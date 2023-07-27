@@ -2,90 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE87765100
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF36765103
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbjG0KZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        id S233919AbjG0KZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbjG0KYn (ORCPT
+        with ESMTP id S231978AbjG0KYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:24:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD53AAF;
-        Thu, 27 Jul 2023 03:24:18 -0700 (PDT)
+        Thu, 27 Jul 2023 06:24:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288CF1BC3;
+        Thu, 27 Jul 2023 03:24:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 174F561E12;
-        Thu, 27 Jul 2023 10:24:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4924C433C7;
-        Thu, 27 Jul 2023 10:24:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B1B1861E12;
+        Thu, 27 Jul 2023 10:24:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF45C433C7;
+        Thu, 27 Jul 2023 10:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690453457;
-        bh=kOpq2Rqf0U8SKxfPvgA2k2zHDoA/cmp6l7XutklD4OE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=goyWfYbQExutZwjItnrCLlgv8n7vVQCY2X2TkzyOnmkzY4GNKu9a41ihr7RmqAa4a
-         J7A4HvzFaMDakoOAr9ZgWyJiwpd1gji4uJcllffhpCkpCKMq2hCSYcqHvXjM808zH6
-         DEClxV3fQzdlP5OvZS912+wXJaaIkqkpAa6dc+LOBK2O4Ga504P8sAWK07WaaFo7yG
-         7T3GQt4DmTHmdSEPsoycKPwZNdqv8KHU8suRak+s6UVdSNrtPxJoNOhd0bQLWa3QGm
-         hbAIlTIh9MFRIvuazaqgnx1OGzNx7/WH4RB97hMfFTwZZFFcL+6nKS1/d1LgIYyWmx
-         /dowfhjCC/J5g==
-Message-ID: <242cdfbc-5b11-015d-5123-fc6aadd1c918@kernel.org>
-Date:   Thu, 27 Jul 2023 19:24:16 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
-Content-Language: en-US
-To:     TW <dalzot@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     regressions@lists.linux.dev,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
- <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
- <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
- <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
+        s=k20201202; t=1690453484;
+        bh=4dJnTdxPpOs7yn6/yYmeAXblymyOHLLkN8KCdq9mBq8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p/QjlPu21Qli95UDAiPYEux9bfi/bCv7dlTpizjIkk0xlBrhH9IQdL59/OqNGEwMs
+         /Phd0+mL9qShJHtdNVoxdgFeiBMgt225WmcUUZYZuTexJb0wJQP8lTuyVFWsWZZEfT
+         QtCuDtVSLScJWgBArzU/3bBcqw++uyt0av/ISu8ZbO0VRvhC5zLU3xlzFVYq2NgyLE
+         7HUm9Gx5qBpoPF+DaJ6tV/mHONfGUn7uDiI0cBbgkQwqJRIH8x61oR3BrbfIg25/U1
+         JZb+158uamEu5ywUmKeXuHrBV3Z5gZOmtHoSEBU68Kam5pVUYv7FmWFMBdRNtwgj/l
+         UutD2auIY9BVw==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qOyAj-00HK4x-J8;
+        Thu, 27 Jul 2023 11:24:41 +0100
+Date:   Thu, 27 Jul 2023 11:24:41 +0100
+Message-ID: <87v8e5r6s6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        "=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?=" <philmd@linaro.org>,
+        Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v7 01/12] KVM: Rename kvm_arch_flush_remote_tlb() to kvm_arch_flush_remote_tlbs()
+In-Reply-To: <20230722022251.3446223-2-rananta@google.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-2-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, gshan@redhat.com, philmd@linaro.org, shahuang@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 19:06, TW wrote:
-> I retried on 6.5 rc3 without the Nvidia drivers and still received the same
-> error and going to try for the patch next but got a malformed patch error on
-> line 6 for the first patch for libata-scsi.c. The other two seem to go through
-> just fine however.
+On Sat, 22 Jul 2023 03:22:40 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+>=20
+> From: David Matlack <dmatlack@google.com>
+>=20
+> Rename kvm_arch_flush_remote_tlb() and the associated macro
+> __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB to kvm_arch_flush_remote_tlbs() and
+> __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS respectively.
+>=20
+> Making the name plural matches kvm_flush_remote_tlbs() and makes it more
+> clear that this function can affect more than one remote TLB.
+>=20
+> No functional change intended.
+>=20
+> Signed-off-by: David Matlack <dmatlack@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  arch/mips/include/asm/kvm_host.h | 4 ++--
+>  arch/mips/kvm/mips.c             | 2 +-
+>  arch/x86/include/asm/kvm_host.h  | 4 ++--
+>  include/linux/kvm_host.h         | 4 ++--
+>  virt/kvm/kvm_main.c              | 2 +-
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm=
+_host.h
+> index 04cedf9f8811..9b0ad8f3bf32 100644
+> --- a/arch/mips/include/asm/kvm_host.h
+> +++ b/arch/mips/include/asm/kvm_host.h
+> @@ -896,7 +896,7 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu =
+*vcpu, int cpu) {}
+>  static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
+>  static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
+> =20
+> -#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB
+> -int kvm_arch_flush_remote_tlb(struct kvm *kvm);
+> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
+> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
 
-Which other two patches are you talking about ?
+How about making this prototype global? I don't see a point in having
+it per-architecture, specially as you are adding arm64 to that mix in
+the following patch.
 
-> Also the bugzilla link is similar to what I have but the disk doesn't
-> disappear, comes back but just takes awhile to come back out of sleep mode.
+	M.
 
-The switch to async resume has revealed many issues with the way ata devices
-are resumed with regard to their scsi representation. The issues manifest in
-different form. The drive "gone" problem was fixed recently. The start-stop
-command seem to cause most of the time a delay in resume that several users
-noticed. In your case though, it is an outright failure.
-
-Hence the *single* patch I asked you to test (another user with a delay issue
-is testing the same as well). Not sure what other patches you are talking about.
-
--- 
-Damien Le Moal
-Western Digital Research
-
+--=20
+Without deviation from the norm, progress is not possible.
