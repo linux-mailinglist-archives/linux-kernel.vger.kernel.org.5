@@ -2,80 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FC37649A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC1176499B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbjG0H6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbjG0H5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232329AbjG0H5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 27 Jul 2023 03:57:52 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282443C3F;
-        Thu, 27 Jul 2023 00:55:08 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R6wa6J012197;
-        Thu, 27 Jul 2023 07:55:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=wNI0rleG38u1p1JaTjkOzXrKMH0gmtg9EtYqPGh7CRU=;
- b=exIVC8huDEZIxp+fq/elpwhB9teFLfBjyl0h1d5gQzkOlbBC9OXC/RF/xy2JtyMYpo6t
- CXPFyKwGqpMSrFji2IwwT11V1J3xqo87WfCBc3j/KO/ao/4V5gcpdGZt5f1icTndqjmf
- +yZ6yx72kg8dPRzjsHAnbHGZHvkg70Nh9XXdv6bt2nSG8S8o2qRctSRAPQrM2RwKd27r
- 6+wJ9QF/jpcOW3oucyxLTWiaVSjjk51Of1WTG65/hc1ef5+KR0TR595qM5r2baj0pVE5
- 3NX1ttt3lMLssSoCz4lX2MaTRGrC44mUUzD1ggC2KfDxxDJdceeH+r0a+R5abDnjrVa/ 5w== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3krn83f5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 07:55:02 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R7t1pW028870
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 07:55:01 GMT
-Received: from [10.239.104.229] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 00:54:28 -0700
-Message-ID: <af383bea-f30d-f0fe-500f-c50904505293@quicinc.com>
-Date:   Thu, 27 Jul 2023 15:54:24 +0800
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233630AbjG0H5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 27 Jul 2023 03:57:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1C32685
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:54:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7E7E521AF8;
+        Thu, 27 Jul 2023 07:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690444492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=wSxwMI6iTWlc8CQ5+CmIo2ka2i1bO3cYp5kFn1ZMdYI=;
+        b=EfLy4/WAskIouv5rxvEmdHlFj3FESHYvCBQIeMk066Gamse8nqqzhOc9v7r186DjuVTx0w
+        IxBX3vZGZdKCEe1S9ciYupkB8ZCGLkRERbnkmeupIkZV4h9fgjrevxyZujANz2qoI5eONC
+        n/CqicCMfepooCttUnGlOFr/9/HN8C0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A503138E5;
+        Thu, 27 Jul 2023 07:54:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NxPDB8wiwmR4PwAAMHmgww
+        (envelope-from <nik.borisov@suse.com>); Thu, 27 Jul 2023 07:54:52 +0000
+From:   Nikolay Borisov <nik.borisov@suse.com>
+To:     x86@kernel.org
+Cc:     bp@alien8.de, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [PATCH] x86/cpu/amd: Report zenbleed in sysfs
+Date:   Thu, 27 Jul 2023 10:54:46 +0300
+Message-Id: <20230727075446.1749969-1-nik.borisov@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v13 0/2] Bluetooth: hci_qca: Add support for Qualcomm
- Bluetooth SoC QCA2066
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
-        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <quic_bgodavar@quicinc.com>, <quic_hemantg@quicinc.com>
-References: <20230727044011.965205-1-quic_tjiang@quicinc.com>
- <ZMIb6RWvhvtteRXE@hovoldconsulting.com>
-From:   Tim Jiang <quic_tjiang@quicinc.com>
-In-Reply-To: <ZMIb6RWvhvtteRXE@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CxYAEnMOvumcmZg_anTe4Cc7Y61w5DZg
-X-Proofpoint-GUID: CxYAEnMOvumcmZg_anTe4Cc7Y61w5DZg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- adultscore=0 suspectscore=0 mlxlogscore=502 priorityscore=1501 bulkscore=0
- phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307270069
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,29 +58,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Initial submission of Zenbleed fix omitted reporting the bug in sysfs.
+There's no reason why it shouldn't be reported so let's add it among
+the other vulnerabilities.
 
-On 7/27/23 15:25, Johan Hovold wrote:
-> On Thu, Jul 27, 2023 at 12:40:09PM +0800, Tim Jiang wrote:
->> This series adds support for qualcomm bluetooth soc qca2066
->>
->> Changes in v13
->>   - change the subject name for patch 1/2
->>   - solve review comments for patch 2/2
-> Again, this is not specific enough and essentially only explains why you
-> changed something, but doesn't say what you changed.
->
-> You also again ignored some of my review comments without even
-> explaining why.
+Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+---
+ .../ABI/testing/sysfs-devices-system-cpu          |  1 +
+ arch/x86/kernel/cpu/amd.c                         | 15 +++++++++++++++
+ drivers/base/cpu.c                                |  8 ++++++++
+ include/linux/cpu.h                               |  2 ++
+ 4 files changed, 26 insertions(+)
 
-[Tim] sorry for that , seems the email I explain why we do not need to 
-sort the btsoc name does not be sent out for network issue.
+diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+index ecd585ca2d50..30bb4196e451 100644
+--- a/Documentation/ABI/testing/sysfs-devices-system-cpu
++++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+@@ -524,6 +524,7 @@ What:		/sys/devices/system/cpu/vulnerabilities
+ 		/sys/devices/system/cpu/vulnerabilities/itlb_multihit
+ 		/sys/devices/system/cpu/vulnerabilities/mmio_stale_data
+ 		/sys/devices/system/cpu/vulnerabilities/retbleed
++		/sys/devices/system/cpu/vulnerabilities/zenbleed
+ Date:		January 2018
+ Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+ Description:	Information about CPU vulnerabilities
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 26ad7ca423e7..3ab9745eafc5 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1279,6 +1279,21 @@ u32 amd_get_highest_perf(void)
+ }
+ EXPORT_SYMBOL_GPL(amd_get_highest_perf);
+ 
++ssize_t cpu_show_zenbleed(struct device *dev, struct device_attribute *attr, char *buf)
++{
++
++	if (!cpu_has_amd_erratum(&boot_cpu_data, amd_zenbleed) ||
++	    !boot_cpu_has(X86_FEATURE_AVX) ||
++	    boot_cpu_has(X86_FEATURE_HYPERVISOR))
++		return sysfs_emit(buf, "Not affected\n");
++
++	if (!cpu_has_zenbleed_microcode()) {
++		return sysfs_emit(buf, "Mitigation: Chickenbit\n");
++	} else {
++		return sysfs_emit(buf, "Mitigation: Microcode\n");
++	}
++}
++
+ static void zenbleed_check_cpu(void *unused)
+ {
+ 	struct cpuinfo_x86 *c = &cpu_data(smp_processor_id());
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index c1815b9dae68..49c963a0f362 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -577,6 +577,12 @@ ssize_t __weak cpu_show_retbleed(struct device *dev,
+ 	return sysfs_emit(buf, "Not affected\n");
+ }
+ 
++ssize_t __weak cpu_show_zenbleed(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	return sysfs_emit(buf, "Not affected\n");
++}
++
+ static DEVICE_ATTR(meltdown, 0444, cpu_show_meltdown, NULL);
+ static DEVICE_ATTR(spectre_v1, 0444, cpu_show_spectre_v1, NULL);
+ static DEVICE_ATTR(spectre_v2, 0444, cpu_show_spectre_v2, NULL);
+@@ -588,6 +594,7 @@ static DEVICE_ATTR(itlb_multihit, 0444, cpu_show_itlb_multihit, NULL);
+ static DEVICE_ATTR(srbds, 0444, cpu_show_srbds, NULL);
+ static DEVICE_ATTR(mmio_stale_data, 0444, cpu_show_mmio_stale_data, NULL);
+ static DEVICE_ATTR(retbleed, 0444, cpu_show_retbleed, NULL);
++static DEVICE_ATTR(zenbleed, 0444, cpu_show_zenbleed, NULL);
+ 
+ static struct attribute *cpu_root_vulnerabilities_attrs[] = {
+ 	&dev_attr_meltdown.attr,
+@@ -601,6 +608,7 @@ static struct attribute *cpu_root_vulnerabilities_attrs[] = {
+ 	&dev_attr_srbds.attr,
+ 	&dev_attr_mmio_stale_data.attr,
+ 	&dev_attr_retbleed.attr,
++	&dev_attr_zenbleed.attr,
+ 	NULL
+ };
+ 
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 6e6e57ec69e8..8ed8fa142067 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -70,6 +70,8 @@ extern ssize_t cpu_show_mmio_stale_data(struct device *dev,
+ 					char *buf);
+ extern ssize_t cpu_show_retbleed(struct device *dev,
+ 				 struct device_attribute *attr, char *buf);
++extern ssize_t cpu_show_zenbleed(struct device *dev,
++				 struct device_attribute *attr, char *buf);
+ 
+ extern __printf(4, 5)
+ struct device *cpu_device_create(struct device *parent, void *drvdata,
+-- 
+2.34.1
 
-as qc define btsoc name does not be sorted  alphabetilly, and we add new 
-chip name followed by old one , I think we only under this rule is OK,  
-do you agree?  thank you very much.
-
->
-> Seriously, you Qualcomm engineers really need to get your act together
-> and stop wasting other people's time.
->
-> Johan
