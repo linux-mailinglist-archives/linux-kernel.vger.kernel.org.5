@@ -2,52 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A049764320
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AB4764322
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjG0Azu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 20:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
+        id S231172AbjG0A5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 20:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjG0Azs (ORCPT
+        with ESMTP id S229642AbjG0A5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 20:55:48 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2948C128;
-        Wed, 26 Jul 2023 17:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690419341;
-        bh=UFMoZKi7V33EmgvjH/R6KMUgI2DKINwbZ0AlLQr3a8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iI49eekM5Ibc+F1kCgCKAlbAOLNuiLjU/ZMk3aDglJWBC3CRn0p9diAM5tjasXRsz
-         LLuJHuulKOUW6KvpZ5BjY/KtkTGTfq+eOG/FuPN8EBDBclts/C4w2PC/wpgKbRIUWj
-         JDhI/DOuArq3WWkFbp7ssGK4Vc9iYIlmPtB3DNrj52p2hIy9yRYAGQ9MzroI7lqvdM
-         9rPxVQTy/W11iXfBRV7vnEY7zp1fGb4B8DViSpZ7FP39xq5+k5KSRJqof1lPwPdVie
-         iN5p5GjKOvKKn16qEgWm/pMVV5lXAduI78DpG0/ThUq3t8SA6WCOU38RW0IKpWqjRM
-         ldwQA4Yd9cjhA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBC4D2WMCz4wqZ;
-        Thu, 27 Jul 2023 10:55:40 +1000 (AEST)
-Date:   Thu, 27 Jul 2023 10:55:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Nishanth Menon <nm@ti.com>
-Subject: Re: linux-next: New tree for generic PM domain providers
-Message-ID: <20230727105539.55227684@canb.auug.org.au>
-In-Reply-To: <CAPDyKFrHVhg_Jt+nd9H7MtF_ZU+SPF2gtuA1QA0DKRAuq6kexA@mail.gmail.com>
-References: <CAPDyKFrHVhg_Jt+nd9H7MtF_ZU+SPF2gtuA1QA0DKRAuq6kexA@mail.gmail.com>
+        Wed, 26 Jul 2023 20:57:48 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E87A0;
+        Wed, 26 Jul 2023 17:57:46 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VoIRP9O_1690419462;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VoIRP9O_1690419462)
+          by smtp.aliyun-inc.com;
+          Thu, 27 Jul 2023 08:57:43 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jiri@resnulli.us
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH net-next] team: Remove NULL check before dev_{put, hold}
+Date:   Thu, 27 Jul 2023 08:57:41 +0800
+Message-Id: <20230727005741.114069-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uBoA1ELgprHk/LFWY6aWY9v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,66 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uBoA1ELgprHk/LFWY6aWY9v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The call netdev_{put, hold} of dev_{put, hold} will check NULL,
+so there is no need to check before using dev_{put, hold},
+remove it to silence the warning:
 
-Hi Ulf,
+./drivers/net/team/team.c:2325:3-10: WARNING: NULL check before dev_{put, hold} functions is not needed.
 
-On Wed, 26 Jul 2023 13:37:34 +0200 Ulf Hansson <ulf.hansson@linaro.org> wro=
-te:
->
-> I would like to add a new tree to the linux-next integration tree. The
-> new tree is intended to host drivers for the so-called generic PM
-> domains providers (aka genpd providers). Most of the changes that I
-> intend to collect will thus be within drivers/genpd/*, which is a new
-> subsystem especially targeted for this.
->=20
-> These are the branches:
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git next
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git fixes
->=20
-> The plan is to start collecting patches beyond v6.6-rc1, but that
-> isn't really clear yet.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5991
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/net/team/team.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Added from today.
+diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
+index d3dc22509ea5..bc50fc3f6913 100644
+--- a/drivers/net/team/team.c
++++ b/drivers/net/team/team.c
+@@ -2321,8 +2321,7 @@ static struct team *team_nl_team_get(struct genl_info *info)
+ 	ifindex = nla_get_u32(info->attrs[TEAM_ATTR_TEAM_IFINDEX]);
+ 	dev = dev_get_by_index(net, ifindex);
+ 	if (!dev || dev->netdev_ops != &team_netdev_ops) {
+-		if (dev)
+-			dev_put(dev);
++		dev_put(dev);
+ 		return NULL;
+ 	}
+ 
+-- 
+2.20.1.7.g153144c
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
---Sig_/uBoA1ELgprHk/LFWY6aWY9v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTBwIsACgkQAVBC80lX
-0Gynywf9Fd0pGDxUiR2Vr/JUFGgbkoVBSRKu5xUO1IaDxMmgbgWcSHTGEDQJYaVv
-neTrANlUtqwk3JRWY7fD/k8GdVpgNJacP/s6TvrC3p17i0LmH6hFN10yvlHryh2x
-wvtNCr5XBBzWnFnCwMoy1mAqL7VsUDZOCzu1GkNfpJUYrtkZQ18B+6eriRKgUSfX
-/KSNUqya/NrxJmvkLoYG1XFvaVejd+UpvYKlt7RtGTZQH8HOai5y86vz+ep0Gy2B
-ZJICg6CTSATdamC7qRvIa1FYhjNRcIHwy4tlK31KMBnVp7II/XGf1QQP/6Q4uSpD
-cDj76mfWTgE1lmcGxjqwux3Y2G2rvA==
-=FiRt
------END PGP SIGNATURE-----
-
---Sig_/uBoA1ELgprHk/LFWY6aWY9v--
