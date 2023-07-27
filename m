@@ -2,52 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 203A37653E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE067653D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233776AbjG0M26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        id S231221AbjG0M20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbjG0M2E (ORCPT
+        with ESMTP id S233301AbjG0M1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:28:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA853C11
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:27:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43F6E61E58
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:27:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE70C433C7;
-        Thu, 27 Jul 2023 12:27:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690460845;
-        bh=ZT1ZAhDl9Us1qyYzoAo30SmrH7DzyLRh79VUEapqkR8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KSvoBeVDFB2WLb/ZthrcY2/5un3LhBPT2h010VvMXIIbxrI9k59hU1haL9I4YmAS6
-         bweh4UMZ2tZTtgDk02XSJzxUx4Wz9qX/Z7OS7DqzKWLefzH9tutQ4EP5x4IulZPjlz
-         b7xs3B5CISDY6Ca7r+x3H+buQQjyB5STEpjdKEla1KsJU0Kymp8QufwNXQYuYctSTZ
-         wnzD2l3VYqQOl443xDPNcz8wUWipGoQY25c3fSboxLLviwH5DATj3vti7Exfl4ukLq
-         7/iXcE9hUcBeAYKXNUlgGZg49p4ypTI1VwvDCsYBt3sBw7swYO5Vd/9hHBquNi2Jjz
-         P+7UhDPFeRwjA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: address missing-prototypes warnings
-Date:   Thu, 27 Jul 2023 14:26:50 +0200
-Message-Id: <20230727122720.2558065-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Thu, 27 Jul 2023 08:27:42 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE5E359C
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:26:59 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3159d5e409dso1505951f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1690460815; x=1691065615;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=krUsWJrSbT94Y2njRnvGsx0mZ0IDUPa+ST4QCqg21Lk=;
+        b=SirOA77z3IYYVzo6MktRkF6SXigTC2gNOaK9LgeVqhnF4poO7cjaVWGOowctJLdZm4
+         p4np4nG0P5aWhe0Qxr6zY1IDJIKSpli9n+ZvXQd49z08XLStoFaronpi2dokRWTzxDY/
+         AoBytA6eEDOmIDoUr2Fry49cmkURQXxjE6zYW0mqjIaFjYD3Mxq1/Gz/yr8S121D6Au5
+         M7HqFRoQD8xpI+PmWqJOjHp9dctOqdrxw+za7TJ2P1PPs4moeci+258f2dn7Acr4DE76
+         78vs8AiXcxCFuFC8ZC345YAXJI9YbMdhDSKn1iAST8RQR8pC+8QecnGDNxdwsrq9qXG0
+         mRzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690460815; x=1691065615;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=krUsWJrSbT94Y2njRnvGsx0mZ0IDUPa+ST4QCqg21Lk=;
+        b=CnITwCnlPKEEh084VrVmqhDebZrcabcXypRIGPG9piur/bN6WVCAcMQQ3ozi8bCaXt
+         F9tGeztTk5iuE2kfOmONkxiPzoRuY/jVzVwahw/bq3WrZK+CmaMx+2NoGUoDuDf2ZMDT
+         MVXLB2zuwOdC2eBVM3sf1TUZrwG+L6XswkaaeJxDVv7MziNXeO0lhUf7OVz7NkwlPutk
+         k9yCEsVIq7GZ0t9xVAyVh3Ce41y22V7+/cxkoW05Lc4hZApOSgyqzxs+ORvwyMm6xUI3
+         5GaAy/MaNjnx2p01/PQ9HenWWog1zg+VRh0MzoTru9RmWgOQndNdY6kEva08gc+iC2hw
+         Vg+Q==
+X-Gm-Message-State: ABy/qLbiaJq26LbhN+Acg6vkW4hxUrri4FCudKWNMno/w6BQTmbYZg5O
+        RvK9ZqVr3zPnMW5o82IanxhbIZ1ZBBeJJ3KaLuoUwQ==
+X-Google-Smtp-Source: APBJJlHZESWh+iPWchiyU4VlWw4pInX9ZuRnhfnhpPmvQe48Qu8W8h1SapWmUqg5A8Lk7cb0f7hH5A==
+X-Received: by 2002:adf:e252:0:b0:314:1e15:f30b with SMTP id bl18-20020adfe252000000b003141e15f30bmr1223531wrb.35.1690460814905;
+        Thu, 27 Jul 2023 05:26:54 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:3cc3:939b:a917:f0a3? ([2a02:8011:e80c:0:3cc3:939b:a917:f0a3])
+        by smtp.gmail.com with ESMTPSA id c18-20020a5d4f12000000b0030647449730sm1931066wru.74.2023.07.27.05.26.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 05:26:54 -0700 (PDT)
+Message-ID: <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
+Date:   Thu, 27 Jul 2023 13:26:53 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [RFC PATCH 3/5] libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
+Content-Language: en-GB
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wuyun.abel@bytedance.com, robin.lu@bytedance.com
+References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
+ <20230727073632.44983-4-zhouchuyi@bytedance.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20230727073632.44983-4-zhouchuyi@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,204 +78,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+2023-07-27 15:36 UTC+0800 ~ Chuyi Zhou <zhouchuyi@bytedance.com>
+> Support BPF_PROG_TYPE_OOM_POLICY program in libbpf and bpftool, so that
+> we can identify and use BPF_PROG_TYPE_OOM_POLICY in our application.
+> 
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>  tools/bpf/bpftool/common.c     |  1 +
+>  tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
+>  tools/lib/bpf/libbpf.c         |  3 +++
+>  tools/lib/bpf/libbpf_probes.c  |  2 ++
+>  4 files changed, 20 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index cc6e6aae2447..c5c311299c4a 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -1089,6 +1089,7 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
+>  	case BPF_TRACE_FENTRY:			return "fentry";
+>  	case BPF_TRACE_FEXIT:			return "fexit";
+>  	case BPF_MODIFY_RETURN:			return "mod_ret";
+> +	case BPF_OOM_POLICY:			return "oom_policy";
 
-There are a few warnings in powerpc64 defconfig builds after -Wmissing-prototypes
-gets promoted from W=1 to the default warning set:
+This case is not necessary. This block is here to keep legacy attach
+type strings supported by bpftool. In your case, the name is the same as
+the one provided by libbpf, so...
 
-arch/powerpc/mm/book3s64/pgtable.c:422:6: error: no previous prototype for 'arch_report_meminfo' [-Werror=missing-prototypes]
-arch/powerpc/mm/init_64.c:311:12: error: no previous prototype for '__vmemmap_free' [-Werror=missing-prototypes]
-arch/powerpc/platforms/cell/ras.c:275:5: error: no previous prototype for 'cbe_sysreset_hack' [-Werror=missing-prototypes]
-arch/powerpc/platforms/cell/spu_manage.c:29:21: error: no previous prototype for 'spu_devnode' [-Werror=missing-prototypes]
-arch/powerpc/platforms/pasemi/time.c:12:17: error: no previous prototype for 'pas_get_boot_time' [-Werror=missing-prototypes]
-arch/powerpc/platforms/powermac/feature.c:1532:13: error: no previous prototype for 'g5_phy_disable_cpu1' [-Werror=missing-prototypes]
-arch/powerpc/platforms/86xx/pic.c:28:13: error: no previous prototype for 'mpc86xx_init_irq' [-Werror=missing-prototypes]
-drivers/pci/pci-sysfs.c:936:13: error: no previous prototype for 'pci_adjust_legacy_attr' [-Werror=missing-prototypes]
+>  	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
+>  	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
+>  	default:	return libbpf_bpf_attach_type_str(t);
 
-Address these by including the right header files or marking the
-functions static. The audit.c one is a bit tricky since compat_audit.h
-cannot include regular kernel headers tht have conflicting types on
-32-bit powerpc.
+... we just want to pick it up from libbpf directly, here.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/include/asm/pci.h            | 3 ++-
- arch/powerpc/kernel/audit.c               | 3 ++-
- arch/powerpc/kernel/audit_32.h            | 7 +++++++
- arch/powerpc/kernel/compat_audit.c        | 2 ++
- arch/powerpc/mm/book3s64/pgtable.c        | 1 +
- arch/powerpc/mm/init_64.c                 | 2 +-
- arch/powerpc/platforms/86xx/pic.c         | 2 ++
- arch/powerpc/platforms/cell/ras.c         | 2 +-
- arch/powerpc/platforms/cell/spu_manage.c  | 1 +
- arch/powerpc/platforms/pasemi/pasemi.h    | 1 +
- arch/powerpc/platforms/pasemi/time.c      | 2 ++
- arch/powerpc/platforms/powermac/feature.c | 2 ++
- 12 files changed, 24 insertions(+), 4 deletions(-)
- create mode 100644 arch/powerpc/kernel/audit_32.h
+[...]
 
-diff --git a/arch/powerpc/include/asm/pci.h b/arch/powerpc/include/asm/pci.h
-index 289f1ec85bc54..f5078a7dd85a5 100644
---- a/arch/powerpc/include/asm/pci.h
-+++ b/arch/powerpc/include/asm/pci.h
-@@ -82,7 +82,8 @@ extern int pci_legacy_write(struct pci_bus *bus, loff_t port, u32 val,
- extern int pci_mmap_legacy_page_range(struct pci_bus *bus,
- 				      struct vm_area_struct *vma,
- 				      enum pci_mmap_state mmap_state);
--
-+extern void pci_adjust_legacy_attr(struct pci_bus *bus,
-+				   enum pci_mmap_state mmap_type);
- #define HAVE_PCI_LEGACY	1
- 
- extern void pcibios_claim_one_bus(struct pci_bus *b);
-diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-index 1bcfca5fdf676..92298d6a3a37a 100644
---- a/arch/powerpc/kernel/audit.c
-+++ b/arch/powerpc/kernel/audit.c
-@@ -4,6 +4,8 @@
- #include <linux/audit.h>
- #include <asm/unistd.h>
- 
-+#include "audit_32.h"
-+
- static unsigned dir_class[] = {
- #include <asm-generic/audit_dir_write.h>
- ~0U
-@@ -41,7 +43,6 @@ int audit_classify_arch(int arch)
- int audit_classify_syscall(int abi, unsigned syscall)
- {
- #ifdef CONFIG_PPC64
--	extern int ppc32_classify_syscall(unsigned);
- 	if (abi == AUDIT_ARCH_PPC)
- 		return ppc32_classify_syscall(syscall);
- #endif
-diff --git a/arch/powerpc/kernel/audit_32.h b/arch/powerpc/kernel/audit_32.h
-new file mode 100644
-index 0000000000000..c6c79c3041ab2
---- /dev/null
-+++ b/arch/powerpc/kernel/audit_32.h
-@@ -0,0 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#ifndef __AUDIT_32_H__
-+#define __AUDIT_32_H__
-+
-+extern int ppc32_classify_syscall(unsigned);
-+
-+#endif
-diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-index d92ffe4e5dc1c..57b38c592b9f3 100644
---- a/arch/powerpc/kernel/compat_audit.c
-+++ b/arch/powerpc/kernel/compat_audit.c
-@@ -3,6 +3,8 @@
- #include <linux/audit_arch.h>
- #include <asm/unistd.h>
- 
-+#include "audit_32.h"
-+
- unsigned ppc32_dir_class[] = {
- #include <asm-generic/audit_dir_write.h>
- ~0U
-diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-index 75b938268b040..0558202103171 100644
---- a/arch/powerpc/mm/book3s64/pgtable.c
-+++ b/arch/powerpc/mm/book3s64/pgtable.c
-@@ -9,6 +9,7 @@
- #include <linux/memremap.h>
- #include <linux/pkeys.h>
- #include <linux/debugfs.h>
-+#include <linux/proc_fs.h>
- #include <misc/cxl-base.h>
- 
- #include <asm/pgalloc.h>
-diff --git a/arch/powerpc/mm/init_64.c b/arch/powerpc/mm/init_64.c
-index 6db7a063ba63f..7241b8515f89b 100644
---- a/arch/powerpc/mm/init_64.c
-+++ b/arch/powerpc/mm/init_64.c
-@@ -315,7 +315,7 @@ static unsigned long vmemmap_list_free(unsigned long start)
- 	return vmem_back->phys;
- }
- 
--void __ref __vmemmap_free(unsigned long start, unsigned long end,
-+static void __ref __vmemmap_free(unsigned long start, unsigned long end,
- 			  struct vmem_altmap *altmap)
- {
- 	unsigned long page_size = 1 << mmu_psize_defs[mmu_vmemmap_psize].shift;
-diff --git a/arch/powerpc/platforms/86xx/pic.c b/arch/powerpc/platforms/86xx/pic.c
-index 2c32c3488afbb..7cdb16dc8b936 100644
---- a/arch/powerpc/platforms/86xx/pic.c
-+++ b/arch/powerpc/platforms/86xx/pic.c
-@@ -12,6 +12,8 @@
- #include <asm/mpic.h>
- #include <asm/i8259.h>
- 
-+#include "mpc86xx.h"
-+
- #ifdef CONFIG_PPC_I8259
- static void mpc86xx_8259_cascade(struct irq_desc *desc)
- {
-diff --git a/arch/powerpc/platforms/cell/ras.c b/arch/powerpc/platforms/cell/ras.c
-index 98db63b72d56b..f6b87926530cc 100644
---- a/arch/powerpc/platforms/cell/ras.c
-+++ b/arch/powerpc/platforms/cell/ras.c
-@@ -22,7 +22,7 @@
- #include <asm/cell-regs.h>
- 
- #include "ras.h"
--
-+#include "pervasive.h"
- 
- static void dump_fir(int cpu)
- {
-diff --git a/arch/powerpc/platforms/cell/spu_manage.c b/arch/powerpc/platforms/cell/spu_manage.c
-index 74567b32c48c2..f464a1f2e5681 100644
---- a/arch/powerpc/platforms/cell/spu_manage.c
-+++ b/arch/powerpc/platforms/cell/spu_manage.c
-@@ -25,6 +25,7 @@
- 
- #include "spufs/spufs.h"
- #include "interrupt.h"
-+#include "spu_priv1_mmio.h"
- 
- struct device_node *spu_devnode(struct spu *spu)
- {
-diff --git a/arch/powerpc/platforms/pasemi/pasemi.h b/arch/powerpc/platforms/pasemi/pasemi.h
-index 3f277a200fd87..018c30665e1b3 100644
---- a/arch/powerpc/platforms/pasemi/pasemi.h
-+++ b/arch/powerpc/platforms/pasemi/pasemi.h
-@@ -4,6 +4,7 @@
- 
- extern time64_t pas_get_boot_time(void);
- extern void pas_pci_init(void);
-+struct pci_dev;
- extern void pas_pci_irq_fixup(struct pci_dev *dev);
- extern void pas_pci_dma_dev_setup(struct pci_dev *dev);
- 
-diff --git a/arch/powerpc/platforms/pasemi/time.c b/arch/powerpc/platforms/pasemi/time.c
-index ad721882c8b6f..70ac6db027d0e 100644
---- a/arch/powerpc/platforms/pasemi/time.c
-+++ b/arch/powerpc/platforms/pasemi/time.c
-@@ -9,6 +9,8 @@
- 
- #include <asm/time.h>
- 
-+#include "pasemi.h"
-+
- time64_t __init pas_get_boot_time(void)
- {
- 	/* Let's just return a fake date right now */
-diff --git a/arch/powerpc/platforms/powermac/feature.c b/arch/powerpc/platforms/powermac/feature.c
-index ed58928469b5b..ed472b797e28a 100644
---- a/arch/powerpc/platforms/powermac/feature.c
-+++ b/arch/powerpc/platforms/powermac/feature.c
-@@ -37,6 +37,8 @@
- #include <asm/pci-bridge.h>
- #include <asm/pmac_low_i2c.h>
- 
-+#include "pmac.h"
-+
- #undef DEBUG_FEATURE
- 
- #ifdef DEBUG_FEATURE
--- 
-2.39.2
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 214f828ece6b..10496bb9b3bc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -118,6 +118,7 @@ static const char * const attach_type_name[] = {
+>  	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
+>  	[BPF_STRUCT_OPS]		= "struct_ops",
+>  	[BPF_NETFILTER]			= "netfilter",
+> +	[BPF_OOM_POLICY]		= "oom_policy",
+>  };
 
