@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C25C765263
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADA0765260
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjG0Lae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S232434AbjG0Laa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbjG0LaX (ORCPT
+        with ESMTP id S232483AbjG0LaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:30:23 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F1D35BF;
-        Thu, 27 Jul 2023 04:30:02 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36RBTS2q119183;
-        Thu, 27 Jul 2023 06:29:28 -0500
+        Thu, 27 Jul 2023 07:30:15 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA607359A;
+        Thu, 27 Jul 2023 04:29:59 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36RBTY9e084731;
+        Thu, 27 Jul 2023 06:29:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690457368;
-        bh=7Utm4F15aZgg90XqeSzYnnyLrRWHIRnHF8JlWQv6/rI=;
+        s=ti-com-17Q1; t=1690457374;
+        bh=GrhRztoEETe2mrTdbwezGZGsNAKW3D2XUyEtzptgUCs=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=AebL+SFIBFiUjyK3sNmOvKZsi08Fu7ovIdtBkDHfh5jyeRFoN3bXaIZY5xYM9Gg9/
-         zSVNtQX7OwVMlM/FXcD+2d+bvcYqpPNcQwTvCWx2OqTM0JgqVS+wXB13nH4hvG3MZY
-         T8j6VlCYvF95W+bZ4OjiQ+Bd0SYziK37atagO3W4=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36RBTSIt105260
+        b=v6JspWuVCm1Tpv6kNnGwwt2pJjvsei7VvxA4Tu+lT+CbUD3l/gQRxdOFqV8xA210M
+         Z97x8ojk3KX9L+vFqen5dDRddU16dMODUdQJZzYKpggExGtx+mSJxzjKu5vCVQHx9F
+         1ZnkLBLTrvD61FUnhNci1xTzH5ShmOzUEMWcHxTk=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36RBTYDj032644
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Jul 2023 06:29:28 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 27 Jul 2023 06:29:34 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 27
- Jul 2023 06:29:27 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 06:29:34 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 27 Jul 2023 06:29:27 -0500
+ Frontend Transport; Thu, 27 Jul 2023 06:29:34 -0500
 Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36RBTR4G094410;
-        Thu, 27 Jul 2023 06:29:27 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36RBTY2S070457;
+        Thu, 27 Jul 2023 06:29:34 -0500
 Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 36RBTQ9a001439;
-        Thu, 27 Jul 2023 06:29:27 -0500
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 36RBTXiZ001450;
+        Thu, 27 Jul 2023 06:29:34 -0500
 From:   MD Danish Anwar <danishanwar@ti.com>
 To:     Randy Dunlap <rdunlap@infradead.org>,
         Roger Quadros <rogerq@kernel.org>,
@@ -62,9 +62,9 @@ CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-omap@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v12 08/10] net: ti: icssg-prueth: Add Standard network staticstics
-Date:   Thu, 27 Jul 2023 16:58:25 +0530
-Message-ID: <20230727112827.3977534-9-danishanwar@ti.com>
+Subject: [PATCH v12 09/10] net: ti: icssg-prueth: Add ethtool ops for ICSSG Ethernet driver
+Date:   Thu, 27 Jul 2023 16:58:26 +0530
+Message-ID: <20230727112827.3977534-10-danishanwar@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230727112827.3977534-1-danishanwar@ti.com>
 References: <20230727112827.3977534-1-danishanwar@ti.com>
@@ -74,103 +74,263 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement .ndo_get_stats64 to dump standard network interface
-statistics for ICSSG ethernet driver.
+Add icssg_ethtool.c file. This file will be used for dumping statistics
+via ethtool for ICSSG ethernet driver.
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 ---
- drivers/net/ethernet/ti/icssg/icssg_prueth.c | 22 ++++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icssg_prueth.h |  2 ++
- drivers/net/ethernet/ti/icssg/icssg_stats.c  | 13 ++++++++++++
- 3 files changed, 37 insertions(+)
+ drivers/net/ethernet/ti/Makefile              |   1 +
+ drivers/net/ethernet/ti/icssg/icssg_ethtool.c | 188 ++++++++++++++++++
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c  |   1 +
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h  |   3 +
+ 4 files changed, 193 insertions(+)
+ create mode 100644 drivers/net/ethernet/ti/icssg/icssg_ethtool.c
 
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 3d36f2a79fc8..8a12d3b1ac1f 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -1244,6 +1244,27 @@ static int emac_ndo_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
- 	return phy_do_ioctl(ndev, ifr, cmd);
- }
- 
-+static void emac_ndo_get_stats64(struct net_device *ndev,
-+				 struct rtnl_link_stats64 *stats)
+diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+index 03d9b2b36b5f..9176d79c36e1 100644
+--- a/drivers/net/ethernet/ti/Makefile
++++ b/drivers/net/ethernet/ti/Makefile
+@@ -37,3 +37,4 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+ 		  icssg/icssg_config.o \
+ 		  icssg/icssg_mii_cfg.o \
+ 		  icssg/icssg_stats.o \
++		  icssg/icssg_ethtool.o
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+new file mode 100644
+index 000000000000..02c312f01d10
+--- /dev/null
++++ b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Texas Instruments ICSSG Ethernet driver
++ *
++ * Copyright (C) 2018-2022 Texas Instruments Incorporated - https://www.ti.com/
++ *
++ */
++
++#include "icssg_prueth.h"
++#include "icssg_stats.h"
++
++static void emac_get_drvinfo(struct net_device *ndev,
++			     struct ethtool_drvinfo *info)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct prueth *prueth = emac->prueth;
++
++	strscpy(info->driver, dev_driver_string(prueth->dev),
++		sizeof(info->driver));
++	strscpy(info->bus_info, dev_name(prueth->dev), sizeof(info->bus_info));
++}
++
++static u32 emac_get_msglevel(struct net_device *ndev)
 +{
 +	struct prueth_emac *emac = netdev_priv(ndev);
 +
-+	emac_update_hardware_stats(emac);
-+
-+	stats->rx_packets     = emac_get_stat_by_name(emac, "rx_packets");
-+	stats->rx_bytes       = emac_get_stat_by_name(emac, "rx_bytes");
-+	stats->tx_packets     = emac_get_stat_by_name(emac, "tx_packets");
-+	stats->tx_bytes       = emac_get_stat_by_name(emac, "tx_bytes");
-+	stats->rx_crc_errors  = emac_get_stat_by_name(emac, "rx_crc_errors");
-+	stats->rx_over_errors = emac_get_stat_by_name(emac, "rx_over_errors");
-+	stats->multicast      = emac_get_stat_by_name(emac, "rx_multicast_frames");
-+
-+	stats->rx_errors  = ndev->stats.rx_errors;
-+	stats->rx_dropped = ndev->stats.rx_dropped;
-+	stats->tx_errors  = ndev->stats.tx_errors;
-+	stats->tx_dropped = ndev->stats.tx_dropped;
++	return emac->msg_enable;
 +}
 +
- static const struct net_device_ops emac_netdev_ops = {
- 	.ndo_open = emac_ndo_open,
- 	.ndo_stop = emac_ndo_stop,
-@@ -1253,6 +1274,7 @@ static const struct net_device_ops emac_netdev_ops = {
- 	.ndo_tx_timeout = emac_ndo_tx_timeout,
- 	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
- 	.ndo_eth_ioctl = emac_ndo_ioctl,
-+	.ndo_get_stats64 = emac_ndo_get_stats64,
- };
++static void emac_set_msglevel(struct net_device *ndev, u32 value)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++
++	emac->msg_enable = value;
++}
++
++static int emac_get_link_ksettings(struct net_device *ndev,
++				   struct ethtool_link_ksettings *ecmd)
++{
++	return phy_ethtool_get_link_ksettings(ndev, ecmd);
++}
++
++static int emac_set_link_ksettings(struct net_device *ndev,
++				   const struct ethtool_link_ksettings *ecmd)
++{
++	return phy_ethtool_set_link_ksettings(ndev, ecmd);
++}
++
++static int emac_get_eee(struct net_device *ndev, struct ethtool_eee *edata)
++{
++	if (!ndev->phydev)
++		return -EOPNOTSUPP;
++
++	return phy_ethtool_get_eee(ndev->phydev, edata);
++}
++
++static int emac_set_eee(struct net_device *ndev, struct ethtool_eee *edata)
++{
++	if (!ndev->phydev)
++		return -EOPNOTSUPP;
++
++	return phy_ethtool_set_eee(ndev->phydev, edata);
++}
++
++static int emac_nway_reset(struct net_device *ndev)
++{
++	return phy_ethtool_nway_reset(ndev);
++}
++
++static int emac_get_sset_count(struct net_device *ndev, int stringset)
++{
++	switch (stringset) {
++	case ETH_SS_STATS:
++		return ICSSG_NUM_ETHTOOL_STATS;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static void emac_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
++{
++	u8 *p = data;
++	int i;
++
++	switch (stringset) {
++	case ETH_SS_STATS:
++		for (i = 0; i < ARRAY_SIZE(icssg_all_stats); i++) {
++			if (!icssg_all_stats[i].standard_stats) {
++				memcpy(p, icssg_all_stats[i].name,
++				       ETH_GSTRING_LEN);
++				p += ETH_GSTRING_LEN;
++			}
++		}
++		break;
++	default:
++		break;
++	}
++}
++
++static void emac_get_ethtool_stats(struct net_device *ndev,
++				   struct ethtool_stats *stats, u64 *data)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++	int i;
++
++	emac_update_hardware_stats(emac);
++
++	for (i = 0; i < ARRAY_SIZE(icssg_all_stats); i++)
++		if (!icssg_all_stats[i].standard_stats)
++			*(data++) = emac->stats[i];
++}
++
++static int emac_set_channels(struct net_device *ndev,
++			     struct ethtool_channels *ch)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++
++	/* Check if interface is up. Can change the num queues when
++	 * the interface is down.
++	 */
++	if (netif_running(emac->ndev))
++		return -EBUSY;
++
++	emac->tx_ch_num = ch->tx_count;
++
++	return 0;
++}
++
++static void emac_get_channels(struct net_device *ndev,
++			      struct ethtool_channels *ch)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++
++	ch->max_rx = 1;
++	ch->max_tx = PRUETH_MAX_TX_QUEUES;
++	ch->rx_count = 1;
++	ch->tx_count = emac->tx_ch_num;
++}
++
++static const struct ethtool_rmon_hist_range emac_rmon_ranges[] = {
++	{    0,   64},
++	{   65,  128},
++	{  129,  256},
++	{  257,  512},
++	{  513, PRUETH_MAX_PKT_SIZE},
++	{}
++};
++
++static void emac_get_rmon_stats(struct net_device *ndev,
++				struct ethtool_rmon_stats *rmon_stats,
++				const struct ethtool_rmon_hist_range **ranges)
++{
++	struct prueth_emac *emac = netdev_priv(ndev);
++
++	*ranges = emac_rmon_ranges;
++
++	rmon_stats->undersize_pkts = emac_get_stat_by_name(emac, "rx_bucket1_frames") -
++				     emac_get_stat_by_name(emac, "rx_64B_frames");
++
++	rmon_stats->hist[0] = emac_get_stat_by_name(emac, "rx_bucket1_frames");
++	rmon_stats->hist[1] = emac_get_stat_by_name(emac, "rx_bucket2_frames");
++	rmon_stats->hist[2] = emac_get_stat_by_name(emac, "rx_bucket3_frames");
++	rmon_stats->hist[3] = emac_get_stat_by_name(emac, "rx_bucket4_frames");
++	rmon_stats->hist[4] = emac_get_stat_by_name(emac, "rx_bucket5_frames");
++
++	rmon_stats->hist_tx[0] = emac_get_stat_by_name(emac, "tx_bucket1_frames");
++	rmon_stats->hist_tx[1] = emac_get_stat_by_name(emac, "tx_bucket2_frames");
++	rmon_stats->hist_tx[2] = emac_get_stat_by_name(emac, "tx_bucket3_frames");
++	rmon_stats->hist_tx[3] = emac_get_stat_by_name(emac, "tx_bucket4_frames");
++	rmon_stats->hist_tx[4] = emac_get_stat_by_name(emac, "tx_bucket5_frames");
++}
++
++const struct ethtool_ops icssg_ethtool_ops = {
++	.get_drvinfo = emac_get_drvinfo,
++	.get_msglevel = emac_get_msglevel,
++	.set_msglevel = emac_set_msglevel,
++	.get_sset_count = emac_get_sset_count,
++	.get_ethtool_stats = emac_get_ethtool_stats,
++	.get_strings = emac_get_strings,
++	.get_channels = emac_get_channels,
++	.set_channels = emac_set_channels,
++	.get_link_ksettings = emac_get_link_ksettings,
++	.set_link_ksettings = emac_set_link_ksettings,
++	.get_link = ethtool_op_get_link,
++	.get_eee = emac_get_eee,
++	.set_eee = emac_set_eee,
++	.nway_reset = emac_nway_reset,
++	.get_rmon_stats = emac_get_rmon_stats,
++};
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+index 8a12d3b1ac1f..01ba397ea2b6 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+@@ -1425,6 +1425,7 @@ static int prueth_netdev_init(struct prueth *prueth,
+ 	ndev->min_mtu = PRUETH_MIN_PKT_SIZE;
+ 	ndev->max_mtu = PRUETH_MAX_MTU;
+ 	ndev->netdev_ops = &emac_netdev_ops;
++	ndev->ethtool_ops = &icssg_ethtool_ops;
+ 	ndev->hw_features = NETIF_F_SG;
+ 	ndev->features = ndev->hw_features;
  
- /* get emac_port corresponding to eth_node name */
 diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-index bbde423ec51d..f0db3558b7a8 100644
+index f0db3558b7a8..520dcb696e65 100644
 --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
 +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
-@@ -51,6 +51,7 @@
- 
+@@ -52,6 +52,7 @@
  /* Number of ICSSG related stats */
  #define ICSSG_NUM_STATS 60
-+#define ICSSG_NUM_STANDARD_STATS 31
+ #define ICSSG_NUM_STANDARD_STATS 31
++#define ICSSG_NUM_ETHTOOL_STATS (ICSSG_NUM_STATS - ICSSG_NUM_STANDARD_STATS)
  
  /* Firmware status codes */
  #define ICSS_HS_FW_READY 0x55555555
-@@ -254,4 +255,5 @@ void icssg_config_set_speed(struct prueth_emac *emac);
- 
- void emac_stats_work_handler(struct work_struct *work);
- void emac_update_hardware_stats(struct prueth_emac *emac);
-+int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
- #endif /* __NET_TI_ICSSG_PRUETH_H */
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_stats.c b/drivers/net/ethernet/ti/icssg/icssg_stats.c
-index 25deb368a3f0..bb0b33927e3b 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_stats.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_stats.c
-@@ -42,3 +42,16 @@ void emac_stats_work_handler(struct work_struct *work)
- 	queue_delayed_work(system_long_wq, &emac->stats_work,
- 			   msecs_to_jiffies((STATS_TIME_LIMIT_1G_MS * 1000) / emac->speed));
+@@ -242,6 +243,8 @@ static inline int prueth_emac_slice(struct prueth_emac *emac)
+ 	}
  }
+ 
++extern const struct ethtool_ops icssg_ethtool_ops;
 +
-+int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(icssg_all_stats); i++) {
-+		if (!strcmp(icssg_all_stats[i].name, stat_name))
-+			return emac->stats[icssg_all_stats[i].offset / sizeof(u32)];
-+	}
-+
-+	netdev_err(emac->ndev, "Invalid stats %s\n", stat_name);
-+	return -EINVAL;
-+}
+ /* config helpers */
+ void icssg_config_ipg(struct prueth_emac *emac);
+ int icssg_config(struct prueth *prueth, struct prueth_emac *emac,
 -- 
 2.34.1
 
