@@ -2,157 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFCF765D01
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811B5765D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbjG0UNL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Jul 2023 16:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S232659AbjG0UP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjG0UNK (ORCPT
+        with ESMTP id S230204AbjG0UPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:13:10 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADECBE47;
-        Thu, 27 Jul 2023 13:13:08 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56475c1b930so176181eaf.0;
-        Thu, 27 Jul 2023 13:13:08 -0700 (PDT)
+        Thu, 27 Jul 2023 16:15:25 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337C1FDD;
+        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b9920362so1089764b3a.1;
+        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690488924; x=1691093724;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
+        b=AhyHSKUIkkgbZvtQQcyOKRC4C+sGBBU1rnW7UKRYJelhzH7/ZrA6+1Xg4/vOjR9OBb
+         2LiXllBWDr3LkIBs0B/HpC95oZnJRCD0J4e6Qd/+w+xbPyfsCkd+ypfy8zlEEQg2Cs2l
+         1bNXUidT+UahwU+1TAhT92SRQd4PrYR4jj1FwXZuZrdtDG/PyKSc/2Cj5pi/joFqabur
+         JkmKOL1V/ewlylT3LCRSl78qgYZTBnWSXDg0te4dPPC4jPB3EFA+GB1EhGkQOlrFtEFQ
+         b4MraEAS4OuOvFpd4YQIPbgaCFLUB+9vO60R9LnsWln7xCCnmoiYLosUxYKJ4hpTpGB3
+         IMIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690488788; x=1691093588;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L5Z31Dq5VWK2apYQ/bvG19BYq0hISSJX9VnwC0J6vTg=;
-        b=BQkYGyaX0c0jsh/oaidhkkGbXEVjca9dtOXnTqqV64piuemI2+z9X6SGLxi50vQ5nv
-         6cXqgUzr1if6W8dchD/aNQYCkYHbL0ODQoUGNlI9TPuw6PtfClYQRuWYrIbqtS6Q95Fw
-         TvsIwYg2lbpCe0/o28DXhfz5EhTFYXfcHChYh+3gxjUt+/qKN1w+a+OlGGsbL8IHtd2z
-         kXzh1WUfwiVx4xly91PVqpdKp/mRHSqygQyVdPP7mGQVMlnM4OpAIpAwIH9hhUPvOsTr
-         R+ijs6KK5Wmz7RqkZ9ZEdZrTKoj8//fRYjZYVu3C+0KER69QjpQiVA45Nl33rYjl+3Wo
-         GIVA==
-X-Gm-Message-State: ABy/qLbNXiLOpKZfAE/M52Z24J9tfl/7Oeu+0DN6TsVb7tOy/JNe1W6D
-        PfZW0dgZspKzyfamlXT2WUIUlkFWsFaVBos1E9d3XTkc
-X-Google-Smtp-Source: APBJJlE+5WCDAGDphOpgTpC96fI64euD/U8QM5jbQYMAU92UDLulFFTCuVFyQdLuchdl+KeAwtSLRP6nesgHW23upDM=
-X-Received: by 2002:a4a:db86:0:b0:560:b01a:653d with SMTP id
- s6-20020a4adb86000000b00560b01a653dmr565021oou.0.1690488787631; Thu, 27 Jul
- 2023 13:13:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <4506480.LvFx2qVVIh@kreacher>
-In-Reply-To: <4506480.LvFx2qVVIh@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 27 Jul 2023 22:12:56 +0200
-Message-ID: <CAJZ5v0hnRm7Nnup3HPWedEchzLD_9w8OPkhQ0vjpR3uAL3HUoQ@mail.gmail.com>
-Subject: Re: [PATCH v1] cpuidle: teo: Update idle duration estimate when
- choosing shallower state
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1690488924; x=1691093724;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
+        b=gtaaOTcsrMrErlKyvsUhYNJ6UxEkH2T7pnO/ageJcMbL2aF+Ewt0k9LbF6STUwLvji
+         SJiiGQtcDP81BtECOBlICJaP9dBa7Wkd76ztOkExyx7pM1Kosu2GyGdM+weeySeQG5Qc
+         bank9xEjwwnEUnqCp0H4pgJzDbxhFQpk2ETt1X/xI6XhdQzp88xn7IJdNRmFro7npkfg
+         4UDeETbg73Uuizjg0T5ymiXrtCKIJh6XgIhWTn9TWWwDtWhA70jTXXKWlru0uaeOJczq
+         aKCwFmB2hZpcCM+qBVeqa0+VSXARwU6y4N1s44GzBjc/UothsnwfYy0b8QCTFFM8TuRM
+         ohqQ==
+X-Gm-Message-State: ABy/qLYz+eRBc5J7pvbmy2hRhOhWNdPbI/cBBqARlDTWSJWYNepniGyX
+        KXUMwWw3yI0oq56EwXtK7aE=
+X-Google-Smtp-Source: APBJJlE/vCxhHaS86mEOqx3kFx6vMxKfngxzPSkTcBkc7tZIAXfeUFlJDQsMA7TZxE9/hIrOlKW7eg==
+X-Received: by 2002:a05:6a20:7351:b0:133:656e:fe1e with SMTP id v17-20020a056a20735100b00133656efe1emr128808pzc.47.1690488924247;
+        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:705d:54ca:a48d:47da])
+        by smtp.gmail.com with ESMTPSA id m17-20020aa78a11000000b0063afb08afeesm1862257pfa.67.2023.07.27.13.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 13:15:23 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 13:15:22 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     tglozar@redhat.com, linux-kernel@vger.kernel.org
+Cc:     john.fastabend@gmail.com, jakub@cloudflare.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Tomas Glozar <tglozar@redhat.com>
+Message-ID: <64c2d05a894be_831d20896@john.notmuch>
+In-Reply-To: <20230726085003.261112-1-tglozar@redhat.com>
+References: <20230726085003.261112-1-tglozar@redhat.com>
+Subject: RE: [PATCH RFC net] bpf: sockmap: Remove preempt_disable in
+ sock_map_sk_acquire
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:05 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> The TEO governor takes CPU utilization into account by refining idle state
-> selection when the utilization is above a certain threshold.  The idle state
-> selection is then refined by choosing an idle state shallower than the
-> previously selected one.
->
-> However, when this is done, the idle duration estimate needs to be updated
-> so as to prevent the scheduler tick from being stopped while the candidate
-> idle state is shallow, which may lead to excessive energy usage if the CPU
-> is not interrupted quickly enough going forward.  Moreover, in case the
-> scheduler tick has been stopped already and the new idle duration estimate
-> is too small, the replacement candidate state cannot be used.
->
-> Modify the relevant code to take the above observations into account.
->
-> Fixes: 9ce0f7c4bc64 ("cpuidle: teo: Introduce util-awareness")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+tglozar@ wrote:
+> From: Tomas Glozar <tglozar@redhat.com>
+> 
+> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+> patchset notes for details).
+> 
+> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+> BUG (sleeping function called from invalid context) on RT kernels.
+> 
+> preempt_disable was introduced together with lock_sk and rcu_read_lock
+> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+> in parallel") with no comment on why it is necessary.
+> 
+> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+> 
+> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
 > ---
->
-> @Peter: This doesn't attempt to fix the tick stopping problem, it just makes
-> the current behavior consistent.
->
-> @Anna-Maria: This is likely to basically prevent the tick from being stopped
-> at all if the CPU utilization is above a certain threshold.  I'm wondering if
-> your results will be affected by it and in what way.
->
-> ---
->  drivers/cpuidle/governors/teo.c |   33 ++++++++++++++++++++++++++-------
->  1 file changed, 26 insertions(+), 7 deletions(-)
->
-> Index: linux-pm/drivers/cpuidle/governors/teo.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpuidle/governors/teo.c
-> +++ linux-pm/drivers/cpuidle/governors/teo.c
-> @@ -397,13 +397,22 @@ static int teo_select(struct cpuidle_dri
->          * the shallowest non-polling state and exit.
->          */
->         if (drv->state_count < 3 && cpu_data->utilized) {
-> -               for (i = 0; i < drv->state_count; ++i) {
-> -                       if (!dev->states_usage[i].disable &&
-> -                           !(drv->states[i].flags & CPUIDLE_FLAG_POLLING)) {
-> -                               idx = i;
-> +               /*
-> +                * If state 0 is enabled and it is not a polling one, select it
-> +                * right away and update the idle duration estimate accordingly,
-> +                * unless the scheduler tick has been stopped.
-> +                */
-> +               if (!idx && !(drv->states[0].flags & CPUIDLE_FLAG_POLLING)) {
-> +                       s64 span_ns = teo_middle_of_bin(0, drv);
-> +
-> +                       if (teo_time_ok(span_ns)) {
-> +                               duration_ns = span_ns;
->                                 goto end;
->                         }
->                 }
-> +               /* Assume that state 1 is not a polling one and select it. */
+>  net/core/sock_map.c | 2 --
+>  1 file changed, 2 deletions(-)
 
-Well, I should also check if it is not disabled.  Will send a v2 tomorrow.
+Hi Thomas,
 
-> +               idx = 1;
-> +               goto end;
->         }
->
->         /*
-> @@ -539,10 +548,20 @@ static int teo_select(struct cpuidle_dri
->
->         /*
->          * If the CPU is being utilized over the threshold, choose a shallower
-> -        * non-polling state to improve latency
-> +        * non-polling state to improve latency, unless the scheduler tick has
-> +        * been stopped already and the shallower state's target residency is
-> +        * not sufficiently large.
->          */
-> -       if (cpu_data->utilized)
-> -               idx = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
-> +       if (cpu_data->utilized) {
-> +               s64 span_ns;
-> +
-> +               i = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
-> +               span_ns = teo_middle_of_bin(i, drv);
-> +               if (teo_time_ok(span_ns)) {
-> +                       idx = i;
-> +                       duration_ns = span_ns;
-> +               }
-> +       }
->
->  end:
->         /*
->
->
->
+I looked at this and don't see the need for the preempt_disable there
+at the moment. I believe it was there simply to match the BPF caller
+case where it was preempt_disable at the time and now is migrate
+disable. From the BPF side we don't want the migrate, but from the
+syscall interface it should be OK.
+
+Can you submit without RFC tag I think this should be OK.
+
+Thanks,
+John
+
+> 
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 19538d628714..08ab108206bf 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
+>  	__acquires(&sk->sk_lock.slock)
+>  {
+>  	lock_sock(sk);
+> -	preempt_disable();
+>  	rcu_read_lock();
+>  }
+>  
+> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
+>  	__releases(&sk->sk_lock.slock)
+>  {
+>  	rcu_read_unlock();
+> -	preempt_enable();
+>  	release_sock(sk);
+>  }
+>  
+> 
+> base-commit: 22117b3ae6e37d07225653d9ae5ae86b3a54f99c
+> -- 
+> 2.39.3
+> 
+
+
