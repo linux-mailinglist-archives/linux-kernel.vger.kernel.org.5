@@ -2,170 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C7C7652EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C872F7652F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbjG0LyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
+        id S233548AbjG0Lya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231289AbjG0LyP (ORCPT
+        with ESMTP id S233543AbjG0Ly2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:54:15 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2068.outbound.protection.outlook.com [40.107.102.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0910D272A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:54:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=levbpftPR0RnkP22GarDBKMu9vQbeSPlv2b9oA9bLvWSv3Amluk/ZN8Qd65pGSJfZXdhXcQM8HtpH6XfvqaB3ySi9++1yZOhAgOKfdk1jZo27/gRKX/HKfiimURGyTsEKVkxrWuCekl9V7yALZUymKC4U5trwLgTDSUXPtIrPAwUup8QKBVgoqVf5bdFR8A2Ur8o0PalbE3F4RxD1fBL9Zr7M8gJAb8SM6Eh46nDsr//AeVyVMrO4C7sYLVDEoLAHZlPRiFIpK5mVuqXIhacM1BnGITMMrMeEhgbeJ1NeRwPd6UgCSq0/9IjLxT13XIBe0Mib8Q4Q0ewyP3xmB32rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JYxchqoz8SRyKqbBj2EVQ4Hz4x+pFpI7xzw+wDw1llk=;
- b=S/cX0L4390ugnlbYfea/RCo9MRG5FLV2kPjPQC3AnT6bF2lkOzx6JvxJDSNpUoGNPddv+6siKg+76i0fhh96VgIBKOpEHpjolLr3U/PqOUQtOwfhqLOdWURmg0bHEpEm6qXN6bNDx5ftvPj0XlMncyzoQ+EO7gtd1V/KN7AVpSmfzsAGDPrKtJtBSIITCHaE0HRcy8E1FNrlywj2w7/DMKxL5xJMDtW+SjHCwC7M0gqS3vYh9nVckqx4QNCP69okm263cvmDYhGLqWcZlwjSgkz5cMMEZHkr7Zziu/d2wnc883PiIk1r4LDlieTFndWPI4O9yTLX2qK7BUP1nyhfVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JYxchqoz8SRyKqbBj2EVQ4Hz4x+pFpI7xzw+wDw1llk=;
- b=uKwW2WcwijIownHuc+liioy0YcnnQdHUVJPLc/cBbA02QEfX5QwFJzEIKpubrJ2w/VwUwAN6eyDwsWGFUcn1q5cusJsJ5v5oyrtggVNMBBsIzAKtGy5uRi3CLUuBzUdmyUotM2vjAHkG4EyrTepS0SR002ScxVMdftWsIcqL/pRPkGfo5uC5yz9HoCk+K6L3qcdkwtdo5WD8pK2aOBZU/GV81hFAWqrz1k9GVbOX1MIJGrJ//OYlUw61rPBZO5N16YOPxLJpXhEl0pK0EgDBM9UxONPUEgGQV2H28lu3m+eUM6SBGrcRmbfMt6/YdYjOmhWLYuJhWn1e37Z9N/lbkA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by LV8PR12MB9181.namprd12.prod.outlook.com (2603:10b6:408:18d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 11:54:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
- 11:54:09 +0000
-Date:   Thu, 27 Jul 2023 08:54:06 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
-        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to
- smmu_master
-Message-ID: <ZMJa3kGHD2iE0/za@nvidia.com>
-References: <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
- <ZLAKQw+DzcpSRSyi@nvidia.com>
- <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
- <ZLApQjaqoOshT2TJ@nvidia.com>
- <CAKHBV25BRWTxXO0YTGq3q1OdMQHAzop8BqJJaa9CHxdQzxnNbg@mail.gmail.com>
- <ZLFLyh1b+wiqb7Ql@nvidia.com>
- <CAKHBV24zQ+4waZgsYV08LzeMkjze1gTcwvEv5uL8RM1GcBgrzg@mail.gmail.com>
- <ZLU0IZJr6WSjknHf@nvidia.com>
- <CAKHBV25QZn9xApRT+=oAtwQRAjCD--S46uXRDwW+E5=at0ESQQ@mail.gmail.com>
- <CAKHBV26sRpFJv8-_f4n2jsTKiOgnHF0_FZ07KBbVaueX+T2kWA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKHBV26sRpFJv8-_f4n2jsTKiOgnHF0_FZ07KBbVaueX+T2kWA@mail.gmail.com>
-X-ClientProxiedBy: BYAPR11CA0085.namprd11.prod.outlook.com
- (2603:10b6:a03:f4::26) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 27 Jul 2023 07:54:28 -0400
+X-Greylist: delayed 92395 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Jul 2023 04:54:25 PDT
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD45272E;
+        Thu, 27 Jul 2023 04:54:25 -0700 (PDT)
+Message-ID: <fb734626-6041-1e68-38d7-221837284cf1@linux.intel.com>
+Date:   Thu, 27 Jul 2023 13:54:21 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9181:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2772427f-8fb5-4173-e655-08db8e982fae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Dc6Mmt/+7j5Idj3JgJs1MOeGiQmjsGVDZSwi1jv8WCc9DalaDQaXSnD/N5LI5tl94trnhAD+NGgucDtE99RF6crLlhpwxlK8HcM8yCUXb0BEwFODf8qtTMNOEB08edeq6u4HwQGfYE/d8xoT9JXjlnRqtW057Vo4gm7Sl7YpmY4TNBj7RV+L1cyrGCuJNms8Pzs77/3WlXWJutc+WzSgE+Eob2t0Daf8n71eOgy/xjjM2wIMLuwhvqgJYVtyg2vdVw6ig8R/WBCV/fWy5X0D/DrxyqNxoPQHYsdbvlhkDVn9f6CBAAjXjUC7Nr9USVIj/KBtS7m/cHrMqHjqIiriD+o27uYIxs/Fv+rleqOZ963HIqvul8P11cRUrrGZmd+yjjYnSS3QVX14W3cXaaQu+Z/5Lk2CBLY51IP0zprCLM0EgS6QoD+cn0nGqBYn3+Ktk516hKPEp/XIYZ5oVYGhNKUNO0aVmDHQkd1B7fAsBMhCfT1NO8oT3AOsGZuTKk8Sqwwc4cUtG+EnlPm7xInhByF1YBdP3E+45aeKRtCvIQHQHbVfqHeuDQpkmqHpXs9b
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(451199021)(54906003)(6512007)(38100700002)(6666004)(6486002)(478600001)(316002)(41300700001)(5660300002)(8676002)(4326008)(6916009)(8936002)(66476007)(66556008)(66946007)(2616005)(186003)(83380400001)(26005)(6506007)(86362001)(2906002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yTOfb7tzwHO3DBB3Q2PcNo/gIgDe9uNq9wp/o5zAnGWpRp8no1NqWGwy/MW0?=
- =?us-ascii?Q?oT4BJPksNWpkc/8y0N3UKg6C7an3VYJQLfEBP8PyzBRJM1MeAfddg8nSsh9Y?=
- =?us-ascii?Q?GIBhTIOz0HEBILhHztsSMW6g3gqOuYz6niwLz/UGP9I1iDSF7nrJsBvvL+sO?=
- =?us-ascii?Q?Dnld5GDP1WUEdg66XeuJBbTrhb7MK4IgcR4nDFI2azutsTCJA6ongtAO3slG?=
- =?us-ascii?Q?O6+gGBOMF5pkuhrB3TCIox7t/j0M9V9DUU4zhRtBOg/bRAmLdFWO2qlkk8mp?=
- =?us-ascii?Q?U4pYKTeF94EtOKnOqfCZtmOi9IcvmCefZ3sgVEAwK9JgT5I+7FCl6jp5yamW?=
- =?us-ascii?Q?JFVuKKklZ7Bzzc6wzDQ7IjDpBFoL3SaIFqSleFUlKpGDi4NWyc1uzQrxuGO1?=
- =?us-ascii?Q?CKbQdNNr9n8m/L6FIoQiqaO1bmmx5KLB/vAwngemodbfMe0n0JglZokYKy3d?=
- =?us-ascii?Q?7LzgD9d7iQ8kjnYc1E2lj/4YPu6cAz+0BEaPaEBDpFhyOPlymX6DulM3rdym?=
- =?us-ascii?Q?lWuPrHboX2IFjjL1XPPk/786Tn2XJoHcKV/1EO3/D/4zPgT0Xz6Aqm/9Yj+L?=
- =?us-ascii?Q?0AYY5n3lpD7k3cvTJtxLnDIwWNCYqtOvbRZTUpJJaG9cY3lqFo7wDwoSzyb6?=
- =?us-ascii?Q?BGFBBd8QLJQ3XCTl3aRos0VGrLK8Q9FJelsES07zlDPesbeSEyTDxF8dmFY1?=
- =?us-ascii?Q?Iv4FyKJUGmh8NqkvlTnlATuXXa/mia7ZDkkvf0xhV7NlaP96dJBcZI5dtdPV?=
- =?us-ascii?Q?LSzq+14CuQyh7QEC/ru6xPzHxodmffaJkgu8RkzCF2yDKuNWEk/VWxoxbPmr?=
- =?us-ascii?Q?FIQSy+TE1X8lRg++2PIYQ2KORiEvPdWpsRmllgAis+qp+ZY6Fe2Qr5Gf5yuW?=
- =?us-ascii?Q?WZFmvIBxvDhb8i9LVNTIpOyE7VEolUvYA8HMCEX0/pi3+bBi93IebzrBiGGk?=
- =?us-ascii?Q?1qqpiOsxXiFRccXJ3P4yvdjqKMuR+nl0Cfx+e2Jey+L4CN8yKwZwYIhgS/Xc?=
- =?us-ascii?Q?CRc7fv193TYtEO2Ow44LZgpkXNaaqQ7UFdaMfGw9Wy1VNzcrIWN49yK02RpO?=
- =?us-ascii?Q?V8zFzyobaFG497GDZ25oFvjBL4KP4w0l2wlV48weGU0lNr5Ku6j8wiaqEBz3?=
- =?us-ascii?Q?nOnB3g9lRQN2YWnKnpvbAUCHXZuBWqDDqgZ1K2pwxWMldFEuqocadNoLFBP7?=
- =?us-ascii?Q?mrTsonQv2b27lXfGbK4gMoygnr2ZUULvn7QLQ5u9WffaY0HwXTI6NgUWGSO3?=
- =?us-ascii?Q?VpVYCBFqYTbMRA1e3C/pc4mENpITVJ3M9z3A4a4cm1AhhFSbP9F4iSNSx/uO?=
- =?us-ascii?Q?hYsbRcUm8LV/ySwt4r4mN+Xvq9WKoSWWV/DOns5/vC1LXMP+KojQKLf5TGw6?=
- =?us-ascii?Q?mbCQxQif29SYKHjfCaZwzZ45HInhTRGKo+m0r9XOyMwrliLpfqT9D6uqdRkM?=
- =?us-ascii?Q?EYZDgm9jiVPlO7cAI96+wVDe0QSS8uQclDrKIzNR3C4B2M05FPo/cRfCDaYQ?=
- =?us-ascii?Q?7KjScUoMG4KjvJKw8iHqhNvdIIDJQ+NeRqK5ws0yae0vgCcXCIdCPup4gDLc?=
- =?us-ascii?Q?WuBd7bccgg8B/CLlBKpr5lJHbAIyfGwqvxEbaQZA?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2772427f-8fb5-4173-e655-08db8e982fae
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 11:54:09.0740
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lqnNS7cnDI13JXY6jTn8vtjIy8GtpZcCDaeyTQ3k8HpknxS3puZwzPxOSqkVW8L8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9181
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
+        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Brian Welty <brian.welty@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
+ <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
+ <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
+ <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
+ <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
+Content-Language: en-US
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 07:22:05PM +0800, Michael Shavit wrote:
-> Sorry for the delay; I'm trying to refactor these patches now.
+Hey,
+
+On 2023-07-26 13:41, Tvrtko Ursulin wrote:
 > 
-> > I think the master should have a pointer to the iommu_domain that owns
-> > the STE or if NULL the master should assign its internal CD table to
-> > the STE.
-> Just to clarify, does the nested domain patch series require writing
-> CDs into the user-space's CD table using arm_smmu_write_ctx_desc()?
+> On 26/07/2023 11:14, Maarten Lankhorst wrote:
+>> Hey,
+>>
+>> On 2023-07-22 00:21, Tejun Heo wrote:
+>>> On Wed, Jul 12, 2023 at 12:46:04PM +0100, Tvrtko Ursulin wrote:
+>>>>    $ cat drm.memory.stat
+>>>>    card0 region=system total=12898304 shared=0 active=0 
+>>>> resident=12111872 purgeable=167936
+>>>>    card0 region=stolen-system total=0 shared=0 active=0 resident=0 
+>>>> purgeable=0
+>>>>
+>>>> Data is generated on demand for simplicty of implementation ie. no 
+>>>> running
+>>>> totals are kept or accounted during migrations and such. Various
+>>>> optimisations such as cheaper collection of data are possible but
+>>>> deliberately left out for now.
+>>>>
+>>>> Overall, the feature is deemed to be useful to container orchestration
+>>>> software (and manual management).
+>>>>
+>>>> Limits, either soft or hard, are not envisaged to be implemented on 
+>>>> top of
+>>>> this approach due on demand nature of collecting the stats.
+>>>
+>>> So, yeah, if you want to add memory controls, we better think through 
+>>> how
+>>> the fd ownership migration should work.
+>> I've taken a look at the series, since I have been working on cgroup 
+>> memory eviction.
+>>
+>> The scheduling stuff will work for i915, since it has a purely 
+>> software execlist scheduler, but I don't think it will work for GuC 
+>> (firmware) scheduling or other drivers that use the generic drm 
+>> scheduler.
+> 
+> It actually works - I used to have a blurb in the cover letter about it 
+> but apparently I dropped it. Just a bit less well with many clients, 
+> since there are fewer priority levels.
+> 
+> All that the design requires from the invididual drivers is some way to 
+> react to the "you are over budget by this much" signal. The rest is 
+> driver and backend specific.
 
-No, CD entries in nested CD tables are written by userspace only.
+What I mean is that this signal may not be applicable since the drm 
+scheduler just schedules jobs that run. Adding a weight might be done in 
+hardware, since it's responsible for  scheduling which context gets to 
+run. The over budget signal is useless in that case, and you just need 
+to set a scheduling priority for the hardware instead.
 
-> Or is there any other requirement for writing a CD into a
-> domain-owned CD table from arm_smmu_write_ctx_desc?
+>> For something like this,  you would probably want it to work inside 
+>> the drm scheduler first. Presumably, this can be done by setting a 
+>> weight on each runqueue, and perhaps adding a callback to update one 
+>> for a running queue. Calculating the weights hierarchically might be 
+>> fun..
+> 
+> It is not needed to work in drm scheduler first. In fact drm scheduler 
+> based drivers can plug into what I have since it already has the notion 
+> of scheduling priorities.
+> 
+> They would only need to implement a hook which allow the cgroup 
+> controller to query client GPU utilisation and another to received the 
+> over budget signal.
+> 
+> Amdgpu and msm AFAIK could be easy candidates because they both support 
+> per client utilisation and priorities.
+> 
+> Looks like I need to put all this info back into the cover letter.
+> 
+> Also, hierarchic weights and time budgets are all already there. What 
+> could be done later is make this all smarter and respect the time budget 
+> with more precision. That would however, in many cases including Intel, 
+> require co-operation with the firmware. In any case it is only work in 
+> the implementation, while the cgroup control interface remains the same.
+> 
+>> I have taken a look at how the rest of cgroup controllers change 
+>> ownership when moved to a different cgroup, and the answer was: not at 
+>> all. If we attempt to create the scheduler controls only on the first 
+>> time the fd is used, you could probably get rid of all the tracking.
+> 
+> Can you send a CPU file descriptor from process A to process B and have 
+> CPU usage belonging to process B show up in process' A cgroup, or 
+> vice-versa? Nope, I am not making any sense, am I? My point being it is 
+> not like-to-like, model is different.
+> 
+> No ownership transfer would mean in wide deployments all GPU utilisation 
+> would be assigned to Xorg and so there is no point to any of this. No 
+> way to throttle a cgroup with un-important GPU clients for instance.
+If you just grab the current process' cgroup when a drm_sched_entity is 
+created, you don't have everything charged to X.org. No need for 
+complicated ownership tracking in drm_file. The same equivalent should 
+be done in i915 as well when a context is created as it's not using the 
+drm scheduler.
 
-Not that I know of.
+>> This can be done very easily with the drm scheduler.
+>>
+>> WRT memory, I think the consensus is to track system memory like 
+>> normal memory. Stolen memory doesn't need to be tracked. It's kernel 
+>> only memory, used for internal bookkeeping  only.
+>>
+>> The only time userspace can directly manipulate stolen memory, is by 
+>> mapping the pinned initial framebuffer to its own address space. The 
+>> only allocation it can do is when a framebuffer is displayed, and 
+>> framebuffer compression creates some stolen memory. Userspace is not
+>> aware of this though, and has no way to manipulate those contents.
+> 
+> Stolen memory is irrelevant and not something cgroup controller knows 
+> about. Point is drivers say which memory regions they have and their 
+> utilisation.
+> 
+> Imagine instead of stolen it said vram0, or on Intel multi-tile it shows 
+> local0 and local1. People working with containers are interested to see 
+> this breakdown. I guess the parallel and use case here is closer to 
+> memory.numa_stat.
+Correct, but for the same reason, I think it might be more useful to 
+split up the weight too.
 
-The only time the kernel writes a CD entry is to the shared CD table
-stored in the master.
+A single scheduling weight for the global GPU might be less useful than 
+per engine, or per tile perhaps..
 
-> 1. The CD entries STALL bit value in arm_smmu_write_ctx_desc depends
-> on the master (e.g. if STALL_FORCE is set on the smmu device). This
-> could potentially be encoded in arm_smmu_ctx_desc_cfg, at which point
-> that CD table is only attachable to masters with the same
-> stall_enabled value.
-
-For cleanness I would orgnize it like this.
-
-> 2. arm_smmu_write_ctx_desc must sync the CD for the attached master(s)
-> in the middle of writing CD entry.
->
-> This is all easier to handle in arm_smmu_write_ctx_desc if the table
-> is always owned by the master.
-
-I think it is fine if you start with a shared CD table being 1:1 with
-a single master.
-
-Making the CD table shared between masters (eg for multi-device-group)
-is a micro-optimization, and I'm not sure we have workloads where it
-is worthwhile. We already block PASID support for multi-device-group.
-
-Though resizable CD table is probably a better place to put efforts.
-
-Jason
+Cheers,
+~Maarten
