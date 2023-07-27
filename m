@@ -2,310 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777FD76570A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1C07656BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234432AbjG0PK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
+        id S232296AbjG0PE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234278AbjG0PK0 (ORCPT
+        with ESMTP id S234256AbjG0PE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:10:26 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA36FD;
-        Thu, 27 Jul 2023 08:10:25 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RF3bT2011115;
-        Thu, 27 Jul 2023 15:10:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=jYolTo5yzhUDm4bH36rF7ixNA0wJ58vXdRhnf1d7LFQ=;
- b=p9enl8WXIn9Gfi/Feikvcn6Mm5cSLu5F1DD3VKIETqKPJC20fSv3g3uPVE1RpK52kqsE
- 4qFXWkIkaDQ39XccOA3T+XwLmdPGsF9Bw6NZZxSnem9/HffQ3EHs3GYbkb6tmUUpCUOH
- l+wolXl6ofvyNBXrYIhdNYLHr6tqWnRuTYfNWVl+MWMQYhWgCki8IUFaF7eNpkLGWekx
- utzWRWwB9g9RriSS04HHRKzsqRWnsZ+0Wos/p8NXOjwotM5wI9La/IWZl2bpRvT3siIs
- 3cX3g9KAVYe37HXMbpp0EMYIH6ye7968+HjJe9quahsZowxW0Ces3rd3so7hie9vlI1U mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3tw1rjae-1
+        Thu, 27 Jul 2023 11:04:26 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF8CF2;
+        Thu, 27 Jul 2023 08:04:23 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RBD8l4020221;
+        Thu, 27 Jul 2023 17:03:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=doC1Pd1d3NibZb37WWHiE70DKjD6XTr1B8pDdUXXdeU=;
+ b=WKh8WR22AxBJ/QxFWaS3op28d0rl7a8Nyuf6roe+2yyfevhAi98xg0CqHDltNkrDgyCQ
+ cNGzI37Wav5oon8GfmjPvsK5pvTKyvP5Li5Saxd7N15R8t87i/2RCDrx3Yoqj/haszej
+ HsgcbTr9VqAs50j6UB6X28DAq7G5/Mx6ah0v/eg4zZUVfyeLLhX2MHCmJgLSDWST6NIB
+ r9bRDSvd10mF/j4yGAj88HdwyJ54sPzWV5wF+J/hMKLnx0od6XRv09VPyNNSDi8LKtla
+ xQ6DWpi3LzqPNU++36daT5H/8/mF2t15BFr7jtJWvhBOotJ202ikt8n3HS0WS3xpGXy4 8w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s3qgy97v8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 15:10:23 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36RF4DN7014300;
-        Thu, 27 Jul 2023 15:08:39 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3tw1rd67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 15:08:39 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36REXUfH002379;
-        Thu, 27 Jul 2023 15:07:34 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0unjx2mv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 15:07:34 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36RF7V3i18678350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Jul 2023 15:07:31 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF5A420040;
-        Thu, 27 Jul 2023 15:07:31 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 845F12004B;
-        Thu, 27 Jul 2023 15:07:31 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 27 Jul 2023 15:07:31 +0000 (GMT)
-Date:   Thu, 27 Jul 2023 17:02:23 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Steffen Eiden <seiden@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>
-Subject: Re: [PATCH 2/3] KVM: s390: Add UV feature negotiation
-Message-ID: <20230727170223.387c9cf6@p-imbrenda>
-In-Reply-To: <20230727122053.774473-3-seiden@linux.ibm.com>
-References: <20230727122053.774473-1-seiden@linux.ibm.com>
-        <20230727122053.774473-3-seiden@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 27 Jul 2023 17:03:35 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4313010002A;
+        Thu, 27 Jul 2023 17:03:35 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3859B209BA1;
+        Thu, 27 Jul 2023 17:03:35 +0200 (CEST)
+Received: from localhost (10.201.20.178) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 27 Jul
+ 2023 17:03:34 +0200
+From:   Olivier Moysan <olivier.moysan@foss.st.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RFC v2 00/11] iio: add iio backend device type
+Date:   Thu, 27 Jul 2023 17:03:11 +0200
+Message-ID: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Qp5wO5ICRaUKx-8UkOufRRhXUiUZCbFr
-X-Proofpoint-GUID: R8xUXexyzwsrcU3CSVDKPnDU8XnJhPij
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.178]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270135
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 14:20:52 +0200
-Steffen Eiden <seiden@linux.ibm.com> wrote:
+This v2 is an addon to initial RFC:
+https://lore.kernel.org/lkml/20230623140944.2613002-1-olivier.moysan@foss.st.com/
 
-> Add a uv_feature list for pv-guests to the kvm cpu-model.
-> The feature bits 'AP-interpretation for secure guests' and
-> 'AP-interrupt for secure guests' are available.
-> 
-> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
-> ---
->  arch/s390/include/asm/kvm_host.h |  2 +
->  arch/s390/include/uapi/asm/kvm.h | 24 +++++++++++
->  arch/s390/kvm/kvm-s390.c         | 70 ++++++++++++++++++++++++++++++++
->  3 files changed, 96 insertions(+)
-> 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 2bbc3d54959d..7ae57ac352b2 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -817,6 +817,8 @@ struct kvm_s390_cpu_model {
->  	__u64 *fac_list;
->  	u64 cpuid;
->  	unsigned short ibc;
-> +	/* subset of available uv features for pv-guests enabled by user space */
-> +	struct kvm_s390_vm_cpu_uv_feat uv_feat_guest;
->  };
->  
->  typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
-> diff --git a/arch/s390/include/uapi/asm/kvm.h b/arch/s390/include/uapi/asm/kvm.h
-> index a73cf01a1606..7ea7e4fbd37e 100644
-> --- a/arch/s390/include/uapi/asm/kvm.h
-> +++ b/arch/s390/include/uapi/asm/kvm.h
-> @@ -159,6 +159,30 @@ struct kvm_s390_vm_cpu_subfunc {
->  	__u8 reserved[1728];
->  };
->  
-> +#define KVM_S390_VM_CPU_PROCESSOR_UV_FEAT_GUEST	6
-> +#define KVM_S390_VM_CPU_MACHINE_UV_FEAT_GUEST	7
-> +
-> +#define KVM_S390_VM_CPU_UV_FEAT_NR_BITS	64
-> +struct kvm_s390_vm_cpu_uv_feat {
-> +	union {
-> +		struct {
-> +			__u64 res0 : 4;
-> +			__u64 ap : 1;		/* bit 4 */
-> +			__u64 ap_intr : 1;	/* bit 5 */
+Despite the "IIO backend" naming has to be changed (as pointed out by
+Jonathan previously), it has been kept here, for time being. The
+appropriated naming still has to be discussed later on.
 
-I would put padding here for completeness, and maybe a static assert
-for the size of struct kvm_s390_vm_cpu_uv_feat
+In the previous RFC the "IIO backend" concept was proposed through
+a set of template APIs.
 
-> +		};
-> +		__u64 feat;
-> +	};
-> +};
-> +
-> +#define KVM_S390_VM_CPU_UV_FEAT_GUEST_MASK \
-> +(((struct kvm_s390_vm_cpu_uv_feat) {	\
-> +	.ap = 1,		\
-> +	.ap_intr = 1,		\
-> +}).feat)
+This v2 implements a functionnal exemple based on STM32 DFSDM,
+to bring scaling support to this peripheral.
 
-please indent the body of the macro, and add tabs on the right so that
-the \ are aligned
+Olivier Moysan (11):
+  iio: introduce iio backend device
+  of: property: add device link support for io-backends
+  dt-bindings: iio: stm32-dfsdm-adc: add scaling support
+  dt-bindings: iio: adc: add scaling support to sd modulator
+  iio: adc: stm32-dfsdm: manage dfsdm as a channel provider
+  iio: adc: stm32-dfsdm: adopt generic channel bindings
+  iio: adc: stm32-dfsdm: add scaling support to dfsdm
+  iio: adc: sd modulator: add scale and offset support
+  ARM: dts: stm32: adopt new dfsdm bindings on stm32mp151
+  ARM: dts: stm32: add dfsdm pins muxing on stm32mp15
+  ARM: dts: stm32: add dfsdm iio support on stm32mp157c-ev
 
-> +
-> +#define KVM_S390_VM_CPU_UV_FEAT_GUEST_DEFAULT \
-> +((struct kvm_s390_vm_cpu_uv_feat) { })
+ .../iio/adc/sigma-delta-modulator.yaml        |   9 +-
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml  | 189 ++++++------------
+ arch/arm/boot/dts/st/stm32mp15-pinctrl.dtsi   |  39 ++++
+ arch/arm/boot/dts/st/stm32mp151.dtsi          |  18 +-
+ arch/arm/boot/dts/st/stm32mp157c-ev1.dts      |  68 +++++++
+ drivers/iio/Makefile                          |   1 +
+ drivers/iio/adc/sd_adc_modulator.c            | 106 ++++++++--
+ drivers/iio/adc/stm32-dfsdm-adc.c             | 187 +++++++++++------
+ drivers/iio/industrialio-backend.c            | 107 ++++++++++
+ drivers/of/property.c                         |   2 +
+ include/linux/iio/backend.h                   |  56 ++++++
+ 11 files changed, 561 insertions(+), 221 deletions(-)
+ create mode 100644 drivers/iio/industrialio-backend.c
+ create mode 100644 include/linux/iio/backend.h
 
-please indent the body of the macro
-
-> +
->  /* kvm attributes for crypto */
->  #define KVM_S390_VM_CRYPTO_ENABLE_AES_KW	0
->  #define KVM_S390_VM_CRYPTO_ENABLE_DEA_KW	1
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 339e3190f6dc..50c8b85b89ac 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -1531,6 +1531,32 @@ static int kvm_s390_set_processor_subfunc(struct kvm *kvm,
->  	return 0;
->  }
->  
-> +static int kvm_s390_set_uv_feat(struct kvm *kvm, struct kvm_device_attr *attr)
-> +{
-> +	struct kvm_s390_vm_cpu_uv_feat data = {};
-> +	unsigned long filter =
-> +		uv_info.uv_feature_indications &
-
-I think this can go in the previous line?
-
-> +		(unsigned long)KVM_S390_VM_CPU_UV_FEAT_GUEST_MASK;
-
-the cast is not necessary
-
-without the cast the whole thing can fit in one line
-
-> +
-> +	if (copy_from_user(&data, (void __user *)attr->addr, sizeof(data)))
-> +		return -EFAULT;
-> +	if (!bitmap_subset((unsigned long *)&data, &filter,
-> +			   KVM_S390_VM_CPU_UV_FEAT_NR_BITS))
-
-this also fits in one line :)
-
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&kvm->lock);
-> +	if (kvm->created_vcpus) {
-> +		mutex_unlock(&kvm->lock);
-> +		return -EBUSY;
-> +	}
-> +	kvm->arch.model.uv_feat_guest = data;
-> +	mutex_unlock(&kvm->lock);
-> +
-> +	VM_EVENT(kvm, 3, "SET: guest uv feat: 0x%16.16llx", data.feat);
-> +
-> +	return 0;
-> +}
-> +
->  static int kvm_s390_set_cpu_model(struct kvm *kvm, struct kvm_device_attr *attr)
->  {
->  	int ret = -ENXIO;
-> @@ -1545,6 +1571,9 @@ static int kvm_s390_set_cpu_model(struct kvm *kvm, struct kvm_device_attr *attr)
->  	case KVM_S390_VM_CPU_PROCESSOR_SUBFUNC:
->  		ret = kvm_s390_set_processor_subfunc(kvm, attr);
->  		break;
-> +	case KVM_S390_VM_CPU_PROCESSOR_UV_FEAT_GUEST:
-> +		ret = kvm_s390_set_uv_feat(kvm, attr);
-> +		break;
->  	}
->  	return ret;
->  }
-> @@ -1777,6 +1806,37 @@ static int kvm_s390_get_machine_subfunc(struct kvm *kvm,
->  	return 0;
->  }
->  
-> +static int kvm_s390_get_processor_uv_feat(struct kvm *kvm,
-> +					  struct kvm_device_attr *attr)
-> +{
-> +	struct kvm_s390_vm_cpu_uv_feat *src = &kvm->arch.model.uv_feat_guest;
-> +
-> +	if (copy_to_user((void __user *)attr->addr, src, sizeof(*src)))
-> +		return -EFAULT;
-> +	VM_EVENT(kvm, 3, "GET: guest  uv feat: 0x%16.16llx",
-> +		 kvm->arch.model.uv_feat_guest.feat);
-
-this can actually fit in one line
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int kvm_s390_get_machine_uv_feat(struct kvm *kvm,
-> +					struct kvm_device_attr *attr)
-> +{
-> +	struct kvm_s390_vm_cpu_uv_feat data = {
-> +		.feat = uv_info.uv_feature_indications &
-> +			KVM_S390_VM_CPU_UV_FEAT_GUEST_MASK
-
-this can fit in one line
-
-> +	};
-> +
-> +	BUILD_BUG_ON(sizeof(struct kvm_s390_vm_cpu_uv_feat) !=
-> +		     sizeof(uv_info.uv_feature_indications));
-> +	if (copy_to_user((void __user *)attr->addr, &data,
-> +			 sizeof(struct kvm_s390_vm_cpu_uv_feat)))
-
-why not sizeof(data) ?
-
-(also, it can fit in one line)
-
-> +		return -EFAULT;
-> +	VM_EVENT(kvm, 3, "GET: guest  uv feat: 0x%16.16llx", data.feat);
-> +
-> +	return 0;
-> +}
-> +
->  static int kvm_s390_get_cpu_model(struct kvm *kvm, struct kvm_device_attr *attr)
->  {
->  	int ret = -ENXIO;
-> @@ -1800,6 +1860,12 @@ static int kvm_s390_get_cpu_model(struct kvm *kvm, struct kvm_device_attr *attr)
->  	case KVM_S390_VM_CPU_MACHINE_SUBFUNC:
->  		ret = kvm_s390_get_machine_subfunc(kvm, attr);
->  		break;
-> +	case KVM_S390_VM_CPU_PROCESSOR_UV_FEAT_GUEST:
-> +		ret = kvm_s390_get_processor_uv_feat(kvm, attr);
-> +		break;
-> +	case KVM_S390_VM_CPU_MACHINE_UV_FEAT_GUEST:
-> +		ret = kvm_s390_get_machine_uv_feat(kvm, attr);
-> +		break;
->  	}
->  	return ret;
->  }
-> @@ -1952,6 +2018,8 @@ static int kvm_s390_vm_has_attr(struct kvm *kvm, struct kvm_device_attr *attr)
->  		case KVM_S390_VM_CPU_MACHINE_FEAT:
->  		case KVM_S390_VM_CPU_MACHINE_SUBFUNC:
->  		case KVM_S390_VM_CPU_PROCESSOR_SUBFUNC:
-> +		case KVM_S390_VM_CPU_MACHINE_UV_FEAT_GUEST:
-> +		case KVM_S390_VM_CPU_PROCESSOR_UV_FEAT_GUEST:
->  			ret = 0;
->  			break;
->  		default:
-> @@ -3292,6 +3360,8 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  	kvm->arch.model.cpuid = kvm_s390_get_initial_cpuid();
->  	kvm->arch.model.ibc = sclp.ibc & 0x0fff;
->  
-> +	kvm->arch.model.uv_feat_guest = KVM_S390_VM_CPU_UV_FEAT_GUEST_DEFAULT;
-> +
->  	kvm_s390_crypto_init(kvm);
->  
->  	if (IS_ENABLED(CONFIG_VFIO_PCI_ZDEV_KVM)) {
+-- 
+2.25.1
 
