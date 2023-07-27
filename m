@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3562876583F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBED765842
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjG0QG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S233414AbjG0QGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbjG0QGZ (ORCPT
+        with ESMTP id S233476AbjG0QGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:06:25 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3BB2D45;
-        Thu, 27 Jul 2023 09:06:22 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52227142a27so1428400a12.1;
-        Thu, 27 Jul 2023 09:06:22 -0700 (PDT)
+        Thu, 27 Jul 2023 12:06:30 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386ED2D45;
+        Thu, 27 Jul 2023 09:06:29 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so18204001fa.2;
+        Thu, 27 Jul 2023 09:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690473981; x=1691078781;
+        d=gmail.com; s=20221208; t=1690473987; x=1691078787;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3KJUb5wJMX455Ly+7ii8j4l9cAoayBImjBImEkrRStY=;
-        b=UTD2d/1H3fEe3uEhBhHdDJP5WJa1vOv1Bk1xcS49fZYSHyisOMs574Eib844vVW3nW
-         JFLs5xYkb5iwTsBM+KV+G25HuM0/U9M57rjGGVUG0RehxGNG/4IMFTPwiH8MDjg5jJ9v
-         kAdyNHv0embVoj+ag5HbF2NZe4Y69Es3/9GtcAyeVNF4sQ/Jop/vnOuY0a9V804XRD2n
-         /7eNglqFxdJ6k+CqxAnTjOzDrbMLTsnrpWbwpwizRBmAWr+OHt5GNqDU0MG8PqEK9cPy
-         bTMb2ncHP1oxIpHePnyj76zZ0VzTsX/HwXN5uccUJS7y5JUdDOyjg+NuDNwsjm2TtsPP
-         eApA==
+        bh=yyKDf+CToOe8rKKKOXBY/UzZ8faPu6UhccJmfEJhILw=;
+        b=jIyUhVoZRSdJJO/RKPbHwkRqRp4QkuP6L9jVwzEGc0cB09SWgMpcVxbkFdpdT7PcRW
+         H6MI1od9iKQGz5ZqKK2W6t4fx6bTd/iy2u4v7JoxrfPm/hEpbFeeTUW6LKjdwmln4xFe
+         i/zZ4lJSntCA/TrmAld3pui6ydKofYTPe30ttK+ganP0mfLtUl774clTvRiQ9htw1k7m
+         vdL0KBvZDEZG6w1yYtnv39TG9ySbWme9LalA+v0nESfa81T3kfpxBFENLG0mNAfpqDjC
+         JX1qal+A55JANOWitOZUgUH2/YzeV5+A27SgZUPU7e4/cEnTETiXxu69TQXqEU4Ex9y/
+         ppPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690473981; x=1691078781;
+        d=1e100.net; s=20221208; t=1690473987; x=1691078787;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3KJUb5wJMX455Ly+7ii8j4l9cAoayBImjBImEkrRStY=;
-        b=JeFQD9OGP3NpfJ85Pu1Svtm0CjzbAdkvpoai9HsfKflOS8tf2CbM4y5CHnHR/roMoo
-         Wlzbvg27+88L/T10MFKVXX7A5bDu6N8YirwyGWRCFiZiLUHeJklxRRVyIlQRH/YGrpoK
-         wo2xt0yH38+9Tzo9hGs82NV9dBUtxgwgYrYZ4hXcU7X2D7MbJoqMO3o3hNe3zAwVwu9u
-         DtcT4qtU9DEUtuenH2ticBYFrZTL7QRmcX3RxZ/eO6omxlRklZKNzZtWGgzmjFW1Ctck
-         ZEPQkAjI90QG3rQFJRj6t+4IqXLqVEksT3c7y0/wdFpXcbkKCtUaQII9D2J1zRKBQcHu
-         r/LA==
-X-Gm-Message-State: ABy/qLajj3X+u5E6CKgMNfXFmbn57ZNFLpTDN7hYZVDQIskisFKLGzU9
-        4Ttl9aZHlsFc/Qn3medRxX4=
-X-Google-Smtp-Source: APBJJlFQ5aa+IoIf4ApWsONPuCycLjstk/YHtbUGTH1E6Vfm8G75YVIrg2tXFM2MNx/N5JZfPRkFJg==
-X-Received: by 2002:a17:906:cc49:b0:993:f9d4:eaac with SMTP id mm9-20020a170906cc4900b00993f9d4eaacmr2074811ejb.24.1690473980698;
-        Thu, 27 Jul 2023 09:06:20 -0700 (PDT)
+        bh=yyKDf+CToOe8rKKKOXBY/UzZ8faPu6UhccJmfEJhILw=;
+        b=U+hecDcCDdc4xj/lRlldRj+vyR2A5XI2sMtnVQpg/0QlBtJ6Xxx0YPhrWkEfaN/fi1
+         G6VuN18ObMZB+B1APktmewp//bbTk3U8zV6xJoWZTsfDAnG11Oj+mUJXlBnwUfn90ium
+         sPXsrbkR5WrgJ088HLEsXztHpCfa9ZecsHRhhUzrlkmGiuiKYhflyxCteKoYGfOjUN/W
+         Qk0D+yR1PvthsBNvQv2ve4LGZgfWkgpFIEUsy805PIYCxCS7s4kmIkoOLs8FW1mrIMv2
+         mR9CDGuAVuQNTU/emYeaTdBgoNydqzMAWGvvhFa1XgXgydQ0y6IeZqPeH6T8UIBqiO+J
+         ZMXQ==
+X-Gm-Message-State: ABy/qLbb/F+NInTVhcm/4yR68wQ0D0YfNiVRX7NXxqdjHlE81SUXB9VB
+        KNSrw1NrK6mltS92lXwEP2keAH4lr00s2Q==
+X-Google-Smtp-Source: APBJJlEQkdEBVvchG2qcztsQVkpCpSxQ4/441HR6s3d4gLwnmjmyRnb57s1Aq2wLH/YGWoOFxT8a7Q==
+X-Received: by 2002:a2e:9550:0:b0:2b6:e2aa:8fc2 with SMTP id t16-20020a2e9550000000b002b6e2aa8fc2mr2014600ljh.46.1690473987112;
+        Thu, 27 Jul 2023 09:06:27 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:c844:242b:b300:215:5dff:fe78:868])
-        by smtp.gmail.com with ESMTPSA id ck8-20020a170906c44800b00982be08a9besm936540ejb.172.2023.07.27.09.06.19
+        by smtp.gmail.com with ESMTPSA id ck8-20020a170906c44800b00982be08a9besm936540ejb.172.2023.07.27.09.06.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 09:06:20 -0700 (PDT)
+        Thu, 27 Jul 2023 09:06:26 -0700 (PDT)
 From:   Matus Gajdos <matuszpd@gmail.com>
 To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -57,9 +57,9 @@ To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Matus Gajdos <matuszpd@gmail.com>
-Subject: [PATCH 1/3] dt-bindings: Add vendor prefix for Broadchip Technology Group Co., Ltd.
-Date:   Thu, 27 Jul 2023 18:05:23 +0200
-Message-Id: <20230727160525.23312-2-matuszpd@gmail.com>
+Subject: [PATCH 2/3] dt-bindings: leds: Add binding for Broadchip BCT3024 LED driver
+Date:   Thu, 27 Jul 2023 18:05:24 +0200
+Message-Id: <20230727160525.23312-3-matuszpd@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230727160525.23312-1-matuszpd@gmail.com>
 References: <20230727160525.23312-1-matuszpd@gmail.com>
@@ -75,26 +75,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Website: http://www.broadchip.com
+The BCT3024 chip is an I2C LED driver with independent 24 output
+channels. Each channel supports 256 levels.
 
 Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/leds/broadchip,bct3024.yaml      | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/broadchip,bct3024.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index af60bf1a6664..dc1ed3dc0c9f 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -202,6 +202,8 @@ patternProperties:
-     description: Bosch Sensortec GmbH
-   "^boundary,.*":
-     description: Boundary Devices Inc.
-+  "^broadchip,.*":
-+    description: Broadchip Technology Group Co., Ltd.
-   "^brcm,.*":
-     description: Broadcom Corporation
-   "^broadmobi,.*":
+diff --git a/Documentation/devicetree/bindings/leds/broadchip,bct3024.yaml b/Documentation/devicetree/bindings/leds/broadchip,bct3024.yaml
+new file mode 100644
+index 000000000000..0d622894e79c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/broadchip,bct3024.yaml
+@@ -0,0 +1,89 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/broadchip,bct3024.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Broadchip BCT3024 LED Driver
++
++maintainers:
++  - Matus Gajdos <matuszpd@gmail.com>
++
++description: |
++  The BCT3024 is an I2C LED driver with independent 24 output channels. Each
++  channel supports 256 levels and its output current can be scaled by a factor
++  of 1, 1/2, 1/3 and 1/4.
++
++properties:
++  compatible:
++    const: broadchip,bct3024
++
++  reg:
++    description: I2C slave address of the driver.
++    maxItems: 1
++
++  vdd-supply:
++    description: Regulator providing power to the VDD pin.
++
++  shutdown-gpios:
++    maxItems: 1
++    description: GPIO attached to the SDB pin.
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^led@[0-9a-f]+$":
++    type: object
++    $ref: common.yaml#
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        description: Index of the LED channel.
++        minimum: 0
++        maximum: 23
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/leds/common.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led-controller@3c {
++            compatible = "broadchip,bct3024";
++            reg = <0x3c>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            vdd-supply = <&reg_3v3d>;
++
++            led@0 {
++                reg = <0x00>;
++                function = LED_FUNCTION_INDICATOR;
++                color = <LED_COLOR_ID_RED>;
++            };
++
++            led@1 {
++                reg = <0x01>;
++                function = LED_FUNCTION_INDICATOR;
++                color = <LED_COLOR_ID_GREEN>;
++            };
++        };
++    };
++
++...
 -- 
 2.25.1
 
