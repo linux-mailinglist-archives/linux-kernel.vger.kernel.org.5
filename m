@@ -2,189 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE82765E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F55C765E5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjG0VkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        id S231859AbjG0VrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjG0VkM (ORCPT
+        with ESMTP id S229817AbjG0VrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:40:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354B0211C;
-        Thu, 27 Jul 2023 14:40:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD58F61F58;
-        Thu, 27 Jul 2023 21:40:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9558C433C7;
-        Thu, 27 Jul 2023 21:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690494010;
-        bh=mjTnkk3b0rI1iOPv/Erll2f7p8nHIqeLrpilD6C+YDQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=os6lgqeRlhps0lkDpycX0VCi+KYZNetLU7PqLKFkIOaKx75In/LdmyInZ+Cik2SRz
-         s4BVM2SjHyK7IUERS4hwnVBBFsmu7iN7w95b3n4hVqqls79hSbB/BCyShUhRiCqVBN
-         Rx96krUKwgicAcTwrbGQJZMgbt54TSSIDRudtnoghTiZksUJljgQjFvT1BOQUgp6OX
-         SAiSBelfmexQEfqYN//OtdJ6nyYU0vc0J+qGFgkbKn5vgJcEVaO2a+OfcEjx651AdA
-         1a7OKyB3BtkfaUSeEHcv+RouKXEWVwyuta8AAa2nEaFmjvGVk0blN+GDAR1UZVef42
-         acC1VYKjsqxYg==
-Date:   Thu, 27 Jul 2023 16:40:08 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kevin Xie <kevin.xie@starfivetech.com>
-Cc:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Message-ID: <20230727214008.GA797783@bhelgaas>
+        Thu, 27 Jul 2023 17:47:21 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626722135;
+        Thu, 27 Jul 2023 14:47:18 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5221b90f763so1831029a12.0;
+        Thu, 27 Jul 2023 14:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690494437; x=1691099237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZQT20ya3umarGlkx91bSiJhfieCi0SQZjcxxXhKKL6k=;
+        b=OavclEzq9N93PryalxWE0J5P0zkddtwF3xlKnn1r58/hfOFi4Om3L1N/lcn18ch1Es
+         oMaJL4WhW7NDTu6a8lSj7UIjsBCRtt/c8fd4FK4Bl0C8eZtVBO+jMT9LoLWj/eJhIJok
+         n0jjQ/SkEJ2raSVbkz6oo1FeK2Xlp6DIxlknyQTUMBNrtoudAQ3Ht9+tyISqZRUXQyBX
+         /sRPmhQrtclz6I2N10XNwAlMOp69FWlOXjgAlTpp3xaz9MOWQN3w3qG5oKJ3FJjyzaXy
+         Ttw5FcUIRveJ3W1z3C+jlqpXLtk87lWhu9OaWU30eZHyb957Q+4hIYRPt94cb7mI5E5F
+         lwkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690494437; x=1691099237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZQT20ya3umarGlkx91bSiJhfieCi0SQZjcxxXhKKL6k=;
+        b=C1FO9zNr4jQFVcgxqsvRdKQgPWOczahhMf/7xK5vJSQcnKU80npDftJeeMtZiuTvqR
+         LdOmZDvx+YrW8whw2PB+dFPlCpZ/Lbmh2IQtMfhr9Z29UfabCX356lLQsONBIlMnCr8e
+         Lf/pdIgm59cw/0NTLYPLXSLde2p7acXyeMpxkDJ7KxM+I69akzOyqEFZa+Yy2MQLgMhQ
+         rpXS5+8LxBiirYn18dbWShPnCCiseKcvocoHnBjxsrSHECghzbWDWZG711ocowpPVwmF
+         ReNLjUbHxM5DWixRlXMapOTs/I4g8sFugpF/TJHPNTF9BdCcCEbhA33NBmIbloD3WWeb
+         WlFg==
+X-Gm-Message-State: ABy/qLbIG+6gdiWqiv9btfTpkwSZnSeRqdh5U6Qqlkf2YTYfL3x/+RR9
+        CA1qgAf1B5HJZzGJMS2T+VrRd/wsvGJTQWMvo3E=
+X-Google-Smtp-Source: APBJJlHwUhzpMXw3xvJvmt0bTHyfdXzXlAJZs5Ji0VeEkdAhd2AvfOlhiMR5mSOZI1bWVvVLmOsIfUZEcH5zHhDEq9U=
+X-Received: by 2002:a05:6402:613:b0:522:3fc6:91e6 with SMTP id
+ n19-20020a056402061300b005223fc691e6mr188712edv.9.1690494436484; Thu, 27 Jul
+ 2023 14:47:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725204633.GA664368@bhelgaas>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230720152737.102382-1-helen.koike@collabora.com> <CAF6AEGtXL5vjp3Uup6Mk19MiY8E26-tpyXVmxXYhMd3fiadykQ@mail.gmail.com>
+In-Reply-To: <CAF6AEGtXL5vjp3Uup6Mk19MiY8E26-tpyXVmxXYhMd3fiadykQ@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 27 Jul 2023 14:47:04 -0700
+Message-ID: <CAF6AEGsxLg4og1EkCdno6P8x31KK=rJfmerJa8uMeNR-n7RVRg@mail.gmail.com>
+Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        daniels@collabora.com, emma@anholt.net, robclark@freedesktop.org,
+        gustavo.padovan@collabora.com, robdclark@google.com,
+        anholt@google.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, corbet@lwn.net, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, heiko@sntech.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Mika, Maciej since they've worked on similar delays recently]
+On Thu, Jul 27, 2023 at 12:49=E2=80=AFPM Rob Clark <robdclark@gmail.com> wr=
+ote:
+>
+> On Thu, Jul 20, 2023 at 8:27=E2=80=AFAM Helen Koike <helen.koike@collabor=
+a.com> wrote:
+> >
+> > From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> >
+> > Developers can easily execute several tests on different devices
+> > by just pushing their branch to their fork in a repository hosted
+> > on gitlab.freedesktop.org which has an infrastructure to run jobs
+> > in several runners and farms with different devices.
+> >
+> > There are also other automated tools that uprev dependencies,
+> > monitor the infra, and so on that are already used by the Mesa
+> > project, and we can reuse them too.
+> >
+> > Also, store expectations about what the DRM drivers are supposed
+> > to pass in the IGT test suite. By storing the test expectations
+> > along with the code, we can make sure both stay in sync with each
+> > other so we can know when a code change breaks those expectations.
+> >
+> > Also, include a configuration file that points to the out-of-tree
+> > CI scripts.
+> >
+> > This will allow all contributors to drm to reuse the infrastructure
+> > already in gitlab.freedesktop.org to test the driver on several
+> > generations of the hardware.
+> >
+> > Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+> > Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> >
+> > ---
+> >
+> > Hello,
+> >
+> > I'm re-spining this patch sent originally by Tomeu.
+> >
+> > This is meant to be an auxiliary tool where developers and
+> > maintainers can just submit their code to fdo and see if
+> > tests passes, than they can decide if it is worthy merging
+> > it or not.
+> >
+> > This tool has proven its value on the Mesa community
+> > and it can bring a lot of value here too.
+> >
+> > Please review and let me know your thoughts.
+> >
+> > You can also see this patch on
+> > https://gitlab.freedesktop.org/helen.fornazier/linux/-/tree/drm-ci-test=
+s
+> >
+> > Thanks!
+> >
+> > v2:
+> >   - Fix names of result expectation files to match SoC
+> >   - Don't execute tests that are going to skip on all boards
+> >
+> > v3:
+> >   - Remove tracking of dmesg output during test execution
+> >
+> > v4:
+> >   - Move up to drivers/gpu/drm
+> >   - Add support for a bunch of other drivers
+> >   - Explain how to incorporate fixes for CI from a
+> >     ${TARGET_BRANCH}-external-fixes branch
+> >   - Remove tests that pass from expected results file, to reduce the
+> >     size of in-tree files
+> >   - Add docs about how to deal with outages in automated testing labs
+> >   - Specify the exact SHA of the CI scripts to be used
+> >
+> > v5:
+> >   - Remove unneeded skips from Meson expectations file
+> >   - Use a more advanced runner that detects flakes automatically
+> >   - Use a more succint format for the expectations
+> >   - Run many more tests (and use sharding to finish in time)
+> >   - Use skip lists to avoid hanging machines
+> >   - Add some build testing
+> >   - Build IGT in each pipeline for faster uprevs
+> >   - List failures in the GitLab UI
+> >
+> > v6:
+> >   - Rebase on top of latest drm-next
+> >   - Lower priority of LAVA jobs to not impact Mesa CI as much
+> >   - Update docs
+> >
+> > v7:
+> >   - Rebase on top of latest drm-next
+> >
+> > v8:
+> >   - Move all files specific to testing the kernel into the kernel tree
+> >     (thus I have dropped the r-bs I had collected so far)
+> >   - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
+> >   - Add MAINTAINERS entry
+> >   - Fix boot on MT8173 by adding some Kconfigs that are now needed
+> >   - Link to the docs from index.rst and hard-wrap the file
+> >
+> > v9:
+> >   - Only automatically run the pipelines for merge requests
+> >   - Switch to zstd for the build artifacts to align with Mesa
+> >   - Add Qcom USB PHYs to config as they are now =3Dm in the defconfig
+> >
+> > v10:
+> >   - Include ci yml files from mesa/mesa (where the development is
+> >     current active) instead of a spin off project.
+> >   - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
+> >   - Update MAINTAINERS entry
+> >   - Uprev igt tool
+> >   - add LAVA_JOB_PRIORITY: 30
+> >   - pipeline example:
+> >   https://gitlab.freedesktop.org/helen.fornazier/linux/-/pipelines/9405=
+06
+> > ---
+> >  Documentation/gpu/automated_testing.rst       |  144 +
+> >  Documentation/gpu/index.rst                   |    1 +
+> >  MAINTAINERS                                   |    8 +
+> >  drivers/gpu/drm/ci/arm.config                 |   69 +
+> >  drivers/gpu/drm/ci/arm64.config               |  199 ++
+> >  drivers/gpu/drm/ci/build-igt.sh               |   35 +
+> >  drivers/gpu/drm/ci/build.sh                   |  157 +
+> >  drivers/gpu/drm/ci/build.yml                  |  110 +
+> >  drivers/gpu/drm/ci/check-patch.py             |   57 +
+> >  drivers/gpu/drm/ci/container.yml              |   61 +
+> >  drivers/gpu/drm/ci/gitlab-ci.yml              |  252 ++
+> >  drivers/gpu/drm/ci/igt_runner.sh              |   77 +
+> >  drivers/gpu/drm/ci/image-tags.yml             |   15 +
+> >  drivers/gpu/drm/ci/lava-submit.sh             |   57 +
+> >  drivers/gpu/drm/ci/static-checks.yml          |   12 +
+> >  drivers/gpu/drm/ci/test.yml                   |  335 ++
+> >  drivers/gpu/drm/ci/testlist.txt               | 2912 +++++++++++++++++
+> >  drivers/gpu/drm/ci/x86_64.config              |  111 +
+> >  .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |   22 +
+> >  .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |   19 +
+> >  .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |    2 +
+> >  drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   17 +
+> >  .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |   32 +
+> >  drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |    4 +
+> >  drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |   57 +
+> >  drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |    1 +
+> >  drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |    4 +
+> >  drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |   18 +
+> >  drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |   37 +
+> >  drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |    2 +
+> >  drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |   18 +
+> >  drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |   41 +
+> >  drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |    5 +
+> >  drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   26 +
+> >  drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |   25 +
+> >  drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |    5 +
+> >  drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   37 +
+> >  drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt |    5 +
+> >  drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   11 +
+> >  drivers/gpu/drm/ci/xfails/i915-whl-fails.txt  |   47 +
+> >  drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt |    1 +
+> >  drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |    2 +
+> >  .../drm/ci/xfails/mediatek-mt8173-fails.txt   |   29 +
+> >  .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |    0
+> >  .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   10 +
+> >  .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |   14 +
+> >  .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   12 +
+> >  .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |    4 +
+> >  .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |   15 +
+> >  .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |    4 +
+> >  .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |    2 +
+> >  .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |    4 +
+> >  .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |    2 +
+> >  .../gpu/drm/ci/xfails/msm-sc7180-fails.txt    |   25 +
+> >  .../gpu/drm/ci/xfails/msm-sc7180-flakes.txt   |    7 +
+> >  .../gpu/drm/ci/xfails/msm-sc7180-skips.txt    |   23 +
+> >  .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   68 +
+> >  .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |   11 +
+> >  .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |    2 +
+> >  .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   49 +
+> >  .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |    8 +
+> >  .../drm/ci/xfails/rockchip-rk3288-skips.txt   |   52 +
+> >  .../drm/ci/xfails/rockchip-rk3399-fails.txt   |   39 +
+> >  .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |   23 +
+> >  .../drm/ci/xfails/rockchip-rk3399-skips.txt   |    5 +
+> >  .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   38 +
+> >  .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |    0
+> >  .../drm/ci/xfails/virtio_gpu-none-skips.txt   |    6 +
+> >  test                                          |    0
+> >  69 files changed, 5502 insertions(+)
+> >  create mode 100644 Documentation/gpu/automated_testing.rst
+> >  create mode 100644 drivers/gpu/drm/ci/arm.config
+> >  create mode 100644 drivers/gpu/drm/ci/arm64.config
+> >  create mode 100644 drivers/gpu/drm/ci/build-igt.sh
+> >  create mode 100644 drivers/gpu/drm/ci/build.sh
+> >  create mode 100644 drivers/gpu/drm/ci/build.yml
+> >  create mode 100755 drivers/gpu/drm/ci/check-patch.py
+> >  create mode 100644 drivers/gpu/drm/ci/container.yml
+> >  create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
+> >  create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
+> >  create mode 100644 drivers/gpu/drm/ci/image-tags.yml
+> >  create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
+> >  create mode 100644 drivers/gpu/drm/ci/static-checks.yml
+> >  create mode 100644 drivers/gpu/drm/ci/test.yml
+> >  create mode 100644 drivers/gpu/drm/ci/testlist.txt
+> >  create mode 100644 drivers/gpu/drm/ci/x86_64.config
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.tx=
+t
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.tx=
+t
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.tx=
+t
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.tx=
+t
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.tx=
+t
+> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+> >  create mode 100644 test
+> >
+>
+> [snip]
+>
+> > diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitl=
+ab-ci.yml
+> > new file mode 100644
+> > index 000000000000..32d8e2258eb6
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> > @@ -0,0 +1,252 @@
+> > +variables:
+> > +  # Change this to use your fork of drm-ci
+>
+> nit, I think this comment mostly doesn't make sense since everyone
+> would be using the same version of this gitlab-ci.yml, Ie. we can't
+> have msm and nouveau and intel and so on with there own conflicting
+> patches on gitlab-ci.yml
+>
+> I did run into a bit of a chicken vs. egg problem with testing the "in
+> tree" version (compared to earlier versions which kept most of the yml
+> and scripts in a separate tree), is that it actually requires this
+> commit to exist in the branch you want to run CI on.  My earlier
+> workaround of pulling the drm/ci commit in via
+> ${branchname}-external-fixes no longer works.
 
-On Tue, Jul 25, 2023 at 03:46:35PM -0500, Bjorn Helgaas wrote:
-> On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
-> > On 2023/7/21 0:15, Bjorn Helgaas wrote:
-> > > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
-> > >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
-> > >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
-> > >> >> Add StarFive JH7110 SoC PCIe controller platform
-> > >> >> driver codes.
-> 
-> > >> However, in the compatibility testing with several NVMe SSD, we
-> > >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
-> > >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
-> > >> value to 300ms for the better device compatibility.
-> > > ...
-> > > 
-> > > Thanks for this valuable information!  This NVMe issue potentially
-> > > affects many similar drivers, and we may need a more generic fix so
-> > > this device works well with all of them.
-> > > 
-> > > T_PVPERL is defined to start when power is stable.  Do you have a way
-> > > to accurately determine that point?  I'm guessing this:
-> > > 
-> > >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
-> > > 
-> > > turns the power on?  But of course that doesn't mean it is instantly
-> > > stable.  Maybe your testing is telling you that your driver should
-> > > have a hardware-specific 200ms delay to wait for power to become
-> > > stable, followed by the standard 100ms for T_PVPERL?
-> > 
-> > You are right, we did not take the power stable cost into account.
-> > T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
-> > and the extra cost is from the power circuit of a PCIe to M.2 connector,
-> > which is used to verify M.2 SSD with our EVB at early stage.
-> 
-> Hmm.  That sounds potentially interesting.  I assume you're talking
-> about something like this: https://www.amazon.com/dp/B07JKH5VTL
-> 
-> I'm not familiar with the timing requirements for something like this.
-> There is a PCIe M.2 spec with some timing requirements, but I don't
-> know whether or how software is supposed to manage this.  There is a
-> T_PVPGL (power valid to PERST# inactive) parameter, but it's
-> implementation specific, so I don't know what the point of that is.
-> And I don't see a way for software to even detect the presence of such
-> an adapter.
+After unwinding some more gitlab repo settings that were for the
+previous out-of-tree yml setup, I have this working.
 
-I intended to ask about this on the PCI-SIG forum, but after reading
-this thread [1], I don't think we would learn anything.  The question
-was:
-
-  The M.2 device has 5 voltage rails generated from the 3.3V input
-  supply voltage
-  -------------------------------------------
-  This is re. Table 17 in PCI Express M.2 Specification Revision 1.1
-  Power Valid* to PERST# input inactive : Implementation specific;
-  recommended 50 ms
-
-  What exactly does this mean ?
-
-  The Note says
-
-    *Power Valid when all the voltage supply rails have reached their
-    respective Vmin.
-
-  Does this mean that the 50ms to PERSTn is counted from the instant
-  when all *5 voltage rails* on the M.2 device have become "good" ?
-
-and the answer was:
-
-  You wrote;
-  Does this mean that the 50ms to PERSTn is counted from the instant
-  when all 5 voltage rails on the M.2 device have become "good" ?
-
-  Reply:
-  This means that counting the recommended 50 ms begins from the time
-  when the power rails coming to the device/module, from the host, are
-  stable *at the device connector*.
-
-  As for the time it takes voltages derived inside the device from any
-  of the host power rails (e.g., 3.3V rail) to become stable, that is
-  part of the 50ms the host should wait before de-asserting PERST#, in
-  order ensure that most devices will be ready by then.
-
-  Strictly speaking, nothing disastrous happens if a host violates the
-  50ms. If it de-asserts too soon, the device may not be ready, but
-  most hosts will try again. If the host de-asserts too late, the
-  device has even more time to stabilize. This is why the WG felt that
-  an exact minimum number for >>Tpvpgl, was not valid in practice, and
-  we made it a recommendation.
-
-Since T_PVPGL is implementation-specific, we can't really base
-anything in software on the 50ms recommendation.  It sounds to me like
-they are counting on software to retry config reads when enumerating.
-
-I guess the delays we *can* observe are:
-
-  100ms T_PVPERL "Power stable to PERST# inactive" (CEM 2.9.2)
-  100ms software delay between reset and config request (Base 6.6.1)
-
-The PCI core doesn't know how to assert PERST#, so the T_PVPERL delay
-definitely has to be in the host controller driver.
-
-The PCI core observes the second 100ms delay after a reset in
-pci_bridge_wait_for_secondary_bus().  But this 100ms delay does not
-happen during initial enumeration.  I think the assumption of the PCI
-core is that when the host controller driver calls pci_host_probe(),
-we can issue config requests immediately.
-
-So I think that to be safe, we probably need to do both of those 100ms
-delays in the host controller driver.  Maybe there's some hope of
-supporting the latter one in the PCI core someday, but that's not
-today.
-
-Bjorn
-
-[1] https://forum.pcisig.com/viewtopic.php?f=74&t=1037
+Tested-by: Rob Clark <robdclark@gmail.com>
+Acked-by: Rob Clark <robdclark@gmail.com>
