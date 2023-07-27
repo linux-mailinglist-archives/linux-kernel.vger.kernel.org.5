@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2188765C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7DE765BED
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbjG0TUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        id S231224AbjG0TPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjG0TUO (ORCPT
+        with ESMTP id S229445AbjG0TPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:20:14 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5E1F3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:20:13 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f58444a410so674e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:20:13 -0700 (PDT)
+        Thu, 27 Jul 2023 15:15:05 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28962735;
+        Thu, 27 Jul 2023 12:15:03 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99b9161b94aso174696066b.1;
+        Thu, 27 Jul 2023 12:15:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690485612; x=1691090412;
+        d=googlemail.com; s=20221208; t=1690485302; x=1691090102;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NWa8Bstqe+PKwfvvskX3BhBIL8nUC+d+rJDV9BvUQGc=;
-        b=cXDtGlq1/SL6cs7e3G0edW1fcqOngTdgH0ZmgQRxYXSzgenYddUrawOd8aV1euePnR
-         uBL+1IhcXy+LpjrnNhDwQ7gcRMThtStbyqGGZbvmNrHuczWhrsx/Z2cGPQGg8mVJlw8v
-         bzCa11nFNH+7vn7Wk5PshPg0+wIgSxAn+/6D0q6+g0+M3nGGjToyWorz2ov/b6YHicC3
-         kfx7qqLnkM4O8RHqYW8BQkBd9dw1uVR+shTspJk7xub24xRIrLw9EqO5FqdAy1X2H9WK
-         hy7lAlL/W9Qw8kbdlO81xqd5vgculaW3D48Sm+qJaVA6AIdkbb8+nz6HqOjeYkVIoKFF
-         UtXA==
+        bh=S3mLrIEj6i09sZTd8OZW9bqC9iQyhJ5LXxHWMM4QrZY=;
+        b=Ed3WOFVlxxamSM13Mr4fMTkJyvhgXdfRjANj6CrginYJFyFM41FDvfaK2vEJ5lwNc0
+         GCkIfkbG9ZzIQwucDgCEIA7MmvO+nPemT0JAPfHH9B8cDGWSFaPuX9GjHJc8r6fiF0kn
+         c0J2EhpZMe7ibv9H00kQN/D+KPpdnbpTq3ISAInV0aj6BJMX6+Pxd6jbQeiVObPG/t0Y
+         I2q5Fq01wTc26v18AQLeyxsN7Nyk7CFrdsz0KsgLwEL5dZ5o7QZ/SdhRZ+ikg/qXYtJQ
+         5S1SS6l0X9C0fjahWw+fRxzAs2LRucCLwD9x7LSR5Hbvtetua/jA+LA+qtNO13QNZK+j
+         BwPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485612; x=1691090412;
+        d=1e100.net; s=20221208; t=1690485302; x=1691090102;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NWa8Bstqe+PKwfvvskX3BhBIL8nUC+d+rJDV9BvUQGc=;
-        b=j9yVCAp+I6/VCrZAg3C7Uz+xQSxhgxKiIP5pPrWCNVLxyMEKfx9nMNMEtaILtjWMMb
-         IozF5Mz13PxNkwcyGc+fbmnf7nUixwn6TRIA5WNYskzoed7g51kytCl9XMKZ8dviKCZj
-         u5l96SXA7LpWUm7R0yzT4CIm82pPAQSGRp6CF6ZMi1RpSsqZzDB4FtyhK1Baooon+YNM
-         Wuz3D4BIIuaS8Tkd4VShcqMO/aVHAMHZQJN2MW8YJDrLGlg3AMigRXWpXWEVNg2uKQBu
-         rhrmmh0ECTSydlu9oKN8Hy/lNR53EH7bnrh6mBJ8sZJm6yV0EV0pmXrX6he8ueEluZmB
-         5OpA==
-X-Gm-Message-State: ABy/qLYtxJsG3oijp8ManBH1td7SdTvF0AMEKHhEMaFIUOfa4DrYb/2y
-        dKkD6hVjHQEIvHb6jxZitkDmoG1XEQ3/70l0KfE3c5ycHRhDWS/05jMb6z3j
-X-Google-Smtp-Source: APBJJlED1SfLnWR0xjG24DvcpV8ETwQoqYPH/QOhH3Ffh+4FGOdk8jwd4DlFSrw8wIZ1iez9Q693fCLBaQkrM8A5F2k=
-X-Received: by 2002:a05:600c:8509:b0:3f7:3e85:36a with SMTP id
- gw9-20020a05600c850900b003f73e85036amr19144wmb.7.1690485169747; Thu, 27 Jul
- 2023 12:12:49 -0700 (PDT)
+        bh=S3mLrIEj6i09sZTd8OZW9bqC9iQyhJ5LXxHWMM4QrZY=;
+        b=ca7LUv5yqL4cBmb115mh98kzekTU0Qpgkfb2GVC0Dko8zfj1YB5noyz7G5BDTSrU3d
+         B1pafNxNoDWaZeW2Y7t2UECsARAdDke87EQgWXzT4jcbDsvXuh2DH/B7cElOZBZm4+I7
+         yMhn+5KGz+ZisrzMWnKeiVlc7DGfpgRPvZLniSvuJtfXNxeto2TgMqXUGD+lIngdavbE
+         HGCs6cUHfomyxCdk62iaol3ILAVnj6t8vt1ZiBT7hy4so6jxasfGPXhpOZD4hVkOtiBm
+         PrdcpnPiSj8+axcWQZXsSgjhL4eG+dwaxyNFYmXktd0oI6YXLz8jBuOTTCOS5MZEWYxw
+         Cf6w==
+X-Gm-Message-State: ABy/qLZQcC5zeB+JuF6eHLVugxTH2mRrMbIxIWugAAZfaia0aFkFZVwz
+        1qFrkTHs9DocT5UDDGGEqalmfXXMcn51+BQ6ynw=
+X-Google-Smtp-Source: APBJJlHqe8Db9+ktxLkIwQKQ2FJd+P31M6a8NsywGTFbag00ryYo1w0bdwp358gbe5zeurhcoNMOkxR2lEulMI9JAmU=
+X-Received: by 2002:a17:906:3189:b0:99b:c35a:8865 with SMTP id
+ 9-20020a170906318900b0099bc35a8865mr113365ejy.1.1690485301887; Thu, 27 Jul
+ 2023 12:15:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZMK9C+iq3y8POOGp@casper.infradead.org> <0000000000004ccc7906017c79e0@google.com>
- <ZMK9arq/gzFEqUOs@casper.infradead.org>
-In-Reply-To: <ZMK9arq/gzFEqUOs@casper.infradead.org>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 27 Jul 2023 21:12:36 +0200
-Message-ID: <CANp29Y6YgrQ4pX+JXY1SBtmFYc2ThyHUA6GAEVMh5hqu6Q0FdA@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (2)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, liam.howlett@oracle.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
+References: <20230725141252.98848-1-avromanov@sberdevices.ru> <20230725141252.98848-2-avromanov@sberdevices.ru>
+In-Reply-To: <20230725141252.98848-2-avromanov@sberdevices.ru>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 27 Jul 2023 21:14:51 +0200
+Message-ID: <CAFBinCBLjE051KeFzFZzjc=0ZuMHOQwRfWasxWRUOSwQO3jqYg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] drivers: rng: add check status bit feature
+To:     Alexey Romanov <avromanov@sberdevices.ru>
+Cc:     narmstrong@baylibre.com, neil.armstrong@linaro.org,
+        olivia@selenic.com, herbert@gondor.apana.org.au,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kernel@sberdevices.ru
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,37 +76,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 8:54=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Jul 27, 2023 at 11:53:02AM -0700, syzbot wrote:
-> > > On Tue, Jul 25, 2023 at 11:57:22PM -0700, syzbot wrote:
-> > >> syzbot has bisected this issue to:
-> > >>
-> > >> commit a52f58b34afe095ebc5823684eb264404dad6f7b
-> > >> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > >> Date:   Mon Jul 24 18:54:10 2023 +0000
-> > >>
-> > >>     mm: handle faults that merely update the accessed bit under the =
-VMA lock
-> > >>
-> > >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17835=
-85ea80000
-> > >> start commit:   [unknown]
-> > >> git tree:       linux-next
-> > >
-> > > #syz test linux-next a52f58b34afe095ebc5823684eb264404dad6f7b
-> >
-> > "linux-next" does not look like a valid git repo address.
->
-> Well, now, that's your fault, isn't it?  You're abbreviating the git
-> tree in the report, but then refusing to accept the abbreviation in
-> the response.
+Hello Alexey,
 
-Good point.
-There's an issue about this
-(https://github.com/google/syzkaller/issues/2265), I've added it to my
-backlog.
+On Tue, Jul 25, 2023 at 4:13=E2=80=AFPM Alexey Romanov <avromanov@sberdevic=
+es.ru> wrote:
+[...]
+>  static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bool=
+ wait)
+>  {
+>         struct meson_rng_data *data =3D
+>                         container_of(rng, struct meson_rng_data, rng);
+> +       const struct meson_rng_priv *priv =3D data->priv;
+> +
+> +       if (priv->check_status_bit) {
+> +               void __iomem *cfg_addr =3D data->base + priv->cfg_offset;
+> +               int err;
+Have you considered just creating two separate functions:
+- meson_rng_read
+- meson_s4_rng_read
 
---=20
-Aleksandr
+Then you don't need all of these if/else.
+You can even skip the whole offset description in your new struct
+meson_rng_priv.
+All of this can make the code easier to understand.
+
+> +               writel_relaxed(readl_relaxed(cfg_addr) | BIT(SEED_READY_S=
+TS_BIT), cfg_addr);
+Why not just #define SEED_READY_STS as BIT(...) right away?
+
+
+Best regards,
+Martin
