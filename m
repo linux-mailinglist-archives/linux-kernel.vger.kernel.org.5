@@ -2,170 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1115E764A29
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E62764A33
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbjG0IHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
+        id S233719AbjG0IHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjG0IG6 (ORCPT
+        with ESMTP id S229946AbjG0IHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:06:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB3BC3;
-        Thu, 27 Jul 2023 01:03:24 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.24])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 93E0E6607123;
-        Thu, 27 Jul 2023 09:03:16 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690445003;
-        bh=dW1Iw2fW6OgCt1ybA/3F16Se6r7KV+IdGvqNyOupjdI=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=DJzXf0kz3lRWuRFEQS8dTSgtxQvhEzEEPapXsYHDsEWxjW2Ym4qqvPYJsJ+smye+W
-         pZQaaMjEHn4QXqIl7dZ/0v720T7XU889U57N8aNmLfhEn5z97KaUd+aSLPJ3+XkR9R
-         UNc86yz7zNuqLYpSCIUsMueQJDLZhJ084zBoqP+jZwjeGclHm9U2uNGeE8mIfib7F2
-         h5n4lxgHhpbU2lNOR+CKGNEdnjPQybGqCyH+lbfwkicViEWibFWLxJ+rOY8AbV2G3p
-         aJQAPpSnoylfpx0raqcbFnwBFmvr+C7kNGkpR1sCZYVxULwWnYrYPVG6n9A6UcSJ1Q
-         WKC+00iUYfIzw==
-Message-ID: <89c09085-19ab-462b-e3be-b4e492a85899@collabora.com>
-Date:   Thu, 27 Jul 2023 13:03:11 +0500
+        Thu, 27 Jul 2023 04:07:03 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C09E2D63;
+        Thu, 27 Jul 2023 01:03:32 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso9558391fa.0;
+        Thu, 27 Jul 2023 01:03:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690445011; x=1691049811;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IbW7gI8a3h2DtRGdUF2rMRbdoxwlm6QKOTYcrosHNBs=;
+        b=EhWPo4MEPNAXO7A/UJ1EqCuxFIfcR01vvsKQKmIGV1QV+PnLkZKyDmrGCWc+YSi8F4
+         lOoP/2TG2yqIkudRF+0iwzcAiI4gYrGIXkrX2ypVZg5665I4MaFS0/JewGu3SragA9ZT
+         5MMrRSRaiadbCTjTK2fkDiXv4WVm47Lq8FpnWAYYd/ACP/WlVO3XmtZsl/pZbFqPf0b2
+         oD7jcmyAOXanzOz3WPIR9RjWSlsU+kHdWN2xj9/t0mPEwXDWsmkFWB2TLEw+rYroWyfk
+         JSYzeWSnH3jpGSR5Jdl0Xb+ZTJFqjSpaWRccdiCSuVgMsf/pJ52xuDTBWSauQNGq2+gn
+         Mztg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690445011; x=1691049811;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IbW7gI8a3h2DtRGdUF2rMRbdoxwlm6QKOTYcrosHNBs=;
+        b=P3ZE6CZ3+YM19zLaB4ZMjMGu72ez+G6dxKsXq8Skmhe2QYf3mVXp66OGDPsQZgZjKY
+         xDvkXNEkC8ROnopLDWjh5STMjCUdfqZ1AdqRE8xWQUDVuHxivxtMjG3EBDwPziFgW/Bt
+         HgLx43RD/FkoyvuM2uLu+p0c9fRlhmWr8OtPsLbj26gZTsRnGqpwuKfZ7ueIvlvs/byc
+         QgLOL3WlyRcQ39PyDTgNPH5OExGbhodJAhrNM/BIXCexRd3b07/Q/N7vlKg4hHs5Cxm3
+         oLhO2dfyBL3JarGJ/zeECXaGxIWFOz///hcfvvpE9g35Yxn3EGZKLbzmiOlE6n1gtc/c
+         muyw==
+X-Gm-Message-State: ABy/qLbuIcRFnC0vS61Ju3nMcDa4biCGHOBzEd476etE2I68yBQPyXUt
+        hVP3sjmZ+11O0eipRpP2AQZkhlmdB4eLWcYOOn4=
+X-Google-Smtp-Source: APBJJlFOyEp3aH4nbnnFb6F1FGxJyzCBCXxMiO4szu4Qz6wRbHan22QnDkvyGS9SlOqBnnv2QBJiOI+MWs7hY8+gz/A=
+X-Received: by 2002:a2e:b1d3:0:b0:2b6:da88:a2d0 with SMTP id
+ e19-20020a2eb1d3000000b002b6da88a2d0mr1085078lja.47.1690445010411; Thu, 27
+ Jul 2023 01:03:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [v3] fs/proc/task_mmu: Implement IOCTL for efficient page table
- scanning
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-References: <20230713101415.108875-6-usama.anjum@collabora.com>
- <a0b5c6776b2ed91f78a7575649f8b100e58bd3a9.1689881078.git.mirq-linux@rere.qmqm.pl>
- <7eedf953-7cf6-c342-8fa8-b7626d69ab63@collabora.com>
- <ZLpqzcyo2ZMXwtm4@qmqm.qmqm.pl>
- <382f4435-2088-08ce-20e9-bc1a15050861@collabora.com>
- <ZLshsAj5PbsEAHhP@qmqm.qmqm.pl>
- <b1071d62-5c8e-1b03-d919-b3a9db520e51@collabora.com>
- <CABb0KFF6M2_94Ect72zMtaRLBpOoHjHYJA-Ube3oQAh4cXSg5w@mail.gmail.com>
- <44eddc7d-fd68-1595-7e4f-e196abe37311@collabora.com>
- <CABb0KFHJVeEkh4f6WWK6FThCbA+NE8iYUZE68nV1YAxaHwiwog@mail.gmail.com>
- <e1ead2e8-046a-31d9-8df9-27cdd7b7ff83@collabora.com>
- <1afedab8-5929-61e5-b0da-9c70dc01c254@collabora.com>
- <eac29a4d-aa3f-4df5-97e6-4aa3a358f2b1@collabora.com>
- <CABb0KFHuNpG+NJQ4sQdp1n_Kf4sO8aC5DBEppFc1zz=zAeDfQw@mail.gmail.com>
- <f949f74f-bb65-e3f2-e70d-7198446a9981@collabora.com>
- <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CABb0KFGQ_HbD+MNwKCcE+6D50XhJxpx0M0dRiC-EVwEXPv+4XA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Thu, 27 Jul 2023 16:03:18 +0800
+Message-ID: <CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com>
+Subject: WARNING in kvm_arch_vcpu_ioctl_run
+To:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, jarkko@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 2:10 AM, Michał Mirosław wrote:
-> On Wed, 26 Jul 2023 at 10:34, Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->> On 7/25/23 11:05 PM, Michał Mirosław wrote:
->>> On Tue, 25 Jul 2023 at 11:11, Muhammad Usama Anjum
->>> <usama.anjum@collabora.com> wrote:
->>>>
->>>> ----
->>>> Michal please post your thoughts before I post this as v26.
->>>> ----
->>> [...]
->>>
->>> Looks ok - minor things below.
->>>
->>> 1. I'd change the _WPASYNC things to something better, if this can
->>> also work with "normal" UFFD WP.
->> Yeah, but we don't have any use case where UFFD WP is required. It can be
->> easily added later when user case arrives. Also UFFD WP sends messages to
->> userspace. User can easily do the bookkeeping in userspace as performance
->> isn't a concern there.
-> 
-> We shouldn't name the flags based on the use case but based on what
-> they actually do. So if this checks UFFD registration for WP, then
-> maybe PAGE_IS_WPALLOWED or something better describing the trait it
-> matches?
-PAGE_IS_WPALLOWED seems appropriate.
+Hello, I'm sorry for the mistake in my previous email. I forgot to add
+a subject. This is my second attempt to send the message.
 
-> 
->>> 2. For the address tagging part I'd prefer someone who knows how this
->>> is used take a look. We're ignoring the tag (but clear it on return in
->>> ->start) - so it doesn't matter for the ioctl() itself.
->> I've added Kirill if he can give his thoughts about tagged memory.
->>
->> Right now we are removing the tags from all 3 pointers (start, end, vec)
->> before using the pointers on kernel side. But we are overwriting and
->> writing the walk ending address in start which user can read/use.
->>
->> I think we shouldn't over-write the start (and its tag) and instead return
->> the ending walk address in new variable, walk_end.
-> 
-> The overwrite of `start` is making the ioctl restart (continuation)
-> easier to handle. I prefer the current way, but it's not a strong
-> opinion.
-We shouldn't overwrite the start if we aren't gonna put the correct tag. So
-I've resorted to adding another variable `walk_end` to return the walk
-ending address.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-> 
->>> 3. BTW, One of the uses is the GetWriteWatch and I wonder how it
->>> behaves on HugeTLB (MEM_LARGE_PAGES allocation)? Shouldn't it return a
->>> list of huge pages and write *lpdwGranularity = HPAGE_SIZE?
->> Wine/Proton doesn't used hugetlb by default. Hugetlb isn't enabled by
->> default on Debian as well. For GetWriteWatch() we don't care about the
->> hugetlb at all. We have added hugetlb's implementation to complete the
->> feature and leave out something.
-> 
-> How is GetWriteWatch() working when passed a VirtualAlloc(...,
-> MEM_LARGE_PAGES|MEM_WRITE_WATCH...)-allocated range? Does it still
-> report 4K pages?
-> This is only a problem when using max_pages: a hugetlb range might
-> need counting and reporting huge pages and not 4K parts.
-> 
-> Best Regards
-> Michał Mirosław
+HEAD commit: fdf0eaf11452d72945af31804e2a1048ee1b574c (tag: v6.5-rc2)
 
-I'll send v26 in next hour.
+git tree: upstream
 
--- 
-BR,
-Muhammad Usama Anjum
+console output:
+https://drive.google.com/file/d/1FiemC_AWRT-6EGscpQJZNzYhXZty6BVr/view?usp=drive_link
+kernel config: https://drive.google.com/file/d/1fgPLKOw7QbKzhK6ya5KUyKyFhumQgunw/view?usp=drive_link
+C reproducer: https://drive.google.com/file/d/1SiLpYTZ7Du39ubgf1k1BIPlu9ZvMjiWZ/view?usp=drive_link
+Syzlang reproducer:
+https://drive.google.com/file/d/1eWSmwvNGOlZNU-0-xsKhUgZ4WG2VLZL5/view?usp=drive_link
+Similar report:
+https://groups.google.com/g/syzkaller-bugs/c/C2ud-S1Thh0/m/z4iI7l_dAgAJ
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+
+kvm: vcpu 129: requested lapic timer restore with starting count
+register 0x390=4241646265 (4241646265 ns) > initial count (296265111
+ns). Using initial count to start timer.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1977 at arch/x86/kvm/x86.c:11098
+kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
+Modules linked in:
+CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
+Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
+40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
+e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
+RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
+RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
+RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
+RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
+R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
+R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
+FS:  00007feb64c14640(0000) GS:ffff888063e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000000002a8 CR3: 0000000114888000 CR4: 0000000000752ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
+RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
+ </TASK>
+
+Modules linked in:
+CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
+Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
+40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
+e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
+RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
+RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
+RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
+RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
+R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
+R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
+FS:  00007feb64c14640(0000) GS:ffff888063e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000000002a8 CR3: 0000000114888000 CR4: 0000000000752ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
+RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
+ </TASK>
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x92/0xf0 lib/dump_stack.c:106
+ panic+0x570/0x620 kernel/panic.c:340
+ check_panic_on_warn+0x8e/0x90 kernel/panic.c:236
+ __warn+0xee/0x340 kernel/panic.c:673
+ __report_bug lib/bug.c:199 [inline]
+ report_bug+0x25d/0x460 lib/bug.c:219
+ handle_bug+0x3c/0x70 arch/x86/kernel/traps.c:324
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:345
+ asm_exc_invalid_op+0x16/0x20 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
+Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
+40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
+e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
+RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
+RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
+RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
+RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
+R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
+R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
+ kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x47959d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
+RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
+ </TASK>
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
