@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F39B4764E02
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C73764E01
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232915AbjG0Irb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
+        id S231817AbjG0Ir0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbjG0IrF (ORCPT
+        with ESMTP id S232861AbjG0IrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 04:47:05 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1747449C3;
-        Thu, 27 Jul 2023 01:29:42 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RBP6c4NHLzrS0H;
-        Thu, 27 Jul 2023 16:28:24 +0800 (CST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3249A9D;
+        Thu, 27 Jul 2023 01:29:41 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RBP6f3PQMz1GDM5;
+        Thu, 27 Jul 2023 16:28:26 +0800 (CST)
 Received: from M910t.huawei.com (10.110.54.157) by
  kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 16:29:18 +0800
+ 15.1.2507.27; Thu, 27 Jul 2023 16:29:19 +0800
 From:   Changbin Du <changbin.du@huawei.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -35,10 +35,12 @@ CC:     Mark Rutland <mark.rutland@arm.com>,
         <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Hui Wang <hw.huiwang@huawei.com>,
         Changbin Du <changbin.du@huawei.com>
-Subject: [PATCH v4 0/4] perf: add new option '--workload-attr' to set workload sched_policy/priority/cpumask
-Date:   Thu, 27 Jul 2023 16:28:48 +0800
-Message-ID: <20230727082852.916093-1-changbin.du@huawei.com>
+Subject: [PATCH v4 1/4] perf cpumap: Add __perf_cpu_map__new and perf_cpu_map__2_cpuset
+Date:   Thu, 27 Jul 2023 16:28:49 +0800
+Message-ID: <20230727082852.916093-2-changbin.du@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230727082852.916093-1-changbin.du@huawei.com>
+References: <20230727082852.916093-1-changbin.du@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -47,56 +49,214 @@ X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemi500013.china.huawei.com (7.221.188.120)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a new option '--workload-attr' to set the sched_policy/priority/cpumask
-of the workload to reduce system noise.
+This adds two new api which will be used later.
+  - __perf_cpu_map__new: accept a specified separator instead of ','.
+  - perf_cpu_map__2_cpuset: convert perf_cpu_map to cpu_set_t.
 
-$ sudo perf stat --workload-attr fifo,40,0-3:7 -- ls
+Signed-off-by: Changbin Du <changbin.du@huawei.com>
+---
+ tools/lib/perf/cpumap.c              | 45 ++++++++++++++++++++++++++--
+ tools/lib/perf/include/perf/cpumap.h |  4 +++
+ tools/lib/perf/libperf.map           |  2 ++
+ tools/perf/tests/cpumap.c            | 23 ++++++++++++++
+ 4 files changed, 71 insertions(+), 3 deletions(-)
 
-Please see patch 2/4 for more details.
-
-v4:
-  - add a test case for perf-stat. (suggeted by Ian Rogers)
-  - fix warning found by 0-DAY.
-v3:
-  - replace taskset with --workload-attr option in documents and tests.
-v2:
-  - Use cpu list spec instead of cpu mask number.
-  - Update documents.
-
-Changbin Du (4):
-  perf cpumap: Add __perf_cpu_map__new and perf_cpu_map__2_cpuset
-  perf: add new option '--workload-attr' to set workload
-    sched_policy/priority/cpumask
-  perf: replace taskset with --workload-attr option
-  perf test: add test case for --workload-attr option
-
- tools/lib/perf/cpumap.c                       |  45 ++++++-
- tools/lib/perf/include/perf/cpumap.h          |   4 +
- tools/lib/perf/libperf.map                    |   2 +
- tools/perf/Documentation/intel-hybrid.txt     |   2 +-
- tools/perf/Documentation/perf-record.txt      |   7 ++
- tools/perf/Documentation/perf-stat.txt        |   8 +-
- tools/perf/builtin-record.c                   |  26 ++++
- tools/perf/builtin-stat.c                     |  18 +++
- tools/perf/tests/cpumap.c                     |  23 ++++
- tools/perf/tests/shell/stat.sh                |  19 +++
- .../tests/shell/stat_bpf_counters_cgrp.sh     |   2 +-
- tools/perf/tests/shell/test_arm_coresight.sh  |   2 +-
- tools/perf/tests/shell/test_data_symbol.sh    |   2 +-
- tools/perf/tests/shell/test_intel_pt.sh       |   2 +-
- tools/perf/util/evlist.c                      | 116 ++++++++++++++++++
- tools/perf/util/evlist.h                      |   3 +
- tools/perf/util/target.h                      |   9 ++
- 17 files changed, 281 insertions(+), 9 deletions(-)
-
+diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+index 2a5a29217374..23e907078b28 100644
+--- a/tools/lib/perf/cpumap.c
++++ b/tools/lib/perf/cpumap.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
++#define _GNU_SOURCE
+ #include <perf/cpumap.h>
+ #include <stdlib.h>
+ #include <linux/refcount.h>
+@@ -7,6 +8,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <sched.h>
+ #include <ctype.h>
+ #include <limits.h>
+ 
+@@ -201,7 +203,7 @@ static struct perf_cpu_map *cpu_map__read_all_cpu_map(void)
+ 	return cpus;
+ }
+ 
+-struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
++struct perf_cpu_map *__perf_cpu_map__new(const char *cpu_list, char sep)
+ {
+ 	struct perf_cpu_map *cpus = NULL;
+ 	unsigned long start_cpu, end_cpu = 0;
+@@ -225,7 +227,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+ 		p = NULL;
+ 		start_cpu = strtoul(cpu_list, &p, 0);
+ 		if (start_cpu >= INT_MAX
+-		    || (*p != '\0' && *p != ',' && *p != '-'))
++		    || (*p != '\0' && *p != sep && *p != '-'))
+ 			goto invalid;
+ 
+ 		if (*p == '-') {
+@@ -233,7 +235,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+ 			p = NULL;
+ 			end_cpu = strtoul(cpu_list, &p, 0);
+ 
+-			if (end_cpu >= INT_MAX || (*p != '\0' && *p != ','))
++			if (end_cpu >= INT_MAX || (*p != '\0' && *p != sep))
+ 				goto invalid;
+ 
+ 			if (end_cpu < start_cpu)
+@@ -278,6 +280,11 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+ 	return cpus;
+ }
+ 
++struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
++{
++	return __perf_cpu_map__new(cpu_list, ',');
++}
++
+ static int __perf_cpu_map__nr(const struct perf_cpu_map *cpus)
+ {
+ 	return RC_CHK_ACCESS(cpus)->nr;
+@@ -479,3 +486,35 @@ struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
+ 	free(tmp_cpus);
+ 	return merged;
+ }
++
++/* The caller is responsible for freeing returned cpu_set_t with CPU_FREE(). */
++cpu_set_t *perf_cpu_map__2_cpuset(struct perf_cpu_map *cpus, size_t *cpuset_size)
++{
++	cpu_set_t *cpusetp;
++	int max_cpu;
++	struct perf_cpu cpu;
++	int idx;
++
++	if (perf_cpu_map__has_any_cpu(cpus))
++		return NULL;
++
++	max_cpu = perf_cpu_map__max(cpus).cpu;
++	if (max_cpu < 0)
++		return NULL;
++
++	cpusetp = CPU_ALLOC(max_cpu + 1);
++	if (cpusetp == NULL)
++		return NULL;
++
++	*cpuset_size = CPU_ALLOC_SIZE(max_cpu + 1);
++	CPU_ZERO_S(*cpuset_size, cpusetp);
++
++	perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
++		if (cpu.cpu == -1)
++			continue;
++
++		CPU_SET_S(cpu.cpu, *cpuset_size, cpusetp);
++	}
++
++	return cpusetp;
++}
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index e38d859a384d..1a0498f92dbe 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -3,6 +3,7 @@
+ #define __LIBPERF_CPUMAP_H
+ 
+ #include <perf/core.h>
++#include <sched.h>
+ #include <stdio.h>
+ #include <stdbool.h>
+ 
+@@ -23,6 +24,7 @@ struct perf_cpu_map;
+  */
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__dummy_new(void);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
++LIBPERF_API struct perf_cpu_map *__perf_cpu_map__new(const char *cpu_list, char sep);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+@@ -46,6 +48,8 @@ LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
+  */
+ LIBPERF_API bool perf_cpu_map__has_any_cpu(const struct perf_cpu_map *map);
+ 
++LIBPERF_API cpu_set_t *perf_cpu_map__2_cpuset(struct perf_cpu_map *cpus, size_t *cpuset_size);
++
+ #define perf_cpu_map__for_each_cpu(cpu, idx, cpus)		\
+ 	for ((idx) = 0, (cpu) = perf_cpu_map__cpu(cpus, idx);	\
+ 	     (idx) < perf_cpu_map__nr(cpus);			\
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index 190b56ae923a..fe0946e34471 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -5,6 +5,7 @@ LIBPERF_0.0.1 {
+ 		perf_cpu_map__default_new;
+ 		perf_cpu_map__get;
+ 		perf_cpu_map__put;
++		__perf_cpu_map__new;
+ 		perf_cpu_map__new;
+ 		perf_cpu_map__read;
+ 		perf_cpu_map__nr;
+@@ -12,6 +13,7 @@ LIBPERF_0.0.1 {
+ 		perf_cpu_map__empty;
+ 		perf_cpu_map__max;
+ 		perf_cpu_map__has;
++		perf_cpu_map__2_cpuset;
+ 		perf_thread_map__new_array;
+ 		perf_thread_map__new_dummy;
+ 		perf_thread_map__set_pid;
+diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+index 7730fc2ab40b..ae5e5337ea4f 100644
+--- a/tools/perf/tests/cpumap.c
++++ b/tools/perf/tests/cpumap.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include "tests.h"
++#include <sched.h>
+ #include <stdio.h>
+ #include "cpumap.h"
+ #include "event.h"
+@@ -247,12 +248,34 @@ static int test__cpu_map_equal(struct test_suite *test __maybe_unused, int subte
+ 	return TEST_OK;
+ }
+ 
++static int test__cpu_map_convert(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
++{
++	struct perf_cpu_map *any = perf_cpu_map__dummy_new();
++	struct perf_cpu_map *cpus = perf_cpu_map__new("1-2");
++	cpu_set_t *cpu_set;
++	size_t setsize;
++
++	cpu_set = perf_cpu_map__2_cpuset(any, &setsize);
++	TEST_ASSERT_VAL("not equal", cpu_set == NULL);
++	CPU_FREE(cpu_set);
++
++	cpu_set = perf_cpu_map__2_cpuset(cpus, &setsize);
++	TEST_ASSERT_VAL("cpus", cpu_set != NULL);
++	TEST_ASSERT_VAL("bad cpuset", !CPU_ISSET_S(0, setsize, cpu_set));
++	TEST_ASSERT_VAL("bad cpuset", CPU_ISSET_S(1, setsize, cpu_set));
++	TEST_ASSERT_VAL("bad cpuset", CPU_ISSET_S(2, setsize, cpu_set));
++	CPU_FREE(cpu_set);
++
++	return TEST_OK;
++}
++
+ static struct test_case tests__cpu_map[] = {
+ 	TEST_CASE("Synthesize cpu map", cpu_map_synthesize),
+ 	TEST_CASE("Print cpu map", cpu_map_print),
+ 	TEST_CASE("Merge cpu map", cpu_map_merge),
+ 	TEST_CASE("Intersect cpu map", cpu_map_intersect),
+ 	TEST_CASE("Equal cpu map", cpu_map_equal),
++	TEST_CASE("Convert cpu map", cpu_map_convert),
+ 	{	.name = NULL, }
+ };
+ 
 -- 
 2.25.1
 
