@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A539764615
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636F67645F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbjG0Fr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:47:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34846 "EHLO
+        id S232263AbjG0Foe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbjG0Frc (ORCPT
+        with ESMTP id S232143AbjG0FoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:47:32 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF0E3A90;
-        Wed, 26 Jul 2023 22:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690436491;
-        bh=/Dgf+ZQcoCmW2zZg+QiLcmAWHhDU2MxqOceMEJwdS+U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XdtGIcK6NZRBq/4eM4Au4zcnGisTcxtR5lY25h9VUBj/0e23/i3IzQ/gfhn3m66f3
-         r4qIZglFJsyLqCbwFbkKZNuxUkwzXVHZCd8witH/kzMvVpXkg7vbofW7YciDQnfKMZ
-         l65DrHuNgoh/xkKuNBoB3b2YCby4jurGQ19LoiYYggQuc7pudZZI8sZCNy+jNHANYO
-         jH/y7ofaJiiG9W5oZiEl/2o9u6ufLLzDiOSA1nYb0iuPWi9uGd8XXwuRHyoiaUaxYa
-         lYmwi9YVOVTU2Tknz9TZjL07XL6Dh1Cf0giecoCwxmc2XRoq84c4BH1jvR8lwinJ75
-         Zq7AnS0TIsDug==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Thu, 27 Jul 2023 01:44:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C156844B4
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:42:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBKQ20bC5z4wbP;
-        Thu, 27 Jul 2023 15:41:29 +1000 (AEST)
-Date:   Thu, 27 Jul 2023 15:41:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andre Werner <andre.werner@systec-electronic.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the hwmon-staging tree
-Message-ID: <20230727154128.6fcdb6d9@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B40E161D48
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:41:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538D0C433C8;
+        Thu, 27 Jul 2023 05:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690436510;
+        bh=tRQeUvtOWTVEnYHK/93U8TcFdC1blB4d+lsY7E7p0Ec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bo2LTR56mu0jXWM+3RWJdC5SGW9+sY+RU8Ft0YUjDKUTx4zvXPFIu30w4m1VFz8K3
+         fwoNR2WbMaPJI5qLbB/ivk+nrvO+ZVFhk2JRIyUDKnZNVIQ9tONHm5UjgLOUVkqiUa
+         hdLDT505vAYhyrZlJ/k83tny8+KEAKBBzxMCTZim32wegoxxvb4zLxs2mV1NGszDj3
+         cZI6dnGRNDZVBp14AaDSbJ/yWgWpMDOjhNSauVl4Xerxs6UNSf6zMxFvBFhPu0PNgC
+         +dJ8D1t7EHKpNIqTyALF4dTETlKqI4YtXR5zZ95+wEhPShP8ixeDAm5ZAeqlvX9fpr
+         By+qlOs9AFScQ==
+Date:   Thu, 27 Jul 2023 08:41:45 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Gal Pressman <gal@nvidia.com>
+Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
+Message-ID: <20230727054145.GY11388@unreal>
+References: <000000000000ee69e80600ec7cc7@google.com>
+ <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
+ <20230726071254.GA1380402@unreal>
+ <20230726082312.1600053e@kernel.org>
+ <20230726170133.GX11388@unreal>
+ <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
+ <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LiiUbrF.rVvy2LyhhCAMOna";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LiiUbrF.rVvy2LyhhCAMOna
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jul 26, 2023 at 04:33:40PM -0700, Martin KaFai Lau wrote:
+> On 7/26/23 11:16 AM, Martin KaFai Lau wrote:
+> > On 7/26/23 10:01 AM, Leon Romanovsky wrote:
+> > > On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
+> > > > On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
+> > > > > > Thanks, I'll take a look this evening.
+> > > > > 
+> > > > > Did anybody post a fix for that?
+> > > > > 
+> > > > > We are experiencing the following kernel panic in netdev commit
+> > > > > b57e0d48b300 (net-next/main) Merge branch '100GbE' of
+> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
+> > > > 
+> > > > Not that I know, looks like this is with Daniel's previous fix already
+> > > > present, and syzbot is hitting it, too :(
+> > > 
+> > > My naive workaround which restored our regression runs is:
+> > > 
+> > > diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
+> > > index 69a272712b29..10c9ab830702 100644
+> > > --- a/kernel/bpf/tcx.c
+> > > +++ b/kernel/bpf/tcx.c
+> > > @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
+> > >                          bpf_prog_put(tuple.prog);
+> > >                  tcx_skeys_dec(ingress);
+> > >          }
+> > > -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
+> > > +       tcx_miniq_set_active(entry, false);
+> > 
+> > Thanks for the report. I will look into it.
+> 
+> I don't see how that may be triggered for now after Daniel's recent fix in
+> commit dc644b540a2d ("tcx: Fix splat in ingress_destroy upon
+> tcx_entry_free"). 
 
-Hi all,
+Both our regression and syzbot have this fix in the trees.
 
-After merging the hwmon-staging tree, today's linux-next build (htmldocs)
-failed like this:
 
-Sphinx parallel build error:
-docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/hwmon/hs300=
-1.rst:34: (SEVERE/4) Missing matching underline for section title overline.
+> Do you have a small reproducible case? Thanks.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-temp1_input:        temperature input
-humidity1_input:    humidity input
+Unfortunately no.
 
-Caused by commit
+Thanks
 
-  33faa6fcc93f ("hwmon: Add driver for Renesas HS3001")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LiiUbrF.rVvy2LyhhCAMOna
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTCA4gACgkQAVBC80lX
-0Gy5lAf+M2d/2c4Q+aBvZXW+NcLAOkxBHc4c8JrAOcRdzY75UqaVfCWCTH0k8hzC
-TPH9YUw8cpCFQEXPrYWhfRiPmg2e/ASAk9Vp/LjTuiqAtMhH8TiMsKVysHCIBJCV
-p00r5axOrC+Fwo0hZW8uSMpBlmqmj//pJPlut58uHv45BYYODPhUELXkonmlJL+h
-tGTIgFVpE04grcsucDQzAbuyDPquGYLfb1Uho/M3PDAU6biC+FacWXXYGOgE2OaM
-dP1efeT8NXqe9szDTQavWTEjIwQsN0UjyyUmwPcZUQ7JiXTtAvoiEUpktnQ1fW7s
-ZHU1ycE30B14uHdnLnATY5kCPPtgUQ==
-=Pxxk
------END PGP SIGNATURE-----
-
---Sig_/LiiUbrF.rVvy2LyhhCAMOna--
+> 
+> > 
+> > >          tcx_entry_free(entry);
+> > >   }
+> > > 
+> > 
+> > 
+> 
