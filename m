@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CF4764349
+	by mail.lfdr.de (Postfix) with ESMTP id BE37776434A
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbjG0BQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 21:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
+        id S231297AbjG0BQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjG0BQW (ORCPT
+        with ESMTP id S230072AbjG0BQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 26 Jul 2023 21:16:22 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D07A2709
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A168C270D
         for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:16:21 -0700 (PDT)
-Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RBCSH3h7lztRk7;
-        Thu, 27 Jul 2023 09:13:03 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBCS81PHgzNmcJ;
+        Thu, 27 Jul 2023 09:12:56 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 09:16:17 +0800
+ 15.1.2507.27; Thu, 27 Jul 2023 09:16:18 +0800
 From:   Peng Zhang <zhangpeng362@huawei.com>
 To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
 CC:     <glider@google.com>, <elver@google.com>, <dvyukov@google.com>,
         <kasan-dev@googlegroups.com>, <akpm@linux-foundation.org>,
         <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>,
         ZhangPeng <zhangpeng362@huawei.com>
-Subject: [PATCH 0/3] minor cleanups for kmsan
-Date:   Thu, 27 Jul 2023 09:16:09 +0800
-Message-ID: <20230727011612.2721843-1-zhangpeng362@huawei.com>
+Subject: [PATCH 1/3] mm: kmsan: use helper function page_size()
+Date:   Thu, 27 Jul 2023 09:16:10 +0800
+Message-ID: <20230727011612.2721843-2-zhangpeng362@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230727011612.2721843-1-zhangpeng362@huawei.com>
+References: <20230727011612.2721843-1-zhangpeng362@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -50,18 +52,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: ZhangPeng <zhangpeng362@huawei.com>
 
-Use helper function and macros to improve code readability. No
-functional modification involved.
+Use function page_size() to improve code readability. No functional
+modification involved.
 
-ZhangPeng (3):
-  mm: kmsan: use helper function page_size()
-  mm: kmsan: use helper macro offset_in_page()
-  mm: kmsan: use helper macros PAGE_ALIGN and PAGE_ALIGN_DOWN
+Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+---
+ mm/kmsan/hooks.c  | 2 +-
+ mm/kmsan/shadow.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
- mm/kmsan/hooks.c  | 4 ++--
- mm/kmsan/shadow.c | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
+index ec0da72e65aa..4e3c3e60ba97 100644
+--- a/mm/kmsan/hooks.c
++++ b/mm/kmsan/hooks.c
+@@ -117,7 +117,7 @@ void kmsan_kfree_large(const void *ptr)
+ 	page = virt_to_head_page((void *)ptr);
+ 	KMSAN_WARN_ON(ptr != page_address(page));
+ 	kmsan_internal_poison_memory((void *)ptr,
+-				     PAGE_SIZE << compound_order(page),
++				     page_size(page),
+ 				     GFP_KERNEL,
+ 				     KMSAN_POISON_CHECK | KMSAN_POISON_FREE);
+ 	kmsan_leave_runtime();
+diff --git a/mm/kmsan/shadow.c b/mm/kmsan/shadow.c
+index b8bb95eea5e3..c7de991f6d7f 100644
+--- a/mm/kmsan/shadow.c
++++ b/mm/kmsan/shadow.c
+@@ -210,7 +210,7 @@ void kmsan_free_page(struct page *page, unsigned int order)
+ 		return;
+ 	kmsan_enter_runtime();
+ 	kmsan_internal_poison_memory(page_address(page),
+-				     PAGE_SIZE << compound_order(page),
++				     page_size(page),
+ 				     GFP_KERNEL,
+ 				     KMSAN_POISON_CHECK | KMSAN_POISON_FREE);
+ 	kmsan_leave_runtime();
 -- 
 2.25.1
 
