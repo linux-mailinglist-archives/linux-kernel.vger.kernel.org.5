@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2940A765FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8B3765FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbjG0WqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        id S232888AbjG0WrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjG0WqQ (ORCPT
+        with ESMTP id S229804AbjG0WrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:46:16 -0400
+        Thu, 27 Jul 2023 18:47:15 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58881BC3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:46:15 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57320c10635so14862037b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:46:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911DF1BC1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:47:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583f048985bso15006157b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690497975; x=1691102775;
+        d=google.com; s=20221208; t=1690498034; x=1691102834;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=+xSxR3hp/I+0TJm3Gw1q3yDgLZR8du1mEjkS4CS9C3Y=;
-        b=3p4mB6hS4bB4DjFvuA8AjBwm5q5y+9Rzo3bKtgHjsDBsRvfkB/zxRokoM6g5pNE/r/
-         ZnvKnqADVXicY1zIdf1mIprFzlLZImIXH/CI0gtSf2ESS1Z/gZYWL+ArRYrb1YIZUMSD
-         mqlsU25BuAOrvimQaJpZ08nOy4tHf6aQQSFHSU/YU6HpRljTxIg5nDzc51mMJc3On4pJ
-         64Vx2T9bnQutSKVxTtf0+xyW6SO/QUumDNILCURJWyNR1tewKdbLlTqGU9Cju7temypD
-         L90tLrBo5GwqkwwwM0PC2+/H8f8qPtaM/j9HpULrmpfBJfIF9O2PBwZxWbEpTb/MOFCA
-         2aXQ==
+        bh=h8M17W+SY6LNnIrBQCPmXoDqQ4N8XZNCU3T7YHTRw88=;
+        b=qKt37uGq/wscmlYr8MsZg//pXb6RySyaO4y6NJeuPda08KKiBjtJBS67P14T6qV1M0
+         LL9mjLjQYaJiLnSUF4EWtgT2q06OnX5y+YpaxLHO6f+6a3EIbFNrTc+7RB4U+ZiuyvVa
+         wVuGmAuWeRbHjs/5JgVP2QOlnsY5lyobE6B9bss/BiV7uNJCKRAb8KCsQodxtcNumAeV
+         tfOwogzv3MOn84SrebCIma7DNohFZJb5l213YxgBfudwFCoGEAXHH/L6snpDUdyijney
+         6+Vc/w4tJvqI9+iRC6+Sw/3tZ8W5zMhUWDBE49fQTskT0ezoLHQgsg5p62+Ls2Lm9eBP
+         fV9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690497975; x=1691102775;
+        d=1e100.net; s=20221208; t=1690498034; x=1691102834;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+xSxR3hp/I+0TJm3Gw1q3yDgLZR8du1mEjkS4CS9C3Y=;
-        b=ioLq1RxQOf2HuZ7NRE9ynIoPx5P+iU9jNO0x9EjTsFcqgqM7ogzEMM5pPyEWVo9bVr
-         BLPZGa9AANP3ZC2jZ7FgWAOjNfS0HOXvcDTpjaqQvbBFRWQB/Y1yXy2z7GcA1pe3I0Kx
-         IUkqFsxulhQWb/VEhJ/qfC9tzXWz+7TCgWQ28jAjwD5bVAOsuFxmZ4O/Zgr01R7yWEgA
-         BuQ9rR1c8gOw5UGKUbhmrZCCKVM0L465u1fdQKQl02Y1AuOuD0rUhpOBZvdPDqpLVBxg
-         n0lnMOSwX4erQ5ifL0CpUlu3HPGJ50MSfybNSnrKywID8pYJriAD2E8xSuIKOGgPPTVI
-         otDg==
-X-Gm-Message-State: ABy/qLYh6c5mUFmAxfXi1S5A/xLmaBIt6geUv1KEzlDnRrQtPXtqNhdt
-        LHlwdv9Qj4cf6jZfhonvxVfbwbfolblUcPByZA==
-X-Google-Smtp-Source: APBJJlFtIfNRWhxKI9ReVlZVrIdSJVbc68FHmf1QrwaTAqeS7qwdelvTuwenzmSR6B4vHHVO4ceb+3rUp6w8zZjxvA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:c58a:0:b0:d07:9d79:881c with SMTP
- id v132-20020a25c58a000000b00d079d79881cmr4ybe.11.1690497974749; Thu, 27 Jul
- 2023 15:46:14 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 22:46:13 +0000
+        bh=h8M17W+SY6LNnIrBQCPmXoDqQ4N8XZNCU3T7YHTRw88=;
+        b=XtlUZ5LdxHjItjGAiEt+7IWwcfhmMR4lYDo3cYPcSGJ+N3ZAQOHwK+9Lr7MyyBzaxf
+         kf0U/z3TTtCeXOXg8JkImgmcFfD7BMfnkpPvvhrumaBw++rmlSaM5yWvFdW+birmhBqz
+         gSr7yAjdpzcNR+UgYZ8EsYis6Akkn4a4t/OygbaZCTNSLBQyh7zm490sk3QgPpjWXXts
+         HFT+FG7HJM5VLh3RUWcM8PwPuRP4W+rMRNK/vyPw7/1BxaAZSGdNi9OfNTrZwRqamtZm
+         1cOZ9HnIQDWS8sjpTqNN4XwXlhQLos5Fvlk7NJeIQp+Be6uopuDcVw9oZC6FyCw7AYwC
+         kCGQ==
+X-Gm-Message-State: ABy/qLYzZ/BTXWmkHw6LO9/wjV7f4IrYzfMVXF9+mAoO3LIfIfKNwnOc
+        MMuoZSEc3xF2CVLOv9FqAZUVHY/nDgoctJH2z64=
+X-Google-Smtp-Source: APBJJlFGnVWRLJUkrTVrUmig5mpkfOptKBJYmMCfyEC709K8nbUaHxXMj+WKdKG5zBlRCFhHoXkA4S2rhsmnF/EMJIQ=
+X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:659f:4728:cfbb:8cc3])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:690c:721:b0:573:8316:8d04 with
+ SMTP id bt1-20020a05690c072100b0057383168d04mr212ywb.4.1690498033839; Thu, 27
+ Jul 2023 15:47:13 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 15:47:09 -0700
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIALTzwmQC/x2MywqAIBAAfyX2nGD2kPqV6GDrVnvRcCkC6d+TL
- gNzmMkglJgEpipDopuFYyjS1BXg4cJOin1xMNq02hqrJF7BF6LC6AlFjZ3dcB37dnAWSnYm2vj 5l/Pyvh9K+aHLYgAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690497974; l=2418;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=bZgCYDFF558H9+uGABOoX1/6Falrihq1b+s55TkP1Rc=; b=RXhH5b4I6Sx8dSLpV7dWRHWahWzUnLIfmT5bv+HNz20DE0PdQ7UaHD8k8TSZLqjCeBJjEBK26
- QNpKX4HQNG5ANdl4Q781Tn39kh8DTU+nTEgSo6JdYZ3svnd/iWTQW6q
-X-Mailer: b4 0.12.3
-Message-ID: <20230727-sound-soc-codecs-v1-1-562fa2836bf4@google.com>
-Subject: [PATCH] ASoC: 88pm860x: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
+X-B4-Tracking: v=1; b=H4sIAOzzwmQC/x2MQQqAIBAAvxJ7TjAlwr4SHdS2XCgLpQjEv7d0n
+ GGYAhkTYYaxKZDwoUxnZOjaBnywcUNBCzMoqbQc1CDssWzXLYz2Enstlek74NjZjMIlG33gPN7 7zvJKuNL736e51g9FP1hgbQAAAA==
+X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690498032; l=3429;
+ i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
+ bh=h5xjymXwHB0lf01RIpHtYLR4vTj4v+sUfx87gYKkB7Y=; b=N2uJPCF50jFFN4PLKe1RA7MLTy5RlIkmUWI7lMBscLyrcTCLI3tbqj7jsQDczYGb8rXqmc7m4
+ fVVfKltnA+lByM/BerwonDXLZydewq7ck6QpVuol9QtpGTy2Znh+q3q
+X-Mailer: b4 0.12.2
+Message-ID: <20230727-amdgpu-v1-1-a95690e75388@google.com>
+Subject: [PATCH] drm: fix indirect goto into statement expression UB
+From:   ndesaulniers@google.com
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -76,68 +80,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+A new diagnostic in clang-17 now produces the following build error:
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ always the case for `strncpy`!
+drivers/gpu/drm/tests/drm_exec_test.c:41:3: error: cannot jump from this
+indirect goto statement to one of its possible targets
+   41 |                 drm_exec_retry_on_contention(&exec);
+      |                 ^
+include/drm/drm_exec.h:96:4: note: expanded from macro
+'drm_exec_retry_on_contention'
+   96 |                         goto *__drm_exec_retry_ptr;
+      |                         ^
+drivers/gpu/drm/tests/drm_exec_test.c:39:2: note: possible target of
+indirect goto statement
+   39 |         drm_exec_until_all_locked(&exec) {
+      |         ^
+include/drm/drm_exec.h:79:33: note: expanded from macro
+'drm_exec_until_all_locked'
+   79 |                 __label__ __drm_exec_retry;
+drivers/gpu/drm/tests/drm_exec_test.c:39:2: note: jump enters a
+statement expression
 
-In this case, though, there was care taken to ensure that the
-destination buffer would be NUL-terminated. The destination buffer is
-zero-initialized and each `pm860x->name[i]` has a size of
-`MAX_NAME_LENGTH + 1`. This means that there is unlikely to be a bug
-here.
+The GCC manually currently states that:
+>> Jumping into a statement expression with a computed goto (see Labels
+>> as Values) has undefined behavior.
 
-However, in an attempt to eliminate the usage of the `strncpy` API as
-well as disambiguate implementations, replacements such as: `strscpy`,
-`strscpy_pad`, `strtomem` and `strtomem_pad` should be preferred.
+So the diagnostic appears correct, even if codegen happened to produce
+working code.
 
-We are able to eliminate the need for `len + 1` since `strscpy`
-guarantees NUL-termination for its destination buffer as per its
-implementation [3]:
+Looking closer at this code, while the original combination of statement
+expression, local label, and computed/indirect goto GNU C expressions
+were clever, a simple while loop and continue block might have sufficed.
 
-|       /* Hit buffer length without finding a NUL; force NUL-termination. */
-|       if (res)
-| 	        dest[res-1] = '\0';
+This approach might not work as expected if drm_exec_until_all_locked
+"loops" can be nested, but that doesn't appear to be an existing use
+case in the codebase.
 
-[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-[3]: https://elixir.bootlin.com/linux/v6.3/source/lib/string.c#L183
-
-Link: https://github.com/KSPP/linux/issues/90
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Fixes: commit 09593216bff1 ("drm: execution context for GEM buffers v7")
+Link: https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
+Link: https://github.com/ClangBuiltLinux/linux/issues/1890
+Link: https://github.com/llvm/llvm-project/commit/20219106060208f0c2f5d096eb3aed7b712f5067
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- sound/soc/codecs/88pm860x-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/drm/drm_exec.h | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 3574c68e0dda..d99b674d574b 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -143,7 +143,7 @@ struct pm860x_priv {
- 	struct pm860x_det	det;
+diff --git a/include/drm/drm_exec.h b/include/drm/drm_exec.h
+index 73205afec162..393ac022ed3a 100644
+--- a/include/drm/drm_exec.h
++++ b/include/drm/drm_exec.h
+@@ -70,18 +70,9 @@ struct drm_exec {
+  * Core functionality of the drm_exec object. Loops until all GEM objects are
+  * locked and no more contention exists. At the beginning of the loop it is
+  * guaranteed that no GEM object is locked.
+- *
+- * Since labels can't be defined local to the loops body we use a jump pointer
+- * to make sure that the retry is only used from within the loops body.
+  */
+ #define drm_exec_until_all_locked(exec)				\
+-	for (void *__drm_exec_retry_ptr; ({			\
+-		__label__ __drm_exec_retry;			\
+-__drm_exec_retry:						\
+-		__drm_exec_retry_ptr = &&__drm_exec_retry;	\
+-		(void)__drm_exec_retry_ptr;			\
+-		drm_exec_cleanup(exec);				\
+-	});)
++	while(drm_exec_cleanup(exec))
  
- 	int			irq[4];
--	unsigned char		name[4][MAX_NAME_LEN+1];
-+	unsigned char		name[4][MAX_NAME_LEN];
- };
+ /**
+  * drm_exec_retry_on_contention - restart the loop to grap all locks
+@@ -93,7 +84,7 @@ __drm_exec_retry:						\
+ #define drm_exec_retry_on_contention(exec)			\
+ 	do {							\
+ 		if (unlikely(drm_exec_is_contended(exec)))	\
+-			goto *__drm_exec_retry_ptr;		\
++			continue;				\
+ 	} while (0)
  
- /* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
-@@ -1373,7 +1373,7 @@ static int pm860x_codec_probe(struct platform_device *pdev)
- 			return -EINVAL;
- 		}
- 		pm860x->irq[i] = res->start + chip->irq_base;
--		strncpy(pm860x->name[i], res->name, MAX_NAME_LEN);
-+		strscpy(pm860x->name[i], res->name, MAX_NAME_LEN);
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
+ /**
 
 ---
-base-commit: 57012c57536f8814dec92e74197ee96c3498d24e
-change-id: 20230727-sound-soc-codecs-947fcb9536a7
+base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+change-id: 20230727-amdgpu-93c0e5302951
 
 Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+Nick Desaulniers <ndesaulniers@google.com>
 
