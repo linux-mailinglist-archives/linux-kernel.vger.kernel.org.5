@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F05D07658BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B9D7658C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbjG0QcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        id S229590AbjG0Qcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjG0Qbw (ORCPT
+        with ESMTP id S230122AbjG0Qcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:31:52 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532073AA3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:31:22 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so2940241fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690475460; x=1691080260;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yW+tb6QFhlbLr0bi96ZSf05YZeaSfV3/8CB+PE4cSW0=;
-        b=jET9iRXPww1h2fUwvAPI4hd2QprWiYQGOs/Lw39zD+h5jhpak6vpe5dqMBqIpDhmTS
-         QuE1GE/YW2r9eKew2hzQ9Zc5TmafwIpNe1Ty+r9ZSZUk1n/k45R2JCKS2H0I14CL02HL
-         vFzferwT7eKxTQaUdfhkV6Gsjpblv0dm5b6O5MQ7bxx3JseG2oL8z1IsfrUSvnx3HAY4
-         ZzaFZYjup0Is0ySxU+pzMSDP/+ZmiYolAfz4BgfYUNGU6juMZwDCGHXfRL5kQw2j8jKX
-         ZHAjDmSmvXkQzZI1JIQG4DKVMiaRpa9g7CQRdgU1EW2UCor7SgSscdRObUbq/Zyn5IcH
-         nZEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690475460; x=1691080260;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yW+tb6QFhlbLr0bi96ZSf05YZeaSfV3/8CB+PE4cSW0=;
-        b=F3KEu2dkNOeOB1D4ErfYTH7BcLaVj3NJoZvXTGQQPf22RjZwYdYZYB/teaRtGaZEbR
-         IhIJzYrCSvwThYcWTq97eBxrT5pSHuEFAo/w6COI1nF+IQflDp0v84eOPxXUtkEXGI+1
-         KF3D8qIQq6xRmC0N4iRHxnwz6UnNi/XQV/OG/d+MUbqd5uUJAF4/4SAlI7T06DKwJW6F
-         XZXleMiofa+Xs/QzGq5zFp0wn8IscooJ+8u7Q2/oEjqeCORfnbbGySZ93CxvYOR3/wFz
-         S3cr83oOa/mNLZk2eMCDeGQuAs7PZFQb28T3ictDew8NB+SoUDuybDDA7kOlA0d5hiUJ
-         GA+g==
-X-Gm-Message-State: ABy/qLYgm98wnBbfl6RSB4+NAkmr9QZhC7UOtddqcevz7JaV/O9Yy+6t
-        dIfH9JUrrOTxmjxbmhJ3FrfI7g==
-X-Google-Smtp-Source: APBJJlGshqd84PTlVeLYvCfWWjBYjaC7Kh9xR7rMineoibtJfIWFBE3MlYSGFDd+a2fyhsjv0YIp8g==
-X-Received: by 2002:a2e:8490:0:b0:2b6:9afe:191c with SMTP id b16-20020a2e8490000000b002b69afe191cmr2179709ljh.7.1690475459666;
-        Thu, 27 Jul 2023 09:30:59 -0700 (PDT)
-Received: from [192.168.1.101] (abxi99.neoplus.adsl.tpnet.pl. [83.9.2.99])
-        by smtp.gmail.com with ESMTPSA id n6-20020a2e8786000000b002b97fe43238sm431551lji.19.2023.07.27.09.30.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 09:30:59 -0700 (PDT)
-Message-ID: <d2863160-c63a-62ec-2231-4ead640978aa@linaro.org>
-Date:   Thu, 27 Jul 2023 18:30:57 +0200
+        Thu, 27 Jul 2023 12:32:43 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F31830FC;
+        Thu, 27 Jul 2023 09:32:15 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R7Ef0G017437;
+        Thu, 27 Jul 2023 09:31:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=XrrCBVavAAVBSZibFdCAE6bVf3Y4bPd72+D1hPhtusE=;
+ b=Gw2s/KRWm2dbtvNxST4BCqZnGT6VaLZlt2ldRi7GG0ZeBEWyo7qnCw33u0nwHWbErd2y
+ b5BbX0JJ0BIAbSjfKovxuMS8mbluDW2T5qWEUC5/0hBmqp1SLBJVmi98VnXq+TxkzpRM
+ 2rGOVX1RVF4eBn7CxePGGZdvAQaFD3k0/3r/cmsAsnkYTXslh8lsYsrnU8Bzam5Mb89E
+ wdZbrFCkim8Q76ByDf9ouK/J92vYY5v2G6LEv+lXMjnSdgEkZsVQWVape5tUNWGfDIdS
+ lURBcFmkuX83Di3RoNSdbsO39DbhrvbnP+PO3lms/huXTILzL1pbzsecCo4PLfbfEl2G eg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s3m13sybe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 09:31:11 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 27 Jul
+ 2023 09:31:10 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Thu, 27 Jul 2023 09:31:10 -0700
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id C79CD3F7041;
+        Thu, 27 Jul 2023 09:31:05 -0700 (PDT)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>,
+        <dan.carpenter@linaro.org>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH] octeontx2-af: Initialize 'cntr_val' to fix uninitialized symbol error
+Date:   Thu, 27 Jul 2023 22:01:01 +0530
+Message-ID: <20230727163101.2793453-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom: ipq8064: move keys and leds out of soc
- node
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230726210152.273161-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230726210152.273161-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 89wATJtry_RsKwgoJrzhALUchkza6cEV
+X-Proofpoint-ORIG-GUID: 89wATJtry_RsKwgoJrzhALUchkza6cEV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.2023 23:01, Krzysztof Kozlowski wrote:
-> GPIO keys and LEDs are not part of the SoC, so move them to top-level to
-> fix dtbs_check warnings like:
-> 
->   qcom-ipq8064-rb3011.dtb: soc: gpio-keys: {'compatible': ['gpio-keys'], ... should not be valid under {'type': 'object'}
->         from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c:860
+otx2_tc_update_mcam_table_del_req()
+error: uninitialized symbol 'cntr_val'.
 
-Konrad
+Fixes: ec87f05402f5 ("octeontx2-af: Install TC filter rules in hardware based on priority")
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index 1e6fc23eca4f..0915a0121316 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -841,7 +841,7 @@ static int otx2_tc_update_mcam_table_del_req(struct otx2_nic *nic,
+ 	struct list_head *pos, *n;
+ 	struct otx2_tc_flow *tmp;
+ 	int i = 0, index = 0;
+-	u16 cntr_val;
++	u16 cntr_val = 0;
+ 
+ 	/* Find and delete the entry from the list and re-install
+ 	 * all the entries from beginning to the index of the
+@@ -880,7 +880,7 @@ static int otx2_tc_update_mcam_table_add_req(struct otx2_nic *nic,
+ 	int mcam_idx = flow_cfg->max_flows - flow_cfg->nr_flows - 1;
+ 	struct otx2_tc_flow *tmp;
+ 	int list_idx, i;
+-	u16 cntr_val;
++	u16 cntr_val = 0;
+ 
+ 	/* Find the index of the entry(list_idx) whose priority
+ 	 * is greater than the new entry and re-install all
+-- 
+2.25.1
+
