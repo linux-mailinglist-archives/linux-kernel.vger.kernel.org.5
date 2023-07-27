@@ -2,80 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C15AE765944
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86CE765948
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbjG0Qx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        id S232441AbjG0Qx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbjG0QxZ (ORCPT
+        with ESMTP id S231289AbjG0Qx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:53:25 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44F530ED;
-        Thu, 27 Jul 2023 09:53:20 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so1558745a12.2;
-        Thu, 27 Jul 2023 09:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690476799; x=1691081599;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lTwQIB4IHOiPoYJY4vojAM9a3MV+iKb7V2dGlSdgHxw=;
-        b=lI+AusB1AaWv/rUwEtomngUgmeaCNMA23w3lJGt8P3qhWbe7l1112+dgzS1rVShHAN
-         dIVSqBy5yiOwE8epqwToLeKP9uW81zQy+SpTxxYFVoHryXvPU8+RbAAHiTiLHQlfpNN4
-         gbPwI/wwnZl0Lh15vioPDJ/9ZLQ1Xw8Uz1MZTcHJZQCm/YGMVoBF6M+bzSkntaAtcTRa
-         sPJVTtORWsiwJv0os6HFzQiCEnomn5cYhoCIesiy0F1hyC6Dx38VrNLYWgSfgZLKAtgh
-         I6cd8wRd9NCwh9ysBMJveHWAYgeU9yczgnvF1Hzk8RShl5zZB3qgCS2EHzJHkdNgg8kO
-         RZtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690476799; x=1691081599;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lTwQIB4IHOiPoYJY4vojAM9a3MV+iKb7V2dGlSdgHxw=;
-        b=Sw2JEdMHiQB2shMu3NWrw5pIhHA5NvYn2I0FyZg3YbEOXO2jNi/8FO7YSUnWDQi+FV
-         6JepH5BgnewvByfnEEFFXPCrlz08am2e+F4/Sen3tnf3Yl7c2ylM0yHkyjz94yGIMkW9
-         b2LSAjDmlqAHgDoaOCfT0FhsDviOWzchuyePHaOVEpH5W20JYgRSPwWE4s/e5uwp/Gsw
-         RWO1xsj3x/PJiwgm4QzXgXBz5rz+itdo0QrXEoR+jqlkKH46YHxlsdw2KmPSEyyT25w8
-         9fm1oLPKPNB/MWvLhZ8RWNcNNO7brAdOjfxW3U/sno3nxe5VWfdR3IemfVP78OxO3c0e
-         iWqw==
-X-Gm-Message-State: ABy/qLb1uXM+bRHcWAiSRGXVbM20Y9eA7h4OTBEU2jKEH8s1sfBA8Y3x
-        YwOFqET8eIrkKjPWrwstMRo=
-X-Google-Smtp-Source: APBJJlHZlSD//sZi4Yqmub9w5kwyDbnGQTGIeGaiZDIEWz7z51ZYCOPYl43sQuHnSGiYfY//1+v0lw==
-X-Received: by 2002:aa7:d4d0:0:b0:522:79e8:e530 with SMTP id t16-20020aa7d4d0000000b0052279e8e530mr2321644edr.16.1690476799063;
-        Thu, 27 Jul 2023 09:53:19 -0700 (PDT)
-Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05640206cd00b005223fb6d511sm832093edy.28.2023.07.27.09.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 09:53:18 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 18:53:16 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Benjamin Bara <bbara93@gmail.com>
-Cc:     Lee Jones <lee@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Robin Gong <yibin.gong@nxp.com>,
-        Jerome Neanne <jneanne@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>
-Subject: Re: [PATCH 3/6] soc/tegra: pmc: Specify restart mode
-Message-ID: <ZMKg_ONgb8GokxgU@orome>
-References: <20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com>
- <20230727-pca9450-reboot-v1-3-c8edb27bf404@skidata.com>
+        Thu, 27 Jul 2023 12:53:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55D7B9E;
+        Thu, 27 Jul 2023 09:53:55 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38C2AD75;
+        Thu, 27 Jul 2023 09:54:38 -0700 (PDT)
+Received: from [10.32.102.67] (e110479.arm.com [10.32.102.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02A833F5A1;
+        Thu, 27 Jul 2023 09:53:52 -0700 (PDT)
+Message-ID: <23f220fd-918e-0e3a-764c-14d11fdf8f4f@arm.com>
+Date:   Thu, 27 Jul 2023 17:53:47 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="T57b0I5ES1wJOef9"
-Content-Disposition: inline
-In-Reply-To: <20230727-pca9450-reboot-v1-3-c8edb27bf404@skidata.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC][PATCH] rtc: sunxi: use external 32k oscillator if provided
+Content-Language: en-US
+To:     Mans Rullgard <mans@mansr.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230727150156.29691-1-mans@mansr.com>
+From:   Andre Przywara <andre.przywara@arm.com>
+In-Reply-To: <20230727150156.29691-1-mans@mansr.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,42 +50,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mans,
 
---T57b0I5ES1wJOef9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jul 27, 2023 at 05:26:38PM +0200, Benjamin Bara wrote:
-> From: Benjamin Bara <benjamin.bara@skidata.com>
->=20
-> Specify the implemented restart handler as a warm one.
->=20
-> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+On 27/07/2023 16:01, Mans Rullgard wrote:
+> Set the OSC32K_SRC_SEL bit in the LOSC control register if a clock is
+> specified in the devicetree.
+> 
+> Signed-off-by: Mans Rullgard <mans@mansr.com>
 > ---
->  drivers/soc/tegra/pmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The newer sun6i rtc driver is a proper clk provider with parent
+> selection.  Doing the same thing in this driver would be difficult
+> while staying compatible with existing devicetrees.  For that reason,
+> this simpler approach seems reasonable.
+> ---
+>   drivers/rtc/rtc-sunxi.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-sunxi.c b/drivers/rtc/rtc-sunxi.c
+> index 5d019e3a835a..4f1053eab778 100644
+> --- a/drivers/rtc/rtc-sunxi.c
+> +++ b/drivers/rtc/rtc-sunxi.c
+> @@ -5,6 +5,7 @@
+>    * Copyright (c) 2013, Carlo Caione <carlo.caione@gmail.com>
+>    */
+>   
+> +#include <linux/clk.h>
+>   #include <linux/delay.h>
+>   #include <linux/err.h>
+>   #include <linux/fs.h>
+> @@ -21,8 +22,10 @@
+>   #include <linux/types.h>
+>   
+>   #define SUNXI_LOSC_CTRL				0x0000
+> +#define SUNXI_LOSC_CTRL_KEY			(0x16aa << 16)
+>   #define SUNXI_LOSC_CTRL_RTC_HMS_ACC		BIT(8)
+>   #define SUNXI_LOSC_CTRL_RTC_YMD_ACC		BIT(7)
+> +#define SUNXI_LOSC_CTRL_OSC32K_SRC_SEL		BIT(0)
+>   
+>   #define SUNXI_RTC_YMD				0x0004
+>   
+> @@ -422,6 +425,7 @@ MODULE_DEVICE_TABLE(of, sunxi_rtc_dt_ids);
+>   static int sunxi_rtc_probe(struct platform_device *pdev)
+>   {
+>   	struct sunxi_rtc_dev *chip;
+> +	struct clk *extclk;
+>   	int ret;
+>   
+>   	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
+> @@ -455,6 +459,14 @@ static int sunxi_rtc_probe(struct platform_device *pdev)
+>   		return -ENODEV;
+>   	}
+>   
+> +	/* use external oscillator if present */
+> +	extclk = devm_clk_get_optional_enabled(&pdev->dev, NULL);
+> +	if (IS_ERR(extclk))
+> +		return PTR_ERR(extclk);
+> +	if (extclk)
+> +		writel(SUNXI_LOSC_CTRL_KEY | SUNXI_LOSC_CTRL_OSC32K_SRC_SEL,
+> +		       chip->base + SUNXI_LOSC_CTRL);
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+This should be a read-modify-write operation, since we don't want to 
+disturb other bits in this register.
 
---T57b0I5ES1wJOef9
-Content-Type: application/pgp-signature; name="signature.asc"
+In general this looks OK to me, but would need to be documented in the 
+bindings docs, to allow an optional clocks property.
 
------BEGIN PGP SIGNATURE-----
+Cheers,
+Andre
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmTCoPwACgkQ3SOs138+
-s6Glsw//e8DvHgzuym/bjCuZStCD5jcg6Guk1u18gsSrJ+lOk0jCn7/RIffJmNzW
-2C6ITO9D6jmW/XqWXo+VUgk/g/CZ3KygGh/Rz1BSptw0VTYUNIwMQgmqkmU8mxsu
-xUmU0F2nA6NUqEXvJgrzYpW5mlsqRG9Mh7XqoL2CIzUQKnMafcHYpOvIEzDZ4V+5
-2PWSzkkESMIb2MtwnLmQUNy+6XftwkrINrCh0b93cSEJ7OkiWZ7m1J67oYUXVFwU
-6+156zr/CrG86g/mAHi1IOCn9j2oZ2BtcTQT53gARyVHHrnODrNTR7VxR6S3cTPl
-J2TsWMxeaNpecJ/2v+kEvqcMlpEVKsTGrrA2UzGinZAbzP2SrH8cy0Vi8MYOiWda
-iTXbUwvrznjg4Fj5vkpCqUosS2oEgbXEvbadqV77WWxbwENbHzDAMZZ88F88+vk5
-b8fE1kmP1qvsvPQ+pJSZajtvxWqZRfOD7cVL5UCjmPas6m3XE4iZBNRYJYYRdpFL
-mvttd3rC4iQOXFYeq6c2BvggP5Sy2I776hTI69nBf9EWBhP43MxW6B+KGzYcNivq
-9YqbNGpZU8Y+qr9fmxtFhc4i4f0hC9HkTWxwgEUddf3ssmCSh9ysTXuGi62yLWEM
-BsJNMaZkO2LDn/NFEULpGhXd3zmFF60L2CfoYJoxF46gME54TDE=
-=Zaii
------END PGP SIGNATURE-----
-
---T57b0I5ES1wJOef9--
+> +
+>   	/* clear the alarm count value */
+>   	writel(0, chip->base + SUNXI_ALRM_DHMS);
+>   
