@@ -2,291 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DFE765484
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D7976548C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231483AbjG0NGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        id S232227AbjG0NIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjG0NGL (ORCPT
+        with ESMTP id S231817AbjG0NIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:06:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E43F2113
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:06:09 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F0577660713C;
-        Thu, 27 Jul 2023 14:06:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690463166;
-        bh=nIcE3OJoErKYJqW3Zt4z41Rw2r69rJ5mBgVnBs2oAAI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZfH3Abayj+SGW0mhS5XHz1ccb4ljxZJTvq6EtkyrcIWZrt+fDguM16ydkFL+ekzpp
-         gBtRCpPXb73ZXo0o41A3S6x+dgdIJx5xp/oIOcxkuLO8tW3HntEuq7Y1leZMvIMQSq
-         P633yZd5qj1cmUyYOk2yRC55Hkimy7DBCcWKmEecj1/NttH0Skjuqg6uZDR6w5wsWT
-         A/wdDIi1rD8OxvJR9hAFmCPcfc6iO4fiF0ZDVibqHiC9Y2RV60PJy/rMVTc1kEmAz+
-         4VDJXI58TrlIZkEjdHQxQP8D2ZFX6dMbgyJf+NmYYFwbxfHarqGk8vf4v4/UFHyjKe
-         7bPagrwjB650g==
-Message-ID: <8b9769f3-8a7c-3607-ca9a-09443cfbc9d9@collabora.com>
-Date:   Thu, 27 Jul 2023 15:06:03 +0200
+        Thu, 27 Jul 2023 09:08:40 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386251FC4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:08:39 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so13763041fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690463317; x=1691068117;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6Kd6oHs2QTvmJWiIALNrAWDoU2wpAabwv5dblMxirYg=;
+        b=b/LUujK6N3vuRoT9JKNkv6gdi3vpQ5M1wz+e0dNIimg3cqTFiKh0d2bgSJGE+8Lhqt
+         wrzPDBjNIz0DLOaVyAwk8gNx7jkdHDxEcnlsaDi/JKVflzQjbivUUB3jZjhFtS7O8rcN
+         mU+mB941DXbJXBtKOaf8PzO+zFUXABESQg9BAJgknQK59pJndUqdOAcba/z7BqwDB4GE
+         AOUIQ4pqHEyC58StHdRHuT6eBcAkSmhSiyG0/KKmBLHKYpiqa0gcL1B2tUGcbQNrbbTZ
+         nIugnaf2oHxMVkmeH+jnSHc69Ni1FoStwZNyD4+LgisPWOZGNcsA0vtnwSNgtB4cOVIl
+         DciQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690463317; x=1691068117;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Kd6oHs2QTvmJWiIALNrAWDoU2wpAabwv5dblMxirYg=;
+        b=aop+DkscozhT8COTiPBAArNUv7AlwgAKRpG8UiCkvKo4SNMLNTXHqDEVHvbEhAnPMW
+         nnrNQzRs4Kls+t2amTKGcxkKqlYEGNrSduKngmJSe+itCUobvdysiWh2K0uj3O2n3lln
+         fjSFELzqVf4vyMmugAaysAAxcjALjP8tRTek1XvBTmIwdnAJ/aNARFOdfszUUISlws3g
+         LMJJhWS5T3AJmajdzw6jx2QrjAmc3VnLB7qJPSXcmNJC32CInVNCks4bM90DwMcEegwO
+         ZoEHn14+Ad+rZuz9ehM1rFfNi3ucuVPfezrRQAJVdBgnrByOqFDiaYYriFJwBrTmzFfV
+         Bxfg==
+X-Gm-Message-State: ABy/qLYIszS8fNT+OHvAigE+Ks1NZHiKamtHQufKWjcgt+U5IGxrQPKA
+        qnSRU/PACXjcA/Qa9xt0JgYucg==
+X-Google-Smtp-Source: APBJJlEbFhIeCLs5ShD64Ybgb1exeXf5bBbCkY/XPSqRilLDbicTEeKPQihfP95ctEtGLYti6CE2pA==
+X-Received: by 2002:a2e:8483:0:b0:2b6:cf64:7a8e with SMTP id b3-20020a2e8483000000b002b6cf647a8emr1532757ljh.19.1690463317461;
+        Thu, 27 Jul 2023 06:08:37 -0700 (PDT)
+Received: from [192.168.1.101] (abxj4.neoplus.adsl.tpnet.pl. [83.9.3.4])
+        by smtp.gmail.com with ESMTPSA id g13-20020a2e9ccd000000b002b6cba03427sm330659ljj.79.2023.07.27.06.08.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 06:08:36 -0700 (PDT)
+Message-ID: <3ba67502-1781-2abf-32dc-254796ce7621@linaro.org>
+Date:   Thu, 27 Jul 2023 15:08:35 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v6 09/11] drm/mediatek: gamma: Add support for
- 12-bit LUT and MT8195
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/6] arm64: dts: qcom: Add base SM4450 QRD DTS
 Content-Language: en-US
-To:     Alexandre Mergnat <amergnat@baylibre.com>, chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
-        kernel@collabora.com, ehristev@collabora.com,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
-References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
- <20230727094633.22505-10-angelogioacchino.delregno@collabora.com>
- <ec66e067-642e-1512-3e4b-b51065ccc75d@baylibre.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <ec66e067-642e-1512-3e4b-b51065ccc75d@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Tengfei Fan <quic_tengfan@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230727023508.18002-1-quic_tengfan@quicinc.com>
+ <20230727023508.18002-5-quic_tengfan@quicinc.com>
+ <f974f48a-05b0-530d-25a0-7ccf1b1ad113@linaro.org>
+ <518770c2-05ad-a2a2-4e73-7ceb30687614@linaro.org>
+ <ba733dbe-c44e-2199-e7f4-7152a9be065b@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ba733dbe-c44e-2199-e7f4-7152a9be065b@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 27/07/23 13:03, Alexandre Mergnat ha scritto:
-> Hi Angelo !
+On 27.07.2023 10:49, Tengfei Fan wrote:
 > 
-> On 27/07/2023 11:46, AngeloGioacchino Del Regno wrote:
->> Add support for 12-bit gamma lookup tables and introduce the first
->> user for it: MT8195.
->> While at it, also reorder the variables in mtk_gamma_set_common()
->> and rename `lut_base` to `lut0_base` to improve readability.
+> 
+> 在 7/27/2023 3:59 PM, Konrad Dybcio 写道:
+>> On 27.07.2023 08:56, Krzysztof Kozlowski wrote:
+>>> On 27/07/2023 04:35, Tengfei Fan wrote:
+>>>> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
+>>>>
+>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>> ---
+>>>>   arch/arm64/boot/dts/qcom/Makefile       |  1 +
+>>>>   arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 18 ++++++++++++++++++
+>>>>   2 files changed, 19 insertions(+)
+>>>>   create mode 100644 arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+>>>> index 337abc4ceb17..db805d0929c8 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/Makefile
+>>>> +++ b/arch/arm64/boot/dts/qcom/Makefile
+>>>> @@ -186,6 +186,7 @@ dtb-$(CONFIG_ARCH_QCOM)    += sdm850-lenovo-yoga-c630.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sdm850-samsung-w737.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sdx75-idp.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sm4250-oneplus-billie2.dtb
+>>>> +dtb-$(CONFIG_ARCH_QCOM)    += sm4450-qrd.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sm6115-fxtec-pro1x.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sm6115p-lenovo-j606f.dtb
+>>>>   dtb-$(CONFIG_ARCH_QCOM)    += sm6125-sony-xperia-seine-pdx201.dtb
+>>>> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>> new file mode 100644
+>>>> index 000000000000..04ad1dd4285a
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>> @@ -0,0 +1,18 @@
+>>>> +// SPDX-License-Identifier: BSD-3-Clause
+>>>> +/*
+>>>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>>> + */
+>>>> +
+>>>> +/dts-v1/;
+>>>> +
+>>>> +#include "sm4450.dtsi"
+>>>> +/ {
+>>>> +    model = "Qualcomm Technologies, Inc. SM4450 QRD";
+>>>> +    compatible = "qcom,sm4450-qrd", "qcom,sm4450";
+>>>> +
+>>>> +    aliases { };
+>>>> +
+>>>> +    chosen {
+>>>> +        bootargs = "console=hvc0 earlycon=hvc0 hvc_dcc.enable=1 cpuidle.off=1";
+>>>
+>>> No earlycon, no hvc.enable (there is no such parameter), no cpuidle.off
+>>> (again don't add fake stuff). So the only suitable argument is console,
+>>> but this should be actually used via stdout path, although it seems
+>>> there is no device node for such usage?
+>> hvc totally comes from Qualcomm downstream and all the Gunyah
+>> shenanigans..
 >>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 61 ++++++++++++++++++-----
->>   1 file changed, 48 insertions(+), 13 deletions(-)
+>> Tengfei, please ensure the patches are tested against linux-next
+>> with no additional changes or modules, with a clean Linux userspace
+>> (or at least a ramdisk).
 >>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c 
->> b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> index f1a0b18b6c1a..e0e2d2bdbf59 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> @@ -27,12 +27,20 @@
->>   #define DISP_GAMMA_SIZE_VSIZE                GENMASK(12, 0)
->>   #define DISP_GAMMA_BANK                0x0100
->>   #define DISP_GAMMA_BANK_BANK                GENMASK(1, 0)
->> +#define DISP_GAMMA_BANK_DATA_MODE            BIT(2)
->>   #define DISP_GAMMA_LUT                0x0700
->> +#define DISP_GAMMA_LUT1                0x0b00
-> 
-> Is this offset generic to all MTK SoC which support this driver ?
-> 
->> +/* For 10 bit LUT layout, R/G/B are in the same register */
->>   #define DISP_GAMMA_LUT_10BIT_R            GENMASK(29, 20)
->>   #define DISP_GAMMA_LUT_10BIT_G            GENMASK(19, 10)
->>   #define DISP_GAMMA_LUT_10BIT_B            GENMASK(9, 0)
->> +/* For 12 bit LUT layout, R/G are in LUT, B is in LUT1 */
-> 
-> As I understood from the application processor registers (v0.4), R/G are in LUT, B 
-> is in LUT1 for 10bit and 12bit for MT8195. Can you check please to be sure ?
-> 
+>> Konrad
+> Hi Konrad,
+> All these patches are tesed on linux-next, and get DCC console.
+> For support this test, I did a temporal for enable CONFIG_HVC_DCC(this change haven't push to upstream).
+So what you've said is that you've not tested against linux-next + this patchset.
 
-That's right, but here I'm implying that 10-bit LUT is only for older SoCs, and
-all of them have got the same register layout with one LUT register for R, G, B,
-while all the new SoCs, which have got 12-bits LUT support, have got the new
-register layout with two LUT registers (and multiple banks).
-Infact, the MT8195 SoC was added here with 12-bits LUT support only (as the LUT
-parameters extraction is easily handled by the drm_color_lut_extract() function).
+You're supposed to `git checkout linux-next/master && (pick the series
+you're sending)` and test just that. No less, no more. Preferably with
+the upstream arm64 defconfig.
 
-The alternative would've been to add two compatibles, like
-"mediatek,mt8195-disp-gamma-10bits" and "mediatek,mt8195-disp-gamma-12bits",
-or a boolean property like "mediatek,lut-12bits" which would appear literally
-everywhere starting from a certain point in time (since there's no reason to
-use 10-bits LUT on MT8195, that starts now!).
-
-Even then, consider the complication in code, where mtk_gamma_set_common()
-would have to handle:
-- 10-bits, layout A
-- 10-bits, layout B -> but fallback to layout A if this is AAL
-- 12-bits layout
-
-is_aal = !(gamma && gamma->data);
-
-for_each_bank()
-{
-	if (num_lut_banks > 1) write_num_bank();
-
-	for (i = 0; i < lut_bank_size; i++) {
-		.......
-
-		if (!lut_diff || (i % 2 == 0)) {
-			if (lut_bits == 12 || (lut_bits == 10 && layout_b)) {
-				... setup word[0],[1] ...
-			} else if (layout_b && !is_aal) {
-				...setup word[0],[1]...
-			} else {
-				...setup word[0]
-			}
-		} else {
-			 ^^^ almost repeat the same ^^^
-		}
-		writel(word[0], (...));
-		if (lut_bits == 12 || (lut_bits == 10 && layout_b) && !is_aal)
-			writel(word[i] (....));
-	}
-}
-
-probe() {
-	if (of_property_read_bool(dev->of_node, "mediatek,lut-12bits") ||
-	    data->supports_only_12bits)
-		priv->lut_bits = 12;
-	else
-		priv->lut_bits = 10;
-}
-
-...at least, that's the implementation that I would do to solve your concern,
-which isn't *too bad*, but still, a big question arises here...
-
-
-Why should we care about supporting *both* 10-bit and 12-bit Gamma LUTs on
-the *same* SoC?
-
-
-A 12-bit LUT gives us more precision and there's no penalty if we want to
-convert a 10-bit LUT to a 12-bits one, as we're simply "ignoring" the value
-of two bits per component (no expensive calculation involved)...
-
-Is there anything that I'm underestimating here?
-
-Cheers,
-Angelo
-
->> +#define DISP_GAMMA_LUT_12BIT_R            GENMASK(11, 0)
->> +#define DISP_GAMMA_LUT_12BIT_G            GENMASK(23, 12)
->> +#define DISP_GAMMA_LUT_12BIT_B            GENMASK(11, 0)
->> +
->>   #define LUT_10BIT_MASK                0x03ff
->>   #define LUT_BITS_DEFAULT            10
->>   #define LUT_SIZE_DEFAULT            512
->> @@ -83,14 +91,15 @@ unsigned int mtk_gamma_get_lut_size(struct device *dev)
->>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct 
->> drm_crtc_state *state)
->>   {
->>       struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
->> -    unsigned int i;
->> +    void __iomem *lut0_base = regs + DISP_GAMMA_LUT;
->> +    void __iomem *lut1_base = regs + DISP_GAMMA_LUT1;
->> +    u32 cfg_val, data_mode, lbank_val, word[2];
->> +    int cur_bank, num_lut_banks;
->> +    u16 lut_bank_size, lut_size;
->>       struct drm_color_lut *lut;
->> -    void __iomem *lut_base;
->> +    unsigned int i;
->>       bool lut_diff;
->> -    u16 lut_bank_size, lut_size;
->>       u8 lut_bits;
->> -    u32 cfg_val, lbank_val, word;
->> -    int cur_bank, num_lut_banks;
->>       /* If there's no gamma lut there's nothing to do here. */
->>       if (!state->gamma_lut)
->> @@ -110,14 +119,17 @@ void mtk_gamma_set_common(struct device *dev, void __iomem 
->> *regs, struct drm_crt
->>       num_lut_banks = lut_size / lut_bank_size;
->>       cfg_val = readl(regs + DISP_GAMMA_CFG);
->> -    lut_base = regs + DISP_GAMMA_LUT;
->>       lut = (struct drm_color_lut *)state->gamma_lut->data;
->> +    /* Switch to 12 bits data mode if supported */
->> +    data_mode = FIELD_PREP(DISP_GAMMA_BANK_DATA_MODE, !!(lut_bits == 12));
->> +
->>       for (cur_bank = 0; cur_bank < num_lut_banks; cur_bank++) {
->>           /* Switch gamma bank and set data mode before writing LUT */
->>           if (num_lut_banks > 1) {
->>               lbank_val = FIELD_PREP(DISP_GAMMA_BANK_BANK, cur_bank);
->> +            lbank_val |= data_mode;
->>               writel(lbank_val, regs + DISP_GAMMA_BANK);
->>           }
->> @@ -130,9 +142,15 @@ void mtk_gamma_set_common(struct device *dev, void __iomem 
->> *regs, struct drm_crt
->>               hwlut.blue = drm_color_lut_extract(lut[n].blue, lut_bits);
->>               if (!lut_diff || (i % 2 == 0)) {
->> -                word = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, hwlut.red);
->> -                word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, hwlut.green);
->> -                word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, hwlut.blue);
->> +                if (lut_bits == 12) {
->> +                    word[0] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_R, hwlut.red);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_12BIT_G, hwlut.green);
->> +                    word[1] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_B, hwlut.blue);
->> +                } else {
->> +                    word[0] = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, hwlut.red);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, hwlut.green);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, hwlut.blue);
->> +                }
->>               } else {
->>                   diff.red = lut[n].red - lut[n - 1].red;
->>                   diff.red = drm_color_lut_extract(diff.red, lut_bits);
->> @@ -143,11 +161,19 @@ void mtk_gamma_set_common(struct device *dev, void __iomem 
->> *regs, struct drm_crt
->>                   diff.blue = lut[n].blue - lut[n - 1].blue;
->>                   diff.blue = drm_color_lut_extract(diff.blue, lut_bits);
->> -                word = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, diff.red);
->> -                word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, diff.green);
->> -                word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, diff.blue);
->> +                if (lut_bits == 12) {
->> +                    word[0] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_R, diff.red);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_12BIT_G, diff.green);
->> +                    word[1] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_B, diff.blue);
->> +                } else {
->> +                    word[0] = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, diff.red);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, diff.green);
->> +                    word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, diff.blue);
->> +                }
->>               }
->> -            writel(word, (lut_base + i * 4));
->> +            writel(word[0], (lut0_base + i * 4));
->> +            if (lut_bits == 12)
->> +                writel(word[1], (lut1_base + i * 4));
-> 
-> ditto
-> 
->>           }
->>       }
->> @@ -271,11 +297,20 @@ static const struct mtk_disp_gamma_data 
->> mt8183_gamma_driver_data = {
->>       .lut_size = 512,
->>   };
->> +static const struct mtk_disp_gamma_data mt8195_gamma_driver_data = {
->> +    .lut_bank_size = 256,
->> +    .lut_bits = 12,
-> 
-> If I'm right, ".lut_bits = 10" will not work properly.
-> 
->> +    .lut_diff = true,
->> +    .lut_size = 1024,
->> +};
->> +
->>   static const struct of_device_id mtk_disp_gamma_driver_dt_match[] = {
->>       { .compatible = "mediatek,mt8173-disp-gamma",
->>         .data = &mt8173_gamma_driver_data},
->>       { .compatible = "mediatek,mt8183-disp-gamma",
->>         .data = &mt8183_gamma_driver_data},
->> +    { .compatible = "mediatek,mt8195-disp-gamma",
->> +      .data = &mt8195_gamma_driver_data},
->>       {},
->>   };
->>   MODULE_DEVICE_TABLE(of, mtk_disp_gamma_driver_dt_match);
-> 
-
+Konrad
