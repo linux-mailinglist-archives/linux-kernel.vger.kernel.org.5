@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F52764920
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A15764925
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbjG0HoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
+        id S233189AbjG0Ho2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233699AbjG0Hnh (ORCPT
+        with ESMTP id S233742AbjG0Hnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:43:37 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF98965B9
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:19 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-56c42bb70abso471106eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:19 -0700 (PDT)
+        Thu, 27 Jul 2023 03:43:43 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A2F6A4D
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:24 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-686f94328a4so119405b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690443437; x=1691048237;
+        d=bytedance.com; s=google; t=1690443442; x=1691048242;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s3P4jk/DjTpvx9PdAJj920ScGLlcJW6HGkHJHTkHl6A=;
-        b=S7FhqPdC6B45lRXe055P5PaVB94tznGk9FrHIpoUyTL61ml7EZmcmoma4G1m8PTLNX
-         qNy+xG/t8mZ8BQRoO2wrIto0n1SbVsyupw1IUQDbWg0ss/fGxYr2YQrHj2LrK0eZM3mB
-         sijyrWeRuFgWJUOYkTfB86DrJRKy+rO0LluT1ezkA07OZB9v+0ToMXPEJMqFGmU0CxQG
-         QgVQPZXhXjWdhJP+Fmn1qGbZuOKCLTw+7cj5vCjF2x7/ezfUNsHM6sP0vFj38UxZ0anZ
-         j695g+6unGfMklS8VYfNLUkSH5FMlfOF7hSnLmjmbwri1KBrbOCAgTOH+vNyhE6URK9S
-         DZgA==
+        bh=r//0VfNIsSS7LjEKz2w3sxhtDAhJR7x5LJkBswgmGuQ=;
+        b=bvNQcm1txH3rhOO7bm1O9db1gBgcBMCQs09BOjh+n6R3VBja2J59RqrtgNWO9awRAF
+         EmhJsX7mQDb9SHJfhSrkICHn+WQAe+gtR3inPpRAzBY6qQm1agnybe8DuKumdO5jlFKe
+         3YHkH7nP76dnwLFRRldyNlJof4ZD7ZNlpVEshWiVntSoFuZJgffmlqMqIhPq7i/8LGKD
+         cnP86b8NCN8urnuP2ojgUdnkOLytJMwGVrSs3Rp5ZqjCx+OJDr2iX6bR9VytoWWz39b+
+         J/IBNZIBta/QlN/Xir19mHZ05UZLuiWy9NoVByRL9UYOatX6ERlOMwp7Y8Ubo90+OnSE
+         +4Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690443437; x=1691048237;
+        d=1e100.net; s=20221208; t=1690443442; x=1691048242;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s3P4jk/DjTpvx9PdAJj920ScGLlcJW6HGkHJHTkHl6A=;
-        b=QyKqZUTDbzdbKt2Q41hlDw/TFfI+3M52CvjZZRZSnUygmBH9/oITMkDpsEJnO+O4zz
-         G89/QyNV4Kbfunsk8z3KM1lIkwSpL9/M19oVi8D3gr4q49VKlm9XeZqMs4g+13xMc3cP
-         UnMV57uCuUrUF6sBIs4p84sKbjNX33yyjtQApOESDzTtwIeHcaFn7rOH/h4Om8TOLdbM
-         Q1Lv7LsLrMJkWtstCvvuZYkS1LBoM+7rSkqCg0F9kWco4T1HepBlcjOi6myEfLAcW0BZ
-         jN1ZbxBS4kkXWS4tqG+BKq+PqZRh1qV7svptUM0U0V/LhwwC2KM0xlGtUnQ0zbVD8Z9I
-         KHrQ==
-X-Gm-Message-State: ABy/qLYiF1aAIEYZPAgP+7XluQZbsKHcjd/bGrIIg/mEcZVi1oKn3Q3Q
-        NDfn9zv4QAEZdKQHNIgiNf0dfQ==
-X-Google-Smtp-Source: APBJJlFrA6OYIMUCXYDHSgYayAl8YdYfMGMS0d7a5pDMpWYTJUyDMEysjTkvW4PpsPS4YlTUh2iBZg==
-X-Received: by 2002:a05:6358:5915:b0:135:4003:7851 with SMTP id g21-20020a056358591500b0013540037851mr2343798rwf.19.1690443437625;
-        Thu, 27 Jul 2023 00:37:17 -0700 (PDT)
+        bh=r//0VfNIsSS7LjEKz2w3sxhtDAhJR7x5LJkBswgmGuQ=;
+        b=OmGrymshFZCAK5NDYY3SN9Yh0D89B1v7nwVMP6TEWxc5ymdCpgrPVMWRg1ld7V6Pjf
+         hqi/3fCpWSXVw/M3twRbIC8bKf+QyK+Rn7EaIPjKX4Crya0zsNS7Rpj96oj5er8fd3MB
+         FejwT8HyuYV2uWTQiTTyYVlZmAbOBOoH7wxGAJFQ/Kj73E5gSIfmruNVV6TXEDU0qMYL
+         tlDGGtxtd6VnnvdBqOw3mGmkmlt2LSmY1ncUxghyxpSRJts+Py89eFLXTeHZcXBbdFoz
+         BpN2cOIb36RB1Xthn/j+OKQvvlhWJ0v0UygrEQjFqt09zJyyVQ6VsfTo0afNhJUE75MX
+         5Wjw==
+X-Gm-Message-State: ABy/qLZ+pEGF4wdgBlGhGH1M6FK/k29PrWDe1hC3yjNaLzCExUfQDPV/
+        cyiFEhtguBzI/RlgZm+RkerSCw==
+X-Google-Smtp-Source: APBJJlG4+R4jPSCVEGlR6rgLCmNVhaHd81UbthPsy8RJlP61GxssPJqO3tI7kRrjB9mH7WDD/QMfIA==
+X-Received: by 2002:a05:6a21:329d:b0:13a:cfdf:d7a1 with SMTP id yt29-20020a056a21329d00b0013acfdfd7a1mr2311681pzb.2.1690443442119;
+        Thu, 27 Jul 2023 00:37:22 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.51.134])
-        by smtp.gmail.com with ESMTPSA id s196-20020a6377cd000000b005638a70110bsm733919pgc.65.2023.07.27.00.37.14
+        by smtp.gmail.com with ESMTPSA id s196-20020a6377cd000000b005638a70110bsm733919pgc.65.2023.07.27.00.37.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 00:37:17 -0700 (PDT)
+        Thu, 27 Jul 2023 00:37:21 -0700 (PDT)
 From:   Chuyi Zhou <zhouchuyi@bytedance.com>
 To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         wuyun.abel@bytedance.com, robin.lu@bytedance.com,
         Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [RFC PATCH 2/5] mm: Select victim memcg using bpf prog
-Date:   Thu, 27 Jul 2023 15:36:29 +0800
-Message-Id: <20230727073632.44983-3-zhouchuyi@bytedance.com>
+Subject: [RFC PATCH 3/5] libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
+Date:   Thu, 27 Jul 2023 15:36:30 +0800
+Message-Id: <20230727073632.44983-4-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230727073632.44983-1-zhouchuyi@bytedance.com>
 References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
@@ -74,153 +74,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch use BPF prog to bypass the default select_bad_process method
-and select a victim memcg when gobal oom is invoked. Specifically, we
-iterate root_mem_cgroup's children and select a next iteration root
-through __bpf_run_oom_policy(). Repeat until we finally find a leaf
-memcg in the last layer. Then we use oom_evaluate_task() to find a
-victim task in the selected memcg. If there are no suitable process
-to be killed in the memcg, we go back to the default method.
+Support BPF_PROG_TYPE_OOM_POLICY program in libbpf and bpftool, so that
+we can identify and use BPF_PROG_TYPE_OOM_POLICY in our application.
 
-Suggested-by: Abel Wu <wuyun.abel@bytedance.com>
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- include/linux/memcontrol.h |  6 +++++
- mm/memcontrol.c            | 50 ++++++++++++++++++++++++++++++++++++++
- mm/oom_kill.c              | 17 +++++++++++++
- 3 files changed, 73 insertions(+)
+ tools/bpf/bpftool/common.c     |  1 +
+ tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
+ tools/lib/bpf/libbpf.c         |  3 +++
+ tools/lib/bpf/libbpf_probes.c  |  2 ++
+ 4 files changed, 20 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5818af8eca5a..7fedc2521c8b 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1155,6 +1155,7 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 						gfp_t gfp_mask,
- 						unsigned long *total_scanned);
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index cc6e6aae2447..c5c311299c4a 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -1089,6 +1089,7 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
+ 	case BPF_TRACE_FENTRY:			return "fentry";
+ 	case BPF_TRACE_FEXIT:			return "fexit";
+ 	case BPF_MODIFY_RETURN:			return "mod_ret";
++	case BPF_OOM_POLICY:			return "oom_policy";
+ 	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
+ 	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
+ 	default:	return libbpf_bpf_attach_type_str(t);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 60a9d59beeab..9da0d61cf703 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -987,6 +987,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_SK_LOOKUP,
+ 	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+ 	BPF_PROG_TYPE_NETFILTER,
++	BPF_PROG_TYPE_OOM_POLICY,
+ };
  
-+struct mem_cgroup *select_victim_memcg(void);
- #else /* CONFIG_MEMCG */
+ enum bpf_attach_type {
+@@ -1036,6 +1037,7 @@ enum bpf_attach_type {
+ 	BPF_LSM_CGROUP,
+ 	BPF_STRUCT_OPS,
+ 	BPF_NETFILTER,
++	BPF_OOM_POLICY,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
- #define MEM_CGROUP_ID_SHIFT	0
-@@ -1588,6 +1589,11 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- {
- 	return 0;
- }
-+
-+static inline struct mem_cgroup *select_victim_memcg(void)
-+{
-+	return NULL;
-+}
- #endif /* CONFIG_MEMCG */
+@@ -6825,6 +6827,18 @@ struct bpf_cgroup_dev_ctx {
+ 	__u32 minor;
+ };
  
- static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..c6b42635f1af 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -64,6 +64,7 @@
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
- #include <linux/sched/isolation.h>
-+#include <linux/bpf_oom.h>
- #include "internal.h"
- #include <net/sock.h>
- #include <net/ip.h>
-@@ -2638,6 +2639,55 @@ void mem_cgroup_handle_over_high(void)
- 	css_put(&memcg->css);
- }
++enum {
++	BPF_OOM_CMP_EQUAL   = (1ULL << 0),
++	BPF_OOM_CMP_GREATER = (1ULL << 1),
++	BPF_OOM_CMP_LESS    = (1ULL << 2),
++};
++
++struct bpf_oom_ctx {
++	__u64 cg_id_1;
++	__u64 cg_id_2;
++	__u8  cmp_ret;
++};
++
+ struct bpf_raw_tracepoint_args {
+ 	__u64 args[0];
+ };
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 214f828ece6b..10496bb9b3bc 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -118,6 +118,7 @@ static const char * const attach_type_name[] = {
+ 	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
+ 	[BPF_STRUCT_OPS]		= "struct_ops",
+ 	[BPF_NETFILTER]			= "netfilter",
++	[BPF_OOM_POLICY]		= "oom_policy",
+ };
  
-+struct mem_cgroup *select_victim_memcg(void)
-+{
-+	struct cgroup_subsys_state *pos, *parent, *victim;
-+	struct mem_cgroup *victim_memcg;
-+
-+	parent = &root_mem_cgroup->css;
-+	victim_memcg = NULL;
-+
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+		return NULL;
-+
-+	rcu_read_lock();
-+	while (parent) {
-+		struct cgroup_subsys_state *chosen = NULL;
-+		struct mem_cgroup *pos_mem, *chosen_mem;
-+		u64 chosen_id, pos_id;
-+		int cmp_ret;
-+
-+		victim = parent;
-+
-+		list_for_each_entry_rcu(pos, &parent->children, sibling) {
-+			pos_id = cgroup_id(pos->cgroup);
-+			if (!chosen)
-+				goto chose;
-+
-+			cmp_ret = __bpf_run_oom_policy(chosen_id, pos_id);
-+			if (cmp_ret == BPF_OOM_CMP_GREATER)
-+				continue;
-+			if (cmp_ret == BPF_OOM_CMP_EQUAL) {
-+				pos_mem = mem_cgroup_from_css(pos);
-+				chosen_mem = mem_cgroup_from_css(chosen);
-+				if (page_counter_read(&pos_mem->memory) <=
-+					page_counter_read(&chosen_mem->memory))
-+					continue;
-+			}
-+chose:
-+			chosen = pos;
-+			chosen_id = pos_id;
-+		}
-+		parent = chosen;
-+	}
-+
-+	if (victim && css_tryget(victim))
-+		victim_memcg = mem_cgroup_from_css(victim);
-+	rcu_read_unlock();
-+
-+	return victim_memcg;
-+}
-+
- static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 			unsigned int nr_pages)
- {
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 01af8adaa16c..b88c8c7d4ee4 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -361,6 +361,19 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
- 	return 1;
- }
+ static const char * const link_type_name[] = {
+@@ -204,6 +205,7 @@ static const char * const prog_type_name[] = {
+ 	[BPF_PROG_TYPE_SK_LOOKUP]		= "sk_lookup",
+ 	[BPF_PROG_TYPE_SYSCALL]			= "syscall",
+ 	[BPF_PROG_TYPE_NETFILTER]		= "netfilter",
++	[BPF_PROG_TYPE_OOM_POLICY]		= "oom_policy",
+ };
  
-+static bool bpf_select_bad_process(struct oom_control *oc)
-+{
-+	struct mem_cgroup *victim_memcg;
-+
-+	victim_memcg = select_victim_memcg();
-+	if (victim_memcg) {
-+		mem_cgroup_scan_tasks(victim_memcg, oom_evaluate_task, oc);
-+		css_put(&victim_memcg->css);
-+	}
-+
-+	return !!oc->chosen;
-+}
-+
- /*
-  * Simple selection loop. We choose the process with the highest number of
-  * 'points'. In case scan was aborted, oc->chosen is set to -1.
-@@ -372,6 +385,9 @@ static void select_bad_process(struct oom_control *oc)
- 	if (is_memcg_oom(oc))
- 		mem_cgroup_scan_tasks(oc->memcg, oom_evaluate_task, oc);
- 	else {
-+		if (bpf_oom_policy_enabled() && bpf_select_bad_process(oc))
-+			return;
-+
- 		struct task_struct *p;
+ static int __base_pr(enum libbpf_print_level level, const char *format,
+@@ -8738,6 +8740,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("struct_ops.s+",	STRUCT_OPS, 0, SEC_SLEEPABLE),
+ 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE),
+ 	SEC_DEF("netfilter",		NETFILTER, BPF_NETFILTER, SEC_NONE),
++	SEC_DEF("oom_policy",       OOM_POLICY, BPF_OOM_POLICY, SEC_ATTACHABLE_OPT),
+ };
  
- 		rcu_read_lock();
-@@ -1426,3 +1442,4 @@ bool bpf_oom_policy_enabled(void)
- 	rcu_read_unlock();
- 	return !empty;
- }
-+
+ static size_t custom_sec_def_cnt;
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 9c4db90b92b6..dbac3e98a2d7 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -129,6 +129,8 @@ static int probe_prog_load(enum bpf_prog_type prog_type,
+ 	case BPF_PROG_TYPE_LIRC_MODE2:
+ 		opts.expected_attach_type = BPF_LIRC_MODE2;
+ 		break;
++	case BPF_PROG_TYPE_OOM_POLICY:
++		opts.expected_attach_type = BPF_OOM_POLICY;
+ 	case BPF_PROG_TYPE_TRACING:
+ 	case BPF_PROG_TYPE_LSM:
+ 		opts.log_buf = buf;
 -- 
 2.20.1
 
