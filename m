@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A16076597A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3D076597E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbjG0RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S232055AbjG0REx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjG0REY (ORCPT
+        with ESMTP id S231604AbjG0REu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:04:24 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D6D2701
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:04:23 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686b879f605so857404b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690477463; x=1691082263;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZcV7GGyEaE3OLX7Vopz1HxO7d9e/1e1Zp3uwy/ULrg=;
-        b=iiIuTxt6uVQ4wct3bOeLzxV0BWCxXhaJliBn5ZfltSH6DFUVlrmIUyoNpQaAXqRFnw
-         NvaYTRxu/XHkUGDbjqCd292vQFYnzKTKzlkYd86pmVUYnH65j5ZTAu7Ap8zLqbfXo+XR
-         gCOWjd9R/J2MURdh5WcB50gdoFqHaSMYXy0uU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690477463; x=1691082263;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IZcV7GGyEaE3OLX7Vopz1HxO7d9e/1e1Zp3uwy/ULrg=;
-        b=B4IjOtErMQXXoz5p35YZso0iTllbIvl4kVByojaPlD0QC7/uvv+MVDgUpoRqqcDdW8
-         sLZwuAA021TReLAKK7qPPlE0MNhpAvnFQVPo368mdDq5iuKbHP0UWE2jxj1tEA4CUi4e
-         xZv9/T1CYHmvdI2gQp4PLA+w9GO4Krc4tFLRrzGugkJypgpA0sNGgYUMjOO278JChheN
-         j/Kg43ivPxOnNTt1QK2v/etGrjM9At5iCd8Gae93aw0s58itd990zzu96mbuzeZDVa9W
-         yY0a7jWw3AHp2G1rLVEKijEYNG68jrKT4Wv90fqdhUubOCN9hDErUF+7GU8I//ywP+V6
-         Z7WA==
-X-Gm-Message-State: ABy/qLYA9LmdGRv8Z935EzGtcV5AI4WzOqKrpBHrheEHjCWZu1i2RIU1
-        riEx+rtC/cBGLRtvqR3tKv8eNQ==
-X-Google-Smtp-Source: APBJJlGg0Pa5pJwOyLvYDxFwV9CR6OjZiGoVvSx+j7lgNrunXLpTzpEeoW/HbZLc5o28d/HAGWeCIg==
-X-Received: by 2002:a05:6a00:190d:b0:66c:6766:7373 with SMTP id y13-20020a056a00190d00b0066c67667373mr6000736pfi.23.1690477463304;
-        Thu, 27 Jul 2023 10:04:23 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c16-20020a62e810000000b006636c4f57a6sm1725855pfi.27.2023.07.27.10.04.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 10:04:22 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 10:04:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Thu, 27 Jul 2023 13:04:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B53F7;
+        Thu, 27 Jul 2023 10:04:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7503D61EEA;
+        Thu, 27 Jul 2023 17:04:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EA6DC433C8;
+        Thu, 27 Jul 2023 17:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690477483;
+        bh=wx7pEgEpcjzZV0HZM5v6UOhxEOweIToIwi8mVUCF90M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Np9UNJesVhDbFHPKhi7euJlnSDVbsgrUwU5yNRCuDTUkbzA7DARtyoagVtM0GGQ91
+         sXbg/IZhsa/j19NwFztvfus+uN/7TgkMs1iECO86Envs3SZcmcuFIwfgRQLSl3kUFC
+         rirUvGDxwlbsT3lebfnUrf3Fvy4r6bsFeRwhj2kFGZnHrSq6G/fVlxZH/061mJGsM3
+         eZNRf5F9zQ04Yt22HfKbJ1HjobBPoKWypyr+Q8Vx5NmaJt8ZpdzPd5BGlqgVXOTSdk
+         DlB4VCnKAJ7G/5SV2W6+qgYYoi9i+KRYPX6tY/zTDHIhlMyBaoqsyZCSVTjmK4rsSE
+         8JsrOpp1yU5Rw==
+Received: (nullmailer pid 1814150 invoked by uid 1000);
+        Thu, 27 Jul 2023 17:04:42 -0000
+Date:   Thu, 27 Jul 2023 11:04:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] wifi: mwifiex: Replace strlcpy with strscpy
-Message-ID: <202307271003.BCF5F3597@keescook>
-References: <20230710030625.812707-1-azeemshaikh38@gmail.com>
- <169047317161.2400214.15246406234885315012.b4-ty@chromium.org>
- <87pm4dz6js.fsf@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: arm: cpus: Add Cortex A520, A720, and X4
+Message-ID: <169047748130.1814093.15874479054846290050.robh@kernel.org>
+References: <20230706205334.306483-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pm4dz6js.fsf@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230706205334.306483-1-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 07:02:31PM +0300, Kalle Valo wrote:
-> Kees Cook <keescook@chromium.org> writes:
+
+On Thu, 06 Jul 2023 14:53:34 -0600, Rob Herring wrote:
+> Add compatible strings for the Arm Cortex-A520, Cortex-A720, and
+> Cortex-X4 2023 CPUs.
 > 
-> > On Mon, 10 Jul 2023 03:06:25 +0000, Azeem Shaikh wrote:
-> >> strlcpy() reads the entire source buffer first.
-> >> This read may exceed the destination size limit.
-> >> This is both inefficient and can lead to linear read
-> >> overflows if a source string is not NUL-terminated [1].
-> >> In an effort to remove strlcpy() completely [2], replace
-> >> strlcpy() here with strscpy().
-> >> 
-> >> [...]
-> >
-> > Applied, thanks!
-> >
-> > [1/1] wifi: mwifiex: Replace strlcpy with strscpy
-> >       https://git.kernel.org/kees/c/5469fb73e96d
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2:
+>  - Also add Cortex-X4
+> ---
+>  Documentation/devicetree/bindings/arm/cpus.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> And the same question here, why are you taking wifi patches without
-> acks? And this already fixed differently in wireless-next so our trees
-> conflict now:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git/commit/?id=caf9ead2c7d06fd7aa4cb48bd569ad61db9a0b4a
 
-Thanks for pointing that out! I saw no feedback on Azeem's patch, so it
-looked like it was being ignored.
+Applied, thanks!
 
-For the patch you linked to -- it's okay to have lost the overflow
-detection and warning?
-
-Regardless, I will drop this from my tree.
-
--Kees
-
--- 
-Kees Cook
