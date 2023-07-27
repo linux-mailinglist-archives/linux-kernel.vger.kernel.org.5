@@ -2,620 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1809764E9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1896A764E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbjG0JHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S231822AbjG0Ix2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbjG0JHT (ORCPT
+        with ESMTP id S231225AbjG0Iwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:07:19 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C7B9ABA;
-        Thu, 27 Jul 2023 01:48:13 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 607E112000B;
-        Thu, 27 Jul 2023 11:37:41 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 607E112000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690447061;
-        bh=lpJwV8CYnGkoJHSgh9wT8OYVaHshNCm8lsq7aqkBjH4=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=O880yKbLVsKSHhXG189ljHM56DpdlBFqVXb803EhdqzzqECI1FgS5dHngZc6DuLFd
-         ts8YcfLVMcPbo7z0lTorMGEFJFN2SDSwIevuIQR3HmSr+quVWiPayMqXMEdX6Vm7N9
-         OFI98aF2GLF3EaJtYGVDtcoDXy22ph1wUdbgIXDKW+1f4q43ii0mEJxGK206FgCDhH
-         c3DktbBaWxJwfqbhbctQ/6jNfGJWhpAcczPMpeONOZ0KzkvfU9Z1up+qGKlW37Zc3F
-         bkxnUe7+nhpMX8TsbcE4j5kmBzdl5hEuwEq4rtVgDDuUUsCdlQmcMu7VITufGhOfPO
-         nEgHWVwQ+iE3w==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 27 Jul 2023 04:52:49 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A611C8A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:34:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 27 Jul 2023 11:37:41 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 27 Jul 2023 11:37:25 +0300
-Message-ID: <f020405e-86af-1b66-c5f4-9bec98298f44@sberdevices.ru>
-Date:   Thu, 27 Jul 2023 11:32:00 +0300
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 514AF21AF5;
+        Thu, 27 Jul 2023 08:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1690446801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gKEeRgCOuMXVv+dy5V7kKodknnAI3DeJtAcs76fCCWc=;
+        b=BP0pIDFxBzhK5Y1rJuiurwlH5lPQtfJNnnWEM7+0TB+d6LT0v4q9d5tYr4k/D/WNEA52A2
+        jI1g+AR9nVz6V1FoiG9e6yYdsW4E5DDziVWr/3bjIDIENjFTS8XY8UWI7RHpRe3lFGxe+d
+        ycDDi0kmkCAHl/vhXGOhCEttTnzbHYk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1690446801;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gKEeRgCOuMXVv+dy5V7kKodknnAI3DeJtAcs76fCCWc=;
+        b=pJyh2Enik6eYxH8uTutVUUgCuv9AqFaORxpc4UFmv0i12YZc/ARvt/8QNNqrD4TXaC4ESt
+        WG7HPmDhtosfLYAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E45C13902;
+        Thu, 27 Jul 2023 08:33:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Zi+gCtErwmQhUgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 27 Jul 2023 08:33:21 +0000
+Message-ID: <167455a3-3a9f-6064-4063-5b74231141f9@suse.cz>
+Date:   Thu, 27 Jul 2023 10:33:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v3 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230720214245.457298-1-AVKrasnov@sberdevices.ru>
- <20230720214245.457298-5-AVKrasnov@sberdevices.ru>
- <091c067b-43a0-da7f-265f-30c8c7e62977@sberdevices.ru>
- <2k3cbz762ua3fmlben5vcm7rs624sktaltbz3ldeevwiguwk2w@klggxj5e3ueu>
- <51022d5f-5b50-b943-ad92-b06f60bef433@sberdevices.ru>
- <3d1d76c9-2fdb-3dfe-222a-b2184cf17708@sberdevices.ru>
- <o6axh6mxd6mxai2zrpax6wa25slns7ysz5xsegntskvfxl53mt@wowjgb3jazt6>
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm: page_alloc: consume available CMA space first
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Joonsoo Kim <js1304@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230726145304.1319046-1-hannes@cmpxchg.org>
+ <ZMGuY7syh9x0Sf51@P9FQF9L96D>
 Content-Language: en-US
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <o6axh6mxd6mxai2zrpax6wa25slns7ysz5xsegntskvfxl53mt@wowjgb3jazt6>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZMGuY7syh9x0Sf51@P9FQF9L96D>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/27/23 01:38, Roman Gushchin wrote:
+> On Wed, Jul 26, 2023 at 10:53:04AM -0400, Johannes Weiner wrote:
+>> On a memcache setup with heavy anon usage and no swap, we routinely
+>> see premature OOM kills with multiple gigabytes of free space left:
+>> 
+>>     Node 0 Normal free:4978632kB [...] free_cma:4893276kB
+>> 
+>> This free space turns out to be CMA. We set CMA regions aside for
+>> potential hugetlb users on all of our machines, figuring that even if
+>> there aren't any, the memory is available to userspace allocations.
+>> 
+>> When the OOMs trigger, it's from unmovable and reclaimable allocations
+>> that aren't allowed to dip into CMA. The non-CMA regions meanwhile are
+>> dominated by the anon pages.
+>> 
+>> 
+>> Because we have more options for CMA pages, change the policy to
+>> always fill up CMA first. This reduces the risk of premature OOMs.
+> 
+> I suspect it might cause regressions on small(er) devices where
+> a relatively small cma area (Mb's) is often reserved for a use by various
+> device drivers, which can't handle allocation failures well (even interim
+> allocation failures). A startup time can regress too: migrating pages out of
+> cma will take time.
 
+Agreed, we should be more careful here.
 
-On 25.07.2023 15:28, Stefano Garzarella wrote:
-> On Tue, Jul 25, 2023 at 12:16:11PM +0300, Arseniy Krasnov wrote:
->>
->>
->> On 25.07.2023 11:46, Arseniy Krasnov wrote:
->>>
->>>
->>> On 25.07.2023 11:43, Stefano Garzarella wrote:
->>>> On Fri, Jul 21, 2023 at 08:09:03AM +0300, Arseniy Krasnov wrote:
->>>>>
->>>>>
->>>>> On 21.07.2023 00:42, Arseniy Krasnov wrote:
->>>>>> This adds handling of MSG_ZEROCOPY flag on transmission path: if this
->>>>>> flag is set and zerocopy transmission is possible (enabled in socket
->>>>>> options and transport allows zerocopy), then non-linear skb will be
->>>>>> created and filled with the pages of user's buffer. Pages of user's
->>>>>> buffer are locked in memory by 'get_user_pages()'. Second thing that
->>>>>> this patch does is replace type of skb owning: instead of calling
->>>>>> 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
->>>>>> change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
->>>>>> of socket, so to decrease this field correctly proper skb destructor is
->>>>>> needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
->>>>>>
->>>>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->>>>>> ---
->>>>>>  Changelog:
->>>>>>  v5(big patchset) -> v1:
->>>>>>   * Refactorings of 'if' conditions.
->>>>>>   * Remove extra blank line.
->>>>>>   * Remove 'frag_off' field unneeded init.
->>>>>>   * Add function 'virtio_transport_fill_skb()' which fills both linear
->>>>>>     and non-linear skb with provided data.
->>>>>>  v1 -> v2:
->>>>>>   * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
->>>>>>  v2 -> v3:
->>>>>>   * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
->>>>>>     provided 'iov_iter' with data could be sent in a zerocopy mode.
->>>>>>     If this callback is not set in transport - transport allows to send
->>>>>>     any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
->>>>>>     then zerocopy is allowed. Reason of this callback is that in case of
->>>>>>     G2H transmission we insert whole skb to the tx virtio queue and such
->>>>>>     skb must fit to the size of the virtio queue to be sent in a single
->>>>>>     iteration (may be tx logic in 'virtio_transport.c' could be reworked
->>>>>>     as in vhost to support partial send of current skb). This callback
->>>>>>     will be enabled only for G2H path. For details pls see comment
->>>>>>     'Check that tx queue...' below.
->>>>>>
->>>>>>  include/net/af_vsock.h                  |   3 +
->>>>>>  net/vmw_vsock/virtio_transport.c        |  39 ++++
->>>>>>  net/vmw_vsock/virtio_transport_common.c | 257 ++++++++++++++++++------
->>>>>>  3 files changed, 241 insertions(+), 58 deletions(-)
->>>>>>
->>>>>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->>>>>> index 0e7504a42925..a6b346eeeb8e 100644
->>>>>> --- a/include/net/af_vsock.h
->>>>>> +++ b/include/net/af_vsock.h
->>>>>> @@ -177,6 +177,9 @@ struct vsock_transport {
->>>>>>
->>>>>>      /* Read a single skb */
->>>>>>      int (*read_skb)(struct vsock_sock *, skb_read_actor_t);
->>>>>> +
->>>>>> +    /* Zero-copy. */
->>>>>> +    bool (*msgzerocopy_check_iov)(const struct iov_iter *);
->>>>>>  };
->>>>>>
->>>>>>  /**** CORE ****/
->>>>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->>>>>> index 7bbcc8093e51..23cb8ed638c4 100644
->>>>>> --- a/net/vmw_vsock/virtio_transport.c
->>>>>> +++ b/net/vmw_vsock/virtio_transport.c
->>>>>> @@ -442,6 +442,43 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
->>>>>>      queue_work(virtio_vsock_workqueue, &vsock->rx_work);
->>>>>>  }
->>>>>>
->>>>>> +static bool virtio_transport_msgzerocopy_check_iov(const struct iov_iter *iov)
->>>>>> +{
->>>>>> +    struct virtio_vsock *vsock;
->>>>>> +    bool res = false;
->>>>>> +
->>>>>> +    rcu_read_lock();
->>>>>> +
->>>>>> +    vsock = rcu_dereference(the_virtio_vsock);
->>>>>> +    if (vsock) {
+> And given the velocity of kernel upgrades on such devices, we won't learn about
+> it for next couple of years.
 > 
-> Just noted, what about the following to reduce the indentation?
+>> Movable pages can be migrated out of CMA when necessary, but we don't
+>> have a mechanism to migrate them *into* CMA to make room for unmovable
+>> allocations. The only recourse we have for these pages is reclaim,
+>> which due to a lack of swap is unavailable in our case.
 > 
->         if (!vsock) {
->             goto out;
->         }
->             ...
->             ...
->     out:
->         rcu_read_unlock();
->         return res;
-> 
->>>>>> +        struct virtqueue *vq;
->>>>>> +        int iov_pages;
->>>>>> +
->>>>>> +        vq = vsock->vqs[VSOCK_VQ_TX];
->>>>>> +
->>>>>> +        iov_pages = round_up(iov->count, PAGE_SIZE) / PAGE_SIZE;
->>>>>> +
->>>>>> +        /* Check that tx queue is large enough to keep whole
->>>>>> +         * data to send. This is needed, because when there is
->>>>>> +         * not enough free space in the queue, current skb to
->>>>>> +         * send will be reinserted to the head of tx list of
->>>>>> +         * the socket to retry transmission later, so if skb
->>>>>> +         * is bigger than whole queue, it will be reinserted
->>>>>> +         * again and again, thus blocking other skbs to be sent.
->>>>>> +         * Each page of the user provided buffer will be added
->>>>>> +         * as a single buffer to the tx virtqueue, so compare
->>>>>> +         * number of pages against maximum capacity of the queue.
->>>>>> +         * +1 means buffer for the packet header.
->>>>>> +         */
->>>>>> +        if (iov_pages + 1 <= vq->num_max)
->>>>>
->>>>> I think this check is actual only for case one we don't have indirect buffer feature.
->>>>> With indirect mode whole data to send will be packed into one indirect buffer.
->>>>
->>>> I think so.
->>>> So, should we check also that here?
->>>>
->>>>>
->>>>> Thanks, Arseniy
->>>>>
->>>>>> +            res = true;
->>>>>> +    }
->>>>>> +
->>>>>> +    rcu_read_unlock();
->>>>>> +
->>>>>> +    return res;
->>>>>> +}
->>>>>> +
->>>>>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
->>>>>>
->>>>>>  static struct virtio_transport virtio_transport = {
->>>>>> @@ -475,6 +512,8 @@ static struct virtio_transport virtio_transport = {
->>>>>>          .seqpacket_allow          = virtio_transport_seqpacket_allow,
->>>>>>          .seqpacket_has_data       = virtio_transport_seqpacket_has_data,
->>>>>>
->>>>>> +        .msgzerocopy_check_iov      = virtio_transport_msgzerocopy_check_iov,
->>>>>> +
->>>>>>          .notify_poll_in           = virtio_transport_notify_poll_in,
->>>>>>          .notify_poll_out          = virtio_transport_notify_poll_out,
->>>>>>          .notify_recv_init         = virtio_transport_notify_recv_init,
->>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>>> index 26a4d10da205..e4e3d541aff4 100644
->>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>>> @@ -37,73 +37,122 @@ virtio_transport_get_ops(struct vsock_sock *vsk)
->>>>>>      return container_of(t, struct virtio_transport, transport);
->>>>>>  }
->>>>>>
->>>>>> -/* Returns a new packet on success, otherwise returns NULL.
->>>>>> - *
->>>>>> - * If NULL is returned, errp is set to a negative errno.
->>>>>> - */
->>>>>> -static struct sk_buff *
->>>>>> -virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
->>>>>> -               size_t len,
->>>>>> -               u32 src_cid,
->>>>>> -               u32 src_port,
->>>>>> -               u32 dst_cid,
->>>>>> -               u32 dst_port)
->>>>>> -{
->>>>>> -    const size_t skb_len = VIRTIO_VSOCK_SKB_HEADROOM + len;
->>>>>> -    struct virtio_vsock_hdr *hdr;
->>>>>> -    struct sk_buff *skb;
->>>>>> -    void *payload;
->>>>>> -    int err;
->>>>>> +static bool virtio_transport_can_zcopy(struct virtio_vsock_pkt_info *info,
->>>>>> +                       size_t max_to_send)
->>>>>> +{
->>>>>> +    const struct vsock_transport *t;
->>>>>> +    struct iov_iter *iov_iter;
->>>>>>
->>>>>> -    skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
->>>>>> -    if (!skb)
->>>>>> -        return NULL;
->>>>>> +    if (!info->msg)
->>>>>> +        return false;
->>>>>>
->>>>>> -    hdr = virtio_vsock_hdr(skb);
->>>>>> -    hdr->type    = cpu_to_le16(info->type);
->>>>>> -    hdr->op        = cpu_to_le16(info->op);
->>>>>> -    hdr->src_cid    = cpu_to_le64(src_cid);
->>>>>> -    hdr->dst_cid    = cpu_to_le64(dst_cid);
->>>>>> -    hdr->src_port    = cpu_to_le32(src_port);
->>>>>> -    hdr->dst_port    = cpu_to_le32(dst_port);
->>>>>> -    hdr->flags    = cpu_to_le32(info->flags);
->>>>>> -    hdr->len    = cpu_to_le32(len);
->>>>>> +    iov_iter = &info->msg->msg_iter;
->>>>>>
->>>>>> -    if (info->msg && len > 0) {
->>>>>> -        payload = skb_put(skb, len);
->>>>>> -        err = memcpy_from_msg(payload, info->msg, len);
->>>>>> -        if (err)
->>>>>> -            goto out;
->>>>>> +    t = vsock_core_get_transport(info->vsk);
->>>>>>
->>>>>> -        if (msg_data_left(info->msg) == 0 &&
->>>>>> -            info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
->>>>>> -            hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->>>>>> +    if (t->msgzerocopy_check_iov &&
->>>>>> +        !t->msgzerocopy_check_iov(iov_iter))
->>>>>> +        return false;
->>>>
->>>> I'd avoid adding a new transport callback used only internally in virtio
->>>> transports.
->>>
->>> Ok, I see.
->>>
->>>>
->>>> Usually the transport callbacks are used in af_vsock.c, if we need a
->>>> callback just for virtio transports, maybe better to add it in struct
->>>> virtio_vsock_pkt_info or struct virtio_vsock_sock.
->>
->> Hm, may be I just need to move this callback from 'struct vsock_transport' to parent 'struct virtio_transport',
->> after 'send_pkt' callback. In this case:
->> 1) AF_VSOCK part is not touched.
->> 2) This callback stays in 'virtio_transport.c' and is set also in this file.
->>   vhost and loopback are unchanged - only 'send_pkt' still enabled in both
->>   files for these two transports.
-> 
-> Yep, this could also work!
-> 
-> Stefano
+> Idk, should we introduce such a mechanism? Or use some alternative heuristics,
+> which will be a better compromise between those who need cma allocations always
+> pass and those who use large cma areas for opportunistic huge page allocations.
+> Of course, we can add a boot flag/sysctl/per-cma-area flag, but I doubt we want
+> really this.
 
-Great! I'll send this implementation when this patchset for MSG_PEEK will be merged
-to net-next as both conflicts with each other.
+At some point the solution was supposed to be ZONE_MOVABLE:
+https://lore.kernel.org/linux-mm/1512114786-5085-1-git-send-email-iamjoonsoo.kim@lge.com/
 
-https://lore.kernel.org/netdev/20230726060150-mutt-send-email-mst@kernel.org/T/#m56f3b850361a412735616145162d2d9df25f6350
+But it was reverted due to IIRC some bugs, and Joonsoo going MIA.
 
-Thanks, Arseniy
+> Thanks!
 
-> 
->>
->> Thanks, Arseniy
->>
->>>>
->>>> Maybe better the last one so we don't have to allocate pointer space
->>>> for each packet and you should reach it via info.
->>>
->>> Ok, thanks, I'll try this way
->>>
->>> Thanks, Arseniy
->>>
->>>>
->>>> Thanks,
->>>> Stefano
->>>>
->>>>>>
->>>>>> -            if (info->msg->msg_flags & MSG_EOR)
->>>>>> -                hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->>>>>> -        }
->>>>>> +    /* Data is simple buffer. */
->>>>>> +    if (iter_is_ubuf(iov_iter))
->>>>>> +        return true;
->>>>>> +
->>>>>> +    if (!iter_is_iovec(iov_iter))
->>>>>> +        return false;
->>>>>> +
->>>>>> +    if (iov_iter->iov_offset)
->>>>>> +        return false;
->>>>>> +
->>>>>> +    /* We can't send whole iov. */
->>>>>> +    if (iov_iter->count > max_to_send)
->>>>>> +        return false;
->>>>>> +
->>>>>> +    return true;
->>>>>> +}
->>>>>> +
->>>>>> +static int virtio_transport_init_zcopy_skb(struct vsock_sock *vsk,
->>>>>> +                       struct sk_buff *skb,
->>>>>> +                       struct msghdr *msg,
->>>>>> +                       bool zerocopy)
->>>>>> +{
->>>>>> +    struct ubuf_info *uarg;
->>>>>> +
->>>>>> +    if (msg->msg_ubuf) {
->>>>>> +        uarg = msg->msg_ubuf;
->>>>>> +        net_zcopy_get(uarg);
->>>>>> +    } else {
->>>>>> +        struct iov_iter *iter = &msg->msg_iter;
->>>>>> +        struct ubuf_info_msgzc *uarg_zc;
->>>>>> +        int len;
->>>>>> +
->>>>>> +        /* Only ITER_IOVEC or ITER_UBUF are allowed and
->>>>>> +         * checked before.
->>>>>> +         */
->>>>>> +        if (iter_is_iovec(iter))
->>>>>> +            len = iov_length(iter->__iov, iter->nr_segs);
->>>>>> +        else
->>>>>> +            len = iter->count;
->>>>>> +
->>>>>> +        uarg = msg_zerocopy_realloc(sk_vsock(vsk),
->>>>>> +                        len,
->>>>>> +                        NULL);
->>>>>> +        if (!uarg)
->>>>>> +            return -1;
->>>>>> +
->>>>>> +        uarg_zc = uarg_to_msgzc(uarg);
->>>>>> +        uarg_zc->zerocopy = zerocopy ? 1 : 0;
->>>>>>      }
->>>>>>
->>>>>> -    if (info->reply)
->>>>>> -        virtio_vsock_skb_set_reply(skb);
->>>>>> +    skb_zcopy_init(skb, uarg);
->>>>>>
->>>>>> -    trace_virtio_transport_alloc_pkt(src_cid, src_port,
->>>>>> -                     dst_cid, dst_port,
->>>>>> -                     len,
->>>>>> -                     info->type,
->>>>>> -                     info->op,
->>>>>> -                     info->flags);
->>>>>> +    return 0;
->>>>>> +}
->>>>>>
->>>>>> -    if (info->vsk && !skb_set_owner_sk_safe(skb, sk_vsock(info->vsk))) {
->>>>>> -        WARN_ONCE(1, "failed to allocate skb on vsock socket with sk_refcnt == 0\n");
->>>>>> -        goto out;
->>>>>> +static int virtio_transport_fill_skb(struct sk_buff *skb,
->>>>>> +                     struct virtio_vsock_pkt_info *info,
->>>>>> +                     size_t len,
->>>>>> +                     bool zcopy)
->>>>>> +{
->>>>>> +    if (zcopy) {
->>>>>> +        return __zerocopy_sg_from_iter(info->msg, NULL, skb,
->>>>>> +                          &info->msg->msg_iter,
->>>>>> +                          len);
->>>>>> +    } else {
->>>>>> +        void *payload;
->>>>>> +        int err;
->>>>>> +
->>>>>> +        payload = skb_put(skb, len);
->>>>>> +        err = memcpy_from_msg(payload, info->msg, len);
->>>>>> +        if (err)
->>>>>> +            return -1;
->>>>>> +
->>>>>> +        if (msg_data_left(info->msg))
->>>>>> +            return 0;
->>>>>> +
->>>>>> +        return 0;
->>>>>>      }
->>>>>> +}
->>>>>>
->>>>>> -    return skb;
->>>>>> +static void virtio_transport_init_hdr(struct sk_buff *skb,
->>>>>> +                      struct virtio_vsock_pkt_info *info,
->>>>>> +                      u32 src_cid,
->>>>>> +                      u32 src_port,
->>>>>> +                      u32 dst_cid,
->>>>>> +                      u32 dst_port,
->>>>>> +                      size_t len)
->>>>>> +{
->>>>>> +    struct virtio_vsock_hdr *hdr;
->>>>>>
->>>>>> -out:
->>>>>> -    kfree_skb(skb);
->>>>>> -    return NULL;
->>>>>> +    hdr = virtio_vsock_hdr(skb);
->>>>>> +    hdr->type    = cpu_to_le16(info->type);
->>>>>> +    hdr->op        = cpu_to_le16(info->op);
->>>>>> +    hdr->src_cid    = cpu_to_le64(src_cid);
->>>>>> +    hdr->dst_cid    = cpu_to_le64(dst_cid);
->>>>>> +    hdr->src_port    = cpu_to_le32(src_port);
->>>>>> +    hdr->dst_port    = cpu_to_le32(dst_port);
->>>>>> +    hdr->flags    = cpu_to_le32(info->flags);
->>>>>> +    hdr->len    = cpu_to_le32(len);
->>>>>>  }
->>>>>>
->>>>>>  static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
->>>>>> @@ -214,6 +263,70 @@ static u16 virtio_transport_get_type(struct sock *sk)
->>>>>>          return VIRTIO_VSOCK_TYPE_SEQPACKET;
->>>>>>  }
->>>>>>
->>>>>> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
->>>>>> +                          struct virtio_vsock_pkt_info *info,
->>>>>> +                          size_t payload_len,
->>>>>> +                          bool zcopy,
->>>>>> +                          u32 src_cid,
->>>>>> +                          u32 src_port,
->>>>>> +                          u32 dst_cid,
->>>>>> +                          u32 dst_port)
->>>>>> +{
->>>>>> +    struct sk_buff *skb;
->>>>>> +    size_t skb_len;
->>>>>> +
->>>>>> +    skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
->>>>>> +
->>>>>> +    if (!zcopy)
->>>>>> +        skb_len += payload_len;
->>>>>> +
->>>>>> +    skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
->>>>>> +    if (!skb)
->>>>>> +        return NULL;
->>>>>> +
->>>>>> +    virtio_transport_init_hdr(skb, info, src_cid, src_port,
->>>>>> +                  dst_cid, dst_port,
->>>>>> +                  payload_len);
->>>>>> +
->>>>>> +    /* Set owner here, because '__zerocopy_sg_from_iter()' uses
->>>>>> +     * owner of skb without check to update 'sk_wmem_alloc'.
->>>>>> +     */
->>>>>> +    if (vsk)
->>>>>> +        skb_set_owner_w(skb, sk_vsock(vsk));
->>>>>> +
->>>>>> +    if (info->msg && payload_len > 0) {
->>>>>> +        int err;
->>>>>> +
->>>>>> +        err = virtio_transport_fill_skb(skb, info, payload_len, zcopy);
->>>>>> +        if (err)
->>>>>> +            goto out;
->>>>>> +
->>>>>> +        if (info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
->>>>>> +            struct virtio_vsock_hdr *hdr = virtio_vsock_hdr(skb);
->>>>>> +
->>>>>> +            hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->>>>>> +
->>>>>> +            if (info->msg->msg_flags & MSG_EOR)
->>>>>> +                hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->>>>>> +        }
->>>>>> +    }
->>>>>> +
->>>>>> +    if (info->reply)
->>>>>> +        virtio_vsock_skb_set_reply(skb);
->>>>>> +
->>>>>> +    trace_virtio_transport_alloc_pkt(src_cid, src_port,
->>>>>> +                     dst_cid, dst_port,
->>>>>> +                     payload_len,
->>>>>> +                     info->type,
->>>>>> +                     info->op,
->>>>>> +                     info->flags);
->>>>>> +
->>>>>> +    return skb;
->>>>>> +out:
->>>>>> +    kfree_skb(skb);
->>>>>> +    return NULL;
->>>>>> +}
->>>>>> +
->>>>>>  /* This function can only be used on connecting/connected sockets,
->>>>>>   * since a socket assigned to a transport is required.
->>>>>>   *
->>>>>> @@ -222,10 +335,12 @@ static u16 virtio_transport_get_type(struct sock *sk)
->>>>>>  static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>>>>>                        struct virtio_vsock_pkt_info *info)
->>>>>>  {
->>>>>> +    u32 max_skb_len = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
->>>>>>      u32 src_cid, src_port, dst_cid, dst_port;
->>>>>>      const struct virtio_transport *t_ops;
->>>>>>      struct virtio_vsock_sock *vvs;
->>>>>>      u32 pkt_len = info->pkt_len;
->>>>>> +    bool can_zcopy = false;
->>>>>>      u32 rest_len;
->>>>>>      int ret;
->>>>>>
->>>>>> @@ -254,15 +369,30 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>>>>>      if (pkt_len == 0 && info->op == VIRTIO_VSOCK_OP_RW)
->>>>>>          return pkt_len;
->>>>>>
->>>>>> +    if (info->msg) {
->>>>>> +        /* If zerocopy is not enabled by 'setsockopt()', we behave as
->>>>>> +         * there is no MSG_ZEROCOPY flag set.
->>>>>> +         */
->>>>>> +        if (!sock_flag(sk_vsock(vsk), SOCK_ZEROCOPY))
->>>>>> +            info->msg->msg_flags &= ~MSG_ZEROCOPY;
->>>>>> +
->>>>>> +        if (info->msg->msg_flags & MSG_ZEROCOPY)
->>>>>> +            can_zcopy = virtio_transport_can_zcopy(info, pkt_len);
->>>>>> +
->>>>>> +        if (can_zcopy)
->>>>>> +            max_skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE,
->>>>>> +                        (MAX_SKB_FRAGS * PAGE_SIZE));
->>>>>> +    }
->>>>>> +
->>>>>>      rest_len = pkt_len;
->>>>>>
->>>>>>      do {
->>>>>>          struct sk_buff *skb;
->>>>>>          size_t skb_len;
->>>>>>
->>>>>> -        skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE, rest_len);
->>>>>> +        skb_len = min(max_skb_len, rest_len);
->>>>>>
->>>>>> -        skb = virtio_transport_alloc_skb(info, skb_len,
->>>>>> +        skb = virtio_transport_alloc_skb(vsk, info, skb_len, can_zcopy,
->>>>>>                           src_cid, src_port,
->>>>>>                           dst_cid, dst_port);
->>>>>>          if (!skb) {
->>>>>> @@ -270,6 +400,17 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>>>>>              break;
->>>>>>          }
->>>>>>
->>>>>> +        /* This is last skb to send this portion of data. */
->>>>>> +        if (info->msg && info->msg->msg_flags & MSG_ZEROCOPY &&
->>>>>> +            skb_len == rest_len && info->op == VIRTIO_VSOCK_OP_RW) {
->>>>>> +            if (virtio_transport_init_zcopy_skb(vsk, skb,
->>>>>> +                                info->msg,
->>>>>> +                                can_zcopy)) {
->>>>>> +                ret = -ENOMEM;
->>>>>> +                break;
->>>>>> +            }
->>>>>> +        }
->>>>>> +
->>>>>>          virtio_transport_inc_tx_pkt(vvs, skb);
->>>>>>
->>>>>>          ret = t_ops->send_pkt(skb);
->>>>>> @@ -934,7 +1075,7 @@ static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
->>>>>>      if (!t)
->>>>>>          return -ENOTCONN;
->>>>>>
->>>>>> -    reply = virtio_transport_alloc_skb(&info, 0,
->>>>>> +    reply = virtio_transport_alloc_skb(NULL, &info, 0, false,
->>>>>>                         le64_to_cpu(hdr->dst_cid),
->>>>>>                         le32_to_cpu(hdr->dst_port),
->>>>>>                         le64_to_cpu(hdr->src_cid),
->>>>>
->>>>
->>
-> 
