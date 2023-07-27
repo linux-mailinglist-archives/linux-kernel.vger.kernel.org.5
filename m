@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE9B765FEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA56765FEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjG0Wua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S232933AbjG0Wu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbjG0Wu2 (ORCPT
+        with ESMTP id S229509AbjG0Wu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:50:28 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8971FCD
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:50:23 -0700 (PDT)
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso12144435ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:50:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690498223; x=1691103023;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Ck3lyZGLf+F2YFdZHPFliqXqnqZBVSPAOZfVe+yCL0=;
-        b=CEjw6VdDK77ZMNdqzGirYUNfbYCStqQ0HgD7r2vWjxj+fLkNCssVP61eGrmqFywo77
-         TCwi921IZ6Q62eYXf2+RsE3o9rEM7eXzUjpnwc4gFAOadUQEEG/cisgk3TxOz3ymNsZo
-         iaYlwcagbMXxR+2xllzWZBUfo71E0FbUkT+ch25kF0vIK932nb0/pi8+bF2Z6r4mtjEz
-         gb5P6WLqkJK8CxT9QC4GmTYIkTeeOa7mzANLg10MeOdB1evGPRDrk5ZXL+0gCaSK3Lpo
-         f56OSYilVPVK/D/9YD3r1adI3VlffRjUqSBm68Ay7SBbwYltDU9wacEVHkODvn46XzUJ
-         LTdQ==
-X-Gm-Message-State: ABy/qLYfw1Idoz9CI4fKftE0n9IOjDBp42TO+EhWFTRm4pP9NZs1QFtF
-        YBLH41elyFj2O5MItpICrd8=
-X-Google-Smtp-Source: APBJJlEIPFubxJ7JROG/8yCHhxVJJ/qEZLipx8hx9MDkty48geWZ98Wod7ei126CzzI9nVgluQMsJg==
-X-Received: by 2002:a17:902:d3c6:b0:1bb:c69b:6f6b with SMTP id w6-20020a170902d3c600b001bbc69b6f6bmr634913plb.6.1690498223158;
-        Thu, 27 Jul 2023 15:50:23 -0700 (PDT)
-Received: from snowbird ([199.73.127.3])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001bb20380bf2sm2160120plh.13.2023.07.27.15.50.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 15:50:22 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 15:50:19 -0700
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, tj@kernel.org, cl@linux.com,
-        mawupeng1@huawei.com
-Subject: Re: [PATCH 0/3] percpu: some trivial cleanup patches
-Message-ID: <ZML0qwKTG5zB4VwL@snowbird>
-References: <20230721131800.20003-1-bhe@redhat.com>
- <ZLry5gupx9mp1659@snowbird>
- <ZLtNRsDuN4xEMSMB@MiWiFi-R3L-srv>
+        Thu, 27 Jul 2023 18:50:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F801FDD;
+        Thu, 27 Jul 2023 15:50:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E52BF61F79;
+        Thu, 27 Jul 2023 22:50:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5666BC433C9;
+        Thu, 27 Jul 2023 22:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690498224;
+        bh=i5DsTslOD8Clg4eU331uW2tQhTGqkzRkE8EjnUBLwCo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=I8ZuIIh5IASgG3ywn1uxy0Wq8Fza6V9uPTWH+ccnsZKdaDtd94SXNBGDehwyCWxx6
+         PcbWaC0qmxhs2mselZeL1L2c6Wn20QbBND8noz+frxx7J0CFtMMJ7HKSBUj3U30mA3
+         8xUq1bacnWJVXae0nrTGH59UR7pVLf1ueJzk7grUqPYjdQIF9ZgmjJnSuJCLAtdBBs
+         kkYdQ3KokOMq1oFDq3QyLTzQJO9uDZfw7SvSwsvtnnMv6Y2C5rWyROeR4+ow5IIUpy
+         qRuWTihmWHyALHRThvJgUDjpKVNvuaSwOdP+PrjHXwqcgkTNTOuhm1caYr+QPmLAF4
+         FeUB6nK4kWJlA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C26AC64459;
+        Thu, 27 Jul 2023 22:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLtNRsDuN4xEMSMB@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1] Bluetooth: btnxpuart: Add support for AW693 chipset
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <169049822423.13443.14788509499502860271.git-patchwork-notify@kernel.org>
+Date:   Thu, 27 Jul 2023 22:50:24 +0000
+References: <20230727133317.297014-1-neeraj.sanjaykale@nxp.com>
+In-Reply-To: <20230727133317.297014-1-neeraj.sanjaykale@nxp.com>
+To:     Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        amitkumar.karwar@nxp.com, rohit.fule@nxp.com, sherry.sun@nxp.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-On Sat, Jul 22, 2023 at 11:30:14AM +0800, Baoquan He wrote:
-> On 07/21/23 at 02:04pm, Dennis Zhou wrote:
-> > Hello,
-> > 
-> > On Fri, Jul 21, 2023 at 09:17:57PM +0800, Baoquan He wrote:
-> > > There's a left issue in my mailbox about percpu code at below. When
-> > > I rechecked it and considered Dennis's comment, I made an attmept
-> > > to fix it with patch 3.
-> > > 
-> > > https://lore.kernel.org/all/Y407wDMKq5ibE9sc@fedora/T/#u
-> > > 
-> > > Patch 1 and 2 are trivial clean up patches when reading percpu code.
-> > > 
-> > > Baoquan He (3):
-> > >   mm/percpu.c: remove redundant check
-> > >   mm/percpu.c: optimize the code in pcpu_setup_first_chunk() a little
-> > >     bit
-> > >   mm/percpu.c: print error message too if atomic alloc failed
-> > > 
-> > >  mm/percpu.c | 39 +++++++++++++++++----------------------
-> > >  1 file changed, 17 insertions(+), 22 deletions(-)
-> > > 
-> > > -- 
-> > > 2.34.1
-> > > 
-> > 
-> > Thanks for these. I left a few comments. I think I might have some stuff
-> > for v6.6, I'll figure that out in a couple days. If that's so, I can
-> > pull 1, probably massage 2 and send that out again, and then I think
-> > you'll need to resend 3.
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Thu, 27 Jul 2023 19:03:17 +0530 you wrote:
+> This adds support for NXP AW693 chipset in btnxpuart driver
+> by adding FW name and bootloader signature. Based on the
+> loader version bits 7:6 of the bootloader signature, the
+> driver can choose between selecting secure and non-secure
+> FW files.
 > 
-> Sure, thanks for careful reviewing and great suggestion. So I only need
-> to send v2 of patch 3, right? Or I should change and send v2 of the
-> whold series? I may not get it clear.
+> Signed-off-by: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
 > 
+> [...]
 
-Sorry for the delay. I've pulled 1 and 2 (reworded the comment). Can you
-please resend patch 3.
+Here is the summary with links:
+  - [v1] Bluetooth: btnxpuart: Add support for AW693 chipset
+    https://git.kernel.org/bluetooth/bluetooth-next/c/dd338bea1ff1
 
-Thanks,
-Dennis
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
