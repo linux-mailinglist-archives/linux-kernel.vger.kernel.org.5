@@ -2,135 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715287652A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFFC7652A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbjG0Lj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S232997AbjG0Ljl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjG0LjY (ORCPT
+        with ESMTP id S232887AbjG0Ljj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:39:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A36135
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:39:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FEC261E33
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:39:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37868C433C7;
-        Thu, 27 Jul 2023 11:39:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690457962;
-        bh=AnYhYNSCkoA1i1nJ/uqzgdg16BpZvGqho6C4A1W9zWs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YPdwqfQnx8jhE6mVLFootDc0+4r6fjjfl8QpUU+Pt2uRX7QeMPmx/0knPrrFOpBgA
-         Qd85hv1zGw/6pzUbmerSZ/U+bGSCCdElgGxLmB6An0hTipdt3rG10fxNr3TeFS31Dm
-         4XYiXzZL+ZkXEs5Jmna/kcigqvBWAUSkSfMWiFir0iML8ui7PPsD1NGRW1nE2ROfxI
-         EOW/pPFVIbDipTRdSDTRJ6Cbkyd8CRbwo5+B1EEgZdMkj/Bw8I2yCr5K18YhWL2XoK
-         J2sFlxcXAVl0D1lL09z69/O36NBHnt8DsqmF3jJe3D2R9y6sHuVJA/sKDbRTq+Sivb
-         2hK1BYqDSj0/g==
-Date:   Thu, 27 Jul 2023 17:09:18 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: Generic phy fixes for v6.5
-Message-ID: <ZMJXZoBpjdKbGwxa@matsya>
+        Thu, 27 Jul 2023 07:39:39 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2048.outbound.protection.outlook.com [40.107.96.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473E8272E
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:39:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JNB8AIuC4WtwSd2PminbS+7btNsDNViRrHSXaXL8cAbdHG8QxpeELfM/5Uy3MALq+JiAIFlDlOTrPOVv0WDTgxNH5YRFeO9b0IgXmGWN5xP8g5BnS4NL+tNAEnXcljNFnR3Ot1SytRKkKxqLcd1MGEno9ss26qARN+PFccqK/hGiFs8DMG2bqdcv6nYzHiJsW7c3OaiLSiO2pVzxI/3DX+I0VRFn7OvUKtCMk/rxyr0GFD1RPLNi1kVFw5rDnNPvUMyXIogTgxBPoi+DGdKw2uMzLfb69VDN0Diu6iydYYcsp+u4yeRaX+7p4zHrb89RUjX6jrfhB64mw4b5g4VdnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j8LzM+inXomkavkzUyymHDOkPcMtHQ4lXyWYu0avxwM=;
+ b=TYERl81/U67hGApGSPfcaAZ05jwW3ms/z98oZAT54rHpV6lzDtTAjW3RaAzDnbXMG/yn32KSFOk1vJXfacbbf7CAyKUmKmrT8+Nx3UVI7M9T8XGwnisk5qNEHPKiCU9yuLqK4933toRGfhhwFK67MaliHKDOMkeFYa1ESji/EekM0DCAVdTjFGfuqV7V3JLo3FGma1+KOOYimbnPiuS1SCGaUuvGOQQx10XWf3+aCoqj5N+kGUtiVqvP5cEXwqx3/vuVMNKoXQ2EEfbwnJnp05s9TbV1RRW5xHLdNIV9U7irlAsNNX6EWocnDRQaUIKc+5tbfpscv2owj9bbvwR4hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j8LzM+inXomkavkzUyymHDOkPcMtHQ4lXyWYu0avxwM=;
+ b=Q2Yx4OLyAL3S/Q6PmjpJ6trdKLXLzeOdI1SlkvZ9D7//sGuFEAgJ+EDfhw600EHLVQ2d96P8mrbe0YFx0Tv1wnCH7l03n2P9pSpFGIFUnn5HVojgMqu4D6Toslks90rx6fv0dz8YUIxg9S1C5y/KIgPXyE+2V5U89rArINZS4uI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by DM6PR12MB4235.namprd12.prod.outlook.com (2603:10b6:5:220::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 11:39:29 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 11:39:29 +0000
+Message-ID: <89ec5d89-34b8-751b-9acd-6154eb3bc409@amd.com>
+Date:   Thu, 27 Jul 2023 13:39:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -next] drm/amdgpu: clean up some inconsistent indentings
+Content-Language: en-US
+To:     Yang Li <yang.lee@linux.alibaba.com>, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     Xinhui.Pan@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+References: <20230727010330.122606-1-yang.lee@linux.alibaba.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230727010330.122606-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0001.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::6) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UFkruDOjleKiRkOp"
-Content-Disposition: inline
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|DM6PR12MB4235:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef1febb8-fdce-41c8-c6f0-08db8e962352
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yHazH3EpRNidN/eqOLuQ2Cd2ql3gjsa4la3jCOdiv8RiUJo0j3moPWaW1pc2sa4dUD7HQeYp9vbaI+hKX1McNZ7beJDbaquCb0/yAxDiUUMo/SkSJPd+P3AcFsDcGsxHfWAVnrEUThXJfsaBPzqebZUOS4kjQYR4va6A3LvZz97SSbULhjS/IoHLdQJ5Z1W34hOmaT7WQMwKEtB8QATTjqUlb+2frF5lsWor1bhLmfsaifS8cASB0mziEticKBpYScmgtn8huxvNKEnLp6P9gbD0cneD09o+fvNe3m+t09Fa9oXaLvl/Qf8Gydnoz2UV09Hmz3D8xEDTNM+p9W24Gf658xLWwZ96QJYDz+r/T9Y/LFMyvWmCAGmD9wkVaAXmXMjAC3cwf/ypJ3bmcGSMJdcuZBTrgvSNOqKZgByNbmsa5YYOFc6I4/+nyX9m8JiwpadtISMg9hZymdh0SWt8ujUJZGwNfKh9Y6TV7Am9bkv2Zf0iuT7gmQTB+rnUeDF4w2psaJFAgdLgBx0RV/LYwaQXA53oOOQDLZQg8KW3M6vB7trBoEfu8FDcXyErPXDW79V9V0gdoe+u6IMhC7pJIKGoO54EEkiBFzglDlRYGP/dpc4WAAzuxZ1+tMnqOC53
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(451199021)(478600001)(6666004)(6512007)(6486002)(966005)(38100700002)(41300700001)(5660300002)(66476007)(8936002)(66556008)(4326008)(8676002)(66946007)(316002)(186003)(83380400001)(6506007)(2616005)(86362001)(31696002)(2906002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVcrY3VwTTB4bklHNllHTjVxREsyYzcwWUxIZmNRTjFqSDF2UHM1ODRzMEhW?=
+ =?utf-8?B?eXpzdnV0SUZVazJpVlQrNEVnMDJ0bmR2V00xVkg0akRDWGlPYjJhOTl1N0dN?=
+ =?utf-8?B?eHQ3U25lTkRERHhaNTdVejZiUzVaWFF2Zi9EbCtVaCszai8zTVptV29BK3c1?=
+ =?utf-8?B?RlQvV0hQbU5UTVdXRzhyZkNhdi9IVDVaTVdTdVU3eXBVZTdPWENueHhLcmJ5?=
+ =?utf-8?B?d0JtNXRFL2pQczNBNmFJTW5iYzVhYW4wdm9FZzNXekdwSmRleGdoLzlvUHNB?=
+ =?utf-8?B?TlJSalN4MzFVa0RDWHFSUXpmYjZCM2lTaHd5TWhYbUpjd3pUdFpmaW5PQ21Z?=
+ =?utf-8?B?bWNEWmdRNUNCNmU2dVd5ZndYdFk1akhtWEZucVZEeFp0aktPMkVJK1UvSmgw?=
+ =?utf-8?B?dVZNbW1WV3VUWlYvTTcwaUgxbG8wc0pnekYvWUxRN3V0MnZGZ3MzTGU4WkRO?=
+ =?utf-8?B?amtsb3UvdGpMaVgxTE0zQjZTNVNYb1QrRzB2Z0RFdU1VYU9yRkVpeGNZOHVZ?=
+ =?utf-8?B?L0l5bkZFSlF6YU9mWkNSNzB1Ky9JdlRxRjQ0dmRWQndDaktTeStCUWt5N05V?=
+ =?utf-8?B?aTc4NkxRckdtcTczcytEb1UrZ1VybWtUMU9NMVRvYlNWVXpESGlmYnV3RTF4?=
+ =?utf-8?B?SVlmR2drMWxHRWdaZ3haWFhsS2s2SU1nZUM4M1hrYjdvUWhKTXBFVm5Yd0ZC?=
+ =?utf-8?B?MHJIeUJ2aDBBb0N2eFdJNUVJakFndGNvMkZPdnNmR2pZb1JZblBkT3I3eG56?=
+ =?utf-8?B?RGtaQkhlVkVMSjdWWUNDNlNZNUhvNVd5REdOZ25VTi9mR2xETTdjTHpPeGF0?=
+ =?utf-8?B?YU9HNFZUTzl6NnQ4R1VybStwK084WityQVU4M2pYWmdPRU9nb0Ntby91M1E1?=
+ =?utf-8?B?UnJXdmZZa3N4MFJDSVZZSWV2S2N0aTVlSHNHb3phV01FVUhFNjZqVHhNeHQy?=
+ =?utf-8?B?SFEvRll3VGd2cDgyZW5MSlJLaTZncGk5azZzU3VVaDRtTjg4Z2xIdWRJQnJt?=
+ =?utf-8?B?aG1maEJlRzhKRXR4Nmc3bTF6ZndMd2FzZ09uVnBUcHRDeXV6dktOcVJ6M0tz?=
+ =?utf-8?B?b2ozelRXcGF6N0o4aGIzSTY1NnlwSk1oNkFtWmdTbWhhNElRNENOUUFYaTF4?=
+ =?utf-8?B?SVZXd0pxM0NGL2UyTW16d2gvbkRSR2NBcnBUQzNGSGxhV1hoRmwxODdGMS9u?=
+ =?utf-8?B?M2s0TWVnWVVzRnBCd1pwY0Vuem5yZm5hemN1L1hrYWVRZWFQQmtucFd4N0p6?=
+ =?utf-8?B?NkFoSHVHYUlteGxWUE93UzRKOXJxRlFCd0dQL05UaFVGVVlxNzJvb3B3a2I1?=
+ =?utf-8?B?WnJLUVk1dTFmR3kyVHRwY2gxZ1E0cklLOHl6U1drQzlQUStjOTI5cG5BdkFy?=
+ =?utf-8?B?Rmk4NUk5WkV1aW41UnViSDliZGlmZWJCOU1kaGY0M0oycGpDNDExZHZMV1Bv?=
+ =?utf-8?B?NGh3c1lMcDgvbVdlUWJZem5McU15L2ZoK3Z4eCtsR29DTXBvUmFjNFAzNElp?=
+ =?utf-8?B?OW9pUTIrWkEvRlU3eGU2M0hDNVZCSXdPQTIxa092aTk5aGZ2Wmtkeng1amMz?=
+ =?utf-8?B?ZXJ5NnppU2xtTGhtY1pxM1pYY3hGYXFGVzM3WjY5ZlpLR0JmM04wT2FQYmdW?=
+ =?utf-8?B?Nmo5NS9HRkp0MDFpNnRWN3czcFRQOXVMYzRrZ1Z0RXp3YStWL05LZVBzWG84?=
+ =?utf-8?B?UjdTZ3BxdlJmMW40bHZyLzRYTHJYa0Nyd200Q0JoYVFLRkM2anNrRFE0dWM4?=
+ =?utf-8?B?T0tXZndwQjVvNE1DMFdMVlpvNXZRMlEzSmxRbnZvbWFRUUZkN3hjVk5kZnh1?=
+ =?utf-8?B?TERIYVVhWW5qb1RZRGI3ZndRcmdnTWk1cjdGUktKQmVWbyswVXdFeVNCZmxo?=
+ =?utf-8?B?SGcwa05wcnZLZUtsdTNmZWFtZkxxWmMrdkpjMGd4anJXVklJaUp4N0FBbHdZ?=
+ =?utf-8?B?eHllcE90cy9KaXVnUXZuMGlQc1owdUQ3M08yN3RUZzRVVVhSeEs2S2FRcUdX?=
+ =?utf-8?B?L1lLN0xkbHlBdmhwQ2NwZGVuOUVHakRudDFpWEx3VjlkZkVHamk4bTFnUjNY?=
+ =?utf-8?B?RDdkaFJobFhFUC93SFBQdFFzYmdUNnFRam5sZERoYXRCVEJkYytSWDJ3OXhJ?=
+ =?utf-8?B?MEU4d1haNTNRTURNRmVIU296M0xyQUxNb2pTNVkySTZhOHJncElxVkd1eWtF?=
+ =?utf-8?Q?tET0i18t2gGJASTdMvMTIK369iuh9f7RDf3R6TaEhIhV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef1febb8-fdce-41c8-c6f0-08db8e962352
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 11:39:29.4274
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BwCXIL3+ugW8E/WTDbR9XEBaLhHSEEmHSln9O2VSZMtnwwXFMkjhl/oYj/FM1tH+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4235
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 27.07.23 um 03:03 schrieb Yang Li:
+> drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c:622 amdgpu_gfx_enable_kcq() warn: inconsistent indenting
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5992
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
---UFkruDOjleKiRkOp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-Hello Linus,
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+> index c76b6bfc4dab..80a306b3d9f9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c
+> @@ -619,8 +619,7 @@ int amdgpu_gfx_enable_kcq(struct amdgpu_device *adev, int xcc_id)
+>   	kiq->pmf->kiq_set_resources(kiq_ring, queue_mask);
+>   	for (i = 0; i < adev->gfx.num_compute_rings; i++) {
+>   		j = i + xcc_id * adev->gfx.num_compute_rings;
+> -			kiq->pmf->kiq_map_queues(kiq_ring,
+> -						 &adev->gfx.compute_ring[j]);
+> +		kiq->pmf->kiq_map_queues(kiq_ring, &adev->gfx.compute_ring[j]);
+>   	}
+>   
+>   	r = amdgpu_ring_test_helper(kiq_ring);
 
-Please pull to receive few of odd fixes for phy driver for 6.5
-
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes-6.5
-
-for you to fetch changes up to 13c088cf3657d70893d75cf116be937f1509cc0f:
-
-  phy: hisilicon: Fix an out of bounds check in hisi_inno_phy_probe() (2023=
--07-24 16:23:37 +0530)
-
-----------------------------------------------------------------
-phy fixes for 6.5
-
- - Driver fixes for
-   - Out of bound fix for hisilicon phy
-   - Qualcomm synopsis femto phy for keeping clock enabled during suspend
-     and enabling ref clocks
-   - Mediatek driver fixes for upper limit test and error code
-
-----------------------------------------------------------------
-Adrien Thierry (3):
-      phy: qcom-snps-femto-v2: keep cfg_ahb_clk enabled during runtime susp=
-end
-      phy: qcom-snps-femto-v2: properly enable ref clock
-      phy: qcom-snps-femto-v2: use qcom_snps_hsphy_suspend/resume error code
-
-Dan Carpenter (1):
-      phy: phy-mtk-dp: Fix an error code in probe()
-
-Guillaume Ranquet (1):
-      phy: mediatek: hdmi: mt8195: fix prediv bad upper limit test
-
-Harshit Mogalapalli (1):
-      phy: hisilicon: Fix an out of bounds check in hisi_inno_phy_probe()
-
- drivers/phy/hisilicon/phy-hisi-inno-usb2.c    |  2 +-
- drivers/phy/mediatek/phy-mtk-dp.c             |  2 +-
- drivers/phy/mediatek/phy-mtk-hdmi-mt8195.c    |  2 +-
- drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 78 +++++++++++++++++------=
-----
- 4 files changed, 53 insertions(+), 31 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---UFkruDOjleKiRkOp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmTCV2YACgkQfBQHDyUj
-g0cOvxAAw6J2AJqRmV8q/59NcyFUNVaLdrNbVZbJ4Qc8OtYDzChvEdJMVI3+lsjH
-yGD3x81aS+GU4bu5tF3/ZGGvIjSyMOU2KEtXJhd6Saf50fnjOpEAygNYDzb83sxg
-/hoIxicx+CrIj6KMg64P0utETxkjmEpBY/Fdu0ojGWQRQLj15uK5BBwfn178qqfG
-zpkktktg+KqmzP4m+ZcxNawnGSHcEicesrKjZXRcVcyMe6BlWKNjP0AUFedCQIL+
-oLPXzaWIW+0LxXGFv0KCAc3OxRs1XUfpvn+nEGK+2GWR6J8emw7ovSglg+OFjMOA
-JrgzzblJmu03ryPP+q5+u6g884CsSHfPCQY6xc3VoVqKQ9Ao47msMao1Z6qoL3ne
-ubT2DIEoCpQAeNTd4UcUfIPkjrhR4VciHNKFNVOteLxgJDlDhHrFrndXRcIr9+4y
-zxKWvL0bT4xXDFLgCilMtOtXA6ftnTgoKKGvi1JoJrw6PM/hjYZdC2bnJ6tDPJAO
-sngUM77KG4kxQc2waL8v8j/bWbZD/MoGGzGBHzjmGLcfrxquZTCHavVWGiuRj8rp
-jz6l/Uv/hCNRLhyNEQ0n4MDpz2m/eQ6d6UmdewvDr3cd4wXPrYCwHZZ6Fwmk4k5D
-wuOQYqk1YjZ1KY9RxN9jBNBJ1nk9KL2jlkN/yXuSavWriB2F6Co=
-=2Zqs
------END PGP SIGNATURE-----
-
---UFkruDOjleKiRkOp--
