@@ -2,242 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A41764981
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE12764984
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbjG0H4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S232708AbjG0H4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbjG0H4H (ORCPT
+        with ESMTP id S233129AbjG0H4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:56:07 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6197D49E0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:52:49 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6b9c03dd4f6so1291202a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:52:49 -0700 (PDT)
+        Thu, 27 Jul 2023 03:56:09 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DEC359C;
+        Thu, 27 Jul 2023 00:53:18 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f954d7309fso784335e87.1;
+        Thu, 27 Jul 2023 00:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690444397; x=1691049197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PZy9WK27qcKRkfE4r4NzAnnUDv8fmzE8MslrqWOIPZo=;
+        b=h//3iYtwVI/lcHfINWHg0miTQsBobT0251MlcYrffGM9xj7nxuujx8WyZj/ih77iQu
+         dtQSaZ81ZU7XwFzv9skD49763T0DfEvN7Wm813weKYOAX/qnJhccZUMXmGJ4VYtOvrbs
+         A+acA+jlPLbIGzNLLww7DZYSLIfkT8PY+iF4J6n+i+3ZyoqabYbOZzfSxpQWGYTQgQ5G
+         X4v8ux6Nu4mIJfI2QcKYlCFJKwOuQodQxH/SgNZDDAeCg/KI+tsM/DCrVogFtW8lGiQw
+         CHuEKki7ck/DN3k+cf3t1WYqkaWAxG6QdqsJiRw55oKG2johNYQJEGLcC7yrrA7HiIW0
+         Fnsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690444368; x=1691049168;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20221208; t=1690444397; x=1691049197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hVqo6YT5N3pCkLArgKJXvbOm2TEfjbnjh+8WdUdlNx8=;
-        b=Qt7+VX0X2w2Yt2XT7c7VXleUyyYfm6hMsFem+cXiVyjm1lJPxlPLe6R1V24ufIw9Zz
-         Pzs43za54oDlIm/vpzYeTsWbAwecyJD810T3oXOeLKBS7LKTB+kXoRMwFQ4Wl+gxVuQF
-         lLt6y3XhYIcg1SBA1Hn9c+BDMWFKbM0J14mbR5ZgolQ69SQd5sFaD205A85vxT5ib10Z
-         799wTuGQUv4jlyi+e9H+i/FH8CINxPbHkMERIBRLXKg/hO+SkVvnPpi6HyE8IkBxpA/W
-         MvigjHzBNOJRUwnEgD5J844toqnEPuzKRz/XmWziHftud2OTm3esvBq5IFN6D/XGQhEv
-         P1yA==
-X-Gm-Message-State: ABy/qLZw9yDTsu9mVkgV8M6LxhbF45Dw6noqqFLrwz1Qq6HLqvgfavVq
-        iLcQKjHIX5wIfge87kSM1pcSSo+LK7zz3h/RLVzRaRWTq/N5
-X-Google-Smtp-Source: APBJJlHik+wG9JRMoxUWT5a2eLj4YrqdE0MjwSapTtdrTyySpVgYejbvm7h5XG7H449zRr+e48OXZ/pIWs9VnaKkW02NPr8nbtEI
+        bh=PZy9WK27qcKRkfE4r4NzAnnUDv8fmzE8MslrqWOIPZo=;
+        b=MLqrH19L8+c54ZLFtkq05RYtlBFfSs+mepFqlEE0U0GLIWSijLR9EPRIerKr0W13tg
+         DZMj/eDwPyRFKXHJTa6445DHlbcs8ij9hyWoNiuOnuh1wgZc/NhnUN11tavNtFoe3z3I
+         IQ9/hDRLXPEIIpMS4sMvDo8mfqGgLbuU2QMmRD6dbTvsVbPee2qNUSH5DfhaG7GuKFwY
+         v5+5DyF0vFPNsiQwM6sYJ3ZFkLy37K272J+iYRc5xufY6/v27fNVuaIxyD5YHOd6EHUQ
+         YhE9RZYHJjQVVSGXTQeK8O7KYvAh4MIQ4Kzb4GSj5oG8z2+q1ciQu64NnmqkV8bLya5C
+         8J5Q==
+X-Gm-Message-State: ABy/qLa2atWex472/2yChNxc2tV4LsLXzLxzgOhjD5K0Zs/gGeXFZuYV
+        Yc8XuNVI6mwsXdute+wDqRw=
+X-Google-Smtp-Source: APBJJlFuCXetQMc65qnz0mWXxqHNQrVlKRUTUKML/oP/nh6hzCCRe0W+VtRR907vnfydMk2k4QElDg==
+X-Received: by 2002:a05:6512:6d6:b0:4fd:d1b9:f835 with SMTP id u22-20020a05651206d600b004fdd1b9f835mr656312lff.1.1690444396437;
+        Thu, 27 Jul 2023 00:53:16 -0700 (PDT)
+Received: from [192.168.0.112] ([77.220.140.242])
+        by smtp.gmail.com with ESMTPSA id l21-20020a19c215000000b004fba5c20ab1sm189150lfc.167.2023.07.27.00.53.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 00:53:16 -0700 (PDT)
+Message-ID: <f0bca831-207c-6cbb-48e9-7d2ea02229ff@gmail.com>
+Date:   Thu, 27 Jul 2023 10:53:14 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:1650:b0:6af:9f8b:c606 with SMTP id
- h16-20020a056830165000b006af9f8bc606mr6614137otr.0.1690444368773; Thu, 27 Jul
- 2023 00:52:48 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 00:52:48 -0700
-In-Reply-To: <000000000000b4e906060113fd63@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001d07560601734039@google.com>
-Subject: Re: [syzbot] [nilfs?] KASAN: slab-use-after-free Read in
- nilfs_load_inode_block (2)
-From:   syzbot <syzbot+74db8b3087f293d3a13a@syzkaller.appspotmail.com>
-To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH RFC net-next v5 01/14] af_vsock: generalize
+ vsock_dgram_recvmsg() to all transports
+Content-Language: en-US
+To:     Bobby Eshleman <bobbyeshleman@gmail.com>
+Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-1-581bd37fdb26@bytedance.com>
+ <27a430f8-18e9-7cc2-c773-dde8ae824bfc@gmail.com> <ZMFkFE0AqaOUfric@bullseye>
+From:   Arseniy Krasnov <oxffffaa@gmail.com>
+In-Reply-To: <ZMFkFE0AqaOUfric@bullseye>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    5f0bc0b042fc mm: suppress mm fault logging if fatal signal..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1382e2f9a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d10d93e1ae1f229
-dashboard link: https://syzkaller.appspot.com/bug?extid=74db8b3087f293d3a13a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15176d81a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132d93d9a80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b15763fff0b8/disk-5f0bc0b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d0b1ccb084b3/vmlinux-5f0bc0b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5a2e6f8db73/bzImage-5f0bc0b0.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/0fd90c1b386c/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+74db8b3087f293d3a13a@syzkaller.appspotmail.com
-
-NILFS (loop4): discard dirty block: blocknr=25, size=4096
-NILFS (loop4): disposed unprocessed dirty file(s) when detaching log writer
-==================================================================
-BUG: KASAN: slab-use-after-free in nilfs_load_inode_block+0x11e/0x280 fs/nilfs2/inode.c:1030
-Read of size 8 at addr ffff88802ba11030 by task syz-executor459/5018
-
-CPU: 0 PID: 5018 Comm: syz-executor459 Not tainted 6.5.0-rc3-syzkaller-00025-g5f0bc0b042fc #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- nilfs_load_inode_block+0x11e/0x280 fs/nilfs2/inode.c:1030
- __nilfs_mark_inode_dirty+0xa5/0x280 fs/nilfs2/inode.c:1107
- nilfs_dirty_inode+0x164/0x200 fs/nilfs2/inode.c:1148
- __mark_inode_dirty+0x305/0xd90 fs/fs-writeback.c:2430
- mark_inode_dirty_sync include/linux/fs.h:2153 [inline]
- iput+0x1f2/0x8f0 fs/inode.c:1814
- nilfs_dispose_list+0x51d/0x5c0 fs/nilfs2/segment.c:816
- nilfs_detach_log_writer+0xaf1/0xbb0 fs/nilfs2/segment.c:2859
- nilfs_put_super+0x4d/0x160 fs/nilfs2/super.c:498
- generic_shutdown_super+0x134/0x340 fs/super.c:499
- kill_block_super+0x68/0xa0 fs/super.c:1417
- deactivate_locked_super+0xa4/0x110 fs/super.c:330
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- ptrace_notify+0x2cd/0x380 kernel/signal.c:2376
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:252 [inline]
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:279 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
- syscall_exit_to_user_mode+0x157/0x280 kernel/entry/common.c:297
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fa78ff75ee7
-Code: 08 00 48 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffe7acb7da8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fa78ff75ee7
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffe7acb7e60
-RBP: 00007ffe7acb7e60 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000202 R12: 00007ffe7acb8f20
-R13: 00005555556ce700 R14: 431bde82d7b634db R15: 00007ffe7acb8ec4
- </TASK>
-
-Allocated by task 7068:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:582 [inline]
- kzalloc include/linux/slab.h:703 [inline]
- nilfs_find_or_create_root+0x137/0x4e0 fs/nilfs2/the_nilfs.c:851
- nilfs_attach_checkpoint+0x123/0x4d0 fs/nilfs2/super.c:550
- nilfs_fill_super+0x321/0x600 fs/nilfs2/super.c:1095
- nilfs_mount+0x637/0x950 fs/nilfs2/super.c:1343
- legacy_get_tree+0xef/0x190 fs/fs_context.c:611
- vfs_get_tree+0x8c/0x270 fs/super.c:1519
- do_new_mount+0x28f/0xae0 fs/namespace.c:3335
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Freed by task 5018:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1792 [inline]
- slab_free_freelist_hook mm/slub.c:1818 [inline]
- slab_free mm/slub.c:3801 [inline]
- __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3814
- nilfs_segctor_destroy fs/nilfs2/segment.c:2782 [inline]
- nilfs_detach_log_writer+0x8c1/0xbb0 fs/nilfs2/segment.c:2845
- nilfs_put_super+0x4d/0x160 fs/nilfs2/super.c:498
- generic_shutdown_super+0x134/0x340 fs/super.c:499
- kill_block_super+0x68/0xa0 fs/super.c:1417
- deactivate_locked_super+0xa4/0x110 fs/super.c:330
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- ptrace_notify+0x2cd/0x380 kernel/signal.c:2376
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:252 [inline]
- syscall_exit_to_user_mode_prepare kernel/entry/common.c:279 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
- syscall_exit_to_user_mode+0x157/0x280 kernel/entry/common.c:297
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The buggy address belongs to the object at ffff88802ba11000
- which belongs to the cache kmalloc-256 of size 256
-The buggy address is located 48 bytes inside of
- freed 256-byte region [ffff88802ba11000, ffff88802ba11100)
-
-The buggy address belongs to the physical page:
-page:ffffea0000ae8400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2ba10
-head:ffffea0000ae8400 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000010200 ffff888012841b40 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (init), ts 16455889560, free_ts 12781023907
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1570
- prep_new_page mm/page_alloc.c:1577 [inline]
- get_page_from_freelist+0x31e8/0x3370 mm/page_alloc.c:3221
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4477
- alloc_slab_page+0x6a/0x160 mm/slub.c:1862
- allocate_slab mm/slub.c:2009 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2062
- ___slab_alloc+0xade/0x1100 mm/slub.c:3215
- __slab_alloc mm/slub.c:3314 [inline]
- __slab_alloc_node mm/slub.c:3367 [inline]
- slab_alloc_node mm/slub.c:3460 [inline]
- __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3509
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1076
- kmalloc include/linux/slab.h:582 [inline]
- kzalloc include/linux/slab.h:703 [inline]
- smk_fetch+0x92/0x140 security/smack/smack_lsm.c:291
- smack_d_instantiate+0x8d7/0xb40 security/smack/smack_lsm.c:3547
- security_d_instantiate+0x9b/0xf0 security/security.c:3760
- d_splice_alias+0x6f/0x330 fs/dcache.c:3146
- ext4_lookup+0x284/0x750 fs/ext4/namei.c:1879
- __lookup_slow+0x282/0x3e0 fs/namei.c:1690
- lookup_slow+0x53/0x70 fs/namei.c:1707
- walk_component fs/namei.c:1998 [inline]
- link_path_walk+0x9c8/0xe70 fs/namei.c:2325
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1161 [inline]
- free_unref_page_prepare+0x903/0xa30 mm/page_alloc.c:2348
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2443
- vfree+0x186/0x2e0 mm/vmalloc.c:2842
- delayed_vfree_work+0x56/0x80 mm/vmalloc.c:2763
- process_one_work+0x92c/0x12c0 kernel/workqueue.c:2597
- worker_thread+0xa63/0x1210 kernel/workqueue.c:2748
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-
-Memory state around the buggy address:
- ffff88802ba10f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88802ba10f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88802ba11000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff88802ba11080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802ba11100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+On 26.07.2023 21:21, Bobby Eshleman wrote:
+> On Mon, Jul 24, 2023 at 09:11:44PM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 19.07.2023 03:50, Bobby Eshleman wrote:
+>>> This commit drops the transport->dgram_dequeue callback and makes
+>>> vsock_dgram_recvmsg() generic to all transports.
+>>>
+>>> To make this possible, two transport-level changes are introduced:
+>>> - implementation of the ->dgram_addr_init() callback to initialize
+>>>   the sockaddr_vm structure with data from incoming socket buffers.
+>>> - transport implementations set the skb->data pointer to the beginning
+>>>   of the payload prior to adding the skb to the socket's receive queue.
+>>>   That is, they must use skb_pull() before enqueuing. This is an
+>>>   agreement between the transport and the socket layer that skb->data
+>>>   always points to the beginning of the payload (and not, for example,
+>>>   the packet header).
+>>>
+>>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>>> ---
+>>>  drivers/vhost/vsock.c                   |  1 -
+>>>  include/linux/virtio_vsock.h            |  5 ---
+>>>  include/net/af_vsock.h                  |  3 +-
+>>>  net/vmw_vsock/af_vsock.c                | 40 ++++++++++++++++++++++-
+>>>  net/vmw_vsock/hyperv_transport.c        |  7 ----
+>>>  net/vmw_vsock/virtio_transport.c        |  1 -
+>>>  net/vmw_vsock/virtio_transport_common.c |  9 -----
+>>>  net/vmw_vsock/vmci_transport.c          | 58 ++++++---------------------------
+>>>  net/vmw_vsock/vsock_loopback.c          |  1 -
+>>>  9 files changed, 50 insertions(+), 75 deletions(-)
+>>>
+>>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>>> index 6578db78f0ae..ae8891598a48 100644
+>>> --- a/drivers/vhost/vsock.c
+>>> +++ b/drivers/vhost/vsock.c
+>>> @@ -410,7 +410,6 @@ static struct virtio_transport vhost_transport = {
+>>>  		.cancel_pkt               = vhost_transport_cancel_pkt,
+>>>  
+>>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>  		.dgram_bind               = virtio_transport_dgram_bind,
+>>>  		.dgram_allow              = virtio_transport_dgram_allow,
+>>>  
+>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>> index c58453699ee9..18cbe8d37fca 100644
+>>> --- a/include/linux/virtio_vsock.h
+>>> +++ b/include/linux/virtio_vsock.h
+>>> @@ -167,11 +167,6 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+>>>  				size_t len,
+>>>  				int type);
+>>>  int
+>>> -virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>> -			       struct msghdr *msg,
+>>> -			       size_t len, int flags);
+>>> -
+>>> -int
+>>>  virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
+>>>  				   struct msghdr *msg,
+>>>  				   size_t len);
+>>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>>> index 0e7504a42925..305d57502e89 100644
+>>> --- a/include/net/af_vsock.h
+>>> +++ b/include/net/af_vsock.h
+>>> @@ -120,11 +120,10 @@ struct vsock_transport {
+>>>  
+>>>  	/* DGRAM. */
+>>>  	int (*dgram_bind)(struct vsock_sock *, struct sockaddr_vm *);
+>>> -	int (*dgram_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>>> -			     size_t len, int flags);
+>>>  	int (*dgram_enqueue)(struct vsock_sock *, struct sockaddr_vm *,
+>>>  			     struct msghdr *, size_t len);
+>>>  	bool (*dgram_allow)(u32 cid, u32 port);
+>>> +	void (*dgram_addr_init)(struct sk_buff *skb, struct sockaddr_vm *addr);
+>>>  
+>>>  	/* STREAM. */
+>>>  	/* TODO: stream_bind() */
+>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>>> index deb72a8c44a7..ad71e084bf2f 100644
+>>> --- a/net/vmw_vsock/af_vsock.c
+>>> +++ b/net/vmw_vsock/af_vsock.c
+>>> @@ -1272,11 +1272,15 @@ static int vsock_dgram_connect(struct socket *sock,
+>>>  int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>>>  			size_t len, int flags)
+>>>  {
+>>> +	const struct vsock_transport *transport;
+>>>  #ifdef CONFIG_BPF_SYSCALL
+>>>  	const struct proto *prot;
+>>>  #endif
+>>>  	struct vsock_sock *vsk;
+>>> +	struct sk_buff *skb;
+>>> +	size_t payload_len;
+>>>  	struct sock *sk;
+>>> +	int err;
+>>>  
+>>>  	sk = sock->sk;
+>>>  	vsk = vsock_sk(sk);
+>>> @@ -1287,7 +1291,41 @@ int vsock_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>>>  		return prot->recvmsg(sk, msg, len, flags, NULL);
+>>>  #endif
+>>>  
+>>> -	return vsk->transport->dgram_dequeue(vsk, msg, len, flags);
+>>> +	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	transport = vsk->transport;
+>>> +
+>>> +	/* Retrieve the head sk_buff from the socket's receive queue. */
+>>> +	err = 0;
+>>> +	skb = skb_recv_datagram(sk_vsock(vsk), flags, &err);
+>>> +	if (!skb)
+>>> +		return err;
+>>> +
+>>> +	payload_len = skb->len;
+>>> +
+>>> +	if (payload_len > len) {
+>>> +		payload_len = len;
+>>> +		msg->msg_flags |= MSG_TRUNC;
+>>> +	}
+>>> +
+>>> +	/* Place the datagram payload in the user's iovec. */
+>>> +	err = skb_copy_datagram_msg(skb, 0, msg, payload_len);
+>>> +	if (err)
+>>> +		goto out;
+>>> +
+>>> +	if (msg->msg_name) {
+>>> +		/* Provide the address of the sender. */
+>>> +		DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+>>> +
+>>> +		transport->dgram_addr_init(skb, vm_addr);
+>>
+>> Do we need check that dgram_addr_init != NULL? because I see that not all transports have this
+>> callback set in this patch
+>>
+> 
+> How about adding the check somewhere outside of the hotpath, such as
+> when the transport is assigned?
+
+Yes, may be we can return ESOCKTNOSUPPORT if this callback is not provided by transport (as we dereference
+it here without any checks).
+
+Thanks, Arseniy
+
+> 
+>>> +		msg->msg_namelen = sizeof(*vm_addr);
+>>> +	}
+>>> +	err = payload_len;
+>>> +
+>>> +out:
+>>> +	skb_free_datagram(&vsk->sk, skb);
+>>> +	return err;
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(vsock_dgram_recvmsg);
+>>>  
+>>> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+>>> index 7cb1a9d2cdb4..7f1ea434656d 100644
+>>> --- a/net/vmw_vsock/hyperv_transport.c
+>>> +++ b/net/vmw_vsock/hyperv_transport.c
+>>> @@ -556,12 +556,6 @@ static int hvs_dgram_bind(struct vsock_sock *vsk, struct sockaddr_vm *addr)
+>>>  	return -EOPNOTSUPP;
+>>>  }
+>>>  
+>>> -static int hvs_dgram_dequeue(struct vsock_sock *vsk, struct msghdr *msg,
+>>> -			     size_t len, int flags)
+>>> -{
+>>> -	return -EOPNOTSUPP;
+>>> -}
+>>> -
+>>>  static int hvs_dgram_enqueue(struct vsock_sock *vsk,
+>>>  			     struct sockaddr_vm *remote, struct msghdr *msg,
+>>>  			     size_t dgram_len)
+>>> @@ -833,7 +827,6 @@ static struct vsock_transport hvs_transport = {
+>>>  	.shutdown                 = hvs_shutdown,
+>>>  
+>>>  	.dgram_bind               = hvs_dgram_bind,
+>>> -	.dgram_dequeue            = hvs_dgram_dequeue,
+>>>  	.dgram_enqueue            = hvs_dgram_enqueue,
+>>>  	.dgram_allow              = hvs_dgram_allow,
+>>>  
+>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>>> index e95df847176b..66edffdbf303 100644
+>>> --- a/net/vmw_vsock/virtio_transport.c
+>>> +++ b/net/vmw_vsock/virtio_transport.c
+>>> @@ -429,7 +429,6 @@ static struct virtio_transport virtio_transport = {
+>>>  		.cancel_pkt               = virtio_transport_cancel_pkt,
+>>>  
+>>>  		.dgram_bind               = virtio_transport_dgram_bind,
+>>> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>>  		.dgram_allow              = virtio_transport_dgram_allow,
+>>>  
+>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>> index b769fc258931..01ea1402ad40 100644
+>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>> @@ -583,15 +583,6 @@ virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
+>>>  }
+>>>  EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_enqueue);
+>>>  
+>>> -int
+>>> -virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>> -			       struct msghdr *msg,
+>>> -			       size_t len, int flags)
+>>> -{
+>>> -	return -EOPNOTSUPP;
+>>> -}
+>>> -EXPORT_SYMBOL_GPL(virtio_transport_dgram_dequeue);
+>>> -
+>>>  s64 virtio_transport_stream_has_data(struct vsock_sock *vsk)
+>>>  {
+>>>  	struct virtio_vsock_sock *vvs = vsk->trans;
+>>> diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transport.c
+>>> index b370070194fa..0bbbdb222245 100644
+>>> --- a/net/vmw_vsock/vmci_transport.c
+>>> +++ b/net/vmw_vsock/vmci_transport.c
+>>> @@ -641,6 +641,7 @@ static int vmci_transport_recv_dgram_cb(void *data, struct vmci_datagram *dg)
+>>>  	sock_hold(sk);
+>>>  	skb_put(skb, size);
+>>>  	memcpy(skb->data, dg, size);
+>>> +	skb_pull(skb, VMCI_DG_HEADERSIZE);
+>>>  	sk_receive_skb(sk, skb, 0);
+>>>  
+>>>  	return VMCI_SUCCESS;
+>>> @@ -1731,57 +1732,18 @@ static int vmci_transport_dgram_enqueue(
+>>>  	return err - sizeof(*dg);
+>>>  }
+>>>  
+>>> -static int vmci_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>> -					struct msghdr *msg, size_t len,
+>>> -					int flags)
+>>> +static void vmci_transport_dgram_addr_init(struct sk_buff *skb,
+>>> +					   struct sockaddr_vm *addr)
+>>>  {
+>>> -	int err;
+>>>  	struct vmci_datagram *dg;
+>>> -	size_t payload_len;
+>>> -	struct sk_buff *skb;
+>>> -
+>>> -	if (flags & MSG_OOB || flags & MSG_ERRQUEUE)
+>>> -		return -EOPNOTSUPP;
+>>> -
+>>> -	/* Retrieve the head sk_buff from the socket's receive queue. */
+>>> -	err = 0;
+>>> -	skb = skb_recv_datagram(&vsk->sk, flags, &err);
+>>> -	if (!skb)
+>>> -		return err;
+>>> -
+>>> -	dg = (struct vmci_datagram *)skb->data;
+>>> -	if (!dg)
+>>> -		/* err is 0, meaning we read zero bytes. */
+>>> -		goto out;
+>>> -
+>>> -	payload_len = dg->payload_size;
+>>> -	/* Ensure the sk_buff matches the payload size claimed in the packet. */
+>>> -	if (payload_len != skb->len - sizeof(*dg)) {
+>>> -		err = -EINVAL;
+>>> -		goto out;
+>>> -	}
+>>> -
+>>> -	if (payload_len > len) {
+>>> -		payload_len = len;
+>>> -		msg->msg_flags |= MSG_TRUNC;
+>>> -	}
+>>> +	unsigned int cid, port;
+>>>  
+>>> -	/* Place the datagram payload in the user's iovec. */
+>>> -	err = skb_copy_datagram_msg(skb, sizeof(*dg), msg, payload_len);
+>>> -	if (err)
+>>> -		goto out;
+>>> -
+>>> -	if (msg->msg_name) {
+>>> -		/* Provide the address of the sender. */
+>>> -		DECLARE_SOCKADDR(struct sockaddr_vm *, vm_addr, msg->msg_name);
+>>> -		vsock_addr_init(vm_addr, dg->src.context, dg->src.resource);
+>>> -		msg->msg_namelen = sizeof(*vm_addr);
+>>> -	}
+>>> -	err = payload_len;
+>>> +	WARN_ONCE(skb->head == skb->data, "vmci vsock bug: bad dgram skb");
+>>>  
+>>> -out:
+>>> -	skb_free_datagram(&vsk->sk, skb);
+>>> -	return err;
+>>> +	dg = (struct vmci_datagram *)skb->head;
+>>> +	cid = dg->src.context;
+>>> +	port = dg->src.resource;
+>>> +	vsock_addr_init(addr, cid, port);
+>>
+>> I think we
+>>
+>> 1) can short this to:
+>>
+>> vsock_addr_init(addr, dg->src.context, dg->src.resource);
+>>
+>> 2) w/o previous point, cid and port better be u32, as VMCI structure has u32 fields 'context' and
+>>    'resource' and 'vsock_addr_init()' also has u32 type for both arguments.
+>>
+>> Thanks, Arseniy
+> 
+> Sounds good, thanks.
+> 
+>>
+>>>  }
+>>>  
+>>>  static bool vmci_transport_dgram_allow(u32 cid, u32 port)
+>>> @@ -2040,9 +2002,9 @@ static struct vsock_transport vmci_transport = {
+>>>  	.release = vmci_transport_release,
+>>>  	.connect = vmci_transport_connect,
+>>>  	.dgram_bind = vmci_transport_dgram_bind,
+>>> -	.dgram_dequeue = vmci_transport_dgram_dequeue,
+>>>  	.dgram_enqueue = vmci_transport_dgram_enqueue,
+>>>  	.dgram_allow = vmci_transport_dgram_allow,
+>>> +	.dgram_addr_init = vmci_transport_dgram_addr_init,
+>>>  	.stream_dequeue = vmci_transport_stream_dequeue,
+>>>  	.stream_enqueue = vmci_transport_stream_enqueue,
+>>>  	.stream_has_data = vmci_transport_stream_has_data,
+>>> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+>>> index 5c6360df1f31..2a59dd177c74 100644
+>>> --- a/net/vmw_vsock/vsock_loopback.c
+>>> +++ b/net/vmw_vsock/vsock_loopback.c
+>>> @@ -62,7 +62,6 @@ static struct virtio_transport loopback_transport = {
+>>>  		.cancel_pkt               = vsock_loopback_cancel_pkt,
+>>>  
+>>>  		.dgram_bind               = virtio_transport_dgram_bind,
+>>> -		.dgram_dequeue            = virtio_transport_dgram_dequeue,
+>>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+>>>  		.dgram_allow              = virtio_transport_dgram_allow,
+>>>  
+>>>
+> 
+> Thanks,
+> Bobby
