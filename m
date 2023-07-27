@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25BD7652D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D680F7652D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbjG0LrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        id S233475AbjG0LrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233428AbjG0LrL (ORCPT
+        with ESMTP id S233466AbjG0LrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:47:11 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DE02733
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:09 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so11499a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:09 -0700 (PDT)
+        Thu, 27 Jul 2023 07:47:14 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276E92127
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:13 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99454855de1so107717866b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690458428; x=1691063228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qlpFvFih5GNNFlLVS+kGv2ki2c8Ll+1BvaJ8aRuK9S8=;
-        b=ujVW/hIeAcMqTgtHIGUFEu+YyAKGtrsu3UgdsoRPDPWXPqjjTrGvvT/+TomWCDMNEE
-         smG9z1Hj5QXb9B+hICOfNKa8kLEmzcwPz3qTWSiklR+lXYz3qtHZO91BDB9j8kpe/ATD
-         L/5QiEmFSsorHiikkg8KZV4hqg/R3PHGKYfX+JwX1FzSY7khHOQW/6pLNBQlejhGiton
-         RCWGtAoaSzWHbWhwuUOi8b4fBhzW4zIbFwjr4uXFTJToDdyxMRkCQocqFpTlZz68+OpD
-         l9uc8727PvEqzdQ8oZ3fUvbKoy1+whzmNxsGQZNtg/7ZLynTO+1j4UwVAuNnort5Wltn
-         reMg==
+        d=linaro.org; s=google; t=1690458431; x=1691063231;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/gqSRYXyIiQxJrNLAqE8d2UZxktKUrnnw3/Y1qTE4og=;
+        b=Xz7ibKY7UnAcjypV7aAgcV9oAS2BidIzlerD9Fro2fqZCVHnnBIyTSbS7Pdhfy2rrU
+         2cLTNtZabSg5eRH78cKBg5luY5OsfVjOPtsno7fWxmyjp6Kghy5byuWms19dL7I1Gr6e
+         H/zo2p3Jxjovdpl304/je5rJ7rfk/ZjQt0u5zpMJ95TOCkx86hfVYWiWSbhWJuKChfnR
+         2QaQ1OFrB4khiZxIdNx10KZWfxpuEnCFWzPosCjyOIzDB+x2PInqx0PBu/I4Ry3eg5DA
+         csJcIoPENrjhYnHDzN8j0DqDYsZs+M4lRkYWzebYa82mTMuWaeKa81MTy64A2iLvn6GF
+         tQwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690458428; x=1691063228;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qlpFvFih5GNNFlLVS+kGv2ki2c8Ll+1BvaJ8aRuK9S8=;
-        b=M3gSbYOqrVyUcd0SyFj032IOLA2jBXflt6uKpqBXUKo+ktq+4nxgYt9Ms44cr8HkRu
-         QrNeeUY3lRE39UN5RwiRgEVY3VBQg/OPpFd7wsPnt601Dk3ruNNvrCzqtOw8Z/6Pnzvo
-         79GJ8rg0Llquq31YJvYrTPKoocCbPKV+A2d0eLkpvXPA7O5CNqoJlIIvhjWknLoBZKni
-         4yraHly4N9jmBUSLhnrxrk4OZaQvZSg/B5LnYlsQgJDzdYwhZ2W24DiAaNStOIKij+eW
-         v5gDcQf5eitrjNhU87LruaNuWyKYlkLOZyz41+xueLgfqAElkej4qYqbVU3fnBjDi6GW
-         zxrQ==
-X-Gm-Message-State: ABy/qLZsPtHbok5YrQ48es2ntvwixm2isogi+TwkQNM2GqkcWmJbPIhQ
-        vBLi94mIJdwQQJeDXdlkvfrzj1RuvfDt4vstQLLCcA==
-X-Google-Smtp-Source: APBJJlE3Ak6SrPpYNQym9CXnEyN4bE4ktVECrlEgTPLFQyDYNdtVYB9u6qLMyh0cL/BUEGDyLb+GfNuNoJPF3Vc8fY4=
-X-Received: by 2002:a50:d0d2:0:b0:522:41c9:9b9 with SMTP id
- g18-20020a50d0d2000000b0052241c909b9mr83558edf.5.1690458427687; Thu, 27 Jul
- 2023 04:47:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690458431; x=1691063231;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/gqSRYXyIiQxJrNLAqE8d2UZxktKUrnnw3/Y1qTE4og=;
+        b=YiE/ddupnc6JcpGdLFazl8zufVaZuVJG5rIQkmks7pSA+VVq987PG78Mayzwm6jWnR
+         FlE09q395oixabYQCMqOBCqvCfx3fwHoEIKTmWGBPWklqT6R27sLUiHCJtS9dnMADh/D
+         dqiBhdlyDY01JxUkiTbI068O2AOslhZJ12aujtdVcgSvRH548AQxkzPDmBpe3PhoLPg1
+         20qnRDCEEXE7UHLr0isImYIANkhZkDPzzo+sfEEH5yHpdhiWyDd2WbFd1ciuwR6aPeoE
+         yDt+8LkRdok6ikdK8IqK7vRiizJ3bOWitAK8tFTfoHiG93nZiCUYcn9ULPBCN+zROAFK
+         LYWw==
+X-Gm-Message-State: ABy/qLbGcoiHndbBxAjrYIsyWs42CAqH84BNrrMA3YhUk2mkl5ClAT28
+        otwQLS43mz7zr0ZpEvHMMRToag==
+X-Google-Smtp-Source: APBJJlHc02BBYqqYKQubEhzgD06aEdh4kXzo48JCdj+2N3cMsM0ox7BZSV7xs9qUUHBQfaGEhn+9Ng==
+X-Received: by 2002:a17:907:a04d:b0:993:f349:c98c with SMTP id gz13-20020a170907a04d00b00993f349c98cmr1502329ejc.4.1690458431574;
+        Thu, 27 Jul 2023 04:47:11 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id pw3-20020a17090720a300b00987e2f84768sm696396ejb.0.2023.07.27.04.47.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 04:47:11 -0700 (PDT)
+Message-ID: <7f7d1c90-9969-66bd-fd71-defffe0e05d6@linaro.org>
+Date:   Thu, 27 Jul 2023 13:47:09 +0200
 MIME-Version: 1.0
-References: <20230727093637.1262110-1-usama.anjum@collabora.com> <20230727093637.1262110-3-usama.anjum@collabora.com>
-In-Reply-To: <20230727093637.1262110-3-usama.anjum@collabora.com>
-From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-Date:   Thu, 27 Jul 2023 13:46:55 +0200
-Message-ID: <CABb0KFFphs6gLCH9+tenmoJ_3nNAop30pOMhKDwKT2Pthvb=6g@mail.gmail.com>
-Subject: Re: [PATCH v26 2/5] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: iio: admv1014: make all regs required
+Content-Language: en-US
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230727113136.98037-1-antoniu.miclaus@analog.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230727113136.98037-1-antoniu.miclaus@analog.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 11:37, Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
-[...]
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-[...]
-> +/*
-> + * struct pm_scan_arg - Pagemap ioctl argument
-> + * @size:              Size of the structure
-> + * @flags:             Flags for the IOCTL
-> + * @start:             Starting address of the region
-> + * @end:               Ending address of the region
-> + * @walk_end:          Ending address of the visited memory is returned
-> + *                     (This helps if entire range hasn't been visited)
+On 27/07/2023 13:31, Antoniu Miclaus wrote:
+> Since the regulators are required in the driver implementation, make
+> them required also in the bindings.
+> 
 
-"Address where the scan stopped (written by kernel). walk_end == end
-informs that the scan completed."
+The true reason should be whether the hardware requires them. Because if
+hardware does not need some, the driver should be fixed.
 
-(To make the userspace life easier, we can copy `end` (only) in case
-of full scan completion, so that the tag is retained.)
+Best regards,
+Krzysztof
 
-> + * @vec:               Address of page_region struct array for output
-> + * @vec_len:           Length of the page_region struct array
-> + * @max_pages:         Optional limit for number of returned pages (0 = disabled)
-> + * @category_inverted: PAGE_IS_* categories which values match if 0 instead of 1
-> + * @category_mask:     Skip pages for which any category doesn't match
-> + * @category_anyof_mask: Skip pages for which no category matches
-> + * @return_mask:       PAGE_IS_* categories that are to be reported in `page_region`s returned
-> + */
