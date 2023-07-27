@@ -2,227 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E62764A33
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA632764A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbjG0IHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S233791AbjG0IHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjG0IHD (ORCPT
+        with ESMTP id S233768AbjG0IG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:07:03 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C09E2D63;
-        Thu, 27 Jul 2023 01:03:32 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso9558391fa.0;
-        Thu, 27 Jul 2023 01:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690445011; x=1691049811;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IbW7gI8a3h2DtRGdUF2rMRbdoxwlm6QKOTYcrosHNBs=;
-        b=EhWPo4MEPNAXO7A/UJ1EqCuxFIfcR01vvsKQKmIGV1QV+PnLkZKyDmrGCWc+YSi8F4
-         lOoP/2TG2yqIkudRF+0iwzcAiI4gYrGIXkrX2ypVZg5665I4MaFS0/JewGu3SragA9ZT
-         5MMrRSRaiadbCTjTK2fkDiXv4WVm47Lq8FpnWAYYd/ACP/WlVO3XmtZsl/pZbFqPf0b2
-         oD7jcmyAOXanzOz3WPIR9RjWSlsU+kHdWN2xj9/t0mPEwXDWsmkFWB2TLEw+rYroWyfk
-         JSYzeWSnH3jpGSR5Jdl0Xb+ZTJFqjSpaWRccdiCSuVgMsf/pJ52xuDTBWSauQNGq2+gn
-         Mztg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445011; x=1691049811;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IbW7gI8a3h2DtRGdUF2rMRbdoxwlm6QKOTYcrosHNBs=;
-        b=P3ZE6CZ3+YM19zLaB4ZMjMGu72ez+G6dxKsXq8Skmhe2QYf3mVXp66OGDPsQZgZjKY
-         xDvkXNEkC8ROnopLDWjh5STMjCUdfqZ1AdqRE8xWQUDVuHxivxtMjG3EBDwPziFgW/Bt
-         HgLx43RD/FkoyvuM2uLu+p0c9fRlhmWr8OtPsLbj26gZTsRnGqpwuKfZ7ueIvlvs/byc
-         QgLOL3WlyRcQ39PyDTgNPH5OExGbhodJAhrNM/BIXCexRd3b07/Q/N7vlKg4hHs5Cxm3
-         oLhO2dfyBL3JarGJ/zeECXaGxIWFOz///hcfvvpE9g35Yxn3EGZKLbzmiOlE6n1gtc/c
-         muyw==
-X-Gm-Message-State: ABy/qLbuIcRFnC0vS61Ju3nMcDa4biCGHOBzEd476etE2I68yBQPyXUt
-        hVP3sjmZ+11O0eipRpP2AQZkhlmdB4eLWcYOOn4=
-X-Google-Smtp-Source: APBJJlFOyEp3aH4nbnnFb6F1FGxJyzCBCXxMiO4szu4Qz6wRbHan22QnDkvyGS9SlOqBnnv2QBJiOI+MWs7hY8+gz/A=
-X-Received: by 2002:a2e:b1d3:0:b0:2b6:da88:a2d0 with SMTP id
- e19-20020a2eb1d3000000b002b6da88a2d0mr1085078lja.47.1690445010411; Thu, 27
- Jul 2023 01:03:30 -0700 (PDT)
+        Thu, 27 Jul 2023 04:06:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70830128
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:03:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DFEA61DA2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:03:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A108C433C7;
+        Thu, 27 Jul 2023 08:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690445002;
+        bh=2TyIJyHYASUoeAuNBExQ7Upn2naOgOozjwpfY0cvE/Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pbos+VHSeeXMtK4cSodDIHutWXua9CUJD7cAoyTRRg/2DxQHGCEC9HLFT56RjVr/2
+         dkPcQgvKsnfI6aFOl8udayaXch9OTD3QFVYauHoB0F8Nmr3RTQ8STxnGkMZqjMFI3V
+         MT4kISx9cznxh8zJ9Bz31hLX5obsJ3fSrzcrIiEs=
+Date:   Thu, 27 Jul 2023 10:03:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <2023072729-sensitive-spyglass-ec96@gregkh>
+References: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-From:   Yikebaer Aizezi <yikebaer61@gmail.com>
-Date:   Thu, 27 Jul 2023 16:03:18 +0800
-Message-ID: <CALcu4rbFrU4go8sBHk3FreP+qjgtZCGcYNpSiEXOLm==qFv7iQ@mail.gmail.com>
-Subject: WARNING in kvm_arch_vcpu_ioctl_run
-To:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, jarkko@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, I'm sorry for the mistake in my previous email. I forgot to add
-a subject. This is my second attempt to send the message.
+On Sat, Jul 08, 2023 at 12:55:11AM -0300, Alexon Oliveira wrote:
+> Adhere to Linux kernel coding style.
+> 
+> Reported by checkpatch:
+> 
+> CHECK: Alignment should match open parenthesis
+> 
+> #132: FILE: drivers/staging/vme_user/vme_bridge.h:132
+> #135: FILE: drivers/staging/vme_user/vme_bridge.h:135
+> #139: FILE: drivers/staging/vme_user/vme_bridge.h:139
+> #142: FILE: drivers/staging/vme_user/vme_bridge.h:142
+> #144: FILE: drivers/staging/vme_user/vme_bridge.h:144
+> #146: FILE: drivers/staging/vme_user/vme_bridge.h:146
+> #148: FILE: drivers/staging/vme_user/vme_bridge.h:148
+> #152: FILE: drivers/staging/vme_user/vme_bridge.h:152
+> #163: FILE: drivers/staging/vme_user/vme_bridge.h:163
+> #173: FILE: drivers/staging/vme_user/vme_bridge.h:173
+> #175: FILE: drivers/staging/vme_user/vme_bridge.h:175
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+We don't need all of these lines.
 
-HEAD commit: fdf0eaf11452d72945af31804e2a1048ee1b574c (tag: v6.5-rc2)
+>     Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
 
-git tree: upstream
+Please don't indent your signed-off-by line, that should be to the left.
 
-console output:
-https://drive.google.com/file/d/1FiemC_AWRT-6EGscpQJZNzYhXZty6BVr/view?usp=drive_link
-kernel config: https://drive.google.com/file/d/1fgPLKOw7QbKzhK6ya5KUyKyFhumQgunw/view?usp=drive_link
-C reproducer: https://drive.google.com/file/d/1SiLpYTZ7Du39ubgf1k1BIPlu9ZvMjiWZ/view?usp=drive_link
-Syzlang reproducer:
-https://drive.google.com/file/d/1eWSmwvNGOlZNU-0-xsKhUgZ4WG2VLZL5/view?usp=drive_link
-Similar report:
-https://groups.google.com/g/syzkaller-bugs/c/C2ud-S1Thh0/m/z4iI7l_dAgAJ
+> 
+> diff --git a/drivers/staging/vme_user/vme_bridge.h b/drivers/staging/vme_user/vme_bridge.h
+> index 11df0a5e7f7b..a0d7a8db239d 100644
+> --- a/drivers/staging/vme_user/vme_bridge.h
+> +++ b/drivers/staging/vme_user/vme_bridge.h
+> @@ -128,28 +128,21 @@ struct vme_bridge {
+>  	struct mutex irq_mtx;
+> 
+>  	/* Slave Functions */
+> -	int (*slave_get)(struct vme_slave_resource *, int *,
+> -		unsigned long long *, unsigned long long *, dma_addr_t *,
+> -		u32 *, u32 *);
+> -	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
+> -		unsigned long long, dma_addr_t, u32, u32);
+> +	int (*slave_get)(struct vme_slave_resource *, int *, unsigned long long *,
+> +			 unsigned long long *, dma_addr_t *, u32 *, u32 *);
+> +	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+Did you run your patch through checkpatch.pl after making this change?
+I think you just added more warnings...
 
-kvm: vcpu 129: requested lapic timer restore with starting count
-register 0x390=4241646265 (4241646265 ns) > initial count (296265111
-ns). Using initial count to start timer.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1977 at arch/x86/kvm/x86.c:11098
-kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
-Modules linked in:
-CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
-Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
-40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
-e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
-RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
-RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
-RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
-RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
-R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
-R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
-FS:  00007feb64c14640(0000) GS:ffff888063e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000002a8 CR3: 0000000114888000 CR4: 0000000000752ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <TASK>
- kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x47959d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
-RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
- </TASK>
+thanks,
 
-Modules linked in:
-CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
-Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
-40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
-e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
-RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
-RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
-RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
-RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
-R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
-R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
-FS:  00007feb64c14640(0000) GS:ffff888063e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000002a8 CR3: 0000000114888000 CR4: 0000000000752ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <TASK>
- kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x47959d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
-RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
- </TASK>
-Kernel panic - not syncing: kernel: panic_on_warn set ...
-CPU: 0 PID: 1977 Comm: syz-executor Not tainted 6.5.0-rc2 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x92/0xf0 lib/dump_stack.c:106
- panic+0x570/0x620 kernel/panic.c:340
- check_panic_on_warn+0x8e/0x90 kernel/panic.c:236
- __warn+0xee/0x340 kernel/panic.c:673
- __report_bug lib/bug.c:199 [inline]
- report_bug+0x25d/0x460 lib/bug.c:219
- handle_bug+0x3c/0x70 arch/x86/kernel/traps.c:324
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:345
- asm_exc_invalid_op+0x16/0x20 arch/x86/include/asm/idtentry.h:568
-RIP: 0010:kvm_arch_vcpu_ioctl_run+0x152f/0x1830 arch/x86/kvm/x86.c:11098
-Code: fd ff ff e8 83 ca 67 00 44 89 ee 48 c7 c7 80 8e 42 89 c6 05 e3
-40 1e 0c 01 e8 2d 22 33 00 0f 0b e9 ed fc ff ff e8 61 ca 67 00 <0f> 0b
-e9 ff fb ff ff e8 55 ca 67 00 80 3d c0 40 1e 0c 00 0f 85 19
-RSP: 0018:ffffc900072dfcd8 EFLAGS: 00010212
-RAX: 00000000000006a9 RBX: ffff88801852c000 RCX: ffffc90002bd9000
-RDX: 0000000000040000 RSI: ffffffff81114ddf RDI: ffff88810e5d0880
-RBP: ffff888018995180 R08: 0000000000000000 R09: fffffbfff1f4f5b0
-R10: ffffffff8fa7ad87 R11: 0000000000000001 R12: ffff8880189951ac
-R13: 0000000000000000 R14: ffff8880189959a8 R15: ffff888018995268
- kvm_vcpu_ioctl+0x4de/0xcc0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4112
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x173/0x1e0 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x47959d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007feb64c14068 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000008
-RBP: 000000000059c0a0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 000000000000000b R14: 0000000000437250 R15: 00007feb64bf4000
- </TASK>
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 1 seconds..
+greg k-h
