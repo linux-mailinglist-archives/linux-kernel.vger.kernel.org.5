@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6764B764572
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70F6764578
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbjG0Fat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
+        id S231422AbjG0Fce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjG0Fas (ORCPT
+        with ESMTP id S229820AbjG0Fcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:30:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FFC2721;
-        Wed, 26 Jul 2023 22:30:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 32D7021B82;
-        Thu, 27 Jul 2023 05:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690435844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S85VZ1Bg5eFUHBIs1TmYsF9LGbx0r23IuB4QCTVlNMY=;
-        b=jaIEt0aMR2Rp2VPqgJKXQC0xEILQNQocmtuJOqjqp2fDyp36rnHfZBMevcBUyU/cH2cyvd
-        wvmRIYCEksZbsmaihBb/qkV4mwRxi2t9a7BYZJf9OcaXzVE/WSyx4/ODMCVNQDUsWYc0g7
-        BxjIqlOtmvEs5xTnRSXTA+tAFLtMN8k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 03D6F138E5;
-        Thu, 27 Jul 2023 05:30:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id EqrzOgMBwmRbfwAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 27 Jul 2023 05:30:43 +0000
-Message-ID: <6842949f-a955-b73b-7a9e-8e93657b2f40@suse.com>
-Date:   Thu, 27 Jul 2023 07:30:42 +0200
+        Thu, 27 Jul 2023 01:32:32 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE2D26B9
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:32:30 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686f19b6dd2so222426b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:32:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1690435950; x=1691040750;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KUys1cDp/2h7CG55/Ytj4NCRarR8kFAc8HIBwQgZbvA=;
+        b=V0hWqsPPDiPMT83R1pVfVCMYSrBLqz6mc6EmFuwO1yCN/iNQXE1//W7WibzJPN9xRF
+         j89axna4imoV+P9Ciz31Ax/8HEG8TRDt11HxGIU4+7WOtcIhyiYNmUHeGAGlpYzk+zTM
+         2RMn5LAbKbUOUapiC9PLwlCbTJn75OltqI1svRLv284ezFzAJlgdQWtlxxDDUl6ck4HI
+         TPcoOctqsFpUkTvRCAgXtu8jRX3UBZ6UzwT8DiSV4GpvO28Tu1LAfMzB61/NweQTMgkh
+         CPV6EZLjSvbSs+mUCmok0UrUtzL5376P2FIqKmlHFyVZQwa6L6djZbXvQNB2SYuVd2bf
+         m9fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690435950; x=1691040750;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KUys1cDp/2h7CG55/Ytj4NCRarR8kFAc8HIBwQgZbvA=;
+        b=fiUW+CrK93xYGAL3cvm5TidxaWMk0IQXcFvGaXccJ9+tFM/6wXgPLh6SfeGU3Ri4fN
+         v93NhmM3haovxlSnvzxHTLyBrLFfsw+Asff++oJiKCkKMqKm+slozYQbjBfAGAXnDDrV
+         ph2Bq4hzXBTZ6TOG+Jm6VdfuRmN8ZCqFchR8Xxue47wV+2ad8eo1FlCrMUMUBHLSi0bG
+         8P9wBreWN0NSiYVBWPQmRMJzsqYhybCgos4xniHJQ5E6XUtuheJftJr6ET0uqOiMBq7q
+         0qVf8BBkCVVG/hEdB10VQqa9FHBVIFLGXnk3z8xVBZknNtenseu9ybDhHjkdDjbx/CzP
+         gOOQ==
+X-Gm-Message-State: ABy/qLb/AetcChTysjeHAz6an16OY19T65DAS6gHQZDOv0K612RxaNkD
+        +83BTq6X9ONTa5efSvw5GBrckA==
+X-Google-Smtp-Source: APBJJlGE9hhTvh6wkyKNJHhZ7YJNkDle/Tksp17wSJxgHShpBSYKh+2gLuxRxwhUauESUzKZfUPPrg==
+X-Received: by 2002:a05:6a20:b70a:b0:132:87ab:42d5 with SMTP id fg10-20020a056a20b70a00b0013287ab42d5mr3296876pzb.35.1690435949763;
+        Wed, 26 Jul 2023 22:32:29 -0700 (PDT)
+Received: from localhost.localdomain ([82.78.167.79])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c11500b001bb889530adsm319059pli.217.2023.07.26.22.32.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 22:32:29 -0700 (PDT)
+From:   Claudiu Beznea <claudiu.beznea@tuxon.dev>
+To:     mturquette@baylibre.com, sboyd@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        mripard@kernel.org
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, varshini.rajendran@microchip.com,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Subject: [PATCH 00/42] clk: at91: add support for parent_data and parent_hw (take #2)
+Date:   Thu, 27 Jul 2023 08:31:14 +0300
+Message-Id: <20230727053156.13587-1-claudiu.beznea@tuxon.dev>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4] xen: speed up grant-table reclaim
-Content-Language: en-US
-To:     Demi Marie Obenour <demi@invisiblethingslab.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc:     Xen developer discussion <xen-devel@lists.xenproject.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org
-References: <20230627172216.1359-1-demi@invisiblethingslab.com>
- <20230726165354.1252-1-demi@invisiblethingslab.com>
-From:   Juergen Gross <jgross@suse.com>
-In-Reply-To: <20230726165354.1252-1-demi@invisiblethingslab.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------ZGkv1JTl5MGJG34IhnAZglmk"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,127 +72,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------ZGkv1JTl5MGJG34IhnAZglmk
-Content-Type: multipart/mixed; boundary="------------f8E1sN4Er4CzU5ittAAqYdAW";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Demi Marie Obenour <demi@invisiblethingslab.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Cc: Xen developer discussion <xen-devel@lists.xenproject.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- stable@vger.kernel.org
-Message-ID: <6842949f-a955-b73b-7a9e-8e93657b2f40@suse.com>
-Subject: Re: [PATCH v4] xen: speed up grant-table reclaim
-References: <20230627172216.1359-1-demi@invisiblethingslab.com>
- <20230726165354.1252-1-demi@invisiblethingslab.com>
-In-Reply-To: <20230726165354.1252-1-demi@invisiblethingslab.com>
+Series adds support for parent data and parent_hw on the remaining AT91
+clock drivers. Along with it a fix for SAMA7G5 has been introduced
+(patch 1/42).
 
---------------f8E1sN4Er4CzU5ittAAqYdAW
-Content-Type: multipart/mixed; boundary="------------fmbcQldT8wBclasItfmALE0m"
+Series has been tested on SAM9X60 and SAMA5D2 SoCs.
 
---------------fmbcQldT8wBclasItfmALE0m
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Thank you,
+Claudiu Beznea
 
-T24gMjYuMDcuMjMgMTg6NTIsIERlbWkgTWFyaWUgT2Jlbm91ciB3cm90ZToNCj4gV2hlbiBh
-IGdyYW50IGVudHJ5IGlzIHN0aWxsIGluIHVzZSBieSB0aGUgcmVtb3RlIGRvbWFpbiwgTGlu
-dXggbXVzdCBwdXQNCj4gaXQgb24gYSBkZWZlcnJlZCBsaXN0LiAgTm9ybWFsbHksIHRoaXMg
-bGlzdCBpcyB2ZXJ5IHNob3J0LCBiZWNhdXNlDQo+IHRoZSBQViBuZXR3b3JrIGFuZCBibG9j
-ayBwcm90b2NvbHMgZXhwZWN0IHRoZSBiYWNrZW5kIHRvIHVubWFwIHRoZSBncmFudA0KPiBm
-aXJzdC4gIEhvd2V2ZXIsIFF1YmVzIE9TJ3MgR1VJIHByb3RvY29sIGlzIHN1YmplY3QgdG8g
-dGhlIGNvbnN0cmFpbnRzDQo+IG9mIHRoZSBYIFdpbmRvdyBTeXN0ZW0sIGFuZCBhcyBzdWNo
-IHdpbmRzIHVwIHdpdGggdGhlIGZyb250ZW5kIHVubWFwcGluZw0KPiB0aGUgd2luZG93IGZp
-cnN0LiAgQXMgYSByZXN1bHQsIHRoZSBsaXN0IGNhbiBncm93IHZlcnkgbGFyZ2UsIHJlc3Vs
-dGluZw0KPiBpbiBhIG1hc3NpdmUgbWVtb3J5IGxlYWsgYW5kIGV2ZW50dWFsIFZNIGZyZWV6
-ZS4NCj4gDQo+IFRvIHBhcnRpYWxseSBzb2x2ZSB0aGlzIHByb2JsZW0sIG1ha2UgdGhlIG51
-bWJlciBvZiBlbnRyaWVzIHRoYXQgdGhlIFZNDQo+IHdpbGwgYXR0ZW1wdCB0byBmcmVlIGF0
-IGVhY2ggaXRlcmF0aW9uIHR1bmFibGUuICBUaGUgZGVmYXVsdCBpcyBzdGlsbA0KPiAxMCwg
-YnV0IGl0IGNhbiBiZSBvdmVycmlkZGVuIHZpYSBhIG1vZHVsZSBwYXJhbWV0ZXIuDQo+IA0K
-PiBUaGlzIGlzIENjOiBzdGFibGUgYmVjYXVzZSAod2hlbiBjb21iaW5lZCB3aXRoIGFwcHJv
-cHJpYXRlIHVzZXJzcGFjZQ0KPiBjaGFuZ2VzKSBpdCBmaXhlcyBhIHNldmVyZSBwZXJmb3Jt
-YW5jZSBhbmQgc3RhYmlsaXR5IHByb2JsZW0gZm9yIFF1YmVzDQo+IE9TIHVzZXJzLg0KPiAN
-Cj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU2lnbmVkLW9mZi1ieTogRGVtaSBN
-YXJpZSBPYmVub3VyIDxkZW1pQGludmlzaWJsZXRoaW5nc2xhYi5jb20+DQoNClJldmlld2Vk
-LWJ5OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+DQoNCg0KSnVlcmdlbg0KDQo=
+Claudiu Beznea (42):
+  clk: at91: sama7g5: check __clk_get_hw() argument for errors
+  clk: at91: clk-usb: add support for parent_hw
+  clk: at91: sam9x60: switch to parent_hw and parent_data
+  clk: at91: sam9x60: make checkpatch.pl happy
+  clk: at91: clk-pll: add support for parent_hw
+  clk: at91: clk-audio-pll: add support for parent_hw
+  clk: at91: clk-plldiv: add support for parent_hw
+  clk: at91: clk-h32mx: add support for parent_hw
+  clk: at91: clk-i2s-mux: add support for parent_hw
+  clk: at91: sama5d2: switch to parent_hw and parent_data
+  clk: at91: clk-smd: add support for parent_hw
+  clk: at91: sama5d3: switch to parent_hw and parent_data
+  clk: at91: sama5d3: make checkpatch.pl happy
+  clk: at91: sama5d4: switch to parent_hw and parent_data
+  clk: at91: at91sam9x5: switch to parent_hw and parent_data
+  clk: at91: at91rm9200: switch to parent_hw and parent_data
+  clk: at91: at91rm9200: fix checkpatch.pl check
+  clk: at91: at91rm9200: fix checkpatch.pl check
+  clk: at91: clk-slow: add support for parent_hw
+  clk: at91: at91sam9260: switch to parent_hw and parent_data
+  clk: at91: at91sam9g45: switch to parent_hw and parent_data
+  clk: at91: at91sam9g45: fix checkpatch.pl check
+  clk: at91: at91sam9n12: switch to parent_hw and parent_data
+  clk: at91: at91sam9n12: remove checkpatch.pl checks
+  clk: at91: at91sam9rl: switch to parent_hw
+  clk: at91: dt-compat: switch to parent_hw and parent_data
+  clk: at91: clk-audio-pll: remove parent_names support
+  clk: at91: clk-generated: remove parent_names support
+  clk: at91: clk-h32mx: remove parent_names support
+  clk: at91: clk-i2s-mux: remove parent_names support
+  clk: at91: clk-main: remove parent_names support
+  clk: at91: clk-master: remove parent_names support
+  clk: at91: clk-peripheral: remove parent_names support
+  clk: at91: clk-pll: remove parent_names support
+  clk: at91: clk-plldiv: remove parent_names support
+  clk: at91: clk-programmable: remove parent_names support
+  clk: at91: clk-sam9x60-pll: remove parent_names support
+  clk: at91: clk-slow: remove parent_names support
+  clk: at91: clk-smd: remove parent_names support
+  clk: at91: clk-system: remove parent_names support
+  clk: at91: clk-usb: remove parent_names support
+  clk: at91: clk-utmi: remove parent_names support
 
---------------fmbcQldT8wBclasItfmALE0m
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+ drivers/clk/at91/at91rm9200.c       | 101 +++++----
+ drivers/clk/at91/at91sam9260.c      | 140 ++++++------
+ drivers/clk/at91/at91sam9g45.c      |  94 ++++----
+ drivers/clk/at91/at91sam9n12.c      | 113 +++++-----
+ drivers/clk/at91/at91sam9rl.c       |  71 +++---
+ drivers/clk/at91/at91sam9x5.c       | 123 ++++++-----
+ drivers/clk/at91/clk-audio-pll.c    |  16 +-
+ drivers/clk/at91/clk-generated.c    |  10 +-
+ drivers/clk/at91/clk-h32mx.c        |   8 +-
+ drivers/clk/at91/clk-i2s-mux.c      |   5 +-
+ drivers/clk/at91/clk-main.c         |  24 +-
+ drivers/clk/at91/clk-master.c       |  23 +-
+ drivers/clk/at91/clk-peripheral.c   |  20 +-
+ drivers/clk/at91/clk-pll.c          |   6 +-
+ drivers/clk/at91/clk-plldiv.c       |   8 +-
+ drivers/clk/at91/clk-programmable.c |  10 +-
+ drivers/clk/at91/clk-sam9x60-pll.c  |  16 +-
+ drivers/clk/at91/clk-slow.c         |   8 +-
+ drivers/clk/at91/clk-smd.c          |   7 +-
+ drivers/clk/at91/clk-system.c       |   9 +-
+ drivers/clk/at91/clk-usb.c          |  30 +--
+ drivers/clk/at91/clk-utmi.c         |  23 +-
+ drivers/clk/at91/dt-compat.c        | 330 +++++++++++++++++++---------
+ drivers/clk/at91/pmc.h              |  64 +++---
+ drivers/clk/at91/sam9x60.c          | 124 ++++++-----
+ drivers/clk/at91/sama5d2.c          | 165 +++++++-------
+ drivers/clk/at91/sama5d3.c          | 126 ++++++-----
+ drivers/clk/at91/sama5d4.c          | 131 ++++++-----
+ drivers/clk/at91/sama7g5.c          |  45 ++--
+ 29 files changed, 1032 insertions(+), 818 deletions(-)
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+-- 
+2.39.2
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------fmbcQldT8wBclasItfmALE0m--
-
---------------f8E1sN4Er4CzU5ittAAqYdAW--
-
---------------ZGkv1JTl5MGJG34IhnAZglmk
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTCAQMFAwAAAAAACgkQsN6d1ii/Ey9v
-7Af/UcL9ZwVgufL4OUPDqEaWGp9Lpg9u3jqURxOBY104E9Cpm2kjwilzEPNs8+6l+kKA/8ucD4Fj
-LV7IQ/N+HNTasVNnK9Ew20m/t1Q++KBqJ4/MLoKabEjsGDSZOMadsZWIk0CXh+tJoGIU793qEH22
-fvP1qkKK83ErkeSbVsU0kBPFzHmzqe4LVBgcP1Stou992Go8M3GXM6ZnHUQ7de6zrwylMzw8CyHA
-ayAGfP6uxbAXH4dO0KhMM7oE1+w1RfWHPZII6a/FVJ7wGWSx0V4xiWa0ZSJdejIg+P4hA+hhFhoM
-s9XCOuh3L8ZIRT9jTX/YPEPiVoabo/5/n2fd24+YNg==
-=cvz8
------END PGP SIGNATURE-----
-
---------------ZGkv1JTl5MGJG34IhnAZglmk--
