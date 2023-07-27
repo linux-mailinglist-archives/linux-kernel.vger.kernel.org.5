@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AE4765E45
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A45765E44
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbjG0VcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        id S229786AbjG0VcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbjG0VcT (ORCPT
+        with ESMTP id S229727AbjG0VcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:32:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1BF198A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:32:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C2AE61F53
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:32:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43BDDC433C7;
-        Thu, 27 Jul 2023 21:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690493537;
-        bh=1CRGMuJsL3YWwFkJWqZBVNQLm+e0c2Kn5gP+uFZkfnA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=hH3TlYxlIbzFmsrhc7tqA0RbNmbOiMN1MESjZVmQCUuImg3/IaxnKpIXwLWbv7kvF
-         3pzqheJI7w0gYaoN2/rYXM4+qGoy+3tFxnmLV356MM0WmkoicaUMNzGFw23zTOF86f
-         14xXCHERBRuAXLgjIEiREtjSGHmxNCsEzOtwJCOZxPyDtxPWPArkJ94JQOLYs6eiUv
-         AD6oxAwDC+ss933wRVeAt5HMjSpu8XdKCPMlJeSzIPcK1w/VuYyN3I7+H0Zk5b16W8
-         PrfMozEokSlep42J3JJd/mxElozkdhtLWaolymui3kFU9iqjbjPVpWNgx1tKzIfF1Z
-         qmLgLuige9Xaw==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 27 Jul 2023 22:31:44 +0100
-Subject: [PATCH] arm64/fpsimd: Only provide the length to cpufeature for
- xCR registers
+        Thu, 27 Jul 2023 17:32:05 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB5D113;
+        Thu, 27 Jul 2023 14:32:03 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B14E81BF205;
+        Thu, 27 Jul 2023 21:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690493521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RVzGt1hU6/zJ2p8ESrItLga9WOYSY12aapmt+gJTTm0=;
+        b=KuzkthgvdjwJnivEU/aryJfGIVIwS2Jo2FGYznAjBe2XO2ObIJRvGb4lZ+5IDN1HoNpZYG
+        4od2IsUmCvD1rkxDQUX70EEy/OerDBhxZu3PYbTnWRsnA+Uh3PCr6Soiqs7oTND51Z5H12
+        vPxGYo5bgxbp54fa9pK//rRC9ZjhXRAtXs5LXD+g2zg8loPvxEOC0OU9LKtcey5kXGqFUV
+        3owWu3CEW9oVKY03yZ19bLiumKfiItmQPfrW7xy4+Zjs6amZuo4MDBNNBF0yaCOsre4eZ+
+        CZksNyGouFQz3JfaVim3BzM6WwJl4QqifmvRDrXEUYS0+aUG+hl2XEUkrWRj6g==
+Date:   Thu, 27 Jul 2023 23:31:51 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH v2] rtc: Explicitly include correct DT includes
+Message-ID: <169049349537.641428.12895115995770744599.b4-ty@bootlin.com>
+References: <20230724205456.767430-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAD/iwmQC/x2MQQqAIBAAvxJ7bqEsNPtKdJBaa6FUtCKI/p50m
- znMPJAoMiXoiwciXZzYuyx1WcC0GrcQ8pwdRCWaSgmFJu6yxbQTWpNh9UfYzgVrkp2WqpVWK8h
- xiGT5/sfD+L4fDOP8wWgAAAA=
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2482; i=broonie@kernel.org;
- h=from:subject:message-id; bh=1CRGMuJsL3YWwFkJWqZBVNQLm+e0c2Kn5gP+uFZkfnA=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkwuJfmjZxm299vqS0FgQ7RMOHXsS6ZOjWNxPhZZ9u
- dj3urxaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMLiXwAKCRAk1otyXVSH0EYdB/
- 9j02QwBO6pB4nb0BM8kQI73QWh+XZa0Vn8R1RubNM2+z++MgD7xbVOAMp7id+2c2D5lC4G/m/K3lLZ
- WArgn3zZKCKPQ91dqN9xaoBxSd4x2GHDCrWWffB/YI0tUFIFPPWSZZmegrGC1BBuCptjUQZIP6v1St
- J3MNHRAomp6IaW5Z8Bsf/3e17Fn8SuZ6ga4BulVwIM8me+GhD1Q2WeY7DVS4lvfSxsg+VInFEQU63q
- jRO+FXz0iL1xxT2xZl3qJ81lhXgcqq3fB3Kq/fzbwI0Qthh4IaJMGAtbfi/ZiljQkgrlPCCl43rD60
- HkTKJUnRYyMCTkm5vWzwl5Fe2rWPGF
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724205456.767430-1-robh@kernel.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For both SVE and SME we abuse the generic register field comparison
-support in the cpufeature code as part of our detection of unsupported
-variations in the vector lengths available to PEs, reporting the maximum
-vector lengths via ZCR_EL1.LEN and SMCR_EL1.LEN.  Since these are
-configuration registers rather than identification registers the
-assumptions the cpufeature code makes about how unknown bitfields behave
-are invalid, leading to warnings when SME features like FA64 are enabled
-and we hotplug a CPU:
 
-  CPU features: SANITY CHECK: Unexpected variation in SYS_SMCR_EL1. Boot CPU: 0x0000000000000f, CPU3: 0x0000008000000f
-  CPU features: Unsupported CPU feature variation detected.
+On Mon, 24 Jul 2023 14:54:54 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> [...]
 
-SVE has no controls other than the vector length so is not yet impacted
-but the same issue will apply there if any are defined.
+Applied, thanks!
 
-Since the only field we are interested in having the cpufeature code
-handle is the length field and we use a custom read function to obtain
-the value we can avoid these warnings by filtering out all other bits
-when we return the register value.
-
-Fixes: 2e0f2478ea37eb ("arm64/sve: Probe SVE capabilities and usable vector lengths")
-FixeS: b42990d3bf77cc ("arm64/sme: Identify supported SME vector lengths at boot")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- arch/arm64/kernel/fpsimd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 89d54a5242d1..c7fdeebd050c 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -1189,11 +1189,11 @@ u64 read_zcr_features(void)
- 	write_sysreg_s(ZCR_ELx_LEN_MASK, SYS_ZCR_EL1);
- 
- 	zcr = read_sysreg_s(SYS_ZCR_EL1);
--	zcr &= ~(u64)ZCR_ELx_LEN_MASK; /* find sticky 1s outside LEN field */
-+	zcr &= ~(u64)ZCR_ELx_LEN_MASK;
- 	vq_max = sve_vq_from_vl(sve_get_vl());
- 	zcr |= vq_max - 1; /* set LEN field to maximum effective value */
- 
--	return zcr;
-+	return SYS_FIELD_GET(ZCR_ELx, LEN, zcr);
- }
- 
- void __init sve_setup(void)
-@@ -1364,7 +1364,7 @@ u64 read_smcr_features(void)
- 	vq_max = sve_vq_from_vl(sme_get_vl());
- 	smcr |= vq_max - 1; /* set LEN field to maximum effective value */
- 
--	return smcr;
-+	return SYS_FIELD_GET(SMCR_ELx, LEN, smcr);
- }
- 
- void __init sme_setup(void)
-
----
-base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
-change-id: 20230727-arm64-sme-fa64-hotplug-1e6896746f97
+[1/1] rtc: Explicitly include correct DT includes
+      commit: 48144c2890503b919bc8ee128b63e37008d69250
 
 Best regards,
--- 
-Mark Brown <broonie@kernel.org>
 
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
