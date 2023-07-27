@@ -2,112 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A4776454C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6477876454F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjG0FK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S231504AbjG0FNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjG0FKZ (ORCPT
+        with ESMTP id S230332AbjG0FNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:10:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74EF26AE;
-        Wed, 26 Jul 2023 22:10:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43759614A8;
-        Thu, 27 Jul 2023 05:10:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9376DC433D9;
-        Thu, 27 Jul 2023 05:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690434623;
-        bh=4y6u2oRadKe4rbPOWeXyCffpFw8g8kqrXrl7kOvqkVE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dKypFyKn4AmKaTtTpFdOTikQKNZ6A9ORXpAjff81NHaCac9RWvUunjuYfm8xx2Kbr
-         qwRcroPY3TGbL0XtTYDZ4knj5ERhuVNyjvs+1l3ZzFfc/Koc9aJCGp5+ToTxOOMrSy
-         QxnmHBa+3usJ4uhUal604dWTp5rcRxvfgmDhiC7rpb9sQ280JiTavAro877GUSsCIr
-         pan1QV8yCkcfmz6qzyzuy0YWZDQhVaUzg+thcJpiO/gd1zD/yWqS2wVIebNcg8yvpi
-         oULVtPj5Pe36TzjYrNNLQ4FibO1NOD47CQwUsKtJKscnX01rqbQhG71eVp4QorenWZ
-         bmqoeNUmo2y5g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7C945C595D0;
-        Thu, 27 Jul 2023 05:10:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 27 Jul 2023 01:13:11 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D46519B9;
+        Wed, 26 Jul 2023 22:13:10 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36QI9gd6021021;
+        Wed, 26 Jul 2023 22:13:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=PCz8FsbhB5mQTSYTDPPyTiMw8FhuikO9Cw3uYRkSsQ8=;
+ b=QUkxSDSgWEGo5K02hEH58MoqiIJoPI6eZM777JxhCraGlzLTtAupkeDtAHZf3rMq4kLE
+ 57xQZb1c6wrIf/IXssMYuDuq1SJZoIIFLA1fehLoI5o9mOUOkhX6s5fJhHJ73OIefLtn
+ QUXruImBEy6mJNCyQDDEtYrIcFTC68EIvWntlqZrf/qPwa/YkvwIEp3CQLB0PsiRO5WV
+ CZEPQ2BG42c5fhWdPNenwQ0lje7NLUDSv+jpxtjL0oIZgDBIL/sR2oJ/tT4HzMzICyN9
+ U+xRXt6Z8TmHIy68wuFBUEtm7SlFZvDHIHnOVFqloA+/egc7vVKrLEJ83w9iFrjCL2Qr 3g== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s389rspau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jul 2023 22:13:03 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 26 Jul
+ 2023 22:13:01 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 26 Jul 2023 22:13:01 -0700
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 390043F7041;
+        Wed, 26 Jul 2023 22:12:56 -0700 (PDT)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH V2] octeontx2-af: Tc flower offload support for inner VLAN
+Date:   Thu, 27 Jul 2023 10:42:52 +0530
+Message-ID: <20230727051252.2779804-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6 0/8] net: ethernet: mtk_eth_soc: add basic
- support for MT7988 SoC
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169043462350.30073.405534761855593169.git-patchwork-notify@kernel.org>
-Date:   Thu, 27 Jul 2023 05:10:23 +0000
-References: <cover.1690246066.git.daniel@makrotopia.org>
-In-Reply-To: <cover.1690246066.git.daniel@makrotopia.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nbd@nbd.name, john@phrozen.org, sean.wang@mediatek.com,
-        Mark-MC.Lee@mediatek.com, lorenzo@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux@armlinux.org.uk, gerg@kernel.org, bjorn@mork.no,
-        f.fainelli@gmail.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: yGrQ7YRQu_XIDtNjmui2tdtJpDUKY3d9
+X-Proofpoint-GUID: yGrQ7YRQu_XIDtNjmui2tdtJpDUKY3d9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This patch extends current TC flower offload support to allow filters
+involving inner VLAN matching, to be offloaded to HW.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Example command:
+tc filter add dev eth2 protocol 802.1AD parent ffff: flower vlan_id 10
+vlan_ethtype 802.1Q cvlan_id 20 skip_sw action drop
 
-On Tue, 25 Jul 2023 01:51:00 +0100 you wrote:
-> The MediaTek MT7988 SoC introduces a new version (3) of the NETSYS
-> block and comes with three instead of two MACs.
-> 
-> The first MAC can be internally connected to a built-in Gigabit
-> Ethernet switch with four 1000M/100M/10M twisted pair user ports.
-> 
-> The second MAC can be internally connected to a built-in 2500Base-T
-> Ethernet PHY.
-> 
-> [...]
+Signed-off-by: Suman Ghosh <sumang@marvell.com>
+---
+v2 changes:
+- Addressed review comment from Leon for a minor code readjustment
 
-Here is the summary with links:
-  - [net-next,v6,1/8] dt-bindings: net: mediatek,net: add missing mediatek,mt7621-eth
-    https://git.kernel.org/netdev/net-next/c/1cbf487d7d3a
-  - [net-next,v6,2/8] dt-bindings: net: mediatek,net: add mt7988-eth binding
-    https://git.kernel.org/netdev/net-next/c/c94a9aabec36
-  - [net-next,v6,3/8] net: ethernet: mtk_eth_soc: add version in mtk_soc_data
-    https://git.kernel.org/netdev/net-next/c/a008e2a84e6b
-  - [net-next,v6,4/8] net: ethernet: mtk_eth_soc: increase MAX_DEVS to 3
-    https://git.kernel.org/netdev/net-next/c/6ca265571b9e
-  - [net-next,v6,5/8] net: ethernet: mtk_eth_soc: rely on MTK_MAX_DEVS and remove MTK_MAC_COUNT
-    https://git.kernel.org/netdev/net-next/c/e05fd6274ee6
-  - [net-next,v6,6/8] net: ethernet: mtk_eth_soc: add NETSYS_V3 version support
-    https://git.kernel.org/netdev/net-next/c/1953f134a1a8
-  - [net-next,v6,7/8] net: ethernet: mtk_eth_soc: convert caps in mtk_soc_data struct to u64
-    https://git.kernel.org/netdev/net-next/c/51a4df60db5c
-  - [net-next,v6,8/8] net: ethernet: mtk_eth_soc: convert clock bitmap to u64
-    https://git.kernel.org/netdev/net-next/c/c75e416ccfd2
-  - [v6,net-next,9/9] net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC
-    (no matching commit)
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |   1 +
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |   3 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        |   5 +
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |  13 +++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 107 +++++++++++-------
+ 5 files changed, 91 insertions(+), 38 deletions(-)
 
-You are awesome, thank you!
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index ed66c5989102..382764f39702 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -1461,6 +1461,7 @@ struct flow_msg {
+ 		u8 ip_flag;
+ 		u8 next_header;
+ 	};
++	__be16 vlan_itci;
+ };
+ 
+ struct npc_install_flow_req {
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index 9beeead56d7b..5b6a1b941ccc 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -184,6 +184,7 @@ enum key_fields {
+ 	NPC_VLAN_ETYPE_CTAG, /* 0x8100 */
+ 	NPC_VLAN_ETYPE_STAG, /* 0x88A8 */
+ 	NPC_OUTER_VID,
++	NPC_INNER_VID,
+ 	NPC_TOS,
+ 	NPC_IPFRAG_IPV4,
+ 	NPC_SIP_IPV4,
+@@ -229,6 +230,8 @@ enum key_fields {
+ 	NPC_VLAN_TAG1,
+ 	/* outer vlan tci for double tagged frame */
+ 	NPC_VLAN_TAG2,
++	/* inner vlan tci for double tagged frame */
++	NPC_VLAN_TAG3,
+ 	/* other header fields programmed to extract but not of our interest */
+ 	NPC_UNKNOWN,
+ 	NPC_KEY_FIELDS_MAX,
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index 3b26893efdf8..3d0825c0685a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -2787,6 +2787,11 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
+ 			seq_printf(s, "mask 0x%x\n",
+ 				   ntohs(rule->mask.vlan_tci));
+ 			break;
++		case NPC_INNER_VID:
++			seq_printf(s, "0x%x ", ntohs(rule->packet.vlan_itci));
++			seq_printf(s, "mask 0x%x\n",
++				   ntohs(rule->mask.vlan_itci));
++			break;
+ 		case NPC_TOS:
+ 			seq_printf(s, "%d ", rule->packet.tos);
+ 			seq_printf(s, "mask 0x%x\n", rule->mask.tos);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 9c365cc3e736..f2a7599aa9de 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -20,6 +20,7 @@ static const char * const npc_flow_names[] = {
+ 	[NPC_VLAN_ETYPE_CTAG] = "vlan ether type ctag",
+ 	[NPC_VLAN_ETYPE_STAG] = "vlan ether type stag",
+ 	[NPC_OUTER_VID]	= "outer vlan id",
++	[NPC_INNER_VID]	= "inner vlan id",
+ 	[NPC_TOS]	= "tos",
+ 	[NPC_IPFRAG_IPV4] = "fragmented IPv4 header ",
+ 	[NPC_SIP_IPV4]	= "ipv4 source ip",
+@@ -327,6 +328,8 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
+ 	 */
+ 	struct npc_key_field *vlan_tag1;
+ 	struct npc_key_field *vlan_tag2;
++	/* Inner VLAN TCI for double tagged frames */
++	struct npc_key_field *vlan_tag3;
+ 	u64 *features;
+ 	u8 start_lid;
+ 	int i;
+@@ -349,6 +352,7 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
+ 	etype_tag2 = &key_fields[NPC_ETYPE_TAG2];
+ 	vlan_tag1 = &key_fields[NPC_VLAN_TAG1];
+ 	vlan_tag2 = &key_fields[NPC_VLAN_TAG2];
++	vlan_tag3 = &key_fields[NPC_VLAN_TAG3];
+ 
+ 	/* if key profile programmed does not extract Ethertype at all */
+ 	if (!etype_ether->nr_kws && !etype_tag1->nr_kws && !etype_tag2->nr_kws) {
+@@ -430,6 +434,12 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
+ 		goto done;
+ 	}
+ 	*features |= BIT_ULL(NPC_OUTER_VID);
++
++	/* If key profile extracts inner vlan tci */
++	if (vlan_tag3->nr_kws) {
++		key_fields[NPC_INNER_VID] = *vlan_tag3;
++		*features |= BIT_ULL(NPC_INNER_VID);
++	}
+ done:
+ 	return;
+ }
+@@ -512,6 +522,7 @@ do {									       \
+ 	NPC_SCAN_HDR(NPC_ETYPE_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 8, 2);
+ 	NPC_SCAN_HDR(NPC_VLAN_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 2, 2);
+ 	NPC_SCAN_HDR(NPC_VLAN_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 2, 2);
++	NPC_SCAN_HDR(NPC_VLAN_TAG3, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 6, 2);
+ 	NPC_SCAN_HDR(NPC_DMAC, NPC_LID_LA, la_ltype, la_start, 6);
+ 	/* SMAC follows the DMAC(which is 6 bytes) */
+ 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
+@@ -932,6 +943,8 @@ do {									      \
+ 
+ 	NPC_WRITE_FLOW(NPC_OUTER_VID, vlan_tci, ntohs(pkt->vlan_tci), 0,
+ 		       ntohs(mask->vlan_tci), 0);
++	NPC_WRITE_FLOW(NPC_INNER_VID, vlan_itci, ntohs(pkt->vlan_itci), 0,
++		       ntohs(mask->vlan_itci), 0);
+ 
+ 	NPC_WRITE_FLOW(NPC_IPFRAG_IPV6, next_header, pkt->next_header, 0,
+ 		       mask->next_header, 0);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index 1e6fc23eca4f..89836cd299e4 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -439,6 +439,64 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
+ 	return 0;
+ }
+ 
++static int otx2_tc_process_vlan(struct otx2_nic *nic, struct flow_msg *flow_spec,
++				struct flow_msg *flow_mask, struct flow_rule *rule,
++				struct npc_install_flow_req *req, bool is_inner)
++{
++	struct flow_match_vlan match;
++	u16 vlan_tci, vlan_tci_mask;
++
++	if (is_inner)
++		flow_rule_match_cvlan(rule, &match);
++	else
++		flow_rule_match_vlan(rule, &match);
++
++	if ((ntohs(match.key->vlan_tpid) != ETH_P_8021Q) &&
++	    (ntohs(match.key->vlan_tpid) != ETH_P_8021AD)) {
++		netdev_err(nic->netdev, "vlan tpid 0x%x not supported\n",
++			   ntohs(match.key->vlan_tpid));
++		return -EOPNOTSUPP;
++	}
++
++	if (!match.mask->vlan_id) {
++		struct flow_action_entry *act;
++		int i;
++
++		flow_action_for_each(i, act, &rule->action) {
++			if (act->id == FLOW_ACTION_DROP) {
++				netdev_err(nic->netdev,
++					   "vlan tpid 0x%x with vlan_id %d is not supported for DROP rule.\n",
++					   ntohs(match.key->vlan_tpid), match.key->vlan_id);
++				return -EOPNOTSUPP;
++			}
++		}
++	}
++
++	if (match.mask->vlan_id ||
++	    match.mask->vlan_dei ||
++	    match.mask->vlan_priority) {
++		vlan_tci = match.key->vlan_id |
++			   match.key->vlan_dei << 12 |
++			   match.key->vlan_priority << 13;
++
++		vlan_tci_mask = match.mask->vlan_id |
++				match.mask->vlan_dei << 12 |
++				match.mask->vlan_priority << 13;
++
++		if (is_inner) {
++			flow_spec->vlan_itci = htons(vlan_tci);
++			flow_mask->vlan_itci = htons(vlan_tci_mask);
++			req->features |= BIT_ULL(NPC_INNER_VID);
++		} else {
++			flow_spec->vlan_tci = htons(vlan_tci);
++			flow_mask->vlan_tci = htons(vlan_tci_mask);
++			req->features |= BIT_ULL(NPC_OUTER_VID);
++		}
++	}
++
++	return 0;
++}
++
+ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 				struct flow_cls_offload *f,
+ 				struct npc_install_flow_req *req)
+@@ -458,6 +516,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	      BIT(FLOW_DISSECTOR_KEY_BASIC) |
+ 	      BIT(FLOW_DISSECTOR_KEY_ETH_ADDRS) |
+ 	      BIT(FLOW_DISSECTOR_KEY_VLAN) |
++	      BIT(FLOW_DISSECTOR_KEY_CVLAN) |
+ 	      BIT(FLOW_DISSECTOR_KEY_IPV4_ADDRS) |
+ 	      BIT(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
+ 	      BIT(FLOW_DISSECTOR_KEY_PORTS) |
+@@ -564,47 +623,19 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	}
+ 
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_VLAN)) {
+-		struct flow_match_vlan match;
+-		u16 vlan_tci, vlan_tci_mask;
+-
+-		flow_rule_match_vlan(rule, &match);
+-
+-		if (ntohs(match.key->vlan_tpid) != ETH_P_8021Q) {
+-			netdev_err(nic->netdev, "vlan tpid 0x%x not supported\n",
+-				   ntohs(match.key->vlan_tpid));
+-			return -EOPNOTSUPP;
+-		}
++		int ret;
+ 
+-		if (!match.mask->vlan_id) {
+-			struct flow_action_entry *act;
+-			int i;
+-
+-			flow_action_for_each(i, act, &rule->action) {
+-				if (act->id == FLOW_ACTION_DROP) {
+-					netdev_err(nic->netdev,
+-						   "vlan tpid 0x%x with vlan_id %d is not supported for DROP rule.\n",
+-						   ntohs(match.key->vlan_tpid),
+-						   match.key->vlan_id);
+-					return -EOPNOTSUPP;
+-				}
+-			}
+-		}
+-
+-		if (match.mask->vlan_id ||
+-		    match.mask->vlan_dei ||
+-		    match.mask->vlan_priority) {
+-			vlan_tci = match.key->vlan_id |
+-				   match.key->vlan_dei << 12 |
+-				   match.key->vlan_priority << 13;
++		ret = otx2_tc_process_vlan(nic, flow_spec, flow_mask, rule, req, false);
++		if (ret)
++			return ret;
++	}
+ 
+-			vlan_tci_mask = match.mask->vlan_id |
+-					match.mask->vlan_dei << 12 |
+-					match.mask->vlan_priority << 13;
++	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CVLAN)) {
++		int ret;
+ 
+-			flow_spec->vlan_tci = htons(vlan_tci);
+-			flow_mask->vlan_tci = htons(vlan_tci_mask);
+-			req->features |= BIT_ULL(NPC_OUTER_VID);
+-		}
++		ret = otx2_tc_process_vlan(nic, flow_spec, flow_mask, rule, req, true);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IPV4_ADDRS)) {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
