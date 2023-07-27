@@ -2,120 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEE776441C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B2E76441D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbjG0DBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
+        id S231340AbjG0DB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjG0DBA (ORCPT
+        with ESMTP id S230410AbjG0DBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:01:00 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F741BCB;
-        Wed, 26 Jul 2023 20:00:59 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R2JCa1009162;
-        Thu, 27 Jul 2023 03:00:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=j4aARu0MkArEU5RCLOwlPl8+9JwP9fo0BEv/2Jdj1/g=;
- b=mSaSXrcpOO7LNktBZnxbNwhcmsY7qcvu8dX6CejE5OEuSp1vdXarOu96D2h1Rs20pJuP
- MbS3MsZ4smx3LLAn7O6UjZ7bJL5URvw0bKg5+h4VquRp1YNlEE8LGMozCzAcwr5lh9pm
- 3dwmS4asu5+Oxr7biROh75QS0DB9TXULNnrtlnFPU/rjJG3sN1VW5jRmV2HaFhSAFZCh
- WRXQuy8v0b6oyYd4CyWDWpH6BsWxoz3QGXc8vqvTl5S/ezwRa9HetgichqQJAqEIJcyq
- ekpzEfDrDyYhguMgU4+M1ABUOu7oEC5WjhatUPmIqM9+5QIxFndThjLgEMW9Q3UoZB2g HQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s336t1j6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 03:00:49 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R30mM4013784
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 03:00:48 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 20:00:43 -0700
-Date:   Thu, 27 Jul 2023 08:30:39 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Elliot Berman <quic_eberman@quicinc.com>
-CC:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Sebastian Reichel" <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        "Prasad Sodagudi" <quic_psodagud@quicinc.com>
-Subject: Re: [RFC PATCH 4/4] power: reset: Implement a PSCI SYSTEM_RESET2
- reboot-mode driver
-Message-ID: <c1c2653e-4f3b-45f2-9325-d0ed8572a346@quicinc.com>
-References: <20230724223057.1208122-1-quic_eberman@quicinc.com>
- <20230724223057.1208122-5-quic_eberman@quicinc.com>
- <46744a2e-139c-4e4e-89b2-66346f64c3f2@quicinc.com>
- <6a0ea31d-814b-6745-d301-c1f6dadf9718@quicinc.com>
+        Wed, 26 Jul 2023 23:01:55 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B5B1BD5
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:01:54 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9aa1d3029so6358451fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1690426912; x=1691031712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
+        b=i261GX+ISLVBQWkZJlC8JRSTm8YljJalFdC0xw+oAOtekwYguIX3lJETIZEfqN6p6e
+         hbc+y0nlxiMJ1OIUQAUmvgz3nM1Um64qCuh0JGjRzewYJM/VmOn5dwj7nq2BJJYjb8Be
+         DP11WIROHODl84N7ysvCYEPdQSeb8it8IOSPE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690426912; x=1691031712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=28kM+66MW+/ZE/QhfQIXTCdNMEwChH0F8W+wviNU5N4=;
+        b=KnZr4igwEdtNsVSLkeAv2AWIzymakvs+uviHr+LHvIUn/IXyaZTMCTMAN3iU5enX9a
+         LfLE8khgvUB8os5PRVH8cDW3mMVLjUN3NtWSXnwBBEG20jLDsOe/VHz2Q/bbjKlDS8BJ
+         GRok7T6aRFdIIHv8M735dSNx/M4rwK6OVgK//woaTDG6LYxwyXtbJ/3BtsP7BuafVc9w
+         Y7h6xJB7g3ScrDR5HwxpeIyTkqmrxKqJxsWfKh2Iiuv1E+jXXpXyejkRsZC2qrHeN5sW
+         CuvuoUbX+/2GYHahx3+6qWbMN9ZxR+RWjIRj49yJXQODAIcJ1FmdxCP2ve6U/Kq0qDHV
+         9B/g==
+X-Gm-Message-State: ABy/qLZLcAIUONe7XMBux0RPP7sTV/uxL260XBsyE7ChVXvxZ0qtU4sS
+        hZmwo7Ujm1PgK6FCKjNTj11nIWViX9SxZL6+PK2HE0dhq3Ko7UqAHqs=
+X-Google-Smtp-Source: APBJJlEx6ky2cjrQJP4D+4530EmV6PxTY62HotbnTfmh+ipGNijarsBTGEmVIjyEv5iR/HbLmjdJG6rq5EMrz4S83rw=
+X-Received: by 2002:a2e:a0ca:0:b0:2b6:cf0f:1fbf with SMTP id
+ f10-20020a2ea0ca000000b002b6cf0f1fbfmr538037ljm.42.1690426912206; Wed, 26 Jul
+ 2023 20:01:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6a0ea31d-814b-6745-d301-c1f6dadf9718@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 5uIHP9ddzcxBs_J2QaGvp2NLe92urYsY
-X-Proofpoint-GUID: 5uIHP9ddzcxBs_J2QaGvp2NLe92urYsY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- clxscore=1015 mlxlogscore=794 adultscore=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270026
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230725232913.2981357-1-joel@joelfernandes.org>
+ <20230725232913.2981357-2-joel@joelfernandes.org> <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
+In-Reply-To: <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 26 Jul 2023 23:01:40 -0400
+Message-ID: <CAEXW_YTfo8MDcAQk23cw=vxzReZntSXgkUefD+=4yZ+Gb+ZAww@mail.gmail.com>
+Subject: Re: [PATCH 1/5] rcutorture: Fix stuttering races and other issues
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 10:19:01AM -0700, Elliot Berman wrote:
-> 
-> 
-> On 7/26/2023 3:41 AM, Pavan Kondeti wrote:
-> > On Mon, Jul 24, 2023 at 03:30:54PM -0700, Elliot Berman wrote:
-> > > PSCI implements a restart notifier for architectural defined resets.
-> > > The SYSTEM_RESET2 allows vendor firmware to define additional reset
-> > > types which could be mapped to the reboot reason.
-> > > 
-> > > Implement a driver to wire the reboot-mode framework to make vendor
-> > > SYSTEM_RESET2 calls on reboot.
-> > > 
-> > > Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> > 
-> > Do we need to skip the PSCI call from the existing PSCI restart notifier
-> > which gets called after your newly introduced callback from reboot mode
-> > notifier?
-> > 
-> 
-> No need, the vendor SYSTEM_RESET2 call shouldn't return if the call worked.
-> 
+On Wed, Jul 26, 2023 at 4:59=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Tue, Jul 25, 2023 at 11:29:06PM +0000, Joel Fernandes (Google) wrote:
+> > The stuttering code isn't functioning as expected. Ideally, it should
+> > pause the torture threads for a designated period before resuming. Yet,
+> > it fails to halt the test for the correct duration. Additionally, a rac=
+e
+> > condition exists, potentially causing the stuttering code to pause for
+> > an extended period if the 'spt' variable is non-zero due to the stutter
+> > orchestration thread's inadequate CPU time.
+> >
+> > Moreover, over-stuttering can hinder RCU's progress on TREE07 kernels.
+> > This happens as the stuttering code may run within a softirq due to RCU
+> > callbacks. Consequently, ksoftirqd keeps a CPU busy for several seconds=
+,
+> > thus obstructing RCU's progress. This situation triggers a warning
+> > message in the logs:
+> >
+> > [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+> >
+> > This warning suggests that an RCU torture object, although invisible to
+> > RCU readers, couldn't make it past the pipe array and be freed -- a
+> > strong indication that there weren't enough grace periods during the
+> > stutter interval.
+> >
+> > To address these issues, this patch sets the "stutter end" time to an
+> > absolute point in the future set by the main stutter thread. This is
+> > then used for waiting in stutter_wait(). While the stutter thread still
+> > defines this absolute time, the waiters' waiting logic doesn't rely on
+> > the stutter thread receiving sufficient CPU time to halt the stuttering
+> > as the halting is now self-controlled.
+> >
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >  kernel/torture.c | 46 +++++++++++++---------------------------------
+> >  1 file changed, 13 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/kernel/torture.c b/kernel/torture.c
+> > index 68dba4ecab5c..63f8f2a7d960 100644
+> > --- a/kernel/torture.c
+> > +++ b/kernel/torture.c
+> > @@ -719,7 +719,7 @@ static void torture_shutdown_cleanup(void)
+> >   * suddenly applied to or removed from the system.
+> >   */
+> >  static struct task_struct *stutter_task;
+> > -static int stutter_pause_test;
+> > +static ktime_t stutter_till_abs_time;
+> >  static int stutter;
+> >  static int stutter_gap;
+> >
+> > @@ -729,30 +729,17 @@ static int stutter_gap;
+> >   */
+> >  bool stutter_wait(const char *title)
+> >  {
+> > -     unsigned int i =3D 0;
+> >       bool ret =3D false;
+> > -     int spt;
+> > +     ktime_t now_ns, till_ns;
+> >
+> >       cond_resched_tasks_rcu_qs();
+> > -     spt =3D READ_ONCE(stutter_pause_test);
+> > -     for (; spt; spt =3D READ_ONCE(stutter_pause_test)) {
+> > -             if (!ret && !rt_task(current)) {
+> > -                     sched_set_normal(current, MAX_NICE);
+> > -                     ret =3D true;
+> > -             }
+> > -             if (spt =3D=3D 1) {
+> > -                     torture_hrtimeout_jiffies(1, NULL);
+> > -             } else if (spt =3D=3D 2) {
+> > -                     while (READ_ONCE(stutter_pause_test)) {
+> > -                             if (!(i++ & 0xffff))
+> > -                                     torture_hrtimeout_us(10, 0, NULL)=
+;
+> > -                             cond_resched();
+> > -                     }
+> > -             } else {
+> > -                     torture_hrtimeout_jiffies(round_jiffies_relative(=
+HZ), NULL);
+> > -             }
+> > -             torture_shutdown_absorb(title);
+> > +     now_ns =3D ktime_get();
+> > +     till_ns =3D READ_ONCE(stutter_till_abs_time);
+> > +     if (till_ns && ktime_before(now_ns, till_ns)) {
+> > +             torture_hrtimeout_ns(ktime_sub(till_ns, now_ns), 0, NULL)=
+;
+>
+> This ktime_sub() is roughly cancelled out by a ktime_add_safe() in
+> __hrtimer_start_range_ns().
 
-From the documentation of restart handlers, restarting from reboot
-notifiers may not be correct. Since you hooked it up with reboot-mode
-driver framework, you may restart the system much early before the
-actual machine restart kicks in. Pls check. 
+Yes, functionally it is the same but your suggestion is more robust I think=
+.
 
-Thanks,
-Pavan
+> Perhaps torture_hrtimeout_ns() needs to
+> take a mode argument as in the patch at the end of this email, allowing
+> you to ditch that ktime_sub() in favor of HRTIMER_MODE_ABS.
+
+Sure, or we can add a new API and keep the default as relative?
+
+Or have 2 APIs:
+torture_hrtimeout_relative_ns();
+
+and:
+torture_hrtimeout_absolute_ns();
+
+That makes it more readable IMHO.
+
+Also, do you want me to make both changes (API and usage) in the same
+patch? Or were you planning to have a separate patch yourself in -dev
+which I can use? Let me know either way, and then I'll refresh the
+patch.
+
+thanks,
+
+ - Joel
+
+[..]
