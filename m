@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7487644C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E27644C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjG0EEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
+        id S229622AbjG0EDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 00:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjG0EEI (ORCPT
+        with ESMTP id S231320AbjG0EDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:04:08 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642AB1BC3;
-        Wed, 26 Jul 2023 21:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690430647; x=1721966647;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=1XoGj8bNfPfHorVioZIXPSWtmymYw6ZsZ+nFjl0sK1I=;
-  b=GlYvQfLTvIMrcKVcbf/C4OhzxsCVy6IQdxJmLYZ5UCCHaTYMQFaoH4qe
-   Cl0LQpfHHtqYoFfSDCky3gcAzSQhDBb+lyRsDVKXttWeEVoxazI04W01p
-   1l8ZCsyyjeIG1gybx5AmsbRpAffYdYgZwEhK/UNM9xdWxK59S8e/y/4p/
-   WYk1MTby6znbO4JFJ08YBmJy0Iz2wgRadAiADpFguYRAs4tNRa02C8GGd
-   A5tYznZXahnLZr4nbcbhwJVNbqRECPCWdfg4Dz1Tycjp7UR9tsE3RriyY
-   BTAvjMkGWvCEe7SN2XqLrrEXGVxihmhmNyMibMqNsMxNL/L/FhT0hGgaF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="431996243"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="431996243"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 21:04:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900707817"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="900707817"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 21:04:02 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH RESEND 1/4] memory tiering: add abstract distance
- calculation algorithms management
-References: <20230721012932.190742-1-ying.huang@intel.com>
-        <20230721012932.190742-2-ying.huang@intel.com>
-        <87r0owzqdc.fsf@nvdebian.thelocal>
-        <87r0owy95t.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87sf9cxupz.fsf@nvdebian.thelocal>
-        <878rb3xh2x.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87351axbk6.fsf@nvdebian.thelocal>
-Date:   Thu, 27 Jul 2023 12:02:25 +0800
-In-Reply-To: <87351axbk6.fsf@nvdebian.thelocal> (Alistair Popple's message of
-        "Thu, 27 Jul 2023 13:42:15 +1000")
-Message-ID: <87edkuvw6m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 27 Jul 2023 00:03:38 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E73E2D40
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:03:28 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-7659db6339eso21587885a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1690430607; x=1691035407;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6+VbTe6Mob4pAC/pm6erOvbSB+k/JJhQ28OiV0//M8A=;
+        b=k+kAPSGz9g+/O/PU+gHlRhiOWXyurJIn8zLIe+/qpvMcuSHDp4QqXHqsj/3YZW7k8C
+         fp+aA226yPrBBuaTv7+Y7gYXWD2p+plLwa96DkA2+XFjADvKr24Os+SY0tyYhp9AWyGt
+         xSEU7df6RzulfpcB/EkujEior93l93kJ317y0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690430607; x=1691035407;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6+VbTe6Mob4pAC/pm6erOvbSB+k/JJhQ28OiV0//M8A=;
+        b=gVylgGAaoHKtddyquU6nxZJAwmjX7+r4IFtRMmLcMS2ulaQ6KJJIy6f5SA4jp42j17
+         NwW9+7bHIyQj7hltwDlNRhlYvnAT7vDzMBDXI6VRjVjPKWlEACPR1DocnYTUbYwr62Pe
+         PahXVGjoz8pKAn+Zn5Rlzit2HzkDhI8aPNuzyFljyDPkTjyztP14RLUMCKjR6QRjYz92
+         cF+Bfsb9A2nxIX/j+KlCjXx/luy5AMRVSdtxc1AssckEnDVSqywZrXvlX49kaOOxVcyk
+         SWiZOd9U7jsJg1UyPJIM4Q8RAPESXMdDI+vtSbXBqf2astZpiCHo2mnMkGh++smY2CLz
+         Lfuw==
+X-Gm-Message-State: ABy/qLZuuVFvsQ07MtVfN8iqxztavwTgTmVn4xMCv4kL/gBh5bceX3ey
+        XPj/nAFsGvT42AwGk+OHgAS9IBJRBfrDKq8XEMg=
+X-Google-Smtp-Source: APBJJlGqR3VGOfZbk3AX+BYQF0t415g128FZkk3shlgLNDRoM7HM4rUZq8wAX52OvjT70nY3MJVYIg==
+X-Received: by 2002:a05:620a:290c:b0:767:e55c:d3ba with SMTP id m12-20020a05620a290c00b00767e55cd3bamr1913878qkp.3.1690430607450;
+        Wed, 26 Jul 2023 21:03:27 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id i10-20020a05620a074a00b0076c60b95b87sm136397qki.96.2023.07.26.21.03.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 21:03:26 -0700 (PDT)
+Message-ID: <410cf9c7-a993-4e8f-3279-caba802c6a5c@joelfernandes.org>
+Date:   Thu, 27 Jul 2023 00:03:25 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/5] rcutorture: Fix stuttering races and other issues
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
+References: <20230725232913.2981357-1-joel@joelfernandes.org>
+ <20230725232913.2981357-2-joel@joelfernandes.org>
+ <f6ef4762-6d37-40a4-8272-13b248c46f5b@paulmck-laptop>
+ <CAEXW_YTfo8MDcAQk23cw=vxzReZntSXgkUefD+=4yZ+Gb+ZAww@mail.gmail.com>
+ <9482525e-fddf-449c-b448-8261cff3395f@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <9482525e-fddf-449c-b448-8261cff3395f@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,76 +76,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alistair Popple <apopple@nvidia.com> writes:
-
-> "Huang, Ying" <ying.huang@intel.com> writes:
->
->>>> The other way (suggested by this series) is to make dax/kmem call a
->>>> notifier chain, then CXL CDAT or ACPI HMAT can identify the type of
->>>> device and calculate the distance if the type is correct for them.  I
->>>> don't think that it's good to make dax/kem to know every possible
->>>> types of memory devices.
+On 7/27/23 00:01, Paul E. McKenney wrote:
+> On Wed, Jul 26, 2023 at 11:01:40PM -0400, Joel Fernandes wrote:
+>> On Wed, Jul 26, 2023 at 4:59 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 >>>
->>> Do we expect there to be lots of different types of memory devices
->>> sharing a common dax/kmem driver though? Must admit I'm coming from a
->>> GPU background where we'd expect each type of device to have it's own
->>> driver anyway so wasn't expecting different types of memory devices to
->>> be handled by the same driver.
->>
->> Now, dax/kmem.c is used for
->>
->> - PMEM (Optane DCPMM, or AEP)
->> - CXL.mem
->> - HBM (attached to CPU)
->
-> Thanks a lot for the background! I will admit to having a faily narrow
-> focus here.
->
->>>> And, I don't think that we are forced to use the general notifier
->>>> chain interface in all memory device drivers.  If the memory device
->>>> driver has better understanding of the memory device, it can use other
->>>> way to determine abstract distance.  For example, a CXL memory device
->>>> driver can identify abstract distance by itself.  While other memory
->>>> device drivers can use the general notifier chain interface at the
->>>> same time.
+>>> On Tue, Jul 25, 2023 at 11:29:06PM +0000, Joel Fernandes (Google) wrote:
+>>>> The stuttering code isn't functioning as expected. Ideally, it should
+>>>> pause the torture threads for a designated period before resuming. Yet,
+>>>> it fails to halt the test for the correct duration. Additionally, a race
+>>>> condition exists, potentially causing the stuttering code to pause for
+>>>> an extended period if the 'spt' variable is non-zero due to the stutter
+>>>> orchestration thread's inadequate CPU time.
+>>>>
+>>>> Moreover, over-stuttering can hinder RCU's progress on TREE07 kernels.
+>>>> This happens as the stuttering code may run within a softirq due to RCU
+>>>> callbacks. Consequently, ksoftirqd keeps a CPU busy for several seconds,
+>>>> thus obstructing RCU's progress. This situation triggers a warning
+>>>> message in the logs:
+>>>>
+>>>> [ 2169.481783] rcu_torture_writer: rtort_pipe_count: 9
+>>>>
+>>>> This warning suggests that an RCU torture object, although invisible to
+>>>> RCU readers, couldn't make it past the pipe array and be freed -- a
+>>>> strong indication that there weren't enough grace periods during the
+>>>> stutter interval.
+>>>>
+>>>> To address these issues, this patch sets the "stutter end" time to an
+>>>> absolute point in the future set by the main stutter thread. This is
+>>>> then used for waiting in stutter_wait(). While the stutter thread still
+>>>> defines this absolute time, the waiters' waiting logic doesn't rely on
+>>>> the stutter thread receiving sufficient CPU time to halt the stuttering
+>>>> as the halting is now self-controlled.
+>>>>
+>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>>> ---
+>>>>   kernel/torture.c | 46 +++++++++++++---------------------------------
+>>>>   1 file changed, 13 insertions(+), 33 deletions(-)
+>>>>
+>>>> diff --git a/kernel/torture.c b/kernel/torture.c
+>>>> index 68dba4ecab5c..63f8f2a7d960 100644
+>>>> --- a/kernel/torture.c
+>>>> +++ b/kernel/torture.c
+>>>> @@ -719,7 +719,7 @@ static void torture_shutdown_cleanup(void)
+>>>>    * suddenly applied to or removed from the system.
+>>>>    */
+>>>>   static struct task_struct *stutter_task;
+>>>> -static int stutter_pause_test;
+>>>> +static ktime_t stutter_till_abs_time;
+>>>>   static int stutter;
+>>>>   static int stutter_gap;
+>>>>
+>>>> @@ -729,30 +729,17 @@ static int stutter_gap;
+>>>>    */
+>>>>   bool stutter_wait(const char *title)
+>>>>   {
+>>>> -     unsigned int i = 0;
+>>>>        bool ret = false;
+>>>> -     int spt;
+>>>> +     ktime_t now_ns, till_ns;
+>>>>
+>>>>        cond_resched_tasks_rcu_qs();
+>>>> -     spt = READ_ONCE(stutter_pause_test);
+>>>> -     for (; spt; spt = READ_ONCE(stutter_pause_test)) {
+>>>> -             if (!ret && !rt_task(current)) {
+>>>> -                     sched_set_normal(current, MAX_NICE);
+>>>> -                     ret = true;
+>>>> -             }
+>>>> -             if (spt == 1) {
+>>>> -                     torture_hrtimeout_jiffies(1, NULL);
+>>>> -             } else if (spt == 2) {
+>>>> -                     while (READ_ONCE(stutter_pause_test)) {
+>>>> -                             if (!(i++ & 0xffff))
+>>>> -                                     torture_hrtimeout_us(10, 0, NULL);
+>>>> -                             cond_resched();
+>>>> -                     }
+>>>> -             } else {
+>>>> -                     torture_hrtimeout_jiffies(round_jiffies_relative(HZ), NULL);
+>>>> -             }
+>>>> -             torture_shutdown_absorb(title);
+>>>> +     now_ns = ktime_get();
+>>>> +     till_ns = READ_ONCE(stutter_till_abs_time);
+>>>> +     if (till_ns && ktime_before(now_ns, till_ns)) {
+>>>> +             torture_hrtimeout_ns(ktime_sub(till_ns, now_ns), 0, NULL);
 >>>
->>> Whilst I think personally I would find that flexibility useful I am
->>> concerned it means every driver will just end up divining it's own
->>> distance rather than ensuring data in HMAT/CDAT/etc. is correct. That
->>> would kind of defeat the purpose of it all then.
+>>> This ktime_sub() is roughly cancelled out by a ktime_add_safe() in
+>>> __hrtimer_start_range_ns().
 >>
->> But we have no way to enforce that too.
->
-> Enforce that HMAT/CDAT/etc. is correct? Agree we can't enforce it, but
-> we can influence it. If drivers can easily ignore the notifier chain and
-> do their own thing that's what will happen.
+>> Yes, functionally it is the same but your suggestion is more robust I think.
+>>
+>>> Perhaps torture_hrtimeout_ns() needs to
+>>> take a mode argument as in the patch at the end of this email, allowing
+>>> you to ditch that ktime_sub() in favor of HRTIMER_MODE_ABS.
+>>
+>> Sure, or we can add a new API and keep the default as relative?
+>>
+>> Or have 2 APIs:
+>> torture_hrtimeout_relative_ns();
+>>
+>> and:
+>> torture_hrtimeout_absolute_ns();
+>>
+>> That makes it more readable IMHO.
+>>
+>> Also, do you want me to make both changes (API and usage) in the same
+>> patch? Or were you planning to have a separate patch yourself in -dev
+>> which I can use? Let me know either way, and then I'll refresh the
+>> patch.
+> 
+> I queued the patch on the -rcu tree's "dev" branch.  It turns out that
+> torture_hrtimeout_ns() isn't called very many times, so adding the
+> parameter was straightforward.  Plus the compiler might well optimize
+> it away anyway.
 
-IMHO, both enforce HMAT/CDAT/etc is correct and enforce drivers to use
-general interface we provided.  Anyway, we should try to make HMAT/CDAT
-works well, so drivers want to use them :-)
+Ok sounds good, I will make use of it in this patch and send it again after testing.
 
->>>> While other memory device drivers can use the general notifier chain
->>>> interface at the same time.
->
-> How would that work in practice though? The abstract distance as far as
-> I can tell doesn't have any meaning other than establishing preferences
-> for memory demotion order. Therefore all calculations are relative to
-> the rest of the calculations on the system. So if a driver does it's own
-> thing how does it choose a sensible distance? IHMO the value here is in
-> coordinating all that through a standard interface, whether that is HMAT
-> or something else.
+thanks,
 
-Only if different algorithms follow the same basic principle.  For
-example, the abstract distance of default DRAM nodes are fixed
-(MEMTIER_ADISTANCE_DRAM).  The abstract distance of the memory device is
-in linear direct proportion to the memory latency and inversely
-proportional to the memory bandwidth.  Use the memory latency and
-bandwidth of default DRAM nodes as base.
+  - Joel
 
-HMAT and CDAT report the raw memory latency and bandwidth.  If there are
-some other methods to report the raw memory latency and bandwidth, we
-can use them too.
 
---
-Best Regards,
-Huang, Ying
