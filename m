@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 080577646FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349E17646FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjG0GjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
+        id S231931AbjG0Gi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjG0GjC (ORCPT
+        with ESMTP id S231809AbjG0Giz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:39:02 -0400
-Received: from mgamail.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CE5211C
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:39:02 -0700 (PDT)
+        Thu, 27 Jul 2023 02:38:55 -0400
+Received: from mgamail.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73B42126
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690439942; x=1721975942;
+  t=1690439931; x=1721975931;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=l95sHoi/sZGqMzpe1qc3INiDxsmM2Z+gfXv8zvoNc08=;
-  b=KsNuKrgWn4bNZz+B6W/RX9Gd8g4XsNqd7JYZsvSy/tbbnvn/b/xy5YJz
-   hjvbV2/B2AKnGlRL+s3cEE8ACdwtCZm2nVdC1tuDZ4VgiU/7jWgnuh0oV
-   7XaBdGAhkoeZYhtrRiSL9FUkNisQK8Yqgq/gDdsCzBcmcD/OOYvLizm+C
-   Fg+nSj9Qk10zMAxSuAVXTBexFzsLP/MAjvJiVcYi2G5gXlfDGbxpLZRAx
-   MSDyFQE92ex5hsKP087/LPTzm0utQc72Ih/gV71Z7aEml0V3HrXa8uSrA
-   OAfhjkl9VhCmGgOTu39kFVIR6dEtEpvmXp+T9DqAeTpdosvq9JcYlhOjk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="454589391"
+  bh=U+i30E359f/fjXNg0MSHQoaPJ3cOlGNvB3S19we3sqc=;
+  b=k1qb8VbYFgI87j71HDWzhVM/DQVHefJ3Va6C4cyTT4w0Z3NF4ikJgOyc
+   5TyFOYRL2hM4ifQOGiz5PlKR0Pfw8SHUttosxaJRVuwf0DQQfbC9ZEFbY
+   PGbI1E9GpK9MBqUikK0EzQ0bc0W5vyF7sOk+FRVYMg/VICoTCE+S+9CVt
+   a1oZzKlacmDt8FuGXPg0HCzPq0MZCw2B5fAMQkNd/ri9bTgxPp3mHyQW9
+   7pKeF1qwTZoSrqIkmOykAAYJg5RbcEytyl5w4RXJKsvMVadLNeWhkCN0O
+   xRZaEIsI3qX8i1Twskch5+bOzOxV6QB8yvxedEcpwNfSJWwrv1L95Z9jv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="347829661"
 X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="454589391"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 23:38:36 -0700
+   d="scan'208";a="347829661"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 23:38:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="792191821"
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="973430014"
 X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="792191821"
+   d="scan'208";a="973430014"
 Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Jul 2023 23:38:33 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 26 Jul 2023 23:38:48 -0700
 From:   Chen Yu <yu.c.chen@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Vincent Guittot <vincent.guittot@linaro.org>
@@ -51,9 +51,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
         Chen Yu <yu.chen.surf@gmail.com>,
         Aaron Lu <aaron.lu@intel.com>, linux-kernel@vger.kernel.org,
         Chen Yu <yu.c.chen@intel.com>
-Subject: [RFC PATCH 1/7] sched/topology: Assign sd_share for all non NUMA sched domains
-Date:   Thu, 27 Jul 2023 22:34:22 +0800
-Message-Id: <169500eaa13198382765027eb047e6c7a0e5a13e.1690273854.git.yu.c.chen@intel.com>
+Subject: [RFC PATCH 2/7] sched/topology: Introduce nr_groups in sched_domain to indicate the number of groups
+Date:   Thu, 27 Jul 2023 22:34:36 +0800
+Message-Id: <d4bb3b7f8911ef38e60138ec7b0a629062ae7c34.1690273854.git.yu.c.chen@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1690273854.git.yu.c.chen@intel.com>
 References: <cover.1690273854.git.yu.c.chen@intel.com>
@@ -69,38 +69,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, only the domain with SD_SHARE_PKG_RESOURCES flag
-would share 1 sd_share for every CPU in this domain. Remove this
-restriction and extend it for other sched domains under NUMA
-domain.
+Record the number of sched groups within each sched domain. Prepare for
+newidle_balance() scan depth calculation introduced by ILB_UTIL.
 
-This shared field will be used by a later patch which optimizes
-newidle balancing.
-
-Suggested-by: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 ---
- kernel/sched/topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/sched/topology.h |  1 +
+ kernel/sched/topology.c        | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 67b573d5bf28..c07f2f00317a 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -152,6 +152,7 @@ struct sched_domain {
+ 	struct sched_domain_shared *shared;
+ 
+ 	unsigned int span_weight;
++	unsigned int nr_groups;
+ 	/*
+ 	 * Span of all CPUs in this domain.
+ 	 *
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d3a3b2646ec4..64212f514765 100644
+index 64212f514765..56dc564fc9a3 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -1641,10 +1641,10 @@ sd_init(struct sched_domain_topology_level *tl,
- 	}
+@@ -1023,7 +1023,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 	struct cpumask *covered = sched_domains_tmpmask;
+ 	struct sd_data *sdd = sd->private;
+ 	struct sched_domain *sibling;
+-	int i;
++	int i, nr_groups = 0;
  
- 	/*
--	 * For all levels sharing cache; connect a sched_domain_shared
-+	 * For all levels except for NUMA; connect a sched_domain_shared
- 	 * instance.
- 	 */
--	if (sd->flags & SD_SHARE_PKG_RESOURCES) {
-+	if (!(sd->flags & SD_NUMA)) {
- 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
- 		atomic_inc(&sd->shared->ref);
- 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
+ 	cpumask_clear(covered);
+ 
+@@ -1087,6 +1087,8 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 		if (!sg)
+ 			goto fail;
+ 
++		nr_groups++;
++
+ 		sg_span = sched_group_span(sg);
+ 		cpumask_or(covered, covered, sg_span);
+ 
+@@ -1100,6 +1102,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+ 		last->next = first;
+ 	}
+ 	sd->groups = first;
++	sd->nr_groups = nr_groups;
+ 
+ 	return 0;
+ 
+@@ -1233,7 +1236,7 @@ build_sched_groups(struct sched_domain *sd, int cpu)
+ 	struct sd_data *sdd = sd->private;
+ 	const struct cpumask *span = sched_domain_span(sd);
+ 	struct cpumask *covered;
+-	int i;
++	int i, nr_groups = 0;
+ 
+ 	lockdep_assert_held(&sched_domains_mutex);
+ 	covered = sched_domains_tmpmask;
+@@ -1248,6 +1251,8 @@ build_sched_groups(struct sched_domain *sd, int cpu)
+ 
+ 		sg = get_group(i, sdd);
+ 
++		nr_groups++;
++
+ 		cpumask_or(covered, covered, sched_group_span(sg));
+ 
+ 		if (!first)
+@@ -1258,6 +1263,7 @@ build_sched_groups(struct sched_domain *sd, int cpu)
+ 	}
+ 	last->next = first;
+ 	sd->groups = first;
++	sd->nr_groups = nr_groups;
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
