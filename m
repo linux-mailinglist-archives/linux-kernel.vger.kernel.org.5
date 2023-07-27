@@ -2,161 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5137B76436A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67DF6764367
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjG0BdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 21:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S231195AbjG0B3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjG0Bc7 (ORCPT
+        with ESMTP id S229511AbjG0B3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 21:32:59 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ADE1738
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 18:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690421578; x=1721957578;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=u7rvnskAyZQLr/jiUlhUpSV7nzdX/3cMR6rxrfLJ7fI=;
-  b=IJzDZgYeFWAmRxtZujchap37z7D0xawjwX/ojow9HH3UfigqNURQSX94
-   nxdQXXVCNQIBtIlxO/TXU7XwcMZhzMHGYhzClnG7rkswOO6ysvt7BMY/I
-   GYQO6bXv/NgrWDs7zKDrtVHxmd9GpQViObo/vjTq4ULOBm1F3FI8HN8Bo
-   jWPJInmjRyBszwH/4tIEbwRM7bKMia2ren9U7KzoEL1pegOUKn+JG7L7n
-   LTOfi1tU5Jd0Vdd3xI2Q7rRNmT+aCaCm+SZRw/u30KtIKuCvRePzcoh1+
-   HTp1yatGqyy10IrT4G3OOdZb6+KUUVWcZr3k0uCd9H6fjXVl6WFWTg5KR
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="431974999"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="431974999"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 18:32:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="792115064"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="792115064"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Jul 2023 18:32:56 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 18:32:56 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 26 Jul 2023 18:32:55 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 18:32:55 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 26 Jul 2023 18:32:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DIyZxUfAQGR+R5UaDl9eLO2cwiT6pgXW3MRR5NbxbpmArPW8YB8m12o9Kej91APQ+WI60cNU7rStGxImCEA1RHMD0ogVCNzY/sWQBHitosuOlDUQkylG4rQx403jGZndW7167X7rsWR0yT3Cg7Gx9gX7YBLC1kxByh2FX+hDC0cOXZQzmbEenhTZKvD686Sabxoeniji4+nBj4uBR7tdO1G43sPtQ5OfmEvy3en36RiYsq5F0SiEWneihoz8KUjtv3D18Qw7XA47XGwVOsjR3rINhYXaeKkXk45fluvYfra5JAA6LrTxvyedFb3dXHhDSst9Grrg1PvbW5c1Gv5Txg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SFNmCNkQiVqC0fURyah4Hnp9XbReilYzsCF7BVijNYE=;
- b=cCr2VCr0sTLfdZ6c1tFqJmyknJK7s+S6rUbGKVjTWa8l/RfipIpxZQh8oX7xpDDxjEgMYAKQfoKR6LbsKGtH5FEPB43O0wkJq88XiZgE981562WHBFAsiJ9dLywq1iAqMZDA2eaTiB2V5wA+3rCprH9qgzOQUiRgWDUICoG1eXj6ltm8rKfm8AlIqF7XVSXZNWwXRRKDYVvoLfFdKR4Aixglc53ZXcYOFnbdPLe/38cuvxYM3ANNeQKp8Z8VghlJLyNpkH7bNahBWk9fwxIkXqZYymi/q8JdU4gJgAE18SKHsy+JXCXVZLxhzXkBL14LNA9dz9qRAI+hTLsxgLsxww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
- by PH7PR11MB8570.namprd11.prod.outlook.com (2603:10b6:510:2ff::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 01:32:52 +0000
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::57e7:80ff:c440:c53a]) by MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::57e7:80ff:c440:c53a%5]) with mapi id 15.20.6609.032; Thu, 27 Jul 2023
- 01:32:52 +0000
-Date:   Thu, 27 Jul 2023 09:24:59 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Paul E . McKenney" <paulmck@kernel.org>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rui.zhang@intel.com>,
-        <tim.c.chen@intel.com>
-Subject: Re: [Patch v2 2/2] x86/tsc: use logical_packages as a better
- estimation of socket numbers
-Message-ID: <ZMHHa0rkAQwm+Sw2@feng-clx>
-References: <20230615092021.GE1683497@hirez.programming.kicks-ass.net>
- <ZIwMstkB7CG3pDYu@feng-clx>
- <87h6qz7et0.ffs@tglx>
- <87edm36qqb.ffs@tglx>
- <ZJW0gi5oQQbxf8Df@feng-clx>
- <ZJhUiO+bdBoLU5WF@feng-clx>
- <87r0px40o5.ffs@tglx>
- <ZJ2Grrn7sq9Jdxf6@feng-clx>
- <ZLVEVoZTbYi3LbjK@feng-clx>
- <87pm4esbv6.ffs@tglx>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87pm4esbv6.ffs@tglx>
-X-ClientProxiedBy: SI2PR01CA0048.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::17) To MN0PR11MB6304.namprd11.prod.outlook.com
- (2603:10b6:208:3c0::7)
+        Wed, 26 Jul 2023 21:29:20 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDDC1738;
+        Wed, 26 Jul 2023 18:29:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBCpy3K82z4f3vdm;
+        Thu, 27 Jul 2023 09:29:14 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP1 (Coremail) with SMTP id cCh0CgDnUCtoyMFkLJR3OA--.21216S2;
+        Thu, 27 Jul 2023 09:29:13 +0800 (CST)
+Subject: Re: [PATCH v2 10/10] ext4: correct some stale comment of criteria
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230725185106.2147273-1-shikemeng@huaweicloud.com>
+ <20230725185106.2147273-11-shikemeng@huaweicloud.com>
+ <ZMEyxLauFkXBwgUZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <5db4b292-fee8-9581-841c-206ba10d4b80@huaweicloud.com>
+Date:   Thu, 27 Jul 2023 09:29:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|PH7PR11MB8570:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2c60e62b-f2ba-44a1-d9e0-08db8e416520
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OkMQ2KqHl4ZqyGWBPcVxHcMUfhThjEBDLXzPW9wyrzxJWFlsyFIpLqhckRv0pl7o1ljfgUaSZ65FyavSSlINmpLADH4jwulzIF0/JkbmrYRnUw9jpkV7mccuJ6BdEvLOJ9an22o0mQjcsxGLBoZEbTkoxOg1oCmTTs6jdhs2L8fatdOTI1zIP5C5VkVxe4nNOMs3wtQUuuDvYJdkTsy0LMceYp4aHuZH5dkBOGkZWXNJKaR+7z5CU73qzW16bI7ydcb6uqfb8GmPHrTkljcBKAx5n2tNRU6rhfgxyXfa+wufXIbixMB4qvZ30TLdwPpKH0RJ+ImEk6dajJ+PQvypEqmvAW57jKYFs9Va1YvmcxmbNSGrzLHv18LnbFsGR4CgK5QTACCvfKxn9oeygiZ5k9i0RJrxqgSqJLsdTB622L6UrlABFkQf/4OP2NSQAOGLkxw/sblL6yrkkCt7MvaLZcMBuNiXK4/mJed5SXb4ZQU8BQhN8pgwfrUE51xiju5H+62F1fnbSW2hTIvNs//0ZmYKWXIgnaabKUgVw41SqLqXh5l9M/k0zNvOY2ZFF/rBAwNWvb/CiwXWUKnJyY19zGbC83Wh9Byt3Zm0ahREe6A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(39860400002)(396003)(376002)(366004)(346002)(136003)(451199021)(82960400001)(6486002)(478600001)(6506007)(26005)(6512007)(9686003)(6916009)(4326008)(54906003)(66556008)(66476007)(66946007)(186003)(38100700002)(7416002)(44832011)(8676002)(8936002)(33716001)(5660300002)(2906002)(4744005)(316002)(41300700001)(86362001)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6J1Ifq928+psZcijVL0Zdg50sJaCXoglZFTRKWkBK7L+U+TgaxlaKJx/ncRS?=
- =?us-ascii?Q?wlAjKdPqBQkitNT8sX0InXfZZxdsk9NRFnteYuY3r4KxAV6cR2DwtseYMU/E?=
- =?us-ascii?Q?6YkjI6qhv3hLfOgFut2lgLBPNk+nNKyPNClKaUJ5VbtiizM1DpntPlnSF2XL?=
- =?us-ascii?Q?j2OuIwLSft5WK+ISZY+iYsqNAL0Lc+SXtiTdyZqkYXINi3O0rrUNW86+xPfX?=
- =?us-ascii?Q?SfwOTJ8ShqA+6IjbUEHSdRTbl6vOL2NDXDLI+OZ98MsmB51GOVAhTPZeJa/p?=
- =?us-ascii?Q?jvORBRwfcT0+/zIFTtMGEiTGh1kZZudEYgtC2C/HhTSlSTUleqW3BCf3l2iS?=
- =?us-ascii?Q?IVc/1Ct2mUTqDjzDp3xhXbrXeuV+JTybi+SQWAWCJ+ZmdWLz0L0pznDJP5IK?=
- =?us-ascii?Q?ESvdhDksszMN16BkF8dT2tnBZQnFXEM4JBglonPWlch/KoBGgDdHjrJgsK5o?=
- =?us-ascii?Q?1KFRaUPkceQUe5F7s+TeGUNgS8dZkWsQ+CXDfG8rz50zWu5Oys/gqDVb9Vi6?=
- =?us-ascii?Q?FBPk83a2dcLOtfw1YpmCpNfy2wcuFHP7XBEwgK/BuT1NtBMCBYoY7uxuBOyl?=
- =?us-ascii?Q?SpEZNRqWSN/1Wjl3s3Z9dJw3++usUuHXk0G7/P3Jqp/JjP5ub9AMjx59geM8?=
- =?us-ascii?Q?/uMA8rJ/9fyrwVjWnWx2Xch74TTUS1gkGdfj945wCBV0/x1Sqj9T/Do1EaXe?=
- =?us-ascii?Q?vrGY+vw6CgYe8XDLENB4YZoqhFf+fGJqfqwS+zMubuEmYBWfhNxtHng/Nzrk?=
- =?us-ascii?Q?N/MqBgUoxx1nMv+suZVdi/+636tHKPpmQSs6YumVl6P7IymHP2e77dHCTqtb?=
- =?us-ascii?Q?+V0vIJwY/cLszZ1YG4psoeHBt3ZngxKZgRi0ezVjwmxwTu/sd9q5ICe6BXwo?=
- =?us-ascii?Q?kYsZQptUazwRZrqv699lXm4UaCA92rny6SI5kk5OftV1nrVFyFiwG8CXEHy2?=
- =?us-ascii?Q?xPgA8dxM46qHjMDDr3AANm3TvCONSVciMOVg19kkMNYCiXFPGVo+8fpgEASg?=
- =?us-ascii?Q?mvg/4DtXzstFfBibC1S73j+gmUdwSVIFt0X3SgRwT99+2MWSMevqIH1ZQIn+?=
- =?us-ascii?Q?dyLJ/J61RDXc6gCC5JE4yOkyQo1Ndhg+LBEJey2kKtOYPcPsbf5dJOHsVhnX?=
- =?us-ascii?Q?CXdkuv7823afooIusPcgHmDDtVIDMFJz/KDwbkrNNTg612xixLz5f9dQJKb+?=
- =?us-ascii?Q?iqtP9xeG+IBDOj4fOBsc1mYiOMTGc3Dik7fXkOuyi4YQH8PNZpIf2WZQqdWB?=
- =?us-ascii?Q?ymc3kEUJfxBmwTKJMLaI5I6t8YhLvds2AlqHBRECidyp6XwELpxKhgDmeKdl?=
- =?us-ascii?Q?V5oiv3xGgg3SkumtLV9uHZwAGNqAcr5qGd6oBVnyekznNYU0UlGuY/iDI/zF?=
- =?us-ascii?Q?98MmSe8RNZjR2CdYSy1XHQt2n784wmHZlFLbqkFKgJ59boQ8XK5vVV5lSIHE?=
- =?us-ascii?Q?YjcVJDYNn+pNENnW++xGux9p8gOLac+Rmd9qmNEf4O5w1xAI3Y7e+1ASXodB?=
- =?us-ascii?Q?D00geePQ3BYYaDhWb7unifj+tC/A04ppgQgheAS78Vbs51zX5aS1KDb4fsdW?=
- =?us-ascii?Q?8kZHSYp7uf8tJXaCNozcZG0TGZJ14ieQKgy+zi4B?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c60e62b-f2ba-44a1-d9e0-08db8e416520
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 01:32:52.5767
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Mb4XhlgolWwX7wrgYLAJBZaZkSF+guf42g5vOM9cxFCZ7nRqBeVbe1gPNGPxzMzga2ihPhMUYjQfyXaAXW3BsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8570
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <ZMEyxLauFkXBwgUZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: cCh0CgDnUCtoyMFkLJR3OA--.21216S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1UZw48Cr18tFyUZrW8JFb_yoW8uw4kpr
+        WfKFyxCF1fXr1UCFZF93W8WwsFgw4SgFWUXr9Y9w4Fvr9xJryfC3ZrK3Z5uFyxAr4fG3W5
+        ZwnIvFWxC3WUu37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -165,21 +64,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 09:37:17PM +0200, Thomas Gleixner wrote:
-> On Mon, Jul 17 2023 at 21:38, Feng Tang wrote:
-> > On Thu, Jun 29, 2023 at 09:27:10PM +0800, Feng Tang wrote:
-> >
-> > I plan to put these together and resend. Can I use your Signed-off-by
-> > for your code?  
-> 
-> No. I'm reworking the topology code at large scale and this temporary
-> hack is just in the way. Give me a couple of days to polish it up for
-> posting. That will just provide the correct information out of the box.
- 
-Glad to see this happening! and thanks for the heads up.
 
-- Feng
 
-> Thanks,
+on 7/26/2023 10:50 PM, Ojaswin Mujoo wrote:
+> On Wed, Jul 26, 2023 at 02:51:06AM +0800, Kemeng Shi wrote:
+>> We named criteria with CR_XXX, correct stale comment to criteria with
+>> raw number.
 > 
->         tglx
+> Hi Kemeng,
+> 
+> Thanks for the cleanups.
+> 
+>>
+>> Fixes: f52f3d2b9fba ("ext4: Give symbolic names to mballoc criterias")
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> ---
+>>  fs/ext4/mballoc.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 36eea63eaace..de5da76e6748 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -2777,8 +2777,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>>  
+>>  	/*
+>>  	 * ac->ac_2order is set only if the fe_len is a power of 2
+>> -	 * if ac->ac_2order is set we also set criteria to 0 so that we
+>> -	 * try exact allocation using buddy.
+>> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
+>> +	 * so that we try exact allocation using buddy.
+>>  	 */
+>>  	i = fls(ac->ac_g_ex.fe_len);
+>>  	ac->ac_2order = 0;
+>> @@ -2835,8 +2835,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>>  			/*
+>>  			 * Batch reads of the block allocation bitmaps
+>>  			 * to get multiple READs in flight; limit
+>> -			 * prefetching at cr=0/1, otherwise mballoc can
+>> -			 * spend a lot of time loading imperfect groups
+>> +			 * prefetching at cr below CR_FAST, otherwise mballoc
+> 
+> One of my earlier patchset has replaced the CR_FAST macro with
+> ext4_mb_cr_expensive() so maybe we can account for that here:
+> 
+> https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
+> 
+Hi Ojaswin, sorry for missing this. I still could not find the comment update
+of stale comment "limit prefetching at cr=0/1" in that patch. Maybe we could
+update comment to "prefetching at inexpensive CR, otherwise ...". What do
+you think. Or did I miss anything.
+
+-- 
+Best wishes
+Kemeng Shi
+> Regards,
+> ojaswin
+> 
+>> +			 * can spend a lot of time loading imperfect groups
+> 
+>>  			 */
+>>  			if ((prefetch_grp == group) &&
+>>  			    (cr >= CR_FAST ||
+>> -- 
+>> 2.30.0
+>>
+>
+
