@@ -2,202 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1BD765D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83C3765D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjG0Ufm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S231478AbjG0UjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjG0Ufj (ORCPT
+        with ESMTP id S229552AbjG0UjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:35:39 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431C52736;
-        Thu, 27 Jul 2023 13:35:38 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id B3075320094B;
-        Thu, 27 Jul 2023 16:35:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 27 Jul 2023 16:35:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1690490134; x=1690576534; bh=8EtEmjr8ap2Hz2DcaXveDr0qco1V0aQHiRl
-        MiasL9Fc=; b=G6Wyxf1LnZrveM2I45Ub5taqepidDuXsO8qKsr138TDa0Ik1INQ
-        uD6l0jWQ4kig4oc2oWW/raZw4HsM/iLjCyR1lRtcaPUrtRPsIq+k1dS1rkOQ2oIg
-        O+V7N5zvZxkOkjuwH1y9nOQxcq3nSf7byHieA+Njs7atRsDtmuXvlXOwvXGmkf0+
-        7nQddLgNkWA9Ct6ZICHDOVVBfnvX1vdVPpV+4EpLf3z/iDY7zRJg+rXQkAlKu/b6
-        2amNH0BXWLvm7B0VsaL4ecgeYeC7DhE5RQYsVnMw1l033QN9C5K4vkRaFkb7XnHf
-        n3flNhU5OlnhnQB3ITSvSDxvpPWW/A0R8sg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690490134; x=1690576534; bh=8EtEmjr8ap2Hz2DcaXveDr0qco1V0aQHiRl
-        MiasL9Fc=; b=vadqZpOxHGzEldM5yGAYRiBiFL/eLDO+Fh12L+/fMoY16rw1VIB
-        FstOycAQKq5iJYyd4VWt08r7P/OeaiUrXBxOLZWy9v78FFKxoPK0wOhwNr4H3sv5
-        o0BuSiDWIUw/n4fK9C9LWH+uQhPJZwtYtMfc5AsQSWnS/DWqmpjDYXuUUI6nz5JI
-        scJPGNOfIvHZDg//fYxJWfIlTe6f1ZYgVJEYGjLzmExLavj6FtAp7DLvlHTmgytV
-        9MzGvGNhpr9RlWg5sSWRRZlaR/QAq008DNLPrZfkJUNaA0LiFCGcT9ysBfCYmaFy
-        vs7UKUfx3CYneL7dlc2mzKl5h/bsjVqvexA==
-X-ME-Sender: <xms:FdXCZGJ-rS0sphIAKfJk8lGaaPr_nwt7j_HrRFEBniRU7v5RxtKeXg>
-    <xme:FdXCZOL3uBgfUFil-EovlcCM1rjgU5Mxd42PX6nfUvanqAg2Ddrafyxa3vBWMuoSe
-    PjW0Kvinhj0zTQ8>
-X-ME-Received: <xmr:FdXCZGvvLi1K9zpLiPt47watWyfLVRclyMuABb3vqM_X0Xz0XDvjZDRK_QWSFysbrT6GGbPhyOpiGNqyWfj3HikVY9EKonQaBKal2RINvYxehoNkI-BY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeggdduvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdluddtmdenucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredt
-    tdefjeenucfhrhhomhepuegvrhhnugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthh
-    husggvrhhtsehfrghsthhmrghilhdrfhhmqeenucggtffrrghtthgvrhhnpeekheevkeel
-    keekjefhheegfedtffduudejjeeiheehudeuleelgefhueekfeevudenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgs
-    vghrthesfhgrshhtmhgrihhlrdhfmh
-X-ME-Proxy: <xmx:FdXCZLZ-nS2wD3F7gm2Rm3C_lGLifPJPhUXwZmxz_B6ALBVYCydyCA>
-    <xmx:FdXCZNY78st261SBr6ZUs687QHgprcNw9bBL-KsoBvQN09UhTAYUZg>
-    <xmx:FdXCZHBaFLZdjm3DSXtdylKbGtwhUFvv0UfRbJIgt4MIqCPoIc6nQA>
-    <xmx:FtXCZMUy7WdM3mtJicBG95n0XoLzn9Dyt9F-OLGx_0gUuFzty2-zbA>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 27 Jul 2023 16:35:32 -0400 (EDT)
-Message-ID: <d9ec13de-ebb2-af50-6026-408b49ff979b@fastmail.fm>
-Date:   Thu, 27 Jul 2023 22:35:31 +0200
+        Thu, 27 Jul 2023 16:39:21 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B652D45;
+        Thu, 27 Jul 2023 13:39:20 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686c06b806cso1099551b3a.2;
+        Thu, 27 Jul 2023 13:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690490359; x=1691095159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zyITX45GpTXogJEYiZE6OHZHfNoVROM05QVwzgFFXYA=;
+        b=QJEMg4MLxn+7tFi87dopB1hZODqle5ugHUWYODjrVyV+DhqzI30Eus2HYksloZQ4yd
+         CgxytAd8QEs2JEIbfCv2NI5vy9kOkZOni8GJmLEdo9/5lpbbhFt5dsYqeKOVdUsImLC+
+         qLYjUJ993nDinpi98+B8mfcIN43wEX1hDb2tpm3s4lDz5lT3mFGnK9u2Q1/2Af1TNEl6
+         Zhqd0RGKhYPfKAaVw5uF0eg9djhnW6p1Hhz87Mriy5melImdvRye9X1Wjv/CaD2w3GaO
+         l5oPwm0FwNaBIA4U4RzVyFagjzwxg0xEZKQUUDpc0oZpttBnkPYrI8KoE2AKRI8wKc18
+         MCrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690490359; x=1691095159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zyITX45GpTXogJEYiZE6OHZHfNoVROM05QVwzgFFXYA=;
+        b=ZnlmvDV9V/OLnQl5ja4Jp5ltCckUFbrhxbwRbrEu/FmeJf0fLH7By7CGCe5/BOaNX1
+         En4fxqzmZoAnzN/Fo3WPcR5+KUSQ/5e56d8c1j8yrmDcezCuPQcrVk+53PLu5FTaK4OK
+         b8q2aFQ8yyeU+Munso1ltLQAslz/6X9dQL9ZMkZv9DwgOiU21OrAdKQBCjaoSlAfXsYZ
+         INU+SjW7SfFpmHzCrwjTezREn68e15TweBXKSlqLBWTCLV4hThX/OH6GVvZ+23JdEZ3g
+         XcO6RM13jK3n8G17y6hGOTC349Sgi7KCAtAJN309Trgjigc1K/Y5ci9Vr7E6+wW3OcQf
+         9tIw==
+X-Gm-Message-State: ABy/qLagmLB/GADj/0T9Ff7ctrIZkAG7qQxGmG0pBsOoi2V7SSyuGWwT
+        Hdo2mqM4NlBDBhMPK7wslcBV6b4sqII=
+X-Google-Smtp-Source: APBJJlH1lJRrzhf5NSYBO/uT93iCsBwZhWljDil9fKues7o5iNj42FFroJfdizBjNUSJKJhu386rrw==
+X-Received: by 2002:a05:6a20:7f88:b0:133:c9f0:ce66 with SMTP id d8-20020a056a207f8800b00133c9f0ce66mr216658pzj.18.1690490359329;
+        Thu, 27 Jul 2023 13:39:19 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:9b75:ab53:f898:d12d])
+        by smtp.gmail.com with ESMTPSA id s12-20020a62e70c000000b00686bf824b3bsm1865233pfh.136.2023.07.27.13.39.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 13:39:18 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 13:39:16 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Benjamin Bara <bbara93@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>
+Subject: Re: [PATCH] Input: ads7846 - don't set ABS_PRESSURE when min == max
+Message-ID: <ZMLV9BVxHx3jlE5R@google.com>
+References: <20230727-ads7846-pressure-v1-1-fa74c7680191@skidata.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir [v2].
-Content-Language: en-US, de-DE
-To:     Miklos Szeredi <miklos@szeredi.hu>, Jaco Kroon <jaco@uls.co.za>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Antonio SJ Musumeci <trapexit@spawn.link>
-References: <20230726105953.843-1-jaco@uls.co.za>
- <20230727081237.18217-1-jaco@uls.co.za>
- <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727-ads7846-pressure-v1-1-fa74c7680191@skidata.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Benjamin,
 
-
-On 7/27/23 17:35, Miklos Szeredi wrote:
-> On Thu, 27 Jul 2023 at 10:13, Jaco Kroon <jaco@uls.co.za> wrote:
->>
->> This patch does not mess with the caching infrastructure like the
->> previous one, which we believe caused excessive CPU and broke directory
->> listings in some cases.
->>
->> This version only affects the uncached read, which then during parse adds an
->> entry at a time to the cached structures by way of copying, and as such,
->> we believe this should be sufficient.
->>
->> We're still seeing cases where getdents64 takes ~10s (this was the case
->> in any case without this patch, the difference now that we get ~500
->> entries for that time rather than the 14-18 previously).  We believe
->> that that latency is introduced on glusterfs side and is under separate
->> discussion with the glusterfs developers.
->>
->> This is still a compile-time option, but a working one compared to
->> previous patch.  For now this works, but it's not recommended for merge
->> (as per email discussion).
->>
->> This still uses alloc_pages rather than kvmalloc/kvfree.
->>
->> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
->> ---
->>   fs/fuse/Kconfig   | 16 ++++++++++++++++
->>   fs/fuse/readdir.c | 18 ++++++++++++------
->>   2 files changed, 28 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
->> index 038ed0b9aaa5..0783f9ee5cd3 100644
->> --- a/fs/fuse/Kconfig
->> +++ b/fs/fuse/Kconfig
->> @@ -18,6 +18,22 @@ config FUSE_FS
->>            If you want to develop a userspace FS, or if you want to use
->>            a filesystem based on FUSE, answer Y or M.
->>
->> +config FUSE_READDIR_ORDER
->> +       int
->> +       range 0 5
->> +       default 5
->> +       help
->> +               readdir performance varies greatly depending on the size of the read.
->> +               Larger buffers results in larger reads, thus fewer reads and higher
->> +               performance in return.
->> +
->> +               You may want to reduce this value on seriously constrained memory
->> +               systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
->> +
->> +               This value reprents the order of the number of pages to allocate (ie,
->> +               the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
->> +               pages (128KiB).
->> +
->>   config CUSE
->>          tristate "Character device in Userspace support"
->>          depends on FUSE_FS
->> diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
->> index dc603479b30e..47cea4d91228 100644
->> --- a/fs/fuse/readdir.c
->> +++ b/fs/fuse/readdir.c
->> @@ -13,6 +13,12 @@
->>   #include <linux/pagemap.h>
->>   #include <linux/highmem.h>
->>
->> +#define READDIR_PAGES_ORDER            CONFIG_FUSE_READDIR_ORDER
->> +#define READDIR_PAGES                  (1 << READDIR_PAGES_ORDER)
->> +#define READDIR_PAGES_SIZE             (PAGE_SIZE << READDIR_PAGES_ORDER)
->> +#define READDIR_PAGES_MASK             (READDIR_PAGES_SIZE - 1)
->> +#define READDIR_PAGES_SHIFT            (PAGE_SHIFT + READDIR_PAGES_ORDER)
->> +
->>   static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
->>   {
->>          struct fuse_conn *fc = get_fuse_conn(dir);
->> @@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
->>          struct fuse_mount *fm = get_fuse_mount(inode);
->>          struct fuse_io_args ia = {};
->>          struct fuse_args_pages *ap = &ia.ap;
->> -       struct fuse_page_desc desc = { .length = PAGE_SIZE };
->> +       struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+On Thu, Jul 27, 2023 at 05:19:57PM +0200, Benjamin Bara wrote:
+> From: Benjamin Bara <benjamin.bara@skidata.com>
 > 
-> Does this really work?  I would've thought we are relying on single
-> page lengths somewhere.
+> When the optional fields "pressure_min" and "pressure_max" are not set,
+> both fall back to 0, which results to the following libinput error:
 > 
->>          u64 attr_version = 0;
->>          bool locked;
->>
->> -       page = alloc_page(GFP_KERNEL);
->> +       page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
->>          if (!page)
->>                  return -ENOMEM;
->>
->>          plus = fuse_use_readdirplus(inode, ctx);
->>          ap->args.out_pages = true;
->> -       ap->num_pages = 1;
->> +       ap->num_pages = READDIR_PAGES;
+> ADS7846 Touchscreen: kernel bug: device has min == max on ABS_PRESSURE
 > 
-> No.  This is the array lenght, which is 1.  This is the hack I guess,
-> which makes the above trick work.
+> Avoid it by only setting ABS_PRESSURE if the values differ.
 
-Hmm, ap->num_pages / ap->pages[] is used in fuse_copy_pages, but so is 
-ap->descs[] - shouldn't the patch caused an out-of-bound access?
-Out of interest, would you mind to explain how the hack worked?
+What is the benefit of silently continuing without reporting pressure on
+models that do support pressure readings, vs. using libinput's errors as
+signal to adjust DT?
 
+> 
+> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+> ---
+>  drivers/input/touchscreen/ads7846.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+> index faea40dd66d0..2535424a5630 100644
+> --- a/drivers/input/touchscreen/ads7846.c
+> +++ b/drivers/input/touchscreen/ads7846.c
+> @@ -1281,7 +1281,7 @@ static int ads7846_probe(struct spi_device *spi)
+>  			pdata->y_min ? : 0,
+>  			pdata->y_max ? : MAX_12BIT,
+>  			0, 0);
+> -	if (ts->model != 7845)
+> +	if (ts->model != 7845 && pdata->pressure_min != pdata->pressure_max)
+>  		input_set_abs_params(input_dev, ABS_PRESSURE,
+>  				pdata->pressure_min, pdata->pressure_max, 0, 0);
+>  
+> 
+> ---
+> base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+> change-id: 20230727-ads7846-pressure-05edfb01887f
+> 
+> Best regards,
+> -- 
+> Benjamin Bara <benjamin.bara@skidata.com>
+> 
 
-Thanks,
-Bernd
+Thanks.
+
+-- 
+Dmitry
