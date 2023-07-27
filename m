@@ -2,45 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21BF7652FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2B8765305
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbjG0L5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        id S233200AbjG0L6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbjG0L46 (ORCPT
+        with ESMTP id S229485AbjG0L6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:56:58 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD122D4E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:56:54 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBTgD4yQxzNmV5;
-        Thu, 27 Jul 2023 19:53:28 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
- 2023 19:56:51 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>
-CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2 4/4] mm: memory-failure: add PageOffline() check
-Date:   Thu, 27 Jul 2023 19:56:43 +0800
-Message-ID: <20230727115643.639741-5-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230727115643.639741-1-linmiaohe@huawei.com>
-References: <20230727115643.639741-1-linmiaohe@huawei.com>
+        Thu, 27 Jul 2023 07:58:34 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0F4272A;
+        Thu, 27 Jul 2023 04:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690459113; x=1721995113;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hY+8uYrnEMl08IuoLtWPq8No+6FuLjDj9Prajmo6FTE=;
+  b=jStp7on7UQ6lEuhRc33J7BIleKv5UeqG43/zO29Z8UQweHssMl0zRjDz
+   Kgm8Bp00YqJKk3CPZtx8W4jAKDXABaofcIDQTZRtkYhvZWDCUy3Yu3NAc
+   gNm3FHWWsE7bbYrnQi7WB6QHcQ3Hs/8XajA1jS/PKuTHrRtt3sidEg/ow
+   MMDFEIDEF3p23cWeE1DwzF7PliIBhVPYQzmxUzxnX9NVwlm/AwtQ8f5ru
+   95qbsKBUbAOysXNKU+xukW/g96rn61zQYskDpPIHzazssy/vwxkz32+c+
+   dwcNq5fr9RHTbTHfRCsErkFcevlhiYsWx+Iu+ZI2aD/F8e0GOBt+Ift6o
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="353185759"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="353185759"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 04:58:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="704158257"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="704158257"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP; 27 Jul 2023 04:58:32 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qOzdW-002kmz-1k;
+        Thu, 27 Jul 2023 14:58:30 +0300
+Date:   Thu, 27 Jul 2023 14:58:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: core: Simplify uart_get_rs485_mode()
+Message-ID: <ZMJb5lT5BjtSiflM@smile.fi.intel.com>
+References: <20230726122335.14187-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726122335.14187-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,38 +65,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory failure is not interested in logically offlined page. Skip this
-type of pages.
+On Wed, Jul 26, 2023 at 03:23:35PM +0300, Andy Shevchenko wrote:
+> Simplify uart_get_rs485_mode() by using temporary variable for
+> the GPIO descriptor. With that, use proper type for the flags
+> of the GPIO descriptor.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- mm/memory-failure.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+It seems I will have more against serial core, perhaps it makes sense to unite
+them in a single series.
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index d975a6b224f7..e4c4b9dc852f 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1561,7 +1561,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 	 * Here we are interested only in user-mapped pages, so skip any
- 	 * other types of pages.
- 	 */
--	if (PageReserved(p) || PageSlab(p) || PageTable(p))
-+	if (PageReserved(p) || PageSlab(p) || PageTable(p) || PageOffline(p))
- 		return true;
- 	if (!(PageLRU(hpage) || PageHuge(p)))
- 		return true;
-@@ -2535,7 +2535,8 @@ int unpoison_memory(unsigned long pfn)
- 		goto unlock_mutex;
- 	}
- 
--	if (folio_test_slab(folio) || PageTable(&folio->page) || folio_test_reserved(folio))
-+	if (folio_test_slab(folio) || PageTable(&folio->page) ||
-+	    folio_test_reserved(folio) || PageOffline(&folio->page))
- 		goto unlock_mutex;
- 
- 	/*
 -- 
-2.33.0
+With Best Regards,
+Andy Shevchenko
+
 
