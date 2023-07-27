@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07057765929
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156E776592C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjG0Qt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
+        id S231768AbjG0Que (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjG0Qt5 (ORCPT
+        with ESMTP id S230523AbjG0Quc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:49:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41F01724;
-        Thu, 27 Jul 2023 09:49:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40A9161EE2;
-        Thu, 27 Jul 2023 16:49:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB7EC433C8;
-        Thu, 27 Jul 2023 16:49:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690476595;
-        bh=gcwSoL2bkDWbowCSuuulpc/4xH1rTxXZ2w4KlNaV8sw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ga5J9/+3lu2HE+A49nb6Q8RsDrf1xcwmIjw20AVQZ1wu+uPt1Qczw2tW5SfIj937U
-         FjQxAIrzJNrwEWwOcjrsbgYsXWxYrCoTFsJfEqickqDZtR6p5W03DnYFnXS1SJZRs7
-         QTT18Irx2tocg/Lr4BFTVYwyJYSfQwch3AEO2fqf5pZxBriszkPHMbV70I0LJUV67Y
-         DQ/++5Bu58zNLWsZ6nOQi/hTQ73JNz90k5Ma4G4ORiViRqL6SyS3gCfAsqoiNeM8rc
-         uJcyM5wJszKFtdrPXPAhIyfJWMJCgfrRY6sGjOGSsyg9ZTYVHl2sQMLhx1UXqThGA9
-         yhjEiL6ccCMNQ==
-Date:   Thu, 27 Jul 2023 09:49:27 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] scripts/faddr2line: Constrain readelf output to
- symbols from System.map
-Message-ID: <20230727164927.3bjth6ac75jh6rdr@treble>
-References: <20230725211157.17031-1-will@kernel.org>
- <20230725211157.17031-3-will@kernel.org>
- <20230725213805.g6osfswz5o6cxusy@treble>
- <20230727121851.GA19653@willie-the-truck>
+        Thu, 27 Jul 2023 12:50:32 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66151724
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:50:28 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id EF665240105
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 18:50:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1690476622; bh=uXHQHEZB1n2cI4t1guKeGhWibX3EDqHJ7eWOrBCO3Ho=;
+        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=SHdvkGCxkVTu+mpzVFlXQADUshjrg14ltCJ6sN+4Aqe2aGqeVqlmqOBnJ4kk9WUHN
+         iVGdSaUmIOIbXLjetriYa8Xx9sgvUUh4lGm/MCMNlDY0dOPF2bjdtq96p6oM7887YO
+         NYY2D4EE9fRUcBkAo660XBw56+n2ksUqYDGMvZEg6t/iiA0++8WFy0qOu5AqLVC25C
+         2wyQFKXUjuPfHj8sTwG9UQBMF1FUremTreVTxlLk3UriA/aMa8uVshJMw2ioO0CBMU
+         ECOQzE4cL/zbMElicp3e4/UMIwUTOBEhsvJLJkzkf4DW7mMXg/z1CcNulyObdsqJBp
+         9YTBW7sJTc/7A==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4RBcFm42S4z6ty0;
+        Thu, 27 Jul 2023 18:50:20 +0200 (CEST)
+Date:   Thu, 27 Jul 2023 16:50:19 +0000
+From:   Daniil Stas <daniil.stas@posteo.net>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        jarkko@kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+        stable@vger.kernel.org, torvalds@linux-foundation.org
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+Message-ID: <20230727195019.41abb48d@g14>
+In-Reply-To: <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+References: <20230727183805.69c36d6e@g14>
+        <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
+        <20230727193949.55c18805@g14>
+        <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230727121851.GA19653@willie-the-truck>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:18:52PM +0100, Will Deacon wrote:
-> On Tue, Jul 25, 2023 at 02:38:05PM -0700, Josh Poimboeuf wrote:
-> > On Tue, Jul 25, 2023 at 10:11:57PM +0100, Will Deacon wrote:
-> > > @@ -185,7 +186,7 @@ __faddr2line() {
-> > >  				found=2
-> > >  				break
-> > >  			fi
-> > > -		done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2)
-> > > +		done < <(${READELF} --symbols --wide $objfile | sed -f ${IGNORED_SYMS} -e 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2)
-> > >  
-> > >  		if [[ $found = 0 ]]; then
-> > >  			warn "can't find symbol: sym_name: $sym_name sym_sec: $sym_sec sym_addr: $sym_addr sym_elf_size: $sym_elf_size"
+On Thu, 27 Jul 2023 11:41:55 -0500
+Mario Limonciello <mario.limonciello@amd.com> wrote:
+
+> On 7/27/2023 11:39, Daniil Stas wrote:
+> > On Thu, 27 Jul 2023 10:42:33 -0500
+> > Mario Limonciello <mario.limonciello@amd.com> wrote:
+> >   
+> >> On 7/27/2023 10:38, Daniil Stas wrote:  
+>  [...]  
+> >>
+> >> Can you please open up a kernel bugzilla and attach your dmesg to
+> >> it both with TPM enabled and disabled?
+> >>
+> >> You can CC me on it directly.  
 > > 
-> > Looks good, though the outer loop has another readelf incantation:
-> > 
-> > 	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$4 == "FUNC" && $8 == fn')
-> > 
-> > It should probably have the same sed options?
+> > There are several bug categories to choose in the bugzilla. Which
+> > one should I use?
+> > I never used bugzilla before...  
 > 
-> Hmm, I don't think it's needed there, is it? The awk expression has a
-> strict match on $sym_name, which is going to be something extracted from
-> a kernel log and therefore exists in kallsyms.
+> drivers/other is fine.  If there is a better category we can move it
+> later.
 
-Yes, I think you're right.
-
-> > Also it looks like it's wrongly checking for FUNC.
-> 
-> Yes, I agree that should be dropped for the reasons you gave before.
-> 
-> So I can spin a v3, with an extra patch to avoid checking against FUNC.
-
-Sounds good, thanks!
-
--- 
-Josh
+I see there are already several bug reports similar to mine. This one
+for example: https://bugzilla.kernel.org/show_bug.cgi?id=217212
+Should I still make a new one?
