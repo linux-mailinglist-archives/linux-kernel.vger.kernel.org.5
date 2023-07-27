@@ -2,215 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE407648AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68187648AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233427AbjG0HeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46374 "EHLO
+        id S233241AbjG0Heb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbjG0Hdq (ORCPT
+        with ESMTP id S233161AbjG0HeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:33:46 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235789A9D;
-        Thu, 27 Jul 2023 00:23:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RBMgS2vcYz4f3jMb;
-        Thu, 27 Jul 2023 15:23:16 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgCXaK9mG8JkwjuoOw--.65260S4;
-        Thu, 27 Jul 2023 15:23:19 +0800 (CST)
-From:   Li Lingfeng <lilingfeng@huaweicloud.com>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, linan122@huawei.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com, lilingfeng@huaweicloud.com,
-        lilingfeng3@huawei.com
-Subject: [PATCH -next] md:ensure mddev->reconfig_mutex is hold when try to get mddev->sync_thread
-Date:   Thu, 27 Jul 2023 15:20:47 +0800
-Message-Id: <20230727072047.389637-1-lilingfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 27 Jul 2023 03:34:00 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3F89EDF;
+        Thu, 27 Jul 2023 00:23:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=moZ3kQhZXTYk0eSH5gcJPILZn9yUA4r/+0b7pCDVLwPqLrZFPeCXWqGIceDmLLM90JxBorXjbFxjMLOy4LT26uH1upTmTc34LrTcX1rK13JJ/ayshULxXdc/wf/DDs0xmXLKGm1C9Owrzg0858vJjWK8dhMXvzeZkNT7tu9ll9BEwn3SnUcLPNezi2HSoHT8pUJvMvViapWKH68TImRw3V9DMZn67s5LSGFC9IG+xeOVZ67yxlWWuoUD7qM9IEE2b7QRCsp3leA+wTcFAkr0yZif1pnm7FKmunGHN+a59LiXI3gKY4zv3MrqcXxL5UuFZOyKAqjZ4XbumD+gKCTF2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hSYOtWb9BEixt+P418G2AtwNQTya+F0MEhsf6tNzeuw=;
+ b=b0cYLGQIKlz5vQyKQjIvK08SnaZZ6ukphXdKHvWoKpggf7bbj66OHQe8euo/Q6oC1Yk7UsocwCC+m9pG4WhrVbz2f/wqI+NHASxRgChdCnpL/XxXn2nuTYgy7gpxrzcrdZUynkhecq90YpMVep4IMA9oT3vQXK6/16fOg6VIrtRbtOqBcWTDEZjN92Wr9XERIp6ynnejNKOgcxzUZYr8auZinnmmqStaw2BOvUABdf/37PW7qjW6Jsn34DKWZ5tWugvBxkEfGEY+afZON1HimsuALhuKJMJvX0hDTGfak0/JcPDOlcCMDcbC4JJqKWajW8yM1raZONLfpo90O9GiDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hSYOtWb9BEixt+P418G2AtwNQTya+F0MEhsf6tNzeuw=;
+ b=D+XqZIJJqNJ2gj7l2eqr3nHirF3o6AhLqDdHFbYQm07w24HeWqbiIJa8FMDedVd/PmWLDIBgW44BDsYdHRIh17sZ7I777Jm1HOw73Oh/xSUJIarJYZpMRqrUL0EMBCVVNs5upMfpKMKAta8kCnG5NdVtJ7pKs/gL7BlQU5IS3kSNZ2RPMwkKWM1TtKnbmN2mRY3pfNgMsebkRQA6t2/r1/eT+pNml2tM/fFDdyjmMMb4kewqbS0HXOKW7kcfub5kHTUCOiC4MsakE9WJpesqIemAQC6KvTTCqWNrJNoZZcrujk2FnfzQXTTeMQIerA7T23zxeiohEFzMOP0rKT1HlQ==
+Received: from MW4PR04CA0049.namprd04.prod.outlook.com (2603:10b6:303:6a::24)
+ by CH3PR12MB8481.namprd12.prod.outlook.com (2603:10b6:610:157::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 07:23:38 +0000
+Received: from CO1NAM11FT084.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:6a:cafe::90) by MW4PR04CA0049.outlook.office365.com
+ (2603:10b6:303:6a::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Thu, 27 Jul 2023 07:23:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ CO1NAM11FT084.mail.protection.outlook.com (10.13.174.194) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 07:23:37 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
+ 00:23:28 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Thu, 27 Jul 2023 00:23:28 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Thu, 27 Jul 2023 00:23:27 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <jgg@nvidia.com>, <kevin.tian@intel.com>
+CC:     <yi.l.liu@intel.com>, <joro@8bytes.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>,
+        <shuah@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <farman@linux.ibm.com>
+Subject: [PATCH v9 0/6] cover-letter: Add IO page table replacement support
+Date:   Thu, 27 Jul 2023 00:23:05 -0700
+Message-ID: <cover.1690440730.git.nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCXaK9mG8JkwjuoOw--.65260S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr48GF4rJw47Xr13Ww1fXrb_yoW7tF4xpa
-        yrXFy3Ar4FvrW5Zr4DJayDuay5A3WIgFWjkryfC3yrA3WfW3y5JFWj9FyDXr1DZFyrAr4a
-        qa15KF48uFWvgr7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT084:EE_|CH3PR12MB8481:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a2a3645-db49-450e-5bc4-08db8e726545
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z6ZHwTE6XrVYl5dYgZ0HnHigA5i8jVi5rVl5loMYK0HdNaQyoKJVpBFGteMH/A5C7GsZ4kcKr6R5NRgp/PXRo6O5IkSAJK6mKLxQv8uO6/tQ/SwFfv+M8/VNqvRFTg4scbJl2QMsBNvt86r57xI5/q2zoLAo35HuVPC1CRSgUejINYpLvP8HVhJBKlWr6wVeJZxeasP9cF1I0HrWAgGA3TYwJZuWD+ZG+OTwGr5n0k2YZtMk7OsQDshyAo/ATPBqtqrULJyvoTsinamiV0fc1DKG3BNKbWMFeYl/WeCCL0Tvg8vmW6VOT492Ly/7Fneopbc5EzIZnMFz2KTCR7dQRaOxbZc7c8xCofXS8ZZAfVLD132wMsvo83DhcNiQAbpG7ClU1XrRCvWi/m7FwiXAHX9fWw8W1kV6tbsiKyiPvobFohuQCRMLJfk8RwoVgVEyKA9vqCnHld+OdZUGXwTZrFPwldDa2oGWF1l3/L2zBUtIS0zd5MzdLH68dLCkJiz8uNx3kjYGsX4GkzcEDkZXr7gpZu0AlKK4D1wUueBjfDYz8dg0nMLe9Y/Rlc4eQ5gyHDz3uPRHg6BGiIdgNANzTPH+7rWjWU7ZJibpSAwEahAwSJ8pdomULl3Nd8AysQ7UZrZGa/QCwirkB7yAy+iiOhM6Yr6P5T6RCg7DAn10Bt/AYD2mt5SkhFOSm5LaiNLdAtyX0GATBtTTD+YGdq5fHqOJ7WhdCVJlWorN+8LsPDnZjmdS1oX5f6ENfD8oCfDbPKQt1FNmV3QBixecNPh9x+FrsSXeSq+VCuEDA+4XHVOBz8rIUwIEbtQGjN350F4c
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(346002)(136003)(451199021)(82310400008)(40470700004)(46966006)(36840700001)(26005)(336012)(186003)(2906002)(86362001)(4326008)(82740400003)(8676002)(36756003)(7416002)(8936002)(54906003)(7696005)(110136005)(966005)(6666004)(478600001)(36860700001)(356005)(316002)(7636003)(41300700001)(5660300002)(47076005)(70586007)(70206006)(40460700003)(83380400001)(2616005)(426003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 07:23:37.8423
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2a3645-db49-450e-5bc4-08db8e726545
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT084.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8481
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ba9d9f1a707f ("Revert "md: unlock mddev before reap sync_thread in
-action_store"") removed the scenario of calling md_unregister_thread()
-without holding mddev->reconfig_mutex, so add a lock holding check before
-acquiring mddev->sync_thread.
+[ This series depends on the VFIO device cdev series ]
 
-Signed-off-by: Li Lingfeng <lilingfeng@huaweicloud.com>
----
- drivers/md/md-cluster.c  | 8 ++++----
- drivers/md/md.c          | 9 +++++----
- drivers/md/md.h          | 2 +-
- drivers/md/raid1.c       | 4 ++--
- drivers/md/raid10.c      | 2 +-
- drivers/md/raid5-cache.c | 2 +-
- drivers/md/raid5.c       | 2 +-
- 7 files changed, 15 insertions(+), 14 deletions(-)
+Changelog
+v9:
+ * Rebased on top of Jason's iommufd for-next tree
+ * Added Reviewed-by from Jason and Alex
+ * Reworked the replace API patches
+   * Added a new patch allowing passing in to iopt_remove_access
+   * Added a new patch of a helper function following Jason's design,
+     mainly by blocking any concurrent detach/replace and keeping the
+     refcount_dec at the end of the function
+   * Added a call of the new helper in iommufd_access_destroy_object()
+     to reduce race condition
+   * Simplified the replace API patch
+v8:
+ https://lore.kernel.org/all/cover.1690226015.git.nicolinc@nvidia.com/
+ * Rebased on top of Jason's iommufd_hwpt series and then cdev v15 series:
+   https://lore.kernel.org/all/0-v8-6659224517ea+532-iommufd_alloc_jgg@nvidia.com/
+   https://lore.kernel.org/kvm/20230718135551.6592-1-yi.l.liu@intel.com/
+ * Changed the order of detach() and attach() in replace(), to fix a bug
+v7:
+ https://lore.kernel.org/all/cover.1683593831.git.nicolinc@nvidia.com/
+ * Rebased on top of v6.4-rc1 and cdev v11 candidate
+ * Fixed a wrong file in replace() API patch
+ * Added Kevin's "Reviewed-by" to replace() API patch
+v6:
+ https://lore.kernel.org/all/cover.1679939952.git.nicolinc@nvidia.com/
+ * Rebased on top of cdev v8 series
+   https://lore.kernel.org/kvm/20230327094047.47215-1-yi.l.liu@intel.com/
+ * Added "Reviewed-by" from Kevin to PATCH-4
+ * Squashed access->ioas updating lines into iommufd_access_change_pt(),
+   and changed function return type accordingly for simplification.
+v5:
+ https://lore.kernel.org/all/cover.1679559476.git.nicolinc@nvidia.com/
+ * Kept the cmd->id in the iommufd_test_create_access() so the access can
+   be created with an ioas by default. Then, renamed the previous ioctl
+   IOMMU_TEST_OP_ACCESS_SET_IOAS to IOMMU_TEST_OP_ACCESS_REPLACE_IOAS, so
+   it would be used to replace an access->ioas pointer.
+ * Added iommufd_access_replace() API after the introductions of the other
+   two APIs iommufd_access_attach() and iommufd_access_detach().
+ * Since vdev->iommufd_attached is also set in emulated pathway too, call
+   iommufd_access_update(), similar to the physical pathway.
+v4:
+ https://lore.kernel.org/all/cover.1678284812.git.nicolinc@nvidia.com/
+ * Rebased on top of Jason's series adding replace() and hwpt_alloc()
+ https://lore.kernel.org/all/0-v2-51b9896e7862+8a8c-iommufd_alloc_jgg@nvidia.com/
+ * Rebased on top of cdev series v6
+ https://lore.kernel.org/kvm/20230308132903.465159-1-yi.l.liu@intel.com/
+ * Dropped the patch that's moved to cdev series.
+ * Added unmap function pointer sanity before calling it.
+ * Added "Reviewed-by" from Kevin and Yi.
+ * Added back the VFIO change updating the ATTACH uAPI.
+v3:
+ https://lore.kernel.org/all/cover.1677288789.git.nicolinc@nvidia.com/
+ * Rebased on top of Jason's iommufd_hwpt branch:
+ https://lore.kernel.org/all/0-v2-406f7ac07936+6a-iommufd_hwpt_jgg@nvidia.com/
+ * Dropped patches from this series accordingly. There were a couple of
+   VFIO patches that will be submitted after the VFIO cdev series. Also,
+   renamed the series to be "emulated".
+ * Moved dma_unmap sanity patch to the first in the series.
+ * Moved dma_unmap sanity to cover both VFIO and IOMMUFD pathways.
+ * Added Kevin's "Reviewed-by" to two of the patches.
+ * Fixed a NULL pointer bug in vfio_iommufd_emulated_bind().
+ * Moved unmap() call to the common place in iommufd_access_set_ioas().
+v2:
+ https://lore.kernel.org/all/cover.1675802050.git.nicolinc@nvidia.com/
+ * Rebased on top of vfio_device cdev v2 series.
+ * Update the kdoc and commit message of iommu_group_replace_domain().
+ * Dropped revert-to-core-domain part in iommu_group_replace_domain().
+ * Dropped !ops->dma_unmap check in vfio_iommufd_emulated_attach_ioas().
+ * Added missing rc value in vfio_iommufd_emulated_attach_ioas() from the
+   iommufd_access_set_ioas() call.
+ * Added a new patch in vfio_main to deny vfio_pin/unpin_pages() calls if
+   vdev->ops->dma_unmap is not implemented.
+ * Added a __iommmufd_device_detach helper and let the replace routine do
+   a partial detach().
+ * Added restriction on auto_domains to use the replace feature.
+ * Added the patch "iommufd/device: Make hwpt_list list_add/del symmetric"
+   from the has_group removal series.
+v1:
+ https://lore.kernel.org/all/cover.1675320212.git.nicolinc@nvidia.com/
 
-diff --git a/drivers/md/md-cluster.c b/drivers/md/md-cluster.c
-index 3d9fd74233df..1e26eb223349 100644
---- a/drivers/md/md-cluster.c
-+++ b/drivers/md/md-cluster.c
-@@ -952,8 +952,8 @@ static int join(struct mddev *mddev, int nodes)
- 	return 0;
- err:
- 	set_bit(MD_CLUSTER_HOLDING_MUTEX_FOR_RECVD, &cinfo->state);
--	md_unregister_thread(&cinfo->recovery_thread);
--	md_unregister_thread(&cinfo->recv_thread);
-+	md_unregister_thread(mddev, &cinfo->recovery_thread);
-+	md_unregister_thread(mddev, &cinfo->recv_thread);
- 	lockres_free(cinfo->message_lockres);
- 	lockres_free(cinfo->token_lockres);
- 	lockres_free(cinfo->ack_lockres);
-@@ -1015,8 +1015,8 @@ static int leave(struct mddev *mddev)
- 		resync_bitmap(mddev);
- 
- 	set_bit(MD_CLUSTER_HOLDING_MUTEX_FOR_RECVD, &cinfo->state);
--	md_unregister_thread(&cinfo->recovery_thread);
--	md_unregister_thread(&cinfo->recv_thread);
-+	md_unregister_thread(mddev, &cinfo->recovery_thread);
-+	md_unregister_thread(mddev, &cinfo->recv_thread);
- 	lockres_free(cinfo->message_lockres);
- 	lockres_free(cinfo->token_lockres);
- 	lockres_free(cinfo->ack_lockres);
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index a3d98273b295..5c3c19b8d509 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6258,7 +6258,7 @@ static void mddev_detach(struct mddev *mddev)
- 		mddev->pers->quiesce(mddev, 1);
- 		mddev->pers->quiesce(mddev, 0);
- 	}
--	md_unregister_thread(&mddev->thread);
-+	md_unregister_thread(mddev, &mddev->thread);
- 	if (mddev->queue)
- 		blk_sync_queue(mddev->queue); /* the unplug fn references 'conf'*/
- }
-@@ -7990,9 +7990,10 @@ struct md_thread *md_register_thread(void (*run) (struct md_thread *),
- }
- EXPORT_SYMBOL(md_register_thread);
- 
--void md_unregister_thread(struct md_thread __rcu **threadp)
-+void md_unregister_thread(struct mddev *mddev, struct md_thread __rcu **threadp)
- {
--	struct md_thread *thread = rcu_dereference_protected(*threadp, true);
-+	struct md_thread *thread = rcu_dereference_protected(*threadp,
-+					lockdep_is_held(&mddev->reconfig_mutex));
- 
- 	if (!thread)
- 		return;
-@@ -9484,7 +9485,7 @@ void md_reap_sync_thread(struct mddev *mddev)
- 	bool is_reshaped = false;
- 
- 	/* resync has finished, collect result */
--	md_unregister_thread(&mddev->sync_thread);
-+	md_unregister_thread(mddev, &mddev->sync_thread);
- 	atomic_inc(&mddev->sync_seq);
- 
- 	if (!test_bit(MD_RECOVERY_INTR, &mddev->recovery) &&
-diff --git a/drivers/md/md.h b/drivers/md/md.h
-index 8ae957480976..9bcb77bca963 100644
---- a/drivers/md/md.h
-+++ b/drivers/md/md.h
-@@ -761,7 +761,7 @@ extern struct md_thread *md_register_thread(
- 	void (*run)(struct md_thread *thread),
- 	struct mddev *mddev,
- 	const char *name);
--extern void md_unregister_thread(struct md_thread __rcu **threadp);
-+extern void md_unregister_thread(struct mddev *mddev, struct md_thread __rcu **threadp);
- extern void md_wakeup_thread(struct md_thread __rcu *thread);
- extern void md_check_recovery(struct mddev *mddev);
- extern void md_reap_sync_thread(struct mddev *mddev);
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 23d211969565..581dfbdfca89 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -3152,7 +3152,7 @@ static int raid1_run(struct mddev *mddev)
- 	 * RAID1 needs at least one disk in active
- 	 */
- 	if (conf->raid_disks - mddev->degraded < 1) {
--		md_unregister_thread(&conf->thread);
-+		md_unregister_thread(mddev, &conf->thread);
- 		ret = -EINVAL;
- 		goto abort;
- 	}
-@@ -3179,7 +3179,7 @@ static int raid1_run(struct mddev *mddev)
- 
- 	ret = md_integrity_register(mddev);
- 	if (ret) {
--		md_unregister_thread(&mddev->thread);
-+		md_unregister_thread(mddev, &mddev->thread);
- 		goto abort;
- 	}
- 	return 0;
-diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-index 16aa9d735880..6188b71186f4 100644
---- a/drivers/md/raid10.c
-+++ b/drivers/md/raid10.c
-@@ -4320,7 +4320,7 @@ static int raid10_run(struct mddev *mddev)
- 	return 0;
- 
- out_free_conf:
--	md_unregister_thread(&mddev->thread);
-+	md_unregister_thread(mddev, &mddev->thread);
- 	raid10_free_conf(conf);
- 	mddev->private = NULL;
- out:
-diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-index 47ba7d9e81e1..ce9b42fd54b9 100644
---- a/drivers/md/raid5-cache.c
-+++ b/drivers/md/raid5-cache.c
-@@ -3171,7 +3171,7 @@ void r5l_exit_log(struct r5conf *conf)
- 	/* Ensure disable_writeback_work wakes up and exits */
- 	wake_up(&conf->mddev->sb_wait);
- 	flush_work(&log->disable_writeback_work);
--	md_unregister_thread(&log->reclaim_thread);
-+	md_unregister_thread(conf->mddev, &log->reclaim_thread);
- 
- 	conf->log = NULL;
- 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 4cdb35e54251..f41f9b712d3d 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -8107,7 +8107,7 @@ static int raid5_run(struct mddev *mddev)
- 
- 	return 0;
- abort:
--	md_unregister_thread(&mddev->thread);
-+	md_unregister_thread(mddev, &mddev->thread);
- 	print_raid5_conf(conf);
- 	free_conf(conf);
- 	mddev->private = NULL;
+Hi all,
+
+The existing IOMMU APIs provide a pair of functions: iommu_attach_group()
+for callers to attach a device from the default_domain (NULL if not being
+supported) to a given iommu domain, and iommu_detach_group() for callers
+to detach a device from a given domain to the default_domain. Internally,
+the detach_dev op is deprecated for the newer drivers with default_domain.
+This means that those drivers likely can switch an attaching domain to
+another one, without stagging the device at a blocking or default domain,
+for use cases such as:
+1) vPASID mode, when a guest wants to replace a single pasid (PASID=0)
+   table with a larger table (PASID=N)
+2) Nesting mode, when switching the attaching device from an S2 domain
+   to an S1 domain, or when switching between relevant S1 domains.
+
+This series is rebased on top of Jason Gunthorpe's series that introduces
+iommu_group_replace_domain API and IOMMUFD infrastructure for the IOMMUFD
+"physical" devices. The IOMMUFD "emulated" deivces will need some extra
+steps to replace the access->ioas object and its iopt pointer.
+
+You can also find this series on Github:
+https://github.com/nicolinc/iommufd/commits/iommu_group_replace_domain-v9
+
+Thank you
+Nicolin Chen
+
+Nicolin Chen (6):
+  vfio: Do not allow !ops->dma_unmap in vfio_pin/unpin_pages()
+  iommufd: Allow passing in iopt_access_list_id to iopt_remove_access()
+  iommufd: Add iommufd_access_change_ioas helper
+  iommufd: Add iommufd_access_replace() API
+  iommufd/selftest: Add IOMMU_TEST_OP_ACCESS_REPLACE_IOAS coverage
+  vfio: Support IO page table replacement
+
+ drivers/iommu/iommufd/device.c                | 123 ++++++++++++------
+ drivers/iommu/iommufd/io_pagetable.c          |   6 +-
+ drivers/iommu/iommufd/iommufd_private.h       |   3 +-
+ drivers/iommu/iommufd/iommufd_test.h          |   4 +
+ drivers/iommu/iommufd/selftest.c              |  19 +++
+ drivers/vfio/iommufd.c                        |  11 +-
+ drivers/vfio/vfio_main.c                      |   4 +
+ include/linux/iommufd.h                       |   1 +
+ include/uapi/linux/vfio.h                     |   6 +
+ tools/testing/selftests/iommu/iommufd.c       |  29 ++++-
+ tools/testing/selftests/iommu/iommufd_utils.h |  19 +++
+ 11 files changed, 175 insertions(+), 50 deletions(-)
+
 -- 
-2.39.2
+2.41.0
 
