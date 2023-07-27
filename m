@@ -2,154 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A73A37644F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3622D7644FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjG0EiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S230288AbjG0Ekc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 00:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjG0Eh6 (ORCPT
+        with ESMTP id S229837AbjG0Eka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:37:58 -0400
-Received: from pb-smtp2.pobox.com (pb-smtp2.pobox.com [64.147.108.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39928270F
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:37:56 -0700 (PDT)
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id 0872F197BCD;
-        Thu, 27 Jul 2023 00:37:56 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:message-id:references:mime-version:content-type
-        :in-reply-to:content-transfer-encoding; s=sasl; bh=syJJx0ZnbQZaI
-        S1EYh4auknPhV1wln5D5dPlbAR/7oI=; b=SG0lU5goP8o6Le8CSGwQ2Q2l87gyh
-        PcWY3N536C+gj9BaW5dix1vi/jXUIDMcR7KigBjj7awyCF71ec60J3/pOUoHet/n
-        VmZq+fcAPejA5IkWEMXrhR/3PbungzrvHWW91nRvlqb+TPq/PtBPfpFWS21Hdj6j
-        Gdy889VbWPTVjI=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id E4D90197BCC;
-        Thu, 27 Jul 2023 00:37:55 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
- h=date:from:to:cc:subject:message-id:references:mime-version:content-type:content-transfer-encoding:in-reply-to; s=2019-09.pbsmtp; bh=v0fno4hXvRvf0mZcV/qvB0rwl9YQrVHFB1TPmTsvqcE=; b=kZR6nlCwn8o8bI09WeXy9+FCP1hXpj7a5Vn53VMhR1fv56r7vFlAtzVJgrnOfCJxFdeBJEHHPKCWormJ5U5Oa0T9ETL6Ob1EbrYafyd/YNld4POtRkIvRtvDMtiTQ0fTazaYrnDSlMZXyGCTBW/OFzq4lGmbVYQRn7bVxQn6tao=
-Received: from oatmeal.darkphysics (unknown [76.146.178.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id BB24B197BCB;
-        Thu, 27 Jul 2023 00:37:54 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-Date:   Wed, 26 Jul 2023 21:37:47 -0700
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     philipp.g.hortmann@gmail.com, anjan@momi.ca, error27@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Staging: rtl8192e: Function name cleanup series 1
-Message-ID: <ZMH0g2hGaLlzFtL1@oatmeal.darkphysics>
-References: <ZL9tmaSHxKh2JCau@basil>
- <2023072548-unpledged-slacker-90b6@gregkh>
+        Thu, 27 Jul 2023 00:40:30 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6148135;
+        Wed, 26 Jul 2023 21:40:29 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R3Ch8w021092;
+        Thu, 27 Jul 2023 04:40:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=qDmpXOAmImZIFkJfAZHSDMjKrgjt0em/5/ijsrB0NEI=;
+ b=LI4hRTIy7KiUerSshYDj3JK0tunTnqcK41oZR2vdH8HPyJvOhpFSHMKjhohvow/JxFsA
+ UjTkRFNrWycdp8Y2W9pKCkKoWyMkb8E/L6JHysCdwJjQoERkXJudqRtWeoPyE3oxcqHs
+ DGuPzThuYbvVN8SdPOoI6gUIvL/yDBxCQhgkEi1s5HgOgjbR7SPajbBeJTqyUkvmAbhh
+ RVLF/0z9dyImLHUODpML0z6YSsOv2QUYqfH8FHyRVThehyet4PN1523lnQIXOSN5X5ZN
+ YhuiblvDf6DX1rCkGbvBS9qdmhZrn1mjgxmLIsL1KOdqwA30k8wY/mZppGTai1A3oas9 ZQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s336t1q07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 04:40:23 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R4eNOF001818
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 04:40:23 GMT
+Received: from tjiang-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 26 Jul 2023 21:40:20 -0700
+From:   Tim Jiang <quic_tjiang@quicinc.com>
+To:     <johan@kernel.org>
+CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
+        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <quic_tjiang@quicinc.com>, <quic_bgodavar@quicinc.com>,
+        <quic_hemantg@quicinc.com>
+Subject: [PATCH v13 0/2] Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
+Date:   Thu, 27 Jul 2023 12:40:09 +0800
+Message-ID: <20230727044011.965205-1-quic_tjiang@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2023072548-unpledged-slacker-90b6@gregkh>
-X-Pobox-Relay-ID: 5AC2A4D6-2C37-11EE-94A5-307A8E0A682E-45285927!pb-smtp2.pobox.com
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CjUQecGYmyl-Y4wABjwN1E7FtVpEBXXN
+X-Proofpoint-GUID: CjUQecGYmyl-Y4wABjwN1E7FtVpEBXXN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ clxscore=1011 mlxlogscore=765 adultscore=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270042
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 08:48:28AM +0200, Greg KH wrote:
-> On Mon, Jul 24, 2023 at 11:37:13PM -0700, Tree Davies wrote:
-> > Rename functions to fix checkpatch warning: Avoid CamelCase
-> >=20
-> > Tree Davies (5):
-> >   Staging: rtl8192e: Rename function ActivateBAEntry
-> >   Staging: rtl8192e: Rename function DeActivateBAEntry
-> >   Staging: rtl8192e: Rename function TxTsDeleteBA
-> >   Staging: rtl8192e: Rename function RxTsDeleteBA
-> >   Staging: rtl8192e: Rename function ResetBaEntry
-> >=20
-> >  drivers/staging/rtl8192e/rtl819x_BAProc.c | 44 +++++++++++----------=
---
-> >  drivers/staging/rtl8192e/rtl819x_TSProc.c |  6 ++--
-> >  drivers/staging/rtl8192e/rtllib.h         |  2 +-
-> >  3 files changed, 26 insertions(+), 26 deletions(-)
->=20
-> Odd, how did you send these patches?  They are not properly "threaded"
-> or "connected" such that if you look them up on lore.kernel.org, or in
-> your email client, they show that they should be connected.
->=20
-> Here's what they look like in my inbox right now:
->=20
->=20
->    1   T Jul 24 Tree Davies     (0.6K) [PATCH 0/5] Staging: rtl8192e: F=
-unction name cleanup series 1
->    2 N T Jul 24 Tree Davies     (1.9K) [PATCH 3/5] Staging: rtl8192e: R=
-ename function TxTsDeleteBA
->    3   F Jul 25 To linux-kernel (  29) [PATCH v2] Documentation: embarg=
-oed-hardware-issues.rst: add AMD to the list
->    4 N T Jul 24 Tree Davies     (2.5K) [PATCH 5/5] Staging: rtl8192e: R=
-ename function ResetBaEntry
->    5 N T Jul 24 Tree Davies     (1.8K) [PATCH 4/5] Staging: rtl8192e: R=
-ename function RxTsDeleteBA
->    6 N T Jul 24 Tree Davies     (3.1K) [PATCH 2/5] Staging: rtl8192e: R=
-ename function DeActivateBAEntry
->    7 N T Jul 24 Tree Davies     (1.7K) [PATCH 1/5] Staging: rtl8192e: R=
-ename function ActivateBAEntry
->=20
-> While if I look at a different recent series sent for staging patches, =
-send
-> correctly, they look like:
->=20
->  372   T Jul 22 Franziska Naepe (0.9K) [PATCH 0/9] staging: rtl8723bs: =
-ioctl_linux: Fix checkpatch issues
->  373   C Jul 22 Franziska Naepe (0.8K) =E2=94=9C=E2=94=80>[PATCH 9/9] s=
-taging: rtl8723bs: ioctl_linux: Fix comparison to false
->  374   C Jul 22 Franziska Naepe (7.2K) =E2=94=9C=E2=94=80>[PATCH 8/9] s=
-taging: rtl8723bs: ioctl_linux: Add preferred spaces
->  375   C Jul 22 Franziska Naepe (2.2K) =E2=94=9C=E2=94=80>[PATCH 7/9] s=
-taging: rtl8723bs: ioctl_linux: Fix alignment on open parenthesis
->  376   C Jul 22 Franziska Naepe ( 10K) =E2=94=9C=E2=94=80>[PATCH 6/9] s=
-taging: rtl8723bs: ioctl_linux: Remove unnecessary parentheses
->  377   C Jul 22 Franziska Naepe (5.9K) =E2=94=9C=E2=94=80>[PATCH 5/9] s=
-taging: rtl8723bs: ioctl_linux: Remove unnecessary blank lines
->  378   C Jul 22 Franziska Naepe (4.1K) =E2=94=9C=E2=94=80>[PATCH 4/9] s=
-taging: rtl8723bs: ioctl_linux: Remove multiple blank lines
->  379   C Jul 22 Franziska Naepe (1.0K) =E2=94=9C=E2=94=80>[PATCH 3/9] s=
-taging: rtl8723bs: ioctl_linux: Fix block comment alignment
->  380   C Jul 22 Franziska Naepe (0.9K) =E2=94=9C=E2=94=80>[PATCH 2/9] s=
-taging: rtl8723bs: ioctl_linux: Fix code indent
->  381   C Jul 22 Franziska Naepe (0.9K) =E2=94=94=E2=94=80>[PATCH 1/9] s=
-taging: rtl8723bs: ioctl_linux: Fix else on next line
->=20
->=20
-> See the difference with the -> and such?  No other messages in the midd=
-le of
-> the thread, and they are all connected together so that our tools can h=
-andle
-> them as a series, not as individual patches.
->=20
-> If you use 'git send-email' to send the whole back of patches at once, =
-they
-> will be properly connected together, so I do recommend using that if yo=
-u are
-> starting out.
->=20
-> Please fix up and try again, thanks.
->=20
-> greg k-h
+This series adds support for qualcomm bluetooth soc qca2066
 
-Greg,
-I got git send-email working. Do I send this series as a v2, even though =
-the=20
-patches are the same, and how I send them is 'the change'?
-The last commit I see in linux-next for rtl8192e is 4a22870cede374d80c5d2=
-f9c5b79253a5a667832.
-Can I send patches from that state?
-Tree
+Changes in v13
+ - change the subject name for patch 1/2
+ - solve review comments for patch 2/2
 
+Changes in v12
+ - fix compile error issue for patch 1/2
+
+Changes in v11
+ - reverse two patches order
+
+Changes in v10
+ - break out btsoc type print into seperate patch
+
+Changes in v2-v9
+ - solve review comments for code style and commit message context
+
+
+Tim Jiang (2):
+  Bluetooth: hci_qca: adjust qca btsoc type print expression
+  Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
+
+ drivers/bluetooth/btqca.c   | 76 ++++++++++++++++++++++++++++++++++++-
+ drivers/bluetooth/btqca.h   |  4 +-
+ drivers/bluetooth/hci_qca.c | 42 ++++++++++++++++++--
+ 3 files changed, 115 insertions(+), 7 deletions(-)
+
+-- 
+2.41.0
 
