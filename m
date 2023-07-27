@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8FE7659C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59BA7659CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbjG0RPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
+        id S231230AbjG0RQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbjG0RPa (ORCPT
+        with ESMTP id S231218AbjG0RQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:15:30 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E17135AB;
-        Thu, 27 Jul 2023 10:15:23 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so12869795e9.1;
-        Thu, 27 Jul 2023 10:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690478121; x=1691082921;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1ul81gbrbgkGKJ2+qFPiiqGnP9CzSuQLVLhrE7rAfXM=;
-        b=bE/jTuPbGDIJ5QQpYTdUKCr/g5ows59oesotT1Ng35PuTPYcSlO9SXTPRv+lRrG8tw
-         yHRIHc5Jw4StnWp49Bb1bhfF/mRr6mVTrMGO9qTQniFh+6ObS/W+nIrq5V6hMZKbiccY
-         pMiRLuZxmqnKHOl8y3FkafozWCqAsOutHw+DEiY7DIXnsteRXp9S7UzUlMjL/3avM/sA
-         i5Bx4NFTKe7xcS6u/PMkUQljRE0mtiW+N6cQDfDAROzFxNuQKhnnGJfuFY6NjgyZI0J9
-         pTiyCEinRo2UJvX/QveUqi0/KEE75uE0UJn2eUVSw5UIcO4Mdy+HHj9Zv5W+StL5m2ob
-         /DYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690478121; x=1691082921;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ul81gbrbgkGKJ2+qFPiiqGnP9CzSuQLVLhrE7rAfXM=;
-        b=htcOD9lisGoQ08n388lZYeWdgIES54SRehblJZIp2VgloN75Nw1ccHGjIlBiV5eZ5Q
-         4yv3b9T6dJnuCRoZGHb6X+HBk3d+Z+7DjP2ulR/1MpgCuSMTuW/IlWn70qYzT6cZLxQa
-         MG+6HxcdHOsRxmw/155fyZoaJDGJrHS5ATacIAyvrSkuQujOy7iJkykT31PgjNHe8peM
-         LygAaD/tn1hT2o0rhXWOmOrFtGpVzeYIB7/VtjwjZX4WwoOllcY/f7PCn6CUmgOxzLbq
-         z6pighe/w9QWx38J9JC7z+PPM9v/+RAXANcfza6dWzIatZRNhx9l/JBnX0f9aa32+x93
-         zNcw==
-X-Gm-Message-State: ABy/qLZ0OofOngdFSu0r7yefwvRVokvQobRqJpUyuqaQoXbuhwZh6ojX
-        HEKbP+987pK1N2unbvLg5Jg=
-X-Google-Smtp-Source: APBJJlFfalNKGeBlyDEyCqk1kwpmohtze5EH9xcacpd1iXxviatja8R6TvIKwmchLUCoLZU6GSqTLg==
-X-Received: by 2002:a05:600c:241:b0:3f8:f6fe:26bf with SMTP id 1-20020a05600c024100b003f8f6fe26bfmr2061603wmj.12.1690478121131;
-        Thu, 27 Jul 2023 10:15:21 -0700 (PDT)
-Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.googlemail.com with ESMTPSA id z15-20020a05600c114f00b003fbb5506e54sm2279020wmz.29.2023.07.27.10.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 10:15:20 -0700 (PDT)
-Message-ID: <64213517-099b-e5a7-6cf3-2f78fa59ee99@gmail.com>
-Date:   Thu, 27 Jul 2023 18:15:19 +0100
+        Thu, 27 Jul 2023 13:16:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029AC30F5;
+        Thu, 27 Jul 2023 10:16:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 80FAD61EEA;
+        Thu, 27 Jul 2023 17:16:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AD19C433C7;
+        Thu, 27 Jul 2023 17:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690478183;
+        bh=MCgVzrM/QVCLxCzVUmRQ6gbhx/qfSVSSWLqpIAuaIjA=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=KemntZb/KzizusBCXa4O1u2+Juu3lJsvfqxJi/uuoUZRnLYbezIwVbNhpsuf7VzAs
+         +4o2fA4tVgJceHorPEUkbs4pX8VetBnIjyT0YcYZw7zxxhunU25p6AtaPGk6u/Um/T
+         buva/857M/tAnHq9CLBjxGpVb48aYhEqLG7DaU2rT3nqU3gNJ8kYx1aCURAtB0wUbd
+         tIPUmd40jPFVhJgp1Q0vjySEARlWN8Ejsw+igGhYF8ozpKCL+1xvh0aZ8/xRiok44C
+         PO0WQoxOR4LrSp8BJumj0OjTme8g8Uoq04LedFGr0zTg7K4YQAUZbcyGoLjsTOfdMh
+         NGLXon31KF2FQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Jeong <eric.jeong.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
+References: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] regulator: dt-bindings: dlg,slg51000: Convert to DT
+ schema
+Message-Id: <169047818176.132925.17960631556237815643.b4-ty@kernel.org>
+Date:   Thu, 27 Jul 2023 18:16:21 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next] net: ethernet: slicoss: remove redundant increment
- of pointer data
-Content-Language: en-US
-To:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20230726164522.369206-1-colin.i.king@gmail.com>
- <662ebbd2-b780-167d-ce57-cde1af636399@web.de>
-From:   "Colin King (gmail)" <colin.i.king@gmail.com>
-In-Reply-To: <662ebbd2-b780-167d-ce57-cde1af636399@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2023 21:05, Markus Elfring wrote:
->> The pointer data is being incremented but this change to the pointer
->> is not used afterwards. The increment is redundant and can be removed.
+On Tue, 25 Jul 2023 08:31:32 +0200, Krzysztof Kozlowski wrote:
+> Convert the bindings for Dialog Semiconductor SLG51000 Voltage Regulator
+> to DT schema.
 > 
-> Are imperative change descriptions still preferred?
+> 
 
-Hrm, I've used this style of commit message for a few thousand commits, 
-I hope it's still fine.
+Applied to
 
-> 
-> See also:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.5-rc3#n94
-> 
-> Regards,
-> Markus
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/1] regulator: dt-bindings: dlg,slg51000: Convert to DT schema
+      commit: cfef69cbe3726c095f55769bd0e7c72f32bf5060
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
