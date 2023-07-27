@@ -2,128 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CD57651D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1B97651E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbjG0LBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
+        id S233015AbjG0LDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjG0LBt (ORCPT
+        with ESMTP id S233128AbjG0LCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:01:49 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8B11FEC;
-        Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso38725566b.1;
-        Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690455706; x=1691060506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
-        b=bRqxGL26+Cd4UDJMsCRgvHHMbT81l6+oh+WQ2BqDYUGtTo2K3iTnsbNqccRgY/Byz/
-         vPTwqRRFSrPzJpytHiM28SzqGji9BPWO15KZPEvup3CQnvFvmTFzESAYuHycDgwKiPCa
-         MuoOQdSAgoLgmr2wkrqPECTLGd8mdI9SeZj5LBE14vMx2qYPhrwXbcO5UuyWNGtiOIck
-         jky8AGRxvfIKKr+qHyZ/JqPG/hpATQmDozL0O6tSm37W5PUT3XnjWVSwTUEOyFc6lK/b
-         rQUV+kox2Rs5IBQ/Ic1X9hohq1x4QWvZtt7SGI4bbL4TXB0mQsE39lHid+Bg8EsQFvDc
-         4wsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690455706; x=1691060506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
-        b=Ai37Gn0oqMZSQFFHmyvY76jf+oXyHPAFRnorri+ylwa30ZRjlYnEK0rIfDK9F3E4lj
-         acpEMEOsqYTnLS4v2jcgEJCShioS+Kk/hKcR1UDrXr0kXkXUfsR9nhZO92E8jqFgrdSf
-         /0JUZIo1BfE8wgerFzcAEj0c2QWHg8mVS1RSz73uSNAfqtbzvQrnqrVC+UM01ufIYMzj
-         n6085oedJ6vRwSV3pMG8lW4Oi+jAoHtMY77xrM40ZAYh3iWc8UFCQdjQkeHlY6QA4Bze
-         C0V/Zw927PhJLzHlrjvLVxNRRNGF83IfmeyPjEGGg98NcTZuSzwozohHl4vq41Esjh77
-         QwBw==
-X-Gm-Message-State: ABy/qLbKZfFQdKrpLNU8e5rh2XI21xGfK4zG+WSn6tS1H72wLmwxnH4g
-        W7ctKxiZmOhlHWBPPbTerKtTmNH5JcY=
-X-Google-Smtp-Source: APBJJlHcPaJ1NwM9+BwKxljX/Y1e7qZR3xAoj+zouHwkhYPy0b2mQN0JduuiJF3a/uJPaZ2Eq8zdWw==
-X-Received: by 2002:a17:906:10cd:b0:99b:d243:157c with SMTP id v13-20020a17090610cd00b0099bd243157cmr1845316ejv.31.1690455706292;
-        Thu, 27 Jul 2023 04:01:46 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id t26-20020a1709064f1a00b0099bd86f9248sm631649eju.63.2023.07.27.04.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 04:01:45 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 27 Jul 2023 13:01:43 +0200
-To:     Xiangyu Chen <xiangyu.chen@eng.windriver.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] libbpf: fix warnings "'pad_type' 'pad_bits' 'new_off'
- may be used uninitialized"
-Message-ID: <ZMJOl5uLrK9rucXB@krava>
-References: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
+        Thu, 27 Jul 2023 07:02:48 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5871330CF
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:02:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96136D75;
+        Thu, 27 Jul 2023 04:03:16 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAFA03F5A1;
+        Thu, 27 Jul 2023 04:02:31 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v1] mm: Fix use-after-free for MMU_GATHER_NO_GATHER
+Date:   Thu, 27 Jul 2023 12:02:24 +0100
+Message-Id: <20230727110224.3333682-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 04:25:36PM +0800, Xiangyu Chen wrote:
-> From: Xiangyu Chen <xiangyu.chen@windriver.com>
-> 
-> When turn on the yocto DEBUG_BUILD flag, the build options for gcc would enable maybe-uninitialized,
-> and following warnings would be reported as below:
+The recent change to batch-zap anonymous ptes did not take into account
+that for platforms where MMU_GATHER_NO_GATHER is enabled (e.g. s390),
+__tlb_remove_page() drops a reference to the page. This means that the
+folio reference count can drop to zero while still in use (i.e. before
+folio_remove_rmap_range() is called). This does not happen on other
+platforms because the actual page freeing is deferred.
 
-curious, what's the gcc version? I can't reproduce that,
-and we already have all warnings enabled:
+Solve this by appropriately getting/putting the folio to guarrantee it
+does not get freed early.
 
-  CFLAGS += -Werror -Wall
+Given the new need to get/put the folio in the batch path, let's stick
+to the non-batched path if the folio is not large. In this case batching
+is not helpful since the batch size is 1.
 
-they seem like false warnings also, because ARRAY_SIZE(pads)
-will be always > 0
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Fixes: 904d9713b3b0 ("mm: batch-zap large anonymous folio PTE mappings")
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/linux-mm/20230726161942.GA1123863@dev-arch.thelio-3990X/
+---
 
-jirka
+Hi Andrew,
 
-> 
-> | btf_dump.c: In function 'btf_dump_emit_bit_padding':
-> | btf_dump.c:916:4: error: 'pad_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   916 |    btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type,
-> |       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> |   917 |      in_bitfield ? new_off - cur_off : 0);
-> |       |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> | btf_dump.c:929:6: error: 'pad_bits' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   929 |   if (bits == pad_bits) {
-> |       |      ^
-> | btf_dump.c:913:28: error: 'new_off' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-> |   913 |       (new_off == next_off && roundup(cur_off, next_align * 8) != new_off) ||
-> |       |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> |   HOSTLD  scripts/mod/modpost
-> 
-> Signed-off-by: Xiangyu Chen <xiangyu.chen@windriver.com>
-> ---
->  tools/lib/bpf/btf_dump.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 4d9f30bf7f01..79923c3b8777 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->  	} pads[] = {
->  		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
->  	};
-> -	int new_off, pad_bits, bits, i;
-> -	const char *pad_type;
-> +	int new_off = 0, pad_bits = 0, bits, i;
-> +	const char *pad_type = NULL;
->  
->  	if (cur_off >= next_off)
->  		return; /* no gap */
-> -- 
-> 2.34.1
-> 
-> 
+This fixes patch 3 in the series at [1], which is currently in mm-unstable. I'm
+not sure whether you want to take the fix or whether I should re-post the entire
+series?
+
+Thanks,
+Ryan
+
+
+ mm/memory.c | 42 +++++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 15 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 2130bad76eb1..808f6408a570 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1456,6 +1456,9 @@ static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
+ 	bool full;
+ 	int i;
+
++	/* __tlb_remove_page drops a ref; prevent it going to 0 while in use. */
++	folio_get(folio);
++
+ 	for (i = 0; i < nr_pages;) {
+ 		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
+ 		tlb_remove_tlb_entry(tlb, pte, addr);
+@@ -1476,6 +1479,8 @@ static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
+
+ 	folio_remove_rmap_range(folio, page - i, i, vma);
+
++	folio_put(folio);
++
+ 	return i;
+ }
+
+@@ -1526,26 +1531,33 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			 */
+ 			if (page && PageAnon(page)) {
+ 				struct folio *folio = page_folio(page);
+-				int nr_pages_req, nr_pages;
+
+-				nr_pages_req = folio_nr_pages_cont_mapped(
+-						folio, page, pte, addr, end);
++				if (folio_test_large(folio)) {
++					int nr_pages_req, nr_pages;
++					int counter = mm_counter(page);
+
+-				nr_pages = try_zap_anon_pte_range(tlb, vma,
+-						folio, page, pte, addr,
+-						nr_pages_req, details);
++					nr_pages_req = folio_nr_pages_cont_mapped(
++							folio, page, pte, addr,
++							end);
+
+-				rss[mm_counter(page)] -= nr_pages;
+-				nr_pages--;
+-				pte += nr_pages;
+-				addr += nr_pages << PAGE_SHIFT;
++					/* folio may be freed on return. */
++					nr_pages = try_zap_anon_pte_range(
++							tlb, vma, folio, page,
++							pte, addr, nr_pages_req,
++							details);
+
+-				if (unlikely(nr_pages < nr_pages_req)) {
+-					force_flush = 1;
+-					addr += PAGE_SIZE;
+-					break;
++					rss[counter] -= nr_pages;
++					nr_pages--;
++					pte += nr_pages;
++					addr += nr_pages << PAGE_SHIFT;
++
++					if (unlikely(nr_pages < nr_pages_req)) {
++						force_flush = 1;
++						addr += PAGE_SIZE;
++						break;
++					}
++					continue;
+ 				}
+-				continue;
+ 			}
+
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+--
+2.25.1
+
