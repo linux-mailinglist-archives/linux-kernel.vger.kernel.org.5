@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7046B764691
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ADB764692
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbjG0GQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S229819AbjG0GQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjG0GQj (ORCPT
+        with ESMTP id S232560AbjG0GQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:16:39 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890E319B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:16:37 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id A71446015F;
-        Thu, 27 Jul 2023 08:16:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690438584; bh=v8tjT8YDeqCYzHJA6CKxcqAvKzkCNd4Kl/SePIkOylc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=H+NP3Y+HWY+q+l1bRE/5U2gN9HpNKI944o/j/Su+y8uFOvnwfMs7X8/UhbM/UYyFs
-         bNnVu+ACWxZAbt439AvuX4oB12KlR8jCiQzkPdyevmO+zaYd3aLjDKG/hi5tjZe2YF
-         euZb9/h+df7cAPnO373+xU5KlZY3Lpgl5+YKrz58MGjehzNerCSvuBZSUgvvAppqd3
-         hRAuWtGfTHISXKTc0mHt/hiH73YDHQntjXJSomfw0y/WEH8inn4H97H6+Gz2+Ch9nk
-         m+W3xoL1mlMLnHC8mbre9oUPG3B+kSR6H0iytAqm0/RsrLve7q0iJU9WbPqpeyQwmy
-         H2m10ECK8kaVQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RXM8HHwO1p07; Thu, 27 Jul 2023 08:16:21 +0200 (CEST)
-Received: from [10.0.2.76] (grf-nat.grf.hr [161.53.83.23])
-        by domac.alu.hr (Postfix) with ESMTPSA id 1C6A660155;
-        Thu, 27 Jul 2023 08:16:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690438581; bh=v8tjT8YDeqCYzHJA6CKxcqAvKzkCNd4Kl/SePIkOylc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=APPA7pEwPF3Q21pW6oqSL+o2fxHn9vv8ZXYHb/lsSupLopCjXxTkivrrSoVF8wXC2
-         DYzmmv1RDiE4krpWmkHSkjPclHYHPF/tIaUz3CQbJkPguKd/fynwxawUb5/iezdWNF
-         4KAZUBy+hvVbmYSMcTpnBDtr/rsbG/d49BKHFd0SJHlPj9UOBtyG8FBuLJzuNKmZWe
-         zqR/uCq0cjzwiPfMm2v6dlChf3yWkHDa/h5XarD0sQe/HzJqylTSdYHzgxHhgqgG9o
-         C5XnheUNSHuyeIYJXfmdDtCf7MiSHiFch66DtUsTxARElpfFGjKRw8YcqxnVXj5vr9
-         jopI2tdXt7lig==
-Message-ID: <e9af482f-5b8a-70c0-d767-e98703cd1b03@alu.unizg.hr>
-Date:   Thu, 27 Jul 2023 08:16:17 +0200
+        Thu, 27 Jul 2023 02:16:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2CB1731
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:16:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0083361D14
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:16:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 672BDC433CA;
+        Thu, 27 Jul 2023 06:16:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690438614;
+        bh=0u5dKLdzEDZbgSk/MVboHGJ1y2URwAqm+KVO+8/WIc4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YjMOO7/zK1ptmQ2eJZY2/w1CylXNT51YJPf7GZkK3Avtd16Eidc1G91BrftdPvVyj
+         PL6aMz+yZPq7hWCYLeJ+PYlL3/C4StQB971Lsr7Eepc+66vDP1kADVUlKq/Aro4vBH
+         lOZo0aU7lMGxU01RNg2C+j3g09HfCie5PFqVLcKmRQTab/iGVNOR6h6mTLcW4yZdXw
+         0EGhkSVtk67TMN/kkg2mkgLD1dbvfCfzkAoxpiWe3Wk6b/06QWV1Ht7VY16eacSHIL
+         yc4F/NbDaYXlXp/o8jGSPSsUTcDMo6GyauvyYJSyo5OdXw4HIgD6GfYcDlu46NCvKX
+         cb8Ey2/uFzLbw==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so698555a12.2;
+        Wed, 26 Jul 2023 23:16:54 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYNdtNkR6l/LEHHvyopc8tQhFdJ3NVKHrrNtnkd07vw0jKmPh4K
+        0OrXFxNrVSz5MGUpfPcOGqJgpt94LWG8SQhVz2w=
+X-Google-Smtp-Source: APBJJlGYnWtVs+fnABK57qFLoh/r+fFmn/JbZgwI3j6LEHG8OqFrjDwoQz1ZzQcxB6MJncvN/eFqINTm625RMLy8zRY=
+X-Received: by 2002:a05:6402:31e8:b0:51e:4bd6:ce4a with SMTP id
+ dy8-20020a05640231e800b0051e4bd6ce4amr1059655edb.11.1690438612612; Wed, 26
+ Jul 2023 23:16:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v4 1/1] test_firmware: fix some memory leaks and
- racing conditions
-Content-Language: en-US, hr
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tianfei zhang <tianfei.zhang@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-References: <20230421185205.28743-1-mirsad.todorovac@alu.unizg.hr>
- <ZEgbkoSjHcVLcCcp@bombadil.infradead.org>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZEgbkoSjHcVLcCcp@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230727042125.884988-1-zhaochenguang@kylinos.cn>
+In-Reply-To: <20230727042125.884988-1-zhaochenguang@kylinos.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 27 Jul 2023 14:16:39 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4Vn1Mf8L_+QaCJJaQLLxKe5Sg9tJ4A5KkDuupdnfQHDw@mail.gmail.com>
+Message-ID: <CAAhV-H4Vn1Mf8L_+QaCJJaQLLxKe5Sg9tJ4A5KkDuupdnfQHDw@mail.gmail.com>
+Subject: Re: [PATCH v2] LoongArch/bpf: Enable bpf_probe_read{, str}() on LoongArch
+To:     Chenguang Zhao <zhaochenguang@kylinos.cn>
+Cc:     kernel@xen0n.name, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.4.2023. 20:27, Luis Chamberlain wrote:
-> On Fri, Apr 21, 2023 at 08:52:06PM +0200, Mirsad Goran Todorovac wrote:
->> Some functions were called both from locked and unlocked context, so
->> the lock was dropped prematurely, introducing a race condition when
->> deadlock was avoided.
->>
->> Having two locks wouldn't assure a race-proof mutual exclusion.
->>
->> __test_dev_config_update_bool(), __test_dev_config_update_u8() and
->> __test_dev_config_update_size_t() unlocked versions of the functions
->> were introduced to be called from the locked contexts as a workaround
->> without releasing the main driver's lock and causing a race condition.
->>
->> This should guarantee mutual exclusion and prevent any race conditions.
->>
->> Locked versions simply allow for mutual exclusion and call the unlocked
->> counterparts, to avoid duplication of code.
->>
->> trigger_batched_requests_store() and trigger_batched_requests_async_store()
->> now return -EBUSY if called with test_fw_config->reqs already allocated,
->> so the memory leak is prevented.
->>
->> The same functions now keep track of the allocated buf for firmware in
->> req->fw_buf as release_firmware() will not deallocate this storage for us.
->>
->> Additionally, in __test_release_all_firmware(), req->fw_buf is released
->> before calling release_firmware(req->fw),
->> foreach test_fw_config->reqs[i], i = 0 .. test_fw_config->num_requests-1
->>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Luis Chamberlain <mcgrof@kernel.org>
->> Cc: Russ Weight <russell.h.weight@intel.com>
->> Cc: Tianfei zhang <tianfei.zhang@intel.com>
->> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> Cc: Zhengchao Shao <shaozhengchao@huawei.com>
->> Cc: Colin Ian King <colin.i.king@gmail.com>
->> Cc: linux-kernel@vger.kernel.org
->> Cc: Takashi Iwai <tiwai@suse.de>
->> Cc: Kees Cook <keescook@chromium.org>
->> Cc: Scott Branden <sbranden@broadcom.com>
->> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
->> Suggested-by: Dan Carpenter <error27@gmail.com>
->> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> 
-> Mirad, thanks for this work, good stuff! So the patch just needs to be
-> adjust with:
-> 
-> Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf"
-> Cc: stable@vger.kernel.org # v5.4
-> 
-> Then, can you split the patch in two, one which fixes the memory leaks
-> and another that deals with the mutexes. The second patch might be a fix
-> for the original code but I can't tell until I see the changes split out.
-> 
-> The commit log should account for the memory leak and be clear how it
-> happens. The other commit log for the second patch should clarify what
-> it fixes and why as well.
+Queued for loongarch-next, thanks.
 
-It seems to me that there is something wrong with the patchwork, as this commit
-had not yet appeared in 5.4 LTS stable tree?
+Huacai
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/log/?qt=grep&q=Mirsad&h=linux-5.4.y
-
-I was accidentally looking whether it passed, and it seems like more than a month
-since the other commits propagated :-/
-
-Thanks,
-Mirsad
-
--- 
-Mirsad Todorovac
-System engineer
-Faculty of Graphic Arts | Academy of Fine Arts
-University of Zagreb
-Republic of Croatia, the European Union
-
-Sistem inženjer
-Grafički fakultet | Akademija likovnih umjetnosti
-Sveučilište u Zagrebu
-
+On Thu, Jul 27, 2023 at 12:21=E2=80=AFPM Chenguang Zhao
+<zhaochenguang@kylinos.cn> wrote:
+>
+> Currently nettrace does not work on LoongArch due to missing
+> bpf_probe_read{,str}() support, with the error message:
+>
+>      ERROR: failed to load kprobe-based eBPF
+>      ERROR: failed to load kprobe-based bpf
+>
+> According to commit 0ebeea8ca8a4d ("bpf: Restrict bpf_probe_read{,
+> str}() only to archs where they work"), we only need to select
+> CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE to add said support,
+> because LoongArch does have non-overlapping address ranges for kernel
+> and userspace.
+>
+> Signed-off-by: Chenguang Zhao <zhaochenguang@kylinos.cn>
+> ---
+>  arch/loongarch/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index 903096bd87f8..4a156875e9cc 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -11,6 +11,7 @@ config LOONGARCH
+>         select ARCH_ENABLE_MEMORY_HOTREMOVE
+>         select ARCH_HAS_ACPI_TABLE_UPGRADE      if ACPI
+>         select ARCH_HAS_PTE_SPECIAL
+> +       select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+>         select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+>         select ARCH_INLINE_READ_LOCK if !PREEMPTION
+>         select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
+> --
+> 2.25.1
+>
