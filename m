@@ -2,227 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D1765E8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF756765E8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjG0V6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        id S232185AbjG0V5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjG0V6S (ORCPT
+        with ESMTP id S230486AbjG0V5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:58:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605ED100
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:57:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690495056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s9OuLr3u1FKmz7UA09k1shRXalh3/1PXcGGjjo2Ltyc=;
-        b=DWz6HnoxVP/mgWyWVhONuTxAQLj4cJ99VqItZuvRkZ5PUO9A+6cpwHO3O+oRQHsoOE4qdh
-        GQkRBWjIGcwsiLxP1Xjs2i+8pJ6fMB51opGXdBGs/GzfGLC6CP2U6WTq4AffFf+al3vOIz
-        O2qvUAic35LHeu9FCy9HQzdaGBLttq0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-662-24WDBhzeOSK13HqsnPYa7g-1; Thu, 27 Jul 2023 17:57:35 -0400
-X-MC-Unique: 24WDBhzeOSK13HqsnPYa7g-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76c562323fbso199401985a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:57:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690495054; x=1691099854;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9OuLr3u1FKmz7UA09k1shRXalh3/1PXcGGjjo2Ltyc=;
-        b=Pk0JAVxxUJhPe50dhPa4ZDXjQcQap/e93g9k48d0HIEi/EC673tW2+yR1H06g5Kdm+
-         RZ5n32iO/VaVWh2/+OXJcWEHLhjPbjWCLcE+ZKjjsdx524WQR6ys2/qPkcawIMcaJpmb
-         mNsRsYTI/g2+0hSGK/ocPUZQF/lhukbwfZIDkf8WeEsfCBjTl3PAIMZlG8jvo6tZiMxU
-         WYfb2py5w4gUhi9GXgsNJmOvB0PogUaoq6HBLIaAHYpS5OqXTJdmLeRZy2bRtDR+KmSg
-         3MuHQQDP/eKLVBjo53DcPXHsPFj7MqDHuJy9J/HvC98yiUtew12fn2qjJQaeC1zxF1rv
-         y0ig==
-X-Gm-Message-State: ABy/qLYQ9jkVl7ktYqmibrTh/bEN8x4dFUeObALfJZAAZsNxgn48f8zT
-        9cS7Wnfmkm3Ei7VGpajQ2JVK5wheMksP4Qp4Xlh/Ta61il0/Ika2+Ce/3f4z+3zWfn6RqnvOMG8
-        aMJBuJCSBa1d9VdKWecNfrrA5a8uQXm/a
-X-Received: by 2002:a05:620a:22d6:b0:767:dc58:f256 with SMTP id o22-20020a05620a22d600b00767dc58f256mr576818qki.70.1690495054383;
-        Thu, 27 Jul 2023 14:57:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEzY7IQL3ZyLnsNAB2lwLy/4bDaZV4xaXncyDjJN0h+TlqUMguVN/HH1elUGz4ZzbmQ37uo1Q==
-X-Received: by 2002:a05:620a:22d6:b0:767:dc58:f256 with SMTP id o22-20020a05620a22d600b00767dc58f256mr576803qki.70.1690495054117;
-        Thu, 27 Jul 2023 14:57:34 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c7d:5f00::feb? ([2600:4040:5c7d:5f00::feb])
-        by smtp.gmail.com with ESMTPSA id j8-20020a05620a146800b0076c73ec2f88sm544372qkl.19.2023.07.27.14.57.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 14:57:33 -0700 (PDT)
-Message-ID: <badef3d33469d97b01a42da520ad22ae4c9485fe.camel@redhat.com>
-Subject: Re: [PATCH] drm/nouveau/nvkm/dp: Add hack to fix DP 1.3+ DPCD issues
-From:   Lyude Paul <lyude@redhat.com>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 27 Jul 2023 17:57:33 -0400
-In-Reply-To: <CACO55tvfTDu8XcKowWXcSRqp8OMLb8Q4jnPG_Fn5y=yJy-Dqbw@mail.gmail.com>
-References: <20230707215851.590754-1-lyude@redhat.com>
-         <CACO55tvfTDu8XcKowWXcSRqp8OMLb8Q4jnPG_Fn5y=yJy-Dqbw@mail.gmail.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+        Thu, 27 Jul 2023 17:57:46 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2087.outbound.protection.outlook.com [40.107.101.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A789B1FF5;
+        Thu, 27 Jul 2023 14:57:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ObeTvOxFFP2pssbzRyqzwTSmUYvl933ySbHAF2Szaw2BF86q1KF673+d4UCeHtlhQB9Gc13PBtsOU+J8W/zgppAz5gLHGTPJ+4UKek91j4yDc3GzNZaXL5ydZXghPBPIr6zxTeBVbyWaW8SLJdg7CxQp79at5X+udXMpIRejXkm0fqnLJvPcR7e5H4zKzd9PW39Y2Xpx5Z3CLo8q4fmuiV9xLzr/o/FCBwCN9LFL37+IRcfwoIGcBEvqDT45yss06O38lSwnpmkxXedR5K+C6VO9KiT7FtDM1NSvqIsBSABOgG3MB8NOmXx7noWNOB25WZFDeDoHDPcS5wcZecNUTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ymhV/9TeveNlLpw8KJRK5AAP0WlUOPhgcAVtHWk9ALE=;
+ b=TiwPOA3wnwqP2kgeHmhuX+NrPBMcVImHt7ro2V5ZkoehYa4/aSso1avfqGQJKNvk/BOhSQaatSkcfRKWxOomeePIVY/Fg3LZgdeZ6FmNSRdpYB+vx8HVyOoXYBlRgyQVoxzUhpmD1bCq6zaVfMkGkveApr+WV/93Vs2LFrOQTN64hmE/tQrJw60LsErtdkVIvgH4oRSZx7NE7gabo3YWI6QNElUMxxwpGMwsTD8044QQIhlK5R7O2HfNvXP1f8xxQk+MhIesK0org7BgvllKrO61vKWym9kNwx5x1W5PClS37saJsUQQUrYx9WQ5CTHrsOsQEp07RkDQW8n3IZixWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ymhV/9TeveNlLpw8KJRK5AAP0WlUOPhgcAVtHWk9ALE=;
+ b=UEVzpS33Qc+zSFWkc+etBw/QDW7LC/9G2Pd0se5GCfQyjwVRcxhhgIhFB/FCStGnddxJkNw5H4oCeKd8SG3od9mi2Nhb694u4hDNrfRzCFg8grdA+P8bTG9YmjcIJCyPqDF28P8qjIn1gnyIqrF840HU1ehYCwr0WQpz/Jipyyf3ukQ2BwvPK7JOC8INzpjDxXqYXt3WJFWELYtBR7uWjQwtF5kUBG6IPdiVr7oj54EPS0CxyDYrqQQ4L8HuhnDXD5q47uN2dmvObGnzB/MZoLuGHGs0Gbn04ag3z7u0ZzvMWp7S7EFb7+dMFc/sVCHxtgIolBOL3eY8khDHGSaXlQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB6604.namprd12.prod.outlook.com (2603:10b6:208:3a0::7)
+ by CYXPR12MB9428.namprd12.prod.outlook.com (2603:10b6:930:d5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 21:57:43 +0000
+Received: from IA1PR12MB6604.namprd12.prod.outlook.com
+ ([fe80::7d22:3b01:5ff:1ac6]) by IA1PR12MB6604.namprd12.prod.outlook.com
+ ([fe80::7d22:3b01:5ff:1ac6%5]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 21:57:42 +0000
+Message-ID: <132d5dc1-6104-1d2e-543a-e92177b01fae@nvidia.com>
+Date:   Thu, 27 Jul 2023 14:57:39 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] hte: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     devicetree@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230714174600.4057041-1-robh@kernel.org>
+Content-Language: en-US
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+In-Reply-To: <20230714174600.4057041-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0271.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::6) To IA1PR12MB6604.namprd12.prod.outlook.com
+ (2603:10b6:208:3a0::7)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6604:EE_|CYXPR12MB9428:EE_
+X-MS-Office365-Filtering-Correlation-Id: 43701772-3e9c-428f-c01a-08db8eec80a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vc2twhVZ5SPXGHbKEyEv2tPuDi9N9btGlBw82mET5pgn/AiO8dYRFQ/88xZNoUsWPaossgs548xGi3g8yNBofDfcGRlkZyhSX4ylHcB5psNVrjP5OvEShk+EO6RocTiGoJp7ElcJ08T8F/QY4IxhrHdC4AwdMp+Bz2d7NfO9olFo2SUbr9NY7MOKIbwnHCgZOIeaij8TIzBZPrEdrdWuMRLfQmF/gIFzCujfj35CLBFM7yRZzIsZWBQb+uCssKKLBj0Z3O95baNrbfeeOXkeBgMOe5KZaw4moqg2fNiAvhsyP9x+wz5USKn5RoEstCKeGam9knhXlH+vjhz7Uu3YgqpZTll19XhdpJ41aEMSH10TlNUn/O9Tncp6GJwTl2UVFEJLKZ9u9CMHcuV/n/WFU2ymlk0mPzLW46KexajHUC7htVutLHi88IcbGQaVOs4VQZqiqj0dc9yee6L6BEjAD7r8TVUui061YW5r8ZybbFUpxgesQLeiTEHFfDsTMm9RKhItkCC6NP6fugPa5XmZ/Jj/48z3RlGQ2I7FaVTnV2K/cbGqAAmxwSwq6Tz4hd8WrYqCfB0i3QJM93T/bLWJXanKH1H3SgK/BrM2tqX80MKe3Uty9XCzT56rZuyLGIesBMV9rpfDlR2D0PUlyt5WuQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6604.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(376002)(39860400002)(396003)(136003)(451199021)(83380400001)(31686004)(31696002)(2616005)(110136005)(5660300002)(6506007)(53546011)(86362001)(8936002)(6512007)(6666004)(478600001)(6486002)(316002)(8676002)(66556008)(66476007)(4326008)(66946007)(2906002)(41300700001)(186003)(26005)(6636002)(38100700002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXdDTC9LR3FzYUVZQ2RnZUZsNlBCWGJoL1U5ZjNUVG5PMUUzU2VOeWdodXN1?=
+ =?utf-8?B?YlBFc0JVYW5FSHNzcWNYVDB6TEMyenpwM1E4eEpubDBHbk9JL2pBOWh5MmE0?=
+ =?utf-8?B?STNSOGhwY2g2OUZlU2plaHAzWGgzeUxsczNiOXNlaWNKNTNwNmN3TnJzUFhn?=
+ =?utf-8?B?emJNcUVzVE8zZ2pKNVFZR0JuR2VUSVVUcnlJcW5FL0JRRzBwekFydi9hMEtZ?=
+ =?utf-8?B?bDNCQWpwQTg3L09sc1llZnNVVEtlcjNMSUR5RjVrYXFsRkx3YUlxVzFtR2N5?=
+ =?utf-8?B?Rzk0eXZkc1BGZGhzVm55RWVhV2lkbm1FNFREKzYxb2pYV2pzb2M4dHFJWWF0?=
+ =?utf-8?B?ejhkaklIdTNEdm5xb1l2eUZoNlYxREdFeUUvTnJleENuTmY2UTlGb0RNSUZB?=
+ =?utf-8?B?RlNhWmZ4T0dHejMyMUgrbmxkQjdBTU9SZzRXVy9qaVNnckNabitCQVlPd3pN?=
+ =?utf-8?B?S1dMZW5GNmI0YWt2M202QTl0OVQzaGY2Ym5WT0RrSzlOcVJYM0hDLzZRWndC?=
+ =?utf-8?B?YUNSa0hObGRUTERtVHQ4QXI1M0V1VVJIalhCQTdEWmFoeit4MlNyQ3RDSGh2?=
+ =?utf-8?B?MDJuREdXNFBzZTNiaUYrWWdIV1FiU2Y0elBZSmNRSFArNExXUzQ1eGFKNjZt?=
+ =?utf-8?B?RmtXdmlpMGFGRkxIOTloL2YzcU9ZSWxIbm1FUW0rd0NwMHVtZWMxNzRtbFhn?=
+ =?utf-8?B?MlBGZHBUOEFDWEpSaVhSQ2RKd25LNE9NVEdRbXZHaUV3QlJnTHoxbFZRaUs4?=
+ =?utf-8?B?b2Zkckh2Z1J1SlF0ZzhUM0hWeFlCSi9hYmdBYjYxS3JLWHdBeHhrTE4yVjY3?=
+ =?utf-8?B?eCt6SG9LL0pqZlJJVUwzR0ZCMitnNWV0WmpnRWtlcnNnTzFBSjh3QUtOTHRN?=
+ =?utf-8?B?QXRuRUI1bDNJSGUycE1Pd0JNU2RvR0xoTGd4RFdEUlhmak90OHFiWU1TcXQx?=
+ =?utf-8?B?RkxNUkxUQm9jNVA5aDJmb0pXUEYrNkZqZHJDb216djNFeGZKaEpaMEthN1dj?=
+ =?utf-8?B?ZWpMTTVMZFZaV2lIMTF0SHJoU1RrYnArVzVSc3lZaDZQb2toVERKbUtUZm95?=
+ =?utf-8?B?WG9COFZJQnpwZnd1UUoybXpwYVUrc3BGbVZwd2xvTzhhWll2Qll0Ry92N0xa?=
+ =?utf-8?B?ZFVKQXRacUhwNEN4RXhoeFJEWGxodWRKU0tCK2NtekZSV0N5RjU5Qnp3R1Ny?=
+ =?utf-8?B?SmpQVkptcjFZRWdGKzN6cXhGNklyd1VOZjRoOEszL0lURDRDVWtscU9rSmJ6?=
+ =?utf-8?B?L2JXdXhVTlJDaWFuV2xnNXpQS2VPbHNWQWNzNW1MWnlmNXlWMmtSSm0zLzJM?=
+ =?utf-8?B?eUsyU09qblJ3UXVMUllyeG5TdnBDWjc5WjFSZVJOWmpOdkM2ZmtTN2xmRnJN?=
+ =?utf-8?B?bS9sbDdCaDlyUEZUV1BhNTg2M0JEakJ6NFRjdTlNTjZZd2JGbnlwRzlHaWdY?=
+ =?utf-8?B?Tm9KVkQrU0hWMEEzRkZOVFpGRGFaTEcrZDRBakUwWGo2VlhtRkFRZmtWazU3?=
+ =?utf-8?B?QmtsOE9USzV1V1RyZkhDSGxxb2VSemVsMDY2VUh3bFlMZS9KNWtBVjZ5RW5L?=
+ =?utf-8?B?VjcwN1lKYm5jTG5Va2VMYTJWVWRUbVBpL3NNK2x1TTMzSnJYdzJqRnFmNy96?=
+ =?utf-8?B?c1dxc0Fvbm43dndQT2x3akUzRUg1VjVQZjNtakdsd1JGMlFvUEQ1b01iQ1Bi?=
+ =?utf-8?B?V0ZqRy9oVUV1WVkvS1drbW5MQWxjemJmbVkxRVAzOEh5SFhlQzM4d0l5RWpK?=
+ =?utf-8?B?eEtPKzlmRzZZSUVBMGpzTzBCY0dXckl4QUxsZWRZWXdWVkdEZmRVV0M3WFFV?=
+ =?utf-8?B?TG9xQi9iTk5VTURQMHhTOC9wTEptemxvWEs5SlVVdGJEcjRhYmsrclVtSFI5?=
+ =?utf-8?B?UUYzb3hXZXFTUzVwenpYVlREMUo1MkhCUE90Y0xDMzlGQzB5WkVnUnQ5akxJ?=
+ =?utf-8?B?d3J0ZWRrdTVYN3dKZ1Q1TnNOSVBnakQ3dWtzZ2xDWVZpQ1ErdW44VllHSGZi?=
+ =?utf-8?B?STJqRnFEUmpUWWZxVUJHMVhoT1NJVkZvWGJJSVdORFJSN0oyZ0V5NFVpeVRO?=
+ =?utf-8?B?NzB5akJvdkJ1K3czZXFuVlM1MEpwNEdBYXFWZXpUSmRwM0RCTHRrNVJXNFk4?=
+ =?utf-8?Q?dcAa675oqCX8qW1PXYxA0qRU3?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43701772-3e9c-428f-c01a-08db8eec80a1
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6604.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 21:57:42.7071
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SQanWyKcQB9hvvdiBc55mtv/32Shw5hxAhKIrWpY3jsEX2PhSz77m/hTCgaCQXe6TfOcr0DTeB4no28nmcs0mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9428
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-07-09 at 01:42 +0200, Karol Herbst wrote:
-> On Fri, Jul 7, 2023 at 11:58=E2=80=AFPM Lyude Paul <lyude@redhat.com> wro=
-te:
-> >=20
-> > Currently we use the drm_dp_dpcd_read_caps() helper in the DRM side of
-> > nouveau in order to read the DPCD of a DP connector, which makes sure w=
-e do
-> > the right thing and also check for extended DPCD caps. However, it turn=
-s
-> > out we're not currently doing this on the nvkm side since we don't have
-> > access to the drm_dp_aux structure there - which means that the DRM sid=
-e of
-> > the driver and the NVKM side can end up with different DPCD capabilitie=
-s
-> > for the same connector.
-> >=20
-> > Ideally to fix this, we want to start setting up the drm_dp_aux device =
-in
-> > NVKM before we've made contact with the DRM side - which should be pret=
-ty
-> > easy to accomplish (I'm already working on it!). Until then however, le=
-t's
-> > workaround this problem by porting a copy of drm_dp_read_dpcd_caps() in=
-to
-> > NVKM - which should fix this issue.
-> >=20
-> > Issue: https://gitlab.freedesktop.org/drm/nouveau/-/issues/211
->=20
-> Should a Fixes: or Cc: stable tag be added so it gets backported?
-
-JFYI I think not adding one is fine nowadays? The stable bot seems to be
-pretty good at catching anything with the words fix/fixes in it
-
->=20
-> > Signed-off-by: Lyude Paul <lyude@redhat.com>
-> > ---
-> >  drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c | 48 ++++++++++++++++++-
-> >  1 file changed, 47 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gp=
-u/drm/nouveau/nvkm/engine/disp/dp.c
-> > index 40c8ea43c42f..b8ac66b4a2c4 100644
-> > --- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-> > +++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-> > @@ -26,6 +26,8 @@
-> >  #include "head.h"
-> >  #include "ior.h"
-> >=20
-> > +#include <drm/display/drm_dp.h>
-> > +
-> >  #include <subdev/bios.h>
-> >  #include <subdev/bios/init.h>
-> >  #include <subdev/gpio.h>
-> > @@ -634,6 +636,50 @@ nvkm_dp_enable_supported_link_rates(struct nvkm_ou=
-tp *outp)
-> >         return outp->dp.rates !=3D 0;
-> >  }
-> >=20
-> > +/* XXX: This is a big fat hack, and this is just drm_dp_read_dpcd_caps=
-()
->=20
-> Well.. maybe we should rephrase that _if_ we want to see it
-> backported. But is this code really that bad? It kinda looks
-> reasonable enough.
->=20
-> > + * converted to work inside nvkm. This is a temporary holdover until w=
-e start
-> > + * passing the drm_dp_aux device through NVKM
-> > + */
-> > +static int
-> > +nvkm_dp_read_dpcd_caps(struct nvkm_outp *outp)
-> > +{
-> > +       struct nvkm_i2c_aux *aux =3D outp->dp.aux;
-> > +       u8 dpcd_ext[DP_RECEIVER_CAP_SIZE];
-> > +       int ret;
-> > +
-> > +       ret =3D nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd, DP_R=
-ECEIVER_CAP_SIZE);
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       /*
-> > +        * Prior to DP1.3 the bit represented by
-> > +        * DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT was reserved.
-> > +        * If it is set DP_DPCD_REV at 0000h could be at a value less t=
-han
-> > +        * the true capability of the panel. The only way to check is t=
-o
-> > +        * then compare 0000h and 2200h.
-> > +        */
-> > +       if (!(outp->dp.dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
-> > +             DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT))
-> > +               return 0;
-> > +
-> > +       ret =3D nvkm_rdaux(aux, DP_DP13_DPCD_REV, dpcd_ext, sizeof(dpcd=
-_ext));
-> > +       if (ret < 0)
-> > +               return ret;
-> > +
-> > +       if (outp->dp.dpcd[DP_DPCD_REV] > dpcd_ext[DP_DPCD_REV]) {
-> > +               OUTP_DBG(outp, "Extended DPCD rev less than base DPCD r=
-ev (%d > %d)\n",
-> > +                        outp->dp.dpcd[DP_DPCD_REV], dpcd_ext[DP_DPCD_R=
-EV]);
-> > +               return 0;
-> > +       }
-> > +
-> > +       if (!memcmp(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext)))
-> > +               return 0;
-> > +
-> > +       memcpy(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext));
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  void
-> >  nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
-> >  {
-> > @@ -689,7 +735,7 @@ nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
-> >                         memset(outp->dp.lttpr, 0x00, sizeof(outp->dp.lt=
-tpr));
-> >                 }
-> >=20
-> > -               if (!nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd,=
- sizeof(outp->dp.dpcd))) {
-> > +               if (!nvkm_dp_read_dpcd_caps(outp)) {
-> >                         const u8 rates[] =3D { 0x1e, 0x14, 0x0a, 0x06, =
-0 };
-> >                         const u8 *rate;
-> >                         int rate_max;
-> > --
-> > 2.40.1
-> >=20
->=20
-
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+On 7/14/23 10:46 AM, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/hte/hte-tegra194.c | 1 -
+>  drivers/hte/hte.c          | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hte/hte-tegra194.c b/drivers/hte/hte-tegra194.c
+> index 06ef349a2265..6fe6897047ac 100644
+> --- a/drivers/hte/hte-tegra194.c
+> +++ b/drivers/hte/hte-tegra194.c
+> @@ -12,7 +12,6 @@
+>  #include <linux/stat.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/of.h>
+> -#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/hte.h>
+>  #include <linux/uaccess.h>
+> diff --git a/drivers/hte/hte.c b/drivers/hte/hte.c
+> index 67c15724ee78..598a716b7364 100644
+> --- a/drivers/hte/hte.c
+> +++ b/drivers/hte/hte.c
+> @@ -10,12 +10,12 @@
+>  #include <linux/err.h>
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+> -#include <linux/of_device.h>
+>  #include <linux/mutex.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/hte.h>
+>  #include <linux/delay.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/device.h>
+>  
+>  #define HTE_TS_NAME_LEN		10
+>  
+Acked-by: Dipen Patel <dipenp@nvidia.com>
