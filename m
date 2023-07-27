@@ -2,160 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAA4764961
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA0F76496E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232949AbjG0Hx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S231215AbjG0Hy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjG0Hww (ORCPT
+        with ESMTP id S233332AbjG0Hyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:52:52 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09DB4ED6;
-        Thu, 27 Jul 2023 00:46:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QgIlD//yHQZcBNLA34RVsTbbf2CSiLVTGmiqeqko4BZIXjw+mZsrnP4g7jrucCZ9eS35rD1IDE7/YrvOSf/uKH/Alt+34V5o6rws04YFdIE10f6BLt2bhP9dBAxr6zzolIlsoA/7XlYgbnRj7xTLEjwLuUvWdwEkxwrVIhkd2LNTwIw4kCw2zxNmJw1Y0dXl1gKbH1jlpktAG8deO33YMxZOabIP7GQe756hw3r59a/1UoErNfCHYiREcEHJ/EpyRFWq1xVI+2DWRoUZVlz0X4ctAz96ERbzJcqaUErHhAFglsbfXCuteRUemApE8nq01hcu/A+5KiY6rkUqD984eA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dsuXSTq8w9nhLNvGsyo0ANgU+L52Pez8eHR2nW3tAPQ=;
- b=NOkn5uY6/R9+gq+mBnOB/pv7gl1oNYr71x9iVTW1cSBBpuU160IaTbb275lEcgz73WFg5mG3rT4kuG4Eq7xvWRzNxtVGv4nDqMuCubB9bBvhXeZ/W2UL+WCZQtK+OE4slY9jdD4ewD5EQXL8tztXoQTjorIRsocdgpkjjB8fMEkdgB7ou5/JMImJYswT1dSF7pfHbU8vF8X8HqmEyDaSLYIn9qg+BI/C2KFk46BpIPKPAFeS4Ztt8kcUOEknS7tSpXQSlL/q1zDxh44alnOjYUSOdiVAoBuE5KFoSwd2QbjDWCkZ8MlRIFNZzWhkeAa0naSVXBAXc/2THq5+RAskDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dsuXSTq8w9nhLNvGsyo0ANgU+L52Pez8eHR2nW3tAPQ=;
- b=nr7kmUQG1HVtPnGuUBIsJ75njrri7jJJri8GjqJBj6mX6EtW/gU6Nqo/Z6L953baUt3RqrzoHvRWeE49mvbr/APuE7l9k8fecl8F0cSjr8JXPfBWdJWFWSRB5y1bjgJL5SCLGhV9rbvCzCDVIMw3aGr9TYZo65x/qVbvI182Dt0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by PH7PR12MB8428.namprd12.prod.outlook.com (2603:10b6:510:243::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
- 2023 07:46:07 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
- 07:46:07 +0000
-Message-ID: <52498955-a14b-5646-95a3-611bda0049d7@amd.com>
-Date:   Thu, 27 Jul 2023 09:46:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] dma-buf: Fix the typo in DMA-BUF statistics doc
-Content-Language: en-US
-To:     Luc Ma <onion0709@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        javierm@redhat.com
-References: <64b6749a.170a0220.3acab.2af9@mx.google.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <64b6749a.170a0220.3acab.2af9@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0012.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1d::15) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Thu, 27 Jul 2023 03:54:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940D130DB
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690444111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j1sGpcCh25quOAjflnOwlUM9P1X98CB5H9u91wgYUjs=;
+        b=BAfH3eZZvfwnJ81BopGYpP+k8GjtSQzt79eEbkVEr2cVjPdLpQmwhB4yTswajYRZ6B+NFY
+        fnfDIP4z5sl/B+tKOj4oqLqDwYTAdYRIMFU4jI42pyT3K469KCFzWOCfcsqF3klvqX6pqw
+        hW/6iJzApCwFccZ6IjdClK7JPKCvBdw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-522-WcjX1r9zM9yBkLjzNR6mDA-1; Thu, 27 Jul 2023 03:48:30 -0400
+X-MC-Unique: WcjX1r9zM9yBkLjzNR6mDA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-993831c639aso35741766b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:48:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690444109; x=1691048909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1sGpcCh25quOAjflnOwlUM9P1X98CB5H9u91wgYUjs=;
+        b=IXuykYbpBjQHN1Wqi5/mxLTo7ddE1CR+L+KmMAzer1Hm1qQNUdAGIWJwF+ex+miiSR
+         0aQcef7RtcCmVMfPPobjROSHSrjz2ImBQvGZHa5bqaKpvDR1Q2w/CrfYxkod54/G6Ztq
+         MvijngRuPcrffmASk7JyA2pvAorrtBXGlsseEZwgnzxzElmM8Rp/X8R9h3rjltqIz9gr
+         ng+e9xQqlwyeEeOCoGROe68+BsG047iGu15lQGnp/hh8TuilDjpy9zGR6xI71TQwwf7C
+         80n+SqmNIHVcdUeE1/oq4fFUDCN3/lfCdgP2qatO6Ds+5+1nHeU4pEcxZjquVThYVga3
+         FFjg==
+X-Gm-Message-State: ABy/qLYn9hQqfnePiSyuQWNmxV+cn6OIv+7w8sRouy+CDiHah8XBtXZv
+        6Xp2m1kBzdxw2mnBKfQx6o/n8+6iNBlObxqcHZ/06AVPU1Hf0gcBtI/fQwj7PTY/NAT83A/28dF
+        lRfXE4oJEXuvV3eu5V1EJLadb
+X-Received: by 2002:a17:907:a068:b0:989:3148:e9a with SMTP id ia8-20020a170907a06800b0098931480e9amr1273095ejc.41.1690444108917;
+        Thu, 27 Jul 2023 00:48:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE55JyhKwJyB8qUe+lq1MkQNb4GdgSPTG/st46k7wZpyOLVvAygT9RNqVELeE+FBejRoktCsg==
+X-Received: by 2002:a17:907:a068:b0:989:3148:e9a with SMTP id ia8-20020a170907a06800b0098931480e9amr1273068ejc.41.1690444108579;
+        Thu, 27 Jul 2023 00:48:28 -0700 (PDT)
+Received: from sgarzare-redhat ([193.207.217.102])
+        by smtp.gmail.com with ESMTPSA id z16-20020a170906075000b00993a9a951fasm467215ejb.11.2023.07.27.00.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 00:48:28 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 09:48:21 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Krasnov Arseniy <oxffffaa@gmail.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        bpf@vger.kernel.org, Jiang Wang <jiang.wang@bytedance.com>
+Subject: Re: [PATCH RFC net-next v5 10/14] virtio/vsock: add
+ VIRTIO_VSOCK_F_DGRAM feature bit
+Message-ID: <tpwk67lij7t7hquduogxzyox5wvq73yriv7vqiizqoxxtxvfwq@jzkcmq4kv3b4>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-10-581bd37fdb26@bytedance.com>
+ <20230726143736-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|PH7PR12MB8428:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad16d763-6edc-4a3b-2de4-08db8e75897a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RuL7iBJnJFTcVsK1fEVZO077ALPlv4WU+SdLG35DRgz7GDx5CPLpK7ifMZyj9wZ9dEvVceAHSIVxU1lNSHSmh+pD9RSKMOkWBVDEo9a113d9BONqeV7ydKUrZW3+dn3TuYg2Onml47vB2kexVO0hR7gmARwdGf1u7bc2sp8UOfPnPtRVM/7attWCfbK4N5f34HqlTP+ChYrZUX5h9fpGOotCiJyJ0AzPljVslVxbkTkYCEoKZbIGamUu9z37dOuLyz5ieDG4l+TgU3o2RnHSYndmNF0xR2hC9xslPkx6Gwf/vk8/Kdu9CzZG6JC0VQJ5evhFy0dYR7v7aw4sIV7mZPbNguO9OOtaMpBHDknnatc477vzbUW/PC8Zaje1OPxc3uw/QpqbUBTTJPW7sDQcj9MPvTJNTZjyHdndPWvxH2Z8YkD62adQDISfiX17EKXnLvSZPXVKyVxDo/JyTGdsBdRI4H/jKCVnCGLeTq19L5d7GTNmhhnm1LZR4YGixu2bdWsJzFzKDzTFsTM4DrvJxh8z1iWmsNiJVap5S+InIEXy+zc0I7UgA/HL4gQmgVW+O7Kj+7DFxnQ5CExjBvGBmAOQA2yn3dsDMj06rKiwMVW0ZlDTbRuvJm5VB8ZUpijWflYQ+P8Zgi3u5XcRSmZjXg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(39860400002)(346002)(366004)(451199021)(31686004)(8936002)(8676002)(5660300002)(41300700001)(316002)(2906002)(66556008)(66476007)(66946007)(6666004)(110136005)(6506007)(186003)(478600001)(86362001)(31696002)(36756003)(2616005)(6512007)(6486002)(83380400001)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aTJDeEVFY1ZpS1BEaktnOEZuR29XMGhwUE5DNEVLVkYyRmxPNVU0UGU4MXpo?=
- =?utf-8?B?cFNPQXB3WDZwbGNTZkxJdHh4ZmIyVm5QWGl5Z1Z6OVVkQXpCL213Tm42ckw4?=
- =?utf-8?B?aDFCRUQ3cUEzdUtza2JOTnhlN0VmWXZUUHBNeTVYWjVScm5DL3NkU3ZCVU5Z?=
- =?utf-8?B?S0kvblRCd0RkTllFUmxrRi9RZmorb3J6QXFaeUw2eHBzNlNCdWw0QWtSNjlV?=
- =?utf-8?B?VDZxTjR1NEVua2kya3VwRkN5THJDcjN3QTFGSW81QWFRL2hPU2tzTHJJdzU5?=
- =?utf-8?B?MnFqT3VFSG9FanZMQk9ySVVDYmNRTWM5Y09hYmMvNk5vRkFQTmNtSzZLSHVu?=
- =?utf-8?B?ZGluNC83Tkorc2RhMm5YWkZtMjViRElETDUyb2dudzR2UTJuQW1FWjJxcmdk?=
- =?utf-8?B?TzZ2SGFBeG5nVmZnelZRS2FLOTRRR08zczEzZ1Mydk96V1kvc3M2U2NtbUho?=
- =?utf-8?B?TmM4T1lVdEJkRDJNais5ZENreC9MN2puR01odUtPUGp0MmhaMVF4dExheHU0?=
- =?utf-8?B?WUNtWlBGVlN2cXlpMnB6cGpTbU03TjFOeHN0Q0VKSW1yUG9xVUg1Q0lYbDNQ?=
- =?utf-8?B?ODkvQkZ3TzhtRk5qYnlsVzhmekVMZDZsUDVVNXBiZVVWZ1RzNW1YQlQ3MGQ5?=
- =?utf-8?B?NGdqRXh5K1g0VW1mSkFQc0ljTFV1QVRVYzZFL2lDTFlBdzhxTTNoZXRDTEFX?=
- =?utf-8?B?d1crYTJyTEVMM0d3V1J3NldPMWFTYm5VM2xabzZCd3hGaUdKeU4vRENZUDNR?=
- =?utf-8?B?WEZJY3dBdlJ1eXVpeUJzVndsb2Q1QS9uZDRXTGdmSjAxQlJwb2tsR3Nld2Vs?=
- =?utf-8?B?Vno2bzRHWjBkUGpzTklCcFFsb0IrclZSYjRnUTVoTHEveHlhYVBCbnZPQjFj?=
- =?utf-8?B?TkpUb0JxdGRhU1lWUGhIYytocklBM3hHdTBkMHZFL29OV1l5eVdKYjRPNE16?=
- =?utf-8?B?ZmZSZTRWZEZHMVQ0S2hIVVF3RXQ5cWI4RGl1VG96MmIzMWhlaEQxRTJaL214?=
- =?utf-8?B?V2I3aDZheUlCbnNvaDc1dEpBVXA4Q3NOTWxQeitkR0xWeW9qZ212SWpDOXkv?=
- =?utf-8?B?UzU2R0tNbEF4Mlpobkhlek9YMkp6dVQxS3YzNlI3aVVPZFlBWDYyWUx6WlBO?=
- =?utf-8?B?bnU5amJuemhwZ3VWb0J1YisyeVZMSE5TQWtHSjVkSENRZFR3TkROWDVyT3Nm?=
- =?utf-8?B?VWRXMElLeCtzTUhkTklRdXZ1NzBKM1podytWTTRPV3NWZDVVRzU5Z0ZIVlJv?=
- =?utf-8?B?eXBwWVhQUG50a1Fwd0hrUHRQQVluc0NaaEtyL0ppQ29IbUQ0aWFicFlwVlVq?=
- =?utf-8?B?U3kwdG5rY0JNMDJIdk96NTlwbzZ6WXJCK0lYMjVWRDhTdlduYWNNZWJ2SEF5?=
- =?utf-8?B?d0dBamlxWkFwUCt2dlZCZ3hnRUNBSkxFWkdpRkg5OGhpaUEvSzltazZPZFhH?=
- =?utf-8?B?Ty83VmdrK2F1VEMxTE5velJobng4TkpxNDREK3N0SjdkdFQxYWUwVForczhv?=
- =?utf-8?B?NXdQK3JTeFdLWHdGMkplc01FUGJxMmlqTEFjY201U0ZZZEN6dFU2MHU0bjZt?=
- =?utf-8?B?UER3b0Y5UGdXQWdLYWYwYUlmdkZ4Rzl3S2lOM1BQWGdlREh3MERFVmpkV0tn?=
- =?utf-8?B?bjlEZGdMOG1meWdwc3dkRVAwTHFJdStuS01GWW9XS0xzbkZ2ZHczREM2OEFM?=
- =?utf-8?B?ZnNhRE1EU3RxaUp5K1gvZFA2UjYvRkJUOWRvYWtGT21aSTJ3N1A3ejZDak15?=
- =?utf-8?B?bEVwU3hWZVVrOEs1dmhINWk5a0NVZkJYOU1RT0g5NWxmQjlIZE5YL1kwUWUy?=
- =?utf-8?B?RzRINFozZGREd2NUY0UxaTBvWmMvbDhRWlBad0lXY0NGak92L1hHRFR4N1Zs?=
- =?utf-8?B?aXFlUVQvQTZYc1JUajBkelRMRUlsTnVXdFFVeUlvakdtZVA0R1Fxa1dua3RX?=
- =?utf-8?B?TWNObisxVVVoU3JJRmZEZUNvcS9yajJnS1ZHdTJyNnBiU1FBZ29RUVEyYzJM?=
- =?utf-8?B?ZjNHYmxRcVV2TFNjZWdjTXpHY3RFZjJqK1BJZjBCZVVlUDZURzBNMzk5TElX?=
- =?utf-8?B?ME5FanBnZENBWDhrbnNHaUtrQlRlcVdORytVOXpFL2wvRzA2Zy9FTEZUeGdD?=
- =?utf-8?B?N0IyWTVqUXJZRUoraWVKc2NQVVdROEQyZjYrMjJkb292dVdUeVBoOUxUbmNN?=
- =?utf-8?Q?Y4BBvYU5YNvgQgltf+1p0yUxPg61GdeSj8MMqGHvaFME?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad16d763-6edc-4a3b-2de4-08db8e75897a
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 07:46:07.4369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lq9owbYWAvd6beiuZRhz1EXVczpgVw3MjPpwPi6RJzrujSH8KdaWrQIvkYqpKN3V
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8428
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230726143736-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 18.07.23 um 13:16 schrieb Luc Ma:
-> From: Luc Ma <luc@sietium.com>
+On Wed, Jul 26, 2023 at 02:38:08PM -0400, Michael S. Tsirkin wrote:
+>On Wed, Jul 19, 2023 at 12:50:14AM +0000, Bobby Eshleman wrote:
+>> This commit adds a feature bit for virtio vsock to support datagrams.
+>>
+>> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+>> ---
+>>  include/uapi/linux/virtio_vsock.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+>> index 331be28b1d30..27b4b2b8bf13 100644
+>> --- a/include/uapi/linux/virtio_vsock.h
+>> +++ b/include/uapi/linux/virtio_vsock.h
+>> @@ -40,6 +40,7 @@
+>>
+>>  /* The feature bitmap for virtio vsock */
+>>  #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
+>> +#define VIRTIO_VSOCK_F_DGRAM		3	/* SOCK_DGRAM supported */
+>>
+>>  struct virtio_vsock_config {
+>>  	__le64 guest_cid;
 >
-> The kernel-doc for DMA-BUF statistics mentions /sys/kernel/dma-buf/buffers
-> but the correct path is /sys/kernel/dmabuf/buffers instead.
->
-> Signed-off-by: Luc Ma <luc@sietium.com>
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+>pls do not add interface without first getting it accepted in the
+>virtio spec.
 
-Reviewed and pushed to drm-misc-next.
+Yep, fortunatelly this series is still RFC.
+I think by now we've seen that the implementation is doable, so we
+should discuss the changes to the specification ASAP. Then we can
+merge the series.
+
+@Bobby can you start the discussion about spec changes?
 
 Thanks,
-Christian.
-
-> ---
->   drivers/dma-buf/dma-buf-sysfs-stats.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/dma-buf/dma-buf-sysfs-stats.c b/drivers/dma-buf/dma-buf-sysfs-stats.c
-> index 6cfbbf0720bd..b5b62e40ccc1 100644
-> --- a/drivers/dma-buf/dma-buf-sysfs-stats.c
-> +++ b/drivers/dma-buf/dma-buf-sysfs-stats.c
-> @@ -33,7 +33,7 @@
->    * into their address space. This necessitated the creation of the DMA-BUF sysfs
->    * statistics interface to provide per-buffer information on production systems.
->    *
-> - * The interface at ``/sys/kernel/dma-buf/buffers`` exposes information about
-> + * The interface at ``/sys/kernel/dmabuf/buffers`` exposes information about
->    * every DMA-BUF when ``CONFIG_DMABUF_SYSFS_STATS`` is enabled.
->    *
->    * The following stats are exposed by the interface:
+Stefano
 
