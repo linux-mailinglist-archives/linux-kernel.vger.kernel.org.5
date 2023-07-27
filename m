@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F310B7643A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FA47643A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbjG0CCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 22:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36506 "EHLO
+        id S230271AbjG0CC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 22:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjG0CCT (ORCPT
+        with ESMTP id S229982AbjG0CCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:02:19 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5FA9E
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:02:13 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bbdc05a93bso1541635ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:02:13 -0700 (PDT)
+        Wed, 26 Jul 2023 22:02:21 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD8CCE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:02:16 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8b2886364so2893565ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690423333; x=1691028133;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UkfxuI1Afe6clKYZSZbRtLRAuJsgjCF95/9Z0266VFg=;
-        b=JrDvtHHv/eA9Poq4CK6QbxvJJ1AnvGlazNBpzdenxYaliF75E6Zno3D+MjjymQm3xv
-         A2SnNJ2UCs6R6Al+NQ8SVrhs6WFmOC7vt772TzUjK7+fAwYAv8lN6bQ0bxL2neo0Z2eh
-         c/Aqdsc4/lYfMEVt1kZCGbXWnT1G0Pc252CyuLIQ1LVZQLDJbyI6KcrI8TZwwffcv4CW
-         dM7DreUjgBM2c/52gJG7dB4C71ImJF1Z6qWEbWDO0Vj/nU+wt5ewkHvzSDmoYUa+Ec9j
-         O4RrWQ1lMyX9IXXP70UawUj4C6oOYKggMB/apYnCIQe6qNGBlLlrBgPUJ9oo2tY8AVa0
-         +5Kg==
+        d=gmail.com; s=20221208; t=1690423336; x=1691028136;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7JvH6fCyOwmUpJlih9kGPQ82FswQKyJELuqHpVpnDY4=;
+        b=i7gBSpnqZQMeQLBB3IgdhZMBG7JEgU+m3wyIXdUHG3iCYDl66WvgCrSqmUpC5Njy3W
+         dY+PJkHGbPQDbcb24H/c4beeMOYfCENgG3YPBbnTEeW4ru+hluahmqoSBW/28IsDhh4p
+         4e5sbagKQJDa0OmqfHfRqb2hm8iVcZAfUi6zvIsB+nIpI5wSwBzb9KZ+OP+izfp1SAaO
+         otpMwFXFToqJa96GG006XR0IvD+ZrQv2lY7mFv4AVHUdMeVcaicJ6A5/HvNi3Qt4uUHl
+         TCwg1x3lWUb/uJUxKqhy2EyFqe6wpkiOEbFmvCJpeDCiq4aTPYD8omlkGE4DRKAqv9Td
+         DOZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690423333; x=1691028133;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UkfxuI1Afe6clKYZSZbRtLRAuJsgjCF95/9Z0266VFg=;
-        b=ZP2/b9mc+NlOzeFESjCYRhlSISJETpYM5qZSdtWz8OZBy01Li4csLq2cYcOC27Cd2m
-         0WVDt+Gn94DZhdwT7DvEpOSk6afn5LatYMdMuSTDCig/vnOzSONKIcqT1VZMJzplUzZ3
-         XYht5L4KgXFa4FBpIW0ec4sRX+N5aJEpdN04PDgq8jdC9dE/3qGaOJENbaSdnwqi3VVw
-         JezfC8wNKNdOvtPSUy6m7u6ODbkZZP45p0WjIeuGRB/h+Gdfy1dzxfkTjTC7b18dhD26
-         eCDHtGt8ux6RZW2MA+723vvRKgZDUckdUwNfuFdaLKWO6wdcavKNO5I2Q7dhzrnd2uOd
-         iCOw==
-X-Gm-Message-State: ABy/qLZCFUzhfoVY5vd1ATs/SATXe3hePfgwkfvAhs/3FzOG/CX94FVR
-        Z6zABcblneK7VZiribYSLoSlmvDvIFT8aw==
-X-Google-Smtp-Source: APBJJlGutoKSLSjfCipLWXHgTpSapDv2FLGbjdBvF0v4MKKT4wzaKIPw1tny4/KdyPAlrA2ZPRJT8w==
-X-Received: by 2002:a17:902:8216:b0:1b8:9b17:f63d with SMTP id x22-20020a170902821600b001b89b17f63dmr2752321pln.23.1690423332627;
-        Wed, 26 Jul 2023 19:02:12 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690423336; x=1691028136;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7JvH6fCyOwmUpJlih9kGPQ82FswQKyJELuqHpVpnDY4=;
+        b=OYiZnSWcNYEVhz4yexGIX5nJBg/YM3tKqG7OHU//GpBpoQxnwuPIBvhx9ohJQTQAFg
+         IzcCmYVf+Q0sZdqlPwnBuOYOk2QWw2aqRokUhXJvb3deCabLQo8/QjYQP+dAO/9FnfaW
+         ZZ0ns0CR2k3u4KPlcl713gz5gnKlaeXBC+Upu4i7T4IN/fFf98eVnWDWxnpirTDr6oR+
+         CHksjheej++gAVJuFwOeOmAB7tUN4AGAZZSt8xzLerhLXPQ9pbggCwWmgbkJ8vQPMlst
+         rm7vzJKZezMq8WuUsiQWDVk/q9NO2/4AH9ZaO9xsr7MIf/0FLiYdQF76pYB/DGmKi0jU
+         Fjdg==
+X-Gm-Message-State: ABy/qLahFDuXG3WL5WOxNVkWgm/FGLqy/wyJDlbiIdQhvFxYD7zyoaoB
+        a9xZBSdxetKdh7P2qS4LSsO0cvHbmi9BSg==
+X-Google-Smtp-Source: APBJJlEYYacde0cKtvxPkhHMjKZE1q1RLQsFu6oYo+pe8taW61QdhtOFkkGW0JdkvxBqLUMdKWhGOg==
+X-Received: by 2002:a17:902:7616:b0:1b9:f7dc:b4f6 with SMTP id k22-20020a170902761600b001b9f7dcb4f6mr2750054pll.44.1690423335906;
+        Wed, 26 Jul 2023 19:02:15 -0700 (PDT)
 Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001adf6b21c77sm230580plx.107.2023.07.26.19.02.11
+        by smtp.gmail.com with ESMTPSA id u6-20020a17090282c600b001a1b66af22fsm234921plz.62.2023.07.26.19.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 19:02:12 -0700 (PDT)
+        Wed, 26 Jul 2023 19:02:15 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc:     Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH 0/6] bitmap: cleanup bitmap_*_region() implementation
-Date:   Wed, 26 Jul 2023 19:02:01 -0700
-Message-Id: <20230727020207.36314-1-yury.norov@gmail.com>
+Subject: [PATCH 1/6] bitmap: fix opencoded bitmap_allocate_region()
+Date:   Wed, 26 Jul 2023 19:02:02 -0700
+Message-Id: <20230727020207.36314-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230727020207.36314-1-yury.norov@gmail.com>
+References: <20230727020207.36314-1-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,26 +73,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bitmap_{allocate,find_free,release}_region() functions are implemented
-on top of _reg_op() machinery. It duplicates existing generic functionality
-with no benefits. In fact, generic alternatives may work even better
-because they optimized for small_const_nbits() case and overall very well
-optimized for performance and code generation.
+bitmap_find_region() opencodes bitmap_allocate_region(). Fix it.
 
-This series drops _reg_op() entirely.
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ lib/bitmap.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Yury Norov (6):
-  bitmap: fix opencoded bitmap_allocate_region()
-  bitmap: replace _reg_op(REG_OP_ALLOC) with bitmap_set()
-  bitmap: replace _reg_op(REG_OP_RELEASE) with bitmap_clear()
-  bitmap: replace _reg_op(REG_OP_ISFREE) with find_next_bit()
-  bitmap: drop _reg_op()
-  bitmap: move functions
-
- include/linux/bitmap.h |  65 ++++++++++++++++++-
- lib/bitmap.c           | 140 -----------------------------------------
- 2 files changed, 62 insertions(+), 143 deletions(-)
-
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index ddb31015e38a..0bed9d943d96 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -1314,12 +1314,10 @@ int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order)
+ {
+ 	unsigned int pos, end;		/* scans bitmap by regions of size order */
+ 
+-	for (pos = 0 ; (end = pos + (1U << order)) <= bits; pos = end) {
+-		if (!__reg_op(bitmap, pos, order, REG_OP_ISFREE))
+-			continue;
+-		__reg_op(bitmap, pos, order, REG_OP_ALLOC);
+-		return pos;
+-	}
++	for (pos = 0 ; (end = pos + (1U << order)) <= bits; pos = end)
++		if (!bitmap_allocate_region(bitmap, pos, order))
++			return pos;
++
+ 	return -ENOMEM;
+ }
+ EXPORT_SYMBOL(bitmap_find_free_region);
 -- 
 2.39.2
 
