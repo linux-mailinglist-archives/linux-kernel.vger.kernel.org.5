@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B2B765CEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBFA765CD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjG0UHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S232494AbjG0UDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjG0UHb (ORCPT
+        with ESMTP id S231304AbjG0UDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:07:31 -0400
-Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9601A1BC6;
-        Thu, 27 Jul 2023 13:07:27 -0700 (PDT)
-Received: from [192.168.1.109] (44.183.202.62.dynamic.cgnat.res.cust.swisscom.ch [62.202.183.44])
-        by mx.gpxsee.org (Postfix) with ESMTPSA id 5E01F2AC9;
-        Thu, 27 Jul 2023 21:57:20 +0200 (CEST)
-Message-ID: <af722fc4-8255-167b-a4a7-3268bb424627@gpxsee.org>
-Date:   Thu, 27 Jul 2023 21:58:22 +0200
+        Thu, 27 Jul 2023 16:03:33 -0400
+X-Greylist: delayed 101955 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Jul 2023 13:02:53 PDT
+Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8238::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A77C30E9;
+        Thu, 27 Jul 2023 13:02:53 -0700 (PDT)
+Received: from [2001:a61:6209:7f01:c80a:ff:fe00:19d] (helo=cs-wrt.lan.local); authenticated
+        by wp534.webpack.hosteurope.de running ExIM with esmtpa
+        id 1qP7CA-0005S7-M0; Thu, 27 Jul 2023 22:02:46 +0200
+From:   =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>
+To:     =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v2 2/2] dt-bindings: hwmon: add renesas,isl28022
+Date:   Thu, 27 Jul 2023 22:02:34 +0200
+Message-Id: <20230727200234.2245395-1-mail@carsten-spiess.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v8 1/2] Added Digiteq Automotive MGB4 driver
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
-References: <20230704131339.2177-1-tumic@gpxsee.org>
- <20230704131339.2177-2-tumic@gpxsee.org>
- <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
-From:   =?UTF-8?Q?Martin_T=c5=afma?= <tumic@gpxsee.org>
-In-Reply-To: <fd6517b1-1bb9-d54e-45c6-87765343f112@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690488173;57f17ea2;
+X-HE-SMSGID: 1qP7CA-0005S7-M0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26. 07. 23 11:14, Hans Verkuil wrote:
-> Hi Martin,
-> 
-> On 04/07/2023 15:13, tumic@gpxsee.org wrote:
->> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
->>
->> Digiteq Automotive MGB4 is a modular frame grabber PCIe card for automotive
->> video interfaces. As for now, two modules - FPD-Link and GMSL - are
->> available and supported by the driver. The card has two inputs and two
->> outputs (FPD-Link only).
->>
->> In addition to the video interfaces it also provides a trigger signal
->> interface and a MTD interface for FPGA firmware upload.
->>
->> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
->> ---
->>   MAINTAINERS                             |   7 +
->>   drivers/media/pci/Kconfig               |   1 +
->>   drivers/media/pci/Makefile              |   1 +
->>   drivers/media/pci/mgb4/Kconfig          |  17 +
->>   drivers/media/pci/mgb4/Makefile         |   6 +
->>   drivers/media/pci/mgb4/mgb4_cmt.c       | 244 +++++++
->>   drivers/media/pci/mgb4/mgb4_cmt.h       |  17 +
->>   drivers/media/pci/mgb4/mgb4_core.c      | 711 ++++++++++++++++++
->>   drivers/media/pci/mgb4/mgb4_core.h      |  72 ++
->>   drivers/media/pci/mgb4/mgb4_dma.c       | 123 ++++
->>   drivers/media/pci/mgb4/mgb4_dma.h       |  18 +
->>   drivers/media/pci/mgb4/mgb4_i2c.c       | 140 ++++
->>   drivers/media/pci/mgb4/mgb4_i2c.h       |  35 +
->>   drivers/media/pci/mgb4/mgb4_io.h        |  33 +
->>   drivers/media/pci/mgb4/mgb4_regs.c      |  30 +
->>   drivers/media/pci/mgb4/mgb4_regs.h      |  35 +
->>   drivers/media/pci/mgb4/mgb4_sysfs.h     |  18 +
->>   drivers/media/pci/mgb4/mgb4_sysfs_in.c  | 757 +++++++++++++++++++
->>   drivers/media/pci/mgb4/mgb4_sysfs_out.c | 700 ++++++++++++++++++
->>   drivers/media/pci/mgb4/mgb4_sysfs_pci.c |  71 ++
->>   drivers/media/pci/mgb4/mgb4_trigger.c   | 208 ++++++
->>   drivers/media/pci/mgb4/mgb4_trigger.h   |   8 +
->>   drivers/media/pci/mgb4/mgb4_vin.c       | 930 ++++++++++++++++++++++++
->>   drivers/media/pci/mgb4/mgb4_vin.h       |  69 ++
->>   drivers/media/pci/mgb4/mgb4_vout.c      | 594 +++++++++++++++
->>   drivers/media/pci/mgb4/mgb4_vout.h      |  65 ++
->>   26 files changed, 4910 insertions(+)
->>   create mode 100644 drivers/media/pci/mgb4/Kconfig
->>   create mode 100644 drivers/media/pci/mgb4/Makefile
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_cmt.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_core.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_dma.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_i2c.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_io.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_regs.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_in.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_out.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_sysfs_pci.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_trigger.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_vin.h
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.c
->>   create mode 100644 drivers/media/pci/mgb4/mgb4_vout.h
->>
-> 
-> When I build with: make W=1 KCFLAGS=-Wmaybe-uninitialized
-> 
-> I get this warning:
-> 
-> drivers/media/pci/mgb4/mgb4_vout.c: In function 'mgb4_vout_create':
-> drivers/media/pci/mgb4/mgb4_vout.c:473:27: warning: variable 'video' set but not used [-Wunused-but-set-variable]
->    473 |         struct mgb4_regs *video;
->        |                           ^~~~~
-> 
-> Regards,
-> 
-> 	Hans
+Add dt-bindings for Renesas ISL28022 power monitor.
 
-Hi,
-Thanks for pointing this out. I was making some minor code cleanup when 
-creating the v8 patch and probably missed that. I will fix it in v9.
+Signed-off-by: Carsten Spieß <mail@carsten-spiess.de>
+---
+ .../bindings/hwmon/renesas,isl28022.yaml      | 65 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
 
-M.
+diff --git a/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
+new file mode 100644
+index 000000000000..1e0971287941
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/renesas,isl28022.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Renesas ISL28022 power monitor
++
++maintainers:
++  - Carsten Spieß <mail@carsten-spiess.de>
++
++description: |
++  The ISL28022 is a power monitor with I2C interface. The device monitors
++  voltage, current via shunt resistor and calculated power.
++
++  Datasheets:
++    https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
++
++properties:
++  compatible:
++    enum:
++      - renesas,isl28022
++
++  reg:
++    maxItems: 1
++
++  shunt-resistor-micro-ohms:
++    description: |
++      Shunt resistor value in micro-Ohm
++    minimum: 800
++    default: 10000
++
++  renesas,shunt-range-microvolt:
++    description: |
++      Maximal shunt voltage range of +/- 40 mV, 80 mV, 160 mV or 320 mV
++    default: 320000
++    enum: [40000, 80000, 160000, 320000]
++
++  renesas,average-samples:
++    description: |
++      Number of samples to be used to report voltage, current and power values.
++    default: 1
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [1, 2, 4, 8, 16, 32, 64, 128]
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        power-monitor@40 {
++            compatible = "renesas,isl28022";
++            reg = <0x40>;
++            shunt-resistor-micro-ohms = <8000>;
++            renesas,shunt-range-microvolt = <40000>;
++            renesas,average-samples = <128>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b02e3b991676..23b8e8183ece 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11069,6 +11069,7 @@ ISL28022 HARDWARE MONITORING DRIVER
+ M:	Carsten Spieß <mail@carsten-spiess.de>
+ L:	linux-hwmon@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
+ F:	Documentation/hwmon/isl28022.rst
+ F:	drivers/hwmon/isl28022.c
+ 
+-- 
+2.34.1
+
