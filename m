@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 870FE7659D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7EC765A18
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjG0RRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
+        id S229449AbjG0RVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjG0RRs (ORCPT
+        with ESMTP id S231786AbjG0RVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:17:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CE997;
-        Thu, 27 Jul 2023 10:17:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 27 Jul 2023 13:21:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732613C00
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:21:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CCF5621A8F;
-        Thu, 27 Jul 2023 17:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690478265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=niENjOE1icbcpi7kZRifQxcvaZR6brVmI8ZmmVizlZU=;
-        b=QV4PKhlv07RzPWFz4H11F+xa1G/rYCNmHsZTYzVwzbPVhlPTIGea2Akt5jl/3I0+tMCvQU
-        rwg6AFeUJWdFauIz4nAA/sY9Js5OsX/Ezb5NefJxxH2f3Nk7uT5RrV5/1+AeyHQn1BgILs
-        D7C+SDb4nHyr9AAKr4bTFDPyxIKvRtg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5B2F13902;
-        Thu, 27 Jul 2023 17:17:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nDPOJbmmwmS5YwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 27 Jul 2023 17:17:45 +0000
-Date:   Thu, 27 Jul 2023 19:17:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, wuyun.abel@bytedance.com,
-        robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 0/5] mm: Select victim memcg using BPF_OOM_POLICY
-Message-ID: <ZMKmuLqyjePWESux@dhcp22.suse.cz>
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
- <CAADnVQLdu_6aJH+0wwpKB146HvxkhvL-uRGAqSPZ8jDMAMqX=A@mail.gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C32C61F0D
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:21:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3A4C433C8;
+        Thu, 27 Jul 2023 17:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690478471;
+        bh=1siF8FEzIm/u9nbl1sknyH/SiSYpK9pi4eRex4u1zSc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ufU3DUXJT2VB/NpAfG2FWTTFW+/OmMFFUxDSz+qZgzAD9FBJ7NugNg2dN+YmO/3HB
+         pVa+tG3mh4DgcW0i+KlbnF1Hfeiyxmx7aIdxD5P5SEiFwwJJdDP9TEnI7eBTAiS1Of
+         YELuN9s4gUI63hao133fWBeTxa0xKdFNSKzPbVJc=
+Date:   Thu, 27 Jul 2023 19:21:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <2023072752-stem-pupil-76ab@gregkh>
+References: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
+ <2023072729-sensitive-spyglass-ec96@gregkh>
+ <ZMKDeyGaPQHm6/pr@alolivei-thinkpadt480s.gru.csb>
+ <2023072741-mankind-ethics-b95b@gregkh>
+ <ZMKkgItqf8r8BcRB@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLdu_6aJH+0wwpKB146HvxkhvL-uRGAqSPZ8jDMAMqX=A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZMKkgItqf8r8BcRB@alolivei-thinkpadt480s.gru.csb>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 27-07-23 08:57:03, Alexei Starovoitov wrote:
-> On Thu, Jul 27, 2023 at 4:45 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > On 27/07/2023 08:36, Chuyi Zhou wrote:
-> > > This patchset tries to add a new bpf prog type and use it to select
-> > > a victim memcg when global OOM is invoked. The mainly motivation is
-> > > the need to customizable OOM victim selection functionality so that
-> > > we can protect more important app from OOM killer.
-> > >
-> >
-> > It's a nice use case, but at a high level, the approach pursued here
-> > is, as I understand it, discouraged for new BPF program development.
-> > Specifically, adding a new BPF program type with semantics like this
-> > is not preferred. Instead, can you look at using something like
-> >
-> > - using "fmod_ret" instead of a new program type
-> > - use BPF kfuncs instead of helpers.
-> > - add selftests in tools/testing/selftests/bpf not samples.
+On Thu, Jul 27, 2023 at 02:08:16PM -0300, Alexon Oliveira wrote:
+> On Thu, Jul 27, 2023 at 05:05:03PM +0200, Greg KH wrote:
+> > You resolved one warning by replacing it with a different one, that's
+> > not good :(
 > 
-> +1 to what Alan said above and below.
-> 
-> Also as Michal said there needs to be a design doc with pros and cons.
-> We see far too often that people attempt to use BPF in places where it
-> shouldn't be.
-> If programmability is not strictly necessary then BPF is not a good fit.
+> Well, honestly, I couldn't spot any new issue caused by this patch. At least it was not reported by the checkpatch.pl. The ones that are still showing up were already there. But, to move on, if you think it's more productive, I can fix all warnings and checks reported by the checkpatch.pl and send them over in only one patch. Is it that feasible?
 
-To be completely honest I am not sure whether BPF is the right fit
-myself. It is definitely a path to be explored but maybe we will learn
-not the proper one in the end. The primary reason for considering it
-though is that there is endless (+1) different policies how to select a
-victim to kill on OOM. So having an interface to hook into and make that
-decision sounds very promissing. This might be something very static
-like EXPORT_SYMBOL that a kernel module can hook into or a more broader
-BPF callback that could be more generic and therefore allow for easier
-to define policy AFAIU.
--- 
-Michal Hocko
-SUSE Labs
+I would have thought you would get a "line is too long" warning, that
+didn't happen?
+
+Anyway, no, you can't send a "fix all the issues at once" patch, sorry,
+if you do that you will get a message from my patch bot that says:
+
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
+
+So please break it up into logical changes.
+
+thanks,
+
+greg k-h
