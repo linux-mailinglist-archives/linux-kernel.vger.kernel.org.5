@@ -2,211 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1879D764557
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073EB76455B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjG0FOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S231608AbjG0FSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbjG0FOg (ORCPT
+        with ESMTP id S230110AbjG0FSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:14:36 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3425B271B;
-        Wed, 26 Jul 2023 22:14:30 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B4741F383;
-        Thu, 27 Jul 2023 05:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690434868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XTdHiNQcaCZE78fGeClmYN0Gm2fXFHfS4a+GD564Hu0=;
-        b=myHTM2Rhzyxpy1H5Kex389WmVZshtWc7iSQ99qhW/mjupBGZA033+zb/Qt5y73J2sJMnpl
-        Zi5b1iHln/QgIHVy/3SolO0gT1NvjTmnBoMOq5ph7pF7OvjhNucaNqJjO5RsnvVBrI289S
-        cxWQrm46qyRlmcOOV8faN7rKzDg0SWY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B287138E5;
-        Thu, 27 Jul 2023 05:14:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id v2g3ATT9wWQ6eAAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 27 Jul 2023 05:14:28 +0000
-Message-ID: <3d363767-3960-7ed9-8dce-c46fa5445b51@suse.com>
-Date:   Thu, 27 Jul 2023 07:14:27 +0200
+        Thu, 27 Jul 2023 01:18:11 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526EDBA;
+        Wed, 26 Jul 2023 22:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690435088; x=1721971088;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=hlRyos7jpQu00uL4l7M1q/UCcoJbtHQoqg/Haspscvg=;
+  b=Xe1QrzXKggStOxda4iyJfvZar+LsnJYDJQ25xiI16sZiMZ/R89tYh0W9
+   pS/rH5srqZkV6N6qhYl6JGKUPNGHyw60GusFxkmvPLHuX2D4gkH+nXjYN
+   bxs/xd8b3EC7qAbAMrnkzyDrpKaksfUXjyO4QbfbkVvLfqUteRQvM/9gn
+   SAsIAjDy3A/cFjSYS8QI1ZBKsDwO98Q5uz5LRuTtyVGN1ZQE7U44p3iPn
+   CcjWOKnZMkPyZQOU33Oxxx5DEeVPkkmh1zKxIhLkcQRn0lquggg35+w98
+   NM4jLkBkWqnJQSfIRcVEprCy8e8bLjWVidRoLbFubetJn0ygIzFZ9h09n
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="434484031"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="434484031"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:18:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="900727741"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="900727741"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 26 Jul 2023 22:16:48 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 22:16:47 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 22:16:47 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 22:16:47 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 22:16:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HJbtg5sBK3u7tVBZLHAtkedldDnu+atCyVn2cFUPcJ7FE1U9z+jYRMgUu/W2AOQdQPQbEMEkAkuiTLAnQtV9odV5j/JQgKyzKViNsxmZaPTd9gxmy4DWemhZHqhtehKXRNfyNKytmEXbvC8FaJxEaItGVjp6XirZN9aaWrch07oyYSjxi5ZDbrII/TT2H1VvOD7rIPjEUt/98EHLYhS6PZSD9DyYlj2YmzGs2jrKxnJZ9+WTdhZorErjBWZbOC2prRnanPg3Shs5O8EYaoQF+5AP+X/XDEFJZ9zgg1KQMqyNyQLVJ3eQCRfyxCKXq8J3quiH3MpDEYmQmzL0FdfOXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ea2Rwct9wWvFGFzpoIK5jUjr2nbpp5ejDiEZzs220nU=;
+ b=iVLJAIL89IaUl4KMUC0Rkc32MsAtRDR/Bsn4qNAkB5MUfVmh5SAtbj5qGguFtScKonLK/qOljeTfqcczC+2W0NF8mFkAr5WNy5GNVkKpNzchBaunuSHXej713SpDTg80eCbOep1//11COiMj5u1xjImcKXzy3GGVOQU7vDiwoFXmCuSSpNM75RL27JNry9436vrlLLqrPve3k4sW/MQYLhUYRLPEvb/cTWoWA4UtU9Vgb2E5cW2ETA+V7PXADn7eZ/Am60fLd6RMX+qVoGDVWcPSjyE+tgj762GhMnpcbR5f6nGRH6S/mRuuuonmGBsBDnA8Z7zu6U4L2AYV7jqtGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11)
+ by SN7PR11MB6996.namprd11.prod.outlook.com (2603:10b6:806:2af::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.28; Thu, 27 Jul
+ 2023 05:16:45 +0000
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::2803:94a7:314c:3254]) by PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::2803:94a7:314c:3254%7]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 05:16:44 +0000
+Date:   Thu, 27 Jul 2023 13:16:36 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <peterz@infradead.org>,
+        <john.allen@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rick.p.edgecombe@intel.com>,
+        <binbin.wu@linux.intel.com>
+Subject: Re: [PATCH v4 13/20] KVM:VMX: Emulate read and write to CET MSRs
+Message-ID: <ZMH9tIXfPk0dl7ye@chao-email>
+References: <20230721030352.72414-1-weijiang.yang@intel.com>
+ <20230721030352.72414-14-weijiang.yang@intel.com>
+ <ZMDT/r4sEfMj5Bmu@chao-email>
+ <3d5fdd07-563c-6841-a867-88369c4dbb36@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <3d5fdd07-563c-6841-a867-88369c4dbb36@intel.com>
+X-ClientProxiedBy: SA0PR11CA0004.namprd11.prod.outlook.com
+ (2603:10b6:806:d3::9) To PH8PR11MB6780.namprd11.prod.outlook.com
+ (2603:10b6:510:1cb::11)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] x86/paravirt: Fix tlb_remove_table function callback
- prototype warning
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230726231139.never.601-kees@kernel.org>
-From:   Juergen Gross <jgross@suse.com>
-In-Reply-To: <20230726231139.never.601-kees@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------BLDac3cN9XMDOl1400k3wyYK"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6780:EE_|SN7PR11MB6996:EE_
+X-MS-Office365-Filtering-Correlation-Id: f34772a5-14b3-4e82-08df-08db8e60ab25
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FwePd+ZhxzlQHWIQM0XQK2D0s+ft1LZd+ujXGrkZ92JBxtKlcEsDdPshjDasJtA6B0vdYiMeFMtSrna54lBhE4SGcghALoaJRmM9kKe9UpGUEchZJHbPGrTSiY49svl3E36u+iu+plebtMrj887i3aZJihRTsbbgXiy2c5Q56+a6eiuExyPnIXZgoC61KZDHMspzO7k5Fymv1w4ie80UiSTqJNOdjOA+3phFrZGyY/t2uKH/9Sh6pvT7ksYHGMYPTq90AljHrblo8wViXqqVdclZjtMBDI8QC7Si4XSnxMCHGThu08fCOyOCbV6YbWYAl04b2SXNvQ+lqpaom/H9wiT4m5cfUcKyhxt3vlLd3nMDZo6JvFgmhDiIxKomQ/PKP7QAP0VJ4xrXfb7kJx0goAj0bSdgDu4Nx9kam3L6YkIQYwuvjk2J54lh41MTEAYe02dvhjEPv1FHEkbCjggESrxpd2e2YH1QfOpnMkYuIikRd9tawc1bQqvi8ONF8kzmg7znbClRdzEpYbTq44+EtzGhlvw3VkE1o5CZB8kLbndWgdLcYDCmzPhNu3iV6p+M
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(366004)(136003)(39860400002)(346002)(396003)(376002)(451199021)(5660300002)(8936002)(41300700001)(26005)(6862004)(6506007)(8676002)(186003)(4326008)(6636002)(316002)(33716001)(66946007)(66556008)(66476007)(86362001)(38100700002)(44832011)(6666004)(6512007)(9686003)(6486002)(82960400001)(2906002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZTA4ROTzagDUZKPVywaXd0a8KCGc+eHcaQhG4ApAFV1bNgccuK4TLcFm6UEJ?=
+ =?us-ascii?Q?TUdBWl1h6hDX1P77mHsOfhM3qg6x5s1Q/KvOqsSWief0VMzbh+I2ZvFVShW2?=
+ =?us-ascii?Q?atR+0XvQ2g8P5/y/scwv9n5kJDid/5edra4EcoFnNJR4LQ9mMf+QS1Sb+opW?=
+ =?us-ascii?Q?d/Gnc59u1zi33daALDpyi6v2vZzd3k/Krj469hF1+qPd7pd4QbxIyu6K1lWY?=
+ =?us-ascii?Q?pdgrgyv+CZZniO+gT0Qxr1kqZ9Dy0SibXXce+WEp18ZW12c5VVj8kGI46LV8?=
+ =?us-ascii?Q?lcJuDR+m/FxmitfZINRYzpi04lunUCy4vtotXQbdYMmBkZcCqgomgQ0BPful?=
+ =?us-ascii?Q?Ed2+VNK8VGY+Ip5jyDGoSMoHUC2LC6sJOp0QvGv1J7PbisIMTdyiGp9ir7C9?=
+ =?us-ascii?Q?vOZcXH6cbQ6NXIxfbHNH8aVFcV5mz8sUk9ypScattysgnutL4abilJX4FMCv?=
+ =?us-ascii?Q?Z+CvBffiKUL8i+SI7d3d9wEJ6nFUKKPsngSK82kaUK6r5S3Bs2eWKcj2t7xL?=
+ =?us-ascii?Q?eaaUZh/odrdJUiJUb6qwZyPcJp404pFApD6f5cH8INdeyo5i6yfKeGaSLjFG?=
+ =?us-ascii?Q?IMGOicW3x+B/y9n0RZtc0ApPy5ydFLCnVfc98xY6CZw6cjtKcHdUOH9/7o6g?=
+ =?us-ascii?Q?gtkpJvT6+i9EUIAWUCUfRk/d8xc9W30wYVkse2j2KdvaFNIWgsct96FZ9HI6?=
+ =?us-ascii?Q?sUuWJxhfOXVFtQhD0CqmmZtnUXtGaqUwNIJcnCbEK8irrhPkLMVovZ2N43+g?=
+ =?us-ascii?Q?G1j9Mqzcxh77Pe1cdsGV4tz/tLfJQ0Z+VaUCkCuNuPnVsH9m/aeZZGmk+agw?=
+ =?us-ascii?Q?/cAa4ked9Sj2yI1OYIYKa5SS4eK/cVPCTSW3h9d2RLBGzQ8sV6PGg8gzBSfF?=
+ =?us-ascii?Q?BwCXOb4152CCSjviihGD2AoBFkXUhvDlId+UtmUBTPzuXAPfLO8DBkyaxiZ1?=
+ =?us-ascii?Q?Kibi15IfRTClk4qQwbK+4FpT1b2BkFV/604nhIxKA0c4k87WBtGFZDn0U1QC?=
+ =?us-ascii?Q?0KWM5DMqf+s3Ag/exE83I6gcGHDfZpb4WhkBN5Ebrp6YkMQC1twEgPx2mIZy?=
+ =?us-ascii?Q?y5OoPVXK4tEiZpbH0GlR0fR0rknwdY1ckfNMpxDY+tGZQO65zuBDCua7Fg9g?=
+ =?us-ascii?Q?TambJY2oCwQcj00KspBPsIKpIzOfHUOqxHqtwNz07iTtE/G+YJuw/tTIV+3w?=
+ =?us-ascii?Q?cZiPiL3ovO8yiTAFR/eZgxecD2uV3bCEGvmabN4H3lkGllofnSQB0O6O0Yxm?=
+ =?us-ascii?Q?yUG+Rpx+wAga+rOO4FdJBSAQCjmER+lx0W1/RsPXIbRG+4BeBlmev5KDHCyA?=
+ =?us-ascii?Q?mTrz1b1m+DDf1BYDnjGqBWd7SY9mPMwv3hGxxTn7/6IH27zYUImKHl6VGbl+?=
+ =?us-ascii?Q?8vwbi1ngGhKVD06nyZjio3wkYBSMfsTyGfRY9hW7K9v0Sw0AR31suWDfQgvQ?=
+ =?us-ascii?Q?8lf8Wxd247KeBKwhvj2+pPpnrW45rfCzMvqNi2BJ4WAqIzy2mrbitYFCInc5?=
+ =?us-ascii?Q?4O1tLjj8oC+Mo90J8RxfEOJS7KNmd9eEFJVICQugZqk7XV9llRHKjE4wQnGc?=
+ =?us-ascii?Q?0aa+ovXsZ527GDqpS44YwnYO/Wpqvjg49vGkFUXd?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f34772a5-14b3-4e82-08df-08db8e60ab25
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6780.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 05:16:44.3556
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Gfj3bIDNJH4yhmsV/Kar925IKPvXeleR28wT3MytJKGFhYz89uBcIZNfpBB6tvyH+HDIn8kTkpch7ri7x5a7ag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6996
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------BLDac3cN9XMDOl1400k3wyYK
-Content-Type: multipart/mixed; boundary="------------0MQ0mNlwNh22tS7tBfV8UZJW";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: kernel test robot <lkp@intel.com>, Peter Zijlstra <peterz@infradead.org>,
- Sami Tolvanen <samitolvanen@google.com>,
- Nathan Chancellor <nathan@kernel.org>, Ajay Kaher <akaher@vmware.com>,
- Alexey Makhalov <amakhalov@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
- x86@kernel.org, llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Message-ID: <3d363767-3960-7ed9-8dce-c46fa5445b51@suse.com>
-Subject: Re: [PATCH] x86/paravirt: Fix tlb_remove_table function callback
- prototype warning
-References: <20230726231139.never.601-kees@kernel.org>
-In-Reply-To: <20230726231139.never.601-kees@kernel.org>
+>> > +	case MSR_IA32_S_CET:
+>> > +	case MSR_KVM_GUEST_SSP:
+>> > +	case MSR_IA32_INT_SSP_TAB:
+>> > +		if (kvm_get_msr_common(vcpu, msr_info))
+>> > +			return 1;
+>> > +		if (msr_info->index == MSR_KVM_GUEST_SSP)
+>> > +			msr_info->data = vmcs_readl(GUEST_SSP);
+>> > +		else if (msr_info->index == MSR_IA32_S_CET)
+>> > +			msr_info->data = vmcs_readl(GUEST_S_CET);
+>> > +		else if (msr_info->index == MSR_IA32_INT_SSP_TAB)
+>> > +			msr_info->data = vmcs_readl(GUEST_INTR_SSP_TABLE);
+>> > +		break;
+>> > 	case MSR_IA32_DEBUGCTLMSR:
+>> > 		msr_info->data = vmcs_read64(GUEST_IA32_DEBUGCTL);
+>> > 		break;
+>> > @@ -2402,6 +2417,31 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>> > 		else
+>> > 			vmx->pt_desc.guest.addr_a[index / 2] = data;
+>> > 		break;
+>> > +#define VMX_CET_CONTROL_MASK		(~GENMASK_ULL(9, 6))
+>> bits9-6 are reserved for both intel and amd. Shouldn't this check be
+>> done in the common code?
+>
+>My thinking is, on AMD platform, bit 63:2 is anyway reserved since it doesn't
+>support IBT,
 
---------------0MQ0mNlwNh22tS7tBfV8UZJW
-Content-Type: multipart/mixed; boundary="------------PFivGCtLbQJW6OwguXOkv0PR"
+You can only say
 
---------------PFivGCtLbQJW6OwguXOkv0PR
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+	bits 5:2 and bits 63:10 are reserved since AMD doens't support IBT.
 
-T24gMjcuMDcuMjMgMDE6MTEsIEtlZXMgQ29vayB3cm90ZToNCj4gVW5kZXIgVz0xLCB0aGlz
-IHdhcm5pbmcgaXMgdmlzaWJsZSBpbiBDbGFuZyAxNiBhbmQgbmV3ZXI6DQo+IA0KPiBhcmNo
-L3g4Ni9rZXJuZWwvcGFyYXZpcnQuYzozMzc6NDogd2FybmluZzogY2FzdCBmcm9tICd2b2lk
-ICgqKShzdHJ1Y3QgbW11X2dhdGhlciAqLCBzdHJ1Y3QgcGFnZSAqKScgdG8gJ3ZvaWQgKCop
-KHN0cnVjdCBtbXVfZ2F0aGVyICosIHZvaWQgKiknIGNvbnZlcnRzIHRvIGluY29tcGF0aWJs
-ZSBmdW5jdGlvbiB0eXBlIFstV2Nhc3QtZnVuY3Rpb24tdHlwZS1zdHJpY3RdDQo+ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAodm9pZCAoKikoc3RydWN0IG1tdV9nYXRoZXIgKiwg
-dm9pZCAqKSl0bGJfcmVtb3ZlX3BhZ2UsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBefn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
-fn4NCj4gDQo+IEFkZCBhIGRpcmVjdCB3cmFwcGVyIGluc3RlYWQsIHdoaWNoIHdpbGwgbWFr
-ZSB0aGlzIHdhcm5pbmcgKGFuZA0KPiBwb3RlbnRpYWwgS0NGSSBmYWlsdXJlcykgZ28gYXdh
-eS4NCj4gDQo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNv
-bT4NCj4gQ2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIw
-MjMwNzI2MDMzMi5wSm50V1I2by1sa3BAaW50ZWwuY29tLw0KPiBDYzogSnVlcmdlbiBHcm9z
-cyA8amdyb3NzQHN1c2UuY29tPg0KPiBDYzogUGV0ZXIgWmlqbHN0cmEgPHBldGVyekBpbmZy
-YWRlYWQub3JnPg0KPiBDYzogU2FtaSBUb2x2YW5lbiA8c2FtaXRvbHZhbmVuQGdvb2dsZS5j
-b20+DQo+IENjOiBOYXRoYW4gQ2hhbmNlbGxvciA8bmF0aGFuQGtlcm5lbC5vcmc+DQo+IENj
-OiBBamF5IEthaGVyIDxha2FoZXJAdm13YXJlLmNvbT4NCj4gQ2M6IEFsZXhleSBNYWtoYWxv
-diA8YW1ha2hhbG92QHZtd2FyZS5jb20+DQo+IENjOiBWTXdhcmUgUFYtRHJpdmVycyBSZXZp
-ZXdlcnMgPHB2LWRyaXZlcnNAdm13YXJlLmNvbT4NCj4gQ2M6IFRob21hcyBHbGVpeG5lciA8
-dGdseEBsaW51dHJvbml4LmRlPg0KPiBDYzogSW5nbyBNb2xuYXIgPG1pbmdvQHJlZGhhdC5j
-b20+DQo+IENjOiBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFsaWVuOC5kZT4NCj4gQ2M6IERhdmUg
-SGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+IENjOiB2aXJ0dWFsaXph
-dGlvbkBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9yZw0KPiBTaWduZWQtb2ZmLWJ5OiBLZWVz
-IENvb2sgPGtlZXNjb29rQGNocm9taXVtLm9yZz4NCg0KUmV2aWV3ZWQtYnk6IEp1ZXJnZW4g
-R3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4NCg0KDQpKdWVyZ2VuDQoNCg==
---------------PFivGCtLbQJW6OwguXOkv0PR
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+bits 9:6 are reserved regardless of the support of IBT.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+>
+>so the checks in common code for AMD is enough, when the execution flow comes
+>here,
+>
+>it should be vmx, and need this additional check.
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+The checks against reserved bits are common for AMD and Intel:
 
---------------PFivGCtLbQJW6OwguXOkv0PR--
+1. if SHSTK is supported, bit1:0 are not reserved.
+2. if IBT is supported, bit5:2 and bit63:10 are not reserved
+3. bit9:6 are always reserved.
 
---------------0MQ0mNlwNh22tS7tBfV8UZJW--
+There is nothing specific to Intel.
 
---------------BLDac3cN9XMDOl1400k3wyYK
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+>
+>> 
+>> > +#define CET_LEG_BITMAP_BASE(data)	((data) >> 12)
+>> > +#define CET_EXCLUSIVE_BITS		(CET_SUPPRESS | CET_WAIT_ENDBR)
+>> > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+>> > +		return kvm_set_msr_common(vcpu, msr_info);
+>> this hunk can be dropped as well.
+>
+>In patch 16, these lines still need to be added back for PL{0,1,2}_SSP, so
+>would like keep it
 
------BEGIN PGP SIGNATURE-----
+If that's the case, better to move it to patch 16, where the change
+can be justified. And PL3_SSP should be removed anyway. and then
+"msr_index != MSR_IA32_PL3_SSP" check in the below code snippet in
+patch 16 can go away.
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTB/TMFAwAAAAAACgkQsN6d1ii/Ey9r
-AAf+PvD92wMKH9/SWZ0mRYuLdayuTWzEYugdwQkKjyGBR6O+Ff0ereIZOraCf+yFftG5iy2ntIvN
-VNZodzdG4qkn406WscGnoqBlHpwcZT9QeRP5EvGE2oxapmFPu5SwWN+JMNQ8rna/P947rTYZdh/h
-SeIshf18Mi8RGtNx7D29DAZPSr8fTayyd+uVSKMkkZEjDq7BQtZp99QWYmTPb/4Co8kXfebi+H2x
-dL0DE4PHvteYKAAxJZ85uBu41vt3c2lXLc7zBGkLkNAChIAUExlqSQYIzHWq0tCkgLvMkyAQt7Y3
-mNjsTE/NxFvDEwx8SLaubpBfzkP4DO+3At6jfqTaWg==
-=OMjt
------END PGP SIGNATURE-----
++		/*
++		 * Write to the base SSP MSRs should happen ahead of toggling
++		 * of IA32_S_CET.SH_STK_EN bit.
++		 */
++		if (msr_index != MSR_IA32_PL3_SSP && data) {
++			vmx_disable_write_intercept_sss_msr(vcpu);
++			wrmsrl(msr_index, data);
++		}
 
---------------BLDac3cN9XMDOl1400k3wyYK--
+
+>
+>here.
+>
+>> 
+>> > +		break;
+>> > +	case MSR_IA32_U_CET:
+>> > +	case MSR_IA32_S_CET:
+>> > +	case MSR_KVM_GUEST_SSP:
+>> > +	case MSR_IA32_INT_SSP_TAB:
+>> > +		if ((msr_index == MSR_IA32_U_CET ||
+>> > +		     msr_index == MSR_IA32_S_CET) &&
+>> > +		    ((data & ~VMX_CET_CONTROL_MASK) ||
+>> > +		     !IS_ALIGNED(CET_LEG_BITMAP_BASE(data), 4) ||
+>> > +		     (data & CET_EXCLUSIVE_BITS) == CET_EXCLUSIVE_BITS))
+>> > +			return 1;
+>> how about
+>> 
+>> 	case MSR_IA32_U_CET:
+>> 	case MSR_IA32_S_CET:
+>> 		if ((data & ~VMX_CET_CONTROL_MASK) || ...
+>> 			...
+>> 
+>> 	case MSR_KVM_GUEST_SSP:
+>> 	case MSR_IA32_INT_SSP_TAB:
+>
+>Do you mean to use "fallthrough"?
+
+Yes.
