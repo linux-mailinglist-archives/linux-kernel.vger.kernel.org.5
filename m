@@ -2,150 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D1764922
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2857276490B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbjG0HoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S231640AbjG0Hmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbjG0Hma (ORCPT
+        with ESMTP id S232852AbjG0HmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:42:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E41E4C09;
-        Thu, 27 Jul 2023 00:36:30 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R3unVG008044;
-        Thu, 27 Jul 2023 07:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=2n/MYezEYjuO1nj9ZfoKPomZfREMkLf5ekX0WIwT4h8=;
- b=JC641ezSWjDqpke2Cv+Jjmae6/oN2AKdu9j9UrhWETgJQ50AA1S7CZWx2ssAA/7Q6Zc5
- ID9ORnfd2iaArM6ZqNxIfaxYdIonRCrAmSXF+Fk9gMebw+zXGrJFGIslDHDcwQ4XpxlP
- ZY9mFle6maz54VXoorFN2G6lew00ek3YNdkkfFqkzkbxPFOjybchXnT93t0xYfIMsZsI
- zL45CTFo+46734n+qouqTE/zmGbQIQ/rxuUJ3u1vr5F1PpFx8X5ysA7EDIYZn6/EJ4rU
- DIYg8KdunvQHGhzV1xIfkIySkZnS5SnrqdWINBGZwkmSljiCi9guDaNIgXj4i0Htl15A Yg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2vq9js56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 07:35:32 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R7ZUSt018739
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 07:35:30 GMT
-Received: from [10.239.104.229] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 00:34:55 -0700
-Message-ID: <11643479-3411-381e-4708-7259f6a15668@quicinc.com>
-Date:   Thu, 27 Jul 2023 15:34:53 +0800
+        Thu, 27 Jul 2023 03:42:07 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECF37D99
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:35:58 -0700 (PDT)
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com [209.85.128.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 04CF4413C2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1690443320;
+        bh=RKMCuKHuWbZ4j6RU2sqbTQzBCOCRVev47qJw1PwY77A=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=fk+4zGp5psUPlUD8D/T6E8iXYt3LD6Fee9S2unm+l0Z0gwGrjUNO/8e08ihHP9h15
+         +04yWu0zMjpEtgagxyxaWddjIeQt8suVchJNLCKrOhgLhZDuyQDCrrWKSO/eaybT40
+         4rFYktXFQjaB+3279Kwc3SEbIGCGLPPAmUOrm1AxC8wJbfVVQbcM2soQUP1ZsEhFxk
+         F964iZHZBnXbJ2kdrCPg1JTUi55KkMe6bj6DElg4b2AGdrlpnDTRrByKZ1U37sb/6J
+         GWH519ykpWHh4nClAtSD07qHh8kSo46pKFadtscJC415cFAIB+Hx4FKLwZkRA3tm+k
+         Te6x39oDx713g==
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5844e92ee6bso7070227b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:35:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690443318; x=1691048118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RKMCuKHuWbZ4j6RU2sqbTQzBCOCRVev47qJw1PwY77A=;
+        b=dTmEptJpevd4gA3xJJ5KYJcrjhpzJIoslJXVFG6MnqrKjtyrrLsfesCl7pSgHy+7FY
+         bq0+KzZ37lwRBv4tv60IVWl8x5P1Z8EaC6b7xAr3sG1iZ3Umu6SaUdTLrL5eJvMYs0b6
+         d/uBbyTEScBAhjktzX8RpTbJ3+NmcYp/8I3YaFPwjO5l7hWG0hrxVZQpk6TesekGC820
+         Gwh/UaRuKX3fH0i2uKaEcj4UUsKjMsOTLukTsvzNO0XHMfA+tjfB3Yz9k/F8lLxtPYxE
+         DfkVzOo6oP9DmJ7wixd2epBYh/bMUAfIavlZdTRHPoyzwu08ieeUCz8ENlqk7l6PeumS
+         ElxA==
+X-Gm-Message-State: ABy/qLaxJUaiwBoqVNVAQZCFwxQOJoPXjN0mTxlig7FhFgJyP77lmirg
+        CFTv/2UOS8iomHMyxU++A9PUkTUuFuY//jKxtrAAALyybajeIeSHUl5APoAGvlaHkENw7rW2RhD
+        eJJfOCuN6nTWe4NHHRpw7IyQCI3Nrx/s43Tzby6r+WXWOdvW4/QFm0D/8MX6G7WeZYHA6
+X-Received: by 2002:a25:d2cf:0:b0:d11:254a:aa71 with SMTP id j198-20020a25d2cf000000b00d11254aaa71mr3956784ybg.44.1690443318636;
+        Thu, 27 Jul 2023 00:35:18 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGQWTziFIdSl949Gbo6TbYPQXIEHcrd2JhcuVf6LNgcgAxRgZpAWf52mIo9nPrwStZmnIE39ZAMchBSvFIOdWc=
+X-Received: by 2002:a25:d2cf:0:b0:d11:254a:aa71 with SMTP id
+ j198-20020a25d2cf000000b00d11254aaa71mr3956776ybg.44.1690443318423; Thu, 27
+ Jul 2023 00:35:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v13 1/2] Bluetooth: hci_qca: adjust qca btsoc type print
- expression
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
-        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <quic_bgodavar@quicinc.com>, <quic_hemantg@quicinc.com>
-References: <20230727044011.965205-1-quic_tjiang@quicinc.com>
- <20230727044011.965205-2-quic_tjiang@quicinc.com>
- <ZMIcZqpN-CBgCFS8@hovoldconsulting.com>
-From:   Tim Jiang <quic_tjiang@quicinc.com>
-In-Reply-To: <ZMIcZqpN-CBgCFS8@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NPA0S_RtKGLAK7Xvp7mhLVeEydqQckmI
-X-Proofpoint-GUID: NPA0S_RtKGLAK7Xvp7mhLVeEydqQckmI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0
- phishscore=0 suspectscore=0 clxscore=1015 mlxlogscore=999 spamscore=0
- mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307270066
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230726141026.307690-1-aleksandr.mikhalitsyn@canonical.com> <20230726141026.307690-4-aleksandr.mikhalitsyn@canonical.com>
+In-Reply-To: <20230726141026.307690-4-aleksandr.mikhalitsyn@canonical.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Thu, 27 Jul 2023 09:35:07 +0200
+Message-ID: <CAEivzxfj+E7uF9PD-6qLkLMLOUa494Oq=6TTQYT3NtQOdyZPBg@mail.gmail.com>
+Subject: Re: [PATCH v7 03/11] ceph: handle idmapped mounts in create_request_message()
+To:     xiubli@redhat.com
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/27/23 15:27, Johan Hovold wrote:
-> On Thu, Jul 27, 2023 at 12:40:10PM +0800, Tim Jiang wrote:
->> This patch make the print btsoc type expression more clearly.
->>
->> Signed-off-by: Tim Jiang <quic_tjiang@quicinc.com>
->> ---
->>   drivers/bluetooth/hci_qca.c | 31 +++++++++++++++++++++++++++----
->>   1 file changed, 27 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->> index 9b785c947d96..e11d47210e80 100644
->> --- a/drivers/bluetooth/hci_qca.c
->> +++ b/drivers/bluetooth/hci_qca.c
->> @@ -1748,6 +1748,7 @@ static int qca_setup(struct hci_uart *hu)
->>   	const char *firmware_name = qca_get_firmware_name(hu);
->>   	int ret;
->>   	struct qca_btsoc_version ver;
->> +	const char *soc_name;
->>   
->>   	ret = qca_check_speeds(hu);
->>   	if (ret)
->> @@ -1762,10 +1763,32 @@ static int qca_setup(struct hci_uart *hu)
->>   	 */
->>   	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
->>   
->> -	bt_dev_info(hdev, "setting up %s",
->> -		qca_is_wcn399x(soc_type) ? "wcn399x" :
->> -		(soc_type == QCA_WCN6750) ? "wcn6750" :
->> -		(soc_type == QCA_WCN6855) ? "wcn6855" : "ROME/QCA6390");
->> +	switch (soc_type) {
->> +	case QCA_AR3002:
->> +		soc_name = "ar300x";
->> +		break;
->> +	case QCA_ROME:
->> +		soc_name = "ROME";
->> +		break;
->> +	case QCA_QCA6390:
->> +		soc_name = "QCA6390";
->> +		break;
->> +	case QCA_WCN3990:
->> +	case QCA_WCN3991:
->> +	case QCA_WCN3998:
->> +		soc_name = "wcn399x";
->> +		break;
->> +	case QCA_WCN6750:
->> +		soc_name = "wcn6750";
->> +		break;
->> +	case QCA_WCN6855:
->> +		soc_name = "wcn6855";
->> +		break;
-> I still think the above should be sorted (alphabetically) as maintaining
-> these lists otherwise soon becomes harder than it should be. And similar
-> throughout the driver.
-[Tim] Hi Johan: I think we no need to sort it, we only add the new btsoc 
-name following the older one, for example , ar300x is the oldest , ROME 
-is new than ar300x, actually qca2066 is newer version chip than qca6390, 
-so I does not think we need to sort it.
+On Wed, Jul 26, 2023 at 4:10=E2=80=AFPM Alexander Mikhalitsyn
+<aleksandr.mikhalitsyn@canonical.com> wrote:
 >
->> +	default:
->> +		soc_name = "unknown soc";
->> +		break;
->> +	}
->> +	bt_dev_info(hdev, "setting up %s", soc_name);
-> Johan
+
+Oops, have just noticed. Author of this commit should be Christian Brauner.
+It's because I've squashed this commit into the previous one (which
+was the commit that updated struct ceph_mds_request_head).
+I'll fix that next time.
+
+> Inode operations that create a new filesystem object such as ->mknod,
+> ->create, ->mkdir() and others don't take a {g,u}id argument explicitly.
+> Instead the caller's fs{g,u}id is used for the {g,u}id of the new
+> filesystem object.
+>
+> In order to ensure that the correct {g,u}id is used map the caller's
+> fs{g,u}id for creation requests. This doesn't require complex changes.
+> It suffices to pass in the relevant idmapping recorded in the request
+> message. If this request message was triggered from an inode operation
+> that creates filesystem objects it will have passed down the relevant
+> idmaping. If this is a request message that was triggered from an inode
+> operation that doens't need to take idmappings into account the initial
+> idmapping is passed down which is an identity mapping.
+>
+> This change uses a new cephfs protocol extension CEPHFS_FEATURE_HAS_OWNER=
+_UIDGID
+> which adds two new fields (owner_{u,g}id) to the request head structure.
+> So, we need to ensure that MDS supports it otherwise we need to fail
+> any IO that comes through an idmapped mount because we can't process it
+> in a proper way. MDS server without such an extension will use caller_{u,=
+g}id
+> fields to set a new inode owner UID/GID which is incorrect because caller=
+_{u,g}id
+> values are unmapped. At the same time we can't map these fields with an
+> idmapping as it can break UID/GID-based permission checks logic on the
+> MDS side. This problem was described with a lot of details at [1], [2].
+>
+> [1] https://lore.kernel.org/lkml/CAEivzxfw1fHO2TFA4dx3u23ZKK6Q+EThfzuibrh=
+A3RKM=3DZOYLg@mail.gmail.com/
+> [2] https://lore.kernel.org/all/20220104140414.155198-3-brauner@kernel.or=
+g/
+>
+> Cc: Xiubo Li <xiubli@redhat.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: Ilya Dryomov <idryomov@gmail.com>
+> Cc: ceph-devel@vger.kernel.org
+> Co-Developed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
+om>
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com=
+>
+> ---
+> v7:
+>         - reworked to use two new fields for owner UID/GID (https://githu=
+b.com/ceph/ceph/pull/52575)
+> ---
+>  fs/ceph/mds_client.c         | 20 ++++++++++++++++++++
+>  fs/ceph/mds_client.h         |  5 ++++-
+>  include/linux/ceph/ceph_fs.h |  4 +++-
+>  3 files changed, 27 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> index c641ab046e98..ac095a95f3d0 100644
+> --- a/fs/ceph/mds_client.c
+> +++ b/fs/ceph/mds_client.c
+> @@ -2923,6 +2923,7 @@ static struct ceph_msg *create_request_message(stru=
+ct ceph_mds_session *session,
+>  {
+>         int mds =3D session->s_mds;
+>         struct ceph_mds_client *mdsc =3D session->s_mdsc;
+> +       struct ceph_client *cl =3D mdsc->fsc->client;
+>         struct ceph_msg *msg;
+>         struct ceph_mds_request_head_legacy *lhead;
+>         const char *path1 =3D NULL;
+> @@ -3028,6 +3029,16 @@ static struct ceph_msg *create_request_message(str=
+uct ceph_mds_session *session,
+>         lhead =3D find_legacy_request_head(msg->front.iov_base,
+>                                          session->s_con.peer_features);
+>
+> +       if ((req->r_mnt_idmap !=3D &nop_mnt_idmap) &&
+> +           !test_bit(CEPHFS_FEATURE_HAS_OWNER_UIDGID, &session->s_featur=
+es)) {
+> +               pr_err_ratelimited_client(cl,
+> +                       "idmapped mount is used and CEPHFS_FEATURE_HAS_OW=
+NER_UIDGID"
+> +                       " is not supported by MDS. Fail request with -EIO=
+.\n");
+> +
+> +               ret =3D -EIO;
+> +               goto out_err;
+> +       }
+> +
+>         /*
+>          * The ceph_mds_request_head_legacy didn't contain a version fiel=
+d, and
+>          * one was added when we moved the message version from 3->4.
+> @@ -3043,10 +3054,19 @@ static struct ceph_msg *create_request_message(st=
+ruct ceph_mds_session *session,
+>                 p =3D msg->front.iov_base + sizeof(*ohead);
+>         } else {
+>                 struct ceph_mds_request_head *nhead =3D msg->front.iov_ba=
+se;
+> +               kuid_t owner_fsuid;
+> +               kgid_t owner_fsgid;
+>
+>                 msg->hdr.version =3D cpu_to_le16(6);
+>                 nhead->version =3D cpu_to_le16(CEPH_MDS_REQUEST_HEAD_VERS=
+ION);
+>                 p =3D msg->front.iov_base + sizeof(*nhead);
+> +
+> +               owner_fsuid =3D from_vfsuid(req->r_mnt_idmap, &init_user_=
+ns,
+> +                                         VFSUIDT_INIT(req->r_cred->fsuid=
+));
+> +               owner_fsgid =3D from_vfsgid(req->r_mnt_idmap, &init_user_=
+ns,
+> +                                         VFSGIDT_INIT(req->r_cred->fsgid=
+));
+> +               nhead->owner_uid =3D cpu_to_le32(from_kuid(&init_user_ns,=
+ owner_fsuid));
+> +               nhead->owner_gid =3D cpu_to_le32(from_kgid(&init_user_ns,=
+ owner_fsgid));
+>         }
+>
+>         end =3D msg->front.iov_base + msg->front.iov_len;
+> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> index e3bbf3ba8ee8..8f683e8203bd 100644
+> --- a/fs/ceph/mds_client.h
+> +++ b/fs/ceph/mds_client.h
+> @@ -33,8 +33,10 @@ enum ceph_feature_type {
+>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,
+>         CEPHFS_FEATURE_OP_GETVXATTR,
+>         CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> +       CEPHFS_FEATURE_NEW_SNAPREALM_INFO,
+> +       CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+>
+> -       CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_32BITS_RETRY_FWD,
+> +       CEPHFS_FEATURE_MAX =3D CEPHFS_FEATURE_HAS_OWNER_UIDGID,
+>  };
+>
+>  #define CEPHFS_FEATURES_CLIENT_SUPPORTED {     \
+> @@ -49,6 +51,7 @@ enum ceph_feature_type {
+>         CEPHFS_FEATURE_NOTIFY_SESSION_STATE,    \
+>         CEPHFS_FEATURE_OP_GETVXATTR,            \
+>         CEPHFS_FEATURE_32BITS_RETRY_FWD,        \
+> +       CEPHFS_FEATURE_HAS_OWNER_UIDGID,        \
+>  }
+>
+>  /*
+> diff --git a/include/linux/ceph/ceph_fs.h b/include/linux/ceph/ceph_fs.h
+> index 5f2301ee88bc..6eb83a51341c 100644
+> --- a/include/linux/ceph/ceph_fs.h
+> +++ b/include/linux/ceph/ceph_fs.h
+> @@ -499,7 +499,7 @@ struct ceph_mds_request_head_legacy {
+>         union ceph_mds_request_args args;
+>  } __attribute__ ((packed));
+>
+> -#define CEPH_MDS_REQUEST_HEAD_VERSION  2
+> +#define CEPH_MDS_REQUEST_HEAD_VERSION  3
+>
+>  struct ceph_mds_request_head_old {
+>         __le16 version;                /* struct version */
+> @@ -530,6 +530,8 @@ struct ceph_mds_request_head {
+>
+>         __le32 ext_num_retry;          /* new count retry attempts */
+>         __le32 ext_num_fwd;            /* new count fwd attempts */
+> +
+> +       __le32 owner_uid, owner_gid;   /* used for OPs which create inode=
+s */
+>  } __attribute__ ((packed));
+>
+>  /* cap/lease release record */
+> --
+> 2.34.1
+>
