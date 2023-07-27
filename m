@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376437658E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521C07658E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjG0QjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        id S231809AbjG0QjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjG0QjU (ORCPT
+        with ESMTP id S231194AbjG0QjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:39:20 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276B62D54
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:19 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40540a8a3bbso304571cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690475958; x=1691080758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2yDMqgwJZJpeLWzTC3EjN9bRwWDIhFu5M1m3QL8b53s=;
-        b=AdhfcTm82K1GjFLigVcxGTETbwB4Hu0ZKLK+rVeYJhk06k5aXEomtq0SuD4my1yUGg
-         G6a/EeSTlThiC82+Z4bb/j+2s0ml/xUhySNsXFOA6VBQOFGZDamFXY9HPFc97j6VTYG5
-         1e3d2EFDPlJjT/zTfCt+EjkDltdCVWOfiGhis7IWPppJdrn0DD5QVUmWhlKEzl+bjSib
-         UYXeS7mDMrpUEzNQ3lX5EVaJgq/MZDpL+9hmU+DGwhEBLNQsOasCoVnXS4xZoegM3c2P
-         U6gEU7zhObGvROVJgWVeMRLMV+9gxdLqC4/35IJiVicb67MCUB2Azg0hfZNEGGq3G8kR
-         5mXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690475958; x=1691080758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2yDMqgwJZJpeLWzTC3EjN9bRwWDIhFu5M1m3QL8b53s=;
-        b=RWEDy+jndlyOfPwaZxzrHtFvbaayR1qir84+OE3/6FMwI5nxGX1dlF9RmLpe7lRwph
-         mrLIdDgGLAVormh/OfpZI0CJ9gjLZ9Vafx3ZjREnZ9B5jVk/mF6gKdmPbidTDyGe6gol
-         1bKLoCliZRV9ED8Tyj1SaXAOpAxNjK8edOOmNTGyawLYiGpw7tbuDYrEMwkDS/dwRANb
-         vHF0fm8CZij3oerC/qXPXhFRDbjh7QFwMiqKYaG136V3MW1s7Ue2msGFyDvbgIGWYy8q
-         M4abP+4mTHc6jh3JruNhPEEhB9bEX44d4BC3QWZyMqbzq//5vWJHILW4G/LwsKSCm6rX
-         jokA==
-X-Gm-Message-State: ABy/qLb17hVMX8oupxEtCTjfuPkidushaUyGzSztBenyI8nDuUfeXsnp
-        Oc3S18xxize2Yz+HigvedXJ6H4iu2CtKFdHPtgBvTQ==
-X-Google-Smtp-Source: APBJJlFa6Zgjvg4Fw2GO4V4tr/e2Mu+mSsSifid6jwnpXQAx3UQnVcDy9mGobHKu9b2sKlUs8EavhIu7j8HTjvXvfKs=
-X-Received: by 2002:ac8:7d85:0:b0:3f9:a78f:c527 with SMTP id
- c5-20020ac87d85000000b003f9a78fc527mr207755qtd.21.1690475958109; Thu, 27 Jul
- 2023 09:39:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230720112955.643283-1-ryan.roberts@arm.com> <20230720112955.643283-3-ryan.roberts@arm.com>
- <CAOUHufamqn0b8tN1DppfPi7FRnENzYwcSOVcAKNxkj=CYa+OwQ@mail.gmail.com>
- <ZMFNgmlT1JpI0z5+@casper.infradead.org> <87r0ouw39n.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZMHX+O0wmjuPXdTi@casper.infradead.org> <faf8d723-afb8-ac4e-7861-4004bb78c5a9@arm.com>
-In-Reply-To: <faf8d723-afb8-ac4e-7861-4004bb78c5a9@arm.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 27 Jul 2023 10:38:42 -0600
-Message-ID: <CAOUHufa38H0o0ZoX-KYMSeAiJghMWtjfHM2F4OjUZ-a--_Kt_w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] mm: Implement folio_remove_rmap_range()
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 12:39:12 -0400
+Received: from abi149hd127.arn1.oracleemaildelivery.com (abi149hd127.arn1.oracleemaildelivery.com [129.149.84.127])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FD1273D
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=TUR8Bp9AvDdz7mF4b5ZMncRJ7atKCHvCkxwXqShE5b0=;
+ b=c/MRb5/z40lzFSg1LT2XsFo0z1oN7p6bTdXRLP6mwQdT5zY3hazwFa4dGcC8X8qsZ/qkSCHIPf3a
+   X7UVoh5LKZ3Fy7G/zw3kFa29fBPrS3XV8QcmVxyszr4nvdPZ1/6XxYm1J4NbpwhHRCweS1o3af82
+   E0Sj+yasUOiQug9p32BrrBhMda9n+NjW7iUyKgrEj9ORQ62IkzfbPi25XbURzsrZ3p6AuCo0qrZ+
+   +oRrsod/nmiZ6AYXjZWu+8I9W8E/yBcmRpnnCHf9vi7wRz5XejHqJILXJgH9ZZuJvzOGYp3EF6PG
+   VpCiDm8vgLu1li4l5Nf9U/pxr+UIRT8x31Rafw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=TUR8Bp9AvDdz7mF4b5ZMncRJ7atKCHvCkxwXqShE5b0=;
+ b=WWVLg7uniBO4YJRL4OnT/2QOSJ4y0NoM2bs7qsENSY/9VwGUg3IdKQKzW+pM6fz0F7qBY5oz08kF
+   Ud9DF2O58qfPgFWYRNTtsd84eV5rpL1c0ZmbWMQwBbnJShkvVEgPZNUB2TzW81VXy3TuTCVOw6qq
+   dDcI1jVRqfooRIl/+7L0Oi+RcR0qFauWHQDNie7Wk9AL64S9F7h5SEuA+RELVVxKDcNxeKw7otk4
+   ZL3MgUcrXmrk3xrU3AFiXLbVG8X1mt11wxR9rk/R3xTR8kI7orr5oQhI0FIfUwRAcv2vxMDuPSRk
+   dtSQRnJpLi3f6Unlu62SOT0S7/a9Fs9shkflPQ==
+Received: by omta-ad1-fd2-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230629 64bit (built Jun 29
+ 2023))
+ with ESMTPS id <0RYG006K0RL64P80@omta-ad1-fd2-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for linux-kernel@vger.kernel.org; Thu, 27 Jul 2023 16:39:06 +0000 (GMT)
+Message-id: <838377ff-4df5-6b5d-e127-615e7e4dce4e@augustwikerfors.se>
+Date:   Thu, 27 Jul 2023 18:39:03 +0200
+MIME-version: 1.0
+From:   August Wikerfors <git@augustwikerfors.se>
+Subject: Re: [REGRESSION] IRQ override revert breaks keyboard on Lenovo Yoga 7
+ 14ARB7
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+References: <596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se>
+ <d3179d08-d513-a7e4-9ddb-416e50578957@amd.com>
+Content-language: en-US
+In-reply-to: <d3179d08-d513-a7e4-9ddb-416e50578957@amd.com>
+Content-type: text/plain; charset=UTF-8; format=flowed
+Content-transfer-encoding: 8bit
+Reporting-Meta: AAEmfh3AQNA2NlNOpFxqcaDLKO5WwzqH005cigcB7ucbTA9rDG1WbIVPpXsWcScT
+ KYdQNzGmTT8E1DtL1mf4ADYa+DJRhvHpbFnC1Kq0pYADK+iT+4nodGqWrxv5Vvrx
+ V7UTKJ+w4Gi3QwGIa+Lr3pYJRIqq6fETUdHzkSgRZfb5JptuDkTNlee9A4q+Fk0v
+ IEiMTkbo4s2mYzopEf0yL3gmVbuewVeu/MWJWJ2HpvJ256RiD6K3/6Fitqb5tfKU
+ 463bDEcar8UB6nJlNY3BBTCFiWw8Rv9yllLUJR7smWg0kZHrwFWWRM9/eEJ4HgtH
+ EaBv2+COvfT+KOySIpXqgVFRA3dcUOEjp2pbeWgMVmBJlmgZ2rdT5m+V9WY4Y01l
+ Ia6Ffezp25lADB0875lrO0pig288U0TmP1KsA5WX0J4mWzLs8YxAtObztHt9Udt3 i+P6+t0=
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 1:26=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 27/07/2023 03:35, Matthew Wilcox wrote:
-> > On Thu, Jul 27, 2023 at 09:29:24AM +0800, Huang, Ying wrote:
-> >> Matthew Wilcox <willy@infradead.org> writes:
-> >>> I think that can make sense.  Because we limit to a single page table=
-,
-> >>> specifying 'nr =3D 1 << PMD_ORDER' is the same as 'compound =3D true'=
-.
-> >>> Just make it folio, page, nr, vma.  I'd actually prefer it as (vma,
-> >>> folio, page, nr), but that isn't the convention we've had in rmap up
-> >>> until now.
-> >>
-> >> IIUC, even if 'nr =3D 1 << PMD_ORDER', we may remove one PMD 'compound=
-'
-> >> mapping, or 'nr' PTE mapping.  So, we will still need 'compound' (or
-> >> some better name) as parameter.
-> >
-> > Oh, this is removing ... so you're concerned with the case where we've
-> > split the PMD into PTEs, but all the PTEs are still present in a single
-> > page table?  OK, I don't have a good answer to that.  Maybe that torped=
-oes
-> > the whole idea; I'll think about it.
->
-> This is exactly why I think the approach I've already taken is the correc=
-t one;
-> a 'range' makes no sense when you are dealing with 'compound' pages becau=
-se you
-> are accounting the entire folio. So surely its better to reflect that by =
-only
-> accounting small pages in the range version of the API.
+On 2023-07-27 04:56, Mario Limonciello wrote:
+> This is unfortunate.  Before we go adding more quirks for your system, 
+> can you please check for a BIOS upgrade for your system?  If it's 
+> happening with the latest BIOS, then can you please open a kernel 
+> bugzilla with an acpidump and dmidecode included?
 
-If the argument is the compound case is a separate one, then why not a
-separate API for it?
+The latest released BIOS is K5CN40WW, I'm using K5CN40WWT66 which is a 
+later beta that partially mitigates a Windows BSOD issue. I've opened a 
+Bugzilla report with the dmidecode here: 
+https://bugzilla.kernel.org/show_bug.cgi?id=217718
 
-I don't really care about whether we think 'range' makes sense for
-'compound' or not. What I'm saying is:
-1. if they are considered one general case, then one API with the
-compound parameter.
-2. if they are considered two specific cases, there should be two APIs.
-This common design pattern is cleaner IMO.
-
-Right now we have an overlap (redundancy) -- people would have to do
-two code searches: one for page_remove_rmap() and the other for
-folio_remove_rmap_range(nr=3D1), and this IMO is a bad design pattern.
+For the acpidump I'm not sure what parts could be sensitive so I will 
+e-mail it directly to you.
