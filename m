@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D2E76572A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEEB765735
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbjG0PQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S234521AbjG0PSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjG0PQZ (ORCPT
+        with ESMTP id S234516AbjG0PRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:16:25 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F42D19BA
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:16:24 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so97975e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690470982; x=1691075782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=utE8vRwrX++6X0lCOyhtmTOdfLDy8jS4+Yo+Xxkza3c=;
-        b=Ud0pxpZcd7aJNotRCE+WUkhwBFed5VvPwbUpDmgYSr8EJcG6JebWxDXIuyEiieBAPV
-         PO1qiiq2eJavMeZRdjixHjuwqA+2/WoV5o7o7Ynd+QnnajfQaNBBUrkDqiyyLiKwnJtA
-         rq3SDnDRGFVUkeNDtrnLUyX9Dznzsymxnsxc1hXaclSb46syUvEsivXGKLSsXkVIU4sV
-         cLYy2tYslYLm8gOFsr+kFoUtVt+rv+IUfbG0VX+vlTzCtdEXzjmdaHssefNZPMReg5I1
-         axHAnqY1q1s60vmb7J4GCAt+bQixi3uhbstXwwiF6qlwNoi5ewKAKxdhFBuGEIm7giJn
-         17gQ==
+        Thu, 27 Jul 2023 11:17:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEA119BA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690471020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pp7lX2S4BE1VOAd+Ohe4qOsAj8X9hgCenh8uffGy52U=;
+        b=UV141jlwuyQs1PPe0lIWTzrbgQmVqE/02ksud2UoC7Caqdu0TDci0jJG1X6UDhST7mQKLk
+        ZYZqhGx9rg3qgB8rmp6WsU951sXnvzxlpAfOY3pBjvxA8tte130pZij0AzU64rTBzLB1Nf
+        B11czmMeVjAif1OtrWlagy6FrGLbcmI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-593-kmci5ySlMm2bqfyq1Mmlrg-1; Thu, 27 Jul 2023 11:16:56 -0400
+X-MC-Unique: kmci5ySlMm2bqfyq1Mmlrg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fd22a4cf2dso6329305e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:16:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690470982; x=1691075782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=utE8vRwrX++6X0lCOyhtmTOdfLDy8jS4+Yo+Xxkza3c=;
-        b=hL+MPWlYXizjCRTUOM3lf0TYvFxYiJY0Pa6KZTscAG4XI7KX01gJJZgpReBeQ9r0wZ
-         /XgQtbF/GmipBpJ0nlnoUiTkxtmm0QdT2a4kr/7HyDDu/XefnGncLN4qv3RQkLL3IpRI
-         pk/Fv0GY4qoWJECQIanVmFAI8NPgNhnqkYl5kZS1eOnpTsnoSFLYBfXyQ5vzGzdKPrkk
-         s3OSX7r91uDJokz4V88zUUjm0me/ERRumMREqr+YnDxgACwr/5QeEwFNFb7AuH0TyIhP
-         r51LvLl+8f6ATgjfZglFLHsjRSAs+mmeiP3PsQ0xU6UUUaJFt9f2AknJdJZ6thJ6yQot
-         +Wew==
-X-Gm-Message-State: ABy/qLa/Aq8R+K7lABwyBQZyyRN0XyGgvCKbz4GmBFfY3QpCMy9/2QoU
-        aEsowg7kWfErEySMhHtN+VA3mykg/LiO5TnYxduKtw==
-X-Google-Smtp-Source: APBJJlE4frvwQ6KmYnfKrtCTfLx4fYG+xPFA2HGLtVpwad1rvO4gMoSBfZQUbfyqUM/AJW+OuV1rWQWd9qfbBYornqI=
-X-Received: by 2002:a05:600c:829:b0:3f1:6fe9:4a95 with SMTP id
- k41-20020a05600c082900b003f16fe94a95mr113708wmp.4.1690470982450; Thu, 27 Jul
- 2023 08:16:22 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690471015; x=1691075815;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pp7lX2S4BE1VOAd+Ohe4qOsAj8X9hgCenh8uffGy52U=;
+        b=dem0Kg4EHMR97dkQoZvj3nFFOseKnYiyHQc5JlIMLhb4LylcvzsA3FNGmz1/6VJeBC
+         pFkiXrN4Unhb+13Yjbz4xeW3PL77aZg900WpAsKClnC2muAq9owv07TWWjoLmcI425zm
+         83u2znKCZ/rJkk1jqv63pCbm8QzJ6jliR2uhXeQTwiv+5Xe9ASOZECPfnGAwJkDVwxKj
+         sdMTyr1ZA8jKD9p/uKvrn9VRSjVPT67hBLVkuNluH7+ZGkIqWWLaQdWi0Wq12PY4IhsL
+         +Y94D05IwAA/6WpBggWsSxzQfYYm7RekNdrgws/gEBe5SFfNexTsHylR18YCOObaMO+q
+         lpFw==
+X-Gm-Message-State: ABy/qLafjbLJwkDX4eYkwsr0sYsDWEzbN9OTIGEzPybI+6UYu0ySUEzC
+        TcQWQErSS0VTSBeWYwj64urKcfCtRoyp+F5RWhuPVYxDNG6UdpgNtAQ4ViJMt/DyGGfbnQyxBw8
+        B+KBXeufNK6zhTicQqeV/H9jf
+X-Received: by 2002:adf:fc05:0:b0:317:5de3:86fb with SMTP id i5-20020adffc05000000b003175de386fbmr1932627wrr.10.1690471015016;
+        Thu, 27 Jul 2023 08:16:55 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGFJTm1x26WKX+ZJ5GVgIV/5/cEhdRTj0qRIs77CCN9iPmG4jfZSNpagqJH+qPLWxdEJ7LocQ==
+X-Received: by 2002:adf:fc05:0:b0:317:5de3:86fb with SMTP id i5-20020adffc05000000b003175de386fbmr1932612wrr.10.1690471014678;
+        Thu, 27 Jul 2023 08:16:54 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id h18-20020adff192000000b003113ed02080sm2265368wro.95.2023.07.27.08.16.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 08:16:54 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/ssd130x: Use shadow-buffer helpers when managing
+ plane's state
+In-Reply-To: <0ce32153-cfc0-e701-3863-803fcdb897ff@suse.de>
+References: <20230727140453.577445-1-javierm@redhat.com>
+ <0ce32153-cfc0-e701-3863-803fcdb897ff@suse.de>
+Date:   Thu, 27 Jul 2023 17:16:53 +0200
+Message-ID: <87y1j1tme2.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
- <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com> <ZMKINJ9+WX1WWG8g@casper.infradead.org>
-In-Reply-To: <ZMKINJ9+WX1WWG8g@casper.infradead.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 27 Jul 2023 17:15:45 +0200
-Message-ID: <CAG48ez1YPhc2sp=+pXCsZsmiPfXF_oQakouSfNFqi4xK2gEuGA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     paulmck@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 5:07=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
-> On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
-> > The other option is to replace the READ_ONCE() with a
-> > smp_load_acquire(), at which point it becomes a lot simpler to show
-> > that the code is correct.
->
-> Aren't we straining at gnats here?  The context of this is handling a
-> page fault, and we used to take an entire rwsem for read.  I'm having
-> a hard time caring about "the extra expense" of an unnecessarily broad
-> barrier.
->
-> Cost of an L3 cacheline miss is in the thousands of cycles.  Cost of a
-> barrier is ... tens?
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-Yeah, fair point. If it's hard to show correctness with READ_ONCE() we
-can just use smp_load_acquire() and call it a day.
+Hello Thomas,
+
+> Hi Javier
+>
+> Am 27.07.23 um 16:04 schrieb Javier Martinez Canillas:
+>> The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
+>> .atomic_check() callback") moved the buffers allocation to be done in
+>> the primary plane's .atomic_check() callback.
+>> 
+>> But it missed that since the driver uses a shadow-buffered plane, the
+>> __drm_gem_{reset,duplicate,destroy}_shadow_plane() helper functions
+>> must be used in the struct drm_plane_funcs handlers.
+>> 
+>> This was missed because the mentioned commit did not remove the macro
+>> DRM_GEM_SHADOW_PLANE_FUNCS, which leads to the custom plane's atomic
+>> state management handlers to not be used.
+>> 
+>> Fixes: 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's .atomic_check() callback")
+>> Reported-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Reported-by needs to be followed by
+>
+> Closes: <url>
+>
+> where <url> would point to Arnd's bug report on dri-devel.
+>
+
+Ah, I thought checkpatch complaining about it but since we already add a
+Link: with dim, didn't know what to add there. Makes sense to add Arnd's
+report indeed.
+
+I can include it when applying instead of posting a v2 if you don't mind.
+
+>> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>
+> This looks correct now. Thanks for fixing this bug quickly. With the 
+> Close added:
+>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
+
+Thanks and to you for pointing that out.
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
