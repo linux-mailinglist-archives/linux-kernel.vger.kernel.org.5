@@ -2,64 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 940C0764945
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE4C764949
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjG0Htd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S232831AbjG0HuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233897AbjG0HtI (ORCPT
+        with ESMTP id S232432AbjG0Ht4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:49:08 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487165FCC;
-        Thu, 27 Jul 2023 00:42:23 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RBN4L3kFvz1GDKg;
-        Thu, 27 Jul 2023 15:41:22 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 15:42:15 +0800
-Message-ID: <b85bcf1d-9467-4df6-da11-8f0b24165ada@huawei.com>
-Date:   Thu, 27 Jul 2023 15:42:15 +0800
+        Thu, 27 Jul 2023 03:49:56 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859D3659F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:14 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VoJlfUx_1690443778;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VoJlfUx_1690443778)
+          by smtp.aliyun-inc.com;
+          Thu, 27 Jul 2023 15:43:09 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     rostedt@goodmis.org
+Cc:     mhiramat@kernel.org, karolherbst@gmail.com, ppaalanen@gmail.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org,
+        nouveau@lists.freedesktop.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] x86/mm/kmmio: return -ENOMEM when kzalloc failed
+Date:   Thu, 27 Jul 2023 15:42:56 +0800
+Message-Id: <20230727074256.118672-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next] riscv/bpf: Fix truncated immediate warning in
- rv_s_insn
-Content-Language: en-US
-To:     Luke Nelson <lukenels@cs.washington.edu>, <bpf@vger.kernel.org>
-CC:     Luke Nelson <luke.r.nels@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230727024931.17156-1-luke.r.nels@gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20230727024931.17156-1-luke.r.nels@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,76 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The driver is using -1 instead of the -ENOMEM defined macro to specify
+that a buffer allocation failed.
 
+arch/x86/mm/kmmio.c:392 add_kmmio_fault_page() warn: returning -1 instead of -ENOMEM is sloppy.
 
-On 2023/7/27 10:49, Luke Nelson wrote:
-> Sparse warns that a cast in rv_s_insn truncates bits from the constant
-> 0x7ff to 0xff.  The warning originates from the use of a constant offset
-> of -8 in a store instruction in bpf_jit_comp64.c:
-> 
->    emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
-> 
-> rv_sd then calls rv_s_insn, with imm11_0 equal to (u16)(-8), or 0xfff8.
-> 
-> Here's the current implementation of rv_s_insn:
-> 
->    static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
->    {
->            u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
-> 
->            return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
->                   (imm4_0 << 7) | opcode;
->    }
-> 
-> imm11_0 is a signed 12-bit immediate offset of the store instruction. The
-> instruction encoding requires splitting the immediate into bits 11:5 and
-> bits 4:0. In this case, imm11_0 >> 5 = 0x7ff, which then gets truncated
-> to 0xff when cast to u8, causing the warning from sparse. However, this is
-> not actually an issue because the immediate offset is signed---truncating
-> upper bits that are all set to 1 has no effect on the value of the
-> immediate.
-> 
-> There is another subtle quirk with this code, which is imm11_5 is
-> supposed to be the upper 7 bits of the 12-bit signed immediate, but its
-> type is u8 with no explicit mask to select out only the bottom 7 bits.
-> This happens to be okay here because imm11_5 is the left-most field in
-> the instruction and the "extra" bit will be shifted out when imm11_5 is
-> shifted left by 25.
-> 
-> This commit fixes the warning by changing the type of imm11_5 and imm4_0
-> to be u32 instead of u8, and adding an explicit mask to compute imm11_5
-> instead of relying on truncation + shifting.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202307260704.dUElCrWU-lkp@intel.com/
-> In-Reply-To: <202307260704.dUElCrWU-lkp@intel.com>
-> Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-> Cc: Xi Wang <xi.wang@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->   arch/riscv/net/bpf_jit.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-> index 2717f5490428..e159c6e3ff43 100644
-> --- a/arch/riscv/net/bpf_jit.h
-> +++ b/arch/riscv/net/bpf_jit.h
-> @@ -238,7 +238,7 @@ static inline u32 rv_i_insn(u16 imm11_0, u8 rs1, u8 funct3, u8 rd, u8 opcode)
-> 
->   static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
->   {
-> -	u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
-> +	u32 imm11_5 = (imm11_0 >> 5) & 0x7f, imm4_0 = imm11_0 & 0x1f;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6002
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/x86/mm/kmmio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Hi Luke,
+diff --git a/arch/x86/mm/kmmio.c b/arch/x86/mm/kmmio.c
+index 9f82019179e1..9aa5bcf5a836 100644
+--- a/arch/x86/mm/kmmio.c
++++ b/arch/x86/mm/kmmio.c
+@@ -389,14 +389,14 @@ static int add_kmmio_fault_page(unsigned long addr)
+ 
+ 	f = kzalloc(sizeof(*f), GFP_ATOMIC);
+ 	if (!f)
+-		return -1;
++		return -ENOMEM;
+ 
+ 	f->count = 1;
+ 	f->addr = addr;
+ 
+ 	if (arm_kmmio_fault_page(f)) {
+ 		kfree(f);
+-		return -1;
++		return -ENOMEM;
+ 	}
+ 
+ 	list_add_rcu(&f->list, kmmio_page_list(f->addr));
+-- 
+2.20.1.7.g153144c
 
-keep u8 and add 0x7f explicit mask should work. I ran the repro case and 
-it can silence the warning.
-
->
->   	return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
->   		(imm4_0 << 7) | opcode;
-> --
-> 2.34.1
-> 
-> 
