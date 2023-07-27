@@ -2,175 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3448765042
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D2D76503B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbjG0Jss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S232723AbjG0Jri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbjG0Jra (ORCPT
+        with ESMTP id S233142AbjG0Jqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:47:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4B1B6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690451200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
-        b=WBxm/GICrULU9Q4b5gRPGiWaJjiSO1esm0u94/+8NL7GaArA5pJSOWpL8V3521BemGZode
-        liAjk7xCACW6h+HbwIIQcDRuR7LYXaaK5pow8N0tixopgJBJvyyJToUHeukCNT5x3LZBpc
-        er8qwCcesThVPTzarY9yCwSUHEy3HVI=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-615--VYhOQanNpOc6HygHIlujQ-1; Thu, 27 Jul 2023 05:46:38 -0400
-X-MC-Unique: -VYhOQanNpOc6HygHIlujQ-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fbcdca9082so671289e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:46:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690451197; x=1691055997;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9/ZtPwamYEdAIqsg4Eha/G0ZWoXDeFDSv2EcRY5ZelM=;
-        b=O6aRaIQqECRsVuAc1C1NRuJ6M3yAhZntaJVmbWuevTByM0zAT0bixfOngmISCOUf5W
-         E6MW8E7gEmcHnrg3lI4e9xTTu82x1iVQP7SO1iX2VJiIUJAc04hpLOaTTWPTGVtW/Cnx
-         nulgBa/IE9Xios/LccfzA0HWVFhA/ISmny+ESQRWBduBe9zdvXlWeqYuDzkanOdY5awk
-         xiSAlXSfqMF8Z28BJ/svUoloH9iUPCDmOYnuwZ3bTnydIKOnA/MbGQZQyaMJP6Bx0lGq
-         i3bld0iGJHpVreRYN4n21eBe2RGSToyDSbLrK9j81B5XAZ8hgvd09xPuuKK2r1ZhnpWG
-         TOQg==
-X-Gm-Message-State: ABy/qLbvGpPAA9gDz1YLRVlJgRUlm911qy6gQnFFdPo7Q7PvDknrKUvd
-        HD30tZuR9lFEJmmjT81KuA9Ckvam+DW1AABcyznpsiEysaLRFovszOhEWpT/Ce1KX2CW43bh2qf
-        TxM6P29VCt4P/4ygMSD8FkqMW
-X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763706lfe.2.1690451196894;
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHWfc8e6nRRU05KgrIaBfOnm87x2dNku7t4qZB3XfKVqk/Go7XcWjycqa01reYQ5M3BH+RFoA==
-X-Received: by 2002:a05:6512:3186:b0:4f8:7513:8cb0 with SMTP id i6-20020a056512318600b004f875138cb0mr1763631lfe.2.1690451196504;
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id l10-20020a05600c1d0a00b003fd2d3462fcsm6308442wms.1.2023.07.27.02.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 02:46:36 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-In-Reply-To: <20230726194148.4jhyqqbtn3qqqqsq@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-3-vschneid@redhat.com>
- <20230726194148.4jhyqqbtn3qqqqsq@treble>
-Date:   Thu, 27 Jul 2023 10:46:33 +0100
-Message-ID: <xhsmho7jxsn46.mognet@vschneid.remote.csb>
+        Thu, 27 Jul 2023 05:46:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7830111D
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:46:49 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9A9676607175;
+        Thu, 27 Jul 2023 10:46:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690451208;
+        bh=0Iha/JOTYyfiitNl2/tF672JZIUVhHcbx0vgBiZKTc4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hRUYCKLiNNMNeaZ6LtmbttbslYB06NAh6Ow5BUdEJcf5qkFsiEQ4wVF63i44gy7XQ
+         C/4pA+yG0SDMdgseo6EXuzk1b9S4s1cUHw0eLcsNJEwlAwbS8GAfB8Wleuaxkq+NKP
+         zCQWBi4c5aR6bTrFr6u1XaicI9C6iCSZoJUggrMl6cJWqvYsstmZVM3bb2gVKlG6SK
+         q+yYPqt5I+DkoYV0Urv3VABn6n+TZK16pEv4L6PfdrQEAMEpPOBV6tnq/Vanjf064F
+         dkh3gXR4ERN3v/o+otO6qSu9fhfprCPjshYWzkgzARI8VFbZymJlFmAcRlXGDHx6EH
+         Kj2+jl03e9YWQ==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com, ehristev@collabora.com,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
+Subject: [PATCH RESEND v6 11/11] drm/mediatek: gamma: Program gamma LUT type for descending or rising
+Date:   Thu, 27 Jul 2023 11:46:33 +0200
+Message-ID: <20230727094633.22505-12-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
+References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/23 12:41, Josh Poimboeuf wrote:
-> On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
->>  int filter_assign_type(const char *type)
->>  {
->> -	if (strstr(type, "__data_loc") && strstr(type, "char"))
->> -		return FILTER_DYN_STRING;
->> +	if (strstr(type, "__data_loc")) {
->> +		if (strstr(type, "char"))
->> +			return FILTER_DYN_STRING;
->> +		if (strstr(type, "cpumask_t"))
->> +			return FILTER_CPUMASK;
->> +		}
->
-> The closing bracket has the wrong indentation.
->
->> +		/* Copy the cpulist between { and } */
->> +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
->> +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);
->
-> Need to check kmalloc() failure?  And also free tmp?
->
+All of the SoCs that don't have dithering control in the gamma IP
+have got a GAMMA_LUT_TYPE bit that tells to the IP if the LUT is
+"descending" (bit set) or "rising" (bit cleared): make sure to set
+it correctly after programming the LUT.
 
-Heh, indeed, shoddy that :-)
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+---
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Thanks!
-
->> +
->> +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
->> +		if (!pred->mask)
->> +			goto err_mem;
->> +
->> +		/* Now parse it */
->> +		if (cpulist_parse(tmp, pred->mask)) {
->> +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
->> +			goto err_free;
->> +		}
->> +
->> +		/* Move along */
->> +		i++;
->> +		if (field->filter_type == FILTER_CPUMASK)
->> +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
->> +
->
-> --
-> Josh
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+index e9655b661364..020755ae0ec0 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+@@ -23,6 +23,7 @@
+ #define GAMMA_RELAY_MODE				BIT(0)
+ #define GAMMA_LUT_EN					BIT(1)
+ #define GAMMA_DITHERING					BIT(2)
++#define GAMMA_LUT_TYPE					BIT(2)
+ #define DISP_GAMMA_SIZE				0x0030
+ #define DISP_GAMMA_SIZE_HSIZE				GENMASK(28, 16)
+ #define DISP_GAMMA_SIZE_VSIZE				GENMASK(12, 0)
+@@ -89,6 +90,16 @@ unsigned int mtk_gamma_get_lut_size(struct device *dev)
+ 	return lut_size;
+ }
+ 
++static bool mtk_gamma_lut_is_descending(struct drm_color_lut *lut, u32 lut_size)
++{
++	u64 first, last;
++
++	first = lut[0].red + lut[0].green + lut[0].blue;
++	last = lut[lut_size].red + lut[lut_size].green + lut[lut_size].blue;
++
++	return !!(first > last);
++}
++
+ void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crtc_state *state)
+ {
+ 	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
+@@ -178,6 +189,14 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crt
+ 		}
+ 	}
+ 
++	if (gamma && gamma->data && !gamma->data->has_dither) {
++		/* Descending or Rising LUT */
++		if (mtk_gamma_lut_is_descending(lut, lut_size))
++			cfg_val |= FIELD_PREP(GAMMA_LUT_TYPE, 1);
++		else
++			cfg_val &= ~GAMMA_LUT_TYPE;
++	}
++
+ 	/* Enable the gamma table */
+ 	cfg_val |= FIELD_PREP(GAMMA_LUT_EN, 1);
+ 
+-- 
+2.40.1
 
