@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB00B764DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D39764E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbjG0Iqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S233293AbjG0Is3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233175AbjG0IqN (ORCPT
+        with ESMTP id S232598AbjG0IrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:46:13 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A928A69
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:29:06 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-992dcae74e0so87675966b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690446543; x=1691051343;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vqiw6r+PHEVT+EztfpBhphT+HL4dVYUe7akOolTO95E=;
-        b=WB43hr/c+d+z9E1dr3O2n9Zrk01bgQhVrkcBz0BXQqEIXbQ1+GpUeBUpJF41KFf5Tf
-         lNm4rdRmMREzcf3LvomOfI21YpbvM6rACW4qqCaREo4hE9yZVqNV07X0NRrbSwuz/Off
-         egSFoZU1aXCiBuVzWNAUurp8glWLA6xEfQudURruUH1gBHIdxawSOyfxGL5Ck1I2okdP
-         1JEbf8n5QIkdeImRZLBDq54nXlEyFyEm5PgeYjggQPBUMMAaYCpvAz7nfz+b6F8205Y0
-         YudRzdIN6RPjy2EbEcLaYpmmMhFPTkcjZB/G7W3F9eI6T4CWb894X7wzJwyhIYdJnxcJ
-         MAGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690446543; x=1691051343;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vqiw6r+PHEVT+EztfpBhphT+HL4dVYUe7akOolTO95E=;
-        b=YMx2HNL7vv1cC2DOTVXGwMuCKKuiljTji//xn2PEu8o9bpq0+/kkFULuqx24y7hQEh
-         sgXLfz8NyHnSUX0XhOHM3gWVXxjuuttsuA+ZMJC/tkvaaXHCo3rSFk57mv/DeofHQCvY
-         Qa8ndIPNXNSAHBcrydYI2tD/yRm4CjG8fES5GXSNIh7zXZyz3ewHFoW5J2Abd7Z8rq8o
-         RH9iAs90Ma0j5VNA9jX/D28/fXAzuWIw7Vx5+IWKjBlWLZeFl+WCIKCiKoS7YT8Y8U8X
-         ijJ7A+bnZCJUBsb2mqsYkxtHdjVH46Kcfqj67cunqLumn5xppTyUVUj2uZtKjGqBZqF7
-         M+4g==
-X-Gm-Message-State: ABy/qLbQEdCjlU9sFKg41URzn6DxtFS8AD+ac1Csb+8K0KKe9S5aVUTP
-        otTHdhHooJ3DCyxy9n8j+pXCxg==
-X-Google-Smtp-Source: APBJJlEePlD/dAhfTCyMhSnx6fASNBNWb1h9K0gW1jyicnQaTG11W03to93lZljkXpeSk7Uf1M9P1A==
-X-Received: by 2002:a17:906:5356:b0:99b:d5fd:c924 with SMTP id j22-20020a170906535600b0099bd5fdc924mr1511323ejo.66.1690446542830;
-        Thu, 27 Jul 2023 01:29:02 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id cw25-20020a170906c79900b0098d2d219649sm488322ejb.174.2023.07.27.01.29.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 01:29:02 -0700 (PDT)
-Message-ID: <b0999940-8cd1-349d-9bf4-d6494145254c@linaro.org>
-Date:   Thu, 27 Jul 2023 10:29:00 +0200
+        Thu, 27 Jul 2023 04:47:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A92E59D1;
+        Thu, 27 Jul 2023 01:30:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A03F61DA8;
+        Thu, 27 Jul 2023 08:30:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06711C433C7;
+        Thu, 27 Jul 2023 08:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690446606;
+        bh=lgMwb11ItIJ27YCsuj2akQ0e0AMgpISaoiuOUrGiITY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Tr4M7HQ3pxhso0Q/eg4xKtwD0lUURtq4zUL2WnDxbX7YJArr/oNtVx0HKmYWbVJCj
+         uZ3CjjOq76HigUmfxsBIfU5BJp2UCC8gXysiCMyY4oUiNa0NyuYtXgOb+GgYI2e2UD
+         q/DMid3QMY2nJGias56vfjnyYrQ2kAGyvOg7az/lKKcQPYsllW1cAnQl1FfA/ktsaA
+         ypQoOxGNqaMUpP2GFbXa8+1QKt5gSsrAShH7O9rxadTFuFxweU5IvbZDayprJj2afQ
+         IGlbjA9TtQP0FcoHyTXu4yjcQ81VS0g2mOFp+HrXHsn6/kAwTiNlXyj4HVftm6tXbg
+         kxbv5Cd7EwHzQ==
+Message-ID: <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+Date:   Thu, 27 Jul 2023 17:30:01 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: input: qcom,pm8xxx-vib: add more PMIC
- support
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
+ shrinker
 Content-Language: en-US
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
-        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com,
-        quic_huliu@quicinc.com
-References: <20230718062639.2339589-1-quic_fenglinw@quicinc.com>
- <20230718062639.2339589-2-quic_fenglinw@quicinc.com>
- <cb534cdb-508e-b03e-4e39-50cd6654377a@linaro.org>
- <4cb9f443-bdea-695a-f1b7-3963747e9a17@quicinc.com>
- <5b7e624b-5d06-826d-92d1-2a721b7c83b7@quicinc.com>
- <fec38f3a-f103-ff0f-138c-cffa3a808001@linaro.org>
- <4210b137-2d5d-a467-ea8c-d047701fdcc2@quicinc.com>
- <dd5864ee-7df2-eb64-c7f2-0fb234900d6a@linaro.org>
- <2fa3f27d-ff08-b923-2fb1-cf7cc888e5d5@linaro.org>
- <f1286da7-05a6-c8aa-d13b-075c0fd45b77@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <f1286da7-05a6-c8aa-d13b-075c0fd45b77@quicinc.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
+        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
+        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
+        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
+        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
+        gregkh@linuxfoundation.org, muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230727080502.77895-29-zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 09:54, Fenglin Wu wrote:
->>>> +          - enum:
->>>> +              - qcom,pm7550ba-vib
->>>> +          - const: qcom,pm7325b-vib
->>>>
->>>
->>> Yes
->>
->> I wonder why this approved change turned out to something incorrect in
->> your v3 patch...
->>
-> Since I got review comments in the driver change and I was told to 
-> refactor the driver before adding new HW support. I added the HW type 
-> logic in the driver and I was thinking it might be good to add some 
-> generic compatible strings to match with the HW type introduced in the 
-> driver change.
+On 7/27/23 17:04, Qi Zheng wrote:
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
+> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+> read-side critical section when releasing the struct dmz_metadata.
 > 
-> Anyway, I will update it to what you suggested in next patch.
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  drivers/md/dm-zoned-metadata.c | 28 ++++++++++++++++------------
+>  1 file changed, 16 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
+> index 9d3cca8e3dc9..0bcb26a43578 100644
+> --- a/drivers/md/dm-zoned-metadata.c
+> +++ b/drivers/md/dm-zoned-metadata.c
+> @@ -187,7 +187,7 @@ struct dmz_metadata {
+>  	struct rb_root		mblk_rbtree;
+>  	struct list_head	mblk_lru_list;
+>  	struct list_head	mblk_dirty_list;
+> -	struct shrinker		mblk_shrinker;
+> +	struct shrinker		*mblk_shrinker;
+>  
+>  	/* Zone allocation management */
+>  	struct mutex		map_lock;
+> @@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
+>  static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+>  					       struct shrink_control *sc)
+>  {
+> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
+> +	struct dmz_metadata *zmd = shrink->private_data;
+>  
+>  	return atomic_read(&zmd->nr_mblks);
+>  }
+> @@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+>  static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
+>  					      struct shrink_control *sc)
+>  {
+> -	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
+> +	struct dmz_metadata *zmd = shrink->private_data;
+>  	unsigned long count;
+>  
+>  	spin_lock(&zmd->mblk_lock);
+> @@ -2936,19 +2936,23 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+>  	 */
+>  	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
+>  	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
+> -	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
+> -	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
+> -	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
+>  
+>  	/* Metadata cache shrinker */
+> -	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
+> -				MAJOR(dev->bdev->bd_dev),
+> -				MINOR(dev->bdev->bd_dev));
+> -	if (ret) {
+> -		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
+> +	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
+> +					    MAJOR(dev->bdev->bd_dev),
+> +					    MINOR(dev->bdev->bd_dev));
+> +	if (!zmd->mblk_shrinker) {
+> +		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
 
-Drivers are not really related to bindings, so whatever HW type you add
-in driver, is not a reason to change bindings. Reason to change bindings
-could be for example: because hardware is like that.
+ret is not set here, so dmz_ctr_metadata() will return success. You need to add:
+		ret = -ENOMEM;
+or something.
+>  		goto err;
+>  	}
+>  
+> +	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
+> +	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
+> +	zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
+> +	zmd->mblk_shrinker->private_data = zmd;
+> +
+> +	shrinker_register(zmd->mblk_shrinker);
 
-Best regards,
-Krzysztof
+I fail to see how this new shrinker API is better... Why isn't there a
+shrinker_alloc_and_register() function ? That would avoid adding all this code
+all over the place as the new API call would be very similar to the current
+shrinker_register() call with static allocation.
+
+> +
+>  	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
+>  	for (i = 0; i < zmd->nr_devs; i++)
+>  		dmz_print_dev(zmd, i);
+> @@ -2995,7 +2999,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+>   */
+>  void dmz_dtr_metadata(struct dmz_metadata *zmd)
+>  {
+> -	unregister_shrinker(&zmd->mblk_shrinker);
+> +	shrinker_free(zmd->mblk_shrinker);
+>  	dmz_cleanup_metadata(zmd);
+>  	kfree(zmd);
+>  }
+
+-- 
+Damien Le Moal
+Western Digital Research
 
