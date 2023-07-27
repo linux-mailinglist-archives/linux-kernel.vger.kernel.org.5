@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174F976475F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE84D764763
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbjG0G5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S232684AbjG0G62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232583AbjG0G5a (ORCPT
+        with ESMTP id S232520AbjG0G60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:57:30 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217E826A6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:57:29 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-992f15c36fcso74724166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690441047; x=1691045847;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UQYN/VzzVNnuXjJRSrV1QLMFprNIFXz06CrdAkh42wk=;
-        b=FtrP2ijNIQKJFvFUwnyA62PndsAg6LMHWQwfDuA7WC5Vf+VlPaWp+E7X7tl9BjHM3K
-         DKOaAJQC7mNaC4BLbWO4lxTY4nIhymoy7YE95Vvuwo1ZrKIkwoA/tvf5K19/KBQlqDus
-         6bcvwSSdn3EBY5+b1SGIeDOTZw1VgrUGUznhst/Lgb4eook2/oIkrb9PO0BzaahfJoJ3
-         1n59wSNuNsfXm9Z0bgHUgWpgT1dnCnW3VjEKHjDc4pju32Ml5kaMi9hNm0K04wbC4twL
-         4YZ3Gp3cWr3qsnQ0lSCFTV4A295vONWF6OiACqSLYbhEWUpNUBJYG9tRdsha92ZMZvxn
-         NXTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690441047; x=1691045847;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQYN/VzzVNnuXjJRSrV1QLMFprNIFXz06CrdAkh42wk=;
-        b=ZI35bk7aejHNQqjHUyD0I2PKuUEnJwceRX0Ru/w6PiagtxiQcdpX655gYjaTB22n+y
-         tpUz+v0R0Yc37fwxGGGDdNq5iFPxUI9W+HToyP/5afO4IMngw7duqaPTZlnkLE2dDKyU
-         UyRgBshvAYDMsebjCJaUrAhE3nkd9WPHg5ljzbPdnARwM6UzOhFvYjZwCfKwJkC/8mxh
-         ptlHeIB3E4wW3uPMmh5aULsXpSqW5OOf9sJi62hj8+BUHXLGnbanuWw1yAO8Bqm+M4L6
-         HBHxhpWvUNtwu4SUxUGtcDWZDU0BD32JfgTVYv9lCn8yh4dy9iEY0Pty7IWhDXyPkhms
-         FjEA==
-X-Gm-Message-State: ABy/qLZDy05JyLPehMtIX2NNUyD2d5qg1cQa2yzZsjjMAWGRXIAkDx9d
-        i7PuUODX5Ivf8yIS2JrR2gTG/A==
-X-Google-Smtp-Source: APBJJlEkbRc+QPuAO42qpDIaHAWqTfEy8Uwpj4POZqFapsFaVinOKDMUklUrgjoWXa1XZ4HDJ1X3KA==
-X-Received: by 2002:a17:907:7745:b0:99b:605b:1f49 with SMTP id kx5-20020a170907774500b0099b605b1f49mr1156807ejc.36.1690441047729;
-        Wed, 26 Jul 2023 23:57:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id si15-20020a170906cecf00b00992e265495csm396008ejb.212.2023.07.26.23.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Jul 2023 23:57:27 -0700 (PDT)
-Message-ID: <8b43115b-150c-bada-f847-1544bccc28c6@linaro.org>
-Date:   Thu, 27 Jul 2023 08:57:25 +0200
+        Thu, 27 Jul 2023 02:58:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1A12688;
+        Wed, 26 Jul 2023 23:58:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49D1B61D70;
+        Thu, 27 Jul 2023 06:58:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FB06C433C7;
+        Thu, 27 Jul 2023 06:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690441104;
+        bh=CNciP+/pNE5hEClaju1ZWb2DZJZqztngG2sT0T9at6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DDu+dwv0ppc8/GEB1E9zVxsSHsPsJqh2ZoqZ+WVRF6kaqMrnrN14zcbpYTwcEBKRL
+         jsK5wCnMBwVbLFtD1zJeRnD37YRZG82dDRmuT0HooLSG8YhH1v8ziPHdHBCrWMZtyl
+         pqBaGkDr6/Bux3EUV7S+4RUif2ORFEFMXTwchOKHS2JHx5oMf0eecbJBV3lo095bK2
+         sv7KRE6Xntc7qqSuzAOp9+SmVehfx+4gX1Y6VtF4d1zGkPWpkKnyaDpvrTaaKlw/8U
+         Yw90InOuNKVtRtBSUy6TIn/g/R3QU+kFWLDLZBcqD1R5/vq3LL5cTgi6mqYOsBsgTi
+         o45bktJ7U00pA==
+Date:   Thu, 27 Jul 2023 09:58:20 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Junxian Huang <huangjunxian6@hisilicon.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
+Message-ID: <20230727065820.GZ11388@unreal>
+References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
+ <20230724111938.GB9776@unreal>
+ <01d762f7-6388-9539-68ee-5425b4d56e58@hisilicon.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/6] soc: qcom: socinfo: add SM4450 ID
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230727023508.18002-1-quic_tengfan@quicinc.com>
- <20230727023508.18002-7-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727023508.18002-7-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01d762f7-6388-9539-68ee-5425b4d56e58@hisilicon.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,26 +57,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 04:35, Tengfei Fan wrote:
-> Add the ID for the Qualcomm SM4450 SoC.
+On Thu, Jul 27, 2023 at 11:44:50AM +0800, Junxian Huang wrote:
 > 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->  drivers/soc/qcom/socinfo.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-> index 4d49945b3a35..ca3c08d67a32 100644
-> --- a/drivers/soc/qcom/socinfo.c
-> +++ b/drivers/soc/qcom/socinfo.c
-> @@ -406,6 +406,7 @@ static const struct soc_id soc_id[] = {
->  	{ qcom_board_id(QRU1000) },
->  	{ qcom_board_id(QDU1000) },
->  	{ qcom_board_id(QDU1010) },
-> +	{ qcom_board_id(SM4450) },
+> On 2023/7/24 19:19, Leon Romanovsky wrote:
+> > On Fri, Jul 21, 2023 at 05:20:52PM +0800, Junxian Huang wrote:
+> >> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
+> >>
+> >> Previously, there was no way to query the number of lanes for a network
+> >> card, so the same netdev_speed would result in a fixed pair of width and
+> >> speed. As network card specifications become more diverse, such fixed
+> >> mode is no longer suitable, so a method is needed to obtain the correct
+> >> width and speed based on the number of lanes.
+> >>
+> >> This patch retrieves netdev lanes and speed from net_device and
+> >> translates them to IB width and speed.
+> >>
+> >> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+> >> Signed-off-by: Luoyouming <luoyouming@huawei.com>
+> >> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+> >> ---
+> >>  drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
+> >>  1 file changed, 79 insertions(+), 21 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+> >> index b99b3cc283b6..25367bd6dd97 100644
+> >> --- a/drivers/infiniband/core/verbs.c
+> >> +++ b/drivers/infiniband/core/verbs.c
+> >> @@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
+> >>  }
+> >>  EXPORT_SYMBOL(ib_modify_qp_with_udata);
+> >>  
+> >> +static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
+> >> +				   u16 *speed, u8 *width)
+> > 
+> > <...>
+> > 
+> >> +	switch (netdev_speed / lanes) {
+> >> +	case SPEED_2500:
+> >> +		*speed = IB_SPEED_SDR;
+> >> +		break;
+> >> +	case SPEED_5000:
+> >> +		*speed = IB_SPEED_DDR;
+> >> +		break;
+> >> +	case SPEED_10000:
+> >> +		*speed = IB_SPEED_FDR10;
+> >> +		break;
+> >> +	case SPEED_14000:
+> >> +		*speed = IB_SPEED_FDR;
+> >> +		break;
+> >> +	case SPEED_25000:
+> >> +		*speed = IB_SPEED_EDR;
+> >> +		break;
+> >> +	case SPEED_50000:
+> >> +		*speed = IB_SPEED_HDR;
+> >> +		break;
+> >> +	case SPEED_100000:
+> >> +		*speed = IB_SPEED_NDR;
+> >> +		break;
+> >> +	default:
+> >> +		*speed = IB_SPEED_SDR;
+> >> +	}
+> > 
+> > How did you come to these translation values?
+> > 
+> > Thanks
+> 
+> The IB spec defines the mapping relationship between IB speed and transfer
+> rate. For example, if the transfer rate of is 2.5Gbps(SPEED_2500), the IB
+> speed will be set to IB_SPEED_SDR.
 
-Neither here...
+Are you referring to "Table 250 - Enumeration of the Rate"?
 
-Best regards,
-Krzysztof
+Thanks
 
+> 
+> Junxian
