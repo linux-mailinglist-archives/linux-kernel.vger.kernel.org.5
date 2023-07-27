@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E937658EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376437658E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjG0Qjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51264 "EHLO
+        id S232496AbjG0QjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjG0Qjq (ORCPT
+        with ESMTP id S232135AbjG0QjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:39:46 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B8273D
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690475985; x=1722011985;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RI85hPQlhBFAXR1YGTbviOk2eANaFYxndRW93QBWhOM=;
-  b=P2G+LNmw18279LGidW2yUuVNkgRFf4wHz1sr+6lFsXOYxo4v0SuLWDG4
-   /0EWvwucRQ5CuKLC/KfBkpqc8yiYuUaCsOUZ6yqscq0fmc9r4WQTTTtSA
-   /btajunVQ/4bWOZ+zPWTCwtE7u/xanwCOPk0KdNeJmEukdbab1KCYg4J4
-   KT1VCvI3jE/Iq+Yfor6VEmug0DVPF1+OkrClRGxC52xbCkTQQPYcDJGSI
-   0dKF4eRD537CHQA8n3OC04UDfhM3ePws1DGa/6fMicKoc2sWcVyPx0Wme
-   gpBA5oeOrlgHQAp3iALc9ze+NjLPaWnqzvKZWTLHRCDg7ZFgDXVEoSLV2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432181346"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="432181346"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 09:36:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="797114748"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="797114748"
-Received: from lzhiguno-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.37.222])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 09:36:32 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 62ADC109503; Thu, 27 Jul 2023 19:36:30 +0300 (+03)
-Date:   Thu, 27 Jul 2023 19:36:30 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com
-Subject: Re: [PATCH v3 05/12] x86/tdx: Pass TDCALL/SEAMCALL input/output
- registers via a structure
-Message-ID: <20230727163630.gcsczhebozgf2tsu@box.shutemov.name>
-References: <cover.1690369495.git.kai.huang@intel.com>
- <fd9886e5fffe5ccccf5895627be2fff209a69049.1690369495.git.kai.huang@intel.com>
+        Thu, 27 Jul 2023 12:39:20 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276B62D54
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:19 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40540a8a3bbso304571cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690475958; x=1691080758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2yDMqgwJZJpeLWzTC3EjN9bRwWDIhFu5M1m3QL8b53s=;
+        b=AdhfcTm82K1GjFLigVcxGTETbwB4Hu0ZKLK+rVeYJhk06k5aXEomtq0SuD4my1yUGg
+         G6a/EeSTlThiC82+Z4bb/j+2s0ml/xUhySNsXFOA6VBQOFGZDamFXY9HPFc97j6VTYG5
+         1e3d2EFDPlJjT/zTfCt+EjkDltdCVWOfiGhis7IWPppJdrn0DD5QVUmWhlKEzl+bjSib
+         UYXeS7mDMrpUEzNQ3lX5EVaJgq/MZDpL+9hmU+DGwhEBLNQsOasCoVnXS4xZoegM3c2P
+         U6gEU7zhObGvROVJgWVeMRLMV+9gxdLqC4/35IJiVicb67MCUB2Azg0hfZNEGGq3G8kR
+         5mXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690475958; x=1691080758;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2yDMqgwJZJpeLWzTC3EjN9bRwWDIhFu5M1m3QL8b53s=;
+        b=RWEDy+jndlyOfPwaZxzrHtFvbaayR1qir84+OE3/6FMwI5nxGX1dlF9RmLpe7lRwph
+         mrLIdDgGLAVormh/OfpZI0CJ9gjLZ9Vafx3ZjREnZ9B5jVk/mF6gKdmPbidTDyGe6gol
+         1bKLoCliZRV9ED8Tyj1SaXAOpAxNjK8edOOmNTGyawLYiGpw7tbuDYrEMwkDS/dwRANb
+         vHF0fm8CZij3oerC/qXPXhFRDbjh7QFwMiqKYaG136V3MW1s7Ue2msGFyDvbgIGWYy8q
+         M4abP+4mTHc6jh3JruNhPEEhB9bEX44d4BC3QWZyMqbzq//5vWJHILW4G/LwsKSCm6rX
+         jokA==
+X-Gm-Message-State: ABy/qLb17hVMX8oupxEtCTjfuPkidushaUyGzSztBenyI8nDuUfeXsnp
+        Oc3S18xxize2Yz+HigvedXJ6H4iu2CtKFdHPtgBvTQ==
+X-Google-Smtp-Source: APBJJlFa6Zgjvg4Fw2GO4V4tr/e2Mu+mSsSifid6jwnpXQAx3UQnVcDy9mGobHKu9b2sKlUs8EavhIu7j8HTjvXvfKs=
+X-Received: by 2002:ac8:7d85:0:b0:3f9:a78f:c527 with SMTP id
+ c5-20020ac87d85000000b003f9a78fc527mr207755qtd.21.1690475958109; Thu, 27 Jul
+ 2023 09:39:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd9886e5fffe5ccccf5895627be2fff209a69049.1690369495.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230720112955.643283-1-ryan.roberts@arm.com> <20230720112955.643283-3-ryan.roberts@arm.com>
+ <CAOUHufamqn0b8tN1DppfPi7FRnENzYwcSOVcAKNxkj=CYa+OwQ@mail.gmail.com>
+ <ZMFNgmlT1JpI0z5+@casper.infradead.org> <87r0ouw39n.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZMHX+O0wmjuPXdTi@casper.infradead.org> <faf8d723-afb8-ac4e-7861-4004bb78c5a9@arm.com>
+In-Reply-To: <faf8d723-afb8-ac4e-7861-4004bb78c5a9@arm.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 27 Jul 2023 10:38:42 -0600
+Message-ID: <CAOUHufa38H0o0ZoX-KYMSeAiJghMWtjfHM2F4OjUZ-a--_Kt_w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm: Implement folio_remove_rmap_range()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:25:07PM +1200, Kai Huang wrote:
-> diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
-> index 6bdf6e137953..a0e7fe81bf63 100644
-> --- a/arch/x86/virt/vmx/tdx/tdxcall.S
-> +++ b/arch/x86/virt/vmx/tdx/tdxcall.S
-> @@ -17,34 +17,33 @@
->   *            TDX module and hypercalls to the VMM.
->   * SEAMCALL - used by TDX hosts to make requests to the
->   *            TDX module.
-> + *
-> + *-------------------------------------------------------------------------
-> + * TDCALL/SEAMCALL ABI:
-> + *-------------------------------------------------------------------------
-> + * Input Registers:
-> + *
-> + * RAX                 - TDCALL/SEAMCALL Leaf number.
-> + * RCX,RDX,R8-R9       - TDCALL/SEAMCALL Leaf specific input registers.
-> + *
-> + * Output Registers:
-> + *
-> + * RAX                 - TDCALL/SEAMCALL instruction error code.
-> + * RCX,RDX,R8-R11      - TDCALL/SEAMCALL Leaf specific output registers.
-> + *
-> + *-------------------------------------------------------------------------
+On Thu, Jul 27, 2023 at 1:26=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> On 27/07/2023 03:35, Matthew Wilcox wrote:
+> > On Thu, Jul 27, 2023 at 09:29:24AM +0800, Huang, Ying wrote:
+> >> Matthew Wilcox <willy@infradead.org> writes:
+> >>> I think that can make sense.  Because we limit to a single page table=
+,
+> >>> specifying 'nr =3D 1 << PMD_ORDER' is the same as 'compound =3D true'=
+.
+> >>> Just make it folio, page, nr, vma.  I'd actually prefer it as (vma,
+> >>> folio, page, nr), but that isn't the convention we've had in rmap up
+> >>> until now.
+> >>
+> >> IIUC, even if 'nr =3D 1 << PMD_ORDER', we may remove one PMD 'compound=
+'
+> >> mapping, or 'nr' PTE mapping.  So, we will still need 'compound' (or
+> >> some better name) as parameter.
+> >
+> > Oh, this is removing ... so you're concerned with the case where we've
+> > split the PMD into PTEs, but all the PTEs are still present in a single
+> > page table?  OK, I don't have a good answer to that.  Maybe that torped=
+oes
+> > the whole idea; I'll think about it.
+>
+> This is exactly why I think the approach I've already taken is the correc=
+t one;
+> a 'range' makes no sense when you are dealing with 'compound' pages becau=
+se you
+> are accounting the entire folio. So surely its better to reflect that by =
+only
+> accounting small pages in the range version of the API.
 
-So, you keep the existing asymetry in IN and OUT registers. R10 and R11
-are OUT-only registers. It can be confusing for user since it is the same
-structure now. I guess it changes in the following patches, but I would
-prefer to make them even here if there's no good reason not to.
+If the argument is the compound case is a separate one, then why not a
+separate API for it?
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+I don't really care about whether we think 'range' makes sense for
+'compound' or not. What I'm saying is:
+1. if they are considered one general case, then one API with the
+compound parameter.
+2. if they are considered two specific cases, there should be two APIs.
+This common design pattern is cleaner IMO.
+
+Right now we have an overlap (redundancy) -- people would have to do
+two code searches: one for page_remove_rmap() and the other for
+folio_remove_rmap_range(nr=3D1), and this IMO is a bad design pattern.
