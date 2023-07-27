@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FF1764DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45665764EA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbjG0IqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S231573AbjG0JI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbjG0Ipw (ORCPT
+        with ESMTP id S231382AbjG0JII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:45:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442EB83CC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690446438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RGeV47pO7s8gps9ksu/4+lDYD8FHRHT3YEWZYPUU9kM=;
-        b=N2tcRLMao8GCSz3YHJm/KILK4kuQLXceKHs8MkcCfl1Epwdqsk8Nm7T2TZ4oXtxu55u0u1
-        8zwAQ7NfTksHYMiFt2YNjNPtiLfRv6Qb8GIn/UiTOHvzYa3+LfyUYV5wri5inroI6p3Jv2
-        ryJGILZfJIoDADj4VBUjw6ch+qpX9XQ=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-6oNo8XWcMt2fZDwVQhUQAA-1; Thu, 27 Jul 2023 04:21:13 -0400
-X-MC-Unique: 6oNo8XWcMt2fZDwVQhUQAA-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-767b80384a3so16379285a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:21:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690446073; x=1691050873;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RGeV47pO7s8gps9ksu/4+lDYD8FHRHT3YEWZYPUU9kM=;
-        b=bT0zKYWGngcN15M4dd2fR/hBwFhWS47QY8XbMExkW5GWmFOgTexSoJxBvmIZXEclWD
-         haVS5bwd3kn+k+2FKrsH7BYmeYJQcomve+/H/vMQmatXXxe/tAN4o50JZjotfaGXUCKy
-         nNVyOU00gOgxQ2kMP3OEQbAjNgcbR87Xp2jV4mjNIKP8kUigeX4A8OT1vhRi3e5eqgdm
-         Xu8JkIWYJnfOAYXOBYGnTQ1uLgl2MZLzOdNzjrDoA2UPL0eBVb4VrB/XHrIsj3s6dDS1
-         qxjE4FFoZLJ7vzVKWpwcSP61yu4ENEluTu+MymOsO8ltGplhJYsaGjSuYeR60MMSSu55
-         t9WA==
-X-Gm-Message-State: ABy/qLaqA+7BV1+J2y3aeFPWHseRBR2nInWwmd5unTgCz1j5M/0vQo4O
-        Ts8vjgcOJf+S+qBYAOt5Fky3SoimegnVhCORrytdpzNS5RHDlmjqB5PnCVtPZEFM0jZ5jCS9jrX
-        SRYoOg6YTxR9eUo5CcHWoVsMI
-X-Received: by 2002:a05:620a:31a1:b0:75b:23a1:69ee with SMTP id bi33-20020a05620a31a100b0075b23a169eemr4576177qkb.5.1690446073024;
-        Thu, 27 Jul 2023 01:21:13 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHs3zPOBeUj9ojGrgUE/X3gQH8r73DGALfDrJ+7Y3EtRQm+q4OZUXkV2TRkziNvYTa7JtMfZA==
-X-Received: by 2002:a05:620a:31a1:b0:75b:23a1:69ee with SMTP id bi33-20020a05620a31a100b0075b23a169eemr4576160qkb.5.1690446072769;
-        Thu, 27 Jul 2023 01:21:12 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-238-55.dyn.eolo.it. [146.241.238.55])
-        by smtp.gmail.com with ESMTPSA id j4-20020a05620a000400b00767d8663b3asm253886qki.53.2023.07.27.01.21.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:21:12 -0700 (PDT)
-Message-ID: <9cfa70cca3cb1dd20bb2cab70a213e5a4dd28f89.camel@redhat.com>
-Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>, Zheng Wang <zyytlz.wz@163.com>
-Cc:     s.shtylyov@omp.ru, lee@kernel.org, linyunsheng@huawei.com,
-        davem@davemloft.net, edumazet@google.com, richardcochran@gmail.com,
-        p.zabel@pengutronix.de, geert+renesas@glider.be,
-        magnus.damm@gmail.com, yoshihiro.shimoda.uh@renesas.com,
-        biju.das.jz@bp.renesas.com, wsa+renesas@sang-engineering.com,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hackerzheng666@gmail.com,
-        1395428693sheep@gmail.com, alex000young@gmail.com
-Date:   Thu, 27 Jul 2023 10:21:07 +0200
-In-Reply-To: <20230725201952.2f23bb3b@kernel.org>
-References: <20230725030026.1664873-1-zyytlz.wz@163.com>
-         <20230725201952.2f23bb3b@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 27 Jul 2023 05:08:08 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABE8EA5D5;
+        Thu, 27 Jul 2023 01:49:07 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36R8LnOkA004705, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36R8LnOkA004705
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 27 Jul 2023 16:21:49 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 27 Jul 2023 16:22:01 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 27 Jul 2023 16:22:01 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Thu, 27 Jul 2023 16:22:01 +0800
+From:   =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: RE: [PATCH 7/7] dt-bindings: pinctrl: realtek: add RTD1619B pinctrl binding
+Thread-Topic: [PATCH 7/7] dt-bindings: pinctrl: realtek: add RTD1619B pinctrl
+ binding
+Thread-Index: AQHZv7exjVfyXJsHrEuOnb3buOw8/6/NRDrg
+Date:   Thu, 27 Jul 2023 08:22:00 +0000
+Message-ID: <7ba2cf80260149fd8996a8ad8b9df82e@realtek.com>
+References: <20230726090409.16606-1-tychang@realtek.com>
+ <20230726090409.16606-8-tychang@realtek.com>
+ <169037236741.1158189.1605537876806523813.robh@kernel.org>
+In-Reply-To: <169037236741.1158189.1605537876806523813.robh@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,36 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-07-25 at 20:19 -0700, Jakub Kicinski wrote:
-> On Tue, 25 Jul 2023 11:00:26 +0800 Zheng Wang wrote:
-> > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/eth=
-ernet/renesas/ravb_main.c
-> > index 4d6b3b7d6abb..ce2da5101e51 100644
-> > --- a/drivers/net/ethernet/renesas/ravb_main.c
-> > +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> > @@ -2885,6 +2885,9 @@ static int ravb_remove(struct platform_device *pd=
-ev)
-> >  	struct ravb_private *priv =3D netdev_priv(ndev);
-> >  	const struct ravb_hw_info *info =3D priv->info;
-> > =20
-> > +	netif_carrier_off(ndev);
-> > +	netif_tx_disable(ndev);
-> > +	cancel_work_sync(&priv->work);
->=20
-> Still racy, the carrier can come back up after canceling the work.
-
-I must admit I don't see how/when this driver sets the carrier on ?!?
-
-> But whatever, this is a non-issue in the first place.
-
-Do you mean the UaF can't happen? I think that is real.=20
-
-> The fact that ravb_tx_timeout_work doesn't take any locks seems much
-> more suspicious.
-
-Indeed! But that should be a different patch, right?
-
-Waiting a little more for feedback from renesas.
-
-/P
-
+SGkgUm9iLA0KPkZyb206IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+U2VudDogV2Vk
+bmVzZGF5LCBKdWx5IDI2LCAyMDIzIDc6NTMgUE0NCj5UbzogVFlfQ2hhbmdbsWmkbLZoXSA8dHlj
+aGFuZ0ByZWFsdGVrLmNvbT4NCj5DYzogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9mLmtv
+emxvd3NraStkdEBsaW5hcm8ub3JnPjsgUm9iIEhlcnJpbmcNCj48cm9iaCtkdEBrZXJuZWwub3Jn
+PjsgQ29ub3IgRG9vbGV5IDxjb25vcitkdEBrZXJuZWwub3JnPjsNCj5kZXZpY2V0cmVlQHZnZXIu
+a2VybmVsLm9yZzsgbGludXgtZ3Bpb0B2Z2VyLmtlcm5lbC5vcmc7DQo+bGludXgta2VybmVsQHZn
+ZXIua2VybmVsLm9yZzsgTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPg0K
+PlN1YmplY3Q6IFJlOiBbUEFUQ0ggNy83XSBkdC1iaW5kaW5nczogcGluY3RybDogcmVhbHRlazog
+YWRkIFJURDE2MTlCIHBpbmN0cmwgYmluZGluZw0KPg0KPg0KPkV4dGVybmFsIG1haWwuDQo+DQo+
+DQo+DQo+T24gV2VkLCAyNiBKdWwgMjAyMyAxNzowNDowOSArMDgwMCwgVFkgQ2hhbmcgd3JvdGU6
+DQo+PiBBZGQgZGV2aWNlIHRyZWUgYmluZGluZ3MgZm9yIFJURDE2MTlCLg0KPj4NCj4+IFNpZ25l
+ZC1vZmYtYnk6IFRZIENoYW5nIDx0eWNoYW5nQHJlYWx0ZWsuY29tPg0KPj4gLS0tDQo+PiAgLi4u
+L3BpbmN0cmwvcmVhbHRlayxydGQxNjE5Yi1waW5jdHJsLnlhbWwgICAgIHwgMTYyICsrKysrKysr
+KysrKysrKysrKw0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAxNjIgaW5zZXJ0aW9ucygrKQ0KPj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NA0KPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bp
+bmN0cmwvcmVhbHRlayxydGQxNjE5Yi1waW5jdHJsLnlhbQ0KPj4gbA0KPj4NCj4NCj5NeSBib3Qg
+Zm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2UgRFRfQ0hFQ0tFUl9GTEFHUz0tbSBkdF9iaW5kaW5n
+X2NoZWNrJw0KPm9uIHlvdXIgcGF0Y2ggKERUX0NIRUNLRVJfRkxBR1MgaXMgbmV3IGluIHY1LjEz
+KToNCj4NCj55YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6DQo+DQo+ZHRzY2hlbWEvZHRjIHdhcm5p
+bmdzL2Vycm9yczoNCj5Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGluY3RybC9y
+ZWFsdGVrLHJ0ZDE2MTliLXBpbmN0cmwuZXhhbXBsZS5kdGI6DQo+L2V4YW1wbGUtMC9waW5jdHJs
+QDRlMDAwOiBmYWlsZWQgdG8gbWF0Y2ggYW55IHNjaGVtYSB3aXRoIGNvbXBhdGlibGU6DQo+Wydy
+ZWFsdGVrLHJ0ZDE2eHhiLXBpbmN0cmwnXQ0KPg0KPmRvYyByZWZlcmVuY2UgZXJyb3JzIChtYWtl
+IHJlZmNoZWNrZG9jcyk6DQo+DQo+U2VlDQo+aHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9w
+cm9qZWN0L2RldmljZXRyZWUtYmluZGluZ3MvcGF0Y2gvMjAyMzA3MjYwOTA0MDkNCj4uMTY2MDYt
+OC10eWNoYW5nQHJlYWx0ZWsuY29tDQo+DQo+VGhlIGJhc2UgZm9yIHRoZSBzZXJpZXMgaXMgZ2Vu
+ZXJhbGx5IHRoZSBsYXRlc3QgcmMxLiBBIGRpZmZlcmVudCBkZXBlbmRlbmN5IHNob3VsZCBiZQ0K
+Pm5vdGVkIGluICp0aGlzKiBwYXRjaC4NCj4NCj5JZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRf
+YmluZGluZ19jaGVjaycgYW5kIGRpZG4ndCBzZWUgdGhlIGFib3ZlIGVycm9yKHMpLCB0aGVuDQo+
+bWFrZSBzdXJlICd5YW1sbGludCcgaXMgaW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8N
+Cj5kYXRlOg0KPg0KPnBpcDMgaW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUNCj4NCj5QbGVhc2Ug
+Y2hlY2sgYW5kIHJlLXN1Ym1pdCBhZnRlciBydW5uaW5nIHRoZSBhYm92ZSBjb21tYW5kIHlvdXJz
+ZWxmLiBOb3RlIHRoYXQNCj5EVF9TQ0hFTUFfRklMRVMgY2FuIGJlIHNldCB0byB5b3VyIHNjaGVt
+YSBmaWxlIHRvIHNwZWVkIHVwIGNoZWNraW5nIHlvdXINCj5zY2hlbWEuIEhvd2V2ZXIsIGl0IG11
+c3QgYmUgdW5zZXQgdG8gdGVzdCBhbGwgZXhhbXBsZXMgd2l0aCB5b3VyIHNjaGVtYS4NCj4NCkkg
+d2lsbCBmaXggaXQgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KVFkgQ2hhbmcNCg==
