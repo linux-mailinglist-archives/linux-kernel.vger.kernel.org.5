@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFC7764FB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04073764FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbjG0J24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:28:56 -0400
+        id S234519AbjG0Jag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:30:36 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234689AbjG0J2R (ORCPT
+        with ESMTP id S233890AbjG0JaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:28:17 -0400
-Received: from rivendell.linuxfromscratch.org (rivendell.linuxfromscratch.org [208.118.68.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDACE8690;
-        Thu, 27 Jul 2023 02:19:16 -0700 (PDT)
-Received: from [192.168.124.11] (unknown [113.140.29.10])
-        by rivendell.linuxfromscratch.org (Postfix) with ESMTPSA id 872301C1E3F;
-        Thu, 27 Jul 2023 09:19:08 +0000 (GMT)
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 1.0.0 at rivendell.linuxfromscratch.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfromscratch.org;
-        s=cert4; t=1690449554;
-        bh=U3/iZtufbRk45Ts76eay7OLdIEe1IdvlvMnUnVReqh8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Z8mNShnFzFCDa+6T09xC9x+L74plUnIJhzVb1nZjZltH+qoaU6mGqmSzxrWpErjEt
-         k6ofcrPoVjzWt+bV2neqteEUYWxIRtl/Ti4h4tWpD0mXNPlZEPuaywC/g0Y/GX4fKs
-         ninbuE0bT73eHjVHFeH8zpFw2aDSSoypWL63nXR9behxJgfKWyEoNN/Hha8E9SKiQn
-         6IP8Y4r5O9LWZrsDguAo2XpyMgSr7ZYAI4tAQ1g+nwNoZ1a2+mdnk7SONgJp/Wut8I
-         gJ7ItS39IunM9F5YA20b712clPIe/5mqVq5JRUZfOoMdQidYarE7g8jB5tjV9qzU1y
-         qNvD0LcqdTV/w==
-Message-ID: <c5e44ec519f4d56a71d416cf43a375cdbf0b9358.camel@linuxfromscratch.org>
-Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
-From:   Xi Ruoyao <xry111@linuxfromscratch.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Date:   Thu, 27 Jul 2023 17:18:51 +0800
-In-Reply-To: <4986b92f1a5aa303a529c6004aaedd2184c3ccf7.camel@linuxfromscratch.org>
-References: <20230617161529.2092-1-jszhang@kernel.org>
-         <c9a44f534071a6d67f1e21bafdb713793c559124.camel@linuxfromscratch.org>
-         <20230725-unheard-dingy-42f0fafe7216@wendy> <ZL/jMYL3akl78ZZN@xhacker>
-         <3e0994dab495920ac590dc28d6b9d9765abe0c7e.camel@linuxfromscratch.org>
-         <ZME1J4mpVf5yth32@xhacker>
-         <866eab3e30a18c50742a75d62aee223fdc7e3cee.camel@linuxfromscratch.org>
-         <4986b92f1a5aa303a529c6004aaedd2184c3ccf7.camel@linuxfromscratch.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Thu, 27 Jul 2023 05:30:12 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75389A9C
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:20:04 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-682ae5d4184so182992b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690449603; x=1691054403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
+        b=YCWSTu9U7oWMIxlz666y2QG523oA3QX5qQv7ZytrRVu6fJw8dRHyUfgDIT1gU69FG8
+         THUguZfsi1KeJApNPmw0jxmv7f8KFlV4UTxlH9XbeulHxoa/ldWA269gxLsqPd7fsDUL
+         3wrs7fjkTjLEvVIuFKVgIWoEr+OE7ZGV4f2QptD03saCT0x1g+4lQFRHQ9ruqft2Rhft
+         lQsKff8YPeqYMpcr6auHVhvyZ4A0b6O2v3t87pxn8FkR9lCy8v/ntqGuUNKm9Zf3rtD1
+         Pt/WGCyBPHzJX+fw7G8Ac9jWyGkR4LQhg8QoLvoZwbFMr8CqGaDCh/cUGTEJkXif0gLU
+         NqYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690449603; x=1691054403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cb79b5va6gFfSJneJi5lY4rGeRwgOukMupryAUVW6kI=;
+        b=BXhQho2SGKJDm970k06ECoGGR+2LKYo0gAhpiEagNQrMKUrNMvnAnt7JNOblQCtTrk
+         1yvFQ3D2WLWvgMZmYHObp85LJDDsWJWG+QMOvzF/+PenBF24C7K3uHrPdz+rcBF/USkG
+         3g4hK+HO1c3tTbNJSHiZcq9wa7AHrl/1Ar0UXZTmi+YC4kaC0KcgrhLcqtKdev6Fns8Z
+         DkIxmbTsdSyBoDDiDAI068YRFJPfXJ1CgXz0a5KDCe0bW4wnNYgjtV8UM8AqL14MFFiL
+         4AnbsS1w69bC2kFhx+SyDxZbR+jC/+3ltH2yuqrA0wrLJIKbLSbm2B7krz/2LAkcKd/L
+         HGgw==
+X-Gm-Message-State: ABy/qLaVoNiI8CyHUpewlHU/fGqXHmur5b527iXaB5i5vJO4ZeoI+aH+
+        YMil54MuiBW0xL8ri3a20J19JQ==
+X-Google-Smtp-Source: APBJJlH+dm0mCsob/js+yZXnXAfwEH4KDToex0aS0MQ56gbjyJxo+xxDZzOa2lZ9gy3mjvwdmWQa2g==
+X-Received: by 2002:a17:902:da82:b0:1b8:811:b079 with SMTP id j2-20020a170902da8200b001b80811b079mr5785873plx.0.1690449602958;
+        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id 5-20020a170902c24500b001bbb7d8fff2sm1109046plg.116.2023.07.27.02.19.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 02:20:02 -0700 (PDT)
+Message-ID: <5f1b85b8-3655-1700-4d16-fa056b31ceeb@bytedance.com>
+Date:   Thu, 27 Jul 2023 17:19:49 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 40/49] xfs: dynamically allocate the xfs-qm shrinker
+Content-Language: en-US
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-41-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230727080502.77895-41-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-27 at 08:54 +0800, Xi Ruoyao wrote:
-> On Thu, 2023-07-27 at 08:14 +0800, Xi Ruoyao wrote:
-> > On Wed, 2023-07-26 at 23:00 +0800, Jisheng Zhang wrote:
-> > > which dts r u using? see below.
-> > >=20
-> > > >=20
-> > > > Or maybe my toolchain (GCC 13.1.0, Binutils-2.40, with no patches) =
-can
-> > > > miscompile the kernel?
-> >=20
-> > /* snip */
-> >=20
-> > > > Boot HART ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 : 0
-> > > > Boot HART Domain=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 : root
-> > > > Boot HART Priv Version=C2=A0=C2=A0=C2=A0 : v1.11
-> > > > Boot HART Base ISA=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 : rv64=
-imafdcvx
-> > >=20
-> > > what? I don't think the mainline dts provide v and x.=20
-> >=20
-> > I copied the compiled arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dtb
-> > into /boot and loaded it with u-boot "load" command onto 0x46000000, an=
-d
-> > passed this address to the booti command.
-> >=20
-> > But maybe I've copied the wrong file or made some other mistake... I'll
-> > recheck.
->=20
-> Hmm, and if I read OpenSBI code correctly, this line reflects the
-> content of the misa CSR, not the DT riscv,isa value.
->=20
-> The log of successful boot provided by Drew also contains
-> "rv64imafdcvx":
->=20
-> https://gist.github.com/pdp7/23259595a7570f1f11086d286e16dfb6
 
-I tried a __show_reg call before the panic:
 
-[    0.012953] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc3 #7
-[    0.012967] Hardware name: Sipeed Lichee Pi 4A (DT)
-[    0.012976] epc : ffffffff80c84a60 ra : 0000000000000000 sp : ffffffff80=
-04dfee
-[    0.012988]  gp : 0000000200000120 tp : ffffffff80c03d20 t0 : ffffffff80=
-002d6c
-[    0.012997]  t1 : ffffffff8004dfee t2 : ffffffff8004dfe6 s0 : ffffffff80=
-c03d20
-[    0.013005]  s1 : ffffffff80c966f0 a0 : ffffffff80c98140 a1 : 2000000000=
-000000
-[    0.013012]  a2 : 0000000000000043 a3 : 203a656c6f736e6f a4 : ffffffff80=
-c03def
-[    0.013021]  a5 : ffffffff80dcb4a0 a6 : 0000000000000001 a7 : 0000000000=
-000014
-[    0.013030]  s2 : 000000000000000a s3 : 0000000000000000 s4 : 0000000000=
-000000
-[    0.013036]  s5 : ffffffd9fef69740 s6 : 0000000000000008 s7 : 0000000000=
-000032
-[    0.013046]  s8 : 0000000000000002 s9 : ffffffff80c03df0 s10: ffffffff80=
-dcb4e8
-[    0.013056]  s11: ffffffff80dc7c80 t3 : ffffffff80c03d48 t4 : ffffffff80=
-dcb2f0
-[    0.013064]  t5 : ffffffff80c84a60 t6 : ffffffff80c10b98
-[    0.013071] status: 0000000000000000 badaddr: 0000000000000001 cause: ff=
-ffffff80dcb4f7
-[    0.013082] Kernel panic - not syncing: unexpected interrupt cause
+On 2023/7/27 16:04, Qi Zheng wrote:
+> In preparation for implementing lockless slab shrink, use new APIs to
+> dynamically allocate the xfs-qm shrinker, so that it can be freed
+> asynchronously using kfree_rcu(). Then it doesn't need to wait for RCU
+> read-side critical section when releasing the struct xfs_quotainfo.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   fs/xfs/xfs_qm.c | 26 +++++++++++++-------------
+>   fs/xfs/xfs_qm.h |  2 +-
+>   2 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_qm.c b/fs/xfs/xfs_qm.c
+> index 6abcc34fafd8..032f0a208bd2 100644
+> --- a/fs/xfs/xfs_qm.c
+> +++ b/fs/xfs/xfs_qm.c
+> @@ -504,8 +504,7 @@ xfs_qm_shrink_scan(
+>   	struct shrinker		*shrink,
+>   	struct shrink_control	*sc)
+>   {
+> -	struct xfs_quotainfo	*qi = container_of(shrink,
+> -					struct xfs_quotainfo, qi_shrinker);
+> +	struct xfs_quotainfo	*qi = shrink->private_data;
+>   	struct xfs_qm_isolate	isol;
+>   	unsigned long		freed;
+>   	int			error;
+> @@ -539,8 +538,7 @@ xfs_qm_shrink_count(
+>   	struct shrinker		*shrink,
+>   	struct shrink_control	*sc)
+>   {
+> -	struct xfs_quotainfo	*qi = container_of(shrink,
+> -					struct xfs_quotainfo, qi_shrinker);
+> +	struct xfs_quotainfo	*qi = shrink->private_data;
+>   
+>   	return list_lru_shrink_count(&qi->qi_lru, sc);
+>   }
+> @@ -680,16 +678,18 @@ xfs_qm_init_quotainfo(
+>   	if (XFS_IS_PQUOTA_ON(mp))
+>   		xfs_qm_set_defquota(mp, XFS_DQTYPE_PROJ, qinf);
+>   
+> -	qinf->qi_shrinker.count_objects = xfs_qm_shrink_count;
+> -	qinf->qi_shrinker.scan_objects = xfs_qm_shrink_scan;
+> -	qinf->qi_shrinker.seeks = DEFAULT_SEEKS;
+> -	qinf->qi_shrinker.flags = SHRINKER_NUMA_AWARE;
+> -
+> -	error = register_shrinker(&qinf->qi_shrinker, "xfs-qm:%s",
+> -				  mp->m_super->s_id);
+> -	if (error)
+> +	qinf->qi_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE, "xfs-qm:%s",
+> +					   mp->m_super->s_id);
+> +	if (!qinf->qi_shrinker)
 
-I compared these with System.map and the result seems completely erratic
-(for example, sp is out of init_stack, and gp is not __global_pointer$).
+Here should set error to -ENOMEM, will fix.
 
+>   		goto out_free_inos;
+>   
+> +	qinf->qi_shrinker->count_objects = xfs_qm_shrink_count;
+> +	qinf->qi_shrinker->scan_objects = xfs_qm_shrink_scan;
+> +	qinf->qi_shrinker->seeks = DEFAULT_SEEKS;
+> +	qinf->qi_shrinker->private_data = qinf;
+> +
+> +	shrinker_register(qinf->qi_shrinker);
+> +
+>   	return 0;
+>   
+>   out_free_inos:
+> @@ -718,7 +718,7 @@ xfs_qm_destroy_quotainfo(
+>   	qi = mp->m_quotainfo;
+>   	ASSERT(qi != NULL);
+>   
+> -	unregister_shrinker(&qi->qi_shrinker);
+> +	shrinker_free(qi->qi_shrinker);
+>   	list_lru_destroy(&qi->qi_lru);
+>   	xfs_qm_destroy_quotainos(qi);
+>   	mutex_destroy(&qi->qi_tree_lock);
+> diff --git a/fs/xfs/xfs_qm.h b/fs/xfs/xfs_qm.h
+> index 9683f0457d19..d5c9fc4ba591 100644
+> --- a/fs/xfs/xfs_qm.h
+> +++ b/fs/xfs/xfs_qm.h
+> @@ -63,7 +63,7 @@ struct xfs_quotainfo {
+>   	struct xfs_def_quota	qi_usr_default;
+>   	struct xfs_def_quota	qi_grp_default;
+>   	struct xfs_def_quota	qi_prj_default;
+> -	struct shrinker		qi_shrinker;
+> +	struct shrinker		*qi_shrinker;
+>   
+>   	/* Minimum and maximum quota expiration timestamp values. */
+>   	time64_t		qi_expiry_min;
