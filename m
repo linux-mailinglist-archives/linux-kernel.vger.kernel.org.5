@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BF5764EC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A1F764EC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjG0JKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S232435AbjG0JK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbjG0JJV (ORCPT
+        with ESMTP id S233421AbjG0JKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:09:21 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F395FC6;
-        Thu, 27 Jul 2023 01:53:25 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R74V6b027847;
-        Thu, 27 Jul 2023 04:53:21 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s36afn5xq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 04:53:21 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 36R8rKE1005784
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Jul 2023 04:53:20 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 27 Jul
- 2023 04:53:19 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 27 Jul 2023 04:53:19 -0400
-Received: from okan.localdomain ([10.158.19.61])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36R8qn6s026993;
-        Thu, 27 Jul 2023 04:53:09 -0400
-From:   Okan Sahin <okan.sahin@analog.com>
-To:     <okan.sahin@analog.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Thu, 27 Jul 2023 05:10:11 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A74210FC
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:54:43 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5221f193817so893953a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690448082; x=1691052882;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4zFidkvpiaBnsj/3sbwZ3aVjcWlOMu2Or6nmeidN1j0=;
+        b=pPi+Y4SMHAl+xf5iH2Ya1h6XD5Tmjp0NMKDioa0Jr5hSr6Tpokic8WYvuAr4jCmtZl
+         7DT+PS8t0TJmHZw8x2SnyBXY0SYinp62tpqzpfZs5Xe75UvFqzo8BFRylTj+g2GMdBTM
+         l/xN0S3adnkDJLaKkyVr8KUxvdTUEyv1b/+XSZEUqclbzkIsz1PdMBDdWu+xs2dyCJ7g
+         A6ZtvexK5CelK0jNnqMUmqKcozHJbY2xvYCCnbPfErASO/dYfjT961yyqVzgmk+t3Rn6
+         TEBB9QQdHHgWNwqteR8SSqSLHcewaPeCZZjBVozObOhg62w6OaPvEnu4TueBrOn0CdlU
+         qSZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690448082; x=1691052882;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4zFidkvpiaBnsj/3sbwZ3aVjcWlOMu2Or6nmeidN1j0=;
+        b=aZ3MiInfOHcTW/KZpXmS+s1CcpRmySaRcakhJFNNmLGr0WmPBRMsoKzLx9rbbRBFUV
+         Sv6fQQOxcNNdttQgpEhZ8Eo+B5Ai0bG7rjtX/aFlvPi27PWv9VGX5Dgiv+YHUFQ+gSXw
+         Zo+s7tvs9MCPpEagYaCHLPEEzhGnUfoNvrCIq2eKAO7jvZvDJGunvHt80vvmu/cSNOLj
+         vLetvfrsRUVXkDQImJ/v5F0cOMmBTF98058OmviK3U2j7J/ELar8VywNGDv9I3a7JXHM
+         jcrMikloTxJs76UhvTvhswZhKHZmLXEeyVAg1XuYe6tLrJfpGro0jbMcevMw8s+HlVaC
+         6lpw==
+X-Gm-Message-State: ABy/qLaFKPdysif/EXEBAHxGxBjMbOT3YDrnmu1P+wQubA2EeINmmUKh
+        AfLh0yOw+pvT7xUVv+ZHItYZGg==
+X-Google-Smtp-Source: APBJJlEbn0yzom06E5Cay0i6NfMSg5ILA5LvSBS9SqCQV1Z32UDhAFJTgWqw4r7n9lmFd1zj5xg6TA==
+X-Received: by 2002:a17:906:29a:b0:994:554b:7f27 with SMTP id 26-20020a170906029a00b00994554b7f27mr1461333ejf.2.1690448082053;
+        Thu, 27 Jul 2023 01:54:42 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id g24-20020a1709064e5800b0099316c56db9sm504002ejw.127.2023.07.27.01.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:54:41 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/2] gpio: ds4520: Add ADI DS4520 GPIO Expander Support
-Date:   Thu, 27 Jul 2023 11:52:38 +0300
-Message-ID: <20230727085239.4326-3-okan.sahin@analog.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230727085239.4326-1-okan.sahin@analog.com>
-References: <20230727085239.4326-1-okan.sahin@analog.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Jeong <eric.jeong.opensource@diasemi.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v3] regulator: dt-bindings: dlg,slg51000: Convert to DT schema
+Date:   Thu, 27 Jul 2023 10:54:34 +0200
+Message-Id: <20230727085434.16596-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: O1KQoexNbEz6LG8CwH80BPxnLlffTZ1U
-X-Proofpoint-ORIG-GUID: O1KQoexNbEz6LG8CwH80BPxnLlffTZ1U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 suspectscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=859 clxscore=1015 spamscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270078
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,148 +75,272 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DS4520 is a 9-bit nonvolatile (NV) I/O expander.
-It offers users a digitally programmable alternative
-to hardware jumpers and mechanical switches that are
-being used to control digital logic node.
+Convert the bindings for Dialog Semiconductor SLG51000 Voltage Regulator
+to DT schema.
 
-Signed-off-by: Okan Sahin <okan.sahin@analog.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
- drivers/gpio/Kconfig       | 11 +++++
- drivers/gpio/Makefile      |  1 +
- drivers/gpio/gpio-ds4520.c | 89 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 101 insertions(+)
- create mode 100644 drivers/gpio/gpio-ds4520.c
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 13be729710f2..5f89e46d6411 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -1000,6 +1000,17 @@ config GPIO_ADNP
- 	  enough to represent all pins, but the driver will assume a
- 	  register layout for 64 pins (8 registers).
- 
-+config GPIO_DS4520
-+	tristate "DS4520 I2C GPIO expander"
-+	select REGMAP_I2C
-+	select GPIO_REGMAP
-+	help
-+	  GPIO driver for ADI DS4520 I2C-based GPIO expander.
-+	  Say yes here to enable the GPIO driver for the ADI DS4520 chip.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called gpio-ds4520.
-+
- config GPIO_GW_PLD
- 	tristate "Gateworks PLD GPIO Expander"
- 	depends on OF_GPIO
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index c048ba003367..6f8656d5d617 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -52,6 +52,7 @@ obj-$(CONFIG_GPIO_DA9052)		+= gpio-da9052.o
- obj-$(CONFIG_GPIO_DA9055)		+= gpio-da9055.o
- obj-$(CONFIG_GPIO_DAVINCI)		+= gpio-davinci.o
- obj-$(CONFIG_GPIO_DLN2)			+= gpio-dln2.o
-+obj-$(CONFIG_GPIO_DS4520)		+= gpio-ds4520.o
- obj-$(CONFIG_GPIO_DWAPB)		+= gpio-dwapb.o
- obj-$(CONFIG_GPIO_EIC_SPRD)		+= gpio-eic-sprd.o
- obj-$(CONFIG_GPIO_EM)			+= gpio-em.o
-diff --git a/drivers/gpio/gpio-ds4520.c b/drivers/gpio/gpio-ds4520.c
+Changes in v3:
+1. Correct typo "regulatoris".
+
+Changes in v2:
+1. Mention that supplies are required, if given regulator is enabled,
+   which matches exactly original wording of old binding.
+---
+ .../bindings/regulator/dlg,slg51000.yaml      | 132 ++++++++++++++++++
+ .../bindings/regulator/slg51000.txt           |  88 ------------
+ MAINTAINERS                                   |   2 +-
+ 3 files changed, 133 insertions(+), 89 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/slg51000.txt
+
+diff --git a/Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml b/Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
 new file mode 100644
-index 000000000000..0a9fdbfed6ee
+index 000000000000..bad140418e49
 --- /dev/null
-+++ b/drivers/gpio/gpio-ds4520.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Analog Devices, Inc.
-+ * Driver for the DS4520 I/O Expander
-+ */
++++ b/Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
+@@ -0,0 +1,132 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/dlg,slg51000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+#include <linux/device.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/gpio/regmap.h>
-+#include <linux/i2c.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
++title: Dialog Semiconductor SLG51000 Voltage Regulator
 +
-+#define DS4520_PULLUP0		0xF0
-+#define DS4520_IO_CONTROL0	0xF2
-+#define DS4520_IO_STATUS0	0xF8
++maintainers:
++  - Eric Jeong <eric.jeong.opensource@diasemi.com>
++  - Support Opensource <support.opensource@diasemi.com>
 +
-+static const struct regmap_config ds4520_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+};
++properties:
++  compatible:
++    const: dlg,slg51000
 +
-+static int ds4520_gpio_probe(struct i2c_client *client)
-+{
-+	struct gpio_regmap_config config = { };
-+	struct device *dev = &client->dev;
-+	struct regmap *regmap;
-+	u32 ngpio;
-+	u32 base;
-+	int ret;
++  reg:
++    maxItems: 1
 +
-+	ret = device_property_read_u32(dev, "reg", &base);
-+	if (ret) {
-+		dev_err_probe(dev, ret,
-+			  "Missing 'reg' property.\n");
-+		return -EINVAL;
-+	}
++  interrupts:
++    maxItems: 1
 +
-+	ret = device_property_read_u32(dev, "ngpios", &ngpio);
-+	if (ret) {
-+		dev_err_probe(dev, ret,
-+			  "Missing 'ngpios' property.\n");
-+		return -EINVAL;
-+	}
++  dlg,cs-gpios:
++    maxItems: 1
++    description:
++      GPIO for chip select
 +
-+	regmap = devm_regmap_init_i2c(client, &ds4520_regmap_config);
-+	if (IS_ERR(regmap)) {
-+		ret = PTR_ERR(regmap);
-+		dev_err_probe(dev, ret,
-+			      "Failed to allocate register map\n");
-+		return ret;
-+	}
++  vin3-supply:
++    description:
++      Input supply for ldo3, required if regulator is enabled
 +
-+	config.regmap = regmap;
-+	config.parent = dev;
-+	config.ngpio = ngpio;
++  vin4-supply:
++    description:
++      Input supply for ldo4, required if regulator is enabled
 +
-+	config.reg_dat_base = base + DS4520_IO_STATUS0;
-+	config.reg_set_base = base + DS4520_PULLUP0;
-+	config.reg_dir_out_base = base + DS4520_IO_CONTROL0;
++  vin5-supply:
++    description:
++      Input supply for ldo5, required if regulator is enabled
 +
-+	return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &config));
-+}
++  vin6-supply:
++    description:
++      Input supply for ldo6, required if regulator is enabled
 +
-+static const struct of_device_id ds4520_gpio_of_match_table[] = {
-+	{ .compatible = "adi,ds4520-gpio" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ds4520_gpio_of_match_table);
++  vin7-supply:
++    description:
++      Input supply for ldo7, required if regulator is enabled
 +
-+static const struct i2c_device_id ds4520_gpio_id_table[] = {
-+	{ "ds4520-gpio" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, ds4520_gpio_id_table);
++  regulators:
++    type: object
++    additionalProperties: false
 +
-+static struct i2c_driver ds4520_gpio_driver = {
-+	.driver = {
-+		.name = "ds4520-gpio",
-+		.of_match_table = ds4520_gpio_of_match_table,
-+	},
-+	.probe_new = ds4520_gpio_probe,
-+	.id_table = ds4520_gpio_id_table,
-+};
-+module_i2c_driver(ds4520_gpio_driver);
++    patternProperties:
++      "^ldo[1-7]$":
++        type: object
++        $ref: /schemas/regulator/regulator.yaml#
++        unevaluatedProperties: false
 +
-+MODULE_DESCRIPTION("DS4520 I/O Expander");
-+MODULE_AUTHOR("Okan Sahin <okan.sahin@analog.com>");
-+MODULE_LICENSE("GPL");
++        properties:
++          enable-gpios:
++            maxItems: 1
++
++        required:
++          - regulator-name
++
++required:
++  - compatible
++  - reg
++  - regulators
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/regulator/dlg,da9121-regulator.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pmic@75 {
++            compatible = "dlg,slg51000";
++            reg = <0x75>;
++            dlg,cs-gpios = <&tlmm 69 GPIO_ACTIVE_HIGH>;
++            vin5-supply = <&vreg_s1f_1p2>;
++            vin6-supply = <&vreg_s1f_1p2>;
++
++            regulators {
++                ldo1 {
++                    regulator-name = "slg51000_b_ldo1";
++                    regulator-min-microvolt = <2400000>;
++                    regulator-max-microvolt = <3300000>;
++                };
++
++                ldo2 {
++                    regulator-name = "slg51000_b_ldo2";
++                    regulator-min-microvolt = <2400000>;
++                    regulator-max-microvolt = <3300000>;
++                };
++
++                ldo3 {
++                    regulator-name = "slg51000_b_ldo3";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <3750000>;
++                };
++
++                ldo4 {
++                    regulator-name = "slg51000_b_ldo4";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <3750000>;
++                };
++
++                ldo5 {
++                    regulator-name = "slg51000_b_ldo5";
++                    regulator-min-microvolt = <500000>;
++                    regulator-max-microvolt = <1200000>;
++                };
++
++                ldo6 {
++                    regulator-name = "slg51000_b_ldo6";
++                    regulator-min-microvolt = <500000>;
++                    regulator-max-microvolt = <1200000>;
++                };
++
++                ldo7 {
++                    regulator-name = "slg51000_b_ldo7";
++                    regulator-min-microvolt = <1200000>;
++                    regulator-max-microvolt = <3750000>;
++                };
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/regulator/slg51000.txt b/Documentation/devicetree/bindings/regulator/slg51000.txt
+deleted file mode 100644
+index aa0733e49b90..000000000000
+--- a/Documentation/devicetree/bindings/regulator/slg51000.txt
++++ /dev/null
+@@ -1,88 +0,0 @@
+-* Dialog Semiconductor SLG51000 Voltage Regulator
+-
+-Required properties:
+-- compatible : Should be "dlg,slg51000" for SLG51000
+-- reg : Specifies the I2C slave address.
+-- xxx-supply: Input voltage supply regulator for ldo3 to ldo7.
+-  These entries are required if regulators are enabled for a device.
+-  An absence of these properties can cause the regulator registration to fail.
+-  If some of input supply is powered through battery or always-on supply then
+-  also it is required to have these parameters with proper node handle of always
+-  on power supply.
+-    vin3-supply: Input supply for ldo3
+-    vin4-supply: Input supply for ldo4
+-    vin5-supply: Input supply for ldo5
+-    vin6-supply: Input supply for ldo6
+-    vin7-supply: Input supply for ldo7
+-
+-Optional properties:
+-- interrupt-parent : Specifies the reference to the interrupt controller.
+-- interrupts : IRQ line information.
+-- dlg,cs-gpios : Specify a valid GPIO for chip select
+-
+-Sub-nodes:
+-- regulators : This node defines the settings for the regulators.
+-  The content of the sub-node is defined by the standard binding
+-  for regulators; see regulator.txt.
+-
+-  The SLG51000 regulators are bound using their names listed below:
+-    ldo1
+-    ldo2
+-    ldo3
+-    ldo4
+-    ldo5
+-    ldo6
+-    ldo7
+-
+-Optional properties for regulators:
+-- enable-gpios : Specify a valid GPIO for platform control of the regulator.
+-
+-Example:
+-	pmic: slg51000@75 {
+-		compatible = "dlg,slg51000";
+-		reg = <0x75>;
+-
+-		regulators {
+-			ldo1 {
+-			        regulator-name = "ldo1";
+-			        regulator-min-microvolt = <2400000>;
+-			        regulator-max-microvolt = <3300000>;
+-			};
+-
+-			ldo2 {
+-			        regulator-name = "ldo2";
+-			        regulator-min-microvolt = <2400000>;
+-			        regulator-max-microvolt = <3300000>;
+-			};
+-
+-			ldo3 {
+-			        regulator-name = "ldo3";
+-			        regulator-min-microvolt = <1200000>;
+-			        regulator-max-microvolt = <3750000>;
+-			};
+-
+-			ldo4 {
+-			        regulator-name = "ldo4";
+-			        regulator-min-microvolt = <1200000>;
+-			        regulator-max-microvolt = <3750000>;
+-			};
+-
+-			ldo5 {
+-			        regulator-name = "ldo5";
+-			        regulator-min-microvolt = <500000>;
+-			        regulator-max-microvolt = <1200000>;
+-			};
+-
+-			ldo6 {
+-			        regulator-name = "ldo6";
+-			        regulator-min-microvolt = <500000>;
+-			        regulator-max-microvolt = <1200000>;
+-			};
+-
+-			ldo7 {
+-			        regulator-name = "ldo7";
+-			        regulator-min-microvolt = <1200000>;
+-			        regulator-max-microvolt = <3750000>;
+-			};
+-		};
+-	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index df54d6eee746..0efb378621eb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6038,7 +6038,7 @@ F:	Documentation/devicetree/bindings/mfd/da90*.txt
+ F:	Documentation/devicetree/bindings/mfd/dlg,da90*.yaml
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/dlg,da9*.yaml
+-F:	Documentation/devicetree/bindings/regulator/slg51000.txt
++F:	Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
+ F:	Documentation/devicetree/bindings/sound/da[79]*.txt
+ F:	Documentation/devicetree/bindings/thermal/da90??-thermal.txt
+ F:	Documentation/devicetree/bindings/watchdog/da90??-wdt.txt
 -- 
-2.30.2
+2.34.1
 
