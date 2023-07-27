@@ -2,57 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01D3764663
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EB5764686
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjG0GA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S231367AbjG0GN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231435AbjG0GA4 (ORCPT
+        with ESMTP id S229819AbjG0GN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:00:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59CA994;
-        Wed, 26 Jul 2023 23:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Nppsaspz4CjT3S8/e89X2Jzh5rOqdX/6FAO/rCJxSxA=; b=VFOdBgzU376WuGfOouqajz4rEa
-        6x/oaqtjy83zHp4U2Wg/jjTMjALPwOVd5lUkqLQVIxM2sKbRmiRt7p4UEQBSe28H6kDOBvfvvW5xg
-        hK+Kjk48q7IDAlH5lmggxd7YvRh5sQUVTWhYk8cdh3eWHJk7mKEQHBuUShjYCq6oacw03MBHZqD/t
-        8B0HfgEglK0l55kAoFW7pK371hHDFQtp3zhM0Z1FfI30YE5QjLt0pMnoc4hGczP1cvdjsy/beBMxc
-        pDATdgWaxDeFgEWCGfAnULtnzmWR2HAYdhh2K6XZvA2UxTp8syvVLG8XjBeEOhhS7MVdDTeSIVwBZ
-        ZCGywrAQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOu3R-00CHBi-1c;
-        Thu, 27 Jul 2023 06:00:53 +0000
-Message-ID: <16a13cab-6974-e2a6-f4c5-45971ede258b@infradead.org>
-Date:   Wed, 26 Jul 2023 23:00:52 -0700
+        Thu, 27 Jul 2023 02:13:57 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF1C1;
+        Wed, 26 Jul 2023 23:13:55 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R5YBNj006381;
+        Thu, 27 Jul 2023 05:36:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=XpsdMt1sFgTg69/LY+BKyfJs5QOVuIEG+ovPEwfU5R8=;
+ b=J3rvE4I9R+6NeGsGft1bAwxR7jBgYJs9Myxfre3JWCII2tD6fntm5TBCQ1kTlVVH+TB+
+ z0QNjPV0F4jYHNTBH3TocNwBGuH0gm0GEiHi+A0b3jffTM3ZetoTLuc7RFpmY35BJSc1
+ AyI0g1lPDIoQlGbd3lHAzI2qosVu1iquY9v6/he+eeEzcKTAGPJOYTbjA0+39+H3mGhO
+ yad1myGy8fIl01MTDjPMsTG+kmibLQ8cx4696VAa6cjXJZvr2IaMhe7j9MPVxuKo3D6i
+ hMEXzsr8xks2IeX3ilKucELbHQAHToiTuxbEUlNh7MDULmcIQkJq0myDIZIy7CtdFmaD VQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3jdqr7gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:36:11 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36R5QjAm016488;
+        Thu, 27 Jul 2023 05:36:11 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3jdqr7ex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:36:11 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36R4KnTq002079;
+        Thu, 27 Jul 2023 05:36:09 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0tenaut2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:36:09 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36R5a73X23266012
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jul 2023 05:36:07 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76D5D2004E;
+        Thu, 27 Jul 2023 05:36:07 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F19B02004B;
+        Thu, 27 Jul 2023 05:36:05 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.169])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 27 Jul 2023 05:36:05 +0000 (GMT)
+Date:   Thu, 27 Jul 2023 11:06:03 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/10] ext4: correct some stale comment of criteria
+Message-ID: <ZMICQ52W8HTUpvTX@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20230725185106.2147273-1-shikemeng@huaweicloud.com>
+ <20230725185106.2147273-11-shikemeng@huaweicloud.com>
+ <ZMEyxLauFkXBwgUZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <5db4b292-fee8-9581-841c-206ba10d4b80@huaweicloud.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5db4b292-fee8-9581-841c-206ba10d4b80@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3ZRPvx6DLO9c6X_PNXKfVc1EWHWrz0kZ
+X-Proofpoint-ORIG-GUID: LHTJWGkoK2v7DrjYbhq-6-elyHpKcbmt
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: linux-next: Tree for Jul 27 (fbdev/core/fbcon.o)
-Content-Language: en-US
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-fbdev@vger.kernel.org
-References: <20230727143346.079d4e5a@canb.auug.org.au>
- <4c1ba872-156a-68d4-4d2f-ef459a8b7997@infradead.org>
-In-Reply-To: <4c1ba872-156a-68d4-4d2f-ef459a8b7997@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270049
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,182 +94,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/26/23 22:56, Randy Dunlap wrote:
+On Thu, Jul 27, 2023 at 09:29:11AM +0800, Kemeng Shi wrote:
 > 
 > 
-> On 7/26/23 21:33, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20230726:
->>
+> on 7/26/2023 10:50 PM, Ojaswin Mujoo wrote:
+> > On Wed, Jul 26, 2023 at 02:51:06AM +0800, Kemeng Shi wrote:
+> >> We named criteria with CR_XXX, correct stale comment to criteria with
+> >> raw number.
+> > 
+> > Hi Kemeng,
+> > 
+> > Thanks for the cleanups.
+> > 
+> >>
+> >> Fixes: f52f3d2b9fba ("ext4: Give symbolic names to mballoc criterias")
+> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> >> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> >> ---
+> >>  fs/ext4/mballoc.c | 8 ++++----
+> >>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> >> index 36eea63eaace..de5da76e6748 100644
+> >> --- a/fs/ext4/mballoc.c
+> >> +++ b/fs/ext4/mballoc.c
+> >> @@ -2777,8 +2777,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+> >>  
+> >>  	/*
+> >>  	 * ac->ac_2order is set only if the fe_len is a power of 2
+> >> -	 * if ac->ac_2order is set we also set criteria to 0 so that we
+> >> -	 * try exact allocation using buddy.
+> >> +	 * if ac->ac_2order is set we also set criteria to CR_POWER2_ALIGNED
+> >> +	 * so that we try exact allocation using buddy.
+> >>  	 */
+> >>  	i = fls(ac->ac_g_ex.fe_len);
+> >>  	ac->ac_2order = 0;
+> >> @@ -2835,8 +2835,8 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+> >>  			/*
+> >>  			 * Batch reads of the block allocation bitmaps
+> >>  			 * to get multiple READs in flight; limit
+> >> -			 * prefetching at cr=0/1, otherwise mballoc can
+> >> -			 * spend a lot of time loading imperfect groups
+> >> +			 * prefetching at cr below CR_FAST, otherwise mballoc
+> > 
+> > One of my earlier patchset has replaced the CR_FAST macro with
+> > ext4_mb_cr_expensive() so maybe we can account for that here:
+> > 
+> > https://lore.kernel.org/linux-ext4/20230630085927.140137-1-ojaswin@linux.ibm.com/
+> > 
+> Hi Ojaswin, sorry for missing this. I still could not find the comment update
+> of stale comment "limit prefetching at cr=0/1" in that patch. Maybe we could
+> update comment to "prefetching at inexpensive CR, otherwise ...". What do
+> you think. Or did I miss anything.
+
+Hey Kemeng,
+
+That's right I missed the update but just wanted to let you know that
+CR_FAST would be removed. "prefetching at inexpensive CRs, ..."  sounds
+good to me.
+
+Regards,
+ojaswin
 > 
-> on ARCH=um, SUBARCH=i386:
+> -- 
+> Best wishes
+> Kemeng Shi
+> > Regards,
+> > ojaswin
+> > 
+> >> +			 * can spend a lot of time loading imperfect groups
+> > 
+> >>  			 */
+> >>  			if ((prefetch_grp == group) &&
+> >>  			    (cr >= CR_FAST ||
+> >> -- 
+> >> 2.30.0
+> >>
+> >
 > 
-> many build errors for fbdev:
-> 
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_rotate_all':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3205: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_rotate':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3183: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `show_cursor_blink':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3245: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `show_rotate':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3225: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_modechange_possible':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2766: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `get_color':
-> UM32/../drivers/video/fbdev/core/fbcon.c:287: undefined reference to `console_blanked'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_palette':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2571: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_modechanged':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2678: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2686: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2692: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2702: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2703: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_all_vcs':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2718: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2723: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2735: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_debug_enter':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2253: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_resize':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2048: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_disp':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1347: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1391: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1393: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1394: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_deinit':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1190: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1202: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `do_fbcon_takeover':
-> UM32/../drivers/video/fbdev/core/fbcon.c:530: undefined reference to `do_take_over_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_do_set_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2430: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2433: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2436: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_def_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2544: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2546: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2522: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_prepare_logo':
-> UM32/../drivers/video/fbdev/core/fbcon.c:612: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:614: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_init':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1022: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1025: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1039: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1040: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1091: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1123: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1133: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fb_flashcursor':
-> UM32/../drivers/video/fbdev/core/fbcon.c:368: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:370: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_cursor_blink':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3271: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_switch':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2072: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2171: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2176: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2178: undefined reference to `update_region'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_blank':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2232: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_startup':
-> UM32/../drivers/video/fbdev/core/fbcon.c:923: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:924: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:962: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:963: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:977: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `set_con2fb_map':
-> UM32/../drivers/video/fbdev/core/fbcon.c:822: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:836: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:861: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `con2fb_init_display':
-> UM32/../drivers/video/fbdev/core/fbcon.c:797: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:797: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_suspended':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2654: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_resumed':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2666: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2666: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_unregistered':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2910: undefined reference to `do_unregister_con_driver'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_remap_all':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2930: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_blanked':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3039: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3044: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3046: undefined reference to `do_blank_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3048: undefined reference to `do_unblank_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_new_modelist':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3065: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_get_requirement':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3083: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3094: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3094: undefined reference to `vc_cons'
-> 
-> Full randconfig file is attached.
-
-
-Sorry, I missed these kconfig warnings:
-
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-
--- 
-~Randy
