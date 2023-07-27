@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C35E764BCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B310764BF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjG0IRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49904 "EHLO
+        id S233967AbjG0IUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjG0IQz (ORCPT
+        with ESMTP id S233504AbjG0IRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:16:55 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0992B5B91
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:10:02 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-682eef7d752so203888b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:10:02 -0700 (PDT)
+        Thu, 27 Jul 2023 04:17:50 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D57E4F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:10:15 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-682b1768a0bso174982b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:10:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690445357; x=1691050157;
+        d=bytedance.com; s=google; t=1690445369; x=1691050169;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1//FAyntSoVVhHGcFkYF5rOUv8OYZDaOr/FI52lXs1g=;
-        b=WprFfHhwxvgCbIOGEhvz/77THpnE+uaWMbMuLLIIDpVeL3Jz2616v8wLFkzo7HZvSd
-         TNFFTtJffBxh3fLTgZ0hA52iTzwFJ1lb7YC8GT96AcRGLEmRK6UnsPg5TF0WeT/gBbXI
-         n3D8mngVfbe3MYXC32UZAJFJiGuaHBVIWM9CunOWIYu990kGDPAj43N4rpm3m8rpgsHd
-         02xW2JacWcelFq3TAnDCLUfDJo66VYYZvDcSFvyxJpg5YwEtAXcJf/FphGWJu7IrCr2v
-         NhF0NyS2ftTWJJ0Gd6+a6tHW0SZpG4hIgkFC42XLIYM9ZEOFnWGm8ZzCwBndTMQ8KaY8
-         M1zg==
+        bh=et7oKjMo2RpAm9eGe6PO8KzXkO6yMET8jj6KuxhxE1o=;
+        b=ZArGb8yz+8ycxhYpd3TfnObsbskAktwxKp/LK6E+gx1lOsm2QqxHLjO1qFt766mx4G
+         4UOFzMb5rOBT3wq7QpcOo/50dqnABPqLouzBdNx69dJP3kndLHofbdJgcQSOE87tIEP3
+         gOFIB0th/ApJ4utKzdT3r6irRm20AGsjylo629bfexLkXBuL+hMcZdtnwSmPAtxRA7F8
+         l3r/R789CkvCTacsaPitu2Mn9fHBZCoAT7Xd7Py97lY3Lp4c0X3H7O8uSS1JwsanI4Cy
+         Pf3LZprk/pnZjQej6Xzx3T3CJ+QGRGxZd7LUmSV8XGImv+0X4BPv+EIagOcfGqekhivR
+         Bv+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445357; x=1691050157;
+        d=1e100.net; s=20221208; t=1690445369; x=1691050169;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1//FAyntSoVVhHGcFkYF5rOUv8OYZDaOr/FI52lXs1g=;
-        b=Eh4T6vP1b79ZWy1iGUg5sQJGfe368xZTlOkYjwI9D3HG1dya1SQsIl33Yw42L3hzkC
-         Td+M+uUA6+Ufm6cky5wItWqhwNKqOlWH+CJlIWw9vAXZl9AZED9QClScmJGgHXZbYpUK
-         iZ5jLhf8hZpirORXipGMiDr/hBvNyd5uj/LiJRdI3gy1uPv3QZ3qQfi9/UWL93EKvIc0
-         QUNzeWHjo0uIgW1kowQJ0hFBewkqmMl5wsTciZKp8BFOdUjWl6bL2gBM/tW+7CmSxEWj
-         e0Bj0Nx5nmbTTVngMUcg0zx3hPv9+WEZ8+BdV71GSJq+R+H1dHkzmltkmUzzzy/ynS8G
-         P/qg==
-X-Gm-Message-State: ABy/qLZFp4CxCp/nIxBVO6SHD9xSYmeFBUhUJASffWWvvY7x+wo38a70
-        YfcyIWyyjQ5TWQl3F45nqByahg==
-X-Google-Smtp-Source: APBJJlHvmYnqUEfQMupLlQUSLLnEPxVICkIYSDMBUwnFYoQAuRxCEO7ekKLA8kJr4NX0LnRrY6UJ3A==
-X-Received: by 2002:a05:6a00:13a3:b0:676:2a5c:7bc5 with SMTP id t35-20020a056a0013a300b006762a5c7bc5mr5229938pfg.1.1690445356761;
-        Thu, 27 Jul 2023 01:09:16 -0700 (PDT)
+        bh=et7oKjMo2RpAm9eGe6PO8KzXkO6yMET8jj6KuxhxE1o=;
+        b=T2vA1Snh0ZhIjg8edxT///uo6raH2DiaBvf382HY5qGhjwIfMUW+NhaXNRLufd3JG9
+         SuSvlb74nrK35ZIIyu0U32H5GTZsEeCqLTkFrT29ZEkgYnRE5DmJhZ9xqinwZQwzPBHr
+         hB9Iv3+yeh7ihPtl9FovnaWjONUgS2151r8ER/X/t0vOAWVjbGy46J/8wa8KumiTXrcb
+         AstLLD9CN6o5jmKyESqQO0EX8BdH9UtcrirYWrhw2cWuhb2qsbJ58StSNRFW5e8XCy+/
+         2jF6ip7j0db6d3LPNX1lRkp+BB7hWJi3WtU8ZZtYThlAZtNrPPeNE+JTgw5gXQqmMT4X
+         nUsw==
+X-Gm-Message-State: ABy/qLZwZ622oIdxjJwWbjRmB0Puro3ylzmB/vKObfm0Nf+tYcWguCBN
+        /lzAXdGI85DfLojBsyrmr++6aw==
+X-Google-Smtp-Source: APBJJlGUbAM65UTyBU06poLXl/mtaX6EX5YDf65AxeW9rsxnsdAR4xxA054nRzBMt6Eu4ihj5O0Oaw==
+X-Received: by 2002:a05:6a20:7da5:b0:137:3941:17b3 with SMTP id v37-20020a056a207da500b00137394117b3mr5573135pzj.6.1690445369382;
+        Thu, 27 Jul 2023 01:09:29 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.09.05
+        by smtp.gmail.com with ESMTPSA id j8-20020aa78d08000000b006828e49c04csm885872pfe.75.2023.07.27.01.09.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 01:09:16 -0700 (PDT)
+        Thu, 27 Jul 2023 01:09:28 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -71,9 +71,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v3 17/49] quota: dynamically allocate the dquota-cache shrinker
-Date:   Thu, 27 Jul 2023 16:04:30 +0800
-Message-Id: <20230727080502.77895-18-zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 18/49] ubifs: dynamically allocate the ubifs-slab shrinker
+Date:   Thu, 27 Jul 2023 16:04:31 +0800
+Message-Id: <20230727080502.77895-19-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
 References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
@@ -89,57 +89,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new APIs to dynamically allocate the dquota-cache shrinker.
+Use new APIs to dynamically allocate the ubifs-slab shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 ---
- fs/quota/dquot.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/ubifs/super.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index e8232242dd34..8883e6992f7c 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -791,12 +791,6 @@ dqcache_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- 	percpu_counter_read_positive(&dqstats.counter[DQST_FREE_DQUOTS]));
- }
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index b08fb28d16b5..c690782388a8 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -54,11 +54,7 @@ module_param_cb(default_version, &ubifs_default_version_ops, &ubifs_default_vers
+ static struct kmem_cache *ubifs_inode_slab;
  
--static struct shrinker dqcache_shrinker = {
--	.count_objects = dqcache_shrink_count,
--	.scan_objects = dqcache_shrink_scan,
+ /* UBIFS TNC shrinker description */
+-static struct shrinker ubifs_shrinker_info = {
+-	.scan_objects = ubifs_shrink_scan,
+-	.count_objects = ubifs_shrink_count,
 -	.seeks = DEFAULT_SEEKS,
 -};
--
- /*
-  * Safely release dquot and put reference to dquot.
-  */
-@@ -2957,6 +2951,7 @@ static int __init dquot_init(void)
++static struct shrinker *ubifs_shrinker_info;
+ 
+ /**
+  * validate_inode - validate inode.
+@@ -2373,7 +2369,7 @@ static void inode_slab_ctor(void *obj)
+ 
+ static int __init ubifs_init(void)
  {
- 	int i, ret;
- 	unsigned long nr_hash, order;
-+	struct shrinker *dqcache_shrinker;
+-	int err;
++	int err = -ENOMEM;
  
- 	printk(KERN_NOTICE "VFS: Disk quotas %s\n", __DQUOT_VERSION__);
+ 	BUILD_BUG_ON(sizeof(struct ubifs_ch) != 24);
  
-@@ -2991,8 +2986,15 @@ static int __init dquot_init(void)
- 	pr_info("VFS: Dquot-cache hash table entries: %ld (order %ld,"
- 		" %ld bytes)\n", nr_hash, order, (PAGE_SIZE << order));
+@@ -2439,10 +2435,16 @@ static int __init ubifs_init(void)
+ 	if (!ubifs_inode_slab)
+ 		return -ENOMEM;
  
--	if (register_shrinker(&dqcache_shrinker, "dquota-cache"))
--		panic("Cannot register dquot shrinker");
-+	dqcache_shrinker = shrinker_alloc(0, "dquota-cache");
-+	if (!dqcache_shrinker)
-+		panic("Cannot allocate dquot shrinker");
+-	err = register_shrinker(&ubifs_shrinker_info, "ubifs-slab");
+-	if (err)
++	ubifs_shrinker_info = shrinker_alloc(0, "ubifs-slab");
++	if (!ubifs_shrinker_info)
+ 		goto out_slab;
+ 
++	ubifs_shrinker_info->count_objects = ubifs_shrink_count;
++	ubifs_shrinker_info->scan_objects = ubifs_shrink_scan;
++	ubifs_shrinker_info->seeks = DEFAULT_SEEKS;
 +
-+	dqcache_shrinker->count_objects = dqcache_shrink_count;
-+	dqcache_shrinker->scan_objects = dqcache_shrink_scan;
-+	dqcache_shrinker->seeks = DEFAULT_SEEKS;
++	shrinker_register(ubifs_shrinker_info);
 +
-+	shrinker_register(dqcache_shrinker);
+ 	err = ubifs_compressors_init();
+ 	if (err)
+ 		goto out_shrinker;
+@@ -2467,7 +2469,7 @@ static int __init ubifs_init(void)
+ 	dbg_debugfs_exit();
+ 	ubifs_compressors_exit();
+ out_shrinker:
+-	unregister_shrinker(&ubifs_shrinker_info);
++	shrinker_free(ubifs_shrinker_info);
+ out_slab:
+ 	kmem_cache_destroy(ubifs_inode_slab);
+ 	return err;
+@@ -2483,7 +2485,7 @@ static void __exit ubifs_exit(void)
+ 	dbg_debugfs_exit();
+ 	ubifs_sysfs_exit();
+ 	ubifs_compressors_exit();
+-	unregister_shrinker(&ubifs_shrinker_info);
++	shrinker_free(ubifs_shrinker_info);
  
- 	return 0;
- }
+ 	/*
+ 	 * Make sure all delayed rcu free inodes are flushed before we
 -- 
 2.30.2
 
