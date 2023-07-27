@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE547765D66
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9660E765D73
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjG0UcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        id S233024AbjG0UdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231398AbjG0UcI (ORCPT
+        with ESMTP id S231755AbjG0Uc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:32:08 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D05E30DB;
-        Thu, 27 Jul 2023 13:31:50 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1690489900tiuhvymd
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 28 Jul 2023 04:31:39 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: 3M0okmaRx3iio5UHKEhK5b2ClrY+IfoQsoiyLkp16KXoPNZd6NKJ6Hq2TkPOp
-        lxuEVdu0iqSsDofWqZLbsQNWgPuh4dTi3eZroNw+JgJBygfCJFjpuRtgX7H8WMWgkbAg4Lx
-        HpQCjdORRam1SuzECvY3se07e0xnOANa0+i63yBaLR2iLK1CL3yVwmcFjZ0ZptN7WavMAhs
-        1X1RMFp4Mcb7h8SZhMJ966izSIJvKs6VM+7Rz+6TqgzWp+/SYLMiOQ2LhWCqRvqE0Dyva9V
-        8Df/r12xiCcEP4zb1cAwJ/yl39Tid5XJd1HShHLXUqPMkt7sEpx1X+eF8Rhcs7sGJ55iMFe
-        iFUzR0cIPJ1QNBsh8JfDO5wzHsY2Eha/SLBOaLqj3UT0zUcKgLDQppuzwPvIQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8403613974557991608
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 09/12] selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
-Date:   Fri, 28 Jul 2023 04:31:39 +0800
-Message-Id: <fefba2df5bcffc5f03478da1b595ec5a418b04dd.1690489039.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690489039.git.falcon@tinylab.org>
-References: <cover.1690489039.git.falcon@tinylab.org>
+        Thu, 27 Jul 2023 16:32:57 -0400
+Received: from smtprelay08.ispgateway.de (smtprelay08.ispgateway.de [134.119.228.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5412C94;
+        Thu, 27 Jul 2023 13:32:53 -0700 (PDT)
+Received: from [77.64.243.219] (helo=note-book.lan)
+        by smtprelay08.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qP7fB-000859-S1; Thu, 27 Jul 2023 22:32:45 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH v3 0/2] arm64: dts: qcom: msm8939-longcheer-l9100: Add
+ initial dts
+Date:   Thu, 27 Jul 2023 22:32:16 +0200
+Message-Id: <20230727-bq_m5-v3-0-df5e227c79d0@apitzsch.eu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-B4-Tracking: v=1; b=H4sIAFDUwmQC/12Myw6CMBBFf4XM2po+IKWu/A9jTFsGmYWILTYq4
+ d8tJCbq8tzccyaIGAgj7IoJAiaKdO0zqE0BvrP9GRk1mUFyqbiWJXO306VizhvbotJ1WzeQv0P
+ Alh5r53DM3FEcr+G5ZpNY1v9CEowzoS2vNbdaOdzbgcZX9N0W77A0kvz2qo8ns2e0Nl6WxqITv
+ 948z2+RvlnG1AAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,28 +54,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both ppc64 and ppc64le use slow bios in some qemu versions, let's
-increase the timeout to make sure the running qemu would not be killed
-before the test finish.
+This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
+2015.
 
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+Add a device tree with initial support for:
+
+- GPIO keys
+- Hall sensor
+- SDHCI
+- WCNSS (BT/WIFI)
+- Accelerometer/Magnetometer
+- Vibrator
+- Touchscreen
+- Front flash
+
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
- tools/testing/selftests/nolibc/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v3:
+- use "id-gpios" instead of "id-gpio" to avoid conflicts with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+  (v2 only contained the changelog entry, but not the actual change) 
+- Link to v2: https://lore.kernel.org/r/20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 9a57de3b283c..ad2538ec5eb0 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -106,6 +106,8 @@ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=N
- QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
- 
- # QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
-+QEMU_TIMEOUT_ppc64     = 15
-+QEMU_TIMEOUT_ppc64le   = 25
- QEMU_TIMEOUT           = $(or $(QEMU_TIMEOUT_$(XARCH)),10)
- 
- # OUTPUT is only set when run from the main makefile, otherwise
+Changes in v2:
+- add R-b to first patch
+- sort node extends/overrides by name, but keep &tlmm last, as done in
+  msm8939-samsung-a7.dts
+- use id-gpios, to avoid conflict with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+- don't enable mdss for now; postpone it till display support is added
+- Link to v1: https://lore.kernel.org/r/20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu
+
+---
+André Apitzsch (2):
+      dt-bindings: arm: qcom: Add BQ Aquaris M5
+      arm64: dts: qcom: msm8939-longcheer-l9100: Add initial device tree
+
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+ .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 336 +++++++++++++++++++++
+ 3 files changed, 338 insertions(+)
+---
+base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+change-id: 20230724-bq_m5-bc9afe378f8d
+
+Best regards,
 -- 
-2.25.1
+André Apitzsch <git@apitzsch.eu>
 
