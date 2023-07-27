@@ -2,275 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BA17656EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5097656B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbjG0PGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S234163AbjG0PDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbjG0PGZ (ORCPT
+        with ESMTP id S234106AbjG0PDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:06:25 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3837530D8;
-        Thu, 27 Jul 2023 08:06:04 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RBD3Kf020177;
-        Thu, 27 Jul 2023 17:05:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=selector1;
- bh=zmIPHW6iVYvOYi7oMUl9xnnwWipA141Ebb8TXiBkQXc=;
- b=6QX4TiYSntWcuysnOPTpYG03Wm8TzRkJ2LtxGD897emCWqelSVFabxXtNYesNFEari5Y
- EPbSbqwllTxW+63FnHlS5Ol410zrPFRa7RRnazGh3VbjNzvWUxYFErLg54IKtooVLh3G
- 56NnH6bT7XIj07WguEpme4jKCNC/Tr9WZXUWMg3L8TuN1Pn+cQsn+QITX3muFVJQBSu0
- Uh+k4nQ8Vhfmo5U7bHDOaFEiwjbmawtCziBNjD7YsjtHwPrj4EFLzmdZPea0ucHk+Ppq
- YqkI82l3qQQa3D/NWP7Sztoc1piiJi2IFDm3n0ZH37fWgvRuIOSg0BHKlj1VDQnkJJrz 7A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3s3qgy988r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 17:05:44 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B36C810002A;
-        Thu, 27 Jul 2023 17:05:43 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA361209BA7;
-        Thu, 27 Jul 2023 17:05:43 +0200 (CEST)
-Received: from localhost (10.201.20.178) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 27 Jul
- 2023 17:05:43 +0200
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Olivier Moysan <olivier.moysan@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v2 06/11] iio: adc: stm32-dfsdm: adopt generic channel bindings
-Date:   Thu, 27 Jul 2023 17:03:17 +0200
-Message-ID: <20230727150324.1157933-7-olivier.moysan@foss.st.com>
+        Thu, 27 Jul 2023 11:03:31 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5406CA0;
+        Thu, 27 Jul 2023 08:03:29 -0700 (PDT)
+X-QQ-mid: bizesmtp77t1690470199tpjd4kf7
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 27 Jul 2023 23:03:18 +0800 (CST)
+X-QQ-SSF: 01200000002000D0X000B00A0000000
+X-QQ-FEAT: rZJGTgY0+YMRpS1qYEzYM26oLmGEy05P+ZWt64uSt0g1LCQW3zax2yYj9/qE/
+        IAqlig2SaXfAtDFWaLCNxZmPwrueHkgrcNnbL1xx/W3qKbQd1y/hoyrrbHEBZZNioU2VNkz
+        NwqYZ3Mx9mOxo6WGpa4NpdfNmDVYc6CcadAUbBBaj46f+OSCxq1WzoFKsW7YA7Yn/sgn+5z
+        MR8/omeirrpLVw8B6PgInOT4aMPnXBPb7m9eovpqVLfpuFYBkqRUO2xlN5TAsruSQi5bmar
+        H4y4KSPH5lx5BFqs2EEhJ5UEzGrO3I6KF6h4Jt3IFdFxHVfIHhlBUQ7iTiWgblGTvr1/cNJ
+        mXtn9RdCG9PuJT7FzaAeRwaaxwKEZtjNvKEbAk1HA10VnWg1fZyFBV5UeCaC9WbiFd6mShN
+        FPhi3BB9CkM=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16471828213070841702
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v3 4/7] selftests/nolibc: add XARCH and ARCH mapping support
+Date:   Thu, 27 Jul 2023 23:03:17 +0800
+Message-Id: <45cc24c1cf8794782be2ae631ca01bcd136da6d9.1690468707.git.falcon@tinylab.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
-References: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
+In-Reply-To: <cover.1690468707.git.falcon@tinylab.org>
+References: <cover.1690468707.git.falcon@tinylab.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.178]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adopt the generic channel bindings to ease the configuration
-of the DFSDM channels as consumers of the SD modulator backend device.
-Also adopt unified device property API in the same patch for this RFC.
+Most of the CPU architectures have different variants, but kernel
+usually only accepts parts of them via the ARCH variable, the others
+should be customized via kernel config files.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+To simplify testing, the external ARCH variable is extended to accept
+more CPU variants from user's input, a new internal XARCH variable is
+added to save users' ARCH input and used to customize variant specific
+variables, at last XARCH is converted to the internal ARCH variable
+acceptable by kernel:
+
+  e.g. make run ARCH=<one of the supported variants>
+               /
+              v
+  external ARCH from cmdline -> internal XARCH -> internal ARCH for kernel
+                                          |
+                                          `--> variant specific variables
+
+XARCH and ARCH are carefully mapped to allow users to pass architecture
+variants via external ARCH (or XARCH) from cmdline:
+
+- From developers' perspective
+
+  - XARCH records the architecture variant from user's ARCH input, after
+    'override ARCH', ARCH is overridden and mapped from XARCH to the one
+    supported by kernel
+
+  - Map from XARCH to the kernel supported ARCH: 'ARCH_<XARCH> = <ARCH>'
+
+  - Configure a default variant for kernel supported ARCH: 'XARCH_<ARCH> = <XARCH>'
+
+- From users' perspective
+
+  - ARCH (or XARCH) are architecture variants of a target architecture
+
+  - the variants are XARCH names from the "ARCH_<XARCH> = <ARCH>" mapping list
+
+PowerPC is the first user and also a very good reference architecture of
+this mapping, it has variants with different combinations of
+32-bit/64-bit and bit endian/little endian.
+
+To use this mapping, the other architectures can refer to PowerPC, If
+the target architecture only has one variant, XARCH is simply an alias
+of ARCH, no additional mapping required.
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230702171715.GD16233@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- drivers/iio/adc/stm32-dfsdm-adc.c | 93 ++++++++++++++++---------------
- 1 file changed, 49 insertions(+), 44 deletions(-)
+ tools/testing/selftests/nolibc/Makefile | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index 20f7dffcecdd..96f4e0c64cdc 100644
---- a/drivers/iio/adc/stm32-dfsdm-adc.c
-+++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -596,45 +596,35 @@ static int stm32_dfsdm_filter_configure(struct iio_dev *indio_dev,
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 9576f1a0a98d..5afb3e7d7723 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -14,6 +14,14 @@ include $(srctree)/scripts/subarch.include
+ ARCH = $(SUBARCH)
+ endif
  
- static int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
- 					struct iio_dev *indio_dev,
-+					struct fwnode_handle *node,
- 					struct iio_chan_spec *ch)
- {
- 	struct stm32_dfsdm_channel *df_ch;
- 	const char *of_str;
--	int chan_idx = ch->scan_index;
- 	int ret, val;
- 
--	ret = of_property_read_u32_index(indio_dev->dev.of_node,
--					 "st,adc-channels", chan_idx,
--					 &ch->channel);
-+	ret = fwnode_property_read_u32(node, "reg", &ch->channel);
- 	if (ret < 0) {
--		dev_err(&indio_dev->dev,
--			" Error parsing 'st,adc-channels' for idx %d\n",
--			chan_idx);
-+		dev_err(&indio_dev->dev, "Missing channel index %d\n", ret);
- 		return ret;
- 	}
- 	if (ch->channel >= dfsdm->num_chs) {
--		dev_err(&indio_dev->dev,
--			" Error bad channel number %d (max = %d)\n",
-+		dev_err(&indio_dev->dev, " Error bad channel number %d (max = %d)\n",
- 			ch->channel, dfsdm->num_chs);
- 		return -EINVAL;
- 	}
- 
--	ret = of_property_read_string_index(indio_dev->dev.of_node,
--					    "st,adc-channel-names", chan_idx,
--					    &ch->datasheet_name);
-+	ret = fwnode_property_read_string(node, "label", &ch->datasheet_name);
- 	if (ret < 0) {
- 		dev_err(&indio_dev->dev,
--			" Error parsing 'st,adc-channel-names' for idx %d\n",
--			chan_idx);
-+			" Error parsing 'label' for idx %d\n", ch->channel);
- 		return ret;
- 	}
- 
- 	df_ch =  &dfsdm->ch_list[ch->channel];
- 	df_ch->id = ch->channel;
- 
--	ret = of_property_read_string_index(indio_dev->dev.of_node,
--					    "st,adc-channel-types", chan_idx,
--					    &of_str);
-+	ret = fwnode_property_read_string(node, "st,adc-channel-types", &of_str);
- 	if (!ret) {
- 		val = stm32_dfsdm_str2val(of_str, stm32_dfsdm_chan_type);
- 		if (val < 0)
-@@ -644,9 +634,7 @@ static int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
- 	}
- 	df_ch->type = val;
- 
--	ret = of_property_read_string_index(indio_dev->dev.of_node,
--					    "st,adc-channel-clk-src", chan_idx,
--					    &of_str);
-+	ret = fwnode_property_read_string(node, "st,adc-channel-clk-src", &of_str);
- 	if (!ret) {
- 		val = stm32_dfsdm_str2val(of_str, stm32_dfsdm_chan_src);
- 		if (val < 0)
-@@ -656,10 +644,8 @@ static int stm32_dfsdm_channel_parse_of(struct stm32_dfsdm *dfsdm,
- 	}
- 	df_ch->src = val;
- 
--	ret = of_property_read_u32_index(indio_dev->dev.of_node,
--					 "st,adc-alt-channel", chan_idx,
--					 &df_ch->alt_si);
--	if (ret < 0)
-+	ret = fwnode_property_read_u32(node, "st,adc-alt-channel", &df_ch->alt_si);
-+	if (ret != -EINVAL)
- 		df_ch->alt_si = 0;
- 
- 	return 0;
-@@ -1354,17 +1340,21 @@ static int stm32_dfsdm_dma_request(struct device *dev,
- }
- 
- static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
-+					 struct fwnode_handle *child,
- 					 struct iio_chan_spec *ch)
- {
- 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
- 	int ret;
- 
--	ret = stm32_dfsdm_channel_parse_of(adc->dfsdm, indio_dev, ch);
--	if (ret < 0)
-+	ret = stm32_dfsdm_channel_parse_of(adc->dfsdm, indio_dev, child, ch);
-+	if (ret < 0) {
-+		dev_err(&indio_dev->dev, "Failed to parse channel\n");
- 		return ret;
-+	}
- 
- 	ch->type = IIO_VOLTAGE;
- 	ch->indexed = 1;
-+	ch->scan_index = ch->channel;
- 
- 	/*
- 	 * IIO_CHAN_INFO_RAW: used to compute regular conversion
-@@ -1387,6 +1377,30 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
- 					  &adc->dfsdm->ch_list[ch->channel]);
- }
- 
-+static int stm32_dfsdm_generic_chan_init(struct iio_dev *indio_dev, struct stm32_dfsdm_adc *adc,
-+					 struct iio_chan_spec *channels)
-+{
-+	struct fwnode_handle *child;
-+	int chan_idx = 0, ret;
++# XARCH is used to save user-input ARCH variant
++# configure default variants for target kernel supported architectures
++XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
 +
-+	device_for_each_child_node(&indio_dev->dev, child) {
-+		ret = stm32_dfsdm_adc_chan_init_one(indio_dev, child, &channels[chan_idx]);
-+		if (ret < 0) {
-+			dev_err(&indio_dev->dev, "Channels init failed\n");
-+			goto err;
-+		}
++# ARCH is supported by kernel
++# map from user input variants to their kernel supported architectures
++override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
 +
-+		chan_idx++;
-+	}
-+
-+	return chan_idx;
-+
-+err:
-+	fwnode_handle_put(child);
-+
-+	return ret;
-+}
-+
- static int stm32_dfsdm_audio_init(struct device *dev, struct iio_dev *indio_dev)
- {
- 	struct iio_chan_spec *ch;
-@@ -1400,7 +1414,7 @@ static int stm32_dfsdm_audio_init(struct device *dev, struct iio_dev *indio_dev)
+ # kernel image names by architecture
+ IMAGE_i386       = arch/x86/boot/bzImage
+ IMAGE_x86_64     = arch/x86/boot/bzImage
+@@ -24,7 +32,7 @@ IMAGE_mips       = vmlinuz
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+-IMAGE            = $(IMAGE_$(ARCH))
++IMAGE            = $(IMAGE_$(XARCH))
+ IMAGE_NAME       = $(notdir $(IMAGE))
  
- 	ch->scan_index = 0;
+ # default kernel configurations that appear to be usable
+@@ -37,10 +45,10 @@ DEFCONFIG_mips       = malta_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+-DEFCONFIG            = $(DEFCONFIG_$(ARCH))
++DEFCONFIG            = $(DEFCONFIG_$(XARCH))
  
--	ret = stm32_dfsdm_adc_chan_init_one(indio_dev, ch);
-+	ret = stm32_dfsdm_generic_chan_init(indio_dev, adc, ch);
- 	if (ret < 0) {
- 		dev_err(&indio_dev->dev, "Channels init failed\n");
- 		return ret;
-@@ -1422,33 +1436,24 @@ static int stm32_dfsdm_adc_init(struct device *dev, struct iio_dev *indio_dev)
- 	struct iio_chan_spec *ch;
- 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
- 	int num_ch;
--	int ret, chan_idx;
-+	int ret;
+ # extra kernel config files under configs/, include common + architecture specific
+-EXTCONFIG            = common.config $(ARCH).config
++EXTCONFIG            = common.config $(XARCH).config
  
- 	adc->oversamp = DFSDM_DEFAULT_OVERSAMPLING;
- 	ret = stm32_dfsdm_compute_all_osrs(indio_dev, adc->oversamp);
- 	if (ret < 0)
- 		return ret;
+ # optional tests to run (default = all)
+ TEST =
+@@ -55,7 +63,7 @@ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+-QEMU_ARCH            = $(QEMU_ARCH_$(ARCH))
++QEMU_ARCH            = $(QEMU_ARCH_$(XARCH))
  
--	num_ch = of_property_count_u32_elems(indio_dev->dev.of_node,
--					     "st,adc-channels");
--	if (num_ch < 0 || num_ch > adc->dfsdm->num_chs) {
--		dev_err(&indio_dev->dev, "Bad st,adc-channels\n");
--		return num_ch < 0 ? num_ch : -EINVAL;
--	}
-+	num_ch = device_get_child_node_count(&indio_dev->dev);
-+	if (!num_ch)
-+		return -EINVAL;
+ # QEMU_ARGS : some arch-specific args to pass to qemu
+ QEMU_ARGS_i386       = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+@@ -67,7 +75,7 @@ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+-QEMU_ARGS            = $(QEMU_ARGS_$(ARCH)) $(QEMU_ARGS_EXTRA)
++QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
  
--	ch = devm_kcalloc(&indio_dev->dev, num_ch, sizeof(*ch),
--			  GFP_KERNEL);
-+	ch = devm_kcalloc(&indio_dev->dev, num_ch, sizeof(*ch), GFP_KERNEL);
- 	if (!ch)
- 		return -ENOMEM;
+ # OUTPUT is only set when run from the main makefile, otherwise
+ # it defaults to this nolibc directory.
+@@ -84,7 +92,7 @@ CFLAGS_mips = -EL
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+ CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 \
+ 		$(call cc-option,-fno-stack-protector) \
+-		$(CFLAGS_$(ARCH)) $(CFLAGS_STACKPROTECTOR)
++		$(CFLAGS_$(XARCH)) $(CFLAGS_STACKPROTECTOR)
+ LDFLAGS := -s
  
--	for (chan_idx = 0; chan_idx < num_ch; chan_idx++) {
--		ch[chan_idx].scan_index = chan_idx;
--		ret = stm32_dfsdm_adc_chan_init_one(indio_dev, &ch[chan_idx]);
--		if (ret < 0) {
--			dev_err(&indio_dev->dev, "Channels init failed\n");
--			return ret;
--		}
--	}
-+	stm32_dfsdm_generic_chan_init(indio_dev, adc, ch);
-+	if (ret < 0)
-+		return ret;
+ REPORT  ?= awk '/\[OK\][\r]*$$/{p++} /\[FAIL\][\r]*$$/{if (!f) printf("\n"); f++; print;} /\[SKIPPED\][\r]*$$/{s++} \
+@@ -111,12 +119,13 @@ help:
+ 	@echo ""
+ 	@echo "Currently using the following variables:"
+ 	@echo "  ARCH          = $(ARCH)"
++	@echo "  XARCH         = $(XARCH)"
+ 	@echo "  CROSS_COMPILE = $(CROSS_COMPILE)"
+ 	@echo "  CC            = $(CC)"
+ 	@echo "  OUTPUT        = $(OUTPUT)"
+ 	@echo "  TEST          = $(TEST)"
+-	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$ARCH]"
+-	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$ARCH]"
++	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$XARCH]"
++	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$XARCH]"
+ 	@echo ""
  
- 	indio_dev->num_channels = num_ch;
- 	indio_dev->channels = ch;
+ all: run
 -- 
 2.25.1
 
