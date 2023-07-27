@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E586C764F00
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C947764F0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbjG0JNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
+        id S233873AbjG0JOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjG0JNT (ORCPT
+        with ESMTP id S234653AbjG0JNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:13:19 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FEE3594;
-        Thu, 27 Jul 2023 02:02:51 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R80pa7016828;
-        Thu, 27 Jul 2023 09:02:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=pzwGFj1DoyxQIuBQv1J+4RIab4lfvzFS295ihCETh+Y=;
- b=e+c5HFLyJhQ9Rxk0x6P931rC1oYzVqsgZagwmHnxmI0XxEZDToNqGITSV344YPXcgc5l
- BPkLV3yN4k/Y6JmnPnCDxf+iAVlp87vs+wD6enzhYn/aWI8yPUzzET8Vmp2eyxWv8TsH
- IxTzDvIwxBREytyIyG+ITWYUSa+Ema1aD9I128tLE5HCLql3i0KrcMpc23UPz9M50ICy
- SoAaHgdxGcb1ioz7TUqyRtj0/BBvZqHhczgyHdpHvGJLdVsoUANQswjGEVZ6Q/BMwv9O
- z7+Etj2pwePqJfHp2aryOhKti9ZhWQhGMmQdg8p1X4TvM/kdUGCbsDixsiIRz0XU67dD VA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3mpt06b6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:02:47 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R92iw2019173
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:02:46 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 02:02:16 -0700
-Message-ID: <f0f94ea9-94b1-ccd1-0a43-3cb119fc5d94@quicinc.com>
-Date:   Thu, 27 Jul 2023 17:02:14 +0800
+        Thu, 27 Jul 2023 05:13:24 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4235144B1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:04:01 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-992dcae74e0so92053466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690448640; x=1691053440;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o+nMtMSYCB8lb+6HEt8kXyZny9RP0k44HK0QsEHwLZY=;
+        b=pE8EZ7SDhjgXVr5jF35gUXQ2wZokNnxbBeLaIg4EKcIZA/Qw0vi3f9uSrRCkf0TSq6
+         k1m09915OJqyPOK+QofmyBb/OAyNwQ6C0vJnpvRlq5YlMVG/yKq+klwHwfaSU0aq3r1E
+         dL9Be3MA6pEAOAGZlGBHS9d7S6NT8o2IlR7irAlVRrIbcZ4GzSIWNwKzVlKeqmFbbkVc
+         zda5m4HgLhKyDx4pkj8nkp66c6WHmVwn7dCjpWRtZS4Sn2hXlgVd1iK/g4OjVyGNW/z5
+         pwfBKWQ58aulU9kA8N7AhzXn2wJjSyzeSEQ7BFcf23KF9vj07ZvV0zcN8cbhZ4/vKttz
+         FMPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690448640; x=1691053440;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o+nMtMSYCB8lb+6HEt8kXyZny9RP0k44HK0QsEHwLZY=;
+        b=QRH8OCQu6SWhNM/8MLpiE92MrRs7cMpBps1a8+2izkjeNfM+Hadoit1wYLOsQwobxF
+         nQ7eiAfxk3YBO5TuAvJkDeXrR4175d/oZ0BiefvTt5ztaTEFV2dAD7e0k+bYPGwM7fzh
+         m6IyWMpCfSqVwPXvqO7qOhb3hXx6Bzkdo4HONNpX3hko3+k/Z51tZUaBg7m/657sAa6M
+         rpu+oMHXfDtbu47K+EfQ/4tQZJUOBg3Gy+OqvBS5Jv+dQw20CAHthVPQlwhu64NwGYAM
+         pbE/ymol2EJsKAYpwu8X1Ue2DGd5XQDvuV2jtg1Nk1iS8N6WbH7x5FzwOXEAGMH2hfm2
+         U+Ag==
+X-Gm-Message-State: ABy/qLbXkXMsaLvCtTfKhuUHD/ZXBvvflJ2PxVnFWZtSHEhpQP72FgPV
+        jc+Cm5gKeGhb1ytA1vDochifUg==
+X-Google-Smtp-Source: APBJJlGIY9tfAQuvHiyq47xqAXRRoPTeBIDcdXJ0RNoK3rwr28DVCiRwAjkyyM8nY1xjrjPfECKcAg==
+X-Received: by 2002:a17:907:7798:b0:99b:d580:546c with SMTP id ky24-20020a170907779800b0099bd580546cmr1811202ejc.23.1690448639710;
+        Thu, 27 Jul 2023 02:03:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id rs5-20020a170907036500b009929d998abcsm512639ejb.209.2023.07.27.02.03.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 02:03:59 -0700 (PDT)
+Message-ID: <d3c77a86-f152-cad3-6087-6167656c4c9e@linaro.org>
+Date:   Thu, 27 Jul 2023 11:03:57 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/6] arm64: dts: qcom: Add base SM4450 QRD DTS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230727023508.18002-1-quic_tengfan@quicinc.com>
- <20230727023508.18002-5-quic_tengfan@quicinc.com>
- <f974f48a-05b0-530d-25a0-7ccf1b1ad113@linaro.org>
- <dba27a60-8681-e2e7-b89f-608bfbc05e93@quicinc.com>
- <e20781ea-09ba-2190-7318-dc62e713302d@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <e20781ea-09ba-2190-7318-dc62e713302d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Pehz4Zp3NqpLt4gTAgGGvTyqJktE1_LP
-X-Proofpoint-GUID: Pehz4Zp3NqpLt4gTAgGGvTyqJktE1_LP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 mlxlogscore=896
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307270079
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/2] gpio: ds4520: Add ADI DS4520 GPIO Expander Support
+Content-Language: en-US
+To:     Okan Sahin <okan.sahin@analog.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230727085239.4326-1-okan.sahin@analog.com>
+ <20230727085239.4326-3-okan.sahin@analog.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230727085239.4326-3-okan.sahin@analog.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/07/2023 10:52, Okan Sahin wrote:
+> The DS4520 is a 9-bit nonvolatile (NV) I/O expander.
+> It offers users a digitally programmable alternative
+> to hardware jumpers and mechanical switches that are
+> being used to control digital logic node.
+> 
+> Signed-off-by: Okan Sahin <okan.sahin@analog.com>
 
+...
 
-在 7/27/2023 4:50 PM, Krzysztof Kozlowski 写道:
-> On 27/07/2023 10:27, Tengfei Fan wrote:
->>
->>
->> 在 7/27/2023 2:56 PM, Krzysztof Kozlowski 写道:
->>> On 27/07/2023 04:35, Tengfei Fan wrote:
->>>> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
->>>>
->>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>> ---
->>>>    arch/arm64/boot/dts/qcom/Makefile       |  1 +
->>>>    arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 18 ++++++++++++++++++
->>>>    2 files changed, 19 insertions(+)
->>>>    create mode 100644 arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
->>>> index 337abc4ceb17..db805d0929c8 100644
->>>> --- a/arch/arm64/boot/dts/qcom/Makefile
->>>> +++ b/arch/arm64/boot/dts/qcom/Makefile
->>>> @@ -186,6 +186,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-samsung-w737.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sdx75-idp.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sm4250-oneplus-billie2.dtb
->>>> +dtb-$(CONFIG_ARCH_QCOM)	+= sm4450-qrd.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sm6115-fxtec-pro1x.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sm6115p-lenovo-j606f.dtb
->>>>    dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
->>>> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->>>> new file mode 100644
->>>> index 000000000000..04ad1dd4285a
->>>> --- /dev/null
->>>> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
->>>> @@ -0,0 +1,18 @@
->>>> +// SPDX-License-Identifier: BSD-3-Clause
->>>> +/*
->>>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->>>> + */
->>>> +
->>>> +/dts-v1/;
->>>> +
->>>> +#include "sm4450.dtsi"
->>>> +/ {
->>>> +	model = "Qualcomm Technologies, Inc. SM4450 QRD";
->>>> +	compatible = "qcom,sm4450-qrd", "qcom,sm4450";
->>>> +
->>>> +	aliases { };
->>>> +
->>>> +	chosen {
->>>> +		bootargs = "console=hvc0 earlycon=hvc0 hvc_dcc.enable=1 cpuidle.off=1";
->>>
->>> No earlycon, no hvc.enable (there is no such parameter), no cpuidle.off
->>> (again don't add fake stuff). So the only suitable argument is console,
->>> but this should be actually used via stdout path, although it seems
->>> there is no device node for such usage?
->> Hi Krzysztof,
->> Checked upstream linux kernel code, there is not "hvc_dcc.enable", but
->> have other parameters, like earlycon, cpuidle.off.
->> Do you mean we should not set "earlycon=hvc0 cpuidle.off=1" parameters,
-> 
-> Of course not. Why production code would have earlycon? This is debug
-> argument, not suitable for each user of this DTS.
-> 
-> cpuidle.off is neither explained nor needed. Otherwise please add a
-> comment why this is part of hardware description.
-> 
->> right? only need: bootargs = "console=hvc0" ?
-> 
-> You should use stdout-path if possible. If not, then only console.
-> 
-> Best regards,
-> Krzysztof
-> 
-Sure, will update this patch for have right boorargs parameter.
+> +static int ds4520_gpio_probe(struct i2c_client *client)
+> +{
+> +	struct gpio_regmap_config config = { };
+> +	struct device *dev = &client->dev;
+> +	struct regmap *regmap;
+> +	u32 ngpio;
+> +	u32 base;
+> +	int ret;
+> +
+> +	ret = device_property_read_u32(dev, "reg", &base);
+> +	if (ret) {
+> +		dev_err_probe(dev, ret,
+> +			  "Missing 'reg' property.\n");
+> +		return -EINVAL;
 
--- 
-Thx and BRs,
-Tengfei Fan
+Nope.
+
+> +	}
+> +
+> +	ret = device_property_read_u32(dev, "ngpios", &ngpio);
+> +	if (ret) {
+> +		dev_err_probe(dev, ret,
+> +			  "Missing 'ngpios' property.\n");
+> +		return -EINVAL;
+
+Nope.
+
+> +	}
+> +
+> +	regmap = devm_regmap_init_i2c(client, &ds4520_regmap_config);
+> +	if (IS_ERR(regmap)) {
+> +		ret = PTR_ERR(regmap);
+> +		dev_err_probe(dev, ret,
+> +			      "Failed to allocate register map\n");
+> +		return ret;
+
+That's not correct syntax. What did you receive in previous
+comments/feedback?
+
+Best regards,
+Krzysztof
+
