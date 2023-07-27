@@ -2,92 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FFD76574A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1FB76574D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbjG0PTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S233204AbjG0PUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbjG0PTB (ORCPT
+        with ESMTP id S231387AbjG0PUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:19:01 -0400
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B302A35A8;
-        Thu, 27 Jul 2023 08:18:44 -0700 (PDT)
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1bba48b0bd2so6616425ad.3;
-        Thu, 27 Jul 2023 08:18:44 -0700 (PDT)
+        Thu, 27 Jul 2023 11:20:15 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B30E273D;
+        Thu, 27 Jul 2023 08:20:14 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9b904bb04so16018811fa.1;
+        Thu, 27 Jul 2023 08:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690471212; x=1691076012;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZqcR5puT1EdjGVb9gAZcFyu524POY6u1/1h9aOnJT20=;
+        b=jdUPxzFmOULUSJLp83KqTEH/h3lYyK43L109D1E6yQjWYLI954sm4kWvl9m8/FbbAd
+         BdBGjtT4a8CVfzQX7LRW1u2JI4K3g5o/sMadm3ES/IOVS7qHp013VOA88l7ISDMQCAxe
+         ZgiNzRb4gNZGJ+Wz7kJ/bMHulECqFAbu9OTU4SRcYhIZBey3heGIDswup7Tt/qDlzJie
+         oDiAeaOoYYbKxVIumiBw92dH5bDpIdUfRVjWq3cMdZDZUulWDNV30BqfmR6Wu0a+Oivo
+         tKl3o3Ak+xs8GPUOUGGBL8ehytXnjjiYCSrR9KqBZnINk8UypQdEA0yz58zRg+G16SH1
+         DkbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690471124; x=1691075924;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F0vvwsh2rxMF2ShvbYgqpo5URMyKXI0NTlXbCxD/+r0=;
-        b=OJMEagHZlltshrpNvB0cP9IZYZDEKxFCzK1m7MZt2AIVJv2h7HAO1KjYV9qZtKtRqc
-         csATaTvBR4cASw0nWAISGQZiBJiAPGG1g3Bp3zDGoBiHcce5nKOp5opx6NjehHSma7y/
-         G/N+LHcv0IYzPrOSytHTOAZ7wcDrpzQMawCKlrXPqW0s0FwvbW2PksTt2IvoC+iz7F9c
-         hhsdxA+jLU9m6kc8q0iG/Vkl1ZLcPODNAOxLjYhsKRv3oBVv31An4fa4jeYkyAOMUCLE
-         m7eJEb8RRzQlAbiAEcCxMrJuQgOdMilytZ/PNBCDYvyyt9B9xgtLcpLtHw6jXvYuTzEI
-         Rtdg==
-X-Gm-Message-State: ABy/qLakebZ2N7Shi1TxXBEFHj3qgqBTwl1c1jDWbi2V2+vdcixw87Td
-        D9hwhce9v02pjFHz5FwfRdE=
-X-Google-Smtp-Source: APBJJlG+bh/RGLvfVKFEqRfijkNNCjs6JeTHl2tGDJdRVSJtDHktXPCXP8zZXKWwmTtRjnw0V8qL1Q==
-X-Received: by 2002:a17:902:e550:b0:1b5:5a5f:369b with SMTP id n16-20020a170902e55000b001b55a5f369bmr5439261plf.65.1690471124010;
-        Thu, 27 Jul 2023 08:18:44 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:32d2:d535:b137:7ba3? ([2620:15c:211:201:32d2:d535:b137:7ba3])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170902ceca00b001b872695c1csm1748294plg.256.2023.07.27.08.18.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 08:18:43 -0700 (PDT)
-Message-ID: <c3bff0d9-957a-fbb7-a433-4cab457c62bf@acm.org>
-Date:   Thu, 27 Jul 2023 08:18:41 -0700
+        d=1e100.net; s=20221208; t=1690471212; x=1691076012;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZqcR5puT1EdjGVb9gAZcFyu524POY6u1/1h9aOnJT20=;
+        b=FVDVJw7gK6ddPVlh42zsee2yGU4uEbkBZTmRlBFgZZk4ul4gqxW0jDPidCRHD0DzTL
+         Ic11iirfQ44xJ7I4Oumc1DLRkuAI1zilNtlSycVNBNs9/pt/qRa0jmSutff+zB/BxMKv
+         Hb7dvR0hEtitKuM13Mq7ZC8PjgZwQng3fHKVGnebqzLWOV+UooG1LW85wYkCd1c8SXk/
+         7vW7AnNNDFkwl0mtdAnEAjILkdmSg431mDOESjFZH7T16eDIqck04HED3v9a4aG9PkiH
+         Z8dXvqEvMLyOMYki1mO6E5v6xlHr0b8p0uifkSTKQxHGRbBG9zYzHZjlNVJ0dwwQYqji
+         BmTQ==
+X-Gm-Message-State: ABy/qLZMCE93HUX5XsBpnJZsvFTAnijuUos2v+7DcTjVPTkTX1h1Nnzl
+        kdrYLQXIpgJjpEO76K12ONA=
+X-Google-Smtp-Source: APBJJlEcRhmgBfbGju1s6tRonzry+Bh+VpjleHGlMg7sjPKOjD8O5gHV3wzbJi3LlD67/nOGr9f4zw==
+X-Received: by 2002:a2e:a1ca:0:b0:2b9:5b46:2107 with SMTP id c10-20020a2ea1ca000000b002b95b462107mr1972980ljm.9.1690471212218;
+        Thu, 27 Jul 2023 08:20:12 -0700 (PDT)
+Received: from [127.0.1.1] ([91.230.2.244])
+        by smtp.gmail.com with ESMTPSA id w10-20020a5d4b4a000000b003176c6e87b1sm2247664wrs.81.2023.07.27.08.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 08:20:11 -0700 (PDT)
+From:   Benjamin Bara <bbara93@gmail.com>
+Date:   Thu, 27 Jul 2023 17:19:57 +0200
+Subject: [PATCH] Input: ads7846 - don't set ABS_PRESSURE when min == max
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH blktests v1 01/11] nvme/{003,004,005,013,046,049}: Group
- all variables declarations
-Content-Language: en-US
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>
-References: <20230726124644.12619-1-dwagner@suse.de>
- <20230726124644.12619-2-dwagner@suse.de>
- <7e4f6c51-43f4-c039-07bc-6724748a1d3e@acm.org>
- <kya2ayzcgz7iemknkx6xuef4m37f2ms7rt3uxamtxr2w7zbwfc@onladguxa7bk>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <kya2ayzcgz7iemknkx6xuef4m37f2ms7rt3uxamtxr2w7zbwfc@onladguxa7bk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Message-Id: <20230727-ads7846-pressure-v1-1-fa74c7680191@skidata.com>
+X-B4-Tracking: v=1; b=H4sIAByLwmQC/x2MywqAIBAAf0X2nKD2UPqV6GC51l4sXIpA+vek4
+ zDMFGDMhAyjKJDxJqYjVdCNgHX3aUNJoTIYZVpljZU+sHXdIM+MzFdGqXoMcVHaORuhZlVEev7
+ lNL/vB6SDDEViAAAA
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 00:11, Daniel Wagner wrote:
-> On Wed, Jul 26, 2023 at 07:54:24AM -0700, Bart Van Assche wrote:
->> On 7/26/23 05:46, Daniel Wagner wrote:
->>> Group all variable declarations together at the beginning of the
->>> function.
->>
->> An explanation of why this change has been proposed is missing from the
->> patch description.
-> 
-> Sure, I'll add one. The coding style to declare all local variables at the
-> beginning of the function.
+From: Benjamin Bara <benjamin.bara@skidata.com>
 
-Isn't declaring local variables just before their first use a better style?
+When the optional fields "pressure_min" and "pressure_max" are not set,
+both fall back to 0, which results to the following libinput error:
 
-Thanks,
+ADS7846 Touchscreen: kernel bug: device has min == max on ABS_PRESSURE
 
-Bart.
+Avoid it by only setting ABS_PRESSURE if the values differ.
+
+Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+---
+ drivers/input/touchscreen/ads7846.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index faea40dd66d0..2535424a5630 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -1281,7 +1281,7 @@ static int ads7846_probe(struct spi_device *spi)
+ 			pdata->y_min ? : 0,
+ 			pdata->y_max ? : MAX_12BIT,
+ 			0, 0);
+-	if (ts->model != 7845)
++	if (ts->model != 7845 && pdata->pressure_min != pdata->pressure_max)
+ 		input_set_abs_params(input_dev, ABS_PRESSURE,
+ 				pdata->pressure_min, pdata->pressure_max, 0, 0);
+ 
+
+---
+base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+change-id: 20230727-ads7846-pressure-05edfb01887f
+
+Best regards,
+-- 
+Benjamin Bara <benjamin.bara@skidata.com>
 
