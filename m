@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811B5765D0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F6D765D16
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbjG0UP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S232771AbjG0UUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjG0UPZ (ORCPT
+        with ESMTP id S232757AbjG0UUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:15:25 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337C1FDD;
-        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686b9920362so1089764b3a.1;
-        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690488924; x=1691093724;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
-        b=AhyHSKUIkkgbZvtQQcyOKRC4C+sGBBU1rnW7UKRYJelhzH7/ZrA6+1Xg4/vOjR9OBb
-         2LiXllBWDr3LkIBs0B/HpC95oZnJRCD0J4e6Qd/+w+xbPyfsCkd+ypfy8zlEEQg2Cs2l
-         1bNXUidT+UahwU+1TAhT92SRQd4PrYR4jj1FwXZuZrdtDG/PyKSc/2Cj5pi/joFqabur
-         JkmKOL1V/ewlylT3LCRSl78qgYZTBnWSXDg0te4dPPC4jPB3EFA+GB1EhGkQOlrFtEFQ
-         b4MraEAS4OuOvFpd4YQIPbgaCFLUB+9vO60R9LnsWln7xCCnmoiYLosUxYKJ4hpTpGB3
-         IMIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690488924; x=1691093724;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5pjZ51xtViHPu61r/EFWrYe+qxWhroS6JQ+9gaxVDaQ=;
-        b=gtaaOTcsrMrErlKyvsUhYNJ6UxEkH2T7pnO/ageJcMbL2aF+Ewt0k9LbF6STUwLvji
-         SJiiGQtcDP81BtECOBlICJaP9dBa7Wkd76ztOkExyx7pM1Kosu2GyGdM+weeySeQG5Qc
-         bank9xEjwwnEUnqCp0H4pgJzDbxhFQpk2ETt1X/xI6XhdQzp88xn7IJdNRmFro7npkfg
-         4UDeETbg73Uuizjg0T5ymiXrtCKIJh6XgIhWTn9TWWwDtWhA70jTXXKWlru0uaeOJczq
-         aKCwFmB2hZpcCM+qBVeqa0+VSXARwU6y4N1s44GzBjc/UothsnwfYy0b8QCTFFM8TuRM
-         ohqQ==
-X-Gm-Message-State: ABy/qLYz+eRBc5J7pvbmy2hRhOhWNdPbI/cBBqARlDTWSJWYNepniGyX
-        KXUMwWw3yI0oq56EwXtK7aE=
-X-Google-Smtp-Source: APBJJlE/vCxhHaS86mEOqx3kFx6vMxKfngxzPSkTcBkc7tZIAXfeUFlJDQsMA7TZxE9/hIrOlKW7eg==
-X-Received: by 2002:a05:6a20:7351:b0:133:656e:fe1e with SMTP id v17-20020a056a20735100b00133656efe1emr128808pzc.47.1690488924247;
-        Thu, 27 Jul 2023 13:15:24 -0700 (PDT)
-Received: from localhost ([2605:59c8:148:ba10:705d:54ca:a48d:47da])
-        by smtp.gmail.com with ESMTPSA id m17-20020aa78a11000000b0063afb08afeesm1862257pfa.67.2023.07.27.13.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 13:15:23 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 13:15:22 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     tglozar@redhat.com, linux-kernel@vger.kernel.org
-Cc:     john.fastabend@gmail.com, jakub@cloudflare.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Tomas Glozar <tglozar@redhat.com>
-Message-ID: <64c2d05a894be_831d20896@john.notmuch>
-In-Reply-To: <20230726085003.261112-1-tglozar@redhat.com>
-References: <20230726085003.261112-1-tglozar@redhat.com>
-Subject: RE: [PATCH RFC net] bpf: sockmap: Remove preempt_disable in
- sock_map_sk_acquire
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 16:20:01 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2053.outbound.protection.outlook.com [40.107.92.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34222213A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:20:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CZFbFCCzkmjmVZ2UojdWTd83eyQ93AlP1moh0IHfId69+OlaMChc24bFizppGODfwsizd1fpn3LMK2GD395psNSDTIl0AORgvkt8gCtiGXfNZ1f6xbUEzPPg9X+XmDyhnCeUzt8680askaIGLgWIVrPo240jt9ZfMqooPWDG9whNzfwM5+fR8eZy+awvv/AFe5NV4nzSAq3/721BOaBijRdOaKDyAVigdpJoafx6H51ih5p5Frs/psSGgWyDdKO8HPSyypb9oKnuFoyPhLaDa+jx39fbCrdMSRuzLok3TrsJbC/bLzAsjCU3dVfsZ4koWbMrBjOQ6a2WpOnDUw7KDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VrZq4xPUqw0ZefXTKNzbHD3Ee220tu6u5mt59zwRtBM=;
+ b=YLaeUE/ZSIld9hGWhelOgdFg2Sprwrol68Y87EC0COJ9iflyIkHHCZwDxfpTPmP3+78Zoki/fKXsPiAX6y1EyVyALQdrMkBE8bzxfuUyXai6l1uFRnqJ3xGCV3FRjeDkyBFemkj0vSc+XoEmqukVcuqFMJRYt7TRBWm5hVLZ/wDuVQO8NjqjJKsMgdw53KSzbCDb0DjP/RJdn3HGKWT8qylUzNUx8WKKW0/Jl0aGRfA9a9IyAOwnSzvnsqEZMZbKJmwlZ7MTOHTREskjVtd/DrHiBiobFEocj2nEd+x4Le0VKyKKXEirIjJKzAqcQolesCm1/ia3mVH1ammD848CMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VrZq4xPUqw0ZefXTKNzbHD3Ee220tu6u5mt59zwRtBM=;
+ b=PyxIHFEn9DQsX0Rknst9TEDxNp+sbu7LgvPfH3LoUxcofR89HJ98HJQnrFz6kiH4wl2xoYb99nt21wcIeD2wpndemmW8o0/SFue1JiWM4u9x/xwX0bxiPXjn2yFrLhK2TuJJuJKdsgkYIaVlFp74vSgSzFlriZkZ+fgqRsNHdjyB5Hx59iZgqA4VbngSHnvdcXHtFBrAOIfO5zhB0ObdRmd6QZMFpLJMrIocQF86Brx7HPXt87E1CsQeAMpvtBP1rwPXuBHML9FBcfNQJxlLQaRMZX2CK46nLyqWw6vxzn4g5HoENVYOg7Ugfae05JZMKN/nD9cEIVNAaExTEJr46Q==
+Received: from MW4PR03CA0199.namprd03.prod.outlook.com (2603:10b6:303:b8::24)
+ by IA1PR12MB8312.namprd12.prod.outlook.com (2603:10b6:208:3fc::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 20:19:58 +0000
+Received: from CO1NAM11FT044.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b8:cafe::ce) by MW4PR03CA0199.outlook.office365.com
+ (2603:10b6:303:b8::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Thu, 27 Jul 2023 20:19:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1NAM11FT044.mail.protection.outlook.com (10.13.175.188) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 20:19:57 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
+ 13:19:40 -0700
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 27 Jul
+ 2023 13:19:39 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.10)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 27 Jul 2023 13:19:39 -0700
+Date:   Thu, 27 Jul 2023 13:19:37 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 0/7] Refactor the SMMU's CD table ownership
+Message-ID: <ZMLRWfLET9FC3FQB@Asurada-Nvidia>
+References: <20230727182647.4106140-1-mshavit@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230727182647.4106140-1-mshavit@google.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT044:EE_|IA1PR12MB8312:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c24ce65-d8ce-4369-74b5-08db8eded8e8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r1FrnsL0TGAWmm2Yw8JZW7Y8L1zHPeIwl0T302fDPOKUb3Qzi+ChAeznDtaoZdrdFLC3/GWFfqCWXxOmHaPEmbQMRfltAQtaje8xW2qO1XxHjcDIvKRrR/GSEQ+YIU8zd0FsdP2Vj2qvBt/4+oy8ygOLeRHfDfJuYx9VR+2u7zPKKKck8qGvH5hLlrQVLFQ/sOC0ydANXFU3UBK3TX+PHOEBeYFvLhF3CmI5M3c+k3C5Z/ZmzDPwAOUNBdAEYikJAHYiPM3Qa8JUbw3/OIOsAz+drYo9ZiPCgtvML2cBA6LP7I1yKR5QKCWdDjvXOcLurB/lk9CgKLTfsQxUpk7tdg8CRLzvF4WOkb04rQXNL7JUD7eKzmsGtNzQv6D+kLjm61BTyXhCn9zM3kpdi3S/F748G3RhQxYPYW/H/wH0aIIyUVrYNl0rhouuSiEjX+CyNDx0B0FO1eyhoty3lgXMJ0Es0YLK47Itnu2Hi4LucsX/BsJVIjsqIDUrH7ntz9+ppc1qqrwSodZOV+wtPtkc6Tzqt2DKRoseFJ1AL/KmSRF9+dV4p6Ha2QP53gkJ5zMdjjatZGIecFV6tZbrQTrLK7SCS0Qz0EustvJFAPc6KFeFq1u4OJcT1V7h1xI0L4ISfifllSg3iPraT8bHLlTJh9d4D/S5oYzt4Mi9o98BxwtGa6OQhRQVWAb7ZB16rIxm8/b6pyWhFOl9F2MbAxpKCnvGSFzsKs+Sn8mj622pXcayZhCJZkyUYKVIUe5gkvQ2x4zqBFfYNn4xgIU8rHTfJQ==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(376002)(39860400002)(346002)(82310400008)(451199021)(40470700004)(36840700001)(46966006)(26005)(41300700001)(316002)(8676002)(6916009)(4326008)(8936002)(70206006)(33716001)(40460700003)(54906003)(478600001)(82740400003)(40480700001)(7636003)(9686003)(966005)(70586007)(356005)(55016003)(2906002)(4744005)(426003)(83380400001)(336012)(86362001)(47076005)(36860700001)(186003)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 20:19:57.4647
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c24ce65-d8ce-4369-74b5-08db8eded8e8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT044.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8312
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tglozar@ wrote:
-> From: Tomas Glozar <tglozar@redhat.com>
-> 
-> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
-> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
-> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
-> patchset notes for details).
-> 
-> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
-> BUG (sleeping function called from invalid context) on RT kernels.
-> 
-> preempt_disable was introduced together with lock_sk and rcu_read_lock
-> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
-> in parallel") with no comment on why it is necessary.
-> 
-> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
-> 
-> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
-> ---
->  net/core/sock_map.c | 2 --
->  1 file changed, 2 deletions(-)
+Hi Michael,
 
-Hi Thomas,
+Thanks for sending this!
 
-I looked at this and don't see the need for the preempt_disable there
-at the moment. I believe it was there simply to match the BPF caller
-case where it was preempt_disable at the time and now is migrate
-disable. From the BPF side we don't want the migrate, but from the
-syscall interface it should be OK.
-
-Can you submit without RFC tag I think this should be OK.
-
-Thanks,
-John
-
+On Fri, Jul 28, 2023 at 02:26:16AM +0800, Michael Shavit wrote:
+ 
+> This series refactors stage 1 domains so that they describe a single CD
+> entry. These entries are now inserted into a CD table that is owned by
+> the arm_smmu_master instead of the domain.
+> This is conceptually cleaner and unblocks other features, such as
+> attaching domains with PASID (for unmanaged/dma domains).
 > 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 19538d628714..08ab108206bf 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
->  	__acquires(&sk->sk_lock.slock)
->  {
->  	lock_sock(sk);
-> -	preempt_disable();
->  	rcu_read_lock();
->  }
->  
-> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
->  	__releases(&sk->sk_lock.slock)
->  {
->  	rcu_read_unlock();
-> -	preempt_enable();
->  	release_sock(sk);
->  }
->  
+> This patch series was originally part of a larger patch series that
+> implemented the set_dev_pasid callback for non-SVA domains but is now
+> split into a distinct series.
 > 
-> base-commit: 22117b3ae6e37d07225653d9ae5ae86b3a54f99c
-> -- 
-> 2.39.3
-> 
+> This patch series is also available on gerrit with Jean's SMMU test
+> engine patches cherry-picked on top for testing:
+> https://linux-review.git.corp.google.com/c/linux/kernel/git/torvalds/linux/+/24729
 
+The link isn't accessible for public. I guess it should be this?
+https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/24729
 
+Nicolin
