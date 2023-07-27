@@ -2,83 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 342E9765C05
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B61765C0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjG0TVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
+        id S230516AbjG0T0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjG0TVf (ORCPT
+        with ESMTP id S229619AbjG0T0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:21:35 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A866D30E1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:21:30 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-98377c5d53eso177577166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1690485689; x=1691090489;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMVC/xmQcqwSqBzvS5kpbfVcWFfNCx3gJcsonstxVoQ=;
-        b=A90XbHPWVeV6ghMsF2q3ncxcXaG/9F56P6HcqI/Qc6wPkx7ys5i+ppXuMh+S3v6g2p
-         AuUtBqL86j4orXonaQORIl8O/oia1zyjBFmupqLjvubhp3tvZp/8F8z05xSnOcznw1a3
-         qz+fC2w1NGBqPa1pRFFjr9K3HhEpkKiUh9Rfo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485689; x=1691090489;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CMVC/xmQcqwSqBzvS5kpbfVcWFfNCx3gJcsonstxVoQ=;
-        b=UzGUcJ3M+iybxFZv7gDz6ka/I4+z8BpbK+hQL/UL/vMwQJeyQTJAsrFfTCq0OJ3RqI
-         5vmWo0i4S4QiVmGnu35cc3fxK50xbWjDJesGa1bpssdo2s0zOEmkwr8CVd1gI5xaqYyl
-         pYKTMpJp4+aw7i/U6yjtJxqVMx7H+NieFCvTuNQicqKR8V51zWGap7xw3FO+ud/vd2k6
-         a6xa+JjQ7Ww6rETLm8Ul4ZoNyt/rOuid6LSIIMG78uodhvgW9yNfYmeWoGjM4USaelOZ
-         S1w4XL+D2C/aSyzqrqLHTxWjnh35xQpEsqxtAQylTOjK7Q5FcOKkB4aLEpa/McvzZ+TO
-         SAjQ==
-X-Gm-Message-State: ABy/qLbrnSrZgVctFUVsoneNeRPLOGfYS0Iq/fJA6ZstUkBTB26HdHF2
-        06b6Ytp+ZYlwyVYiGdbMHaSX1+iZJQK/6cXd6u+5cA==
-X-Google-Smtp-Source: APBJJlF2t+YKOnZMzjcVO2vmlHXHDn+Vc4n5sCS24LMePL4Tq12fixTzHpGRBzcPfVixgZXxQiU3Co38OQxE/Vxuhk0=
-X-Received: by 2002:a17:906:328b:b0:982:45ca:ac06 with SMTP id
- 11-20020a170906328b00b0098245caac06mr110008ejw.60.1690485689143; Thu, 27 Jul
- 2023 12:21:29 -0700 (PDT)
+        Thu, 27 Jul 2023 15:26:16 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28430268B;
+        Thu, 27 Jul 2023 12:26:14 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 64CB260171;
+        Thu, 27 Jul 2023 21:26:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690485971; bh=7fw+979HTyI3g1irHu9HUvXN9G+83ViUcHnWOykGLQo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ds7DmjwyRCEn/utPKUwbq8uOWCVvzYsxdhFPhfZCeG7V7oijdsNqGDIxntdSCBjoI
+         mRlymUUKnIR56QpsixQIYBble7Ye3+K/6jYGivvFeEdM9Nc7bSvpzmnXNKBgbjrRvW
+         1sRtInDngtJWDHJ8brAuRvGaxsDh3hZm0UYaB4jmQciDkjBpisgJR8Ne6tbJE7Kxot
+         oUAIkVqq1y8Bw2++ZG2ddjRTd4Y80apfiS6FG72WeBLILcKXHU7Zjd9pJGoC+hrtkF
+         Dynlh+WqLc4bdOjRLGkCteC7nypRGxWWH4ML7tJBHKf3yN2shLvHWnrRtxMJQwAijv
+         WTyEicERvYA1g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JQ1USOFRCqN7; Thu, 27 Jul 2023 21:26:08 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 6AAA96016E;
+        Thu, 27 Jul 2023 21:26:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690485968; bh=7fw+979HTyI3g1irHu9HUvXN9G+83ViUcHnWOykGLQo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YdkWLbc/ePFiF615XLOoQ43cVK8dZujUylvK+MTbybvavLuJA0m2bq3GcDpPDq1AJ
+         bVdFbK6i4/x8v+mQbDGoS24Ze1pJNPrsT2ypJgak3qEaYsrpxQjYBBQUF7btXEdvwP
+         sa2iEjxnr0cLEj9cZxg8DycbAIe2vSiRNCA06U1EZAmr23SjoxrqFFSgLrPHH3RwGQ
+         KnGOpO7pmJ50LXnvlPHZLdhVu1i00swp+K3RMu0xP3dD6Qvn7eH/bwsjTTj1ViUo9W
+         z0ZxoEF3zSujUciSa5drnAWBBElnCOfkw3gIo+YSo5xTiVoqrly1GFHjBMa/AdjThV
+         8IBxsb/7JtwUw==
+Message-ID: <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
+Date:   Thu, 27 Jul 2023 21:26:03 +0200
 MIME-Version: 1.0
-References: <20230726105953.843-1-jaco@uls.co.za> <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
- <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za> <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
- <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link> <27875beb-bd1c-0087-ac4c-420a9d92a5a9@uls.co.za>
-In-Reply-To: <27875beb-bd1c-0087-ac4c-420a9d92a5a9@uls.co.za>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 27 Jul 2023 21:21:18 +0200
-Message-ID: <CAJfpegtaxHu2RCqStSFyGzEUrQx-cpuQaCCxiB-F6YmBEvNiJw@mail.gmail.com>
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
-To:     Jaco Kroon <jaco@uls.co.za>
-Cc:     Antonio SJ Musumeci <trapexit@spawn.link>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
+ add cleanup for SIGTERM sent by timeout
+Content-Language: en-US
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
+ <ZLzj5oYrbHGvCMkq@shredder>
+ <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
+ <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
+ <ZL6OljQubhVtQjcD@shredder>
+ <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
+ <ZMEQGIOQXv6so30x@shredder>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZMEQGIOQXv6so30x@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 20:40, Jaco Kroon <jaco@uls.co.za> wrote:
+On 7/26/23 14:22, Ido Schimmel wrote:
+> On Mon, Jul 24, 2023 at 10:46:09PM +0200, Mirsad Todorovac wrote:
+>> On 7/24/23 16:45, Ido Schimmel wrote:
+>>> On Sun, Jul 23, 2023 at 11:37:46PM +0200, Mirsad Todorovac wrote:
+>>>> Some tests however exited with error:
+>>
+>> Hi,
+>>
+>>>> marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc2-net-forwarding-11.log
+>>>> not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
+>>>> not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
+>>>> not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
+>>>
+>>> I can't reproduce these three.
+>>
+>> I have now enabled 'set -x' and here is the link to the output.
+>>
+>> NOTE as there are side-effects to running the test scripts, I have ran the
+> 
+> I don't believe this is correct after "selftests: forwarding: Switch off
+> timeout".
+> 
+>> whole suite, just in case:
+>>
+>> https://domac.alu.unizg.hr/~mtodorov/linux/selftests/net-forwarding/kselftest-6.5-rc3-net-forwarding-12.log.xz
+>>
+>>> Do you have systemd-networkd running?
+>>
+>> No:
+> 
+> [...]
+> 
+>>>> not ok 15 selftests: net/forwarding: ethtool_extended_state.sh # exit=1
+>>>> not ok 17 selftests: net/forwarding: ethtool.sh # exit=1
+>>>> not ok 25 selftests: net/forwarding: hw_stats_l3_gre.sh # exit=1
+>>>
+>>> Fixed these three.
+>>>
+>>>> not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
+>>>
+>>> Fixed.
+>>
+>> Great job, that's almost 50% of them!
+>>
+>>>> not ok 80 selftests: net/forwarding: tc_actions.sh # exit=1
+>>>> not ok 83 selftests: net/forwarding: tc_flower.sh # exit=1
+>>>> not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
+>>>> not ok 89 selftests: net/forwarding: tc_tunnel_key.sh # exit=1
+>>>
+>>> Can't reproduce these.
+>>
+>> Hope the above will help.
+> 
+> Pushed fixes for tc_actions.sh, tc_flower.sh and tc_tunnel_key.sh to the
+> same branch. Please test them.
+> 
+> Regarding the MDB tests and tc_flower_l2_miss.sh, I suspect you might
+> have some daemon in user space that sends IGMP queries and therefore
+> messes with the tests. Please run the following commands in a separate
+> terminal before running tc_flower_l2_miss.sh:
+> 
+> # perf probe --add 'br_ip4_multicast_query'
+> # perf record -a -g -e 'probe:br_ip4_multicast_query'
+> 
+> After the test finishes, terminate the second command and run:
+> 
+> # perf report --stdio
+> 
+> It should show us if queries were received and which process sent them.
+> 
+>>
+>>> Pushed the fixes on top of the fixes from yesterday:
+>>>
+>>> https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
+>>
+>> I have applied them.
+>>
+>> BTW, after running the full net/forwarding test suite, "ip link show"
+>> looks like this:
+>>
+>> marvin@defiant:~/linux/kernel/linux_torvalds$ ip link show
+>> 256: veth7@veth6: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 16:74:e0:e6:f0:92 brd ff:ff:ff:ff:ff:ff
+>> 257: veth6@veth7: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 22:f3:40:50:fb:73 brd ff:ff:ff:ff:ff:ff
+>> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>>      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+>> 2: enp16s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+>>      link/ether 9c:6b:00:01:fb:80 brd ff:ff:ff:ff:ff:ff
+>> 3: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether b6:46:e6:4c:e4:00 brd ff:ff:ff:ff:ff:ff
+>> 4: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 2e:ff:7f:8a:6b:d4 brd ff:ff:ff:ff:ff:ff
+>> 5: veth3@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether ba:33:37:81:dc:5b brd ff:ff:ff:ff:ff:ff
+>> 6: veth2@veth3: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether f2:fd:0a:9b:94:17 brd ff:ff:ff:ff:ff:ff
+>> 278: veth9@veth8: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 0a:f1:22:04:0f:55 brd ff:ff:ff:ff:ff:ff
+>> 279: veth8@veth9: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 92:be:71:00:59:0f brd ff:ff:ff:ff:ff:ff
+>> 282: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>>      link/gre 0.0.0.0 brd 0.0.0.0
+>> 283: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+>> 284: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
+>> 366: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>>      link/tunnel6 :: brd :: permaddr ce1e:75f3:f565::
+>> 367: ip6gre0@NONE: <NOARP> mtu 1448 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>>      link/gre6 :: brd :: permaddr 1e91:da47:154d::
+>> 237: veth5@veth4: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether 6a:e3:dc:ad:8c:a0 brd ff:ff:ff:ff:ff:ff
+>> 238: veth4@veth5: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+>>      link/ether ce:a7:61:90:c8:2d brd ff:ff:ff:ff:ff:ff
+>> marvin@defiant:~/linux/kernel/linux_torvalds$
+>>
+>> This is kinda awkward, because I have to reboot the machine for the next run, each time.
+> 
+> Why? The fact that the veth pairs are already present doesn't impact the
+> selftests.
+> 
+>>
+>> I am in no condition to try to figure out which tests leaked links.
+> 
+> The veth pairs were created by the first invocation of the selftests and
+> are not deleted at the end. We already discussed it. But the fact that
+> they are already present does not mean you can't re-run the tests.
+> 
+> Regarding gre0, gretap0, erspan0, ip6tnl0 and ip6gre0, they are
+> automatically created by the kernel when the relevant kernel modules are
+> loaded. They are not used by the selftests.
 
-> Will look into FUSE_INIT.  The FUSE_INIT as I understand from what I've
-> read has some expansion constraints or the structure is somehow
-> negotiated.  Older clients in other words that's not aware of the option
-> will follow some default.  For backwards compatibility that default
-> should probably be 1 page.  For performance reasons it makes sense that
-> this limit be larger.
+If you're in dilemma, my experiment had shown that it is sufficient to delete one
+side of the veth link, for another side automagically vanishes.
 
-Yes, might need this for backward compatibility.  But perhaps a
-feature flag is enough and the readdir buf can be limited to
-fc->max_read.
+BTW, the patches successfully applied, safe for the following:
 
-Thanks,
-Miklos
+error: patch failed: tools/testing/selftests/net/forwarding/hw_stats_l3_gre.sh:99
+error: tools/testing/selftests/net/forwarding/hw_stats_l3_gre.sh: patch does not apply
+
+error: patch failed: tools/testing/selftests/net/forwarding/ethtool_extended_state.sh:108
+error: tools/testing/selftests/net/forwarding/ethtool_extended_state.sh: patch does not apply
+
+error: patch failed: tools/testing/selftests/net/forwarding/ethtool_mm.sh:278
+error: tools/testing/selftests/net/forwarding/ethtool_mm.sh: patch does not apply
+
+(Manual inspection revealed that all of those are adding of skip_on_veth which was already
+present in the script, but I recall you added skip_on_veth recently, so I guess this is something
+in our patch communication.)
+
+The test results are very good:
+
+marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc3-net-forwarding-16.log
+not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
+not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
+not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
+not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
+not ok 49 selftests: net/forwarding: mirror_gre_changes.sh # exit=1
+not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
+marvin@defiant:~/linux/kernel/linux_torvalds$ grep -v "^# +" ../kselftest-6.5-rc3-net-forwarding-16.log | grep -A1 FAIL | grep -v -e -- | grep -v OK
+# TEST: IPv6 (S, G) port group entries configuration tests            [FAIL]
+# 	"temp" entry has an unpending group timer
+# TEST: IPv4 host entries forwarding tests                            [FAIL]
+# 	Packet not locally received after adding a host entry
+# TEST: IPv4 port group "exclude" entries forwarding tests            [FAIL]
+# 	Packet from valid source not received on H2 after adding entry
+# TEST: IPv4 port group "include" entries forwarding tests            [FAIL]
+# 	Packet from valid source not received on H2 after adding entry
+# TEST: IGMPv3 MODE_IS_INCLUDE tests                                  [FAIL]
+# 	Source not add to source list
+# TEST: ctl4: port: ngroups reporting                                 [FAIL]
+# 	Couldn't add MDB entries
+# TEST: ctl4: port maxgroups: reporting and treatment of 0            [FAIL]
+# 	Adding 5 MDB entries failed but should have passed
+# TEST: ctl4: port maxgroups: configure below ngroups                 [FAIL]
+# 	dev veth1: Couldn't add MDB entries
+# TEST: ctl4: port: ngroups reporting                                 [FAIL]
+# 	Couldn't add MDB entries
+# TEST: ctl4: port maxgroups: reporting and treatment of 0            [FAIL]
+# 	Adding 5 MDB entries failed but should have passed
+# TEST: ctl4: port maxgroups: configure below ngroups                 [FAIL]
+# 	dev veth1 vid 10: Couldn't add MDB entries
+# TEST: ctl4: port_vlan: ngroups reporting                            [FAIL]
+# 	Couldn't add MDB entries
+# TEST: ctl4: port_vlan: isolation of port and per-VLAN ngroups       [FAIL]
+# 	Couldn't add MDB entries to VLAN 10
+# TEST: ctl4: port_vlan maxgroups: reporting and treatment of 0       [FAIL]
+# 	Adding 5 MDB entries failed but should have passed
+# TEST: ctl4: port_vlan maxgroups: configure below ngroups            [FAIL]
+# 	dev veth1 vid 10: Couldn't add MDB entries
+# TEST: ctl4: port_vlan maxgroups: isolation of port and per-VLAN ngroups   [FAIL]
+# 	Couldn't add 5 entries
+# TEST: Vlan mcast_startup_query_interval global option default value   [FAIL]
+# 	Wrong default mcast_startup_query_interval global vlan option value
+# TEST: Ip6InHdrErrors                                                [FAIL]
+# TEST: mirror to gretap: TTL change (skip_hw)                        [FAIL]
+# 	Expected to capture 10 packets, got 14.
+# TEST: L2 miss - Multicast (IPv4)                                    [FAIL]
+# 	Unregistered multicast filter was not hit before adding MDB entry
+marvin@defiant:~/linux/kernel/linux_torvalds$
+
+In case you want to pursue these failures, there is the complete test output log
+here:
+
+https://domac.alu.unizg.hr/~mtodorov/linux/selftests/net-forwarding/kselftest-6.5-rc3-net-forwarding-16.log.xz
+
+Thanks again, great work!
+
+Kind regards,
+Mirsad
