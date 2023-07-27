@@ -2,175 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9E7764F53
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E109C764F6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbjG0JTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:19:38 -0400
+        id S234000AbjG0JVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:21:19 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbjG0JS6 (ORCPT
+        with ESMTP id S231883AbjG0JU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:18:58 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F695B92;
-        Thu, 27 Jul 2023 02:09:56 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5973D20002;
-        Thu, 27 Jul 2023 09:09:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690448995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rK0kgw5LzcKtfaISYOOP5YAwk737ZNSt9k6WE/IR5iU=;
-        b=Zwk9FRWmX7HtxhycqPP+GSgdJ/lE0Jsf02fG5eRjCnrnNZdzdBeO3YgnQihx1VtKrAmoHu
-        R+0fUpDKNNSvxBL0sOdsfTkUTdxLJcK2e+JZfYc0cSUDB5fpsHtZqGaxUsNmy6IFaMmuiz
-        dzpVaJAU0Qm7BptVX7fr77ZTMdjJ+WBVFl1VyLwsAx0VzlYMw72vhsGb6BbtbtId7re+rG
-        wdUrJrAqrkpatIxufuuSXEgZH0QIUrPoKcVDJ/w/T9BgSHStT8mQmL1ENohCMeFat8FBGp
-        lN6gQStuXkUsJpILuQdCU3oeVTw6XMMCMt/6OO6NPj+uuYPoHKtcIf2ONnIQIg==
-Date:   Thu, 27 Jul 2023 11:09:48 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 05/28] dt-bindings: net: Add support for QMC HDLC
-Message-ID: <20230727110948.7926a532@bootlin.com>
-In-Reply-To: <20230727-talcum-backside-5bdbe2171fb6@spud>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
-        <20230726150225.483464-6-herve.codina@bootlin.com>
-        <20230727-talcum-backside-5bdbe2171fb6@spud>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 27 Jul 2023 05:20:59 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1315FE7
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686f74a8992so86822b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690449072; x=1691053872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cACJ3NT7rSPHksG1CSCDv/QZVUluNTqq4KXvaW886oI=;
+        b=lKnOasFRjAEbGh7P40XbzLKtOkahlmVFUDvqCWW3ZgaRuzNJSwp4sTaKgMwNwz+Jpc
+         hA4nVDJPH5aqf4q8bVxcWLUkzXpK23oeAFnlJRwJaEUIleLrrgs7btXzJpx3+9HaPfQV
+         hGIP/T6lERVA8hpdk6KZN9Q4J/+wilHe5ZItz/9QQ1qHO3gv2Y4k+BaS5cDcOKz/WLAL
+         6NaRvNv6KF2mZ19RDXY6rbQZ5sQKyx2Yj2LrfaBgxjqmYdHbumQCN0WmWtbB+gjDIGzm
+         PXmUTQGLOY5T8H3PnVo3H27NG4eQhipuKvHt4yAhK97ujnI+IJGqA8lmlUO0fy4wYeay
+         +oXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690449072; x=1691053872;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cACJ3NT7rSPHksG1CSCDv/QZVUluNTqq4KXvaW886oI=;
+        b=Q8XG53IfgfYg5AKWyONQ84/IKpTnpHnu7OLUbGbBmUVKlLKVgYDHPXkG/Vl5lV5Tnm
+         KzKIrc8rI2xE+oPbrlRZ1I9Mtgp50qTEsX542r6sAA7g60GmcfhiN1hy3rTs7LFTTQEP
+         Qbzjpvu98er4JyICDW9yCq1PeDfv83inppShchCCgJlm535KSczm4c2P+s3PXwafZN+L
+         RgIQCHxGJcF59a8AIReR51AIH+pSSEEIDctL1NVZqopWOeB61rwtPk6slFyYCO+RsVBD
+         MyCrY9IhZC0/MhtcewIQXnaY91oNUzRRFN6CeRGojxkk2sxtKT4y+rQXNFIOVuciBVUV
+         qjVw==
+X-Gm-Message-State: ABy/qLb0/BhtEtvFPiMZfCu+fJoaApRe8ETFb83mFk1/z3FXmuV2hfHv
+        te7XK/cj22hthL6uRafRXqQfvg==
+X-Google-Smtp-Source: APBJJlFfFWIsc+pfSeu4dzuDSzimKXTbXaekoL0gFKsbHel8kB/qljY4u0PtyM2mUW/wDh3jQGEPVg==
+X-Received: by 2002:a05:6a00:2d82:b0:675:8627:a291 with SMTP id fb2-20020a056a002d8200b006758627a291mr4692915pfb.3.1690449072033;
+        Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id h4-20020aa786c4000000b00682a99b01basm1038080pfo.0.2023.07.27.02.11.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 02:11:11 -0700 (PDT)
+Message-ID: <1eb30b9e-c43b-b81e-4d96-5d6fa4f2894a@bytedance.com>
+Date:   Thu, 27 Jul 2023 17:10:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 22/49] sunrpc: dynamically allocate the sunrpc_cred
+ shrinker
+Content-Language: en-US
+To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-23-zhengqi.arch@bytedance.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230727080502.77895-23-zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
 
-On Thu, 27 Jul 2023 09:19:59 +0100
-Conor Dooley <conor@kernel.org> wrote:
 
-> On Wed, Jul 26, 2023 at 05:02:01PM +0200, Herve Codina wrote:
-> > The QMC (QUICC mutichannel controller) is a controller present in some
-> > PowerQUICC SoC such as MPC885.
-> > The QMC HDLC uses the QMC controller to transfer HDLC data.
-> > 
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  .../devicetree/bindings/net/fsl,qmc-hdlc.yaml | 41 +++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-> > new file mode 100644
-> > index 000000000000..8bb6f34602d9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-> > @@ -0,0 +1,41 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/fsl,qmc-hdlc.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: QMC HDLC  
+On 2023/7/27 16:04, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the sunrpc_cred shrinker.
 > 
-> "QMC HDLC" seems excessively terse.
-
-The name was based on the fsl,qmc-audio.yaml already present upstream.
-  https://elixir.bootlin.com/linux/v6.4/source/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-
-If needed, I can change to:
-  title: QMC (QUICC Multichannel Controller) HDLC
-Let me known if it is better to you.
-
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   net/sunrpc/auth.c | 19 +++++++++++--------
+>   1 file changed, 11 insertions(+), 8 deletions(-)
 > 
-> > +
-> > +maintainers:
-> > +  - Herve Codina <herve.codina@bootlin.com>
-> > +
-> > +description: |
-> > +  The QMC HDLC uses a QMC (QUICC Multichannel Controller) channel to transfer
-> > +  HDLC data.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: fsl,qmc-hdlc
-> > +
-> > +  fsl,qmc-chan:  
-> 
-> Perhaps I am just showing my lack of knowledge in this area, but what is
-> fsl specific about wanting a reference to the channel of a "QMC"?
-> Is this something that hardware from other manufacturers would not also
-> want to do?
+> diff --git a/net/sunrpc/auth.c b/net/sunrpc/auth.c
+> index 2f16f9d17966..6b898b1be6f5 100644
+> --- a/net/sunrpc/auth.c
+> +++ b/net/sunrpc/auth.c
+> @@ -861,11 +861,7 @@ rpcauth_uptodatecred(struct rpc_task *task)
+>   		test_bit(RPCAUTH_CRED_UPTODATE, &cred->cr_flags) != 0;
+>   }
+>   
+> -static struct shrinker rpc_cred_shrinker = {
+> -	.count_objects = rpcauth_cache_shrink_count,
+> -	.scan_objects = rpcauth_cache_shrink_scan,
+> -	.seeks = DEFAULT_SEEKS,
+> -};
+> +static struct shrinker *rpc_cred_shrinker;
+>   
+>   int __init rpcauth_init_module(void)
+>   {
+> @@ -874,9 +870,16 @@ int __init rpcauth_init_module(void)
+>   	err = rpc_init_authunix();
+>   	if (err < 0)
+>   		goto out1;
+> -	err = register_shrinker(&rpc_cred_shrinker, "sunrpc_cred");
+> -	if (err < 0)
+> +	rpc_cred_shrinker = shrinker_alloc(0, "sunrpc_cred");
+> +	if (!rpc_cred_shrinker)
 
-The QMC and the QMC channel are something specific to the SoC. This IP is only
-available on some Freescale/NXP SoCs.
+Here should set err to -ENOMEM, will fix.
 
-When I upstreamed the 'fsl,qmc-audio.yaml', I first used a generic name for this
-property and Kristoff asked to change to a vendor prefixed name.
-  https://lore.kernel.org/linux-kernel/1dfade07-f8c4-2e16-00dc-c7d183708259@linaro.org/
-
-Based on this, as the property 'fsl,qmc-chan' has the exact same meaning in
-fsl,qmc-audio.yaml and fsl,qmc-hdlc.yaml, I use the same name.
-
-Best regards,
-Hervé
-
-> 
-> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> > +    items:
-> > +      - items:
-> > +          - description: phandle to QMC node
-> > +          - description: Channel number
-> > +    description:
-> > +      Should be a phandle/number pair. The phandle to QMC node and the QMC
-> > +      channel to use.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - fsl,qmc-chan
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    hdlc {
-> > +        compatible = "fsl,qmc-hdlc";
-> > +        fsl,qmc-chan = <&qmc 16>;
-> > +    };
-> > -- 
-> > 2.41.0
-> >   
+>   		goto out2;
+> +
+> +	rpc_cred_shrinker->count_objects = rpcauth_cache_shrink_count;
+> +	rpc_cred_shrinker->scan_objects = rpcauth_cache_shrink_scan;
+> +	rpc_cred_shrinker->seeks = DEFAULT_SEEKS;
+> +
+> +	shrinker_register(rpc_cred_shrinker);
+> +
+>   	return 0;
+>   out2:
+>   	rpc_destroy_authunix();
+> @@ -887,5 +890,5 @@ int __init rpcauth_init_module(void)
+>   void rpcauth_remove_module(void)
+>   {
+>   	rpc_destroy_authunix();
+> -	unregister_shrinker(&rpc_cred_shrinker);
+> +	shrinker_free(rpc_cred_shrinker);
+>   }
