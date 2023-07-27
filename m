@@ -2,110 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55F07652DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5007652E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbjG0Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S233305AbjG0Lsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbjG0Lrt (ORCPT
+        with ESMTP id S232372AbjG0Lse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:47:49 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49231271F;
-        Thu, 27 Jul 2023 04:47:40 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RBTTT4RSGzLnsJ;
-        Thu, 27 Jul 2023 19:45:01 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
- 2023 19:47:37 +0800
-Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from
- page_pool.h
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-References: <20230725131258.31306-1-linyunsheng@huawei.com>
- <ZL/fVF7WetuLgB0l@hera> <20230725141223.19c1c34c@kernel.org>
- <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
- <20230726084742.7dc67c79@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <d6dd7cb3-5d06-cc1d-ff0d-6933cb9994b9@huawei.com>
-Date:   Thu, 27 Jul 2023 19:47:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 27 Jul 2023 07:48:34 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071182122;
+        Thu, 27 Jul 2023 04:48:33 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [59.103.218.24])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id CE4986607057;
+        Thu, 27 Jul 2023 12:48:17 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690458511;
+        bh=0qxwSBYd7sM3osQHdzQ9jmOETl5u5FVEVXpJCyozE18=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=VwWHBy4Fz+Uq2ZgEVfz/g6zrk+uiQW8i288WOCqoUeKyYOZPSWRGPswZH9S4GjmjI
+         elJ4o1Nc21T6uGBpPA4OMaU79ukYjTR6EFOZ8oQNI5xWQmuPWq8XEXZKbbwoDecklx
+         KzPKIBcZwJ52uDt6FZzv6w6igb7g2jUHUbx/IcsmVww4JYwgu6IBR1k8X4/wy6JA7e
+         hXzWGNky+83m0plmg16KCcnWLGNr9AjJwFzOTWwqvO39CXzVojFzPmaJraVo5xAf1n
+         AoZswvD8VYINa6Z/6qVIh+3XCYT+VdeiuiyV03TYf/cP9aTOzIbBfmZz+MgvsgnHRJ
+         wvuG9pLLO8YeA==
+Message-ID: <7f124303-660e-8350-4628-2340550637b0@collabora.com>
+Date:   Thu, 27 Jul 2023 16:48:10 +0500
 MIME-Version: 1.0
-In-Reply-To: <20230726084742.7dc67c79@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Subject: Re: [PATCH v26 2/5] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+References: <20230727093637.1262110-1-usama.anjum@collabora.com>
+ <20230727093637.1262110-3-usama.anjum@collabora.com>
+ <CABb0KFFtjTve+uM=CTPChzUbJvJ=Tr3Q8espo_Rr_hutZPPAiw@mail.gmail.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CABb0KFFtjTve+uM=CTPChzUbJvJ=Tr3Q8espo_Rr_hutZPPAiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/26 23:47, Jakub Kicinski wrote:
-> On Wed, 26 Jul 2023 12:48:05 +0200 Alexander Lobakin wrote:
->>> I prefer the more systematic approach of creating a separate types.h
->>> file, so I don't have to keep chasing people or cleaning up the include
->>> hell myself. I think it should be adopted more widely going forward,
->>> it's not just about the page pool.  
+On 7/27/23 4:40 PM, Michał Mirosław wrote:
+> On Thu, 27 Jul 2023 at 11:37, Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>> This IOCTL, PAGEMAP_SCAN on pagemap file can be used to get and/or clear
+>> the info about page table entries. The following operations are supported
+>> in this ioctl:
+>> - Get the information if the pages have Async Write-Protection enabled
+>>   (``PAGE_IS_WPALLOWED``), have been written to (``PAGE_IS_WRITTEN``), file
+>>   mapped (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped
+>>   (``PAGE_IS_SWAPPED``) or page has pfn zero (``PAGE_IS_PFNZERO``).
+>> - Find pages which have been written to and/or write protect
+>>   (atomic ``PM_SCAN_WP_MATCHING + PM_SCAN_CHECK_WPASYNC``) the pages
+>>   atomically. The (``PM_SCAN_WP_MATCHING``) is used to WP the matched
+>>   pages. The (``PM_SCAN_CHECK_WPASYNC``) aborts the operation if
+>>   non-Async-Write-Protected pages are found. Get is automatically performed
+>>   if output buffer is specified.
 >>
->> I have this patch reworked to introduce
->> include/net/page_pool/{types,helpers}.h in my tree, maybe someone could
->> take a quick look[0] and say if this works while I'm preparing the next
->> version for sending? Not the most MLish way, I know :s
+>> This IOCTL can be extended to get information about more PTE bits. The
+>> entire address range passed by user [start, end) is scanned until either
+>> the user provided buffer is full or max_pages have been found.
 >>
->> [0]
->> https://github.com/alobakin/linux/commit/19741ee072c32eb1d30033cd4fcb236d1c00bfbf
+>> Reviewed-by: Andrei Vagin <avagin@gmail.com>
+>> Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 > 
-> LGTM!
+> Thanks for all the work!
+> 
+> Small request below.
+> 
+>> --- a/fs/proc/task_mmu.c
+>> +++ b/fs/proc/task_mmu.c
+> [...]
+>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> +static unsigned long pagemap_thp_category(pmd_t pmd)
+>> +{
+>> +       unsigned long categories = 0;
+>> +
+>> +       if (pmd_present(pmd)) {
+>> +               categories |= PAGE_IS_PRESENT;
+>> +               if (!pmd_uffd_wp(pmd))
+>> +                       categories |= PAGE_IS_WRITTEN;
+>> +               if (is_zero_pfn(pmd_pfn(pmd)))
+>> +                       categories |= PAGE_IS_PFNZERO;
+>> +       } else if (is_swap_pmd(pmd)) {
+>> +               categories |= PAGE_IS_SWAPPED;
+>> +               if (!pmd_swp_uffd_wp(pmd))
+>> +                       categories |= PAGE_IS_WRITTEN;
+>> +       }
+>> +
+>> +       return categories;
+>> +}
+> [...]
+>> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>> +
+>> +#ifdef CONFIG_HUGETLB_PAGE
+>> +static unsigned long pagemap_hugetlb_category(pte_t pte)
+>> +{
+>> +       unsigned long categories = 0;
+>> +
+>> +       if (pte_present(pte)) {
+>> +               categories |= PAGE_IS_PRESENT;
+>> +               if (!huge_pte_uffd_wp(pte))
+>> +                       categories |= PAGE_IS_WRITTEN;
+>> +               if (!PageAnon(pte_page(pte)))
+>> +                       categories |= PAGE_IS_FILE;
+>> +               if (is_zero_pfn(pte_pfn(pte)))
+>> +                       categories |= PAGE_IS_PFNZERO;
+>> +       } else if (is_swap_pte(pte)) {
+>> +               categories |= PAGE_IS_SWAPPED;
+>> +               if (!pte_swp_uffd_wp_any(pte))
+>> +                       categories |= PAGE_IS_WRITTEN;
+>> +       }
+>> +
+>> +       return categories;
+>> +}
+> 
+> Could you add PAGE_IS_HUGE for THP and HugeTLB pages? This would help
+> maintaining checkpointed process'es page sizes by CRIU when THP is
+> used.
+Can be done.
 
-Hi, Alexander
-It seems you have taken it and adjust it accordingly, do you mind sending
-the next version along with your patchset, so that there is less patch
-conflict for both of us:)
+> 
+> Best Regards
+> Michał Mirosław
 
-> 
-> .
-> 
+-- 
+BR,
+Muhammad Usama Anjum
