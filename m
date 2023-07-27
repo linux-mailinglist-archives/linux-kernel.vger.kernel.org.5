@@ -2,67 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8D765D2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6223A765D19
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjG0UXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49644 "EHLO
+        id S229956AbjG0UVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjG0UXt (ORCPT
+        with ESMTP id S229487AbjG0UVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:23:49 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24DB35A2;
-        Thu, 27 Jul 2023 13:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690489415; x=1722025415;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WeEGqpvtDT+7iTCOG+Fl7R/2EclFppBGdUDQfhYalbc=;
-  b=A4gX0rc16UaNfTRmZ6D1dfKtTwy/aw83wlaHAL64/fsVyHgz4nH4zkAX
-   6OUfYvpUiFGAF5FqvikJ9YDo5pn+y2Mq1JvxuDirfpTPXf9w+blf92ngx
-   k6btZja1d7tkOPkD47lZfLW6SxEex+CVa6uAN52Nc31u4pRpSQfbp9gjM
-   kGzqmVCkMh3ToddOkW26NN9uPdWd/U9aHV+bG9eV3iYgs5t8FagXAJo7x
-   xcigBpO8TNma86aoHMq80q77yU/49H5e4goExCHdVH4bQy4D0hTjHW88A
-   QwrP/RZ+ERlIWMgFNqicfYf+2l/IUf8hoUfZ+/wFsh2Z6XNklqUhLc360
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="368442798"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="368442798"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 13:23:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="900980588"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="900980588"
-Received: from mtyszka-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.133.203])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 13:23:32 -0700
-From:   Iwona Winiarska <iwona.winiarska@intel.com>
-To:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v3 4/4] arm64: dts: nuvoton: Add PECI controller node
-Date:   Thu, 27 Jul 2023 22:21:26 +0200
-Message-Id: <20230727202126.1477515-5-iwona.winiarska@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230727202126.1477515-1-iwona.winiarska@intel.com>
-References: <20230727202126.1477515-1-iwona.winiarska@intel.com>
+        Thu, 27 Jul 2023 16:21:51 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B2319BA;
+        Thu, 27 Jul 2023 13:21:48 -0700 (PDT)
+X-QQ-mid: bizesmtp70t1690489296tws862vv
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 28 Jul 2023 04:21:34 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: LrCnY+iDm+O9BsCx7wECHlZ1cmX5U7VxpBnSEWEJeHuEudDsYPNN+MIzBnrTE
+        uMhMJ4/t9cjVkxE4LNm/hm1E/ulnGHHDfmLReKCltns9Ql4FI46jaD1vD9rVsvVa6Xrq840
+        f+XEchByXBKe3iV/Xr8BApGk3H/lszaIO2GO9wD/d3RGdYbhEHL4XG/JA02a3m7uu4+pA+i
+        GYIqy1IIfUMzLa54eXrPqOjri2Tjkjkw8HXmGFLGV1N/+fLIDTDjw4fscDD304pEy9klmKy
+        JXfUmBT/bD9fmsGt0jMBeJMFEHNqhbsnBM+AEUQVgMrr9afZt/leYNroIhkcHgQR8Q+oDJg
+        YGvGO/EsnfMXLWKelAmFRGxc7RM2x6UvT1f5NK4
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1905233204736184143
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 00/12] selftests/nolibc: add minimal kernel config support - part1
+Date:   Fri, 28 Jul 2023 04:21:34 +0800
+Message-Id: <cover.1690489039.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,33 +49,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PECI controller node with all required information.
+Hi, Willy
 
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+Most of the suggestions of v2 [1] have been applied in this v3 revision,
+except the local menuconfig and mrproper targets, as explained in [2].
+
+A fresh run with tinyconfig for ppc, ppc64 and ppc64le:
+
+    $ for arch in ppc ppc64 ppc64le; do \
+        mkdir -p $PWD/kernel-$arch;
+        time make defconfig run DEFCONFIG=tinyconfig ARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out;
+      done
+
+rerun for ppc, ppc64 and ppc64le:
+
+    $ for arch in ppc ppc64 ppc64le; do \
+        make rerun ARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out;
+      done
+    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc/vmlinux on qemu-system-ppc
+    >> [ppc] Kernel command line: console=ttyS0 panic=-1 
+    printk: console [ttyS0] enabled
+    Run /init as init process
+    Running test 'startup'
+    Running test 'syscall'
+    Running test 'stdlib'
+    Running test 'vfprintf'
+    Running test 'protection'
+    Leaving init with final status: 0
+    reboot: Power down
+    powered off, test finish
+    qemu-system-ppc: terminating on signal 15 from pid 190248 ()
+
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+
+    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc.out
+    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc64/vmlinux on qemu-system-ppc64
+    Linux version 6.4.0+ (ubuntu@linux-lab) (powerpc64le-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #2 SMP Fri Jul 28 01:40:55 CST 2023
+    Kernel command line: console=hvc0 panic=-1 
+    printk: console [hvc0] enabled
+    printk: console [hvc0] enabled
+    Run /init as init process
+    Running test 'startup'
+    Running test 'syscall'
+    Running test 'stdlib'
+    Running test 'vfprintf'
+    Running test 'protection'
+    Leaving init with final status: 0
+    reboot: Power down
+    powered off, test finish
+
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+
+    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc64.out
+    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc64le/arch/powerpc/boot/zImage on qemu-system-ppc64le
+    Linux version 6.4.0+ (ubuntu@linux-lab) (powerpc64le-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #2 SMP Fri Jul 28 01:41:12 CST 2023
+    Kernel command line: console=hvc0 panic=-1 
+    Run /init as init process
+    Running test 'startup'
+    Running test 'syscall'
+    Running test 'stdlib'
+    Running test 'vfprintf'
+    Running test 'protection'
+    Leaving init with final status: 0
+    reboot: Power down
+    powered off, test finish
+
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+
+    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc64le.out
+
+A fast report on existing test logs:
+
+    $ for arch in ppc ppc64 ppc64le; do \
+        make report ARCH=$arch RUN_OUT=$PWD/run.$arch.out | grep status; \
+      done
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
+
+Changes from v2 --> v3:
+
+* selftests/nolibc: allow report with existing test log
+  selftests/nolibc: fix up O= option support
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+  selftests/nolibc: tinyconfig: add extra common options
+
+    No Change.
+
+* selftests/nolibc: add macros to reduce duplicated changes
+
+    Remove REPORT_RUN_OUT and LOG_OUT.
+
+* selftests/nolibc: string the core targets
+
+    Removed extconfig target from our v3 powerpc patchset [3], the
+    operations have been merged into the defconfig target.
+
+    Let kernel depends on $(KERNEL_CONFIG) instead of the removed
+    extconfig.
+
+* selftests/nolibc: add menuconfig and mrproper for development
+
+    like the other local nolibc targets, still require local menuconfig
+    and mrproper targets for consistent usage with the same ARCH and no -C
+    /path/to/srctree
+
+    Merge them together to reduce duplicated entries.
+
+* selftests/nolibc: allow quit qemu-system when poweroff fails
+
+    Enhance timeout logic with more expected strings print and detection
+    about the booting of bios, kernel, init and test.
+
+    Add a default 10 seconds of QEMU_TIMEOUT for every architecture to
+    detect all of the potential boog hang or failed poweroff.
+
+* selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
+
+    Reduce QEMU_TIMEOUT from 60 seconds to a more normal 15 and 20
+    seconds for ppc64 and ppc64le respectively. the main time cost is
+    the slow bios used.
+
+* selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
+
+    Rename the file names to shorter ones as suggestions from the powerpc
+    patchset.
+
+* selftests/nolibc: speed up some targets with multiple jobs
+
+    New to speed up with -j<N> by default.
+
+Best regards,
+Zhangjin
 ---
- arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+[1]: https://lore.kernel.org/lkml/cover.1689759351.git.falcon@tinylab.org/
+[2]: https://lore.kernel.org/lkml/20230727132418.117924-1-falcon@tinylab.org/
+[3]: https://lore.kernel.org/lkml/8e9e5ac6283c6ec2ecf10a70ce55b219028497c1.1690468707.git.falcon@tinylab.org/
 
-diff --git a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-index aa7aac8c3774..b8326bbe9fde 100644
---- a/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-+++ b/arch/arm64/boot/dts/nuvoton/nuvoton-common-npcm8xx.dtsi
-@@ -68,6 +68,15 @@ apb {
- 			ranges = <0x0 0x0 0xf0000000 0x00300000>,
- 				<0xfff00000 0x0 0xfff00000 0x00016000>;
- 
-+			peci0: peci-controller@100000 {
-+				compatible = "nuvoton,npcm845-peci";
-+				reg = <0x100000 0x1000>;
-+				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&clk NPCM8XX_CLK_APB3>;
-+				cmd-timeout-ms = <1000>;
-+				status = "disabled";
-+			};
-+
- 			timer0: timer@8000 {
- 				compatible = "nuvoton,npcm845-timer";
- 				interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+
+Zhangjin Wu (12):
+  selftests/nolibc: allow report with existing test log
+  selftests/nolibc: add macros to reduce duplicated changes
+  selftests/nolibc: fix up O= option support
+  selftests/nolibc: string the core targets
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+  selftests/nolibc: add menuconfig and mrproper for development
+  selftests/nolibc: allow quit qemu-system when poweroff fails
+  selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
+  selftests/nolibc: tinyconfig: add extra common options
+  selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
+  selftests/nolibc: speed up some targets with multiple jobs
+
+ tools/testing/selftests/nolibc/Makefile       | 102 ++++++++++++++----
+ .../selftests/nolibc/configs/common.config    |   4 +
+ .../selftests/nolibc/configs/ppc.config       |   3 +
+ .../selftests/nolibc/configs/ppc64.config     |   3 +
+ .../selftests/nolibc/configs/ppc64le.config   |   4 +
+ 5 files changed, 98 insertions(+), 18 deletions(-)
+ create mode 100644 tools/testing/selftests/nolibc/configs/common.config
+ create mode 100644 tools/testing/selftests/nolibc/configs/ppc64.config
+ create mode 100644 tools/testing/selftests/nolibc/configs/ppc64le.config
+
 -- 
-2.40.1
+2.25.1
 
