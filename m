@@ -2,148 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B77765B51
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E3B765B54
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbjG0S0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S230446AbjG0S2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjG0S0B (ORCPT
+        with ESMTP id S229492AbjG0S2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:26:01 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108AC2D64
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:26:00 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so1749293a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:25:59 -0700 (PDT)
+        Thu, 27 Jul 2023 14:28:04 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DFD26B2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:28:03 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-584375eacacso13072487b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:28:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690482358; x=1691087158;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bzem6p2nNFcrPREy8LTws99E2B4HTj3oQRbG1EigUS4=;
-        b=bjAdL850CueyOByCRuInC49bKHSUSe8x+zsDEu/NYsVmPUGVLaK7NVBLBshh2XsXuK
-         wkYSXG4nLvZcHgcXF2uxUMJMEsG7FPmuOB61TO5bcgB8E8+UUXg2S33FZ7EQMlWFvl92
-         JSn47budHcPk7imfbiF7H8/mCigiYG7s1b4g0=
+        d=google.com; s=20221208; t=1690482483; x=1691087283;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LdqBlA80Wg7TTifhsmcWRJBqXp5WhnKqMSkVfyET1zg=;
+        b=2ORqFkA2f3Z9uBQcEXJuPsfPoD3pbCZzEg9K5vjpSb+ANKuVree8tmQXRURnLx56ld
+         kaGAjGT3BxZrdF3VUT+aDQokKYfTI8kUwreH2Ab+JrMFGHHJcKLVDG2OXYPZ3VLXA/Fv
+         6stescGuyXhxkUxbS5ZRNT907yR2cFGVnzi34CqfJbBZ2Z+D5sawwHlSDSnFU104J90i
+         glA8cm4ApX4r3QoQCorCX6/v+SGlMnEfQVVz+ZVvLaIBZSFCBwZ0nBPt7llVhUy8I30v
+         wq5c/3NJErPcbxT2Qp0L2yDOnvEnZGEV87lSNUYeBc0TkL8RMv3mWzLs08LIc7xWbRRW
+         ya0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690482358; x=1691087158;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bzem6p2nNFcrPREy8LTws99E2B4HTj3oQRbG1EigUS4=;
-        b=BfIK1GLK1RAJJo92qKSQsQFr5Ma9idlIYyWJSYEn0Rnd47KTqabywlrxwJbmac8fgt
-         DHlOJeBst4EOhprboqKVtjznz/OWKmUOmJqbSlmdx94Ftlws4fyTUoNJfLjGYLpDmFUV
-         X1X5C5pqgEuA++mNGfdTDdh2epAzZNx5XFrD9Gu3EPi83UmZqAIZm7zxrbukN/uzm7EX
-         q3F3WkVHq4JAc/CIatd8+euU8593dB7x2d/EKNzcVb7IBmSEZOF9KhzaQewwh3Ysf/WV
-         prYDC7ZQFRKsG15tPqtkrA0I4Od578rOJ6ZpdueHv0s2G3mjHExAVZJrbRY63vdU/NCF
-         3I6A==
-X-Gm-Message-State: ABy/qLanrDXFT0YJ4qWgDlrJIHXSeUuXWkuacJd3O3AokJ2smQ+C+Clw
-        o3L/rgu5yIsRyshLhJ7nqcVFw1/NNwLuE/9QZJ8DDxzR
-X-Google-Smtp-Source: APBJJlF/ToR/OPqnwnPqTGfFBvuYq9YVErzyqq/VfULKfZZzhUUYjjgbeaxwHU2Wi9RBTauGq0C/sw==
-X-Received: by 2002:aa7:d9c5:0:b0:522:2b24:cf6 with SMTP id v5-20020aa7d9c5000000b005222b240cf6mr2091893eds.42.1690482358221;
-        Thu, 27 Jul 2023 11:25:58 -0700 (PDT)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id k16-20020aa7d8d0000000b0051e2670d599sm924108eds.4.2023.07.27.11.25.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 11:25:57 -0700 (PDT)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5221e487e08so1774271a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:25:57 -0700 (PDT)
-X-Received: by 2002:aa7:cfc5:0:b0:521:7a5e:ab1e with SMTP id
- r5-20020aa7cfc5000000b005217a5eab1emr2415059edy.21.1690482357203; Thu, 27 Jul
- 2023 11:25:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230726214103.3261108-1-jannh@google.com> <20230726214103.3261108-4-jannh@google.com>
- <CAG48ez00FhfjTReO8+B43tEXuzFcat1mQs3jxu_eGFzEp2Vsag@mail.gmail.com>
-In-Reply-To: <CAG48ez00FhfjTReO8+B43tEXuzFcat1mQs3jxu_eGFzEp2Vsag@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linuxfoundation.org>
-Date:   Thu, 27 Jul 2023 11:25:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiU7J8-tz_UaaAZfLeak7N2D_LPLq3OS7stSxY87nwPYg@mail.gmail.com>
-Message-ID: <CAHk-=wiU7J8-tz_UaaAZfLeak7N2D_LPLq3OS7stSxY87nwPYg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: Fix anon_vma memory ordering
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
+        d=1e100.net; s=20221208; t=1690482483; x=1691087283;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LdqBlA80Wg7TTifhsmcWRJBqXp5WhnKqMSkVfyET1zg=;
+        b=UeOpQQ93+iycItHxWIq1wTocRg+nD/uYCK83W706vx30Uhuzd5vfm40qwZtWkUosw/
+         AWR7tYU4Za1eT6vda9pVWazk44NRBAIVRBNg2TCCp6dK+qBWNoGyTcxZi+zWghKQ8l5G
+         mR1q9FKBqC5+T4xJeTT/wjULV3I1cpf71lknbNrPnLEXEc0ZZAM+kFp25hPgtWNd2Oq/
+         l837prZFYt4mqETGCsekhHingkpj/qOWb7Ljqj5CTJj6yugzQ8/9lL6qUhpdLIeNAfA2
+         1Zfl4OwmG73oXSvxE0V7Tt5q/YCtEO6ApBTLzCZAbQ7pGo2DXjy7qv/7Xmduz3QE7ZbT
+         QAhg==
+X-Gm-Message-State: ABy/qLZHjB9a16eWobKKm9i6/F8f8O81FamFEpkzew3YCPLgWpnmtuZF
+        rG8DCGgrF1GvcjDB9NfS9YK1m42bcqvX
+X-Google-Smtp-Source: APBJJlFu1RmIM9I2XbdYtCItJzT1I4AJtth2QNNJiNYVh4Yo5EZk+wFwLwBJ0TaQyZTQq3wAjZaAjFpkxTME
+X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:780f:26da:d952:3463])
+ (user=mshavit job=sendgmr) by 2002:a05:690c:72c:b0:576:cd91:b888 with SMTP id
+ bt12-20020a05690c072c00b00576cd91b888mr805ywb.0.1690482483158; Thu, 27 Jul
+ 2023 11:28:03 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 02:26:16 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <20230727182647.4106140-1-mshavit@google.com>
+Subject: [PATCH v1 0/7] Refactor the SMMU's CD table ownership
+From:   Michael Shavit <mshavit@google.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Michael Shavit <mshavit@google.com>, jean-philippe@linaro.org,
+        nicolinc@nvidia.com, jgg@nvidia.com, baolu.lu@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 14:51, Jann Horn <jannh@google.com> wrote:
->
-> Of course I only realize directly after sending this patch that this
-> comment only holds... [..]
-> ... if we move the smp_store_release() down by one line here.
+Hi all,
 
-So I've applied PATCH 1/2 as obvious, but am holding off on this one.
+This series refactors stage 1 domains so that they describe a single CD
+entry. These entries are now inserted into a CD table that is owned by
+the arm_smmu_master instead of the domain.
+This is conceptually cleaner and unblocks other features, such as
+attaching domains with PASID (for unmanaged/dma domains).
 
-Partly because of the other discussion about memory ordering, but also
-due to how the now sometimes much more complex-looking conditionals
-could be made a bit visually simpler.
+This patch series was originally part of a larger patch series that
+implemented the set_dev_pasid callback for non-SVA domains but is now
+split into a distinct series.
 
-For example the patch does
+This patch series is also available on gerrit with Jean's SMMU test
+engine patches cherry-picked on top for testing:
+https://linux-review.git.corp.google.com/c/linux/kernel/git/torvalds/linux/+/24729
 
--       if (!vma || !(vma->vm_flags & VM_MERGEABLE) || !vma->anon_vma)
-+       /* see anon_vma_prepare() */
-+       if (!vma || !(vma->vm_flags & VM_MERGEABLE) ||
-+                       !smp_load_acquire(&vma->anon_vma))
-                return NULL;
+Thanks,
+Michael Shavit
 
-which is a understandably mindless "just add the smp_load_acquire()",
-but it is also just unnecessarily hard to read.
+Changelog
+v1:
+* Replace s1_cfg with arm_smmu_ctx_desc_cfg representing the CD table
+* Assume that the CD table is owned by the SMMU master for most
+  operations. This is forward-compatible with the nested patch series as
+  these operations wouldn't be called when the installed CD table comes
+  from nested domains.
+* Split off as a distinct patch series Split-off from:
+https://lore.kernel.org/all/20230621063825.268890-1-mshavit@google.com/
 
-And the comment placement is a bit misleading too, since it really
-only refers to one part of the expression. And that's very obvious if
-you know what it's about, but the whole point of that comment would be
-that you don't necessarily know why the code is doing what it is
-doing.
+Michael Shavit (7):
+  iommu/arm-smmu-v3: Move ctx_desc out of s1_cfg
+  iommu/arm-smmu-v3: Replace s1_cfg with ctx_desc_cfg
+  iommu/arm-smmu-v3: Encapsulate ctx_desc_cfg init in alloc_cd_tables
+  iommu/arm-smmu-v3: move stall_enabled to the cd table
+  iommu/arm-smmu-v3: Skip cd sync if CD table isn't active
+  iommu/arm-smmu-v3: Refactor write_ctx_desc
+  iommu/arm-smmu-v3: Move CD table to arm_smmu_master
 
-IOW, that would be much more legible just split up as
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  35 +++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 167 ++++++++----------
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  39 ++--
+ 3 files changed, 123 insertions(+), 118 deletions(-)
 
-        if (!vma || !(vma->vm_flags & VM_MERGEABLE))
-                return NULL;
 
-        /* see anon_vma_prepare() */
-        if (!smp_load_acquire(&vma->anon_vma))
-                return NULL;
+base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+-- 
+2.41.0.585.gd2178a4bd4-goog
 
-I feel.
-
-Also, I'm now wondering about the ordering of that
-
->                 smp_store_release(&vma->anon_vma, anon_vma);
->                 anon_vma_chain_link(vma, avc, anon_vma);
-
-sequence. Maybe we *do* want the anon_vma pointer to be set first, so
-that once it's on that anon_vma chain (and is visible in the anon_vma
-interval tree) it always has a proper anon_vma pointer.
-
-*OR* maybe the rule needs to be that any other concurrent user that
-sees 'anon_vma' as being valid also can rely on the links being set
-up?
-
-I *suspect* the ordering doesn't actually matter, but it just makes me
-wonder more about this area.
-
-                Linus
