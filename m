@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1758F7650F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5B87650FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjG0KXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S234002AbjG0KYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbjG0KXQ (ORCPT
+        with ESMTP id S233571AbjG0KXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:23:16 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A771319BA;
-        Thu, 27 Jul 2023 03:22:59 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2682e33509bso598766a91.1;
-        Thu, 27 Jul 2023 03:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690453379; x=1691058179;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SOS+4iMvfIqSqMDfD009RckKJ93j4gnKYZMgqoKrYXA=;
-        b=qiqhDJsW68fry/uR4TLtmce/93goZBVsCTW8/DS42XKrLFR12FbIPDUs/wX3Yqyn5S
-         5OdxFeBD4XCEIGOAYMgZ0GuzRaR9jFmPCE4RYxUbVQ+isd9le6c1p/ELlzV3yL/ovcbw
-         NQXOdhIfMlDW7KY0YxnS3VyZxghvjzx1rwhblxhg0WlfylsY8gHUrfDnE2IuMmJSfZee
-         twAcIanP4ZNZFQIK9W+xP5YOi/+9nuKkVLfz+TXge9geGixVqcuIF76+sqSHZQU3xYLo
-         XMc+3Ps+jm1iaYHENJfTht4DHLsNr2rNomckm2KKF39AKAVELwIfWf9HjBSQL4qWjTeq
-         Q64Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690453379; x=1691058179;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SOS+4iMvfIqSqMDfD009RckKJ93j4gnKYZMgqoKrYXA=;
-        b=ech19tpavVYwtIrnhVS0mLRCxbOFzgPI4+Lcjgyfwy4fhb7mXzmbfagp7y1cO8eNph
-         LKX2CQVZbOGWEI5OqElEv8EZLDn7x3T6rJGo3FOMBl9Os8sHWGQcqP8oODjkhWhenCDI
-         MU6WKLxQCr+B3mBNKmbEoPcMzqgxrFVwgjnPgPtQDhJEA6Kl5NSUMTWR3JlyV80FkOgi
-         9rxUD1oqpeuX01bj8AghVfY68Bkb+4u/7+ADb6JPRRceHyya23yXgLug9QRq/9QQtJ0Z
-         VB0OQQ3lzfzfjnSWtGUA7w2t7lkRKf3lQxSNgGPd6UT14qMcRbFQnbcoGZL2KgZTpLvr
-         wxbw==
-X-Gm-Message-State: ABy/qLabrsfhMZUr975ia8ZZ/5Sci+FOPg1PHhbcy4f8qi5JHdvh4/89
-        DsRpoh2l4U8NwrvBVkljyyM=
-X-Google-Smtp-Source: APBJJlFddPx3cGLNjyXpDC378SkH9rHKbY7ad9h5Wq6Htdvyb1Wp3rP77aG0mAzX2jor48p7Ca+OCA==
-X-Received: by 2002:a17:90a:114f:b0:25e:bd1d:4f0c with SMTP id d15-20020a17090a114f00b0025ebd1d4f0cmr4156327pje.10.1690453378929;
-        Thu, 27 Jul 2023 03:22:58 -0700 (PDT)
-Received: from [192.168.1.121] ([65.129.146.152])
-        by smtp.gmail.com with ESMTPSA id g4-20020a170902c38400b001b85bb5fd77sm1243108plg.119.2023.07.27.03.22.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 03:22:58 -0700 (PDT)
-Message-ID: <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
-Date:   Thu, 27 Jul 2023 04:22:57 -0600
+        Thu, 27 Jul 2023 06:23:40 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF78F0;
+        Thu, 27 Jul 2023 03:23:39 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R9iX43027205;
+        Thu, 27 Jul 2023 06:23:36 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s36ahwjrx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 06:23:35 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 36RANY8A014075
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Jul 2023 06:23:34 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 27 Jul 2023 06:23:33 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Thu, 27 Jul 2023 06:23:33 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 27 Jul 2023 06:23:33 -0400
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36RANMXL031645;
+        Thu, 27 Jul 2023 06:23:24 -0400
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH 1/2] dt-bindings:iio:frequency:admv1013: add vcc regs
+Date:   Thu, 27 Jul 2023 13:23:08 +0300
+Message-ID: <20230727102309.92479-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
-Content-Language: en-US
-From:   TW <dalzot@gmail.com>
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     regressions@lists.linux.dev,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
- <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
- <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
- <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
-In-Reply-To: <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: 5gRnnmw5ulnk7Kqlep9YziQpsn6YDZj3
+X-Proofpoint-GUID: 5gRnnmw5ulnk7Kqlep9YziQpsn6YDZj3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 mlxscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270092
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I managed to fix the patch file, guess the formatting messed up a bit. 
-So will try with those patches installed.
+Add bindings for the VCC regulators of the ADMV1013 microware
+upconverter.
 
-On 7/27/23 04:06, TW wrote:
-> I retried on 6.5 rc3 without the Nvidia drivers and still received the 
-> same error and going to try for the patch next but got a malformed 
-> patch error on line 6 for the first patch for libata-scsi.c. The other 
-> two seem to go through just fine however.
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+ .../bindings/iio/frequency/adi,admv1013.yaml  | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+index fc813bcb6532..6660299ac1ad 100644
+--- a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+@@ -39,6 +39,46 @@ properties:
+     description:
+       Analog voltage regulator.
+ 
++  vcc-drv-supply:
++    description:
++      RF Driver voltage regulator.
++
++  vcc2-drv-supply:
++    description:
++      RF predriver voltage regulator.
++
++  vcc-vva-supply:
++    description:
++      VVA Control Circuit voltage regulator.
++
++  vcc-amp1-supply:
++    description:
++      RF Amplifier 1 voltage regulator.
++
++  vcc-amp2-supply:
++    description:
++      RF Amplifier 2 voltage regulator.
++
++  vcc-env-supply:
++    description:
++      Envelope Detector voltage regulator.
++
++  vcc-bg-supply:
++    description:
++      Mixer Chip Band Gap Circuit voltage regulator.
++
++  vcc-bg2-supply:
++    description:
++      VGA Chip Band Gap Circuit voltage regulator.
++
++  vcc-mixer-supply:
++    description:
++      Mixer voltage regulator.
++
++  vcc-quad-supply:
++    description:
++      Quadruppler voltage regulator.
++
+   adi,detector-enable:
+     description:
+       Enable the Envelope Detector available at output pins VENV_P and
+@@ -87,6 +127,16 @@ examples:
+         clocks = <&admv1013_lo>;
+         clock-names = "lo_in";
+         vcm-supply = <&vcm>;
++        vcc-drv-supply = <&vcc_drv>;
++        vcc2-drv-supply = <&vcc2_drv>;
++        vcc-vva-supply = <&vcc_vva>;
++        vcc-amp1-supply = <&vcc_amp1>;
++        vcc-amp2-supply = <&vcc_amp2>;
++        vcc-env-supply = <&vcc_env>;
++        vcc-bg-supply = <&vcc_bg>;
++        vcc-bg2-supply = <&vcc_bg2>;
++        vcc-mixer-supply = <&vcc_mixer>;
++        vcc-quad-supply = <&vcc_quad>;
+         adi,quad-se-mode = "diff";
+         adi,detector-enable;
+       };
+-- 
+2.41.0
+
