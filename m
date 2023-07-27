@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7347C764319
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8754676431B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjG0Avi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 20:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
+        id S230258AbjG0AwS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 20:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjG0Avh (ORCPT
+        with ESMTP id S229582AbjG0AwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 20:51:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EA2128;
-        Wed, 26 Jul 2023 17:51:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B01461CE7;
-        Thu, 27 Jul 2023 00:51:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04086C433C7;
-        Thu, 27 Jul 2023 00:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690419095;
-        bh=ZhjqtpIRGSMoW8Oc7K1hWttjjyBxCt0r6PcQ25NEtp0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ATiThoRis+jRgtpQW5n1P4JjCWAKCrhdgEvSKVsu6I7i/kFxajtP8ksM21Aq2oeUD
-         7gkKAKWFMtw5V3cNS0uull4Ew6ZGd3YqMY67F4XV4uDeJCiNQvsUhXUpd9P9WUyq4y
-         2BPhE7aA28kotCTZVsO/pyXAyC7B/9vdQJsKTCMiqKyBOBgeRUMdJk/FtUm1v7YoDm
-         7mLBY2uxPhRmWSFdvyRKCdLpnafH/79SKQmvQo1fS++ewWJEKAvWR1OFuvg+yMWDcn
-         sngLg9pGvEkxA8zff54nnbQbLvKOgG8j9Pu/UxwmPONAlMqTU9ZyQKTSlJtlIGslFP
-         u9uxOtqcj0XLg==
-Date:   Thu, 27 Jul 2023 02:51:32 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 21/61] mmc: sdhci-s3c: Convert to platform remove
- callback returning void
-Message-ID: <20230727005132.sxphs3cdourj3m2f@intel.intel>
-References: <20230726040041.26267-1-frank.li@vivo.com>
- <20230726040041.26267-21-frank.li@vivo.com>
+        Wed, 26 Jul 2023 20:52:16 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB75026A6;
+        Wed, 26 Jul 2023 17:52:14 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 36R0prL4049406;
+        Thu, 27 Jul 2023 08:51:53 +0800 (+08)
+        (envelope-from surong.pang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RBBy64wsQz2K5pr2;
+        Thu, 27 Jul 2023 08:50:22 +0800 (CST)
+Received: from zeshkernups01.spreadtrum.com (10.29.55.99) by
+ shmbx05.spreadtrum.com (10.29.1.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Thu, 27 Jul 2023 08:51:52 +0800
+From:   Surong Pang <surong.pang@unisoc.com>
+To:     <Thinh.Nguyen@synopsys.com>, <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <Orson.Zhai@unisoc.com>, <Zhiyong.liu@unisoc.com>,
+        <Surong.Pang@Unisoc.com>, <Surong.Pang@gmail.com>
+Subject: [PATCH] usb: dwc3: gadget: let pm runtime get/put paired
+Date:   Thu, 27 Jul 2023 08:51:50 +0800
+Message-ID: <20230727005150.18836-1-surong.pang@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230726040041.26267-21-frank.li@vivo.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Originating-IP: [10.29.55.99]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+Content-Transfer-Encoding: 8BIT
+X-MAIL: SHSQR01.spreadtrum.com 36R0prL4049406
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yangtao,
+pm_runtime_get is called when setting pending_events to true.
+pm_runtime_put is needed for pairing with pm_runtime_get.
 
-On Wed, Jul 26, 2023 at 12:00:01PM +0800, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Cc: Uwe Kleine-K�nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Signed-off-by: Surong Pang <surong.pang@unisoc.com>
+---
+ drivers/usb/dwc3/gadget.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 5fd067151fbf..9c835c5f9928 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -4720,5 +4720,6 @@ void dwc3_gadget_process_pending_events(struct dwc3 *dwc)
+                dwc3_interrupt(dwc->irq_gadget, dwc->ev_buf);
+                dwc->pending_events = false;
+                enable_irq(dwc->irq_gadget);
++               pm_runtime_put(dwc->dev);
+        }
+ }
+--
+2.17.1
 
-Andi
+________________________________
+ This email (including its attachments) is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential or otherwise protected from disclosure. Unauthorized use, dissemination, distribution or copying of this email or the information herein or taking any action in reliance on the contents of this email or the information herein, by anyone other than the intended recipient, or an employee or agent responsible for delivering the message to the intended recipient, is strictly prohibited. If you are not the intended recipient, please do not read, copy, use or disclose any part of this e-mail to others. Please notify the sender immediately and permanently delete this e-mail and any attachments if you received it in error. Internet communications cannot be guaranteed to be timely, secure, error-free or virus-free. The sender does not accept liability for any errors or omissions.
+本邮件及其附件具有保密性质，受法律保护不得泄露，仅发送给本邮件所指特定收件人。严禁非经授权使用、宣传、发布或复制本邮件或其内容。若非该特定收件人，请勿阅读、复制、 使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件的方式即刻告知发件人。无法保证互联网通信及时、安全、无误或防毒。发件人对任何错漏均不承担责任。
