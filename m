@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1896A764E2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E607D764E30
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjG0Ix2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
+        id S234267AbjG0Ixv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjG0Iwt (ORCPT
+        with ESMTP id S234675AbjG0IxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:52:49 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A611C8A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:34:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 514AF21AF5;
-        Thu, 27 Jul 2023 08:33:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690446801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gKEeRgCOuMXVv+dy5V7kKodknnAI3DeJtAcs76fCCWc=;
-        b=BP0pIDFxBzhK5Y1rJuiurwlH5lPQtfJNnnWEM7+0TB+d6LT0v4q9d5tYr4k/D/WNEA52A2
-        jI1g+AR9nVz6V1FoiG9e6yYdsW4E5DDziVWr/3bjIDIENjFTS8XY8UWI7RHpRe3lFGxe+d
-        ycDDi0kmkCAHl/vhXGOhCEttTnzbHYk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690446801;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gKEeRgCOuMXVv+dy5V7kKodknnAI3DeJtAcs76fCCWc=;
-        b=pJyh2Enik6eYxH8uTutVUUgCuv9AqFaORxpc4UFmv0i12YZc/ARvt/8QNNqrD4TXaC4ESt
-        WG7HPmDhtosfLYAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E45C13902;
-        Thu, 27 Jul 2023 08:33:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Zi+gCtErwmQhUgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 27 Jul 2023 08:33:21 +0000
-Message-ID: <167455a3-3a9f-6064-4063-5b74231141f9@suse.cz>
-Date:   Thu, 27 Jul 2023 10:33:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm: page_alloc: consume available CMA space first
-To:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Joonsoo Kim <js1304@gmail.com>, linux-mm@kvack.org,
+        Thu, 27 Jul 2023 04:53:22 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C2642F4B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:34:43 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3175f17a7baso751321f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:34:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=devtank-co-uk.20221208.gappssmtp.com; s=20221208; t=1690446872; x=1691051672;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T+RffnyX1C3jwfJk0PWLmvia5S+Nu7M5/ptHa76gYBw=;
+        b=FeXoWvmilpW1hdXzL3FNF8UmBleGyuvtnBmWlMSGvCfmSQyoKL2aTr0nXU1WNBbq3U
+         o4mHBaStsMb/aS8Osw9yf5pBA10qmjWbFvlxZr58zyG+vx2zz4ieK7+FD19cbHtCtj6g
+         9I9CrXC6YMrnO6/7p97IYUAzIRVv7tJHCBWrSC9tOkX3Vm9nVA94sY003Q+UnQKlemgx
+         9fVkLgnEpsMmaw/hfMYe0yAmqhdaYfSm0cWVDagn1mqjA630hpwRTzb7/rPjr/1HyTj0
+         XPDr2xlvbijolhVXSV6s+ezhmHEA9bMqO9UdJSB0LxeW4/huleZr9kq8ExozgbYWebcC
+         Jy9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690446872; x=1691051672;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T+RffnyX1C3jwfJk0PWLmvia5S+Nu7M5/ptHa76gYBw=;
+        b=PVJKmsxzUzMro1+azoxJMxtgxWVk7QfRPQCQSWBjUMX94yL1PGKKjSyurLTnlNL25d
+         KCMWgwUdCEW1lvO/WwxJYporfiAsMqAdyXoNXuY89c3sGI0GpQ7FQyweL8DzTQGQRLy6
+         GZ3Mco2dvAJuogjqUCvqO0CO6VUTb3qdQHlwe3LRFclVzRaQmy8Kl40w8mkhbmgl+CzV
+         BdOXJu4edhmJ3cUZSDSyenbJXSLzUKDoLljrhtQci6kzIcXOPasv8g+K+yd3XgHa0+Ba
+         Wp87Qp6Lb8ihsz92Er/WvzcVkZtKbqDhTIjX/N1nXtJa/0sS1AZmJEufH8ngo3+Nyw7O
+         8vBg==
+X-Gm-Message-State: ABy/qLYIyOY9BDthijOo1FVBlr+ybXdzP2wUzscz7rvlrT7L3wRdr6/P
+        D0xU1PNO93dU7BCZMmLFHmCqfg==
+X-Google-Smtp-Source: APBJJlEHOF6Ha/hI8jPTkvlVhz5xgjSnWuYcuXmwjzcHWfoWdbiiFTlziaUnxvQuqw4WK5cG59wsFg==
+X-Received: by 2002:adf:edca:0:b0:313:e8bf:a77 with SMTP id v10-20020adfedca000000b00313e8bf0a77mr1129028wro.5.1690446872019;
+        Thu, 27 Jul 2023 01:34:32 -0700 (PDT)
+Received: from DevTop.lan ([212.82.82.3])
+        by smtp.gmail.com with ESMTPSA id e5-20020a5d5005000000b00311d8c2561bsm1330079wrt.60.2023.07.27.01.34.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:34:31 -0700 (PDT)
+From:   Harry Geyer <harry.geyer@devtank.co.uk>
+To:     Till Harbaum <till@harbaum.org>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230726145304.1319046-1-hannes@cmpxchg.org>
- <ZMGuY7syh9x0Sf51@P9FQF9L96D>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZMGuY7syh9x0Sf51@P9FQF9L96D>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     harry.geyer@devtank.co.uk
+Subject: [PATCH] i2c: tiny-usb: check usb base class before assuming the interface on device is for this driver
+Date:   Thu, 27 Jul 2023 09:33:54 +0100
+Message-Id: <20230727083354.4903-1-harry.geyer@devtank.co.uk>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 01:38, Roman Gushchin wrote:
-> On Wed, Jul 26, 2023 at 10:53:04AM -0400, Johannes Weiner wrote:
->> On a memcache setup with heavy anon usage and no swap, we routinely
->> see premature OOM kills with multiple gigabytes of free space left:
->> 
->>     Node 0 Normal free:4978632kB [...] free_cma:4893276kB
->> 
->> This free space turns out to be CMA. We set CMA regions aside for
->> potential hugetlb users on all of our machines, figuring that even if
->> there aren't any, the memory is available to userspace allocations.
->> 
->> When the OOMs trigger, it's from unmovable and reclaimable allocations
->> that aren't allowed to dip into CMA. The non-CMA regions meanwhile are
->> dominated by the anon pages.
->> 
->> 
->> Because we have more options for CMA pages, change the policy to
->> always fill up CMA first. This reduces the risk of premature OOMs.
-> 
-> I suspect it might cause regressions on small(er) devices where
-> a relatively small cma area (Mb's) is often reserved for a use by various
-> device drivers, which can't handle allocation failures well (even interim
-> allocation failures). A startup time can regress too: migrating pages out of
-> cma will take time.
+Patch allows usb devices with multiple interfaces to use this driver without
+this driver assuming all interfaces are i2c-tiny-usb.
 
-Agreed, we should be more careful here.
+Signed-off-by: Harry Geyer <harry.geyer@devtank.co.uk>
+---
+ drivers/i2c/busses/i2c-tiny-usb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> And given the velocity of kernel upgrades on such devices, we won't learn about
-> it for next couple of years.
-> 
->> Movable pages can be migrated out of CMA when necessary, but we don't
->> have a mechanism to migrate them *into* CMA to make room for unmovable
->> allocations. The only recourse we have for these pages is reclaim,
->> which due to a lack of swap is unavailable in our case.
-> 
-> Idk, should we introduce such a mechanism? Or use some alternative heuristics,
-> which will be a better compromise between those who need cma allocations always
-> pass and those who use large cma areas for opportunistic huge page allocations.
-> Of course, we can add a boot flag/sysctl/per-cma-area flag, but I doubt we want
-> really this.
-
-At some point the solution was supposed to be ZONE_MOVABLE:
-https://lore.kernel.org/linux-mm/1512114786-5085-1-git-send-email-iamjoonsoo.kim@lge.com/
-
-But it was reverted due to IIRC some bugs, and Joonsoo going MIA.
-
-> Thanks!
+diff --git a/drivers/i2c/busses/i2c-tiny-usb.c b/drivers/i2c/busses/i2c-tiny-usb.c
+index d1fa9ff5aeab..d6578e8908ac 100644
+--- a/drivers/i2c/busses/i2c-tiny-usb.c
++++ b/drivers/i2c/busses/i2c-tiny-usb.c
+@@ -222,6 +222,9 @@ static int i2c_tiny_usb_probe(struct usb_interface *interface,
+ 	int retval = -ENOMEM;
+ 	u16 version;
+ 
++	if (interface->intf_assoc && interface->intf_assoc->bFunctionClass != USB_CLASS_VENDOR_SPEC)
++		return -ENODEV;
++
+ 	dev_dbg(&interface->dev, "probing usb device\n");
+ 
+ 	/* allocate memory for our device state and initialize it */
+-- 
+2.34.1
 
