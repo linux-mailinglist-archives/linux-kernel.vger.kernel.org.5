@@ -2,419 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F2765360
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC26765366
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbjG0MNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S233777AbjG0MQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjG0MNw (ORCPT
+        with ESMTP id S233068AbjG0MQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:13:52 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D1B22D6A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:13:47 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcc0adab4so119423166b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690460026; x=1691064826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2mH+Rp4hSfnfzF/tM/KbcwfyGEwPjJ6t1DC9fcpN9vs=;
-        b=ULSIU0yhJ878Y/H7wl/vpxvHi5mUdrRaM9uzsVLLNJB1UZr97BZEzMrhZFmMGFDkNh
-         l/LPI3x4SP/pfKtk6Lk2ouk1ZZrQIpB4OBk4gaYtV6heVaWKLbJc/e2bEVqaC0dVhQNk
-         bbAAaK9gXR6sUhFHWm0ID6CmcLraEIadZ6fEDNAJMzIrqCiIqFtxy0dnre3xqrc5L8L9
-         fssUUNom/Hir5FY6BVjYQmW+Pr/bJgVpt4obun4yuyKyZznbsW/DP3V1hCZg8CwsyYzy
-         yq8amupcCMsW1Dsk5FEyTtjlJc/1dHIQhPp9U+/doOkJQTc9EYvuLjZ9aLRuQrx6WycC
-         qJMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690460026; x=1691064826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2mH+Rp4hSfnfzF/tM/KbcwfyGEwPjJ6t1DC9fcpN9vs=;
-        b=I1NszbjA8poykeJczYJ7nmqG13VJNCfsJNzKiEgBjGTMEQhRnlf1+5s1HI3JPgQ9ip
-         yxBYjm1NdtBF4Yxn0p6aSK+85sytKZri3TBorZ/ix6KAq/J8xGfJINMsV2AegXcf2cZl
-         dLxHAFlbbvXkjSAvgIAeeokNneR5PvXrUXaOQRugUkc1pH0ryq4c48MTqaKQpzAPdgxC
-         zwJ2bFACOjPd2PrDQWwLdyUNQDXbOUcLbaTqEcLrc62ACZiKU5+gvTqnSEyTZbLPgUvu
-         0lqwTgMn5BpfYgQk5GTxUg0gJgHeufQJRw+LGWRYlK5IVugJ6pbA7oCcsF2/p/RDKQE9
-         k7Aw==
-X-Gm-Message-State: ABy/qLZUOdupML+Hh0oEO669SMiOkxAFGAiBp6wQ62Q/d6YQYSaaza9p
-        IyRGqJcNtI+ZUa0qa+8T9Cmj3g==
-X-Google-Smtp-Source: APBJJlFtTydzjExxCW2N0thWNf60e/JzMuJjuuZISZRxsnDyWezae/QKskV4QnPmRVwurLShFjR1mg==
-X-Received: by 2002:a17:906:84:b0:994:539d:f97f with SMTP id 4-20020a170906008400b00994539df97fmr2048729ejc.37.1690460025986;
-        Thu, 27 Jul 2023 05:13:45 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id m15-20020a17090607cf00b00993159ce075sm688182ejc.210.2023.07.27.05.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 05:13:45 -0700 (PDT)
-Message-ID: <ef4825d6-1016-cbf2-0cd3-94b0fc4165f4@linaro.org>
-Date:   Thu, 27 Jul 2023 14:13:43 +0200
+        Thu, 27 Jul 2023 08:16:44 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96192719
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:16:42 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBV9w31l1z4f3pBr
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:16:36 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgD3rLAeYMJkyp24Ow--.57086S3;
+        Thu, 27 Jul 2023 20:16:32 +0800 (CST)
+Subject: Re: [RESEND PATCH 1/4] iommu/arm-smmu-v3: Add support for ECMDQ
+ register mode
+To:     kernel test robot <lkp@intel.com>,
+        Tanmay Jagdale <tanmay@marvell.com>, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, baolu.lu@linux.intel.com,
+        thunder.leizhen@huawei.com
+Cc:     oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, gcherian@marvell.com,
+        sgoutham@marvell.com, lcherian@marvell.com, bbhushan2@marvell.com
+References: <20230721063513.33431-2-tanmay@marvell.com>
+ <202307271849.sqXiM3CK-lkp@intel.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <6f2863d3-f0ef-900c-c64a-87f02e726cf8@huaweicloud.com>
+Date:   Thu, 27 Jul 2023 20:16:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] media: imagination: Add E5010 JPEG Encoder driver
+In-Reply-To: <202307271849.sqXiM3CK-lkp@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, eugen.hristev@collabora.com,
-        ezequiel@vanguardiasur.com.ar, u.kleine-koenig@pengutronix.de,
-        sakari.ailus@linux.intel.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
-        j-luthra@ti.com, b-brnich@ti.com, detheridge@ti.com,
-        p-mantena@ti.com, vijayp@ti.com
-References: <20230727112546.2201995-1-devarsht@ti.com>
- <20230727112546.2201995-3-devarsht@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727112546.2201995-3-devarsht@ti.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgD3rLAeYMJkyp24Ow--.57086S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtrW3CFyfXrykZr4rKFykKrg_yoWxZw4kpa
+        1DGa9Yyr1kGF4xZa4xXr1Iv3s8tws5ua4ayFWUur90vr1j9rWrWrs7K3WYkrykKFy5Kw17
+        ArnxX3yjkw45ArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 13:25, Devarsh Thakkar wrote:
-> This adds support for stateful V4L2 M2M based driver
-> for Imagination E5010 JPEG Encoder [1] which supports baseline
-> encoding with two different quantization tables and compression
-> ratio as demanded.
+
+
+On 2023/7/27 19:13, kernel test robot wrote:
+> Hi Tanmay,
 > 
-> Support for both contigous and non-contigous YUV420 and YUV422
-> semiplanar formats is added along with alignment restrictions
-> as required by the hardware.
+> kernel test robot noticed the following build warnings:
 > 
-> System and runtime PM hooks are added in the driver along with v4l2
-> crop and selection API support.
+> [auto build test WARNING on v6.5-rc2]
+> [also build test WARNING on linus/master next-20230727]
+> [cannot apply to joro-iommu/next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
 > 
-> Minimum resolution supported is 64x64 and
-> Maximum resolution supported is 8192x8192.
+> url:    https://github.com/intel-lab-lkp/linux/commits/Tanmay-Jagdale/iommu-arm-smmu-v3-Add-support-for-ECMDQ-register-mode/20230721-143913
+> base:   v6.5-rc2
+> patch link:    https://lore.kernel.org/r/20230721063513.33431-2-tanmay%40marvell.com
+> patch subject: [RESEND PATCH 1/4] iommu/arm-smmu-v3: Add support for ECMDQ register mode
+> config: arm64-randconfig-r083-20230726 (https://download.01.org/0day-ci/archive/20230727/202307271849.sqXiM3CK-lkp@intel.com/config)
+> compiler: aarch64-linux-gcc (GCC) 12.3.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230727/202307271849.sqXiM3CK-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202307271849.sqXiM3CK-lkp@intel.com/
+> 
+> sparse warnings: (new ones prefixed by >>)
+>>> drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3573:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct arm_smmu_ecmdq *ecmdq @@     got struct arm_smmu_ecmdq [noderef] __percpu * @@
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3573:23: sparse:     expected struct arm_smmu_ecmdq *ecmdq
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3573:23: sparse:     got struct arm_smmu_ecmdq [noderef] __percpu *
+
+OK, thanks, the local variable 'ecmdq' need modifier '__percpu'.
+
+>>> drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3578:58: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct arm_smmu_ecmdq * @@
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3578:58: sparse:     expected void const [noderef] __percpu *__vpp_verify
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3578:58: sparse:     got struct arm_smmu_ecmdq *
+>>> drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3604:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *addr @@     got void [noderef] __iomem *base @@
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3604:45: sparse:     expected void const *addr
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:3604:45: sparse:     got void [noderef] __iomem *base
+
+Perhaps it would be better to add a member to the structure arm_smmu_device
+to record the start physical address of the smmu.
+
+>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c: note: in included file (through arch/arm64/include/asm/atomic.h, include/linux/atomic.h, include/asm-generic/bitops/atomic.h, ...):
+>    arch/arm64/include/asm/cmpxchg.h:168:1: sparse: sparse: cast truncates bits from constant value (ffffffff80000000 becomes 0)
+>    arch/arm64/include/asm/cmpxchg.h:168:1: sparse: sparse: cast truncates bits from constant value (ffffffff80000000 becomes 0)
+> 
+> vim +3573 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> 
+>   3566	
+>   3567	static int arm_smmu_ecmdq_layout(struct arm_smmu_device *smmu)
+>   3568	{
+>   3569		int cpu;
+>   3570		struct arm_smmu_ecmdq *ecmdq;
+>   3571	
+>   3572		if (num_possible_cpus() <= smmu->nr_ecmdq) {
+>> 3573			ecmdq = devm_alloc_percpu(smmu->dev, *ecmdq);
+>   3574			if (!ecmdq)
+>   3575				return -ENOMEM;
+>   3576	
+>   3577			for_each_possible_cpu(cpu)
+>> 3578				*per_cpu_ptr(smmu->ecmdq, cpu) = per_cpu_ptr(ecmdq, cpu);
+>   3579	
+>   3580			/* A core requires at most one ECMDQ */
+>   3581			smmu->nr_ecmdq = num_possible_cpus();
+>   3582	
+>   3583			return 0;
+>   3584		}
+>   3585	
+>   3586		return -ENOSPC;
+>   3587	}
+>   3588	
+>   3589	static int arm_smmu_ecmdq_probe(struct arm_smmu_device *smmu)
+>   3590	{
+>   3591		int ret, cpu;
+>   3592		u32 i, nump, numq, gap;
+>   3593		u32 reg, shift_increment;
+>   3594		u64 addr, smmu_dma_base;
+>   3595		void __iomem *cp_regs, *cp_base;
+>   3596	
+>   3597		/* IDR6 */
+>   3598		reg = readl_relaxed(smmu->base + ARM_SMMU_IDR6);
+>   3599		nump = 1 << FIELD_GET(IDR6_LOG2NUMP, reg);
+>   3600		numq = 1 << FIELD_GET(IDR6_LOG2NUMQ, reg);
+>   3601		smmu->nr_ecmdq = nump * numq;
+>   3602		gap = ECMDQ_CP_RRESET_SIZE >> FIELD_GET(IDR6_LOG2NUMQ, reg);
+>   3603	
+>> 3604		smmu_dma_base = (vmalloc_to_pfn(smmu->base) << PAGE_SHIFT);
+>   3605		cp_regs = ioremap(smmu_dma_base + ARM_SMMU_ECMDQ_CP_BASE, PAGE_SIZE);
+>   3606		if (!cp_regs)
+>   3607			return -ENOMEM;
+>   3608	
+>   3609		for (i = 0; i < nump; i++) {
+>   3610			u64 val, pre_addr;
+>   3611	
+>   3612			val = readq_relaxed(cp_regs + 32 * i);
+>   3613			if (!(val & ECMDQ_CP_PRESET)) {
+>   3614				iounmap(cp_regs);
+>   3615				dev_err(smmu->dev, "ecmdq control page %u is memory mode\n", i);
+>   3616				return -EFAULT;
+>   3617			}
+>   3618	
+>   3619			if (i && ((val & ECMDQ_CP_ADDR) != (pre_addr + ECMDQ_CP_RRESET_SIZE))) {
+>   3620				iounmap(cp_regs);
+>   3621				dev_err(smmu->dev, "ecmdq_cp memory region is not contiguous\n");
+>   3622				return -EFAULT;
+>   3623			}
+>   3624	
+>   3625			pre_addr = val & ECMDQ_CP_ADDR;
+>   3626		}
+>   3627	
+>   3628		addr = readl_relaxed(cp_regs) & ECMDQ_CP_ADDR;
+>   3629		iounmap(cp_regs);
+>   3630	
+>   3631		cp_base = devm_ioremap(smmu->dev, smmu_dma_base + addr, ECMDQ_CP_RRESET_SIZE * nump);
+>   3632		if (!cp_base)
+>   3633			return -ENOMEM;
+>   3634	
+>   3635		smmu->ecmdq = devm_alloc_percpu(smmu->dev, struct arm_smmu_ecmdq *);
+>   3636		if (!smmu->ecmdq)
+>   3637			return -ENOMEM;
+>   3638	
+>   3639		ret = arm_smmu_ecmdq_layout(smmu);
+>   3640		if (ret)
+>   3641			return ret;
+>   3642	
+>   3643		shift_increment = order_base_2(num_possible_cpus() / smmu->nr_ecmdq);
+>   3644	
+>   3645		addr = 0;
+>   3646		for_each_possible_cpu(cpu) {
+>   3647			struct arm_smmu_ecmdq *ecmdq;
+>   3648			struct arm_smmu_queue *q;
+>   3649	
+>   3650			ecmdq = *per_cpu_ptr(smmu->ecmdq, cpu);
+>   3651			ecmdq->base = cp_base + addr;
+>   3652	
+>   3653			q = &ecmdq->cmdq.q;
+>   3654	
+>   3655			q->llq.max_n_shift = ECMDQ_MAX_SZ_SHIFT + shift_increment;
+>   3656			ret = arm_smmu_init_one_queue(smmu, q, ecmdq->base, ARM_SMMU_ECMDQ_PROD,
+>   3657					ARM_SMMU_ECMDQ_CONS, CMDQ_ENT_DWORDS, "ecmdq");
+>   3658			if (ret)
+>   3659				return ret;
+>   3660	
+>   3661			q->ecmdq_prod = ECMDQ_PROD_EN;
+>   3662			rwlock_init(&q->ecmdq_lock);
+>   3663	
+>   3664			ret = arm_smmu_ecmdq_init(&ecmdq->cmdq);
+>   3665			if (ret) {
+>   3666				dev_err(smmu->dev, "ecmdq[%d] init failed\n", i);
+>   3667				return ret;
+>   3668			}
+>   3669	
+>   3670			addr += gap;
+>   3671		}
+>   3672	
+>   3673		return 0;
+>   3674	}
+>   3675	
 > 
 
-
-...
-
-> +
-> +static int e5010_release(struct file *file)
-> +{
-> +	struct e5010_dev *dev = video_drvdata(file);
-> +	struct e5010_context *ctx = file->private_data;
-> +
-> +	dprintk(dev, 1, "Releasing instance: 0x%p, m2m_ctx: 0x%p\n", ctx, ctx->fh.m2m_ctx);
-
-Why do you print pointers? Looks like code is buggy and you still keep
-debugging it.
-
-> +	mutex_lock(&dev->mutex);
-> +	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
-> +	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-> +	v4l2_fh_del(&ctx->fh);
-> +	v4l2_fh_exit(&ctx->fh);
-> +	kfree(ctx);
-> +	mutex_unlock(&dev->mutex);
-> +
-> +	return 0;
-> +}
-> +
-
-...
-
-> +static int e5010_init_device(struct e5010_dev *dev)
-> +{
-> +	int ret = 0;
-> +
-> +	/*TODO: Set MMU in bypass mode until support for the same is added in driver*/
-> +	e5010_hw_bypass_mmu(dev->mmu_base, 1);
-> +
-> +	if (e5010_hw_enable_auto_clock_gating(dev->jasper_base, 1))
-> +		dev_warn(dev->dev, "Failed to enable auto clock gating\n");
-> +
-> +	if (e5010_hw_enable_manual_clock_gating(dev->jasper_base, 0))
-> +		dev_warn(dev->dev, "Failed to disable manual clock gating\n");
-> +
-> +	if (e5010_hw_enable_crc_check(dev->jasper_base, 0))
-> +		dev_warn(dev->dev, "Failed to disable CRC check\n");
-> +
-> +	if (e5010_hw_enable_output_address_error_irq(dev->jasper_base, 1))
-> +		dev_err(dev->dev, "Failed to enable Output Address Error interrupts\n");
-> +
-> +	ret = e5010_hw_set_input_source_to_memory(dev->jasper_base, 1);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Failed to set input source to memory\n");
-> +		goto fail;
-
-retturn ret;
-
-> +	}
-> +
-> +	ret = e5010_hw_enable_picture_done_irq(dev->jasper_base, 1);
-> +	if (ret)
-> +		dev_err(dev->dev, "Failed to enable Picture Done interrupts\n");
-> +fail:
-> +	return ret;
-> +}
-> +
-> +static int e5010_probe(struct platform_device *pdev)
-> +{
-> +	const struct of_device_id *of_dev_id;
-> +	struct e5010_dev *dev;
-
-dev is struct device, so call it differently.
-
-> +	struct resource *res;
-> +	int irq, ret = 0;
-> +
-> +	of_dev_id = of_match_device(e5010_of_match, &pdev->dev);
-> +	if (!of_dev_id) {
-> +		dev_err(&pdev->dev, "%s: Unable to match device\n", __func__);
-
-I don't think this can happen.
-
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "32-bit consistent DMA enable failed\n");
-> +		return ret;
-> +	}
-> +
-> +	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, dev);
-> +
-> +	dev->dev = &pdev->dev;
-> +
-> +	mutex_init(&dev->mutex);
-> +	spin_lock_init(&dev->hw_lock);
-> +
-> +	dev->vdev = &e5010_videodev;
-> +	dev->vdev->v4l2_dev = &dev->v4l2_dev;
-> +	dev->vdev->lock = &dev->mutex;
-> +	dev->vdev->queue = NULL;
-> +	dev->vdev->prio = NULL;
-> +	dev->vdev->dev_parent = NULL;
-> +	dev->vdev->minor = -1;
-> +
-> +	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Failed to register v4l2 device\n");
-> +		return ret;
-
-return dev_err_probe
-
-> +	}
-> +
-> +	dev->m2m_dev = v4l2_m2m_init(&e5010_m2m_ops);
-> +	if (!dev->m2m_dev) {
-
-This cannot happen. Read the function.
-
-> +		dev_err(dev->dev, "Failed to initialize m2m device\n");
-> +		ret = -ENOMEM;
-> +		goto fail_after_v4l2_register;
-> +	}
-> +
-> +	video_set_drvdata(dev->vdev, dev);
-> +
-> +	ret = video_register_device(dev->vdev, VFL_TYPE_VIDEO, 0);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Failed to register video device\n");
-> +		ret = -ENOMEM;
-
-Why?
-
-> +		goto fail_after_v4l2_register;
-> +	}
-> +
-> +	dev_info(dev->dev, "Device registered as /dev/video%d\n",
-> +		 dev->vdev->num);
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regjasper");
-> +	if (!res) {
-> +		dev_err(dev->dev, "Missing 'regjasper' resources area\n");
-> +		ret = -ENOMEM;
-> +		goto fail_after_video_register_device;
-> +	}
-> +	dev->jasper_base = devm_ioremap_resource(&pdev->dev, res);
-
-Use helper function to combine two calls into one.
-
-> +	if (!dev->jasper_base) {
-> +		ret = -ENOMEM;
-
-This shouldn't be ENOMEM
-
-> +		goto fail_after_video_register_device;
-> +	}
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regmmu");
-> +	if (!res) {
-> +		dev_err(dev->dev, "Missing 'regmmu' resources area\n");
-> +		ret = -ENOMEM;
-> +		goto fail_after_video_register_device;
-> +	}
-> +	dev->mmu_base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (!dev->mmu_base) {
-> +		ret = -ENOMEM;
-
-The same.
-
-> +		goto fail_after_video_register_device;
-> +	}
-> +
-> +	dev->last_context_run = NULL;
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	ret = devm_request_irq(dev->dev, irq, e5010_irq, 0,
-> +			       E5010_MODULE_NAME, dev);
-> +	if (ret) {
-> +		dev_err(dev->dev, "Failed to register IRQ %d\n", irq);
-> +		goto fail_after_video_register_device;
-> +	}
-> +
-> +	dev->clk = devm_clk_get(&pdev->dev, "core_clk");
-> +	if (IS_ERR(dev->clk)) {
-> +		dev_err(dev->dev, "failed to get clock\n");
-> +		ret = PTR_ERR(dev->clk);
-
-ret = dev_err_probe
-
-> +		goto fail_after_video_register_device;
-> +	}
-> +
-> +	pm_runtime_enable(dev->dev);
-> +
-> +	return 0;
-> +
-> +fail_after_video_register_device:
-> +	v4l2_m2m_release(dev->m2m_dev);
-> +fail_after_v4l2_register:
-> +	v4l2_device_unregister(&dev->v4l2_dev);
-> +	return ret;
-> +}
-> +
-> +static int e5010_remove(struct platform_device *pdev)
-> +{
-> +	struct e5010_dev *dev = platform_get_drvdata(pdev);
-> +
-> +	pm_runtime_disable(dev->dev);
-> +	video_unregister_device(dev->vdev);
-> +	v4l2_m2m_release(dev->m2m_dev);
-> +	v4l2_device_unregister(&dev->v4l2_dev);
-> +
-> +	return 0;
-> +}
-
-...
-
-> +#define MAX_PLANES			2
-> +#define HEADER_SIZE			0x025E
-> +#define MIN_DIMENSION			64
-> +#define MAX_DIMENSION			8192
-> +#define DEFAULT_WIDTH			640
-> +#define DEFAULT_HEIGHT			480
-> +#define E5010_MODULE_NAME		"e5010"
-> +
-> +/* JPEG marker definitions */
-> +#define START_OF_IMAGE			0xFFD8
-> +#define SOF_BASELINE_DCT		0xFFC0
-> +#define END_OF_IMAGE			0xFFD9
-> +#define START_OF_SCAN			0xFFDA
-> +
-> +/* Definitions for the huffman table specification in the Marker segment */
-> +#define DHT_MARKER			0xFFC4
-> +#define LH_DC				0x001F
-> +#define LH_AC				0x00B5
-> +
-> +/* Definitions for the quantization table specification in the Marker segment */
-> +#define DQT_MARKER			0xFFDB
-> +#define ACMAX				0x03FF
-> +#define DCMAX				0x07FF
-> +
-> +/* Length and precision of the quantization table parameters */
-> +#define LQPQ				0x00430
-> +#define QMAX				255
-> +
-> +/* Misc JPEG header definitions */
-> +#define UC_NUM_COMP			3
-> +#define PRECISION			8
-> +#define HORZ_SAMPLING_FACTOR		(2 << 4)
-> +#define VERT_SAMPLING_FACTOR_422	1
-> +#define VERT_SAMPLING_FACTOR_420	2
-> +#define COMPONENTS_IN_SCAN		3
-> +#define PELS_IN_BLOCK			64
-> +
-> +/* Used for Qp table generation */
-> +#define LUMINOSITY			10
-> +#define CONTRAST			1
-> +#define INCREASE			2
-> +#define QP_TABLE_SIZE			(8 * 8)
-> +#define QP_TABLE_FIELD_OFFSET		0x04
-> +
-> +/*
-> + * vb2 queue structure
-> + * contains queue data information
-> + *
-> + * @fmt: format info
-> + * @width: frame width
-> + * @height: frame height
-> + * @bytesperline: bytes per line in memory
-> + * @size_image: image size in memory
-> + */
-> +struct e5010_q_data {
-> +	struct e5010_fmt *fmt;
-> +	u32 width;
-> +	u32 height;
-> +	u32 width_adjusted;
-> +	u32 height_adjusted;
-> +	u32 sizeimage[MAX_PLANES];
-> +	u32 bytesperline[MAX_PLANES];
-> +	bool format_set;
-> +	bool streaming;
-> +	u32			sequence;
-> +	struct v4l2_rect	crop;
-
-Unexpected indentation.
-
-> +};
-> +
-> +/*
-> + * Driver device structure
-> + * Holds all memory handles and global parameters
-> + * Shared by all instances
-> + */
-> +struct e5010_dev {
-> +	struct device *dev;
-> +	struct v4l2_device v4l2_dev;
-> +	struct v4l2_m2m_dev *m2m_dev;
-> +	struct video_device *vdev;
-> +	void __iomem *jasper_base;
-> +	void __iomem *mmu_base;
-> +	struct clk   *clk;
-
-Please keep style consistent.
-
-> +	struct e5010_context *last_context_run;
-> +	/* Protect access to device data */
-> +	struct mutex mutex;
-> +	/* Protect access to hardware*/
-> +	spinlock_t hw_lock;
-> +};
-> +
-
-
-Best regards,
-Krzysztof
+-- 
+Regards,
+  Zhen Lei
 
