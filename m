@@ -2,196 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC0C76456A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AF9764570
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbjG0FXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
+        id S231561AbjG0F1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjG0FXk (ORCPT
+        with ESMTP id S229582AbjG0F1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:23:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F20311D
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690435404; x=1691040204; i=deller@gmx.de;
- bh=9Ba+rWrFA1c6ljXrc+1qjjYtNpjV+RX1ly8w80Fi4Vs=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=sqrp0QhNyF1+/uKFfq40dRiCySTYfpHen4TMtucLuIdIzgNZNOa2suzxKUZ2alfcd3B00K1
- NSfOY8fl1ER/541wLoV2wwmJojWdf8iNqMXGToVizXQsvcvfJnCaoHZ0KI5Wa5ITfoYCFqeu3
- Gxst2YZFcmjfeFGeVLGnUm8Ven0t2FG9yUYMVDUsoghT3uYHI+EANWe/d6fKKxiM0U8yzt26v
- 9GmQANZyNsA9exfJPSlmtGhVC9ZYBF3mxl87I9SNiRRdo0k45+pz3NkoQw9l9xzrrJJJHpX8D
- a09Q6uw/vupSShET7ZmBmbVgQCLddY9rCwq+ita6JqlCnR0ETkJQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.159.20]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MMXUN-1q8aq33I0N-00JelA; Thu, 27
- Jul 2023 07:23:24 +0200
-Message-ID: <fea8677b-348a-dd67-4eac-12c547afa00d@gmx.de>
-Date:   Thu, 27 Jul 2023 07:23:23 +0200
+        Thu, 27 Jul 2023 01:27:15 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A21211D;
+        Wed, 26 Jul 2023 22:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690435634; x=1721971634;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=fX0VB+oC7I8byVGLz/BLLL2XFaXQFpDQDlE6jlgsCsA=;
+  b=bl3BkRPaIrPJ0D0SnfOoWzem6ZJGT2py7QCFydJJmVes9oBj1bwAYWEN
+   yzeEJ5jov4ileolgT3zXRh8/OSQl1ycXoRLPioYHQdDHMfVYKVBFHBtDn
+   8Ce836LukVUtv5ELKWBXP3IsoTvxg7y27tKvY6reJupmHSkwmJ/gJlug0
+   ijq/78ZWnXN2hyKqVIDcuz8bbfBm9ojePzGkVnzrIySoTt25OMLG6l5zr
+   yD3sw4ISL8yQlxW+Lwtttc5TWojag8Rq10AB3vTj30v4B4UWwOiV71juY
+   UtXUtJqo8DJRdmi3f9Oh6CuMgVW07vZNQIeRR9wj/V13Tifo1MOZuv5GQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="367082656"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="367082656"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:27:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="796847132"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="796847132"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Jul 2023 22:27:00 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 22:27:00 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 22:27:00 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 22:27:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GB8W5KQnk7QdeACcdeBpzfYTSH/suURvGQcIY+H15G5w4o9cqP0UaszPzwpxWP7ZxepSe5as+iEEaDpHbvcDeY25+1lfuuM+zT2zdPw/j3w4da0WODOMQDAxpT64am2yaigwGH/GlFiY33cb/vrd3Us1+uy1xGB6l3uzJxh4VfZt/20rQiXfT1Cv2ETffSvYImcT8sI8dByYIpjEVHifNG6ooXLFzuIRJIJOIUAMK1LfxF2dGrBKptpNBznLil3yTx+2aXJNl/uueXo41LRXOtn/R8bfRoFnwZNJMSBzsR/zWjuTpLVPbxP3zJLzaPLiqikKlXZYD4MmCTSXizfSeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8JXGLNtdkK7rbxaiDCxamnbzlpx5f4L5whiz/URFtxA=;
+ b=m+xTnFfwXrKMGqKgh7eu9jQaWcP5lBS6EZkmP9+e3V77TrsrgOEKF30YKCEE3Mw9mafT679XGpnAvq0dmRhbxM/FJDHFRcCX82AHAK7W4GV6aIZf2YZaiwxkD+ZVjzdESZ537jwsn93xQ8efeJhD7ibwh8GNhgb4bT8fnd+jhqg//1jaKTH3rENUwGmwVYwEsDwdzQcWKdQyLJbKssAmcn5/ZXZE94OTVt1g6ApuQmnqdZG9f1IbpBp6inBne8ZQPmT6OeRFcG0aosNRvn7VD7WTa7nO4mXoQqKQTXyythLXW7i2V8Ur33LMVTqCtxNcaDExVfIEpyNLKF6x/GRfGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11)
+ by SN7PR11MB7539.namprd11.prod.outlook.com (2603:10b6:806:343::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.31; Thu, 27 Jul
+ 2023 05:26:57 +0000
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::2803:94a7:314c:3254]) by PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::2803:94a7:314c:3254%7]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 05:26:57 +0000
+Date:   Thu, 27 Jul 2023 13:26:47 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <peterz@infradead.org>,
+        <john.allen@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rick.p.edgecombe@intel.com>,
+        <binbin.wu@linux.intel.com>,
+        Zhang Yi Z <yi.z.zhang@linux.intel.com>
+Subject: Re: [PATCH v4 12/20] KVM:VMX: Introduce CET VMCS fields and control
+ bits
+Message-ID: <ZMIAF40pG0WCgPNK@chao-email>
+References: <20230721030352.72414-1-weijiang.yang@intel.com>
+ <20230721030352.72414-13-weijiang.yang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230721030352.72414-13-weijiang.yang@intel.com>
+X-ClientProxiedBy: SG2PR01CA0180.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::36) To PH8PR11MB6780.namprd11.prod.outlook.com
+ (2603:10b6:510:1cb::11)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: mm/kfence/kfence_test.c:287 test_alloc() warn: use 'gfp' here
- instead of GFP_KERNEL?
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        oe-kbuild@lists.linux.dev, Marco Elver <elver@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <9e72b7ea-9598-415d-bc55-f2f42b7fcb3b@kadam.mountain>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <9e72b7ea-9598-415d-bc55-f2f42b7fcb3b@kadam.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:q4WUBWKRB56NS4WI95CxOuAsJCM7QUFH7uLOg9pzPo9C2W2/wKo
- 5NCZSMv0k9M9YSzg5wtc3jW2hGxcOHK459q4zYn/luUXJEizQ2e8mNCyf579+sPlxloLotj
- GlSH/DrZXdqNuOCRtkhtux3uxQ+5PXSTu/zRdsHAaOHMuIkVGQpjKYyi18jju4Hn3nBKlOD
- kkW4Fq21LbSQPQQN2g0qw==
-UI-OutboundReport: notjunk:1;M01:P0:GM5V8VKyGsU=;6Zmw/GchiKIohQKoDtRfZPJ/A/x
- MhL+ufBurSSyoDGbVj371Rf4t8YAfyvvLfrS1Y1CFZiMNw0eyfZb3tDV/gMlAMbAIDwf0tiMo
- rXKRMrl2mCe6OrHsH3yuwSq9AHAVN4CJ5mXHhxA5zM3ugCXsK54HGJoqR5d59UdhnQfWTHDed
- gRWJlEXeWr4Krih6k4mKk0Zy0Uj+hdx+5GGPWtVY6dveDAcbQCHwJJfYGl+cc4GQCax0z0iQA
- sFz88QWgQTekHWQuhrJd89syUoGrAhjL/Tz4sBkj74fVEx9GCRF0TiyEJfibm51Bw650KJhSJ
- qYme21NcfHv1nYmO37pIUJxEuStSzKoPcpiYjgoqHv6fWmeijjWhRbWruVQ7379JpqzJAmR0D
- 0nn7JvF6U6ebHp8VshmT/4Gij92OAOMpmKIeAJNhlvaK5cTZFDydNempeg/+AHS57B+M/hNWB
- 1Fow3qS+43/BBp7no08KaKeWRcFP6JNsNKLtuhHLHECej8OBjT6qrodcaKEjGz7y656GxmYGE
- CqZXHSNcQ9fQWRoPWOlWlDYEcc6MfmDjeTt/MCAczowakUflWz212jWAEub+y1YoblomlsVEE
- G9PoRL8CSvyErErVcJ3uaiahYanzJNzj1xHL5XhgXsQ9SYYmoDP6PYnGpmRCPGK9BRXFA9pbK
- yQYXdfaww62TRhrL98M0jhObL/0Qp3Gc/pjfLBdjjwr2gq8Ydlro+6NiScF0fxtrrvb4qHRwh
- tN0caya5Qw9femg4NvsEFd5mugTYD9Q9U8WaPgFZTpIPP569HZqD3gLr1t1NBDidRS10H0pkG
- zPvYG6mn0FqkQzV/bRIdisVkVEsmOmWAwV3NjhJv7+rV5yesaZIsdK3fwuBQuJnEXxBSSGUxB
- eujv9UZsHzmdfzZ478+sLV1UjmFA4EaEZYOWQN9LT7QNjeS1eww0KnoJsMn5G3730uM7utcwV
- SAHr8toM19n5uDlSzaxkQwOUYD8=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6780:EE_|SN7PR11MB7539:EE_
+X-MS-Office365-Filtering-Correlation-Id: 81a22ce2-4bfd-48a2-c520-08db8e62183c
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +a4c+1/sdZ1/blFXHR8qcn+HKlMzwpr69c7P1cj8w7BXZgYynjF3CCW09WXJ8i1u6FIEl2r6qtA3+EAIzBlYuhfJZ0jirH99qIUPSLRdo00KQeEzWxDNGS1hNiyb24tjqxqwqwfIrxxlZhthEK/JfgPXlfBwBDhofG0v3XoA196ihs18Ks8h3cxFW7desn5C3i73gGRKwxAUYIiLcHhqzRzGSaxWilrzyprEDiZoHwDQfsYWe61+nsXtefvDX+ek4yfyATG/s9w/AhdCbqImwqEOJlZ+ubQ9XxFhL9UL7Jr7J2c+Y3uAj1RBKyos3RIQN/l6FJDB3qRrBDi+3KK8bPmjBBzRaBfFJIJQmMw4e+b08ZCqjlV5ZHmkLzmip4c+vLib1apxJMhij2vGJLnJIXEV15HeKCb5OvSYHy6nWks+iIue0EmO1Ai23+cVqnnlDG8AJsmv4fkfzmoAuO1YEJiuU1YQcs/NGbVsiAvJhiFbl/jYtqIlUnIZXz0XEUG7XuvF17smN0IDoxyr0f9/tCw6t1QnFy2q+KaVwJns229tCkoeaVPTAZYEaTYIxMP+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(366004)(376002)(346002)(39860400002)(136003)(396003)(451199021)(4326008)(38100700002)(66556008)(66476007)(83380400001)(8936002)(9686003)(8676002)(5660300002)(44832011)(478600001)(6486002)(316002)(66946007)(6862004)(6636002)(41300700001)(6506007)(186003)(2906002)(6512007)(26005)(6666004)(33716001)(86362001)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FKsibVPI8dWecsVo/iC1DxPAVKbNu4yo/5rQ3k8Hzl/R7xzoJDvq76M23T+T?=
+ =?us-ascii?Q?G7cH69oF7xWrmxei3mpsfjBjm/9U1cerVu3zobsqH0bQmQ3VaPno7edL5Bp7?=
+ =?us-ascii?Q?e5cFIaCoVQDOZsuuHOZtoyMTn1SqPFp209gCS+I25y7qvTjvjEG0dT6lWw53?=
+ =?us-ascii?Q?CIAgEcK9YxVD7KwMmsse7iqb0hlnd4RMKTEpHnNHPZRHEvZnD0GbCKsgTVGo?=
+ =?us-ascii?Q?nOEfpIDBNjBwN2WpMMi3IcwtJqb3hynStyCnFYabxQG5R7TbCSgknetEVnNN?=
+ =?us-ascii?Q?xSyzraoSV1I9SJ/BWyWxSLKCY7ZyL9j7eif6GiIS9eZ6eYdDqqI7GGVTAw6S?=
+ =?us-ascii?Q?aToDYJStXPV9FKr6d/vZGi4WeEPHwZauFBs09xxAOEBI0+oeCj7SGsSITyH4?=
+ =?us-ascii?Q?sa6WXRAG7SX+ePHYUKQX2pAeQQbnoZKOnnAleSNpTV9R7DWXGy3LNLoCEIRF?=
+ =?us-ascii?Q?5mR8K5OdjimyFnPU7JR6Fz7v28ddwcPFcjJg46Wo+UbMQ7IbwU3XkAeDHAs3?=
+ =?us-ascii?Q?jSrS+qCESnwR06rsWGtI+H1tArFVOd6R4ko7vdc58SxQr+ldNSj5bvNxc4zc?=
+ =?us-ascii?Q?CA6o7YTSEUJuRa2FaWSzg+mqBHNW2ZxZr7O2mRSeomhYt3Mf/8ibxydax/D5?=
+ =?us-ascii?Q?elzMAyG3IOuvmIM2JSwjlrt62sH3ZD5rkwSBAqqPb8PcvN85uULWcM4i5q7Y?=
+ =?us-ascii?Q?zX6XX1Pc0/Ii1YiGFsF6bDTi+nFvz41U2qqkkM7eXJKHnRpTIJb8FVi4XdgQ?=
+ =?us-ascii?Q?HJ+7crqmju1825DypLCPnF2sI0WBMbPXgwgO7tZ6PrI32B2doPkWM3+Pf3QC?=
+ =?us-ascii?Q?W3jFYy3CM3kP/J4R5zScj7XzeT/Fadxx49BB+J/CzDS5byXHC1VKACqC/UmX?=
+ =?us-ascii?Q?AHE1B3GyaoG5OFmCymjpnbPUMatogJ5Q1LJPas9bHnln1EwKRCa4PUV5V3JO?=
+ =?us-ascii?Q?XCRiJM4yiNYqtNAgTdFPwbLx9ckF1RyrY8Qsaj8Dd47j7+vV+RtriSJO3CQJ?=
+ =?us-ascii?Q?LRgmXkg/sQCU/G3RQpgxHR2y6VmqabCAA3qdsCo11Zax00QzOZqogPZku9Wl?=
+ =?us-ascii?Q?6LhCqIrDWMEj7raZWgm39b8PCwuO50o1kckkh6H0OD31UBsOC2aJ63ctckgS?=
+ =?us-ascii?Q?AX+jdTQuwtLuZsfZnxwfS0n46db/uAWK66TdJ3dsDRANju0sq3k3gOSNELU4?=
+ =?us-ascii?Q?8+Sm6W17oeNVDpngHMwW+eg9w3dKV26l/cTZXF+zQuQ9TWUalFTRNHO4uTVx?=
+ =?us-ascii?Q?TwFAeNxbuBgVQZXTsTh9Hv9Pn2xR6b2vQc6pSIAdDzSNti6DgVaoTNmdCC/W?=
+ =?us-ascii?Q?Wwu/lO7dn9HwWfI6O4xeDCO4XNzAjufjm30usi65IrN5V0KTJ/c8YGyFIYe/?=
+ =?us-ascii?Q?iY84WJkHjrdJAVC0nscikF3u7/YW+tPUdY6Ftg/3yIC1Vy+0G73PqDpDanSI?=
+ =?us-ascii?Q?ccxOrIJi+pbxhWVUNzhk1zV333006uzPF+w6d1U6CHP8BmYociHjnzv/BkU7?=
+ =?us-ascii?Q?RDYnl1WiInZyOOa1RGKd0WQQl1b3J7DYmUikflR84wymUdEOcaoXp704AAwK?=
+ =?us-ascii?Q?dl+b/+9+ishzBHYOzMpM4YBo/SLz5QOxy7Cetk/N?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81a22ce2-4bfd-48a2-c520-08db8e62183c
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6780.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 05:26:57.0411
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1zVtOwoZJbjg1PPsF/9yGGAJ0c6orc37YbqmyZGCD09EKB+w2oWQeKWcx9NOmwYAfTSXowoQMclcPv7IJ6SBqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7539
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 06:51, Dan Carpenter wrote:
-> Hi Helge,
+On Thu, Jul 20, 2023 at 11:03:44PM -0400, Yang Weijiang wrote:
+>Two XSAVES state bits are introduced for CET:
+>  IA32_XSS:[bit 11]: Control saving/restoring user mode CET states
+>  IA32_XSS:[bit 12]: Control saving/restoring supervisor mode CET states.
 >
-> FYI, the error/warning was bisected to this commit, please ignore it if =
-it's irrelevant.
+>Six VMCS fields are introduced for CET:
+>  {HOST,GUEST}_S_CET: Stores CET settings for kernel mode.
+>  {HOST,GUEST}_SSP: Stores shadow stack pointer of current active task/thread.
+>  {HOST,GUEST}_INTR_SSP_TABLE: Stores current active MSR_IA32_INT_SSP_TAB.
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
-it master
-> head:   18b44bc5a67275641fb26f2c54ba7eef80ac5950
-> commit: adf8e96a7ea670d45b5de7594acc67e8f4787ae6 parisc: Enable LOCKDEP =
-support
-> config: parisc-randconfig-m041-20230726 (https://download.01.org/0day-ci=
-/archive/20230727/202307270305.L19EfaJD-lkp@intel.com/config)
-> compiler: hppa-linux-gcc (GCC) 12.3.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230727/20230727030=
-5.L19EfaJD-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new ver=
-sion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202307270305.L19EfaJD-lkp@intel.com/
->
-> smatch warnings:
-> mm/kfence/kfence_test.c:287 test_alloc() warn: use 'gfp' here instead of=
- GFP_KERNEL?
->
-> (Just included these for the LOLs)
-> mm/kfence/kfence_test.c:395 test_double_free() error: double free of 'ex=
-pect.addr'
-> mm/kfence/kfence_test.c:671 test_memcache_typesafe_by_rcu() error: deref=
-erencing freed memory 'expect.addr'
->
-> vim +/gfp +287 mm/kfence/kfence_test.c
->
-> bc8fbc5f305aec Marco Elver     2021-02-25  243  static void *test_alloc(=
-struct kunit *test, size_t size, gfp_t gfp, enum allocation_policy policy)
-> bc8fbc5f305aec Marco Elver     2021-02-25  244  {
-> bc8fbc5f305aec Marco Elver     2021-02-25  245  	void *alloc;
-> bc8fbc5f305aec Marco Elver     2021-02-25  246  	unsigned long timeout, =
-resched_after;
-> bc8fbc5f305aec Marco Elver     2021-02-25  247  	const char *policy_name=
-;
-> bc8fbc5f305aec Marco Elver     2021-02-25  248
-> bc8fbc5f305aec Marco Elver     2021-02-25  249  	switch (policy) {
-> bc8fbc5f305aec Marco Elver     2021-02-25  250  	case ALLOCATE_ANY:
-> bc8fbc5f305aec Marco Elver     2021-02-25  251  		policy_name =3D "any";
-> bc8fbc5f305aec Marco Elver     2021-02-25  252  		break;
-> bc8fbc5f305aec Marco Elver     2021-02-25  253  	case ALLOCATE_LEFT:
-> bc8fbc5f305aec Marco Elver     2021-02-25  254  		policy_name =3D "left"=
-;
-> bc8fbc5f305aec Marco Elver     2021-02-25  255  		break;
-> bc8fbc5f305aec Marco Elver     2021-02-25  256  	case ALLOCATE_RIGHT:
-> bc8fbc5f305aec Marco Elver     2021-02-25  257  		policy_name =3D "right=
-";
-> bc8fbc5f305aec Marco Elver     2021-02-25  258  		break;
-> bc8fbc5f305aec Marco Elver     2021-02-25  259  	case ALLOCATE_NONE:
-> bc8fbc5f305aec Marco Elver     2021-02-25  260  		policy_name =3D "none"=
-;
-> bc8fbc5f305aec Marco Elver     2021-02-25  261  		break;
-> bc8fbc5f305aec Marco Elver     2021-02-25  262  	}
-> bc8fbc5f305aec Marco Elver     2021-02-25  263
-> bc8fbc5f305aec Marco Elver     2021-02-25  264  	kunit_info(test, "%s: s=
-ize=3D%zu, gfp=3D%x, policy=3D%s, cache=3D%i\n", __func__, size, gfp,
-> bc8fbc5f305aec Marco Elver     2021-02-25  265  		   policy_name, !!test=
-_cache);
-> bc8fbc5f305aec Marco Elver     2021-02-25  266
-> bc8fbc5f305aec Marco Elver     2021-02-25  267  	/*
-> bc8fbc5f305aec Marco Elver     2021-02-25  268  	 * 100x the sample inte=
-rval should be more than enough to ensure we get
-> bc8fbc5f305aec Marco Elver     2021-02-25  269  	 * a KFENCE allocation =
-eventually.
-> bc8fbc5f305aec Marco Elver     2021-02-25  270  	 */
-> 8913c610014823 Peng Liu        2022-02-11  271  	timeout =3D jiffies + m=
-secs_to_jiffies(100 * kfence_sample_interval);
-> bc8fbc5f305aec Marco Elver     2021-02-25  272  	/*
-> bc8fbc5f305aec Marco Elver     2021-02-25  273  	 * Especially for non-p=
-reemption kernels, ensure the allocation-gate
-> bc8fbc5f305aec Marco Elver     2021-02-25  274  	 * timer can catch up: =
-after @resched_after, every failed allocation
-> bc8fbc5f305aec Marco Elver     2021-02-25  275  	 * attempt yields, to e=
-nsure the allocation-gate timer is scheduled.
-> bc8fbc5f305aec Marco Elver     2021-02-25  276  	 */
-> 8913c610014823 Peng Liu        2022-02-11  277  	resched_after =3D jiffi=
-es + msecs_to_jiffies(kfence_sample_interval);
-> bc8fbc5f305aec Marco Elver     2021-02-25  278  	do {
-> bc8fbc5f305aec Marco Elver     2021-02-25  279  		if (test_cache)
-> bc8fbc5f305aec Marco Elver     2021-02-25  280  			alloc =3D kmem_cache_=
-alloc(test_cache, gfp);
-> bc8fbc5f305aec Marco Elver     2021-02-25  281  		else
-> bc8fbc5f305aec Marco Elver     2021-02-25  282  			alloc =3D kmalloc(siz=
-e, gfp);
->                                                                         =
-                       ^^^
->
-> bc8fbc5f305aec Marco Elver     2021-02-25  283
-> bc8fbc5f305aec Marco Elver     2021-02-25  284  		if (is_kfence_address(=
-alloc)) {
-> 8dae0cfed57357 Vlastimil Babka 2021-11-03  285  			struct slab *slab =3D=
- virt_to_slab(alloc);
-> 588c7fa022d7b2 Hyeonggon Yoo   2021-06-28  286  			struct kmem_cache *s =
-=3D test_cache ?:
-> 588c7fa022d7b2 Hyeonggon Yoo   2021-06-28 @287  					kmalloc_caches[kmal=
-loc_type(GFP_KERNEL)][__kmalloc_index(size, false)];
->                                                                         =
-                                             ^^^^^^^^^^
-> I feel like using gfp might be correct but I'm not sure?  This code
-> is from prior to this commit.  Let's add Marco to the CC.
+>On Intel platforms, two additional bits are defined in VM_EXIT and VM_ENTRY
+>control fields:
+>If VM_EXIT_LOAD_HOST_CET_STATE = 1, the host CET states are restored from
 
-Since this is a test program, I assume that "GFP_KERNEL" is used intention=
-ally
-instead of "gfp" here to check if the "kmalloc(size, gfp)" above gets the =
-right kmalloc_caches[].
-If so, is there a way to silence the smatch warning ("mm/kfence/kfence_tes=
-t.c:287 test_alloc() warn: use 'gfp' here instead of GFP_KERNEL?") ?
-But I'm not sure either, so adding Hyeonggon to the CC too...
+Nit: s/VM_EXIT_LOAD_HOST_CET_STATE/VM_EXIT_LOAD_CET_STATE
 
-Helge
+to align with the name you are actually using.
+
+>the following VMCS fields at VM-Exit:
+>  HOST_S_CET
+>  HOST_SSP
+>  HOST_INTR_SSP_TABLE
+>
+>If VM_ENTRY_LOAD_GUEST_CET_STATE = 1, the guest CET states are loaded from
+
+Nit: s/VM_ENTRY_LOAD_GUEST_CET_STATE/VM_ENTRY_LOAD_CET_STATE
+
+>the following VMCS fields at VM-Entry:
+>  GUEST_S_CET
+>  GUEST_SSP
+>  GUEST_INTR_SSP_TABLE
+>
+>Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+>Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
+>Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+
+Reviewed-by: Chao Gao <chao.gao@intel.com>
+
+>---
+> arch/x86/include/asm/vmx.h | 8 ++++++++
+> 1 file changed, 8 insertions(+)
+>
+>diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+>index 0d02c4aafa6f..db7f93307349 100644
+>--- a/arch/x86/include/asm/vmx.h
+>+++ b/arch/x86/include/asm/vmx.h
+>@@ -104,6 +104,7 @@
+> #define VM_EXIT_CLEAR_BNDCFGS                   0x00800000
+> #define VM_EXIT_PT_CONCEAL_PIP			0x01000000
+> #define VM_EXIT_CLEAR_IA32_RTIT_CTL		0x02000000
+>+#define VM_EXIT_LOAD_CET_STATE                  0x10000000
+> 
+> #define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
+> 
+>@@ -117,6 +118,7 @@
+> #define VM_ENTRY_LOAD_BNDCFGS                   0x00010000
+> #define VM_ENTRY_PT_CONCEAL_PIP			0x00020000
+> #define VM_ENTRY_LOAD_IA32_RTIT_CTL		0x00040000
+>+#define VM_ENTRY_LOAD_CET_STATE                 0x00100000
+> 
+> #define VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR	0x000011ff
+> 
+>@@ -345,6 +347,9 @@ enum vmcs_field {
+> 	GUEST_PENDING_DBG_EXCEPTIONS    = 0x00006822,
+> 	GUEST_SYSENTER_ESP              = 0x00006824,
+> 	GUEST_SYSENTER_EIP              = 0x00006826,
+>+	GUEST_S_CET                     = 0x00006828,
+>+	GUEST_SSP                       = 0x0000682a,
+>+	GUEST_INTR_SSP_TABLE            = 0x0000682c,
+> 	HOST_CR0                        = 0x00006c00,
+> 	HOST_CR3                        = 0x00006c02,
+> 	HOST_CR4                        = 0x00006c04,
+>@@ -357,6 +362,9 @@ enum vmcs_field {
+> 	HOST_IA32_SYSENTER_EIP          = 0x00006c12,
+> 	HOST_RSP                        = 0x00006c14,
+> 	HOST_RIP                        = 0x00006c16,
+>+	HOST_S_CET                      = 0x00006c18,
+>+	HOST_SSP                        = 0x00006c1a,
+>+	HOST_INTR_SSP_TABLE             = 0x00006c1c
+> };
+> 
+> /*
+>-- 
+>2.27.0
+>
