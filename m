@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3417647F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535F77647FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjG0HJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+        id S233249AbjG0HK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231883AbjG0HId (ORCPT
+        with ESMTP id S233136AbjG0HKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:08:33 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB3A3C31;
-        Thu, 27 Jul 2023 00:05:00 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RBM9R3RmrztRjS;
-        Thu, 27 Jul 2023 15:00:43 +0800 (CST)
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 15:03:58 +0800
-Subject: Re: [PATCH] USB:bugfix a controller halt error
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230721100015.27124-1-liulongfang@huawei.com>
- <c3ab029f-f6ab-4b09-b2b5-1cc6a5370d0d@rowland.harvard.edu>
- <bfee90c1-a7ca-27e3-88f9-936f48cd2595@huawei.com>
- <bd440f1d-5ea4-485e-9924-433997765adc@rowland.harvard.edu>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <77a8ecb4-8099-1826-abd8-4f080d80b07d@huawei.com>
-Date:   Thu, 27 Jul 2023 15:03:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 27 Jul 2023 03:10:17 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7965C4EDD
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:05:30 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso76074666b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690441487; x=1691046287;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tyWOReIaTWogrTqx/H2evhSzZP49XXtaCHT17ykae0k=;
+        b=fyD3URrueDIRI8GkTwSzUWSAl2VKP57UmMg+g+vWaW55JaCbnU6j3NkWnnUuk4hsC4
+         Gl0gB+rzQO+rzW0KhpxYMwQwLeMq5lzwax9GB2z23bIiuIJOd1t9IB65hbGD+y+C4EII
+         5gCAp2dJRS+xJvGtf3qHdCQ0bbmPiNI/1pzU5PhHPrXRICh+qmzo4oDm1rKiZNGVlQc2
+         Gn6rbvfCau0T6pXUYyuXfzFwBpaF3Atj71DX709gNGSsgyceQqilmENxpkTMVCrZqmrv
+         SjL1hb02ZY9NHY3sHUBY9ekEjNQTI27FBrMRPXEKFrtQNAOReGTan47WuwIM6brqvNMK
+         ot0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690441487; x=1691046287;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tyWOReIaTWogrTqx/H2evhSzZP49XXtaCHT17ykae0k=;
+        b=WvQPRjZZ96N+8gNBl3QP4Q7YQPhbcfazFH/2kih1ch5FWwmCmCVHYHQ7798Vn5cYtD
+         TcJ2BnGfeinVzGa4S9ZvufbC45f7VD40Mft2kB19I2yLvO2cseDI46tIiyRBTMe1yIHG
+         cSmoFBOYBvkZj046vFpEAbYxYEHbTJyPVqETjVfFvdn5jJeUKQCPGXj9tsNgClYPr+U9
+         1iPEmnbntTm+kYGyMw4ad7Wjp1nnLZi6GeqrUFzP+VbSIjvlVOjBwIxgZQMJ40f+8kQX
+         w/1otQ/0kqj+R12PVh27nxq86+xqo9QcGEqSOZutjp5ZZkb9jCrq22mzejYUIrxgxCsM
+         yxkQ==
+X-Gm-Message-State: ABy/qLafqS+cpEVbrECOAKku2W9A9YtITQYZQuyq4KExomBsyRSkT3OT
+        Za5CAFfIQV3Va1u1Oj2Kpb009g==
+X-Google-Smtp-Source: APBJJlE3xOvEgAUDRzNT5DczncNtwe/1ADISyZxo2Bue81WHffPVZczMcMaOADPGRQ/gUqYjqTWoxw==
+X-Received: by 2002:a17:906:295:b0:966:17b2:5b0b with SMTP id 21-20020a170906029500b0096617b25b0bmr1207106ejf.49.1690441487629;
+        Thu, 27 Jul 2023 00:04:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id m10-20020a17090607ca00b0099bcf9c2ec6sm408245ejc.75.2023.07.27.00.04.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 00:04:47 -0700 (PDT)
+Message-ID: <92da5cd8-02b5-ee7e-5c07-bece49b57116@linaro.org>
+Date:   Thu, 27 Jul 2023 09:04:41 +0200
 MIME-Version: 1.0
-In-Reply-To: <bd440f1d-5ea4-485e-9924-433997765adc@rowland.harvard.edu>
-Content-Type: text/plain; charset="gbk"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: gpio: fsl-imx-gpio: support i.MX8QM/DXL
+Content-Language: en-US
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, linus.walleij@linaro.org,
+        brgl@bgdev.pl, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, stefan@agner.ch,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+References: <20230725102330.160810-1-peng.fan@oss.nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725102330.160810-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/26 22:20, Alan Stern wrote:
-> On Wed, Jul 26, 2023 at 02:58:18PM +0800, liulongfang wrote:
->> On 2023/7/21 22:57, Alan Stern Wrote:
->>> On Fri, Jul 21, 2023 at 06:00:15PM +0800, liulongfang wrote:
->>>> On systems that use ECC memory. The ECC error of the memory will
->>>> cause the USB controller to halt. It causes the usb_control_msg()
->>>> operation to fail.
->>>
->>> How often does this happen in real life?  (Besides, it seems to me that 
->>> if your system is getting a bunch of ECC memory errors then you've got 
->>> much worse problems than a simple USB failure!)
->>>
->>
->> This problem is on ECC memory platform.
->> In the test scenario, the problem is 100% reproducible.
->>
->>> And why do you worry about ECC memory failures in particular?  Can't 
->>> _any_ kind of failure cause the usb_control_msg() operation to fail?
->>>
->>>> At this point, the returned buffer data is an abnormal value, and
->>>> continuing to use it will lead to incorrect results.
->>>
->>> The driver already contains code to check for abnormal values.  The 
->>> check is not perfect, but it should prevent things from going too 
->>> badly wrong.
->>>
->>
->> If it is ECC memory error. These parameter checks would also
->> actually be invalid.
->>
->>>> Therefore, it is necessary to judge the return value and exit.
->>>>
->>>> Signed-off-by: liulongfang <liulongfang@huawei.com>
->>>
->>> There is a flaw in your reasoning.
->>>
->>> The operation carried out here is deliberately unsafe (for full-speed 
->>> devices).  It is made before we know the actual maxpacket size for ep0, 
->>> and as a result it might return an error code even when it works okay.  
->>> This shouldn't happen, but a lot of USB hardware is unreliable.
->>>
->>> Therefore we must not ignore the result merely because r < 0.  If we do 
->>> that, the kernel might stop working with some devices.
->>>
->> It may be that the handling solution for ECC errors is different from that
->> of the OS platform. On the test platform, after usb_control_msg() fails,
->> reading the memory data of buf will directly lead to kernel crash:
+On 25/07/2023 12:23, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> All right, then here's a proposal for a different way to solve the 
-> problem: Change the kernel's handler for the ECC error notification.  
-> Have it clear the affected parts of memory, so that the kernel can go 
-> ahead and use them without crashing.
+> Add i.MX8QM/DXL gpio compatible which is compatible with i.MX35.
 > 
-> It seems to me that something along these lines must be necessary in 
-> any case.  Unless the bad memory is cleared somehow, it would never be 
-> usable again.  The kernel might deallocate it, then reallocate for 
-> another purpose, and then crash when the new user tries to access it.  
-> 
-> In fact, this scenario could still happen even with your patch, which 
-> means the patch doesn't really fix the problem.
-> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-This patch is only used to prevent data in the buffer from being accessed.
-As long as the data is not accessed, the kernel does not crash.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-thanks,
-Longfang.
+Best regards,
+Krzysztof
 
-> Alan Stern
-> 
-> .
-> 
