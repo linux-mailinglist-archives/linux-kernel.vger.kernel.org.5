@@ -2,189 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0AE765DA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC99765DA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjG0U46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
+        id S230207AbjG0U5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjG0U45 (ORCPT
+        with ESMTP id S229581AbjG0U5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:56:57 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F74F5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:56:31 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso14449055e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690491390; x=1691096190;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZuRgeT5VlstWJ8B1+I/x/Bo/hFhxlkd2kqhh5r6tMvo=;
-        b=GUuXheYW4WvNv7X7DW3/pE92+8S04jgSbsMYnMgR2VUJTShU2PWaO0ZxK8TRClpzMj
-         ogBc/bRm4qV8UAWdqQ0agHWPjuBnm1aix6Ryr5V6JScupiSQzxYUzh9qpFPfkqTR9pvP
-         puk28X+Q7mE47jIJ0qtFq9U7wGeDiLX8Vh7/2pM4AtKx6XnAyFFAlkZlVgge8Zfp+Y/5
-         Cou+oM4ac38To08oM9OdpR7YPba1PmtbjkNCCIqtDaTPBevew2eWbQV0c8m8K0NhfuJk
-         25/swSF/8/gvYAE9bw374d4sgIH7/UHFm/vjTzChhfMpXiStc+1orlo1yAvdsINUybUP
-         08Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690491390; x=1691096190;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZuRgeT5VlstWJ8B1+I/x/Bo/hFhxlkd2kqhh5r6tMvo=;
-        b=OgHSO89vm2iS95a9F4BbzUenYzBTuq+6gvsCRsTmnv5I8Q04C9mUYBXE2h6DyVD9N6
-         ENme4LLhsKWdr2YxtYfwb/JLok4T5PCVC6l8QU+mdzwcHykMPC0xPgCWdgByRAjtWV7S
-         6XOtpdZTGEuH/ru4RiPXKvLy0iyhgwshgbLDUCuVIzTZ+HFUcZ9iZV8EJKyBTxtm+d3Z
-         BzsrMi8aekQEFMTiuQp5CV+moGD9dRr2gZ+L6Qbn40n27qJXh34e1pPnQs3ZNInnjy+g
-         x00tpmyrkyvCxr1PfFapRlJh9beOqGcGBQ+X9DozU2y+6GRRlUVqa4X3a51jt/6tykwS
-         jbow==
-X-Gm-Message-State: ABy/qLbMFFmEBXOrLu5XocQhEC9mkDjVx69DX5cFlxP515lpddTm8xqb
-        EpEalt9hW/wxvx6rCrQK9BSRXw==
-X-Google-Smtp-Source: APBJJlGs1jeeH1Eow3I3RdeLRBmy0ZNvAuNmUXCMigvkucMCAXAIQ1kbpSNECnd+OkRlHEmPYp3vcQ==
-X-Received: by 2002:a5d:6b8c:0:b0:314:e929:bcb9 with SMTP id n12-20020a5d6b8c000000b00314e929bcb9mr224952wrx.57.1690491390092;
-        Thu, 27 Jul 2023 13:56:30 -0700 (PDT)
-Received: from ?IPV6:2a02:6b6a:b465:0:7e3e:db9e:70fa:9ccb? ([2a02:6b6a:b465:0:7e3e:db9e:70fa:9ccb])
-        by smtp.gmail.com with ESMTPSA id s18-20020a5d5112000000b00313e59cb371sm3065937wrt.12.2023.07.27.13.56.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 13:56:29 -0700 (PDT)
-Message-ID: <383a72f7-b9d3-963f-e5fb-b0036376399e@bytedance.com>
-Date:   Thu, 27 Jul 2023 21:56:28 +0100
+        Thu, 27 Jul 2023 16:57:44 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2044.outbound.protection.outlook.com [40.107.96.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD20273E
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:57:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F1uSGpBsjvLdFN6PKvmOjtqPsJXpXDmqWZTBsdM0Ex3XZqIFIW4MCY3r1gfmLMCy1eVShRAlt4Xpl4DvO0Gg01BH3EQQY4kP8HdSeI7obgoYeUFspvyS3j7IdpfEOM8NhbS16ORqRSI+Q5c1P4Nrih1kdph/NSwzI2UHD4Xb7J/sgeIkMl6DVZt/oI0A6w4S64Si/MNZhC6DJlTAhvXy296W9mltUrtKE2ZWMbbB8kaW1Osbj/T2CLCiALQRBWnNtWe2y/lnrd5LdO2LZqN5Rs++JhmQuBNOwcUrrx4GXtA1w74MjXly1+bbXPUoD6K5/nZ1iCco1K49eyCKeChjgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a5VyKL0m+t2msTl+MBV2YxDcqbGQzDF1w7xDwCU4sUo=;
+ b=ROlqMmWHcE8hPi48cKDxYZ7W0lJidPBrxBX/lERrmqp3cTLCSdpzzYS/zuBTSYZeeoEA5siadPyyKAgag70v6e8kPJwcZD+g6wsT9hmuIF72Gc0Ju+k2PnNsXoDazLCcRx+ruZu86Ld3rTxmZ2XPqeNNy2XhPnjXyxjHWuLOLhxlTeW5alJEYivqzL0rF3l5Ctr4wYNPRxXLmoP4TsKOzK1YUKd2igQHddOJ3LFlhq11t2+YSc+Vxqp3vIAO1d5whrLCNNIzAe80MPHNN4PT5CFqPSpSEo6SVJVcd+AJDMzdxqkQIcTMjzV/mBJzpWf8BADIlrAhaelzif5LTER+8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a5VyKL0m+t2msTl+MBV2YxDcqbGQzDF1w7xDwCU4sUo=;
+ b=JGtqvM1siG4tFUfIDaQXylN5XRpBNTI3j7GZ4dXnir1+Jhe/C6fj8aQfdivVl1AWygc4trRKruGfpGf9OdsJzYfl20D/zc1QoMCEuOcI9wEZJHThWO39bu4BM8YNDtZy5dX4vw7n6LPDPkCPkvMDFShlkE21wiLqxYWpdswsCKuq3uJFh/J82yIKzfuItekfEgTrtByJpcPRcsepp0WX6fX3JwblQPCz7N37uK4g8pjVWbL9GyS64Hs0qotX3w+Di5kjR2sXkC5CNTDVQO0kQd4P8w/JXQgKcsCsq9RqUAWDUE99S04VGAbrYIb3paYmtcY5h1afwHw2hd6d8eTamw==
+Received: from DS7PR05CA0065.namprd05.prod.outlook.com (2603:10b6:8:57::10) by
+ MN2PR12MB4469.namprd12.prod.outlook.com (2603:10b6:208:268::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 20:57:41 +0000
+Received: from DM6NAM11FT092.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:8:57:cafe::c4) by DS7PR05CA0065.outlook.office365.com
+ (2603:10b6:8:57::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.25 via Frontend
+ Transport; Thu, 27 Jul 2023 20:57:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ DM6NAM11FT092.mail.protection.outlook.com (10.13.173.44) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 20:57:40 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
+ 13:57:25 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Thu, 27 Jul 2023 13:57:25 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 27 Jul 2023 13:57:24 -0700
+Date:   Thu, 27 Jul 2023 13:57:23 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/7] iommu/arm-smmu-v3: Replace s1_cfg with
+ ctx_desc_cfg
+Message-ID: <ZMLaM9QjHDu11iKf@Asurada-Nvidia>
+References: <20230727182647.4106140-1-mshavit@google.com>
+ <20230727182647.4106140-3-mshavit@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [External] Re: [RFC 2/4] mm/memblock: Add hugepage_size member to
- struct memblock_region
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com
-References: <20230724134644.1299963-1-usama.arif@bytedance.com>
- <20230724134644.1299963-3-usama.arif@bytedance.com>
- <20230726110113.GT1901145@kernel.org>
- <440d4a0e-c1ea-864b-54cb-aab74858319a@bytedance.com>
- <20230727043002.GA1901145@kernel.org>
-From:   Usama Arif <usama.arif@bytedance.com>
-In-Reply-To: <20230727043002.GA1901145@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230727182647.4106140-3-mshavit@google.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT092:EE_|MN2PR12MB4469:EE_
+X-MS-Office365-Filtering-Correlation-Id: e112b377-cd3f-4f7a-cbcc-08db8ee41e10
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FAX+7MYRtWRJp3TkqzPjK+R7yb6SLr270kNO38bP58ut3Rq0uyFdSu+KtDzLfbixzKS0bEKHRa+yfioKEo6Z/0ALqU4jS/tJWSBmsCXPpORhHZlXo2Ep3RUm2+sGu2KxosymXytQe1tw0A5sfUFB98CzPX2mrFicZSxqQ/tFJx+AFZrMEe8N8y1n2L1ZF7wUNoZf6uyVrpqRoh+KyoWhAVDhuAwjFlLYpCDNqlkkITmNfklVoMqm9bMXBnLY9PmqdOU47o9lnvAhtFOoV+hPFYsyOMhpN2bTKJR0k/L2+89QYm9W9V3z+P/pZkQH1W2ECaTYwtR2PwRT+EUcDn48LyuH+H+3QvN0l3jqxKUlCyJfbYAI/f1wldizTTIFn6IhwspGEOrctk4D1EY1usRqF8zDh+AFz8rT5Xq/cTTqh6qouh79InUMDBNwtufphU7ZrMJzEcsfc0t5vFAtQwAsHh9zFJ7Pl5bwQlw9S/zfo4MJ7x6y7zCn6dLfqBIH4Zi+aq3tRM0oKsXVDvwSOwNkjnwgaVvZJ0CRL8CrStDmBaCRCrViGjHAANZ32Ge8ZF+shSjULtkk9j+MfPgJRtI3M8hu4vBnJ1LOFuYLbMm8RV53t17cxsK6inxEqScki0talgkkx/EK/HstKRDFQaG1TKDGSpgLlp/NdyGkUYr6QoKjt0GhUvEm6eC9BjsZddD+9AhmLL8YFGCXaERbV00UsNlJVERdzrqFVbwduq5yhMIDX5tKgbepl7EiYR8SO+GD7spq3cigh0/VXEosrCOD/MuZLAoZJXIrZktu7GlzFa4=
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(376002)(346002)(396003)(451199021)(82310400008)(40470700004)(46966006)(36840700001)(47076005)(9686003)(478600001)(54906003)(336012)(26005)(70586007)(426003)(2906002)(33716001)(70206006)(6916009)(316002)(8936002)(7636003)(8676002)(5660300002)(41300700001)(82740400003)(4326008)(86362001)(356005)(55016003)(83380400001)(40480700001)(36860700001)(40460700003)(186003)(414714003)(473944003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 20:57:40.9912
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e112b377-cd3f-4f7a-cbcc-08db8ee41e10
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT092.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4469
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 28, 2023 at 02:26:18AM +0800, Michael Shavit wrote:
 
+> Remove or move s1_cfg fields that are redundant with those found in
+> arm_smmu_ctx_desc_cfg. The arm_smmu_ctx_desc_cfg member is named
+> cd_table to make it more obvious that it represents a cd table.
 
-On 27/07/2023 05:30, Mike Rapoport wrote:
-> On Wed, Jul 26, 2023 at 04:02:21PM +0100, Usama Arif wrote:
->>
->> On 26/07/2023 12:01, Mike Rapoport wrote:
->>> On Mon, Jul 24, 2023 at 02:46:42PM +0100, Usama Arif wrote:
->>>> This propagates the hugepage size from the memblock APIs
->>>> (memblock_alloc_try_nid_raw and memblock_alloc_range_nid)
->>>> so that it can be stored in struct memblock region. This does not
->>>> introduce any functional change and hugepage_size is not used in
->>>> this commit. It is just a setup for the next commit where huge_pagesize
->>>> is used to skip initialization of struct pages that will be freed later
->>>> when HVO is enabled.
->>>>
->>>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
->>>> ---
->>>>    arch/arm64/mm/kasan_init.c                   |  2 +-
->>>>    arch/powerpc/platforms/pasemi/iommu.c        |  2 +-
->>>>    arch/powerpc/platforms/pseries/setup.c       |  4 +-
->>>>    arch/powerpc/sysdev/dart_iommu.c             |  2 +-
->>>>    include/linux/memblock.h                     |  8 ++-
->>>>    mm/cma.c                                     |  4 +-
->>>>    mm/hugetlb.c                                 |  6 +-
->>>>    mm/memblock.c                                | 60 ++++++++++++--------
->>>>    mm/mm_init.c                                 |  2 +-
->>>>    mm/sparse-vmemmap.c                          |  2 +-
->>>>    tools/testing/memblock/tests/alloc_nid_api.c |  2 +-
->>>>    11 files changed, 56 insertions(+), 38 deletions(-)
->>>>
->>>
->>> [ snip ]
->>>
->>>> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
->>>> index f71ff9f0ec81..bb8019540d73 100644
->>>> --- a/include/linux/memblock.h
->>>> +++ b/include/linux/memblock.h
->>>> @@ -63,6 +63,7 @@ struct memblock_region {
->>>>    #ifdef CONFIG_NUMA
->>>>    	int nid;
->>>>    #endif
->>>> +	phys_addr_t hugepage_size;
->>>>    };
->>>>    /**
->>>> @@ -400,7 +401,8 @@ phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t align,
->>>>    				      phys_addr_t start, phys_addr_t end);
->>>>    phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
->>>>    				      phys_addr_t align, phys_addr_t start,
->>>> -				      phys_addr_t end, int nid, bool exact_nid);
->>>> +				      phys_addr_t end, int nid, bool exact_nid,
->>>> +				      phys_addr_t hugepage_size);
->>>
->>> Rather than adding yet another parameter to memblock_phys_alloc_range() we
->>> can have an API that sets a flag on the reserved regions.
->>> With this the hugetlb reservation code can set a flag when HVO is
->>> enabled and memmap_init_reserved_pages() will skip regions with this flag
->>> set.
->>>
->>
->> Hi,
->>
->> Thanks for the review.
->>
->> I think you meant memblock_alloc_range_nid/memblock_alloc_try_nid_raw and
->> not memblock_phys_alloc_range?
-> 
-> Yes.
->   
->> My initial approach was to use flags, but I think it looks worse than what I
->> have done in this RFC (I have pushed the flags prototype at
->> https://github.com/uarif1/linux/commits/flags_skip_prep_init_gigantic_HVO,
->> top 4 commits for reference (the main difference is patch 2 and 4 from
->> RFC)). The major points are (the bigger issue is in patch 4):
->>
->> - (RFC vs flags patch 2 comparison) In the RFC, hugepage_size is propagated
->> from memblock_alloc_try_nid_raw through function calls. When using flags,
->> the "no_init" boolean is propogated from memblock_alloc_try_nid_raw through
->> function calls until the region flags are available in memblock_add_range
->> and the new MEMBLOCK_NOINIT flag is set. I think its a bit more tricky to
->> introduce a new function to set the flag in the region AFTER the call to
->> memblock_alloc_try_nid_raw has finished as the memblock_region can not be
->> found.
->> So something (hugepage_size/flag information) still has to be propagated
->> through function calls and a new argument needs to be added.
-> 
-> Sorry if I wasn't clear. I didn't mean to add flags parameter, I meant to
-> add a flag and a function that sets this flag for a range. So for
-> MEMBLOCK_NOINIT there would be
-> 
-> int memblock_mark_noinit(phys_addr_t base, phys_addr_t size);
-> 
-> I'd just name this flag MEMBLOCK_RSRV_NOINIT to make it clear it controls
-> the reserved regions.
-> 
-> This won't require updating all call sites of memblock_alloc_range_nid()
-> and memblock_alloc_try_nid_raw() but only a small refactoring of
-> memblock_setclr_flag() and its callers.
-> 
+Though the "cd_table" is clear, it doesn't feel very obvious to me
+that "struct arm_smmu_ctx_desc_cfg" means CD table, so a mismatch
+with "cd_table". How about renaming to "struct arm_smmu_cdtab_cfg",
+similar to "struct arm_smmu_strtab_cfg"?
 
-Thanks for this, its much cleaner doing the way you described. I have 
-sent v1 implementing this 
-https://lore.kernel.org/all/20230727204624.1942372-1-usama.arif@bytedance.com/.
+> Signed-off-by: Michael Shavit <mshavit@google.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 45 +++++++++++----------
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 10 ++---
+>  2 files changed, 26 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index bb277ff86f65f..8cf4987dd9ec7 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -1033,9 +1033,9 @@ static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_domain *smmu_domain,
+>         unsigned int idx;
+>         struct arm_smmu_l1_ctx_desc *l1_desc;
+>         struct arm_smmu_device *smmu = smmu_domain->smmu;
+> -       struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->s1_cfg.cdcfg;
+> +       struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
 
-Regards,
-Usama
+[<<<]
 
+> @@ -1276,7 +1273,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>         u64 val = le64_to_cpu(dst[0]);
+>         bool ste_live = false;
+>         struct arm_smmu_device *smmu = NULL;
+> -       struct arm_smmu_s1_cfg *s1_cfg = NULL;
+> +       struct arm_smmu_ctx_desc_cfg *cd_table = NULL;
+
+[>>>]
+
+It'd be nicer to align all the variables to "cd_table" like the
+2nd piece here. And if we rename the struct name too:
+
+	struct arm_smmu_cdtab_cfg *cd_table = xxxx;
+
+> -struct arm_smmu_s1_cfg {
+> -       struct arm_smmu_ctx_desc_cfg    cdcfg;
+> -       u8                              s1fmt;
+> -       u8                              s1cdmax;
+> +       /* log2 of the maximum number of CDs supported by this table */
+> +       u8                              max_cds_bits;
+
+Though "s1fmt" is redundant, "max_cds_bits" doesn't seem to be.
+
+It'd be nicer to separate them in the commit message to why we
+remove s1fmt and why we rename s1cdmax.
+
+Thanks
+Nicolin
