@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5802F765B28
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E02765B29
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjG0SGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        id S231311AbjG0SGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbjG0SGo (ORCPT
+        with ESMTP id S230230AbjG0SGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:06:44 -0400
+        Thu, 27 Jul 2023 14:06:47 -0400
 Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDBA30ED
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:06:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07652D5B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690481202; x=1722017202;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Nn/+97mXokNFhGc4n8F4TMZQ782vpORbU0AqQNg977U=;
-  b=g/Tfxyv/3yzO79MI8zeW4L9sTAlrBXoIsfq1Rkv5FyZ71cdabvEGq3cy
-   lw/ov1URAta9SHjtcpH2yHttOdxKhK4awJXKAs7EoWFMLWbELEKShUUB+
-   W5VGKXkAJgQ/f97w7jb0z2a1TI52kbL78BdvRe3ebuydQfvrL1RiKD1Li
-   Bq8z2lH+OOMXGVrjE2izQqJzPybwp0/RqQhbZAacrYjTPQsE+dyjUEUau
-   xY6VVAv/TZww21eMHlL3Lujs87djfBWx8fIef7BK2r4A8OHXinUzxz5ih
-   90qxQvUanQwjkzcCLmlAiajt8sU+lA180Ul1K4nuiG/BDQ36jw1Bq2E/g
+  t=1690481206; x=1722017206;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=pNajP0H5SUJ9f+Q1Onyg09lY/pVe/W2pk6K32ziRX90=;
+  b=gb9JxKALS1REZGkMaAFDjgpsW3NvfF0YzytTfFV/dkO+q2XV8cFVZcZE
+   1lvy/+uRP6S9AKLAM8gvQRp+MkAW7jx/6Nryy6cStYMqYoRdBpQ7DV8ke
+   xd+N610z0p9MQsQQcX+aNWQg6sFMzMJqiXg0Zs3ZTNzg+3SUSzxsg+QZm
+   sO51Dkq+C89cMvBErz2BrWwbDy9F8gaCPVBNDVoHedcFG7Ig2tKMeqMwe
+   bEyalnvN97A5lwgBEdfhT7+ny3X4pghX99e//+/b2ZvcTqTyBc+B1H8FD
+   td/dNMvd0DWWy/4r7rkd2OeaOpc29nMmyPe7YO1X/KmqL7g0057UV1gLE
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="454760077"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="454760087"
 X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="454760077"
+   d="scan'208";a="454760087"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 11:06:42 -0700
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 11:06:45 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="870523911"
+   d="scan'208";a="870523921"
 Received: from sohilmeh.sc.intel.com ([172.25.103.65])
-  by fmsmga001.fm.intel.com with ESMTP; 27 Jul 2023 11:06:43 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 27 Jul 2023 11:06:47 -0700
 From:   Sohil Mehta <sohil.mehta@intel.com>
 To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>
@@ -46,10 +46,12 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
         Sohil Mehta <sohil.mehta@intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] x86/smpboot: Minor cleanup
-Date:   Thu, 27 Jul 2023 18:05:30 +0000
-Message-Id: <20230727180533.3119660-1-sohil.mehta@intel.com>
+Subject: [PATCH v2 1/3] x86/smpboot: Remove a stray comment about CPU hotplug
+Date:   Thu, 27 Jul 2023 18:05:31 +0000
+Message-Id: <20230727180533.3119660-2-sohil.mehta@intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230727180533.3119660-1-sohil.mehta@intel.com>
+References: <20230727180533.3119660-1-sohil.mehta@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -62,27 +64,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These cleanup patches are minor and fairly independent. I have put them in a
-series to make it easier to review. Please feel free to apply any of them.
+This old comment is irrelavant to the logic of disabling interrupts and
+could be misleading. Remove it.
 
-I found these mainly through code inspection.
+Now, hlt_play_dead() resembles the code that the comment was initially
+added for, but, it doesn't make sense anymore because an offlined cpu
+could also be put into other states such as mwait.
 
-v2:
- - Added 2 more patches
- - Rebased to 6.5-rc3
- - Improved commit message
+Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
+---
+ arch/x86/kernel/smpboot.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index e1aa2cd7734b..6a09a021b534 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1614,9 +1614,7 @@ void play_dead_common(void)
+ 	idle_task_exit();
  
-v1: https://lore.kernel.org/lkml/20230614201301.1308363-1-sohil.mehta@intel.com/
-
-Sohil Mehta (3):
-  x86/smpboot: Remove a stray comment about CPU hotplug
-  x86/smp: Remove a non-existent function declaration
-  x86/smpboot: Change smp_store_boot_cpu_info() to static
-
- arch/x86/include/asm/smp.h | 3 ---
- arch/x86/kernel/smpboot.c  | 6 ++----
- 2 files changed, 2 insertions(+), 7 deletions(-)
-
+ 	cpuhp_ap_report_dead();
+-	/*
+-	 * With physical CPU hotplug, we should halt the cpu
+-	 */
++
+ 	local_irq_disable();
+ }
+ 
 -- 
 2.34.1
 
