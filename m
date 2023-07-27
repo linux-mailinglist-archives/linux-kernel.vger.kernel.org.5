@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 785137656A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FABA7656AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbjG0PBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S234046AbjG0PBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234165AbjG0PBR (ORCPT
+        with ESMTP id S233921AbjG0PBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:01:17 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369AC30E1;
-        Thu, 27 Jul 2023 08:01:08 -0700 (PDT)
-X-QQ-mid: bizesmtp84t1690470057tpm9d056
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 27 Jul 2023 23:00:56 +0800 (CST)
-X-QQ-SSF: 01200000002000D0X000B00A0000000
-X-QQ-FEAT: 5q30pvLz2ifSFQC7zAtcmth9BQ99F3QX7jMGoQfR1aNIOgCwn9uvi1jOuq6K5
-        0PuPYGvo/MV8ecWP78qlbHD5Awh9SpdMM/dij1uNd4CvRexxNDfexvqQSBSh2Gx0+JEeZ+Y
-        NZGOLfnN2Q72xcYqj7hFOxdWUeT7TfAzG3gm13y+ZkO7eI4AWQ8ktTS8Yq0bd+AM4wt1wgv
-        dZOpd8MvbaVt5IZYU79INQkqbWvU5PbeCA4X45OFVtOeLI4E8zkdfFq9efIB25HUOPCOeDX
-        qw1kZdwDIGJqcSTg6i4GkDspbEI/UYdpVFmre2OMqG6HKLadRhxsQU4aqpwp/+x5JKCvLLZ
-        tfZ5dugbMcB5eAaLWf5qbZVzlcrRoxqiz0n+a+kLIX8Va6VSg7Azn9v5YxnmS8nkDPegwS3
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 14503850201614126736
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v3 2/7] tools/nolibc: add support for powerpc64
-Date:   Thu, 27 Jul 2023 23:00:55 +0800
-Message-Id: <6f9c496695b5d44a3a694abc571e183b80d9081d.1690468707.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690468707.git.falcon@tinylab.org>
-References: <cover.1690468707.git.falcon@tinylab.org>
+        Thu, 27 Jul 2023 11:01:31 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19453A8D;
+        Thu, 27 Jul 2023 08:01:20 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3177f520802so650511f8f.1;
+        Thu, 27 Jul 2023 08:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690470079; x=1691074879;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvCF/eVSd9hmC6XYT4T1ezXatK3iLtpGtg715fOf/58=;
+        b=k/z3jAdPty8pr9RV96/kIt05tsIb/2SPKBH9mAzqzaRfV9MPcKGLKBafnlPqZSR39w
+         OEx99Gybqta70dIZrmZVYVmqe/xlIQMgtiwufYvjIhyFL+/wX74CkwpI7FlI27c0e49J
+         f+ZqfM7sbc4UpartBigQf0/+AQaj9Wt+/FI9zBWDzKLQqJM4b5c/QOyqUcIl7e+mHIei
+         M20V2oR9bBtjSPrl+ReDNM/Bgm8tLf40OJQiDhPnQ4hovaOileJKCxFq2fSJ4MGobcjI
+         jbZP0J+wpxWElP8XSyWkXeAE0Qmr0yidt4TXZbF9TpHjDTVRfM9wJKhlAhB8ZPhaIeEJ
+         t6cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690470079; x=1691074879;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RvCF/eVSd9hmC6XYT4T1ezXatK3iLtpGtg715fOf/58=;
+        b=Uh70v7P9+s0mh5rREm7YbOU7xdCFSWIXQi2eIZpZppi4pBOJg8sygLqgJ/I7aWng20
+         s8E/OnbPkg12Gf/j1VRbcgaQ80fJx1uONHnM+Ch7yLkuOUGlpLCibXE0OzK+O/wf0EMB
+         zUPfHkj5z9z/HQyH41rUsH20/E+dekTiOxjpaywOtBnvzNnjQ9f1KVb2l+PJLTgwtvt0
+         7u3Vsp0+oW79j+8sR+4a7/f+TyuURoEQ+y3utY1Gmi37Kn4fuh50bNcPyP/OBagMe8oC
+         SYdIDy3twcZEepoNSSdZahKxTSyUKMR90nSjE9PaG2kxxvWTg1kjju/CGAdMwRnKlGg+
+         cv+w==
+X-Gm-Message-State: ABy/qLY6gpFlr63j3Hv87Ubn0YdFRfFGWzroGBbRps4DGNd8O5ZxeGNV
+        YQinTuWK/MpC+Zevl1w7knE=
+X-Google-Smtp-Source: APBJJlGU86bx5VqRAOWDKiY5phwY7+ucGmhvWfqzAJmocNr9VtQu4SXGlFXWERSQXKnGtxkMe5+ADw==
+X-Received: by 2002:a05:6000:108e:b0:313:e20c:b90b with SMTP id y14-20020a056000108e00b00313e20cb90bmr2071747wrw.26.1690470078949;
+        Thu, 27 Jul 2023 08:01:18 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id d4-20020adfe884000000b003144b95e1ecsm2280938wrm.93.2023.07.27.08.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 08:01:18 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andreas Schwab <schwab@suse.de>,
+        linux-trace-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] rtla: Fix uninitialized variable found
+Date:   Thu, 27 Jul 2023 16:01:17 +0100
+Message-Id: <20230727150117.627730-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This follows the 64-bit PowerPC ABI [1], refers to the slides: "A new
-ABI for little-endian PowerPC64 Design & Implementation" [2] and the
-musl code in arch/powerpc64/crt_arch.h.
+Variable found is not being initialized, in the case where the desired
+mount is not found the variable contains garbage. Fix this by initializing
+it to zero.
 
-First, stdu and clrrdi are used instead of stwu and clrrwi for
-powerpc64.
-
-Second, the stack frame size is increased to 32 bytes for powerpc64, 32
-bytes is the minimal stack frame size supported described in [2].
-
-Besides, the TOC pointer (GOT pointer) must be saved to r2.
-
-This works on both little endian and big endian 64-bit PowerPC.
-
-[1]: https://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.pdf
-[2]: https://www.llvm.org/devmtg/2014-04/PDFs/Talks/Euro-LLVM-2014-Weigand.pdf
-
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+Fixes: a957cbc02531 ("rtla: Add -C cgroup support")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- tools/include/nolibc/arch-powerpc.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ tools/tracing/rtla/src/utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/include/nolibc/arch-powerpc.h b/tools/include/nolibc/arch-powerpc.h
-index caa943e1521a..d783ed0b5dbd 100644
---- a/tools/include/nolibc/arch-powerpc.h
-+++ b/tools/include/nolibc/arch-powerpc.h
-@@ -175,6 +175,19 @@
- /* startup code */
- void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+diff --git a/tools/tracing/rtla/src/utils.c b/tools/tracing/rtla/src/utils.c
+index 623a38908ed5..c769d7b3842c 100644
+--- a/tools/tracing/rtla/src/utils.c
++++ b/tools/tracing/rtla/src/utils.c
+@@ -538,7 +538,7 @@ static const int find_mount(const char *fs, char *mp, int sizeof_mp)
  {
-+#ifdef __powerpc64__
-+	/* On 64-bit PowerPC, save TOC/GOT pointer to r2 */
-+	extern char TOC __asm__ (".TOC.");
-+	register volatile long r2 __asm__ ("r2") = (void *)&TOC - (void *)_start;
-+
-+	__asm__ volatile (
-+		"mr     3, 1\n"         /* save stack pointer to r3, as arg1 of _start_c */
-+		"clrrdi 1, 1, 4\n"      /* align the stack to 16 bytes                   */
-+		"li     0, 0\n"         /* zero the frame pointer                        */
-+		"stdu   1, -32(1)\n"    /* the initial stack frame                       */
-+		"bl     _start_c\n"     /* transfer to c runtime                         */
-+	);
-+#else
- 	__asm__ volatile (
- 		"mr     3, 1\n"         /* save stack pointer to r3, as arg1 of _start_c */
- 		"clrrwi 1, 1, 4\n"      /* align the stack to 16 bytes                   */
-@@ -182,6 +195,7 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
- 		"stwu   1, -16(1)\n"    /* the initial stack frame                       */
- 		"bl     _start_c\n"     /* transfer to c runtime                         */
- 	);
-+#endif
- 	__builtin_unreachable();
- }
+ 	char mount_point[MAX_PATH];
+ 	char type[100];
+-	int found;
++	int found = 0;
+ 	FILE *fp;
  
+ 	fp = fopen("/proc/mounts", "r");
 -- 
-2.25.1
+2.39.2
 
