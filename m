@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F29E76535D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F107A765340
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbjG0MNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S232787AbjG0MIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbjG0MNa (ORCPT
+        with ESMTP id S231986AbjG0MID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:13:30 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFE12719;
-        Thu, 27 Jul 2023 05:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690460009; x=1721996009;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5uIFR6uMssEWsFWrPUBKU4Ccoe4vSSRYqdWErrCk1QM=;
-  b=nD5da08hrqWZYfqxY9qqHyZQJV/OR/is6Z4dQiCsj3sYtrr65ht50r4N
-   RqlcRb4fEHzsV2RjKLiL+QIByotFcKe9CrWAoiwbnCys29oa8nRcbiKil
-   SahW4RvEv+YlemunI1ggldFablRhvEtQFmgkJicWo93aViMOoAkyQBHbQ
-   vb0BlWado5gm7YsHAY77peGoK9AqGPUMj3ffuj2mq+eEgtYKJjp6d/OsF
-   L7C1eAViWAEUIl/RB9fQ+NqiUhtZHJAsLHnKIDWhRXMh7smaULSzPQskM
-   As4rI95H+VNH76LQBRPWWb1Efp9o+bHJXatTGVFK5U/w4Syh34m9xzh6S
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="367167844"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="367167844"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 05:06:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="730252652"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="730252652"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Jul 2023 05:06:02 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOzkn-0002Fk-2Y;
-        Thu, 27 Jul 2023 12:06:01 +0000
-Date:   Thu, 27 Jul 2023 20:05:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Charles Boyer <Charles.Boyer@fii-usa.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Vivekanand Veeracholan <vveerach@google.com>,
-        Lancelot Kao <lancelot.cy.kao@fii-na.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Charles Boyer <Charles.Boyer@fii-usa.com>
-Subject: Re: [PATCH] ARM: dts: nuvoton: Add Fii Mori system
-Message-ID: <202307271949.TXhf41ue-lkp@intel.com>
-References: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
+        Thu, 27 Jul 2023 08:08:03 -0400
+Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D832B2D60;
+        Thu, 27 Jul 2023 05:07:52 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBTkh1NY5z9v7gP;
+        Thu, 27 Jul 2023 19:56:28 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.209.69])
+        by APP2 (Coremail) with SMTP id GxC2BwBnGkGaXcJkfMYUBQ--.33878S5;
+        Thu, 27 Jul 2023 13:06:59 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mips@vger.kernel.org (open list:MIPS),
+        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
+        linux-mm@kvack.org (open list:SLAB ALLOCATOR)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v6 3/9] swiotlb: add documentation and rename swiotlb_do_find_slots()
+Date:   Thu, 27 Jul 2023 14:05:31 +0200
+Message-Id: <2398ad9c61fd686d99d4d7077d8755e19e54b6eb.1690459412.git.petr.tesarik.ext@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
+References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwBnGkGaXcJkfMYUBQ--.33878S5
+X-Coremail-Antispam: 1UD129KBjvJXoW3GrWfGF4UuFy8tF1xZF1kKrg_yoW7ur4rpF
+        4rt3Z8tFs8Jr1xC39Fkw48uF1S9w4kK347uFWavryF9rnrJr9agFyktrW5XFyrJFW8uF4U
+        Ja4avr48Gr43Xr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUQm14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+        IY04v7MxkF7I0En4kS14v26r1q6r43MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcV
+        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU8YFADUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,44 +97,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Charles,
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-kernel test robot noticed the following build errors:
+Add some kernel-doc comments and move the existing documentation of struct
+io_tlb_slot to its correct location. The latter was forgotten in commit
+942a8186eb445 ("swiotlb: move struct io_tlb_slot to swiotlb.c").
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on linus/master v6.5-rc3 next-20230727]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Use the opportunity to give swiotlb_do_find_slots() a more descriptive name
+and make it clear how it differs from swiotlb_find_slots().
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Charles-Boyer/ARM-dts-nuvoton-Add-Fii-Mori-system/20230727-024931
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20230726184651.1221-1-Charles.Boyer%40fii-usa.com
-patch subject: [PATCH] ARM: dts: nuvoton: Add Fii Mori system
-config: arm-randconfig-r046-20230726 (https://download.01.org/0day-ci/archive/20230727/202307271949.TXhf41ue-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230727/202307271949.TXhf41ue-lkp@intel.com/reproduce)
+Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+---
+ include/linux/swiotlb.h | 15 +++++++---
+ kernel/dma/swiotlb.c    | 61 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 66 insertions(+), 10 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307271949.TXhf41ue-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:649.1-6 Label or path emc0 not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:662.1-7 Label or path ohci1 not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:666.1-5 Label or path aes not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:670.1-5 Label or path sha not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:761.1-8 Label or path sdhci0 not found
-   Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:769.1-7 Label or path ohci1 not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:773.1-6 Label or path vdma not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:777.1-9 Label or path pcimbox not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:781.1-5 Label or path vcd not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:785.1-5 Label or path ece not found
->> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:818.1-5 Label or path otp not found
->> FATAL ERROR: Syntax error parsing input tree
-
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 2d453b3e7771..31625ae507ea 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -76,10 +76,6 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t phys,
+  * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
+  *		@end. For default swiotlb, this is command line adjustable via
+  *		setup_io_tlb_npages.
+- * @list:	The free list describing the number of free entries available
+- *		from each index.
+- * @orig_addr:	The original address corresponding to a mapped entry.
+- * @alloc_size:	Size of the allocated buffer.
+  * @debugfs:	The dentry to debugfs.
+  * @late_alloc:	%true if allocated using the page allocator
+  * @force_bounce: %true if swiotlb bouncing is forced
+@@ -111,6 +107,17 @@ struct io_tlb_mem {
+ #endif
+ };
+ 
++/**
++ * is_swiotlb_buffer() - check if a physical address belongs to a swiotlb
++ * @dev:        Device which has mapped the buffer.
++ * @paddr:      Physical address within the DMA buffer.
++ *
++ * Check if @paddr points into a bounce buffer.
++ *
++ * Return:
++ * * %true if @paddr points into a bounce buffer
++ * * %false otherwise
++ */
+ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+ 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 0b173303e088..ef5d5e41a17f 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -62,6 +62,13 @@
+ 
+ #define INVALID_PHYS_ADDR (~(phys_addr_t)0)
+ 
++/**
++ * struct io_tlb_slot - IO TLB slot descriptor
++ * @orig_addr:	The original address corresponding to a mapped entry.
++ * @alloc_size:	Size of the allocated buffer.
++ * @list:	The free list describing the number of free entries available
++ *		from each index.
++ */
+ struct io_tlb_slot {
+ 	phys_addr_t orig_addr;
+ 	size_t alloc_size;
+@@ -635,11 +642,22 @@ static void dec_used(struct io_tlb_mem *mem, unsigned int nslots)
+ }
+ #endif /* CONFIG_DEBUG_FS */
+ 
+-/*
+- * Find a suitable number of IO TLB entries size that will fit this request and
+- * allocate a buffer from that IO TLB pool.
++/**
++ * swiotlb_area_find_slots() - search for slots in one IO TLB memory area
++ * @dev:	Device which maps the buffer.
++ * @area_index:	Index of the IO TLB memory area to be searched.
++ * @orig_addr:	Original (non-bounced) IO buffer address.
++ * @alloc_size: Total requested size of the bounce buffer,
++ *		including initial alignment padding.
++ * @alloc_align_mask:	Required alignment of the allocated buffer.
++ *
++ * Find a suitable sequence of IO TLB entries for the request and allocate
++ * a buffer from the given IO TLB memory area.
++ * This function takes care of locking.
++ *
++ * Return: Index of the first allocated slot, or -1 on error.
+  */
+-static int swiotlb_do_find_slots(struct device *dev, int area_index,
++static int swiotlb_area_find_slots(struct device *dev, int area_index,
+ 		phys_addr_t orig_addr, size_t alloc_size,
+ 		unsigned int alloc_align_mask)
+ {
+@@ -734,6 +752,19 @@ static int swiotlb_do_find_slots(struct device *dev, int area_index,
+ 	return slot_index;
+ }
+ 
++/**
++ * swiotlb_find_slots() - search for slots in the whole swiotlb
++ * @dev:	Device which maps the buffer.
++ * @orig_addr:	Original (non-bounced) IO buffer address.
++ * @alloc_size: Total requested size of the bounce buffer,
++ *		including initial alignment padding.
++ * @alloc_align_mask:	Required alignment of the allocated buffer.
++ *
++ * Search through the whole software IO TLB to find a sequence of slots that
++ * match the allocation constraints.
++ *
++ * Return: Index of the first allocated slot, or -1 on error.
++ */
+ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 		size_t alloc_size, unsigned int alloc_align_mask)
+ {
+@@ -742,8 +773,8 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 	int i = start, index;
+ 
+ 	do {
+-		index = swiotlb_do_find_slots(dev, i, orig_addr, alloc_size,
+-					      alloc_align_mask);
++		index = swiotlb_area_find_slots(dev, i, orig_addr, alloc_size,
++						alloc_align_mask);
+ 		if (index >= 0)
+ 			return index;
+ 		if (++i >= mem->nareas)
+@@ -755,6 +786,15 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 
++/**
++ * mem_used() - get number of used slots in an allocator
++ * @mem:	Software IO TLB allocator.
++ *
++ * The result is accurate in this version of the function, because an atomic
++ * counter is available if CONFIG_DEBUG_FS is set.
++ *
++ * Return: Number of used slots.
++ */
+ static unsigned long mem_used(struct io_tlb_mem *mem)
+ {
+ 	return atomic_long_read(&mem->total_used);
+@@ -762,6 +802,15 @@ static unsigned long mem_used(struct io_tlb_mem *mem)
+ 
+ #else /* !CONFIG_DEBUG_FS */
+ 
++/**
++ * mem_used() - get number of used slots in an allocator
++ * @mem:	Software IO TLB allocator.
++ *
++ * The result is not accurate, because there is no locking of individual
++ * areas.
++ *
++ * Return: Approximate number of used slots.
++ */
+ static unsigned long mem_used(struct io_tlb_mem *mem)
+ {
+ 	int i;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
