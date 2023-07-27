@@ -2,91 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60D87654A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402727654AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjG0NKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S232480AbjG0NM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbjG0NKm (ORCPT
+        with ESMTP id S229589AbjG0NMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:10:42 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7679C211C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690463420; x=1721999420;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/lwz7NzWnByDhqIuXrpnxSlLdfcwu8DhHulc0zwVbck=;
-  b=WBVJ2AYBkqmlXcz0vJ1sw5dH4yY5NPWjdFlKTCaZyYHYzQ7h/oDpuNwQ
-   0tH4AgWlYP5D7Zwby8/8NUUOq5BMys5qkuQHIj88ILw2t4q0UMzqQF4Ob
-   mXAbMIqwNpFi2T3PVK02+FZWuwyiHthhtgNzwJAF0Wwjm/li8CxVPTOUh
-   NGwIY0U0S/edACFIN7ElNzpTqUolxRGL/ypadS+jxdlcVkiQ83E5io0eH
-   AL1fUgdVZMcRkbNzXdJ1Z0OO/ytKt7rVpo/6P84dQaf0XqyXxAd0N2rBX
-   TnCnYunlj6XcIlTq1r2ELyI3761HkKa9BoW2hh2AEaQlSZK41scLWhf2l
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="367182941"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="367182941"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:10:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817079607"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="817079607"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Jul 2023 06:10:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qP0kz-005E43-07;
-        Thu, 27 Jul 2023 16:10:17 +0300
-Date:   Thu, 27 Jul 2023 16:10:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1 1/1] minmax: Fix header inclusions
-Message-ID: <ZMJsuKFrYvSWlhjK@smile.fi.intel.com>
-References: <20230721133932.12679-1-andriy.shevchenko@linux.intel.com>
- <20230721161033.55bc133c@bootlin.com>
- <ZL6KxZh9SwizrApS@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZL6KxZh9SwizrApS@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 27 Jul 2023 09:12:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830011715;
+        Thu, 27 Jul 2023 06:12:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2087C61E71;
+        Thu, 27 Jul 2023 13:12:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D31C433C8;
+        Thu, 27 Jul 2023 13:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690463539;
+        bh=9dsD6qht9F/b5jq523+Sku0tJDHSRASAuDdE3hK28X8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FYECEGQ5Fy7k8XN9uei3Ju2nUDmE/L0NnLipfyqsyZp0k0r9HpmtRnuPeGjH1CkdR
+         Ss4AtRlEpUv4wNES6j9km4m+th3oQGt0nejciOeOhHBRUpADqErk8n6a4MNa2wdAwF
+         vySWhTE9z3UIA0CRdNXQQ2to0/GoGRCXCYA0vmcipvKXFDXWds3GCedCykFFylQ3wQ
+         z6uGkXRlNwgApJUWUe0wIw3rYuOhlzPKxvTI802CNJkqB++IigCuhCP0kbfoHZpSzN
+         rENDcPTa/y9xYBw2ctxR7P2DeMq/O1y3uYVouqLIfpPH+tRU9XOr7ASAJh/GfCzVFW
+         a5x6QZKhfqNnw==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qP0mu-00HMdJ-Ub;
+        Thu, 27 Jul 2023 14:12:17 +0100
+Date:   Thu, 27 Jul 2023 14:12:16 +0100
+Message-ID: <87jzulqz0v.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
+In-Reply-To: <20230722022251.3446223-13-rananta@google.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-13-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:29:25PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 21, 2023 at 04:10:33PM +0200, Herve Codina wrote:
-> > On Fri, 21 Jul 2023 16:39:32 +0300
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+On Sat, 22 Jul 2023 03:22:51 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
 > 
-> > Reviewed-by: Herve Codina <herve.codina@bootlin.com>
+> The current implementation of the stage-2 unmap walker traverses
+> the given range and, as a part of break-before-make, performs
+> TLB invalidations with a DSB for every PTE. A multitude of this
+> combination could cause a performance bottleneck on some systems.
 > 
-> Thank you!
+> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
+> invalidations until the entire walk is finished, and then
+> use range-based instructions to invalidate the TLBs in one go.
+> Condition deferred TLB invalidation on the system supporting FWB,
+> as the optimization is entirely pointless when the unmap walker
+> needs to perform CMOs.
 > 
-> Note, the https://lore.kernel.org/all/20230724142307.28411-1-andriy.shevchenko@linux.intel.com/
-> has a fix to the broken builds the LKP reported about.
+> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
+> now serves the stage-2 unmap walker specifically, rather than
+> acting generic.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
+>  1 file changed, 58 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 5ef098af1736..cf88933a2ea0 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgtable_visit_ctx *ctx, kvm_pte_t n
+>  	smp_store_release(ctx->ptep, new);
+>  }
+>  
+> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, struct kvm_s2_mmu *mmu,
+> -			   struct kvm_pgtable_mm_ops *mm_ops)
+> +struct stage2_unmap_data {
+> +	struct kvm_pgtable *pgt;
+> +	bool defer_tlb_flush_init;
+> +};
+> +
+> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
+> +{
+> +	/*
+> +	 * If FEAT_TLBIRANGE is implemented, defer the individual
+> +	 * TLB invalidations until the entire walk is finished, and
+> +	 * then use the range-based TLBI instructions to do the
+> +	 * invalidations. Condition deferred TLB invalidation on the
+> +	 * system supporting FWB, as the optimization is entirely
+> +	 * pointless when the unmap walker needs to perform CMOs.
+> +	 */
+> +	return system_supports_tlb_range() && stage2_has_fwb(pgt);
+> +}
+> +
+> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unmap_data)
+> +{
+> +	bool defer_tlb_flush = __stage2_unmap_defer_tlb_flush(unmap_data->pgt);
+> +
+> +	/*
+> +	 * Since __stage2_unmap_defer_tlb_flush() is based on alternative
+> +	 * patching and the TLBIs' operations behavior depend on this,
+> +	 * track if there's any change in the state during the unmap sequence.
+> +	 */
+> +	WARN_ON(unmap_data->defer_tlb_flush_init != defer_tlb_flush);
+> +	return defer_tlb_flush;
 
-Andrew, since the build fix is in your tree, can you apply this one
-on top of that, please?
+I really don't understand what you're testing here. The ability to
+defer TLB invalidation is a function of the system capabilities
+(range+FWB) and a single flag that is only set on the host for pKVM.
+
+How could that change in the middle of the life of the system? if
+further begs the question about the need for the unmap_data data
+structure.
+
+It looks to me that we could simply pass the pgt pointer around and be
+done with it. Am I missing something obvious?
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Without deviation from the norm, progress is not possible.
