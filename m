@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 819747653E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64EC7653E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbjG0M2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S234202AbjG0M2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234492AbjG0M2K (ORCPT
+        with ESMTP id S234529AbjG0M2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:28:10 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06C1B6;
-        Thu, 27 Jul 2023 05:27:52 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36RCRVmG096167;
-        Thu, 27 Jul 2023 07:27:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690460852;
-        bh=IWBlGzgI1L9ao+widI/hYD7CbAqUuNS9xLpskj1aBsg=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=jDAjwdJA2fRfCqdJw21QVAE7gN8Ca4euPmT708t7pHMBGLrWDQqW4Bzxw8MwrJ0JB
-         +Pm6/jgI9js2tyk0ku+NmFKlf0SWkPfIQk1OPTknJ4wF03qbn0+VjB8dcx9c6bAeQJ
-         nw7JJEK7iFU7ZJzmhlpjd2iBigX7rYMPzaijEuPs=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36RCRV7a051564
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Jul 2023 07:27:31 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 27
- Jul 2023 07:27:31 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 27 Jul 2023 07:27:31 -0500
-Received: from [172.24.227.6] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36RCRO4b011975;
-        Thu, 27 Jul 2023 07:27:25 -0500
-Message-ID: <afa6bb31-6ffb-32e6-a56d-783f613af84d@ti.com>
-Date:   Thu, 27 Jul 2023 17:57:24 +0530
+        Thu, 27 Jul 2023 08:28:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B80530CA;
+        Thu, 27 Jul 2023 05:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=0SHwtlLfdLykm91VDjKonBsfjtpcmLBc8lJqYZToBcg=; b=D9EKpOfhiN9nSQhGjNtFFOB/5J
+        IvoEznWKphYvGec9XS3FDaLewEcIxHC3ECqpdiPtciChaSPmdJnvaaQTPRIcMWw53ITYejobJi1QD
+        vF6RYxVTJ3bvRt63gOVBNbGgp11XHjkqwdarkDR9IGkOdUJ38OS3rQ6MrlumhKynj1UUvgTQy1ErQ
+        ErRrW5vmoqqJfnmFf5OZfpiFG1v8O9ZhhpIyWeO4gdB/EFnqNBgXl9y71BYZtOHKEu0bA+htek+sC
+        qn09JvHVWJ7ohLt1iFUvG869wEVjKgh3981XyKTBB9xlkOAmc8TyXWMaH03xAAuswqgRqa8Wqp4HJ
+        m+CVd12Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qP060-007Sp6-P9; Thu, 27 Jul 2023 12:27:56 +0000
+Date:   Thu, 27 Jul 2023 13:27:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Daniel Dao <dqminh@cloudflare.com>
+Cc:     linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, djwong@kernel.org
+Subject: Re: Kernel NULL pointer deref and data corruptions with xfs on 6.1
+Message-ID: <ZMJizCdbm+JPZ8gp@casper.infradead.org>
+References: <CA+wXwBRGab3UqbLqsr8xG=ZL2u9bgyDNNea4RGfTDjqB=J3geQ@mail.gmail.com>
+ <ZMHkLA+r2K6hKsr5@casper.infradead.org>
+ <CA+wXwBQur9DU7mVa961KWpL+cn1BNeZbU+oja+SKMHhEo1D0-g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: media: Add bindings for Imagination
- E5010 JPEG Encoder driver
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <mchehab@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hverkuil-cisco@xs4all.nl>, <laurent.pinchart@ideasonboard.com>,
-        <eugen.hristev@collabora.com>, <ezequiel@vanguardiasur.com.ar>,
-        <u.kleine-koenig@pengutronix.de>, <sakari.ailus@linux.intel.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <b-brnich@ti.com>,
-        <detheridge@ti.com>, <p-mantena@ti.com>, <vijayp@ti.com>
-References: <20230727112546.2201995-1-devarsht@ti.com>
- <20230727112546.2201995-2-devarsht@ti.com>
- <d6217fc3-e5f8-b629-2eac-4a778452ce74@linaro.org>
-From:   Devarsh Thakkar <devarsht@ti.com>
-In-Reply-To: <d6217fc3-e5f8-b629-2eac-4a778452ce74@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+wXwBQur9DU7mVa961KWpL+cn1BNeZbU+oja+SKMHhEo1D0-g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Thu, Jul 27, 2023 at 11:25:33AM +0100, Daniel Dao wrote:
+> On Thu, Jul 27, 2023 at 4:27 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Fri, Jul 21, 2023 at 11:49:04AM +0100, Daniel Dao wrote:
+> > > We do not have a reproducer yet, but we now have more debugging data
+> > > which hopefully
+> > > should help narrow this down. Details as followed:
+> > >
+> > > 1. Kernel NULL pointer deferencences in __filemap_get_folio
+> > >
+> > > This happened on a few different hosts, with a few different repeated addresses.
+> > > The addresses are 0000000000000036, 0000000000000076,
+> > > 00000000000000f6. This looks
+> > > like the xarray is corrupted and we were trying to do some work on a
+> > > sibling entry.
+> >
+> > I think I have a fix for this one.  Please try the attached.
+> 
+> For some reason I do not see the attached patch. Can you resend it, or
+> is it the same
+> one as in https://bugzilla.kernel.org/show_bug.cgi?id=216646#c31 ?
 
-Thanks for the quick review.
-
-On 27/07/23 17:33, Krzysztof Kozlowski wrote:
-> On 27/07/2023 13:25, Devarsh Thakkar wrote:
->> Add dt-bindings for Imagination E5010 JPEG Encoder driver which is
->> implemented as stateful V4L2 M2M driver.
->>
->> Co-developed-by: David Huang <d-huang@ti.com>
->> Signed-off-by: David Huang <d-huang@ti.com>
->> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
->> ---
->> V2: No change, just sending this together with driver and cover-letter
-> 
-> So all other comments get ignored? Yeah, I see.
-> 
-
-Sorry my bad, I somehow missed to notice you had replied already due to some
-bad filtering of emails. I will check your comments and get back.
-
-Regards
-Devarsh
-
-> This is a friendly reminder during the review process.
-> 
-> It seems my previous comments were not fully addressed. Maybe my
-> feedback got lost between the quotes, maybe you just forgot to apply it.
-> Please go back to the previous discussion and either implement all
-> requested changes or keep discussing them.
-> 
-> Thank you.
-> 
-> Best regards,
-> Krzysztof
-> 
+Yes, that's the one, sorry.
