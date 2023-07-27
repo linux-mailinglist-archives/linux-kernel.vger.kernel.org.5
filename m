@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F77765726
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D2E76572A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234461AbjG0PPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S232953AbjG0PQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234460AbjG0PPA (ORCPT
+        with ESMTP id S232667AbjG0PQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:15:00 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC2219BA
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:14:58 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bbd4f526caso7097215ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:14:58 -0700 (PDT)
+        Thu, 27 Jul 2023 11:16:25 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F42D19BA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:16:24 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so97975e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690470898; x=1691075698;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uh22aMhq83izPRCbdrRzzwtaMf1me9g6NjbX+Co5bp0=;
-        b=V5PJl9OPtbH6rKjCHnQT6vG07X8vn1wK9wE/VoB4pVOU/wXuTZXHBq4qngrQhFqdYx
-         7Nc/8XHsnrfsfvv63G5rKFMVKoj2MBlEBdyp1WGHDAFWz3vrGvQ3AdmEIExOtJ1aO6i+
-         cnpQEo0+AaWgfFRrDpzagp8FGIL+tu0h/ir+/VZ2zzregWOLzHJM0I9Ivoic0+BxzKz4
-         WYd1p4sm9ojfR9ElLG7BmLpUbcffOLNvMQyPdc38Ip378ziKHbWr9liHJkrm859/SeMX
-         ozbx6WwLe/AJVj5hZNh0cUCayyHYysk1ulw9KDKJg9gQ0Hv8Z3iv6s5gECSyYS8u0C8i
-         fslw==
+        d=google.com; s=20221208; t=1690470982; x=1691075782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=utE8vRwrX++6X0lCOyhtmTOdfLDy8jS4+Yo+Xxkza3c=;
+        b=Ud0pxpZcd7aJNotRCE+WUkhwBFed5VvPwbUpDmgYSr8EJcG6JebWxDXIuyEiieBAPV
+         PO1qiiq2eJavMeZRdjixHjuwqA+2/WoV5o7o7Ynd+QnnajfQaNBBUrkDqiyyLiKwnJtA
+         rq3SDnDRGFVUkeNDtrnLUyX9Dznzsymxnsxc1hXaclSb46syUvEsivXGKLSsXkVIU4sV
+         cLYy2tYslYLm8gOFsr+kFoUtVt+rv+IUfbG0VX+vlTzCtdEXzjmdaHssefNZPMReg5I1
+         axHAnqY1q1s60vmb7J4GCAt+bQixi3uhbstXwwiF6qlwNoi5ewKAKxdhFBuGEIm7giJn
+         17gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690470898; x=1691075698;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uh22aMhq83izPRCbdrRzzwtaMf1me9g6NjbX+Co5bp0=;
-        b=GNCY0yCDjsbUgV0xZUfk8Z4h8ZLVU8h9oFT/ijd/sOALnvlWDOfi6ww8XThDwTDzGs
-         ULkE+8ESHnGBK++SFJx6vYsGh3Z8c1gdNApEK3nqtyaffDOwUy4UaqT90PxYLsTQEd0t
-         hF3/bEdA1GT6MWuxNFbjJL+kpWxQhCLyYj+A6gB6rTDH69aYhA3LCvO9Gn56NDFwaZlx
-         oIMy+Cuq/yRIqJTi+ZsbJ0EAfJ98RkW9cCU92Ph5r+8ZEmK6PwpGYrLHjtz5k994oEXk
-         KtGvp5FLGgU8yj26kR00A8uEq2WJKB4Qmjc2Sl+5s3D6XZU5WmM/SmIOXv0Ikm6r5B8G
-         tqFQ==
-X-Gm-Message-State: ABy/qLbmUn7AAW66M6OXUiqn4/mIiGg2aE9r29u3ECQfQdeboJoH36nJ
-        0wzb2oGXGLfqgHcIR4M9cF9UeZW8vVk=
-X-Google-Smtp-Source: APBJJlGAozwFR6Zya7MZdDqmVCOsox47jjr1N+m/uDgqX2krJoIRdH7cC9hMOsvAPWaaJ/Ie78DL6VKYewM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d2cd:b0:1b9:ce2c:3bb0 with SMTP id
- n13-20020a170902d2cd00b001b9ce2c3bb0mr23241plc.3.1690470897724; Thu, 27 Jul
- 2023 08:14:57 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 08:14:56 -0700
-In-Reply-To: <cover.1690364259.git.haibo1.xu@intel.com>
-Mime-Version: 1.0
-References: <cover.1690364259.git.haibo1.xu@intel.com>
-Message-ID: <ZMKI8RknjjZBOaxf@google.com>
-Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
-From:   Sean Christopherson <seanjc@google.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, ajones@ventanamicro.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Vishal Annapurve <vannapurve@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1690470982; x=1691075782;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=utE8vRwrX++6X0lCOyhtmTOdfLDy8jS4+Yo+Xxkza3c=;
+        b=hL+MPWlYXizjCRTUOM3lf0TYvFxYiJY0Pa6KZTscAG4XI7KX01gJJZgpReBeQ9r0wZ
+         /XgQtbF/GmipBpJ0nlnoUiTkxtmm0QdT2a4kr/7HyDDu/XefnGncLN4qv3RQkLL3IpRI
+         pk/Fv0GY4qoWJECQIanVmFAI8NPgNhnqkYl5kZS1eOnpTsnoSFLYBfXyQ5vzGzdKPrkk
+         s3OSX7r91uDJokz4V88zUUjm0me/ERRumMREqr+YnDxgACwr/5QeEwFNFb7AuH0TyIhP
+         r51LvLl+8f6ATgjfZglFLHsjRSAs+mmeiP3PsQ0xU6UUUaJFt9f2AknJdJZ6thJ6yQot
+         +Wew==
+X-Gm-Message-State: ABy/qLa/Aq8R+K7lABwyBQZyyRN0XyGgvCKbz4GmBFfY3QpCMy9/2QoU
+        aEsowg7kWfErEySMhHtN+VA3mykg/LiO5TnYxduKtw==
+X-Google-Smtp-Source: APBJJlE4frvwQ6KmYnfKrtCTfLx4fYG+xPFA2HGLtVpwad1rvO4gMoSBfZQUbfyqUM/AJW+OuV1rWQWd9qfbBYornqI=
+X-Received: by 2002:a05:600c:829:b0:3f1:6fe9:4a95 with SMTP id
+ k41-20020a05600c082900b003f16fe94a95mr113708wmp.4.1690470982450; Thu, 27 Jul
+ 2023 08:16:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
+ <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com> <ZMKINJ9+WX1WWG8g@casper.infradead.org>
+In-Reply-To: <ZMKINJ9+WX1WWG8g@casper.infradead.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 27 Jul 2023 17:15:45 +0200
+Message-ID: <CAG48ez1YPhc2sp=+pXCsZsmiPfXF_oQakouSfNFqi4xK2gEuGA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
+ anon_vma memory ordering
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     paulmck@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,13 +86,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023, Haibo Xu wrote:
-> The sstc_timer selftest is used to validate Sstc timer functionality
-> in a guest, which sets up periodic timer interrupts and check the
-> basic interrupt status upon its receipt.
-> 
-> This KVM selftest was ported from aarch64 arch_timer and tested
-> with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+On Thu, Jul 27, 2023 at 5:07=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+> On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
+> > The other option is to replace the READ_ONCE() with a
+> > smp_load_acquire(), at which point it becomes a lot simpler to show
+> > that the code is correct.
+>
+> Aren't we straining at gnats here?  The context of this is handling a
+> page fault, and we used to take an entire rwsem for read.  I'm having
+> a hard time caring about "the extra expense" of an unnecessarily broad
+> barrier.
+>
+> Cost of an L3 cacheline miss is in the thousands of cycles.  Cost of a
+> barrier is ... tens?
 
-Would it be possible to extract the ARM bits from arch_timer and make the bulk of
-the test common to ARM and RISC-V?  At a glance, there is quite a bit of copy+paste.
+Yeah, fair point. If it's hard to show correctness with READ_ONCE() we
+can just use smp_load_acquire() and call it a day.
