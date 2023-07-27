@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D191765E1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9270B765E22
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjG0VYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
+        id S230439AbjG0V1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbjG0VYY (ORCPT
+        with ESMTP id S229882AbjG0V0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:24:24 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AB53A8C;
-        Thu, 27 Jul 2023 14:24:06 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 91CBF1C0005;
-        Thu, 27 Jul 2023 21:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690493045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ORG5dgngYFtAHPnQ7QoUeAEsgIr39oZ6NJsu8Dq7mTE=;
-        b=JfdcVMrkwF8LPNEFSZlrmHDMYc44jjXYx8n4Dkili5JJjEx6z1mK2kDcn/SC17urFbpDVD
-        vtGurY2uGg9NmQub4ZHVnhkxmFQPibHcVsjj2Z0a+qkm/XhXB+RdQmiksZoL/PIxKGgzDG
-        muG1X1bTY1s+y3MiZh2kN2l9smQtNJKaSppuSTbWR5TUBvb986xYoAdbU9frWHB96oQghO
-        GWjAtCkt4cduhkJ3+KwexJpPHPoEAAjaIyLXEsoGiIsKnipakulHwyl06kRABQGOw8F8yf
-        SiGKuc73yWop4E94rjQNfOKYbJf90Go5cPKtPmp54IPyhFrIFspJibmB7s9tXw==
-Date:   Thu, 27 Jul 2023 23:24:03 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jeremy Kerr <jk@codeconstruct.com.au>,
-        =?utf-8?Q?Przemys=C5=82aw?= Gaj <pgaj@cadence.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i3c: Explicitly include correct DT includes
-Message-ID: <169049302660.636147.12256189755653244870.b4-ty@bootlin.com>
-References: <20230714174623.4057784-1-robh@kernel.org>
+        Thu, 27 Jul 2023 17:26:55 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E731C3A94
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:26:51 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686f38692b3so1100506b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690493211; x=1691098011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1j+kMh0iOsH0JqfJ3WA4QtOF313IMeXkg3gc/f9dpg=;
+        b=UW/Zl61NXORbuErLMYKrPm9BFy7QuUh39/eAy5ZU0tDpiY0EdHKcfvtC+GjtpmoDS8
+         UmDlC5OLbd58dgYVEmXHluzRe1t2fY8rL1HiaDUFiSJTNyiVKx7Yj/LsR1iXdWF2JcNt
+         tnIjNEFLAtyVNtQnc5o/YyMDw8iqDLdEFxqRSU0Vz15wWVg7u5g7H6whC3n/cJHzTAky
+         FzfPpDUZfB16CXzC3uQVY4b74zmqkbLxl/LvpVr/5df/t64hI95eiPpq/tX3SGZn8pXV
+         wROKldHqphBhUMtg69MS22I/iovR/Qy3rcvDDNxH4lNhhgWxzukwhDjXh3ehAlzbnPa8
+         7Cyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690493211; x=1691098011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u1j+kMh0iOsH0JqfJ3WA4QtOF313IMeXkg3gc/f9dpg=;
+        b=lWXNb29vz7JCF+F4CL2kbceWbIEdBNKL5vRM5/DLohvHPPF35ZfLlV4WZxWr0aMZ27
+         XX6f38VVT3g5TkaewMOBpyDY/z8RyHm+ocum6rfieJ44p7uWniptYd05gsincFjS2ucy
+         RmpAkzGd1b0X5tViq2slT20BsV8yQEoYcWRFJlQeCgK+pAdO+QxzemCNvGfxctLyKuEM
+         al/zaoU+V8b37fISx3yw1eQHmob2GmGuhyncck0/NcwZ0u6mVgrCC/sWAI1IEBrXjnnc
+         nPwGxIKQD7URPHeS3ayL4BmpAvOvSiYCY+Eptuv8MqishaSlRtkkiVmu7C+YRUmNiVv1
+         1cNA==
+X-Gm-Message-State: ABy/qLaRMOtdbhJkfFzepvJpZZfP5dakH5+wc0cYpGXVnV7wbUwrpmay
+        YQFbfVAqU37GknW3ruyhcy7c7Q==
+X-Google-Smtp-Source: APBJJlHqQrVV0xCK9fwk96H8JBXhaJwlU8jA71nZ4nPqPKjFylYfA9+6fmKC0mo2E6CfNC7prqLhUw==
+X-Received: by 2002:a05:6a20:2c98:b0:13b:ceea:6b50 with SMTP id g24-20020a056a202c9800b0013bceea6b50mr262249pzj.47.1690493211124;
+        Thu, 27 Jul 2023 14:26:51 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id c5-20020aa78c05000000b00682562b1549sm1912312pfd.24.2023.07.27.14.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 14:26:50 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@rivosinc.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: [PATCH v8 0/4] RISC-V: mm: Make SV48 the default address space
+Date:   Thu, 27 Jul 2023 14:26:25 -0700
+Message-ID: <20230727212647.4182407-1-charlie@rivosinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714174623.4057784-1-robh@kernel.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,27 +73,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make sv48 the default address space for mmap as some applications
+currently depend on this assumption. Users can now select a
+desired address space using a non-zero hint address to mmap. Previously,
+requesting the default address space from mmap by passing zero as the hint
+address would result in using the largest address space possible. Some
+applications depend on empty bits in the virtual address space, like Go and
+Java, so this patch provides more flexibility for application developers.
 
-On Fri, 14 Jul 2023 11:46:23 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> [...]
+-Charlie
 
-Applied, thanks!
+---
+v8:
+- Fix RV32 and the RV32 compat mode of RV64
+- Extract out addr and base from the mmap macros
+v7:
+- Changing RLIMIT_STACK inside of an executing program does not trigger
+  arch_pick_mmap_layout(), so rewrite tests to change RLIMIT_STACK from a
+  script before executing tests. RLIMIT_STACK of infinity forces bottomup
+  mmap allocation.
+- Make arch_get_mmap_base macro more readible by extracting out the rnd
+  calculation.
+- Use MMAP_MIN_VA_BITS in TASK_UNMAPPED_BASE to support case when mmap
+  attempts to allocate address smaller than DEFAULT_MAP_WINDOW.
+- Fix incorrect wording in documentation.
 
-[1/1] i3c: Explicitly include correct DT includes
-      commit: 574ca75f8d2935053872aa1b15d8ba24bfb5e51c
+v6:
+- Rebase onto the correct base
 
-Best regards,
+v5:
+- Minor wording change in documentation
+- Change some parenthesis in arch_get_mmap_ macros
+- Added case for addr==0 in arch_get_mmap_ because without this, programs would
+  crash if RLIMIT_STACK was modified before executing the program. This was
+  tested using the libhugetlbfs tests. 
+
+v4:
+- Split testcases/document patch into test cases, in-code documentation, and
+  formal documentation patches
+- Modified the mmap_base macro to be more legible and better represent memory
+  layout
+- Fixed documentation to better reflect the implmentation
+- Renamed DEFAULT_VA_BITS to MMAP_VA_BITS
+- Added additional test case for rlimit changes
+---
+
+Charlie Jenkins (4):
+  RISC-V: mm: Restrict address space for sv39,sv48,sv57
+  RISC-V: mm: Add tests for RISC-V mm
+  RISC-V: mm: Update pgtable comment documentation
+  RISC-V: mm: Document mmap changes
+
+ Documentation/riscv/vm-layout.rst             | 22 +++++++
+ arch/riscv/include/asm/elf.h                  |  2 +-
+ arch/riscv/include/asm/pgtable.h              | 28 ++++++--
+ arch/riscv/include/asm/processor.h            | 52 +++++++++++++--
+ tools/testing/selftests/riscv/Makefile        |  2 +-
+ tools/testing/selftests/riscv/mm/.gitignore   |  2 +
+ tools/testing/selftests/riscv/mm/Makefile     | 15 +++++
+ .../riscv/mm/testcases/mmap_bottomup.c        | 35 ++++++++++
+ .../riscv/mm/testcases/mmap_default.c         | 35 ++++++++++
+ .../selftests/riscv/mm/testcases/mmap_test.h  | 64 +++++++++++++++++++
+ .../selftests/riscv/mm/testcases/run_mmap.sh  | 12 ++++
+ 11 files changed, 257 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/mm/Makefile
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_bottomup.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_default.c
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap_test.h
+ create mode 100755 tools/testing/selftests/riscv/mm/testcases/run_mmap.sh
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.41.0
+
