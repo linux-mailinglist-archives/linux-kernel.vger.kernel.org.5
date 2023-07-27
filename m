@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 636F67645F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B487645FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjG0Foe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S232468AbjG0FqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjG0FoK (ORCPT
+        with ESMTP id S232077AbjG0FqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:44:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C156844B4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:42:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B40E161D48
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:41:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538D0C433C8;
-        Thu, 27 Jul 2023 05:41:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690436510;
-        bh=tRQeUvtOWTVEnYHK/93U8TcFdC1blB4d+lsY7E7p0Ec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bo2LTR56mu0jXWM+3RWJdC5SGW9+sY+RU8Ft0YUjDKUTx4zvXPFIu30w4m1VFz8K3
-         fwoNR2WbMaPJI5qLbB/ivk+nrvO+ZVFhk2JRIyUDKnZNVIQ9tONHm5UjgLOUVkqiUa
-         hdLDT505vAYhyrZlJ/k83tny8+KEAKBBzxMCTZim32wegoxxvb4zLxs2mV1NGszDj3
-         cZI6dnGRNDZVBp14AaDSbJ/yWgWpMDOjhNSauVl4Xerxs6UNSf6zMxFvBFhPu0PNgC
-         +dJ8D1t7EHKpNIqTyALF4dTETlKqI4YtXR5zZ95+wEhPShP8ixeDAm5ZAeqlvX9fpr
-         By+qlOs9AFScQ==
-Date:   Thu, 27 Jul 2023 08:41:45 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        Gal Pressman <gal@nvidia.com>
-Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
-Message-ID: <20230727054145.GY11388@unreal>
-References: <000000000000ee69e80600ec7cc7@google.com>
- <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
- <20230726071254.GA1380402@unreal>
- <20230726082312.1600053e@kernel.org>
- <20230726170133.GX11388@unreal>
- <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
- <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
+        Thu, 27 Jul 2023 01:46:07 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6F12D42
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690436718; x=1721972718;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HwAWVBPhPifYPtR9YPCU/MvGfTwewwbPzIRftArYbaE=;
+  b=J7cndJ4vdedkaO/skkHXNBkbCWxZM8wxvsChy1EJP8/nnIQIRaKEFee9
+   +KWTEjSNycCmqDoiq03To9JRDvtm9qrEFE2fsTXsBvmy2DVP5PRRbol77
+   K0vZyE6uwJj/U44ymu3mIxRUr0XbrC7IIdPK4GP/PhR62qTIdPIDUcfMN
+   yPkChF4sFMLD5sUzl/aiQoKDmgza2s6QDcjZNqeKmIDQG8JzsaMTQuO1c
+   RHuYtrh081FRUHBE5ZOFTrupUN66SE+sGes3doPbkK4uNJoAYEGBVyqju
+   eIhWVaN7W95h4DauP/ZZgsKZFjhfqov+RKtzq71haN3wd1Td0GqkXLWvI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371821131"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="371821131"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:41:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="756522634"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="756522634"
+Received: from mseillie-mobl.ger.corp.intel.com (HELO [10.249.37.247]) ([10.249.37.247])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 22:41:55 -0700
+Message-ID: <bbf9baf1-d55b-b846-740f-1ed8976b82b4@linux.intel.com>
+Date:   Thu, 27 Jul 2023 07:41:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
+To:     "Liao, Bard" <yung-chuan.liao@linux.intel.com>,
+        "Lu, Brent" <brent.lu@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhi, Yong" <yong.zhi@intel.com>,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        "Bhat, Uday M" <uday.m.bhat@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        "Chiang, Mac" <mac.chiang@intel.com>,
+        "R, Dharageswari" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+References: <20230720092628.758834-1-brent.lu@intel.com>
+ <20230720092628.758834-2-brent.lu@intel.com>
+ <ff55e63f-1c17-12ef-57e6-144a5bea4480@linux.intel.com>
+ <CY5PR11MB6257FF6D92D524D389B734C19701A@CY5PR11MB6257.namprd11.prod.outlook.com>
+ <c1aadbcf-78ab-0566-84e5-8eaa7b418d50@linux.intel.com>
+Content-Language: en-US
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <c1aadbcf-78ab-0566-84e5-8eaa7b418d50@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,55 +84,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:33:40PM -0700, Martin KaFai Lau wrote:
-> On 7/26/23 11:16 AM, Martin KaFai Lau wrote:
-> > On 7/26/23 10:01 AM, Leon Romanovsky wrote:
-> > > On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
-> > > > On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
-> > > > > > Thanks, I'll take a look this evening.
-> > > > > 
-> > > > > Did anybody post a fix for that?
-> > > > > 
-> > > > > We are experiencing the following kernel panic in netdev commit
-> > > > > b57e0d48b300 (net-next/main) Merge branch '100GbE' of
-> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
-> > > > 
-> > > > Not that I know, looks like this is with Daniel's previous fix already
-> > > > present, and syzbot is hitting it, too :(
-> > > 
-> > > My naive workaround which restored our regression runs is:
-> > > 
-> > > diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
-> > > index 69a272712b29..10c9ab830702 100644
-> > > --- a/kernel/bpf/tcx.c
-> > > +++ b/kernel/bpf/tcx.c
-> > > @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
-> > >                          bpf_prog_put(tuple.prog);
-> > >                  tcx_skeys_dec(ingress);
-> > >          }
-> > > -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
-> > > +       tcx_miniq_set_active(entry, false);
-> > 
-> > Thanks for the report. I will look into it.
+On 7/27/23 5:21 AM, Liao, Bard wrote:
 > 
-> I don't see how that may be triggered for now after Daniel's recent fix in
-> commit dc644b540a2d ("tcx: Fix splat in ingress_destroy upon
-> tcx_entry_free"). 
-
-Both our regression and syzbot have this fix in the trees.
-
-
-> Do you have a small reproducible case? Thanks.
-
-Unfortunately no.
-
-Thanks
-
+> On 7/27/2023 10:14 AM, Lu, Brent wrote:
+>>>
+>>> max_98390_components[] and max_98390_4spk_components[] are still used
+>>>
+>>> by sof_rt5682.c, we should remove them in the same patch.
+>>>
+>>> Maybe combine the 2 patches together?
+>>>
+>>>
+>> I've got your point but these two patches are doing two things: one is 
+>> refactor the
+>> code and add a detection feature, the other one is removing the quirk. 
+>> Not sure if
+>> it's proper to merge them.
 > 
-> > 
-> > >          tcx_entry_free(entry);
-> > >   }
-> > > 
-> > 
-> > 
+> The point is that if you remove them and they are still used somewhere,
 > 
+> you will break the build. i.e. Kernel will not compile if we apply the
+> 
+> first patch only.
+
+IOW git bisect is broken and that's a big no-no.
+
