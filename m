@@ -2,49 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C693F764530
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A644764533
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjG0E7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S230405AbjG0FAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjG0E7I (ORCPT
+        with ESMTP id S229820AbjG0FAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:59:08 -0400
+        Thu, 27 Jul 2023 01:00:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2AAE47
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:59:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1255BE47;
+        Wed, 26 Jul 2023 22:00:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F5EC61D32
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:59:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CFE3C433C7;
-        Thu, 27 Jul 2023 04:59:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A87061D30;
+        Thu, 27 Jul 2023 05:00:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 07E5FC433C9;
+        Thu, 27 Jul 2023 05:00:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690433946;
-        bh=nI3Z9E6LOhtjoLvillvTW615wdZhZT9TfqRBESPyb7g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=js8a6UH9dinR7AIi+YwNglSjbd6sFcwWYXFMgJXueedhSrAeN5vww8wXM6VIZzoZe
-         cw+hm2tvfhvHA3BYoLQs5r0N4QaMEHCQnYB4iT0UjeZiRKZ4RIiA/Oy5g0tjDjLgbW
-         55wyhbb6qXK2G45s7s18Ihczb1IXr+KMbIcg+ZFVd348P5HPtkAYpDKbHYITqS6z08
-         Wk6bGMfqyRKQUkVirBTYWM83C1VkNKtke21THQs1I3nUw5VX/VGbhuFrWDmhC1CHsx
-         YUJf0xPA0FCEJH8KXmUDTKyF66Nph6dejQgYe90jvwQfrc0HUof3cfVqiB4VnFoQN9
-         FwyOmxNnnUU5w==
-Date:   Thu, 27 Jul 2023 07:58:31 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] memblock fixes for v6.5-rc4
-Message-ID: <20230727045831.GB1901145@kernel.org>
+        s=k20201202; t=1690434020;
+        bh=bz/ycI4oGS9bRmVVuXMmTPwI4myesbiM5Q3vRbb3WqE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BCkOZwMm7x9e1wydST6BP5Skrc0qwMvnM4HEMv2kRU/o87OgvqxZRll9uGKRqj+Ir
+         vPwUP7OTIjn18tl2Sflaq/+ySlK5d7LUEdw+eDpwFtoNNbfQ1peD1LErTl6+n3mlpQ
+         72TteqnOD1FIJeYIRMA8lRWmzZbW8vRDqiTc2iW5ckaHmD97WI2U6l1C8d7ZuqE+Fx
+         sxiNu7aE3943F/RShwD7FqZa22mRovf++pArj/j8ajKFQ22e+GtJ677GSpMkVQqCAi
+         stAiJ98Z7TKGm1QmrPcKtpRKhT2q/0EWT0Re3dsOeJiLTqDhRDx54fHRlpoT89w1uU
+         kzPNVfKiZXkEQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DB0ADC59A4C;
+        Thu, 27 Jul 2023 05:00:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169043401989.24382.16722066763021301341.git-patchwork-notify@kernel.org>
+Date:   Thu, 27 Jul 2023 05:00:19 +0000
+References: <023c0e21e595e00b93903a813bc0bfb9a5d7e368.1690219914.git.jstancek@redhat.com>
+In-Reply-To: <023c0e21e595e00b93903a813bc0bfb9a5d7e368.1690219914.git.jstancek@redhat.com>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     dhowells@redhat.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brauner@kernel.org, viro@zeniv.linux.org.uk
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,44 +59,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello:
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
+On Mon, 24 Jul 2023 19:39:04 +0200 you wrote:
+> LTP sendfile07 [1], which expects sendfile() to return EAGAIN when
+> transferring data from regular file to a "full" O_NONBLOCK socket,
+> started failing after commit 2dc334f1a63a ("splice, net: Use
+> sendmsg(MSG_SPLICE_PAGES) rather than ->sendpage()").
+> sendfile() no longer immediately returns, but now blocks.
+> 
+> Removed sock_sendpage() handled this case by setting a MSG_DONTWAIT
+> flag, fix new splice_to_socket() to do the same for O_NONBLOCK sockets.
+> 
+> [...]
 
-are available in the Git repository at:
+Here is the summary with links:
+  - [v2] splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+    https://git.kernel.org/netdev/net/c/0f0fa27b871b
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2023-07-27
-
-for you to fetch changes up to 9e46e4dcd9d6cd88342b028dbfa5f4fb7483d39c:
-
-  mm,memblock: reset memblock.reserved to system init state to prevent UAF (2023-07-24 08:52:56 +0300)
-
-----------------------------------------------------------------
-memblock: reset memblock.reserved to system init state to prevent UAF
-
-A call to memblock_free() or memblock_phys_free() issued after memblock
-data is discarded will result in use after free in
-memblock_isolate_range().
-
-When CONFIG_KASAN is enabled, this will cause a panic early in boot.
-Without CONFIG_KASAN, there is a chance that memblock_isolate_range() might
-scribble on memory that is now in use by somebody else.
-
-Avoid those issues by making sure that memblock_discard points
-memblock.reserved.regions back at the static buffer.
-
-If memblock_free() or memblock_phys_free() is called after memblock memory
-is discarded, that will print a warning in memblock_remove_region().
-
-----------------------------------------------------------------
-Rik van Riel (1):
-      mm,memblock: reset memblock.reserved to system init state to prevent UAF
-
- mm/memblock.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
+You are awesome, thank you!
 -- 
-Sincerely yours,
-Mike.
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
