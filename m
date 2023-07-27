@@ -2,162 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1877643FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042FF764422
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjG0Cu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 22:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        id S231342AbjG0DFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjG0CuU (ORCPT
+        with ESMTP id S229655AbjG0DF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:50:20 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95EF1FC4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:50:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690426217; x=1721962217;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aLgSkmaRyiwQtegvOvvVB//aYblKPYYlYhlq9fTWEB8=;
-  b=LSiDnR8qCzSqi06o10gkKHJyYBLNkkV+XSZew3PjinNF2eYP7psEKuTY
-   2Vt0SgOlVpZoV9+bHI+5P6ZXzPIFLAXXd102hvQI3AqPZr8D2WChIpSH7
-   g5NcEA00aey8x4E3pv3gMMeazPGGomGNr4Gkoa0tosE5iZNqEcg5Q8rLE
-   BNEEpA1UYEai9IM2BauCJ9dPVyCkbUarf5LZpUeFp05akjb51oYOUSkkJ
-   1nFytuhsMxqEP8TjsAD8Sdk2F3YOW65F3ypO8oWkTnNQqNgTvzNk/ct20
-   BnxRwwkIiHLkcRFHyD8KPx2Xbe8mUrsFqbP6Ei0RFicoAArbp6pw4nxpU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358187895"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="358187895"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 19:50:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="1057488664"
-X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
-   d="scan'208";a="1057488664"
-Received: from brentlu-desktop.itwn.intel.com ([10.5.252.92])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Jul 2023 19:50:13 -0700
-From:   Brent Lu <brent.lu@intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Uday M Bhat <uday.m.bhat@intel.com>,
-        Mac Chiang <mac.chiang@intel.com>,
-        "Dharageswari . R" <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 2/2] ASoC: Intel: sof_rt5682: remove SOF_MAX98390_TWEETER_SPEAKER_PRESENT flag
-Date:   Thu, 27 Jul 2023 18:43:54 +0800
-Message-Id: <20230727104354.2344418-3-brent.lu@intel.com>
+        Wed, 26 Jul 2023 23:05:26 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06761BCB;
+        Wed, 26 Jul 2023 20:05:24 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RBFwk1S6mz1K9TL;
+        Thu, 27 Jul 2023 11:04:22 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
+ 2023 11:05:15 +0800
+From:   Ruan Jinjie <ruanjinjie@huawei.com>
+To:     <alain.volmat@foss.st.com>, <broonie@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH -next] spi: stm32: Remove redundant dev_err_probe()
+Date:   Thu, 27 Jul 2023 11:05:58 +0000
+Message-ID: <20230727110558.2904084-1-ruanjinjie@huawei.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230727104354.2344418-1-brent.lu@intel.com>
-References: <20230727104354.2344418-1-brent.lu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the SOF_MAX98390_TWEETER_SPEAKER_PRESENT flag from driver since
-the number of amplifiers could be queried from ACPI by counting the
-device instance.
+There is no need to call the dev_err_probe() function directly to print
+a custom message when handling an error from platform_get_irq() function as
+it is going to display an appropriate error message in case of a failure.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 37 ++---------------------------
- 1 file changed, 2 insertions(+), 35 deletions(-)
+ drivers/spi/spi-stm32.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index b4f07bdcf8b4..0af1e0c3a9db 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -59,7 +59,6 @@
- #define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
- #define SOF_RT5682S_HEADPHONE_CODEC_PRESENT	BIT(23)
- #define SOF_MAX98390_SPEAKER_AMP_PRESENT	BIT(24)
--#define SOF_MAX98390_TWEETER_SPEAKER_PRESENT	BIT(25)
- #define SOF_RT1019_SPEAKER_AMP_PRESENT	BIT(26)
- #define SOF_RT5650_HEADPHONE_CODEC_PRESENT	BIT(27)
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 8cf7b41481b2..d16ee6e54de9 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1836,8 +1836,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
  
-@@ -195,23 +194,6 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
- 					SOF_RT5682_SSP_AMP(2) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
--	{
--		.callback = sof_rt5682_quirk_cb,
--		.matches = {
--			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
--			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S_4SPK"),
--		},
--		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
--					SOF_RT5682_SSP_CODEC(0) |
--					SOF_SPEAKER_AMP_PRESENT |
--					SOF_MAX98390_SPEAKER_AMP_PRESENT |
--					SOF_MAX98390_TWEETER_SPEAKER_PRESENT |
--					SOF_RT5682_SSP_AMP(1) |
--					SOF_RT5682_NUM_HDMIDEV(4) |
--					SOF_BT_OFFLOAD_SSP(2) |
--					SOF_SSP_BT_OFFLOAD_PRESENT),
--
--	},
- 	{
- 		.callback = sof_rt5682_quirk_cb,
- 		.matches = {
-@@ -850,17 +832,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			sof_rt1011_dai_link(&links[id]);
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
--			if (sof_rt5682_quirk &
--				SOF_MAX98390_TWEETER_SPEAKER_PRESENT) {
--				links[id].codecs = max_98390_4spk_components;
--				links[id].num_codecs = ARRAY_SIZE(max_98390_4spk_components);
--			} else {
--				links[id].codecs = max_98390_components;
--				links[id].num_codecs = ARRAY_SIZE(max_98390_components);
--			}
--			links[id].init = max_98390_spk_codec_init;
--			links[id].ops = &max_98390_ops;
--
-+			max_98390_dai_link(dev, &links[id]);
- 		} else if (sof_rt5682_quirk & SOF_RT5650_HEADPHONE_CODEC_PRESENT) {
- 			links[id].codecs = &rt5650_components[1];
- 			links[id].num_codecs = 1;
-@@ -1019,12 +991,7 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
- 		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
- 	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
--		if (sof_rt5682_quirk & SOF_MAX98390_TWEETER_SPEAKER_PRESENT)
--			max_98390_set_codec_conf(&sof_audio_card_rt5682,
--						 ARRAY_SIZE(max_98390_4spk_components));
--		else
--			max_98390_set_codec_conf(&sof_audio_card_rt5682,
--						 ARRAY_SIZE(max_98390_components));
-+		max_98390_set_codec_conf(&pdev->dev, &sof_audio_card_rt5682);
- 	}
+ 	spi->irq = platform_get_irq(pdev, 0);
+ 	if (spi->irq <= 0)
+-		return dev_err_probe(&pdev->dev, spi->irq,
+-				     "failed to get irq\n");
++		return spi->irq;
  
- 	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
+ 	ret = devm_request_threaded_irq(&pdev->dev, spi->irq,
+ 					spi->cfg->irq_handler_event,
 -- 
 2.34.1
 
