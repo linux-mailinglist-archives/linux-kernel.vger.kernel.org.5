@@ -2,120 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A687A765CFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFCF765D01
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbjG0UMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        id S232734AbjG0UNL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 27 Jul 2023 16:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjG0UMC (ORCPT
+        with ESMTP id S230204AbjG0UNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:12:02 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879DBE47
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:12:00 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b8ad356fe4so8770325ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690488720; x=1691093520;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wn8M5IW1Cx9z9W8X8Ql/iTEi3xFpPTK1V/bqvxk5oAA=;
-        b=bbT99bJdu4sRjdxtAYwfODGngeD83nTVLOalwJyjsSVSlXP2u8fY/+zBMJbdP9va/V
-         gWi4GyD0HeA+cuipXnXPpqXeFWYrwZni4kZtbbDtX2G2dqpveKf3eqVbzWJCbF9gsKje
-         aublcSCyWE5d5wWbOddBF385cH/3VT8hx9dqMrof9e51gN574pctHjUYubsp+ajdWdyo
-         1RodqQimE2n0j8NEKig/qI0DJgFxdVqf4fRBeexQLcmi1mqf7ihLcfssggzbEy8bn8Zk
-         +GnpWr+asgcQ3TSF4ZcXig7wJQnewXfhaoBjmqDYqgCs1jPwQAZUELqamoE3XUqqRUVQ
-         YZTw==
+        Thu, 27 Jul 2023 16:13:10 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADECBE47;
+        Thu, 27 Jul 2023 13:13:08 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56475c1b930so176181eaf.0;
+        Thu, 27 Jul 2023 13:13:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690488720; x=1691093520;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690488788; x=1691093588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wn8M5IW1Cx9z9W8X8Ql/iTEi3xFpPTK1V/bqvxk5oAA=;
-        b=FFs9cu6grjE0T8m9LafrF+mi9UxqsrEEkGGQx1k6PjogoexOOblIFlXiYBVFuJE108
-         CcWquCA1ARbZeJET1Wp7n8m6M6ZAauegWjftcDi+R4ccCek8FARG+fIKh3Xa2HPRS4JK
-         0gE3l8/E+MBmRTFKPQMtj5Bcq+0efROMXHr9LVlnzvrB7Iz/vR37OXS3uYeDfXiJd2BN
-         4s53EiF/5tQIfL1wdReBy6qkGjgyzqUANVmk6HNO5qY5Xf3ft9YRMsURks2n2QNeKi0X
-         xyAnznfoM1dTLoDWaNqa2GzhVHGIcfldu2HfV8zxKzYBfERtMd9/R5iyZp9J+ST5yefu
-         TLPw==
-X-Gm-Message-State: ABy/qLY3nPf8IvtuNINUhRqnVLh8peDJWElFHFsx51bTZ7XNV48+9/VC
-        h3HhPHTX+hcNdJqZSb5vvu0=
-X-Google-Smtp-Source: APBJJlH4tMZF9igEz61H7dr8xO9Mwrcfsn+GgzpF68QIJMZHlCr3vfp08IPuAM2YsE1Gqq9IwU52yQ==
-X-Received: by 2002:a17:903:120e:b0:1b7:e646:4cc4 with SMTP id l14-20020a170903120e00b001b7e6464cc4mr442656plh.28.1690488719837;
-        Thu, 27 Jul 2023 13:11:59 -0700 (PDT)
-Received: from smtpclient.apple ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id v5-20020a170902b7c500b001b891259eddsm2015611plz.197.2023.07.27.13.11.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jul 2023 13:11:59 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <CAHk-=wgeMOvL=ko_eruf5St7h0e9dVn4+GMKjcdshTJoxyD8tw@mail.gmail.com>
-Date:   Thu, 27 Jul 2023 13:11:43 -0700
-Cc:     Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        bh=L5Z31Dq5VWK2apYQ/bvG19BYq0hISSJX9VnwC0J6vTg=;
+        b=BQkYGyaX0c0jsh/oaidhkkGbXEVjca9dtOXnTqqV64piuemI2+z9X6SGLxi50vQ5nv
+         6cXqgUzr1if6W8dchD/aNQYCkYHbL0ODQoUGNlI9TPuw6PtfClYQRuWYrIbqtS6Q95Fw
+         TvsIwYg2lbpCe0/o28DXhfz5EhTFYXfcHChYh+3gxjUt+/qKN1w+a+OlGGsbL8IHtd2z
+         kXzh1WUfwiVx4xly91PVqpdKp/mRHSqygQyVdPP7mGQVMlnM4OpAIpAwIH9hhUPvOsTr
+         R+ijs6KK5Wmz7RqkZ9ZEdZrTKoj8//fRYjZYVu3C+0KER69QjpQiVA45Nl33rYjl+3Wo
+         GIVA==
+X-Gm-Message-State: ABy/qLbNXiLOpKZfAE/M52Z24J9tfl/7Oeu+0DN6TsVb7tOy/JNe1W6D
+        PfZW0dgZspKzyfamlXT2WUIUlkFWsFaVBos1E9d3XTkc
+X-Google-Smtp-Source: APBJJlE+5WCDAGDphOpgTpC96fI64euD/U8QM5jbQYMAU92UDLulFFTCuVFyQdLuchdl+KeAwtSLRP6nesgHW23upDM=
+X-Received: by 2002:a4a:db86:0:b0:560:b01a:653d with SMTP id
+ s6-20020a4adb86000000b00560b01a653dmr565021oou.0.1690488787631; Thu, 27 Jul
+ 2023 13:13:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <4506480.LvFx2qVVIh@kreacher>
+In-Reply-To: <4506480.LvFx2qVVIh@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 27 Jul 2023 22:12:56 +0200
+Message-ID: <CAJZ5v0hnRm7Nnup3HPWedEchzLD_9w8OPkhQ0vjpR3uAL3HUoQ@mail.gmail.com>
+Subject: Re: [PATCH v1] cpuidle: teo: Update idle duration estimate when
+ choosing shallower state
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2229115A-23F2-4B6B-800C-7182199DF79D@gmail.com>
-References: <20230726214103.3261108-1-jannh@google.com>
- <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
- <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
- <20230727145747.GB19940@willie-the-truck>
- <8EA729DD-F1CE-4C6F-A074-147A6A1BBCE0@gmail.com>
- <CAHk-=wgeMOvL=ko_eruf5St7h0e9dVn4+GMKjcdshTJoxyD8tw@mail.gmail.com>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 27, 2023 at 10:05 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> The TEO governor takes CPU utilization into account by refining idle state
+> selection when the utilization is above a certain threshold.  The idle state
+> selection is then refined by choosing an idle state shallower than the
+> previously selected one.
+>
+> However, when this is done, the idle duration estimate needs to be updated
+> so as to prevent the scheduler tick from being stopped while the candidate
+> idle state is shallow, which may lead to excessive energy usage if the CPU
+> is not interrupted quickly enough going forward.  Moreover, in case the
+> scheduler tick has been stopped already and the new idle duration estimate
+> is too small, the replacement candidate state cannot be used.
+>
+> Modify the relevant code to take the above observations into account.
+>
+> Fixes: 9ce0f7c4bc64 ("cpuidle: teo: Introduce util-awareness")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>
+> @Peter: This doesn't attempt to fix the tick stopping problem, it just makes
+> the current behavior consistent.
+>
+> @Anna-Maria: This is likely to basically prevent the tick from being stopped
+> at all if the CPU utilization is above a certain threshold.  I'm wondering if
+> your results will be affected by it and in what way.
+>
+> ---
+>  drivers/cpuidle/governors/teo.c |   33 ++++++++++++++++++++++++++-------
+>  1 file changed, 26 insertions(+), 7 deletions(-)
+>
+> Index: linux-pm/drivers/cpuidle/governors/teo.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpuidle/governors/teo.c
+> +++ linux-pm/drivers/cpuidle/governors/teo.c
+> @@ -397,13 +397,22 @@ static int teo_select(struct cpuidle_dri
+>          * the shallowest non-polling state and exit.
+>          */
+>         if (drv->state_count < 3 && cpu_data->utilized) {
+> -               for (i = 0; i < drv->state_count; ++i) {
+> -                       if (!dev->states_usage[i].disable &&
+> -                           !(drv->states[i].flags & CPUIDLE_FLAG_POLLING)) {
+> -                               idx = i;
+> +               /*
+> +                * If state 0 is enabled and it is not a polling one, select it
+> +                * right away and update the idle duration estimate accordingly,
+> +                * unless the scheduler tick has been stopped.
+> +                */
+> +               if (!idx && !(drv->states[0].flags & CPUIDLE_FLAG_POLLING)) {
+> +                       s64 span_ns = teo_middle_of_bin(0, drv);
+> +
+> +                       if (teo_time_ok(span_ns)) {
+> +                               duration_ns = span_ns;
+>                                 goto end;
+>                         }
+>                 }
+> +               /* Assume that state 1 is not a polling one and select it. */
 
+Well, I should also check if it is not disabled.  Will send a v2 tomorrow.
 
-> On Jul 27, 2023, at 12:39 PM, Linus Torvalds =
-<torvalds@linuxfoundation.org> wrote:
->=20
-> On Thu, 27 Jul 2023 at 12:10, Nadav Amit <nadav.amit@gmail.com> wrote:
->>=20
->> Interesting. I wonder if you considered adding to READ_ONCE() =
-something
->> like:
->>=20
->>        asm volatile("" : "+g" (x) );
->>=20
->> So later loads (such as baz =3D *ptr) would reload the updated value.
->=20
-> Not necessarily a bad idea.  Although I suspect you'd want to add
-> *two* of them - on either side - to make sure any previous loads
-> wouldn't be moved around it either.
-
-You are right, two are needed.
-
-I=E2=80=99ll give it a shot and see if I see changes to the binary.
-
+> +               idx = 1;
+> +               goto end;
+>         }
+>
+>         /*
+> @@ -539,10 +548,20 @@ static int teo_select(struct cpuidle_dri
+>
+>         /*
+>          * If the CPU is being utilized over the threshold, choose a shallower
+> -        * non-polling state to improve latency
+> +        * non-polling state to improve latency, unless the scheduler tick has
+> +        * been stopped already and the shallower state's target residency is
+> +        * not sufficiently large.
+>          */
+> -       if (cpu_data->utilized)
+> -               idx = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> +       if (cpu_data->utilized) {
+> +               s64 span_ns;
+> +
+> +               i = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> +               span_ns = teo_middle_of_bin(i, drv);
+> +               if (teo_time_ok(span_ns)) {
+> +                       idx = i;
+> +                       duration_ns = span_ns;
+> +               }
+> +       }
+>
+>  end:
+>         /*
+>
+>
+>
