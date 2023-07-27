@@ -2,177 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F7A765D8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF53765D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjG0UoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        id S229693AbjG0Uns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjG0UoS (ORCPT
+        with ESMTP id S229552AbjG0Unp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:44:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B845C2D45
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690490611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lfWu2ZSOpTuxqffZRsnr4zvcADBC5ezgXzbU6lFturo=;
-        b=Nqrxo9OYCUYEnYxm97rdc6HxbuEtMg7nff3j7U2SuJnwCgMYyKdNeEfyVbg6904B1O4IKY
-        OUr9ws9dkhv1PkrHOJNMKBa4WGfaY4sqVYdkF56RXoqTq8jQ9Tj08k0ctU3cn2IPBZF7Ni
-        NTIUMnjqUKM1npErAEkje1zIaZmZE5Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-Z11W_rKdM_W4QXsrxB9WMg-1; Thu, 27 Jul 2023 16:43:30 -0400
-X-MC-Unique: Z11W_rKdM_W4QXsrxB9WMg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fbe590234aso7450605e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:43:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690490609; x=1691095409;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lfWu2ZSOpTuxqffZRsnr4zvcADBC5ezgXzbU6lFturo=;
-        b=j4XmlCPDmhBe6/KpqEOafZewrM+yYx4sXENuKFuABgAMR8UrsokuwatRCEU0qlQYMX
-         1EUJWeTuB0tcVw5MNXgzVt8LjnMGMgOGyWR9VY0ZoaG30HPAhvImdmBNlsggZ9l3gaE3
-         7/sAZRszcjYBpBrpA3+bTfDrPP2WpiLqNy0DK+Vp/cPhXPR+oDnwtw6jqGMjVezqzu1n
-         A2jFgaEtqzNcHLy3a7aapVhbDRNteGl789iFVc2SORvB8CeTQQD0a1zgz6P7rYegtRzh
-         ZIdJANgDoGn6p8OXUB59TSEmY/YGZrLufEMg8c5eHDnoGjkaWzSmTlYGNiugaU8mfZPb
-         k0HQ==
-X-Gm-Message-State: ABy/qLaAx73mVj7LzovBJ+/O4PA6AxVfbNx809bUw3sVuog5z3H28ohm
-        amzNYPf1hJK419/HKcCIQNmqNUUkyzfTKmc3HY0Gvisoxra2SpPeB3vaMT+HUAJDoho5a44dOIS
-        Au3ORMXZqcKBdGF76y1cw7NsQ
-X-Received: by 2002:adf:e4c1:0:b0:317:631b:43ce with SMTP id v1-20020adfe4c1000000b00317631b43cemr211124wrm.41.1690490609102;
-        Thu, 27 Jul 2023 13:43:29 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE5uJ/oq7k8HMKqGjTAj9YXavyFIz9pzPmDlSEtdqza/G/k9zSMt0DLfdelGn97z37co4Lb3w==
-X-Received: by 2002:adf:e4c1:0:b0:317:631b:43ce with SMTP id v1-20020adfe4c1000000b00317631b43cemr211115wrm.41.1690490608705;
-        Thu, 27 Jul 2023 13:43:28 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f43:4700:d2cd:2b81:d4e6:8b2a? (p200300d82f434700d2cd2b81d4e68b2a.dip0.t-ipconnect.de. [2003:d8:2f43:4700:d2cd:2b81:d4e6:8b2a])
-        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b00313f031876esm2985542wro.43.2023.07.27.13.43.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 13:43:28 -0700 (PDT)
-Message-ID: <818a2511-5eed-7c29-b52f-1cab2bd40434@redhat.com>
-Date:   Thu, 27 Jul 2023 22:43:27 +0200
+        Thu, 27 Jul 2023 16:43:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25E22D5B;
+        Thu, 27 Jul 2023 13:43:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F54F61F44;
+        Thu, 27 Jul 2023 20:43:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C880AC433C8;
+        Thu, 27 Jul 2023 20:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690490623;
+        bh=QlIHP8dhX5OJKYng0fljwWznF8dNsUY8Bn/VfqY1drk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dZyI1Xl51voxYvqt1b7E85tntZQ5XlSa5Ls6CckQJLCdMgznvnKbraiKe8MCHhYVf
+         DrFwWDUwwoZ9KNsfdjh4jNrM/UkjjT4chmd64CdvouO15NN6LgcuRJ+cEgjG/UWkA3
+         0dKQm1OYI3mxScCV8kGX0g4SvK5S4t0FEUTqhArHzrugieUdAx36AXcoboDy6v364m
+         T2mQ/Ei6DCnpT3TC+a0WyOKPRg+4BTbKs+ejkeSCI0qWD1OP2BSmT1+g3VuIgZJc0g
+         PKNEKGfAxViz2VIsXv60rn6c0AEPlnT7t2Ii7UMCy4PP/SWbPFI+0T4mBTn+Cw77LJ
+         0WRtMZ0GcA+bw==
+Date:   Thu, 27 Jul 2023 22:43:40 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     rjui@broadcom.com, sbranden@broadcom.com, wsa@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue
+Message-ID: <20230727204340.454cmkli5gotipmb@intel.intel>
+References: <20230707084941.28964-1-dg573847474@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
- through /proc/pid/smaps
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     liubo <liubo254@huawei.com>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hughd@google.com, willy@infradead.org
-References: <20230726073409.631838-1-liubo254@huawei.com>
- <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
- <ZMJt+VWzIG4GAjeb@x1n> <f49c2a51-4dd8-784b-57fa-34fb397db2b7@redhat.com>
- <ZMKJjDaqZ7FW0jfe@x1n> <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
- <ZMK+jSDgOmJKySTr@x1n> <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
- <ZMLT4aL9V61Bl5TG@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZMLT4aL9V61Bl5TG@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230707084941.28964-1-dg573847474@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.23 22:30, Peter Xu wrote:
-> On Thu, Jul 27, 2023 at 09:17:45PM +0200, David Hildenbrand wrote:
->> On 27.07.23 20:59, Peter Xu wrote:
->>> On Thu, Jul 27, 2023 at 07:27:02PM +0200, David Hildenbrand wrote:
->>>>>>
->>>>>> This was wrong from the very start. If we're not in GUP, we shouldn't call
->>>>>> GUP functions.
->>>>>
->>>>> My understanding is !GET && !PIN is also called gup.. otherwise we don't
->>>>> need GET and it can just be always implied.
->>>>
->>>> That's not the point. The point is that _arbitrary_ code shouldn't call into
->>>> GUP internal helper functions, where they bypass, for example, any sanity
->>>> checks.
->>>
->>> What's the sanity checks that you're referring to?
->>>
->>
->> For example in follow_page()
->>
->> if (vma_is_secretmem(vma))
->> 	return NULL;
->>
->> if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
->> 	return NULL;
->>
->>
->> Maybe you can elaborate why you think we should *not* be using
->> vm_normal_page_pmd() and instead some arbitrary GUP internal helper? I don't
->> get it.
+Hi Chengfeng,
+
+On Fri, Jul 07, 2023 at 08:49:41AM +0000, Chengfeng Ye wrote:
+> iproc_i2c_rd_reg() and iproc_i2c_wr_reg() are called from both
+> interrupt context (e.g. bcm_iproc_i2c_isr) and process context
+> (e.g. bcm_iproc_i2c_suspend). Therefore, interrupts should be
+> disabled to avoid potential deadlock. To prevent this scenario,
+> use spin_lock_irqsave().
 > 
-> Because the old code was written like that?
+> Fixes: 9a1038728037 ("i2c: iproc: add NIC I2C support")
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
-And it's not 2014 anymore. Nowadays we do have the right helper in place.
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
 
-[...]
-
->> FOLL_NUMA naming was nowadays wrong to begin with (not to mention, confusing
->> a we learned). There are other reasons why we have PROT_NONE -- mprotect(),
->> for example.
-> 
-> It doesn't really violate with the name, IMHO - protnone can be either numa
-> hint or PROT_NONE for real. As long as we return NULL for a FOLL_NUMA
-> request we're achieving the goal we want - we guarantee a NUMA balancing to
-> trigger with when FOLL_NUMA provided.  It doesn't need to guarantee
-> anything else, afaiu.  The final check relies in vma_is_accessible() in the
-> fault paths anyway.  So I don't blame the old name that much.
-
-IMHO, the name FOLL_NUMA made sense when it still was called pte_numa.
-
-> 
->>
->> We could have a flag that goes the other way around: FOLL_IGNORE_PROTNONE
->> ... which surprisingly then ends up being exactly what FOLL_FORCE means
->> without FOLL_WRITE, and what this patch does.
->>
->> Does that make sense to you?
->>
->>
->>>
->>> The very least is if with above we should really document FOLL_FORCE - we
->>> should mention NUMA effects.  But that's ... really confusing. Thinking
->>> about that I personally prefer a revival of FOLL_NUMA, then smaps issue all
->>> go away.
->>
->> smaps needs to be changed in any case IMHO. And I'm absolutely not in favor
->> of revicing FOLL_NUMA.
-> 
-> As stated above, to me FOLL_NUMA is all fine and clear.  If you think
-> having a flag back for protnone is worthwhile no matter as-is (FOLL_NUMA)
-> or with reverted meaning, then that sounds all fine to me. Maybe the old
-> name at least makes old developers know what's that.
-> 
-> I don't have a strong opinion on names though; mostly never had.
-
-I'll avoid new FOLL_ flags first and post my proposal. If many people 
-are unhappy with that approach, we can revert the commit and call it a day.
-
-Thanks!
-
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks,
+Andi
