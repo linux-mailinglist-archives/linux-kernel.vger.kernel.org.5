@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1E67657DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B927657E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbjG0PkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S233075AbjG0Pl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjG0PkG (ORCPT
+        with ESMTP id S231839AbjG0PlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:40:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D53211C;
-        Thu, 27 Jul 2023 08:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=vhfPJf7Z5f5chzjjwIP7s/tDn0TUZnkQcjFDDtTrw5w=; b=imxYerFmGDCb2xssxYZ3UoOdxc
-        c0+x40pLUrjokyWpxY69etwWTBtSaLENbA7ouFFHpq6MPOJcMys5tjbgL13i0vaQ7OPMLhk0DNNpU
-        pMo1DNbyoUVhmTD4+L60MppcaDlwQ6RvIWX0/pflhQvlxFTf6BvmW34kGPzlIu7Qi4Foi1c/WX4eK
-        BUwu69XyBSwXomoIrYhOybP70tqBPs3CxXLXg6WEAZdfnM4y11Rrz7/a6HCM48Ih+KODnmaE79/UE
-        peL4wnb5KUOWRRtgzk/HB6PIJeVQnKNRoUXSdGgqJ1dGCeqWE8xvd5vGjMtONtk8gNYotFpD7+v4c
-        9lWe2TYw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qP35r-00G18m-0v;
-        Thu, 27 Jul 2023 15:39:59 +0000
-Date:   Thu, 27 Jul 2023 08:39:59 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>, willy@infradead.org,
-        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 00/14] sysctl: Add a size argument to register functions
- in sysctl
-Message-ID: <ZMKPzzkVy45lSCJ7@bombadil.infradead.org>
-References: <CGME20230726140648eucas1p29a92c80fb28550e2087cd0ae190d29bd@eucas1p2.samsung.com>
- <20230726140635.2059334-1-j.granados@samsung.com>
- <ZMFizKFkVxUFtSqa@bombadil.infradead.org>
- <20230727114318.q5hxwwnjbwhm37wn@localhost>
+        Thu, 27 Jul 2023 11:41:24 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21113B4;
+        Thu, 27 Jul 2023 08:41:24 -0700 (PDT)
+Received: from umang.jainideasonboard.com (unknown [103.86.18.216])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 622594A9;
+        Thu, 27 Jul 2023 17:40:16 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690472422;
+        bh=Xf++ltgPgr14drE6ifgMA6GI7A5yNuwTe9sdwBYtmuY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AIMA6KJFCarKLHwXBvAE2Tjr20weaLe5Ts6e7Ca20a3iK1iDgMBDfqBw/3B9JDkiX
+         dWkKofme3/OTcTSgfVNB0MNiUhKYd+Kw95/i2jfgf52E4LGfLEo2Xy61Tbw6ztvLRt
+         hlLYI7wJhoOrWLJDdh4kOSuZW54wNe1yTiWgVHoI=
+From:   Umang Jain <umang.jain@ideasonboard.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Lee Jackson <lee.jackson@arducam.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Mikhail Rudenko <mike.rudenko@gmail.com>,
+        kieran.bingham@ideasonboard.com,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        jacopo.mondi@ideasonboard.com,
+        Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH 0/2] media: i2c: imx519: Support for Sony IMX519 sensor
+Date:   Thu, 27 Jul 2023 21:11:06 +0530
+Message-Id: <20230727154108.308320-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230727114318.q5hxwwnjbwhm37wn@localhost>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:43:18PM +0200, Joel Granados wrote:
-> On Wed, Jul 26, 2023 at 11:15:40AM -0700, Luis Chamberlain wrote:
-> > On Wed, Jul 26, 2023 at 04:06:20PM +0200, Joel Granados wrote:
-> > > What?
-> > > These commits set things up so we can start removing the sentinel ele=
-ments.
-> >=20
-> > Yes but the why must explained right away.
-> My intention of putting the "what" first was to explain the chunking and
+Series adds driver support for Sony IMX519 sensor.
 
-It may help also just to clarify:
+Lee, can do add S-o-B tags please to these patches
+since I've updated your email IDs at various places from
+info@ to lee.jackson@.
 
-   sentinel, the extra empty struct ctl_table at the end of each
-   sysctl array.
+Thanks!
 
-> Thx for this.
-> This is a more clear wording for the "Why". Do you mind if I copy/paste
-> it (with some changes to make it flow) into my next cover letter?
+Lee Jackson (2):
+  media: dt-bindings: imx519: Add IMX519 DT bindings
+  media: i2c: imx519: Support for the Sony IMX519 sensor
 
-I don't mind at all.
+ .../bindings/media/i2c/sony,imx519.yaml       |  113 +
+ MAINTAINERS                                   |    8 +
+ drivers/media/i2c/Kconfig                     |   11 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/imx519.c                    | 2134 +++++++++++++++++
+ 5 files changed, 2267 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
+ create mode 100644 drivers/media/i2c/imx519.c
 
-  Luis
+-- 
+2.39.1
+
