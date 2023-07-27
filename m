@@ -2,56 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB4C7654AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330E97654B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbjG0NNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S232398AbjG0NPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjG0NNw (ORCPT
+        with ESMTP id S231145AbjG0NPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:13:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE22D1715
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690463586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=FYy7XLdCnALp3/D9ahfmtvQ5zGKKrEf0N94s0r+0boI=;
-        b=DRpAhGKnyavOAJSqtPnxWjj2gmSMf5OmYR2ozGuVv76vU66D5GJ7624NCGd92me/cw2UBq
-        ypRki15zkiO6Y0y5umgJ0Gui9onSOU3PyQlbQApBuXLhYh5wsfmOVr8+91LrIkktQnJqvf
-        IRuBLdY/aq+jr+owOTFBhkV5XmuLvy4=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-63-FPN6QHfIP2erXVmf6daIOQ-1; Thu, 27 Jul 2023 09:13:05 -0400
-X-MC-Unique: FPN6QHfIP2erXVmf6daIOQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C64529AA385;
-        Thu, 27 Jul 2023 13:13:04 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.45.225.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 76FA74094DC0;
-        Thu, 27 Jul 2023 13:13:03 +0000 (UTC)
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 6.5-rc4
-Date:   Thu, 27 Jul 2023 15:12:50 +0200
-Message-ID: <20230727131250.40515-1-pabeni@redhat.com>
+        Thu, 27 Jul 2023 09:15:13 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7938B2122
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:15:10 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fbc0314a7bso1643511e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1690463709; x=1691068509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y6Q8ZwLNytoMh7EP/Ua+C4sD6CQblwkJIhdO7RzyVy8=;
+        b=dRkUNd0E6fI/fnnsrQPgpoD1YYlPls02DH8WRpAOwjGymP7vqanxJbaIm1T6RNtT5z
+         CiN51MZpcF7kaGJtIxBrYG1R2ZKAfUgXvFMWczzxjvM5jJPxrmCG17jb4EHDlIGS9A81
+         JkSVG4zOdM+qXc8EDfNpjcGVd293CYA3+J478IkMNT9S/7wgIC4Xi7RIoYrS0LEJpIFW
+         PQ807GL6t0eSzT1cubtfwuBpNBBvJo2ICcLfgapcq6brmFkN0RX4ekezcHsX0zZSdrkJ
+         c2o/A4hbK4U6Mccd8qA5ipL/vi1gN3pT/SaX9HBuHWmk4f657KJuFJhejbatj/DrBWD8
+         /H8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690463709; x=1691068509;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y6Q8ZwLNytoMh7EP/Ua+C4sD6CQblwkJIhdO7RzyVy8=;
+        b=WtTq+l8XwUAtEjezEw6GoHtJ5TeEDPo0nMN88dstdLJPwLBmQii2mpZvpThhSv/0PI
+         8Wof7yJaUViPHG48aw2nNFqoszrqH4N43Lf78V3X9ZKcPieOwUUimISKlZdhNvCkz/4r
+         Jirsy1jUyfkoKXZIpbt1LiT32EOZEdni5DBsjejzgZcQPJAPlHhcYX8qoEkddAskumLf
+         0vbVGacIm0c14L5EYYfxm5LNbubZ/mB1OwCYt4LmW+U0IWn4B9fJp6n7UOLxlMYgkJaY
+         coWCdA7UVQwkwj3im8VbGxd3B/OU3FBrzvMiWYHQwqUxK+WaNOPEm2TX8Eq6l2SyILqa
+         xKCg==
+X-Gm-Message-State: ABy/qLZWcjCjglC+JxVLacJ5jRoCIbd4cuFx8Z0qhGdj0JkYGBdrfRHM
+        LrA7k3qjsr3TVfb3/ixjhWQA
+X-Google-Smtp-Source: APBJJlEqmPGxG+L4nSM3FacntEH06YQGUPel1Ts2v1FbLMuRZwoTHsmtvYcKx2+pVLzphaOmPf5jQw==
+X-Received: by 2002:ac2:5058:0:b0:4f9:5426:6622 with SMTP id a24-20020ac25058000000b004f954266622mr1640832lfm.69.1690463708549;
+        Thu, 27 Jul 2023 06:15:08 -0700 (PDT)
+Received: from ukaszb-l.wifi.semihalf.net ([83.142.187.85])
+        by smtp.gmail.com with ESMTPSA id g11-20020ac2538b000000b004f21f196701sm306640lfh.203.2023.07.27.06.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 06:15:06 -0700 (PDT)
+From:   =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Subject: [PATCH v1 1/2] thunderbolt: add tracefs support to tb_* logging helpers
+Date:   Thu, 27 Jul 2023 15:13:25 +0200
+Message-Id: <20230727131326.2282301-1-lb@semihalf.com>
+X-Mailer: git-send-email 2.38.3
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,226 +73,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+Thunderbolt tracing is a lightweight alternative to traditional
+thunderbolt debug logging. While thunderbolt debug logging is quite
+convenient when reproducing a specific issue, it doesn't help when
+something goes wrong unexpectedly. There are a couple of reasons why
+one does not want to enable thunderbolt debug logging at all times:
 
-The following changes since commit 57f1f9dd3abea322173ea75a15887ccf14bbbe51:
+1. We don't want to overwhelm kernel log with thunderbolt spam, others
+   want to use it too
+2. Console logging is slow
 
-  Merge tag 'net-6.5-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-07-20 14:46:39 -0700)
+Thunderbolt tracing aims to solve both these problems. Use of
+the thunderbolt tracefs instance allows to enable thunderbolt
+logging in production without impacting performance or spamming
+the system logs.
 
-are available in the Git repository at:
+To use thunderbolt tracing, set the thunderbolt.trace module parameter
+(via cmdline or sysfs) to true:
+::
+  eg: echo true > /sys/module/thunderbolt/parameters/trace
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.5-rc4
+Once active, all log messages will be written to the thunderbolt trace.
+Once at capacity, the trace will overwrite old messages with new ones.
+At any point, one can read the trace file to extract the previous
+thunderbolt messages:
+::
+  eg: cat /sys/kernel/tracing/instances/thunderbolt/trace
 
-for you to fetch changes up to de52e17326c3e9a719c9ead4adb03467b8fae0ef:
+The thunderbolt trace instance is subsystem wide, so if you have multiple
+devices active, they will be adding logs to the same trace.
 
-  tipc: stop tipc crypto on failure in tipc_node_create (2023-07-27 11:45:05 +0200)
+Signed-off-by: Łukasz Bartosik <lb@semihalf.com>
+---
+ drivers/thunderbolt/nhi.c | 81 +++++++++++++++++++++++++++++++++++++++
+ drivers/thunderbolt/tb.h  | 60 ++++++++++++++++++++++++++---
+ 2 files changed, 136 insertions(+), 5 deletions(-)
 
-----------------------------------------------------------------
-Networking fixes for 6.5-rc4, including fixes from can, netfilter
-
-Current release - regressions:
-
-  - core: fix splice_to_socket() for O_NONBLOCK socket
-
-  - af_unix: fix fortify_panic() in unix_bind_bsd().
-
-  - can: raw: fix lockdep issue in raw_release()
-
-Previous releases - regressions:
-
-  - tcp: reduce chance of collisions in inet6_hashfn().
-
-  - netfilter: skip immediate deactivate in _PREPARE_ERROR
-
-  - tipc: stop tipc crypto on failure in tipc_node_create
-
-  - eth: igc: fix kernel panic during ndo_tx_timeout callback
-
-  - eth: iavf: fix potential deadlock on allocation failure
-
-Previous releases - always broken:
-
-  - ipv6: fix bug where deleting a mngtmpaddr can create a new temporary address
-
-  - eth: ice: fix memory management in ice_ethtool_fdir.c
-
-  - eth: hns3: fix the imp capability bit cannot exceed 32 bits issue
-
-  - eth: vxlan: calculate correct header length for GPE
-
-  - eth: stmmac: apply redundant write work around on 4.xx too
-
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-
-----------------------------------------------------------------
-Alex Elder (1):
-      net: ipa: only reset hashed tables when supported
-
-Arkadiusz Kubalewski (2):
-      tools: ynl-gen: fix enum index in _decode_enum(..)
-      tools: ynl-gen: fix parse multi-attr enum attribute
-
-Christian Marangi (4):
-      net: dsa: qca8k: enable use_single_write for qca8xxx
-      net: dsa: qca8k: fix search_and_insert wrong handling of new rule
-      net: dsa: qca8k: fix broken search_and_del
-      net: dsa: qca8k: fix mdb add/del case with 0 VID
-
-David S. Miller (2):
-      Merge branch 'hns3-fixes'
-      Merge branch 'vxlan-gro-fixes'
-
-Eric Dumazet (1):
-      can: raw: fix lockdep issue in raw_release()
-
-Fedor Pchelkin (1):
-      tipc: stop tipc crypto on failure in tipc_node_create
-
-Florian Westphal (1):
-      netfilter: nft_set_rbtree: fix overlap expiration walk
-
-Hangbin Liu (2):
-      bonding: reset bond's flags when down link is P2P device
-      team: reset team's flags when down link is P2P device
-
-Hao Lan (2):
-      net: hns3: fix the imp capability bit cannot exceed 32 bits issue
-      net: hns3: add tm flush when setting tm
-
-Jacob Keller (2):
-      iavf: fix potential deadlock on allocation failure
-      iavf: check for removal state before IAVF_FLAG_PF_COMMS_FAILED
-
-Jakub Kicinski (7):
-      docs: net: clarify the NAPI rules around XDP Tx
-      Merge tag 'linux-can-fixes-for-6.5-20230724' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
-      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      Merge branch 'net-fix-error-warning-by-fstrict-flex-arrays-3'
-      Merge branch 'tools-ynl-gen-fix-parse-multi-attr-enum-attribute'
-      Merge branch 'mptcp-more-fixes-for-6-5'
-      Merge tag 'nf-23-07-26' of https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-Jan Stancek (1):
-      splice, net: Fix splice_to_socket() for O_NONBLOCK socket
-
-Jason Wang (1):
-      virtio-net: fix race between set queues and probe
-
-Jedrzej Jagielski (1):
-      ice: Fix memory management in ice_ethtool_fdir.c
-
-Jiawen Wu (1):
-      net: phy: marvell10g: fix 88x3310 power up
-
-Jijie Shao (2):
-      net: hns3: fix wrong tc bandwidth weight data issue
-      net: hns3: fix wrong bw weight of disabled tc issue
-
-Jiri Benc (3):
-      vxlan: calculate correct header length for GPE
-      vxlan: generalize vxlan_parse_gpe_hdr and remove unused args
-      vxlan: fix GRO with VXLAN-GPE
-
-Kuniyuki Iwashima (3):
-      af_unix: Fix fortify_panic() in unix_bind_bsd().
-      af_packet: Fix warning of fortified memcpy() in packet_getname().
-      af_unix: Terminate sun_path when bind()ing pathname socket.
-
-Lin Ma (2):
-      macvlan: add forgotten nla_policy for IFLA_MACVLAN_BC_CUTOFF
-      net/sched: mqprio: Add length check for TCA_MQPRIO_{MAX/MIN}_RATE64
-
-Maciej Żenczykowski (1):
-      ipv6 addrconf: fix bug where deleting a mngtmpaddr can create a new temporary address
-
-Marc Kleine-Budde (1):
-      can: gs_usb: gs_can_close(): add missing set of CAN state to CAN_STATE_STOPPED
-
-Matthieu Baerts (1):
-      selftests: mptcp: join: only check for ip6tables if needed
-
-Muhammad Husaini Zulkifli (1):
-      igc: Fix Kernel Panic during ndo_tx_timeout callback
-
-Pablo Neira Ayuso (2):
-      netfilter: nf_tables: skip immediate deactivate in _PREPARE_ERROR
-      netfilter: nf_tables: disallow rule addition to bound chain via NFTA_RULE_CHAIN_ID
-
-Paolo Abeni (2):
-      Merge branch 'fix-up-dev-flags-when-add-p2p-down-link'
-      mptcp: more accurate NL event generation
-
-Stewart Smith (1):
-      tcp: Reduce chance of collisions in inet6_hashfn().
-
-Suman Ghosh (1):
-      octeontx2-af: Fix hash extraction enable configuration
-
-Vincent Whitchurch (1):
-      net: stmmac: Apply redundant write work around on 4.xx too
-
-Wang Ming (1):
-      i40e: Fix an NULL vs IS_ERR() bug for debugfs_create_dir()
-
-Wei Fang (2):
-      net: fec: avoid tx queue timeout when XDP is enabled
-      net: fec: tx processing does not call XDP APIs if budget is 0
-
-Yuanjun Gong (5):
-      ethernet: atheros: fix return value check in atl1c_tso_csum()
-      atheros: fix return value check in atl1_tso()
-      ethernet: atheros: fix return value check in atl1e_tso_csum()
-      benet: fix return value check in be_lancer_xmit_workarounds()
-      tipc: check return value of pskb_trim()
-
- Documentation/networking/napi.rst                  |  13 +-
- drivers/net/bonding/bond_main.c                    |   5 +
- drivers/net/can/usb/gs_usb.c                       |   2 +
- drivers/net/dsa/qca/qca8k-8xxx.c                   |   7 +-
- drivers/net/dsa/qca/qca8k-common.c                 |  19 ++-
- drivers/net/ethernet/atheros/atl1c/atl1c_main.c    |   7 +-
- drivers/net/ethernet/atheros/atl1e/atl1e_main.c    |   7 +-
- drivers/net/ethernet/atheros/atlx/atl1.c           |   7 +-
- drivers/net/ethernet/emulex/benet/be_main.c        |   3 +-
- drivers/net/ethernet/freescale/fec_main.c          |  18 ++-
- drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   7 +-
- .../hisilicon/hns3/hns3_common/hclge_comm_cmd.c    |  22 ++-
- .../hisilicon/hns3/hns3_common/hclge_comm_cmd.h    |   2 +
- drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |   3 +
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c |  51 ++++++-
- .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c |   3 +-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  |  34 ++++-
- .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h  |   4 +
- drivers/net/ethernet/intel/i40e/i40e_debugfs.c     |   2 +-
- drivers/net/ethernet/intel/iavf/iavf_main.c        |  11 +-
- drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c  |  26 ++--
- drivers/net/ethernet/intel/igc/igc_main.c          |  40 +++--
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   2 +-
- .../ethernet/marvell/octeontx2/af/rvu_npc_hash.c   |  43 +++++-
- .../ethernet/marvell/octeontx2/af/rvu_npc_hash.h   |   8 +-
- drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c   |   4 +-
- drivers/net/ipa/ipa_table.c                        |  20 +--
- drivers/net/macvlan.c                              |   1 +
- drivers/net/phy/marvell10g.c                       |   7 +
- drivers/net/team/team.c                            |   9 ++
- drivers/net/virtio_net.c                           |   4 +-
- drivers/net/vxlan/vxlan_core.c                     | 165 +++++++++++++--------
- fs/splice.c                                        |   2 +
- include/net/ipv6.h                                 |   8 +-
- include/net/vxlan.h                                |  13 +-
- include/uapi/linux/if_packet.h                     |   6 +-
- net/can/raw.c                                      |   5 +-
- net/ipv6/addrconf.c                                |  14 +-
- net/mptcp/protocol.c                               |   3 +-
- net/netfilter/nf_tables_api.c                      |   5 +-
- net/netfilter/nft_immediate.c                      |  27 ++--
- net/netfilter/nft_set_rbtree.c                     |  20 ++-
- net/packet/af_packet.c                             |   2 +-
- net/sched/sch_mqprio.c                             |  14 ++
- net/tipc/crypto.c                                  |   3 +-
- net/tipc/node.c                                    |   2 +-
- net/unix/af_unix.c                                 |  23 ++-
- tools/net/ynl/lib/ynl.py                           |  16 +-
- tools/testing/selftests/net/mptcp/mptcp_join.sh    |   4 +-
- 49 files changed, 522 insertions(+), 201 deletions(-)
+diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+index 4b7bec74e89f..3ff89817e421 100644
+--- a/drivers/thunderbolt/nhi.c
++++ b/drivers/thunderbolt/nhi.c
+@@ -20,6 +20,7 @@
+ #include <linux/delay.h>
+ #include <linux/property.h>
+ #include <linux/string_helpers.h>
++#include <linux/trace.h>
+ 
+ #include "nhi.h"
+ #include "nhi_regs.h"
+@@ -50,6 +51,19 @@ static bool host_reset = true;
+ module_param(host_reset, bool, 0444);
+ MODULE_PARM_DESC(host_reset, "reset USBv2 host router (default: true)");
+ 
++#ifdef CONFIG_TRACING
++/*
++ * __tb_debug_trace - enable debug logs to the thunderbolt tracefs instance
++ */
++bool __tb_debug_trace;
++EXPORT_SYMBOL(__tb_debug_trace);
++
++MODULE_PARM_DESC(trace, "enable debug logs to the thunderbolt tracefs instance (default: false) (bool)");
++module_param_named(trace, __tb_debug_trace, bool, 0600);
++
++static struct trace_array *trace_arr;
++#endif
++
+ static int ring_interrupt_index(const struct tb_ring *ring)
+ {
+ 	int bit = ring->hop;
+@@ -1539,6 +1553,71 @@ static struct pci_driver nhi_driver = {
+ 	.driver.pm = &nhi_pm_ops,
+ };
+ 
++#ifdef CONFIG_TRACING
++
++/**
++ * tb_trace_init - initializes the thunderbolt trace array
++ *
++ * This function fetches (or creates) the thunderbolt trace array.
++ * This should be called once on thunderbolt subsystem creation
++ * and matched with tb_trace_cleanup().
++ */
++void tb_trace_init(void)
++{
++	int ret;
++
++	trace_arr = trace_array_get_by_name("thunderbolt");
++	if (!trace_arr)
++		return;
++
++	ret = trace_array_init_printk(trace_arr);
++	if (ret)
++		tb_trace_cleanup();
++}
++
++/**
++ * tb_trace_printf - adds an entry to the thunderbolt tracefs instance
++ * @format: printf format of the message to add to the trace
++ *
++ * This function adds a new entry in the thunderbolt tracefs instance
++ */
++void tb_trace_printf(const struct device *dev, const char *format, ...)
++{
++	struct va_format vaf;
++	va_list args;
++
++	va_start(args, format);
++	vaf.fmt = format;
++	vaf.va = &args;
++
++	if (dev)
++		trace_array_printk(trace_arr, _THIS_IP_, "%s %s: %pV",
++				   dev_driver_string(dev), dev_name(dev),
++				   &vaf);
++	else
++		trace_array_printk(trace_arr, _THIS_IP_,
++				   "(NULL device *): %pV", &vaf);
++	va_end(args);
++}
++
++/**
++ * tb_trace_cleanup - destroys the thunderbolt trace array
++ *
++ * This function destroys the thunderbolt trace array created
++ * with tb_trace_init. This should be called once on thunderbolt
++ * subsystem close and matched with tb_trace_init().
++ */
++void tb_trace_cleanup(void)
++{
++	if (trace_arr) {
++		trace_array_put(trace_arr);
++		trace_array_destroy(trace_arr);
++		trace_arr = NULL;
++	}
++}
++
++#endif
++
+ static int __init nhi_init(void)
+ {
+ 	int ret;
+@@ -1549,11 +1628,13 @@ static int __init nhi_init(void)
+ 	ret = pci_register_driver(&nhi_driver);
+ 	if (ret)
+ 		tb_domain_exit();
++	tb_trace_init();
+ 	return ret;
+ }
+ 
+ static void __exit nhi_unload(void)
+ {
++	tb_trace_cleanup();
+ 	pci_unregister_driver(&nhi_driver);
+ 	tb_domain_exit();
+ }
+diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+index 57a9b272cb94..3d874182b996 100644
+--- a/drivers/thunderbolt/tb.h
++++ b/drivers/thunderbolt/tb.h
+@@ -14,6 +14,7 @@
+ #include <linux/thunderbolt.h>
+ #include <linux/uuid.h>
+ #include <linux/bitfield.h>
++#include <linux/kern_levels.h>
+ 
+ #include "tb_regs.h"
+ #include "ctl.h"
+@@ -685,11 +686,60 @@ static inline int tb_port_write(struct tb_port *port, const void *buffer,
+ 			    length);
+ }
+ 
+-#define tb_err(tb, fmt, arg...) dev_err(&(tb)->nhi->pdev->dev, fmt, ## arg)
+-#define tb_WARN(tb, fmt, arg...) dev_WARN(&(tb)->nhi->pdev->dev, fmt, ## arg)
+-#define tb_warn(tb, fmt, arg...) dev_warn(&(tb)->nhi->pdev->dev, fmt, ## arg)
+-#define tb_info(tb, fmt, arg...) dev_info(&(tb)->nhi->pdev->dev, fmt, ## arg)
+-#define tb_dbg(tb, fmt, arg...) dev_dbg(&(tb)->nhi->pdev->dev, fmt, ## arg)
++#ifdef CONFIG_TRACING
++extern bool __tb_debug_trace;
++
++void tb_trace_init(void);
++__printf(2, 3)
++void tb_trace_printf(const struct device *dev, const char *format, ...);
++void tb_trace_cleanup(void);
++
++static inline bool tb_dbg_trace_enabled(void)
++{
++	return unlikely(__tb_debug_trace);
++}
++
++#else
++static inline void tb_trace_init(void)
++{
++}
++
++__printf(2, 3)
++static inline void tb_trace_printf(const struct device *dev,
++				   const char *format, ...)
++{
++}
++
++static inline void tb_trace_cleanup(void)
++{
++}
++
++static inline bool tb_dbg_trace_enabled(void)
++{
++	return 0;
++}
++#endif
++
++#define __LOG_TRACE_PRINT(log_func, tb, fmt, arg...)			\
++	do {								\
++		const struct device *dev = &(tb)->nhi->pdev->dev;	\
++									\
++		log_func(dev, fmt,  ## arg);				\
++									\
++		if (tb_dbg_trace_enabled())				\
++			tb_trace_printf(dev, fmt, ## arg);		\
++	} while (0)
++
++#define tb_err(tb, fmt, arg...) \
++	__LOG_TRACE_PRINT(dev_err, tb, fmt, ## arg)
++#define tb_WARN(tb, fmt, arg...) \
++	dev_WARN(&(tb)->nhi->pdev->dev, fmt, ## arg)
++#define tb_warn(tb, fmt, arg...) \
++	__LOG_TRACE_PRINT(dev_warn, tb, fmt, ## arg)
++#define tb_info(tb, fmt, arg...) \
++	__LOG_TRACE_PRINT(dev_info, tb, fmt, ## arg)
++#define tb_dbg(tb, fmt, arg...) \
++	__LOG_TRACE_PRINT(dev_dbg, tb, fmt, ## arg)
+ 
+ #define __TB_SW_PRINT(level, sw, fmt, arg...)           \
+ 	do {                                            \
+-- 
+2.41.0.487.g6d72f3e995-goog
 
