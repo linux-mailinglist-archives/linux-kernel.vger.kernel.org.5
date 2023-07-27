@@ -2,100 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A635B764746
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CD876474F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbjG0Gxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S232374AbjG0Gyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjG0Gxn (ORCPT
+        with ESMTP id S231674AbjG0Gyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:53:43 -0400
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779D326A6
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:53:41 -0700 (PDT)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5662b3313e0so1117306eaf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:53:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690440821; x=1691045621;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=x/jtX+SLT8ZNWdrA+Z3ciysS69lKVgG1Od2heohuNHA=;
-        b=Wv4UxBO3nN4rHs+Os2eAMY7ExqfeSp856czQ3jK6070y1GJeSQzLShDKyaVkmwndzV
-         GI3pN8WHXRXTGpG+27JX2R7ZSVHXR7OQ3W6Dr1YrK/Dh2Ie0p1nPE9zsViU3mblkRZkI
-         l9UxWYSuF+mnvRqpqMzWuZA25mJ1AbETxVB7P5A+2shWrAbdfZSgMEaqRqMsfXyB4yXt
-         MgXTSzzDWw/VvkUWklYMsUMg5ids4gJXlKfmEHDHtfR5TjDqw1nlqCy/6wZdbOlQiN78
-         5xbTd1UF9nSY11Iu3IOmWbMg0EsebJMYtggqmSA/o1C+2xH4bh0+dL/SIZYkCPxbjRF6
-         PHVg==
-X-Gm-Message-State: ABy/qLZ6q/iiijM5B+NTem/uWKA5q6ijgYRdRttHfqFrNilfrmJlCLlO
-        gBkw1PAU6806RT56064UZvs3+f29rm5s81Et3sJU2YcgUNAa1yk=
-X-Google-Smtp-Source: APBJJlF2na5TM7DdbhtaIyNBRisOAh+2TTguu02KW7Ut5goTUpZr7zOGmkRcViS7vt1DCKrpF/5rGE47zyv/84Dex0FgO494eVpn
+        Thu, 27 Jul 2023 02:54:45 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254BA2691;
+        Wed, 26 Jul 2023 23:54:44 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R56NQi013675;
+        Thu, 27 Jul 2023 06:54:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nh4cklR1APrVPPa2bvf47yHK9cYInyXrXll/6iQHCK4=;
+ b=Chhum91iAkxlwWW1DbciVCRTfcQyDvO0aggc+E0b1yZ5ahvc/CZMfb5eK14VnGE76EvW
+ qLstrCaTY4EFNboOLKd5MPJZ1EU7gEzWjJgrnGBrcaV5Dfo0s3cwKrIfpxlDDDpQ3tuJ
+ V8kWFUfSbmMfetSVOotR1QRG231OTFLAYmgvTi0KK8LmkccnUzymnctzqbr5aoHdKAuh
+ 7V9TpjqrYEY/VBFdkVAl1gm/U5j4WrZtozYTeRzKexGJFgzwxAFl3BbevR9N8lRm1DpB
+ tjQZThTCxJhuw3SPGBr2ottrqrweh9rGjjDpEr9Ba23qKUBZ+Bqpd9yXQOSrwSH3DQXQ yg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s2fms4e03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 06:54:28 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R6sQw4029194
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 06:54:26 GMT
+Received: from [10.216.40.41] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 26 Jul
+ 2023 23:54:14 -0700
+Message-ID: <86c6e8b1-d286-6858-5de6-b8faf6557fe4@quicinc.com>
+Date:   Thu, 27 Jul 2023 12:24:10 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:21a0:b0:3a1:e58d:aae0 with SMTP id
- be32-20020a05680821a000b003a1e58daae0mr4375306oib.3.1690440820847; Wed, 26
- Jul 2023 23:53:40 -0700 (PDT)
-Date:   Wed, 26 Jul 2023 23:53:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3fa6a0601726caf@google.com>
-Subject: [syzbot] Monthly wireless report (Jul 2023)
-From:   syzbot <syzbot+list84f2b8b519927d59bce1@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] dt-bindings: qcom: Update RPMHPD entries for some SoCs
+Content-Language: en-US
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <conor+dt@kernel.org>, <robdclark@gmail.com>,
+        <quic_abhinavk@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <sean@poorly.run>, <marijn.suijten@somainline.org>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
+        <mchehab@kernel.org>, <ulf.hansson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <jonathan@marek.ca>,
+        <vladimir.zapolskiy@linaro.org>, <quic_tdas@quicinc.com>,
+        <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
+        <bhupesh.sharma@linaro.org>, <mani@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+References: <1690433470-24102-1-git-send-email-quic_rohiagar@quicinc.com>
+ <edac596d-2b3d-4632-9468-4af863aff6f4@quicinc.com>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <edac596d-2b3d-4632-9468-4af863aff6f4@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: gaxiB93QjZMYayGJXBoahVT6HAHoooVe
+X-Proofpoint-ORIG-GUID: gaxiB93QjZMYayGJXBoahVT6HAHoooVe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 spamscore=0 malwarescore=0 mlxlogscore=819
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270061
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello wireless maintainers/developers,
 
-This is a 31-day syzbot report for the wireless subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireless
+On 7/27/2023 11:06 AM, Pavan Kondeti wrote:
+> On Thu, Jul 27, 2023 at 10:21:10AM +0530, Rohit Agarwal wrote:
+>> Update the RPMHPD references with new bindings defined in rpmhpd.h
+>> for Qualcomm SoCs SM8[2345]50.
+>>
+>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml    | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,sm8350-videocc.yaml   | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml     | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,sm8450-dispcc.yaml    | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml   | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,sm8550-dispcc.yaml    | 3 ++-
+>>   Documentation/devicetree/bindings/clock/qcom,videocc.yaml          | 3 ++-
+>>   Documentation/devicetree/bindings/display/msm/qcom,sm8250-dpu.yaml | 3 ++-
+>>   .../devicetree/bindings/display/msm/qcom,sm8250-mdss.yaml          | 7 ++++---
+>>   Documentation/devicetree/bindings/display/msm/qcom,sm8350-dpu.yaml | 3 ++-
+>>   .../devicetree/bindings/display/msm/qcom,sm8350-mdss.yaml          | 5 +++--
+>>   Documentation/devicetree/bindings/display/msm/qcom,sm8450-dpu.yaml | 3 ++-
+>>   .../devicetree/bindings/display/msm/qcom,sm8450-mdss.yaml          | 7 ++++---
+>>   Documentation/devicetree/bindings/display/msm/qcom,sm8550-dpu.yaml | 3 ++-
+>>   .../devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml          | 7 ++++---
+>>   Documentation/devicetree/bindings/media/qcom,sm8250-venus.yaml     | 3 ++-
+>>   Documentation/devicetree/bindings/mmc/sdhci-msm.yaml               | 3 ++-
+>>   Documentation/devicetree/bindings/remoteproc/qcom,sm8350-pas.yaml  | 5 +++--
+>>   18 files changed, 44 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> index d6774db..d6b81c0 100644
+>> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>> @@ -83,6 +83,7 @@ examples:
+>>     - |
+>>       #include <dt-bindings/clock/qcom,rpmh.h>
+>>       #include <dt-bindings/power/qcom-rpmpd.h>
+>> +    #include <dt-bindings/power/qcom,rpmhpd.h>
+>>       clock-controller@af00000 {
+>>         compatible = "qcom,sm8250-dispcc";
+>>         reg = <0x0af00000 0x10000>;
+>> @@ -103,7 +104,7 @@ examples:
+>>         #clock-cells = <1>;
+>>         #reset-cells = <1>;
+>>         #power-domain-cells = <1>;
+>> -      power-domains = <&rpmhpd SM8250_MMCX>;
+>> +      power-domains = <&rpmhpd RPMHPD_MMCX>;
+>>         required-opps = <&rpmhpd_opp_low_svs>;
+>>       };
+>>   ...
+> Does this file still need to include old header? The same is applicable
+> to some of the other files in the patch also.
+>
+> We also discussed on the other thread [1] to move the regulator level
+> definitions to new header. should this change be done after that, so that
+> we don't end up touching the very same files again?
+>
+> [1]
+> https://lore.kernel.org/all/a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm/
+Removing this header directly would also be fine as we are not using any 
+macro defined directly in these
+bindings.
+I already checked with dt_binding_check by removing this header.
 
-During the period, 5 new issues were detected and 0 were fixed.
-In total, 37 issues are still open and 106 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  7904    Yes   KMSAN: uninit-value in hwsim_cloned_frame_received_nl
-                   https://syzkaller.appspot.com/bug?extid=b2645b5bf1512b81fa22
-<2>  6500    Yes   WARNING in ieee80211_bss_info_change_notify
-                   https://syzkaller.appspot.com/bug?extid=09d1cd2f71e6dd3bfd2c
-<3>  4787    Yes   WARNING in __ieee80211_beacon_get
-                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
-<4>  4223    Yes   WARNING in __cfg80211_ibss_joined (2)
-                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-<5>  1571    Yes   WARNING in ieee80211_link_info_change_notify (2)
-                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
-<6>  1361    No    WARNING in ieee80211_ibss_csa_beacon (2)
-                   https://syzkaller.appspot.com/bug?extid=b10a54cb0355d83fd75c
-<7>  808     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
-<8>  737     Yes   WARNING in __rate_control_send_low
-                   https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
-<9>  666     Yes   WARNING in ieee80211_start_next_roc
-                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
-<10> 475     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
-                   https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Rohit.
