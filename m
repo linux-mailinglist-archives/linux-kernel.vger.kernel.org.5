@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5963764F62
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C470764F55
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbjG0JUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S233609AbjG0JTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbjG0JUR (ORCPT
+        with ESMTP id S234723AbjG0JS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:20:17 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB30422A;
-        Thu, 27 Jul 2023 02:10:38 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R34e6m004788;
-        Thu, 27 Jul 2023 09:10:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=LckumSnhkivflKbnAkm9lDusQZZfojIqolca47VIsiI=;
- b=Y4lXNVqFzpHrxvB7Zyn49pObeVZHcYrymBA7QJ+jUWCjAQDORQe+wGLiV2zAYdWs3Otp
- SmduHMOWs4yYexGIQtLS1hsRpPRlPqnx24S6pvDKluq2hOAVxXiwt+8BKwvY0/tf7BYn
- SmypFmBO6mW3pcchC+OEJzxDacUEqh7IqB2F14VPJV7HiLFoRXt0VgE05tZBWotrVDA4
- 7b4P2s56jsQOiFaQj5Ilt22gc6ngJqUseVXRQ/7pkSkZ+r2oxOcVhBlptMbj6LCI4/af
- g9XqVvhHWJmKtuQX3cMVfISZD9zxfbIMfLAMlLpZKXxAjxfMLuqMC+LcbEiJ9FS0Agvi pA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s336t29t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:10:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R9AFtp008212
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:10:15 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 27 Jul 2023 02:09:44 -0700
-Date:   Thu, 27 Jul 2023 14:39:41 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: nvmem: sec-qfprom: Add bindings for
- secure qfprom
-Message-ID: <33f2d056-e65d-4bc2-8a1b-bb5815752014@quicinc.com>
-References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
- <20230724083849.8277-2-quic_kbajaj@quicinc.com>
+        Thu, 27 Jul 2023 05:18:59 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B915BBD
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:09:59 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4866be648ffso75297e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:09:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690448998; x=1691053798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pqdE/vVG5BBYKcmFfE3ql5vjVbA9g47bxLZaTPKHyA4=;
+        b=bsTtLkrSwWOkKTuEtrxBpbny2YpwZtQ2WfN+56m3s4qHVZZStQJssQz9FwVRRXTuOF
+         mIloaqvX3UXvsBw+ajaVAsT8ypKcKXYcQmQM3qQtYdadcer6fioBnDriWJFPOEpqAUT1
+         tlKjjDkMAEEIMkN5wDfY0n1FTFPcBWdCEIfrmIXW/CyIetkszjQBkO6pE5wSVVvAeTAU
+         U+P9U8g3MUYEe/RRmtClI5ZecIAgWV6w3moLARXeM8nYM16mktdS8wbuDqiHnK5jvP98
+         gwXqlwpPxu+zqefUS9d4jYrN/4qSuKsOLZsSZID633SDPghR83PUVR7rsrtJllMmDjtT
+         ewKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690448998; x=1691053798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pqdE/vVG5BBYKcmFfE3ql5vjVbA9g47bxLZaTPKHyA4=;
+        b=IzvGv8wMp2geYyY9pgwGOB1kL9glyulaa81lzKubsfT63EcGdn4LtKSLvW0nRHLusc
+         YfJQPtiq5JSi9wR8RXgA83gHDNARISTIeqi52FZAliM+LRYSbyH5rsNrP/Jo7SP3WMC/
+         dhElt7A6WqXYip8VvTh1CscwN8Xmo3ZEVmHND+kbVjd43LDrGf6gTUaBWb/SJb4D+FPa
+         A29RVfORLy1vmB9As05H8DjZ0BAuJFgzT3a7roznmUOZAYeL44xrJaBWvu45cd5QApJ+
+         5MzPwcvjben1jPgJvVqJX/7iR8+zI1I6BJOK918qivLhAb5qFCPX1AXffsQho2COYqwh
+         e3rA==
+X-Gm-Message-State: ABy/qLY1qENe6G2SxutMPsM6Z6V89jk9ZROXm/s6+zTj2TQGzWQ7joVY
+        oDu7UhUdgQgpbA0kJrZeGtQl/ux9zd/kQ26XFuVTQg==
+X-Google-Smtp-Source: APBJJlFAvsVUz+v5A3EEk9tC92nTgnX8n+qgaIW+T65Xi0glecx84ACNaM1QyZ3v9giu0adouiWkSbiVdY6E5GJ35Vw=
+X-Received: by 2002:a1f:5e47:0:b0:453:b080:632d with SMTP id
+ s68-20020a1f5e47000000b00453b080632dmr812140vkb.0.1690448998241; Thu, 27 Jul
+ 2023 02:09:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230724083849.8277-2-quic_kbajaj@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ad-4Zcd3NQnhbtWhvuoIyPjP1a_X3ZAt
-X-Proofpoint-GUID: ad-4Zcd3NQnhbtWhvuoIyPjP1a_X3ZAt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- clxscore=1011 mlxlogscore=472 adultscore=0 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270081
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20230727085239.4326-1-okan.sahin@analog.com> <20230727085239.4326-3-okan.sahin@analog.com>
+In-Reply-To: <20230727085239.4326-3-okan.sahin@analog.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 27 Jul 2023 11:09:47 +0200
+Message-ID: <CAMRc=MfY+kmBt6nmkPJC=E6u0GP7gSfORkTi8LcaD10+RNp1MQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] gpio: ds4520: Add ADI DS4520 GPIO Expander Support
+To:     Okan Sahin <okan.sahin@analog.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,80 +72,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 02:08:48PM +0530, Komal Bajaj wrote:
-> This patch adds bindings for secure qfprom found in QCOM SOCs.
-> Secure QFPROM driver is based on simple nvmem framework.
-> 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+On Thu, Jul 27, 2023 at 10:53=E2=80=AFAM Okan Sahin <okan.sahin@analog.com>=
+ wrote:
+>
+> The DS4520 is a 9-bit nonvolatile (NV) I/O expander.
+> It offers users a digitally programmable alternative
+> to hardware jumpers and mechanical switches that are
+> being used to control digital logic node.
+>
+> Signed-off-by: Okan Sahin <okan.sahin@analog.com>
 > ---
->  .../bindings/nvmem/qcom,sec-qfprom.yaml       | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
-> 
+>  drivers/gpio/Kconfig       | 11 +++++
+>  drivers/gpio/Makefile      |  1 +
+>  drivers/gpio/gpio-ds4520.c | 89 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 101 insertions(+)
+>  create mode 100644 drivers/gpio/gpio-ds4520.c
+>
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index 13be729710f2..5f89e46d6411 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1000,6 +1000,17 @@ config GPIO_ADNP
+>           enough to represent all pins, but the driver will assume a
+>           register layout for 64 pins (8 registers).
+>
+> +config GPIO_DS4520
+> +       tristate "DS4520 I2C GPIO expander"
+> +       select REGMAP_I2C
+> +       select GPIO_REGMAP
+> +       help
+> +         GPIO driver for ADI DS4520 I2C-based GPIO expander.
+> +         Say yes here to enable the GPIO driver for the ADI DS4520 chip.
+> +
+> +         To compile this driver as a module, choose M here: the module w=
+ill
+> +         be called gpio-ds4520.
+> +
+>  config GPIO_GW_PLD
+>         tristate "Gateworks PLD GPIO Expander"
+>         depends on OF_GPIO
+> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> index c048ba003367..6f8656d5d617 100644
+> --- a/drivers/gpio/Makefile
+> +++ b/drivers/gpio/Makefile
+> @@ -52,6 +52,7 @@ obj-$(CONFIG_GPIO_DA9052)             +=3D gpio-da9052.=
+o
+>  obj-$(CONFIG_GPIO_DA9055)              +=3D gpio-da9055.o
+>  obj-$(CONFIG_GPIO_DAVINCI)             +=3D gpio-davinci.o
+>  obj-$(CONFIG_GPIO_DLN2)                        +=3D gpio-dln2.o
+> +obj-$(CONFIG_GPIO_DS4520)              +=3D gpio-ds4520.o
+>  obj-$(CONFIG_GPIO_DWAPB)               +=3D gpio-dwapb.o
+>  obj-$(CONFIG_GPIO_EIC_SPRD)            +=3D gpio-eic-sprd.o
+>  obj-$(CONFIG_GPIO_EM)                  +=3D gpio-em.o
+> diff --git a/drivers/gpio/gpio-ds4520.c b/drivers/gpio/gpio-ds4520.c
+> new file mode 100644
+> index 000000000000..0a9fdbfed6ee
+> --- /dev/null
+> +++ b/drivers/gpio/gpio-ds4520.c
+> @@ -0,0 +1,89 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 Analog Devices, Inc.
+> + * Driver for the DS4520 I/O Expander
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/gpio/regmap.h>
+> +#include <linux/i2c.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +#define DS4520_PULLUP0         0xF0
+> +#define DS4520_IO_CONTROL0     0xF2
+> +#define DS4520_IO_STATUS0      0xF8
+> +
+> +static const struct regmap_config ds4520_regmap_config =3D {
+> +       .reg_bits =3D 8,
+> +       .val_bits =3D 8,
+> +};
+> +
+> +static int ds4520_gpio_probe(struct i2c_client *client)
+> +{
+> +       struct gpio_regmap_config config =3D { };
+> +       struct device *dev =3D &client->dev;
+> +       struct regmap *regmap;
+> +       u32 ngpio;
+> +       u32 base;
+> +       int ret;
+> +
+> +       ret =3D device_property_read_u32(dev, "reg", &base);
+> +       if (ret) {
+> +               dev_err_probe(dev, ret,
+> +                         "Missing 'reg' property.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpio);
+> +       if (ret) {
+> +               dev_err_probe(dev, ret,
+> +                         "Missing 'ngpios' property.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       regmap =3D devm_regmap_init_i2c(client, &ds4520_regmap_config);
+> +       if (IS_ERR(regmap)) {
+> +               ret =3D PTR_ERR(regmap);
+> +               dev_err_probe(dev, ret,
+> +                             "Failed to allocate register map\n");
+> +               return ret;
+> +       }
+> +
+> +       config.regmap =3D regmap;
+> +       config.parent =3D dev;
+> +       config.ngpio =3D ngpio;
+> +
+> +       config.reg_dat_base =3D base + DS4520_IO_STATUS0;
+> +       config.reg_set_base =3D base + DS4520_PULLUP0;
+> +       config.reg_dir_out_base =3D base + DS4520_IO_CONTROL0;
+> +
+> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &config));
+> +}
+> +
+> +static const struct of_device_id ds4520_gpio_of_match_table[] =3D {
+> +       { .compatible =3D "adi,ds4520-gpio" },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(of, ds4520_gpio_of_match_table);
+> +
+> +static const struct i2c_device_id ds4520_gpio_id_table[] =3D {
+> +       { "ds4520-gpio" },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, ds4520_gpio_id_table);
+> +
+> +static struct i2c_driver ds4520_gpio_driver =3D {
+> +       .driver =3D {
+> +               .name =3D "ds4520-gpio",
+> +               .of_match_table =3D ds4520_gpio_of_match_table,
+> +       },
+> +       .probe_new =3D ds4520_gpio_probe,
 
-[...]
+I missed this previously but i2c drivers have completed the conversion
+to the new probe syntax, so please use regular probe.
 
-> +$id: http://devicetree.org/schemas/nvmem/qcom,sec-qfprom.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies Inc, Secure QFPROM Efuse
-> +
-> +maintainers:
-> +  - Komal Bajaj <quic_kbajaj@quicinc.com>
-> +
-> +description: |
-> +  For some of the Qualcomm SoC's, it is possible that
-> +  the qfprom region is protected from non-secure access.
-> +  In such situations, linux will have to use secure calls
-> +  to read the region.
-> +
-> +allOf:
-> +  - $ref: nvmem.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - qcom,qdu1000-sec-qfprom
-> +      - const: qcom,sec-qfprom
-> +
-> +  reg:
-> +    items:
-> +      - description: The secure qfprom corrected region.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
-> +
-
-minor nitpick:
-
-Since this device does not have any clocks, the above header inclusion
-can be dropped.
-
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      efuse@221c8000 {
-> +        compatible = "qcom,qdu1000-sec-qfprom", "qcom,sec-qfprom";
-> +        reg = <0 0x221c8000 0 0x1000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        multi_chan_ddr: multi-chan-ddr@12b {
-> +          reg = <0x12b 0x1>;
-> +          bits = <0 2>;
-> +        };
-> +      };
-> +    };
-> +
+And please address Krzysztof's comments as well.
 
 Thanks,
-Pavan
+Bart
+
+> +       .id_table =3D ds4520_gpio_id_table,
+> +};
+> +module_i2c_driver(ds4520_gpio_driver);
+> +
+> +MODULE_DESCRIPTION("DS4520 I/O Expander");
+> +MODULE_AUTHOR("Okan Sahin <okan.sahin@analog.com>");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.30.2
+>
