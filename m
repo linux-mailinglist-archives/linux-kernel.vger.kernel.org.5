@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E080A765350
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB18A765332
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbjG0MJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S231915AbjG0MGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbjG0MJx (ORCPT
+        with ESMTP id S231221AbjG0MGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:09:53 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1D32D75;
-        Thu, 27 Jul 2023 05:09:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RBTkW2BzNz9xFb1;
-        Thu, 27 Jul 2023 19:56:19 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.209.69])
-        by APP2 (Coremail) with SMTP id GxC2BwBnGkGaXcJkfMYUBQ--.33878S11;
-        Thu, 27 Jul 2023 13:08:45 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
-        linux-mm@kvack.org (open list:SLAB ALLOCATOR)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v6 9/9] swiotlb: search the software IO TLB only if the device makes use of it
-Date:   Thu, 27 Jul 2023 14:05:37 +0200
-Message-Id: <992c172baff5deac9aa3bbc76d999785d12fe995.1690459412.git.petr.tesarik.ext@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
-References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
+        Thu, 27 Jul 2023 08:06:17 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C5726A6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:05:52 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9e9765f2cso5051615ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690459551; x=1691064351;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BwmFLONIOYK7ou7AxfGRdP9bRNPLFN3Vwa8VGbk/YHs=;
+        b=RNxfAkB6CcRACh5rhHmxAkp5vnYxV0AIKYF3lzqbywIos8+89XoAyQG6m7j5hjiqcM
+         CPyTO3A/iGiPxbvlAI4tI/As2dYzjeRzzrvZHIW7x8C5FrH5LJVdY/4E4JVWFGwmsqpa
+         A2fifj2199zlUpSaS5tbjy5FkA0apVj36cYh0Dlf/r/W/69gQ5orqMxT6quUdZZmiYQm
+         G93bbPe1CZwS72g+ua9mlFrnYY/b2XsGr4rhqJ2NgSlNjn7IcppvsbppQ+D4YEA8tIxx
+         8KzNLstuu1PHSSiky5j9/8sJnK+WDW84Tr46OyhI2Iz9NmKXbBAfE8PkV7e+kDdMjb2O
+         1F3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690459551; x=1691064351;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BwmFLONIOYK7ou7AxfGRdP9bRNPLFN3Vwa8VGbk/YHs=;
+        b=UaPHW0z/1UDF+jKSFc6FloQB+jwQadYqt2ZP45T8m//TvFoCHLnksbHaTF7orH5GJT
+         7lTWld2K9a+PboDckpnK1mbWSuAKp5XEba8WP1cqJAWJD0yBP+ydMBb7mW4Vxin3cNUP
+         ETUp0EPNfC+0CNCEbUJQy6ZwljW482ge9p1utQ7EE6U1gdzs5vhx6n8njy9ittANjtDN
+         jf6DH4UyDAmSHH8zB2KI2Gb8CpHD3/Hk3n/SNa1ZWaKzjYhUHYaUKLxujf4xJ58voZ8L
+         z6XwqUDAfjisw878wf76oHtj2Ef0r5jUdKAQfJqBpvGDLRD8JJwb4ITV9wsquSdbu58Y
+         Lp5g==
+X-Gm-Message-State: ABy/qLYvTfCgfKUurGO29iZEmTlWmQlBgj03H3iolE5UEweSXrSQL5iI
+        GI0P/thiIZaShhPGvDNBtfqB3w==
+X-Google-Smtp-Source: APBJJlFjJHOftyjOvJAGevlCpI+03ZofFgqqbos+NnQhswgcV75ZqE3w1ltXd+wMTUeA0zFvSuVFeQ==
+X-Received: by 2002:a17:902:9a0b:b0:1b8:9f6a:39de with SMTP id v11-20020a1709029a0b00b001b89f6a39demr3969803plp.65.1690459551262;
+        Thu, 27 Jul 2023 05:05:51 -0700 (PDT)
+Received: from [10.85.115.102] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id l15-20020a17090aec0f00b0025bdc3454c6sm2703969pjy.8.2023.07.27.05.05.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 05:05:50 -0700 (PDT)
+Message-ID: <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
+Date:   Thu, 27 Jul 2023 20:05:44 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
+ per-cpu time of cgroup and its descendants
+From:   Hao Jia <jiahao.os@bytedance.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230717093612.40846-1-jiahao.os@bytedance.com>
+ <ZLWb-LsBD041hMvr@slm.duckdns.org>
+ <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
+ <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
+ <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+In-Reply-To: <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwBnGkGaXcJkfMYUBQ--.33878S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF15Ww18ZF1fWr1UtFW7XFb_yoWrXFy3pF
-        98AFZ8KayqqryxGryxCF18uF1agw4vk3yfurWagrnYkr1DJwnaqF1DKrWav3s5Ar47ZF43
-        tryj9wsYkr17Zr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_
-        GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-        ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42
-        IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
-        aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUUMKZtUUUUU==
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,112 +79,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-Skip searching the software IO TLB if a device has never used it, making
-sure these devices are not affected by the introduction of multiple IO TLB
-memory pools.
 
-Additional memory barrier is required to ensure that the new value of the
-flag is visible to other CPUs after mapping a new bounce buffer. For
-efficiency, the flag check should be inlined, and then the memory barrier
-must be moved to is_swiotlb_buffer(). However, it can replace the existing
-barrier in swiotlb_find_pool(), because all callers use is_swiotlb_buffer()
-first to verify that the buffer address belongs to the software IO TLB.
+On 2023/7/19 Hao Jia wrote:
+> 
+> 
+> On 2023/7/19 Tejun Heo wrote:
+>> On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
+>>> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+>>
+>> So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
+>> asdf/cpu.stat correctly reports the cumulative usage. After removing
+>> asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
+> 
+> Sorry, some of my expressions may have misled you.
+> 
+> Yes, cpu.stat will display the cumulative **global** cpu time of the 
+> cgroup and its descendants (the corresponding kernel variable is 
+> "cgrp->bstat"), and it will not be lost when the child cgroup is removed.
+> 
+> Similarly, we need a **per-cpu** variable to record the accumulated 
+> per-cpu time of cgroup and its descendants.
+> The existing kernel variable "cgroup_rstat_cpu(cgrp, cpu)->bstat" is not 
+> satisfied, it only records the per-cpu time of cgroup itself,
+> So I try to add "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" to record 
+> per-cpu time of cgroup and its descendants.
+> 
+> In order to verify the correctness of my patch, I wrote a kernel module 
+> to compare the results of calculating the per-cpu time of cgroup and its 
+> descendants in two ways:
+>    Method 1. Traverse and add the per-cpu rstatc->bstat of cgroup and 
+> each of its descendants.
+>    Method 2. Directly read "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" in 
+> the kernel.
+> 
+> When the child cgroup is not removed, the results calculated by the two 
+> methods should be equal.
+> 
+>> What are you adding?
+> I want to add a **per-cpu variable** to record the cumulative per-cpu 
+> time of cgroup and its descendants, which is similar to the variable 
+> "cgrp->bstat", but it is a per-cpu variable.
+> It is very useful and convenient for calculating the usage of cgroup on 
+> each cpu, and its behavior is similar to the "cpuacct.usage*" interface 
+> of cgroup v1.
+> 
 
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
----
- include/linux/device.h  |  2 ++
- include/linux/swiotlb.h |  7 ++++++-
- kernel/dma/swiotlb.c    | 14 ++++++--------
- 3 files changed, 14 insertions(+), 9 deletions(-)
+Hello Tejun,
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 5fd89c9d005c..6fc808d22bfd 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -628,6 +628,7 @@ struct device_physical_location {
-  * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
-  * @dma_io_tlb_pools:	List of transient swiotlb memory pools.
-  * @dma_io_tlb_lock:	Protects changes to the list of active pools.
-+ * @dma_uses_io_tlb: %true if device has used the software IO TLB.
-  * @archdata:	For arch-specific additions.
-  * @of_node:	Associated device tree node.
-  * @fwnode:	Associated device node supplied by platform firmware.
-@@ -737,6 +738,7 @@ struct device {
- #ifdef CONFIG_SWIOTLB_DYNAMIC
- 	struct list_head dma_io_tlb_pools;
- 	spinlock_t dma_io_tlb_lock;
-+	bool dma_uses_io_tlb;
- #endif
- 	/* arch specific additions */
- 	struct dev_archdata	archdata;
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 8371c92a0271..b4536626f8ff 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- 	if (!mem)
- 		return false;
- 
--	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
-+	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
-+		/* Pairs with smp_wmb() in swiotlb_find_slots() and
-+		 * swiotlb_dyn_alloc(), which modify the RCU lists.
-+		 */
-+		smp_rmb();
- 		return swiotlb_find_pool(dev, paddr);
-+	}
- 	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
- }
- 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 1560a3e484b9..1fe64573d828 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
- 
- 	add_mem_pool(mem, pool);
- 
--	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-+	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
- 	smp_wmb();
- }
- 
-@@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct device *dev, phys_addr_t paddr)
- 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	struct io_tlb_pool *pool;
- 
--	/* Pairs with smp_wmb() in swiotlb_find_slots() and
--	 * swiotlb_dyn_alloc(), which modify the RCU lists.
--	 */
--	smp_rmb();
--
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(pool, &mem->pools, node) {
- 		if (paddr >= pool->start && paddr < pool->end)
-@@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
- #ifdef CONFIG_SWIOTLB_DYNAMIC
- 	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
- 	spin_lock_init(&dev->dma_io_tlb_lock);
-+	dev->dma_uses_io_tlb = false;
- #endif
- }
- 
-@@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
- 	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
- 	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
- 
--	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
--	smp_wmb();
- found:
-+	dev->dma_uses_io_tlb = true;
-+	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
-+	smp_wmb();
-+
- 	*retpool = pool;
- 	return index;
- }
--- 
-2.25.1
+I don't know if I explained it clearly, and do you understand what I mean?
 
+Would you mind adding a variable like this to facilitate per-cpu usage 
+calculations and migration from cgroup v1 to cgroup v2?
+
+Thanks,
+Hao
