@@ -2,159 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE25F765BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD8F765BFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjG0TSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50028 "EHLO
+        id S232077AbjG0TSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjG0TRy (ORCPT
+        with ESMTP id S232129AbjG0TR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:17:54 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C54FA
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:53 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-40540a8a3bbso47871cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:53 -0700 (PDT)
+        Thu, 27 Jul 2023 15:17:59 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5CDFA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:57 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98e011f45ffso171488366b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690485473; x=1691090273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vjaICTqH+cZvfMDigfbOcA5yUI6vz5+/jEk/szdxuyE=;
-        b=3eURap2jCy1X1+Y0vpp99Mf1wqN21k7CprGG94jUm0nCmOjDF5YmGVGfUOv7brl3v6
-         yTrRE0UHjwn8xaokwm7gwwYqB7mhKwshXo9H9hHInqnBjTGdpF7vidjAkfFZjRNjodJr
-         iVYhsBFSc7+2wDnAKPGZhe6BOkhWHZGxfZtfogeDDk7D7TB8WHAI3+oWw2u4NIcsqRYg
-         fC9/VCW9K4aDiFWUwO5K7gKzaPBSQsoU0SVOQKfijMUKnj4TpPEKy6/zX2cf2mzVXhev
-         uQnvvLny6Pu9737cnCfbDRG+Is7ydcHSc97wTjSYtdEUpt04GFFzPzk2BPpbyirW3Lcu
-         qrFg==
+        d=szeredi.hu; s=google; t=1690485476; x=1691090276;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m/Z3Y+hMVv3AErLDGm1fTiSMK1jl55Ger2mmkiHOsY8=;
+        b=Bp5UDylaPcmhnK3Xbwfo0AvC//e+dFqvTB0V4G00cZjUWyGl23uo490gmrJ1a4jEbW
+         18IHjc4jCv2clUs92d6mThmWaKi1PUmpN02Q5Dz/iU296qTyocfYFNuOC2Js7mWooSMG
+         ey+2bD5lRBJ5aOU1QH3qnkkb1aHt+q9CJ1O5c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485473; x=1691090273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vjaICTqH+cZvfMDigfbOcA5yUI6vz5+/jEk/szdxuyE=;
-        b=VsQu6TiIkPmD/KxaYhPMj5VuRNsbMTj+xYpDJkBArFbraTzBFly6L63nBg7sqRpKhG
-         9nclsw5yy0MLaE1ob41zl0C2CAmNi1yYHxD8LhbofaaVVm4BWZ/BTU+mhWEUFr2fysUX
-         I3Gt20yt8Ru4m0SzuJ4vlCFXrTZMUwzqeUEvWLdLE3Loqfk6jYP4DI9jt7NIi/jLl//x
-         S9ogpCzaIxiB5ZyOxOPJyNPS2XB04owek7Uy6vEtGpCjGfDWCnDwcFk9YrC9TmDCgAgN
-         /wx56x+X0MaSX8ueGXkzsRFHHjgJoBju1JV0Otf5LWR3VR+INbi7WIWpHbNQktX20BZQ
-         LQag==
-X-Gm-Message-State: ABy/qLZ++hu+nc4x9JZGniYB2VGRAfx6O7whm740OU+dokdzvAR4y37n
-        4niR3NDKVVPWA5CvI+swZB+eODh2NviYxVkYtmPRNA==
-X-Google-Smtp-Source: APBJJlH/+kGW+EsrfzDedROZlWmvYOKTcHd3WCSC6kPSaTfi+smYxRUcwpQztQBzk+rM1Yc+Nc2UsHv+AznNLs7YOHA=
-X-Received: by 2002:ac8:58d5:0:b0:403:b1e5:bcae with SMTP id
- u21-20020ac858d5000000b00403b1e5bcaemr62160qta.10.1690485472810; Thu, 27 Jul
- 2023 12:17:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690485476; x=1691090276;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m/Z3Y+hMVv3AErLDGm1fTiSMK1jl55Ger2mmkiHOsY8=;
+        b=SzSwaX3IL6x7sggIDT1KCy+xDr9TOk3VqtYxrN7UMCjz9PYEMI/B5AYksOp2uC1AVf
+         tBotJkca3SpR5QJ7jx3WDi3fQGETzGz9VuyZwJs/pP9R/CXSbN2+f8MgqaEz3vgKBWfi
+         ym0u8yNWzPhovYq5JTw5FrgzfLL+i2R1UYuQf/tlm4YhabrRKjbDbS9Q/LP0U1x4Soq+
+         jDZvrEHDbL3rKihV5j/gM+ELCdj/9I+YJjpw2deokOHNrE3SNmS4/+3267LDTsqmdO+z
+         dKPpZJx3y0KUgTrBT0ls5EaGjo3kcuPjpc7uyFr/UsfmVq2VqxzoWd+15RurXUumWkRX
+         7j1w==
+X-Gm-Message-State: ABy/qLbatYZC+rJw6vH9BVl9Hhghth8EaTPau+fM5qCgAK/5ZWzcqgAM
+        sJn5WqwLVRDm00KYx9NhrLyoC0mlSnQp6Z/ewpyt5A==
+X-Google-Smtp-Source: APBJJlG/NyZXS4Z9DgKkeGQoqD4R/EQ4e/CgZ5EWEoafo2el6mR+ufrS1dLK5zHnk3jd5RsbiNBJJLLTHRhOR3JewvU=
+X-Received: by 2002:a17:906:2257:b0:989:450:e585 with SMTP id
+ 23-20020a170906225700b009890450e585mr109063ejr.45.1690485475978; Thu, 27 Jul
+ 2023 12:17:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727125125.1194376-1-imagedong@tencent.com> <20230727125125.1194376-2-imagedong@tencent.com>
-In-Reply-To: <20230727125125.1194376-2-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 27 Jul 2023 21:17:41 +0200
-Message-ID: <CANn89iLwLxzSLKtobE9y+ZBU_eizfNo6FUfBa61KeUXsodA2FQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/3] net: tcp: send zero-window ACK when no memory
-To:     menglong8.dong@gmail.com
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        dsahern@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+References: <20230726105953.843-1-jaco@uls.co.za> <20230727081237.18217-1-jaco@uls.co.za>
+ <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com> <567b798d-9883-aa9c-05e6-3d5ce3d716ca@uls.co.za>
+In-Reply-To: <567b798d-9883-aa9c-05e6-3d5ce3d716ca@uls.co.za>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 27 Jul 2023 21:17:44 +0200
+Message-ID: <CAJfpegsrA93ZzWGwgTNdJgPK0UXhiTSK0QV--k=YpaucnrNj5A@mail.gmail.com>
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir [v2].
+To:     Jaco Kroon <jaco@uls.co.za>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Antonio SJ Musumeci <trapexit@spawn.link>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 2:51=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+On Thu, 27 Jul 2023 at 18:58, Jaco Kroon <jaco@uls.co.za> wrote:
 >
-> From: Menglong Dong <imagedong@tencent.com>
+> Hi,
 >
-> For now, skb will be dropped when no memory, which makes client keep
-> retrans util timeout and it's not friendly to the users.
+> On 2023/07/27 17:35, Miklos Szeredi wrote:
+> > On Thu, 27 Jul 2023 at 10:13, Jaco Kroon <jaco@uls.co.za> wrote:
+> >> This patch does not mess with the caching infrastructure like the
+> >> previous one, which we believe caused excessive CPU and broke directory
+> >> listings in some cases.
+> >>
+> >> This version only affects the uncached read, which then during parse adds an
+> >> entry at a time to the cached structures by way of copying, and as such,
+> >> we believe this should be sufficient.
+> >>
+> >> We're still seeing cases where getdents64 takes ~10s (this was the case
+> >> in any case without this patch, the difference now that we get ~500
+> >> entries for that time rather than the 14-18 previously).  We believe
+> >> that that latency is introduced on glusterfs side and is under separate
+> >> discussion with the glusterfs developers.
+> >>
+> >> This is still a compile-time option, but a working one compared to
+> >> previous patch.  For now this works, but it's not recommended for merge
+> >> (as per email discussion).
+> >>
+> >> This still uses alloc_pages rather than kvmalloc/kvfree.
+> >>
+> >> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+> >> ---
+> >>   fs/fuse/Kconfig   | 16 ++++++++++++++++
+> >>   fs/fuse/readdir.c | 18 ++++++++++++------
+> >>   2 files changed, 28 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+> >> index 038ed0b9aaa5..0783f9ee5cd3 100644
+> >> --- a/fs/fuse/Kconfig
+> >> +++ b/fs/fuse/Kconfig
+> >> @@ -18,6 +18,22 @@ config FUSE_FS
+> >>            If you want to develop a userspace FS, or if you want to use
+> >>            a filesystem based on FUSE, answer Y or M.
+> >>
+> >> +config FUSE_READDIR_ORDER
+> >> +       int
+> >> +       range 0 5
+> >> +       default 5
+> >> +       help
+> >> +               readdir performance varies greatly depending on the size of the read.
+> >> +               Larger buffers results in larger reads, thus fewer reads and higher
+> >> +               performance in return.
+> >> +
+> >> +               You may want to reduce this value on seriously constrained memory
+> >> +               systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
+> >> +
+> >> +               This value reprents the order of the number of pages to allocate (ie,
+> >> +               the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
+> >> +               pages (128KiB).
+> >> +
+> >>   config CUSE
+> >>          tristate "Character device in Userspace support"
+> >>          depends on FUSE_FS
+> >> diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
+> >> index dc603479b30e..47cea4d91228 100644
+> >> --- a/fs/fuse/readdir.c
+> >> +++ b/fs/fuse/readdir.c
+> >> @@ -13,6 +13,12 @@
+> >>   #include <linux/pagemap.h>
+> >>   #include <linux/highmem.h>
+> >>
+> >> +#define READDIR_PAGES_ORDER            CONFIG_FUSE_READDIR_ORDER
+> >> +#define READDIR_PAGES                  (1 << READDIR_PAGES_ORDER)
+> >> +#define READDIR_PAGES_SIZE             (PAGE_SIZE << READDIR_PAGES_ORDER)
+> >> +#define READDIR_PAGES_MASK             (READDIR_PAGES_SIZE - 1)
+> >> +#define READDIR_PAGES_SHIFT            (PAGE_SHIFT + READDIR_PAGES_ORDER)
+> >> +
+> >>   static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
+> >>   {
+> >>          struct fuse_conn *fc = get_fuse_conn(dir);
+> >> @@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
+> >>          struct fuse_mount *fm = get_fuse_mount(inode);
+> >>          struct fuse_io_args ia = {};
+> >>          struct fuse_args_pages *ap = &ia.ap;
+> >> -       struct fuse_page_desc desc = { .length = PAGE_SIZE };
+> >> +       struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+> > Does this really work?  I would've thought we are relying on single
+> > page lengths somewhere.
+> Based on my testing yes.  Getting just under 500 entries per
+> getdents64() call from userspace vs 14-18 before I guess the answer is yes.
+> >
+> >>          u64 attr_version = 0;
+> >>          bool locked;
+> >>
+> >> -       page = alloc_page(GFP_KERNEL);
+> >> +       page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+> >>          if (!page)
+> >>                  return -ENOMEM;
+> >>
+> >>          plus = fuse_use_readdirplus(inode, ctx);
+> >>          ap->args.out_pages = true;
+> >> -       ap->num_pages = 1;
+> >> +       ap->num_pages = READDIR_PAGES;
+> > No.  This is the array lenght, which is 1.  This is the hack I guess,
+> > which makes the above trick work.
 >
-> In this patch, we reply an ACK with zero-window in this case to update
-> the snd_wnd of the sender to 0. Therefore, the sender won't timeout the
-> connection and will probe the zero-window with the retransmits.
+> Oh?  So the page referenced above isn't an array of pages?  It's
+> actually a single piece of contiguous memory?
+
+Yes.
+
 >
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> ---
->  include/net/inet_connection_sock.h |  3 ++-
->  net/ipv4/tcp_input.c               |  4 ++--
->  net/ipv4/tcp_output.c              | 14 +++++++++++---
->  3 files changed, 15 insertions(+), 6 deletions(-)
+> > Better use kvmalloc, which might have a slightly worse performance
+> > than a large page, but definitely not worse than the current single
+> > page.
 >
-> diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connec=
-tion_sock.h
-> index c2b15f7e5516..be3c858a2ebb 100644
-> --- a/include/net/inet_connection_sock.h
-> +++ b/include/net/inet_connection_sock.h
-> @@ -164,7 +164,8 @@ enum inet_csk_ack_state_t {
->         ICSK_ACK_TIMER  =3D 2,
->         ICSK_ACK_PUSHED =3D 4,
->         ICSK_ACK_PUSHED2 =3D 8,
-> -       ICSK_ACK_NOW =3D 16       /* Send the next ACK immediately (once)=
- */
-> +       ICSK_ACK_NOW =3D 16,      /* Send the next ACK immediately (once)=
- */
-> +       ICSK_ACK_NOMEM =3D 32,
->  };
+> Which returns a void*, not struct page* - guess this can be converted
+> using __virt_to_page (iirc)?
+
+No, it cannot be converted to a page or a page array, use it as just a
+piece of kernel memory.
+
+Which means:
+
+ - don't set ->args.out_pages and ->num_pages
+ - instead set  ->args.out_args[0].value to the allocated pointer
+
+and that should be it (fingers crossed).
+
 >
->  void inet_csk_init_xmit_timers(struct sock *sk,
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index 3cd92035e090..03111af6115d 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-> @@ -5061,7 +5061,8 @@ static void tcp_data_queue(struct sock *sk, struct =
-sk_buff *skb)
->                         reason =3D SKB_DROP_REASON_PROTO_MEM;
->                         NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPRCVQDROP=
-);
->                         sk->sk_data_ready(sk);
-> -                       goto drop;
-> +                       inet_csk(sk)->icsk_ack.pending |=3D ICSK_ACK_NOME=
-M;
-
-Also set ICSK_ACK_NOW ?
-
-We also need to make sure to send an immediate ACK WIN 0 in the case we que=
-ued
-the skb in an empty receive queue and we were under pressure.
-
-We do not want to have a delayed ACK sending a normal RWIN,
-then wait for another packet that we will probably drop.
-
-Look at the code :
-
-if (skb_queue_len(&sk->sk_receive_queue) =3D=3D 0)
-     sk_forced_mem_schedule(sk, skb->truesize);
-else if (tcp_try_rmem_schedule(sk, skb, skb->truesize)) {
-
-and refactor it to make sure to set  ICSK_ACK_NOMEM even on the first packe=
-t
-that bypassed the rmem_schedule().
-
-
-
-> +                       goto out_of_window;
-
-Why forcing quickack mode ? Please leave the "goto drop;"
-
->                 }
+> > If we want to optimize the overhead of kvmalloc (and it's a big if)
+> > then the parse_dir*file() functions would need to be converted to
+> > using a page array instead of a plain kernel pointer, which would add
+> > some complexity for sure.
 >
->                 eaten =3D tcp_queue_rcv(sk, skb, &fragstolen);
-> @@ -5102,7 +5103,6 @@ static void tcp_data_queue(struct sock *sk, struct =
-sk_buff *skb)
->  out_of_window:
->                 tcp_enter_quickack_mode(sk, TCP_MAX_QUICKACKS);
->                 inet_csk_schedule_ack(sk);
-> -drop:
->                 tcp_drop_reason(sk, skb, reason);
->                 return;
->         }
->
+> Sorry, I read the above as "I'm surprised this works at all and you're
+> not kernel panicking all over the show", this is probably the most
+> ambitious kernel patch I've attempted to date.
+
+Good start, you'll learn.
+
+Thanks,
+Miklos
