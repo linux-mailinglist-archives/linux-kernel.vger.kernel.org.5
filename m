@@ -2,110 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39153765F43
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5993765F8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjG0WWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S232949AbjG0WcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjG0WV6 (ORCPT
+        with ESMTP id S232832AbjG0WcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:21:58 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9E32D5E;
-        Thu, 27 Jul 2023 15:21:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fb7589b187so2568036e87.1;
-        Thu, 27 Jul 2023 15:21:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690496516; x=1691101316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V5RV8/ahM+DUvJaKMceFZxwjrN0t9JLY7D20I2svw9s=;
-        b=m5XSBNqMGx+saO8HB1KQ9lGLOSZ8Jw2PgDrnT5mE31Kksuj/DuIX4MnSQLWoM/WvQ9
-         qf8C4CXamSVgmS0Bc4K7s9rmIFXVkvg24tl4MZe/hhB2mVg33zJc6A5MFW6cKife9AYm
-         tfUnwgtZ/fw8jj0Y74WCW5UbOueASuOagtP4473j4SE1EvOr6XfGi60yF6sUwU5GIntM
-         6PoXPSdFmePSkZtUYhvcvoDPqjR67/j+JyMVrq79SWWMpMlzd1gn68UGeFNGNW8FAUVp
-         oDwNyHZse6JDMTTioEeVCpuniUUFO1tRh4VKdbbI+kAKtkhogIfrB68q2TQ51ciH5JXD
-         570Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690496516; x=1691101316;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V5RV8/ahM+DUvJaKMceFZxwjrN0t9JLY7D20I2svw9s=;
-        b=Vu/b3ITRpHRbuOWueOno5bNL1H8W4wspbHwu/jayJDo7Kp3lXm4HB4ZBygYzKUgV7Q
-         P3JVlPv0Iq/1XcYq5Oj5RDC7B3wSM+hTtNulW6ZK8YkPBgTe0lCMwFD+aQTpMsgjZQT/
-         RyhAVBphGCWqRtTT/6tRGGEzm0aqHSjjcYokD1PNnWqSQhTGvWXADoNSY9RrJso/XCoQ
-         IR9HgfckV4R728pDxlh0Hw+Nrv08f/SONxm2rV0T+6cTyiAD8x6u8xAtfjlpIbNaJnIf
-         +3ACsMqjACSywHibKv8/XUde1bk9alF9Tz4JZCSAlhit3cw556akj37Wg/m/GhkdjaYs
-         pfwA==
-X-Gm-Message-State: ABy/qLZ+/DDo0pdqTMvMK27NRIeYT8u44tm/niMBpaKwTp4RC0DTH62z
-        Ux7Urtr84xJpSG/zRa5kfp0DAYQHb5M5v46XaJM=
-X-Google-Smtp-Source: APBJJlGgdghveGc4LPwbjgWr6rCMeOEEwHaSD9Kk4Xp3udouUdBA6OEkFoqd6rjBNaq6reNj5zqvtnAtYVvpEAXT/Pc=
-X-Received: by 2002:a2e:3505:0:b0:2b5:9f54:e290 with SMTP id
- z5-20020a2e3505000000b002b59f54e290mr263701ljz.0.1690496515604; Thu, 27 Jul
- 2023 15:21:55 -0700 (PDT)
+        Thu, 27 Jul 2023 18:32:17 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EA42D63;
+        Thu, 27 Jul 2023 15:32:13 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 14B04120004;
+        Fri, 28 Jul 2023 01:32:11 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 14B04120004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690497131;
+        bh=IsmKJ/jqcuZa5LQ1yHb+N0LqenyHgFebC0piM5XZJFg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Uvh2Ljr2mHc0NV3egjwZbzYEfZAg7+leKTU2cwdMmxgr62H6hbjyX6xGK1LCgxdLl
+         C9QFR/DIgm+UQpJrcVavbtawsIEbFL7Ax2rBZSk9YhfxFJbxxVxWYBt8lHpANyH1yy
+         408JPrrBXhAZ+LLIxQwL8uPgxMqPKAXqpDz+QRtcslJ08TYMMtOIxsZyFyKNgwbNOk
+         2t5RNDFIWXFujqw5CAHxpZ8Mw4cOcy7QCOhBWS142ajlOPNFGYvikDADZD/b4nMn4l
+         YSINVJ5lKMNYAsUbCQaLmWBsTHoMOpQna2Pg7UzWscQW22Aw+ij8cR9T3c06WbJUob
+         xXuSLYjO/uBJw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 28 Jul 2023 01:32:10 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 28 Jul 2023 01:31:50 +0300
+From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@sberdevices.ru>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Subject: [PATCH net-next v4 0/4] vsock/virtio/vhost: MSG_ZEROCOPY preparations
+Date:   Fri, 28 Jul 2023 01:26:23 +0300
+Message-ID: <20230727222627.1895355-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-References: <20230727013907.29068-1-yuehaibing@huawei.com>
-In-Reply-To: <20230727013907.29068-1-yuehaibing@huawei.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Thu, 27 Jul 2023 15:21:43 -0700
-Message-ID: <CABBYNZ+Fxmkxg3qQMABt-1DcvhMcUnqsOrwGgHXMQum5ezF82Q@mail.gmail.com>
-Subject: Re: [PATCH v2 -next] Bluetooth: Remove unused declaration amp_read_loc_info()
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pmenzel@molgen.mpg.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
+Hello,
 
-On Wed, Jul 26, 2023 at 6:42=E2=80=AFPM Yue Haibing <yuehaibing@huawei.com>=
- wrote:
->
-> This is introduced in commit 903e45411099 ("Bluetooth: AMP: Use HCI cmd t=
-o Read Loc AMP Assoc")
-> and never be implemented.
+this patchset is first of three parts of another big patchset for
+MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
-The commit information above shall be added with Fixes: tag so it can
-be properly backported, etc.
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
-> v2: fix SOB and update commit log
-> ---
->  net/bluetooth/amp.h | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/net/bluetooth/amp.h b/net/bluetooth/amp.h
-> index 832764dfbfb3..97c87abd129f 100644
-> --- a/net/bluetooth/amp.h
-> +++ b/net/bluetooth/amp.h
-> @@ -28,7 +28,6 @@ struct hci_conn *phylink_add(struct hci_dev *hdev, stru=
-ct amp_mgr *mgr,
->
->  int phylink_gen_key(struct hci_conn *hcon, u8 *data, u8 *len, u8 *type);
->
-> -void amp_read_loc_info(struct hci_dev *hdev, struct amp_mgr *mgr);
->  void amp_read_loc_assoc_frag(struct hci_dev *hdev, u8 phy_handle);
->  void amp_read_loc_assoc(struct hci_dev *hdev, struct amp_mgr *mgr);
->  void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
-> --
-> 2.34.1
->
+1) virtio and vhost updates (for fragged skbs) <--- this patchset
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/.
+3) Updates for tests and utils.
 
+This series enables handling of fragged skbs in virtio and vhost parts.
+Newly logic won't be triggered, because SO_ZEROCOPY options is still
+impossible to enable at this moment (next bunch of patches from big
+set above will enable it).
 
---=20
-Luiz Augusto von Dentz
+I've included changelog to some patches anyway, because there were some
+comments during review of last big patchset from the link above.
+
+Head for this patchset is 9d0cd5d25f7d45bce01bbb3193b54ac24b3a60f3
+
+Link to v1:
+https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+Link to v2:
+https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+Link to v3:
+https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
+
+Changelog:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+
+Arseniy Krasnov (4):
+  vsock/virtio/vhost: read data from non-linear skb
+  vsock/virtio: support to send non-linear skb
+  vsock/virtio: non-linear skb handling for tap
+  vsock/virtio: MSG_ZEROCOPY flag support
+
+ drivers/vhost/vsock.c                   |  14 +-
+ include/linux/virtio_vsock.h            |   6 +
+ net/vmw_vsock/virtio_transport.c        |  79 +++++-
+ net/vmw_vsock/virtio_transport_common.c | 312 ++++++++++++++++++------
+ 4 files changed, 330 insertions(+), 81 deletions(-)
+
+-- 
+2.25.1
+
