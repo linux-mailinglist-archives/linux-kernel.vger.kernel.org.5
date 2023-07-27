@@ -2,62 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C81765828
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A0576582C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjG0QAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S233427AbjG0QAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbjG0QA2 (ORCPT
+        with ESMTP id S231276AbjG0QAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:00:28 -0400
+        Thu, 27 Jul 2023 12:00:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCB8BC;
-        Thu, 27 Jul 2023 09:00:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FB6271D;
+        Thu, 27 Jul 2023 09:00:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51DCF61E06;
-        Thu, 27 Jul 2023 16:00:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F90CC433C8;
-        Thu, 27 Jul 2023 16:00:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9317A61EC0;
+        Thu, 27 Jul 2023 16:00:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75071C433D9;
+        Thu, 27 Jul 2023 16:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690473626;
-        bh=f5m8BGhtN6zBxnVwJ+ho2scIqcjIJySmiEoYp/0u46I=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Zx+nPrzkjVwYmOzLqBoOHudWiVte0aG41ndPOdr+LiYIMiXAAXXEKSP9pDuEG2y5L
-         nmN8Kpd+cv43df4ijqgds7+65i0cNIIyPsv3E8Xo9vPPe1uFXsHSRtGd3wD9t9PwxS
-         Q/Ym0Z8LxRYzEe1vvAUsmrl5tqV8dsf+KqVh05H9dFZ2tHUSToEOrh3mI5o9VW6RZx
-         2X324IRq6rXWvu5t4cgcR1uLxO+IYzawNauV2VddPtVPq8NATjY20WdsCzogEkewHP
-         bvEpJvlQpy7iEQ+VtKQt8RcZLTpbG0YKfcbSjSj30R20IT802X/OWcGrK7HT6sZvT9
-         Wic+BgtEgdKYw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] wifi: mt76: Replace strlcpy with strscpy
-References: <20230703181256.3712079-1-azeemshaikh38@gmail.com>
-        <169047317159.2400214.7882697833368890001.b4-ty@chromium.org>
-Date:   Thu, 27 Jul 2023 19:00:21 +0300
-In-Reply-To: <169047317159.2400214.7882697833368890001.b4-ty@chromium.org>
-        (Kees Cook's message of "Thu, 27 Jul 2023 08:52:55 -0700")
-Message-ID: <87tttpz6ne.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        s=k20201202; t=1690473638;
+        bh=CCG/EudxPmQupRkrrbKiOIs7b3atiTcMUzNXVCWRRkc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QFzTUWmYIe4SvP8C2i725DWCsmNm7iBKykHjb5JgkebvkxbnK/vvzQRnXfMTCp7ZD
+         qOGTpbKUVZflAi1+L3Hc80kEyMTD8eUb/ddXq00J6Px5Z00pYgN619kHP7EZ09bu8k
+         L/0QVM1225wkRt+8baYALGHxa+HmigGwybUkpPoKRQLP8koq8LRR496fcsbAPo5+p5
+         8oO8Mc8zD54Oy77Ke4MmGBh6Yuf4dem1sTOqvinhA7rLrG/bYShM98zRqM7/oQoyG9
+         8ZnzpPW+/I9jTBDzE5SFgvuzojaMfe0h1xELZc8UYzAi9sO0R3wlbA+G02g6WG5wET
+         mCHMHo41bwe/A==
+Date:   Thu, 27 Jul 2023 18:00:35 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Harry Geyer <harry.geyer@devtank.co.uk>
+Cc:     Till Harbaum <till@harbaum.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: tiny-usb: check usb base class before assuming the
+ interface on device is for this driver
+Message-ID: <20230727160035.d4rmprog4amqy2mg@intel.intel>
+References: <20230727083354.4903-1-harry.geyer@devtank.co.uk>
+ <20230727113029.ckrxe4qmy2nznh4e@intel.intel>
+ <ac708760-ed6a-a36b-ac8f-25654276a57c@devtank.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac708760-ed6a-a36b-ac8f-25654276a57c@devtank.co.uk>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -68,27 +58,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+On Thu, Jul 27, 2023 at 02:54:42PM +0100, Harry Geyer wrote:
+> Hi Andi,
+> 
+> On 27/07/2023 12:30, Andi Shyti wrote:
+> > On the other hand, checkpatch is OK with lines up to 100
+> > characters and this one looks like it's withing that length. So,
+> > up to your personal preference.
+> I am happy to resend the patch.
 
-> On Mon, 03 Jul 2023 18:12:56 +0000, Azeem Shaikh wrote:
->> strlcpy() reads the entire source buffer first.
->> This read may exceed the destination size limit.
->> This is both inefficient and can lead to linear read
->> overflows if a source string is not NUL-terminated [1].
->> In an effort to remove strlcpy() completely [2], replace
->> strlcpy() here with strscpy().
->> 
->> [...]
->
-> Applied, thanks!
->
-> [1/1] wifi: mt76: Replace strlcpy with strscpy
->       https://git.kernel.org/kees/c/535c78cbc0c4
+Thanks!
 
-Why did you take this? mt76 is in active development so risk of
-conflicts is high.
+> > If you resend it, you can add my r-b.
+> Not sure what you mean, I am sorry. Please, can you explain what you want me
+> to do.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I was meaning that you could add my Reviewed-by:... you can
+also ignore it, I can r-b it later.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thanks,
+Andi
+
+PS r-b = Reviewed-by, if this was the reason of confusion :)
