@@ -2,164 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEA4764DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08B2764DE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjG0Inz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S233775AbjG0IoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234854AbjG0In2 (ORCPT
+        with ESMTP id S233421AbjG0Inn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:43:28 -0400
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CACD9B4;
-        Thu, 27 Jul 2023 01:26:53 -0700 (PDT)
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36R5q4Ip006491;
-        Thu, 27 Jul 2023 08:25:58 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3s0636cav0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 08:25:58 +0000 (GMT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AUAiz19+tq5m18SuqhRhsSR/mqKIUbPDwr00k0ytbXsLlUQY/eYL/Uu81Hr/6i6cARkw+JMxrJKlCobohtVLA6aRg5AiifOlaFongBZsLdO2VcW3Bi1RjXF0uFmZVAlyOu1//8lBMM83FeI6Il5yATTGB1TTlhP0ft0xqXYAgZmzshEYZu8oL0RMA4ewquprTQZ8BSrCbeumUa5ItpuhLKHcomjyy6XwvUoETW2fP7HaC7PyWD/rvx+qg38bK4gMuF5nIEc/XcWGlHpNDL3INtO9GHWSC9b59MytoUO012Sn+0OICogn1hlXQiGpXqtePl4BqcY95WY9qzFb68P/CA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kP1P2aVTqNdCp71UT5wobcYp4mbVlbJ6l6pnDfwcIOQ=;
- b=VlYzQktbSXd/LGwd2eKD5wBNgLi79q3qyxheNhe96lowbjmRHlV5nlrkwkB1K9krAShG+T1t4LrrWKjtq4myO6ROI/1aDL9R7iDYCjB5bVXu4dIBQboKRHVsvyGi5NGVlFan24pCCwcUYibU6XkLhIxOoxChGbDgiZo+8Sq/973sffQR5g8KqNYcXIMrDPqbmkANDbLIZBvblqT7uCRhAngqLA1JkWFxBq6LS94ve3ITHskIDor8bus4ynLEWBk6xSA+I4svtjbDDNXL/wRXHz+1sywn20pTloBQ2sqNY8AfPGan0SszRDmT4VG+NM3/M7kygdYuUKFTxqaTc0rL3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=eng.windriver.com; dkim=pass header.d=eng.windriver.com; arc=none
-Received: from MW4PR11MB5824.namprd11.prod.outlook.com (2603:10b6:303:187::19)
- by DM4PR11MB5230.namprd11.prod.outlook.com (2603:10b6:5:39a::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 08:25:54 +0000
-Received: from MW4PR11MB5824.namprd11.prod.outlook.com
- ([fe80::c8f6:72a0:67fa:5032]) by MW4PR11MB5824.namprd11.prod.outlook.com
- ([fe80::c8f6:72a0:67fa:5032%7]) with mapi id 15.20.6609.032; Thu, 27 Jul 2023
- 08:25:54 +0000
-From:   Xiangyu Chen <xiangyu.chen@eng.windriver.com>
-To:     bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] libbpf: fix warnings "'pad_type' 'pad_bits' 'new_off' may be used uninitialized"
-Date:   Thu, 27 Jul 2023 16:25:36 +0800
-Message-Id: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: SI2PR01CA0025.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::10) To MW4PR11MB5824.namprd11.prod.outlook.com
- (2603:10b6:303:187::19)
+        Thu, 27 Jul 2023 04:43:43 -0400
+Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DFC4689
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
+        ; s=dkim1; h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=pTHDtCKW0IluBtg4WbpD49owSeMHqMqck+SFzjWQotw=; b=DnDo5654XBkLj2a+Wb/1W2yCw2
+        LP+AsX0KoX/GhpwB0oZjvlsInyvP3LzcmMwiiD2LhVdKkOqXYFME3L4LfRwAN+abEkV1dAQRKv9MF
+        aHy0/IdfyFKUCDM8TJ6opxZY95f0gs6ZlB+766vJZnNFDLbY6//H0WyXUbh0PVRhvWIGnJqieRB6s
+        QqfE5cHfUvn6BoyWT8nTdlnQuaEfKDlJfc2e1ke3XPwKOm042/wKpUvrOx6Fdlb4rXftZjABWSEvQ
+        BbRVATgTw0sw+6ZY7kvzR89IdCdP05B9Gp0xUEz8g+iTQSXTEaMQ9MTDVswxgQLpZP180xrQOzyg/
+        q7QpZdNw==;
+Received: from [192.168.1.4] (port=13596 helo=SH-EX2013.helmholz.local)
+        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.96)
+        (envelope-from <Ante.Knezic@helmholz.de>)
+        id 1qOwJp-0002sf-2y;
+        Thu, 27 Jul 2023 10:25:57 +0200
+Received: from linuxdev.helmholz.local (192.168.6.7) by
+ SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.48; Thu, 27 Jul 2023 10:25:57 +0200
+From:   Ante Knezic <ante.knezic@helmholz.de>
+To:     <netdev@vger.kernel.org>
+CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <olteanv@gmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
+        Ante Knezic <ante.knezic@helmholz.de>
+Subject: [PATCH net-next v4] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
+Date:   Thu, 27 Jul 2023 10:25:50 +0200
+Message-ID: <20230727082550.15254-1-ante.knezic@helmholz.de>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5824:EE_|DM4PR11MB5230:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18436092-6c89-4884-3c49-08db8e7b186d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CP8y1zeLBe9+1ObsYytldcsfURA6l/qRoph8MxFilrwXKDu0StCiPgnQHMOZXOe9Qhyp49KLspIQA98zBr4FeSj+lm6RyDoTBCDQIQllIDPf8RewrzUIx4lm6p6NHgtWF3pNGk70bHiUan6i7XMUuOQYjXtNrShjLCkdMfXx4YSxHNaPW9xcq3nTEK4iOXBq6SZ346VsTE0hP7ITI6mrPDIXVD9cdx6Te2wrXabQNoSl3oqsLo0qXR0Jj7S8Y0P9TU6HJS+RlHbY3vbXTti00wDm59fXao/iysl0Hb/AOk4UJCeIDFPxenhmOdIrFwk6oTgRPQKQG0wmxyNbc2LRuG1nOHLGzxQPUeku7uhh6h9AbORIjcq8agjYtVU21/NEAJUknzg5T3HuJtbpYyoh0YXbe/r7mHU354zXdFlxOSS8+s7EuUhn25nNucTm+pDZlwEpmSPqZUBUVlOZb448JMORPnx2MsOGEKWWZeEKIyme9NSNg2j3uSy6N56pTQWZf17tKLmutIRaWVO4d8qIwgAW+irKVabGLmnvfbiO4urQnGf6FqqSi6DYl8/GfDQKIjI83VTkZ5jiFhWle9RS/aB+8OA1tfP+NqDpCgsvrdlhL9SzmgKclJMbqYi+pzf5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5824.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39850400004)(366004)(376002)(136003)(346002)(396003)(451199021)(2906002)(41300700001)(316002)(44832011)(5660300002)(8676002)(8936002)(478600001)(186003)(2616005)(52116002)(6486002)(6666004)(83170400001)(6512007)(26005)(6506007)(1076003)(450100002)(38350700002)(38100700002)(66946007)(66476007)(66556008)(4326008)(6916009)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GWVWqqhk7qhEboSEva2W7BASdB919jftOJdhoZoZPtiiZS/g7ZrX38BnJ+uA?=
- =?us-ascii?Q?vXRZkcU85AS30d80kAv+wEC18hKpm2kbXg0U5J/n9XA7G+KxVrveX8i4HzRW?=
- =?us-ascii?Q?7ZBuP+JZmeFrinTNqUXa5jVKiCBBoanIFNmxpxnDBsqd11uvjVrbGJoUedA0?=
- =?us-ascii?Q?6IZ6whkmsEhf4IsHuL7x/hPNvc38Xgr5J0o2CJtFhItRLIObMABPMEIC3MrK?=
- =?us-ascii?Q?sKCsTn9osIklj0pXV4VhIPON7f+JCSurCREfG1KoGNTJuf8HGv/w/vU76DZx?=
- =?us-ascii?Q?YJo4yQSFSj3hoaLeacSL43+Lcon3WGBolkJnsNIRd0+FBxwYSIYbtFN9fr33?=
- =?us-ascii?Q?pd4jYH0B6PNrfXHVJLUAk4LNW6AUjljNJNWqHEvSx0tB0IG9O1OdQu5GGr8H?=
- =?us-ascii?Q?yco+al52BhsJi0VRPjlVwSRbDxXY2HtuIyRGbxkPrBGQi9zIi1ilIayr4ATU?=
- =?us-ascii?Q?bYtOGR8sfGIK7mjxfa4II+uDMX01fBIKG4v6uNlbfaKt7gSPdz6GoGnQrO2J?=
- =?us-ascii?Q?xyf/RNplozkyOy1uzIPWlPjd1vJ/hDXDKqoQX8UGJ1hS/3lBNGdB3uptgH8o?=
- =?us-ascii?Q?WilopTJAPI6zy5lK1t6in66NSxr0k8Sl6hKXyv1YQHa3i7EJSzZA0H09/wu1?=
- =?us-ascii?Q?qktNxd+hL0B7IvBh3XMT9egWyXQmfmzu25adlP+ys7Ix1qKsydSzvyX+9TWA?=
- =?us-ascii?Q?S8/UPK6VDgG5f8HUx00rOMrXnuz+TJLksRjFM9s+MVh1PzAqibJgmfVk58Hv?=
- =?us-ascii?Q?Mn6kl8FPDGAAqiQrUiNhQVb2a9kizybMV7oX4z4nmVL5rF6hLaJQ3aAo8wv+?=
- =?us-ascii?Q?DJ+tsnmxOE2ttXQBSitqLvrYspKFuiQBJiVVDo2aWeh8iMwXYhK9nr/6QAfp?=
- =?us-ascii?Q?E8hkFJ32GXa1W/U79cRSJhfhhXV6SGGcLiEOplij5qLAUP33qtzkNuHW4n7G?=
- =?us-ascii?Q?Z4z/C/roqFqkpefnJwprZd6xIZHzcW2KWMEuEhWgPCGieX7C+x9k4gW/Q7fJ?=
- =?us-ascii?Q?FQDyPJyFwyxj9ifaV/zrW/CI2RdytNjaJOnTkokK/oWZ3XHcFhR4s09La8lR?=
- =?us-ascii?Q?YvrTOP0tScWPPwP8RVcUDTRN+F5/IqogOYgnSaxBeNZb2oL4PLOylpV+GkV5?=
- =?us-ascii?Q?14Qe+ftnysgivZiR/knSzC4CvUvrN8JF0EETZQariQQaNn9jEUqOBiwfqQHD?=
- =?us-ascii?Q?2Q/yEgc2lvVJPzKgKPGfU62rNhc/cA1aNKXr7axL7G8FA3ds8XEA6wTmInEH?=
- =?us-ascii?Q?vXXFR5vZyZlqEgV2Igt5iMeu7sI0pE7JDHk7AisCXDkFORqD8xFu1RUNNDfG?=
- =?us-ascii?Q?tzm8x7Dq3Gv2KJdY3JOIUDNLPDwCUkxRcYg1d3ujID74hcrsQFAVReMDPy3w?=
- =?us-ascii?Q?iZh1girnemEsYhgvIGQJ3RUoKSYZNl+rO48mMrcbRsxHZTia7VQRmgy9cx/y?=
- =?us-ascii?Q?fnuA3LgMQ1OZ8PtmCB5S0qto1Q3mINXCaRlTpL7ZqPW1yjmyymNNiK/of5NF?=
- =?us-ascii?Q?irjPfpI4FUpiSyIRediqm0/aVMCtsF5meA3US06ZzraRvAlKfcPU6Zip3AuX?=
- =?us-ascii?Q?sKexzgonZ3pCZ3jJ5HXKEBraslZ/oCFT4BETg0iJhgq7kZYbRq4XS6ax5GA1?=
- =?us-ascii?Q?6w=3D=3D?=
-X-OriginatorOrg: eng.windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18436092-6c89-4884-3c49-08db8e7b186d
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5824.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 08:25:54.6455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HbxhHihK53INeKku+MFKoCicTisnonlSEpMhNLWUptNo27m+091mvpk9cRKfwWtmTdm71P6KUAsghNnhy6r7eepxWo5e+SVPo7886qbRAXQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5230
-X-Proofpoint-GUID: SLN7q00wkMd_aEcb_NOBzAvGfUtPARJy
-X-Proofpoint-ORIG-GUID: SLN7q00wkMd_aEcb_NOBzAvGfUtPARJy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0 bulkscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2307270074
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [192.168.6.7]
+X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
+ SH-EX2013.helmholz.local (192.168.1.4)
+X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiangyu Chen <xiangyu.chen@windriver.com>
+Fixes XAUI/RXAUI lane alignment errors.
+Issue causes dropped packets when trying to communicate over
+fiber via SERDES lanes of port 9 and 10.
+Errata document applies only to 88E6190X and 88E6390X devices.
+Requires poking in undocumented registers.
 
-When turn on the yocto DEBUG_BUILD flag, the build options for gcc would enable maybe-uninitialized,
-and following warnings would be reported as below:
-
-| btf_dump.c: In function 'btf_dump_emit_bit_padding':
-| btf_dump.c:916:4: error: 'pad_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-|   916 |    btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type,
-|       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-|   917 |      in_bitfield ? new_off - cur_off : 0);
-|       |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-| btf_dump.c:929:6: error: 'pad_bits' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-|   929 |   if (bits == pad_bits) {
-|       |      ^
-| btf_dump.c:913:28: error: 'new_off' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-|   913 |       (new_off == next_off && roundup(cur_off, next_align * 8) != new_off) ||
-|       |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-|   HOSTLD  scripts/mod/modpost
-
-Signed-off-by: Xiangyu Chen <xiangyu.chen@windriver.com>
+Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
 ---
- tools/lib/bpf/btf_dump.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+V4 : Rework as suggested by Vladimir Oltean <olteanv@gmail.com>
+     and Russell King <linux@armlinux.org.uk>
+ * print error in case of failure to apply erratum
+ * use mdiobus_c45_write instead of mdiodev_c45_write
+ * use bool variable instead of embedding a chip pointer inside
+   pcs struct.
+V3 : Rework to fit the new phylink_pcs infrastructure
+V2 : Rework as suggested by Andrew Lunn <andrew@lun.ch> 
+ * make int lanes[] const 
+ * reorder prod_nums
+ * update commit message to indicate we are dealing with
+   undocumented Marvell registers and magic values
+---
+ drivers/net/dsa/mv88e6xxx/pcs-639x.c | 45 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 4d9f30bf7f01..79923c3b8777 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
- 	} pads[] = {
- 		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
- 	};
--	int new_off, pad_bits, bits, i;
--	const char *pad_type;
-+	int new_off = 0, pad_bits = 0, bits, i;
-+	const char *pad_type = NULL;
+diff --git a/drivers/net/dsa/mv88e6xxx/pcs-639x.c b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
+index 98dd49dac421..ba373656bfe1 100644
+--- a/drivers/net/dsa/mv88e6xxx/pcs-639x.c
++++ b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
+@@ -20,6 +20,7 @@ struct mv88e639x_pcs {
+ 	struct mdio_device mdio;
+ 	struct phylink_pcs sgmii_pcs;
+ 	struct phylink_pcs xg_pcs;
++	bool erratum_3_14;
+ 	bool supports_5g;
+ 	phy_interface_t interface;
+ 	unsigned int irq;
+@@ -205,13 +206,53 @@ static void mv88e639x_sgmii_pcs_pre_config(struct phylink_pcs *pcs,
+ 	mv88e639x_sgmii_pcs_control_pwr(mpcs, false);
+ }
  
- 	if (cur_off >= next_off)
- 		return; /* no gap */
++static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
++{
++	const int lanes[] = { MV88E6390_PORT9_LANE0, MV88E6390_PORT9_LANE1,
++		MV88E6390_PORT9_LANE2, MV88E6390_PORT9_LANE3,
++		MV88E6390_PORT10_LANE0, MV88E6390_PORT10_LANE1,
++		MV88E6390_PORT10_LANE2, MV88E6390_PORT10_LANE3 };
++	int err, i;
++
++	/* 88e6190x and 88e6390x errata 3.14:
++	 * After chip reset, SERDES reconfiguration or SERDES core
++	 * Software Reset, the SERDES lanes may not be properly aligned
++	 * resulting in CRC errors
++	 */
++
++	for (i = 0; i < ARRAY_SIZE(lanes); i++) {
++		err = mdiobus_c45_write(mpcs->mdio.bus, lanes[i],
++					MDIO_MMD_PHYXS,
++					0xf054, 0x400C);
++		if (err)
++			return err;
++
++		err = mdiobus_c45_write(mpcs->mdio.bus, lanes[i],
++					MDIO_MMD_PHYXS,
++					0xf054, 0x4000);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
+ static int mv88e639x_sgmii_pcs_post_config(struct phylink_pcs *pcs,
+ 					   phy_interface_t interface)
+ {
+ 	struct mv88e639x_pcs *mpcs = sgmii_pcs_to_mv88e639x_pcs(pcs);
++	int err;
+ 
+ 	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
+ 
++	if (mpcs->erratum_3_14) {
++		err = mv88e6390_erratum_3_14(mpcs);
++		if (err)
++			dev_err(mpcs->mdio.dev.parent,
++				"failed to apply erratum 3.14: %pe\n",
++				ERR_PTR(err));
++	}
++
+ 	return 0;
+ }
+ 
+@@ -524,6 +565,10 @@ static int mv88e6390_pcs_init(struct mv88e6xxx_chip *chip, int port)
+ 	mpcs->xg_pcs.ops = &mv88e6390_xg_pcs_ops;
+ 	mpcs->xg_pcs.neg_mode = true;
+ 
++	if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
++	    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
++		mpcs->erratum_3_14 = true;
++
+ 	err = mv88e639x_pcs_setup_irq(mpcs, chip, port);
+ 	if (err)
+ 		goto err_free;
 -- 
-2.34.1
+2.11.0
 
