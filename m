@@ -2,149 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EB47645D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B399C7645E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjG0Fj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S231931AbjG0Fk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231907AbjG0Fiu (ORCPT
+        with ESMTP id S231893AbjG0FkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:38:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4AE30C5;
-        Wed, 26 Jul 2023 22:37:46 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R5FnFU027445;
-        Thu, 27 Jul 2023 05:36:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=LnO6JVSt8v4KBBrvn0hKrjbS5yc5Y5fnC+BDhyBGdv4=;
- b=Ers8qz/M4XD2XWeBZ4t4RRfcPqQrtuy0tPDwm1aVRlEkdSQfCeWB9D14M5s2GKWcvtvB
- ejYg2LiZ1FtXS3zXYbzK8F2t0EA0c9RUECkg5nOWAfGsTlVI1BPB0hzBUfSuVzVlFJ6p
- 4A1Y+k8pHhwrKu3MPTlfK/cak0TFBZvAyQPPscXV/jGTsozlpYRo0Az1tROMNgBpVv+h
- it1F1mv4PnZWzVhR/pWnf5mwt9Qg0hmmPGhhQR3fqvVRD8xumW+owCSkjcCW42slgu4w
- UXNr091WFXd8iSa47K29vzzc7r0U3ABg9MZH/jnM66J6ujxwJI74k/rJsBF5NAc8L203 kg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3b0g0q3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 05:36:30 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R5aT1t009107
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 05:36:29 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 26 Jul 2023 22:36:19 -0700
-Date:   Thu, 27 Jul 2023 11:06:16 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-CC:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <conor+dt@kernel.org>, <robdclark@gmail.com>,
-        <quic_abhinavk@quicinc.com>, <dmitry.baryshkov@linaro.org>,
-        <sean@poorly.run>, <marijn.suijten@somainline.org>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
-        <mchehab@kernel.org>, <ulf.hansson@linaro.org>,
-        <mathieu.poirier@linaro.org>, <jonathan@marek.ca>,
-        <vladimir.zapolskiy@linaro.org>, <quic_tdas@quicinc.com>,
-        <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
-        <bhupesh.sharma@linaro.org>, <mani@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: qcom: Update RPMHPD entries for some SoCs
-Message-ID: <edac596d-2b3d-4632-9468-4af863aff6f4@quicinc.com>
-References: <1690433470-24102-1-git-send-email-quic_rohiagar@quicinc.com>
+        Thu, 27 Jul 2023 01:40:22 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6422F3C24
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:38:52 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a1ebb85f99so526544b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1690436261; x=1691041061;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7WywdthfPTh+XfmRqlsarbdS3w8tnqax2JJ3u+Tr5fo=;
+        b=UQbBxhMfOst5NWQV6gVQ0JJTWp5Vb6FIoSgT8tqKClUgcqvsdppOr7nsx1YKLKiXTM
+         Pyca07NsQbrTjFLWardjLPcxkVKLtuT4aRWl8oDnKMyQkYJQBJY/Uh6e4qjHBj2PNnPe
+         48c3KJBaBKRm4+PFUxF3tHz1WGI1p/oMqPfrtCxT6Y/pBuAnJYW9dAB6dfR3z1bDWi20
+         uaCIEl3spqdFESgrHsOyMhfo2PjM3l6bQXfF1dIjP0pXfU2PqdYn9Wm/t5gwqjeJesYk
+         bGvhtRpImS2dDbSwRyD1Nz4w7L8dVwydFOZRx8rTJkBoh+qPhKv1MvFl3s3v/ta5gH5c
+         zQkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690436261; x=1691041061;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7WywdthfPTh+XfmRqlsarbdS3w8tnqax2JJ3u+Tr5fo=;
+        b=ladyVQYTa2yQr4xaQzv4g94F08RUfTA/ewo+b1Qv8IenyEO7ATjJ8JdLTG+MBNwo0R
+         gIJaNH0HvH+K7nZIeYAmCXbN9DcYcaMgp/V0+EhY1ChoW7NRLpVRl+8edWfUkPbdS7Cx
+         JJ5GyYnWwFnw4K2TASV/4MEHjF04mRjhoTZjFDwvb6JFZ1EHMjJuZrbFMu+OpEQJJOvB
+         s8aFu9BtSQo+Hq6sNlslnjKn3aqWQKB8t+5Gk9yMpjU4sBOf1Uy4OzXhGHA0fvbdYbxX
+         zKnaW7zw3t25yrVqKNhhB28Zs433KUG0YD4LLViahhomrey+E3WkYp42HBTI/Mq/1/km
+         XGcw==
+X-Gm-Message-State: ABy/qLZzizUgmd2sS/y4oqvyD5J+z1PgFqIFedQwAC9z/Xmn4o2br5GN
+        ejASASLfv6CEPQWp3ZzsEUmFvg==
+X-Google-Smtp-Source: APBJJlH2LjwCUDsuM4N9A21r1wgRMpGLVv1sCSS0LVgt/Ju+ZtxNXj38rWLzRXbXE/flB/mRf27sfw==
+X-Received: by 2002:a05:6808:1494:b0:3a2:a96d:19c3 with SMTP id e20-20020a056808149400b003a2a96d19c3mr2377106oiw.41.1690436261045;
+        Wed, 26 Jul 2023 22:37:41 -0700 (PDT)
+Received: from [10.0.2.15] ([82.78.167.79])
+        by smtp.gmail.com with ESMTPSA id n29-20020a638f1d000000b0055b61cd99a1sm478848pgd.81.2023.07.26.22.37.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 22:37:40 -0700 (PDT)
+Message-ID: <95420387-3cde-dd6e-3cb1-169ca56268d2@tuxon.dev>
+Date:   Thu, 27 Jul 2023 08:37:29 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1690433470-24102-1-git-send-email-quic_rohiagar@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 57CqSPJ2zRgDhBnuohIC8xe-8JXgN930
-X-Proofpoint-ORIG-GUID: 57CqSPJ2zRgDhBnuohIC8xe-8JXgN930
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxlogscore=722
- mlxscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270049
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ARM: dts: at91: ksz9477_evb: Add missing timer nodes
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>, Lukasz Majewski <lukma@denx.de>
+Cc:     devicetree@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20230712152111.3756211-1-lukma@denx.de>
+ <20230726101902.769f6541@wsk> <20230726-igloo-science-96e926f086f6@spud>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230726-igloo-science-96e926f086f6@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:21:10AM +0530, Rohit Agarwal wrote:
-> Update the RPMHPD references with new bindings defined in rpmhpd.h
-> for Qualcomm SoCs SM8[2345]50.
+
+
+On 26.07.2023 21:33, Conor Dooley wrote:
+> On Wed, Jul 26, 2023 at 10:19:02AM +0200, Lukasz Majewski wrote:
+>> Dear Community,
+>>
+>>> Without this change the KSZ9477-EVB board hangs just after passing
+>>> execution flow from u-boot to Linux kernel.
+>>>
+>>> This code has been copied from at91-sama5d3_xplained.dts.
+>>>
+>>> Test setup: Linux 6.5-rc1
+>>> Config:     arch/arm/configs/sama5_defconfig
+>>> Toolchain:  gcc-linaro-7.3.1-2018.05-x86_64_arm-linux-gnueabi
+>>>
+>>> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+>>> ---
+>>>   .../boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts  | 12
+>>> ++++++++++++ 1 file changed, 12 insertions(+)
+>>>
+>>> diff --git a/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts
+>>> b/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts index
+>>> 14af1fd6d247..99cd6d15998b 100644 ---
+>>> a/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts +++
+>>> b/arch/arm/boot/dts/microchip/at91-sama5d3_ksz9477_evb.dts @@ -162,6
+>>> +162,18 @@ };
+>>>   };
+>>>   
+>>> +&tcb0 {
+>>> +	timer0: timer@0 {
+>>> +		compatible = "atmel,tcb-timer";
+>>> +		reg = <0>;
+>>> +	};
+>>> +
+>>> +	timer1: timer@1 {
+>>> +		compatible = "atmel,tcb-timer";
+>>> +		reg = <1>;
+>>> +	};
+>>> +};
+>>> +
+>>>   &usb0 {
+>>>   	pinctrl-names = "default";
+>>>   	pinctrl-0 = <&pinctrl_usba_vbus>;
+>>
+>> Gentle ping on this fix ...
 > 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml    | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,sm8350-videocc.yaml   | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml     | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,sm8450-dispcc.yaml    | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml   | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,sm8550-dispcc.yaml    | 3 ++-
->  Documentation/devicetree/bindings/clock/qcom,videocc.yaml          | 3 ++-
->  Documentation/devicetree/bindings/display/msm/qcom,sm8250-dpu.yaml | 3 ++-
->  .../devicetree/bindings/display/msm/qcom,sm8250-mdss.yaml          | 7 ++++---
->  Documentation/devicetree/bindings/display/msm/qcom,sm8350-dpu.yaml | 3 ++-
->  .../devicetree/bindings/display/msm/qcom,sm8350-mdss.yaml          | 5 +++--
->  Documentation/devicetree/bindings/display/msm/qcom,sm8450-dpu.yaml | 3 ++-
->  .../devicetree/bindings/display/msm/qcom,sm8450-mdss.yaml          | 7 ++++---
->  Documentation/devicetree/bindings/display/msm/qcom,sm8550-dpu.yaml | 3 ++-
->  .../devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml          | 7 ++++---
->  Documentation/devicetree/bindings/media/qcom,sm8250-venus.yaml     | 3 ++-
->  Documentation/devicetree/bindings/mmc/sdhci-msm.yaml               | 3 ++-
->  Documentation/devicetree/bindings/remoteproc/qcom,sm8350-pas.yaml  | 5 +++--
->  18 files changed, 44 insertions(+), 26 deletions(-)
+> Claudiu has left Microchip, so things might've got a bit lost on the
+> way. I've added his new address, Claudiu, will you take a look/pick this
+> up please? I can also do it if that is easier for you.
+
+It's on my list.
+
+Thanks,
+Claudiu
+
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> index d6774db..d6b81c0 100644
-> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
-> @@ -83,6 +83,7 @@ examples:
->    - |
->      #include <dt-bindings/clock/qcom,rpmh.h>
->      #include <dt-bindings/power/qcom-rpmpd.h>
-> +    #include <dt-bindings/power/qcom,rpmhpd.h>
->      clock-controller@af00000 {
->        compatible = "qcom,sm8250-dispcc";
->        reg = <0x0af00000 0x10000>;
-> @@ -103,7 +104,7 @@ examples:
->        #clock-cells = <1>;
->        #reset-cells = <1>;
->        #power-domain-cells = <1>;
-> -      power-domains = <&rpmhpd SM8250_MMCX>;
-> +      power-domains = <&rpmhpd RPMHPD_MMCX>;
->        required-opps = <&rpmhpd_opp_low_svs>;
->      };
->  ...
-
-Does this file still need to include old header? The same is applicable
-to some of the other files in the patch also. 
-
-We also discussed on the other thread [1] to move the regulator level 
-definitions to new header. should this change be done after that, so that 
-we don't end up touching the very same files again?
-
-[1]
-https://lore.kernel.org/all/a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm/
+> Thanks,
+> Conor.
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
