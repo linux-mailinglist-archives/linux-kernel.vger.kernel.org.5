@@ -2,79 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFE2765966
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0902765972
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjG0RCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S232560AbjG0RDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbjG0RCa (ORCPT
+        with ESMTP id S229526AbjG0RDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:02:30 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC149E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:02:29 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso9613045ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690477349; x=1691082149;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wT/ZsiiDZwcgiQgl4DELrnCzGmHF+3XYDdWiMBrFYvo=;
-        b=K0phnEYk/GVAqF5YbTQkVwMdPv8mpH4CuAkx7IsfmRJ5aLTp4xG8IBBDRxwU3rp18M
-         H3sZi0bD5d69IgZnJX0pGk+67CRDZxTrseYrgwlMhuP5Q9J4PWS82sWweo8TAt9iHOuR
-         rX1q8/lxZ76BFQzEOl67eODr84NVHK31gql9s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690477349; x=1691082149;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wT/ZsiiDZwcgiQgl4DELrnCzGmHF+3XYDdWiMBrFYvo=;
-        b=Q5Pm5MfgmSzq0rv20gpTM/dRuDGJ50/YLYlrSCwZthYksxhBVUab4LDdVN2ZpGiVjX
-         THikoNOoNLfTH7t5zgZ7w32tUCkrdADG70Bh4XDXesTNoSzutIuXPzY5wHiQ/w2tIcTv
-         9sxfKz/jj857VpdcOnmOvhO8lPITQ+eKduTuCpxM57t6dauQtfIRWGejRvpG+QDZqG2p
-         JLIzOdjPx5NTtWuiaD0t9RdxWblX4kFS3o6IqIZ4Wnnbl6jWRqY7chARERE7znWOpRpU
-         V9+zTV0RRjE8cMo8UYbqBEeCFwb96d3HzvUBRHHwClXb2DqgaPRLRT2RzAkRUoIAqT6v
-         MGkg==
-X-Gm-Message-State: ABy/qLaCuY1SYetc6ky62AHaC+yddRQ+pRwQCe6xCBAVuOTW/dlPElx/
-        D3T05iL9+8VNZPe2Jj/iWfnsFA==
-X-Google-Smtp-Source: APBJJlEJpUVqcSMnFLWNvhMQvBdF6RrGYz2iohHdmUVWppDCrgiBB6p74K9WRtxaVJoGd8oU9n28vw==
-X-Received: by 2002:a17:902:dac4:b0:1bb:cd10:8209 with SMTP id q4-20020a170902dac400b001bbcd108209mr5653824plx.50.1690477348974;
-        Thu, 27 Jul 2023 10:02:28 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170902d38200b001ac7f583f72sm1879688pld.209.2023.07.27.10.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 10:02:28 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 10:02:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Azeem Shaikh <azeemshaikh38@gmail.com>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-hardening@vger.kernel.org,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] wifi: mt76: Replace strlcpy with strscpy
-Message-ID: <202307271001.13EA5FB@keescook>
-References: <20230703181256.3712079-1-azeemshaikh38@gmail.com>
- <202307121653.4A9C69C655@keescook>
- <CADmuW3UY=w0p-h1h4qOord7z1nFnvpyCOU3fcCaATm_PvFFUeA@mail.gmail.com>
+        Thu, 27 Jul 2023 13:03:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBD59E;
+        Thu, 27 Jul 2023 10:03:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A51761EE5;
+        Thu, 27 Jul 2023 17:03:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F36DC433C7;
+        Thu, 27 Jul 2023 17:02:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690477387;
+        bh=dRinFx40BRIrMwg/8epwp+lbWEUZUugvI2zcPLmbs6o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sAR5rAZfLiN5wJdY9U15gQ+2zoDM6Q7hVZtIHJDTHH3SMwSc6rlEIKvPsqk5cg3Xg
+         AnK5C2Dn3qHE9/zOovZJD+aFBMhlS1NqJawkK5/s4w9i3bPzaSYhofqqqKdEv6EEDb
+         RtYXOrAZMbdXRoYQuKrdmE7RTPcMhBa0fkyPAx5iDnXWgAEVUJ3Aj6CGpfOlUJUxxW
+         8nidLRiIuhUXXQC5j/4yspRCD2nyMbAbSjNyAqO2bH4dx6cYM4R62nwXAEseaQd5cM
+         YRFCocsOOhANZ2EdBrrnT78bTY++zOkqtL+nF+3DXHIOv3NNTYaDz5jmZh2VKAyKCQ
+         noXRpmWJsxuAA==
+Date:   Thu, 27 Jul 2023 19:02:53 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        'Aleksa Sarai' <cyphar@cyphar.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@hansenpartnership.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "christian@brauner.io" <christian@brauner.io>,
+        "dalias@libc.org" <dalias@libc.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "deepa.kernel@gmail.com" <deepa.kernel@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "glebfm@altlinux.org" <glebfm@altlinux.org>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hare@suse.com" <hare@suse.com>, "hpa@zytor.com" <hpa@zytor.com>,
+        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
+        "jhogan@kernel.org" <jhogan@kernel.org>,
+        "kim.phillips@arm.com" <kim.phillips@arm.com>,
+        "ldv@altlinux.org" <ldv@altlinux.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "monstr@monstr.eu" <monstr@monstr.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ralf@linux-mips.org" <ralf@linux-mips.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "tycho@tycho.ws" <tycho@tycho.ws>,
+        "will@kernel.org" <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
+        Palmer Dabbelt <palmer@sifive.com>
+Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
+Message-ID: <20230727-zerrt-leitmotiv-9e8b60abf690@brauner>
+References: <cover.1689074739.git.legion@kernel.org>
+ <cover.1689092120.git.legion@kernel.org>
+ <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
+ <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
+ <d052e1266bf042f9b4961bbf42261a55@AcuMS.aculab.com>
+ <87ila5jp2y.fsf@igel.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADmuW3UY=w0p-h1h4qOord7z1nFnvpyCOU3fcCaATm_PvFFUeA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+In-Reply-To: <87ila5jp2y.fsf@igel.home>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,31 +120,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 12:38:37AM -0400, Azeem Shaikh wrote:
-> On Wed, Jul 12, 2023 at 7:54 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Mon, Jul 03, 2023 at 06:12:56PM +0000, Azeem Shaikh wrote:
-> > > strlcpy() reads the entire source buffer first.
-> > > This read may exceed the destination size limit.
-> > > This is both inefficient and can lead to linear read
-> > > overflows if a source string is not NUL-terminated [1].
-> > > In an effort to remove strlcpy() completely [2], replace
-> > > strlcpy() here with strscpy().
-> > >
-> > > Direct replacement is safe here since DEV_ASSIGN is only used by
-> > > TRACE macros and the return values are ignored.
-> > >
-> > > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> > > [2] https://github.com/KSPP/linux/issues/89
-> > >
-> > > Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> >
-> > Looks good -- thing is using return values from the macros.
+On Thu, Jul 27, 2023 at 06:28:53PM +0200, Andreas Schwab wrote:
+> On Jul 27 2023, David Laight wrote:
 > 
-> Just to confirm, you mean *not* using return values from the macros?
+> > From: Aleksa Sarai
+> >> Sent: 25 July 2023 17:36
+> > ...
+> >> We almost certainly want to support AT_EMPTY_PATH at the same time.
+> >> Otherwise userspace will still need to go through /proc when trying to
+> >> chmod a file handle they have.
+> >
+> > That can't be allowed.
+> 
+> IIUC, fchmodat2(fd, "", m, AT_EMPTY_PATH) is equivalent to fchmod(fd,
+> m).  With that, new architectures only need to implement the fchmodat2
+> syscall to cover all chmod variants.
 
-I thought I'd replied to this, but I see it didn't happen: yes, I meant
-"not using return values". Sorry for the confusion!
+There's a difference though as fchmod() doesn't work with O_PATH file
+descriptors while AT_EMPTY_PATH does. Similar to how fchown() doesn't
+work with O_PATH file descriptors.
 
--- 
-Kees Cook
+However, we do allow AT_EMPTY_PATH with fchownat() so there's no reason
+to not allow it for fchmodat2().
+
+But it's a bit of a shame that O_PATH looks less and less like O_PATH.
+It came from can-do-barely-anything to can-do-quite-a-lot-of-things over
+the years.
+
+In any case, AT_EMPTY_PATH for fchmodat2() can be an additional patch on
+top.
