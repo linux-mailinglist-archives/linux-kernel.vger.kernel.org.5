@@ -2,239 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C919764BEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C0A764D33
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjG0IUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
+        id S234557AbjG0IbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbjG0IR0 (ORCPT
+        with ESMTP id S234875AbjG0I3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:17:26 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480485FC6;
-        Thu, 27 Jul 2023 01:10:11 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe0bb9500aso1142038e87.1;
-        Thu, 27 Jul 2023 01:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690445363; x=1691050163;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xiUxgezQ5qkaa0qvpV7WRHRt1+Z+nieJXbLHqjI/O3A=;
-        b=H2fID3UP9XooW3VhY5Axw7dEGEJFmttljx7Sfy9BQHD0WL0rZG5uAQrtzvH8I2Hj0A
-         VsDsdkFkAVoBX9GBJEDxmtwCc6AeDOmrI74AWy5CiG52nL8tg/ze2+Op6jr98MfYcZwP
-         YFifZerd/SGlEUR/W6PRWZE8jhkZkAm8Zk9XWUTpLVu9kvn9PAERmPAmicpDQcFseHbc
-         AM09nJI8IJOh4WD701FsWK4t/HTnkbQD8nGwTKOoyFylOvJ8oI2+5GpGn/RqXDBG4w95
-         nv+0fewb0OQYCZlIraM5WDcVpUIzSHhDh60pbmLi/8u0k4rPf1LRHbmHcewD1KlyOzoZ
-         b8TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690445363; x=1691050163;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xiUxgezQ5qkaa0qvpV7WRHRt1+Z+nieJXbLHqjI/O3A=;
-        b=InKE8Io7jIx/CHTo+WqjaHjC3GySw9X0mAnEzDc0c6CKLJXhbP3EK1ljHNh87gQSdm
-         3LBzf9J0rBzqr1Lp7u4J2IgOd/8UlAdTUZlSgtnrEpMwVpoftfvSuDEunbmXa1KtSd/W
-         hHtkAVWKA29qfMf8ARuPsbxDt6tsjzB4Ipun9h6juyZvmDcTuZK33sHdHIrrlIpDUT5a
-         ytCo+ROEPCMQN4sYeV7zQJcf58igaNKQ1Xktgqja3IXUVX+e0WqR/yBLkwVdwiZT5/00
-         X3iu9h9RAfyeNt9HYAuJ0SHa09hyesH2q9xgIgwijkutnIlKN9ZC3IO40OMcUNsxNaaL
-         +MhQ==
-X-Gm-Message-State: ABy/qLZ30B77z2uyZqVxmaQ2Mab9aDn6tzsuGZgKEyILB1C1ZMSUa71s
-        +xPeCAd0A7k8ypWtPrgkFjI=
-X-Google-Smtp-Source: APBJJlH865Tp8uBcV1iKrM/p9GDkWXd8sduKWaW615rgpOcY27CSHvxDYR2EfMZ71In5Apukj3zxQQ==
-X-Received: by 2002:a05:6512:12c3:b0:4f9:5ca5:f1a6 with SMTP id p3-20020a05651212c300b004f95ca5f1a6mr1408395lfg.17.1690445363111;
-        Thu, 27 Jul 2023 01:09:23 -0700 (PDT)
-Received: from [192.168.0.112] ([77.220.140.242])
-        by smtp.gmail.com with ESMTPSA id o1-20020ac24941000000b004faeedbb2a0sm194192lfi.78.2023.07.27.01.09.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 01:09:22 -0700 (PDT)
-Message-ID: <f04d2aa5-32d8-cdc4-3b51-f15b0f42a1e8@gmail.com>
-Date:   Thu, 27 Jul 2023 11:09:21 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH RFC net-next v5 13/14] virtio/vsock: implement datagram
- support
-Content-Language: en-US
-To:     Bobby Eshleman <bobbyeshleman@gmail.com>
-Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-13-581bd37fdb26@bytedance.com>
- <adeed3a8-68fe-bdb7-e4a1-48044dbe5436@gmail.com> <ZMFetBpO0OdzXtnK@bullseye>
-From:   Arseniy Krasnov <oxffffaa@gmail.com>
-In-Reply-To: <ZMFetBpO0OdzXtnK@bullseye>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 04:29:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E8F9ABE
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690445750; x=1721981750;
+  h=date:from:to:cc:subject:message-id;
+  bh=2flwP5tvX2sCPFwUTFEj96D6EoOZW5tSFp6hvxeh4a8=;
+  b=GHQ1L2QCyxMADUI3+5QYlF3Ftfzk3NXXEkFEj4kRxV3pDWIjjJyhx0AE
+   JPxP03YS6IpeMchEFksopSk0GIa9O+gN66NduoLV7K2SSg3odi+cXGEZH
+   dYeZ6PAjxyiuBuLVJpZuihihunb8MY6Nm3WcF+xbK0na0PgbyEpfzWZIf
+   bVlq0hZL9AEg9FoyRcvJpLn/1sycSJSHHWN1GXrYZU4pddSG8tql5H4iV
+   4/GPtOy9n9cgr0KtB81p0GKnDx/hf+hV1paroi/qwuCfGEfJiH5asIRKZ
+   CzayY+UDAKGrmCMOgY/gtIz6Tu1IzmZZl194lGfX815gLhJ2OrX1b33bo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="434518355"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="434518355"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 01:13:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="840627777"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="840627777"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Jul 2023 01:13:51 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOw7b-000250-1t;
+        Thu, 27 Jul 2023 08:13:31 +0000
+Date:   Thu, 27 Jul 2023 16:10:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2023.07.24a] BUILD REGRESSION
+ aaeb7f70ca6fef20998ac6aa580e42ca7b85fb7f
+Message-ID: <202307271621.FDVwvqn6-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.07.24a
+branch HEAD: aaeb7f70ca6fef20998ac6aa580e42ca7b85fb7f  squash! fs/proc: Add /proc/cmdline_load for boot loader arguments
 
+Error/Warning reports:
 
-On 26.07.2023 20:58, Bobby Eshleman wrote:
-> On Sat, Jul 22, 2023 at 11:45:29AM +0300, Arseniy Krasnov wrote:
->>
->>
->> On 19.07.2023 03:50, Bobby Eshleman wrote:
->>> This commit implements datagram support for virtio/vsock by teaching
->>> virtio to use the general virtio transport ->dgram_addr_init() function
->>> and implementation a new version of ->dgram_allow().
->>>
->>> Additionally, it drops virtio_transport_dgram_allow() as an exported
->>> symbol because it is no longer used in other transports.
->>>
->>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
->>> ---
->>>  include/linux/virtio_vsock.h            |  1 -
->>>  net/vmw_vsock/virtio_transport.c        | 24 +++++++++++++++++++++++-
->>>  net/vmw_vsock/virtio_transport_common.c |  6 ------
->>>  3 files changed, 23 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>> index b3856b8a42b3..d0a4f08b12c1 100644
->>> --- a/include/linux/virtio_vsock.h
->>> +++ b/include/linux/virtio_vsock.h
->>> @@ -211,7 +211,6 @@ void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val);
->>>  u64 virtio_transport_stream_rcvhiwat(struct vsock_sock *vsk);
->>>  bool virtio_transport_stream_is_active(struct vsock_sock *vsk);
->>>  bool virtio_transport_stream_allow(u32 cid, u32 port);
->>> -bool virtio_transport_dgram_allow(u32 cid, u32 port);
->>>  void virtio_transport_dgram_addr_init(struct sk_buff *skb,
->>>  				      struct sockaddr_vm *addr);
->>>  
->>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->>> index ac2126c7dac5..713718861bd4 100644
->>> --- a/net/vmw_vsock/virtio_transport.c
->>> +++ b/net/vmw_vsock/virtio_transport.c
->>> @@ -63,6 +63,7 @@ struct virtio_vsock {
->>>  
->>>  	u32 guest_cid;
->>>  	bool seqpacket_allow;
->>> +	bool dgram_allow;
->>>  };
->>>  
->>>  static u32 virtio_transport_get_local_cid(void)
->>> @@ -413,6 +414,7 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
->>>  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
->>>  }
->>>  
->>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port);
->>
->> May be add body here? Without prototyping? Same for loopback and vhost.
->>
-> 
-> Sounds okay with me, but this seems to go against the pattern
-> established by seqpacket. Any reason why?
+https://lore.kernel.org/oe-kbuild-all/202307270622.15fzt0V1-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202307270637.D2qvjL9a-lkp@intel.com
 
-Stefano Garzarella <sgarzare@redhat.com> commented my patch with the same approach:
+Error/Warning: (recently discovered and may have been fixed)
 
-https://lore.kernel.org/netdev/lex6l5suez7azhirt22lidndtjomkbagfbpvvi5p7c2t7klzas@4l2qly7at37c/
+arch/parisc/include/asm/cache.h:23: warning: "ARCH_DMA_MINALIGN" redefined
+arch/parisc/include/asm/cache.h:25: warning: "__read_mostly" redefined
+arch/sh/include/asm/cache.h:21: warning: "ARCH_DMA_MINALIGN" redefined
+arch/sh/include/asm/cache.h:23: warning: "__read_mostly" redefined
+include/linux/cache.h:72:31: error: 'L1_CACHE_SHIFT' undeclared here (not in a function); did you mean 'L1_CACHE_ALIGN'?
+include/linux/init.h:149:32: error: expected ';' after top level declarator
+include/linux/init.h:149:33: error: expected '=', ',', ';', 'asm' or '__attribute__' before '__ro_after_init'
 
-Thanks, Arseniy
+Error/Warning ids grouped by kconfigs:
 
+gcc_recent_errors
+|-- arm64-allyesconfig
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- arm64-defconfig
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- parisc-allyesconfig
+|   |-- arch-parisc-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+|   |-- arch-parisc-include-asm-cache.h:warning:__read_mostly-redefined
+|   |-- include-linux-cache.h:error:L1_CACHE_SHIFT-undeclared-here-(not-in-a-function)
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- parisc-defconfig
+|   |-- arch-parisc-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+|   |-- arch-parisc-include-asm-cache.h:warning:__read_mostly-redefined
+|   |-- include-linux-cache.h:error:L1_CACHE_SHIFT-undeclared-here-(not-in-a-function)
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- parisc-randconfig-r006-20230726
+|   |-- arch-parisc-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+|   |-- arch-parisc-include-asm-cache.h:warning:__read_mostly-redefined
+|   |-- include-linux-cache.h:error:L1_CACHE_SHIFT-undeclared-here-(not-in-a-function)
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- parisc-randconfig-r011-20230726
+|   |-- arch-parisc-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+|   |-- arch-parisc-include-asm-cache.h:warning:__read_mostly-redefined
+|   |-- include-linux-cache.h:error:L1_CACHE_SHIFT-undeclared-here-(not-in-a-function)
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+|-- parisc64-defconfig
+|   |-- arch-parisc-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+|   |-- arch-parisc-include-asm-cache.h:warning:__read_mostly-redefined
+|   |-- include-linux-cache.h:error:L1_CACHE_SHIFT-undeclared-here-(not-in-a-function)
+|   `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+`-- sh-allmodconfig
+    |-- arch-sh-include-asm-cache.h:warning:ARCH_DMA_MINALIGN-redefined
+    |-- arch-sh-include-asm-cache.h:warning:__read_mostly-redefined
+    `-- include-linux-init.h:error:expected-asm-or-__attribute__-before-__ro_after_init
+clang_recent_errors
+`-- arm64-randconfig-r012-20230726
+    `-- include-linux-init.h:error:expected-after-top-level-declarator
 
-> 
->>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
->>>  
->>>  static struct virtio_transport virtio_transport = {
->>> @@ -430,6 +432,7 @@ static struct virtio_transport virtio_transport = {
->>>  
->>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
->>>  		.dgram_allow              = virtio_transport_dgram_allow,
->>> +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
->>>  
->>>  		.stream_dequeue           = virtio_transport_stream_dequeue,
->>>  		.stream_enqueue           = virtio_transport_stream_enqueue,
->>> @@ -462,6 +465,21 @@ static struct virtio_transport virtio_transport = {
->>>  	.send_pkt = virtio_transport_send_pkt,
->>>  };
->>>  
->>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port)
->>> +{
->>> +	struct virtio_vsock *vsock;
->>> +	bool dgram_allow;
->>> +
->>> +	dgram_allow = false;
->>> +	rcu_read_lock();
->>> +	vsock = rcu_dereference(the_virtio_vsock);
->>> +	if (vsock)
->>> +		dgram_allow = vsock->dgram_allow;
->>> +	rcu_read_unlock();
->>> +
->>> +	return dgram_allow;
->>> +}
->>> +
->>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid)
->>>  {
->>>  	struct virtio_vsock *vsock;
->>> @@ -655,6 +673,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
->>>  	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
->>>  		vsock->seqpacket_allow = true;
->>>  
->>> +	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_DGRAM))
->>> +		vsock->dgram_allow = true;
->>> +
->>>  	vdev->priv = vsock;
->>>  
->>>  	ret = virtio_vsock_vqs_init(vsock);
->>> @@ -747,7 +768,8 @@ static struct virtio_device_id id_table[] = {
->>>  };
->>>  
->>>  static unsigned int features[] = {
->>> -	VIRTIO_VSOCK_F_SEQPACKET
->>> +	VIRTIO_VSOCK_F_SEQPACKET,
->>> +	VIRTIO_VSOCK_F_DGRAM
->>>  };
->>>  
->>>  static struct virtio_driver virtio_vsock_driver = {
->>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>> index 96118e258097..77898f5325cd 100644
->>> --- a/net/vmw_vsock/virtio_transport_common.c
->>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>> @@ -783,12 +783,6 @@ bool virtio_transport_stream_allow(u32 cid, u32 port)
->>>  }
->>>  EXPORT_SYMBOL_GPL(virtio_transport_stream_allow);
->>>  
->>> -bool virtio_transport_dgram_allow(u32 cid, u32 port)
->>> -{
->>> -	return false;
->>> -}
->>> -EXPORT_SYMBOL_GPL(virtio_transport_dgram_allow);
->>> -
->>>  int virtio_transport_connect(struct vsock_sock *vsk)
->>>  {
->>>  	struct virtio_vsock_pkt_info info = {
->>>
->>
->> Thanks, Arseniy
-> 
-> Thanks,
-> Bobby
+elapsed time: 725m
+
+configs tested: 122
+configs skipped: 4
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r004-20230726   gcc  
+alpha                randconfig-r013-20230726   gcc  
+alpha                randconfig-r031-20230726   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r003-20230726   gcc  
+arc                  randconfig-r043-20230726   gcc  
+arc                  randconfig-r043-20230727   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r001-20230726   clang
+arm                  randconfig-r004-20230726   clang
+arm                  randconfig-r021-20230726   gcc  
+arm                  randconfig-r032-20230726   clang
+arm                  randconfig-r046-20230726   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r012-20230726   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r036-20230726   clang
+hexagon              randconfig-r041-20230726   clang
+hexagon              randconfig-r045-20230726   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230726   gcc  
+i386         buildonly-randconfig-r005-20230726   gcc  
+i386         buildonly-randconfig-r006-20230726   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230726   gcc  
+i386                 randconfig-i002-20230726   gcc  
+i386                 randconfig-i003-20230726   gcc  
+i386                 randconfig-i004-20230726   gcc  
+i386                 randconfig-i005-20230726   gcc  
+i386                 randconfig-i006-20230726   gcc  
+i386                 randconfig-i011-20230726   clang
+i386                 randconfig-i011-20230727   gcc  
+i386                 randconfig-i012-20230726   clang
+i386                 randconfig-i012-20230727   gcc  
+i386                 randconfig-i013-20230726   clang
+i386                 randconfig-i013-20230727   gcc  
+i386                 randconfig-i014-20230726   clang
+i386                 randconfig-i014-20230727   gcc  
+i386                 randconfig-i015-20230726   clang
+i386                 randconfig-i015-20230727   gcc  
+i386                 randconfig-i016-20230726   clang
+i386                 randconfig-i016-20230727   gcc  
+i386                 randconfig-r015-20230726   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r016-20230726   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r011-20230726   gcc  
+microblaze           randconfig-r026-20230726   gcc  
+microblaze           randconfig-r034-20230726   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r023-20230726   gcc  
+mips                 randconfig-r035-20230726   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r014-20230726   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r002-20230726   gcc  
+parisc               randconfig-r006-20230726   gcc  
+parisc               randconfig-r011-20230726   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r013-20230726   clang
+powerpc              randconfig-r025-20230726   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r022-20230726   clang
+riscv                randconfig-r042-20230726   clang
+riscv                randconfig-r042-20230727   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230726   clang
+s390                 randconfig-r044-20230727   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r016-20230726   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r033-20230726   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230726   gcc  
+x86_64       buildonly-randconfig-r002-20230726   gcc  
+x86_64       buildonly-randconfig-r003-20230726   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230726   clang
+x86_64               randconfig-x002-20230726   clang
+x86_64               randconfig-x003-20230726   clang
+x86_64               randconfig-x004-20230726   clang
+x86_64               randconfig-x005-20230726   clang
+x86_64               randconfig-x006-20230726   clang
+x86_64               randconfig-x011-20230726   gcc  
+x86_64               randconfig-x012-20230726   gcc  
+x86_64               randconfig-x013-20230726   gcc  
+x86_64               randconfig-x014-20230726   gcc  
+x86_64               randconfig-x015-20230726   gcc  
+x86_64               randconfig-x016-20230726   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r014-20230726   gcc  
+xtensa               randconfig-r015-20230726   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
