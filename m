@@ -2,248 +2,728 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A4F76494B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1C5764950
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbjG0HuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        id S233068AbjG0Huc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbjG0HuC (ORCPT
+        with ESMTP id S233487AbjG0HuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:50:02 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0977D4C04
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:41 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7679ea01e16so52515185a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:40 -0700 (PDT)
+        Thu, 27 Jul 2023 03:50:03 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2050.outbound.protection.outlook.com [40.107.255.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9AB65AD;
+        Thu, 27 Jul 2023 00:43:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJ+BmFSGF1HEbGGYrAo8YPpf/Lq6c8AaAj8S6KJ6aGDjcLafwBzbVLfQoP41zd7Sf7UA170meqBOBiJzIUwP4NmLjBh3o639x9b0sjQDm+DHMIbdTS/oRT9WI5gUOnkkIWEPR9VrwpYvTQMeWRBzSXPTsM5JMoz+mHAFLRNe4gcYDYd7o3VMwjEcOVIBhD9PuvA1bVgici2AvE7lzF/iZx+J7MRlBnPGJvVrolxNEfeuc2ukV/1ncnW/+snlFb8mDO7YLyxjkHH7mrhx7ax5GspxNo/aTLsuuAVpn0B55bfiZaIXl+FT6vwianiGBdF0U2gvKL96HkUPqJ36OdUDgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oDndLdwIU/iWUTaMKiTaiA2KdoGYQKprlz4HTDnl/tI=;
+ b=V2MZXto81nmDrwXuztW9ll1m1jTexDW7B1bScSJ+dq8Qo+muCFCsm+xAN8d2oXMVQajkYFCQjMGzkwscp0sr4qHaNzLNAQ0ribhsCzrhlsa7cbx3TTwbS6y/TePhQqO38+nrDhkoW4JQYVGHtqQE2SkxkcIs1hC7xGjkMuDbC1LOJrjHGi+rg91s6IQ4FcChA+LbW7NpAITuYb+aYWwZTqlZ6HDqKaQMJQpztCvs8/neYcN3Tt5JqNC31SKbyM8Y02xsnAhsK9RObHm0x2tdlj5qZExmZNX9egUYOh8w8rCb5nVaPqohwgo+bPS4UKGFfOkc5hqK9hhZPPuBfoQXow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 175.98.123.7) smtp.rcpttodomain=baylibre.com smtp.mailfrom=nuvoton.com;
+ dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=gmail.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690443819; x=1691048619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sn8sesRltxTsvGZPwjqFOVYdqOt+0ePbjNVrO+NvsVI=;
-        b=R2VjX1bEkK/wSa0IZkJIxTRe3q9R5KoePY/bouYE39NsO0oIGVw47WASgbslll3YBc
-         Pp1ORtFOCrvjgNLDBe6bi/b8i1HxWSI9TKHc74lvCjSKoSvKX6D2P2Ek3vlwRwdXlNXZ
-         sksdyNpKupk8vAKa/03ovrzw66ttGol74EXos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690443819; x=1691048619;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sn8sesRltxTsvGZPwjqFOVYdqOt+0ePbjNVrO+NvsVI=;
-        b=JslKCE7E9HvT59SLEyCbQF5Q/nx58lLbjwLLXcuRbwBBM+Z3Q2GGcMkAr9CWOdmkMg
-         fOV6ArwFFNP49yG3Zetz5HPCy4JbsN8KRy3Foc9MMWUcrtoTeVV2YJj5NQtkNl6PNMl9
-         9tbfhIgY1YJaMSvENaUe8/qWryFFTeexdJo6q0+Navm6beMTGw77IASkcTBjvEL9vea6
-         Y0UPiCATd4rZkLYFSSo/8EhH4UierA0MbgnrNUflbIWWPgmAxOwMimHhwYAymATzei2d
-         7BOuYkxp65KM9GsSJyHjeqPlNH2HkbCaVyO9NDiisJhPG2pkts4ZuXzJA22VrqQoowSF
-         C+jw==
-X-Gm-Message-State: ABy/qLaOSzZ1GnI60gG4gJ5YeHf5Va7I/CKZWKeO5e11G3C9mrG2F7Do
-        4AkeeCfunTIOgvkeWYC2KkxeFe7vUIx44G2GW5UoEA==
-X-Google-Smtp-Source: APBJJlG2GK1hCQDdCWcahWUhX0BxnZVjDA7wEZnExpvwR+i4/5tCmh23NmF3WjCMvTbrtSsb+g8b7Q==
-X-Received: by 2002:a05:620a:c50:b0:767:596f:a9e2 with SMTP id u16-20020a05620a0c5000b00767596fa9e2mr5345285qki.15.1690443819424;
-        Thu, 27 Jul 2023 00:43:39 -0700 (PDT)
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com. [209.85.219.53])
-        by smtp.gmail.com with ESMTPSA id x8-20020ae9f808000000b0076745f352adsm235130qkh.59.2023.07.27.00.43.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 00:43:38 -0700 (PDT)
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-63d09d886a3so4830906d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:38 -0700 (PDT)
-X-Received: by 2002:ad4:438f:0:b0:63d:d83:8808 with SMTP id
- s15-20020ad4438f000000b0063d0d838808mr3291222qvr.63.1690443818431; Thu, 27
- Jul 2023 00:43:38 -0700 (PDT)
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oDndLdwIU/iWUTaMKiTaiA2KdoGYQKprlz4HTDnl/tI=;
+ b=eNqV4p6j+MXhV+OpfddRvGp8SJTHBJbaV+VHfI7zcqIGLYg80HhOofT9jkO1stmIjAnTjwS/93RlqD704qrcZVTfJehuLSc7yFGg7XX47r9u8B+yPmRAES7VLLJgUdefqiWQqq6TjUlVMVtGrPLtqO157/ExL404s9YIx558Vx4=
+Received: from SG2PR02CA0132.apcprd02.prod.outlook.com (2603:1096:4:188::15)
+ by JH0PR03MB7928.apcprd03.prod.outlook.com (2603:1096:990:3b::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 07:43:44 +0000
+Received: from SG2APC01FT0064.eop-APC01.prod.protection.outlook.com
+ (2603:1096:4:188:cafe::eb) by SG2PR02CA0132.outlook.office365.com
+ (2603:1096:4:188::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Thu, 27 Jul 2023 07:43:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 175.98.123.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=gmail.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 175.98.123.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=175.98.123.7; helo=NTHCCAS04.nuvoton.com; pr=C
+Received: from NTHCCAS04.nuvoton.com (175.98.123.7) by
+ SG2APC01FT0064.mail.protection.outlook.com (10.13.36.172) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 07:43:42 +0000
+Received: from NTHCML01A.nuvoton.com (10.1.8.177) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 27
+ Jul 2023 15:43:41 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01A.nuvoton.com
+ (10.1.8.177) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Thu, 27 Jul
+ 2023 15:43:39 +0800
+Received: from taln60.nuvoton.co.il (10.191.1.180) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Thu, 27 Jul 2023 15:43:39 +0800
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id 85FDD64741; Thu, 27 Jul 2023 10:43:37 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <avifishman70@gmail.com>, <tali.perry1@gmail.com>,
+        <joel@jms.id.au>, <venture@google.com>, <yuenn@google.com>,
+        <benjaminfair@google.com>
+CC:     <openbmc@lists.ozlabs.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v18 1/1] clk: npcm8xx: add clock controller
+Date:   Thu, 27 Jul 2023 10:43:28 +0300
+Message-ID: <20230727074328.34144-2-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230727074328.34144-1-tmaimon77@gmail.com>
+References: <20230727074328.34144-1-tmaimon77@gmail.com>
 MIME-Version: 1.0
-References: <20230704040044.681850-1-randy.li@synaptics.com>
- <20230704040044.681850-3-randy.li@synaptics.com> <20230712093301.nkj2vok2x7esdhb3@chromium.org>
- <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
-In-Reply-To: <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 27 Jul 2023 16:43:27 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
-Message-ID: <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Hsia-Jun Li <randy.li@synaptics.com>, linux-media@vger.kernel.org,
-        ayaka@soulik.info, hans.verkuil@cisco.com, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2APC01FT0064:EE_|JH0PR03MB7928:EE_
+X-MS-Office365-Filtering-Correlation-Id: e25844c0-1a28-4cf5-0cbb-08db8e753318
+X-MS-Exchange-SenderADCheck: 0
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bzPFhd6GcTtcgAPihRwUyK6YGdAEsUgZ15SeKHVPuncScaUUn19GTyuzjykbVIvLG2tUWnWMiolxj2GF78iMfUa8Ead1zs0P7BrGY9izKwHv5BZ2Vl8hpO0jtXBzH4xMlbXlFLX27Ykvsc59GiL+ypLVUPdhdKdbbEhXnrSXkiwCYc/H90I4g2oNQlZof0GUfNmG65YcTNwnoCVn6KEpyAqnwXl+HA509iI0TDQqhUcADnvUaMOE95TLyxRMtw87dS0q0tcB7+h0RZVsJbF+CjJ88sJ2dCVm5LB9i3ywSZzLNhsGzuiBpoQ3fVyG1/IbTgHQ4bP6ziT2xwzYgSV4oA13JIO+D6my5qusJbfHTaQJS7P8FhRodoDxX6D9X4g7Zr/wuoJnjTAavalFAhbCS9wv4VLbfEM35sIj0cPGgrhRrb224hOJ/nOe5TyAVgufRtE6e7KNhALza0ys1CjB/yTYXEYZ/n3Z8z2Ka6Am1vHSrDMM7wTS7XBiL6MxVU+d3iap6yQRniEeR7rxNbH/gDT2XzBteZtgqQRE204ts5Y/q9DGq/1d/BsGTj5AC+KA9DuBF9l2gJk7mMJ/63LV4UjOAqUoDcGrEmDORY+NqvKbxQm7COqJo5bpLzR3LEpk5o+itqAjiyszGIzRK26X9cFh/nI7dAeOq2c1hUCgjsHvCEEXsGHaEgEmLJxbnsJUZe9/nxQV8/Hebd7x/NoLwrAa0ROahYRpT0sb6uK/F7kvi+NOwH6wbGH4AJqG86tznA3I+g3UyFX4avlBzNqLK+UGQiO79dRiWEWw+H+ii491nzaBoI3+I51NuM++iPGESveyAaUkblb9dmuL7XPKlD3nXZdYdSXcyFI6MNcVnJG0+MNwPve3rp0hMI6wvgy+g1otJ8TSVmN9fA6qzIzEpQ==
+X-Forefront-Antispam-Report: CIP:175.98.123.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS04.nuvoton.com;PTR:175-98-123-7.static.tfn.net.tw;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(396003)(39860400002)(61400799003)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(7416002)(36756003)(55446002)(30864003)(2906002)(40460700003)(40480700001)(73392003)(83380400001)(47076005)(6266002)(42882007)(186003)(36860700001)(336012)(82202003)(26005)(1076003)(6666004)(76482006)(81166007)(356005)(54906003)(83170400001)(478600001)(110136005)(70206006)(70586007)(4326008)(8676002)(82740400003)(42186006)(8936002)(316002)(41300700001)(2616005)(5660300002)(45356006)(32563001)(35450700002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 07:43:42.1182
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e25844c0-1a28-4cf5-0cbb-08db8e753318
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[175.98.123.7];Helo=[NTHCCAS04.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: SG2APC01FT0064.eop-APC01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR03MB7928
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 11:07=E2=80=AFPM Nicolas Dufresne <nicolas@ndufresn=
-e.ca> wrote:
->
-> Le mercredi 12 juillet 2023 =C3=A0 09:33 +0000, Tomasz Figa a =C3=A9crit =
-:
-> > On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
-> > > From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
-> > >
-> > > Many drivers have to create its own buf_struct for a
-> > > vb2_queue to track such a state. Also driver has to
-> > > iterate over rdy_queue every times to find out a buffer
-> > > which is not sent to hardware(or firmware), this new
-> > > list just offers the driver a place to store the buffer
-> > > that hardware(firmware) has acknowledged.
-> > >
-> > > One important advance about this list, it doesn't like
-> > > rdy_queue which both bottom half of the user calling
-> > > could operate it, while the v4l2 worker would as well.
-> > > The v4l2 core could only operate this queue when its
-> > > v4l2_context is not running, the driver would only
-> > > access this new hw_queue in its own worker.
-> >
-> > Could you describe in what case such a list would be useful for a
-> > mem2mem driver?
->
-> Today all driver must track buffers that are "owned by the hardware". Thi=
-s is a
-> concept dictated by the m2m framework and enforced through the ACTIVE fla=
-g. All
-> buffers from this list must be mark as done/error/queued after streamoff =
-of the
-> respective queue in order to acknowledge that they are no longer in use b=
-y the
-> HW. Not doing so will warn:
->
->   videobuf2_common: driver bug: stop_streaming operation is leaving buf .=
-..
->
-> Though, there is no queue to easily iterate them. All driver endup having=
- their
-> own queue, or just leaving the buffers in the rdy_queue (which isn't bett=
-er).
->
+Nuvoton Arbel BMC NPCM8XX contains an integrated clock controller which
+generates and supplies clocks to all modules within the BMC.
 
-Thanks for the explanation. I see how it could be useful now.
+Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+---
+ drivers/clk/Kconfig       |   8 +
+ drivers/clk/Makefile      |   1 +
+ drivers/clk/clk-npcm8xx.c | 565 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 574 insertions(+)
+ create mode 100644 drivers/clk/clk-npcm8xx.c
 
-Although I guess this is a problem specifically for hardware (or
-firmware) which can internally queue more than 1 buffer, right?
-Otherwise the current buffer could just stay at the top of the
-rdy_queue until it's removed by the driver's completion handler,
-timeout/error handler or context destruction.
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 93f38a8178ba..62c6080f4503 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -325,6 +325,14 @@ config COMMON_CLK_LOCHNAGAR
+ 	  This driver supports the clocking features of the Cirrus Logic
+ 	  Lochnagar audio development board.
+ 
++config COMMON_CLK_NPCM8XX
++	tristate "Clock driver for the NPCM8XX SoC Family"
++	depends on ARCH_NPCM || COMPILE_TEST
++	help
++	  This driver supports the clocks on the Nuvoton BMC NPCM8XX SoC Family,
++	  all the clocks are initialized by the bootloader, so this driver
++	  allows only reading of current settings directly from the hardware.
++
+ config COMMON_CLK_LOONGSON2
+ 	bool "Clock driver for Loongson-2 SoC"
+ 	depends on LOONGARCH || COMPILE_TEST
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index 7cb000549b61..80aaffd0dcfa 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -51,6 +51,7 @@ obj-$(CONFIG_ARCH_MILBEAUT_M10V)	+= clk-milbeaut.o
+ obj-$(CONFIG_ARCH_MOXART)		+= clk-moxart.o
+ obj-$(CONFIG_ARCH_NOMADIK)		+= clk-nomadik.o
+ obj-$(CONFIG_ARCH_NPCM7XX)	    	+= clk-npcm7xx.o
++obj-$(CONFIG_COMMON_CLK_NPCM8XX)	+= clk-npcm8xx.o
+ obj-$(CONFIG_ARCH_NSPIRE)		+= clk-nspire.o
+ obj-$(CONFIG_COMMON_CLK_OXNAS)		+= clk-oxnas.o
+ obj-$(CONFIG_COMMON_CLK_PALMAS)		+= clk-palmas.o
+diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
+new file mode 100644
+index 000000000000..16c50aa9cb65
+--- /dev/null
++++ b/drivers/clk/clk-npcm8xx.c
+@@ -0,0 +1,565 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Nuvoton NPCM8xx Clock Generator
++ * All the clocks are initialized by the bootloader, so this driver allows only
++ * reading of current settings directly from the hardware.
++ *
++ * Copyright (C) 2020 Nuvoton Technologies
++ * Author: Tomer Maimon <tomer.maimon@nuvoton.com>
++ */
++
++#include <linux/bitfield.h>
++#include <linux/clk-provider.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#include <dt-bindings/clock/nuvoton,npcm845-clk.h>
++
++/* npcm8xx clock registers*/
++#define NPCM8XX_CLKSEL		0x04
++#define NPCM8XX_CLKDIV1		0x08
++#define NPCM8XX_CLKDIV2		0x2C
++#define NPCM8XX_CLKDIV3		0x58
++#define NPCM8XX_CLKDIV4		0x7C
++#define NPCM8XX_PLLCON0		0x0C
++#define NPCM8XX_PLLCON1		0x10
++#define NPCM8XX_PLLCON2		0x54
++#define NPCM8XX_PLLCONG		0x60
++#define NPCM8XX_THRTL_CNT	0xC0
++
++#define PLLCON_LOKI	BIT(31)
++#define PLLCON_LOKS	BIT(30)
++#define PLLCON_FBDV	GENMASK(27, 16)
++#define PLLCON_OTDV2	GENMASK(15, 13)
++#define PLLCON_PWDEN	BIT(12)
++#define PLLCON_OTDV1	GENMASK(10, 8)
++#define PLLCON_INDV	GENMASK(5, 0)
++
++struct npcm8xx_clk_pll {
++	void __iomem	*pllcon;
++	unsigned int	id;
++	const char	*name;
++	unsigned long	flags;
++	struct clk_hw	hw;
++};
++
++#define to_npcm8xx_clk_pll(_hw) container_of(_hw, struct npcm8xx_clk_pll, hw)
++
++struct npcm8xx_pll_data {
++	const char *name;
++	struct clk_parent_data parent;
++	unsigned int reg;
++	unsigned long flags;
++	struct clk_hw hw;
++};
++
++struct npcm8xx_clk_div_data {
++	u32 reg;
++	u8 shift;
++	u8 width;
++	const char *name;
++	const struct clk_parent_data parent_data;
++	u8 clk_divider_flags;
++	unsigned long flags;
++	int onecell_idx;
++};
++
++struct npcm8xx_clk_mux_data {
++	u8 shift;
++	u32 mask;
++	const u32 *table;
++	const char *name;
++	const struct clk_parent_data *parent_data;
++	u8 num_parents;
++	unsigned long flags;
++	struct clk_hw hw;
++};
++
++/* external clock definition */
++#define NPCM8XX_CLK_S_REFCLK	"refclk"
++
++/* pll definition */
++#define NPCM8XX_CLK_S_PLL0	"pll0"
++#define NPCM8XX_CLK_S_PLL1	"pll1"
++#define NPCM8XX_CLK_S_PLL2	"pll2"
++#define NPCM8XX_CLK_S_PLL_GFX	"pll_gfx"
++
++/* early divider definition */
++#define NPCM8XX_CLK_S_PLL2_DIV2		"pll2_div2"
++#define NPCM8XX_CLK_S_PLL_GFX_DIV2	"pll_gfx_div2"
++#define NPCM8XX_CLK_S_PLL1_DIV2		"pll1_div2"
++
++/* mux definition */
++#define NPCM8XX_CLK_S_CPU_MUX     "cpu_mux"
++#define NPCM8XX_CLK_S_PIX_MUX     "gfx_pixel_mux"
++#define NPCM8XX_CLK_S_SD_MUX      "sd_mux"
++#define NPCM8XX_CLK_S_UART_MUX    "uart_mux"
++#define NPCM8XX_CLK_S_SU_MUX      "serial_usb_mux"
++#define NPCM8XX_CLK_S_MC_MUX      "mc_mux"
++#define NPCM8XX_CLK_S_ADC_MUX     "adc_mux"
++#define NPCM8XX_CLK_S_GFX_MUX     "gfx_mux"
++#define NPCM8XX_CLK_S_CLKOUT_MUX  "clkout_mux"
++#define NPCM8XX_CLK_S_GFXM_MUX    "gfxm_mux"
++#define NPCM8XX_CLK_S_DVC_MUX     "dvc_mux"
++#define NPCM8XX_CLK_S_RG_MUX	  "rg_mux"
++#define NPCM8XX_CLK_S_RCP_MUX	  "rcp_mux"
++
++/* div definition */
++#define NPCM8XX_CLK_S_MC          "mc"
++#define NPCM8XX_CLK_S_AXI         "axi"
++#define NPCM8XX_CLK_S_AHB         "ahb"
++#define NPCM8XX_CLK_S_SPI0        "spi0"
++#define NPCM8XX_CLK_S_SPI1        "spi1"
++#define NPCM8XX_CLK_S_SPI3        "spi3"
++#define NPCM8XX_CLK_S_SPIX        "spix"
++#define NPCM8XX_CLK_S_APB1        "apb1"
++#define NPCM8XX_CLK_S_APB2        "apb2"
++#define NPCM8XX_CLK_S_APB3        "apb3"
++#define NPCM8XX_CLK_S_APB4        "apb4"
++#define NPCM8XX_CLK_S_APB5        "apb5"
++#define NPCM8XX_CLK_S_APB19       "apb19"
++#define NPCM8XX_CLK_S_TOCK        "tock"
++#define NPCM8XX_CLK_S_CLKOUT      "clkout"
++#define NPCM8XX_CLK_S_PRE_ADC     "pre adc"
++#define NPCM8XX_CLK_S_UART        "uart"
++#define NPCM8XX_CLK_S_UART2       "uart2"
++#define NPCM8XX_CLK_S_TIMER       "timer"
++#define NPCM8XX_CLK_S_MMC         "mmc"
++#define NPCM8XX_CLK_S_SDHC        "sdhc"
++#define NPCM8XX_CLK_S_ADC         "adc"
++#define NPCM8XX_CLK_S_GFX         "gfx0_gfx1_mem"
++#define NPCM8XX_CLK_S_USBIF       "serial_usbif"
++#define NPCM8XX_CLK_S_USB_HOST    "usb_host"
++#define NPCM8XX_CLK_S_USB_BRIDGE  "usb_bridge"
++#define NPCM8XX_CLK_S_PCI         "pci"
++#define NPCM8XX_CLK_S_TH          "th"
++#define NPCM8XX_CLK_S_ATB         "atb"
++#define NPCM8XX_CLK_S_PRE_CLK     "pre_clk"
++#define NPCM8XX_CLK_S_RG	  "rg"
++#define NPCM8XX_CLK_S_RCP	  "rcp"
++
++static struct clk_hw hw_pll1_div2, hw_pll2_div2, hw_gfx_div2, hw_pre_clk;
++static struct npcm8xx_pll_data npcm8xx_pll_clks[] = {
++	{ NPCM8XX_CLK_S_PLL0, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON0, 0 },
++	{ NPCM8XX_CLK_S_PLL1, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON1, 0 },
++	{ NPCM8XX_CLK_S_PLL2, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCON2, 0 },
++	{ NPCM8XX_CLK_S_PLL_GFX, { .name = NPCM8XX_CLK_S_REFCLK }, NPCM8XX_PLLCONG, 0 },
++};
++
++static const u32 cpuck_mux_table[] = { 0, 1, 2, 7 };
++static const struct clk_parent_data cpuck_mux_parents[] = {
++	{ .hw = &npcm8xx_pll_clks[0].hw },
++	{ .hw = &npcm8xx_pll_clks[1].hw },
++	{ .index = 0 },
++	{ .hw = &npcm8xx_pll_clks[2].hw }
++};
++
++static const u32 pixcksel_mux_table[] = { 0, 2 };
++static const struct clk_parent_data pixcksel_mux_parents[] = {
++	{ .hw = &npcm8xx_pll_clks[3].hw },
++	{ .index = 0 }
++};
++
++static const u32 default_mux_table[] = { 0, 1, 2, 3 };
++static const struct clk_parent_data default_mux_parents[] = {
++	{ .hw = &npcm8xx_pll_clks[0].hw },
++	{ .hw = &npcm8xx_pll_clks[1].hw },
++	{ .index = 0 },
++	{ .hw = &hw_pll2_div2 }
++};
++
++static const u32 sucksel_mux_table[] = { 2, 3 };
++static const struct clk_parent_data sucksel_mux_parents[] = {
++	{ .index = 0 },
++	{ .hw = &hw_pll2_div2 }
++};
++
++static const u32 mccksel_mux_table[] = { 0, 2 };
++static const struct clk_parent_data mccksel_mux_parents[] = {
++	{ .hw = &hw_pll1_div2 },
++	{ .index = 0 }
++};
++
++static const u32 clkoutsel_mux_table[] = { 0, 1, 2, 3, 4 };
++static const struct clk_parent_data clkoutsel_mux_parents[] = {
++	{ .hw = &npcm8xx_pll_clks[0].hw },
++	{ .hw = &npcm8xx_pll_clks[1].hw },
++	{ .index = 0 },
++	{ .hw = &hw_gfx_div2 },
++	{ .hw = &hw_pll2_div2 }
++};
++
++static const u32 gfxmsel_mux_table[] = { 2, 3 };
++static const struct clk_parent_data gfxmsel_mux_parents[] = {
++	{ .index = 0 },
++	{ .hw = &npcm8xx_pll_clks[2].hw }
++};
++
++static const u32 dvcssel_mux_table[] = { 2, 3 };
++static const struct clk_parent_data dvcssel_mux_parents[] = {
++	{ .index = 0 },
++	{ .hw = &npcm8xx_pll_clks[2].hw }
++};
++
++static const u32 default3_mux_table[] = { 0, 1, 2 };
++static const struct clk_parent_data default3_mux_parents[] = {
++	{ .hw = &npcm8xx_pll_clks[0].hw },
++	{ .hw = &npcm8xx_pll_clks[1].hw },
++	{ .index = 0 }
++};
++
++static struct npcm8xx_clk_mux_data npcm8xx_muxes[] = {
++	{ 0, 3, cpuck_mux_table, NPCM8XX_CLK_S_CPU_MUX, cpuck_mux_parents,
++		ARRAY_SIZE(cpuck_mux_parents), CLK_IS_CRITICAL },
++	{ 4, 2, pixcksel_mux_table, NPCM8XX_CLK_S_PIX_MUX, pixcksel_mux_parents,
++		ARRAY_SIZE(pixcksel_mux_parents), 0 },
++	{ 6, 2, default_mux_table, NPCM8XX_CLK_S_SD_MUX, default_mux_parents,
++		ARRAY_SIZE(default_mux_parents), 0 },
++	{ 8, 2, default_mux_table, NPCM8XX_CLK_S_UART_MUX, default_mux_parents,
++		ARRAY_SIZE(default_mux_parents), 0 },
++	{ 10, 2, sucksel_mux_table, NPCM8XX_CLK_S_SU_MUX, sucksel_mux_parents,
++		ARRAY_SIZE(sucksel_mux_parents), 0 },
++	{ 12, 2, mccksel_mux_table, NPCM8XX_CLK_S_MC_MUX, mccksel_mux_parents,
++		ARRAY_SIZE(mccksel_mux_parents), 0 },
++	{ 14, 2, default_mux_table, NPCM8XX_CLK_S_ADC_MUX, default_mux_parents,
++		ARRAY_SIZE(default_mux_parents), 0 },
++	{ 16, 2, default_mux_table, NPCM8XX_CLK_S_GFX_MUX, default_mux_parents,
++		ARRAY_SIZE(default_mux_parents), 0 },
++	{ 18, 3, clkoutsel_mux_table, NPCM8XX_CLK_S_CLKOUT_MUX, clkoutsel_mux_parents,
++		ARRAY_SIZE(clkoutsel_mux_parents), 0 },
++	{ 21, 2, gfxmsel_mux_table, NPCM8XX_CLK_S_GFXM_MUX, gfxmsel_mux_parents,
++		ARRAY_SIZE(gfxmsel_mux_parents), 0 },
++	{ 23, 2, dvcssel_mux_table, NPCM8XX_CLK_S_DVC_MUX, dvcssel_mux_parents,
++		ARRAY_SIZE(dvcssel_mux_parents), 0 },
++	{ 25, 2, default3_mux_table, NPCM8XX_CLK_S_RG_MUX, default3_mux_parents,
++		ARRAY_SIZE(default3_mux_parents), 0 },
++	{ 27, 2, default3_mux_table, NPCM8XX_CLK_S_RCP_MUX, default3_mux_parents,
++		ARRAY_SIZE(default3_mux_parents), 0 },
++};
++
++/* configurable dividers: */
++static const struct npcm8xx_clk_div_data npcm8xx_divs[] = {
++	{ NPCM8XX_CLKDIV1, 28, 3, NPCM8XX_CLK_S_ADC,
++	{ .name = NPCM8XX_CLK_S_PRE_ADC, .index = -1 },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_ADC },
++	{ NPCM8XX_CLKDIV1, 26, 2, NPCM8XX_CLK_S_AHB, { .hw = &hw_pre_clk },
++	CLK_DIVIDER_READ_ONLY, CLK_IS_CRITICAL, NPCM8XX_CLK_AHB },
++	{ NPCM8XX_CLKDIV1, 21, 5, NPCM8XX_CLK_S_PRE_ADC,
++	{ .hw = &npcm8xx_muxes[6].hw }, CLK_DIVIDER_READ_ONLY, 0, -1 },
++	{ NPCM8XX_CLKDIV1, 16, 5, NPCM8XX_CLK_S_UART,
++	{ .hw = &npcm8xx_muxes[3].hw }, 0, 0, NPCM8XX_CLK_UART },
++	{ NPCM8XX_CLKDIV1, 11, 5, NPCM8XX_CLK_S_MMC,
++	{ .hw = &npcm8xx_muxes[2].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_MMC },
++	{ NPCM8XX_CLKDIV1, 6, 5, NPCM8XX_CLK_S_SPI3,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB }, 0, 0,
++	NPCM8XX_CLK_SPI3 },
++	{ NPCM8XX_CLKDIV1, 2, 4, NPCM8XX_CLK_S_PCI,
++	{ .hw = &npcm8xx_muxes[7].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_PCI },
++
++	{ NPCM8XX_CLKDIV2, 30, 2, NPCM8XX_CLK_S_APB4,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_APB4 },
++	{ NPCM8XX_CLKDIV2, 28, 2, NPCM8XX_CLK_S_APB3,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_APB3 },
++	{ NPCM8XX_CLKDIV2, 26, 2, NPCM8XX_CLK_S_APB2,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_APB2 },
++	{ NPCM8XX_CLKDIV2, 24, 2, NPCM8XX_CLK_S_APB1,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_APB1 },
++	{ NPCM8XX_CLKDIV2, 22, 2, NPCM8XX_CLK_S_APB5,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_APB5 },
++	{ NPCM8XX_CLKDIV2, 16, 5, NPCM8XX_CLK_S_CLKOUT,
++	{ .hw = &npcm8xx_muxes[8].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_CLKOUT },
++	{ NPCM8XX_CLKDIV2, 13, 3, NPCM8XX_CLK_S_GFX,
++	{ .hw = &npcm8xx_muxes[7].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_GFX },
++	{ NPCM8XX_CLKDIV2, 8, 5, NPCM8XX_CLK_S_USB_BRIDGE,
++	{ .hw = &npcm8xx_muxes[4].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_SU },
++	{ NPCM8XX_CLKDIV2, 4, 4, NPCM8XX_CLK_S_USB_HOST,
++	{ .hw = &npcm8xx_muxes[4].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_SU48 },
++	{ NPCM8XX_CLKDIV2, 0, 4, NPCM8XX_CLK_S_SDHC,
++	{ .hw = &npcm8xx_muxes[2].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_SDHC },
++
++	{ NPCM8XX_CLKDIV3, 16, 8, NPCM8XX_CLK_S_SPI1,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY, 0, NPCM8XX_CLK_SPI1 },
++	{ NPCM8XX_CLKDIV3, 11, 5, NPCM8XX_CLK_S_UART2,
++	{ .hw = &npcm8xx_muxes[3].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_UART2 },
++	{ NPCM8XX_CLKDIV3, 6, 5, NPCM8XX_CLK_S_SPI0,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY, 0, NPCM8XX_CLK_SPI0 },
++	{ NPCM8XX_CLKDIV3, 1, 5, NPCM8XX_CLK_S_SPIX,
++	{ .fw_name = NPCM8XX_CLK_S_AHB, .name = NPCM8XX_CLK_S_AHB },
++	CLK_DIVIDER_READ_ONLY, 0, NPCM8XX_CLK_SPIX },
++
++	{ NPCM8XX_CLKDIV4, 28, 4, NPCM8XX_CLK_S_RG,
++	{ .hw = &npcm8xx_muxes[11].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_RG },
++	{ NPCM8XX_CLKDIV4, 12, 4, NPCM8XX_CLK_S_RCP,
++	{ .hw = &npcm8xx_muxes[12].hw }, CLK_DIVIDER_READ_ONLY, 0,
++	NPCM8XX_CLK_RCP },
++
++	{ NPCM8XX_THRTL_CNT, 0, 2, NPCM8XX_CLK_S_TH,
++	{ .hw = &npcm8xx_muxes[0].hw },
++	CLK_DIVIDER_READ_ONLY | CLK_DIVIDER_POWER_OF_TWO, 0, NPCM8XX_CLK_TH },
++};
++
++static unsigned long npcm8xx_clk_pll_recalc_rate(struct clk_hw *hw,
++						 unsigned long parent_rate)
++{
++	struct npcm8xx_clk_pll *pll = to_npcm8xx_clk_pll(hw);
++	unsigned long fbdv, indv, otdv1, otdv2;
++	unsigned int val;
++	u64 ret;
++
++	if (parent_rate == 0) {
++		pr_debug("%s: parent rate is zero\n", __func__);
++		return 0;
++	}
++
++	val = readl_relaxed(pll->pllcon);
++
++	indv = FIELD_GET(PLLCON_INDV, val);
++	fbdv = FIELD_GET(PLLCON_FBDV, val);
++	otdv1 = FIELD_GET(PLLCON_OTDV1, val);
++	otdv2 = FIELD_GET(PLLCON_OTDV2, val);
++
++	ret = (u64)parent_rate * fbdv;
++	do_div(ret, indv * otdv1 * otdv2);
++
++	return ret;
++}
++
++static const struct clk_ops npcm8xx_clk_pll_ops = {
++	.recalc_rate = npcm8xx_clk_pll_recalc_rate,
++};
++
++static struct clk_hw *
++npcm8xx_clk_register_pll(struct device *dev, void __iomem *pllcon,
++			 const char *name, const struct clk_parent_data *parent,
++			 unsigned long flags)
++{
++	struct npcm8xx_clk_pll *pll;
++	struct clk_init_data init = {};
++	int ret;
++
++	pll = devm_kzalloc(dev, sizeof(*pll), GFP_KERNEL);
++	if (!pll)
++		return ERR_PTR(-ENOMEM);
++
++	init.name = name;
++	init.ops = &npcm8xx_clk_pll_ops;
++	init.parent_data = parent;
++	init.num_parents = 1;
++	init.flags = flags;
++
++	pll->pllcon = pllcon;
++	pll->hw.init = &init;
++
++	ret = devm_clk_hw_register(dev, &pll->hw);
++	if (ret) {
++		kfree(pll);
++		return ERR_PTR(ret);
++	}
++
++	return &pll->hw;
++}
++
++static DEFINE_SPINLOCK(npcm8xx_clk_lock);
++
++static int npcm8xx_clk_probe(struct platform_device *pdev)
++{
++	struct clk_hw_onecell_data *npcm8xx_clk_data;
++	struct device *dev = &pdev->dev;
++	void __iomem *clk_base;
++	struct resource *res;
++	struct clk_hw *hw;
++	unsigned int i;
++	int err;
++
++	npcm8xx_clk_data = devm_kzalloc(dev, struct_size(npcm8xx_clk_data, hws,
++							 NPCM8XX_NUM_CLOCKS),
++					GFP_KERNEL);
++	if (!npcm8xx_clk_data)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	clk_base = devm_ioremap(dev, res->start, resource_size(res));
++	if (!clk_base) {
++		dev_err(&pdev->dev, "Failed to remap I/O memory\n");
++		return -ENOMEM;
++	}
++
++	npcm8xx_clk_data->num = NPCM8XX_NUM_CLOCKS;
++
++	for (i = 0; i < NPCM8XX_NUM_CLOCKS; i++)
++		npcm8xx_clk_data->hws[i] = ERR_PTR(-EPROBE_DEFER);
++
++	/* Register plls */
++	for (i = 0; i < ARRAY_SIZE(npcm8xx_pll_clks); i++) {
++		struct npcm8xx_pll_data *pll_clk = &npcm8xx_pll_clks[i];
++
++		hw = npcm8xx_clk_register_pll(dev, clk_base + pll_clk->reg,
++					      pll_clk->name, &pll_clk->parent,
++					      pll_clk->flags);
++		if (IS_ERR(hw)) {
++			dev_err(dev, "npcm8xx_clk: Can't register pll\n");
++			return PTR_ERR(hw);
++		}
++		pll_clk->hw = *hw;
++	}
++
++	/* Register fixed dividers */
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL1_DIV2,
++					       NPCM8XX_CLK_S_PLL1, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register fixed div\n");
++		return PTR_ERR(hw);
++	}
++	hw_pll1_div2 = *hw;
++
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL2_DIV2,
++					       NPCM8XX_CLK_S_PLL2, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register pll2 div2\n");
++		return PTR_ERR(hw);
++	}
++	hw_pll2_div2 = *hw;
++
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PLL_GFX_DIV2,
++					       NPCM8XX_CLK_S_PLL_GFX, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register gfx div2\n");
++		return PTR_ERR(hw);
++	}
++	hw_gfx_div2 = *hw;
++
++	/* Register muxes */
++	for (i = 0; i < ARRAY_SIZE(npcm8xx_muxes); i++) {
++		struct npcm8xx_clk_mux_data *mux_data = &npcm8xx_muxes[i];
++
++		hw = devm_clk_hw_register_mux_parent_data_table(dev,
++								mux_data->name,
++								mux_data->parent_data,
++								mux_data->num_parents,
++								mux_data->flags,
++								clk_base + NPCM8XX_CLKSEL,
++								mux_data->shift,
++								mux_data->mask,
++								0,
++								mux_data->table,
++								&npcm8xx_clk_lock);
++		if (IS_ERR(hw)) {
++			dev_err(dev, "npcm8xx_clk: Can't register mux\n");
++			return PTR_ERR(hw);
++		}
++		mux_data->hw = *hw;
++	}
++
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_PRE_CLK,
++					       NPCM8XX_CLK_S_CPU_MUX, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register pre clk div2\n");
++		return PTR_ERR(hw);
++	}
++	hw_pre_clk = *hw;
++
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_AXI,
++					       NPCM8XX_CLK_S_TH, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register axi div2\n");
++		return PTR_ERR(hw);
++	}
++	npcm8xx_clk_data->hws[NPCM8XX_CLK_AXI] = hw;
++
++	hw = devm_clk_hw_register_fixed_factor(dev, NPCM8XX_CLK_S_ATB,
++					       NPCM8XX_CLK_S_AXI, 0, 1, 2);
++	if (IS_ERR(hw)) {
++		dev_err(dev, "npcm8xx_clk: Can't register atb div2\n");
++		return PTR_ERR(hw);
++	}
++	npcm8xx_clk_data->hws[NPCM8XX_CLK_ATB] = hw;
++
++	/* Register clock dividers specified in npcm8xx_divs */
++	for (i = 0; i < ARRAY_SIZE(npcm8xx_divs); i++) {
++		const struct npcm8xx_clk_div_data *div_data = &npcm8xx_divs[i];
++
++		hw = clk_hw_register_divider_parent_data(dev, div_data->name,
++							 &div_data->parent_data,
++							 div_data->flags,
++							 clk_base + div_data->reg,
++							 div_data->shift,
++							 div_data->width,
++							 div_data->clk_divider_flags,
++							 &npcm8xx_clk_lock);
++		if (IS_ERR(hw)) {
++			dev_err(dev, "npcm8xx_clk: Can't register div table\n");
++			goto err_div_clk;
++		}
++
++		if (div_data->onecell_idx >= 0)
++			npcm8xx_clk_data->hws[div_data->onecell_idx] = hw;
++	}
++
++	err = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
++					  npcm8xx_clk_data);
++	if (err) {
++		dev_err(dev, "unable to add clk provider\n");
++		hw = ERR_PTR(err);
++		goto err_div_clk;
++	}
++
++	return err;
++
++err_div_clk:
++	while (i--)
++		if (npcm8xx_divs[i].onecell_idx >= 0)
++			clk_hw_unregister_divider(npcm8xx_clk_data->hws[npcm8xx_divs[i].onecell_idx]);
++
++	return PTR_ERR(hw);
++}
++
++static const struct of_device_id npcm8xx_clk_dt_ids[] = {
++	{ .compatible = "nuvoton,npcm845-clk", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, npcm8xx_clk_dt_ids);
++
++static struct platform_driver npcm8xx_clk_driver = {
++	.probe  = npcm8xx_clk_probe,
++	.driver = {
++		.name = "npcm8xx_clk",
++		.of_match_table = npcm8xx_clk_dt_ids,
++	},
++};
++
++static int __init npcm8xx_clk_driver_init(void)
++{
++	return platform_driver_register(&npcm8xx_clk_driver);
++}
++arch_initcall(npcm8xx_clk_driver_init);
++
++static void __exit npcm8xx_clk_exit(void)
++{
++	platform_driver_unregister(&npcm8xx_clk_driver);
++}
++module_exit(npcm8xx_clk_exit);
++
++MODULE_DESCRIPTION("Clock driver for Nuvoton NPCM8XX BMC SoC");
++MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
++MODULE_LICENSE("GPL v2");
++
+-- 
+2.33.0
 
-Best regards,
-Tomasz
-
-> Nicolas
-> >
-> > >
-> > > Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
-> > > ---
-> > >  drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++-------=
--
-> > >  include/media/v4l2-mem2mem.h           | 10 +++++++++-
-> > >  2 files changed, 26 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v=
-4l2-core/v4l2-mem2mem.c
-> > > index c771aba42015..b4151147d5bd 100644
-> > > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v4l2_m2=
-m_dev *m2m_dev,
-> > >             goto job_unlock;
-> > >     }
-> > >
-> > > -   src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > -   dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > -   if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > -           dprintk("No input buffers available\n");
-> > > -           goto job_unlock;
-> > > +   if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
-> > > +           src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > +
-> > > +           if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > +                   dprintk("No input buffers available\n");
-> > > +                   goto job_unlock;
-> > > +           }
-> > >     }
-> > > -   if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > -           dprintk("No output buffers available\n");
-> > > -           goto job_unlock;
-> > > +
-> > > +   if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
-> > > +           dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > +           if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > +                   dprintk("No output buffers available\n");
-> > > +                   goto job_unlock;
-> > > +           }
-> > >     }
-> >
-> > src and dst would be referenced unitialized below if neither of the
-> > above ifs hits...
-> >
-> > Best regards,
-> > Tomasz
-> >
-> > >
-> > >     m2m_ctx->new_frame =3D true;
-> > > @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, struct =
-v4l2_m2m_ctx *m2m_ctx,
-> > >     INIT_LIST_HEAD(&q_ctx->rdy_queue);
-> > >     q_ctx->num_rdy =3D 0;
-> > >     spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
-> > > +   INIT_LIST_HEAD(&q_ctx->hw_queue);
-> > >
-> > >     if (m2m_dev->curr_ctx =3D=3D m2m_ctx) {
-> > >             m2m_dev->curr_ctx =3D NULL;
-> > > @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(struct v=
-4l2_m2m_dev *m2m_dev,
-> > >
-> > >     INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
-> > >     INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
-> > > +   INIT_LIST_HEAD(&out_q_ctx->hw_queue);
-> > > +   INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
-> > >     spin_lock_init(&out_q_ctx->rdy_spinlock);
-> > >     spin_lock_init(&cap_q_ctx->rdy_spinlock);
-> > >
-> > > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2me=
-m.h
-> > > index d6c8eb2b5201..2342656e582d 100644
-> > > --- a/include/media/v4l2-mem2mem.h
-> > > +++ b/include/media/v4l2-mem2mem.h
-> > > @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
-> > >   * processed
-> > >   *
-> > >   * @q:             pointer to struct &vb2_queue
-> > > - * @rdy_queue:     List of V4L2 mem-to-mem queues
-> > > + * @rdy_queue:     List of V4L2 mem-to-mem queues. If v4l2_m2m_buf_q=
-ueue() is
-> > > + *         called in struct vb2_ops->buf_queue(), the buffer enqueue=
-d
-> > > + *         by user would be added to this list.
-> > >   * @rdy_spinlock: spin lock to protect the struct usage
-> > >   * @num_rdy:       number of buffers ready to be processed
-> > > + * @hw_queue:      A list for tracking the buffer is occupied by the=
- hardware
-> > > + *                 (or device's firmware). A buffer could only be in=
- either
-> > > + *                 this list or @rdy_queue.
-> > > + *                 Driver may choose not to use this list while uses=
- its own
-> > > + *                 private data to do this work.
-> > >   * @buffered:      is the queue buffered?
-> > >   *
-> > >   * Queue for buffers ready to be processed as soon as this
-> > > @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
-> > >     struct list_head        rdy_queue;
-> > >     spinlock_t              rdy_spinlock;
-> > >     u8                      num_rdy;
-> > > +   struct list_head        hw_queue;
-> > >     bool                    buffered;
-> > >  };
-> > >
-> > > --
-> > > 2.17.1
-> > >
->
