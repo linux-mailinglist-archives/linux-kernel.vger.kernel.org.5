@@ -2,168 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E406E765194
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F1D7651A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbjG0Kqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S232378AbjG0Kto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjG0Kqv (ORCPT
+        with ESMTP id S229714AbjG0Ktk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:46:51 -0400
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC42F19B6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:46:47 -0700 (PDT)
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-55e16833517so1280962eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:46:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690454807; x=1691059607;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LvI6vtfQJFf8LXXcJyjBDqhJYmrLxLa/d2Tx/45QJ/4=;
-        b=dcS79gIMkDhpaCqIa/muLhBvFmWArQkwhWuM0DeAzfAgOkVx6bbivsbNaXoM0sMZzl
-         hRZlv3KdLF7jaCvHjDskdDp6dNEGf3EuAVjre/XZBYtFO53RR/b61WfAbNcEMVJ6zSEd
-         rzvEvOnW3cdn2ByiLn1JOTJytN59PU6q2qGi+d1L6aUxEib5QK+UEQwip8mhMYre6Szs
-         KhkJZqIA9I7lX44bAPgd1j8K7gghHCP8dewhSDGv4+bZ4lifjV6drkxOxqev403nN6El
-         z9FL0ZV+iWvXHKalLC3GsEaDMozpmD4a+SJjB/KxajTml8x4RVI6E/tyPmHdMcfbJnhz
-         U67Q==
-X-Gm-Message-State: ABy/qLYBIJc13X0Pe5ooLkUKZhf2tErTQ7JFeBBwZkErFXO85mt4jMre
-        v8/Zpwn9sE9yHks0XNyBH4KZ3dqQbjVswp6v8+Po3E6mKDxo
-X-Google-Smtp-Source: APBJJlEjHNOn01A7PhQWqnlltz8q9HyG34aGQpyMcKlcIfoPZdDs6G+HJfbX5y+E5uQqAt5wnkcTQrVHYprRdQVKORLxIcQez/7u
+        Thu, 27 Jul 2023 06:49:40 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126841B0;
+        Thu, 27 Jul 2023 03:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690454980; x=1721990980;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=57mYT2f2RrP9FiodEMMr76QgapJHPnR1nBjKTCXuo1A=;
+  b=Bi/vMRdkZVZxLAFy/AyZsxOHd1O385HsZNSAUgBSEPgCtl7NJ0bMrHZP
+   2ZDvMMzxANjrls/b06H6teoDo082hcbTAnFN08R/SZm++EKRk5O8NvjKZ
+   641xVzMzR2X0Nk86/B6H15JrKvbxliXPJdtmC+Lxt47kwglDK8PGPoHaq
+   nAmMljOxBijv9XtvfIcuxgwPhC1x07I8CM6o4/D1SMblws0KZyZRBww4w
+   iKngxMPJcWq0f8VDAaloV1SszdfKHsCF9v5tWYOROKDrnjDsEjg75pqoD
+   FlVw8/iVZhn1XIShnNmPiBvaCloY7QKrpOuYZ1OxRFVnzBILY1ZaT+2Kk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358278571"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="358278571"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 03:49:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="677111514"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="677111514"
+Received: from mylly.fi.intel.com (HELO [10.237.72.154]) ([10.237.72.154])
+  by orsmga003.jf.intel.com with ESMTP; 27 Jul 2023 03:49:36 -0700
+Message-ID: <d1ec82a2-5c16-c3dd-147f-1e5256acffcd@linux.intel.com>
+Date:   Thu, 27 Jul 2023 13:49:36 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2092:b0:3a4:2943:8f7 with SMTP id
- s18-20020a056808209200b003a4294308f7mr5363691oiw.5.1690454807115; Thu, 27 Jul
- 2023 03:46:47 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 03:46:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000497c3c060175aed9@google.com>
-Subject: [syzbot] [netfilter?] WARNING in __nf_conntrack_confirm
-From:   syzbot <syzbot+ff6e85a2812073da0a36@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, coreteam@netfilter.org, davem@davemloft.net,
-        edumazet@google.com, fw@strlen.de, kadlec@netfilter.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pabeni@redhat.com, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] i2c: designware: Handle invalid SMBus block data
+ response length value
+Content-Language: en-US
+To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Cc:     patches@amperecomputing.com, andriy.shevchenko@linux.intel.com,
+        mika.westerberg@linux.intel.com, jsd@semihalf.com,
+        chuong@os.amperecomputing.com, darren@os.amperecomputing.com,
+        stable@vger.kernel.org
+References: <20230726080001.337353-1-tamnguyenchi@os.amperecomputing.com>
+ <20230726080001.337353-3-tamnguyenchi@os.amperecomputing.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20230726080001.337353-3-tamnguyenchi@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    15cec633fc7b net: fec: tx processing does not call XDP API..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fbd745a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
-dashboard link: https://syzkaller.appspot.com/bug?extid=ff6e85a2812073da0a36
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/cfb97ef3ebf9/disk-15cec633.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2e8df2be69d2/vmlinux-15cec633.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2bdf17720191/bzImage-15cec633.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ff6e85a2812073da0a36@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 12 at net/netfilter/nf_conntrack_core.c:1198 __nf_conntrack_confirm+0x867/0x12c0 net/netfilter/nf_conntrack_core.c:1198
-Modules linked in:
-CPU: 1 PID: 12 Comm: kworker/u4:1 Not tainted 6.5.0-rc2-syzkaller-00231-g15cec633fc7b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Workqueue: events_unbound macvlan_process_broadcast
-RIP: 0010:__nf_conntrack_confirm+0x867/0x12c0 net/netfilter/nf_conntrack_core.c:1198
-Code: df e8 5d 64 ff ff 31 ff 41 89 c4 89 c6 e8 91 b5 1c f9 45 84 e4 0f 84 7a ff ff ff 44 8b 7c 24 18 e9 3b fe ff ff e8 49 ba 1c f9 <0f> 0b 48 8b 7c 24 20 e8 bd f6 cb 01 44 8b 74 24 44 8b 5c 24 38 44
-RSP: 0018:ffffc900001e08b0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff888077a75bc0 RCX: 0000000000000100
-RDX: ffff888015265940 RSI: ffffffff8869b667 RDI: 0000000000000001
-RBP: 000000000001e698 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000004f10 R12: ffff888077a75b00
-R13: 0000000000000001 R14: 000000000001e698 R15: 00000000000038d1
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fea3059d988 CR3: 000000004f78b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- nf_conntrack_confirm include/net/netfilter/nf_conntrack_core.h:62 [inline]
- nf_confirm+0xfae/0x1200 net/netfilter/nf_conntrack_proto.c:155
- nf_hook_entry_hookfn include/linux/netfilter.h:143 [inline]
- nf_hook_slow+0xbf/0x1e0 net/netfilter/core.c:626
- nf_hook include/linux/netfilter.h:258 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ip_local_deliver+0x2f1/0x540 net/ipv4/ip_input.c:254
- dst_input include/net/dst.h:468 [inline]
- ip_rcv_finish+0x1c4/0x2e0 net/ipv4/ip_input.c:449
- NF_HOOK include/linux/netfilter.h:303 [inline]
- NF_HOOK include/linux/netfilter.h:297 [inline]
- ip_rcv+0xc8/0x410 net/ipv4/ip_input.c:569
- __netif_receive_skb_one_core+0x115/0x180 net/core/dev.c:5452
- __netif_receive_skb+0x1f/0x1b0 net/core/dev.c:5566
- process_backlog+0x101/0x6c0 net/core/dev.c:5894
- __napi_poll.constprop.0+0xb4/0x530 net/core/dev.c:6460
- napi_poll net/core/dev.c:6527 [inline]
- net_rx_action+0x956/0xe90 net/core/dev.c:6660
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- do_softirq kernel/softirq.c:454 [inline]
- do_softirq+0xaa/0xe0 kernel/softirq.c:441
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0xf8/0x120 kernel/softirq.c:381
- local_bh_enable include/linux/bottom_half.h:33 [inline]
- netif_rx net/core/dev.c:4972 [inline]
- netif_rx+0x332/0x420 net/core/dev.c:4961
- macvlan_broadcast+0x37d/0x680 drivers/net/macvlan.c:290
- macvlan_multicast_rx drivers/net/macvlan.c:302 [inline]
- macvlan_multicast_rx+0xd6/0x100 drivers/net/macvlan.c:296
- macvlan_process_broadcast+0x225/0x690 drivers/net/macvlan.c:338
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
- worker_thread+0x687/0x1110 kernel/workqueue.c:2748
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-RIP: 0000:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+On 7/26/23 11:00, Tam Nguyen wrote:
+> In the I2C_FUNC_SMBUS_BLOCK_DATA case, the invalid length byte value
+> (outside of 1-32) of the SMBus block data response from the Slave device
+> is not correctly handled by the I2C Designware driver.
+> 
+> In case IC_EMPTYFIFO_HOLD_MASTER_EN==1, which cannot be detected
+> from the registers, the Master can be disabled only if the STOP bit
+> is set. Without STOP bit set, the Master remains active, holding the bus
+> until receiving a block data response length. This hangs the bus and
+> is unrecoverable.
+> 
+> Avoid this by issuing another dump read to reach the stop condition when
+> an invalid length byte is received.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+> ---
+>   drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++++++--
+>   1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
