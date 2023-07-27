@@ -2,260 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1C57649A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AABA47649A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbjG0H6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        id S233601AbjG0H6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjG0H5s (ORCPT
+        with ESMTP id S233724AbjG0H6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:57:48 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFA3C0D
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:55:05 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-63cf57c79b5so5227326d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:55:05 -0700 (PDT)
+        Thu, 27 Jul 2023 03:58:06 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ED944B1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:55:21 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-4864be3606dso250691e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:55:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690444503; x=1691049303;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690444520; x=1691049320;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I6NJUz38HTUn5Lzf1Xa0ODFyXspS2ZmT9vChRAq/stA=;
-        b=gKMG5vIAUoQ1PWlv1B0fWuEI8+cO7PFosRYCHd9fMpNOrwOH64Dy2iZOIM53VG4buD
-         WE9uFnyBGlfKWy9VgK8czQE3saJ+DbvDSH8pqb+3m72WJ3TmnDQdRpdPU56VjVCVu8DM
-         RjLIzQ5DspR5JiNmMiLmlk9+4wpaJQMhT219w=
+        bh=1wTiU1QS3gn92Yh5xPIntx1hOHsqD3iU5S77nWUG3kY=;
+        b=WqxAswDZe0hTtx1sTNc2UdE6IWvEEUTrw3Sc0NLTXmy9AaAxnZ5DZPIhovPW6/PXyl
+         WxUOeKXJv1eyc5MPUypFi9jiVkWYeIrUYGFaTMUBR8CxU2XH/SiY1M7iUHHqCOh/fyg5
+         y++iJgNR6/3/uD+iGQ8f98XSPjuaIIZ38+K06rANnsHlxL0rC5dFKwWqLRZ+zYa6ohC/
+         hYpjNKWoO7VUYGp1oTjY60V7D74DHMYbq75stMxPozPIH7leAEDmawyPXRoUkQ2/yi0N
+         6zWqgw8ADU0IAUchAY35VPC4FM5N9Hm2R9avXExo3z5+WuWhcOI7mOI8qyiiueNYZq3I
+         1N+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690444503; x=1691049303;
+        d=1e100.net; s=20221208; t=1690444520; x=1691049320;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I6NJUz38HTUn5Lzf1Xa0ODFyXspS2ZmT9vChRAq/stA=;
-        b=gQpKxmpXyPSZozwpCvtNSo5hiXEQvNkYj8oeCDLBU9PaJPj8tspWqV8bmglG/Df0Ox
-         G/QNkrBmf9/cOz95yIGryqoYKviYuWs8ExuMwTzMYehgXN+D0ITh483i01qLcKSCCSlJ
-         d6RSRD478UK7oMj6zlb1/H9jSGLBL6R3OfyWJBGX2+Rwvb+5AVhamkVvX+OImwo3NhgP
-         HDtO1ZGA9QyBTndQWFoOdEQvgkkluy8FEd8eqb+EAWNT3gyon+lt95lPSyYCdmvCPCsr
-         R7Fd5hQeI4Y6oQHDV3srQ5Xb3raZI+dgPxvz+lm/WVKJZ2V+qtiWiJpMe6W7F/6sXbif
-         KmLg==
-X-Gm-Message-State: ABy/qLa85pMahapv6kCWjw1bulEKhqLcOzvnF8CUuJrUYB4xntGEpeh3
-        lUv9zzP5on2NfbjfFz7nM1SS0yKQozMSWu3ZVdGO5A==
-X-Google-Smtp-Source: APBJJlEyhOSt6ablef5OX2WRZIhUcFNrNAkabMVJKO1pX6dmWcETyVRgwwTOxWVyQ7NjTgXmarTtMQ==
-X-Received: by 2002:a0c:f14e:0:b0:635:93fb:fbf7 with SMTP id y14-20020a0cf14e000000b0063593fbfbf7mr3852024qvl.2.1690444503106;
-        Thu, 27 Jul 2023 00:55:03 -0700 (PDT)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id e16-20020a0ce3d0000000b0063642bcc5e4sm260460qvl.9.2023.07.27.00.55.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 00:55:02 -0700 (PDT)
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-76731802203so57505285a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:55:02 -0700 (PDT)
-X-Received: by 2002:a05:620a:2915:b0:767:81fc:c6b8 with SMTP id
- m21-20020a05620a291500b0076781fcc6b8mr5945598qkp.6.1690444501768; Thu, 27 Jul
- 2023 00:55:01 -0700 (PDT)
+        bh=1wTiU1QS3gn92Yh5xPIntx1hOHsqD3iU5S77nWUG3kY=;
+        b=IW2ezhfJF+Ad2ACR4fkmdxVQ6sYe7Q5akBBrFS2GSgYeR9GzQuzrhGsnYMSfmyb9RG
+         wMDnQa8fYesMQ//5S/bhDjP0m0lWC0ucnJbNCS9engT5cqHPwQqqturUqyCUL8Yojloo
+         yn0fMkpo0oPtXsnp4QmlMEj6mQq4wzxhcoqFe6jrdzqr9sYx8XRKIeja47tSM0uoD/O8
+         kJ0w0V1qJAbm6ToDSfSrKA6nvyaulHDP8Qc1VkGQfVJm3W/w+VcfqIawFvCi3yWvej4W
+         u7cSIJVKflKQEJP/UktyF8AZK4kViJexYzykoXhe1knTkDH2Aw9FAtgJ9v+zbO9MDUYJ
+         AK3A==
+X-Gm-Message-State: ABy/qLZIfIiFrOrOprNBidzCQcvO0DfTsbgVCTGxwchjZFa2VsB41bfM
+        XYwejgDXL/IVmmjDFwHwPjy/j0i/fvbCwj2nnvgWaw==
+X-Google-Smtp-Source: APBJJlFycQxS0qmSyJIf8rk3jC6nMZNyUdagNpc2N4FOR2b3DHnCdQTEpIAyaaVVB2RmwY9Yftt0S8T6ACfyCGX5ndw=
+X-Received: by 2002:a1f:5502:0:b0:486:6861:a3b3 with SMTP id
+ j2-20020a1f5502000000b004866861a3b3mr248647vkb.8.1690444520413; Thu, 27 Jul
+ 2023 00:55:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230704040044.681850-1-randy.li@synaptics.com>
- <20230704040044.681850-3-randy.li@synaptics.com> <20230712093301.nkj2vok2x7esdhb3@chromium.org>
- <4e70c8b8-d459-2b79-2b3d-40875f701d97@synaptics.com> <CAAFQd5CGO4iiC7HX9wTetuzjZyaAsKStFOpxqcFkZ_o-eJOPtg@mail.gmail.com>
- <ca16e2d6-a1c7-bff6-496f-07174f379fd9@synaptics.com>
-In-Reply-To: <ca16e2d6-a1c7-bff6-496f-07174f379fd9@synaptics.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 27 Jul 2023 16:54:49 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5DbF_=_ZE3M=g0qjhizDBKy2dbsDxW5fWgUXXFHMoQwzQ@mail.gmail.com>
-Message-ID: <CAAFQd5DbF_=_ZE3M=g0qjhizDBKy2dbsDxW5fWgUXXFHMoQwzQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
-To:     Hsia-Jun Li <Randy.Li@synaptics.com>
-Cc:     linux-media@vger.kernel.org, ayaka@soulik.info,
-        hans.verkuil@cisco.com, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
-        nicolas@ndufresne.ca
+References: <20230724063414.102805-1-okan.sahin@analog.com> <20230724063414.102805-3-okan.sahin@analog.com>
+In-Reply-To: <20230724063414.102805-3-okan.sahin@analog.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 27 Jul 2023 09:55:09 +0200
+Message-ID: <CAMRc=Md4pTq5UyDUf44NuByobpYtGGOo0twQnBq9NW+Zt48NdQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] gpio: ds4520: Add ADI DS4520 GPIO Expander Support
+To:     Okan Sahin <okan.sahin@analog.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 4:33=E2=80=AFPM Hsia-Jun Li <Randy.Li@synaptics.com=
-> wrote:
+On Mon, Jul 24, 2023 at 8:34=E2=80=AFAM Okan Sahin <okan.sahin@analog.com> =
+wrote:
 >
+> The DS4520 is a 9-bit nonvolatile (NV) I/O expander.
+> It offers users a digitally programmable alternative
+> to hardware jumpers and mechanical switches that are
+> being used to control digital logic node.
 >
->
-> On 7/27/23 15:25, Tomasz Figa wrote:
-> > CAUTION: Email originated externally, do not click links or open attach=
-ments unless you recognize the sender and know the content is safe.
-> >
-> >
-> > On Mon, Jul 17, 2023 at 4:15=E2=80=AFPM Hsia-Jun Li <Randy.Li@synaptics=
-.com> wrote:
-> >>
-> >>
-> >> On 7/12/23 17:33, Tomasz Figa wrote:
-> >>> CAUTION: Email originated externally, do not click links or open atta=
-chments unless you recognize the sender and know the content is safe.
-> >>>
-> >>>
-> >>> On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
-> >>>> From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
-> >>>>
-> >>>> Many drivers have to create its own buf_struct for a
-> >>>> vb2_queue to track such a state. Also driver has to
-> >>>> iterate over rdy_queue every times to find out a buffer
-> >>>> which is not sent to hardware(or firmware), this new
-> >>>> list just offers the driver a place to store the buffer
-> >>>> that hardware(firmware) has acknowledged.
-> >>>>
-> >>>> One important advance about this list, it doesn't like
-> >>>> rdy_queue which both bottom half of the user calling
-> >>>> could operate it, while the v4l2 worker would as well.
-> >>>> The v4l2 core could only operate this queue when its
-> >>>> v4l2_context is not running, the driver would only
-> >>>> access this new hw_queue in its own worker.
-> >>> Could you describe in what case such a list would be useful for a
-> >>> mem2mem driver?
-> >>
-> >> This list, as its description, just for saving us from creating a
-> >> private buffer struct to track buffer state.
-> >>
-> >> The queue in the kernel is not the queue that hardware(codec firmware)
-> >> are using.
-> >>
-> >
-> > Sorry, I find the description difficult to understand. It might make
-> > sense to have the text proofread by someone experienced in writing
-> > technical documentation in English before posting in the future.
-> > Thanks.
-> >
-> Sorry, I may not be able to get more resource here. I would try to ask a
-> chatbot to fix my description next time.
+> Signed-off-by: Okan Sahin <okan.sahin@analog.com>
+> ---
 
-I think people on the linux-media IRC channel (including me) could
-also be willing to help with rephrasing things, but if a chatbot can
-do it too, it's even better. :)
+This is such a sweet little driver, I love all these abstraction
+layers we now have.
 
-> > I think I got the point from Nicolas' explanation, though.
-> >
-> >>
-> >>>> Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
-> >>>> ---
-> >>>>    drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++----=
-----
-> >>>>    include/media/v4l2-mem2mem.h           | 10 +++++++++-
-> >>>>    2 files changed, 26 insertions(+), 9 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/=
-v4l2-core/v4l2-mem2mem.c
-> >>>> index c771aba42015..b4151147d5bd 100644
-> >>>> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> >>>> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> >>>> @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v4l2_m=
-2m_dev *m2m_dev,
-> >>>>                 goto job_unlock;
-> >>>>         }
-> >>>>
-> >>>> -     src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> >>>> -     dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> >>>> -     if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> >>>> -             dprintk("No input buffers available\n");
-> >>>> -             goto job_unlock;
-> >>>> +     if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
-> >>>> +             src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> >>>> +
-> >>>> +             if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> >>>> +                     dprintk("No input buffers available\n");
-> >>>> +                     goto job_unlock;
-> >>>> +             }
-> >>>>         }
-> >>>> -     if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> >>>> -             dprintk("No output buffers available\n");
-> >>>> -             goto job_unlock;
-> >>>> +
-> >>>> +     if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
-> >>>> +             dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> >>>> +             if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> >>>> +                     dprintk("No output buffers available\n");
-> >>>> +                     goto job_unlock;
-> >>>> +             }
-> >>>>         }
-> >>> src and dst would be referenced unitialized below if neither of the
-> >>> above ifs hits...
-> >> I think they have been initialized at v4l2_m2m_ctx_init()
-> >
-> > What do you mean? They are local variables in this function.
-> >
-> Sorry, I didn't notice the sentence after that.
-> >>>
-> >>> Best regards,
-> >>> Tomasz
-> >>>
-> >>>>         m2m_ctx->new_frame =3D true;
-> >>>> @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, struct=
- v4l2_m2m_ctx *m2m_ctx,
-> >>>>         INIT_LIST_HEAD(&q_ctx->rdy_queue);
-> >>>>         q_ctx->num_rdy =3D 0;
-> >>>>         spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
-> >>>> +     INIT_LIST_HEAD(&q_ctx->hw_queue);
-> >>>>
-> >>>>         if (m2m_dev->curr_ctx =3D=3D m2m_ctx) {
-> >>>>                 m2m_dev->curr_ctx =3D NULL;
-> >>>> @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(struct =
-v4l2_m2m_dev *m2m_dev,
-> >>>>
-> >>>>         INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
-> >>>>         INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
-> >>>> +     INIT_LIST_HEAD(&out_q_ctx->hw_queue);
-> >>>> +     INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
-> >>>>         spin_lock_init(&out_q_ctx->rdy_spinlock);
-> >>>>         spin_lock_init(&cap_q_ctx->rdy_spinlock);
-> >>>>
-> >>>> diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2m=
-em.h
-> >>>> index d6c8eb2b5201..2342656e582d 100644
-> >>>> --- a/include/media/v4l2-mem2mem.h
-> >>>> +++ b/include/media/v4l2-mem2mem.h
-> >>>> @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
-> >>>>     *   processed
-> >>>>     *
-> >>>>     * @q:               pointer to struct &vb2_queue
-> >>>> - * @rdy_queue:       List of V4L2 mem-to-mem queues
-> >>>> + * @rdy_queue:       List of V4L2 mem-to-mem queues. If v4l2_m2m_bu=
-f_queue() is
-> >>>> + *           called in struct vb2_ops->buf_queue(), the buffer enqu=
-eued
-> >>>> + *           by user would be added to this list.
-> >>>>     * @rdy_spinlock: spin lock to protect the struct usage
-> >>>>     * @num_rdy: number of buffers ready to be processed
-> >>>> + * @hw_queue:        A list for tracking the buffer is occupied by =
-the hardware
-> >>>> + *           (or device's firmware). A buffer could only be in eith=
-er
-> >>>> + *           this list or @rdy_queue.
-> >>>> + *           Driver may choose not to use this list while uses its =
-own
-> >>>> + *           private data to do this work.
-> >>>>     * @buffered:        is the queue buffered?
-> >>>>     *
-> >>>>     * Queue for buffers ready to be processed as soon as this
-> >>>> @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
-> >>>>         struct list_head        rdy_queue;
-> >>>>         spinlock_t              rdy_spinlock;
-> >>>>         u8                      num_rdy;
-> >>>> +     struct list_head        hw_queue;
-> >>>>         bool                    buffered;
-> >>>>    };
-> >>>>
-> >>>> --
-> >>>> 2.17.1
-> >>>>
-> >> --
-> >> Hsia-Jun(Randy) Li
-> >>
+Some nits below.
+
+>  drivers/gpio/Kconfig       | 11 +++++
+>  drivers/gpio/Makefile      |  1 +
+>  drivers/gpio/gpio-ds4520.c | 89 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 101 insertions(+)
+>  create mode 100644 drivers/gpio/gpio-ds4520.c
 >
+> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+> index 13be729710f2..5f89e46d6411 100644
+> --- a/drivers/gpio/Kconfig
+> +++ b/drivers/gpio/Kconfig
+> @@ -1000,6 +1000,17 @@ config GPIO_ADNP
+>           enough to represent all pins, but the driver will assume a
+>           register layout for 64 pins (8 registers).
+>
+> +config GPIO_DS4520
+> +       tristate "DS4520 I2C GPIO expander"
+> +       select REGMAP_I2C
+> +       select GPIO_REGMAP
+> +       help
+> +         GPIO driver for ADI DS4520 I2C-based GPIO expander.
+> +         Say yes here to enable the GPIO driver for the ADI DS4520 chip.
+> +
+> +         To compile this driver as a module, choose M here: the module w=
+ill
+> +         be called gpio-ds4520.
+> +
+>  config GPIO_GW_PLD
+>         tristate "Gateworks PLD GPIO Expander"
+>         depends on OF_GPIO
+> diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+> index c048ba003367..6f8656d5d617 100644
+> --- a/drivers/gpio/Makefile
+> +++ b/drivers/gpio/Makefile
+> @@ -52,6 +52,7 @@ obj-$(CONFIG_GPIO_DA9052)             +=3D gpio-da9052.=
+o
+>  obj-$(CONFIG_GPIO_DA9055)              +=3D gpio-da9055.o
+>  obj-$(CONFIG_GPIO_DAVINCI)             +=3D gpio-davinci.o
+>  obj-$(CONFIG_GPIO_DLN2)                        +=3D gpio-dln2.o
+> +obj-$(CONFIG_GPIO_DS4520)              +=3D gpio-ds4520.o
+>  obj-$(CONFIG_GPIO_DWAPB)               +=3D gpio-dwapb.o
+>  obj-$(CONFIG_GPIO_EIC_SPRD)            +=3D gpio-eic-sprd.o
+>  obj-$(CONFIG_GPIO_EM)                  +=3D gpio-em.o
+> diff --git a/drivers/gpio/gpio-ds4520.c b/drivers/gpio/gpio-ds4520.c
+> new file mode 100644
+> index 000000000000..577ffb4b8c50
+> --- /dev/null
+> +++ b/drivers/gpio/gpio-ds4520.c
+> @@ -0,0 +1,89 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2023 Analog Devices, Inc.
+> + * Driver for the DS4520 I/O Expander
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/gpio/regmap.h>
+> +#include <linux/i2c.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +#define DS4520_PULLUP0         0xF0
+> +#define DS4520_IO_CONTROL0     0xF2
+> +#define DS4520_IO_STATUS0      0xF8
+> +
+> +static const struct regmap_config ds4520_regmap_config =3D {
+> +       .reg_bits =3D 8,
+> +       .val_bits =3D 8,
+> +};
+> +
+> +static int ds4520_gpio_probe(struct i2c_client *client)
+> +{
+> +       struct gpio_regmap_config config =3D { };
+> +       struct device *dev =3D &client->dev;
+> +       struct regmap *regmap;
+> +       u32 ngpio;
+> +       u32 base;
+> +       int ret;
+> +
+> +       ret =3D device_property_read_u32(dev, "reg", &base);
+> +       if (ret) {
+> +               dev_err_probe(dev, ret,
+> +                         "Missing 'reg' property.\n");
+> +               return -EINVAL;
+> +       }
+
+Please add a newline here.
+
+> +       ret =3D device_property_read_u32(dev, "ngpios", &ngpio);
+> +       if (ret) {
+> +               dev_err_probe(dev, ret,
+> +                         "Missing 'ngpios' property.\n");
+> +               return -EINVAL;
+> +       }
+
+And here.
+
+> +       regmap =3D devm_regmap_init_i2c(client, &ds4520_regmap_config);
+> +       if (IS_ERR(regmap)) {
+> +               ret =3D PTR_ERR(regmap);
+> +               dev_err_probe(dev, ret,
+> +                             "Failed to allocate register map\n");
+> +               return ret;
+> +       }
+> +
+> +       config.regmap =3D regmap;
+> +       config.parent =3D dev;
+> +       config.ngpio =3D ngpio;
+> +
+> +       config.reg_dat_base =3D base + DS4520_IO_STATUS0;
+> +       config.reg_set_base =3D base + DS4520_PULLUP0;
+> +       config.reg_dir_out_base =3D base + DS4520_IO_CONTROL0;
+> +
+> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &config));
+> +}
+> +
+> +static const struct of_device_id ds4520_gpio_of_match_table[] =3D {
+> +       {
+> +               .compatible =3D "adi,ds4520-gpio"
+
+Keep this on a single line.
+
+> +       },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(of, ds4520_gpio_of_match_table);
+> +
+> +static const struct i2c_device_id ds4520_gpio_id_table[] =3D {
+> +       { "ds4520-gpio" },
+> +       { }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, ds4520_gpio_id_table);
+> +
+> +static struct i2c_driver ds4520_gpio_driver =3D {
+> +       .driver =3D {
+> +               .name =3D "ds4520-gpio",
+> +               .of_match_table =3D ds4520_gpio_of_match_table,
+> +       },
+> +       .probe_new =3D ds4520_gpio_probe,
+> +       .id_table =3D ds4520_gpio_id_table,
+> +};
+> +module_i2c_driver(ds4520_gpio_driver);
+> +
+> +MODULE_DESCRIPTION("DS4520 I/O Expander");
+> +MODULE_AUTHOR("Okan Sahin <okan.sahin@analog.com>");
+> +MODULE_LICENSE("GPL");
 > --
-> Hsia-Jun(Randy) Li
+> 2.30.2
+>
+
+Bart
