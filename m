@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2517651C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466287651CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbjG0K60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S232996AbjG0K65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232281AbjG0K6Y (ORCPT
+        with ESMTP id S232824AbjG0K6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:58:24 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 913191FEC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:58:22 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Cx2erNTcJkh7EKAA--.21528S3;
-        Thu, 27 Jul 2023 18:58:21 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF83MTcJkvPs8AA--.29457S3;
-        Thu, 27 Jul 2023 18:58:20 +0800 (CST)
-Subject: Re: [PATCH v1 4/6] objtool/LoongArch: Enable orc to be built
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <1690272910-11869-1-git-send-email-yangtiezhu@loongson.cn>
- <1690272910-11869-5-git-send-email-yangtiezhu@loongson.cn>
- <20230725115106.GC3765278@hirez.programming.kicks-ass.net>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <936a4873-bfe6-cabc-fa63-b8ba14857243@loongson.cn>
-Date:   Thu, 27 Jul 2023 18:58:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <20230725115106.GC3765278@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8CxF83MTcJkvPs8AA--.29457S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWruFWrtr4kJw4kWw1kGw1fZrc_yoWkWwb_uw
-        1fZ34kC34DKF4fJan8Kay5ZasrGr1UtFs5JryqvFZFq3WkJrWkCw4kGr93ZrWfXayrtF90
-        qrnFqw13Wr9rZosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbfkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2MKZDUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        Thu, 27 Jul 2023 06:58:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587CD10D2;
+        Thu, 27 Jul 2023 03:58:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E314E61E25;
+        Thu, 27 Jul 2023 10:58:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0635C433C8;
+        Thu, 27 Jul 2023 10:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690455533;
+        bh=n3RfNCdiWPuTagE5B1chVs/fd0EBtBaj2u5rwXXs0ds=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EILD8QMz884HU9n3FncxAZXZLiZzTydZFRF/+j6qi81VvqCha4feBndzDazaM9ECa
+         yGVwi8Bfz1f/u4P2fYymjfrwkYmEYuT40s5tQprY3d6pn2NC3MKtreOk0qndrDFWCy
+         Yhnbh3uCmiaqxeNN0C0DUZ4Py8ngmrUxMuDEMjsu0B0s4wZpZ5tOJUQRzbAkcOmU9Q
+         f8t8ojo/epvaRfffiqH8SlTjhuZ+MOMOTZo2jgxWAK8IAXJB7aFUvPD8NnoM0TuLRd
+         F7bYnmZ9foyBCrEKFBDvUcRQv+7fgNjbzRd182O9u2JGyBII5G1Y+Roc2zMmcIjsMY
+         VA4krsCvvYu+w==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qOyhm-00HKZG-6a;
+        Thu, 27 Jul 2023 11:58:50 +0100
+Date:   Thu, 27 Jul 2023 11:58:50 +0100
+Message-ID: <87r0otr579.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v7 06/12] arm64: tlb: Refactor the core flush algorithm of __flush_tlb_range
+In-Reply-To: <20230722022251.3446223-7-rananta@google.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-7-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, catalin.marinas@arm.com, gshan@redhat.com, shahuang@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,47 +85,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 22 Jul 2023 03:22:45 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> Currently, the core TLB flush functionality of __flush_tlb_range()
+> hardcodes vae1is (and variants) for the flush operation. In the
+> upcoming patches, the KVM code reuses this core algorithm with
+> ipas2e1is for range based TLB invalidations based on the IPA.
+> Hence, extract the core flush functionality of __flush_tlb_range()
+> into its own macro that accepts an 'op' argument to pass any
+> TLBI operation, such that other callers (KVM) can benefit.
+> 
+> No functional changes intended.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  arch/arm64/include/asm/tlbflush.h | 109 +++++++++++++++---------------
+>  1 file changed, 56 insertions(+), 53 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> index 412a3b9a3c25..f7fafba25add 100644
+> --- a/arch/arm64/include/asm/tlbflush.h
+> +++ b/arch/arm64/include/asm/tlbflush.h
+> @@ -278,14 +278,62 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
+>   */
+>  #define MAX_TLBI_OPS	PTRS_PER_PTE
+>  
+> +/* When the CPU does not support TLB range operations, flush the TLB
+> + * entries one by one at the granularity of 'stride'. If the TLB
+> + * range ops are supported, then:
 
+Comment format (the original was correct).
 
-On 07/25/2023 07:51 PM, Peter Zijlstra wrote:
-> On Tue, Jul 25, 2023 at 04:15:08PM +0800, Tiezhu Yang wrote:
->
-> Previous Changelog had:
->
->> Define update_cfi_state() as a weak function which may be overwritten
->> by the arch-specific implementation.
->
-> And then this patch does:
->
->> +int update_cfi_state(struct instruction *insn,
->> +		     struct instruction *next_insn,
->> +		     struct cfi_state *cfi, struct stack_op *op)
->> +{
->> +	struct cfi_reg *cfa = &cfi->cfa;
->> +	struct cfi_reg *regs = cfi->regs;
+> + *
+> + * 1. If 'pages' is odd, flush the first page through non-range
+> + *    operations;
+> + *
+> + * 2. For remaining pages: the minimum range granularity is decided
+> + *    by 'scale', so multiple range TLBI operations may be required.
+> + *    Start from scale = 0, flush the corresponding number of pages
+> + *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
+> + *    until no pages left.
+> + *
+> + * Note that certain ranges can be represented by either num = 31 and
+> + * scale or num = 0 and scale + 1. The loop below favours the latter
+> + * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
+> + */
+> +#define __flush_tlb_range_op(op, start, pages, stride,			\
+> +				asid, tlb_level, tlbi_user)		\
 
-...
+If you make this a common macro, please document the parameters, and
+what the constraints are. For example, what does tlbi_user mean for an
+IPA invalidation?
 
->> +	default:
->> +		WARN_FUNC("unknown stack-related instruction", insn->sec, insn->offset);
->> +		return -1;
->> +	}
->> +
->> +	return 0;
->> +}
->
-> Why ?!? what is the actual irreconcilable difference?
+	M.
 
-I went in deeper to analysis the code and did more test,
-the conclusion is that there is no need to define the
-arch-specific update_cfi_state(), although it seems simpler
-than the generic update_cfi_state(), the generic function
-can handle all the cases and works well.
-
-> If you want us to review this, you'll have to explain things.
-
-I will drop the related changes in the next version, thank you.
-
-Thanks,
-Tiezhu
-
+-- 
+Without deviation from the norm, progress is not possible.
