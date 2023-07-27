@@ -2,135 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B10E764696
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC337646A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbjG0GRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        id S232769AbjG0GTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbjG0GRW (ORCPT
+        with ESMTP id S230232AbjG0GTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:17:22 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6309F19B;
-        Wed, 26 Jul 2023 23:17:20 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RBLCJ0g8Mz4f3prt;
-        Thu, 27 Jul 2023 14:17:16 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgBnwBrpC8Jki6qGOA--.46874S2;
-        Thu, 27 Jul 2023 14:17:16 +0800 (CST)
-Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     Adam Sindelar <adam@wowsignal.io>, bpf@vger.kernel.org
-Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20230725162654.912897-1-adam@wowsignal.io>
- <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
-Message-ID: <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
-Date:   Thu, 27 Jul 2023 14:17:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 27 Jul 2023 02:19:49 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4362F1FED;
+        Wed, 26 Jul 2023 23:19:26 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 334DE1BF208;
+        Thu, 27 Jul 2023 06:19:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690438758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qskc8UL7HpZtZS2sXdp6DAYX33Iw0SkA6UUJwMFN1pc=;
+        b=MQ0XLEXe41fjTls2Ua+EtFbn5ci6ACukYOsA5oI8CXGsqok8uG8giYHxAruqtu7zDUPPux
+        nSQuSUKMgQLcH2Eiy/Uh8gd0/SYBhgXC+61KeB1mQUMz42yetKDk8Hos1WrFB6y/Jkqin9
+        T7krT175sF10KnPzoxC9sp2OHE5iPgYvnqFUZPd2kNeS8tr/5EeJbEg7GKAEUXW/PtVfm4
+        tHn6XncNABpQORtDSCONGiZMHqvgA7YsARmbNRo+un8syOWAgts7U3wohC38L+SPFSCO/r
+        vmjWsCUXPi5CfftItyX2o8PWcZMLB8L36WlK93cuXAQRN0HPqoZyIL8gDV1xeQ==
+Date:   Thu, 27 Jul 2023 08:19:14 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Usyskin, Alexander" <alexander.usyskin@intel.com>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>,
+        "Lubart, Vitaly" <vitaly.lubart@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>
+Subject: Re: [PATCH 1/2] mtd: use refcount to prevent corruption
+Message-ID: <20230727081914.03e44b96@xps-13>
+In-Reply-To: <CY5PR11MB636670FCA46F7F68F21AF44BED03A@CY5PR11MB6366.namprd11.prod.outlook.com>
+References: <20230620131905.648089-1-alexander.usyskin@intel.com>
+        <20230620131905.648089-2-alexander.usyskin@intel.com>
+        <TYWPR01MB87756794A30EB389AB017EB1C234A@TYWPR01MB8775.jpnprd01.prod.outlook.com>
+        <20230715174112.3909e43f@xps-13>
+        <CY5PR11MB63666C8DA33C93E1DC3BCB21ED3AA@CY5PR11MB6366.namprd11.prod.outlook.com>
+        <20230716153926.5e975231@xps-13>
+        <CY5PR11MB6366C254F767B6C432C98A0CED02A@CY5PR11MB6366.namprd11.prod.outlook.com>
+        <20230724135118.54e39faf@xps-13>
+        <CY5PR11MB6366FB890508D05E1D1C1375ED02A@CY5PR11MB6366.namprd11.prod.outlook.com>
+        <CY5PR11MB636670FCA46F7F68F21AF44BED03A@CY5PR11MB6366.namprd11.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgBnwBrpC8Jki6qGOA--.46874S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF45WF48GF4DZFy7AFyrWFg_yoW5JFWfpr
-        s0kFy5Crs5ZryxZFZxWF1SqryYvan29r4xKrWxJw1UA39rAF4kXr1jkr1akr43JrZ5K34a
-        yrWYga48CryUW37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Alexander,
 
-On 7/27/2023 9:06 AM, Hou Tao wrote:
-> Hi,
->
-> On 7/26/2023 12:26 AM, Adam Sindelar wrote:
->> We already provide ring_buffer__epoll_fd to enable use of external
->> polling systems. However, the only API available to consume the ring
->> buffer is ring_buffer__consume, which always checks all rings. When
->> polling for many events, this can be wasteful.
->>
->> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
->> ---
->>  tools/lib/bpf/libbpf.h  |  1 +
->>  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
->>  2 files changed, 16 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 55b97b2087540..20ccc65eb3f9d 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->>  				ring_buffer_sample_fn sample_cb, void *ctx);
->>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
->>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
->> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
->>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
->>  
->>  struct user_ring_buffer_opts {
->> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
->> index 02199364db136..8d087bfc7d005 100644
->> --- a/tools/lib/bpf/ringbuf.c
->> +++ b/tools/lib/bpf/ringbuf.c
->> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
->>  	return res;
->>  }
->>  
->> +/* Consume available data from a single RINGBUF map identified by its ID.
->> + * The ring ID is returned in epoll_data by epoll_wait when called with
->> + * ring_buffer__epoll_fd.
->> + */
->> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
->> +{
->> +	struct ring *ring;
->> +
->> +	if (ring_id >= rb->ring_cnt)
->> +		return libbpf_err(-EINVAL);
->> +
->> +	ring = &rb->rings[ring_id];
->> +	return ringbuf_process_ring(ring);
-> When ringbuf_process_ring() returns an error, we need to use
-> libbpf_err() to set the errno accordingly.
+alexander.usyskin@intel.com wrote on Tue, 25 Jul 2023 12:50:04 +0000:
 
-It seems that even when ringbuf_process_ring() returns a positive
-result, we also need to cap it under INT_MAX, otherwise it may be cast
-into a negative error.
->> +}
->> +
->>  /* Poll for available data and consume records, if any are available.
->>   * Returns number of records consumed (or INT_MAX, whichever is less), or
->>   * negative number, if any of the registered callbacks returned error.
->
->
-> .
+> Hi
+> >=20
+> > Hi Miquel, =20
+> > >
+> > > Hi Alexander,
+> > >
+> > > alexander.usyskin@intel.com wrote on Mon, 24 Jul 2023 11:43:59 +0000:
+> > > =20
+> > > > > > > > With this patch applied, when I load up the module, I get t=
+he same 3
+> > > > > > > > devices:
+> > > > > > > > /dev/mtd0
+> > > > > > > > /dev/mtd0ro
+> > > > > > > > /dev/mtdblock0
+> > > > > > > >
+> > > > > > > > Upon removal, the below 2 devices still hang around:
+> > > > > > > > /dev/mtd0
+> > > > > > > > /dev/mtd0ro =20
+> > > > > > > =20
+> > > > > > Our use-case do not produce mtdblock, maybe there are some =20
+> > > imbalances =20
+> > > > > of get/put? =20
+> > > > > > I have somewhere version with pr_debug after every kref_get/put=
+. That =20
+> > > may =20
+> > > > > help to catch where =20
+> > > > > > it missed, I hope. =20
+> > > > >
+> > > > > I believe mtdblock is the good citizen here. Just disable
+> > > > > CONFIG_MTD_BLOCK from your configuration and you will likely obse=
+rve
+> > > > > the same issue, just a bit narrowed, perhaps. Indeed, if you mana=
+ge to
+> > > > > follow all the get/put calls it can help to find an imbalance.
+> > > > >
+> > > > > Thanks,
+> > > > > Miqu=C3=A8l =20
+> > > >
+> > > > Miquel, do you have CONFIG_MTD_PARTITIONED_MASTER set in your =20
+> > > config?
+> > >
+> > > Not sure I get your question. You can enable or disable it, it should
+> > > work in both cases (yet, the handling is of course a bit different as
+> > > the top level device will be retained/not retained).
+> > >
+> > > Thanks,
+> > > Miqu=C3=A8l =20
+> >=20
+> > I'm trying to understand why I can't reproduce the problem in my scenar=
+io.
+> > I found an important difference in upstreamed patch and internal versio=
+n:
+> > The IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) check around
+> > kref_get/put does not exists in the internal tree.
+> > The code before my patch do not have such check, so I tend to assume th=
+at
+> > this check should be removed.
+> > If you reproduce happens with CONFIG_MTD_PARTITIONED_MASTER
+> > disabled that may explain problems that you see.
+> >=20
+> > --
+> > Thanks,
+> > Sasha
+> >  =20
+>=20
+> I've tried to reproduce this with latest Linux 6.5-rc1 and my two patches.
+> The manual modprobe mtdblock creates mtdblock0 over my partitions too.
+> I can't reproduce problem neither with MTD_PARTITIONED_MASTER nor without.
+>=20
+> Let's try to debug on your system, can you enable dynamic debug for mtd s=
+ubsystem,
+> reproduce and publish dmesg?
+>=20
+> The prints for kref get/put can be added as below:
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 2466ea466466..374835831428 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1242,10 +1242,13 @@ int __get_mtd_device(struct mtd_info *mtd)
+>         }
+>=20
+>         kref_get(&mtd->refcnt);
+> +       pr_debug("get mtd %s %d\n", mtd->name, kref_read(&mtd->refcnt));
+>=20
+>         while (mtd->parent) {
+> -               if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd->par=
+ent !=3D master)
+> +               if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd->par=
+ent !=3D master) {
+>                         kref_get(&mtd->parent->refcnt);
+> +                       pr_debug("get mtd %s %d\n", mtd->parent->name, kr=
+ef_read(&mtd->parent->refcnt));
+> +               }
+>                 mtd =3D mtd->parent;
+>         }
+>=20
+> @@ -1335,12 +1338,15 @@ void __put_mtd_device(struct mtd_info *mtd)
+>         while (mtd !=3D master) {
+>                 struct mtd_info *parent =3D mtd->parent;
+>=20
+> +               pr_debug("put mtd %s %d\n", mtd->name, kref_read(&mtd->re=
+fcnt));
+>                 kref_put(&mtd->refcnt, mtd_device_release);
+>                 mtd =3D parent;
+>         }
+>=20
+> -       if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
+> +       if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER)) {
+> +               pr_debug("put mtd %s %d\n", master->name, kref_read(&mast=
+er->refcnt));
+>                 kref_put(&master->refcnt, mtd_device_release);
+> +       }
+>=20
+>         module_put(master->owner);
+>=20
+>=20
 
+Could this be helpful?
+
+https://lore.kernel.org/all/20230725215539.3135304-1-zhangxiaoxu5@huawei.co=
+m/
+
+If you successfully test it, please send your Tested-by.
+
+Thanks,
+Miqu=C3=A8l
