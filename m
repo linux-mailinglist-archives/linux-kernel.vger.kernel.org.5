@@ -2,56 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80699765739
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9799D765740
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbjG0PRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        id S234531AbjG0PSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjG0PRo (ORCPT
+        with ESMTP id S234557AbjG0PR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:17:44 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802931B8;
-        Thu, 27 Jul 2023 08:17:43 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 92E5C60007;
-        Thu, 27 Jul 2023 15:17:38 +0000 (UTC)
+        Thu, 27 Jul 2023 11:17:57 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2391BC3;
+        Thu, 27 Jul 2023 08:17:54 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 23F0FE0004;
+        Thu, 27 Jul 2023 15:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690471061;
+        t=1690471073;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NNG9tje3l3xvzkqp9p4Pdm+9j03eaDrBKVPPDevDw7w=;
-        b=a8isnEEHtGmLESwkXnzgHu0zmOpF5SXA6XP6oLmnOaOB1NpUhdjXq+lDqG08hOsvMhiCAH
-        YEyUuVY5aldv26ZSUh6y+CkxEFf1ERZbglj77phxqtrpUCxVA/KVko+8jZUCaipIxNYuqw
-        JN1ddb7ZXDTXbFwdVL080k2EYfyfxz4kMk8AU1+ouspuqrgeIqNCzUDR488no7iZEpU2vR
-        KjXU5qUOULncJ4Suzpdkxg1MpctDH/yPuVmtrTnG02ZswGZODWuij9dKVKNpyv/5vmuTuB
-        +AbUa1TBEMTWdvefjTzngTIPUtsdm7pyI3Cu8LZ3aG4M7pjtr4rstY/LhPuUuQ==
+        bh=jTWow8XZc1V1a7KC/LzFlJrnEWAhzW/wrrkH2swn2S8=;
+        b=XMl/tBrbHfXa8vnxmWSXGcQUMH7v9E48yQOV82dOI0+RP4bIv8m30JmXdM7sjmBs71Rz05
+        JnvUCnofD7U+Tmuaw1Xc7o4BeMjqdF6XWiPLIqRDy2BAJ+jNitwFDLEajRamnZnh1Zcfe1
+        963PsxOfgiS6SEPTV2DdrVYLtDUEgyIX9V4vW9Rt1GbgkArGFjEB8pSShEw/hwPjuYMRot
+        6chrU8KFiaKj7bVCxKUpjXEYKww8LF+o8aMmhKhTX/MO6OdA27/JKnxcalMT0x5Ht47h1m
+        lpODmtca/GrCwidxcSTUhWSFFC81RvQcKNSnUSthzWBA0pOIIF7tsEVFE8noWQ==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
+To:     Colin Ian King <colin.i.king@gmail.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Peter Foley <pefoley2@pefoley.com>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Mark Brown <broonie@kernel.org>,
-        Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
-        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: avoid holes in struct spi_mem_op
-Date:   Thu, 27 Jul 2023 17:17:38 +0200
-Message-Id: <20230727151738.586338-1-miquel.raynal@bootlin.com>
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mtdblock: make warning messages ratelimited
+Date:   Thu, 27 Jul 2023 17:17:49 +0200
+Message-Id: <20230727151749.586400-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230719190045.4007391-1-arnd@kernel.org>
+In-Reply-To: <20230719103354.2829366-1-colin.i.king@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'71c8f9cf2623d0db79665f876b95afcdd8214aec'
+X-linux-mtd-patch-commit: b'd2236f6219fac62ee22d971e06a04148f4eb8cca'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -64,45 +57,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-19 at 19:00:25 UTC, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 2023-07-19 at 10:33:54 UTC, Colin Ian King wrote:
+> When exercising various dev interfaces with stress-ng the mtdblock drivers
+> can be (ab)used to generate a lot of warning messages. Make these rate
+> limited to reduce the kernel log from being spammed with the same messages.
 > 
-> gcc gets confused when -ftrivial-auto-var-init=pattern is used on sparse
-> bit fields such as 'struct spi_mem_op', which caused the previous false
-> positive warning about an uninitialized variable:
-> 
-> drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]
-> 
-> In fact, the variable is fully initialized and gcc does not see it being
-> used, so the warning is entirely bogus. The problem appears to be
-> a misoptimization in the initialization of single bit fields when the
-> rest of the bytes are not initialized.
-> 
-> A previous workaround added another initialization, which ended up
-> shutting up the warning in spansion.c, though it apparently still happens
-> in other files as reported by Peter Foley in the gcc bugzilla. The
-> workaround of adding a fake initialization seems particularly bad
-> because it would set values that can never be correct but prevent the
-> compiler from warning about actually missing initializations.
-> 
-> Revert the broken workaround and instead pad the structure to only
-> have bitfields that add up to full bytes, which should avoid this
-> behavior in all drivers.
-> 
-> I also filed a new bug against gcc with what I found, so this can
-> hopefully be addressed in future gcc releases. At the moment, only
-> gcc-12 and gcc-13 are affected.
-> 
-> Cc: Peter Foley <pefoley2@pefoley.com>
-> Cc: Pedro Falcato <pedro.falcato@gmail.com>
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=110743
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108402
-> Link: https://godbolt.org/z/efMMsG1Kx
-> Fixes: 420c4495b5e56 ("mtd: spi-nor: spansion: make sure local struct does not contain garbage")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
 Miquel
