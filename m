@@ -2,290 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B61765C0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BA4765C16
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjG0T0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
+        id S231304AbjG0T3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjG0T0Q (ORCPT
+        with ESMTP id S229619AbjG0T3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:26:16 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28430268B;
-        Thu, 27 Jul 2023 12:26:14 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 64CB260171;
-        Thu, 27 Jul 2023 21:26:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690485971; bh=7fw+979HTyI3g1irHu9HUvXN9G+83ViUcHnWOykGLQo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ds7DmjwyRCEn/utPKUwbq8uOWCVvzYsxdhFPhfZCeG7V7oijdsNqGDIxntdSCBjoI
-         mRlymUUKnIR56QpsixQIYBble7Ye3+K/6jYGivvFeEdM9Nc7bSvpzmnXNKBgbjrRvW
-         1sRtInDngtJWDHJ8brAuRvGaxsDh3hZm0UYaB4jmQciDkjBpisgJR8Ne6tbJE7Kxot
-         oUAIkVqq1y8Bw2++ZG2ddjRTd4Y80apfiS6FG72WeBLILcKXHU7Zjd9pJGoC+hrtkF
-         Dynlh+WqLc4bdOjRLGkCteC7nypRGxWWH4ML7tJBHKf3yN2shLvHWnrRtxMJQwAijv
-         WTyEicERvYA1g==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JQ1USOFRCqN7; Thu, 27 Jul 2023 21:26:08 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 6AAA96016E;
-        Thu, 27 Jul 2023 21:26:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690485968; bh=7fw+979HTyI3g1irHu9HUvXN9G+83ViUcHnWOykGLQo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YdkWLbc/ePFiF615XLOoQ43cVK8dZujUylvK+MTbybvavLuJA0m2bq3GcDpPDq1AJ
-         bVdFbK6i4/x8v+mQbDGoS24Ze1pJNPrsT2ypJgak3qEaYsrpxQjYBBQUF7btXEdvwP
-         sa2iEjxnr0cLEj9cZxg8DycbAIe2vSiRNCA06U1EZAmr23SjoxrqFFSgLrPHH3RwGQ
-         KnGOpO7pmJ50LXnvlPHZLdhVu1i00swp+K3RMu0xP3dD6Qvn7eH/bwsjTTj1ViUo9W
-         z0ZxoEF3zSujUciSa5drnAWBBElnCOfkw3gIo+YSo5xTiVoqrly1GFHjBMa/AdjThV
-         8IBxsb/7JtwUw==
-Message-ID: <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
-Date:   Thu, 27 Jul 2023 21:26:03 +0200
+        Thu, 27 Jul 2023 15:29:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9762D68
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:29:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 72D1061F28
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:29:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76FF6C433C9;
+        Thu, 27 Jul 2023 19:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690486158;
+        bh=lDhVJhw+KoLFGQn+Fi5lzz+hMTbWiRN+4uj9W/oH9LY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GVuadQkhNIsq6IxZ4MpiOUeEeHca8gkDzTq1bKTx7cCSTH4zyy1eCm+2XHGVIIjpw
+         hRGo6mNG9wKB9/ojYMnxaiqLFYq1CnCd9eneSeehG1LGcpkx2pHhcHMUW1E0ucBEkx
+         HgEAk+WRHnamez3k4i4jUWywHJyDFRB+opGzy1dsYzgGGBIZyzqrIjHKPAf7pBQISV
+         Jbfi8tWsA9W/7yvhLjoh0WTeQxLDoer+pmpdInkYd9rgXTKrK+B+zMWK4cF/+upGzs
+         gXxM8cYJvi7qZ4+nN2/SP9zfU9+c99gCsO1DQhw3TRKXxvFjTUrI66jk7Jpr5I/bQ1
+         4YXeWH+Ywn6vg==
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
+        Teh Wen Ping <wen.ping.teh@intel.com>,
+        Kah Jing Lee <kah.jing.lee@intel.com>
+Subject: [PATCH 1/2] firmware: stratix10-svc: Generic Mailbox Command
+Date:   Thu, 27 Jul 2023 14:29:06 -0500
+Message-Id: <20230727192907.982070-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
- add cleanup for SIGTERM sent by timeout
-Content-Language: en-US
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
- <ZLzj5oYrbHGvCMkq@shredder>
- <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
- <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
- <ZL6OljQubhVtQjcD@shredder>
- <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
- <ZMEQGIOQXv6so30x@shredder>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZMEQGIOQXv6so30x@shredder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 14:22, Ido Schimmel wrote:
-> On Mon, Jul 24, 2023 at 10:46:09PM +0200, Mirsad Todorovac wrote:
->> On 7/24/23 16:45, Ido Schimmel wrote:
->>> On Sun, Jul 23, 2023 at 11:37:46PM +0200, Mirsad Todorovac wrote:
->>>> Some tests however exited with error:
->>
->> Hi,
->>
->>>> marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc2-net-forwarding-11.log
->>>> not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
->>>> not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
->>>> not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
->>>
->>> I can't reproduce these three.
->>
->> I have now enabled 'set -x' and here is the link to the output.
->>
->> NOTE as there are side-effects to running the test scripts, I have ran the
-> 
-> I don't believe this is correct after "selftests: forwarding: Switch off
-> timeout".
-> 
->> whole suite, just in case:
->>
->> https://domac.alu.unizg.hr/~mtodorov/linux/selftests/net-forwarding/kselftest-6.5-rc3-net-forwarding-12.log.xz
->>
->>> Do you have systemd-networkd running?
->>
->> No:
-> 
-> [...]
-> 
->>>> not ok 15 selftests: net/forwarding: ethtool_extended_state.sh # exit=1
->>>> not ok 17 selftests: net/forwarding: ethtool.sh # exit=1
->>>> not ok 25 selftests: net/forwarding: hw_stats_l3_gre.sh # exit=1
->>>
->>> Fixed these three.
->>>
->>>> not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
->>>
->>> Fixed.
->>
->> Great job, that's almost 50% of them!
->>
->>>> not ok 80 selftests: net/forwarding: tc_actions.sh # exit=1
->>>> not ok 83 selftests: net/forwarding: tc_flower.sh # exit=1
->>>> not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
->>>> not ok 89 selftests: net/forwarding: tc_tunnel_key.sh # exit=1
->>>
->>> Can't reproduce these.
->>
->> Hope the above will help.
-> 
-> Pushed fixes for tc_actions.sh, tc_flower.sh and tc_tunnel_key.sh to the
-> same branch. Please test them.
-> 
-> Regarding the MDB tests and tc_flower_l2_miss.sh, I suspect you might
-> have some daemon in user space that sends IGMP queries and therefore
-> messes with the tests. Please run the following commands in a separate
-> terminal before running tc_flower_l2_miss.sh:
-> 
-> # perf probe --add 'br_ip4_multicast_query'
-> # perf record -a -g -e 'probe:br_ip4_multicast_query'
-> 
-> After the test finishes, terminate the second command and run:
-> 
-> # perf report --stdio
-> 
-> It should show us if queries were received and which process sent them.
-> 
->>
->>> Pushed the fixes on top of the fixes from yesterday:
->>>
->>> https://github.com/idosch/linux/commits/submit/sefltests_fix_v1
->>
->> I have applied them.
->>
->> BTW, after running the full net/forwarding test suite, "ip link show"
->> looks like this:
->>
->> marvin@defiant:~/linux/kernel/linux_torvalds$ ip link show
->> 256: veth7@veth6: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 16:74:e0:e6:f0:92 brd ff:ff:ff:ff:ff:ff
->> 257: veth6@veth7: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 22:f3:40:50:fb:73 brd ff:ff:ff:ff:ff:ff
->> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
->>      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
->> 2: enp16s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
->>      link/ether 9c:6b:00:01:fb:80 brd ff:ff:ff:ff:ff:ff
->> 3: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether b6:46:e6:4c:e4:00 brd ff:ff:ff:ff:ff:ff
->> 4: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 2e:ff:7f:8a:6b:d4 brd ff:ff:ff:ff:ff:ff
->> 5: veth3@veth2: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether ba:33:37:81:dc:5b brd ff:ff:ff:ff:ff:ff
->> 6: veth2@veth3: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether f2:fd:0a:9b:94:17 brd ff:ff:ff:ff:ff:ff
->> 278: veth9@veth8: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 0a:f1:22:04:0f:55 brd ff:ff:ff:ff:ff:ff
->> 279: veth8@veth9: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 92:be:71:00:59:0f brd ff:ff:ff:ff:ff:ff
->> 282: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>      link/gre 0.0.0.0 brd 0.0.0.0
->> 283: gretap0@NONE: <BROADCAST,MULTICAST> mtu 1462 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
->> 284: erspan0@NONE: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
->> 366: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>      link/tunnel6 :: brd :: permaddr ce1e:75f3:f565::
->> 367: ip6gre0@NONE: <NOARP> mtu 1448 qdisc noop state DOWN mode DEFAULT group default qlen 1000
->>      link/gre6 :: brd :: permaddr 1e91:da47:154d::
->> 237: veth5@veth4: <BROADCAST,MULTICAST,M-DOWN> mtu 2000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether 6a:e3:dc:ad:8c:a0 brd ff:ff:ff:ff:ff:ff
->> 238: veth4@veth5: <BROADCAST,MULTICAST,M-DOWN> mtu 10000 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
->>      link/ether ce:a7:61:90:c8:2d brd ff:ff:ff:ff:ff:ff
->> marvin@defiant:~/linux/kernel/linux_torvalds$
->>
->> This is kinda awkward, because I have to reboot the machine for the next run, each time.
-> 
-> Why? The fact that the veth pairs are already present doesn't impact the
-> selftests.
-> 
->>
->> I am in no condition to try to figure out which tests leaked links.
-> 
-> The veth pairs were created by the first invocation of the selftests and
-> are not deleted at the end. We already discussed it. But the fact that
-> they are already present does not mean you can't re-run the tests.
-> 
-> Regarding gre0, gretap0, erspan0, ip6tnl0 and ip6gre0, they are
-> automatically created by the kernel when the relevant kernel modules are
-> loaded. They are not used by the selftests.
+From: Teh Wen Ping <wen.ping.teh@intel.com>
 
-If you're in dilemma, my experiment had shown that it is sufficient to delete one
-side of the veth link, for another side automagically vanishes.
+Add generic mailbox command that can support SDM command. User can use this
+command to send SDM mailbox command. User have to specified an input file
+which contain the command data and an output file for SDM response to be
+copied over.
 
-BTW, the patches successfully applied, safe for the following:
+Signed-off-by: Teh Wen Ping <wen.ping.teh@intel.com>
+Signed-off-by: Kah Jing Lee <kah.jing.lee@intel.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+---
+ drivers/firmware/stratix10-svc.c              | 18 +++++++++++++
+ include/linux/firmware/intel/stratix10-smc.h  | 25 +++++++++++++++++++
+ .../firmware/intel/stratix10-svc-client.h     |  5 ++++
+ 3 files changed, 48 insertions(+)
 
-error: patch failed: tools/testing/selftests/net/forwarding/hw_stats_l3_gre.sh:99
-error: tools/testing/selftests/net/forwarding/hw_stats_l3_gre.sh: patch does not apply
+diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+index 2d674126160f..260695a8a9e6 100644
+--- a/drivers/firmware/stratix10-svc.c
++++ b/drivers/firmware/stratix10-svc.c
+@@ -37,6 +37,7 @@
+ #define SVC_NUM_CHANNEL				3
+ #define FPGA_CONFIG_DATA_CLAIM_TIMEOUT_MS	200
+ #define FPGA_CONFIG_STATUS_TIMEOUT_SEC		30
++#define BYTE_TO_WORD_SIZE              4
+ 
+ /* stratix10 service layer clients */
+ #define STRATIX10_RSU				"stratix10-rsu"
+@@ -361,6 +362,13 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
+ 		cb_data->kaddr2 = svc_pa_to_va(res.a2);
+ 		cb_data->kaddr3 = &res.a3;
+ 		break;
++	case COMMAND_MBOX_SEND_CMD:
++		cb_data->status = BIT(SVC_STATUS_OK);
++		cb_data->kaddr1 = &res.a1;
++		/* SDM return size in u8. Convert size to u32 word */
++		res.a2 = res.a2 * BYTE_TO_WORD_SIZE;
++		cb_data->kaddr2 = &res.a2;
++		break;
+ 	default:
+ 		pr_warn("it shouldn't happen\n");
+ 		break;
+@@ -534,6 +542,15 @@ static int svc_normal_to_secure_thread(void *data)
+ 			a1 = 0;
+ 			a2 = 0;
+ 			break;
++		case COMMAND_MBOX_SEND_CMD:
++			a0 = INTEL_SIP_SMC_MBOX_SEND_CMD;
++			a1 = pdata->arg[0];
++			a2 = (unsigned long)pdata->paddr;
++			a3 = (unsigned long)pdata->size / BYTE_TO_WORD_SIZE;
++			a4 = pdata->arg[1];
++			a5 = (unsigned long)pdata->paddr_output;
++			a6 = (unsigned long)pdata->size_output / BYTE_TO_WORD_SIZE;
++			break;
+ 		default:
+ 			pr_warn("it shouldn't happen\n");
+ 			break;
+@@ -597,6 +614,7 @@ static int svc_normal_to_secure_thread(void *data)
+ 			case COMMAND_FCS_DATA_ENCRYPTION:
+ 			case COMMAND_FCS_DATA_DECRYPTION:
+ 			case COMMAND_FCS_RANDOM_NUMBER_GEN:
++			case COMMAND_MBOX_SEND_CMD:
+ 				cbdata->status = BIT(SVC_STATUS_INVALID_PARAM);
+ 				cbdata->kaddr1 = NULL;
+ 				cbdata->kaddr2 = NULL;
+diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
+index a718f853d457..ee80ca4bb0d0 100644
+--- a/include/linux/firmware/intel/stratix10-smc.h
++++ b/include/linux/firmware/intel/stratix10-smc.h
+@@ -466,6 +466,31 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
+ #define INTEL_SIP_SMC_FIRMWARE_VERSION \
+         INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION)
+ 
++/**
++ * SMC call protocol for Mailbox, starting FUNCID from 60
++ *
++ * Call register usage:
++ * a0 INTEL_SIP_SMC_MBOX_SEND_CMD
++ * a1 mailbox command code
++ * a2 physical address that contain mailbox command data (not include header)
++ * a3 mailbox command data size in word
++ * a4 set to 0 for CASUAL, set to 1 for URGENT
++ * a5 physical address for secure firmware to put response data
++ *    (not include header)
++ * a6 maximum size in word of physical address to store response data
++ * a7 not used
++ *
++ * Return status
++ * a0 INTEL_SIP_SMC_STATUS_OK, INTEL_SIP_SMC_STATUS_REJECTED or
++ *    INTEL_SIP_SMC_STATUS_ERROR
++ * a1 mailbox error code
++ * a2 response data length in word
++ * a3 not used
++ */
++#define INTEL_SIP_SMC_FUNCID_MBOX_SEND_CMD 60
++	#define INTEL_SIP_SMC_MBOX_SEND_CMD \
++	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_MBOX_SEND_CMD)
++
+ /**
+  * Request INTEL_SIP_SMC_SVC_VERSION
+  *
+diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
+index 0c16037fd08d..60ed82112680 100644
+--- a/include/linux/firmware/intel/stratix10-svc-client.h
++++ b/include/linux/firmware/intel/stratix10-svc-client.h
+@@ -118,6 +118,9 @@ struct stratix10_svc_chan;
+  * @COMMAND_SMC_SVC_VERSION: Non-mailbox SMC SVC API Version,
+  * return status is SVC_STATUS_OK
+  *
++ * @COMMAND_MBOX_SEND_CMD: send generic mailbox command, return status is
++ * SVC_STATUS_OK or SVC_STATUS_ERROR
++ *
+  * @COMMAND_RSU_DCMF_STATUS: query firmware for the DCMF status
+  * return status is SVC_STATUS_OK or SVC_STATUS_ERROR
+  *
+@@ -164,6 +167,8 @@ enum stratix10_svc_command_code {
+ 	COMMAND_FCS_RANDOM_NUMBER_GEN,
+ 	/* for general status poll */
+ 	COMMAND_POLL_SERVICE_STATUS = 40,
++	/* for generic mailbox send command */
++	COMMAND_MBOX_SEND_CMD = 100,
+ 	/* Non-mailbox SMC Call */
+ 	COMMAND_SMC_SVC_VERSION = 200,
+ };
+-- 
+2.25.1
 
-error: patch failed: tools/testing/selftests/net/forwarding/ethtool_extended_state.sh:108
-error: tools/testing/selftests/net/forwarding/ethtool_extended_state.sh: patch does not apply
-
-error: patch failed: tools/testing/selftests/net/forwarding/ethtool_mm.sh:278
-error: tools/testing/selftests/net/forwarding/ethtool_mm.sh: patch does not apply
-
-(Manual inspection revealed that all of those are adding of skip_on_veth which was already
-present in the script, but I recall you added skip_on_veth recently, so I guess this is something
-in our patch communication.)
-
-The test results are very good:
-
-marvin@defiant:~/linux/kernel/linux_torvalds$ grep "not ok" ../kselftest-6.5-rc3-net-forwarding-16.log
-not ok 3 selftests: net/forwarding: bridge_mdb.sh # exit=1
-not ok 5 selftests: net/forwarding: bridge_mdb_max.sh # exit=1
-not ok 11 selftests: net/forwarding: bridge_vlan_mcast.sh # exit=1
-not ok 26 selftests: net/forwarding: ip6_forward_instats_vrf.sh # exit=1
-not ok 49 selftests: net/forwarding: mirror_gre_changes.sh # exit=1
-not ok 84 selftests: net/forwarding: tc_flower_l2_miss.sh # exit=1
-marvin@defiant:~/linux/kernel/linux_torvalds$ grep -v "^# +" ../kselftest-6.5-rc3-net-forwarding-16.log | grep -A1 FAIL | grep -v -e -- | grep -v OK
-# TEST: IPv6 (S, G) port group entries configuration tests            [FAIL]
-# 	"temp" entry has an unpending group timer
-# TEST: IPv4 host entries forwarding tests                            [FAIL]
-# 	Packet not locally received after adding a host entry
-# TEST: IPv4 port group "exclude" entries forwarding tests            [FAIL]
-# 	Packet from valid source not received on H2 after adding entry
-# TEST: IPv4 port group "include" entries forwarding tests            [FAIL]
-# 	Packet from valid source not received on H2 after adding entry
-# TEST: IGMPv3 MODE_IS_INCLUDE tests                                  [FAIL]
-# 	Source not add to source list
-# TEST: ctl4: port: ngroups reporting                                 [FAIL]
-# 	Couldn't add MDB entries
-# TEST: ctl4: port maxgroups: reporting and treatment of 0            [FAIL]
-# 	Adding 5 MDB entries failed but should have passed
-# TEST: ctl4: port maxgroups: configure below ngroups                 [FAIL]
-# 	dev veth1: Couldn't add MDB entries
-# TEST: ctl4: port: ngroups reporting                                 [FAIL]
-# 	Couldn't add MDB entries
-# TEST: ctl4: port maxgroups: reporting and treatment of 0            [FAIL]
-# 	Adding 5 MDB entries failed but should have passed
-# TEST: ctl4: port maxgroups: configure below ngroups                 [FAIL]
-# 	dev veth1 vid 10: Couldn't add MDB entries
-# TEST: ctl4: port_vlan: ngroups reporting                            [FAIL]
-# 	Couldn't add MDB entries
-# TEST: ctl4: port_vlan: isolation of port and per-VLAN ngroups       [FAIL]
-# 	Couldn't add MDB entries to VLAN 10
-# TEST: ctl4: port_vlan maxgroups: reporting and treatment of 0       [FAIL]
-# 	Adding 5 MDB entries failed but should have passed
-# TEST: ctl4: port_vlan maxgroups: configure below ngroups            [FAIL]
-# 	dev veth1 vid 10: Couldn't add MDB entries
-# TEST: ctl4: port_vlan maxgroups: isolation of port and per-VLAN ngroups   [FAIL]
-# 	Couldn't add 5 entries
-# TEST: Vlan mcast_startup_query_interval global option default value   [FAIL]
-# 	Wrong default mcast_startup_query_interval global vlan option value
-# TEST: Ip6InHdrErrors                                                [FAIL]
-# TEST: mirror to gretap: TTL change (skip_hw)                        [FAIL]
-# 	Expected to capture 10 packets, got 14.
-# TEST: L2 miss - Multicast (IPv4)                                    [FAIL]
-# 	Unregistered multicast filter was not hit before adding MDB entry
-marvin@defiant:~/linux/kernel/linux_torvalds$
-
-In case you want to pursue these failures, there is the complete test output log
-here:
-
-https://domac.alu.unizg.hr/~mtodorov/linux/selftests/net-forwarding/kselftest-6.5-rc3-net-forwarding-16.log.xz
-
-Thanks again, great work!
-
-Kind regards,
-Mirsad
