@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 042E276578E
+	by mail.lfdr.de (Postfix) with ESMTP id EE5EB765791
 	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjG0P06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S232128AbjG0P1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234588AbjG0P0u (ORCPT
+        with ESMTP id S233532AbjG0P0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:26:50 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97231FF2;
-        Thu, 27 Jul 2023 08:26:49 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc656873eso12229525e9.1;
-        Thu, 27 Jul 2023 08:26:49 -0700 (PDT)
+        Thu, 27 Jul 2023 11:26:51 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9A02D54;
+        Thu, 27 Jul 2023 08:26:50 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31771bb4869so1150236f8f.0;
+        Thu, 27 Jul 2023 08:26:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1690471608; x=1691076408;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z5lUd6tLllXoqVN95rU12GI/kHjXVOUk+BNB7Y22cto=;
-        b=FjsdD+F62OVFGK0evuFmUjv+fYHflFxnl7eTSOLR+NXfZROQ34Eou4GPvtFmLGiJwb
-         Ks70ALf537BmtGdLK4EB7Ufr6+Zu+b7jPbyo7IxuK8/NfIgkhA0/5j32Px3PuRN2Wh6q
-         Hmb8OtMzEH6euQFvszszXZ4erEJb5h/YmVrCJz1Z6DFjIxsFOHZOIWEmHAuybBNDPEPX
-         hX4cF2DoQ8xxqWjap1trw7ZrA5q0tocGUEiXVaT1VPUh1dZa2FQscPW0BTp3oPSbD9Dz
-         cvcBp+Qy0PZuq61ANQpoT6/cMDmAzmzNLo/SZp73vZqmOgM00VaYyqjdUIdN6c7IqeML
-         R10w==
+        bh=HkMGDumQlalY89C6gPCAt+EinCF2NpTD+G/geonEwe8=;
+        b=QJLPzqFhw7qbdOMo67W0DveidbMWfA8UYMf6LvQNtcDD1N7p0GXZhxZIqEcIQVeAbw
+         l8z9ApmYfdLNVwUvry+24uZ5rpIXD6UxJr38/t3gjgIumUE3m/GQUpnoefKjDs7POAt+
+         vLfkOX+x9b+g9nOMWlSQPHZbCsjfLByQ2kcks5dvPMIKnAgC1Dbhfivlz4ZngMWYk+Cs
+         KajNfOMfYSb8UsQ+OHgjY7pluzshN2tfqOhIqWI5ohBJ+MNxS6ExFVf5Jb3k7KMWD9x9
+         a4Kse1naYHheuCtvrdhkTZp8Z6+vusdVGKMIsWIYkHBb6r1ip1OL7OL8lqp+whvvorZ0
+         SC7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1690471608; x=1691076408;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z5lUd6tLllXoqVN95rU12GI/kHjXVOUk+BNB7Y22cto=;
-        b=KjqA72P0/eF2AFM0NWZ+0x4rxBsLi14R3qrEqlh56mZhvVhx/qf5RYfHl+cs+wFclu
-         4d9ILcW6UAZJNWUssCn5vltQjuifni5LP2gegeQskW1sQry54WabNMFprfit315i99Cz
-         nmilhEKICo+I+oFHu2oG9bRTeO9ImBHULrsGpkQOQ6SQ/60Xwo+gYAc+nK2GEBJOIYbM
-         zTLpbWbomb3W407Cpy54awtjfmJSUBx5NbdB5sTEYupjuD6j2tHyMO9bAEBS5HZChOzQ
-         yi0DCzUxndCupjCRPrqI/DyfPHqylB1PWVLr+0QXbbgFxPO5qHahf/NNyzLS+MoeITon
-         7Byw==
-X-Gm-Message-State: ABy/qLbyOgrJNo8Rc0UYK/keKcb0J85IBe+MvmJ04pLO8iMA+TIL8CRA
-        wTb6bld8hUOnViABjH+7D2I=
-X-Google-Smtp-Source: APBJJlFjGqSrbh0oMoihKOPYd1QdUFuycfFOnzva1CI7AXyNbgeXj1ldzIMEDsOHkjausLac9x92sQ==
-X-Received: by 2002:a05:600c:ac1:b0:3fb:a100:2581 with SMTP id c1-20020a05600c0ac100b003fba1002581mr2186582wmr.14.1690471607767;
-        Thu, 27 Jul 2023 08:26:47 -0700 (PDT)
+        bh=HkMGDumQlalY89C6gPCAt+EinCF2NpTD+G/geonEwe8=;
+        b=bpPhQef2cdN5QRmmiUN5CUUrNYOVInj33YrQGt4qoe8WHIyH1xwq1KTGN+KqcZoAM6
+         MO65Dt48fzZdJ6GDzZsNyZjFEYAOQPujaWzE4yOjJPiMJeEyfUvvD2rPblHAvf6UyvDu
+         Zoztx+QfVnOrW5/Unwj35QgnkKEV+leNuRjDfxMAGO2Bxz8P4dXlCevjlDoSWQIwgQ3S
+         akX+1kc1oxG+e6nZdtEJj8PKj29tDBNAMZYUK1IM8IPnGv8X/+7GLEfCOkiOKMGxd70B
+         qfIUKT/ZL8Bj+kudMbSfwRrH7mhqhOb8pFalDAlybCLgjRMdt8LXaZTR/oFFpJjD3XMS
+         PAjA==
+X-Gm-Message-State: ABy/qLan1JwPctDSWOdZbWRHYLOOikvzBXDZOW0cbrb6IECnZd6wxx5J
+        J1accy5nUuIva9160i3RmsI=
+X-Google-Smtp-Source: APBJJlGn3MF6wD2StoFElm1XD+QHKQk5L//InWCg2kgAY070ed7EkqIEA74JK0+10I1+yQoWXJ803A==
+X-Received: by 2002:adf:f8ce:0:b0:317:6f08:8371 with SMTP id f14-20020adff8ce000000b003176f088371mr1994540wrq.48.1690471608531;
+        Thu, 27 Jul 2023 08:26:48 -0700 (PDT)
 Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id b17-20020adfde11000000b003143765e207sm2350622wrm.49.2023.07.27.08.26.46
+        by smtp.gmail.com with ESMTPSA id b17-20020adfde11000000b003143765e207sm2350622wrm.49.2023.07.27.08.26.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 08:26:47 -0700 (PDT)
+        Thu, 27 Jul 2023 08:26:48 -0700 (PDT)
 From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Thu, 27 Jul 2023 17:26:37 +0200
-Subject: [PATCH 2/6] mfd: rk8xx: Specify restart mode
+Date:   Thu, 27 Jul 2023 17:26:38 +0200
+Subject: [PATCH 3/6] soc/tegra: pmc: Specify restart mode
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230727-pca9450-reboot-v1-2-c8edb27bf404@skidata.com>
+Message-Id: <20230727-pca9450-reboot-v1-3-c8edb27bf404@skidata.com>
 References: <20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com>
 In-Reply-To: <20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com>
 To:     Lee Jones <lee@kernel.org>,
@@ -84,27 +84,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Benjamin Bara <benjamin.bara@skidata.com>
 
-Specify the implemented restart handler as a cold one.
+Specify the implemented restart handler as a warm one.
 
 Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
 ---
- drivers/mfd/rk8xx-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soc/tegra/pmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/rk8xx-core.c b/drivers/mfd/rk8xx-core.c
-index e8fc9e2ab1d0..15e8e6a9943a 100644
---- a/drivers/mfd/rk8xx-core.c
-+++ b/drivers/mfd/rk8xx-core.c
-@@ -697,7 +697,8 @@ int rk8xx_probe(struct device *dev, int variant, unsigned int irq, struct regmap
- 		case RK809_ID:
- 		case RK817_ID:
- 			ret = devm_register_sys_off_handler(dev,
--							    SYS_OFF_MODE_RESTART, SYS_OFF_PRIO_HIGH,
-+							    SYS_OFF_MODE_RESTART_COLD,
-+							    SYS_OFF_PRIO_HIGH,
- 							    &rk808_restart, rk808);
- 			if (ret)
- 				dev_warn(dev, "failed to register rst handler, %d\n", ret);
+diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+index 162f52456f65..4f42febb9b0f 100644
+--- a/drivers/soc/tegra/pmc.c
++++ b/drivers/soc/tegra/pmc.c
+@@ -2962,7 +2962,7 @@ static int tegra_pmc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	err = devm_register_sys_off_handler(&pdev->dev,
+-					    SYS_OFF_MODE_RESTART,
++					    SYS_OFF_MODE_RESTART_WARM,
+ 					    SYS_OFF_PRIO_LOW,
+ 					    tegra_pmc_restart_handler, NULL);
+ 	if (err) {
 
 -- 
 2.34.1
