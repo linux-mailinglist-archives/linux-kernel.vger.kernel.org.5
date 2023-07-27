@@ -2,142 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AA87658E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2712F7658A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbjG0QiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
+        id S234309AbjG0QaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233085AbjG0QiL (ORCPT
+        with ESMTP id S230331AbjG0QaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:38:11 -0400
-X-Greylist: delayed 552 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Jul 2023 09:38:10 PDT
-Received: from mail-out.m-online.net (mail-out.m-online.net [212.18.0.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055BA198A;
-        Thu, 27 Jul 2023 09:38:09 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4RBbn36YnGz1sClr;
-        Thu, 27 Jul 2023 18:28:55 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-        by mail.m-online.net (Postfix) with ESMTP id 4RBbn3498Bz1qqlc;
-        Thu, 27 Jul 2023 18:28:55 +0200 (CEST)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id L2BxAh51PvpU; Thu, 27 Jul 2023 18:28:54 +0200 (CEST)
-X-Auth-Info: /OdUztXMee0ZSkATtsTdHv9aXOABzOIhAtGtPnP68TjAEOXj7HyRSJPLBm2Ue4rD
-Received: from igel.home (aftr-62-216-205-232.dynamic.mnet-online.de [62.216.205.232])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 27 Jul 2023 18:28:54 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 19B4B2C1309; Thu, 27 Jul 2023 18:28:54 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Aleksa Sarai' <cyphar@cyphar.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "James.Bottomley@hansenpartnership.com" 
-        <James.Bottomley@hansenpartnership.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "christian@brauner.io" <christian@brauner.io>,
-        "dalias@libc.org" <dalias@libc.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "deepa.kernel@gmail.com" <deepa.kernel@gmail.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "glebfm@altlinux.org" <glebfm@altlinux.org>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hare@suse.com" <hare@suse.com>, "hpa@zytor.com" <hpa@zytor.com>,
-        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
-        "jhogan@kernel.org" <jhogan@kernel.org>,
-        "kim.phillips@arm.com" <kim.phillips@arm.com>,
-        "ldv@altlinux.org" <ldv@altlinux.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mattst88@gmail.com" <mattst88@gmail.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "ralf@linux-mips.org" <ralf@linux-mips.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "stefan@agner.ch" <stefan@agner.ch>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "tycho@tycho.ws" <tycho@tycho.ws>,
-        "will@kernel.org" <will@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
-        Palmer Dabbelt <palmer@sifive.com>
-Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
-In-Reply-To: <d052e1266bf042f9b4961bbf42261a55@AcuMS.aculab.com> (David
-        Laight's message of "Thu, 27 Jul 2023 09:01:06 +0000")
-References: <cover.1689074739.git.legion@kernel.org>
-        <cover.1689092120.git.legion@kernel.org>
-        <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
-        <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
-        <d052e1266bf042f9b4961bbf42261a55@AcuMS.aculab.com>
-X-Yow:  Darling, my ELBOW is FLYING over FRANKFURT, Germany..
-Date:   Thu, 27 Jul 2023 18:28:53 +0200
-Message-ID: <87ila5jp2y.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 27 Jul 2023 12:30:16 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B0F198A;
+        Thu, 27 Jul 2023 09:30:13 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 7145383693;
+        Thu, 27 Jul 2023 18:30:11 +0200 (CEST)
+From:   =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.com,
+        =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v2 0/9] Initial Marvell PXA1908 support
+Date:   Thu, 27 Jul 2023 18:28:58 +0200
+Message-ID: <20230727162909.6031-1-duje.mihanovic@skole.hr>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 27 2023, David Laight wrote:
+v1 -> v2:
+- Remove earlycon patch as it's been merged into tty-next
+- Address maintainer comments:
+  - Clarify GPIO regressions on older PXA platforms
+  - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+  - Add missing includes to clock driver
+  - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+  - Dual license clock bindings
+  - Change clock IDs to decimal
+  - Fix underscores in dt node names
+  - Move chosen node to top of board dts
+  - Clean up documentation
+  - Reorder commits
+  - Drop pxa,rev-id
+- Rename muic-i2c to i2c-muic
+- Reword some commits
+- Move framebuffer node to chosen
+- Add aliases for mmc nodes
+- Rebase on v6.5-rc3
 
-> From: Aleksa Sarai
->> Sent: 25 July 2023 17:36
-> ...
->> We almost certainly want to support AT_EMPTY_PATH at the same time.
->> Otherwise userspace will still need to go through /proc when trying to
->> chmod a file handle they have.
->
-> That can't be allowed.
+Hello,
 
-IIUC, fchmodat2(fd, "", m, AT_EMPTY_PATH) is equivalent to fchmod(fd,
-m).  With that, new architectures only need to implement the fchmodat2
-syscall to cover all chmod variants.
+This series adds initial support for the Marvell PXA1908 SoC and
+"samsung,coreprimevelte", a smartphone using the SoC.
+
+USB works and the phone can boot a rootfs from an SD card, but there are
+some warnings in the dmesg:
+
+During SMP initialization:
+[    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+[    0.006542] CPU features: Unsupported CPU feature variation detected.
+[    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+[    0.010710] Detected VIPT I-cache on CPU2
+[    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+[    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+[    0.014849] Detected VIPT I-cache on CPU3
+[    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+[    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
+
+SMMU probing fails:
+[    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+[    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+[    0.101816] arm-smmu c0010000.iommu:         no translation support!
+
+On Samsung's PXA1908 phones, the bootloader does not start the ARM
+system timer, and my temporary solution (which isn't present in this
+series) was to put the code for starting the timer in the clock driver.
+Would this hack be accepted upstream in the form of a platform or
+clocksource driver such as drivers/clocksource/timer-mediatek-cpux.c?
+
+A 3.14 based Marvell tree is available on GitHub
+acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+CoderCharmander/g361f-kernel.
+
+Andreas Färber attempted to upstream support for this SoC in 2017:
+https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
+
+Andy Shevchenko (1):
+  clk: mmp: Switch to use struct u32_fract instead of custom one
+
+Duje Mihanović (8):
+  gpio: pxa: disable pinctrl calls for MMP_GPIO
+  gpio: pxa: use dynamic allocation of base
+  dt-bindings: clock: Add Marvell PXA1908 clock bindings
+  clk: mmp: Add Marvell PXA1908 clock driver
+  dt-bindings: marvell: Document PXA1908 SoC
+  arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+  arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+  MAINTAINERS: add myself as Marvell PXA1908 maintainer
+
+ .../bindings/arm/marvell/marvell,pxa1908.yaml |  22 ++
+ .../bindings/clock/marvell,pxa1908.yaml       |  47 +++
+ MAINTAINERS                                   |  10 +
+ arch/arm64/Kconfig.platforms                  |  11 +
+ arch/arm64/boot/dts/marvell/Makefile          |   3 +
+ .../pxa1908-samsung-coreprimevelte.dts        | 329 ++++++++++++++++++
+ arch/arm64/boot/dts/marvell/pxa1908.dtsi      | 292 ++++++++++++++++
+ drivers/clk/mmp/Makefile                      |   2 +-
+ drivers/clk/mmp/clk-frac.c                    |  57 ++-
+ drivers/clk/mmp/clk-mmp2.c                    |   6 +-
+ drivers/clk/mmp/clk-of-mmp2.c                 |  26 +-
+ drivers/clk/mmp/clk-of-pxa168.c               |   4 +-
+ drivers/clk/mmp/clk-of-pxa1908.c              | 286 +++++++++++++++
+ drivers/clk/mmp/clk-of-pxa1928.c              |   6 +-
+ drivers/clk/mmp/clk-of-pxa910.c               |   4 +-
+ drivers/clk/mmp/clk-pxa168.c                  |   4 +-
+ drivers/clk/mmp/clk-pxa910.c                  |   4 +-
+ drivers/clk/mmp/clk.h                         |  10 +-
+ drivers/gpio/gpio-pxa.c                       |   2 +
+ include/dt-bindings/clock/marvell,pxa1908.h   |  93 +++++
+ 20 files changed, 1154 insertions(+), 64 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/marvell/marvell,pxa1908.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/marvell,pxa1908.yaml
+ create mode 100644 arch/arm64/boot/dts/marvell/pxa1908-samsung-coreprimevelte.dts
+ create mode 100644 arch/arm64/boot/dts/marvell/pxa1908.dtsi
+ create mode 100644 drivers/clk/mmp/clk-of-pxa1908.c
+ create mode 100644 include/dt-bindings/clock/marvell,pxa1908.h
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+2.41.0
+
+
