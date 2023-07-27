@@ -2,174 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DF0764329
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0604476432B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjG0BBq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 26 Jul 2023 21:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
+        id S231273AbjG0BCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjG0BBo (ORCPT
+        with ESMTP id S229552AbjG0BCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 21:01:44 -0400
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640E326B8;
-        Wed, 26 Jul 2023 18:01:43 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-78372b896d0so14658839f.2;
-        Wed, 26 Jul 2023 18:01:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690419702; x=1691024502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H2t9hQTZLQL2fbrtT3/xWkm8UjlYURhLQTybahLPuAo=;
-        b=i3byS9s5hmCjKtDlZWYHSN4vKoeFUyWK/83ESQ8ua85nISjw73Rneh1EdO7P6Bfc4X
-         E4CIPUDx52O3GFIHY+F2LKVjdB9qJ2In/yWa4ztcGl2efEHKlgIJZJaj1bC6+v7R0MWL
-         0zCrgNtHQiZ3li/2DFNmfL6CHt8gsM/Pyy9twp02Kf0MZne6VeYVP4cvlE1yg2WpRf4S
-         fzV+z/DAsudCiNdES3DygdDboXG/0nsiP2qWDqPTI6bNn54ax1tYTZ9dZYmHG5Mb0ruz
-         wPRvXtDQpGOnxKyUP9kJiY9cAGQqpLQhCUjv2SDUnDP4RfVBh1qt+9N+oC0Srhx76zQK
-         RmlA==
-X-Gm-Message-State: ABy/qLYxFaxMl65/kQhIIUQEZ+qudpe57KgOEee9KlfPKUAdNyCafdjG
-        PiQQOF90+/Pf24k2dOPnmEHANaPqnduTwpEZqIPnZ5SL
-X-Google-Smtp-Source: APBJJlGbp6cAWwJPdYfBgAhF8dvXyvhFv78ZZGTsaLix4Ccor+pIv/jZiq14VFzOQTq0vEpBCiwvEcRXD/x59bygrRk=
-X-Received: by 2002:a6b:730b:0:b0:787:7700:2b5c with SMTP id
- e11-20020a6b730b000000b0078777002b5cmr3863956ioh.6.1690419702417; Wed, 26 Jul
- 2023 18:01:42 -0700 (PDT)
+        Wed, 26 Jul 2023 21:02:14 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0E126B8;
+        Wed, 26 Jul 2023 18:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690419733; x=1721955733;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=r08GviQmSzSPANfI7vEvO5/gRDeF3yRPCIsvhIrYKOQ=;
+  b=ew67S8afsV0RwANr/DU+l1Uoer1IFI0FmSQLGbcCHWZEtwqUncAMWP81
+   pqBIszQ7iPAUjGH3B2MHUz5G2RIWpKjbHgQSBHoGaGV6VF8MpLCNw4Vec
+   w33kQBC46tPDzFtZpaAcPgPWXUuQFWKl43iMVVFta3pNe4bGOKxTNp9ED
+   rnk7Z6xLxG/MPGHG9lIKHV/f3C8sV7tEi7TiIPp18ZODm+oGhfcvKm/zd
+   i0jyeUNjH1U7/XzQgA+iIYZ34EDdgMRu26nSq8ftt5fEoxNuHojrtzqMP
+   eNixpHptZEKeG6uX4j5q/Ew7xrLcAqWH2qgiiIbDy6q58sBwoUecgk0d5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="371782764"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="371782764"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 18:02:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726736494"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="726736494"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2023 18:02:12 -0700
+From:   Haitao Huang <haitao.huang@linux.intel.com>
+To:     dave.hansen@linux.intel.com, kai.huang@intel.com,
+        reinette.chatre@intel.com, jarkko@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     dave.hansen@intel.com, kristen@linux.intel.com, seanjc@google.com,
+        stable@vger.kernel.org, sohil.mehta@intel.com
+Subject: [PATCH v5] x86/sgx: Resolves SECS reclaim vs. page fault for EAUG race
+Date:   Wed, 26 Jul 2023 18:02:12 -0700
+Message-Id: <20230727010212.26406-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: 130e505e-a0d3-548d-61bc-5b7e14cc6117@intel.com
+References: 
 MIME-Version: 1.0
-References: <20230726133642.750342-1-namhyung@kernel.org> <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
- <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com> <CAP-5=fVbwf9=ZFszgFpb_6Qb003WpZC3_vtO7fB1pL_vH-OhQw@mail.gmail.com>
-In-Reply-To: <CAP-5=fVbwf9=ZFszgFpb_6Qb003WpZC3_vtO7fB1pL_vH-OhQw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 26 Jul 2023 18:01:30 -0700
-Message-ID: <CAM9d7chcrd8mN55yb+oCBi3=AF4-a=oCr66+cv7eaquzx0Kvpw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 5:36 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Jul 26, 2023 at 3:57 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Ian,
-> >
-> > On Wed, Jul 26, 2023 at 8:48 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Wed, Jul 26, 2023 at 6:36 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >
-> > > > The bison and flex generate C files from the source (.y and .l)
-> > > > files.  When O= option is used, they are saved in a separate directory
-> > > > but the default build rule assumes the .C files are in the source
-> > > > directory.  So it might read invalid file if there are generated files
-> > > > from an old version.  The same is true for the pmu-events files.
-> > > >
-> > > > For example, the following command would cause a build failure:
-> > > >
-> > > >   $ git checkout v6.3
-> > > >   $ make -C tools/perf  # build in the same directory
-> > > >
-> > > >   $ git checkout v6.5-rc2
-> > > >   $ mkdir build  # create a build directory
-> > > >   $ make -C tools/perf O=build  # build in a different directory but it
-> > > >                                 # refers files in the source directory
-> > > >
-> > > > Let's update the build rule to specify those cases explicitly to depend
-> > > > on the files in the output directory.
-> > > >
-> > > > Note that it's not a complete fix and it needs the next patch for the
-> > > > include path too.
-> > > >
-> > > > Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > ---
-> > > >  tools/build/Makefile.build  | 8 ++++++++
-> > > >  tools/perf/pmu-events/Build | 4 ++++
-> > > >  2 files changed, 12 insertions(+)
-> > > >
-> > > > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-> > > > index 89430338a3d9..f9396696fcbf 100644
-> > > > --- a/tools/build/Makefile.build
-> > > > +++ b/tools/build/Makefile.build
-> > > > @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
-> > > >         $(call rule_mkdir)
-> > > >         $(call if_changed_dep,cc_s_c)
-> > > >
-> > > > +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
-> > > > +       $(call rule_mkdir)
-> > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > > +
-> > > > +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
-> > > > +       $(call rule_mkdir)
-> > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > > +
-> > >
-> > > Hi Namhyung,
-> > >
-> > > as we have:
-> > > ```
-> > > $(OUTPUT)%.o: %.c FORCE
-> > >        $(call rule_mkdir)
-> > >        $(call if_changed_dep,$(host)cc_o_c)
-> > > ```
-> > > I'm not sure what the 2 additional rules achieve.
-> >
-> > The above rule assumes the .c files are in the source directory
-> > (without $(OUTPUT) prefix).  It caused a trouble when the
-> > flex and bison files are generated in the output directory and
-> > you have an old version of them in the source directory.
-> >
-> >
-> > >
-> > > >  # Gather build data:
-> > > >  #   obj-y        - list of build objects
-> > > >  #   subdir-y     - list of directories to nest
-> > > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-> > > > index 150765f2baee..f38a27765604 100644
-> > > > --- a/tools/perf/pmu-events/Build
-> > > > +++ b/tools/perf/pmu-events/Build
-> > > > @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY) $(METRIC_PY) $(METRIC_TEST_L
-> > > >         $(call rule_mkdir)
-> > > >         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARCH) $(JEVENTS_MODEL) pmu-events/arch $@
-> > > >  endif
-> > > > +
-> > > > +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
-> > > > +       $(call rule_mkdir)
-> > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > >
-> > > If we add this, do the Makefile.build changes still need to happen?
-> >
-> > The Makefile.build changes are specific to flex and bison files.
-> > So yes, we need this for pmu-events.c to work properly with O=
-> > option.
->
-> Got it, you are right I was confusing the flex/bison with the jevents
-> case. Can we get away with a single rule then:
-> ```
->  $(OUTPUT)%.o:  $(OUTPUT)%.c FORCE
->         $(call rule_mkdir)
->         $(call if_changed_dep,$(host)cc_o_c)
-> ```
+Under heavy load, the SGX EPC reclaimer (ksgxd) may reclaim the SECS EPC
+page for an enclave and set encl->secs.epc_page to NULL. But the SECS
+EPC page is used for EAUG in the SGX page fault handler without checking
+for NULL and reloading.
 
-Probably, but I wonder if it affects the normal .c files expecting
-them in the OUTPUT directory.
+Fix this by checking if SECS is loaded before EAUG and loading it if it
+was reclaimed.
 
-Thanks,
-Namhyung
+The SECS page holds global enclave metadata. It can only be reclaimed
+when there are no other enclave pages remaining. At that point,
+virtually nothing can be done with the enclave until the SECS page is
+paged back in.
+
+An enclave can not run nor generate page faults without a resident SECS
+page. But it is still possible for a #PF for a non-SECS page to race
+with paging out the SECS page: when the last resident non-SECS page A
+triggers a #PF in a non-resident page B, and then page A and the SECS
+both are paged out before the #PF on B is handled.
+
+Hitting this bug requires that race triggered with a #PF for EAUG.
+Following is a trace when it happens.
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+RIP: 0010:sgx_encl_eaug_page+0xc7/0x210
+Call Trace:
+ ? __kmem_cache_alloc_node+0x16a/0x440
+ ? xa_load+0x6e/0xa0
+ sgx_vma_fault+0x119/0x230
+ __do_fault+0x36/0x140
+ do_fault+0x12f/0x400
+ __handle_mm_fault+0x728/0x1110
+ handle_mm_fault+0x105/0x310
+ do_user_addr_fault+0x1ee/0x750
+ ? __this_cpu_preempt_check+0x13/0x20
+ exc_page_fault+0x76/0x180
+ asm_exc_page_fault+0x27/0x30
+
+Fixes: 5a90d2c3f5ef ("x86/sgx: Support adding of pages to an initialized enclave")
+Cc: stable@vger.kernel.org # v6.0+
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+---
+v5:
+- Trimmed trace and added Acked-by (Reinette)
+
+v4:
+- Refined the title (Kai, Dave)
+- Added a trace to commit meesage (Kai)
+- Added a few details for the race.
+
+v3:
+- Added comments on sgx_encl_load_secs(). (Dave)
+- Added theory of the race condition to hit the bug. (Dave)
+- Added Reviewed-by, and applicable stable release. (Jarkko)
+
+v2:
+- Fixes for style, commit message (Jarkko, Kai)
+- Removed unneeded WARN_ON (Kai)
+---
+ arch/x86/kernel/cpu/sgx/encl.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index 91fa70e51004..279148e72459 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -235,6 +235,21 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+ 	return epc_page;
+ }
+ 
++/*
++ * Ensure the SECS page is not swapped out.  Must be called with encl->lock
++ * to protect the enclave states including SECS and ensure the SECS page is
++ * not swapped out again while being used.
++ */
++static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
++{
++	struct sgx_epc_page *epc_page = encl->secs.epc_page;
++
++	if (!epc_page)
++		epc_page = sgx_encl_eldu(&encl->secs, NULL);
++
++	return epc_page;
++}
++
+ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
+ 						  struct sgx_encl_page *entry)
+ {
+@@ -248,11 +263,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
+ 		return entry;
+ 	}
+ 
+-	if (!(encl->secs.epc_page)) {
+-		epc_page = sgx_encl_eldu(&encl->secs, NULL);
+-		if (IS_ERR(epc_page))
+-			return ERR_CAST(epc_page);
+-	}
++	epc_page = sgx_encl_load_secs(encl);
++	if (IS_ERR(epc_page))
++		return ERR_CAST(epc_page);
+ 
+ 	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
+ 	if (IS_ERR(epc_page))
+@@ -339,6 +352,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
+ 
+ 	mutex_lock(&encl->lock);
+ 
++	epc_page = sgx_encl_load_secs(encl);
++	if (IS_ERR(epc_page)) {
++		if (PTR_ERR(epc_page) == -EBUSY)
++			vmret = VM_FAULT_NOPAGE;
++		goto err_out_unlock;
++	}
++
+ 	epc_page = sgx_alloc_epc_page(encl_page, false);
+ 	if (IS_ERR(epc_page)) {
+ 		if (PTR_ERR(epc_page) == -EBUSY)
+
+base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
+-- 
+2.25.1
+
