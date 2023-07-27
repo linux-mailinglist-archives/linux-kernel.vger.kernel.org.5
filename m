@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 205D2765E73
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB427765E77
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbjG0Vxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
+        id S232528AbjG0Vxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232706AbjG0VxU (ORCPT
+        with ESMTP id S232469AbjG0Vx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:53:20 -0400
-Received: from qs51p00im-qukt01080501.me.com (qs51p00im-qukt01080501.me.com [17.57.155.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7468526AE
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:52:54 -0700 (PDT)
+        Thu, 27 Jul 2023 17:53:26 -0400
+Received: from qs51p00im-qukt01080301.me.com (qs51p00im-qukt01080301.me.com [17.57.155.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB77935A3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1690494770; bh=KmnZ+NHz7PM0U1A/IX51H2Bjow4KLdppH5jj9uz/ocI=;
+        t=1690494773; bh=HXQLqgiZg4lwSg7yuJp70xhHYQeGMquqwwsl6uxX+/s=;
         h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=HfaFosewupSVW4LocN+Fh45yv/yOk7DM9vl1uPwvbMH+nnbcnyarbV9vT40J2YooV
-         UYMrQFw1oPX8FyWjC4KfhWDMT1KtcbCydp+3dKYrphHGkml97N29HcFeTPMiZTld/X
-         89F2gfJZ2zapirmPqwaGu2ww6kZ5RvNlTwSRo5ll5x/T4vjkF19qNs9OHlmossenC2
-         R607BIJEEV44c0Qg1g2sy27AQFbd4zC1ZbNH8dzq5IQuAPlvuxFAkxIVR1Rl5xxJ0v
-         CB1NZXHlgHphrtEdk0ICdE8UKPEYMRiQ0O0P9W3U8nVvq5bPjwbd3NNcOgirSqZxuG
-         0qXkjFvsyO5dQ==
+        b=iWSH1EJWwkMfSRqn9vJtLQPTLaZ45ToCmc5035Zl4yf9t6z4GcEA75Q5iEj5/fxsv
+         rzI8ULoVds72y8jayIA8pvf0IslVNASIwoOS4/flQrYfIsh6HPC9mB4EE1FxIbNhJ9
+         o4lDZRViIyBF6y1Ow2ZgtiXApM3UvIKu10DYr8EePi7CreB9vLTK3XgxizKq6554GJ
+         bYXuQxJVyhPuQu0PFc6w9wzu0epGloaMnSvrqLG2gMW3hP/CGanqPOBvITBXlA2mdQ
+         P60FNgyU56tScM9fAEzmBNYGTDVVnzwPGCIuJx3xgpZ7xfKKsd3Cd/sonKqJBtkRLr
+         T6Rq+voTi8D2w==
 Received: from localhost (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
-        by qs51p00im-qukt01080501.me.com (Postfix) with ESMTPSA id 0D14B1980373;
-        Thu, 27 Jul 2023 21:52:49 +0000 (UTC)
+        by qs51p00im-qukt01080301.me.com (Postfix) with ESMTPSA id EE2DA5F00408;
+        Thu, 27 Jul 2023 21:52:52 +0000 (UTC)
 From:   Alain Volmat <avolmat@me.com>
-To:     Alain Volmat <alain.volmat@foss.st.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Alain Volmat <avolmat@me.com>, dri-devel@lists.freedesktop.org,
+To:     Patrice Chotard <patrice.chotard@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Alain Volmat <avolmat@me.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 10/14] drm/sti: add compositor support for stih418 platform
-Date:   Thu, 27 Jul 2023 21:51:34 +0000
-Message-Id: <20230727215141.53910-11-avolmat@me.com>
+Subject: [PATCH 11/14] ARM: dts: sti: move vtg_main / vtg_aux into stih407/stih410 dtsi
+Date:   Thu, 27 Jul 2023 21:51:35 +0000
+Message-Id: <20230727215141.53910-12-avolmat@me.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230727215141.53910-1-avolmat@me.com>
 References: <20230727215141.53910-1-avolmat@me.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: caJkhSSYKcGWfwaRe3kL8KLlbXUXZNhq
-X-Proofpoint-ORIG-GUID: caJkhSSYKcGWfwaRe3kL8KLlbXUXZNhq
+X-Proofpoint-GUID: H5CenQRAQ1tfGLGPSffjITEBYJ75K4oo
+X-Proofpoint-ORIG-GUID: H5CenQRAQ1tfGLGPSffjITEBYJ75K4oo
 X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.790,17.11.62.513.0000000_definitions?=
- =?UTF-8?Q?=3D2022-01-12=5F02:2020-02-14=5F02,2022-01-12=5F02,2021-12-02?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 adultscore=0
- phishscore=0 malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2307270198
+ =?UTF-8?Q?2903e8d5c8f:6.0.425,18.0.572,17.0.605.474.0000000_definitions?=
+ =?UTF-8?Q?=3D2022-01-11=5F01:2022-01-11=5F01,2020-02-14=5F11,2020-01-23?=
+ =?UTF-8?Q?=5F02_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 clxscore=1015
+ mlxlogscore=907 spamscore=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2307270199
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,125 +64,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the STiH418, a new clock (proc_mixer) must be enabled in order
-to have the plane mixers properly behaving.  Add a new
-st,stih418-compositor in order to describe the planes/mixers
-available on this platform.
+In preparation of introduction of display support in stih418, move
+the vtg nodes into stih407.dtsi and stih410.dtsi since vtg nodes
+will differ in case of the stih418 and thus cannot be kept as part
+of the stih407-family.dtsi.
 
 Signed-off-by: Alain Volmat <avolmat@me.com>
 ---
- drivers/gpu/drm/sti/sti_compositor.c | 26 ++++++++++++++++++++++++++
- drivers/gpu/drm/sti/sti_compositor.h |  2 ++
- drivers/gpu/drm/sti/sti_crtc.c       | 11 +++++++++++
- 3 files changed, 39 insertions(+)
+ arch/arm/boot/dts/st/stih407-family.dtsi | 13 -------------
+ arch/arm/boot/dts/st/stih407.dtsi        | 12 ++++++++++++
+ arch/arm/boot/dts/st/stih410.dtsi        | 12 ++++++++++++
+ 3 files changed, 24 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/gpu/drm/sti/sti_compositor.c b/drivers/gpu/drm/sti/sti_compositor.c
-index 4bd7e305ab75..dfea3c1191a6 100644
---- a/drivers/gpu/drm/sti/sti_compositor.c
-+++ b/drivers/gpu/drm/sti/sti_compositor.c
-@@ -43,6 +43,23 @@ static const struct sti_compositor_data stih407_compositor_data = {
- 	},
- };
+diff --git a/arch/arm/boot/dts/st/stih407-family.dtsi b/arch/arm/boot/dts/st/stih407-family.dtsi
+index 3f58383a7b59..6133c9934651 100644
+--- a/arch/arm/boot/dts/st/stih407-family.dtsi
++++ b/arch/arm/boot/dts/st/stih407-family.dtsi
+@@ -292,19 +292,6 @@ syscfg_lpm: lpm-syscfg@94b5100 {
+ 			reg = <0x94b5100 0x1000>;
+ 		};
  
-+/*
-+ * stiH418 compositor properties
-+ */
-+static const struct sti_compositor_data stih418_compositor_data = {
-+	.nb_subdev = 8,
-+	.subdev_desc = {
-+			{STI_GPDPLUS_SUBDEV, (int)STI_GDP_0, 0x00000},
-+			{STI_GPDPLUS_SUBDEV, (int)STI_GDP_1, 0x10000},
-+			{STI_GPDPLUS_SUBDEV, (int)STI_GDP_2, 0x20000},
-+			{STI_GPDPLUS_SUBDEV, (int)STI_GDP_3, 0x30000},
-+			{STI_GPD_SUBDEV, (int)STI_GDP_4, 0x40000},
-+			{STI_GPD_SUBDEV, (int)STI_GDP_5, 0x50000},
-+			{STI_MIXER_MAIN_SUBDEV, STI_MIXER_MAIN, 0x100000},
-+			{STI_MIXER_AUX_SUBDEV, STI_MIXER_AUX, 0x110000},
-+	},
-+};
+-		/* Display */
+-		vtg_main: sti-vtg-main@8d02800 {
+-			compatible = "st,vtg";
+-			reg = <0x8d02800 0x200>;
+-			interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
+-		};
+-
+-		vtg_aux: sti-vtg-aux@8d00200 {
+-			compatible = "st,vtg";
+-			reg = <0x8d00200 0x100>;
+-			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
+-		};
+-
+ 		serial@9830000 {
+ 			compatible = "st,asc";
+ 			reg = <0x9830000 0x2c>;
+diff --git a/arch/arm/boot/dts/st/stih407.dtsi b/arch/arm/boot/dts/st/stih407.dtsi
+index aca43d2bdaad..69430556edc4 100644
+--- a/arch/arm/boot/dts/st/stih407.dtsi
++++ b/arch/arm/boot/dts/st/stih407.dtsi
+@@ -8,6 +8,18 @@
+ #include <dt-bindings/gpio/gpio.h>
+ / {
+ 	soc {
++		vtg_main: sti-vtg-main@8d02800 {
++			compatible = "st,vtg";
++			reg = <0x8d02800 0x200>;
++			interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
++		};
 +
- void sti_compositor_debugfs_init(struct sti_compositor *compo,
- 				 struct drm_minor *minor)
- {
-@@ -169,6 +186,9 @@ static const struct of_device_id compositor_of_match[] = {
- 	{
- 		.compatible = "st,stih407-compositor",
- 		.data = &stih407_compositor_data,
-+	}, {
-+		.compatible = "st,stih418-compositor",
-+		.data = &stih418_compositor_data,
- 	}, {
- 		/* end node */
- 	}
-@@ -236,6 +256,12 @@ static int sti_compositor_probe(struct platform_device *pdev)
- 		return PTR_ERR(compo->clk_pix_aux);
- 	}
- 
-+	compo->clk_proc_mixer = devm_clk_get_optional(dev, "proc_mixer");
-+	if (IS_ERR(compo->clk_proc_mixer)) {
-+		DRM_ERROR("Cannot get proc_mixer clock\n");
-+		return PTR_ERR(compo->clk_proc_mixer);
-+	}
++		vtg_aux: sti-vtg-aux@8d00200 {
++			compatible = "st,vtg";
++			reg = <0x8d00200 0x100>;
++			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
++		};
 +
- 	/* Get reset resources */
- 	compo->rst_main = devm_reset_control_get_shared(dev, "compo-main");
- 	/* Take compo main out of reset */
-diff --git a/drivers/gpu/drm/sti/sti_compositor.h b/drivers/gpu/drm/sti/sti_compositor.h
-index 62545210b96d..fdc655f78579 100644
---- a/drivers/gpu/drm/sti/sti_compositor.h
-+++ b/drivers/gpu/drm/sti/sti_compositor.h
-@@ -57,6 +57,7 @@ struct sti_compositor_data {
-  * @clk_compo_aux: clock for aux compo
-  * @clk_pix_main: pixel clock for main path
-  * @clk_pix_aux: pixel clock for aux path
-+ * @clk_proc_mixer: clock for the mixers
-  * @rst_main: reset control of the main path
-  * @rst_aux: reset control of the aux path
-  * @mixer: array of mixers
-@@ -72,6 +73,7 @@ struct sti_compositor {
- 	struct clk *clk_compo_aux;
- 	struct clk *clk_pix_main;
- 	struct clk *clk_pix_aux;
-+	struct clk *clk_proc_mixer;
- 	struct reset_control *rst_main;
- 	struct reset_control *rst_aux;
- 	struct sti_mixer *mixer[STI_MAX_MIXER];
-diff --git a/drivers/gpu/drm/sti/sti_crtc.c b/drivers/gpu/drm/sti/sti_crtc.c
-index 3c7154f2d5f3..d93764e99b0e 100644
---- a/drivers/gpu/drm/sti/sti_crtc.c
-+++ b/drivers/gpu/drm/sti/sti_crtc.c
-@@ -67,6 +67,12 @@ sti_crtc_mode_set(struct drm_crtc *crtc, struct drm_display_mode *mode)
- 		pix_clk = compo->clk_pix_aux;
- 	}
+ 		sti-display-subsystem@0 {
+ 			compatible = "st,sti-display-subsystem";
+ 			#address-cells = <1>;
+diff --git a/arch/arm/boot/dts/st/stih410.dtsi b/arch/arm/boot/dts/st/stih410.dtsi
+index 29e95e9d3229..141db3dcaf1f 100644
+--- a/arch/arm/boot/dts/st/stih410.dtsi
++++ b/arch/arm/boot/dts/st/stih410.dtsi
+@@ -99,6 +99,18 @@ ehci1: usb@9a83e00 {
+ 			status = "disabled";
+ 		};
  
-+	/* Enable the mixer processing clock (if applicable) */
-+	if (clk_prepare_enable(compo->clk_proc_mixer)) {
-+		DRM_INFO("Failed to prepare/enable processing mixer clk\n");
-+		goto proc_mixer_error;
-+	}
++		vtg_main: sti-vtg-main@8d02800 {
++			compatible = "st,vtg";
++			reg = <0x8d02800 0x200>;
++			interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>;
++		};
 +
- 	/* Prepare and enable the compo IP clock */
- 	if (clk_prepare_enable(compo_clk)) {
- 		DRM_INFO("Failed to prepare/enable compositor clk\n");
-@@ -97,6 +103,8 @@ sti_crtc_mode_set(struct drm_crtc *crtc, struct drm_display_mode *mode)
- pix_error:
- 	clk_disable_unprepare(compo_clk);
- compo_error:
-+	clk_disable_unprepare(compo->clk_proc_mixer);
-+proc_mixer_error:
- 	return -EINVAL;
- }
- 
-@@ -122,6 +130,9 @@ static void sti_crtc_disable(struct drm_crtc *crtc)
- 		clk_disable_unprepare(compo->clk_compo_aux);
- 	}
- 
-+	/* Disable the mixer clock (if applicable) */
-+	clk_disable_unprepare(compo->clk_proc_mixer);
++		vtg_aux: sti-vtg-aux@8d00200 {
++			compatible = "st,vtg";
++			reg = <0x8d00200 0x100>;
++			interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>;
++		};
 +
- 	mixer->status = STI_MIXER_DISABLED;
- }
- 
+ 		sti-display-subsystem@0 {
+ 			compatible = "st,sti-display-subsystem";
+ 			#address-cells = <1>;
 -- 
 2.34.1
 
