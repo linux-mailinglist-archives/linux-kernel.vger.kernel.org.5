@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AC176578D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECE576579D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbjG0P1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S231665AbjG0P27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbjG0P0y (ORCPT
+        with ESMTP id S229555AbjG0P25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:26:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46422D54;
-        Thu, 27 Jul 2023 08:26:52 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3174aac120aso1135803f8f.2;
-        Thu, 27 Jul 2023 08:26:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690471611; x=1691076411;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qaf1CkazPa/KyrRWgauOWJb0xhcTY+lZFF1+FP/RQeg=;
-        b=pES+br6PSABHemdK2hVq8M/cGE/LbSDF9CzsX6b/tw22P+HPQN5JDqFlEAJg1/Ko21
-         4l3xTwhx1RpvV0FDlZF2XvaFtlAYeMU7nRTIr/+L1BYYBFaVDqgix7aWOakaSmIpBs57
-         V8RX4xQ54mO2syAYOHY0JSsNAx39PgCv1UPklwkPMSEzB0DDdFIexEG++xX2uCkj79my
-         KfjXxnfz5eSzNS48bUfU44hZGlvueZcipQKU/96SBWpTeznggJISFzzo9NtkcX+Zrulv
-         9+q0yiO2GxW7MewOB14kqMvPIhW1/tnJ8mPS2ejOW+jDJ/WVVIUopKdkeZl8vo5bUc9m
-         bidw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690471611; x=1691076411;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qaf1CkazPa/KyrRWgauOWJb0xhcTY+lZFF1+FP/RQeg=;
-        b=VImuB800c2+5fGnNsdkd0+VxHEGFkZKOmckXTq90lJXTniMxGJTO/XPH0mu46nL8xL
-         5HmKvS4MEtfnw6fsJ2quGTPVz3bja6NBzuqYLXLmW65m/WcPKe8MvrTiRmRE6HNKK8ZT
-         doZHT9WL9UlArd8hirzgyVUC1ogc+83sM+fJ6VZLeayT9Qvukbrw/NRuhe0n0uUjryhP
-         FktkVdqaMQ7MRUlk2bYpNZimD06/jbgguGMeAUX5FeIs4VvWtzG0g/J8FwBPPSd1bLuq
-         9d14sk3dTb2E+dVSZWD7kKesDfUr+P/uQsskrwb1pi4YD1fU+65BomNYZuUY7NLKSczE
-         IwSA==
-X-Gm-Message-State: ABy/qLbIfasaZpN9uMHgDIaQBB/Izseu5/qm3PZAtLd3PUkRulIBYP3h
-        J4o7s3ghwsqrgWVBBlASyyw=
-X-Google-Smtp-Source: APBJJlHpj9mV3MVcTKuPvVTXJhI7/bT5b21nBa++UYoWXRN6A54XNn2ORsf8QM6bqXVp2qwKa/oldw==
-X-Received: by 2002:adf:f091:0:b0:317:650e:9030 with SMTP id n17-20020adff091000000b00317650e9030mr1982626wro.57.1690471610905;
-        Thu, 27 Jul 2023 08:26:50 -0700 (PDT)
-Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id b17-20020adfde11000000b003143765e207sm2350622wrm.49.2023.07.27.08.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 08:26:50 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Thu, 27 Jul 2023 17:26:41 +0200
-Subject: [PATCH 6/6] regulator: pca9450: register restart handlers
+        Thu, 27 Jul 2023 11:28:57 -0400
+Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77991BE4;
+        Thu, 27 Jul 2023 08:28:55 -0700 (PDT)
+Received: from [2001:a61:6209:7f40:c80a:ff:fe00:4098] (helo=cs-office3.lan.local); authenticated
+        by wp534.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1qP2v5-0008UE-9I; Thu, 27 Jul 2023 17:28:51 +0200
+Date:   Thu, 27 Jul 2023 17:28:42 +0200
+From:   Carsten =?UTF-8?B?U3BpZcOf?= <mail@carsten-spiess.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH 1/2] hwmon: (isl28022) new driver for ISL28022 power
+ monitor
+Message-ID: <20230727172842.3fe20026.mail@carsten-spiess.de>
+In-Reply-To: <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
+References: <20230726152235.249569-1-mail@carsten-spiess.de>
+ <20230726152235.249569-2-mail@carsten-spiess.de>
+ <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230727-pca9450-reboot-v1-6-c8edb27bf404@skidata.com>
-References: <20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com>
-In-Reply-To: <20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com>
-To:     Lee Jones <lee@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Robin Gong <yibin.gong@nxp.com>,
-        Jerome Neanne <jneanne@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/VKN5LQy7FMPezGOzlhGiZtM";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690471736;7dc0dfdb;
+X-HE-SMSGID: 1qP2v5-0008UE-9I
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Bara <benjamin.bara@skidata.com>
+--Sig_/VKN5LQy7FMPezGOzlhGiZtM
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-The PCA9450 supports both, a warm and a cold reset. Implement both and
-register the respective handlers.
 
-Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
----
- drivers/regulator/pca9450-regulator.c | 59 +++++++++++++++++++++++++++++++++++
- include/linux/regulator/pca9450.h     |  7 +++++
- 2 files changed, 66 insertions(+)
+> On 7/26/23 18:19, Guenter Roeck wrote:
+> I strongly suspect that the conversions will result in overflows and that=
+ they are not always correct.
+> I'll want to write unit test code before accepting the driver.
+I changed the conversion for current to=20
+				*val =3D ((long)regval * 1250L * (long)data->gain) /
+					(long)data->shunt;
 
-diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
-index 2ab365d2749f..86903d677bf6 100644
---- a/drivers/regulator/pca9450-regulator.c
-+++ b/drivers/regulator/pca9450-regulator.c
-@@ -38,6 +38,11 @@ struct pca9450 {
- 	int irq;
- };
- 
-+static inline struct pca9450 *dev_to_pca9450(struct device *dev)
-+{
-+	return dev_get_drvdata(dev);
-+}
-+
- static const struct regmap_range pca9450_status_range = {
- 	.range_min = PCA9450_REG_INT1,
- 	.range_max = PCA9450_REG_PWRON_STAT,
-@@ -219,6 +224,42 @@ static int pca9450_set_dvs_levels(struct device_node *np,
- 	return ret;
- }
- 
-+static int pca9450_cold_reset(struct pca9450 *pca9450)
-+{
-+	int ret;
-+
-+	ret = regmap_write(pca9450->regmap, PCA9450_REG_SWRST,
-+			   SWRST_RESET_COLD_LDO12);
-+	if (ret)
-+		return ret;
-+
-+	/* t_RESTART is 250 ms. */
-+	mdelay(500);
-+	return -ETIME;
-+}
-+
-+static int pca9450_warm_reset(struct pca9450 *pca9450)
-+{
-+	int ret;
-+
-+	ret = regmap_write(pca9450->regmap, PCA9450_REG_SWRST,
-+			   SWRST_RESET_WARM);
-+	if (ret)
-+		return ret;
-+
-+	/* t_RESET is 20 ms. */
-+	mdelay(50);
-+	return -ETIME;
-+}
-+
-+static int pca9450_restart_handler(struct sys_off_data *data)
-+{
-+	int (*handler)(struct pca9450 *) = data->cb_data;
-+	struct pca9450 *pca9450 = dev_to_pca9450(data->dev);
-+
-+	return handler(pca9450);
-+}
-+
- static const struct pca9450_regulator_desc pca9450a_regulators[] = {
- 	{
- 		.desc = {
-@@ -845,6 +886,24 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
- 		return PTR_ERR(pca9450->sd_vsel_gpio);
- 	}
- 
-+	ret = devm_register_cold_restart_handler(pca9450->dev,
-+						 pca9450_restart_handler,
-+						 pca9450_cold_reset);
-+	if (ret) {
-+		dev_err(&i2c->dev, "register cold restart handler failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = devm_register_warm_restart_handler(pca9450->dev,
-+						 pca9450_restart_handler,
-+						 pca9450_warm_reset);
-+	if (ret) {
-+		dev_err(&i2c->dev, "register warm restart handler failed: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
- 	dev_info(&i2c->dev, "%s probed.\n",
- 		type == PCA9450_TYPE_PCA9450A ? "pca9450a" : "pca9450bc");
- 
-diff --git a/include/linux/regulator/pca9450.h b/include/linux/regulator/pca9450.h
-index 505c908dbb81..a72fd4942d5f 100644
---- a/include/linux/regulator/pca9450.h
-+++ b/include/linux/regulator/pca9450.h
-@@ -93,6 +93,13 @@ enum {
- 	PCA9450_MAX_REGISTER	    = 0x2F,
- };
- 
-+/* PCA9450 SW_RST bits */
-+#define SWRST_NOACTION			0x00
-+#define SWRST_RESET_REGS		0x05
-+#define SWRST_RESET_COLD_LDO12		0x14
-+#define SWRST_RESET_WARM		0x35
-+#define SWRST_RESET_COLD		0x64
-+
- /* PCA9450 BUCK ENMODE bits */
- #define BUCK_ENMODE_OFF			0x00
- #define BUCK_ENMODE_ONREQ		0x01
+The term (1250 * gain) will be 10000 max, fits to 14 bit.
+So no risk for 32bit overflow when multiply with 16bit value.
 
--- 
-2.34.1
+And changed the conversion for power to=20
+				*val =3D ((51200000L * ((long)data->gain)) /
+					(long)data->shunt) * (long)regval;
 
+The first term (51200000 * gain / shunt) will be larger than 16bit when=20
+(shunt/gain) is less than ~800. So min values for shunt are=20
+- 6400 =C2=B5Ohm for 320 mV range
+- 3200 =C2=B5Ohm for 160 mV range
+- 1600 =C2=B5Ohm for 80 mV range
+- 800 =C2=B5Ohm for 40 mV range
+Can i set this conditionally in the .yaml file?
+
+Regards Carsten
+
+--Sig_/VKN5LQy7FMPezGOzlhGiZtM
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEWM+MlUpz/bWsZllTM1JQzV9LKSwFAmTCjSoACgkQM1JQzV9L
+KSxNEQ//Zl3WGNjRRHcZX/AnLzHLLmhKq3QZw9OreJLcnES+G85wGIqyXVg6gFYx
+1dSzoUgMJWN/DL8PyjR8AnJayQ0cLbQPqQF0xG/Ki7y2/CmvaQxc1Yy/vc9fDj0N
+sFnuqjBTATNIiKpbGNG8WBBmWRZMD1v9AezG4YqHXxRyiAV+394BrAj4K5ectyxI
+ZpQgYzGwXntGpf9LU3MyEvNaVyWK7SchOOXvBf8b60D2bUnLZft304UTKBoe6isw
+7bI7nY5ENeZJK41l1mYK6LDyqJiuCL7QuMaRuQkTBr4EbXrsvUA+xxXDnQ+CfGID
+yb3jAjfHyWUy9gajeBJGpsQqEjCGHlOnzb8n/6EdfXmrtLD+XShX3pj/Hm1Udkzr
+PUl++5gnu23nLppwB8XaNh/ssyx1tFxs7Fs1oOdBVe59PRSJvf4YKBaFb6J5ZH6r
+eQQj2owJy/vKPl1ASigwUVIVYg6bm/TlVZWdbMn2LXDZCWIOZjqZw2dS0SO7/sbm
+8J2BewTiX9M4vqBM716CIj/7Z++iA9bTHPlhG1LI0Q+nbPEgez68mz2kgMGNxIFB
+LVE7OzFac95rI7REi7rJadDi8DufWama2M1UycM1uUii1feDPYoJ5eCTPBq1AeuQ
+EShQ0pHmiph0Pn2Po3ALEMSJbay4jgGEQDNhZclWC/gjRhDPVnE=
+=QSkV
+-----END PGP SIGNATURE-----
+
+--Sig_/VKN5LQy7FMPezGOzlhGiZtM--
