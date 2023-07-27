@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA267644A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5E37644A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbjG0DzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S230101AbjG0D4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjG0Dym (ORCPT
+        with ESMTP id S230356AbjG0Dz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:54:42 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2046.outbound.protection.outlook.com [40.107.117.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A0230C3;
-        Wed, 26 Jul 2023 20:54:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ccRphC62nkaK3mLDdYNFsnm5n83D/r2dp1TMwNv4w6Ns6Z5kIry96XHBJ4201raELBbfmqcQVtPAcfmFJ+zLYsLfqDQbrBPznDvQKNw/rFmBcVAyOZ+9Xdntt9gbJEqjp5IID9ivNz/YlDQy8WjtTwVCAG+sH733Q/jn4zydLjWL1z3wYSD+yZctg6QjLvFfvZRGP+cHaVAE6fbNVcgP0Txx+FMorAHPijSBUkjXBnOUBud8WZK1Ax6KhJaRpjqyeE34QFzpIRQh0s8ZlEtkz5Md8E2vqnObuujbzPDES+cbu3CqXElEPh4ge5VJ44R4vUgZ+u+n1Ad68ljNIlN0Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tRxXQ9EsziZubPqMqlfwFTJ4qcCb890a0A5C9iZi5RM=;
- b=NYhlMldGpviYjExbd3Pvg6xI7z1FZJjug32e1DdPGSdTb36fZzas384Ypd6p2XdsWj2FflgOi5CGl7bkIiZBAhqyNZyHQ76bDJ41BK47yggLlvo/ATHJtgTIJkf0g2jIl6FrtCnALs8C2pfRzNP40ncf9XjdNtXkJytO6vIWEUDR7mB9RgwuxraAhL5oGy4HX1lVt/xmhyWEVXmw4UibAku709lssfMMZzoeMuNGigbFrGaiGSOAMB/50gmIVObqQIoqz2uVhugBmV//srjEu5pBLQlfQK2u7C/pL1fyNtmycPr0EmXlYv33AgOGsdPr5mjpztqjZ1aXbX1XVfJPXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tRxXQ9EsziZubPqMqlfwFTJ4qcCb890a0A5C9iZi5RM=;
- b=xR8Edf/PoXSyV6rdJogrfjeiy9YiIGafv/Kp3Avo5puC7YbPHBsWLfEFXAzLf1QrQMX82qcGc83c5bYmh+tkV6od3ZPI9baa12nBryjF5tF74ZOt95rSYIOiRU8Krg7a7JJdm2ge2CYMlqT9sVI2ArZTkT1Cuz2nsgRrbLdPXYkCyuNb/jNqrxk2wyMlCF5qKbTDkcLMMa4Q3mP2UrT/fHv9mzYgZjkNxU/J4NoWRYk1TiouUAQUeSgQd3HvCL8Synbaz9ItnEx7fZvxAzd9TbGJ6hnUo904KPl0v3BaMPKJRCKdnHtOKILCgZ5BLl7+feubR/nkO6YhS2gxyxJqRg==
-Received: from PSBPR02CA0009.apcprd02.prod.outlook.com (2603:1096:301::19) by
- KL1PR0401MB6259.apcprd04.prod.outlook.com (2603:1096:820:c6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 03:54:18 +0000
-Received: from HK2PEPF00006FB4.apcprd02.prod.outlook.com
- (2603:1096:301:0:cafe::ed) by PSBPR02CA0009.outlook.office365.com
- (2603:1096:301::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Thu, 27 Jul 2023 03:54:17 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK2PEPF00006FB4.mail.protection.outlook.com (10.167.8.10) with Microsoft SMTP
- Server id 15.20.6631.22 via Frontend Transport; Thu, 27 Jul 2023 03:54:17
- +0000
-From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ARM: dts: aspeed: yosemitev4: add Facebook Yosemite V4 BMC
-Date:   Thu, 27 Jul 2023 11:53:52 +0800
-Message-Id: <20230727035354.1906590-5-Delphine_CC_Chiu@wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230727035354.1906590-1-Delphine_CC_Chiu@wiwynn.com>
-References: <20230727035354.1906590-1-Delphine_CC_Chiu@wiwynn.com>
+        Wed, 26 Jul 2023 23:55:58 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8D02717;
+        Wed, 26 Jul 2023 20:55:38 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-26830595676so393775a91.2;
+        Wed, 26 Jul 2023 20:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690430138; x=1691034938;
+        h=content-transfer-encoding:subject:cc:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aKPwval4JwVixs6vHq6OS1R7adXBXZhv/zbbiXcVS3s=;
+        b=KwdMrCh5/NHrZj7oM+yLpwO/bAqoP94blQR3KpRENtentCqcBXUMMN4nHXxX6M7xV1
+         ShnEwz3guiaFo9p13XwlXpjYbpi24DYGqDHn1SBOwzNUbJ2LjcGFCX2xZ7VSmlQujloW
+         lIDVTbVJkdHGCrbOOzFFfitmXILjW102OkmjPNDR1FhK2AzgeUhtHMB6i/K4svKvUTlC
+         JHucPNgI6ilcti4+217wDiMAmOPPWzwVZj0s2xlNVY+dMlx8JyXoa85JaeeTQYWjAFHh
+         /LWgA4KDUiTCPgX6dGWSqxgQxpsFhDTwX29BDJn82V6rNR0amygj6IxgzBgPNxh5UUjJ
+         lObg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690430138; x=1691034938;
+        h=content-transfer-encoding:subject:cc:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aKPwval4JwVixs6vHq6OS1R7adXBXZhv/zbbiXcVS3s=;
+        b=N+kUsyXNdJuUypUb/fwym6A4lTp4f4AOenpQZoO1OI5RSxcsJ/LUra3rB5hbHuNeLS
+         hq3+fe7BiaaKZ9WWR6bPXNfnUKPKfHPXXv13bF1ZwkTwmCOXhKbbXaishnTkBvDjReP3
+         gVl0wo2T7TFIDpedd4tZKJ70eAFb6wABKxcHAAJ023A3QqKzj7zApgyrHNiYKIIQZ9sW
+         dzCvSzFpwv0d/WflaIssF6MjUpqkvBDthUqIk4/7AiBwxQ1ICvl1x5lelfTX1KWefqEQ
+         xJYwr2Ia86kM6waw2cx1qpNFRtHsumHC5hOx37xrl978r0g65aUGd9k+phw/HqT6DBHR
+         w2Bg==
+X-Gm-Message-State: ABy/qLb/oHi23N5swHTjPNOlrmulgXbrxRSJWncakGPIXjqO47v/aCDW
+        M6AOImpBDKVyr6vg5rdxYkc=
+X-Google-Smtp-Source: APBJJlHssE1XTjk/Q8JN26scij/JN2XiZcd3xIP7S+0tX3vDtFcfraHefoPLwW8QEN/Qn4FpB6Hxhw==
+X-Received: by 2002:a17:90a:7047:b0:263:4164:dfba with SMTP id f65-20020a17090a704700b002634164dfbamr3482072pjk.6.1690430138285;
+        Wed, 26 Jul 2023 20:55:38 -0700 (PDT)
+Received: from [192.168.0.104] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x19-20020a170902ea9300b001bba669a7eesm365951plb.52.2023.07.26.20.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 20:55:25 -0700 (PDT)
+Message-ID: <ca25b1b3-dc7a-b0bb-dce4-8d11eb343438@gmail.com>
+Date:   Thu, 27 Jul 2023 10:55:19 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB4:EE_|KL1PR0401MB6259:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 0310961f-5bd8-4813-6b74-08db8e5526e6
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R9VwqGR0bg3txlVS9PlkrlkJbt+lhHF2cETOxvLqC+17Va+6FyUibBseJoFOVhF9K7f0orekMsQAoFElaj4HzFYfksT6/clSTelxkUH98IehKcTM/gHOzJbcry7JhXf0Oqm6ThUzUscxGCLVuMYrH34CxigkMFU5HpfEdy2qgLnHc+D2e7lt4hzwVugePuSUoPo6eTIqeug566HR/eHwPWcvm7yfogZ4jDmKGXxrYgkCBLlXOX4s9vNW28U1eqo552Yfjx0zk3OY5Gf1Lezsfc/Adbb+WNiXQhI8S1VVD9qochVkqm+5BBuVhAsuPDgXncY2jx0l/vLpHSmnKKtPbQWGIZoh990bbZ736kIcoUzp8g17PnSZXBnLbg/hgrdwXl1vvNr9u1AB1ZObO0ZbUO24eaFfJHxStp8Jh7tGlnLuAe3nE3F/M7JEQlGAWpNFigjEDcvTUKG6JOOVQXVXeJIbsjW8BzULfvcYhK/u4vQvJVtS/2pCXKsPnLZNzzttsMGu1tB0JZZVHUdDkQ8aPz7VjBooUPvz3VP6xADvQwNDE9DonQBn8jmp7TN0RijDkDGhUwXkc9/kxj/MG19yj+mq+/4KUx8b3x+tvVPRDYefcuC1WCCnJ2PHa8mY/KdCJJJSY1Qh2lyaqtnKMK1oDLSbDhOktARqopVk2hPmRHIyJX9XMX1/s1SV59pLczWjxFYFrxlegfSxjrivFRqGPA==
-X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230028)(6069001)(4636009)(396003)(39860400002)(376002)(136003)(346002)(47680400002)(451199021)(82310400008)(36840700001)(46966006)(6486002)(6512007)(110136005)(6666004)(478600001)(47076005)(956004)(1076003)(336012)(26005)(186003)(6506007)(2616005)(2906002)(30864003)(36736006)(316002)(70586007)(8936002)(70206006)(41300700001)(8676002)(5660300002)(7416002)(9316004)(82740400003)(4326008)(81166007)(356005)(86362001)(36756003)(36860700001)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 03:54:17.6712
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0310961f-5bd8-4813-6b74-08db8e5526e6
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource: HK2PEPF00006FB4.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0401MB6259
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Marcus Seyfarth <m.seyfarth@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Perf <linux-perf-users@vger.kernel.org>
+Subject: Fwd: [perf] Build error when using LTO on 6.4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,674 +86,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add linux device tree entry related to
-Yosemite V4 specific devices connected to BMC SoC.
+Hi,
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
----
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../aspeed/aspeed-bmc-facebook-yosemitev4.dts | 640 ++++++++++++++++++
- 2 files changed, 641 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev4.dts
+I notice a build regression on Bugzilla [1]. Quoting from it:
 
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index c68984322a86..023fb428611f 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -26,6 +26,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-facebook-wedge400.dtb \
- 	aspeed-bmc-facebook-yamp.dtb \
- 	aspeed-bmc-facebook-yosemitev2.dtb \
-+	aspeed-bmc-facebook-yosemitev4.dtb \
- 	aspeed-bmc-ibm-bonnell.dtb \
- 	aspeed-bmc-ibm-everest.dtb \
- 	aspeed-bmc-ibm-rainier.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev4.dts
-new file mode 100644
-index 000000000000..1ca7ed6a0e7f
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemitev4.dts
-@@ -0,0 +1,640 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright 2022 Facebook Inc.
-+
-+/dts-v1/;
-+#include "aspeed-g6.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/leds/leds-pca955x.h>
-+#include <dt-bindings/i2c/i2c.h>
-+
-+/ {
-+	model = "Facebook Yosemite V4 BMC";
-+	compatible = "facebook,yosemitev4-bmc", "aspeed,ast2600";
-+
-+	aliases {
-+		serial4 = &uart5;
-+		serial5 = &uart6;
-+		serial6 = &uart7;
-+		serial7 = &uart8;
-+		serial8 = &uart9;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial4:57600n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x80000000>;
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
-+				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
-+				<&adc1 0>, <&adc1 1>;
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&uart6 {
-+	status = "okay";
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-+
-+&uart8 {
-+	status = "okay";
-+};
-+
-+&uart9 {
-+	status = "okay";
-+};
-+
-+&wdt1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_wdtrst1_default>;
-+	aspeed,reset-type = "soc";
-+	aspeed,external-signal;
-+	aspeed,ext-push-pull;
-+	aspeed,ext-active-high;
-+	aspeed,ext-pulse-duration = <256>;
-+};
-+
-+&mac2 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii3_default>;
-+	no-hw-checksum;
-+	use-ncsi;
-+	mlx,multi-host;
-+	ncsi-ctrl,start-redo-probe;
-+	ncsi-ctrl,no-channel-monitor;
-+	ncsi-package = <1>;
-+	ncsi-channel = <1>;
-+	ncsi-rexmit = <1>;
-+	ncsi-timeout = <2>;
-+};
-+
-+&mac3 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii4_default>;
-+	no-hw-checksum;
-+	use-ncsi;
-+	mlx,multi-host;
-+	ncsi-ctrl,start-redo-probe;
-+	ncsi-ctrl,no-channel-monitor;
-+	ncsi-package = <1>;
-+	ncsi-channel = <1>;
-+	ncsi-rexmit = <1>;
-+	ncsi-timeout = <2>;
-+};
-+
-+&rtc {
-+	status = "okay";
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <50000000>;
-+#include "openbmc-flash-layout-64.dtsi"
-+	};
-+	flash@1 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc2";
-+		spi-rx-bus-width = <4>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+	multi-master;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "adi,adm1278";
-+		reg = <0x40>;
-+	};
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x70>;
-+	};
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x71>;
-+	};
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	power-sensor@10 {
-+		compatible = "adi, adm1272";
-+		reg = <0x10>;
-+	};
-+
-+	power-sensor@12 {
-+		compatible = "adi, adm1272";
-+		reg = <0x12>;
-+	};
-+
-+	gpio@20 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@21 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@22 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x22>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio@23 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x23>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+	};
-+
-+	temperature-sensor@49 {
-+		compatible = "ti,tmp75";
-+		reg = <0x49>;
-+	};
-+
-+	temperature-sensor@4a {
-+		compatible = "ti,tmp75";
-+		reg = <0x4a>;
-+	};
-+
-+	temperature-sensor@4b {
-+		compatible = "ti,tmp75";
-+		reg = <0x4b>;
-+	};
-+
-+	eeprom@54 {
-+		compatible = "atmel,24c256";
-+		reg = <0x54>;
-+	};
-+};
-+
-+&i2c12 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+
-+	temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+	};
-+
-+	eeprom@50 {
-+		compatible = "atmel,24c128";
-+		reg = <0x50>;
-+	};
-+};
-+
-+&i2c13 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+};
-+
-+&i2c14 {
-+	status = "okay";
-+	bus-frequency = <400000>;
-+	adc@1d {
-+		compatible = "ti,adc128d818";
-+		reg = <0x1d>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	adc@35 {
-+		compatible = "ti,adc128d818";
-+		reg = <0x35>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	adc@37 {
-+		compatible = "ti,adc128d818";
-+		reg = <0x37>;
-+		ti,mode = /bits/ 8 <2>;
-+	};
-+
-+	power-sensor@40 {
-+		compatible = "ti,ina230";
-+		reg = <0x40>;
-+	};
-+
-+	power-sensor@41 {
-+		compatible = "ti,ina230";
-+		reg = <0x41>;
-+	};
-+
-+	power-sensor@42 {
-+		compatible = "ti,ina230";
-+		reg = <0x42>;
-+	};
-+
-+	power-sensor@41 {
-+		compatible = "ti,ina230";
-+		reg = <0x43>;
-+	};
-+
-+	power-sensor@44 {
-+		compatible = "ti,ina230";
-+		reg = <0x44>;
-+	};
-+
-+	temperature-sensor@4e {
-+		compatible = "ti,tmp75";
-+		reg = <0x4e>;
-+	};
-+
-+	temperature-sensor@4f {
-+		compatible = "ti,tmp75";
-+		reg = <0x4f>;
-+	};
-+
-+	eeprom@51 {
-+		compatible = "atmel,24c128";
-+		reg = <0x51>;
-+	};
-+
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9846";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x71>;
-+
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@1f {
-+				compatible = "ti,adc128d818";
-+				reg = <0x1f>;
-+				ti,mode = /bits/ 8 <2>;
-+			};
-+
-+			pwm@20{
-+				compatible = "max31790";
-+				reg = <0x20>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			gpio@22{
-+				compatible = "ti,tca6424";
-+				reg = <0x22>;
-+			};
-+
-+			pwm@23{
-+				compatible = "max31790";
-+				reg = <0x23>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			adc@33 {
-+				compatible = "maxim,max11615";
-+				reg = <0x33>;
-+			};
-+
-+			eeprom@52 {
-+				compatible = "atmel,24c128";
-+				reg = <0x52>;
-+			};
-+
-+			gpio@61 {
-+				compatible = "nxp,pca9552";
-+				reg = <0x61>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+			};
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@1f {
-+				compatible = "ti,adc128d818";
-+				reg = <0x1f>;
-+				ti,mode = /bits/ 8 <2>;
-+			};
-+
-+			pwm@20{
-+				compatible = "max31790";
-+				reg = <0x20>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			gpio@22{
-+				compatible = "ti,tca6424";
-+				reg = <0x22>;
-+			};
-+
-+			pwm@23{
-+				compatible = "max31790";
-+				reg = <0x23>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			adc@33 {
-+				compatible = "maxim,max11615";
-+				reg = <0x33>;
-+			};
-+
-+			eeprom@52 {
-+				compatible = "atmel,24c128";
-+				reg = <0x52>;
-+			};
-+
-+			gpio@61 {
-+				compatible = "nxp,pca9552";
-+				reg = <0x61>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+			};
-+		};
-+	};
-+
-+	i2c-mux@73 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x73>;
-+
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@35 {
-+				compatible = "maxim,max11617";
-+				reg = <0x35>;
-+			};
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			adc@35 {
-+				compatible = "maxim,max11617";
-+				reg = <0x35>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c15 {
-+	status = "okay";
-+	mctp-controller;
-+	multi-master;
-+	bus-frequency = <400000>;
-+
-+	mctp@10 {
-+		compatible = "mctp-i2c-controller";
-+		reg = <(0x10 | I2C_OWN_SLAVE_ADDRESS)>;
-+	};
-+
-+	i2c-mux@72 {
-+		compatible = "nxp,pca9544";
-+		idle-state = <0>;
-+		i2c-mux-idle-disconnect;
-+		reg = <0x72>;
-+	};
-+};
-+
-+&adc0 {
-+	ref_voltage = <2500>;
-+	status = "okay";
-+	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
-+			&pinctrl_adc2_default &pinctrl_adc3_default
-+			&pinctrl_adc4_default &pinctrl_adc5_default
-+			&pinctrl_adc6_default &pinctrl_adc7_default>;
-+};
-+
-+&adc1 {
-+	ref_voltage = <2500>;
-+	status = "okay";
-+	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default>;
-+};
-+
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+
-+&uhci {
-+	status = "okay";
-+};
--- 
-2.25.1
+> Starting with Kernel 6.4, I see a build error when using "-flto" to bui=
+ld perf. This used to work fine with earlier Kernels when using either bf=
+d or mold as linker when using GCC 13.1.1.
+>=20
+> This is the PKGBUILD I use as my build recipe: https://github.com/ms178=
+/archpkgbuilds/blob/main/packages/bpf/PKGBUILD
+>=20
+> This is the konsole output I get now with Kernel 6.4.5:
+>=20
+> [CODE]
+> CFLAGS=3D'-Wno-error=3Dbad-function-cast -Wno-error=3Ddeclaration-after=
+-statement -Wno-error=3Dswitch-enum -Wbad-function-cast -Wdeclaration-aft=
+er-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declara=
+tions -Wmissing-prototypes -Wno-system-headers -Wold-style-definition -Wp=
+acked -Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wswitch-enu=
+m -Wundef -Wwrite-strings -Wformat -Wno-type-limits -Wstrict-aliasing=3D3=
+ -Wshadow -DHAVE_SYSCALL_TABLE_SUPPORT -DHAVE_ARCH_X86_64_SUPPORT -Iarch/=
+x86/include/generated -DHAVE_PERF_REGS_SUPPORT -DHAVE_ARCH_REGS_QUERY_REG=
+ISTER_OFFSET -Werror -DNDEBUG=3D1 -O6 -fno-omit-frame-pointer -ggdb3 -fun=
+wind-tables -Wall -Wextra -std=3Dgnu11 -fstack-protector-all -U_FORTIFY_S=
+OURCE -D_FORTIFY_SOURCE=3D2 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=3D6=
+4 -D_GNU_SOURCE -I/tmp/makepkg/linux-tools/src/linux/tools/perf/util/incl=
+ude -I/tmp/makepkg/linux-tools/src/linux/tools/perf/arch/x86/include -I/t=
+mp/makepkg/linux-tools/src/linux/tools/include/ -I/tmp/makepkg/linux-tool=
+s/src/linux/tools/arch/x86/include/uapi -I/tmp/makepkg/linux-tools/src/li=
+nux/tools/include/uapi -I/tmp/makepkg/linux-tools/src/linux/tools/arch/x8=
+6/include/ -I/tmp/makepkg/linux-tools/src/linux/tools/arch/x86/ -I/tmp/ma=
+kepkg/linux-tools/src/linux/tools/perf/util -I/tmp/makepkg/linux-tools/sr=
+c/linux/tools/perf -DHAVE_PTHREAD_ATTR_SETAFFINITY_NP -DHAVE_PTHREAD_BARR=
+IER -DHAVE_EVENTFD_SUPPORT -DHAVE_GET_CURRENT_DIR_NAME -DHAVE_GETTID -DHA=
+VE_FILE_HANDLE -DHAVE_DWARF_GETLOCATIONS_SUPPORT -DHAVE_AIO_SUPPORT -DHAV=
+E_SCANDIRAT_SUPPORT -DHAVE_SCHED_GETCPU_SUPPORT -DHAVE_SETNS_SUPPORT -DHA=
+VE_LIBELF_SUPPORT -DHAVE_ELF_GETPHDRNUM_SUPPORT -DHAVE_GELF_GETNOTE_SUPPO=
+RT -DHAVE_ELF_GETSHDRSTRNDX_SUPPORT -DHAVE_DEBUGINFOD_SUPPORT -DHAVE_DWAR=
+F_SUPPORT  -DHAVE_LIBBPF_SUPPORT -DHAVE_BPF_PROLOGUE -DHAVE_JITDUMP -DHAV=
+E_DWARF_UNWIND_SUPPORT -DNO_LIBUNWIND_DEBUG_FRAME -DHAVE_LIBUNWIND_SUPPOR=
+T -DHAVE_LIBCRYPTO_SUPPORT -DHAVE_SLANG_SUPPORT -DNO_LIBPERL -DHAVE_TIMER=
+FD_SUPPORT -DHAVE_LIBPYTHON_SUPPORT -DHAVE_CXA_DEMANGLE_SUPPORT -DHAVE_ZL=
+IB_SUPPORT -DHAVE_LZMA_SUPPORT -DHAVE_ZSTD_SUPPORT -DHAVE_LIBCAP_SUPPORT =
+-DHAVE_BACKTRACE_SUPPORT -DHAVE_LIBNUMA_SUPPORT -DHAVE_KVM_STAT_SUPPORT -=
+DDISASM_FOUR_ARGS_SIGNATURE -DDISASM_INIT_STYLED -DHAVE_PERF_READ_VDSO32 =
+-DHAVE_AUXTRACE_SUPPORT -DHAVE_LIBTRACEEVENT -DLIBTRACEEVENT_VERSION=3D66=
+813 -I/tmp/makepkg/linux-tools/src/linux/tools/perf/libapi/include -I/tmp=
+/makepkg/linux-tools/src/linux/tools/perf/libbpf/include -I/tmp/makepkg/l=
+inux-tools/src/linux/tools/perf/libsubcmd/include -I/tmp/makepkg/linux-to=
+ols/src/linux/tools/perf/libsymbol/include -I/tmp/makepkg/linux-tools/src=
+/linux/tools/perf/libperf/include' LDFLAGS=3D'-Wl,-O3,--as-needed,-Bsymbo=
+lic-functions,--sort-common,-flto=3Dauto -fopenmp -fuse-ld=3Dmold -march=3D=
+native -mtune=3Dnative -maes -mbmi2 -mpclmul -Wl,-zmax-page-size=3D0x2000=
+00 -Wl,-z,noexecstack  -lunwind-x86_64 -lunwind -llzma  -L/usr/lib ' \
+>   '/usr/bin/python' util/setup.py \
+>   --quiet build_ext; \
+> cp python_ext_build/lib/perf*.so python/
+> rm -f -f /tmp/makepkg/linux-tools/src/linux/tools/perf/libbpf/libbpf.a;=
+ ar rcs /tmp/makepkg/linux-tools/src/linux/tools/perf/libbpf/libbpf.a /tm=
+p/makepkg/linux-tools/src/linux/tools/perf/libbpf/staticobjs/libbpf-in.o
+> [snip]
+> gcc -Wno-error=3Dbad-function-cast -Wno-error=3Ddeclaration-after-state=
+ment -Wno-error=3Dswitch-enum -Wbad-function-cast -Wdeclaration-after-sta=
+tement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations =
+-Wmissing-prototypes -Wno-system-headers -Wold-style-definition -Wpacked =
+-Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wswitch-enum -Wun=
+def -Wwrite-strings -Wformat -Wno-type-limits -Wstrict-aliasing=3D3 -Wsha=
+dow -DHAVE_SYSCALL_TABLE_SUPPORT -DHAVE_ARCH_X86_64_SUPPORT -Iarch/x86/in=
+clude/generated -DHAVE_PERF_REGS_SUPPORT -DHAVE_ARCH_REGS_QUERY_REGISTER_=
+OFFSET -Werror -DNDEBUG=3D1 -O6 -fno-omit-frame-pointer -ggdb3 -funwind-t=
+ables -Wall -Wextra -std=3Dgnu11 -fstack-protector-all -U_FORTIFY_SOURCE =
+-D_FORTIFY_SOURCE=3D2 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=3D64 -D_G=
+NU_SOURCE -I/tmp/makepkg/linux-tools/src/linux/tools/perf/util/include -I=
+/tmp/makepkg/linux-tools/src/linux/tools/perf/arch/x86/include -I/tmp/mak=
+epkg/linux-tools/src/linux/tools/include/ -I/tmp/makepkg/linux-tools/src/=
+linux/tools/arch/x86/include/uapi -I/tmp/makepkg/linux-tools/src/linux/to=
+ols/include/uapi -I/tmp/makepkg/linux-tools/src/linux/tools/arch/x86/incl=
+ude/ -I/tmp/makepkg/linux-tools/src/linux/tools/arch/x86/ -I/tmp/makepkg/=
+linux-tools/src/linux/tools/perf/util -I/tmp/makepkg/linux-tools/src/linu=
+x/tools/perf -DHAVE_PTHREAD_ATTR_SETAFFINITY_NP -DHAVE_PTHREAD_BARRIER -D=
+HAVE_EVENTFD_SUPPORT -DHAVE_GET_CURRENT_DIR_NAME -DHAVE_GETTID -DHAVE_FIL=
+E_HANDLE -DHAVE_DWARF_GETLOCATIONS_SUPPORT -DHAVE_AIO_SUPPORT -DHAVE_SCAN=
+DIRAT_SUPPORT -DHAVE_SCHED_GETCPU_SUPPORT -DHAVE_SETNS_SUPPORT -DHAVE_LIB=
+ELF_SUPPORT -DHAVE_ELF_GETPHDRNUM_SUPPORT -DHAVE_GELF_GETNOTE_SUPPORT -DH=
+AVE_ELF_GETSHDRSTRNDX_SUPPORT -DHAVE_DEBUGINFOD_SUPPORT -DHAVE_DWARF_SUPP=
+ORT  -DHAVE_LIBBPF_SUPPORT -DHAVE_BPF_PROLOGUE -DHAVE_JITDUMP -DHAVE_DWAR=
+F_UNWIND_SUPPORT -DNO_LIBUNWIND_DEBUG_FRAME -DHAVE_LIBUNWIND_SUPPORT -DHA=
+VE_LIBCRYPTO_SUPPORT -DHAVE_SLANG_SUPPORT -DNO_LIBPERL -DHAVE_TIMERFD_SUP=
+PORT -DHAVE_LIBPYTHON_SUPPORT -DHAVE_CXA_DEMANGLE_SUPPORT -DHAVE_ZLIB_SUP=
+PORT -DHAVE_LZMA_SUPPORT -DHAVE_ZSTD_SUPPORT -DHAVE_LIBCAP_SUPPORT -DHAVE=
+_BACKTRACE_SUPPORT -DHAVE_LIBNUMA_SUPPORT -DHAVE_KVM_STAT_SUPPORT -DDISAS=
+M_FOUR_ARGS_SIGNATURE -DDISASM_INIT_STYLED -DHAVE_PERF_READ_VDSO32 -DHAVE=
+_AUXTRACE_SUPPORT -DHAVE_LIBTRACEEVENT -DLIBTRACEEVENT_VERSION=3D66813 -I=
+/tmp/makepkg/linux-tools/src/linux/tools/perf/libapi/include -I/tmp/makep=
+kg/linux-tools/src/linux/tools/perf/libbpf/include -I/tmp/makepkg/linux-t=
+ools/src/linux/tools/perf/libsubcmd/include -I/tmp/makepkg/linux-tools/sr=
+c/linux/tools/perf/libsymbol/include -I/tmp/makepkg/linux-tools/src/linux=
+/tools/perf/libperf/include -Wl,-O3,--as-needed,-Bsymbolic-functions,--so=
+rt-common,-flto=3Dauto -fopenmp -fuse-ld=3Dmold -march=3Dnative -mtune=3D=
+native -maes -mbmi2 -mpclmul -Wl,-zmax-page-size=3D0x200000 -Wl,-z,noexec=
+stack  -lunwind-x86_64 -lunwind -llzma  -L/usr/lib  \
+>         perf-in.o pmu-events/pmu-events-in.o -Wl,--whole-archive /tmp/m=
+akepkg/linux-tools/src/linux/tools/perf/libapi/libapi.a /tmp/makepkg/linu=
+x-tools/src/linux/tools/perf/libperf/libperf.a /tmp/makepkg/linux-tools/s=
+rc/linux/tools/perf/libsubcmd/libsubcmd.a /tmp/makepkg/linux-tools/src/li=
+nux/tools/perf/libsymbol/libsymbol.a /tmp/makepkg/linux-tools/src/linux/t=
+ools/perf/libbpf/libbpf.a  -Wl,--no-whole-archive -Wl,--start-group -lpth=
+read -lrt -lm -ldl -lelf -ldebuginfod -ldw -lunwind-x86_64 -lunwind -llzm=
+a -lcrypto -lslang -lpython3.11 -ldl -lm -lutil -lstdc++ -lz -llzma -lzst=
+d -lcap -lnuma -ltraceevent -Wl,--end-group -o perf
+> mold: error: undefined symbol: main
+>>>> referenced by /usr/lib/Scrt1.o:(.text)
+>>>>               /usr/lib/Scrt1.o:(_start)
+> mold: error: undefined symbol: perf_pmu__getcpuid
+>>>> referenced by pmu-events.c
+>>>>               pmu-events/pmu-events-in.o:(perf_pmu__find_events_tabl=
+e)>>>
+>>>>               referenced by pmu-events.c
+>>>>               pmu-events/pmu-events-in.o:(perf_pmu__find_metrics_tab=
+le)
+> mold: error: undefined symbol: strcmp_cpuid_str
+>>>> referenced by pmu-events.c
+>>>>               pmu-events/pmu-events-in.o:(perf_pmu__find_events_tabl=
+e)>>>
+>>>>               referenced by pmu-events.c
+>>>>               pmu-events/pmu-events-in.o:(perf_pmu__find_metrics_tab=
+le)>>>
+>>>>               referenced by pmu-events.c
+>>>>               pmu-events/pmu-events-in.o:(find_core_events_table)>>>=
 
+>>>>               referenced 1 more times
+>=20
+> mold: error: undefined symbol: _ctype
+>>>> referenced by kallsyms.c
+>>>>             =20
+>>>>               /tmp/makepkg/linux-tools/src/linux/tools/perf/libsymbo=
+l/libsymbol.a(libsymbol-in.o):(__tolower)>>>
+>>>>               referenced by kallsyms.c
+>>>>             =20
+>>>>               /tmp/makepkg/linux-tools/src/linux/tools/perf/libsymbo=
+l/libsymbol.a(libsymbol-in.o):(__toupper)
+> mold: error: undefined symbol: strlcpy
+>>>> referenced by exec-cmd.c
+>>>>             =20
+>>>>               /tmp/makepkg/linux-tools/src/linux/tools/perf/libsubcm=
+d/libsubcmd.a(libsubcmd-in.o):(get_pwd_cwd)
+> [/CODE]
+>=20
+> I have noticed a patch series of Ian Rodgers that might adress this iss=
+ue, but his reported errors were different to mine, see: https://www.spin=
+ics.net/lists/kernel/msg4872566.html
+>=20
+> Compiler: gcc-version 13.1.1 20230714 (GCC)
+
+See Bugzilla for the full thread.
+
+Anyway, I'm adding this regression to regzbot:
+
+#regzbot introduced: v6.3..v6.4.5 https://bugzilla.kernel.org/show_bug.cg=
+i?id=3D217706
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217706
+
+--=20
+An old man doll... just what I always wanted! - Clara
