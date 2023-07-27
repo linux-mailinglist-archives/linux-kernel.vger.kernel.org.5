@@ -2,183 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EEB76518F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E406E765194
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbjG0KqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
+        id S232079AbjG0Kqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbjG0KqJ (ORCPT
+        with ESMTP id S231645AbjG0Kqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:46:09 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ECF122;
-        Thu, 27 Jul 2023 03:46:07 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc5d5746cso8529885e9.2;
-        Thu, 27 Jul 2023 03:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690454766; x=1691059566;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FdmjQpiLc4ZmqDl3oE853D9MeV4yc+pdaIBR2PdGPbc=;
-        b=fUp3mpm38j3vLb/RyzCVx8GuQ9XERRL8idRbt0k/B1qNKzwejtz4f0PsvY8/3mabre
-         vyfo4kMGs8T0pDNUZZdynSLbdB1Ljnm4Kq0FKSC1G0D1K2o3CvLZNJT17SduzlRPAu+X
-         nH+LxFNbvX3SDLAiqcZuLTOn5yYcnzn+rzZ/OTAehbzWJcXGJg70zSLDIr8LS6zB1/LM
-         /kpcabfGstB9V/fBllu7UenoYqII08Kx5sv0gqECiw01fbzSlWeNHUiGSjHYBOOoUPPp
-         vs1HpMHWbuH42i4YWgCDNxa0aSYswKwHqMRkh6hCXgoUrRD4QS6yItTj2XycjW4mlGAf
-         9g2w==
+        Thu, 27 Jul 2023 06:46:51 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC42F19B6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:46:47 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-55e16833517so1280962eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:46:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690454766; x=1691059566;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FdmjQpiLc4ZmqDl3oE853D9MeV4yc+pdaIBR2PdGPbc=;
-        b=CRsjJ1YBn/mm14o/WHMoEUWvevTaNs2fQz0u+AjH7SBpOJ0XvWRNQPmsi/C2nwAkUY
-         bEF/qfeHmpq00U/wQHjTHRpX9DGN0k+XIZjgy5rnB1o6n+5KNot8m4NE62AbFOGaBxKE
-         lwTTsyc4ze1Nl5q8/DDf0f4JR/7J3OnfpzT4qDdrrpu4meeIwGISKnS4HD2tF5Unhyxg
-         4C8ewrlZDjwa8C4O/dwIJYbM/DitNTR99N8yXdjetFtXCvrruprvfadFx53T/17z8+QW
-         kuXkn+6GOUoeebbQTYSb0YVgqwSs2bIVbg0dTtyNOAcgoBhk4lXG+63x6zJ7NypVSDbG
-         57lA==
-X-Gm-Message-State: ABy/qLYkDe2mkEmlqcCxs438bVHfeUut7mJvHUwGue+CpCD5iFjPir30
-        wtuyyUz5N8EGSFtdcyHX+C4=
-X-Google-Smtp-Source: APBJJlHKZ5/pQi+YcSxjgRvTZA7OMGuSHcJ356ztIBkB8sq/joOHNqA/WnWFDnKHEIpfSGQxr4ogZQ==
-X-Received: by 2002:a05:600c:b4d:b0:3fc:55b:9f6b with SMTP id k13-20020a05600c0b4d00b003fc055b9f6bmr1344035wmr.19.1690454765948;
-        Thu, 27 Jul 2023 03:46:05 -0700 (PDT)
-Received: from skbuf ([188.25.175.105])
-        by smtp.gmail.com with ESMTPSA id l10-20020a1ced0a000000b003fbb346279dsm1467815wmh.38.2023.07.27.03.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 03:46:05 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 13:46:03 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v4] net: dsa: mv88e6xxx: Add erratum 3.14 for
- 88E6390X and 88E6190X
-Message-ID: <20230727104603.mqbnfrhri6riesrx@skbuf>
-References: <20230727082550.15254-1-ante.knezic@helmholz.de>
+        d=1e100.net; s=20221208; t=1690454807; x=1691059607;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LvI6vtfQJFf8LXXcJyjBDqhJYmrLxLa/d2Tx/45QJ/4=;
+        b=dcS79gIMkDhpaCqIa/muLhBvFmWArQkwhWuM0DeAzfAgOkVx6bbivsbNaXoM0sMZzl
+         hRZlv3KdLF7jaCvHjDskdDp6dNEGf3EuAVjre/XZBYtFO53RR/b61WfAbNcEMVJ6zSEd
+         rzvEvOnW3cdn2ByiLn1JOTJytN59PU6q2qGi+d1L6aUxEib5QK+UEQwip8mhMYre6Szs
+         KhkJZqIA9I7lX44bAPgd1j8K7gghHCP8dewhSDGv4+bZ4lifjV6drkxOxqev403nN6El
+         z9FL0ZV+iWvXHKalLC3GsEaDMozpmD4a+SJjB/KxajTml8x4RVI6E/tyPmHdMcfbJnhz
+         U67Q==
+X-Gm-Message-State: ABy/qLYBIJc13X0Pe5ooLkUKZhf2tErTQ7JFeBBwZkErFXO85mt4jMre
+        v8/Zpwn9sE9yHks0XNyBH4KZ3dqQbjVswp6v8+Po3E6mKDxo
+X-Google-Smtp-Source: APBJJlEjHNOn01A7PhQWqnlltz8q9HyG34aGQpyMcKlcIfoPZdDs6G+HJfbX5y+E5uQqAt5wnkcTQrVHYprRdQVKORLxIcQez/7u
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727082550.15254-1-ante.knezic@helmholz.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2092:b0:3a4:2943:8f7 with SMTP id
+ s18-20020a056808209200b003a4294308f7mr5363691oiw.5.1690454807115; Thu, 27 Jul
+ 2023 03:46:47 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 03:46:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000497c3c060175aed9@google.com>
+Subject: [syzbot] [netfilter?] WARNING in __nf_conntrack_confirm
+From:   syzbot <syzbot+ff6e85a2812073da0a36@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, coreteam@netfilter.org, davem@davemloft.net,
+        edumazet@google.com, fw@strlen.de, kadlec@netfilter.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pabeni@redhat.com, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:25:50AM +0200, Ante Knezic wrote:
-> Fixes XAUI/RXAUI lane alignment errors.
-> Issue causes dropped packets when trying to communicate over
-> fiber via SERDES lanes of port 9 and 10.
-> Errata document applies only to 88E6190X and 88E6390X devices.
-> Requires poking in undocumented registers.
-> 
-> Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
-> ---
-> V4 : Rework as suggested by Vladimir Oltean <olteanv@gmail.com>
->      and Russell King <linux@armlinux.org.uk>
->  * print error in case of failure to apply erratum
->  * use mdiobus_c45_write instead of mdiodev_c45_write
->  * use bool variable instead of embedding a chip pointer inside
->    pcs struct.
-> V3 : Rework to fit the new phylink_pcs infrastructure
-> V2 : Rework as suggested by Andrew Lunn <andrew@lun.ch> 
->  * make int lanes[] const 
->  * reorder prod_nums
->  * update commit message to indicate we are dealing with
->    undocumented Marvell registers and magic values
-> ---
->  drivers/net/dsa/mv88e6xxx/pcs-639x.c | 45 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
-> 
-> diff --git a/drivers/net/dsa/mv88e6xxx/pcs-639x.c b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-> index 98dd49dac421..ba373656bfe1 100644
-> --- a/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-> +++ b/drivers/net/dsa/mv88e6xxx/pcs-639x.c
-> @@ -20,6 +20,7 @@ struct mv88e639x_pcs {
->  	struct mdio_device mdio;
->  	struct phylink_pcs sgmii_pcs;
->  	struct phylink_pcs xg_pcs;
-> +	bool erratum_3_14;
->  	bool supports_5g;
->  	phy_interface_t interface;
->  	unsigned int irq;
-> @@ -205,13 +206,53 @@ static void mv88e639x_sgmii_pcs_pre_config(struct phylink_pcs *pcs,
->  	mv88e639x_sgmii_pcs_control_pwr(mpcs, false);
->  }
->  
-> +static int mv88e6390_erratum_3_14(struct mv88e639x_pcs *mpcs)
-> +{
-> +	const int lanes[] = { MV88E6390_PORT9_LANE0, MV88E6390_PORT9_LANE1,
-> +		MV88E6390_PORT9_LANE2, MV88E6390_PORT9_LANE3,
-> +		MV88E6390_PORT10_LANE0, MV88E6390_PORT10_LANE1,
-> +		MV88E6390_PORT10_LANE2, MV88E6390_PORT10_LANE3 };
-> +	int err, i;
-> +
-> +	/* 88e6190x and 88e6390x errata 3.14:
-> +	 * After chip reset, SERDES reconfiguration or SERDES core
-> +	 * Software Reset, the SERDES lanes may not be properly aligned
-> +	 * resulting in CRC errors
-> +	 */
-> +
-> +	for (i = 0; i < ARRAY_SIZE(lanes); i++) {
-> +		err = mdiobus_c45_write(mpcs->mdio.bus, lanes[i],
-> +					MDIO_MMD_PHYXS,
-> +					0xf054, 0x400C);
-> +		if (err)
-> +			return err;
-> +
-> +		err = mdiobus_c45_write(mpcs->mdio.bus, lanes[i],
-> +					MDIO_MMD_PHYXS,
-> +					0xf054, 0x4000);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int mv88e639x_sgmii_pcs_post_config(struct phylink_pcs *pcs,
->  					   phy_interface_t interface)
->  {
->  	struct mv88e639x_pcs *mpcs = sgmii_pcs_to_mv88e639x_pcs(pcs);
-> +	int err;
->  
->  	mv88e639x_sgmii_pcs_control_pwr(mpcs, true);
->  
-> +	if (mpcs->erratum_3_14) {
-> +		err = mv88e6390_erratum_3_14(mpcs);
-> +		if (err)
-> +			dev_err(mpcs->mdio.dev.parent,
-> +				"failed to apply erratum 3.14: %pe\n",
-> +				ERR_PTR(err));
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -524,6 +565,10 @@ static int mv88e6390_pcs_init(struct mv88e6xxx_chip *chip, int port)
->  	mpcs->xg_pcs.ops = &mv88e6390_xg_pcs_ops;
->  	mpcs->xg_pcs.neg_mode = true;
->  
-> +	if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
-> +	    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
-> +		mpcs->erratum_3_14 = true;
-> +
->  	err = mv88e639x_pcs_setup_irq(mpcs, chip, port);
->  	if (err)
->  		goto err_free;
-> -- 
-> 2.11.0
-> 
+Hello,
 
-It's good practice that, if you had a conversation with Russell on previous
-versions of the patch, to keep him CCed on newer versions of it.
+syzbot found the following issue on:
+
+HEAD commit:    15cec633fc7b net: fec: tx processing does not call XDP API..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fbd745a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=77b9a3cf8f44c6da
+dashboard link: https://syzkaller.appspot.com/bug?extid=ff6e85a2812073da0a36
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cfb97ef3ebf9/disk-15cec633.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/2e8df2be69d2/vmlinux-15cec633.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2bdf17720191/bzImage-15cec633.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ff6e85a2812073da0a36@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 12 at net/netfilter/nf_conntrack_core.c:1198 __nf_conntrack_confirm+0x867/0x12c0 net/netfilter/nf_conntrack_core.c:1198
+Modules linked in:
+CPU: 1 PID: 12 Comm: kworker/u4:1 Not tainted 6.5.0-rc2-syzkaller-00231-g15cec633fc7b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Workqueue: events_unbound macvlan_process_broadcast
+RIP: 0010:__nf_conntrack_confirm+0x867/0x12c0 net/netfilter/nf_conntrack_core.c:1198
+Code: df e8 5d 64 ff ff 31 ff 41 89 c4 89 c6 e8 91 b5 1c f9 45 84 e4 0f 84 7a ff ff ff 44 8b 7c 24 18 e9 3b fe ff ff e8 49 ba 1c f9 <0f> 0b 48 8b 7c 24 20 e8 bd f6 cb 01 44 8b 74 24 44 8b 5c 24 38 44
+RSP: 0018:ffffc900001e08b0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff888077a75bc0 RCX: 0000000000000100
+RDX: ffff888015265940 RSI: ffffffff8869b667 RDI: 0000000000000001
+RBP: 000000000001e698 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000004f10 R12: ffff888077a75b00
+R13: 0000000000000001 R14: 000000000001e698 R15: 00000000000038d1
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fea3059d988 CR3: 000000004f78b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ nf_conntrack_confirm include/net/netfilter/nf_conntrack_core.h:62 [inline]
+ nf_confirm+0xfae/0x1200 net/netfilter/nf_conntrack_proto.c:155
+ nf_hook_entry_hookfn include/linux/netfilter.h:143 [inline]
+ nf_hook_slow+0xbf/0x1e0 net/netfilter/core.c:626
+ nf_hook include/linux/netfilter.h:258 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ip_local_deliver+0x2f1/0x540 net/ipv4/ip_input.c:254
+ dst_input include/net/dst.h:468 [inline]
+ ip_rcv_finish+0x1c4/0x2e0 net/ipv4/ip_input.c:449
+ NF_HOOK include/linux/netfilter.h:303 [inline]
+ NF_HOOK include/linux/netfilter.h:297 [inline]
+ ip_rcv+0xc8/0x410 net/ipv4/ip_input.c:569
+ __netif_receive_skb_one_core+0x115/0x180 net/core/dev.c:5452
+ __netif_receive_skb+0x1f/0x1b0 net/core/dev.c:5566
+ process_backlog+0x101/0x6c0 net/core/dev.c:5894
+ __napi_poll.constprop.0+0xb4/0x530 net/core/dev.c:6460
+ napi_poll net/core/dev.c:6527 [inline]
+ net_rx_action+0x956/0xe90 net/core/dev.c:6660
+ __do_softirq+0x218/0x965 kernel/softirq.c:553
+ do_softirq kernel/softirq.c:454 [inline]
+ do_softirq+0xaa/0xe0 kernel/softirq.c:441
+ </IRQ>
+ <TASK>
+ __local_bh_enable_ip+0xf8/0x120 kernel/softirq.c:381
+ local_bh_enable include/linux/bottom_half.h:33 [inline]
+ netif_rx net/core/dev.c:4972 [inline]
+ netif_rx+0x332/0x420 net/core/dev.c:4961
+ macvlan_broadcast+0x37d/0x680 drivers/net/macvlan.c:290
+ macvlan_multicast_rx drivers/net/macvlan.c:302 [inline]
+ macvlan_multicast_rx+0xd6/0x100 drivers/net/macvlan.c:296
+ macvlan_process_broadcast+0x225/0x690 drivers/net/macvlan.c:338
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2748
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
