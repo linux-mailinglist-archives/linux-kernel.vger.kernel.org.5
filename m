@@ -2,220 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEC8765BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74185765C03
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbjG0TSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
+        id S232112AbjG0TVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjG0TSh (ORCPT
+        with ESMTP id S232107AbjG0TVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:18:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D82273D
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690485470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M6fNNlhfLLjy6Ffe5VEja4cq8lrssWOW4WwBPHdA3f4=;
-        b=dobhaGqRXEWYdD0ZcTijndX7IWIim3j+AULa7r6qdoAjLMSO534O5fXFDYHDK4+bo12Gt5
-        6toQm1kfPcx3ZjKu5knR0A2Qlc9hCh5HGp9Q3BjmCZZIQbtr3zAiBYAkBCwTYEPFZ+xIDu
-        bgTqDz3COYflY4p786K8fvY1d/8Q038=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-8AEu_gAQONWMOX8SdypInw-1; Thu, 27 Jul 2023 15:17:48 -0400
-X-MC-Unique: 8AEu_gAQONWMOX8SdypInw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3143ac4a562so678676f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:17:48 -0700 (PDT)
+        Thu, 27 Jul 2023 15:21:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4C3FA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:21:12 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so18275e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690485670; x=1691090470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IyLrRoHQVkp9Qk0bYrHm60ga1B7v8n8gCKHi/W5Wo6o=;
+        b=vCkIm85UWeFtI32XPvpTC4L+NlRu6wGNi9GJm3U+PsEFcASlm+L39Id790PoDx0Z8M
+         klz28LJqypGOuNTa+R/qvax46BAVeSVxXD3FyL5JtGIMzYhea/3Myb4D2c7MuA5kr612
+         qfObrBrF52R6pap+CdSt0toROzcRADVA3WdrhroewE7DoCrpZm7p21pSDEZU1U1CLmUT
+         TJFpFCMUpF2s6jSl0I3kEAA+TD9d0Xl5rVyIf3qoof6xlvkPrYYObzKicNnX6aJGozDl
+         me6w4bGN2RjO6ShJRyoUEHrDm5K+Kids4i8jvbaTvoN+SVwGs076tc46fYgwZOwWGGZL
+         UWTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485467; x=1691090267;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M6fNNlhfLLjy6Ffe5VEja4cq8lrssWOW4WwBPHdA3f4=;
-        b=lrvD9cYFB8bAiofVOjT4URwrkPRJS7OMEtdu1sEPrTquRhVlGS2hcxF4h5xdEBlZmp
-         8/AU0BVF6ubBxuN+TYjRm53ayW4K+A47yMsP35xyh23FkNN+MpZz7n06gtw/TWWhm3pn
-         wjAxERVR4hJSGOko9Kcs/C48DaudINf9CHr6tFj3kLhgwU8gTR6Zk1BkIVxpz03XM32l
-         LD0vnd9WC3s4XvDj8mWPzap0p1ukB6IamvAEFxRKvhOKE01QKDNtfg94qfKU1xCIL3ht
-         J8syVtxgiIyLVYiu0yLXC/ElKY5vM3eq8iOD9G9GpH4cL6hwIQdc0h+YHmA1YmcYrBXH
-         2b9w==
-X-Gm-Message-State: ABy/qLZty17vgr32QfRMq2vhoJUZgCmVnmrmpu+RcM9TxpJhsHg8wOQ/
-        i1lRTjF+XDIslZRWPJGjYxxfltTyIUij5bIE2x16mcRL8o2wL2Ys7mt3X6IlBpjMEWk2pL2fvl8
-        oYHQuCjvstqqHzGK2OEUhXDKE
-X-Received: by 2002:adf:f502:0:b0:316:f25c:d0c0 with SMTP id q2-20020adff502000000b00316f25cd0c0mr98057wro.16.1690485467576;
-        Thu, 27 Jul 2023 12:17:47 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGjaaCzclHToJETbNW6SrclFfMO44Qjruq5h6Xi98EUIJDqJFds0hNI7NFgUwj4flCCQQz0tA==
-X-Received: by 2002:adf:f502:0:b0:316:f25c:d0c0 with SMTP id q2-20020adff502000000b00316f25cd0c0mr98042wro.16.1690485467134;
-        Thu, 27 Jul 2023 12:17:47 -0700 (PDT)
-Received: from ?IPV6:2003:d8:2f43:4700:d2cd:2b81:d4e6:8b2a? (p200300d82f434700d2cd2b81d4e68b2a.dip0.t-ipconnect.de. [2003:d8:2f43:4700:d2cd:2b81:d4e6:8b2a])
-        by smtp.gmail.com with ESMTPSA id u17-20020a5d5151000000b0030fa3567541sm2828536wrt.48.2023.07.27.12.17.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 12:17:46 -0700 (PDT)
-Message-ID: <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
-Date:   Thu, 27 Jul 2023 21:17:45 +0200
+        d=1e100.net; s=20221208; t=1690485670; x=1691090470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IyLrRoHQVkp9Qk0bYrHm60ga1B7v8n8gCKHi/W5Wo6o=;
+        b=kQUQUVEmkG44NTngxZsEzyS65eyxyxCo/SRC/PCGGT1hpCPJwhMNihhRl6W/HTNHkq
+         PnRB+5fzWnrUZceNKxugvfvyu5BQzYnDGcYpZ39JEn+CjKtw7+JrJiaPE46JQdVRbBRk
+         Xtj9v4rTmkLy+6Dr6NpWVM9JWO1yziIoeI6XJ7wfKO2LQzfWYC+Sh3wmalsgOow+URHo
+         o7m6Bbpay1+S8csDO/zkxf5bFr0JClUkpLh2xWINABfW3JdifzpVRlaKt7vftX7FRgB0
+         vLIpbssBs7ydx42gSbYUQOUlc0mw9TzgH1McPA/LGcUfYwT0aiI2gYAqg/9ZEwBzCr7j
+         6ENA==
+X-Gm-Message-State: ABy/qLadNp3x18U1LtibDNh2DMvLHoxYuDONAdGHlGGRBRjzZtYx47Qp
+        fLe5MdwdBChIhKDKSB8h8OW1ycH46Rp5GfkN9e3zEz7JwTOLpXmpw95ENQ==
+X-Google-Smtp-Source: APBJJlHzUz8IbElL2RzIXfyygRzF9aKFWJf2u1kth8hZi4M2zV3J9WjrTUfFqmWLQM2VhRNHHpXoqopHV6JRtBEPr/E=
+X-Received: by 2002:a05:600c:1c16:b0:3f1:70d1:21a6 with SMTP id
+ j22-20020a05600c1c1600b003f170d121a6mr27810wms.0.1690485670405; Thu, 27 Jul
+ 2023 12:21:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     liubo <liubo254@huawei.com>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hughd@google.com, willy@infradead.org
-References: <20230726073409.631838-1-liubo254@huawei.com>
- <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
- <ZMJt+VWzIG4GAjeb@x1n> <f49c2a51-4dd8-784b-57fa-34fb397db2b7@redhat.com>
- <ZMKJjDaqZ7FW0jfe@x1n> <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
- <ZMK+jSDgOmJKySTr@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
- through /proc/pid/smaps
-In-Reply-To: <ZMK+jSDgOmJKySTr@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <000000000000607ff905ffc8e477@google.com> <0000000000000aeb7f06015e5cbd@google.com>
+ <20230727164757.e2di75xjybxncohn@revolver> <CAJuCfpEyE18kbH84FfmfzUnar2dxgzpi=FOYPbU8MOpz-SbVjg@mail.gmail.com>
+ <CAG48ez1yg7m=aNsjNiGt_s0_tEBEmEXXx0-vijuN9MBmoxL7PQ@mail.gmail.com> <ZMK0ony0LG2SL2Ha@casper.infradead.org>
+In-Reply-To: <ZMK0ony0LG2SL2Ha@casper.infradead.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 27 Jul 2023 21:20:33 +0200
+Message-ID: <CAG48ez0Qgtamxj7BieL5U+pWyQ3S+s3hVJfdJEevqk-hPAN3sA@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (2)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.23 20:59, Peter Xu wrote:
-> On Thu, Jul 27, 2023 at 07:27:02PM +0200, David Hildenbrand wrote:
->>>>
->>>> This was wrong from the very start. If we're not in GUP, we shouldn't call
->>>> GUP functions.
->>>
->>> My understanding is !GET && !PIN is also called gup.. otherwise we don't
->>> need GET and it can just be always implied.
->>
->> That's not the point. The point is that _arbitrary_ code shouldn't call into
->> GUP internal helper functions, where they bypass, for example, any sanity
->> checks.
-> 
-> What's the sanity checks that you're referring to?
-> 
+On Thu, Jul 27, 2023 at 8:17=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Jul 27, 2023 at 07:59:33PM +0200, Jann Horn wrote:
+> > On Thu, Jul 27, 2023 at 7:22=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> > > Hmm. lock_vma_under_rcu() specifically checks for vma->anon_vma=3D=3D=
+NULL
+> > > condition (see [1]) to avoid going into find_mergeable_anon_vma() (a
+> > > check inside anon_vma_prepare() should prevent that). So, it should
+> > > fall back to mmap_lock'ing.
+> >
+> > This syzkaller report applies to a tree with Willy's in-progress patch
+> > series, where lock_vma_under_rcu() only checks for vma->anon_vma if
+> > vma_is_anonymous() is true - it permits private non-anonymous VMAs
+> > (which require an anon_vma for handling write faults)  even if they
+> > don't have an anon_vma.
+> >
+> > The commit bisected by syzkaller
+> > (https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/co=
+mmit/?id=3Da52f58b34afe095ebc5823684eb264404dad6f7b)
+> > removes the vma_is_anonymous() check in handle_pte_fault(), so it lets
+> > us reach do_wp_page() with a non-anonymous private VMA without
+> > anon_vma, even though that requires allocation of an anon_vma.
+> >
+> > So I think this is pretty clearly an issue with Willy's in-progress
+> > patch series that syzkaller blamed correctly.
+>
+> Agreed.  What do we think the right solution is?
+>
+> Option 1:
+>
+> +++ b/mm/memory.c
+> @@ -3197,6 +3197,12 @@ static vm_fault_t wp_page_copy(struct vm_fault *vm=
+f)
+>         struct mmu_notifier_range range;
+>         int ret;
+>
+> +       if (!vma->anon_vma) {
+> +               // check if there are other things to undo here
+> +               vma_end_read(vmf->vma);
+> +               return VM_FAULT_RETRY;
+> +       }
+> +
+>         delayacct_wpcopy_start();
+>
+> Option 2:
+>
+> @@ -5581,7 +5587,8 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm=
+_struct *mm,
+>                 goto inval;
+>
+>         /* find_mergeable_anon_vma uses adjacent vmas which are not locke=
+d */
+> -       if (vma_is_anonymous(vma) && !vma->anon_vma)
+> +       if ((vma_is_anonymous(vma) ||
+> +            vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) && !vma->anon_vma=
+)
+>                 goto inval;
+>
+> The problem with option 2 is that we don't know whether this is a write
+> fault or not, so we'll handle read faults on private file
+> mappings under the mmap_lock UNTIL somebody writes to the mapping, which
+> might be never.  That seems like a bad idea.
+>
+> We could pass FAULT_FLAG_WRITE into lock_vma_under_rcu(), but that also
+> seems like a bad idea.  I dunno.  Three bad ideas.  Anyone think of a
+> good one?
 
-For example in follow_page()
+One kinda straightforward option would be to pass the vmf (or NULL if
+it's not in fault context) to anon_vma_prepare(), teach it to bail if
+it runs under the mm lock, and propagate a VM_FAULT_RETRY all the way
+up? It can already fail due to OOM, so the bailout paths exist, though
+you'd have to work a bit to plumb the right error code up.
 
-if (vma_is_secretmem(vma))
-	return NULL;
-
-if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
-	return NULL;
-
-
-Maybe you can elaborate why you think we should *not* be using 
-vm_normal_page_pmd() and instead some arbitrary GUP internal helper? I 
-don't get it.
-
->>
->>>
->>> The other proof is try_grab_page() doesn't fail hard on !GET && !PIN.  So I
->>> don't know whether that's "wrong" to be used..
->>>
->>
->> To me, that is arbitrary code using a GUP internal helper and, therefore,
->> wrong.
->>
->>> Back to the topic: I'd say either of the patches look good to solve the
->>> problem.  If p2pdma pages are mapped as PFNMAP/MIXEDMAP (?), I guess
->>> vm_normal_page_pmd() proposed here will also work on it, so nothing I see
->>> wrong on 2nd one yet.
->>>
->>> It looks nicer indeed to not have FOLL_FORCE here, but it also makes me
->>> just wonder whether we should document NUMA behavior for FOLL_* somewhere,
->>> because we have an implication right now on !FOLL_FORCE over NUMA, which is
->>> not obvious to me..
->>
->> Yes, we probably should. For get_use_pages() and friends that behavior was
->> always like that and it makes sense: usually it represent application
->> behavior.
->>
->>>
->>> And to look more over that aspect, see follow_page(): previously we can
->>> follow a page for protnone (as it never applies FOLL_NUMA) but now it won't
->>> (it never applies FOLL_FORCE, either, so it seems "accidentally" implies
->>> FOLL_NUMA now).  Not sure whether it's intended, though..
->>
->> That was certainly an oversight, thanks for spotting that. That patch was
->> not supposed to change semantics:
->>
->> diff --git a/mm/gup.c b/mm/gup.c
->> index 76d222ccc3ff..ac926e19ff72 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -851,6 +851,13 @@ struct page *follow_page(struct vm_area_struct *vma,
->> unsigned long address,
->>          if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
->>                  return NULL;
->>
->> +       /*
->> +        * In contrast to get_user_pages() and friends, we don't want to
->> +        * fail if the PTE is PROT_NONE: see gup_can_follow_protnone().
->> +        */
->> +       if (!(foll_flags & FOLL_WRITE))
->> +               foll_flags |= FOLL_FORCE;
->> +
->>          page = follow_page_mask(vma, address, foll_flags, &ctx);
->>          if (ctx.pgmap)
->>                  put_dev_pagemap(ctx.pgmap);
-> 
-> This seems to be slightly against your other solution though for smaps,
-> where we want to avoid abusing FOLL_FORCE.. isn't it..
-
-This is GUP internal, not some arbitrary code, so to me a *completely* 
-different discussion.
-
-> 
-> Why read only?  That'll always attach FOLL_FORCE to all follow page call
-> sites indeed for now, but just curious - logically "I want to fetch the
-> page even if protnone" is orthogonal to do with write permission here to
-> me.
-
-Historical these were not the semantics, so I won't change them.
-
-FOLL_FORCE | FOLL_WRITE always had a special taste to it (COW ...).
-
-> 
-> I still worry about further abuse of FOLL_FORCE, I believe you also worry
-> that so you proposed the other way for the smaps issue.
-> 
-> Do you think we can just revive FOLL_NUMA?  That'll be very clear to me
-> from that aspect that we do still have valid use cases for it.
-
-FOLL_NUMA naming was nowadays wrong to begin with (not to mention, 
-confusing a we learned). There are other reasons why we have PROT_NONE 
--- mprotect(), for example.
-
-We could have a flag that goes the other way around: 
-FOLL_IGNORE_PROTNONE ... which surprisingly then ends up being exactly 
-what FOLL_FORCE means without FOLL_WRITE, and what this patch does.
-
-Does that make sense to you?
-
-
-> 
-> The very least is if with above we should really document FOLL_FORCE - we
-> should mention NUMA effects.  But that's ... really confusing. Thinking
-> about that I personally prefer a revival of FOLL_NUMA, then smaps issue all
-> go away.
-
-smaps needs to be changed in any case IMHO. And I'm absolutely not in 
-favor of revicing FOLL_NUMA.
-
--- 
-Cheers,
-
-David / dhildenb
-
+And if you're feeling adventurous, you could try to build a way to
+opportunistically upgrade from vma lock to mmap lock, to avoid having
+to bail out all the way back up and then dive back in when that
+happens. Something that does mmap_read_trylock(); on failure, bail out
+with VM_FAULT_RETRY; on success, drop the VMA lock and change
+vmf->flags to note the changed locking context.
