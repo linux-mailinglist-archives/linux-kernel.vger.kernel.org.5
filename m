@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994FF765136
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBE876513C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbjG0Kap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S233972AbjG0Kcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbjG0KaQ (ORCPT
+        with ESMTP id S231772AbjG0Kc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:30:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D501984;
-        Thu, 27 Jul 2023 03:30:01 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d167393b95aso2880069276.0;
-        Thu, 27 Jul 2023 03:30:00 -0700 (PDT)
+        Thu, 27 Jul 2023 06:32:29 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0911739
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so160326a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690453800; x=1691058600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=omUaDYixzWjtTMpLHRqhT6EXYqbxVHZ/m0JLSVt+zRU=;
-        b=kR/E8OXTGyuAcMVnK2KQrLklJTZJIbjeBJSeT2sIhGPM65Oruur9kofklO6ietHDy9
-         iN+Yk3uFFi0DCH5b+KIEtuBcPluVBtavpypaR5WD07CSqNhopnv+R23ky6tSh9IjXGJk
-         GzdeqRWRPgntqPs3w/iwM7pGLzDbKoIc/aZkfpT2kgbAlhsGaHHBFI9ifZTJ75RImlBN
-         m18KEttAN2mbFemlm21ARI+oQPZWhQ5ZKjtL1LwA/zUs5OtenG40a77AVnpCBMgIji09
-         cexZ5ek/pfpL8k5LTc7yy93lENk2O4UsiIb8Ws8buCdDhR4wb5xCwrRekry+fPBuluvl
-         CgJw==
+        d=bytedance.com; s=google; t=1690453945; x=1691058745;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
+        b=Zr/NhsMbDbdIdSqoueTQTw00LusmUmyLrdR7MeDx+ZO5Q+75jdmzv373GL0Ee5CtKr
+         W6fluKiuFJCg5ZU3kW0Km101UvphMU1vBCY7hDEO6TFqab4XzqrIV8fVDPR2Owpqim7U
+         N3OX4eAxVQVjc5z6Zvv7YweV9TAIgzv2mVUZoaytYD45Z4tHHiC7Kn023GaYmi5v6RKy
+         g9n+r/2KPb5qfD2ZK/MDUQIwCLsfUVl7c4q/2XRu1uefpNinWMEwlZLohyik+zojbFUF
+         urJtl81vW3ulTBjRT5ht+WLfC03kh8PaMNuzZ2kESl6uu5dT49u0KrVoAN4kKuQ8SPSD
+         k2iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690453800; x=1691058600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=omUaDYixzWjtTMpLHRqhT6EXYqbxVHZ/m0JLSVt+zRU=;
-        b=Nu8Cnj1AU3YMdobcxa6j38XTBGUDdHZm7Ky9rG3bDO6Bpsc5YvUwy4Ls4JKoI0vE6p
-         fDRcYuQBDmF1ol3FOqfI90Sogn5jarlnblz6QRZXQpjzDD5W+OmymYPd8yXvWZko/99u
-         VrwsIC/nMpSmNo8Xab1qUjBS+oIaGidWw90Vj1kfg+DGTRLindzQd33933aP8lyqXJG0
-         DpXdeYo0nCkTUSEE2HuiuyW6dltaAnJ/VnE27ZuIhN6K3byMWznT2jBaN3wmlZOjYJsA
-         Z00EgGMUVC75B0bGE45zLiKc9SWm4nE7tnnh7h1Gl6at2Uw1xhkFlYYIXIQEkNLmTdKD
-         8p0g==
-X-Gm-Message-State: ABy/qLbE5I+ILduGkww569LqrERsogemz2UFR91B88us+mQ8g+lkSqf3
-        g7cn8Tog7LvzodQZUyykbJGa4M+vux4fv1nTERE=
-X-Google-Smtp-Source: APBJJlHBlYlPNCAOaUQmX7sCh/RdKgzYXiRFfLFaMRkHkke9meK1yv0x0Ok78z4gqgOSPSppdBIT7tY7YrKsz3aQ6Jo=
-X-Received: by 2002:a25:3617:0:b0:d1f:8809:ffa1 with SMTP id
- d23-20020a253617000000b00d1f8809ffa1mr2701868yba.27.1690453800151; Thu, 27
- Jul 2023 03:30:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690453945; x=1691058745;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
+        b=UdSVsaHOBrxDPvJAY+jXK3GeItj95VxqZvoPj4qpKizUBJnaznB7Aayg22rO4sM8hy
+         59Z2AjKFoGuRq9uctY2ADs1gH4DC8N/nEj1f8YLTWZSwUGtcK9frUhe4+TB8IEtUSgql
+         8eUhDv3lSscp7r2i9WaH+aJGtJDTsBZpGY7iULtd5fXi6XbWi2n0ZGY1mOEvRhcHyQ0a
+         c0k2riEEoBbyxvQGxHaLf/7ywbR/znDUJKNht6Pfa7oRwxoFwVL3Y/EOch4VCI2RLFfU
+         Qzh7MNuOb6bJW+CMCemY1fO0cRUL4AixTauAAgSDm8gXQAOhn5xrco3pOFI00AqRXbp6
+         TiZg==
+X-Gm-Message-State: ABy/qLaK4PYGdWTvhZNCpBfizl5UJZb211G86/p871gfH2TUDROmVra5
+        jyIL0bSo54/RNMeY3TLs+DNNEg==
+X-Google-Smtp-Source: APBJJlGmzPZn88CMJAqpsojyTb97uikW28yo5O3pi8rH8SDlSH8BwjASuoOudfeGFyxgCSRxAf0mLA==
+X-Received: by 2002:a17:90a:1b06:b0:263:2312:60c2 with SMTP id q6-20020a17090a1b0600b00263231260c2mr4299433pjq.3.1690453945653;
+        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b0026309d57724sm2755058pjc.39.2023.07.27.03.32.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
+Message-ID: <cc819e13-cb25-ddaa-e0e3-7328f5ea3a4f@bytedance.com>
+Date:   Thu, 27 Jul 2023 18:32:10 +0800
 MIME-Version: 1.0
-References: <20230627183629.26571-1-nj.shetty@samsung.com> <CGME20230627184010epcas5p4bb6581408d9b67bbbcad633fb26689c9@epcas5p4.samsung.com>
- <20230627183629.26571-3-nj.shetty@samsung.com> <20230720074256.GA5042@lst.de>
-In-Reply-To: <20230720074256.GA5042@lst.de>
-From:   Nitesh Shetty <nitheshshetty@gmail.com>
-Date:   Thu, 27 Jul 2023 15:59:49 +0530
-Message-ID: <CAOSviJ3oDSHk2HXyRZa=A43vCxh-n2YkyuW-qXNq-q=i6bNacQ@mail.gmail.com>
-Subject: Re: [PATCH v13 2/9] block: Add copy offload support infrastructure
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        willy@infradead.org, hare@suse.de, djwong@kernel.org,
-        bvanassche@acm.org, ming.lei@redhat.com, dlemoal@kernel.org,
-        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
+ shrinker
+Content-Language: en-US
+To:     Damien Le Moal <dlemoal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-29-zhengqi.arch@bytedance.com>
+ <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
+ <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
+ <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 1:12=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
-e:
-> > Suggested-by: Christoph Hellwig <hch@lst.de>
->
-> Hmm, I'm not sure I suggested adding copy offload..
->
-We meant for request based design, we will remove it.
 
-> >  static inline unsigned int blk_rq_get_max_segments(struct request *rq)
-> >  {
-> >       if (req_op(rq) =3D=3D REQ_OP_DISCARD)
-> > @@ -303,6 +310,8 @@ static inline bool bio_may_exceed_limits(struct bio=
- *bio,
-> >               break;
-> >       }
-> >
-> > +     if (unlikely(op_is_copy(bio->bi_opf)))
-> > +             return false;
->
-> This looks wrong to me.  I think the copy ops need to be added to the
-> switch statement above as they have non-trivial splitting decisions.
-> Or at least should have those as we're missing the code to split
-> copy commands right now.
->
 
-Agreed, copy will have non-trivial splitting decisions. But, I
-couldn't think of scenarios where this could happen, as we check for
-queue limits before issuing a copy. Do you see scenarios where split
-could happen for copy here.
+On 2023/7/27 18:20, Damien Le Moal wrote:
+> On 7/27/23 17:55, Qi Zheng wrote:
+>>>>            goto err;
+>>>>        }
+>>>>    +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
+>>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
+>>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
+>>>> +    zmd->mblk_shrinker->private_data = zmd;
+>>>> +
+>>>> +    shrinker_register(zmd->mblk_shrinker);
+>>>
+>>> I fail to see how this new shrinker API is better... Why isn't there a
+>>> shrinker_alloc_and_register() function ? That would avoid adding all this code
+>>> all over the place as the new API call would be very similar to the current
+>>> shrinker_register() call with static allocation.
+>>
+>> In some registration scenarios, memory needs to be allocated in advance.
+>> So we continue to use the previous prealloc/register_prepared()
+>> algorithm. The shrinker_alloc_and_register() is just a helper function
+>> that combines the two, and this increases the number of APIs that
+>> shrinker exposes to the outside, so I choose not to add this helper.
+> 
+> And that results in more code in many places instead of less code + a simple
+> inline helper in the shrinker header file... So not adding that super simple
 
-Acked for all other review comments.
+It also needs to be exported to the driver for use.
 
-Thank you,
-Nitesh Shetty
+> helper is not exactly the best choice in my opinion.
+
+Hm, either one is fine for me. If no one else objects, I can add this
+helper. ;)
+
+> 
