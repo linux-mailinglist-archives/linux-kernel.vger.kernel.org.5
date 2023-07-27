@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7AF76565C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C02C765669
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbjG0OsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S233019AbjG0Otc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjG0Orw (ORCPT
+        with ESMTP id S234125AbjG0OtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:47:52 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AFC35B5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:47:30 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-56597d949b1so782148eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690469248; x=1691074048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fEBZ7nwX4+WR2daHw/62cQtqGndXRWYqeJ5n2EmpQVM=;
-        b=U/fb6tSdoJaxcPPyIPZgdIbUDEYxHVdXnlI3CIPKnhNm3gd4UDJx0Ke/ipTtfATzkh
-         wZVgFrcq36MHCttbksmYYwBLo2fUXW50HwE+/5t7aCN2p3q49Taav0+f7PgTnHwcvV+9
-         1pdtYljEnxNs+qNNQ9Ajvh5NOa/JqWDCB2mNOV1eLQztOV6V/O/wHMj5J4ybY1+FFGRR
-         fflZkjvmdoUazcb3SqS7G7eh6GjQWpkN6VRbaWItUGWBcH1D5B9e2XEvAOhREPRKBC1S
-         NNrOwRUl2gUT1dqF5AlZjrkLxkYJc+lofx8Udl8ONP+IEcQkaeIeYpmchFjbZ28/0Tr3
-         tYNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690469248; x=1691074048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fEBZ7nwX4+WR2daHw/62cQtqGndXRWYqeJ5n2EmpQVM=;
-        b=TPopGYbk6rkW9z40Ca0k4K1dc4nvqkl2tuKP+Q80EuQS7qmxrKIJnWIbgSbN7LQpik
-         cBjW9KLAT/QXjz28V92ulcacLvclpeF1LDAGPvbg2QfMWd+4WTTmwdhTsIYoR0B1QmZW
-         vJ6MbdD9R2ttJ9hJXXnnjdfqXWMbXgsQTXsq2/NiU32erKI1CW9FEFsYblLW7WT65Pk4
-         FcGJDq8XQGL4H3INDMC4V1VgTiQ3h7w3a2Nsu1JCaHynkClgZ4Atq3e66bpDXe9g2jVI
-         PDWKoNHlFtYwAXr9tJ6op5izGW0gU+JbFigRf5si9ZuP7G+DJiqgE+ZkAswHDwC7DYLr
-         xP9A==
-X-Gm-Message-State: ABy/qLbTokij3U3TZEUqw2erZ6JbJgxsx0K3ylscQkRaO5sa4ZWzY0wJ
-        7BsutV41ARjdYnLdJrsSW7QRtAWD35U=
-X-Google-Smtp-Source: APBJJlETIdaCivoWnFSWgxCwrzogg7siQ7AcgYK7CiG04fzEKEGFJdF4+wNPgWvRUVF10oLYfhOYnw==
-X-Received: by 2002:a05:6870:e38d:b0:1bb:509a:824f with SMTP id x13-20020a056870e38d00b001bb509a824fmr3382598oad.55.1690469248485;
-        Thu, 27 Jul 2023 07:47:28 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id a7-20020a056870b14700b001bb86ab4325sm746748oal.48.2023.07.27.07.47.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 07:47:28 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 11:47:23 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
- parenthesis
-Message-ID: <ZMKDeyGaPQHm6/pr@alolivei-thinkpadt480s.gru.csb>
-References: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
- <2023072729-sensitive-spyglass-ec96@gregkh>
+        Thu, 27 Jul 2023 10:49:12 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06974273E;
+        Thu, 27 Jul 2023 07:48:48 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36REmQbG040853;
+        Thu, 27 Jul 2023 09:48:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690469306;
+        bh=r4o2/e1WicuU52RoywMHaSVJpBndS3GS7f3AJTcYJ3o=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=RxIkk8xPku9NOF3cHWZkH8z1oJtm7CsTELi5sgwJt+VtPBPOUdNkir5bsEvkh2tRs
+         iBvEOl6LQ7a3OqjO1m/zV4A7lBZcBhn2V3sF3BoPfYmGKHV0x9157GIyHwhmU8xr+K
+         rUN8xPtHy/0oSSQMFdIqsybCoXz+cE85M0V9pPQc=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36REmQil027583
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Jul 2023 09:48:26 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 27
+ Jul 2023 09:48:26 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 27 Jul 2023 09:48:26 -0500
+Received: from [172.24.227.6] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36REmJeP029821;
+        Thu, 27 Jul 2023 09:48:20 -0500
+Message-ID: <c9629a19-c400-5553-754b-ee17b19e0970@ti.com>
+Date:   Thu, 27 Jul 2023 20:18:19 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023072729-sensitive-spyglass-ec96@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/2] media: imagination: Add E5010 JPEG Encoder driver
+Content-Language: en-US
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <mchehab@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hverkuil-cisco@xs4all.nl>, <laurent.pinchart@ideasonboard.com>,
+        <eugen.hristev@collabora.com>, <ezequiel@vanguardiasur.com.ar>,
+        <u.kleine-koenig@pengutronix.de>, <sakari.ailus@linux.intel.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <praneeth@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <a-bhatia1@ti.com>, <j-luthra@ti.com>, <b-brnich@ti.com>,
+        <detheridge@ti.com>, <p-mantena@ti.com>, <vijayp@ti.com>
+References: <20230727112546.2201995-1-devarsht@ti.com>
+ <20230727112546.2201995-3-devarsht@ti.com>
+ <ef4825d6-1016-cbf2-0cd3-94b0fc4165f4@linaro.org>
+ <51e4ece5250c3345dae4956fbb4d4dbb5ffdde38.camel@ndufresne.ca>
+From:   Devarsh Thakkar <devarsht@ti.com>
+In-Reply-To: <51e4ece5250c3345dae4956fbb4d4dbb5ffdde38.camel@ndufresne.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:03:19AM +0200, Greg KH wrote:
-> On Sat, Jul 08, 2023 at 12:55:11AM -0300, Alexon Oliveira wrote:
-> > Adhere to Linux kernel coding style.
-> > 
-> > Reported by checkpatch:
-> > 
-> > CHECK: Alignment should match open parenthesis
-> > 
-> > #132: FILE: drivers/staging/vme_user/vme_bridge.h:132
-> > #135: FILE: drivers/staging/vme_user/vme_bridge.h:135
-> > #139: FILE: drivers/staging/vme_user/vme_bridge.h:139
-> > #142: FILE: drivers/staging/vme_user/vme_bridge.h:142
-> > #144: FILE: drivers/staging/vme_user/vme_bridge.h:144
-> > #146: FILE: drivers/staging/vme_user/vme_bridge.h:146
-> > #148: FILE: drivers/staging/vme_user/vme_bridge.h:148
-> > #152: FILE: drivers/staging/vme_user/vme_bridge.h:152
-> > #163: FILE: drivers/staging/vme_user/vme_bridge.h:163
-> > #173: FILE: drivers/staging/vme_user/vme_bridge.h:173
-> > #175: FILE: drivers/staging/vme_user/vme_bridge.h:175
+Hi Krzysztof, Nicholas,
+
+Thanks for the quick review.
+
+On 27/07/23 19:49, Nicolas Dufresne wrote:
+> Hi Krzysztof,
 > 
-> We don't need all of these lines.
-
-Hi Greg, I hope you're good and these messages find you well.
-
-ACK. I thought it would be good to explain what I changed.
-
+> Le jeudi 27 juillet 2023 à 14:13 +0200, Krzysztof Kozlowski a écrit :
+>> On 27/07/2023 13:25, Devarsh Thakkar wrote:
+>> ...
+>>
+>>> +
+>>> +static int e5010_release(struct file *file)
+>>> +{
+>>> +	struct e5010_dev *dev = video_drvdata(file);
+>>> +	struct e5010_context *ctx = file->private_data;
+>>> +
+>>> +	dprintk(dev, 1, "Releasing instance: 0x%p, m2m_ctx: 0x%p\n", ctx, ctx->fh.m2m_ctx);
+>>
+>> Why do you print pointers? Looks like code is buggy and you still keep
+>> debugging it.
 > 
-> >     Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> Its relatively common practice in linux-media to leave a certain level of traces
+> to help future debugging if a bug is seen. These uses v4l2 debug helper, and are
+> only going to print if users enable them through the associated sysfs
+> configuration. I do hope though there isn't any issue with IRQ triggering after
+> the instance is released, that would be buggy for sure, but I don't think this
+> is the case considering the level of documented testing that have been done.
 > 
-> Please don't indent your signed-off-by line, that should be to the left.
+> I'd be happy to see what others have to say on the subject, as its been a
+> recurrent subject of confrontation lately. With pretty agressive messages
+> associated with that.
+> 
+> regards,
+> Nicolas
+> 
+> p.s. does not invalidate the question, since for this driver, there is only ever
+> going to be one m2m_ctx, so the question "Why do you print pointers?" is
+> entirely valid I believe.
 > 
 
-ACK. I didn't indent. This was the output of "git format-patch" I copied and pasted. Next time I'll remove the indentation manually.
+There is a possible scenario with multiple applications accessing the device
+node simultaneously (and so multiple m2m_ctx are possible as seen in below
+logs) and these prints were helpful to debug/analyze these scenarios.
 
-> > 
-> > diff --git a/drivers/staging/vme_user/vme_bridge.h b/drivers/staging/vme_user/vme_bridge.h
-> > index 11df0a5e7f7b..a0d7a8db239d 100644
-> > --- a/drivers/staging/vme_user/vme_bridge.h
-> > +++ b/drivers/staging/vme_user/vme_bridge.h
-> > @@ -128,28 +128,21 @@ struct vme_bridge {
-> >  	struct mutex irq_mtx;
-> > 
-> >  	/* Slave Functions */
-> > -	int (*slave_get)(struct vme_slave_resource *, int *,
-> > -		unsigned long long *, unsigned long long *, dma_addr_t *,
-> > -		u32 *, u32 *);
-> > -	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
-> > -		unsigned long long, dma_addr_t, u32, u32);
-> > +	int (*slave_get)(struct vme_slave_resource *, int *, unsigned long long *,
-> > +			 unsigned long long *, dma_addr_t *, u32 *, u32 *);
-> > +	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
-> 
-> Did you run your patch through checkpatch.pl after making this change?
+[181955.443632] e5010 fd20000.e5010: e5010_open: Created instance:
+0x00000000bea83b70, m2m_ctx: 0x00000000d068a951
+[181955.449587] e5010 fd20000.e5010: e5010_open: Created instance:
+0x0000000046749df9, m2m_ctx: 0x000000000ff56aa6
+[181955.450407] e5010 fd20000.e5010: e5010_open: Created instance:
+0x00000000e33791b5, m2m_ctx: 0x00000000217634a8
+[181955.457067] e5010 fd20000.e5010: e5010_open: Created instance:
+0x00000000d77f83fe, m2m_ctx: 0x000000000c8ec99e
 
-Yes, I did it. No more checks about "Alignment should match open parenthesis".
 
-> I think you just added more warnings...
+Infact, actually I had added these prints while debugging an issue with this
+type of multistream scenario, where I was launching like 20 instances of JPEG
+encoding and some of the instances were hanging, these prints were helpful to
+fix that scenario and I later still kept these prints as they may help in
+future in case any issue is encountered while adding a new feature or in
+further testing.
 
-I only focused to solve the checks related to the message above. Nevertheless, there are still other warnings and checks reported by checkpath.pl non-related to this patch (i.e. not caused by this patch) that need to be fixed, but I intend to help to fix them afterwards in a different patch, so I don't send patches with too many changes at once.  
+I have also already put the logs for this multi-stream scenario in gist shared
+in commit message, below is the exact line :
 
-> 
-> thanks,
-> 
-> greg k-h
+https://gist.github.com/devarsht/ea31179199393c2026ae457219bb6321#file-e5010_jpeg_upstream_manualtests-txt-L89
 
-I appreciate your feedback and if there's any other question or request, pleaset let me know.
 
-Thank you.
-
-Alexon Oliveira
+Regards
+Devarsh
+> . . .
