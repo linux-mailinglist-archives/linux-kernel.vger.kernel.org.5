@@ -2,54 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C48765D1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815A7765D22
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjG0UV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S232805AbjG0UXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjG0UVy (ORCPT
+        with ESMTP id S232824AbjG0UW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:21:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F15719BA;
-        Thu, 27 Jul 2023 13:21:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD06461F2D;
-        Thu, 27 Jul 2023 20:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EBEC433C7;
-        Thu, 27 Jul 2023 20:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690489312;
-        bh=3rw7ZIN3BKsO676ed+02hCwwOMbF4a1g3XcYswtgriM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=niPNNtu7vCRsKPXg3YUeFLFf07Onh1mbdg8Q/7inkmKkPSokapGpJhLuNcdk+hBfw
-         4JlitXrp3JNPQKAw+3tJje1+Jah4cZ6QQlBZfS5vJPrUViev9FPqmQ9ympRdgg7oTD
-         7cL2Wun/TREvTm4CmpMz8Ezu0+GjORpi/7T9i/4uVxJ+WaCCPACWd4qpWV8C86aeK7
-         in0qEkY2nEl3B2O7MSHXcCJ4F6BaxGGj3uI266IuKngQhSnDHN1dXmUUUy0mQQuvot
-         ogM5SaW5SMb3dhNaPlntdVspMkDT6CydUgFxqp5LHomYbo4x1TXI8/0pgruVF+fGFq
-         Epa/3HqT+6NVA==
-Date:   Thu, 27 Jul 2023 15:21:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Davidlohr Bueso <dave@stgolabs.net>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI/DOE: Fix destroy_work_on_stack() race
-Message-ID: <20230727202149.GA793572@bhelgaas>
+        Thu, 27 Jul 2023 16:22:58 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F236F2D67;
+        Thu, 27 Jul 2023 13:22:53 -0700 (PDT)
+X-QQ-mid: bizesmtp88t1690489363tb8slm3z
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 28 Jul 2023 04:22:42 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: q+EIYT+FhZqrDLdu2684eR5Czllj1f6+FLo1hVSobBXoXKvq/9go9/jOS6tRf
+        PMdHGvcVLRKu36l8VlpvSphXqPDUm3AUSHxcqiESgvAcL7AJo+WmsIjTUO/LxAoBSM0eJU/
+        blFkSG7ZX8zYzDeZgvyOUJg0tFPY5bmbL2H8e9Lts7azb/kRUQHD7ehMUHtHtImPOD7thfl
+        OhnAOBmITZ1+AEG1C7T0101m/QGw6Kknh6cL9Pql4xM5AQTaHrlGCNgwc2JNzdWxOWSHf/X
+        YJzlOtdku2Qhpw0/ME39BXaXp8mT7DfTn4tgzoyamTd6f9g7PxTUCXGIA9PrQOZ8wUZMkn0
+        w0RWIrpNYFUtwKfwf1M27fgCeRVlzRFEgVPq66fNTfowH1QQ/nLUuArh7OLjg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5556135556970039063
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 01/12] selftests/nolibc: allow report with existing test log
+Date:   Fri, 28 Jul 2023 04:22:42 +0800
+Message-Id: <50b239f40ddbf4bd3e067c39330f99bf63c71147.1690489039.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690489039.git.falcon@tinylab.org>
+References: <cover.1690489039.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726-doe-fix-v1-1-af07e614d4dd@intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,76 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:29:42AM -0700, Ira Weiny wrote:
-> The following debug object splat was observed in testing.
-> 
->   [   14.061937] ------------[ cut here ]------------
->   [   14.063899] ODEBUG: free active (active state 0) object: 0000000097d23782 object type: work_struct hint: doe_statemachine_work+0x0/0x510
->   [   14.067480] WARNING: CPU: 1 PID: 71 at lib/debugobjects.c:514 debug_print_object+0x7d/0xb0
->   ...
->   [   14.080951] Workqueue: pci 0000:36:00.0 DOE [1 doe_statemachine_work
->   [   14.083485] RIP: 0010:debug_print_object+0x7d/0xb0
->   ...
->   [   14.116231] Call Trace:
->   [   14.117652]  <TASK>
->   [   14.118958]  ? debug_print_object+0x7d/0xb0
->   [   14.120782]  ? __warn+0x7d/0x130
->   [   14.122399]  ? debug_print_object+0x7d/0xb0
->   [   14.123746]  ? report_bug+0x18d/0x1c0
->   [   14.125025]  ? handle_bug+0x3c/0x80
->   [   14.126506]  ? exc_invalid_op+0x13/0x60
->   [   14.127796]  ? asm_exc_invalid_op+0x16/0x20
->   [   14.129380]  ? debug_print_object+0x7d/0xb0
->   [   14.130688]  ? debug_print_object+0x7d/0xb0
->   [   14.131997]  ? __pfx_doe_statemachine_work+0x10/0x10
->   [   14.133597]  debug_object_free.part.0+0x11b/0x150
->   [   14.134940]  doe_statemachine_work+0x45e/0x510
->   [   14.136348]  process_one_work+0x1d4/0x3c0
->   ...
->   [   14.161484]  </TASK>
->   [   14.162434] ---[ end trace 0000000000000000 ]---
-> 
-> This occurs because destroy_work_on_stack() was called after signaling
-> the completion in the calling thread.  This creates a race between
-> destroy_work_on_stack() and the task->work struct going of scope in the
-> pci_doe().
-> 
-> Signal the work complete after destroying the work struct.  This is safe
-> because signal_task_complete() is the final thing the work item does and
-> the workqueue code is careful not to access the work struct after.
-> 
-> Fixes: abf04be0e707 ("PCI/DOE: Fix memory leak with CONFIG_DEBUG_OBJECTS=y")
-> Cc: Lukas Wunner <lukas@wunner.de>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+After the tests finish, it is valuable to report and summarize with
+existing test log.
 
-Thanks, applied to pci/misc with Lukas' reviewed-by and Dan's ack for
-v6.6.  I edited out the timestamps and some of the call trace from the
-splat because they didn't seem relevant.
+This avoid rerun or run the tests again when not necessary.
 
-> ---
->  drivers/pci/doe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-> index 1b97a5ab71a9..e3aab5edaf70 100644
-> --- a/drivers/pci/doe.c
-> +++ b/drivers/pci/doe.c
-> @@ -293,8 +293,8 @@ static int pci_doe_recv_resp(struct pci_doe_mb *doe_mb, struct pci_doe_task *tas
->  static void signal_task_complete(struct pci_doe_task *task, int rv)
->  {
->  	task->rv = rv;
-> -	task->complete(task);
->  	destroy_work_on_stack(&task->work);
-> +	task->complete(task);
->  }
->  
->  static void signal_task_abort(struct pci_doe_task *task, int rv)
-> 
-> ---
-> base-commit: 20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
-> change-id: 20230726-doe-fix-f57943f9ea82
-> 
-> Best regards,
-> -- 
-> Ira Weiny <ira.weiny@intel.com>
-> 
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 2e9694370913..75419b695f0d 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -207,6 +207,10 @@ rerun:
+ 	$(Q)qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(srctree)/$(IMAGE)" -serial stdio $(QEMU_ARGS) > "$(CURDIR)/run.out"
+ 	$(Q)$(REPORT) $(CURDIR)/run.out
+ 
++# report with existing test log
++report:
++	$(Q)$(REPORT_RUN_OUT)
++
+ clean:
+ 	$(call QUIET_CLEAN, sysroot)
+ 	$(Q)rm -rf sysroot
+-- 
+2.25.1
+
