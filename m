@@ -2,257 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611827652EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C7C7652EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbjG0Luo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
+        id S233538AbjG0LyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbjG0Lum (ORCPT
+        with ESMTP id S231289AbjG0LyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:50:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD974F0;
-        Thu, 27 Jul 2023 04:50:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 334C661E0C;
-        Thu, 27 Jul 2023 11:50:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 348BFC433C7;
-        Thu, 27 Jul 2023 11:50:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690458639;
-        bh=8Z3xL7FuQ+Z8bk40zZw28Dfgj1A9m6znAkOj4q7/dr4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b2P7TMH2z0zzbvEBF6qfTELADPV3MmiWlScD9IxZntUWmC+JTvbaXeAfykmn6XjR0
-         XV8YdUA05eHZLHHmXl6TvV2mvPi0DeC4oXLyQ8teNNjYZNs7KfO3VqwxFiwp6F5m/t
-         X6HElAnuTIvriJxJKZJW1iCgDgVvY676Rez7XW0XlT6Ng8mjMp/hiG3K6jY2LOcSze
-         RUIxT+qQyzhVcHdnmKvwe7J5GqgyHWicTbyJiCTiwDKUwR9x66kJpkKQ0VrfhYoFNX
-         4JjnUl8EPD/ZedS7gCylK6be/Y/CtPpy4bRQs8kLpel4BSihXs3hEv6puFJdwYp4Bg
-         RR+0EjztQbsow==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B199E40516; Thu, 27 Jul 2023 08:50:36 -0300 (-03)
-Date:   Thu, 27 Jul 2023 08:50:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Anup Sharma <anupnewsmail@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 7/8] perf scripts python: Add command execution for
- perf gecko script
-Message-ID: <ZMJaDGhSnhIlK3Nd@kernel.org>
-References: <cover.1689961706.git.anupnewsmail@gmail.com>
- <cbf03cda175ea3dd2c6cd87bd3f12d803446cb95.1689961706.git.anupnewsmail@gmail.com>
-MIME-Version: 1.0
+        Thu, 27 Jul 2023 07:54:15 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2068.outbound.protection.outlook.com [40.107.102.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0910D272A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:54:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=levbpftPR0RnkP22GarDBKMu9vQbeSPlv2b9oA9bLvWSv3Amluk/ZN8Qd65pGSJfZXdhXcQM8HtpH6XfvqaB3ySi9++1yZOhAgOKfdk1jZo27/gRKX/HKfiimURGyTsEKVkxrWuCekl9V7yALZUymKC4U5trwLgTDSUXPtIrPAwUup8QKBVgoqVf5bdFR8A2Ur8o0PalbE3F4RxD1fBL9Zr7M8gJAb8SM6Eh46nDsr//AeVyVMrO4C7sYLVDEoLAHZlPRiFIpK5mVuqXIhacM1BnGITMMrMeEhgbeJ1NeRwPd6UgCSq0/9IjLxT13XIBe0Mib8Q4Q0ewyP3xmB32rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JYxchqoz8SRyKqbBj2EVQ4Hz4x+pFpI7xzw+wDw1llk=;
+ b=S/cX0L4390ugnlbYfea/RCo9MRG5FLV2kPjPQC3AnT6bF2lkOzx6JvxJDSNpUoGNPddv+6siKg+76i0fhh96VgIBKOpEHpjolLr3U/PqOUQtOwfhqLOdWURmg0bHEpEm6qXN6bNDx5ftvPj0XlMncyzoQ+EO7gtd1V/KN7AVpSmfzsAGDPrKtJtBSIITCHaE0HRcy8E1FNrlywj2w7/DMKxL5xJMDtW+SjHCwC7M0gqS3vYh9nVckqx4QNCP69okm263cvmDYhGLqWcZlwjSgkz5cMMEZHkr7Zziu/d2wnc883PiIk1r4LDlieTFndWPI4O9yTLX2qK7BUP1nyhfVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JYxchqoz8SRyKqbBj2EVQ4Hz4x+pFpI7xzw+wDw1llk=;
+ b=uKwW2WcwijIownHuc+liioy0YcnnQdHUVJPLc/cBbA02QEfX5QwFJzEIKpubrJ2w/VwUwAN6eyDwsWGFUcn1q5cusJsJ5v5oyrtggVNMBBsIzAKtGy5uRi3CLUuBzUdmyUotM2vjAHkG4EyrTepS0SR002ScxVMdftWsIcqL/pRPkGfo5uC5yz9HoCk+K6L3qcdkwtdo5WD8pK2aOBZU/GV81hFAWqrz1k9GVbOX1MIJGrJ//OYlUw61rPBZO5N16YOPxLJpXhEl0pK0EgDBM9UxONPUEgGQV2H28lu3m+eUM6SBGrcRmbfMt6/YdYjOmhWLYuJhWn1e37Z9N/lbkA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by LV8PR12MB9181.namprd12.prod.outlook.com (2603:10b6:408:18d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 11:54:09 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 11:54:09 +0000
+Date:   Thu, 27 Jul 2023 08:54:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
+        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to
+ smmu_master
+Message-ID: <ZMJa3kGHD2iE0/za@nvidia.com>
+References: <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
+ <ZLAKQw+DzcpSRSyi@nvidia.com>
+ <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
+ <ZLApQjaqoOshT2TJ@nvidia.com>
+ <CAKHBV25BRWTxXO0YTGq3q1OdMQHAzop8BqJJaa9CHxdQzxnNbg@mail.gmail.com>
+ <ZLFLyh1b+wiqb7Ql@nvidia.com>
+ <CAKHBV24zQ+4waZgsYV08LzeMkjze1gTcwvEv5uL8RM1GcBgrzg@mail.gmail.com>
+ <ZLU0IZJr6WSjknHf@nvidia.com>
+ <CAKHBV25QZn9xApRT+=oAtwQRAjCD--S46uXRDwW+E5=at0ESQQ@mail.gmail.com>
+ <CAKHBV26sRpFJv8-_f4n2jsTKiOgnHF0_FZ07KBbVaueX+T2kWA@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cbf03cda175ea3dd2c6cd87bd3f12d803446cb95.1689961706.git.anupnewsmail@gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAKHBV26sRpFJv8-_f4n2jsTKiOgnHF0_FZ07KBbVaueX+T2kWA@mail.gmail.com>
+X-ClientProxiedBy: BYAPR11CA0085.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::26) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9181:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2772427f-8fb5-4173-e655-08db8e982fae
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dc6Mmt/+7j5Idj3JgJs1MOeGiQmjsGVDZSwi1jv8WCc9DalaDQaXSnD/N5LI5tl94trnhAD+NGgucDtE99RF6crLlhpwxlK8HcM8yCUXb0BEwFODf8qtTMNOEB08edeq6u4HwQGfYE/d8xoT9JXjlnRqtW057Vo4gm7Sl7YpmY4TNBj7RV+L1cyrGCuJNms8Pzs77/3WlXWJutc+WzSgE+Eob2t0Daf8n71eOgy/xjjM2wIMLuwhvqgJYVtyg2vdVw6ig8R/WBCV/fWy5X0D/DrxyqNxoPQHYsdbvlhkDVn9f6CBAAjXjUC7Nr9USVIj/KBtS7m/cHrMqHjqIiriD+o27uYIxs/Fv+rleqOZ963HIqvul8P11cRUrrGZmd+yjjYnSS3QVX14W3cXaaQu+Z/5Lk2CBLY51IP0zprCLM0EgS6QoD+cn0nGqBYn3+Ktk516hKPEp/XIYZ5oVYGhNKUNO0aVmDHQkd1B7fAsBMhCfT1NO8oT3AOsGZuTKk8Sqwwc4cUtG+EnlPm7xInhByF1YBdP3E+45aeKRtCvIQHQHbVfqHeuDQpkmqHpXs9b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(451199021)(54906003)(6512007)(38100700002)(6666004)(6486002)(478600001)(316002)(41300700001)(5660300002)(8676002)(4326008)(6916009)(8936002)(66476007)(66556008)(66946007)(2616005)(186003)(83380400001)(26005)(6506007)(86362001)(2906002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yTOfb7tzwHO3DBB3Q2PcNo/gIgDe9uNq9wp/o5zAnGWpRp8no1NqWGwy/MW0?=
+ =?us-ascii?Q?oT4BJPksNWpkc/8y0N3UKg6C7an3VYJQLfEBP8PyzBRJM1MeAfddg8nSsh9Y?=
+ =?us-ascii?Q?GIBhTIOz0HEBILhHztsSMW6g3gqOuYz6niwLz/UGP9I1iDSF7nrJsBvvL+sO?=
+ =?us-ascii?Q?Dnld5GDP1WUEdg66XeuJBbTrhb7MK4IgcR4nDFI2azutsTCJA6ongtAO3slG?=
+ =?us-ascii?Q?O6+gGBOMF5pkuhrB3TCIox7t/j0M9V9DUU4zhRtBOg/bRAmLdFWO2qlkk8mp?=
+ =?us-ascii?Q?U4pYKTeF94EtOKnOqfCZtmOi9IcvmCefZ3sgVEAwK9JgT5I+7FCl6jp5yamW?=
+ =?us-ascii?Q?JFVuKKklZ7Bzzc6wzDQ7IjDpBFoL3SaIFqSleFUlKpGDi4NWyc1uzQrxuGO1?=
+ =?us-ascii?Q?CKbQdNNr9n8m/L6FIoQiqaO1bmmx5KLB/vAwngemodbfMe0n0JglZokYKy3d?=
+ =?us-ascii?Q?7LzgD9d7iQ8kjnYc1E2lj/4YPu6cAz+0BEaPaEBDpFhyOPlymX6DulM3rdym?=
+ =?us-ascii?Q?lWuPrHboX2IFjjL1XPPk/786Tn2XJoHcKV/1EO3/D/4zPgT0Xz6Aqm/9Yj+L?=
+ =?us-ascii?Q?0AYY5n3lpD7k3cvTJtxLnDIwWNCYqtOvbRZTUpJJaG9cY3lqFo7wDwoSzyb6?=
+ =?us-ascii?Q?BGFBBd8QLJQ3XCTl3aRos0VGrLK8Q9FJelsES07zlDPesbeSEyTDxF8dmFY1?=
+ =?us-ascii?Q?Iv4FyKJUGmh8NqkvlTnlATuXXa/mia7ZDkkvf0xhV7NlaP96dJBcZI5dtdPV?=
+ =?us-ascii?Q?LSzq+14CuQyh7QEC/ru6xPzHxodmffaJkgu8RkzCF2yDKuNWEk/VWxoxbPmr?=
+ =?us-ascii?Q?FIQSy+TE1X8lRg++2PIYQ2KORiEvPdWpsRmllgAis+qp+ZY6Fe2Qr5Gf5yuW?=
+ =?us-ascii?Q?WZFmvIBxvDhb8i9LVNTIpOyE7VEolUvYA8HMCEX0/pi3+bBi93IebzrBiGGk?=
+ =?us-ascii?Q?1qqpiOsxXiFRccXJ3P4yvdjqKMuR+nl0Cfx+e2Jey+L4CN8yKwZwYIhgS/Xc?=
+ =?us-ascii?Q?CRc7fv193TYtEO2Ow44LZgpkXNaaqQ7UFdaMfGw9Wy1VNzcrIWN49yK02RpO?=
+ =?us-ascii?Q?V8zFzyobaFG497GDZ25oFvjBL4KP4w0l2wlV48weGU0lNr5Ku6j8wiaqEBz3?=
+ =?us-ascii?Q?nOnB3g9lRQN2YWnKnpvbAUCHXZuBWqDDqgZ1K2pwxWMldFEuqocadNoLFBP7?=
+ =?us-ascii?Q?mrTsonQv2b27lXfGbK4gMoygnr2ZUULvn7QLQ5u9WffaY0HwXTI6NgUWGSO3?=
+ =?us-ascii?Q?VpVYCBFqYTbMRA1e3C/pc4mENpITVJ3M9z3A4a4cm1AhhFSbP9F4iSNSx/uO?=
+ =?us-ascii?Q?hYsbRcUm8LV/ySwt4r4mN+Xvq9WKoSWWV/DOns5/vC1LXMP+KojQKLf5TGw6?=
+ =?us-ascii?Q?mbCQxQif29SYKHjfCaZwzZ45HInhTRGKo+m0r9XOyMwrliLpfqT9D6uqdRkM?=
+ =?us-ascii?Q?EYZDgm9jiVPlO7cAI96+wVDe0QSS8uQclDrKIzNR3C4B2M05FPo/cRfCDaYQ?=
+ =?us-ascii?Q?7KjScUoMG4KjvJKw8iHqhNvdIIDJQ+NeRqK5ws0yae0vgCcXCIdCPup4gDLc?=
+ =?us-ascii?Q?WuBd7bccgg8B/CLlBKpr5lJHbAIyfGwqvxEbaQZA?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2772427f-8fb5-4173-e655-08db8e982fae
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 11:54:09.0740
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lqnNS7cnDI13JXY6jTn8vtjIy8GtpZcCDaeyTQ3k8HpknxS3puZwzPxOSqkVW8L8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9181
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 21, 2023 at 11:27:46PM +0530, Anup Sharma escreveu:
-> This will enable the execution of perf-gecko.py script
-> using record and report commands in perf script.
-> And this will be also reflected at "perf script -l" command.
+On Thu, Jul 27, 2023 at 07:22:05PM +0800, Michael Shavit wrote:
+> Sorry for the delay; I'm trying to refactor these patches now.
 > 
-> For Example:
->     perf script record perf-gecko
->     perf script report perf-gecko
+> > I think the master should have a pointer to the iommu_domain that owns
+> > the STE or if NULL the master should assign its internal CD table to
+> > the STE.
+> Just to clarify, does the nested domain patch series require writing
+> CDs into the user-space's CD table using arm_smmu_write_ctx_desc()?
 
-But this isn't working:
+No, CD entries in nested CD tables are written by userspace only.
 
-[root@five ~]# perf script gecko
-usage: gecko.py [-h] [--user-color USER_COLOR] [--kernel-color KERNEL_COLOR]
-gecko.py: error: unrecognized arguments: -i -
-[root@five ~]#
+> Or is there any other requirement for writing a CD into a
+> domain-owned CD table from arm_smmu_write_ctx_desc?
 
-See below how this pipes the 'record' script with its 'report'
-counterpart.
+Not that I know of.
 
-[root@five ~]# strace -s200 -e execve perf script gecko
-execve("/root/bin/perf", ["perf", "script", "gecko"], 0x7ffd0b021c18 /* 23 vars */) = 0
-execve("/bin/sh", ["/bin/sh", "/var/home/acme/libexec/perf-core/scripts/python/bin/gecko-report", "-i", "-"], 0x24a5c20 /* 26 vars */) = 0
-usage: gecko.py [-h] [--user-color USER_COLOR] [--kernel-color KERNEL_COLOR]
-gecko.py: error: unrecognized arguments: -i -
---- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=3275075, si_uid=0, si_status=2, si_utime=3 /* 0.03 s */, si_stime=0} ---
-+++ exited with 2 +++
-[root@five ~]#
-[root@five ~]# perf record -F 99 -a -g -- sleep 5 -o - | perf script gecko
-usage: gecko.py [-h] [--user-color USER_COLOR] [--kernel-color KERNEL_COLOR]
-gecko.py: error: unrecognized arguments: -i -
-[root@five ~]#
+The only time the kernel writes a CD entry is to the shared CD table
+stored in the master.
 
-See it being used another script:
+> 1. The CD entries STALL bit value in arm_smmu_write_ctx_desc depends
+> on the master (e.g. if STALL_FORCE is set on the smmu device). This
+> could potentially be encoded in arm_smmu_ctx_desc_cfg, at which point
+> that CD table is only attachable to masters with the same
+> stall_enabled value.
 
-[root@five ~]# perf script -l
-List of available trace scripts:
-  failed-syscalls [comm]               system-wide failed syscalls
-  rw-by-file <comm>                    r/w activity for a program, by file
-  rw-by-pid                            system-wide r/w activity
-  rwtop [interval]                     system-wide r/w top
-  wakeup-latency                       system-wide min/max/avg wakeup latency
-  compaction-times [-h] [-u] [-p|-pv] [-t | [-m] [-fs] [-ms]] [pid|pid-range|comm-regex] display time taken by mm compaction
-  event_analyzing_sample               analyze all perf samples
-  export-to-postgresql [database name] [columns] [calls] export perf data to a postgresql database
-  export-to-sqlite [database name] [columns] [calls] export perf data to a sqlite3 database
-  failed-syscalls-by-pid [comm]        system-wide failed syscalls, by pid
-  flamegraph                           create flame graphs
-  futex-contention                     futext contention measurement
-  gecko                                create firefox gecko profile json format from perf.data
-  intel-pt-events                      print Intel PT Events including Power Events and PTWRITE
-  mem-phys-addr                        resolve physical address samples
-  net_dropmonitor                      display a table of dropped frames
-  netdev-times [tx] [rx] [dev=] [debug] display a process of packet and processing time
-  powerpc-hcalls
-  sched-migration                      sched migration overview
-  sctop [comm] [interval]              syscall top
-  stackcollapse                        produce callgraphs in short form for scripting use
-  syscall-counts-by-pid [comm]         system-wide syscall counts, by pid
-  syscall-counts [comm]                system-wide syscall counts
-  task-analyzer                        analyze timings of tasks
-[root@five ~]#
+For cleanness I would orgnize it like this.
 
-[root@five ~]# perf script futex-contention
-Press control+C to stop and show the summary
-^CSocket Thread[195353] lock 7f294b100018 contended 387 times, 579 avg ns [max: 32060 ns, min 390 ns]
-WebrtcC~read #1[2866067] lock 7f294b100018 contended 390 times, 506 avg ns [max: 19130 ns, min 330 ns]
-Socket Thread[12316] lock 7efd9479b8a0 contended 2 times, 785 avg ns [max: 910 ns, min 660 ns]
-IPDL Background[12109] lock 7f7792b00018 contended 8 times, 6108 avg ns [max: 9060 ns, min 550 ns]
-WebrtcWorker #3[2866076] lock 7f2922c074cc contended 5 times, 79002 avg ns [max: 133610 ns, min 22810 ns]
-WebrtcWorker #4[2866078] lock 7f2922c07480 contended 19 times, 19540 avg ns [max: 57740 ns, min 4490 ns]
-firefox[12080] lock 7f7792b00e18 contended 15 times, 86585 avg ns [max: 141290 ns, min 510 ns]
-AudioIP~ent RPC[201969] lock 7f294b100018 contended 8 times, 1764 avg ns [max: 2440 ns, min 510 ns]
-<SNIP>
-TaskCon~ller #6[195531] lock 7f294b100dd8 contended 1 times, 10300 avg ns [max: 10300 ns, min 10300 ns]
-Isolated Web Co[16799] lock 7ffb1d100018 contended 2 times, 7270 avg ns [max: 12450 ns, min 2090 ns]
-[root@five ~]#
+> 2. arm_smmu_write_ctx_desc must sync the CD for the attached master(s)
+> in the middle of writing CD entry.
+>
+> This is all easier to handle in arm_smmu_write_ctx_desc if the table
+> is always owned by the master.
 
-It will:
+I think it is fine if you start with a shared CD table being 1:1 with
+a single master.
 
-3275194 pts/2    S+     0:00 strace -s200 -e execve perf script futex-contention
-3275197 pts/2    S+     0:00 /bin/sh /var/home/acme/libexec/perf-core/scripts/python/bin/futex-contention-report -i -
-3275198 pts/2    S+     0:00 /bin/sh /var/home/acme/libexec/perf-core/scripts/python/bin/futex-contention-record -a -q -o -
-3275199 pts/2    Sl+    0:00 perf record -e syscalls:sys_enter_futex -e syscalls:sys_exit_futex -a -q -o -
-3275200 pts/2    S+     0:02 perf script -i - -s /var/home/acme/libexec/perf-core/scripts/python/futex-contention.py
+Making the CD table shared between masters (eg for multi-device-group)
+is a micro-optimization, and I'm not sure we have workloads where it
+is worthwhile. We already block PASID support for multi-device-group.
 
+Though resizable CD table is probably a better place to put efforts.
 
-Create a pipe, run
-/var/home/acme/libexec/perf-core/scripts/python/bin/futex-contention-record
-and pipe it into /var/home/acme/libexec/perf-core/scripts/python/bin/futex-contention-report
-
-I also renamed perf-gecko to just gecko, no need to have the 'perf-'
-prefix.
-
-Try this other script, that updates the screen periodically:
-
-[root@five ~]# perf script rwtop
-read counts by pid:
-
-   pid                  comm      # reads   bytes_req  bytes_read
-------  --------------------   ----------  ----------  ----------
-3275423  perf                      341653    16403072    16403816
-3275448  Web Content                  615     2503477     1419444
-3275431  DOMCacheThread               318     1234020     1232492
-3275466  StreamTrans #1               141     1140597      518820
- 12189  Cache2 I/O                    193      389798      376046
- 12313  QuotaManager IO                81      126252      121668
-3275432  StreamTrans #2                10       92305       92289
-  9317  fuse-overlayfs               1078  1134780416       56796
-3275414  StreamT~s #6488                5       45076       45068
-3275446  IndexedDB #5496               25       33892       32364
-3275461  pkla-check-auth               40       67235       28513
-  1138  systemd-oomd                   40      106560       10520
-  1170  polkitd                        51      110776        6951
-  2227  pipewire                      370        2960        2960
-  3137  gnome-terminal-                15       81104        2869
- 12441  MemoryPoller                    3        3072        1559
-  2425  pipewire-pulse                185        1480        1480
-  2418  pipewire-pulse                185        1480        1480
- 12751  threaded-ml                   563        5630         939
-  2275  gnome-shell                    36      295488         888
-
-write counts by pid:
-
-   pid                  comm    # writes  bytes_written
-------  --------------------  ----------  -------------
-3275424  perf                        2440       68339552
- 12518  mozStorage #4                 15         229545
- 12521  LS Thread                    233         118752
- 12189  Cache2 I/O                    11          21760
-3275431  DOMCacheThread                4           4153
-  2425  pipewire-pulse               370           2960
-  2227  pipewire                     185           1480
- 12751  threaded-ml                 1124           1124
- 12080  firefox                      367            371
-  1211  gdbus                         36            288
-  1705  gdbus                         30            240
-195348  Isolated Web Co              235            235
-  1139  systemd-resolve                7            223
-  2207  gnome-shell                   26            208
-  1545  gdbus                         24            192
-201970  AudioIPC0                    185            185
-2866066  GraphRunner                 176            176
-  1533  geoclue                       16            128
-565667  gvfsd-dnssd                   16            128
-3275460  pcscd                        15            120
-[root@five ~]#
-
-I put what I have on this branch:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git tmp.perf-tools-next
-
-Later I'll try and work on have this working if you don't beat me to it
-:-)
-
-- Arnaldo
-
- 
-> Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
-> ---
->  tools/perf/scripts/python/bin/perf-gecko-record | 2 ++
->  tools/perf/scripts/python/bin/perf-gecko-report | 3 +++
->  2 files changed, 5 insertions(+)
->  create mode 100644 tools/perf/scripts/python/bin/perf-gecko-record
->  create mode 100644 tools/perf/scripts/python/bin/perf-gecko-report
-> 
-> diff --git a/tools/perf/scripts/python/bin/perf-gecko-record b/tools/perf/scripts/python/bin/perf-gecko-record
-> new file mode 100644
-> index 000000000000..7df5a19c0163
-> --- /dev/null
-> +++ b/tools/perf/scripts/python/bin/perf-gecko-record
-> @@ -0,0 +1,2 @@
-> +#!/bin/bash
-> +perf record -g "$@"
-> diff --git a/tools/perf/scripts/python/bin/perf-gecko-report b/tools/perf/scripts/python/bin/perf-gecko-report
-> new file mode 100644
-> index 000000000000..6781313dc862
-> --- /dev/null
-> +++ b/tools/perf/scripts/python/bin/perf-gecko-report
-> @@ -0,0 +1,3 @@
-> +#!/bin/bash
-> +# description: create firefox gecko profile json format from perf.data
-> +perf script -s "$PERF_EXEC_PATH"/scripts/python/perf-gecko.py -- "$@"
-> -- 
-> 2.34.1
-> 
-
--- 
-
-- Arnaldo
+Jason
