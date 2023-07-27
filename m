@@ -2,155 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93B0765529
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E9765535
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjG0Ne7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36938 "EHLO
+        id S232711AbjG0Ngt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233221AbjG0Ne4 (ORCPT
+        with ESMTP id S231433AbjG0Ngs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:34:56 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E334E272E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:34:53 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b6fdaf6eefso14648481fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:34:53 -0700 (PDT)
+        Thu, 27 Jul 2023 09:36:48 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A922728;
+        Thu, 27 Jul 2023 06:36:47 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so127003a12.0;
+        Thu, 27 Jul 2023 06:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690464892; x=1691069692;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9uwU8ola2qkLcSKy+1rI5aYJOesLH456/lp3WB7O6aM=;
-        b=C50x3UuXGGD+pywiK4+NxP6WrckJr3mb0tanueA232jGBD3tAJBugCLuZMBPwUmVXL
-         fGKbEqxDdprS+Ycgh/dvbY/2g8e05/FJ1Fqo1akjAeZBvXX1+bwtLWS/iq5Rfw3B8x1p
-         DNtAH0CCgf5///3MQ6sz/ERGZ5DhnkjJSIyIB8Ss68SfJGp/suJ6mOUrsfCw1A7FvpUW
-         ivAedLk2G7Z1T4sgNqpMPjbkLSkvznYIQN5hPV6Iv8/8XP2uiLHCFJxLShHCLmtRXNqJ
-         +cQqJ0DrrioMojCP/C+WEAaRT52km+9KUOYuzvn9Zc0YsmC2TaMfczDr41G9UaT/8fld
-         9QWg==
+        d=gmail.com; s=20221208; t=1690465007; x=1691069807;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xOaiTAn8rGdkF5zlwNwyGQldTdN+p5xKE7WTqru15pI=;
+        b=pMLpHBb6BmMtboe1C4sJxIkYr8dNkmU+gKItdL4KdTIAwZPMTR2WEHApDlsNV/exj1
+         vy0HrrjjphyqbyWiPKGTuaxEYwpOglO2en25CdqUE9j5dhZ2a59goHyfmFznLDJueic8
+         Ftx/ZuOfCZHWqLSYtBEVxldkYBeqd0YopDBzFV/paNo8mbOFGRNRgi9/5tupwMfANpMu
+         Df5wCQmmFutdRrUMGt0Ju9G8B7vYQyrMyTlUYpmo1Vx4/K6QxFP5PUyUNLbfG4gtky2Y
+         diAvLRVMBLWfPAkZ1CxES0UoHywH5CDidcKxVnCputXmfMZgTGXQesEw+D8ECKrNFyrc
+         ZtCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690464892; x=1691069692;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9uwU8ola2qkLcSKy+1rI5aYJOesLH456/lp3WB7O6aM=;
-        b=VVb+5HYarS2EiO6n5Uo1kdVO90QPgJHD9nFpZab4JPQOSvlU+Im/Trg5JRv0MFrmwf
-         K9Na2IfQb+AgUEepSIsbimimxxiJ1kq/6K9NA4L0alj7lFkd2aO3sgX/UshxrpH0GHkl
-         ZHFAN+m5eudmT7nkrTm+saIVxDBtG5w/mM231FFADusSey33LelCWN5pfdUWHtnKpey/
-         qnhJdCpaXh3Tlz8a5tYHr6s3VGDQHNjxEp41RTI6TqkQ36RZCAjhMGWO0TtpCXXD4Du/
-         BSapR4xSF5RFthygvaZ/Nu8AtgpYZWYKSlIakpb4N8ZSLRR0TONnkyOw2NQvIZKPuBXv
-         8G2g==
-X-Gm-Message-State: ABy/qLYIGZ2MeJQXpCkaWb204zOX+l+DmSC2o1i6xR49YWJ2pC1eGCL+
-        95nPUzgkJ7GMH5RmC4VtuuyoEQ==
-X-Google-Smtp-Source: APBJJlH0Y3VkQ0iBH2aM2WoMWRGBLQjYtW2yB9AaM+gkBgYJjEPBCW9UH2E6x4JfNXt58uxxP3R1kQ==
-X-Received: by 2002:a2e:8310:0:b0:2b6:f1ad:d535 with SMTP id a16-20020a2e8310000000b002b6f1add535mr1641588ljh.14.1690464892041;
-        Thu, 27 Jul 2023 06:34:52 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id lt5-20020a170906fa8500b0098f99048053sm792492ejb.148.2023.07.27.06.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 06:34:51 -0700 (PDT)
-Message-ID: <6c5197c9-e24d-70ac-fd75-2c72369d8b7f@linaro.org>
-Date:   Thu, 27 Jul 2023 16:34:49 +0300
+        d=1e100.net; s=20221208; t=1690465007; x=1691069807;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xOaiTAn8rGdkF5zlwNwyGQldTdN+p5xKE7WTqru15pI=;
+        b=XuncTDNiJJMMnenuVaL7XM87dP7qbbFITrDHRRc/yffV8+gkRWYJn9e5MgmVk2UyRa
+         d6fIlwtGFTND0xFfPMaDEEexFhh2aDaUCss2o0alIwdJhKUaMh/ArWOGzDpHs4fXbep+
+         s8SeWTV1jMOgNFSbxQISBGzbh+0pqGPp3MDa6sNI534lDm1LzgdDS7h7syzq64fm6M1z
+         lAVajiySOhyoU0ZmmELatNuvIYjodNgQuJ2Iqaj1pf12qqnRhU4IFagzZch0GTV4FUWL
+         YItLb3Q6e37VQfMK2i1x44DYw1RHwR0a71dl5WnnpG+68327P3SOe50U2QFImND0Oswn
+         TyJQ==
+X-Gm-Message-State: ABy/qLZlY4SoZnKS+TLeyMbazxUlB+KYHR0UOL3qd7tGjhSMzWVEv1c7
+        nFFgsWHJNqvz3K4XLBONkUg=
+X-Google-Smtp-Source: APBJJlHCafwH9S3OPhpqA+8W7Lczg5j327l0RTvLcvMbx0d1mOFIr6oHUvQ+C0fUqmdUivM04gTd/g==
+X-Received: by 2002:a17:90a:1189:b0:263:f36e:d610 with SMTP id e9-20020a17090a118900b00263f36ed610mr4812722pja.0.1690465007141;
+        Thu, 27 Jul 2023 06:36:47 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id fy16-20020a17090b021000b00267f9bf21ebsm2899810pjb.0.2023.07.27.06.36.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 06:36:46 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 06:36:43 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Johannes Zink <j.zink@pengutronix.de>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
+Message-ID: <ZMJy6yt4CL250x6Q@hoboy.vegasvil.org>
+References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+ <ZMGIuKVP7BEotbrn@hoboy.vegasvil.org>
+ <729dd79e-83aa-0237-1edd-1662a6ae28cd@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 00/17] drm/msm: Add SM6125 MDSS/DPU hardware and enable
- Sony Xperia 10 II panel
-Content-Language: en-GB
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Lux Aliaga <they@mint.lgbt>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20230723-sm6125-dpu-v4-0-a3f287dd6c07@somainline.org>
- <169046051039.1413710.12901529844343078449.b4-ty@linaro.org>
-In-Reply-To: <169046051039.1413710.12901529844343078449.b4-ty@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <729dd79e-83aa-0237-1edd-1662a6ae28cd@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 15:22, Dmitry Baryshkov wrote:
+On Thu, Jul 27, 2023 at 09:20:10AM +0200, Johannes Zink wrote:
+> Hi Richard,
 > 
-> On Sun, 23 Jul 2023 18:08:38 +0200, Marijn Suijten wrote:
->> Bring up the SM6125 DPU now that all preliminary series (such as INTF
->> TE) have been merged (for me to test the hardware properly), and most
->> other conflicting work (barring ongoing catalog *improvements*) has made
->> its way in as well or is still being discussed.
->>
->> The second part of the series complements that by immediately utilizing
->> this hardware in DT, and even enabling the MDSS/DSI nodes complete with
->> a 6.0" 1080x2520 panel for Sony's Seine PDX201 (Xperia 10 II).
->>
->> [...]
+> On 7/26/23 22:57, Richard Cochran wrote:
+> > On Mon, Jul 24, 2023 at 12:01:31PM +0200, Johannes Zink wrote:
+> > 
+> > Earlier versions of the IP core return zero from these...
+> > 
+> > > +#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
+> > > +#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
+> > 
 > 
-> Applied, thanks!
-> 
-> [01/17] drm/msm/dsi: Drop unused regulators from QCM2290 14nm DSI PHY config
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/a7e3fda5948a
-> [02/17] arm64: dts: qcom: sm6125: Pad APPS IOMMU address to 8 characters
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/b7d35a8eae54
-> [03/17] arm64: dts: qcom: sm6125: Sort spmi_bus node numerically by reg
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/2be52ca96a71
+> good catch. Gonna send a v3 with a check to and set the values for dwmac v5 only.
 
-Of course, these two patches sneaked in by the mistake, dropped them now.
+AFAICT there is no feature bit that indicates the presence or absence
+of these two registers.
 
-> [04/17] dt-bindings: display/msm: Remove DSI1 ports from SM6350/SM6375 example
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/4be2c19261fc
-> [05/17] dt-bindings: clock: qcom,dispcc-sm6125: Require GCC PLL0 DIV clock
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/4f86e343f3c6
-> [06/17] dt-bindings: clock: qcom,dispcc-sm6125: Allow power-domains property
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/91043642f28c
-> [07/17] dt-bindings: display/msm: dsi-controller-main: Document SM6125
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/cf5859476e5d
-> [08/17] dt-bindings: display/msm: sc7180-dpu: Describe SM6125
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/04a664dffd19
-> [09/17] dt-bindings: display/msm: Add SM6125 MDSS
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/3bde3b8f8a04
-> [10/17] drm/msm/dpu: Add SM6125 support
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/76c5dffd0bc4
-> [11/17] drm/msm/mdss: Add SM6125 support
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/de50357565d3
-> [12/17] dt-bindings: msm: dsi-phy-14nm: Document SM6125 variant
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/cdac445883cc
-> [13/17] drm/msm/dsi: Reuse QCM2290 14nm DSI PHY configuration for SM6125
->          https://gitlab.freedesktop.org/lumag/msm/-/commit/7638d8059ace
-> 
-> Best regards,
+Are you sure that *all* v5 IP cores have these?
 
--- 
-With best wishes
-Dmitry
+I am not sure.
 
+Thanks,
+Richard
