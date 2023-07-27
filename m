@@ -2,53 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF53765D8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C32765D8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjG0Uns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
+        id S231612AbjG0UqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjG0Unp (ORCPT
+        with ESMTP id S229552AbjG0UqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:43:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25E22D5B;
-        Thu, 27 Jul 2023 13:43:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 27 Jul 2023 16:46:05 -0400
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975FDF5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:03 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by sonata.ens-lyon.org (Postfix) with ESMTP id D9724200E6;
+        Thu, 27 Jul 2023 22:45:55 +0200 (CEST)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Ncy_lJg80Nmi; Thu, 27 Jul 2023 22:45:54 +0200 (CEST)
+Received: from begin (125.170.185.81.rev.sfr.net [81.185.170.125])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F54F61F44;
-        Thu, 27 Jul 2023 20:43:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C880AC433C8;
-        Thu, 27 Jul 2023 20:43:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690490623;
-        bh=QlIHP8dhX5OJKYng0fljwWznF8dNsUY8Bn/VfqY1drk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZyI1Xl51voxYvqt1b7E85tntZQ5XlSa5Ls6CckQJLCdMgznvnKbraiKe8MCHhYVf
-         DrFwWDUwwoZ9KNsfdjh4jNrM/UkjjT4chmd64CdvouO15NN6LgcuRJ+cEgjG/UWkA3
-         0dKQm1OYI3mxScCV8kGX0g4SvK5S4t0FEUTqhArHzrugieUdAx36AXcoboDy6v364m
-         T2mQ/Ei6DCnpT3TC+a0WyOKPRg+4BTbKs+ejkeSCI0qWD1OP2BSmT1+g3VuIgZJc0g
-         PKNEKGfAxViz2VIsXv60rn6c0AEPlnT7t2Ii7UMCy4PP/SWbPFI+0T4mBTn+Cw77LJ
-         0WRtMZ0GcA+bw==
-Date:   Thu, 27 Jul 2023 22:43:40 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     rjui@broadcom.com, sbranden@broadcom.com, wsa@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue
-Message-ID: <20230727204340.454cmkli5gotipmb@intel.intel>
-References: <20230707084941.28964-1-dg573847474@gmail.com>
+        by sonata.ens-lyon.org (Postfix) with ESMTPSA id C64C1200E4;
+        Thu, 27 Jul 2023 22:45:53 +0200 (CEST)
+Received: from samy by begin with local (Exim 4.96)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1qP7rZ-00685J-1R;
+        Thu, 27 Jul 2023 22:45:33 +0200
+Date:   Thu, 27 Jul 2023 22:45:33 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     oushixiong <oushixiong@kylinos.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] tty: vt: Fix spelling typo in comment
+Message-ID: <20230727204533.jf6ezvfairj64n7j@begin>
+Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        oushixiong <oushixiong@kylinos.cn>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org
+References: <20230726091044.705393-1-oushixiong@kylinos.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230707084941.28964-1-dg573847474@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230726091044.705393-1-oushixiong@kylinos.cn>
+Organization: I am not organized
+User-Agent: NeoMutt/20170609 (1.8.3)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,19 +64,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chengfeng,
-
-On Fri, Jul 07, 2023 at 08:49:41AM +0000, Chengfeng Ye wrote:
-> iproc_i2c_rd_reg() and iproc_i2c_wr_reg() are called from both
-> interrupt context (e.g. bcm_iproc_i2c_isr) and process context
-> (e.g. bcm_iproc_i2c_suspend). Therefore, interrupts should be
-> disabled to avoid potential deadlock. To prevent this scenario,
-> use spin_lock_irqsave().
+oushixiong, le mer. 26 juil. 2023 17:10:43 +0800, a ecrit:
+> Signed-off-by: oushixiong <oushixiong@kylinos.cn>
+> ---
+>  drivers/tty/vt/vt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Fixes: 9a1038728037 ("i2c: iproc: add NIC I2C support")
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+> index 1e8e57b45688..bcdd249e47a0 100644
+> --- a/drivers/tty/vt/vt.c
+> +++ b/drivers/tty/vt/vt.c
+> @@ -3473,7 +3473,7 @@ static int __init con_init(void)
+>  		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
+>  		tty_port_init(&vc->port);
+>  		visual_init(vc, currcons, 1);
+> -		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
+> +		/* Assuming vc->vc_{cols,rows,screenbuf_size} are same here. */
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+? No, this is really meant to be "sane" here, i.e. they are not getting
+checked, and just used as they are.
 
-Thanks,
-Andi
+>  		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
+>  		vc_init(vc, vc->vc_rows, vc->vc_cols,
+>  			currcons || !vc->vc_sw->con_save_screen);
