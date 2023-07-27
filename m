@@ -2,288 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EC6765602
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E04765604
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjG0ObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:31:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
+        id S233712AbjG0Ocm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjG0Oa7 (ORCPT
+        with ESMTP id S231774AbjG0Ocl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:30:59 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E34E2D42;
-        Thu, 27 Jul 2023 07:30:58 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bbdc05a93bso5364435ad.0;
-        Thu, 27 Jul 2023 07:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690468258; x=1691073058;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yjq9/74+fd3FNAG1SVAL1aAvZ3EGzRY6BxDlYY3Aykw=;
-        b=U615EZINP7qeK40Qv7KXvEypIC4lDuZ76QXYZDla/y3FXHB5ooFeJvKvPDLGhTyrpM
-         corOEA6p0wnbFxiRt6P8Z8vUoLimKpRVfM6+TO7KxjkqGZgnudFCUZf0ylR0XZLQNm0I
-         Ng3RepEI8VMNfzPElrEueTbcdBMZbCrM1QisLj8gX9qL32AQxgHOm1N7Fo4boUT4R0EK
-         EB1pea9bsy/2x0iXA+l5ntC9WOR/JazNfznbFJvKu4n14xaFbA45I6gja7cal7kaZvNP
-         ZJ8ZMomcW5mY02JoXtCDxSD9/uL+9FAEhgt8tDCBrvChh1Scns4g0EGVkwTNkFrnjBa5
-         Xrdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690468258; x=1691073058;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yjq9/74+fd3FNAG1SVAL1aAvZ3EGzRY6BxDlYY3Aykw=;
-        b=R9SCqBLR+pUA7lf2Qo2QyYoC4QcfsZ+N4IGXdCcww1E0uI418R2BtpmT6A/CMVvFSB
-         forHTlJTf6clQWlc6VWQ5Xfy5n+eMF6wYCt6yrmjUlShjVKuJ70/mpa/BOGDMR7pd1LL
-         tXsPmkBIjWyOtdypoKUMzu6KZX/HuvV+GwGHfUfptxmbUsh0RRrntXFJPn/gmK3XzMGP
-         yaRtyifvn8kFcXOHyCafaA/nQyBQYJFZHM+KUqWOgm0/kZTNQOcoAoOB1w7Tpw0erVHK
-         wcnuMB1qnDWy4As3X+x6lDMpTCH8O1+vZxIpIS+25NsWAbyf3HJTSD5X+rMspB9Q3LXq
-         NSSA==
-X-Gm-Message-State: ABy/qLb8lGdt6gFWkkeqHqSZEn11sFTdpso8GGhou1Xyu/7y78wrZCqA
-        DyILxeEQtv/vz8n12CWoJX9EUsydhQg=
-X-Google-Smtp-Source: APBJJlHWXbGSaSuQ6uzcnTrwIvVyWiNvuPXadSXul7PKZfnOeuOGcQF0MCWZY3MxfhZWvkvfRrcxeA==
-X-Received: by 2002:a17:902:da8a:b0:1b3:fb76:215b with SMTP id j10-20020a170902da8a00b001b3fb76215bmr5966191plx.48.1690468257821;
-        Thu, 27 Jul 2023 07:30:57 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b21-20020a170902d31500b001bb9f104328sm1711209plc.146.2023.07.27.07.30.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 07:30:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <71c9d96f-d815-7cf4-927b-76af44fdd3e0@roeck-us.net>
-Date:   Thu, 27 Jul 2023 07:30:55 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+        Thu, 27 Jul 2023 10:32:41 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2062c.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e1a::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E8B2D40;
+        Thu, 27 Jul 2023 07:32:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XuUA1hbFVqpM3izdd7HT3T6Fu8jEONDs8uvihRIcIiFN6rg9iGaJn+lgs7NQUGmaLX1tFmXTAhsExxGAs493ERfiaB5xQ220z0QzKkwZbgwb6uW+A4h9QtSbavqHDoMa/sz0eWFT8fzORgSKg9rJSW44zay5SplGVkDczibixrvC1D8cMYKran35ZuHCyK3raf++O+2n3c9guIc3O1MRh4CopAxvN0MAJPl6XmgT/3PWFOx3a3tUt9YGM12fGTHVECAEZIRtREiyPdrjkfHTaL7ZxB2GE+cALECL55Xq/7AFTCjQa7guZZCf7kUJHdnd3zGPZ/r7LQipUU7UfTZ4Hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F0nJ3Y/BS0SMKQgyZIvetQimZM8MNr+itQnX8lcCFPM=;
+ b=oUXU8zRW+UAdkpNXr1OkSV6jB3rlpPSyA9wyKPTTh51EdZrF9gQdurFL393dm6g1BZv9zxPMSL1sfedfRljos0EIcW6RSHNdv4SA9h3ml0BCYKvKGt2wAtAU4xIh66ZaKe391B95ai1vKIbOzvE0uO0fwhneoJ/vDSc/H5Ysk7++77bBvLvIrXUhgPHvBA60LV4PILsYy8J/yxKMsA9d67cCPAshZvHr/5jDyz67S6HU1swPBYN8bJOpoaqJput1SFCWFhZWTIF9sX+YnJJb1mDkBYRn93IU+KrHzHqgJVbYSQkPnI5ZFzXl+z2OPXhYw6ZFz1r2qIEISgP6utCCng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=F0nJ3Y/BS0SMKQgyZIvetQimZM8MNr+itQnX8lcCFPM=;
+ b=J0SfD+a/sGTdiuml9imQmVyHVB/p/FJaPfBkTbaVstv5BEJRdBYEEdXhOm2iv4yxLaWCv6HsLuDn8rjbhVNP2VJfQF3OaLxNt8xERppjAOYZ6kMj72mTCrgo5lc/m8J7qVj7QuUfhqbZqfzqIk8Ogk1zdUeaywiaq6IGEHAFG3k=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DU2PR04MB8854.eurprd04.prod.outlook.com (2603:10a6:10:2e1::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 14:32:35 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5d6a:ec53:f2a8:5b97%6]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 14:32:35 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
+CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2] genpd: Makefile: build imx
+Thread-Topic: [PATCH V2] genpd: Makefile: build imx
+Thread-Index: AQHZuuiOaUbY4emHfUG2Aqz8aNM4ua/NuIYQ
+Date:   Thu, 27 Jul 2023 14:32:35 +0000
+Message-ID: <DU0PR04MB9417AAACDDC890FDC3D199158801A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20230720090443.503525-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230720090443.503525-1-peng.fan@oss.nxp.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
- <20230726152235.249569-2-mail@carsten-spiess.de>
- <206ad774-bf6f-aed3-81a7-3d9c8f80a69e@roeck-us.net>
- <20230727093536.4cd2f84f.mail@carsten-spiess.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
-In-Reply-To: <20230727093536.4cd2f84f.mail@carsten-spiess.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DU2PR04MB8854:EE_
+x-ms-office365-filtering-correlation-id: 21194666-ab00-4a9c-4eac-08db8eae5208
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1nGHNoOyhOZy3kT1H2Xjbrg76/4UzuLFHOR0V+ILyUIvObQZ5g04DtiZlngEsiJQRaDqa4vI2jjO+s5Rw1G68tPChtNh7aqCiY/SxLxpIgaGWKgdjlHOcU9CeQuSNxlOFKN3QmAYPFjtXa9GF22v7iE3uHb4IYJo1e8wkQQWkl87G6CZaHmF07vTxVhbKJnCppRv3g6uY8ZHrpBBioEJV95gnD18DOjL30of7vVwElyijSo0G2dW04BSSbdKx63GF4L5gpy21UvwHKKDkuo1sKje5JRmpHgyXhx0rvMOQeVrZmhqtdB6Ij514wk/PQqpEJJw3lbyzfYsSg3sulU2q6OLHW2DBL0SHcP3Y57bXRQtL+/jBf0HI0mcrJzUz7GB3Zw84fxptpkLOsQj6ZVJ1fcCXqbPJJvpUOkDSn2g7ICmTvMSXAOAGlf2kBhNsDt/aR9HJqo/sLjwTzTAmSW7izlDCKOH5o5G0DceVccNc/kVW+bom60IPMStWXHJqca84bGrZZrB96RoRsw4p5G/LK//YmP56EFw5tMPgeZVy5qDSEzwJCyA5AuxdEV0XyFMgRNq8AHguuRlf72lOOumyZg9y3IDab2ze6SdjL8iEH3zGshsJLOnnDXMgXu0OquG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(451199021)(86362001)(9686003)(7696005)(71200400001)(38100700002)(33656002)(186003)(38070700005)(122000001)(6506007)(26005)(55016003)(64756008)(66556008)(66446008)(4326008)(66476007)(66946007)(76116006)(4744005)(2906002)(316002)(5660300002)(52536014)(44832011)(41300700001)(8676002)(8936002)(478600001)(110136005)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KNhV2z8f+N52LYd8Wexv4UNnAZEIX/jfG8jhnU7QZb7iOSdm2hJZyzKJxAG8?=
+ =?us-ascii?Q?d/Xnr/nRKwHMT2rSBr5z2TeVs+ILO7n2zgoGgp2O+J0hHmry7fljr8HEbZRB?=
+ =?us-ascii?Q?zo9pQ7J64qnm+18YW2xR5BICqbRD6GJj0kH07xn0enKp5vu+FhPrwG5NIixT?=
+ =?us-ascii?Q?QD7lehZ34x07FL4M7hO0qCh2VAHi3t8qBIPppq+4Qve7tqxRc7PMV0Gs9AXj?=
+ =?us-ascii?Q?HrOGRtQbGJJu6ziz6mgj3e1CyEnVa+bwDdoUOkIgVUa2atWCD9wSaVnhnGS4?=
+ =?us-ascii?Q?TAZDK8huhuHtO5fuYIuWRJD9ZlWp7mRd5Bi+VlMjAkgTELPyJoDLofCRcATz?=
+ =?us-ascii?Q?g2TpjEyVRI7ZUroak5L13B/nynFYBIhvB+7QRRmncdHsYWpVysHaYDMU0zor?=
+ =?us-ascii?Q?85XLgYNJPBPV866JvhWmKqVwPwd9v/DjQ8U/L/FNIepaYxruIvyG7Le9fWtl?=
+ =?us-ascii?Q?T5c5m+yWzd/C4hrP1cQI9UyKk5aOzYSQJOhb/22AIzdPyb/vVrPyCocILaqI?=
+ =?us-ascii?Q?8e2dXzTeji5mysPVzxB6NcN2T00DIEBYL+CHwaVE3kG7MtinobpvEMTN63Tx?=
+ =?us-ascii?Q?D/UMxjC1wMFBaOCOghrUDVIxgbuevvxJDmadnjHIy4VB6Kl1N8Avs3fmW+Cm?=
+ =?us-ascii?Q?j69pTWavJUfy7MfkfYVp732jFQ8OzFYgArw2u1FjA47etpWStwNmEZPJywGt?=
+ =?us-ascii?Q?GqUhhxuqPo5Q0qWYZ/GPUtyHTu2mFPQVhPi1MHJkDAR6qgKi/KASaLO5jBKm?=
+ =?us-ascii?Q?yO4LUMOMVOsrOuCyF40t1QxQppN4cnItUXrp/DNhJubB4yT12Dnt+e6WHwOf?=
+ =?us-ascii?Q?d0KAJLSuC9qN4kRfC3o5aI/ZdwNUALrqjwL6IjnBwQC7u3j/Qnn7ikopIYt5?=
+ =?us-ascii?Q?4TgFXeDu9xBjmqrGCxYWxQhbTODwcVaQLRWjToHTlJ+g7R4uhfC8NYpF7dSp?=
+ =?us-ascii?Q?ftXDfE8PdLid0Ipk0AKKaqjzCzdfw4ZHy5OeldOxXj9P5n/UXYg0KyK+o4Dn?=
+ =?us-ascii?Q?6itFmkWFmBNRxmoeIthHLuZUmRXAS51Fz7LaoR0Y11RTmg/vdu3z1jSYElVa?=
+ =?us-ascii?Q?HGaBXxMaNzdkpQcXNJm413DbXRviuVO67/xiJdC1QUfsSmDyNcYRRmLjHkc/?=
+ =?us-ascii?Q?BCyqCjVKq3RhovBdc/4NAl7wf+2Gc+AUpAq7Hv3s8Vp+t8vj+ML+Ps9LnkWK?=
+ =?us-ascii?Q?DXvRvuU+pgmXT5Xizs4hu5G18m0IPnMHLLZE4Q51GdKsfIDbhaFxr75U3g6X?=
+ =?us-ascii?Q?D79P4IcQgJO7ZzUDqq/K0YfiPMplnPcJr813q0JRUl8URHOr+ONgfBT1N5wI?=
+ =?us-ascii?Q?W4EMOQQOt1GgUj2hKZpcMIDy3JTlerv8/DrjmxuDcpxvl6S1G8mRYdiEVHmL?=
+ =?us-ascii?Q?xV3yVP3sBJRdNivGRC+4QNCAqr1WEjEENulMRUy7ne3D26Q2wHqCn7K3+rLn?=
+ =?us-ascii?Q?/Wi+lwnwe3VY1UPqVMl8G9Nb4oNRKKDTmJb1F4VdkJhusmPwnToHvICvteZb?=
+ =?us-ascii?Q?+CuvYwoB51CmrutP8OIWInWC18HYyg+5fWz+zH4H7Xba66YdDhTWd8pcQ5A6?=
+ =?us-ascii?Q?YeUDYOSYTsOzZkJp1wM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21194666-ab00-4a9c-4eac-08db8eae5208
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2023 14:32:35.4338
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tdk/1FjwnLAAi38L5/yF2WvJzCp0zujdCuoHi1mMxs2E//rtzdHs16Pub0aHESjjZOdkVO92N8eCMMquo4R4hg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8854
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,SPF_HELO_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 00:35, Carsten Spieß wrote:
-> 
-> On 7/26/23 18:14, Gueter Roeck wrote:
->> On 7/26/23 08:22, Carsten Spieß wrote:
->>> +The shunt value in micro-ohms, shunt gain and averaging can be set
->>> +via device tree at compile-time.
->>
->> At _compile-time_ ?
-> How to explain better that it isn't set at runtime?
-> Other drivers use the same term.
+Hi Ulf,
 
-You mean it is ok to exceed the speed limit because others do it
-as well ?
+> Subject: [PATCH V2] genpd: Makefile: build imx
 
-[ Sorry, I have heard the "Other drivers do it" pseudo-argument too many times.
-   That doesn't mean it is the right thing to do. ]
+I see drivers/genpd are in linux-next. But i.MX was not built.
+Would you pick this patch?
 
-Why not just leave it off ? What value does it add ? Besides,
-even "via devicetree" isn't really correct because it can also
-be set via ACPI or by a platform driver when using device_ properties.
-I would suggest "can be set with device properties".
+Thanks,
+Peng.
 
-> 
->> I'd argue that shunt voltage is all but useless, but if you want to have it supported
->> it _has_ to be in mV.
-> That's a problem.
-> 
-> In my case the ER-6P has a 8 milli Ohm (or 8000 micro Ohm) shunt and a powersupply with
-> max. 2.5 A. This gives a max shunt voltage of 20 mV at 2.5 A.
-> The device normaly consumes between 200 and 500 mA. (typ ~250 mA).
-> This results in shunt voltage of 1.6 to 4.0 mV (typ ~2mV).
-> Having no fractions will make it useless.
-> 
-> Unfortunately there is no possibility to give a scaling factor.
-> Or returning float values (i know, this can't and shouldn't be changed)
-> 
-
-Just like the ABI must not be changed. The sensors command would display your
-4mV shunt voltage as 4V, which is just as useless.
-
-In practice, the shunt voltage _is_ useless for hardware monitoring purpose
-because it can be calculated from current and shunt resistor value.
-I'd say if you really want it, provide it as debugfs attribute. As hwmon
-attribute it has to be in mV.
-
->> Why not support limit attributes ?
-> Due to limited time, left for later enhancement.
-> 
-> 
->>> +#define ISL28022_REG_SHUNT	0x01
->>> +#define ISL28022_REG_BUS	0x02
-> 
-> 
->>> +	switch (type) {
->>> +	case hwmon_in:
->>> +		switch (attr) {
->>> +		case hwmon_in_input:
->>> +			err = regmap_read(data->regmap,
->>> +					  ISL28022_REG_SHUNT + channel, &regval);
->>
->> That never reads REG_BUS.
-> Hmm,
-> channel 0: ISL28022_REG_SHUNT + 0 == 0x01
-> channel 1: ISL28022_REG_SHUNT + 1 == 0x02 == ISL28022_REG_BUS
-> or do i miss something?
-> 
-
-No, I missed the "+ channel".
-
->>> +			if (err < 0)
->>> +				return err;
->>> +			*val = (channel == 0) ?
->>> +					(long)((s16)((u16)regval)) * 10 :
->>> +					(long)(((u16)regval) & 0xFFFC);
->>
->> I don't think the sign extensions are correct based on the datasheet.
->> This will have to use sign_extend.
->  From my understading (see table 11 on page 16 of the ISL28022 datasheet)
-> shunt value is already sign extended, (D15-D12 is sign)
-> bus value (table 12 on page 16) is unsigned.
-> 
-
-Not really. For the shunt voltage, 0xf000 has different meanings depending on scale
-and range settings. LSB for bus voltage is 4 mV and starts at bit 2 or 3 depending
-on BRNG. The above just happens to be correct if BRNG = 10 OR 11 per datasheet.
-If that is intentional, it needs to get a comment.
-
->>> +			err = regmap_read(data->regmap,
->>> +					  ISL28022_REG_CURRENT, &regval);
->>> +			if (err < 0)
->>> +				return err;
->>> +			if (!data->shunt)
->>> +				return -EINVAL;
->>
->> Getting an error message each time the "sensors" command is executed ?
->> Unacceptable.
-> o.k., will change to set *val = 0;
-> 
-Still unacceptable.
-
->>> +			err = regmap_read(data->regmap,
->>> +					  ISL28022_REG_POWER, &regval);
->>> +			if (err < 0)
->>> +				return err;
->>> +			if (!data->shunt)
->>> +				return -EINVAL;
->>
->> Unacceptable.
-> o.k., as above
-> 
->>> +			*val = ((long)regval * 409600000L * (long)data->gain) /
->>> +				(long)(8 * data->shunt);
->>
->> I don't think this was checked for overflows.
-> Yes, i must first divide then multiply.
-> I have to think about how to keep accuracy on high shunt resistor values.
-> 
->>> +static int isl28022_config(struct device *dev)
->>> +{
->>> +	struct isl28022_data *data = dev_get_drvdata(dev);
->>> +
->>> +	if (!dev || !data)
->>> +		return -EINVAL;
->>
->> How would this ever happen ?
-> Shouldn't, but i'm carefully (i had it once during development due to an error
-> (using dev instead of hwmon_dev) on calling this function
->   
-
-Parameter checks are only acceptable on API functions. This is not an API function.
-Local functions are expected to be consistent. If this function is called with
-a bad argument, that needs to be fixed during development.
-
->>> +	regmap_write(data->regmap, ISL28022_REG_CONFIG, data->config);
->>> +	regmap_write(data->regmap, ISL28022_REG_CALIB, data->calib);
->>
->> Error checking needed.
-> o.k. will add.
-> 
->>> +static int isl28022_probe(struct i2c_client *client)
->>> +{
-> 
->>> +	if (!i2c_check_functionality(client->adapter,
->>> +				     I2C_FUNC_SMBUS_BYTE_DATA |
->>> +				     I2C_FUNC_SMBUS_WORD_DATA))
->>> +		return -EIO;
->>
->> This is not an IO error. Return -ENODEV as most other drivers do.
-> o.k.
-> 
->>> +	of_property_read_u32(dev->of_node, "shunt-gain", &data->gain);
->>> +	of_property_read_u32(dev->of_node, "average", &data->average);
->>
->> Check for errors and provide defaults if properties are not set.
-> o.k.
-> 
->> Also please use device_property_read_u32() to enable use from non-devicetree
->> systems.
-> o.k. Never used this, have to look for an example on using it.
-> Many (old) drivers are using the of_property_* functions, is it intended to replace it.
-
-This is not an old driver. It is more generic than of_ functions and
-should be used in new drivers.
-
-> What about backporting this driver to e.g. 5.15, will it affect it?
-> 
-
-Device property callback functions existed for a long time. The function
-exists in v4.14.y, which is the oldest supported kernel. Either case,
-lack of support in an older kernel version is not an argument for avoiding
-a new API. Anyone who backports a driver to an older kernel is responsible
-for handling the backport, which may include new API functions.
-
-Specific example: Your driver will have to use the .probe callback.
-That has one argument in the latest kernel. In v5.15.y, it has two arguments.
-You'll have to use the .probe_new callback there. Yes, technically you could
-try sneaking in the use of .probe_new in your driver, but that callback will
-be removed in v6.6. So you'll _have_ to do some backport, if you want it or not.
-
->>> +	status = isl28022_config(hwmon_dev);
->>> +	if (status)
->>> +		return status;
->>
->> That has to happen before the call to devm_hwmon_device_register_with_info()
->> to avoid race conditions.
-> o.k.
-> 
->>> +static struct i2c_driver isl28022_driver = {
->>> +	.class		= I2C_CLASS_HWMON,
->>> +	.driver = {
->>> +		.name	= "isl28022",
->>> +		.of_match_table = of_match_ptr(isl28022_of_match),
->>
->> Drop of_match_ptr()
-> Most drivers have this, why drop?
-> 
-
-It is needed for device_property_read_u32() to work. And, again, "other drivers
-do it" is not a valid argument.
-
-Guenter
+>=20
+> From: Peng Fan <peng.fan@nxp.com>
+>=20
+> The imx genpd was missed to be built out, add it in Makefile
+>=20
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>=20
+> V2:
+>  Drop scu-pd change
+>=20
+>  drivers/genpd/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/genpd/Makefile b/drivers/genpd/Makefile index
+> c429485c13f6..666753676e5c 100644
+> --- a/drivers/genpd/Makefile
+> +++ b/drivers/genpd/Makefile
+> @@ -3,6 +3,7 @@ obj-y					+=3D actions/
+>  obj-y					+=3D amlogic/
+>  obj-y					+=3D apple/
+>  obj-y					+=3D bcm/
+> +obj-y					+=3D imx/
+>  obj-y					+=3D mediatek/
+>  obj-y					+=3D qcom/
+>  obj-y					+=3D renesas/
+> --
+> 2.37.1
 
