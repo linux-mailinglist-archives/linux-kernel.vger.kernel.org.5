@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4558676604A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F6F76604F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjG0Xor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 19:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        id S231247AbjG0XsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 19:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG0Xop (ORCPT
+        with ESMTP id S229448AbjG0XsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 19:44:45 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6142D70;
-        Thu, 27 Jul 2023 16:44:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=JNLi5VZ5u15SeU34PKfgp04ZTBcnUk6/4EC6ZxqAHzc=; b=eEw+qP2598e8KSb8q42vSBNegh
-        xmYll+6xQEIYKdgIkUmH5rfWzJBFpjJzGNIrwfooz6Fh2eC+YJTP8brTId7RqhylddO8+GQOrmI4t
-        I5rXGW9jRx5DALL19CIyBKH6nnuwc5rJfWKHwgczAkOvqZA77mgBtuY9MtHF6qBrr627jVaJTfhmn
-        fIXorj6wXmS6+bPTaUl1n64o4P4vw7kwpcSsatgzW+0N/MkCwRDqhvwZqIOHkpHDl6sxyapa0Mt8q
-        5bNbK3+3CRNHvzjCYMhp29iZ2s1iVTofx4fOwgTTcOr9OliR66Olar1vQj+87+a7kKXQGPFBDy9y7
-        c0QZtysg==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qPAer-000BRI-3A; Fri, 28 Jul 2023 01:44:37 +0200
-Received: from [14.202.107.205] (helo=192-168-1-115.tpgi.com.au)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qPAeq-000JSA-32; Fri, 28 Jul 2023 01:44:36 +0200
-Subject: Re: [syzbot] [bpf?] WARNING: ODEBUG bug in tcx_uninstall
-To:     Leon Romanovsky <leon@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+14736e249bce46091c18@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        Gal Pressman <gal@nvidia.com>
-References: <000000000000ee69e80600ec7cc7@google.com>
- <91396dc0-23e4-6c81-f8d8-f6427eaa52b0@iogearbox.net>
- <20230726071254.GA1380402@unreal> <20230726082312.1600053e@kernel.org>
- <20230726170133.GX11388@unreal>
- <896cbaf8-c23d-e51a-6f5e-1e6d0383aed0@linux.dev>
- <1f91fe12-f9ff-06c8-4a5b-52dc21e6df05@linux.dev>
- <20230727054145.GY11388@unreal>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d2a76d59-3282-d4ac-fbe5-40b0a07dbc51@iogearbox.net>
-Date:   Fri, 28 Jul 2023 01:44:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 27 Jul 2023 19:48:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F58530F7;
+        Thu, 27 Jul 2023 16:48:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E749061EFF;
+        Thu, 27 Jul 2023 23:48:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB57C433C7;
+        Thu, 27 Jul 2023 23:48:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690501702;
+        bh=leAC5f+fPlZ/cfu7jAxbCYBzhzOHtZlQG/UH+1WwYJQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k0s7B5clwMRIUnKXxzjuwBkCWS4MLUNGeaj8MCrix0Inaxm9GcXL01oJrC+TDOlTg
+         ArMX+warqSug5XXdNKHTZ+WX+q0fXx7DfyExGtR38N4NQkgnDQN334EWobNwkDFXzh
+         9lruDdJRfoyOwZBR3iYUL0anjcSSh/ouNhV9UhGYauq3idrDurIAb9ZJGOUDNezQ+h
+         TT2BJYT6OMZ4L+TjeYbUMLrDuNN8QjsnvgmKLIPThgDbfVxf5MZ9mL/SZXfVU8E+uG
+         R1SMBWAVNuHQNbUcS4otOrKg7FPdPx2r52OeUp59iL+dspB9gSnzatRN0Z0Mv+/yoZ
+         P4ezf3AdhlvcA==
+Date:   Thu, 27 Jul 2023 16:48:20 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     Paolo Abeni <pabeni@redhat.com>, Zheng Wang <zyytlz.wz@163.com>,
+        <lee@kernel.org>, <linyunsheng@huawei.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <richardcochran@gmail.com>,
+        <p.zabel@pengutronix.de>, <geert+renesas@glider.be>,
+        <magnus.damm@gmail.com>, <yoshihiro.shimoda.uh@renesas.com>,
+        <biju.das.jz@bp.renesas.com>, <wsa+renesas@sang-engineering.com>,
+        <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <hackerzheng666@gmail.com>,
+        <1395428693sheep@gmail.com>, <alex000young@gmail.com>
+Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
+Message-ID: <20230727164820.48c9e685@kernel.org>
+In-Reply-To: <607f4fe4-5a59-39dd-71c2-0cf769b48187@omp.ru>
+References: <20230725030026.1664873-1-zyytlz.wz@163.com>
+        <20230725201952.2f23bb3b@kernel.org>
+        <9cfa70cca3cb1dd20bb2cab70a213e5a4dd28f89.camel@redhat.com>
+        <607f4fe4-5a59-39dd-71c2-0cf769b48187@omp.ru>
 MIME-Version: 1.0
-In-Reply-To: <20230727054145.GY11388@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26982/Thu Jul 27 09:29:43 2023)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 7:41 AM, Leon Romanovsky wrote:
-> On Wed, Jul 26, 2023 at 04:33:40PM -0700, Martin KaFai Lau wrote:
->> On 7/26/23 11:16 AM, Martin KaFai Lau wrote:
->>> On 7/26/23 10:01 AM, Leon Romanovsky wrote:
->>>> On Wed, Jul 26, 2023 at 08:23:12AM -0700, Jakub Kicinski wrote:
->>>>> On Wed, 26 Jul 2023 10:12:54 +0300 Leon Romanovsky wrote:
->>>>>>> Thanks, I'll take a look this evening.
->>>>>>
->>>>>> Did anybody post a fix for that?
->>>>>>
->>>>>> We are experiencing the following kernel panic in netdev commit
->>>>>> b57e0d48b300 (net-next/main) Merge branch '100GbE' of
->>>>>> git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue
->>>>>
->>>>> Not that I know, looks like this is with Daniel's previous fix already
->>>>> present, and syzbot is hitting it, too :(
->>>>
->>>> My naive workaround which restored our regression runs is:
->>>>
->>>> diff --git a/kernel/bpf/tcx.c b/kernel/bpf/tcx.c
->>>> index 69a272712b29..10c9ab830702 100644
->>>> --- a/kernel/bpf/tcx.c
->>>> +++ b/kernel/bpf/tcx.c
->>>> @@ -111,6 +111,7 @@ void tcx_uninstall(struct net_device *dev, bool ingress)
->>>>                           bpf_prog_put(tuple.prog);
->>>>                   tcx_skeys_dec(ingress);
->>>>           }
->>>> -       WARN_ON_ONCE(tcx_entry(entry)->miniq_active);
->>>> +       tcx_miniq_set_active(entry, false);
->>>
->>> Thanks for the report. I will look into it.
->>
->> I don't see how that may be triggered for now after Daniel's recent fix in
->> commit dc644b540a2d ("tcx: Fix splat in ingress_destroy upon
->> tcx_entry_free").
+On Thu, 27 Jul 2023 21:48:41 +0300 Sergey Shtylyov wrote:
+> >> Still racy, the carrier can come back up after canceling the work.  
+> > 
+> > I must admit I don't see how/when this driver sets the carrier on ?!?  
 > 
-> Both our regression and syzbot have this fix in the trees.
+>    The phylib code does it for this MAC driver, see the call tree of
+> phy_link_change(), on e.g. https://elixir.bootlin.com/linux/v6.5-rc3/source/...
 > 
->> Do you have a small reproducible case? Thanks.
+> >> But whatever, this is a non-issue in the first place.  
+> > 
+> > Do you mean the UaF can't happen? I think that is real.   
 > 
-> Unfortunately no.
+>    Looks possible to me, at least now... and anyway, shouldn't we clean up
+> after ourselves if we call schedule_work()?However my current impression is
+> that cancel_work_sync() should be called from ravb_close(), after calling
+> phy_{stop|disconnect}()...
+>
+> >> The fact that ravb_tx_timeout_work doesn't take any locks seems much
+> >> more suspicious.  
+> > 
+> > Indeed! But that should be a different patch, right?  
+> 
+>    Yes.
+> 
+> > Waiting a little more for feedback from renesas.  
+> 
+>    Renesas historically hasn't shown much interest to reviewing the sh_eth/ravb
+> driver patches, so I took that task upon myself. I also happen to be a nominal
+> author of this driver... :-)
 
-Thanks for the report, we found the root cause and will send a fix in the next
-day or two.
-
-Best,
-Daniel
+Simplest fix I can think of is to take a reference on the netdev before
+scheduling the work, and then check if it's still registered in the work
+itself. Wrap the timeout work in rtnl_lock() to avoid any races there.
