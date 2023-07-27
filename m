@@ -2,186 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DB17657C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098057657CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbjG0Pf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S232642AbjG0PgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbjG0Pf4 (ORCPT
+        with ESMTP id S232543AbjG0PgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:35:56 -0400
-Received: from out-111.mta0.migadu.com (out-111.mta0.migadu.com [91.218.175.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B55B26A8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:35:54 -0700 (PDT)
-Message-ID: <086a1238-da03-506c-0e94-ac79c462bbbc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690472152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b/pPG2NEJXPqYSHwFw7XxO27Xsu+vFZxk1+pM9vrDcM=;
-        b=ulD15sxQ6QgbYe+Q0JicGZEbuwsiuOygBxEjifWy8q8jGzFsxKXyrW67x7nS3cajtpK801
-        0djyEzt/F+dzxFiLPWQFGPHUkGvkvypi5uKUm1QhKvJ/mm6fshnVgUCtbyvATwU2Wb4vll
-        su5ivLk/kMorTNPK+j32eIPBhu1zsWI=
-Date:   Thu, 27 Jul 2023 23:35:27 +0800
+        Thu, 27 Jul 2023 11:36:14 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A08271C
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:36:10 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe0c566788so2016520e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1690472168; x=1691076968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wnhGuO24k3ZJG4n69+tp8wr6XFgAqNGJKPH/fiKo8cU=;
+        b=UuRhiEn/Ecme2Yfsq5P+MTTtKSJW31H/NZ2qe92/kR/LVHlru559dm3beXn4Iqb6Ot
+         uw35+Ss6JMAvDrcEi/czK3YYIi6H9984/VXI8ZFmVCH1c4s71rU9gp4HgJPaPTs3JBHX
+         ziJsXl6dDwzPXgYg91f0iyZlT9jvMe4Kkn7bk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690472168; x=1691076968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wnhGuO24k3ZJG4n69+tp8wr6XFgAqNGJKPH/fiKo8cU=;
+        b=BSDar6N0b1AjuI/12mRZLrjTFdJB0hS7xPU1A2XYsnS28iRiHV0MXGbZ+JvsDVxcD7
+         /Eb6IZqAGwkyAvnNTDMMWK2BG3YWKioRL6jv1N1bs0t5eaOu1M+yv4Vb6gGqSFnMly4i
+         6/1Nj8K3bUPV8k5qDqQf0Ff5Hbj4LZOcxIimh81ncSWon3OtrmKXWlDacW38tZx2T7im
+         f8SzY4gfWsdVExWyV0zHAMI1sfHNZA5kovERwic27M3pJW/LIC50HEMzlItvjeOJt48X
+         KD/WRohmj2b9cFbmiin89/MtpGaxfrOKazJI/l2zBYXe+d0Pdzp5WXGpHF0gPj2wagC0
+         jloQ==
+X-Gm-Message-State: ABy/qLYFRLtmlh3PL0ZJq/ojf2FZjlpMrmCM/dJ9kXA0kgZmkwOhr5NL
+        mWdOcrxYZPiskaJc7I16pnNgdGtX5nLGX/HS9/WUMQ==
+X-Google-Smtp-Source: APBJJlGsCN6HuHCxz+inQTU2CKEQtL3hsMB5InlEYoL2mvREWd8E42W1h8ZQPNtdHp+/rq06HMdJBPdRekSa9sa4znQ=
+X-Received: by 2002:ac2:58e4:0:b0:4f8:d385:41bd with SMTP id
+ v4-20020ac258e4000000b004f8d38541bdmr1804567lfo.8.1690472168200; Thu, 27 Jul
+ 2023 08:36:08 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] blk-mq: plug based timestamp caching
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230717081602.255767-1-chengming.zhou@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20230717081602.255767-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230726105953.843-1-jaco@uls.co.za> <20230727081237.18217-1-jaco@uls.co.za>
+In-Reply-To: <20230727081237.18217-1-jaco@uls.co.za>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 27 Jul 2023 17:35:56 +0200
+Message-ID: <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir [v2].
+To:     Jaco Kroon <jaco@uls.co.za>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Antonio SJ Musumeci <trapexit@spawn.link>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Jens and Tejun, does this patch look fine to you?
-Looking forward to your comments.
-
-Thanks.
-
-On 2023/7/17 16:16, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> This idea is from Tejun [1] that don't like manually optimized timestamp
-> reads, so come up the plug based timestamp caching infrastructure, which
-> is more generic and has better performance. It works since we don't care
-> about nanosec accuracy.
-> 
-> Have the plug init start with the timestamp invalid, and use blk_get_time()
-> helper that return the time for no plug, and set it in the plug if not set.
-> Flushing the plug would mark it invalid again at the end.
-> 
-> We replaces all "alloc_time_ns", "start_time_ns" and "io_start_time_ns"
-> settings to use the blk_get_time() helper.
-> 
-> The only direct caller of ktime_get_ns() left in blk-mq is in request end,
-> which don't use cached timestamp for better accuracy of completion time.
-> 
-> [1] https://lore.kernel.org/lkml/ZLA7QAfSojxu_FMW@slm.duckdns.org/
-> 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+On Thu, 27 Jul 2023 at 10:13, Jaco Kroon <jaco@uls.co.za> wrote:
+>
+> This patch does not mess with the caching infrastructure like the
+> previous one, which we believe caused excessive CPU and broke directory
+> listings in some cases.
+>
+> This version only affects the uncached read, which then during parse adds an
+> entry at a time to the cached structures by way of copying, and as such,
+> we believe this should be sufficient.
+>
+> We're still seeing cases where getdents64 takes ~10s (this was the case
+> in any case without this patch, the difference now that we get ~500
+> entries for that time rather than the 14-18 previously).  We believe
+> that that latency is introduced on glusterfs side and is under separate
+> discussion with the glusterfs developers.
+>
+> This is still a compile-time option, but a working one compared to
+> previous patch.  For now this works, but it's not recommended for merge
+> (as per email discussion).
+>
+> This still uses alloc_pages rather than kvmalloc/kvfree.
+>
+> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
 > ---
->  block/blk-core.c       |  3 +++
->  block/blk-mq.c         | 22 +++++++++++++++++-----
->  include/linux/blkdev.h |  2 ++
->  3 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 90de50082146..a63d33af7287 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -1054,6 +1054,7 @@ void blk_start_plug_nr_ios(struct blk_plug *plug, unsigned short nr_ios)
->  		return;
->  
->  	plug->mq_list = NULL;
-> +	plug->cached_time_ns = 0;
->  	plug->cached_rq = NULL;
->  	plug->nr_ios = min_t(unsigned short, nr_ios, BLK_MAX_REQUEST_COUNT);
->  	plug->rq_count = 0;
-> @@ -1153,6 +1154,8 @@ void __blk_flush_plug(struct blk_plug *plug, bool from_schedule)
->  	 */
->  	if (unlikely(!rq_list_empty(plug->cached_rq)))
->  		blk_mq_free_plug_rqs(plug);
+>  fs/fuse/Kconfig   | 16 ++++++++++++++++
+>  fs/fuse/readdir.c | 18 ++++++++++++------
+>  2 files changed, 28 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+> index 038ed0b9aaa5..0783f9ee5cd3 100644
+> --- a/fs/fuse/Kconfig
+> +++ b/fs/fuse/Kconfig
+> @@ -18,6 +18,22 @@ config FUSE_FS
+>           If you want to develop a userspace FS, or if you want to use
+>           a filesystem based on FUSE, answer Y or M.
+>
+> +config FUSE_READDIR_ORDER
+> +       int
+> +       range 0 5
+> +       default 5
+> +       help
+> +               readdir performance varies greatly depending on the size of the read.
+> +               Larger buffers results in larger reads, thus fewer reads and higher
+> +               performance in return.
 > +
-> +	plug->cached_time_ns = 0;
->  }
->  
->  /**
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index b04ff6f56926..54648bfaab9c 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -311,6 +311,18 @@ void blk_mq_wake_waiters(struct request_queue *q)
->  			blk_mq_tag_wakeup_all(hctx->tags, true);
->  }
->  
-> +static inline u64 blk_get_time(void)
-> +{
-> +	struct blk_plug *plug = current->plug;
+> +               You may want to reduce this value on seriously constrained memory
+> +               systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
 > +
-> +	if (!plug)
-> +		return ktime_get_ns();
+> +               This value reprents the order of the number of pages to allocate (ie,
+> +               the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
+> +               pages (128KiB).
 > +
-> +	if (!plug->cached_time_ns)
-> +		plug->cached_time_ns = ktime_get_ns();
-> +	return plug->cached_time_ns;
-> +}
+>  config CUSE
+>         tristate "Character device in Userspace support"
+>         depends on FUSE_FS
+> diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
+> index dc603479b30e..47cea4d91228 100644
+> --- a/fs/fuse/readdir.c
+> +++ b/fs/fuse/readdir.c
+> @@ -13,6 +13,12 @@
+>  #include <linux/pagemap.h>
+>  #include <linux/highmem.h>
+>
+> +#define READDIR_PAGES_ORDER            CONFIG_FUSE_READDIR_ORDER
+> +#define READDIR_PAGES                  (1 << READDIR_PAGES_ORDER)
+> +#define READDIR_PAGES_SIZE             (PAGE_SIZE << READDIR_PAGES_ORDER)
+> +#define READDIR_PAGES_MASK             (READDIR_PAGES_SIZE - 1)
+> +#define READDIR_PAGES_SHIFT            (PAGE_SHIFT + READDIR_PAGES_ORDER)
 > +
->  void blk_rq_init(struct request_queue *q, struct request *rq)
+>  static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
 >  {
->  	memset(rq, 0, sizeof(*rq));
-> @@ -322,7 +334,7 @@ void blk_rq_init(struct request_queue *q, struct request *rq)
->  	RB_CLEAR_NODE(&rq->rb_node);
->  	rq->tag = BLK_MQ_NO_TAG;
->  	rq->internal_tag = BLK_MQ_NO_TAG;
-> -	rq->start_time_ns = ktime_get_ns();
-> +	rq->start_time_ns = blk_get_time();
->  	rq->part = NULL;
->  	blk_crypto_rq_set_defaults(rq);
->  }
-> @@ -332,7 +344,7 @@ EXPORT_SYMBOL(blk_rq_init);
->  static inline void blk_mq_rq_time_init(struct request *rq, u64 alloc_time_ns)
->  {
->  	if (blk_mq_need_time_stamp(rq))
-> -		rq->start_time_ns = ktime_get_ns();
-> +		rq->start_time_ns = blk_get_time();
->  	else
->  		rq->start_time_ns = 0;
->  
-> @@ -441,7 +453,7 @@ static struct request *__blk_mq_alloc_requests(struct blk_mq_alloc_data *data)
->  
->  	/* alloc_time includes depth and tag waits */
->  	if (blk_queue_rq_alloc_time(q))
-> -		alloc_time_ns = ktime_get_ns();
-> +		alloc_time_ns = blk_get_time();
->  
->  	if (data->cmd_flags & REQ_NOWAIT)
->  		data->flags |= BLK_MQ_REQ_NOWAIT;
-> @@ -624,7 +636,7 @@ struct request *blk_mq_alloc_request_hctx(struct request_queue *q,
->  
->  	/* alloc_time includes depth and tag waits */
->  	if (blk_queue_rq_alloc_time(q))
-> -		alloc_time_ns = ktime_get_ns();
-> +		alloc_time_ns = blk_get_time();
->  
->  	/*
->  	 * If the tag allocator sleeps we could get an allocation for a
-> @@ -1235,7 +1247,7 @@ void blk_mq_start_request(struct request *rq)
->  	trace_block_rq_issue(rq);
->  
->  	if (test_bit(QUEUE_FLAG_STATS, &q->queue_flags)) {
-> -		rq->io_start_time_ns = ktime_get_ns();
-> +		rq->io_start_time_ns = blk_get_time();
->  		rq->stats_sectors = blk_rq_sectors(rq);
->  		rq->rq_flags |= RQF_STATS;
->  		rq_qos_issue(q, rq);
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index ed44a997f629..21a3d4d7ab2b 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -961,6 +961,8 @@ void blk_mark_disk_dead(struct gendisk *disk);
->  struct blk_plug {
->  	struct request *mq_list; /* blk-mq requests */
->  
-> +	u64 cached_time_ns;
-> +
->  	/* if ios_left is > 1, we can batch tag/rq allocations */
->  	struct request *cached_rq;
->  	unsigned short nr_ios;
+>         struct fuse_conn *fc = get_fuse_conn(dir);
+> @@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
+>         struct fuse_mount *fm = get_fuse_mount(inode);
+>         struct fuse_io_args ia = {};
+>         struct fuse_args_pages *ap = &ia.ap;
+> -       struct fuse_page_desc desc = { .length = PAGE_SIZE };
+> +       struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+
+Does this really work?  I would've thought we are relying on single
+page lengths somewhere.
+
+>         u64 attr_version = 0;
+>         bool locked;
+>
+> -       page = alloc_page(GFP_KERNEL);
+> +       page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+>         if (!page)
+>                 return -ENOMEM;
+>
+>         plus = fuse_use_readdirplus(inode, ctx);
+>         ap->args.out_pages = true;
+> -       ap->num_pages = 1;
+> +       ap->num_pages = READDIR_PAGES;
+
+No.  This is the array lenght, which is 1.  This is the hack I guess,
+which makes the above trick work.
+
+Better use kvmalloc, which might have a slightly worse performance
+than a large page, but definitely not worse than the current single
+page.
+
+If we want to optimize the overhead of kvmalloc (and it's a big if)
+then the parse_dir*file() functions would need to be converted to
+using a page array instead of a plain kernel pointer, which would add
+some complexity for sure.
+
+Thanks,
+Miklos
