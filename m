@@ -2,81 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AB37652E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248BD7652EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbjG0Ltv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
+        id S233453AbjG0LuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbjG0Ltt (ORCPT
+        with ESMTP id S232372AbjG0LuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:49:49 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590411FDA;
-        Thu, 27 Jul 2023 04:49:48 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.24])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8C5206607057;
-        Thu, 27 Jul 2023 12:49:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690458587;
-        bh=NC/0VSOPtAjML62vw26aYCCXLVTxIUCUUJS7zYvPPmc=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=g5Gw9jVrYVSkBWRsfZ85xC9Pv7jkspf3yqXuJtKBaFobfMRIpTo5ZqoUhbu8S/A/r
-         KiRk5MZNS3mhjapKKtlHZC4pnXcxUCGVOv65GG+DMRFdp+oV8tCZZIXzIIEDFXmIWv
-         mFczKH20FJBTCjgqeo0glCPBkHqZ21380lsTwdi2jxEihxtgS+kAGxfJzcqIsOEJui
-         Pu8DJACPMXee76vw9s8ZB8oxlGZcA8Eu9490oMKx6BEmSG5Mu82JOWWv67EfzSlLCC
-         Z3hwEQXPjDVKWqrtsmnQHurlKRdV1d9eZA8LV5n/VW89lQ2b4iG4sDAeLH4/7ocJd5
-         GmEh8qxav/0Rw==
-Message-ID: <82de29db-85fc-0d44-ef41-3ccfe0d3d2c1@collabora.com>
-Date:   Thu, 27 Jul 2023 16:49:36 +0500
+        Thu, 27 Jul 2023 07:50:15 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8563D1FDA;
+        Thu, 27 Jul 2023 04:50:14 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RBTZP0bKlzrRqV;
+        Thu, 27 Jul 2023 19:49:17 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 27 Jul 2023 19:50:11 +0800
+Subject: Re: [PATCH] cgroup: minor cleanup for cgroup_local_stat_show()
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     Tejun Heo <tj@kernel.org>
+CC:     <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230723031932.3152951-1-linmiaohe@huawei.com>
+ <ZMBERCXR27X_gRAt@slm.duckdns.org>
+ <ec3df402-7681-3d0c-b9ce-d50eb7383b1e@huawei.com>
+Message-ID: <719a19c4-3be5-2260-7349-b3f1bb774f4f@huawei.com>
+Date:   Thu, 27 Jul 2023 19:50:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Subject: Re: [PATCH v26 2/5] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
+In-Reply-To: <ec3df402-7681-3d0c-b9ce-d50eb7383b1e@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
-References: <20230727093637.1262110-1-usama.anjum@collabora.com>
- <20230727093637.1262110-3-usama.anjum@collabora.com>
- <CABb0KFFphs6gLCH9+tenmoJ_3nNAop30pOMhKDwKT2Pthvb=6g@mail.gmail.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CABb0KFFphs6gLCH9+tenmoJ_3nNAop30pOMhKDwKT2Pthvb=6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,43 +53,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 4:46 PM, Michał Mirosław wrote:
-> On Thu, 27 Jul 2023 at 11:37, Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
-> [...]
->> --- a/include/uapi/linux/fs.h
->> +++ b/include/uapi/linux/fs.h
-> [...]
->> +/*
->> + * struct pm_scan_arg - Pagemap ioctl argument
->> + * @size:              Size of the structure
->> + * @flags:             Flags for the IOCTL
->> + * @start:             Starting address of the region
->> + * @end:               Ending address of the region
->> + * @walk_end:          Ending address of the visited memory is returned
->> + *                     (This helps if entire range hasn't been visited)
+On 2023/7/26 9:06, Miaohe Lin wrote:
+> On 2023/7/26 5:53, Tejun Heo wrote:
+>> On Sun, Jul 23, 2023 at 11:19:32AM +0800, Miaohe Lin wrote:
+>>> Make it under CONFIG_CGROUP_SCHED to rid of __maybe_unused annotation.
+>>> Also put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED as it's only
+>>> called when CONFIG_CGROUP_SCHED. No functional change intended.
+>>>
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>
+>> Patch doesn't apply to cgroup/for-6.6. Can you please respin?
 > 
-> "Address where the scan stopped (written by kernel). walk_end == end
-> informs that the scan completed."
-I'll update comment.
+> Sure. Will resend the patch based on cgroup/for-6.6.
+
+The commit "sched: add throttled time stat for throttled children" is still in the linux-next tree. So I think I have
+to wait for it to be merged into cgroup tree first.
+
+[1] https://lore.kernel.org/all/20230620183247.737942-2-joshdon@google.com/
+
+Thanks.
 
 > 
-> (To make the userspace life easier, we can copy `end` (only) in case
-> of full scan completion, so that the tag is retained.)
-Lets be consist and not copy tag from end to walk_end as we'll now know
-about tag every time. It should be the responsibility of the user to deal
-with it.
-
+> Thanks.
 > 
->> + * @vec:               Address of page_region struct array for output
->> + * @vec_len:           Length of the page_region struct array
->> + * @max_pages:         Optional limit for number of returned pages (0 = disabled)
->> + * @category_inverted: PAGE_IS_* categories which values match if 0 instead of 1
->> + * @category_mask:     Skip pages for which any category doesn't match
->> + * @category_anyof_mask: Skip pages for which no category matches
->> + * @return_mask:       PAGE_IS_* categories that are to be reported in `page_region`s returned
->> + */
+> 
 
--- 
-BR,
-Muhammad Usama Anjum
