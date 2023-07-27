@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2F276568D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDFC765693
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjG0O6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S232604AbjG0O67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbjG0O6N (ORCPT
+        with ESMTP id S231713AbjG0O66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:58:13 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5AAF4196;
-        Thu, 27 Jul 2023 07:58:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1506CD75;
-        Thu, 27 Jul 2023 07:58:54 -0700 (PDT)
-Received: from [10.32.102.67] (e110479.arm.com [10.32.102.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F9D33F5A1;
-        Thu, 27 Jul 2023 07:58:07 -0700 (PDT)
-Message-ID: <7f4a7739-cb03-bda8-df90-e8eb119b732b@arm.com>
-Date:   Thu, 27 Jul 2023 15:57:59 +0100
+        Thu, 27 Jul 2023 10:58:58 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7766B6;
+        Thu, 27 Jul 2023 07:58:55 -0700 (PDT)
+X-QQ-mid: bizesmtp71t1690469923tm5lzrrx
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 27 Jul 2023 22:58:42 +0800 (CST)
+X-QQ-SSF: 01200000002000D0X000B00A0000000
+X-QQ-FEAT: PS/N6jJLnDaqPADgID7l82JsHc7nT69du5VrDLrkkBLC6w5tY633bvrsPIV4j
+        x4uJbunzn3CMcGecH3VSyM8fZiqEZfuKsDi9KYSt77yOaX3MVdwv8dXKhsrapkJ4ImfR9an
+        Zozf9evXbydg0oxFzhsn+eCjvqChRlMIWZPmIz/12/vq0OUKWOmLtYpF3y3dRzlBEmW2Zur
+        vW4zslEAlP5D1lC3+ukR18Zyx1qShvJzj6jEb6g/uYm7KkNcgxaUP2TLvaK1S7zb2FwmzaD
+        tl8NA4srmM7656PY0VmXmukr5aMZXrZ66HxQ+8MZjPm5vFJMqTeGXZ7ao5Kc7x/ayULBfH7
+        9i+UQcoAHXY0Gnh4uJzlMqSu9Ew0ANF/wMUzGyCKZnNwIYfWbmGpnlztNMIOw==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11436596048244522817
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: [PATCH v3 0/7] tools/nolibc: add 32/64-bit powerpc support
+Date:   Thu, 27 Jul 2023 22:58:38 +0800
+Message-Id: <cover.1690468707.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] arm64: dts: pinephone: Add pstore support for PinePhone
- A64
-To:     Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Jarrah Gosbell <kernel@undef.tools>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-References: <20230724213457.24593-1-andrej.skvortzov@gmail.com>
-Content-Language: en-US
-From:   Andre Przywara <andre.przywara@arm.com>
-In-Reply-To: <20230724213457.24593-1-andrej.skvortzov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi, Willy, Thomas
 
-On 24/07/2023 22:34, Andrey Skvortsov wrote:
-> This patch reserves some memory in the DTS and sets up a
-> pstore device tree node to enable pstore support.
-> 
-> Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> 
-> Gbp-Pq: Topic pinephone
-> Gbp-Pq: Name 0161-arm64-dts-pinephone-Add-pstore-support-for-PinePhone.patch
-> ---
->   .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> index 87847116ab6d..84f9410b0b70 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> @@ -19,6 +19,22 @@ aliases {
->   		serial0 = &uart0;
->   	};
->   
-> +	reserved-memory {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges;
-> +
-> +		pstore_mem: ramoops@61000000 {
-> +			compatible = "ramoops";
-> +			reg = <0x61000000 0x100000>;
+v3 here is to fix up two issues introduced in v2 powerpc patchset [1].
 
-So what's the significance of this address? That's 528MB into DRAM, so 
-somewhat in the middle of it, fragmenting the physical address space.
-And is there any other firmware component that needs to know about this 
-address?
+- One is restore the wrongly removed '\' for a '\$$ARCH'
 
-Cheers,
-Andre
+- Another is add the missing $(ARCH).config for ppc, the default variant
+  for powerpc is renamed to ppc in v2 (as discussed with Willy in [2]), but
+  ppc.config is missing in v2 patchset, not sure why this happen, may a
+  'git clean -fdx .' is required to do a new test, just did it.
 
+Btw, the v3 tinyconfig-part1 for powerpc is ready, I will send it out
+soon.
 
-> +			record-size = <0x20000>;
-> +			console-size = <0x20000>;
-> +			ftrace-size = <0x20000>;
-> +			pmsg-size = <0x20000>;
-> +			ecc-size = <16>;
-> +		};
-> +	};
-> +
->   	backlight: backlight {
->   		compatible = "pwm-backlight";
->   		pwms = <&r_pwm 0 50000 PWM_POLARITY_INVERTED>;
+Best regards,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/cover.1690373704.git.falcon@tinylab.org/
+[2]: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
+
+Zhangjin Wu (7):
+  tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+  selftests/nolibc: add extra configs customize support
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add test support for ppc
+  selftests/nolibc: add test support for ppc64le
+  selftests/nolibc: add test support for ppc64
+
+ tools/include/nolibc/arch-powerpc.h           | 202 ++++++++++++++++++
+ tools/include/nolibc/arch.h                   |   2 +
+ tools/testing/selftests/nolibc/Makefile       |  46 +++-
+ .../selftests/nolibc/configs/ppc.config       |   3 +
+ 4 files changed, 246 insertions(+), 7 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
+ create mode 100644 tools/testing/selftests/nolibc/configs/ppc.config
+
+-- 
+2.25.1
+
