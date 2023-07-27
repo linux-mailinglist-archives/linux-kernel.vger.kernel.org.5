@@ -2,318 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51453764E17
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29174764E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbjG0It2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
+        id S232786AbjG0Iu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233535AbjG0ItI (ORCPT
+        with ESMTP id S234300AbjG0Iuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:49:08 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C08AD3A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:30:44 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-406bd9ed61cso4543531cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:30:44 -0700 (PDT)
+        Thu, 27 Jul 2023 04:50:32 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56613C5B2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:32:05 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso6972975e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:32:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1690446643; x=1691051443;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KxKDeGhB87z13po6LxXuIzFixiY+WDAlFjH7VoTTGVU=;
-        b=PQ2RtRSUuogkataTfpEtJy9XQNkbMPUNv9pHW+D3P1QZUqvY3Bn7wf+P0uKBNHRWVt
-         JSqlEEy3J7/Wq2qXw5DteXYV/3J8k8uwUiHS9miIl3BWgQGcz3t2sc6+DYBIUg6/zJjj
-         5x8PS6GctNs9zt33Y0Bw9SifoD1WHHA+99F3bHB5KO9w5cZ3Wrt/KedunIER0BED1mbJ
-         B2+7wIeRkQqCtDbdzaXZXFNDPoXsEh17bVCSy4GDqI+Iw3NJwMfK0VKpWR6K+9rR5ONb
-         wQ2vmjw06wmuF7BC6/fDIvjp6Phh2H+FgYlJvpbe7m59QWgCWwG9N7JSh5YJ+MrXqdk2
-         96Jw==
+        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1690446676; x=1691051476;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fZFtCpovnp82kT+FkbHY0+/cBruEvbU7wiC862ePSTI=;
+        b=K7tLlDmQGygN+P8AUY4HaZJeNFLMebfjrBrw3ETxkwRaLv/xIdJAA1w9GC8syEyqVp
+         YSxwyQQzu/JvlLv1w8c6solAxDm4LrjxLnGrOE7h7p3ANh9zWoR/H3pmAvglG0Hd9ZvS
+         ABVCCCfnNDdUpRuPJcxtRbQQ24hDZFUT+TJMqpH2D8cKO+U8DXzWRY1QO7+68aJdwSE9
+         82InR3Ani9UxDB2MT4zANVCpz3wuoZQbYNsWUDOmEDpGL81y3Nk25umjDBrLrpQdleFE
+         0T7eDtIlroh5/m3mWTnzBhkb7TZx8e4f0lRoAQMaEvzDSqtkWsNP7cbT+s39KPeIKMor
+         5wUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690446643; x=1691051443;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KxKDeGhB87z13po6LxXuIzFixiY+WDAlFjH7VoTTGVU=;
-        b=EFhKl8OjU/uo/uvtKG12vY7BW17ga3RbnIwr0PJyHGls4BvMAQqX/LvMYXYT16ze2D
-         t8nflS445rZzz2I/rgSr+ecXnNDAULlrY4Zpnj88PobMNuAGjVxPFx8Nxbj/DEh2gL3c
-         c1VN4C7TECyz0WSVF9Fawkce8a/5EkSO254mfhhyjRlXDERxNOot/1hh4uw4rO2gDfaA
-         6NFmJO0xvR9PMQlBvk/eIAsVY9joqXvc8ydX5PFBLEcBnmeqNgNkoNopt6TEm6e7/T18
-         emw7Zo225wN/RcoKEu6yxkXuKFjXLpmI3PZ1fF5shPwCFGByOBpkbe7+RvwA6GrrvAb3
-         xMsQ==
-X-Gm-Message-State: ABy/qLZDp4tQWp0NV1OAXOAVwmlIFLjWAhuC/AJlpsNP9PFODaYd+KaJ
-        CUf/huh6fm7BzaJOrN54a/UC/fhpacwKG6XWnEhQ1XVbt0B0jJO/
-X-Google-Smtp-Source: APBJJlFoR8XUFrivOlo6cpM/yxSjBjYfgDw6sU3YyKGuTzb2M1/AP/Vwx4FJdOi11UWfvY//oj7ieTNhzE8igFrEhKk=
-X-Received: by 2002:a05:620a:2946:b0:767:c16:d202 with SMTP id
- n6-20020a05620a294600b007670c16d202mr5734535qkp.41.1690446643219; Thu, 27 Jul
- 2023 01:30:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690446676; x=1691051476;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fZFtCpovnp82kT+FkbHY0+/cBruEvbU7wiC862ePSTI=;
+        b=fK9getDWdkJujZ0m+Zuj+LaztANG4M3ldMLCwSSK38tLgU0ApmWszkBv0wvUc7CH8T
+         g6PRjlSXnqobZ3CWuAKtYMOwfy7PhUNJ07bb8vNwgmyPP6Ns6YoM+Gx9T8ogIrJ2g9qj
+         vQ70j1ZfdCkBTk0AndOs1cNJChQLQ5GWal/Wg5avzp/5N04/az0pJ/xOGXNdwT+GKlHH
+         ZoR08LLjwmmsohQJ2/jifz1zQnEXQar+1It6kfSupa07p5Xm8sOXSl3EF3+8KiGnxoi5
+         PLrGyaVV/5sX4GC3MzZo8XMS/8fx4WSHpaLwnD/dOl4q5XEDtDk0E/GGQ4DJ29oaAXAK
+         nTSQ==
+X-Gm-Message-State: ABy/qLY9veCJ/Yh3/HXvicCdIooFnzzeoU6fKI/oE30NbUv1TBivV7Xp
+        9bMlZivNzP+sS33lL7N1oiWOCw==
+X-Google-Smtp-Source: APBJJlFECgYh4ciyD3uPwT7v4rGJlK987lIDqpLvmusJiYpIMvGRPpg4IIVHsOfCIleUAJbqJQuqYQ==
+X-Received: by 2002:a7b:c8cf:0:b0:3f9:b19c:aab4 with SMTP id f15-20020a7bc8cf000000b003f9b19caab4mr1163765wml.6.1690446676284;
+        Thu, 27 Jul 2023 01:31:16 -0700 (PDT)
+Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
+        by smtp.gmail.com with ESMTPSA id k17-20020a7bc311000000b003fc02218d6csm4024695wmj.25.2023.07.27.01.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:31:15 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 10:31:15 +0200
+From:   Adam Sindelar <adam@wowsignal.io>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Adam Sindelar <ats@fb.com>,
+        David Vernet <void@manifault.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH] libbpf: Expose API to consume one ring at a time
+Message-ID: <ZMIrU0kQZElkUhAg@debian>
+References: <20230725162654.912897-1-adam@wowsignal.io>
+ <cb844776-9045-1b69-f1db-8ef7d75815b5@huaweicloud.com>
+ <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
 MIME-Version: 1.0
-References: <20230725114030.1860571-1-Naresh.Solanki@9elements.com>
- <20230725114030.1860571-3-Naresh.Solanki@9elements.com> <46f3f44b-5c25-8193-70b5-59303be04ad0@roeck-us.net>
- <331889b5-caf7-ab68-fea2-6566e550d7e8@9elements.com> <a8b53088-70a0-f693-2081-4b9576ac492f@roeck-us.net>
-In-Reply-To: <a8b53088-70a0-f693-2081-4b9576ac492f@roeck-us.net>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Thu, 27 Jul 2023 14:00:31 +0530
-Message-ID: <CABqG17h8mcdp8t4Zh2=XrvRPQp_862i_pnp0Jx=g8dyftda7oA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (pmbus/tda38640) Add workaround for bug in
- SVID mode
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org, linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <482ed32c-5650-54a5-d5bb-18b9bb03e838@huaweicloud.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On Thu, Jul 27, 2023 at 02:17:12PM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 7/27/2023 9:06 AM, Hou Tao wrote:
+> > Hi,
+> >
+> > On 7/26/2023 12:26 AM, Adam Sindelar wrote:
+> >> We already provide ring_buffer__epoll_fd to enable use of external
+> >> polling systems. However, the only API available to consume the ring
+> >> buffer is ring_buffer__consume, which always checks all rings. When
+> >> polling for many events, this can be wasteful.
+> >>
+> >> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
+> >> ---
+> >>  tools/lib/bpf/libbpf.h  |  1 +
+> >>  tools/lib/bpf/ringbuf.c | 15 +++++++++++++++
+> >>  2 files changed, 16 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> >> index 55b97b2087540..20ccc65eb3f9d 100644
+> >> --- a/tools/lib/bpf/libbpf.h
+> >> +++ b/tools/lib/bpf/libbpf.h
+> >> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+> >>  				ring_buffer_sample_fn sample_cb, void *ctx);
+> >>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+> >>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> >> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
+> >>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+> >>  
+> >>  struct user_ring_buffer_opts {
+> >> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> >> index 02199364db136..8d087bfc7d005 100644
+> >> --- a/tools/lib/bpf/ringbuf.c
+> >> +++ b/tools/lib/bpf/ringbuf.c
+> >> @@ -290,6 +290,21 @@ int ring_buffer__consume(struct ring_buffer *rb)
+> >>  	return res;
+> >>  }
+> >>  
+> >> +/* Consume available data from a single RINGBUF map identified by its ID.
+> >> + * The ring ID is returned in epoll_data by epoll_wait when called with
+> >> + * ring_buffer__epoll_fd.
+> >> + */
+> >> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
+> >> +{
+> >> +	struct ring *ring;
+> >> +
+> >> +	if (ring_id >= rb->ring_cnt)
+> >> +		return libbpf_err(-EINVAL);
+> >> +
+> >> +	ring = &rb->rings[ring_id];
+> >> +	return ringbuf_process_ring(ring);
+> > When ringbuf_process_ring() returns an error, we need to use
+> > libbpf_err() to set the errno accordingly.
+> 
+> It seems that even when ringbuf_process_ring() returns a positive
+> result, we also need to cap it under INT_MAX, otherwise it may be cast
+> into a negative error.
 
+Ah, sorry I missed that. Fixed in v3, going out in a few moments.
 
-On Wed, 26 Jul 2023 at 19:49, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/26/23 05:22, Naresh Solanki wrote:
-> > Hi Guenter,
+> >> +}
+> >> +
+> >>  /* Poll for available data and consume records, if any are available.
+> >>   * Returns number of records consumed (or INT_MAX, whichever is less), or
+> >>   * negative number, if any of the registered callbacks returned error.
 > >
-> > On 25-07-2023 07:51 pm, Guenter Roeck wrote:
-> >> On 7/25/23 04:40, Naresh Solanki wrote:
-> >>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >>>
-> >>> The TDA38640 supports two operating modes to set the output voltage:
-> >>> - PMBUS
-> >>> - SVID
-> >>>
-> >>> Due to an undocumented bug the regulator cannot be enabled using BIT7
-> >>> of OPERATION(01h) register when in SVID mode.
-> >>> It works when in PMBUS mode. In SVID mode the regulator only cares
-> >>> about the ENABLE pin.
-> >>>
-> >>> Add a workaround that needs the ENABLE pin to be left floating or
-> >>> tied to a fixed level. The DT must contain the newly introduced
-> >>> property 'infineon,en-pin-fixed-level' to enable this workaround.
-> >>>
-> >>
-> >> Why is that property even needed ? Isn't the workaround always (and only)
-> >> required if the chip is in SVID mode ?
-> > Will add below function to detect SVID mode.
-> > static bool svid_mode(struct i2c_client *client)
-> > {
-> >      /* PMBUS_MFR_READ(0xD0) + Address */
-> >      u8 write_buf[] = {0xd0, 0x44, 0x00};
-> >      u8 read_buf[2];
-> >      int ret;
 > >
-> >      struct i2c_msg msgs[2] = {
-> >          {
-> >              .addr = client->addr,
-> >              .flags = 0,
-> >              .buf = write_buf,
-> >              .len = sizeof(write_buf),
-> >          },
-> >          {
-> >              .addr = client->addr,
-> >              .flags = I2C_M_RD,
-> >              .buf = read_buf,
-> >              .len = sizeof(read_buf),
-> >          }
-> >      };
-> >
-> >      ret = i2c_transfer(client->adapter, msgs, 2);
-> >
-> drop empty line
-Sure
->
-> >      if (ret < 0) {
-> >          dev_err(&client->dev, "%s:%d i2c_transfer failed. %d", __func__, __LINE__, ret);
-> >          return ret;
->
-> Return type is bool.
-Yes. I've changed it to int so that return value can be validated.
->
-> >      }
-> >      /* 0x44[15] determines PMBus Operating Mode */
-> >      return !!(read_buf[1] & BIT(7));
-> > }
-> >
->
-> "The application note AN_2203_PL12_2204_210835 having information on the register map
->   of TDA38640 is under review. The document will be uploaded to the Infineon website
->   once the review is completed."
->
-> How annoying. Is that really the only way to get that information ?
-Datasheet does mention MTP register offset 0x44 bit 15 for PMBUS operating mode.
-I validated those in my setup which has 4 tda38640 in SVID mode & 7 in
-PMBUS mode.
->
-> > Based on svid_mode will init accordingly:
-> >      if (!IS_ENABLED(CONFIG_SENSORS_TDA38640_REGULATOR) || !np || !svid_mode(client))
-> >          return pmbus_do_probe(client, &data->info);
-> >
->
-> This is unnecessary complexity. Just add the local read/write
-> commands and be done with it.
->
->         if (svid_mode(client)) {
->                 data->info.read_byte_data = tda38640_read_byte_data;
->                 data->info.write_byte_data = tda38640_write_byte_data;
->         }
->
-> though it would be useful to error check the return value.
->
->         ret = svid_mode();
->         if (ret < 0)
->                 return ret;
->         if (ret) {
->                 /* consider adding comments here */
->                 data->info.read_byte_data = tda38640_read_byte_data;
->                 data->info.write_byte_data = tda38640_write_byte_data;
->         }
-Yes. I've updated accordingly.
+> > .
+> 
 
-Regards,
-Naresh
->
-> Guenter
->
-> >      dev_dbg(&client->dev, "SVID mode");
-> >
-> > Regards,
-> > Naresh
-> >>
-> >> Guenter
-> >>
-> >>> The workaround will map the PB_OPERATION_CONTROL_ON bit to the
-> >>> PB_ON_OFF_CONFIG_EN_PIN_REQ bit of the ON_OFF_CONFIG register.
-> >>> In combination with the fixed level on the ENABLE pin the regulator
-> >>> can be controlled as expected.
-> >>>
-> >>> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> >>> ---
-> >>>   drivers/hwmon/pmbus/tda38640.c | 95 +++++++++++++++++++++++++++++++++-
-> >>>   1 file changed, 93 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/hwmon/pmbus/tda38640.c b/drivers/hwmon/pmbus/tda38640.c
-> >>> index 450b0273fb59..9d3b89d9845c 100644
-> >>> --- a/drivers/hwmon/pmbus/tda38640.c
-> >>> +++ b/drivers/hwmon/pmbus/tda38640.c
-> >>> @@ -18,6 +18,72 @@ static const struct regulator_desc __maybe_unused tda38640_reg_desc[] = {
-> >>>       PMBUS_REGULATOR("vout", 0),
-> >>>   };
-> >>> +struct tda38640_data {
-> >>> +    struct pmbus_driver_info info;
-> >>> +    u32 en_pin_lvl;
-> >>> +};
-> >>> +
-> >>> +#define to_tda38640_data(x)  container_of(x, struct tda38640_data, info)
-> >>> +
-> >>> +/*
-> >>> + * Map PB_ON_OFF_CONFIG_POLARITY_HIGH to PB_OPERATION_CONTROL_ON.
-> >>> + */
-> >>> +static int tda38640_read_byte_data(struct i2c_client *client, int page, int reg)
-> >>> +{
-> >>> +    const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-> >>> +    struct tda38640_data *data = to_tda38640_data(info);
-> >>> +    int ret, on_off_config, enabled;
-> >>> +
-> >>> +    if (reg != PMBUS_OPERATION)
-> >>> +        return -ENODATA;
-> >>> +
-> >>> +    ret = pmbus_read_byte_data(client, page, reg);
-> >>> +    if (ret < 0)
-> >>> +        return ret;
-> >>> +
-> >>> +    on_off_config = pmbus_read_byte_data(client, page,
-> >>> +                         PMBUS_ON_OFF_CONFIG);
-> >>> +    if (on_off_config < 0)
-> >>> +        return on_off_config;
-> >>> +
-> >>> +    enabled = !!(on_off_config & PB_ON_OFF_CONFIG_POLARITY_HIGH);
-> >>> +
-> >>> +    enabled ^= data->en_pin_lvl;
-> >>> +    if (enabled)
-> >>> +        ret &= ~PB_OPERATION_CONTROL_ON;
-> >>> +    else
-> >>> +        ret |= PB_OPERATION_CONTROL_ON;
-> >>> +
-> >>> +    return ret;
-> >>> +}
-> >>> +
-> >>> +/*
-> >>> + * Map PB_OPERATION_CONTROL_ON to PB_ON_OFF_CONFIG_POLARITY_HIGH.
-> >>> + */
-> >>> +static int tda38640_write_byte_data(struct i2c_client *client, int page,
-> >>> +                    int reg, u8 byte)
-> >>> +{
-> >>> +    const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
-> >>> +    struct tda38640_data *data = to_tda38640_data(info);
-> >>> +    int enable, ret;
-> >>> +
-> >>> +    if (reg != PMBUS_OPERATION)
-> >>> +        return -ENODATA;
-> >>> +
-> >>> +    enable = !!(byte & PB_OPERATION_CONTROL_ON);
-> >>> +
-> >>> +    byte &= ~PB_OPERATION_CONTROL_ON;
-> >>> +    ret = pmbus_write_byte_data(client, page, reg, byte);
-> >>> +    if (ret < 0)
-> >>> +        return ret;
-> >>> +
-> >>> +    enable ^= data->en_pin_lvl;
-> >>> +
-> >>> +    return pmbus_update_byte_data(client, page, PMBUS_ON_OFF_CONFIG,
-> >>> +                      PB_ON_OFF_CONFIG_POLARITY_HIGH,
-> >>> +                      enable ? 0 : PB_ON_OFF_CONFIG_POLARITY_HIGH);
-> >>> +}
-> >>> +
-> >>>   static struct pmbus_driver_info tda38640_info = {
-> >>>       .pages = 1,
-> >>>       .format[PSC_VOLTAGE_IN] = linear,
-> >>> @@ -26,7 +92,6 @@ static struct pmbus_driver_info tda38640_info = {
-> >>>       .format[PSC_CURRENT_IN] = linear,
-> >>>       .format[PSC_POWER] = linear,
-> >>>       .format[PSC_TEMPERATURE] = linear,
-> >>> -
-> >>>       .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
-> >>>           | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP
-> >>>           | PMBUS_HAVE_IIN
-> >>> @@ -41,7 +106,33 @@ static struct pmbus_driver_info tda38640_info = {
-> >>>   static int tda38640_probe(struct i2c_client *client)
-> >>>   {
-> >>> -    return pmbus_do_probe(client, &tda38640_info);
-> >>> +    struct device *dev = &client->dev;
-> >>> +    struct device_node *np = dev_of_node(dev);
-> >>> +    struct tda38640_data *data;
-> >>> +
-> >>> +    data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> >>> +    if (!data)
-> >>> +        return -ENOMEM;
-> >>> +    memcpy(&data->info, &tda38640_info, sizeof(tda38640_info));
-> >>> +
-> >>> +    if (!CONFIG_SENSORS_TDA38640_REGULATOR || !np ||
-> >>> +        of_property_read_u32(np, "infineon,en-pin-fixed-level", &data->en_pin_lvl))
-> >>> +        return pmbus_do_probe(client, &data->info);
-> >>> +
-> >>> +    /*
-> >>> +     * Apply ON_OFF_CONFIG workaround as enabling the regulator using the
-> >>> +     * OPERATION register doesn't work in SVID mode.
-> >>> +     */
-> >>> +    data->info.read_byte_data = tda38640_read_byte_data;
-> >>> +    data->info.write_byte_data = tda38640_write_byte_data;
-> >>> +    /*
-> >>> +     * One should configure PMBUS_ON_OFF_CONFIG here, but
-> >>> +     * PB_ON_OFF_CONFIG_POWERUP_CONTROL, PB_ON_OFF_CONFIG_EN_PIN_REQ and
-> >>> +     * PB_ON_OFF_CONFIG_EN_PIN_REQ are ignored by the device.
-> >>> +     * Only PB_ON_OFF_CONFIG_POLARITY_HIGH has an effect.
-> >>> +     */
-> >>> +
-> >>> +    return pmbus_do_probe(client, &data->info);
-> >>>   }
-> >>>   static const struct i2c_device_id tda38640_id[] = {
-> >>
->
+Thanks!
