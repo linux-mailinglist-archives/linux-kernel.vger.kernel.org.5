@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C477652FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21BF7652FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233650AbjG0L5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S233643AbjG0L5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbjG0L46 (ORCPT
+        with ESMTP id S233580AbjG0L46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 07:56:58 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F122D54
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD122D4E
         for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:56:54 -0700 (PDT)
 Received: from canpemm500002.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RBTgN0WB2ztRc7;
-        Thu, 27 Jul 2023 19:53:36 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBTgD4yQxzNmV5;
+        Thu, 27 Jul 2023 19:53:28 +0800 (CST)
 Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
  (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
@@ -26,9 +26,9 @@ From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>
 CC:     <willy@infradead.org>, <linux-mm@kvack.org>,
         <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2 3/4] mm: memory-failure: avoid false hwpoison page mapped error info
-Date:   Thu, 27 Jul 2023 19:56:42 +0800
-Message-ID: <20230727115643.639741-4-linmiaohe@huawei.com>
+Subject: [PATCH v2 4/4] mm: memory-failure: add PageOffline() check
+Date:   Thu, 27 Jul 2023 19:56:43 +0800
+Message-ID: <20230727115643.639741-5-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230727115643.639741-1-linmiaohe@huawei.com>
 References: <20230727115643.639741-1-linmiaohe@huawei.com>
@@ -48,47 +48,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-folio->_mapcount is overloaded in SLAB, so folio_mapped() has to be done
-after folio_test_slab() is checked. Otherwise slab folio might be treated
-as a mapped folio leading to false 'Someone maps the hwpoison page' error
-info.
+Memory failure is not interested in logically offlined page. Skip this
+type of pages.
 
-Fixes: 230ac719c500 ("mm/hwpoison: don't try to unpoison containment-failed pages")
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 ---
- mm/memory-failure.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ mm/memory-failure.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 4a3e88c15631..d975a6b224f7 100644
+index d975a6b224f7..e4c4b9dc852f 100644
 --- a/mm/memory-failure.c
 +++ b/mm/memory-failure.c
-@@ -2535,6 +2535,13 @@ int unpoison_memory(unsigned long pfn)
- 		goto unlock_mutex;
- 	}
- 
-+	if (folio_test_slab(folio) || PageTable(&folio->page) || folio_test_reserved(folio))
-+		goto unlock_mutex;
-+
-+	/*
-+	 * Note that folio->_mapcount is overloaded in SLAB, so the simple test
-+	 * in folio_mapped() has to be done after folio_test_slab() is checked.
-+	 */
- 	if (folio_mapped(folio)) {
- 		unpoison_pr_info("Unpoison: Someone maps the hwpoison page %#lx\n",
- 				 pfn, &unpoison_rs);
-@@ -2547,9 +2554,6 @@ int unpoison_memory(unsigned long pfn)
+@@ -1561,7 +1561,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
+ 	 * Here we are interested only in user-mapped pages, so skip any
+ 	 * other types of pages.
+ 	 */
+-	if (PageReserved(p) || PageSlab(p) || PageTable(p))
++	if (PageReserved(p) || PageSlab(p) || PageTable(p) || PageOffline(p))
+ 		return true;
+ 	if (!(PageLRU(hpage) || PageHuge(p)))
+ 		return true;
+@@ -2535,7 +2535,8 @@ int unpoison_memory(unsigned long pfn)
  		goto unlock_mutex;
  	}
  
 -	if (folio_test_slab(folio) || PageTable(&folio->page) || folio_test_reserved(folio))
--		goto unlock_mutex;
--
- 	ghp = get_hwpoison_page(p, MF_UNPOISON);
- 	if (!ghp) {
- 		if (PageHuge(p)) {
++	if (folio_test_slab(folio) || PageTable(&folio->page) ||
++	    folio_test_reserved(folio) || PageOffline(&folio->page))
+ 		goto unlock_mutex;
+ 
+ 	/*
 -- 
 2.33.0
 
