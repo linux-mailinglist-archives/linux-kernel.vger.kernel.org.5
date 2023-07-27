@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A45765E44
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EE4765E49
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjG0VcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S232199AbjG0Vco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:32:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjG0VcF (ORCPT
+        with ESMTP id S232166AbjG0Vcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:32:05 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB5D113;
-        Thu, 27 Jul 2023 14:32:03 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B14E81BF205;
-        Thu, 27 Jul 2023 21:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690493521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RVzGt1hU6/zJ2p8ESrItLga9WOYSY12aapmt+gJTTm0=;
-        b=KuzkthgvdjwJnivEU/aryJfGIVIwS2Jo2FGYznAjBe2XO2ObIJRvGb4lZ+5IDN1HoNpZYG
-        4od2IsUmCvD1rkxDQUX70EEy/OerDBhxZu3PYbTnWRsnA+Uh3PCr6Soiqs7oTND51Z5H12
-        vPxGYo5bgxbp54fa9pK//rRC9ZjhXRAtXs5LXD+g2zg8loPvxEOC0OU9LKtcey5kXGqFUV
-        3owWu3CEW9oVKY03yZ19bLiumKfiItmQPfrW7xy4+Zjs6amZuo4MDBNNBF0yaCOsre4eZ+
-        CZksNyGouFQz3JfaVim3BzM6WwJl4QqifmvRDrXEUYS0+aUG+hl2XEUkrWRj6g==
-Date:   Thu, 27 Jul 2023 23:31:51 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v2] rtc: Explicitly include correct DT includes
-Message-ID: <169049349537.641428.12895115995770744599.b4-ty@bootlin.com>
-References: <20230724205456.767430-1-robh@kernel.org>
+        Thu, 27 Jul 2023 17:32:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF7E19BF;
+        Thu, 27 Jul 2023 14:32:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 14D9961F59;
+        Thu, 27 Jul 2023 21:32:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B22F6C433C7;
+        Thu, 27 Jul 2023 21:32:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690493558;
+        bh=LFiOuKaV4mYQNVWY6/YSUjVKfAWsifUjllsJxEWkg8U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=C3h/UWMhwQ4HJv0OU0SmB484+Mafgk/jk4xS+WlpXnP+79zKugFJ0W00kXfqOMUb1
+         V12jq8z7gzm+9/LDbIrDUUgD0o68nv+G//zyM5RiNm8OldUYjrw0vf+K/WRP8Xc9JA
+         trmz3jisE21oeOqtLnSi2ABih/sVEOTC+P81D32c2u4+DX0q/9vJhnmC7ORaY/Inxn
+         911c5GEXmYs12kMkBXi1f3ViZN9/45PPH0P+yrvqH+IB4Dr2P6xMuqfp3/JRoZKYAr
+         lt9F+PKsw876bbfX5mygCil62jIQn8Vr9iX769LeyZVyChHBym8Bc58XQIi72H7UTS
+         jsNI8ZItJ5trQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Rishabh Bhatnagar <risbhat@amazon.com>
+Cc:     gregkh@linuxfoundation.org, lee@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        "Jamal Hadi Salim" <jhs@mojatatu.com>,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 4.14] net/sched: cls_u32: Fix reference counter leak leading to overflow
+Date:   Thu, 27 Jul 2023 21:32:36 +0000
+Message-Id: <20230727213236.49413-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230727191554.21333-1-risbhat@amazon.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724205456.767430-1-robh@kernel.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 Jul 2023 19:15:54 +0000 Rishabh Bhatnagar <risbhat@amazon.com> wrote:
 
-On Mon, 24 Jul 2023 14:54:54 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+> From: Lee Jones <lee@kernel.org>
 > 
-> [...]
+> Upstream commit 04c55383fa5689357bcdd2c8036725a55ed632bc.
+> 
+> In the event of a failure in tcf_change_indev(), u32_set_parms() will
+> immediately return without decrementing the recently incremented
+> reference counter.  If this happens enough times, the counter will
+> rollover and the reference freed, leading to a double free which can be
+> used to do 'bad things'.
+> 
+> In order to prevent this, move the point of possible failure above the
+> point where the reference counter is incremented.  Also save any
+> meaningful return values to be applied to the return data at the
+> appropriate point in time.
+> 
+> This issue was caught with KASAN.
+> 
+> Fixes: 705c7091262d ("net: sched: cls_u32: no need to call tcf_exts_change for newly allocated struct")
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Signed-off-by: Lee Jones <lee@kernel.org>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Rishabh Bhatnagar <risbhat@amazon.com>
 
-Applied, thanks!
+Acked-by: SeongJae Park <sj@kernel.org>
 
-[1/1] rtc: Explicitly include correct DT includes
-      commit: 48144c2890503b919bc8ee128b63e37008d69250
+> ---
+>  net/sched/cls_u32.c | 21 ++++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+> index fdbdcba44917..a4e01220a53a 100644
+> --- a/net/sched/cls_u32.c
+> +++ b/net/sched/cls_u32.c
+> @@ -774,11 +774,22 @@ static int u32_set_parms(struct net *net, struct tcf_proto *tp,
+>  			 struct nlattr *est, bool ovr)
+>  {
+>  	int err;
+> +#ifdef CONFIG_NET_CLS_IND
+> +	int ifindex = -1;
+> +#endif
+>  
+>  	err = tcf_exts_validate(net, tp, tb, est, &n->exts, ovr);
+>  	if (err < 0)
+>  		return err;
+>  
+> +#ifdef CONFIG_NET_CLS_IND
+> +	if (tb[TCA_U32_INDEV]) {
+> +		ifindex = tcf_change_indev(net, tb[TCA_U32_INDEV]);
+> +		if (ifindex < 0)
+> +			return -EINVAL;
+> +	}
+> +#endif
+> +
+>  	if (tb[TCA_U32_LINK]) {
+>  		u32 handle = nla_get_u32(tb[TCA_U32_LINK]);
+>  		struct tc_u_hnode *ht_down = NULL, *ht_old;
+> @@ -806,14 +817,10 @@ static int u32_set_parms(struct net *net, struct tcf_proto *tp,
+>  	}
+>  
+>  #ifdef CONFIG_NET_CLS_IND
+> -	if (tb[TCA_U32_INDEV]) {
+> -		int ret;
+> -		ret = tcf_change_indev(net, tb[TCA_U32_INDEV]);
+> -		if (ret < 0)
+> -			return -EINVAL;
+> -		n->ifindex = ret;
+> -	}
+> +	if (ifindex >= 0)
+> +		n->ifindex = ifindex;
+>  #endif
+> +
+>  	return 0;
 
-Best regards,
+Very trivial nit: Someone might think the above new line is better not to be
+added?  I don't really care, though.
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>  }
+>  
+> -- 
+> 2.40.1
+> 
+
+Thanks,
+SJ
