@@ -2,116 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA55765952
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3385F765957
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbjG0Q6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S232557AbjG0Q7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbjG0Q60 (ORCPT
+        with ESMTP id S230409AbjG0Q7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:58:26 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9030FA
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:58:22 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58456435437so12023307b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690477102; x=1691081902;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xYefQnfYtKpl5Tvn3l6r22ye4r6Itm+ri5XwBUllms=;
-        b=bXZyyVDXb3SULma4QEYC8oUf1j1vR/cFOkHUcZEp5PBKPPq03xmjHa7FH/F6yXfnDw
-         wL8rm5SzewNXwG2IGQlV+dQfPQ14oFzONBXVRyyThW+iYO/As6z+KMf8cbkbhbVDRfK/
-         9pytweYZDZZG8kkYhDTIx2ovp5BFmnr6Iw4zOUo6ila3ezKEUD/+iSkRk/KmvMT/anfj
-         r5IRzqVflMC6/dbrTFu9Q+uvAa8xmHxf21jE8dtJNJ3tcYib1PnsHtsZZO/+l824IG2w
-         BvGp1/C8zsDfHG1PlpEzzBGD3/66tobtjS9i1HlSfuYE5Dy+EHIl9GovebECoSzNF8Jw
-         nqTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690477102; x=1691081902;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xYefQnfYtKpl5Tvn3l6r22ye4r6Itm+ri5XwBUllms=;
-        b=hwS1iml4CedNpg0M8+Z+ug2Hx3Sl3RuHN7sBfoHURyH91zYFrw2e4ii85xm7jsViw9
-         W2Pb4t9R6BQsuPuQGqtI7PHkuHgoLirr3rmecj9zsa6oQ7fB4Qszk9A5ohINcg27WUqL
-         URHBE3ch3WaModi3g29dO3ZMhX+thQc5XqoZpJktUcv6fxTDFLPhvsz6s7h9cscmR3vp
-         VigjKIAfjGpnjJZ/e26VvAhpZgIORB0dhiZXbqC0odhzALmAc1IadMZSngtJrBkjT/CL
-         OZuQ4yVle/WYQ1LNl4Z5ooHequaKsIcLTf31Tzi4NXZFYMG1oEa0E4FoJvINlSb/8Bfj
-         kxtw==
-X-Gm-Message-State: ABy/qLahjILG/QUj2kYr5atjbkKn5tlUBDYZA5grEsf9uHZ5regJafr/
-        w2c5Ej37hoNGbn1JONGNcbcFCkiihAs=
-X-Google-Smtp-Source: APBJJlF+PSqQxfnn2LQeexAEMrTg+4SAEMxe7lFjkKkPuT9k101/25+MOgQiH0DwUWwlKBWbnws/GhVq8ig=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:c08f:0:b0:d10:5b67:843c with SMTP id
- c137-20020a25c08f000000b00d105b67843cmr32796ybf.4.1690477102279; Thu, 27 Jul
- 2023 09:58:22 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 09:58:20 -0700
-In-Reply-To: <ZMIflGq2i3m3bNLU@chao-email>
-Mime-Version: 1.0
-References: <20230721030352.72414-1-weijiang.yang@intel.com>
- <20230721030352.72414-10-weijiang.yang@intel.com> <ZMDMQHwlj9m7C39s@chao-email>
- <67250373-c5f4-d1d7-9334-4c9e6a43ab63@intel.com> <ZMEjudsdr8WEiw3b@chao-email>
- <4565ab4b-f386-7b70-4634-627e92acbb45@intel.com> <ZMIflGq2i3m3bNLU@chao-email>
-Message-ID: <ZMKiLI2oEHivN000@google.com>
-Subject: Re: [PATCH v4 09/20] KVM:x86: Add common code of CET MSR access
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chao Gao <chao.gao@intel.com>
-Cc:     Weijiang Yang <weijiang.yang@intel.com>, pbonzini@redhat.com,
-        peterz@infradead.org, john.allen@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rick.p.edgecombe@intel.com,
-        binbin.wu@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 12:59:01 -0400
+Received: from uriel.iewc.co.za (uriel.iewc.co.za [IPv6:2c0f:f720:0:3::9a49:2248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1BA30C0;
+        Thu, 27 Jul 2023 09:58:57 -0700 (PDT)
+Received: from [154.73.32.4] (helo=tauri.local.uls.co.za)
+        by uriel.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qP4Jp-0005il-12; Thu, 27 Jul 2023 18:58:29 +0200
+Received: from [192.168.1.145]
+        by tauri.local.uls.co.za with esmtp (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qP4Jo-0006eZ-9O; Thu, 27 Jul 2023 18:58:28 +0200
+Message-ID: <567b798d-9883-aa9c-05e6-3d5ce3d716ca@uls.co.za>
+Date:   Thu, 27 Jul 2023 18:58:27 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir [v2].
+Content-Language: en-GB
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Antonio SJ Musumeci <trapexit@spawn.link>
+References: <20230726105953.843-1-jaco@uls.co.za>
+ <20230727081237.18217-1-jaco@uls.co.za>
+ <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
+From:   Jaco Kroon <jaco@uls.co.za>
+Organization: Ultimate Linux Solutions (Pty) Ltd
+In-Reply-To: <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023, Chao Gao wrote:
-> >> -	case MSR_KVM_GUEST_SSP:
-> >> -	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
-> >> 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
-> >> 		if (!kvm_cet_is_msr_accessible(vcpu, msr_info))
-> >> 			return 1;
-> >> 		if (is_noncanonical_address(data, vcpu))
-> >> 			return 1;
-> >> 		if (!IS_ALIGNED(data, 4))
-> >> 			return 1;
-> >> 		if (msr == MSR_IA32_PL0_SSP || msr == MSR_IA32_PL1_SSP ||
-> >> 		    msr == MSR_IA32_PL2_SSP) {
-> >> 			vcpu->arch.cet_s_ssp[msr - MSR_IA32_PL0_SSP] = data;
-> >> 		} else if (msr == MSR_IA32_PL3_SSP) {
-> >> 			kvm_set_xsave_msr(msr_info);
-> >> 		}
-> >> 		break;
-> >> 
-> >> 
-> >> 
-> >> BTW, shouldn't bit2:0 of MSR_KVM_GUEST_SSP be 0? i.e., for MSR_KVM_GUEST_SSP,
-> >> the alignment check should be IS_ALIGNED(data, 8).
-> >
-> >The check for GUEST_SSP should be consistent with that of PLx_SSPs, otherwise
-> >there would be issues
-> 
-> OK. I had the question because Gil said in a previous email:
-> 
-> 	IDT event delivery, when changing to rings 0-2 will load SSP from the
-> 	MSR corresponding to the new ring.  These transitions check that bits
-> 	2:0 of the new value are all zero and will generate a nested fault if
-> 	any of those bits are set.  (Far CALL using a call gate also checks this
-> 	if changing CPL.)
-> 
-> it sounds to me, at least for CPL0-2, SSP (or the synethic
-> MSR_KVM_GUEST_SSP) should be 8-byte aligned. Otherwise, there will be a
-> nested fault when trying to load SSP.
+Hi,
 
-Yes, but that's the guest's problem.  KVM's responsibility is purely to faithfully
-emulate hardware, which in this case means requiring that bits 1:0 be cleared on
-the WRMSR.  *Architecturally*, software is allowed to set bit 2, and only if/when
-the vCPU consumes the "bad" value by transitioning to the relevant CPL will the
-CPU generate a fault.
+On 2023/07/27 17:35, Miklos Szeredi wrote:
+> On Thu, 27 Jul 2023 at 10:13, Jaco Kroon <jaco@uls.co.za> wrote:
+>> This patch does not mess with the caching infrastructure like the
+>> previous one, which we believe caused excessive CPU and broke directory
+>> listings in some cases.
+>>
+>> This version only affects the uncached read, which then during parse adds an
+>> entry at a time to the cached structures by way of copying, and as such,
+>> we believe this should be sufficient.
+>>
+>> We're still seeing cases where getdents64 takes ~10s (this was the case
+>> in any case without this patch, the difference now that we get ~500
+>> entries for that time rather than the 14-18 previously).  We believe
+>> that that latency is introduced on glusterfs side and is under separate
+>> discussion with the glusterfs developers.
+>>
+>> This is still a compile-time option, but a working one compared to
+>> previous patch.  For now this works, but it's not recommended for merge
+>> (as per email discussion).
+>>
+>> This still uses alloc_pages rather than kvmalloc/kvfree.
+>>
+>> Signed-off-by: Jaco Kroon <jaco@uls.co.za>
+>> ---
+>>   fs/fuse/Kconfig   | 16 ++++++++++++++++
+>>   fs/fuse/readdir.c | 18 ++++++++++++------
+>>   2 files changed, 28 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+>> index 038ed0b9aaa5..0783f9ee5cd3 100644
+>> --- a/fs/fuse/Kconfig
+>> +++ b/fs/fuse/Kconfig
+>> @@ -18,6 +18,22 @@ config FUSE_FS
+>>            If you want to develop a userspace FS, or if you want to use
+>>            a filesystem based on FUSE, answer Y or M.
+>>
+>> +config FUSE_READDIR_ORDER
+>> +       int
+>> +       range 0 5
+>> +       default 5
+>> +       help
+>> +               readdir performance varies greatly depending on the size of the read.
+>> +               Larger buffers results in larger reads, thus fewer reads and higher
+>> +               performance in return.
+>> +
+>> +               You may want to reduce this value on seriously constrained memory
+>> +               systems where 128KiB (assuming 4KiB pages) cache pages is not ideal.
+>> +
+>> +               This value reprents the order of the number of pages to allocate (ie,
+>> +               the shift value).  A value of 0 is thus 1 page (4KiB) where 5 is 32
+>> +               pages (128KiB).
+>> +
+>>   config CUSE
+>>          tristate "Character device in Userspace support"
+>>          depends on FUSE_FS
+>> diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
+>> index dc603479b30e..47cea4d91228 100644
+>> --- a/fs/fuse/readdir.c
+>> +++ b/fs/fuse/readdir.c
+>> @@ -13,6 +13,12 @@
+>>   #include <linux/pagemap.h>
+>>   #include <linux/highmem.h>
+>>
+>> +#define READDIR_PAGES_ORDER            CONFIG_FUSE_READDIR_ORDER
+>> +#define READDIR_PAGES                  (1 << READDIR_PAGES_ORDER)
+>> +#define READDIR_PAGES_SIZE             (PAGE_SIZE << READDIR_PAGES_ORDER)
+>> +#define READDIR_PAGES_MASK             (READDIR_PAGES_SIZE - 1)
+>> +#define READDIR_PAGES_SHIFT            (PAGE_SHIFT + READDIR_PAGES_ORDER)
+>> +
+>>   static bool fuse_use_readdirplus(struct inode *dir, struct dir_context *ctx)
+>>   {
+>>          struct fuse_conn *fc = get_fuse_conn(dir);
+>> @@ -328,25 +334,25 @@ static int fuse_readdir_uncached(struct file *file, struct dir_context *ctx)
+>>          struct fuse_mount *fm = get_fuse_mount(inode);
+>>          struct fuse_io_args ia = {};
+>>          struct fuse_args_pages *ap = &ia.ap;
+>> -       struct fuse_page_desc desc = { .length = PAGE_SIZE };
+>> +       struct fuse_page_desc desc = { .length = READDIR_PAGES_SIZE };
+> Does this really work?  I would've thought we are relying on single
+> page lengths somewhere.
+Based on my testing yes.  Getting just under 500 entries per 
+getdents64() call from userspace vs 14-18 before I guess the answer is yes.
+>
+>>          u64 attr_version = 0;
+>>          bool locked;
+>>
+>> -       page = alloc_page(GFP_KERNEL);
+>> +       page = alloc_pages(GFP_KERNEL, READDIR_PAGES_ORDER);
+>>          if (!page)
+>>                  return -ENOMEM;
+>>
+>>          plus = fuse_use_readdirplus(inode, ctx);
+>>          ap->args.out_pages = true;
+>> -       ap->num_pages = 1;
+>> +       ap->num_pages = READDIR_PAGES;
+> No.  This is the array lenght, which is 1.  This is the hack I guess,
+> which makes the above trick work.
+
+Oh?  So the page referenced above isn't an array of pages?  It's 
+actually a single piece of contiguous memory?
+
+> Better use kvmalloc, which might have a slightly worse performance
+> than a large page, but definitely not worse than the current single
+> page.
+
+Which returns a void*, not struct page* - guess this can be converted 
+using __virt_to_page (iirc)?
+
+> If we want to optimize the overhead of kvmalloc (and it's a big if)
+> then the parse_dir*file() functions would need to be converted to
+> using a page array instead of a plain kernel pointer, which would add
+> some complexity for sure.
+
+Sorry, I read the above as "I'm surprised this works at all and you're 
+not kernel panicking all over the show", this is probably the most 
+ambitious kernel patch I've attempted to date.
+
+Kind regards,
+Jaco
+
