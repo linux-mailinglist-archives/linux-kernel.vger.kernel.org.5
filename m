@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE1B765BE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2188765C01
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbjG0TLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S232100AbjG0TUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbjG0TLF (ORCPT
+        with ESMTP id S231418AbjG0TUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:11:05 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0512735;
-        Thu, 27 Jul 2023 12:11:01 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3175f17a7baso1404884f8f.0;
-        Thu, 27 Jul 2023 12:11:01 -0700 (PDT)
+        Thu, 27 Jul 2023 15:20:14 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5E1F3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:20:13 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4f58444a410so674e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 12:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690485060; x=1691089860;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7zkXhTHvZvOOCcCeSTeuHhsZO3DidrcpdwzgYznxPsY=;
-        b=pekMF4x7YAev7j/oPwDgwVLQFf/oPLUMt8SOvqZUQFdx//sDDCKaySmUszJ7CvzrIM
-         SjDnFFs+wE08aUOy3tQyJvKZ87NXBiK+wpB+6W2rhbfqXlYA47FsoIoDbhGs1izDMRTn
-         Cai/N+tRhbfkSWUbvt3B2xGpriISd3fRsBe55PxtlXaWNuC8GBn3/NYNNG9BfpBA1rN0
-         bY1v3460eJZKFSTmq5zAs+LLaV+ipROBz9SdKNVonGLnHklBW3BgcwaCAwU3/sgAb6Er
-         3kzZRdTS2FwdZxTT8xL0dZYeAlTLTKn/4RRtYAfznPLUTQ/MQIkv0LAUMvJGuf3uodYh
-         giBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690485060; x=1691089860;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1690485612; x=1691090412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7zkXhTHvZvOOCcCeSTeuHhsZO3DidrcpdwzgYznxPsY=;
-        b=lyYwFWjvXG5HMfWLm0QUmQeKb7ZXpDvRyi//lZa164IYbrrvYuj6qhetAnYxHkituy
-         xeHGUy8LLkdaT2rXdXsjFmrgA4Mu01Yh+9+lhT7heA+oCEKvtFVz3nQzgLSYg9rZyd10
-         XXLzLIQbKgmNKGTpDYam2qQ14bGeZmWhpe1K0AX/QjKWbysXca0BHhy+5v5MnJ8uhcrm
-         koDabx5or+xHawzECzOGRovaN7depStgJ3NX6UosxdF3hytI7ObLK6TvFX3z7XueE4rx
-         wAn+E9mRNcU9ugmAK7GBEH9hFvNO3UpCcCGfaG4bzURsOeWNrTmi/1lg//eeZKmThRSm
-         Yq7w==
-X-Gm-Message-State: ABy/qLZ7l5tJa0X0MWMSE7FXkMh9UdmFPyI4zmFt56o3G3DUb3TAJAEv
-        AUcG2+TcBkceyZlZtdY/QnLiQoenXESMDQ==
-X-Google-Smtp-Source: APBJJlHKPUbLVvNM3gjxxvwdzoZ+s83DYQiDYT3zQK3IEXRl7qDrMoIibO7YNVk9nym5AaysCHGUOA==
-X-Received: by 2002:a5d:5004:0:b0:313:ee2e:dae1 with SMTP id e4-20020a5d5004000000b00313ee2edae1mr79532wrt.18.1690485060036;
-        Thu, 27 Jul 2023 12:11:00 -0700 (PDT)
-Received: from Ansuel-xps. (host-87-19-253-131.retail.telecomitalia.it. [87.19.253.131])
-        by smtp.gmail.com with ESMTPSA id s1-20020a5d4ec1000000b003063db8f45bsm2804448wrv.23.2023.07.27.12.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 12:10:58 -0700 (PDT)
-Message-ID: <64c2c142.5d0a0220.9ae33.deab@mx.google.com>
-X-Google-Original-Message-ID: <ZMLBQOagq5+i/lbY@Ansuel-xps.>
-Date:   Thu, 27 Jul 2023 21:10:56 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Atin Bainada <hi@atinb.me>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 3/3] net: dsa: qca8k: limit user ports access to
- the first CPU port on setup
-References: <20230724033058.16795-1-ansuelsmth@gmail.com>
- <20230724033058.16795-1-ansuelsmth@gmail.com>
- <20230724033058.16795-3-ansuelsmth@gmail.com>
- <20230724033058.16795-3-ansuelsmth@gmail.com>
- <20230726131851.w5ty2mftr7tdl3mi@skbuf>
+        bh=NWa8Bstqe+PKwfvvskX3BhBIL8nUC+d+rJDV9BvUQGc=;
+        b=cXDtGlq1/SL6cs7e3G0edW1fcqOngTdgH0ZmgQRxYXSzgenYddUrawOd8aV1euePnR
+         uBL+1IhcXy+LpjrnNhDwQ7gcRMThtStbyqGGZbvmNrHuczWhrsx/Z2cGPQGg8mVJlw8v
+         bzCa11nFNH+7vn7Wk5PshPg0+wIgSxAn+/6D0q6+g0+M3nGGjToyWorz2ov/b6YHicC3
+         kfx7qqLnkM4O8RHqYW8BQkBd9dw1uVR+shTspJk7xub24xRIrLw9EqO5FqdAy1X2H9WK
+         hy7lAlL/W9Qw8kbdlO81xqd5vgculaW3D48Sm+qJaVA6AIdkbb8+nz6HqOjeYkVIoKFF
+         UtXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690485612; x=1691090412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NWa8Bstqe+PKwfvvskX3BhBIL8nUC+d+rJDV9BvUQGc=;
+        b=j9yVCAp+I6/VCrZAg3C7Uz+xQSxhgxKiIP5pPrWCNVLxyMEKfx9nMNMEtaILtjWMMb
+         IozF5Mz13PxNkwcyGc+fbmnf7nUixwn6TRIA5WNYskzoed7g51kytCl9XMKZ8dviKCZj
+         u5l96SXA7LpWUm7R0yzT4CIm82pPAQSGRp6CF6ZMi1RpSsqZzDB4FtyhK1Baooon+YNM
+         Wuz3D4BIIuaS8Tkd4VShcqMO/aVHAMHZQJN2MW8YJDrLGlg3AMigRXWpXWEVNg2uKQBu
+         rhrmmh0ECTSydlu9oKN8Hy/lNR53EH7bnrh6mBJ8sZJm6yV0EV0pmXrX6he8ueEluZmB
+         5OpA==
+X-Gm-Message-State: ABy/qLYtxJsG3oijp8ManBH1td7SdTvF0AMEKHhEMaFIUOfa4DrYb/2y
+        dKkD6hVjHQEIvHb6jxZitkDmoG1XEQ3/70l0KfE3c5ycHRhDWS/05jMb6z3j
+X-Google-Smtp-Source: APBJJlED1SfLnWR0xjG24DvcpV8ETwQoqYPH/QOhH3Ffh+4FGOdk8jwd4DlFSrw8wIZ1iez9Q693fCLBaQkrM8A5F2k=
+X-Received: by 2002:a05:600c:8509:b0:3f7:3e85:36a with SMTP id
+ gw9-20020a05600c850900b003f73e85036amr19144wmb.7.1690485169747; Thu, 27 Jul
+ 2023 12:12:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726131851.w5ty2mftr7tdl3mi@skbuf>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <ZMK9C+iq3y8POOGp@casper.infradead.org> <0000000000004ccc7906017c79e0@google.com>
+ <ZMK9arq/gzFEqUOs@casper.infradead.org>
+In-Reply-To: <ZMK9arq/gzFEqUOs@casper.infradead.org>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 27 Jul 2023 21:12:36 +0200
+Message-ID: <CANp29Y6YgrQ4pX+JXY1SBtmFYc2ThyHUA6GAEVMh5hqu6Q0FdA@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (2)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, liam.howlett@oracle.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,27 +73,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:18:51PM +0300, Vladimir Oltean wrote:
-> On Mon, Jul 24, 2023 at 05:30:58AM +0200, Christian Marangi wrote:
-> > In preparation for multi-CPU support, set CPU port LOOKUP MEMBER outside
-> > the port loop and setup the LOOKUP MEMBER mask for user ports only to
-> > the first CPU port.
-> > 
-> > This is to handle flooding condition where every CPU port is set as
-> > target and prevent packet duplication for unknown frames from user ports.
-> > 
-> > Secondary CPU port LOOKUP MEMBER mask will be setup later when
-> > port_change_master will be implemented.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> 
-> This is kinda "net.git" material, in the sense that it fixes the current
-> driver behavior with device trees from the future, right?
+On Thu, Jul 27, 2023 at 8:54=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Jul 27, 2023 at 11:53:02AM -0700, syzbot wrote:
+> > > On Tue, Jul 25, 2023 at 11:57:22PM -0700, syzbot wrote:
+> > >> syzbot has bisected this issue to:
+> > >>
+> > >> commit a52f58b34afe095ebc5823684eb264404dad6f7b
+> > >> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > >> Date:   Mon Jul 24 18:54:10 2023 +0000
+> > >>
+> > >>     mm: handle faults that merely update the accessed bit under the =
+VMA lock
+> > >>
+> > >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17835=
+85ea80000
+> > >> start commit:   [unknown]
+> > >> git tree:       linux-next
+> > >
+> > > #syz test linux-next a52f58b34afe095ebc5823684eb264404dad6f7b
+> >
+> > "linux-next" does not look like a valid git repo address.
+>
+> Well, now, that's your fault, isn't it?  You're abbreviating the git
+> tree in the report, but then refusing to accept the abbreviation in
+> the response.
 
-This is not strictly a fix. The secondary CPU (if defined) doesn't have
-flood enabled so the switch won't forward packet. It's more of a
-cleanup/preparation from my point of view. What do you think?
+Good point.
+There's an issue about this
+(https://github.com/google/syzkaller/issues/2265), I've added it to my
+backlog.
 
--- 
-	Ansuel
+--=20
+Aleksandr
