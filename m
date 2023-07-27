@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59BA7659CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832D17659D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjG0RQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        id S231224AbjG0RQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjG0RQZ (ORCPT
+        with ESMTP id S231536AbjG0RQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:16:25 -0400
+        Thu, 27 Jul 2023 13:16:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029AC30F5;
-        Thu, 27 Jul 2023 10:16:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEB330EB;
+        Thu, 27 Jul 2023 10:16:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80FAD61EEA;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEF3461EF1;
+        Thu, 27 Jul 2023 17:16:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 610A4C433CB;
         Thu, 27 Jul 2023 17:16:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AD19C433C7;
-        Thu, 27 Jul 2023 17:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690478183;
-        bh=MCgVzrM/QVCLxCzVUmRQ6gbhx/qfSVSSWLqpIAuaIjA=;
+        s=k20201202; t=1690478186;
+        bh=/h8WTc7ffM2/OK7+VjlH18R26PhyR6KOVEkzXTCV5+U=;
         h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=KemntZb/KzizusBCXa4O1u2+Juu3lJsvfqxJi/uuoUZRnLYbezIwVbNhpsuf7VzAs
-         +4o2fA4tVgJceHorPEUkbs4pX8VetBnIjyT0YcYZw7zxxhunU25p6AtaPGk6u/Um/T
-         buva/857M/tAnHq9CLBjxGpVb48aYhEqLG7DaU2rT3nqU3gNJ8kYx1aCURAtB0wUbd
-         tIPUmd40jPFVhJgp1Q0vjySEARlWN8Ejsw+igGhYF8ozpKCL+1xvh0aZ8/xRiok44C
-         PO0WQoxOR4LrSp8BJumj0OjTme8g8Uoq04LedFGr0zTg7K4YQAUZbcyGoLjsTOfdMh
-         NGLXon31KF2FQ==
+        b=HVHZU8mxKfMxdWLwjnggTMuODXoZ/0z14Pv+ML3/RI5yA9PIGscEMluf7ltc9ctRQ
+         Q+H0JwK6D9ynUR9eIDGigu7C/STY5kh1WOsOMI0AmMXBSHoQTqtoytsnq6099R19si
+         wYlJRaDXBu34joWB1u4GSc8aIZVbAPr6oRRYKJEjD8nM63P9E3jpR0b4/S5+dMLbrE
+         9e58JPeFNmsS0BK4K7myh7ULjrpqkayx7ikZwBeUYJF/Ftdqag1N0ZPPyXf2ZuDH3Q
+         YJiowB2dBDv0CJ6m+9mLOWhQ/TQ7mJsy2RB8wENsyWAmxukN6bNHtGRAOQ5bwuRaMn
+         2zFDDzmYik5/w==
 From:   Mark Brown <broonie@kernel.org>
 To:     Support Opensource <support.opensource@diasemi.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -42,12 +42,12 @@ To:     Support Opensource <support.opensource@diasemi.com>,
         Eric Jeong <eric.jeong.opensource@diasemi.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
-References: <20230725063132.42132-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2] regulator: dt-bindings: dlg,slg51000: Convert to DT
+In-Reply-To: <20230727085434.16596-1-krzysztof.kozlowski@linaro.org>
+References: <20230727085434.16596-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3] regulator: dt-bindings: dlg,slg51000: Convert to DT
  schema
-Message-Id: <169047818176.132925.17960631556237815643.b4-ty@kernel.org>
-Date:   Thu, 27 Jul 2023 18:16:21 +0100
+Message-Id: <169047818411.132925.12507293568862505459.b4-ty@kernel.org>
+Date:   Thu, 27 Jul 2023 18:16:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -62,7 +62,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 08:31:32 +0200, Krzysztof Kozlowski wrote:
+On Thu, 27 Jul 2023 10:54:34 +0200, Krzysztof Kozlowski wrote:
 > Convert the bindings for Dialog Semiconductor SLG51000 Voltage Regulator
 > to DT schema.
 > 
