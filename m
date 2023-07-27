@@ -2,124 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FED476489F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7186764834
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbjG0HcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
+        id S233263AbjG0HPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbjG0Hbg (ORCPT
+        with ESMTP id S232041AbjG0HPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:31:36 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C613C25
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:20:02 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9922d6f003cso80879366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:20:02 -0700 (PDT)
+        Thu, 27 Jul 2023 03:15:08 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFB14C11;
+        Thu, 27 Jul 2023 00:09:38 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fb4146e8ceso6401695e9.0;
+        Thu, 27 Jul 2023 00:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690442401; x=1691047201;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fqOQsXekD6sFK6WYy17hOsZp5/7SJav2yrMJmcsMwVY=;
-        b=EaA2li8PNRQWUyQ5H36X3vBH5ZCBkXFx20Um28pjq5Ms3WaSpIL2Zy7uh3hv5SLIZI
-         Be1Hh5K2t83HLBDO7Z7C8Gi0byzHyNztwgTdYxeEkbKBdq+SERRxfRMUZuYavkrBNIw+
-         wfFOCJer9R95EoxrjKjKaqonqyNYj615CJGkGJUUeA++s7vEAwTawo70AVEzEJf50ICy
-         ujuqgP+5RNFFTDYvSiYBuL1Xv8EUwRL6BY4ECy0sqZg7baLc3nKs4KxvfxmhHgc79yhQ
-         GntRuCEwOKiJr4qbU9TBBhUlvp6bkcpI/SPWAUoaugGIfGhQbnmYkPYDBYKBdcwpHVNa
-         AMaw==
+        d=gmail.com; s=20221208; t=1690441693; x=1691046493;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dy0ZPSBy/NyLfyM/Q1eVqojfIwuNg1V+4W9H5qPvnrE=;
+        b=GSM/LfeG1DRpQU/3h0UPD8P85XQpwyZ0TH0C7i5iTlrVBs9hV8sCNF7vPnLs014p32
+         Vd/JJpiHtmV3xhbF3VUj6mmpaD5dsnUqeOICHwq2F5h9tIhVSOJZZYsVI/0tf332gUqU
+         NDIqNwyWlhd/4P9B3galyH4h26Rwud5Y9waDJEBJjDBvKG80/oqn+3MhcBGlEVAb/GST
+         Ss4kF6lEG1JV6UxdLnrCzTnWWipr1CRKgeN/dhHOc49a1beKOchHjGFMmlrqvh/B6gTL
+         hxDibRx23NBYCH1tOIZ8U8ZkcjTYvIRo0iPKsTGV0/RT8jXKG1Cag+hUyKqNOOWnBZ4S
+         nkuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690442401; x=1691047201;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fqOQsXekD6sFK6WYy17hOsZp5/7SJav2yrMJmcsMwVY=;
-        b=F/kFvavhKK9+WLJeYykYGzYyCuCadsIdel9DgzDRUMV0gR0+T/+Brt2Bpwf85d1hDz
-         sU8QtMHqMHGwqA2PHOUjy67tRvYF48BCgXZRS6QX2mrf/fGb7c0lPYKpGYQgw44wqxiJ
-         xY+p9DAijizKMmVHnjOpnSPwSqoQJqLMe5gJ7JDH83XE5R9EHvdnGSQTsRxHHDWp1wVq
-         jGa2eD/P4chnNgYcKEnhRLgX/UUuIr3y29rwga2UBH0WwYbm1RETFZYPl/bNnew0h1zR
-         yupseHVcHLpaLaxfduvWu7+DwjZjcJ6rbUFONk/y/SZQ86jLYViCoruonpJ7pMdAiGOP
-         i79Q==
-X-Gm-Message-State: ABy/qLbhfPb89xW6gXSM2yWfHVv0td6esa+KsyJFPHo4RFto0GsrlE/k
-        cgb9NI4Aa/8yS/1DOGIir6CRud0g25zW9+bXVmk=
-X-Google-Smtp-Source: APBJJlH0jrNgLEoeZag63NmlA+d74+LDSnMgmUsHAoDTB3LniXqupxvPa61maXNWsNZ+1q5a7JpmTA==
-X-Received: by 2002:aa7:c490:0:b0:522:5855:ee78 with SMTP id m16-20020aa7c490000000b005225855ee78mr953040edq.32.1690441670722;
-        Thu, 27 Jul 2023 00:07:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id b21-20020a056402139500b005227e53cec2sm296242edv.50.2023.07.27.00.07.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 00:07:50 -0700 (PDT)
-Message-ID: <5bb55bec-6a38-3a88-3fc1-79b12cfe7e02@linaro.org>
-Date:   Thu, 27 Jul 2023 09:07:48 +0200
+        d=1e100.net; s=20221208; t=1690441693; x=1691046493;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Dy0ZPSBy/NyLfyM/Q1eVqojfIwuNg1V+4W9H5qPvnrE=;
+        b=f2Q2iGN9asR5qbUkBLWuZyVxxSh5XsvNfcCTHtKh2pshbuH7AAWA/TC4JgD0DjKgWX
+         rC0cqbwIfGBQlgaTak/nPl4cA2e+WmUCTnZAzsQavw7nB9VIGUQRYusFtEqqT3RIEGDy
+         UBschpaU7gesrONjoMln5yICMAINIs014dS+SoPYIPtK6Fy9P/3DrB9s3No2V/HwnSig
+         meqePVjnLPXqCxP4y6gqDeeomocGfkTaoVefQWFJX61GbLbSMqEml8Z1mWBzzfMrClxN
+         rc2OH+0/QLyTQB7PfwSlf/4zc9LJpFE4zLrPUgJ1DJakDrmYQ1B3I86nfyu+DjR0flki
+         YgfQ==
+X-Gm-Message-State: ABy/qLbJ/7VpBBj14rS0uzZdtyVHQ4hml3tF162U1qaAS3EoO3ljXy5n
+        eC0sxiUoV7lhC4L4RBOj8wTjYSnzOd0=
+X-Google-Smtp-Source: APBJJlH7gFR5ZcceVKw/6PYsYPsQb5R5JwEd8nFNtGwVVDDSYNkmt1Qcq+S1TK85E5fTpMfNNUv0dA==
+X-Received: by 2002:a05:600c:209:b0:3f8:f1db:d206 with SMTP id 9-20020a05600c020900b003f8f1dbd206mr941663wmi.25.1690441693134;
+        Thu, 27 Jul 2023 00:08:13 -0700 (PDT)
+Received: from localhost (dslb-088-076-253-094.088.076.pools.vodafone-ip.de. [88.76.253.94])
+        by smtp.gmail.com with ESMTPSA id u20-20020a05600c00d400b003faef96ee78sm3860651wmm.33.2023.07.27.00.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 00:08:12 -0700 (PDT)
+From:   Jonas Gorski <jonas.gorski@gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: spi: convert spi-brcm63xx.txt to YAML
+Date:   Thu, 27 Jul 2023 09:08:06 +0200
+Message-Id: <20230727070806.12205-1-jonas.gorski@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new
- SPMI vibrator
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org,
-        dmitry.baryshkov@linaro.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
-        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com
-References: <20230725054138.129497-2-quic_fenglinw@quicinc.com>
- <202307251741.PMtlVAgD-lkp@intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <202307251741.PMtlVAgD-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 12:01, kernel test robot wrote:
-> Hi Fenglin,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on dtor-input/next]
-> [also build test WARNING on dtor-input/for-linus linus/master v6.5-rc3 next-20230725]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Fenglin-Wu/input-pm8xxx-vib-refactor-to-easily-support-new-SPMI-vibrator/20230725-134504
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-> patch link:    https://lore.kernel.org/r/20230725054138.129497-2-quic_fenglinw%40quicinc.com
-> patch subject: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new SPMI vibrator
-> config: x86_64-buildonly-randconfig-r002-20230725 (https://download.01.org/0day-ci/archive/20230725/202307251741.PMtlVAgD-lkp@intel.com/config)
-> compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-> reproduce: (https://download.01.org/0day-ci/archive/20230725/202307251741.PMtlVAgD-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202307251741.PMtlVAgD-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/input/misc/pm8xxx-vibrator.c:190:17: warning: cast to smaller integer type 'enum pm8xxx_vib_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
->            vib->hw_type = (enum pm8xxx_vib_type)of_device_get_match_data(dev);
->                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    1 warning generated.
-> 
+Changes done during conversion:
 
-Remember to fix all the warnings.
+* added a description, lifting and adapting the limitation sentence from
+  brcm,bcm63xx-hsspi.yml
+* added appropriate compatibles for all SoCs that are supported by
+  bcm63xx/bmips
 
-Best regards,
-Krzysztof
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+---
+v1 -> v2:
+* applied Kryzstof's review comments:
+ * replaced oneOf list of two consts with enum
+ * replaced textual description of only reg item with maxItems: 1
+ * added Reviewed-By
+
+ .../bindings/spi/brcm,bcm63xx-spi.yaml        | 71 +++++++++++++++++++
+ .../devicetree/bindings/spi/spi-bcm63xx.txt   | 33 ---------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 72 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/brcm,bcm63xx-spi.yaml
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-bcm63xx.txt
+
+diff --git a/Documentation/devicetree/bindings/spi/brcm,bcm63xx-spi.yaml b/Documentation/devicetree/bindings/spi/brcm,bcm63xx-spi.yaml
+new file mode 100644
+index 000000000000..fa03cdd68e70
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/brcm,bcm63xx-spi.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/brcm,bcm63xx-spi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Broadcom BCM6348/BCM6358 SPI controller
++
++maintainers:
++  - Jonas Gorski <jonas.gorski@gmail.com>
++
++description: |
++  Broadcom "Low Speed" SPI controller found in many older MIPS based Broadband
++  SoCs.
++
++  This controller has a limitation that can not keep the chip select line active
++  between the SPI transfers within the same SPI message. This can terminate the
++  transaction to some SPI devices prematurely. The issue can be worked around by
++  the controller's prepend mode.
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - brcm,bcm6368-spi
++              - brcm,bcm6362-spi
++              - brcm,bcm63268-spi
++          - const: brcm,bcm6358-spi
++      - enum:
++          - brcm,bcm6348-spi
++          - brcm,bcm6358-spi
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: SPI master reference clock
++
++  clock-names:
++    items:
++      - const: spi
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@10000800 {
++        compatible = "brcm,bcm6368-spi", "brcm,bcm6358-spi";
++        reg = <0x10000800 0x70c>;
++        interrupts = <1>;
++        clocks = <&clkctl 9>;
++        clock-names = "spi";
++        num-cs = <5>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++    };
+diff --git a/Documentation/devicetree/bindings/spi/spi-bcm63xx.txt b/Documentation/devicetree/bindings/spi/spi-bcm63xx.txt
+deleted file mode 100644
+index 1c16f6692613..000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-bcm63xx.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Binding for Broadcom BCM6348/BCM6358 SPI controller
+-
+-Required properties:
+-- compatible: must contain one of "brcm,bcm6348-spi", "brcm,bcm6358-spi".
+-- reg: Base address and size of the controllers memory area.
+-- interrupts: Interrupt for the SPI block.
+-- clocks: phandle of the SPI clock.
+-- clock-names: has to be "spi".
+-- #address-cells: <1>, as required by generic SPI binding.
+-- #size-cells: <0>, also as required by generic SPI binding.
+-
+-Optional properties:
+-- num-cs: some controllers have less than 8 cs signals. Defaults to 8
+-  if absent.
+-
+-Child nodes as per the generic SPI binding.
+-
+-Example:
+-
+-	spi@10000800 {
+-		compatible = "brcm,bcm6368-spi", "brcm,bcm6358-spi";
+-		reg = <0x10000800 0x70c>;
+-
+-		interrupts = <1>;
+-
+-		clocks = <&clkctl 9>;
+-		clock-names = "spi";
+-
+-		num-cs = <5>;
+-
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d516295978a4..e3aae8887044 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4127,7 +4127,7 @@ BROADCOM BCM6348/BCM6358 SPI controller DRIVER
+ M:	Jonas Gorski <jonas.gorski@gmail.com>
+ L:	linux-spi@vger.kernel.org
+ S:	Odd Fixes
+-F:	Documentation/devicetree/bindings/spi/spi-bcm63xx.txt
++F:	Documentation/devicetree/bindings/spi/brcm,bcm63xx-spi.yaml
+ F:	drivers/spi/spi-bcm63xx.c
+ 
+ BROADCOM ETHERNET PHY DRIVERS
+-- 
+2.34.1
 
