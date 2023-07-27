@@ -2,175 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42CC765BCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22825765BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjG0TAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
+        id S231743AbjG0TAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbjG0TAU (ORCPT
+        with ESMTP id S231785AbjG0TAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:00:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD3D213A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690484369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uMOQdXUv2yVWKzk+yt3Uwzdo1xJhdejfXEHNT0nP2D4=;
-        b=hnDKKPVXtH2Kl49Ugtdpxda3aHoDgldsUkJF95vEFLlHM/J2dSWJYiMkudAdbsdXsSCIFu
-        4bVYaatkaHOpay+fBPmj0KdmncorKaeGnyUvr84/76+ieMfWzl0iikKOKLCayc2V57EOnx
-        NQ49gRTHwreWzmwSiPNmcXQUN7coXxw=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-KhrzhSWBOhKAKpKk_jZiDA-1; Thu, 27 Jul 2023 14:59:28 -0400
-X-MC-Unique: KhrzhSWBOhKAKpKk_jZiDA-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4862bf9cfeaso46006e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:59:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690484368; x=1691089168;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 27 Jul 2023 15:00:15 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A81E30C5;
+        Thu, 27 Jul 2023 12:00:14 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686f8614ce5so816740b3a.3;
+        Thu, 27 Jul 2023 12:00:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690484413; x=1691089213;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uMOQdXUv2yVWKzk+yt3Uwzdo1xJhdejfXEHNT0nP2D4=;
-        b=MPu0w7s+ikkv5o6CdLvKLmydjHM/RQmUXMbaISdJI5sh4Qdfbd7XqR2tmzE9oFAlPA
-         wlsp6F2SMsMKo7hxJHbBlIchFVf2BgE0H0ya3kajQpg5D/a6Q0pTmOFk7zBOe6NGBO3x
-         IJ6n26DgQdE9+KMlMixXD5jvGZyRoqJrXRcds7B02271floEehOofSmNftjL0hPZ7jIR
-         80ozZHcR9+pZhIJ4EP/bUduhckVbaMjwBzZ+f4XkrnfKVZ1CiL+orD+7j0J2TM0Qh2di
-         OhvRxLbIdC4xMlRKXKXo1Da3NGHPVU/MWTcSbtHIsxPLRrQ8WKzInAgRb6zPunAM1Lsm
-         u1IQ==
-X-Gm-Message-State: ABy/qLapUkoyrR0qr3naUYMHChVp4e9q0JIwI7WF3vVjISS/AFmk98W+
-        uMWpP1whqGBjmkIZbEfiWGbz0i3UDDeS3YtZxS1GOe6iuRL8NgSxGEN52uo/pe8CWdyhdSJH1su
-        jzIBlIaLAHm0Hzw1QOq7zXnl3
-X-Received: by 2002:a05:6122:985:b0:471:c1e9:f9bb with SMTP id g5-20020a056122098500b00471c1e9f9bbmr399988vkd.0.1690484367919;
-        Thu, 27 Jul 2023 11:59:27 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH8X06vYzK90HGV2bXKMhvJAhmCYwqU27IT+hrPEO9guKFDUgBmgYGePjsCNkSeDfXXAw2qsw==
-X-Received: by 2002:a05:6122:985:b0:471:c1e9:f9bb with SMTP id g5-20020a056122098500b00471c1e9f9bbmr399978vkd.0.1690484367623;
-        Thu, 27 Jul 2023 11:59:27 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id z4-20020a0cf244000000b0063cf8ae182esm613643qvl.60.2023.07.27.11.59.26
+        bh=HPGWKRpk2Fz9v/1VmZ5uRMYeY+s+4KXrK0E516edFpk=;
+        b=AH59uZ1P/rVgUKRK+i7ZyOlcwXYMicrqUtdshlHIuNmlX8fAMHL665Ty1oCVhsLPWT
+         RTLhcWN63EE8jZD2cGQV6w0xYkQ/zHBO+YcMiljBxCAjPeoQGw/lyq1E86xmQtj7LJz0
+         2XqaXLOfnRgQtD/Z9bjqCrMm58dF9L5c3j4wvLXvQNOFD7fnqBXAQiyOhIvRdmn04PeA
+         bYulhN8sTVVUaAt/ScZhw5m5e6BR9n9MSueGN9y2sZbdNKf+WBfvxoEYvEIouSc+lzqq
+         i7lXqBRM++pDfqPlhfof4HvBy6McIVhenm7M4XChlefbbXJMMY304ecGcZM0aIJr/UXq
+         /26A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690484413; x=1691089213;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HPGWKRpk2Fz9v/1VmZ5uRMYeY+s+4KXrK0E516edFpk=;
+        b=aIS/h8/ozEfORMdL3e9d6/0+4gHyCEiRPxDiiLfRIsS9/GpRYko25uuZmNK+b5vl9k
+         KuX4L0GF49mw0RLXr/aPOy4Lgpco24TyTlXytN+Zpj6tCOxlf2NbzwybBZ7yVvHyT6Gx
+         SEFCsR+jIHLF6nDh1zes+MIB1SnPz7DSDc0QGrYn85moU0YxuiyMj5q8z6g5QCQ5/7KL
+         F9sO+2HHL7n1fPEvJrhJgiU6SXJMdfya8L7cvl2HWzRgGQieTji2HPQJ1Dmt7TjqcMz/
+         j3pLvn+uz/qHWzFOhu2OQLlK8JXwWl+BWHmXLpsI7sLQnRLikW0abEalyguyNZrP3L+p
+         gc9A==
+X-Gm-Message-State: ABy/qLZjorAfbUPkXzSTWfZFL3cR33YbkPlNOoOJzY3qeiSfinlyYlm3
+        38bjetQugc9t9s2o9aNU1Q8=
+X-Google-Smtp-Source: APBJJlEipMIGnVsvgRGIsBE1HP21D6Nj42yo8XW274BgmYCtsKxyxVJkguXl54qu8myHzzuHxj3RQQ==
+X-Received: by 2002:a05:6a20:8f1e:b0:137:db14:e88b with SMTP id b30-20020a056a208f1e00b00137db14e88bmr7956946pzk.29.1690484413162;
+        Thu, 27 Jul 2023 12:00:13 -0700 (PDT)
+Received: from localhost ([2605:59c8:148:ba10:705d:54ca:a48d:47da])
+        by smtp.gmail.com with ESMTPSA id a9-20020a631a09000000b00563590be25esm1858427pga.29.2023.07.27.12.00.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 11:59:27 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 14:59:25 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     liubo <liubo254@huawei.com>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hughd@google.com, willy@infradead.org
-Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
- through /proc/pid/smaps
-Message-ID: <ZMK+jSDgOmJKySTr@x1n>
-References: <20230726073409.631838-1-liubo254@huawei.com>
- <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
- <ZMJt+VWzIG4GAjeb@x1n>
- <f49c2a51-4dd8-784b-57fa-34fb397db2b7@redhat.com>
- <ZMKJjDaqZ7FW0jfe@x1n>
- <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 12:00:12 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 12:00:10 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Adam Sindelar <adam@wowsignal.io>, bpf@vger.kernel.org
+Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Message-ID: <64c2bebadbbba_831d208b3@john.notmuch>
+In-Reply-To: <20230727083436.293201-1-adam@wowsignal.io>
+References: <20230727083436.293201-1-adam@wowsignal.io>
+Subject: RE: [PATCH bpf-next v4] libbpf: Expose API to consume one ring at a
+ time
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 07:27:02PM +0200, David Hildenbrand wrote:
-> > > 
-> > > This was wrong from the very start. If we're not in GUP, we shouldn't call
-> > > GUP functions.
-> > 
-> > My understanding is !GET && !PIN is also called gup.. otherwise we don't
-> > need GET and it can just be always implied.
+Adam Sindelar wrote:
+> We already provide ring_buffer__epoll_fd to enable use of external
+> polling systems. However, the only API available to consume the ring
+> buffer is ring_buffer__consume, which always checks all rings. When
+> polling for many events, this can be wasteful.
 > 
-> That's not the point. The point is that _arbitrary_ code shouldn't call into
-> GUP internal helper functions, where they bypass, for example, any sanity
-> checks.
-
-What's the sanity checks that you're referring to?
-
+> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
+> ---
+> v1->v2: Added entry to libbpf.map
+> v2->v3: Correctly set errno and handle overflow
+> v3->v4: Fixed an embarrasing typo from zealous autocomplete
 > 
-> > 
-> > The other proof is try_grab_page() doesn't fail hard on !GET && !PIN.  So I
-> > don't know whether that's "wrong" to be used..
-> > 
+>  tools/lib/bpf/libbpf.h   |  1 +
+>  tools/lib/bpf/libbpf.map |  1 +
+>  tools/lib/bpf/ringbuf.c  | 22 ++++++++++++++++++++++
+>  3 files changed, 24 insertions(+)
 > 
-> To me, that is arbitrary code using a GUP internal helper and, therefore,
-> wrong.
-> 
-> > Back to the topic: I'd say either of the patches look good to solve the
-> > problem.  If p2pdma pages are mapped as PFNMAP/MIXEDMAP (?), I guess
-> > vm_normal_page_pmd() proposed here will also work on it, so nothing I see
-> > wrong on 2nd one yet.
-> > 
-> > It looks nicer indeed to not have FOLL_FORCE here, but it also makes me
-> > just wonder whether we should document NUMA behavior for FOLL_* somewhere,
-> > because we have an implication right now on !FOLL_FORCE over NUMA, which is
-> > not obvious to me..
-> 
-> Yes, we probably should. For get_use_pages() and friends that behavior was
-> always like that and it makes sense: usually it represent application
-> behavior.
-> 
-> > 
-> > And to look more over that aspect, see follow_page(): previously we can
-> > follow a page for protnone (as it never applies FOLL_NUMA) but now it won't
-> > (it never applies FOLL_FORCE, either, so it seems "accidentally" implies
-> > FOLL_NUMA now).  Not sure whether it's intended, though..
-> 
-> That was certainly an oversight, thanks for spotting that. That patch was
-> not supposed to change semantics:
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 76d222ccc3ff..ac926e19ff72 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -851,6 +851,13 @@ struct page *follow_page(struct vm_area_struct *vma,
-> unsigned long address,
->         if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
->                 return NULL;
-> 
-> +       /*
-> +        * In contrast to get_user_pages() and friends, we don't want to
-> +        * fail if the PTE is PROT_NONE: see gup_can_follow_protnone().
-> +        */
-> +       if (!(foll_flags & FOLL_WRITE))
-> +               foll_flags |= FOLL_FORCE;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 55b97b2087540..20ccc65eb3f9d 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+>  				ring_buffer_sample_fn sample_cb, void *ctx);
+>  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+> +LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
+>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+>  
+>  struct user_ring_buffer_opts {
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 9c7538dd5835e..42dc418b4672f 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -398,4 +398,5 @@ LIBBPF_1.3.0 {
+>  		bpf_prog_detach_opts;
+>  		bpf_program__attach_netfilter;
+>  		bpf_program__attach_tcx;
+> +		ring_buffer__consume_ring;
+>  } LIBBPF_1.2.0;
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 02199364db136..457469fc7d71e 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -290,6 +290,28 @@ int ring_buffer__consume(struct ring_buffer *rb)
+>  	return res;
+>  }
+>  
+> +/* Consume available data from a single RINGBUF map identified by its ID.
+> + * The ring ID is returned in epoll_data by epoll_wait when called with
+> + * ring_buffer__epoll_fd.
+> + */
+> +int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
+> +{
+> +	struct ring *ring;
+> +	int64_t res;
 > +
->         page = follow_page_mask(vma, address, foll_flags, &ctx);
->         if (ctx.pgmap)
->                 put_dev_pagemap(ctx.pgmap);
+> +	if (ring_id >= rb->ring_cnt)
+> +		return libbpf_err(-EINVAL);
+> +
+> +	ring = &rb->rings[ring_id];
+> +	res = ringbuf_process_ring(ring);
+> +	if (res < 0)
+> +		return libbpf_err(res);
+> +
+> +	if (res > INT_MAX)
+> +		return INT_MAX;
+> +	return res;
 
-This seems to be slightly against your other solution though for smaps,
-where we want to avoid abusing FOLL_FORCE.. isn't it..
+Why not just return int64_t here? Then skip the INT_MAX check? I would
+just assume get the actual value if I was calling this.
 
-Why read only?  That'll always attach FOLL_FORCE to all follow page call
-sites indeed for now, but just curious - logically "I want to fetch the
-page even if protnone" is orthogonal to do with write permission here to
-me.
+> +}
+> +
+>  /* Poll for available data and consume records, if any are available.
+>   * Returns number of records consumed (or INT_MAX, whichever is less), or
+>   * negative number, if any of the registered callbacks returned error.
+> -- 
+> 2.39.2
+> 
+> 
 
-I still worry about further abuse of FOLL_FORCE, I believe you also worry
-that so you proposed the other way for the smaps issue.
-
-Do you think we can just revive FOLL_NUMA?  That'll be very clear to me
-from that aspect that we do still have valid use cases for it.
-
-The very least is if with above we should really document FOLL_FORCE - we
-should mention NUMA effects.  But that's ... really confusing. Thinking
-about that I personally prefer a revival of FOLL_NUMA, then smaps issue all
-go away.
-
-Thanks,
-
--- 
-Peter Xu
 
