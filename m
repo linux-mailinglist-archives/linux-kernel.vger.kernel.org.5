@@ -2,54 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAA2765FF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9055E765FFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjG0WxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S232542AbjG0Wyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbjG0WxD (ORCPT
+        with ESMTP id S233106AbjG0Wyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:53:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C629A3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:53:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA57161F50
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:53:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FD1C433C8;
-        Thu, 27 Jul 2023 22:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690498381;
-        bh=nccD0Mf6wU5sbJ5COVN/p0FKMBOhmCCUxaTQs85SCqw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=t/0s9ZMj4z70dOkGNrjMII3EjJTPEzzV5nIVm20v6HgGEhnEWJxOffzdNbfWNjjeT
-         PNLu1JgLK4zZ3zYhF4dwVNAPZPSCcxO5FsYnafndjX6muIEp98ZDRvTW1CR0oZwRSk
-         Yge5GKj2vEyQwZ0jMDa4Na2fxOnUTJYviYPFrS21NNJYEMG+uTmAoryZofn/b0c/Vw
-         F42P5sXjniepCZUWGlsRGBAvS3gqNq7XvwPKV9KeOvZCQGl4H2HaD58DoSjw5M7jrf
-         wYKo8oNwFbVUArRrwQD+X3fwQFFYXWKDw15Stv5b3Z7Rl5oqzlWSFPDZyejgjp/z7+
-         Fay54jzGP9HTA==
-From:   Mark Brown <broonie@kernel.org>
-To:     oder_chiou@realtek.com,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-In-Reply-To: <20230727021632.88912-1-jiapeng.chong@linux.alibaba.com>
-References: <20230727021632.88912-1-jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: rt1017: Remove unused function
-Message-Id: <169049837934.173381.10017429412134576375.b4-ty@kernel.org>
-Date:   Thu, 27 Jul 2023 23:52:59 +0100
+        Thu, 27 Jul 2023 18:54:44 -0400
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FE12113;
+        Thu, 27 Jul 2023 15:54:43 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 22:54:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1690498478; x=1690757678;
+        bh=ZM2MxAETSRwIlgrl0T63dARbFrBqIf2rAhBEukPah0I=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=k2v1NyplU7U9MVHuxmB62DgXjrMW1NPd1fEmnaTWcESSYOisZeOkoU/wJSvILBPXz
+         ByEEa7zA9oxsrLgWXSYaumF1ZXSlfZm5+PPv5vfA4SofPD2fs9USIIAliVxcbzVNnB
+         Kfzmeq//96bKyPBgjA1Ee/ODMUiF0f5Lc98NxesPmvRbK+WqGXE1H8ywaICcvB5ADm
+         9E4x1/R24ONLa92DPR+YX7BHMc83YwxXx/bw0/2APDqvkRpAAR0Af086cQ9CciERYA
+         S4yYnG9Kjz5PT4Y6oMAIdvKLe1LpPMZMqniVzN/2Mj1ukkN3bjOMFjK1buum0rfOFj
+         URybea5NBh3Ag==
+To:     Hans de Goede <hdegoede@redhat.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>, Armin Wolf <W_Armin@gmx.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [RFC PATCH v1] platform/x86: wmi: Do not register driver with invalid GUID
+Message-ID: <pjVZC4te3dWaMwoS7jB1-n4z390Ohz0mvuCCUZHwiXlZVMjzwySf_DMa49RDmbhzfvkzRY3FI8zQ0xltNimu-GpBAqJ2Kc3SENu_fwJDJ7E=@protonmail.com>
+In-Reply-To: <efe4b91f-2602-2115-738e-bb99b42ec5b6@redhat.com>
+References: <20230715211604.1272227-1-pobrn@protonmail.com> <efe4b91f-2602-2115-738e-bb99b42ec5b6@redhat.com>
+Feedback-ID: 20568564:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,39 +51,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 10:16:32 +0800, Jiapeng Chong wrote:
-> The function are defined in the rt1017-sdca-sdw.h file, but not called
-> elsewhere, so delete the unused functions.
-> 
-> sound/soc/codecs/rt1017-sdca-sdw.h:183:33: warning: ‘rt1017_sdca_mbq_defaults’ defined but not used.
-> 
-> 
+Hi
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+2023. j=C3=BAlius 26., szerda 10:45 keltez=C3=A9ssel, Hans de Goede <hdegoe=
+de@redhat.com> =C3=ADrta:
 
-Thanks!
 
-[1/1] ASoC: rt1017: Remove unused function
-      commit: 8f59c7ed230784ca914c98e250c65768b71d5de4
+> [...]
+> On 7/15/23 23:24, Barnab=C3=A1s P=C5=91cze wrote:
+> > Since a WMI driver's ID table contains strings it is relatively
+> > easy to make mistakes. At the moment, there is no feedback
+> > if any of the specified GUIDs are invalid (since
+> > 028e6e204ace1f080cfeacd72c50397eb8ae8883).
+> >
+> > So check if the GUIDs in the driver's ID table are valid,
+> > print all invalid ones, and refuse to register the driver
+> > if any of the GUIDs are invalid.
+> >
+> > Signed-off-by: Barnab=C3=A1s P=C5=91cze <pobrn@protonmail.com>
+>=20
+> Thank you for working on this!
+>=20
+> About the do this here, vs do this in file2alias.c discussion,
+> we have many old style WMI drivers which are not covered by
+> the check you are adding for the new style WMI bus driver.
+>=20
+> So I think having a check in file2alias.c would be a very good
+> thing to have. AFAICT that would also cause compile time
+> failures rather then the run-time errors your current approach
+> results in.
+>=20
+> I think that having an additional check like the one which you
+> propose has some value too, even if it is just to cover drivers
+> which for some reason don't use `MODULE_DEVICE_TABLE()`, but IMHO
+> the most important check to have is a check in file2alias.c .
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Okay... any tips on how to avoid copying `uuid_is_valid()`?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Another idea I had was that maybe `struct wmi_device_id::guid_string` needs=
+ to be
+changed to be `guid_t` and then `GUID_INIT()` or something similar could be=
+ used
+to initialize it. That way it is impossible to mess up the format. The only=
+ downside
+I can see is that guid is no longer "grep-able".
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Regards,
+Barnab=C3=A1s P=C5=91cze
