@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7C2765A66
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECA3765A68
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjG0Rdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        id S230031AbjG0Rel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjG0Rdd (ORCPT
+        with ESMTP id S229915AbjG0Rej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:33:33 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEB3B5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:33:31 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fba03becc6so3142603e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690479210; x=1691084010;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=icO3d3uWVI1Ske0MIHcKUIP285+5TQhyvGKynKcarCg=;
-        b=UghMswEkqCLq7uFW0vg1z0BCw4oUeIeSnbl7RRVXmD+R4LSrBowDwJ2xk4rBk/1c3N
-         YVcSqboHoiKkB54P3hXlJZfbr6wTvzZBtZvjMump/NpjjuE2Cvb/3G2+r+2Zdib0o/O2
-         EIkq5mkmozwuiBAJ7bztpa+UXln0i8suBJKJbi2VvNwlPJFYhvk+NLNPf2ecwds/QnbA
-         PNSLX8ihTygl7/ACrKad7aIoL2qPhLCgtBCW2jFPYiQ91FH22K7bvs4hpkidx/mNykqf
-         aJCm/sBp5AyvV+ME9S2eODDb+PPR6ID4Vn9FX54ONbs3VXRmWLe1RVDAYAYDvgpjozb4
-         s2Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690479210; x=1691084010;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=icO3d3uWVI1Ske0MIHcKUIP285+5TQhyvGKynKcarCg=;
-        b=TDUUgPsOxGuw1J00zxn2bdAlzdcZ84FYPPXh+mmHMScHGq/4BDmNJfuRhM0Ok0Pjnt
-         obDbLlM9y9vvlf1XP0ptBt+TVxjHbUqKcTHvlQMtbshT2doJZzsLi7Jdh2zhVofBHV4s
-         8nLNz8KDTRwinButmJcX36v0MO2Q/yj79qRBlKhF/+6XZCOM8WvllOSeqJz7I4Ngd5li
-         2oSgNO6YeHV4Tc5Q7hk8l8jWsy0P0I02NXsvO3+hAKNTbSskkq0tG70NaRW7Bo1S/WQ7
-         JmjiYOSgHXFREKCx3Xmm0aoJojI6Anj/Qa2AmwSRe8XShmv/bdk3C+VuZxjhNjMzPXjP
-         Y9Bg==
-X-Gm-Message-State: ABy/qLYgW42ljJt9AC2+R9vuXS/Rn4fDlBDg54ArnBMKJ/J5Kk76CAr4
-        EwynjbWlv3ZrFJIuwuXFAreEOw==
-X-Google-Smtp-Source: APBJJlENla/qWI/wubCIydlyspuaQuIsyTFQVi7DDpSPzq+fSIyNg8Oh8dUZnwie0i6o4USOpEQXOA==
-X-Received: by 2002:ac2:57c8:0:b0:4fd:f6db:a7d9 with SMTP id k8-20020ac257c8000000b004fdf6dba7d9mr2060lfo.32.1690479210117;
-        Thu, 27 Jul 2023 10:33:30 -0700 (PDT)
-Received: from [192.168.1.101] (abxi99.neoplus.adsl.tpnet.pl. [83.9.2.99])
-        by smtp.gmail.com with ESMTPSA id g4-20020a19ac04000000b004fe07f06337sm412089lfc.53.2023.07.27.10.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 10:33:28 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 27 Jul 2023 19:33:23 +0200
-Subject: [PATCH v5 3/3] remoteproc: qcom: pas: Add SM6375 MPSS
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Thu, 27 Jul 2023 13:34:39 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D223730E1;
+        Thu, 27 Jul 2023 10:34:35 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RH3Q53010927;
+        Thu, 27 Jul 2023 17:34:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=b1yT2kjr3CfqZGpukbGWQyFlNKOuqm/gluqOWykxj+w=;
+ b=ksllpvp++DLS65B56txnLjeBd9PdwDnrTvvChEyrILWhf2+wOXijEWO0pkxrMFyRdGLG
+ 5ubNfK/XrQVo0/HgkBhQo9iKq33yvzf//zvCb/HHZjJzCmZ4hC3yW9gQCSWJQGYHWusD
+ RN3GwSwIBCXQ6rF0HqaJ2QCGIF6MYWicY9IRyuw3rHqrXBKl1yh+5jXToisecGQdWRMv
+ JJhMaKQH+cvY69gPXGmG5VJ5M+w6QRKGPfxt+hqF/K18TRXIvPcj47bS6qlO03PoH+bv
+ W5Sb+tcopDtS2vyK7H1PMtX9dfFIeYhi1hxs7r3AgQW+PRiKtEHzuyu7bpX7sPag0y9B Fw== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3v12tjgw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 17:34:34 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36RGW9es002132;
+        Thu, 27 Jul 2023 17:34:33 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0unjy2a2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 17:34:33 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36RHYXUa60555574
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jul 2023 17:34:33 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D26258055;
+        Thu, 27 Jul 2023 17:34:33 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5B4F58043;
+        Thu, 27 Jul 2023 17:34:32 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.140.89])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Jul 2023 17:34:32 +0000 (GMT)
+Message-ID: <dc76cbf58bad422bf18de0d954c52b3a022e4199.camel@linux.ibm.com>
+Subject: Re: [PATCH] ima: Remove deprecated IMA_TRUSTED_KEYRING Kconfig
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Nayna Jain <nayna@linux.ibm.com>,
+        "linux-integrity @ vger . kernel . org" 
+        <linux-integrity@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Date:   Thu, 27 Jul 2023 13:34:32 -0400
+In-Reply-To: <20230711164447.714035-1-nayna@linux.ibm.com>
+References: <20230711164447.714035-1-nayna@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230725-topic-6375_rproc-v5-3-a8e9cde56a20@linaro.org>
-References: <20230725-topic-6375_rproc-v5-0-a8e9cde56a20@linaro.org>
-In-Reply-To: <20230725-topic-6375_rproc-v5-0-a8e9cde56a20@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690479202; l=1570;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=sj7Uy3Esp9/kv46p/vCH0qMBjFc8YM0n5pfjJE2JRcc=;
- b=pwCv/rsLcc3qhJEeFtI+WrIDbwPG+xDQNkdjonSUEWRcDMWOxqw6LamKTxlr5pRFwGeBJZl6C
- 28XhYu1QvlKCk6fdUsPaJ9if6YEffEAsLoY5D3x1lj3hPWevlUYXCJ2
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HPvSWOS_u0VhrEDVULeL2y3x0_OZxJo-
+X-Proofpoint-GUID: HPvSWOS_u0VhrEDVULeL2y3x0_OZxJo-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 mlxlogscore=664 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270159
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,48 +87,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a config for the MPSS present on SM6375.
+On Tue, 2023-07-11 at 12:44 -0400, Nayna Jain wrote:
+> Time to remove "IMA_TRUSTED_KEYRING".
+> 
+> Fixes: f4dc37785e9b ("integrity: define '.evm' as a builtin 'trusted' keyring") # v4.5+
+> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 0d58b5be9a77..1c87ae9cec9e 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -813,6 +813,21 @@ static const struct adsp_data sm6350_adsp_resource = {
- 	.ssctl_id = 0x14,
- };
- 
-+static const struct adsp_data sm6375_mpss_resource = {
-+	.crash_reason_smem = 421,
-+	.firmware_name = "modem.mdt",
-+	.pas_id = 4,
-+	.minidump_id = 3,
-+	.auto_boot = false,
-+	.proxy_pd_names = (char*[]){
-+		"cx",
-+		NULL
-+	},
-+	.ssr_name = "mpss",
-+	.sysmon_name = "modem",
-+	.ssctl_id = 0x12,
-+};
-+
- static const struct adsp_data sm8150_adsp_resource = {
- 		.crash_reason_smem = 423,
- 		.firmware_name = "adsp.mdt",
-@@ -1182,6 +1197,7 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,sm6350-mpss-pas", .data = &mpss_resource_init},
- 	{ .compatible = "qcom,sm6375-adsp-pas", .data = &sm6350_adsp_resource},
- 	{ .compatible = "qcom,sm6375-cdsp-pas", .data = &sm8150_cdsp_resource},
-+	{ .compatible = "qcom,sm6375-mpss-pas", .data = &sm6375_mpss_resource},
- 	{ .compatible = "qcom,sm8150-adsp-pas", .data = &sm8150_adsp_resource},
- 	{ .compatible = "qcom,sm8150-cdsp-pas", .data = &sm8150_cdsp_resource},
- 	{ .compatible = "qcom,sm8150-mpss-pas", .data = &mpss_resource_init},
+Thanks, Nayna.   The patch is now queued in next-integrity-testing.
 
 -- 
-2.41.0
+thanks,
+
+Mimi
 
