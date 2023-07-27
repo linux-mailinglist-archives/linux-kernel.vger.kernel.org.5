@@ -2,236 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49964765A8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4626765A97
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjG0RjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36982 "EHLO
+        id S232107AbjG0RkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjG0RjX (ORCPT
+        with ESMTP id S230009AbjG0RkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:39:23 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BD219B5;
-        Thu, 27 Jul 2023 10:39:22 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-783549ef058so49627439f.2;
-        Thu, 27 Jul 2023 10:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690479561; x=1691084361;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mD7Ec40nx1InO1mj1sK16jFptJuYvMWAhJeXyIbeA3M=;
-        b=Hxk1ZfaalrnceoH6uTLtQ+6q7om/j585QiwZq3MvyxOfwZIvrCEHHVDBcroQ6tBBFl
-         wavfyRLx5vN9Jk4/GszclbYn0WebE5j31oNTtbja8jPqA5xjrzjd34vZkhGrC1YPup/4
-         tRsL0KlocvjXWspc0poDn4HBOTRHoG24EDO6fUCNvx5eZWlNzfutObia9ebcIP53EoRI
-         shP1hfvZnzWabk3tX6rFfgxNqpT1J1SGUrxINaMaPi7HV6m5XWiUNI66d/G9NF6xMotH
-         J17kwNnqb1BiYz1P9e1pYa4Po4NzYorm9e40qpLLQYBKFBHHhosYBsZ8aA5K2DDuXuQJ
-         tzOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690479561; x=1691084361;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mD7Ec40nx1InO1mj1sK16jFptJuYvMWAhJeXyIbeA3M=;
-        b=V7kcWzI2nCS4q0CH63/CoOOa6lTIElE3+KcmXu3qydzdu6O8TFjqyMzJGpvcX2/QaV
-         FESq9HYhRzLqjX7/I2pBw80//NY5XVjUDuC3gdKDBN4NL/WCeP100ZEtJwT/0u47nA3e
-         PhhedNNracsQCVa7tgdsQ5jBqflHChJiOJKcRtOacjIZxiwmIwjEQbu5C/Mkh1wblrwm
-         D3mjvcF2fM5RnpWSah8SwzwbIqVoyXC81Ku+wlbhJm1GRaHLhAxKeZhZgnQGUAU602IE
-         NChdI7qmNbXxHfFTmE+qUZe2LlW/Kt1pw4gcTRnO9tBvyhKwPU6ydtrx6W/eIJNBVowH
-         swaw==
-X-Gm-Message-State: ABy/qLZ56/kAoltUqtmd8HQejDO3Ls/UUAiQM5BdXLoDIJRCjzL560Lm
-        0pV891VRgHSdQVzknO2+cBI=
-X-Google-Smtp-Source: APBJJlH7IW0hhv0wW+O2QV239cTgAZ/nOWX/T4X6e0QWGiiGCIKSvFqw62CJpUymCRfCjX7+hC4FJA==
-X-Received: by 2002:a6b:7116:0:b0:787:1990:d2e2 with SMTP id q22-20020a6b7116000000b007871990d2e2mr221526iog.10.1690479560903;
-        Thu, 27 Jul 2023 10:39:20 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h3-20020a02c723000000b0041fb2506011sm542842jao.172.2023.07.27.10.39.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 10:39:20 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <2f4b012e-1f95-30aa-3f43-c31e84cb2c42@roeck-us.net>
-Date:   Thu, 27 Jul 2023 10:39:17 -0700
+        Thu, 27 Jul 2023 13:40:06 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61E22D68;
+        Thu, 27 Jul 2023 10:40:04 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4RBdM30HVhz9t9v;
+        Thu, 27 Jul 2023 19:39:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1690479599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GQKpQzTtuTgmV4ZqIE3KcLbmLNqhQUqywqcDE85QggY=;
+        b=LebiUGvnmtqBMdP9UCAXiJ1Pl3CSQBkvviLbrj5UXcmxN5/WOT3jGv4M6e/OMZFj1IjTTh
+        q92VoAmt1GCyjvN9SWRIRmkkq0G+4f6DJyWrJJ7Ci5EL+qPRpEuF8iCJgNq2ZkvB4YIsg9
+        5z5DAqtXdnKbOtKaN6f4KCLgSwczrTdk/5G6CdujS8OwaweZAlRUCP2subTKn8iMslIiKN
+        NFtlIHVzPl+Wvr4O77YPZUlEefc00Y27y+Il6NsHRe4p4cev83K/+LGgsj27HdU32FLMuM
+        RtguNMSI0mT10u6+If44Y+VD0IboQGWEKQZ9Ivg9QxsTS7dtAOJEy7ZntsHvWw==
+Date:   Fri, 28 Jul 2023 03:39:30 +1000
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, James.Bottomley@hansenpartnership.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        axboe@kernel.dk, benh@kernel.crashing.org, borntraeger@de.ibm.com,
+        bp@alien8.de, catalin.marinas@arm.com, christian@brauner.io,
+        dalias@libc.org, davem@davemloft.net, deepa.kernel@gmail.com,
+        deller@gmx.de, dhowells@redhat.com, fenghua.yu@intel.com,
+        fweimer@redhat.com, geert@linux-m68k.org, glebfm@altlinux.org,
+        gor@linux.ibm.com, hare@suse.com, hpa@zytor.com,
+        ink@jurassic.park.msu.ru, jhogan@kernel.org, kim.phillips@arm.com,
+        ldv@altlinux.org, linux-alpha@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux@armlinux.org.uk,
+        linuxppc-dev@lists.ozlabs.org, luto@kernel.org, mattst88@gmail.com,
+        mingo@redhat.com, monstr@monstr.eu, mpe@ellerman.id.au,
+        namhyung@kernel.org, paulus@samba.org, peterz@infradead.org,
+        ralf@linux-mips.org, sparclinux@vger.kernel.org, stefan@agner.ch,
+        tglx@linutronix.de, tony.luck@intel.com, tycho@tycho.ws,
+        will@kernel.org, x86@kernel.org, ysato@users.sourceforge.jp,
+        Palmer Dabbelt <palmer@sifive.com>
+Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
+Message-ID: <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
+References: <cover.1689074739.git.legion@kernel.org>
+ <cover.1689092120.git.legion@kernel.org>
+ <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
+ <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
+ <ZMEjlDNJkFpYERr1@example.org>
+ <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
- <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
- <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
- <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
- <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-In-Reply-To: <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e7zcgctqub3jhgoj"
+Content-Disposition: inline
+In-Reply-To: <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
+X-Rspamd-Queue-Id: 4RBdM30HVhz9t9v
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 09:07, Paul E. McKenney wrote:
 
-...]
+--e7zcgctqub3jhgoj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> No. However, (unrelated) in linux-next, rcu tests sometimes result in apparent hangs
->> or long runtime.
->>
->> [    0.778841] Mount-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
->> [    0.779011] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
->> [    0.797998] Running RCU synchronous self tests
->> [    0.798209] Running RCU synchronous self tests
->> [    0.912368] smpboot: CPU0: AMD Opteron 63xx class CPU (family: 0x15, model: 0x2, stepping: 0x0)
->> [    0.923398] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
->> [    0.925419] Running RCU-tasks wait API self tests
->>
->> (hangs until aborted). This is primarily with Opteron CPUs, but also with others such as Haswell,
->> Icelake-Server, and pentium3. It is all but impossible to bisect because it doesn't happen
->> all the time. All I was able to figure out was that it has to do with rcu changes in linux-next.
->> I'd be much more concerned about that.
-> 
-> First I have heard of this, so thank you for letting me know.
-> 
-> About what fraction of the time does this happen?
-> 
+On 2023-07-28, Aleksa Sarai <cyphar@cyphar.com> wrote:
+> On 2023-07-26, Alexey Gladkov <legion@kernel.org> wrote:
+> > On Wed, Jul 26, 2023 at 02:36:25AM +1000, Aleksa Sarai wrote:
+> > > On 2023-07-11, Alexey Gladkov <legion@kernel.org> wrote:
+> > > > On the userspace side fchmodat(3) is implemented as a wrapper
+> > > > function which implements the POSIX-specified interface. This
+> > > > interface differs from the underlying kernel system call, which doe=
+s not
+> > > > have a flags argument. Most implementations require procfs [1][2].
+> > > >=20
+> > > > There doesn't appear to be a good userspace workaround for this iss=
+ue
+> > > > but the implementation in the kernel is pretty straight-forward.
+> > > >=20
+> > > > The new fchmodat2() syscall allows to pass the AT_SYMLINK_NOFOLLOW =
+flag,
+> > > > unlike existing fchmodat.
+> > > >=20
+> > > > [1] https://sourceware.org/git/?p=3Dglibc.git;a=3Dblob;f=3Dsysdeps/=
+unix/sysv/linux/fchmodat.c;h=3D17eca54051ee28ba1ec3f9aed170a62630959143;hb=
+=3Da492b1e5ef7ab50c6fdd4e4e9879ea5569ab0a6c#l35
+> > > > [2] https://git.musl-libc.org/cgit/musl/tree/src/stat/fchmodat.c?id=
+=3D718f363bc2067b6487900eddc9180c84e7739f80#n28
+> > > >=20
+> > > > Co-developed-by: Palmer Dabbelt <palmer@sifive.com>
+> > > > Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+> > > > Signed-off-by: Alexey Gladkov <legion@kernel.org>
+> > > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > > ---
+> > > >  fs/open.c                | 18 ++++++++++++++----
+> > > >  include/linux/syscalls.h |  2 ++
+> > > >  2 files changed, 16 insertions(+), 4 deletions(-)
+> > > >=20
+> > > > diff --git a/fs/open.c b/fs/open.c
+> > > > index 0c55c8e7f837..39a7939f0d00 100644
+> > > > --- a/fs/open.c
+> > > > +++ b/fs/open.c
+> > > > @@ -671,11 +671,11 @@ SYSCALL_DEFINE2(fchmod, unsigned int, fd, umo=
+de_t, mode)
+> > > >  	return err;
+> > > >  }
+> > > > =20
+> > > > -static int do_fchmodat(int dfd, const char __user *filename, umode=
+_t mode)
+> > > > +static int do_fchmodat(int dfd, const char __user *filename, umode=
+_t mode, int lookup_flags)
+> > >=20
+> > > I think it'd be much neater to do the conversion of AT_ flags here and
+> > > pass 0 as a flags argument for all of the wrappers (this is how most =
+of
+> > > the other xyz(), fxyz(), fxyzat() syscall wrappers are done IIRC).
+> >=20
+> > I just addressed the Al Viro's suggestion.
+> >=20
+> > https://lore.kernel.org/lkml/20190717014802.GS17978@ZenIV.linux.org.uk/
+>=20
+> I think Al misspoke, because he also said "pass it 0 as an extra
+> argument", but you actually have to pass LOOKUP_FOLLOW from the
+> wrappers. If you look at how faccessat2 and faccessat are implemented,
+> it follows the behaviour I described.
+>=20
+> > > >  {
+> > > >  	struct path path;
+> > > >  	int error;
+> > > > -	unsigned int lookup_flags =3D LOOKUP_FOLLOW;
+> > > > +
+> > > >  retry:
+> > > >  	error =3D user_path_at(dfd, filename, lookup_flags, &path);
+> > > >  	if (!error) {
+> > > > @@ -689,15 +689,25 @@ static int do_fchmodat(int dfd, const char __=
+user *filename, umode_t mode)
+> > > >  	return error;
+> > > >  }
+> > > > =20
+> > > > +SYSCALL_DEFINE4(fchmodat2, int, dfd, const char __user *, filename,
+> > > > +		umode_t, mode, int, flags)
+> > > > +{
+> > > > +	if (unlikely(flags & ~AT_SYMLINK_NOFOLLOW))
+> > > > +		return -EINVAL;
+> > >=20
+> > > We almost certainly want to support AT_EMPTY_PATH at the same time.
+> > > Otherwise userspace will still need to go through /proc when trying to
+> > > chmod a file handle they have.
+> >=20
+> > I'm not sure I understand. Can you explain what you mean?
+>=20
+> You should add support for AT_EMPTY_PATH (LOOKUP_EMPTY) as well as
+> AT_SYMLINK_NOFOLLOW. It would only require something like:
+>=20
+> 	unsigned int lookup_flags =3D LOOKUP_FOLLOW;
+>=20
+> 	if (flags & ~(AT_EMPTY_PATH | AT_SYMLINK_NOFOLLOW))
+> 		return -EINVAL;
+>=20
+> 	if (flags & AT_EMPTY_PATH)
+> 		lookup_flags |=3D LOOKUP_EMPTY;
+> 	if (flags & AT_SYMLINK_NOFOLLOW)
+> 		lookup_flags &=3D ~LOOKUP_FOLLOW;
+>=20
+> 	/* ... */
+>=20
+> This would be effectively equivalent to fchmod(fd, mode). (I was wrong
+> when I said this wasn't already possible -- I forgot about fchmod(2).)
 
-Here is a sample test log from yesterday's -next. This is with x86_64.
-Today's -next always crashes, so no data.
+=2E.. with the exception (as Christian mentioned) of O_PATH descriptors.
+However, there are two counter-points to this:
 
-Building x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ... running ....... passed
-Building x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd ... running .................R....... passed
-Building x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd ... running ...... passed
-Building x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:hd ... running ......... passed
-Building x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd ... running ....... passed
-Building x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd ... running .................R.... passed
-Building x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem4G:sdhci:mmc:hd ... running ....... passed
-Building x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53C974]:hd ... running ....... passed
-Building x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem1G:scsi[53C810]:cd ... running .................R........... passed
-Building x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:efi32:mem2G:scsi[53C895A]:hd ... running ............. passed
-Building x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSION]:hd ... running ..................R.......... passed
-Building x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi[MEGASAS]:hd ... running ....... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[MEGASAS2]:hd ... running ...... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running .................R.............. failed (silent)
-Building x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running .......... passed
-Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd ... running ........ passed
-Building x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ... running ...... passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci]:hd ... running .................R................. passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci-old]:hd ... running ................... passed
-Building x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd ... running ......... passed
-Building x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd ... running .................R... passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:mem2G:virtio:cd ... running ......... passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:nvme:hd ... running ...... passed
-Building x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:efi32:mem1G:sdhci:mmc:hd ... running ...... passed
-Building x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:initrd ... running ...... passed
-Building x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C810]:hd ... running ....... passed
-Building x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd ... running ......... passed
-Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd ... running ....................R................. failed (silent)
-Building x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd ... running .....................R....... passed
-Building x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:ata:hd ... running .................R.............. failed (silent)
+ * fchownat(AT_EMPTY_PATH) exists but fchown() doesn't work on O_PATH
+   descriptors *by design* (according to open(2)).
+ * chmod(/proc/self/fd/$n) works on O_PATH descriptors, meaning this
+   behaviour is already allowed and all that AT_EMPTY_PATH would do is
+   allow programs to avoid depending on procfs for this.
 
-An earlier test run:
+FWIW, I agree with Christian that these behaviours are not ideal (and
+I'm working on a series that might allow for these things to be properly
+blocked in the future) but there's also the consistency argument -- I
+don't think fchownat() is much safer to allow in this way than
+fchmodat() and (again) this behaviour is already possible through
+procfs.
 
-Building x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ... running ....... passed
-Building x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd ... running .................R....... passed
-Building x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd ... running ........ passed
-Building x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:hd ... running .......... passed
-Building x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd ... running ....... passed
-Building x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd ... running .................R.... passed
-Building x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem4G:sdhci:mmc:hd ... running ....... passed
-Building x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:hd ... running ......... passed
-Building x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53C974]:hd ... running ........ passed
-Building x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem1G:scsi[53C810]:cd ... running .......... passed
-Building x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:efi32:mem2G:scsi[53C895A]:hd ... running .................R..... passed
-Building x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSION]:hd ... running .................R.............. failed (silent)
-Building x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi[MEGASAS]:hd ... running ....... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[MEGASAS2]:hd ... running ....... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running ....... passed
-Building x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running .......... passed
-Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd ... running ........ passed
-Building x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ... running ...... passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci]:hd ... running .......... passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci-old]:hd ... running .......... passed
-Building x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd ... running ...... passed
-Building x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd ... running ...... passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:mem2G:virtio:cd ... running ......... passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:nvme:hd ... running ....... passed
-Building x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:efi32:mem1G:sdhci:mmc:hd ... running ....... passed
-Building x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:initrd ... running ....... passed
-Building x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C810]:hd ... running ........ passed
-Building x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd ... running ......... passed
-Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd ... running ....................R................. failed (silent)
-Building x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd ... running ....... passed
-Building x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:ata:hd ... running ....... passed
+Ultimately, we can always add AT_EMPTY_PATH later. It just seemed like
+an obvious omission to me that would be easy to resolve.
 
-"R" means retry, and the dots reflect time expired. It looks like it happens most of the time,
-but not always, on affected CPUs. I don't have specific data for non-Intel CPUs. I don't think
-I see the problem there, but there is too much interference from other problems to be sure.
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
 
-For comparison, here is the result from the latest mainline:
+--e7zcgctqub3jhgoj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Building x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ... running ....... passed
-Building x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd ... running .......... passed
-Building x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd ... running ...... passed
-Building x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:hd ... running ......... passed
-Building x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd ... running ........... passed
-Building x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd ... running ........ passed
-Building x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem4G:sdhci:mmc:hd ... running ....... passed
-Building x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC395]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974]:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53C974]:hd ... running ....... passed
-Building x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem1G:scsi[53C810]:cd ... running .......... passed
-Building x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:efi32:mem2G:scsi[53C895A]:hd ... running ....... passed
-Building x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSION]:hd ... running ............. passed
-Building x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi[MEGASAS]:hd ... running ....... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[MEGASAS2]:hd ... running ....... passed
-Building x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running ...... passed
-Building x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2]:hd ... running ......... passed
-Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd ... running ......... passed
-Building x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ... running ......... passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci]:hd ... running ......... passed
-Building x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-pci-old]:hd ... running ......... passed
-Building x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd ... running ...... passed
-Building x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd ... running ....... passed
-Building x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd ... running ...... passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:mem2G:virtio:cd ... running ............ passed
-Building x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:nvme:hd ... running ....... passed
-Building x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:efi32:mem1G:sdhci:mmc:hd ... running ...... passed
-Building x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:initrd ... running ...... passed
-Building x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C810]:hd ... running ....... passed
-Building x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd ... running .......... passed
-Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd ... running .......... passed
-Building x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd ... running ...... passed
-Building x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:ata:hd ... running ...... passed
+-----BEGIN PGP SIGNATURE-----
 
-Guenter
+iHQEABYKAB0WIQS2TklVsp+j1GPyqQYol/rSt+lEbwUCZMKr0QAKCRAol/rSt+lE
+bxOTAPjqvyH1UP+6mwe27KnhSozfZ2ESIjoNHwsnKv4yQR4pAP9MxrQ+haWjNEfZ
+ZZDcWZoKyujVbOOH33jx88GCIDrFDQ==
+=2N8j
+-----END PGP SIGNATURE-----
 
+--e7zcgctqub3jhgoj--
