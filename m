@@ -2,162 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B016765011
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD10765015
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbjG0Jmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S231882AbjG0Jnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233919AbjG0JmN (ORCPT
+        with ESMTP id S232227AbjG0Jng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:42:13 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19FE11D;
-        Thu, 27 Jul 2023 02:40:52 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R3rD6p017424;
-        Thu, 27 Jul 2023 09:40:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=y6/44QTLWbiB4LbDr07Sx5U/16Pd/jpvUSpYN2bQdxs=;
- b=gYZt2ZfL6LwJWxxUVjny7lpsOUcdJMhhb+CVn0tYn0sust3Iz3x9DgdaT653JCGBu24V
- 3LtDSRcRuW/Sd1zqJbNtyPIGlQuR1+AaaB398k9gEocN/CCWyJAd7Dw55xq8tpclSRDr
- ohiSPviFBHaZPktl4LIAjovPEJf/cXDekvBZrQe5ewFh9LIF24HE3sl5gQK1xUSE2aBH
- nPbwLvm1GVr2W4rgB0UDGZupHvcvec9yw90qZufPG9rARXA53lfeaSYFxCv1IaSjcHb9
- w9TPQoLH1wonveNP98ztMgbiB0SDkxGX/csXvZrsxHcA3g/3I0lLBQtbCFzBSuRhjO8n Iw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3b0g19be-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:40:46 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R9egR2005800
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 09:40:42 GMT
-Received: from [10.253.74.152] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 02:40:38 -0700
-Message-ID: <a9199018-cbc4-e545-5321-ebc2d3096ff3@quicinc.com>
-Date:   Thu, 27 Jul 2023 17:40:36 +0800
+        Thu, 27 Jul 2023 05:43:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D73F2D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:41:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690450918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lfjeYG5xLJPz3EzsvfUrell+1AE3g43fvMdVtQbwndE=;
+        b=gNNNXxwhhT23prUow+C3vO4+lhmK8GHuuBDBpXJpagcPlqURosdRISOnVYwjrlU8NLLgyF
+        ISagFA7z5OpaezCzwYQCmpNMekM8n8ALNAQGg10n/vBoNDH3gpoDkWJFBLaYD/dKk/YRmS
+        5Go2EeClmPqS2+kAbV7rtGV6wFUfs7E=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-400-rYNgnKO9PkyVvgZwHtCzRw-1; Thu, 27 Jul 2023 05:41:57 -0400
+X-MC-Unique: rYNgnKO9PkyVvgZwHtCzRw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b97f342349so6727111fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:41:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690450916; x=1691055716;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lfjeYG5xLJPz3EzsvfUrell+1AE3g43fvMdVtQbwndE=;
+        b=U483lFjP+cKA6mIncChuaia+kk5tqosibMqndoNK2V8yv+P3qS+lKejDyAR2z5B84W
+         njiyA5CXT5bDnncATfRSdDPZNGLiDJdmLUOeJUW6Fb9/fxpIm6V+ZecM7hnALfRkUxSY
+         rskpE+brNMpPq2eoyF+Wy65h0iO9Q/JPrgJYp6nThVjGEKy7e4Q1MazHw4SK5RkxDhTV
+         hnwxHDCFZ2SS3QYIB4e1Nkm3D8/38BL629NKlzvw84g8Za3dyftYalyxSwYzJV+gT7jP
+         uy7HnYxvOrdYlaDROrJH5VjPImlZ1MMm0Yu5GR5Jh5jsA7bsTSY61C14k/4tw18Walyj
+         3OkQ==
+X-Gm-Message-State: ABy/qLbg5iBpgAd1sgn4NU17jGA+AFy8poBTLFQaK916xxMagv9rbIOW
+        0iff+GkDswX9O3iFa/1hZnnMIRINDXCDii6jknIImOnPF+gGCJwXWQXFfWe5tWVDziHJNRbKmpC
+        XBkPXUOKP/rHS/G99krUBNDy4UdZN0eEn
+X-Received: by 2002:a05:6512:682:b0:4fb:893e:8ffc with SMTP id t2-20020a056512068200b004fb893e8ffcmr1295652lfe.17.1690450915784;
+        Thu, 27 Jul 2023 02:41:55 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFTA2HgUm2brJFZAzFf71G9fcrl+Wse+RnzoN0k15ro+yXgQPkF4mKy0Vtx8+KdllBcgmErYA==
+X-Received: by 2002:a05:6512:682:b0:4fb:893e:8ffc with SMTP id t2-20020a056512068200b004fb893e8ffcmr1295623lfe.17.1690450915287;
+        Thu, 27 Jul 2023 02:41:55 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id z10-20020a7bc7ca000000b003fc00212c1esm1338797wmk.28.2023.07.27.02.41.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 02:41:54 -0700 (PDT)
+Message-ID: <73db2622-4985-2f93-a118-d7d249094239@redhat.com>
+Date:   Thu, 27 Jul 2023 11:41:54 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/3] input: pm8xxx-vib: refactor to easily support new
- SPMI vibrator
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>
-CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
-References: <20230725054138.129497-1-quic_fenglinw@quicinc.com>
- <20230725054138.129497-2-quic_fenglinw@quicinc.com>
- <5dd56c31-7ca3-dd39-0623-e4fd18ac6f68@linaro.org>
- <053c9571-d709-2826-fced-a00dd7255b8b@quicinc.com>
- <2a09e743-7423-65b0-c70d-87ae8105182a@linaro.org>
- <4e416602-8dea-fa6d-d083-f93b730552c3@quicinc.com>
- <a27ad44c-bbc9-0a2e-44fe-ee9b787d0cd4@linaro.org>
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <a27ad44c-bbc9-0a2e-44fe-ee9b787d0cd4@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>
+References: <20230718220106.GA3117638@google.com>
+ <ZLd/WEZTH5rlwYjP@dhcp22.suse.cz> <20230719224821.GC3528218@google.com>
+ <9ef757dc-da4b-9fa1-de84-1328a74f18a7@redhat.com>
+ <ZMIoQIS1t53XE4Kw@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZMIoQIS1t53XE4Kw@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xnrdet9_Y86kZS0WAXZWIhjT-cegNBkJ
-X-Proofpoint-ORIG-GUID: xnrdet9_Y86kZS0WAXZWIhjT-cegNBkJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxlogscore=472
- mlxscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270086
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/27/2023 5:22 PM, Krzysztof Kozlowski wrote:
-> On 27/07/2023 09:43, Fenglin Wu wrote:
->>
->>
->> On 7/27/2023 3:07 PM, Krzysztof Kozlowski wrote:
->>> On 25/07/2023 08:16, Fenglin Wu wrote:
->>>>>>     
->>>>>> -static const struct pm8xxx_regs pm8058_regs = {
->>>>>> -	.drv_addr = 0x4A,
->>>>>> -	.drv_mask = 0xf8,
->>>>>> -	.drv_shift = 3,
->>>>>> -	.drv_en_manual_mask = 0xfc,
->>>>>> +static struct reg_field ssbi_vib_regs[VIB_MAX_REG] = {
->>>>>
->>>>> Change from const to non-const is wrong. How do you support multiple
->>>>> devices? No, this is way too fragile now.
->>>>>
+On 27.07.23 10:18, Michal Hocko wrote:
+> On Wed 26-07-23 10:44:21, David Hildenbrand wrote:
+>> On 20.07.23 00:48, Ross Zwisler wrote:
+>>> On Wed, Jul 19, 2023 at 08:14:48AM +0200, Michal Hocko wrote:
+>>>> On Tue 18-07-23 16:01:06, Ross Zwisler wrote:
+>>>> [...]
+>>>>> I do think that we need to fix this collision between ZONE_MOVABLE and memmap
+>>>>> allocations, because this issue essentially makes the movablecore= kernel
+>>>>> command line parameter useless in many cases, as the ZONE_MOVABLE region it
+>>>>> creates will often actually be unmovable.
 >>>>
->>>> The register definition is no longer used as the match data, hw_type is
->>>> used.
->>>>
->>>> The last suggestion was getting the register base address from the DT
->>>> and it has to be added into the offset of SPMI vibrator registers
->>>> (either in the previous hard-coded format or the later the reg_filed
->>>> data structure), so it's not appropriated to make it constant.
->>>>
->>>> I don't understand this question: "How do you support multiple devices?"
->>>> For SSBI vibrator, since all the registers are fixed, and I would assume
->>>> that there is no chance to support multiple vibrator devices on the same
->>>> SSBI bus. If they are not on the same bus, the regmap device will be
->>>> different while the registers definition is the same, and we are still
->>>> able to support multiple devices, right?
+>>>> movablecore is kinda hack and I would be more inclined to get rid of it
+>>>> rather than build more into it. Could you be more specific about your
+>>>> use case?
 >>>
->>> No, you have static memory. One device probes and changes static memory
->>> to reg+=base1. Second device probes and changes the same to reg+=base2.
+>>> The problem that I'm trying to solve is that I'd like to be able to get kernel
+>>> core dumps off machines (chromebooks) so that we can debug crashes.  Because
+>>> the memory used by the crash kernel ("crashkernel=" kernel command line
+>>> option) is consumed the entire time the machine is booted, there is a strong
+>>> motivation to keep the crash kernel as small and as simple as possible.  To
+>>> this end I'm trying to get away without SSD drivers, not having to worry about
+>>> encryption on the SSDs, etc.
 >>
->> Thanks, got it.  I can update it with following 2 options:
+>> Okay, so you intend to keep the crashkernel area as small as possible.
 >>
->> 1) keep the register definition in 'reg_filed' data structure and make
->> it constant, copy it to a dynamically allocated memory before adding the
->> 'reg_base' to the '.reg' variable.
+>>>
+>>> So, the rough plan right now is:
+>>>   > 1) During boot set aside some memory that won't contain kernel
+>> allocations.
+>>> I'm trying to do this now with ZONE_MOVABLE, but I'm open to better ways.
+>>>
+>>> We set aside memory for a crash kernel & arm it so that the ZONE_MOVABLE
+>>> region (or whatever non-kernel region) will be set aside as PMEM in the crash
+>>> kernel.  This is done with the memmap=nn[KMG]!ss[KMG] kernel command line
+>>> parameter passed to the crash kernel.
+>>>
+>>> So, in my sample 4G VM system, I see:
+>>>
+>>>     # lsmem --split ZONES --output-all
+>>>     RANGE                                  SIZE  STATE REMOVABLE BLOCK NODE   ZONES
+>>>     0x0000000000000000-0x0000000007ffffff  128M online       yes     0    0    None
+>>>     0x0000000008000000-0x00000000bfffffff  2.9G online       yes  1-23    0   DMA32
+>>>     0x0000000100000000-0x000000012fffffff  768M online       yes 32-37    0  Normal
+>>>     0x0000000130000000-0x000000013fffffff  256M online       yes 38-39    0 Movable
+>>>     Memory block size:       128M
+>>>     Total online memory:       4G
+>>>     Total offline memory:      0B
+>>>
+>>> so I'll pass "memmap=256M!0x130000000" to the crash kernel.
+>>>
+>>> 2) When we hit a kernel crash, we know (hope?) that the PMEM region we've set
+>>> aside only contains user data, which we don't want to store anyway.
 >>
->> 2) Define the register offsets as constant data and add the 'reg_base'
->> to the 'reg' while using 'regmap_read()'/'regmap_write()' functions.
+>> I raised that in different context already, but such assumptions are not
+>> 100% future proof IMHO. For example, we might at one point be able to make
+>> user page tables movable and place them on there.
 >>
->> which one is the preferred way?
+>> But yes, most kernel data structures (which you care about) will probably
+>> never be movable and never end up on these regions.
+>>
+>>> We make a
+>>> filesystem in there, and create a kernel crash dump using 'makedumpfile':
+>>>
+>>>     mkfs.ext4 /dev/pmem0
+>>>     mount /dev/pmem0 /mnt
+>>>     makedumpfile -c -d 31 /proc/vmcore /mnt/kdump
+>>>
+>>> We then set up the next full kernel boot to also have this same PMEM region,
+>>> using the same memmap kernel parameter.  We reboot back into a full kernel.
+>>>
+>>> 3) The next full kernel will be a normal boot with a full networking stack,
+>>> SSD drivers, disk encryption, etc.  We mount up our PMEM filesystem, pull out
+>>> the kdump and either store it somewhere persistent or upload it somewhere.  We
+>>> can then unmount the PMEM and reconfigure it back to system ram so that the
+>>> live system isn't missing memory.
+>>>
+>>>     ndctl create-namespace --reconfig=namespace0.0 -m devdax -f
+>>>     daxctl reconfigure-device --mode=system-ram dax0.0
+>>>
+>>> This is the flow I'm trying to support, and have mostly working in a VM,
+>>> except up until now makedumpfile would crash because all the memblock
+>>> structures it needed were in the PMEM area that I had just wiped out by making
+>>> a new filesystem. :)
+>>
+>>
+>> Thinking out loud (and remembering that some architectures relocate the
+>> crashkernel during kexec, if I am not wrong), maybe the following would also
+>> work and make your setup eventually easier:
+>>
+>> 1) Don't reserve a crashkernel area in the traditional way, instead reserve
+>> that area using CMA. It can be used for MOVABLE allocations.
+>>
+>> 2) Let kexec load the crashkernel+initrd into ordinary memory only
+>> (consuming as much as you would need there).
+>>
+>> 3) On kexec, relocate the crashkernel+initrd into the CMA area (overwriting
+>> any movable data in there)
+>>
+>> 4) In makedumpfile, don't dump any memory that falls into the crashkernel
+>> area. It might already have been overwritten by the second kernel
 > 
-> Depends on the code. I am not sure if 2 would work with regmap_fields.
-> OTOH, I wonder if the device could just create its own regmap instead of
-> using parents? Then there would be no need of this offset dance.
+> This is more or less what Jiri is looking into.
 > 
-> Anyway, adding offset only for some variants seems also not needed. You
-> should add offset to each variant, because each device has this offset.
-> 
-> Best regards,
-> Krzysztof
-> Thanks for the suggestion.
 
-The Qualcomm SPMI device has to use the 'regmap' from its parent with 16 
-'reg_bits' and 8 'val_bits' config, the higher 8-bit 'reg_bits' is the 
-peripheral ID (PID) and it could be different in different PMICs even 
-for the same type of HW module, and (PID << 8) is the 'reg_base' here.
+Ah, very nice.
 
-I assume that you are not in favor of copying the constant data into a 
-dynamic allocated memory, so I will go with option 2.
-Thanks
+-- 
+Cheers,
+
+David / dhildenb
+
