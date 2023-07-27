@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529FF765D93
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F53765D94
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjG0UrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        id S232370AbjG0UrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjG0Uqz (ORCPT
+        with ESMTP id S231570AbjG0Uq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:46:55 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05360F5
+        Thu, 27 Jul 2023 16:46:56 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6597271D
         for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:33 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso15078435e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:32 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b701e1ca63so21959291fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690490791; x=1691095591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HbnBGeBUXtAMeUnmfrzncXKhjFpmdZ1Ibsl5jI52YQY=;
-        b=TZTSLg2srssGLFinivNe8tD/8JmAqGYtYWeVDxr09UOH0jkDx0FAa7HglO3MPM88Lu
-         ucO7fyfS/+s1OWwyFraRBy4ir+dGEArgEyHbUBGYo392JKFfbFxcRbiMR2apBj+BVkbb
-         hq01LmWnAotWgkoMuhLatMW4vRztuEFaRMRJmvp3TxatrOIPIOCHdywLUYqANhcgFKy4
-         n/q7E+1sDDqsxXzWz604h5ypYXxP0Z+ewkSP4BuiYsfBpJCorV1Rwl0lKtOg8upaWle2
-         v6AjFshQp5whq2T3fMYoePfy/j7abM3CQnCAlbwyNGI5HvgO6kK0R3UGvVL2MxaeQ8qa
-         BwRQ==
+        d=bytedance.com; s=google; t=1690490792; x=1691095592;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oaqNw2Hm1guEkvjK0qvKkO1TrGxzTe44nwo0h0OS4xY=;
+        b=Qh4G5pkJ2CklC1dn5cBz4RJXwctIF25YGEWE2oQ3ZrOzxnKalFKae/8pznmb31lV7C
+         WTzPyronTTWL8g0r5I8lSbz/AdU7gvJCGq8K2Qd4vWzRvFiQ/FfCwXl6dsQ9CmNizTh+
+         m0AH/lVmLiMfUecg6qsdvv9XMrT/D7wOGOTWcG9Zt50oRSe1Bavo9Ko7yaB4wjJ+Qnnr
+         BNWwV0vvSuj9U4WuwZrl1x2sIhyQwELI33CtL1QqIzp+Rtzz205zsveFrvcH9XBhLeZX
+         G7lPHvXhJp/f1c2Jmw7kl1BPg6BGcbtzSnM+LE3IJIaKxCmCB8OfQyprqC6Rh3SHBpsg
+         Wpxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690490791; x=1691095591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HbnBGeBUXtAMeUnmfrzncXKhjFpmdZ1Ibsl5jI52YQY=;
-        b=WwMHlBF3iUbE+wwcxBD1MxzyYDNRM5knP+56STFOTUljRe/MmpTS1QUS8I1gvtAhBQ
-         ax5kGU39dZtsqfi8UXdSob5Csc8ZX221fOx7Xgfew6r0257/vKJZ8JSZw8KPs2vE7fG5
-         8h49KB8jWPFDRmzUGX60Nlm2jGBJDzcpYyLMyJXssFkrfdmq61opO5PaiR7g7PDH6SPE
-         +FScK/2p8cMrIm3o6RPdfotvZn/zeIzIYfLBCHzxGNb4/LCxN41DM4y5zFS9VvW/LO6d
-         1tw3uffgmHxNKEsAB9vfkIh2iPdm0enOqOWy1DoIKXlM5V/pYhiGqTIK+AzeGXd9jlU2
-         3WlA==
-X-Gm-Message-State: ABy/qLasfOH/GMrYwXte8n3tOwWF3iVoDmXUoiRwqDCDnJ0sBEbR5YMQ
-        S3oL+7dQmnW4YHa5XIsBVG6wByUaoHsLt5T0qVk=
-X-Google-Smtp-Source: APBJJlGPxKyzuKwKs5yC1mRbohixE0NIULYu5NjvVcdpxTFrVGqV4CkuVZHZVgSvO66XUC5FJZLgNg==
-X-Received: by 2002:adf:facc:0:b0:317:63a9:d11c with SMTP id a12-20020adffacc000000b0031763a9d11cmr152870wrs.48.1690490791133;
-        Thu, 27 Jul 2023 13:46:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690490792; x=1691095592;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oaqNw2Hm1guEkvjK0qvKkO1TrGxzTe44nwo0h0OS4xY=;
+        b=cIWRrNJAxXNGf/cCZhI/WhleJ19H1lVTspF1KEz1+LkNa+BpyAJ+m7YXZSFRX8KH8d
+         pneT9TvEiEmnUN16gKM9HWiLhanRdxidkvdlBx83NWaPgWc7MHxjiNinmoXPLKkoH6fB
+         vzWqrEoM4yFn/SvLONJh7akI9MvWdrNPRS1PNOrGiimjXAJ2F/sWASw2/7LTPI7dnEwF
+         ucIZ/UfvzsJQzMCnPHlc9B4/CNQJA19qkYKkZgHwELSTZ0F8vBGofPZxVfybIitiO6SH
+         IfmZh99jDUMozxHvz5OpiwSAuTAW6R2XGEZ2GUspB2NvXC2BhFijze1zaKQarx1M7mNO
+         VwSA==
+X-Gm-Message-State: ABy/qLZgHUZWAldkarwnuXffsAWSX4T5nA+KGPwAlHXFCiUCjrncRqVT
+        zta/RDF8HM2Gb6VMjtJo1WXDyg==
+X-Google-Smtp-Source: APBJJlEpvm0P4NAPU6V060zctU8cT38iuWapH30/cDkVR/gUSQA0rrC4oV9wP9Dr8ocbwFl306QznA==
+X-Received: by 2002:a05:651c:1042:b0:2b6:da64:321 with SMTP id x2-20020a05651c104200b002b6da640321mr95486ljm.45.1690490792019;
+        Thu, 27 Jul 2023 13:46:32 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:6b6a:b465:0:7e3e:db9e:70fa:9ccb])
-        by smtp.gmail.com with ESMTPSA id k1-20020a7bc401000000b003fc06169abdsm2701400wmi.2.2023.07.27.13.46.30
+        by smtp.gmail.com with ESMTPSA id k1-20020a7bc401000000b003fc06169abdsm2701400wmi.2.2023.07.27.13.46.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 13:46:30 -0700 (PDT)
+        Thu, 27 Jul 2023 13:46:31 -0700 (PDT)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
         rppt@kernel.org
 Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
         liangma@liangbit.com, simon.evans@bytedance.com,
         punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [v1 0/6] mm/memblock: Skip prep and initialization of struct pages freed later by HVO
-Date:   Thu, 27 Jul 2023 21:46:18 +0100
-Message-Id: <20230727204624.1942372-1-usama.arif@bytedance.com>
+Subject: [v1 1/6] mm: hugetlb: Skip prep of tail pages when HVO is enabled
+Date:   Thu, 27 Jul 2023 21:46:19 +0100
+Message-Id: <20230727204624.1942372-2-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230727204624.1942372-1-usama.arif@bytedance.com>
+References: <20230727204624.1942372-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,47 +74,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the region is for gigantic hugepages and if HVO is enabled, then those
-struct pages which will be freed later by HVO don't need to be prepared and
-initialized. This can save significant time when a large number of hugepages
-are allocated at boot time.
+When vmemmap is optimizable, it will free all the
+duplicated tail pages in hugetlb_vmemmap_optimize while
+preparing the new hugepage. Hence, there is no need to
+prepare them.
 
-For a 1G hugepage, this series avoid initialization and preparation of
+For 1G x86 hugepages, it avoids preparing
 262144 - 64 = 262080 struct pages per hugepage.
 
-When tested on a 512G system (which can allocate max 500 1G hugepages), the
-kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without this
-patchseries to running init is 3.9 seconds. With this patch it is 1.2 seconds.
-This represents an approximately 70% reduction in boot time and will
-significantly reduce server downtime when using a large number of
-gigantic pages.
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+---
+ mm/hugetlb.c         | 32 +++++++++++++++++++++++---------
+ mm/hugetlb_vmemmap.c |  2 +-
+ mm/hugetlb_vmemmap.h |  7 +++++++
+ 3 files changed, 31 insertions(+), 10 deletions(-)
 
-Thanks,
-Usama
-
-[RFC->v1]:
-- (Mike Rapoport) Change from passing hugepage_size in
-memblock_alloc_try_nid_raw for skipping struct page initialization to
-using MEMBLOCK_RSRV_NOINIT flag
-
-Usama Arif (6):
-  mm: hugetlb: Skip prep of tail pages when HVO is enabled
-  mm: hugetlb_vmemmap: Use nid of the head page to reallocate it
-  memblock: add parameter to memblock_setclr_flag for selecting
-    memblock_type
-  memblock: introduce MEMBLOCK_RSRV_NOINIT flag
-  mm: move allocation of gigantic hstates to the start of mm_core_init
-  mm: hugetlb: Skip initialization of struct pages freed later by HVO
-
- include/linux/hugetlb.h  |  1 +
- include/linux/memblock.h |  7 ++++
- mm/hugetlb.c             | 71 ++++++++++++++++++++++++++++++----------
- mm/hugetlb_vmemmap.c     |  6 ++--
- mm/hugetlb_vmemmap.h     | 10 ++++++
- mm/memblock.c            | 51 +++++++++++++++++++++--------
- mm/mm_init.c             |  4 +++
- 7 files changed, 117 insertions(+), 33 deletions(-)
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 64a3239b6407..58cf5978bee1 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1943,13 +1943,24 @@ static void prep_new_hugetlb_folio(struct hstate *h, struct folio *folio, int ni
+ }
+ 
+ static bool __prep_compound_gigantic_folio(struct folio *folio,
+-					unsigned int order, bool demote)
++					unsigned int order, bool demote,
++					bool hvo)
+ {
+ 	int i, j;
+ 	int nr_pages = 1 << order;
+ 	struct page *p;
+ 
+ 	__folio_clear_reserved(folio);
++
++#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
++	/*
++	 * No need to prep pages that will be freed later by hugetlb_vmemmap_optimize
++	 * in prep_new_huge_page. Hence, reduce nr_pages to the pages that will be kept.
++	 */
++	if (hvo)
++		nr_pages = HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page);
++#endif
++
+ 	for (i = 0; i < nr_pages; i++) {
+ 		p = folio_page(folio, i);
+ 
+@@ -2020,15 +2031,15 @@ static bool __prep_compound_gigantic_folio(struct folio *folio,
+ }
+ 
+ static bool prep_compound_gigantic_folio(struct folio *folio,
+-							unsigned int order)
++							unsigned int order, bool hvo)
+ {
+-	return __prep_compound_gigantic_folio(folio, order, false);
++	return __prep_compound_gigantic_folio(folio, order, false, hvo);
+ }
+ 
+ static bool prep_compound_gigantic_folio_for_demote(struct folio *folio,
+-							unsigned int order)
++							unsigned int order, bool hvo)
+ {
+-	return __prep_compound_gigantic_folio(folio, order, true);
++	return __prep_compound_gigantic_folio(folio, order, true, hvo);
+ }
+ 
+ /*
+@@ -2185,7 +2196,8 @@ static struct folio *alloc_fresh_hugetlb_folio(struct hstate *h,
+ 	if (!folio)
+ 		return NULL;
+ 	if (hstate_is_gigantic(h)) {
+-		if (!prep_compound_gigantic_folio(folio, huge_page_order(h))) {
++		if (!prep_compound_gigantic_folio(folio, huge_page_order(h),
++						  vmemmap_should_optimize(h, &folio->page))) {
+ 			/*
+ 			 * Rare failure to convert pages to compound page.
+ 			 * Free pages and try again - ONCE!
+@@ -3201,7 +3213,8 @@ static void __init gather_bootmem_prealloc(void)
+ 
+ 		VM_BUG_ON(!hstate_is_gigantic(h));
+ 		WARN_ON(folio_ref_count(folio) != 1);
+-		if (prep_compound_gigantic_folio(folio, huge_page_order(h))) {
++		if (prep_compound_gigantic_folio(folio, huge_page_order(h),
++						vmemmap_should_optimize(h, page))) {
+ 			WARN_ON(folio_test_reserved(folio));
+ 			prep_new_hugetlb_folio(h, folio, folio_nid(folio));
+ 			free_huge_page(page); /* add to the hugepage allocator */
+@@ -3624,8 +3637,9 @@ static int demote_free_hugetlb_folio(struct hstate *h, struct folio *folio)
+ 		subpage = folio_page(folio, i);
+ 		inner_folio = page_folio(subpage);
+ 		if (hstate_is_gigantic(target_hstate))
+-			prep_compound_gigantic_folio_for_demote(inner_folio,
+-							target_hstate->order);
++			prep_compound_gigantic_folio_for_demote(folio,
++						target_hstate->order,
++						vmemmap_should_optimize(target_hstate, subpage));
+ 		else
+ 			prep_compound_page(subpage, target_hstate->order);
+ 		folio_change_private(inner_folio, NULL);
+diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+index c2007ef5e9b0..b721e87de2b3 100644
+--- a/mm/hugetlb_vmemmap.c
++++ b/mm/hugetlb_vmemmap.c
+@@ -486,7 +486,7 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+ }
+ 
+ /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
+-static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
++bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+ {
+ 	if (!READ_ONCE(vmemmap_optimize_enabled))
+ 		return false;
+diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+index 25bd0e002431..07555d2dc0cb 100644
+--- a/mm/hugetlb_vmemmap.h
++++ b/mm/hugetlb_vmemmap.h
+@@ -13,6 +13,7 @@
+ #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
+ void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
++bool vmemmap_should_optimize(const struct hstate *h, const struct page *head);
+ 
+ /*
+  * Reserve one vmemmap page, all vmemmap addresses are mapped to it. See
+@@ -51,6 +52,12 @@ static inline unsigned int hugetlb_vmemmap_optimizable_size(const struct hstate
+ {
+ 	return 0;
+ }
++
++bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
++{
++	return false;
++}
++
+ #endif /* CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP */
+ 
+ static inline bool hugetlb_vmemmap_optimizable(const struct hstate *h)
 -- 
 2.25.1
 
