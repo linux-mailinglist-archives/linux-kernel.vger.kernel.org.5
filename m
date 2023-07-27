@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B15764672
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF926764675
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjG0GIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        id S232608AbjG0GIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbjG0GIl (ORCPT
+        with ESMTP id S232502AbjG0GIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:08:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3AE1710
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690438073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sKhfa5geZjKIfZjztjHk2uQ3PoNr/mdgmW/R/LWd24U=;
-        b=JjvTkOXzjWsZ8pHdAEqsYUMnD47wkxIvqnnBelEjue23AIFXG1cOAI7CZPXzIuIskthQJd
-        i6hTclbvyrvorSrFDIrCYVVhMojZAxlWMA9mhonNn+ULR0DWyIbsMJINAUHl/wWFLkem+7
-        LjJI5K1WeQ5gXjNQSMylXnnt7/K6NvE=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-247-Wz2YR4rBPWqqRE5x1Bf1IA-1; Thu, 27 Jul 2023 02:07:51 -0400
-X-MC-Unique: Wz2YR4rBPWqqRE5x1Bf1IA-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b9bb2d0b47so5040451fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:07:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690438070; x=1691042870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sKhfa5geZjKIfZjztjHk2uQ3PoNr/mdgmW/R/LWd24U=;
-        b=c64P+0m6FuX1wzL3F3wlSUdgtf7DmwvtcLH9jWNPDYDpptY7JgpZo/zEaLxRMmnE8C
-         /dwXxSYqDV2jalj3qfuH+VSD2MZ0IZw2p1vO2MMiLR/TpJKhvcZEYdfynyj+FYdhLjMV
-         L+hP9mxdWRKu6xw0aJidET7qXTuh1Wl3SGO0U+/lv8xPfjIgob7Li4yH9gnS/hWM3ooE
-         C1KGsvjpZ20Y8AdB7V8OsMyVZ/yZ0dJV3NEeELEHXvJ8VnhkTDNwZ7aR8YZpmmn2RDP+
-         4p3wxkOehwgxhRyB/Ggb/QLuRfPRDirk7OdHywr6gbVLA5oOu/zg71Au4BYjwMffPSCZ
-         wLuw==
-X-Gm-Message-State: ABy/qLaEC7NKU2us6qEhduLcXFVm13PrdENoYkLk7rOIrnPZ7m9wWpb/
-        C/yMeHNMRHGAy0WiPZU8qZur2J/cQ4A54jWjTKWGJbRtK7uycdFVyQJeT6YSd7AqA4gTt4tAF+d
-        G+is55rCgHAw/sx7AENDMP1hzbOdz4+GoEhhs3I1e
-X-Received: by 2002:a2e:3812:0:b0:2b7:3b73:2589 with SMTP id f18-20020a2e3812000000b002b73b732589mr895696lja.32.1690438070199;
-        Wed, 26 Jul 2023 23:07:50 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHhLW0YWxwG/nhKIg4TI3VlNVlEPvQjoVNWQ3o+mluSfSG1OIO7xuG9XQONNUkjDZfZnn1ooiv1FXY+Mm9NyQs=
-X-Received: by 2002:a2e:3812:0:b0:2b7:3b73:2589 with SMTP id
- f18-20020a2e3812000000b002b73b732589mr895672lja.32.1690438069811; Wed, 26 Jul
- 2023 23:07:49 -0700 (PDT)
+        Thu, 27 Jul 2023 02:08:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF3F10F9;
+        Wed, 26 Jul 2023 23:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=HOjfkUq3p22xP8kOD+j8BQJBJjD59Omrm1gEuBPwYmU=; b=fcUXEHtdA78JEdJygveP8HpZ86
+        DPR3f1yho5ZGvB12gAv398M2mPsJnNVUBiSUUuaQNWgxGXMRPM68iLVvYS2qxKlHQLn24NktVe9Ah
+        gYCTQu+Lx44qclc3WdsVPgF1tf9SbNnyUMMIOxciSf8J0tkdmMOQ49W8/lmixj0K869cWKh4G8/AP
+        n1hQveKidiM43PkRIciVA4QJ1a/yepbUWv1LpUDKYdDo6r2xj95gX7qmrQcmmTLUU6SdgKZXxhD/C
+        +5e8YdXr5dzsyNN4dcQE7dZPdIr699KoYaGb0Z3cW+hH/YCQTH9MfScSw3nN6l8aiMKxmOa/miSP/
+        JIXPgGAw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qOuAv-00CHuh-1F;
+        Thu, 27 Jul 2023 06:08:37 +0000
+Message-ID: <1d363177-2629-1ab3-7a4b-bc67d94bb87a@infradead.org>
+Date:   Wed, 26 Jul 2023 23:08:35 -0700
 MIME-Version: 1.0
-References: <20230725155403.796-1-andrew.kanner@gmail.com> <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
- <ab722ec1-ae45-af1f-b869-e7339402c852@redhat.com> <179979e6-eb8a-0300-5445-999b9366250a@gmail.com>
- <0c06b067-349c-9fe2-2cc3-36c149fd5277@gmail.com>
-In-Reply-To: <0c06b067-349c-9fe2-2cc3-36c149fd5277@gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 27 Jul 2023 14:07:38 +0800
-Message-ID: <CACGkMEsYzd1FphP-Ym9T9YjA9ZNBw7Mnw5xQ75dytQMJxDK3cg@mail.gmail.com>
-Subject: Re: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp
- size limits
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Andrew Kanner <andrew.kanner@gmail.com>, brouer@redhat.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] init: Add support for rootwait timeout parameter
+Content-Language: en-US
+To:     Loic Poulain <loic.poulain@linaro.org>, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, hch@infradead.org
+References: <20230726152232.932288-1-loic.poulain@linaro.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230726152232.932288-1-loic.poulain@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 8:27=E2=80=AFAM David Ahern <dsahern@gmail.com> wro=
-te:
->
-> On 7/26/23 1:37 PM, David Ahern wrote:
-> > On 7/26/23 3:02 AM, Jesper Dangaard Brouer wrote:
-> >> Cc. John and Ahern
-> >>
-> >> On 26/07/2023 04.09, Jason Wang wrote:
-> >>> On Tue, Jul 25, 2023 at 11:54=E2=80=AFPM Andrew Kanner
-> >>> <andrew.kanner@gmail.com> wrote:
-> >>>>
-> >>>> Syzkaller reported the following issue:
-> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>> Too BIG xdp->frame_sz =3D 131072
-> >>
-> >> Is this a contiguous physical memory allocation?
-> >>
-> >> 131072 bytes equal order 5 page.
-> >>
-> >> Looking at tun.c code I cannot find a code path that could create
-> >> order-5 skb->data, but only SKB with order-0 fragments.  But I guess i=
-t
-> >> is the netif_receive_generic_xdp() what will realloc to make this line=
-ar
-> >> (via skb_linearize())
-> >
-> >
-> > get_tun_user is passed an iov_iter with a single segment of 65007
-> > total_len. The alloc_skb path is hit with an align size of only 64. Tha=
-t
-> > is insufficient for XDP so the netif_receive_generic_xdp hits the
-> > pskb_expand_head path. Something is off in the math in
-> > netif_receive_generic_xdp resulting in the skb markers being off. That
-> > causes bpf_prog_run_generic_xdp to compute the wrong frame_sz.
->
->
-> BTW, it is pskb_expand_head that turns it from a 64kB to a 128 kB
-> allocation. But the 128kB part is not relevant to the "bug" here really.
->
-> The warn on getting tripped in bpf_xdp_adjust_tail is because xdp
-> generic path is skb based and can have a frame_sz > 4kB. That's what the
-> splat is about.
+Hi--
 
-Other possibility:
+On 7/26/23 08:22, Loic Poulain wrote:
+> Add an optional timeout arg to 'rootwait' as the maximum time in
+> seconds to wait for the root device to show up before attempting
+> forced mount of the root filesystem.
+> 
+> Use case:
+> In case of device mapper usage for the rootfs (e.g. root=/dev/dm-0),
+> if the mapper is not able to create the virtual block for any reason
+> (wrong arguments, bad dm-verity signature, etc), the `rootwait` param
+> causes the kernel to wait forever. It may however be desirable to only
+> wait for a given time and then panic (force mount) to cause device reset.
+> This gives the bootloader a chance to detect the problem and to take some
+> measures, such as marking the booted partition as bad (for A/B case) or
+> entering a recovery mode.
+> 
+> In success case, mounting happens as soon as the root device is ready,
+> unlike the existing 'rootdelay' parameter which performs an unconditional
+> pause.
+> 
+> Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> ---
+>  v2: rebase + reword: add use case example
+> 
+>  .../admin-guide/kernel-parameters.txt         |  4 ++++
+>  init/do_mounts.c                              | 19 +++++++++++++++++--
+>  2 files changed, 21 insertions(+), 2 deletions(-)
+> 
 
-tun_can_build_skb() doesn't count XDP_PACKET_HEADROOM this may end up
-with producing a frame_sz which is greater than PAGE_SIZE as well in
-tun_build_skb().
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index 1aa015883519..118f2bbe7b38 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/ramfs.h>
+>  #include <linux/shmem_fs.h>
+> +#include <linux/ktime.h>
+>  
+>  #include <linux/nfs_fs.h>
+>  #include <linux/nfs_fs_sb.h>
+> @@ -71,12 +72,20 @@ static int __init rootwait_setup(char *str)
+>  {
+>  	if (*str)
+>  		return 0;
+> -	root_wait = 1;
+> +	root_wait = -1;
+>  	return 1;
+>  }
+>  
+>  __setup("rootwait", rootwait_setup);
+>  
+> +static int __init rootwait_timeout_setup(char *str)
+> +{
+> +	root_wait = simple_strtoul(str, NULL, 0);
 
-And rethink this patch, it looks wrong since it basically drops all
-packets whose buflen is greater than PAGE_SIZE since it can't fall
-back to tun_alloc_skb().
+Better to use kstrtoul().  simple_strtoul() says:
 
->
-> Perhaps the solution is to remove the WARN_ON.
+ * This function has caveats. Please use kstrtoul instead.
 
-Yes, that is what I'm asking if this warning still makes sense in V1.
+and kstrtoul() says:
 
-Thanks
+ * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
+ * Preferred over simple_strtoul(). Return code must be checked.
 
->
->
+> +	return 1;
+> +}
+> +
+> +__setup("rootwait=", rootwait_timeout_setup);
 
+
+-- 
+~Randy
