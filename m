@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6707651F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234027651FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjG0LHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S233272AbjG0LIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbjG0LHc (ORCPT
+        with ESMTP id S233360AbjG0LIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:07:32 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9EFE2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:07:26 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso9102815e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:07:26 -0700 (PDT)
+        Thu, 27 Jul 2023 07:08:01 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E6FC0;
+        Thu, 27 Jul 2023 04:08:00 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb5bcb9a28so1409623e87.3;
+        Thu, 27 Jul 2023 04:08:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690456045; x=1691060845;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OSv1P/O0y/iTncVOKp4LRUTrZxi5LvDPIUCnf56db70=;
-        b=DxDBxiNWTRbncvRzsmaNCRmGF52Vhya5e4o4Lpvk2fNozmjKYmB7sznsaolQZfN3gl
-         glckPTO6SdYTSH9ydQeQ/Dc8R7neLbDCYEQ8w+raiF5w9RxMSbYRwDEsHI8+4E2Cblih
-         +Og4gUc4fEkH3i4doFGYl1H7KpwGRpbvmYmIUtxRpSJBvnCjefWBo5StV0yig+gzqfTa
-         WvCw1jpvCpEdxMOWI9IWPUlTBujfh2oNp0q/toD8iH5L7w98yAdyUe0KOd+T0vg1NSdU
-         n44qRxxjsQLpBRLpJez/3R5sTyYN2wI5UpYA1RG118LER5LfqTJfqbUCGkuW1SmkIlfc
-         DwpQ==
+        d=gmail.com; s=20221208; t=1690456079; x=1691060879;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i5kNcxNoM/NBCHBj/sZwkTdvy4fIKuH9KCl0U3Yfro0=;
+        b=sk4nBgwa56blsmau6xT3DDLmsazzohWHmva2oDdPJumZcDXBqpM7H0uoHztvWfDxtG
+         vKpj4Zfq9LpV/7hnhRjKTerH6Z5TXy33YGSCsZzNXvaBL+NA/pcLSGMjb/sUliwWGkzO
+         IPtePMax07YlG1MrdfJXIPI03n9l9CvRVWn7M/iKwa0zIBSSMLdNi2lWVz7LbdsY9kbk
+         fSizPtgo45P5yG+99rQ3ZbBsSbTTQQWUsIwrPkgaz3hroIlAE0A67a3DZ40PNcLQv8eF
+         uDrzPVD2bgjngE0LOQI3aZWSUeyfQZNT8w4J9FmB7Pj92SuRmYpl6spTzE0Swe9U+/vw
+         OR0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690456045; x=1691060845;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OSv1P/O0y/iTncVOKp4LRUTrZxi5LvDPIUCnf56db70=;
-        b=LYt4sIEYaVMMsP5NFg5f6t3hYdvwyLxCjm6yiMw7lB4rRrjQBx7TQEQffh4GNKywvS
-         /xeXpKl8eKbTa+70PMmzOjFtNgQqRTyxfh9egp9D8mG+J02Sf90UAJq9kUmoteIzyMA5
-         xw6BeaYOWxG7ZagwfYk8MM10pwxEonwc/7rCVbizXJQ1D9JyiS5vBiWJCerf1xQFOXo6
-         eQSkxWv1ARJhTqWi8b0BiDG807jlF3AFht8SRNZPg51AkPzVNAcve24xnYnjDnDANiCp
-         9JF3cvY7tqxZLKp+B9K6i27W0hu6IvEeM1zCDya0uDZIJRF7sS+c++SjVvaiFx+6PbyJ
-         loqg==
-X-Gm-Message-State: ABy/qLYrPMR5B0He5KPeZzIwh/A3Ysuw3UpedW4FWg8dVRAhuUtIgzR5
-        vz53kHYhFRjQm+TlIxgMu6A44w==
-X-Google-Smtp-Source: APBJJlHSW1y2jpIg3DmfOcgPNep89mi+9RAqmGSRoEV6Nt541nF6FdYSNXqmm0o2TO7rA22uTBfSqw==
-X-Received: by 2002:a7b:cb58:0:b0:3fc:80a:cf63 with SMTP id v24-20020a7bcb58000000b003fc080acf63mr1589465wmj.38.1690456044908;
-        Thu, 27 Jul 2023 04:07:24 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id p12-20020a7bcc8c000000b003fc00702f65sm4298661wma.46.2023.07.27.04.07.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 04:07:24 -0700 (PDT)
-Message-ID: <5660c1a5-21ce-ad0a-2488-c3429ea7e995@linaro.org>
-Date:   Thu, 27 Jul 2023 13:07:23 +0200
+        d=1e100.net; s=20221208; t=1690456079; x=1691060879;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i5kNcxNoM/NBCHBj/sZwkTdvy4fIKuH9KCl0U3Yfro0=;
+        b=Fj1MbMAz2P5DUzPgQuhY07Ljt49YqPoZBaue/nxiKAJP3RY3QOrT+EHxV4zN1KVuti
+         50fepHi82cC8idQ6P1ClAfIDH2zaRvxV8BrzTyfQCbDPgzsXDuxXDFZxzZfdd9OQlRO9
+         DY5O3jXYjutmi8yNu+OyGN83PSlzaY9yBq1Pk/mwyAa/GuTCzzufpzjSEvWdNzUcWb0J
+         nlUaIZhdZw6D1A66DFpuquUoFVr02vwMSn2DcT26uZTTp80uMGiBwrRuYievcOKcAfR7
+         mkmyrRqDsr5NWORu4JAL6dtOB+AonxX8fIRmSMyYOBxYr9WAEUmM+3fdDYtwVhLdfs6o
+         4w5Q==
+X-Gm-Message-State: ABy/qLZsKiGjpFH4BJVFFZJe+8zM+0QBv9QZ4uNG0hT2GKop9+ij9EG7
+        yhUCZqQr2nzzevUSfJ1Pp/g=
+X-Google-Smtp-Source: APBJJlHJ7vcwwcFzwXaKsSNx7guxdQ7p6EoMMpcgxR4hIhGUEeF5V0F0bI98uP0rqgJr6ACGxAKE9A==
+X-Received: by 2002:ac2:5f9c:0:b0:4fe:825:a081 with SMTP id r28-20020ac25f9c000000b004fe0825a081mr1582496lfe.45.1690456078632;
+        Thu, 27 Jul 2023 04:07:58 -0700 (PDT)
+Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id g4-20020a19ac04000000b004fe07f06337sm267402lfc.53.2023.07.27.04.07.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 04:07:56 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 13:09:58 +0200
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] iio: adc: mcp3911: add support for the whole MCP39xx
+ family
+Message-ID: <ZMJQhuMpm6jSOzvB@gmail.com>
+References: <20230727101318.2764379-1-marcus.folkesson@gmail.com>
+ <20230727101318.2764379-2-marcus.folkesson@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] drivers:iio:admv1013: add vcc regulators
-Content-Language: en-US
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230727110121.93546-1-antoniu.miclaus@analog.com>
- <20230727110121.93546-2-antoniu.miclaus@analog.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727110121.93546-2-antoniu.miclaus@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DeRl1II0JmCihG0L"
+Content-Disposition: inline
+In-Reply-To: <20230727101318.2764379-2-marcus.folkesson@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 13:01, Antoniu Miclaus wrote:
-> Add regulators for the VCC supplies of the admv1013.
-> 
-> The patch aims to align the implementation with the current admv1014
 
-...
+--DeRl1II0JmCihG0L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  	const char *str;
->  	struct spi_device *spi = st->spi;
->  
-> @@ -554,6 +567,17 @@ static int admv1013_properties_parse(struct admv1013_state *st)
->  		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
->  				     "failed to get the common-mode voltage\n");
->  
-> +	for (i = 0; i < ADMV1013_VCC_NUM_REGULATORS; ++i)
-> +		st->vcc_regs[i].supply = admv1013_reg_name[i];
-> +
-> +	ret = devm_regulator_bulk_get(&st->spi->dev,
-> +				      ADMV1013_VCC_NUM_REGULATORS,
-> +				      st->vcc_regs);
-> +	if (ret) {
-> +		dev_err(&spi->dev, "Failed to request VCC regulators");
-> +		return ret;
+Hi,
 
-This should be return dev_err_probe, unless this is not called from
-probe path.
+I will update the Kconfig help text to mention all supported chips in
+v2.
 
 Best regards,
-Krzysztof
+Marcus Folkesson
 
+
+--DeRl1II0JmCihG0L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmTCUIIACgkQiIBOb1ld
+UjIZLg//UFA6CNgv9tM0/CDMzGQA8DShrqijB39GyNvnop6zG0MQrGgSfVzsGpk6
+YD8PKy+JuVLQZ1vltN2gS9MKR4/5IUu2LRW/GSgU2+79AT/2cXcuIq2J1hsT2un4
+U4RrU1dgcGlmUwUvGaTSw6pVM+Gq31tgUzyNMMAWLRknkltqifKgc8Ch4pLl54rZ
+j9/7N+FUdyHU0cWP1Vjv0salc64HYsdAzBsXp8QN5dkaRkRLAHW/QgHPv/Hm6aVJ
+PLtnPvNPQrNcJa3sIX5+8Iu6ENxrWL36tipBEjPWtGePAGv770ail7yXqklMU+9l
+4LKqOmWYifX9OlN2Ju8XwH7QQFUYT/WvWIQh+67zewsm7fjJzafUrDieGfO0rcbX
+qcExwUZAF+BVDseLdAfFUanu8OAqdN9xcyPI/E1ft+Zj7CmIJwVPbW7ewFKkbloQ
+DX5FxZybV/lttNhUNZlYWvDIAdaVYB45SEs2rrS3I1elC2TlPQ2iW2o1EQ1j7lEw
+a3LCs+oOQ9ofVmG522U9u1c7sH8e2ot5xz6+MCGrvHpoLr403eC2Mel287Btc1E2
+YxJvVG9T8E6T71Vl65fG4gVB2Gy5OZKlAPdVXi7cDGN/AC0huXFssrIljmOoFJcT
+be2u9oThDxbSm0uVYc5LFjBuqHENbFUAwdToMzr3y8PxXiGytwg=
+=/flD
+-----END PGP SIGNATURE-----
+
+--DeRl1II0JmCihG0L--
