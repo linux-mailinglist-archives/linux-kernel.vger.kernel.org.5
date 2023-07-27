@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF7A76490E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFD776492A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjG0Hmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
+        id S233496AbjG0Hoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbjG0HmT (ORCPT
+        with ESMTP id S233679AbjG0Hna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:42:19 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BDC7EC4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:36:12 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-486519e5da0so186317e0c.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:36:12 -0700 (PDT)
+        Thu, 27 Jul 2023 03:43:30 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F44683EC
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:04 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so383530b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:37:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690443368; x=1691048168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+FFoh9fAwBO6Qv5kET29/SxFxnrcdEE+m5hTMz9s4Bg=;
-        b=q0HF9MS26IkAFLWMqUaYkeU/ml7JU6fOjvs9mkcMkUYBMQDmB+wteYy1+4vCYvoIT3
-         WoCZe0p+GWcSPt34UWC/5idwii1oNdmWCh8ykdoQDamfinn33x/lMWO38wwpjFeqilFJ
-         vBR/MiQdXjb1xuGuf8cTiu6h0MmGHmnIHgEDxAGaePq9egp/fkBLzn0k3hRezpr+6W+U
-         I+SNjPxtFPpg1egQnlTMq1tVjtDXCct+qevbqsazPTEbHMpcp+iRHhTaF9QchpJJLbsh
-         GZy+x5GsF6/NBAbwKdg/jhRA1IeVgbh2+NfehAvQUSKGSyZee5mPx2Xr3oq/J7oB7aiD
-         X8jA==
+        d=bytedance.com; s=google; t=1690443423; x=1691048223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QdW9TKjaVoY8TAoiZ9/Vr1Qx2UudtUG/Q1a9kCBPzGw=;
+        b=WJUfha13VzDGQgQyWyKoLGRPd9B2AkAKQKlD7TIy163bJUtKECJHVmywN3s0unJxcA
+         AFA1yR4NNxwgvdmCB9kcHHQPMLl9LlV8pAcIGWlF0HUvZLVIlQEbvML2tpREm3u8AD4k
+         ZViVO1tm0udVd0TVKE7yJTePILn0TB+bdWzMf3niDZWAHwzWJFTwp+C84Q2j6ViYWC5t
+         4N5Am2+2fKfp6XRRZQnrrgjY5wF7mYeeJH4JoDqHPFPB6qrHo39bwgcnuGX6byF15qjx
+         ceejVzI8aCT+WIluxObIBO5wrLPWkAdawMcVjKG/3zRwdXvZXxv1sPDUtb817SM3m6vs
+         XPfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690443368; x=1691048168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+FFoh9fAwBO6Qv5kET29/SxFxnrcdEE+m5hTMz9s4Bg=;
-        b=J4GNsBuJGs2PqVqA4/bv1qj8h21ma/ZlxoJQ1HhdoSsyo7PvLs2D+irM9mQNB5HsfI
-         B8OvGKw2omVoNtB2Hf7z4kpK15NTDsKc7Bm7n+7IMVyQLQyKwzSSsCUw2G2HGIiZ1kdD
-         Q7O0Va3+r6yCj1bc6XDvoBqimrtVhLby0E06tGVcJpEoglyJr1JnS92hjb3CHv74RmkP
-         ujubL+aqbIVqyMA1K/QtSSMf3BBImkWp2JWK7Mv4i5Slst8I8fgubn36LVeM61ewaFX5
-         WfIqE/Vb6tX9mOKA7Y2IUKDw128KCewODM8BILBu44Brc/DQ10ceLtnnaT00pnegd7B3
-         I2SA==
-X-Gm-Message-State: ABy/qLYSeGakRKrFi6Hd9MPa1lXLK0HaxMOTtgJcClJUXw2mUobY0bS1
-        H92FliCQ80Zfn+DVKPKSBaUc+bjF+8UwBYNqBWC9qQ==
-X-Google-Smtp-Source: APBJJlFvB+57WYpfabIcu2VZAkq5/iTwfaa2jKLHI63ja8RnH7KtCPvmmmTypGsMiDpMYWxiPVIcWf2bRst+1MyVCz0=
-X-Received: by 2002:a1f:600a:0:b0:486:3a95:f90 with SMTP id
- u10-20020a1f600a000000b004863a950f90mr420717vkb.5.1690443368460; Thu, 27 Jul
- 2023 00:36:08 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690443423; x=1691048223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QdW9TKjaVoY8TAoiZ9/Vr1Qx2UudtUG/Q1a9kCBPzGw=;
+        b=a/fSoOccBDeP72ZQCBBari5VgNjsc6JgCgKeWxkG4BpHzs1jsAs1rcDjjoib6ZcfMm
+         Dxjt/jg6s+q69DMDB18ratBDNqToPwdncZyrlwUya+Y61j+LYzGjWttst2UvEMJspE/X
+         9BDGEkPqieqEbETQIGf0vpqfq2Ui6LoCAO10yNzkiLDyak77TCLB9Yba4I6y2u6FJvcY
+         ODPk0IRi1j+SauDft1MMmtyzP3SboloRHKI2RNq1QJAmvD/9IPUBaO4hMczy5dM0xAeM
+         DvN/gpzhiwm5VIpvsY0Fy53998qspnJ+r9FV04JtS2KpuIyLaprp4ogEHh1ZBJpOnwDi
+         6C0g==
+X-Gm-Message-State: ABy/qLaeoX8o0lWK/gKzQxbHGuuung9AKjmA3gal1CiAp2i98zHSFmGH
+        uUpxxc4iOLCqI5YjRJ9Vy6gwEw==
+X-Google-Smtp-Source: APBJJlGxrFogQX0h6qLoImls0/eZEcESwzsR7mUASJnTL6C0r6eTOSp0Rv2425LMPb9lvt4ZknyY3Q==
+X-Received: by 2002:a05:6a20:3c8f:b0:123:152d:d46b with SMTP id b15-20020a056a203c8f00b00123152dd46bmr2384597pzj.26.1690443423642;
+        Thu, 27 Jul 2023 00:37:03 -0700 (PDT)
+Received: from n37-019-243.byted.org ([180.184.51.134])
+        by smtp.gmail.com with ESMTPSA id s196-20020a6377cd000000b005638a70110bsm733919pgc.65.2023.07.27.00.37.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 00:37:03 -0700 (PDT)
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wuyun.abel@bytedance.com, robin.lu@bytedance.com,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [RFC PATCH 0/5] mm: Select victim memcg using BPF_OOM_POLICY
+Date:   Thu, 27 Jul 2023 15:36:27 +0800
+Message-Id: <20230727073632.44983-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20230725102330.160810-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20230725102330.160810-1-peng.fan@oss.nxp.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 27 Jul 2023 09:35:57 +0200
-Message-ID: <CAMRc=McLqe9QOd3DFVO=4ByaOtRg+y1u3R4CiStp4P_QTHs+vw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: fsl-imx-gpio: support i.MX8QM/DXL
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, stefan@agner.ch, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 12:18=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.c=
-om> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> Add i.MX8QM/DXL gpio compatible which is compatible with i.MX35.
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/D=
-ocumentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> index ae18603697d7..d0ca2af89f1e 100644
-> --- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
-> @@ -32,10 +32,12 @@ properties:
->                - fsl,imx6sx-gpio
->                - fsl,imx6ul-gpio
->                - fsl,imx7d-gpio
-> +              - fsl,imx8dxl-gpio
->                - fsl,imx8mm-gpio
->                - fsl,imx8mn-gpio
->                - fsl,imx8mp-gpio
->                - fsl,imx8mq-gpio
-> +              - fsl,imx8qm-gpio
->                - fsl,imx8qxp-gpio
->                - fsl,imxrt1050-gpio
->                - fsl,imxrt1170-gpio
-> --
-> 2.37.1
->
+This patchset tries to add a new bpf prog type and use it to select
+a victim memcg when global OOM is invoked. The mainly motivation is
+the need to customizable OOM victim selection functionality so that
+we can protect more important app from OOM killer.
 
-Applied, thanks!
+Chuyi Zhou (5):
+  bpf: Introduce BPF_PROG_TYPE_OOM_POLICY
+  mm: Select victim memcg using bpf prog
+  libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
+  bpf: Add a new bpf helper to get cgroup ino
+  bpf: Sample BPF program to set oom policy
 
-Bart
+ include/linux/bpf_oom.h        |  22 ++++
+ include/linux/bpf_types.h      |   2 +
+ include/linux/memcontrol.h     |   6 ++
+ include/uapi/linux/bpf.h       |  21 ++++
+ kernel/bpf/core.c              |   1 +
+ kernel/bpf/helpers.c           |  17 +++
+ kernel/bpf/syscall.c           |  10 ++
+ mm/memcontrol.c                |  50 +++++++++
+ mm/oom_kill.c                  | 185 +++++++++++++++++++++++++++++++++
+ samples/bpf/Makefile           |   3 +
+ samples/bpf/oom_kern.c         |  42 ++++++++
+ samples/bpf/oom_user.c         | 128 +++++++++++++++++++++++
+ tools/bpf/bpftool/common.c     |   1 +
+ tools/include/uapi/linux/bpf.h |  21 ++++
+ tools/lib/bpf/libbpf.c         |   3 +
+ tools/lib/bpf/libbpf_probes.c  |   2 +
+ 16 files changed, 514 insertions(+)
+ create mode 100644 include/linux/bpf_oom.h
+ create mode 100644 samples/bpf/oom_kern.c
+ create mode 100644 samples/bpf/oom_user.c
+
+-- 
+2.20.1
+
