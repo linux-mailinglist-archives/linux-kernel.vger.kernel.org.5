@@ -2,115 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF31776472C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C9C76472B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjG0Grf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        id S229819AbjG0GrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbjG0Grc (ORCPT
+        with ESMTP id S229459AbjG0GrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:47:32 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B6B268B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:31 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so55325e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:31 -0700 (PDT)
+        Thu, 27 Jul 2023 02:47:15 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA94CE
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:14 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-997c4107d62so73006966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690440450; x=1691045250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9VjR3y/NhR9d/n61OfA+UcoVAqNvKvdj5JIvCgpy4QI=;
-        b=jv8kLEWT6bSwYha6xFiUAElWMCPrx3lpi1qWwErb4NzD7uum6JoSy84x2ZQ1lSPBqy
-         JKSGnsuYi7/r3JF9xKsx7Nk8kMhafpBmSsD1oLdfdCGsDieibuegl6LfafbTHfToNLth
-         ApCcnXmususTHmOZGaiCwkYtDvIWX/kdtXz4VaJon/YHdjkS/7pEtmoknHjT6GWraSOs
-         +ElWjpcZGO2e8woDEb5CL+sKmKy4J196loIyFGF6OcJauDh+HW2hIR2+Iia3rsksqJqe
-         +IeEfZp7t1B58DRUR0Oos53qLswubOwyqMX/EcW6zhA/NHl9BV7ixCZgqBBeZQAVsCX8
-         EMOA==
+        d=linaro.org; s=google; t=1690440432; x=1691045232;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=8AfkdTx8aDEG/J6ohJF19yNL93fMDwOc4t4zIdlBZ2E=;
+        b=Bzs4dNELholCLNzpl389GsKTcETPJzgOXzC6mps/0jrWoaqs7nkzk4SX2lF2esiL8h
+         mYUXjzHNOvJVXZEWG4NF+TvVjKGXK9O25Gu5Bg0Mz6HhABuf6RiyTJEyu5B3DFceI4iY
+         GN8a7sly9NkDEMj0P8l6U9nRpBZXyvWH+WxJ847rFr4S+FVx+TVxormi1OTPzuCj4m2t
+         N4wrMZTL4lIDah735Zz0ZfAGoOeuhsJt5RljXqpp0OIpICD0XuOuQyUz0yG3S6DhKax6
+         MDDpL/LeMEUDlAfpTi8qjY4t4SLBNUguCYd3q4hsikp/m70RGXtN3ctniZYm1MCGL2og
+         sx+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690440450; x=1691045250;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9VjR3y/NhR9d/n61OfA+UcoVAqNvKvdj5JIvCgpy4QI=;
-        b=fhS8g7lqlymPfqMhOAqmgttw9rWT/Z7dsk9oOKRkRCbixvyxdE5gB7rVcgagBg0Vlk
-         RcUPyihU1wVL6mgYcMfjfM6bSvBrIhkqfLOGHqqN0OtfwzfSEB9j3wj2Ya5j22VvSAug
-         AhwZUuOK2ldP9bE6VDXKkQRp3spBKo5wkI6j2o5mw6N/urR6m0rexymNIhQAdUVlsltv
-         pLNMaQ6tgIfeNCV0GWbq6FcbDswg1yUtBcRptdcRYL5ZlR/gpiwqD2fNgzrSuLEuuGTj
-         V56ZoESh/JGZDx5Sir9lXUVTUEbKxD0isRAlgwsaxMPyLLBxO4paRlHsa93DJ8LiiFdh
-         +MIg==
-X-Gm-Message-State: ABy/qLZ2h/z+CzQi4KdrdMjCwZOmonPivFAN4gmPA5+7XEUCaJMEoPKV
-        4jnT61X9P4HVbopPGx3x37I3B7USEVP5WCCrfYOG9w==
-X-Google-Smtp-Source: APBJJlHfJHMB79wmPcYAX+eRz3l3yJooxMVKXpu6Z2nTr7RChJGtq0JGjXHvXpOL9DCD74cw420Zqm1UmohQ13kUBC8=
-X-Received: by 2002:a05:600c:3b21:b0:3f7:7bd4:3b9d with SMTP id
- m33-20020a05600c3b2100b003f77bd43b9dmr1852wms.6.1690440436670; Wed, 26 Jul
- 2023 23:47:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690440432; x=1691045232;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8AfkdTx8aDEG/J6ohJF19yNL93fMDwOc4t4zIdlBZ2E=;
+        b=CDRT1jDBltpp2+DfadJYL1wkOGZlSO6XfdEu6NenEmvU/OBsyjOWwzCZz26teeUPcF
+         DTp76uV/XionD9JLJKn1i80aHeZzltg1DA7ktIrPlvKg47N5QBBhsQUIOlmFGK5kOfZO
+         c2JW6n5XCv84f50bcYou6omHoF/mLXN5cDtVPOaDoQ0YYNOsXp45d+osjuV+kX0AYja8
+         7xerN4KafLOMbouXhGMj0sZsDo05YB8ADaqTo877Xi/SK5WJwDBd9XMQSUUSgS4MWzsK
+         WUMX9eVfkUAiEXll0krby8h5H6gAA7gmGeB+uPeiZcuY1by1WsTn8NZ/ydJdK4O2gu3G
+         We7A==
+X-Gm-Message-State: ABy/qLbPTILjcIq2djnKvOqcTggm9QhRKU196JOLF1EdNky7G+MOmMQi
+        llAygUz5R8rt29shUNd5bhy8sA==
+X-Google-Smtp-Source: APBJJlHaOtaQXLEUMwD7ynqgJvlhwXcmtHFmtE3VQA+fsZRixVtmPQJwQX+Ask+KjivM6u5LV3s4Vg==
+X-Received: by 2002:a17:907:761b:b0:99b:4aa3:6480 with SMTP id jx27-20020a170907761b00b0099b4aa36480mr1310855ejc.40.1690440430456;
+        Wed, 26 Jul 2023 23:47:10 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u7-20020a170906408700b009786ae9ed50sm380391ejj.194.2023.07.26.23.47.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Jul 2023 23:47:09 -0700 (PDT)
+Message-ID: <5288c817-3cf8-2b8c-6187-30283353060f@linaro.org>
+Date:   Thu, 27 Jul 2023 08:47:07 +0200
 MIME-Version: 1.0
-References: <000000000000a0d7f305eecfcbb9@google.com> <000000000000ca24700601714dd2@google.com>
-In-Reply-To: <000000000000ca24700601714dd2@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 27 Jul 2023 08:47:04 +0200
-Message-ID: <CANp29Y5htGCC0X73qb-iGwjN0OaFCmCRKTEdhCcF_nx7aLpe2w@mail.gmail.com>
-Subject: Re: [syzbot] [ntfs3?] WARNING in path_openat
-To:     syzbot <syzbot+be8872fcb764bf9fea73@syzkaller.appspotmail.com>
-Cc:     almaz.alexandrovich@paragon-software.com, bp@alien8.de,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, yazen.ghannam@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 1/5] dt-bindings: phy: qcom,m31: Document qcom,m31 USB
+ phy
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        arnd@arndb.de, geert+renesas@glider.be, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl, john.garry@huawei.com,
+        peng.fan@nxp.com, quic_srichara@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1690439352.git.quic_varada@quicinc.com>
+ <f88d5add717e90e136a701f39fe80d00f1052692.1690439352.git.quic_varada@quicinc.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <f88d5add717e90e136a701f39fe80d00f1052692.1690439352.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this bisection result.
+On 27/07/2023 08:33, Varadarajan Narayanan wrote:
+> Document the M31 USB2 phy present in IPQ5332.
+> 
+> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
 
-On Thu, Jul 27, 2023 at 7:33=E2=80=AFAM syzbot
-<syzbot+be8872fcb764bf9fea73@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 00e4feb8c0476bbde3c8bf4a593e0f82ca9a4df6
-> Author: Yazen Ghannam <yazen.ghannam@amd.com>
-> Date:   Fri Jan 27 17:04:03 2023 +0000
->
->     EDAC/amd64: Rename debug_display_dimm_sizes()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D157a6f81a8=
-0000
 
-accumulated error probability: 0.50
-< .. >
-reproducer is flaky (0.11 repro chance estimate)
+> +properties:
+> +  "#phy-cells":
+> +    const: 0
+> +
+> +  compatible:
+> +    items:
+> +      - const: qcom,ipq5332-usb-hsphy
 
-The reproducer was too unstable and the threshold for non-reporting is
-currently exactly 0.5 :)
-I'll decrease it.
+Please keep compatible as first property.
 
-> start commit:   c1649ec55708 Merge tag 'nfsd-6.2-4' of git://git.kernel.o=
-r..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D319a3509d25b0=
-f85
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dbe8872fcb764bf9=
-fea73
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17c604fe480=
-000
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: EDAC/amd64: Rename debug_display_dimm_sizes()
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: cfg_ahb
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description:
+> +      Phandle to 5V regulator supply to PHY digital circuit.
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
+> +    usb2-phy@7b000 {
+
+This was actually better before as usb-phy, I don't know why did you
+changed. Especially that you already changed once to usb-phy and this
+got review tag. It's fine. If there is going to be resubmit then fix
+these two issues.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
