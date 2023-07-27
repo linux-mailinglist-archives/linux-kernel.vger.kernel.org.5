@@ -2,122 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DF7765B3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51924765B42
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjG0SPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S229779AbjG0SQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjG0SPI (ORCPT
+        with ESMTP id S229664AbjG0SQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:15:08 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9882D64
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:15:07 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-98de21518fbso168389866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:15:07 -0700 (PDT)
+        Thu, 27 Jul 2023 14:16:20 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A963530D3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:16:18 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-516500163b2so1317a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690481706; x=1691086506;
+        d=google.com; s=20221208; t=1690481777; x=1691086577;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cDXv3GJoBhlQr8pJG4ewngE2yTfvQ54xOjhSQv72UGM=;
-        b=riHjHppP5NEozcwiEl5iB7KyWW+jJ8XGwJB6AaeCCX81SAoydQGvrnLtUth9zm28kg
-         GdNWiC0B3pWMzmKZC9XzE89drFEXtLyLZT70sTmA+Jf2ch+1jmAib07EusGuLCLhpdkw
-         5GiYJ1Qa4av/NDXOrUdR2bK2twvH88e5Q1/Blqaq8asjz+9TvTon2hkoC2BQTe5UcIt7
-         Q2Qas0SyPR8GUaQyFP040jmAp/PN8srIJDDhqvkYmfODXqGVi16LL+ZyhUSFgb49KFey
-         HR0fvNYdpn/suObjC7F2359RSzItBB8iqPCm1h/39mSqel1YrrOu7CrNrUOamyd7v/AR
-         nA6Q==
+        bh=DiDS0mChascCO6L3tr3Hz0xDTzt2hEO5MJ+iwsPLl7U=;
+        b=OqKw06mieFE2i7Texhe7OHQzvhb6ib37GdrPTOEVqzDpVnflcRQEdAUGLqXs5nDotf
+         9obVCG4LmcSQGVVzMtLTO02vaJnzEX3/MPZN3ISVLwmESgeAh43kLyodB72Fob+qTKpP
+         oNeWog1pOi9+GtH0Z9+Ce+a/yb/i/vjtN92mAcSdXKK6ytR7LUQuWBnjXENNuQlIVO+p
+         GiKyx0qsNKgN+APrsJvS0VzdSWngL0ZF838Jqp3Br+H/5tqyZQwfOHvrRp2hJGeG2JxN
+         LhQPUyuyGhqRToDM8Dqi7G3/NWs0LbavhI+ThoXGxk9nGs3LC2rAmS5s+FiHasYv79AH
+         uv4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690481706; x=1691086506;
+        d=1e100.net; s=20221208; t=1690481777; x=1691086577;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cDXv3GJoBhlQr8pJG4ewngE2yTfvQ54xOjhSQv72UGM=;
-        b=F/hFxqI8PD/3sySwrp14Bm7/mgdR/saIWkCFG/5zpxNqlXLqV9h7GKp3EqBNcVzYGE
-         taKJoetAs9USXlQYhGiwKbjfPhbUkZ24lkhCwNyeZWAZzYKrhtT61lQ43tyKjRU2nbCX
-         p/QMvtpjOSLq98Bl4dxcc2jcMkvPc2i9L81E1b83w06EHjqDKLhrLtVfJ5iyjVnRC36F
-         t64NHM+vGv0xv3ATC/mVgTCdmLnmC/wAtsvA+FQ73p4BrHNvTDfap1JjDeZdcQlhgIG8
-         l0AddO8KYkjkWbxM3O3QUX88Yusvm0uPV68oiwz1HjcLRQeCPNvA/OGVH2SYdTXq2hDf
-         Ymyw==
-X-Gm-Message-State: ABy/qLbnhO3MSyH8Rk0OEuuuMuBRL7vuGMLVqoav8I0/m4Xqwb6Q7o49
-        o6QRDdY9T6/aeOeByGpZYEq3OW1AeT83YXp2tgtVxQ==
-X-Google-Smtp-Source: APBJJlEVxmSgSqqQ8XGRbfXYOgqCkt9UjQRI0/mK5ZuVzQyFMrcfTJN87jfsvbkdR97fG3091Oa9xERnN3FI3L9gjow=
-X-Received: by 2002:a17:906:59:b0:993:dd1d:8251 with SMTP id
- 25-20020a170906005900b00993dd1d8251mr2807834ejg.28.1690481705936; Thu, 27 Jul
- 2023 11:15:05 -0700 (PDT)
+        bh=DiDS0mChascCO6L3tr3Hz0xDTzt2hEO5MJ+iwsPLl7U=;
+        b=iVfRlb8Uq/w/YA9wtF+uUlNAGww/kfCiMosR1nFO5lCHXBlZHRZNW+hodlGX4ctVdv
+         eC92K+0QsSuFYQYkZ+iifkgNlm0XOCEAUZ0xF1t2zc8Hlzkub/AjJw4BQIPI+zXSeGw3
+         5BmIvFyIEV8g7Gz2ZRTzvYU31rjou1AkUDwt3OjGKEhN8N2b/uh1q+U80A/QfqOJPEUn
+         oaPXPdoWML+98PHbLBYtralo3ob6zwO1Tvq5V7YtVbULzTxAKdoWA5o4RBWlLOQ9pzyw
+         65Dsb6MgNbS5+YjNspme1HbGMSD0PJiT865nA+9yqhnSN6pBk9/bZFp1omcQ4fjWY8nc
+         Kskw==
+X-Gm-Message-State: ABy/qLYdxMPf1K0bpiauv2Xk4XLUe6tAQ2ePbXr5KpUkweO03bakNsGx
+        zf2Y2i2fvGbhHv7A4rclnb7qVWguXl1lck4KOgerBA==
+X-Google-Smtp-Source: APBJJlFrSL1AM7CHEdphomj39vss8b33BHSYCNSZrbHdcSZoGX7g6eEnHPlUf54w3Y83E5cBi5H77BQGzK66cSEt/Vc=
+X-Received: by 2002:a50:d50d:0:b0:50b:c48c:8a25 with SMTP id
+ u13-20020a50d50d000000b0050bc48c8a25mr14715edi.6.1690481777012; Thu, 27 Jul
+ 2023 11:16:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727162343.1415598-1-hannes@cmpxchg.org> <20230727162343.1415598-3-hannes@cmpxchg.org>
-In-Reply-To: <20230727162343.1415598-3-hannes@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 27 Jul 2023 11:14:29 -0700
-Message-ID: <CAJD7tkbiYMjricUHA_H5JEMOd7KkJvPDfU5ML1R8sVZXkS9CPg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: zswap: tighten up entry invalidation
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230726020946.1409565-1-rdbabiera@google.com> <13b9a16f-0f26-23a4-1e2e-5b1cf9cb4070@roeck-us.net>
+In-Reply-To: <13b9a16f-0f26-23a4-1e2e-5b1cf9cb4070@roeck-us.net>
+From:   RD Babiera <rdbabiera@google.com>
+Date:   Thu, 27 Jul 2023 11:16:05 -0700
+Message-ID: <CALzBnUGYZXgocCmycqgf6FyCA9qmVYYj9vuVkeXFoQy=E1GiwA@mail.gmail.com>
+Subject: Re: [PATCH v1] usb: typec: bus: verify partner exists in typec_altmode_attention
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 9:23=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> Removing a zswap entry from the tree is tied to an explicit operation
-> that's supposed to drop the base reference: swap invalidation,
-> exclusive load, duplicate store. Don't silently remove the entry on
-> final put, but instead warn if an entry is in tree without reference.
->
-> While in that diff context, convert a BUG_ON to a WARN_ON_ONCE. No
-> need to crash on a refcount underflow.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Tue, Jul 25, 2023 at 7:27=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+> Is this theory or actually observed ?
 
-I have always found it confusing that we explicitly remove the zswap
-entry from the entry in the contexts you mentioned, yet we have
-zswap_rb_erase() called in zswap_entry_put(). In fact, I think in some
-contexts this leads to zswap_rb_erase() being called unnecessarily
-twice on the same entry (e.g. once from invalidation, then once again
-when an outstanding local ref is dropped). It's probably harmless with
-the current implementation, but such a design can easily go wrong.
+This is actually observed.
 
-Thanks for the cleanup, it would be interesting to see if this warning
-is actually fired.
+> This dereferences partner
+>
+> > +
+> > +     if (!partner || !pdev)
+>
+> ... and then checks if partner is NULL.
+>
+> On top of that, pdev is not NULL even if partner is NULL because
+> adev is not the first element of struct altmode.
+>
+> In summary, this code and the check as implemented does not make
+> sense. Maybe partner can be NULL, but pdev will never be NULL.
 
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+After looking at it more carefully, I agree on the pdev assignment and chec=
+k
+being odd. I'll follow how typec_altmode_vdm handles the NULL partner case
+and remove the NULL check on pdev.
 
-> ---
->  mm/zswap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> > +             return -ENODEV;
+> >
+> >       if (pdev->ops && pdev->ops->attention)
+> >               pdev->ops->attention(pdev, vdo);
+> > +     else
+> > +             return -EOPNOTSUPP;
+> > +
 >
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index e123b1c7981c..e34ac89e6098 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -402,9 +402,9 @@ static void zswap_entry_put(struct zswap_tree *tree,
->  {
->         int refcount =3D --entry->refcount;
->
-> -       BUG_ON(refcount < 0);
-> +       WARN_ON_ONCE(refcount < 0);
->         if (refcount =3D=3D 0) {
-> -               zswap_rb_erase(&tree->rbroot, entry);
-> +               WARN_ON_ONCE(!RB_EMPTY_NODE(&entry->rbnode));
->                 zswap_free_entry(entry);
->         }
->  }
-> --
-> 2.41.0
->
+> So far this was explicitly permitted. Now it will log an error each time =
+it is
+> observed. I do not see the point of this log message; obviously it was
+> not intended to be considered an error, and I do not understand why it sh=
+ould
+> suddenly be one that is worth clogging the log.
+
+My rationale for logging anything is that it will make it easier to
+identify port
+partners that send Attention messages regardless of whether or not the
+port registers the partner Alt Mode. You're right that this is not an error=
+, so
+I will treat this case as a successful return moving forward. Then the only
+log generated will be for a port partner that sends Attention messages to a
+port that hasn't registered an altmode for it.
+
+Thanks for the feedback,
+RD
