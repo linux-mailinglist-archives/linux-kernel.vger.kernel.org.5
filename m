@@ -2,131 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C05AA76470B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FA0764F77
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbjG0GkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S234182AbjG0JVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbjG0Gj7 (ORCPT
+        with ESMTP id S232211AbjG0JVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:39:59 -0400
-Received: from mgamail.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C8B2129
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690439991; x=1721975991;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2tUSZMdSmW/MZmHWfmtvUAfg03unaamp6z41Ty0I/Fk=;
-  b=VE5KPygDoUrmAUBxeFBAT5ujtTGSW5Z/OEjLOMSsJUbawqLLaQlI0GLq
-   S7eoIH9sesQ46aAcR0F8qVfS33QLnFXj7paRz6qQ/w71cAkQyD6SBD5+F
-   vrawCUyWVkMfZl34kZODn9PBw91WfkbqP1ZcrgUV5bfs7nVAndwe75V8g
-   7kVa1FodNeO3o7GRO0FonPSdrJBAaiIzYFP63uG5jBRQRf8WblUSWcF4+
-   sCLOUod7+M9yN0QfS+9S3TIgShKjHFcfK4LqEAMyjEAJKw4Ce17grrmRn
-   IYyqUEU1sBkRZlLjwRd/DyR6jww8IcBCIaBLXgCndLm0aaB5n0uFOoYCH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="454589658"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="454589658"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 23:39:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="792191955"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="792191955"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Jul 2023 23:39:47 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        Aaron Lu <aaron.lu@intel.com>, linux-kernel@vger.kernel.org,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [RFC PATCH 7/7] sched/stats: Track the scan number of groups during load balance
-Date:   Thu, 27 Jul 2023 22:35:36 +0800
-Message-Id: <e0176341d5b5186f36ea024fb0f1ca02dc7082a3.1690273854.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690273854.git.yu.c.chen@intel.com>
-References: <cover.1690273854.git.yu.c.chen@intel.com>
+        Thu, 27 Jul 2023 05:21:25 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257C461AB;
+        Thu, 27 Jul 2023 02:11:33 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R5YK05009590;
+        Thu, 27 Jul 2023 07:09:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=eseq8ZzD3Dvq62NkFGvHlXs3ONEHLuPN1Y5ZVBwSuQQ=;
+ b=Wvo45ocoV43Pr2UY1aCtcxLJBdUnVM4mkgjEE8RF72+WAM+F/4S7aVFixrLrXByrokpN
+ XAJSPcHK0MsVODiBfP9UFEVpU8v17S+cdhlo/Gpbgnxm8LjiSvL2bDunOZ1ANI/QUxpe
+ HCSCOaw91re24hGhR3gHLoGD+I+YJ+V8usjWKvoJZyye5I/ireCNWAX2bj+B6IFTnhSV
+ MGta5EXxS62LWhGg6xn8US9NcfWXgkoDyMMhIBxq6J+unV0/sIX2nKb8vErpm/HNn0h+
+ vTONoud2nCuPCWpXge2YdOdmDeliRJ0hleUF44RJuDHEUro+CKQLrHZ8xjuqfevzG09C 1A== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s336t1ymm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 07:09:41 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R79WMY011314
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 07:09:32 GMT
+Received: from [10.216.40.41] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
+ 2023 00:09:20 -0700
+Message-ID: <4dce1330-55eb-bbee-8374-987533b6a877@quicinc.com>
+Date:   Thu, 27 Jul 2023 12:39:17 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] dt-bindings: qcom: Update RPMHPD entries for some SoCs
+Content-Language: en-US
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <conor+dt@kernel.org>, <robdclark@gmail.com>,
+        <quic_abhinavk@quicinc.com>, <dmitry.baryshkov@linaro.org>,
+        <sean@poorly.run>, <marijn.suijten@somainline.org>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <stanimir.k.varbanov@gmail.com>, <quic_vgarodia@quicinc.com>,
+        <mchehab@kernel.org>, <ulf.hansson@linaro.org>,
+        <mathieu.poirier@linaro.org>, <jonathan@marek.ca>,
+        <vladimir.zapolskiy@linaro.org>, <quic_tdas@quicinc.com>,
+        <neil.armstrong@linaro.org>, <rfoss@kernel.org>,
+        <bhupesh.sharma@linaro.org>, <mani@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-media@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+References: <1690433470-24102-1-git-send-email-quic_rohiagar@quicinc.com>
+ <edac596d-2b3d-4632-9468-4af863aff6f4@quicinc.com>
+ <86c6e8b1-d286-6858-5de6-b8faf6557fe4@quicinc.com>
+ <3da310cc-b866-4829-8411-befaa719f10d@quicinc.com>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <3da310cc-b866-4829-8411-befaa719f10d@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: g-uXOygpocTyBnxtmMGatXEAqimXMHdy
+X-Proofpoint-GUID: g-uXOygpocTyBnxtmMGatXEAqimXMHdy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=657 adultscore=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270063
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This metric could be used to evaluate the load balance cost and
-effeciency.
 
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- include/linux/sched/topology.h | 1 +
- kernel/sched/fair.c            | 2 ++
- kernel/sched/stats.c           | 5 +++--
- 3 files changed, 6 insertions(+), 2 deletions(-)
+On 7/27/2023 12:38 PM, Pavan Kondeti wrote:
+> On Thu, Jul 27, 2023 at 12:24:10PM +0530, Rohit Agarwal wrote:
+>> On 7/27/2023 11:06 AM, Pavan Kondeti wrote:
+>>> On Thu, Jul 27, 2023 at 10:21:10AM +0530, Rohit Agarwal wrote:
+>>>> Update the RPMHPD references with new bindings defined in rpmhpd.h
+>>>> for Qualcomm SoCs SM8[2345]50.
+>>>>
+>>>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>>>> ---
+>>>>    Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml    | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,sm8350-videocc.yaml   | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,sm8450-camcc.yaml     | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,sm8450-dispcc.yaml    | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml   | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,sm8550-dispcc.yaml    | 3 ++-
+>>>>    Documentation/devicetree/bindings/clock/qcom,videocc.yaml          | 3 ++-
+>>>>    Documentation/devicetree/bindings/display/msm/qcom,sm8250-dpu.yaml | 3 ++-
+>>>>    .../devicetree/bindings/display/msm/qcom,sm8250-mdss.yaml          | 7 ++++---
+>>>>    Documentation/devicetree/bindings/display/msm/qcom,sm8350-dpu.yaml | 3 ++-
+>>>>    .../devicetree/bindings/display/msm/qcom,sm8350-mdss.yaml          | 5 +++--
+>>>>    Documentation/devicetree/bindings/display/msm/qcom,sm8450-dpu.yaml | 3 ++-
+>>>>    .../devicetree/bindings/display/msm/qcom,sm8450-mdss.yaml          | 7 ++++---
+>>>>    Documentation/devicetree/bindings/display/msm/qcom,sm8550-dpu.yaml | 3 ++-
+>>>>    .../devicetree/bindings/display/msm/qcom,sm8550-mdss.yaml          | 7 ++++---
+>>>>    Documentation/devicetree/bindings/media/qcom,sm8250-venus.yaml     | 3 ++-
+>>>>    Documentation/devicetree/bindings/mmc/sdhci-msm.yaml               | 3 ++-
+>>>>    Documentation/devicetree/bindings/remoteproc/qcom,sm8350-pas.yaml  | 5 +++--
+>>>>    18 files changed, 44 insertions(+), 26 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>>>> index d6774db..d6b81c0 100644
+>>>> --- a/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>>>> +++ b/Documentation/devicetree/bindings/clock/qcom,dispcc-sm8x50.yaml
+>>>> @@ -83,6 +83,7 @@ examples:
+>>>>      - |
+>>>>        #include <dt-bindings/clock/qcom,rpmh.h>
+>>>>        #include <dt-bindings/power/qcom-rpmpd.h>
+>>>> +    #include <dt-bindings/power/qcom,rpmhpd.h>
+>>>>        clock-controller@af00000 {
+>>>>          compatible = "qcom,sm8250-dispcc";
+>>>>          reg = <0x0af00000 0x10000>;
+>>>> @@ -103,7 +104,7 @@ examples:
+>>>>          #clock-cells = <1>;
+>>>>          #reset-cells = <1>;
+>>>>          #power-domain-cells = <1>;
+>>>> -      power-domains = <&rpmhpd SM8250_MMCX>;
+>>>> +      power-domains = <&rpmhpd RPMHPD_MMCX>;
+>>>>          required-opps = <&rpmhpd_opp_low_svs>;
+>>>>        };
+>>>>    ...
+>>> Does this file still need to include old header? The same is applicable
+>>> to some of the other files in the patch also.
+>>>
+>>> We also discussed on the other thread [1] to move the regulator level
+>>> definitions to new header. should this change be done after that, so that
+>>> we don't end up touching the very same files again?
+>>>
+>>> [1]
+>>> https://lore.kernel.org/all/a4zztrn6jhblozdswba7psqtvjt5l765mfr3yl4llsm5gsyqef@7x6q7yabydvm/
+>> Removing this header directly would also be fine as we are not using any
+>> macro defined directly in these
+>> bindings.
+>> I already checked with dt_binding_check by removing this header.
+>>
+> Thanks for checking, then we should remove the old header in this patch
+> it self, right?
+Yes
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index af2261308529..fa8fc6a497fd 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -124,6 +124,7 @@ struct sched_domain {
- 	unsigned int lb_hot_gained[CPU_MAX_IDLE_TYPES];
- 	unsigned int lb_nobusyg[CPU_MAX_IDLE_TYPES];
- 	unsigned int lb_nobusyq[CPU_MAX_IDLE_TYPES];
-+	unsigned int lb_sg_scan[CPU_MAX_IDLE_TYPES];
- 
- 	/* Active load balancing */
- 	unsigned int alb_count;
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9af57b5a24dc..96df7c5706d1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10253,6 +10253,8 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 			goto next_group;
- 
- 
-+		schedstat_inc(env->sd->lb_sg_scan[env->idle]);
-+
- 		if (update_sd_pick_busiest(env, sds, sg, sgs)) {
- 			sds->busiest = sg;
- 			sds->busiest_stat = *sgs;
-diff --git a/kernel/sched/stats.c b/kernel/sched/stats.c
-index 857f837f52cb..38608f791363 100644
---- a/kernel/sched/stats.c
-+++ b/kernel/sched/stats.c
-@@ -152,7 +152,7 @@ static int show_schedstat(struct seq_file *seq, void *v)
- 				   cpumask_pr_args(sched_domain_span(sd)));
- 			for (itype = CPU_IDLE; itype < CPU_MAX_IDLE_TYPES;
- 					itype++) {
--				seq_printf(seq, " %u %u %u %u %u %u %u %u",
-+				seq_printf(seq, " %u %u %u %u %u %u %u %u %u",
- 				    sd->lb_count[itype],
- 				    sd->lb_balanced[itype],
- 				    sd->lb_failed[itype],
-@@ -160,7 +160,8 @@ static int show_schedstat(struct seq_file *seq, void *v)
- 				    sd->lb_gained[itype],
- 				    sd->lb_hot_gained[itype],
- 				    sd->lb_nobusyq[itype],
--				    sd->lb_nobusyg[itype]);
-+				    sd->lb_nobusyg[itype],
-+				    sd->lb_sg_scan[itype]);
- 			}
- 			seq_printf(seq,
- 				   " %u %u %u %u %u %u %u %u %u %u %u %u\n",
--- 
-2.25.1
-
+Thanks,
+Rohit.
+>
+> Thanks,
+> Pavan
