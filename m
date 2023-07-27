@@ -2,186 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFC8765E7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0FD765E7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232915AbjG0VyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S232901AbjG0Vyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbjG0Vxz (ORCPT
+        with ESMTP id S232656AbjG0VyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:53:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098243AB7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:53:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C91461EBC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:53:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B3F2C433C9;
-        Thu, 27 Jul 2023 21:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690494800;
-        bh=Y3Xmaq/xTIj2r6AHGezOL4uhwn8qF3iH6+f0u/RI6rw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BRxP92P/stHqjvuis4AuCMW2avLQAKUzM4EQjZEhatWhnIKf0crT/tVy71isi/IMa
-         d/GA0VqH09UbRGsIoNxztvM1e84wd3K/jHpF32HpB6WbJFeoQmnznf3rpuBooA8Vxg
-         7kdPEva+zMQwe8g7eaxAsk01mrHvH1Xpp3Den2NWpUMa0LvbJ2R/KngxlatoavhedI
-         o2AvdI2tJBSsBTv32SGAF3Y/8mT1OaY2i/z83/eJ9g8F6bIfKqArpdmOXdvul08n3O
-         yDealoqZHntihTZg4n4baAQskMqpxHen0o//hmwEoSdqCvgbRBoPZK9J8LE2Qdtwq9
-         PiEOltJy4lQTA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Levi Yun <ppbuk5246@gmail.com>
-Cc:     sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] damon: Use pmdp_get instead of drectly dereferencing pmd.
-Date:   Thu, 27 Jul 2023 21:53:18 +0000
-Message-Id: <20230727215318.43455-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230727212157.2985025-1-ppbuk5246@gmail.com>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 17:54:11 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F45F423B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:53:35 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d13e11bb9ecso1253963276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:53:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690494814; x=1691099614;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+IrV9GMRSdZPt30c7KcILm3qep9zKx/623+6CGNnSZI=;
+        b=YRH0RandNbmWOsNbix1juf2j32ITK9Uvj67kgr3R72979X637zKHH8KZguOPLopzPy
+         fjkQbcWwTfMo1Hqb4p+zc/kFemN21RJ6rTyJtcMQ/oEKwjHKIFtmzqeJZgnBmRq/79FF
+         Q1T9puk7xzNEdjIV/igXmV4UFIlev2+Onajgaupn8iFIWwD+LDMaU7Rqh6Y/qZ8WNZcQ
+         EbYgsmXlOOtwiPgFmIy/5TsvUTsSImKFRVPRiBPAtXKPd4wWKkCURJYYWadAtcEjnXsQ
+         ZCgI9IcqtCntKz8lcvSlVTtTRikw2cRxyKs3v6SBQpDYBNM+kCas8jJKyEbxblWbQEXw
+         lu9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690494814; x=1691099614;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+IrV9GMRSdZPt30c7KcILm3qep9zKx/623+6CGNnSZI=;
+        b=cdMWgx+QPQpHizCjUdM/feE5LXH40ST0zJu0MmvzKMO67DvkYYQuDtWTTyW10K3h7Y
+         VHj6IehJoD5m3GFUCIaOxP9JypzeksrSLU/L+cKM8S8ijvp7VJH7sUuPYlhS6RMPvYlY
+         VEiEah0l9pQDNEXUyCnV0AWRCOxVLEG+Z8aO0H2OKKnp1BSzztvzx59FDxeLZiuU/6AV
+         L/OLGsDmvVAk/iaRyCY2Gh5nD0H/GvlgHwxqWwGon2jEPtehpdjQGc/RLakghFvrUW2S
+         LbwyN5j6rxKheMvrOxoDyK1X7y4ngVNQkUZUsmIiZQqpIIZHR7z6ymmZatmLwsKEtoTz
+         ZAcg==
+X-Gm-Message-State: ABy/qLbyjaZqGvDCTEbdgp6NZzJRQAosd0Y9dEdkUCUWhkoLWFZE/wR+
+        ArYRdVKpSmbXZQwX7TF/Bgo2Hfn/cmvcFxZF/w==
+X-Google-Smtp-Source: APBJJlHXF3DAQ7oQ2+0tdvzkYP1VoY7GsOUMjOE+/Vdzmdw/tfkvYZ+dZ1a3XDRmAV0OnKJAbEafFAFp/DwKM5StMA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:ab13:0:b0:cfe:74cf:e61a with SMTP
+ id u19-20020a25ab13000000b00cfe74cfe61amr4397ybi.6.1690494813865; Thu, 27 Jul
+ 2023 14:53:33 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 21:53:24 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAFPnwmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDcyNz3eL80rwU3YrUPF1jS4tkS0sj8yTjFAsloPqCotS0zAqwWdGxtbU AfC3LdVsAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690494812; l=3106;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=2DV18A5LAIbHOz8+4mF5Dz/H6ijYF+f0DqJHiw+O6Z8=; b=vopO06Wm0zYSnDpTC9r5I+EsMsCZYRVtZWxLb5Dfivdpz4dFnQc4/MROOoOi/9uBOTysUrbZO
+ B8mJVXUSQDcCy59jXa+eGsPlPBt2oonSrkqDfkKPfBHRnmLmfyW1zgm
+X-Mailer: b4 0.12.3
+Message-ID: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
+Subject: [PATCH] ALSA: xen-front: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Levi,
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ always the case for `strncpy`!
 
-Thank you for quick respin.
+It should be noted that, in this case, the destination buffer has a
+length strictly greater than the source string. Moreover, the source
+string is NUL-terminated (and so is the destination) which means there
+was no real bug happening here. Nonetheless, this patch would get us one
+step closer to eliminating the `strncpy` API in the kernel, as its use
+is too ambiguous. We need to favor less ambiguous replacements such as:
+strscpy, strscpy_pad, strtomem and strtomem_pad (amongst others).
 
-I still hope the subject to drop the ending period, and start the subject with
-lowercase, like other mm/damon/ commits.
+Technically, my patch yields subtly different behavior. The original
+implementation with `strncpy` would fill the entire destination buffer
+with null bytes [3] while `strscpy` will leave the junk, uninitialized
+bytes trailing after the _mandatory_ NUL-termination. So, if somehow
+`pcm->name` or `card->driver/shortname/longname` require this
+NUL-padding behavior then `strscpy_pad` should be used. My
+interpretation, though, is that the aforementioned fields are just fine
+as NUL-terminated strings. Please correct my assumptions if needed and
+I'll send in a v2.
 
-On Fri, 28 Jul 2023 06:21:57 +0900 Levi Yun <ppbuk5246@gmail.com> wrote:
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+[3]: https://linux.die.net/man/3/strncpy
 
-> As ptep_get, Use the pmdp_get wrapper when we accessing pmdval
-> instead of directly dereferencing pmd.
+Link: https://github.com/KSPP/linux/issues/90
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ sound/xen/xen_snd_front_alsa.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Based on the usual git commit message line length recommendation (72
-characters), there is nothing really wrong, but putting 'instead' at the first
-line may look more consistent with other messages.
+diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+index db917453a473..7a3dfce97c15 100644
+--- a/sound/xen/xen_snd_front_alsa.c
++++ b/sound/xen/xen_snd_front_alsa.c
+@@ -783,7 +783,7 @@ static int new_pcm_instance(struct xen_snd_front_card_info *card_info,
+ 	pcm->info_flags = 0;
+ 	/* we want to handle all PCM operations in non-atomic context */
+ 	pcm->nonatomic = true;
+-	strncpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
++	strscpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
+ 
+ 	if (instance_cfg->num_streams_pb)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+@@ -835,9 +835,9 @@ int xen_snd_front_alsa_init(struct xen_snd_front_info *front_info)
+ 			goto fail;
+ 	}
+ 
+-	strncpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
+-	strncpy(card->shortname, cfg->name_short, sizeof(card->shortname));
+-	strncpy(card->longname, cfg->name_long, sizeof(card->longname));
++	strscpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
++	strscpy(card->shortname, cfg->name_short, sizeof(card->shortname));
++	strscpy(card->longname, cfg->name_long, sizeof(card->longname));
+ 
+ 	ret = snd_card_register(card);
+ 	if (ret < 0)
 
-> 
-> Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
-> ---
+---
+base-commit: 57012c57536f8814dec92e74197ee96c3498d24e
+change-id: 20230727-sound-xen-398c9927b3d8
 
-Since this is the good place to put additional comments not suitable for the
-changelog[2], it would be helpful if you could put changes of this patch that
-made after the v1 here, from next time.
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-Above comments are only my trivial and personal preferences, so I wouldn't ask
-you to respin, unless you really want to.
-
-Reviewed-by: SeongJae Park <sj@kernel.org>
-
-[1] https://github.com/torvalds/linux/pull/17
-[2] https://docs.kernel.org/process/submitting-patches.html#the-canonical-patch-format
-
-
-Thanks,
-SJ
-
->  mm/damon/ops-common.c |  2 +-
->  mm/damon/paddr.c      |  2 +-
->  mm/damon/vaddr.c      | 23 +++++++++++++++--------
->  3 files changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/damon/ops-common.c b/mm/damon/ops-common.c
-> index e940802a15a4..ac1c3fa80f98 100644
-> --- a/mm/damon/ops-common.c
-> +++ b/mm/damon/ops-common.c
-> @@ -54,7 +54,7 @@ void damon_ptep_mkold(pte_t *pte, struct vm_area_struct *vma, unsigned long addr
->  void damon_pmdp_mkold(pmd_t *pmd, struct vm_area_struct *vma, unsigned long addr)
->  {
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -	struct folio *folio = damon_get_folio(pmd_pfn(*pmd));
-> +	struct folio *folio = damon_get_folio(pmd_pfn(pmdp_get(pmd)));
->  
->  	if (!folio)
->  		return;
-> diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-> index 40801e38fcf0..909db25efb35 100644
-> --- a/mm/damon/paddr.c
-> +++ b/mm/damon/paddr.c
-> @@ -94,7 +94,7 @@ static bool __damon_pa_young(struct folio *folio, struct vm_area_struct *vma,
->  				mmu_notifier_test_young(vma->vm_mm, addr);
->  		} else {
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -			*accessed = pmd_young(*pvmw.pmd) ||
-> +			*accessed = pmd_young(pmdp_get(pvmw.pmd)) ||
->  				!folio_test_idle(folio) ||
->  				mmu_notifier_test_young(vma->vm_mm, addr);
->  #else
-> diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-> index 2fcc9731528a..d01cc46f4bf4 100644
-> --- a/mm/damon/vaddr.c
-> +++ b/mm/damon/vaddr.c
-> @@ -301,16 +301,19 @@ static int damon_mkold_pmd_entry(pmd_t *pmd, unsigned long addr,
->  		unsigned long next, struct mm_walk *walk)
->  {
->  	pte_t *pte;
-> +	pmd_t pmde;
->  	spinlock_t *ptl;
->  
-> -	if (pmd_trans_huge(*pmd)) {
-> +	if (pmd_trans_huge(pmdp_get(pmd))) {
->  		ptl = pmd_lock(walk->mm, pmd);
-> -		if (!pmd_present(*pmd)) {
-> +		pmde = pmdp_get(pmd);
-> +
-> +		if (!pmd_present(pmde)) {
->  			spin_unlock(ptl);
->  			return 0;
->  		}
->  
-> -		if (pmd_trans_huge(*pmd)) {
-> +		if (pmd_trans_huge(pmde)) {
->  			damon_pmdp_mkold(pmd, walk->vma, addr);
->  			spin_unlock(ptl);
->  			return 0;
-> @@ -439,21 +442,25 @@ static int damon_young_pmd_entry(pmd_t *pmd, unsigned long addr,
->  	struct damon_young_walk_private *priv = walk->private;
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -	if (pmd_trans_huge(*pmd)) {
-> +	if (pmd_trans_huge(pmdp_get(pmd))) {
-> +		pmd_t pmde;
-> +
->  		ptl = pmd_lock(walk->mm, pmd);
-> -		if (!pmd_present(*pmd)) {
-> +		pmde = pmdp_get(pmd);
-> +
-> +		if (!pmd_present(pmde)) {
->  			spin_unlock(ptl);
->  			return 0;
->  		}
->  
-> -		if (!pmd_trans_huge(*pmd)) {
-> +		if (!pmd_trans_huge(pmde)) {
->  			spin_unlock(ptl);
->  			goto regular_page;
->  		}
-> -		folio = damon_get_folio(pmd_pfn(*pmd));
-> +		folio = damon_get_folio(pmd_pfn(pmde));
->  		if (!folio)
->  			goto huge_out;
-> -		if (pmd_young(*pmd) || !folio_test_idle(folio) ||
-> +		if (pmd_young(pmde) || !folio_test_idle(folio) ||
->  					mmu_notifier_test_young(walk->mm,
->  						addr))
->  			priv->young = true;
-> -- 
-> 2.37.2
-> 
-> 
