@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17428765070
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093F9765071
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjG0J4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        id S232360AbjG0J4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbjG0J4W (ORCPT
+        with ESMTP id S232760AbjG0J4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:56:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4C9122;
-        Thu, 27 Jul 2023 02:56:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA3E161DE6;
-        Thu, 27 Jul 2023 09:56:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D4A9C433C8;
-        Thu, 27 Jul 2023 09:56:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690451771;
-        bh=J7ZXQyJs9VwKG49702cEjp5BBaWLGJW95hpeDTHwnW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ovuRrgBqVfaaWo+AAwh7i+/KJm/+GHfb6IJKGJChshbe239WjFuQlKZOOvI14PUa3
-         FtWY5zy2T5NNpwmlMC0ILDQRtX8fa621Ei/QimyzHH8lkTRdZ0bI5ioEn/c0pvgVtL
-         jui5siBD6Z2Sqj+wr+CqYSHbBLd23sRVyox9Yua11qZKdm8pXq7OVT+eDaes6rEEB5
-         ihpjm9VfTdApcBvVtqqGZ1pWLf5QEBqBZYS5uM8pxB5NLvNfennidFGMoP2c4ELZn8
-         +v4MHOfOH6XG49E9M6z+DqEbcP+Dq/ZFMP+wn+aTzrXXqXPGMLSMJQNENcntNfhjoj
-         Xb9GoZpGa+EoA==
-Date:   Thu, 27 Jul 2023 10:56:05 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com, rafael@kernel.org,
-        viresh.kumar@linaro.org, ionela.voinescu@arm.com,
-        sumitg@nvidia.com, yang@os.amperecomputing.com
-Subject: Re: [PATCH] arm64: Provide an AMU-based version of
- arch_freq_get_on_cpu
-Message-ID: <20230727095604.GA18721@willie-the-truck>
-References: <20230606155754.245998-1-beata.michalska@arm.com>
- <20230607095856.7nyv7vzuehceudnl@bogus>
- <ZICNkXfBQUiT/BvK@e120325.cambridge.arm.com>
+        Thu, 27 Jul 2023 05:56:31 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0665116
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:56:29 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxuepLP8Jku6oKAA--.16954S3;
+        Thu, 27 Jul 2023 17:56:27 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yM9P8JkTeo8AA--.57606S3;
+        Thu, 27 Jul 2023 17:56:23 +0800 (CST)
+Message-ID: <68a9a139-922b-93ae-0f4d-ee36b3610110@loongson.cn>
+Date:   Thu, 27 Jul 2023 17:56:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZICNkXfBQUiT/BvK@e120325.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drm/mediatek: Fix potential memory leak if vmap() fail
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        loongson-kernel@lists.loongnix.cn
+References: <20230706134000.130098-1-suijingfeng@loongson.cn>
+ <040c1db8-4ae1-2a6c-ff58-282ed938e565@collabora.com>
+Content-Language: en-US
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <040c1db8-4ae1-2a6c-ff58-282ed938e565@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8Bx3yM9P8JkTeo8AA--.57606S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Gw1Dtr4xJFW7urW3Xr1UurX_yoW3JFb_K3
+        y0q34xurs5tF43Cr4ayasxAayFgFW8tFnrWw4kX3Z3Gwn0k398Xayqgws3XFyrGFnruFyj
+        ga45JF9Yyry7XosvyTuYvTs0mTUanT9S1TB71UUUUbDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbqxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_Jw0_GFyle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0L0ePUUUU
+        U==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,48 +78,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 07, 2023 at 03:00:49PM +0100, Beata Michalska wrote:
-> On Wed, Jun 07, 2023 at 10:58:56AM +0100, Sudeep Holla wrote:
-> > On Tue, Jun 06, 2023 at 04:57:54PM +0100, Beata Michalska wrote:
-> > > With the Frequency Invariance Engine (FIE) being already wired up with
-> > > sched tick and making use of relevant (core counter and constant
-> > > counter) AMU counters, getting the current frequency for a given CPU
-> > > on supported platforms, can be achieved by utilizing the frequency scale
-> > > factor which reflects an average CPU frequency for the last tick period
-> > > length.
-> > > 
-> > > With that at hand, arch_freq_get_on_cpu dedicated implementation
-> > > gets enrolled into cpuinfo_cur_freq policy sysfs attribute handler,
-> > > which is expected to represent the current frequency of a given CPU,
-> > > as obtained by the hardware. This is exactly the type of feedback that
-> > > cycle counters provide.
-> > > 
-> > > In order to avoid calling arch_freq_get_on_cpu from the scaling_cur_freq
-> > > attribute handler for platforms that do provide cpuinfo_cur_freq, and
-> > > yet keeping things intact for those platform that do not, its use gets
-> > > conditioned on the presence of cpufreq_driver (*get) callback (which also
-> > > seems to be the case for creating cpuinfo_cur_freq attribute).
-> > >
-> > 
-> > LGTM,
-> > 
-> > Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-> > 
-> Thanks for the review.
-> > However I fail to understand if both the changes are dependent ?
-> > Can this be split into 2 patches ? I fail to see the dependency, what
-> > am I missing ? Even if there is some dependency to get arch value
-> > (arch_freq_get_on_cpu() from show_cpuinfo_cur_freq()), you can push
-> > that change first followed by the arm64 change as 2 different change.
-> > 
-> I guess I could split the patch into two parts:
-> 1. adding implementation for the arch_freq_get_on_cpu
-> 2. wiring it up with the cpufreq relevant attrib handlers
-> 
-> or the other way round (if that's what you have in mind).
-> 
-> Will wait a bit for any further comments before pushing new v.
+Hi,
 
-Are you still planning on a v2?
+On 2023/7/27 17:22, AngeloGioacchino Del Regno wrote:
+> Il 06/07/23 15:40, Sui Jingfeng ha scritto:
+>> Also return -ENOMEM if such a failure happens, the implement should take
+>> responsibility for the error handling.
+>>
+>> Fixes: 3df64d7b0a4f ("drm/mediatek: Implement gem prime vmap/vunmap 
+>> function")
+>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>
+> Reviewed-by: AngeloGioacchino Del Regno 
+> <angelogioacchino.delregno@collabora.com>
 
-Will
+Yeah! I got so many R-B!
+
+So surprise, So happy!
+
+Hopefully someone will merge/apply this patch someday, thanks.
+
