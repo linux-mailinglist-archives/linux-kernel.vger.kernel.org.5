@@ -2,356 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F37E765C70
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C17F765C7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 21:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbjG0Tur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 15:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
+        id S232210AbjG0Txi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 15:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231866AbjG0Tup (ORCPT
+        with ESMTP id S232181AbjG0Txg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 15:50:45 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C822F3AA5;
-        Thu, 27 Jul 2023 12:50:14 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so1712205a12.1;
-        Thu, 27 Jul 2023 12:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690487392; x=1691092192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ojkcqNP3uNOpjlJhJHIBQRfHAVcUXxAGMw8NVAHP+Aw=;
-        b=I7XbOwk9ivyvO02VJOEgZz8t6BFEFy+fODHwc2cu5KkKlIVGnd/zMdTBD0S1ssLnWX
-         byXU2HxeC38ySEEvcOfdacZKANB/U+rFesxnDxrouuEcqneXSYUu0HEcNNmf/oCIIQBl
-         /Nj1IiX0c2HXOCT3UPUbV1jsrgss1xp7gu6tRVR3juTLQ9jCug15ExCKMv9RapobxkKR
-         bZNntp5mlPkkOvpjMjQaXRB2GvMYkvRqFtDFm/ZqslSI9AL304KAnR/sorjwrHJHG6ui
-         5ev1hADND1vGVccUiVbhstBkd0kK6cgv/FUP0jCJyvX7IgX5RfAjfsn8q59fFkDr+Ur0
-         Wh8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690487392; x=1691092192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ojkcqNP3uNOpjlJhJHIBQRfHAVcUXxAGMw8NVAHP+Aw=;
-        b=kUyziFERK1b2kpHxe8ByGKInKLoVh22hluPrZYMpxakvh6ILACHS0Gf4TTY4fxG0pX
-         CQauuTyAbxDh2tKc6gxaLQ3vvak9gLhYmIaba2s87Ha4NBcQWo4MGCc6Ed1qzhzu01lr
-         gmbRm3tYQ1xMrCdJO3v3+DEGyItTXil0/lhYkKVYzj2w41Ko9U9KfRg3pd9D3yOd3GOk
-         uiN6hUiKPKRtClYtBLUMbwLFJwjqiOpEtfxx6Bx1JcTdFDqlEZQE+dUXbB6GRGHLkQqc
-         Pd7/9CbQLCNsqLq9W85/CCkVWeTbOaF0j63dNRO+r4UiKZVjlkjMYRZIlprNYnnCOuzt
-         qC4A==
-X-Gm-Message-State: ABy/qLZ2kbjZhrK3tgT3BfpGm27cDl8OS/qmwBP9oHZVe9BnxBKMbcX5
-        Pym5Vox0wxA2KVtX9E9V2l4qgYZukzkp9x6ffzQ=
-X-Google-Smtp-Source: APBJJlFeqJRN1XqDEqH2Iu9+gzDYkOMaNfSFN4sliyp+zjGW1ZWr8bfuziJzJ6mQ5c0KNfcSeEbK68Ks+WIdLDMHaSg=
-X-Received: by 2002:a05:6402:1003:b0:51d:9905:6f60 with SMTP id
- c3-20020a056402100300b0051d99056f60mr4563edu.41.1690487392315; Thu, 27 Jul
- 2023 12:49:52 -0700 (PDT)
+        Thu, 27 Jul 2023 15:53:36 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078DB2D45;
+        Thu, 27 Jul 2023 12:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690487615; x=1722023615;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=ZoeZeDMJlZBwg1vI7DgJG0REICFA29PeLYFNDep0PqE=;
+  b=Y9e8SvWkDWFuOJwPplfPv7ke2CTbNsEW9VvQvfa07jc7TzIOz7ep8L/X
+   kMFrv7HF6xuD75VUIRxY10UDXqk/oygy73FHM/pMamwsIfyMPQ9+rDj+s
+   qltOvdax6608pRIzGvn2T9gqvfwB50nBH6WcN2dxnLw7tgerGZw69vKsV
+   QrtQ7it+5Jl3alqS9GZmMJ1C11MjfG4yHXA3X7rm7a+Ag9b6b8GSVcKvH
+   l0K+3hGXdMaF5UYepQCOCec6z3R9CnUAD9E5h3KxEdj2suoUfiG+xMUC0
+   TbGLnlDqWm31QiCspEH3tC/JrF6f04LZUqATU8KBA405Sre2u1rHGV5wc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="454784750"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="454784750"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 12:53:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="720970520"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="720970520"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 27 Jul 2023 12:53:34 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 27 Jul 2023 12:53:33 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 27 Jul 2023 12:53:33 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.49) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 27 Jul 2023 12:53:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jvivzTZ1xICDMb/QS/VAlict2WQ5yYT3vLncsz2BGMkvDVE4/q/RFzuzyCTJY1E5J0Gl9T7EYctGmV7cOfkZlN4c82Ii7DL/1y8tJr9En8orhJD4Z/WfxDwhsjB66kGa6A+JeLZv+CpaxVULwai5Qt6kXZ56BSm5hipURkRAvNVz3Q0cnu2TR1o2JYz5gIRRPoVAnZm/btb5u6TRr5oVjQMJ8WKKYu4FqMPidbqTM1COj8NsnpLOCSrPwDL8S2guPZNuF+OL7Tr3RV7S57PTExh2HraBmCqkrZQxc0HGt4HLKgkqVtYPcOKqxS7A4NE9vYPDdcDYpKEQRdZxWe5m2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pG3q5hjapCi8yzJ4RX+LMaIdZZGWIPXsgaUBdRLRf0E=;
+ b=W2UwBoFuF2xi6L6IGFBeROrtNi5jouYGJbBbEQJiMgG1TzhcpCQZuUAu4Ub6UNVqhrWNMK925FYkNEJZ8sRd41EkbpGPMfnt2EGi7582aQ10WOfWsUrArZeCcqpoFK1sFe8fP/ax88EVwR77Fp3MewimOOH38K8l/xLIGk1xTbYurXBA/ZVItXhlr3TJNmov3g6vHdXZBoSTdAFybJLvVMt4a42BnmwNwFjsKqygunmSSfI2uG2pNafotBPSxRXBnajknnoO125KawYiLePt5QK3b29RostSdVcVCTAE9tinyontRR3DeUO5X+LiiBR55amih6UYC8g84OHIAC3Bsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by DM4PR11MB6382.namprd11.prod.outlook.com (2603:10b6:8:be::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
+ 2023 19:53:32 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::4556:2d4e:a29c:3712]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::4556:2d4e:a29c:3712%4]) with mapi id 15.20.6609.024; Thu, 27 Jul 2023
+ 19:53:31 +0000
+Date:   Thu, 27 Jul 2023 12:53:28 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>, Ira Weiny <ira.weiny@intel.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] PCI/DOE: Fix destroy_work_on_stack() race
+Message-ID: <64c2cb38e1769_a88b294e6@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20230726-doe-fix-v1-1-af07e614d4dd@intel.com>
+ <20230727165910.GA786573@bhelgaas>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230727165910.GA786573@bhelgaas>
+X-ClientProxiedBy: MW4P220CA0005.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::10) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-References: <20230720152737.102382-1-helen.koike@collabora.com>
-In-Reply-To: <20230720152737.102382-1-helen.koike@collabora.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 27 Jul 2023 12:49:39 -0700
-Message-ID: <CAF6AEGtXL5vjp3Uup6Mk19MiY8E26-tpyXVmxXYhMd3fiadykQ@mail.gmail.com>
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     dri-devel@lists.freedesktop.org, guilherme.gallo@collabora.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        daniels@collabora.com, emma@anholt.net, robclark@freedesktop.org,
-        gustavo.padovan@collabora.com, robdclark@google.com,
-        anholt@google.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, corbet@lwn.net, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, heiko@sntech.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM4PR11MB6382:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8518fdd1-673a-4e11-f9e5-08db8edb27a1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7Hk0xKiNCcci8yUmBo7uAvKwMunLZ72saS54Rpf6bKhB7vMmGCko0yyiFOKyo0/sKAQ3NDw+h9FaTdEeaa+kLbvLAR5xZ38kko9z3nBjKO7YTD+6hAGF9jNY5yFgpephBAudiKp3LsrX8UOIdKehA+0FEStD4DVNnCtmI5yFv7uMZEdbYmr97AC8JTe6RCHG+abPoqojGoZnM9InigmDasi6n5lQ4UMznMYrA/frDeRTqk+umbHkJRKZgaO5CsRIjtxnDgk5G7yoxojacyuJHSgTdRjg8dyzn9Y8S/1WkJ9kT6XXMwZCWhSJiBiHX69LWkSqvElQi4b7HkWFvhdWr5jKLxjEcBBtexnMzrMmf8OnH2KbUraS2vX6L3oisNUmJ4JB1VGLkoK2k6WQmazH04JwJMBvzFFp2Wt65yeqbk96lZdfXWSG+S1/kceu9/UHEARMlhPo34F3BmkbGEjAW94B156XyffQMhI2WFo2oVSayC8fK/EgDaJjhzLKU4JEbGzB5uaOIr8kYbc3rNl91k6c0EHQ/50zH0jtunw+sY7MkfjCo3hWWgU/K8z61QGx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(366004)(39860400002)(346002)(136003)(376002)(451199021)(6512007)(9686003)(6506007)(26005)(186003)(41300700001)(6486002)(4326008)(6636002)(316002)(5660300002)(66556008)(38100700002)(8676002)(8936002)(2906002)(66946007)(66476007)(83380400001)(54906003)(6666004)(110136005)(82960400001)(478600001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UzP44kQgjtuewd6GWvWnFdqm+SKEwW2p3nMAOEYLuODZedPwS9K8NfBz7O+y?=
+ =?us-ascii?Q?sa9ZjA4sgA1G6yBNJSUUbXcQjxiwwo5YYU/SgO03tVj14gWH9ChwrhtdL9u9?=
+ =?us-ascii?Q?AGlQvp7Yr88T3zm2w9pZdCbErq43cxO6mOpmL7Vm9R69MHxpZdbidcT5OIH8?=
+ =?us-ascii?Q?mj2dOZWIYq5FXXZE7qyEGEuEQrAUziGlKDygjYNHEA197kOEp6lBszwk2u8y?=
+ =?us-ascii?Q?71n0w9eQhfdUXgkxQZq2StEM9svZ/phfPyKFr3dwRD78lXkfMfpNX2Rdysl3?=
+ =?us-ascii?Q?Xs0yh3lixug0Ep8cFa8MWKfKY8ZMftwGaFgRpTiNfgqKWwzPt0MH1NEfZ/LF?=
+ =?us-ascii?Q?Dss1vFmLTvik6qm+VoPU1XdfG6S0wz/vdbbiu71ARPOxENWDvsho+Oy50+2d?=
+ =?us-ascii?Q?0fi00EfSoT5WCsQCMS6GY5KBU/iDsp1driUgESVW51Ajk/7Zm5V0V+A6Ob2t?=
+ =?us-ascii?Q?8zZeowk3paFkRDypm9qQDgDH2VN2hMycnB133h9twC9/P5h+1I3zQ1PlocAB?=
+ =?us-ascii?Q?mFKG3MPIAhrPhsmSS78YktZCRHS9aMtmckTuRphDNlpg0N/DqIYqYO2o3bWm?=
+ =?us-ascii?Q?lpkJdDEXBFh1DZZrDj64H4IoknwCdeaF0Efck3Ck5EAUDX1tnaO+inOafra4?=
+ =?us-ascii?Q?4C7uih+aPv5m5F9oV8pL6nBHoK3M/uxOg2pCdDMiCOtKWBIqo1UgQWqNBei9?=
+ =?us-ascii?Q?G+DM/w20edK8eXSsIjKRD10tu5pFhp2LWeBXt6ZVLWqvvmSAq5LQxK3AbwWM?=
+ =?us-ascii?Q?PwmqQcBhTtlRioMDw4bqMncG6S6nYN5EOrsJkTxyoibqGveVBw3In2YxIDWr?=
+ =?us-ascii?Q?kdQcayVR0OWi2MqHswBOwj8t47+dwHP9NolfopFFR5wrWA9N3xKkG60AV2PN?=
+ =?us-ascii?Q?cp+MwvRDRUtXGNMBYaF8kka+FclpzYsRXqOeEyIqpohGNR6TSadpqghQr+7r?=
+ =?us-ascii?Q?yoE9fy4+NZHVNLeVeCfy8ba+aMIDx0XhB3yOkfhp6riLWnUBodtbJEc6Hppj?=
+ =?us-ascii?Q?I+kBvN5LwC3wgTZyqi4NXkg6elQa95qYlcxZaHxuWq+PAQ+GnptN0yXDPNIZ?=
+ =?us-ascii?Q?id/3SYiGZPVRoRGiCrKSiIfTr7+GCpGCQBFWG9emYFPVEGFssNTTzNS4r/6S?=
+ =?us-ascii?Q?Od65R+GltH5Qxl3NEyxgfkRIKyP2og78B+4ZgFSQHvMFHbwjFmxduh/idKde?=
+ =?us-ascii?Q?7xYXdmE+IkgFJjgrj/b4YVbeACqUDET8QKb+rxRlTiz57g+9PdQwGhrlQ18X?=
+ =?us-ascii?Q?Wyxp86yflMkn8mLMZN/TeGGidpBrDKucRSfxPdPq92jvDphAURhbWhoVF/6K?=
+ =?us-ascii?Q?NW/ApUdIqtvSgnGRHLCRADaQO9fLiHVnByUyR6d/ruvGQtW/zxIV1O+lmayj?=
+ =?us-ascii?Q?HCTKY+cnoxSTQMRFckEunZ+4I17p6es+VQrgdyZ/pRGxMhQTvJXIwWtKYY4I?=
+ =?us-ascii?Q?CjhXy2NeSpE7kUDbW47BQKZD8c8/uR6vuYJclP89IdyaZRu6dYoEuHtxp7bJ?=
+ =?us-ascii?Q?K47nldL2Bm+q1+MzX2BemveRoaSx67ccw/xzGfwP4W8heJWMydvBhh0VTc/D?=
+ =?us-ascii?Q?NwGMpsRNec/+585dTzvNRwbkwierxmVb5Y1h+y6TBerfEBnYRy0u9gaL9MXA?=
+ =?us-ascii?Q?xA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8518fdd1-673a-4e11-f9e5-08db8edb27a1
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 19:53:31.8407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aA8xaSocJVxuS4LmKLoGMHqjuVjdw3nO9Q1cA2Uoof3MrHMcRVwl8AS9zydDRb3Y4MgRwpKgGQLbWVFkTn1EBJq7W2GcYrRTMJrvWzaIxQI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6382
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 8:27=E2=80=AFAM Helen Koike <helen.koike@collabora.=
-com> wrote:
->
-> From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
->
-> Developers can easily execute several tests on different devices
-> by just pushing their branch to their fork in a repository hosted
-> on gitlab.freedesktop.org which has an infrastructure to run jobs
-> in several runners and farms with different devices.
->
-> There are also other automated tools that uprev dependencies,
-> monitor the infra, and so on that are already used by the Mesa
-> project, and we can reuse them too.
->
-> Also, store expectations about what the DRM drivers are supposed
-> to pass in the IGT test suite. By storing the test expectations
-> along with the code, we can make sure both stay in sync with each
-> other so we can know when a code change breaks those expectations.
->
-> Also, include a configuration file that points to the out-of-tree
-> CI scripts.
->
-> This will allow all contributors to drm to reuse the infrastructure
-> already in gitlab.freedesktop.org to test the driver on several
-> generations of the hardware.
->
-> Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->
-> ---
->
-> Hello,
->
-> I'm re-spining this patch sent originally by Tomeu.
->
-> This is meant to be an auxiliary tool where developers and
-> maintainers can just submit their code to fdo and see if
-> tests passes, than they can decide if it is worthy merging
-> it or not.
->
-> This tool has proven its value on the Mesa community
-> and it can bring a lot of value here too.
->
-> Please review and let me know your thoughts.
->
-> You can also see this patch on
-> https://gitlab.freedesktop.org/helen.fornazier/linux/-/tree/drm-ci-tests
->
-> Thanks!
->
-> v2:
->   - Fix names of result expectation files to match SoC
->   - Don't execute tests that are going to skip on all boards
->
-> v3:
->   - Remove tracking of dmesg output during test execution
->
-> v4:
->   - Move up to drivers/gpu/drm
->   - Add support for a bunch of other drivers
->   - Explain how to incorporate fixes for CI from a
->     ${TARGET_BRANCH}-external-fixes branch
->   - Remove tests that pass from expected results file, to reduce the
->     size of in-tree files
->   - Add docs about how to deal with outages in automated testing labs
->   - Specify the exact SHA of the CI scripts to be used
->
-> v5:
->   - Remove unneeded skips from Meson expectations file
->   - Use a more advanced runner that detects flakes automatically
->   - Use a more succint format for the expectations
->   - Run many more tests (and use sharding to finish in time)
->   - Use skip lists to avoid hanging machines
->   - Add some build testing
->   - Build IGT in each pipeline for faster uprevs
->   - List failures in the GitLab UI
->
-> v6:
->   - Rebase on top of latest drm-next
->   - Lower priority of LAVA jobs to not impact Mesa CI as much
->   - Update docs
->
-> v7:
->   - Rebase on top of latest drm-next
->
-> v8:
->   - Move all files specific to testing the kernel into the kernel tree
->     (thus I have dropped the r-bs I had collected so far)
->   - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
->   - Add MAINTAINERS entry
->   - Fix boot on MT8173 by adding some Kconfigs that are now needed
->   - Link to the docs from index.rst and hard-wrap the file
->
-> v9:
->   - Only automatically run the pipelines for merge requests
->   - Switch to zstd for the build artifacts to align with Mesa
->   - Add Qcom USB PHYs to config as they are now =3Dm in the defconfig
->
-> v10:
->   - Include ci yml files from mesa/mesa (where the development is
->     current active) instead of a spin off project.
->   - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
->   - Update MAINTAINERS entry
->   - Uprev igt tool
->   - add LAVA_JOB_PRIORITY: 30
->   - pipeline example:
->   https://gitlab.freedesktop.org/helen.fornazier/linux/-/pipelines/940506
-> ---
->  Documentation/gpu/automated_testing.rst       |  144 +
->  Documentation/gpu/index.rst                   |    1 +
->  MAINTAINERS                                   |    8 +
->  drivers/gpu/drm/ci/arm.config                 |   69 +
->  drivers/gpu/drm/ci/arm64.config               |  199 ++
->  drivers/gpu/drm/ci/build-igt.sh               |   35 +
->  drivers/gpu/drm/ci/build.sh                   |  157 +
->  drivers/gpu/drm/ci/build.yml                  |  110 +
->  drivers/gpu/drm/ci/check-patch.py             |   57 +
->  drivers/gpu/drm/ci/container.yml              |   61 +
->  drivers/gpu/drm/ci/gitlab-ci.yml              |  252 ++
->  drivers/gpu/drm/ci/igt_runner.sh              |   77 +
->  drivers/gpu/drm/ci/image-tags.yml             |   15 +
->  drivers/gpu/drm/ci/lava-submit.sh             |   57 +
->  drivers/gpu/drm/ci/static-checks.yml          |   12 +
->  drivers/gpu/drm/ci/test.yml                   |  335 ++
->  drivers/gpu/drm/ci/testlist.txt               | 2912 +++++++++++++++++
->  drivers/gpu/drm/ci/x86_64.config              |  111 +
->  .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |   22 +
->  .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |   19 +
->  .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |    2 +
->  drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   17 +
->  .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |   32 +
->  drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |    4 +
->  drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |   57 +
->  drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |    1 +
->  drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |    4 +
->  drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |   18 +
->  drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |   37 +
->  drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |    2 +
->  drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |   18 +
->  drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |   41 +
->  drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |    5 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   26 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |   25 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |    5 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   37 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt |    5 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   11 +
->  drivers/gpu/drm/ci/xfails/i915-whl-fails.txt  |   47 +
->  drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt |    1 +
->  drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |    2 +
->  .../drm/ci/xfails/mediatek-mt8173-fails.txt   |   29 +
->  .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |    0
->  .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   10 +
->  .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |   14 +
->  .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   12 +
->  .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |    4 +
->  .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |   15 +
->  .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |    4 +
->  .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |    2 +
->  .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |    4 +
->  .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |    2 +
->  .../gpu/drm/ci/xfails/msm-sc7180-fails.txt    |   25 +
->  .../gpu/drm/ci/xfails/msm-sc7180-flakes.txt   |    7 +
->  .../gpu/drm/ci/xfails/msm-sc7180-skips.txt    |   23 +
->  .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   68 +
->  .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |   11 +
->  .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |    2 +
->  .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   49 +
->  .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |    8 +
->  .../drm/ci/xfails/rockchip-rk3288-skips.txt   |   52 +
->  .../drm/ci/xfails/rockchip-rk3399-fails.txt   |   39 +
->  .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |   23 +
->  .../drm/ci/xfails/rockchip-rk3399-skips.txt   |    5 +
->  .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   38 +
->  .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |    0
->  .../drm/ci/xfails/virtio_gpu-none-skips.txt   |    6 +
->  test                                          |    0
->  69 files changed, 5502 insertions(+)
->  create mode 100644 Documentation/gpu/automated_testing.rst
->  create mode 100644 drivers/gpu/drm/ci/arm.config
->  create mode 100644 drivers/gpu/drm/ci/arm64.config
->  create mode 100644 drivers/gpu/drm/ci/build-igt.sh
->  create mode 100644 drivers/gpu/drm/ci/build.sh
->  create mode 100644 drivers/gpu/drm/ci/build.yml
->  create mode 100755 drivers/gpu/drm/ci/check-patch.py
->  create mode 100644 drivers/gpu/drm/ci/container.yml
->  create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
->  create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
->  create mode 100644 drivers/gpu/drm/ci/image-tags.yml
->  create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
->  create mode 100644 drivers/gpu/drm/ci/static-checks.yml
->  create mode 100644 drivers/gpu/drm/ci/test.yml
->  create mode 100644 drivers/gpu/drm/ci/testlist.txt
->  create mode 100644 drivers/gpu/drm/ci/x86_64.config
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->  create mode 100644 test
->
+Bjorn Helgaas wrote:
+> On Wed, Jul 26, 2023 at 11:29:42AM -0700, Ira Weiny wrote:
+> > The following debug object splat was observed in testing.
+> > 
+> >   [   14.061937] ------------[ cut here ]------------
+> >   [   14.063899] ODEBUG: free active (active state 0) object: 0000000097d23782 object type: work_struct hint: doe_statemachine_work+0x0/0x510
+> >   [   14.067480] WARNING: CPU: 1 PID: 71 at lib/debugobjects.c:514 debug_print_object+0x7d/0xb0
+> >   ...
+> >   [   14.080951] Workqueue: pci 0000:36:00.0 DOE [1 doe_statemachine_work
+> >   [   14.083485] RIP: 0010:debug_print_object+0x7d/0xb0
+> >   ...
+> >   [   14.116231] Call Trace:
+> >   [   14.117652]  <TASK>
+> >   [   14.118958]  ? debug_print_object+0x7d/0xb0
+> >   [   14.120782]  ? __warn+0x7d/0x130
+> >   [   14.122399]  ? debug_print_object+0x7d/0xb0
+> >   [   14.123746]  ? report_bug+0x18d/0x1c0
+> >   [   14.125025]  ? handle_bug+0x3c/0x80
+> >   [   14.126506]  ? exc_invalid_op+0x13/0x60
+> >   [   14.127796]  ? asm_exc_invalid_op+0x16/0x20
+> >   [   14.129380]  ? debug_print_object+0x7d/0xb0
+> >   [   14.130688]  ? debug_print_object+0x7d/0xb0
+> >   [   14.131997]  ? __pfx_doe_statemachine_work+0x10/0x10
+> >   [   14.133597]  debug_object_free.part.0+0x11b/0x150
+> >   [   14.134940]  doe_statemachine_work+0x45e/0x510
+> >   [   14.136348]  process_one_work+0x1d4/0x3c0
+> >   ...
+> >   [   14.161484]  </TASK>
+> >   [   14.162434] ---[ end trace 0000000000000000 ]---
+> > 
+> > This occurs because destroy_work_on_stack() was called after signaling
+> > the completion in the calling thread.  This creates a race between
+> > destroy_work_on_stack() and the task->work struct going of scope in the
+> > pci_doe().
+> > 
+> > Signal the work complete after destroying the work struct.  This is safe
+> > because signal_task_complete() is the final thing the work item does and
+> > the workqueue code is careful not to access the work struct after.
+> > 
+> > Fixes: abf04be0e707 ("PCI/DOE: Fix memory leak with CONFIG_DEBUG_OBJECTS=y")
+> > Cc: Lukas Wunner <lukas@wunner.de>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Dan, let me know if you'd rather have me take this.
 
-[snip]
+I have nothing else in the DOE area at this time, so I would be happy if
+you took it. It is self contained to drivers/pci/.
 
-> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab=
--ci.yml
-> new file mode 100644
-> index 000000000000..32d8e2258eb6
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-> @@ -0,0 +1,252 @@
-> +variables:
-> +  # Change this to use your fork of drm-ci
+Much appreciated.
 
-nit, I think this comment mostly doesn't make sense since everyone
-would be using the same version of this gitlab-ci.yml, Ie. we can't
-have msm and nouveau and intel and so on with there own conflicting
-patches on gitlab-ci.yml
-
-I did run into a bit of a chicken vs. egg problem with testing the "in
-tree" version (compared to earlier versions which kept most of the yml
-and scripts in a separate tree), is that it actually requires this
-commit to exist in the branch you want to run CI on.  My earlier
-workaround of pulling the drm/ci commit in via
-${branchname}-external-fixes no longer works.
-
-BR,
--R
+Acked-by: Dan Williams <dan.j.williams@intel.com>
