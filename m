@@ -2,57 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC23E765D60
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE547765D66
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjG0UbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        id S230364AbjG0UcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjG0Ua5 (ORCPT
+        with ESMTP id S231398AbjG0UcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:30:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2793A80;
-        Thu, 27 Jul 2023 13:30:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 545C861F40;
-        Thu, 27 Jul 2023 20:30:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED73EC433C7;
-        Thu, 27 Jul 2023 20:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690489848;
-        bh=mQBtNRNqjOs/lQt6R/EIsW6LRcenyV0myrRrv1wFZ0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ALFJR+wYo9wRrPqbJ70y8hQ58UfdRlVokpUzFGN4Q8UoPpydHwMBVKmbeaIP1nMz2
-         hO22rLNz2b539G4e45tfpYkrFp8WSZbJcFcgzHXuRqtX1AVvZ1JKOgk+rTCll7Lmz7
-         dEmsiLqRZZPZjpv7gHEIWddvqbvA1ijnDUnuvRmfl70dO4fa2EuhKl1bHhxv8D+xTb
-         IMqjJdOPhDD+PGEbLAHEKZqF0FDXjcfq8GuVmnjBfR31MgZ3NNeZb4/JLsEhGC9VbQ
-         EzQq9ZAVFykggSleDerNeRCXLxKmtDuvDkRqtl0kfJuJW7AbY0VKGvE6v1hzPZE1d9
-         vpT2j6JK5NIvg==
-Date:   Thu, 27 Jul 2023 22:30:45 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Mans Rullgard <mans@mansr.com>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: imx: add support for I2C_M_STOP flag
-Message-ID: <20230727203045.2p7mbdtayca2hago@intel.intel>
-References: <20230706125729.17335-1-mans@mansr.com>
+        Thu, 27 Jul 2023 16:32:08 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D05E30DB;
+        Thu, 27 Jul 2023 13:31:50 -0700 (PDT)
+X-QQ-mid: bizesmtp71t1690489900tiuhvymd
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 28 Jul 2023 04:31:39 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: 3M0okmaRx3iio5UHKEhK5b2ClrY+IfoQsoiyLkp16KXoPNZd6NKJ6Hq2TkPOp
+        lxuEVdu0iqSsDofWqZLbsQNWgPuh4dTi3eZroNw+JgJBygfCJFjpuRtgX7H8WMWgkbAg4Lx
+        HpQCjdORRam1SuzECvY3se07e0xnOANa0+i63yBaLR2iLK1CL3yVwmcFjZ0ZptN7WavMAhs
+        1X1RMFp4Mcb7h8SZhMJ966izSIJvKs6VM+7Rz+6TqgzWp+/SYLMiOQ2LhWCqRvqE0Dyva9V
+        8Df/r12xiCcEP4zb1cAwJ/yl39Tid5XJd1HShHLXUqPMkt7sEpx1X+eF8Rhcs7sGJ55iMFe
+        iFUzR0cIPJ1QNBsh8JfDO5wzHsY2Eha/SLBOaLqj3UT0zUcKgLDQppuzwPvIQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 8403613974557991608
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 09/12] selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
+Date:   Fri, 28 Jul 2023 04:31:39 +0800
+Message-Id: <fefba2df5bcffc5f03478da1b595ec5a418b04dd.1690489039.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690489039.git.falcon@tinylab.org>
+References: <cover.1690489039.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230706125729.17335-1-mans@mansr.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,52 +51,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mans,
+Both ppc64 and ppc64le use slow bios in some qemu versions, let's
+increase the timeout to make sure the running qemu would not be killed
+before the test finish.
 
-on top of Oleksij's comments...
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[...]
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 9a57de3b283c..ad2538ec5eb0 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -106,6 +106,8 @@ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=N
+ QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
+ 
+ # QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
++QEMU_TIMEOUT_ppc64     = 15
++QEMU_TIMEOUT_ppc64le   = 25
+ QEMU_TIMEOUT           = $(or $(QEMU_TIMEOUT_$(XARCH)),10)
+ 
+ # OUTPUT is only set when run from the main makefile, otherwise
+-- 
+2.25.1
 
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -1262,10 +1262,17 @@ static int i2c_imx_xfer_common(struct i2c_adapter *adapter,
->  
->  	/* read/write data */
->  	for (i = 0; i < num; i++) {
-> -		if (i == num - 1)
-> -			is_lastmsg = true;
-> +		if (is_lastmsg) {
-> +			/* previous message had I2C_M_STOP flag set */
-> +			temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +			temp |= I2CR_MSTA;
-> +			imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2CR);
-> +			result = i2c_imx_bus_busy(i2c_imx, 1, atomic);
-> +			if (result)
-> +				goto fail0;
-> +		}
->  
-> -		if (i) {
-> +		if (i && !is_lastmsg) {
-
-	} else if (i) {
-
-looks a bit simplier to me.
-
->  			dev_dbg(&i2c_imx->adapter.dev,
->  				"<%s> repeated start\n", __func__);
->  			temp = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> @@ -1275,6 +1282,10 @@ static int i2c_imx_xfer_common(struct i2c_adapter *adapter,
->  			if (result)
->  				goto fail0;
->  		}
-> +
-> +		if (i == num - 1 || (msgs[i].flags & I2C_M_STOP))
-> +			is_lastmsg = true;
-
-you don't need this "i == num - 1" here.
-
-Andi
-
->  		dev_dbg(&i2c_imx->adapter.dev,
->  			"<%s> transfer message: %d\n", __func__, i);
->  		/* write/read data */
