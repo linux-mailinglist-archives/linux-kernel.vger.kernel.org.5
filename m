@@ -2,145 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0FD765E7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EA0765E85
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 23:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjG0Vyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 17:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S231602AbjG0V4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 17:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbjG0VyL (ORCPT
+        with ESMTP id S232699AbjG0V4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 17:54:11 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F45F423B
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:53:35 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d13e11bb9ecso1253963276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690494814; x=1691099614;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+IrV9GMRSdZPt30c7KcILm3qep9zKx/623+6CGNnSZI=;
-        b=YRH0RandNbmWOsNbix1juf2j32ITK9Uvj67kgr3R72979X637zKHH8KZguOPLopzPy
-         fjkQbcWwTfMo1Hqb4p+zc/kFemN21RJ6rTyJtcMQ/oEKwjHKIFtmzqeJZgnBmRq/79FF
-         Q1T9puk7xzNEdjIV/igXmV4UFIlev2+Onajgaupn8iFIWwD+LDMaU7Rqh6Y/qZ8WNZcQ
-         EbYgsmXlOOtwiPgFmIy/5TsvUTsSImKFRVPRiBPAtXKPd4wWKkCURJYYWadAtcEjnXsQ
-         ZCgI9IcqtCntKz8lcvSlVTtTRikw2cRxyKs3v6SBQpDYBNM+kCas8jJKyEbxblWbQEXw
-         lu9A==
+        Thu, 27 Jul 2023 17:56:32 -0400
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E7835BE
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:56:25 -0700 (PDT)
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-565c44558b0so2337678eaf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 14:56:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690494814; x=1691099614;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+IrV9GMRSdZPt30c7KcILm3qep9zKx/623+6CGNnSZI=;
-        b=cdMWgx+QPQpHizCjUdM/feE5LXH40ST0zJu0MmvzKMO67DvkYYQuDtWTTyW10K3h7Y
-         VHj6IehJoD5m3GFUCIaOxP9JypzeksrSLU/L+cKM8S8ijvp7VJH7sUuPYlhS6RMPvYlY
-         VEiEah0l9pQDNEXUyCnV0AWRCOxVLEG+Z8aO0H2OKKnp1BSzztvzx59FDxeLZiuU/6AV
-         L/OLGsDmvVAk/iaRyCY2Gh5nD0H/GvlgHwxqWwGon2jEPtehpdjQGc/RLakghFvrUW2S
-         LbwyN5j6rxKheMvrOxoDyK1X7y4ngVNQkUZUsmIiZQqpIIZHR7z6ymmZatmLwsKEtoTz
-         ZAcg==
-X-Gm-Message-State: ABy/qLbyjaZqGvDCTEbdgp6NZzJRQAosd0Y9dEdkUCUWhkoLWFZE/wR+
-        ArYRdVKpSmbXZQwX7TF/Bgo2Hfn/cmvcFxZF/w==
-X-Google-Smtp-Source: APBJJlHXF3DAQ7oQ2+0tdvzkYP1VoY7GsOUMjOE+/Vdzmdw/tfkvYZ+dZ1a3XDRmAV0OnKJAbEafFAFp/DwKM5StMA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:ab13:0:b0:cfe:74cf:e61a with SMTP
- id u19-20020a25ab13000000b00cfe74cfe61amr4397ybi.6.1690494813865; Thu, 27 Jul
- 2023 14:53:33 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 21:53:24 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAFPnwmQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyNz3eL80rwU3YrUPF1jS4tkS0sj8yTjFAsloPqCotS0zAqwWdGxtbU AfC3LdVsAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690494812; l=3106;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=2DV18A5LAIbHOz8+4mF5Dz/H6ijYF+f0DqJHiw+O6Z8=; b=vopO06Wm0zYSnDpTC9r5I+EsMsCZYRVtZWxLb5Dfivdpz4dFnQc4/MROOoOi/9uBOTysUrbZO
- B8mJVXUSQDcCy59jXa+eGsPlPBt2oonSrkqDfkKPfBHRnmLmfyW1zgm
-X-Mailer: b4 0.12.3
-Message-ID: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
-Subject: [PATCH] ALSA: xen-front: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690494985; x=1691099785;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NTZFcDWEnalsrrsj91+aV+exj/gSz6DkLyYFyJHhczQ=;
+        b=H8XIth6GlgVIfcl+lmNVMzUi/Qy424kkgIenkrjZBkf7gjdOIT5a7jzc9dBzzIERgk
+         xnEIHphbZr7fPsxxZC53Yu2JiEk7Pk7dFAFlGRO1gPdAgRNLEl3+pqL2XDgkZmR7p5cp
+         /CQz0T59iJ1NaFpWymrm8poK4xDFJEX6wNy3z5pebKJGFcu49f5SdR19UarTY+durdIX
+         S5QVzFDZRIUvih/698vnoPSKCuFwVl+YJuHnWkWYdU2EurJNpGZOZM9HWIJ87h76XH2l
+         KmX/0CPccLv4vXEXHtrstep5dNlwaanW4x8tm2pVYOhv+tVcq4b66befOHr9d/oPyBo/
+         Dyow==
+X-Gm-Message-State: ABy/qLYwz9UnDB0y/jKSKP8Ien8cCVkwEVvk6NN93yIvTwf1Ptg4YC1t
+        7sB/Uzwl+feWG+YOkWuBYH9d7BdehupoHRl5gvEc7OsPTL8f
+X-Google-Smtp-Source: APBJJlH27w/I6S9cUeylwXarAxaDlL/rMDcRdn6KLWkdjH2BJtEUNIhS7lk/MWp1h0vRqgIhlJrFWuq2xzxANoqLIN7JnzjhDHdp
+MIME-Version: 1.0
+X-Received: by 2002:a05:6808:1b24:b0:3a3:7087:bbfb with SMTP id
+ bx36-20020a0568081b2400b003a37087bbfbmr1067033oib.6.1690494985416; Thu, 27
+ Jul 2023 14:56:25 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 14:56:25 -0700
+In-Reply-To: <000000000000b4e906060113fd63@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019b5b106017f096a@google.com>
+Subject: Re: [syzbot] [nilfs?] KASAN: slab-use-after-free Read in
+ nilfs_load_inode_block (2)
+From:   syzbot <syzbot+74db8b3087f293d3a13a@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, konishi.ryusuke@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+syzbot has bisected this issue to:
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ always the case for `strncpy`!
+commit 28a65b49eb53e172d23567005465019658bfdb4d
+Author: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Thu Apr 27 01:15:26 2023 +0000
 
-It should be noted that, in this case, the destination buffer has a
-length strictly greater than the source string. Moreover, the source
-string is NUL-terminated (and so is the destination) which means there
-was no real bug happening here. Nonetheless, this patch would get us one
-step closer to eliminating the `strncpy` API in the kernel, as its use
-is too ambiguous. We need to favor less ambiguous replacements such as:
-strscpy, strscpy_pad, strtomem and strtomem_pad (amongst others).
+    nilfs2: do not write dirty data after degenerating to read-only
 
-Technically, my patch yields subtly different behavior. The original
-implementation with `strncpy` would fill the entire destination buffer
-with null bytes [3] while `strscpy` will leave the junk, uninitialized
-bytes trailing after the _mandatory_ NUL-termination. So, if somehow
-`pcm->name` or `card->driver/shortname/longname` require this
-NUL-padding behavior then `strscpy_pad` should be used. My
-interpretation, though, is that the aforementioned fields are just fine
-as NUL-terminated strings. Please correct my assumptions if needed and
-I'll send in a v2.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=177150e5a80000
+start commit:   5f0bc0b042fc mm: suppress mm fault logging if fatal signal..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14f150e5a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f150e5a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d10d93e1ae1f229
+dashboard link: https://syzkaller.appspot.com/bug?extid=74db8b3087f293d3a13a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15176d81a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=132d93d9a80000
 
-[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-[3]: https://linux.die.net/man/3/strncpy
+Reported-by: syzbot+74db8b3087f293d3a13a@syzkaller.appspotmail.com
+Fixes: 28a65b49eb53 ("nilfs2: do not write dirty data after degenerating to read-only")
 
-Link: https://github.com/KSPP/linux/issues/90
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- sound/xen/xen_snd_front_alsa.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
-index db917453a473..7a3dfce97c15 100644
---- a/sound/xen/xen_snd_front_alsa.c
-+++ b/sound/xen/xen_snd_front_alsa.c
-@@ -783,7 +783,7 @@ static int new_pcm_instance(struct xen_snd_front_card_info *card_info,
- 	pcm->info_flags = 0;
- 	/* we want to handle all PCM operations in non-atomic context */
- 	pcm->nonatomic = true;
--	strncpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
-+	strscpy(pcm->name, "Virtual card PCM", sizeof(pcm->name));
- 
- 	if (instance_cfg->num_streams_pb)
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK,
-@@ -835,9 +835,9 @@ int xen_snd_front_alsa_init(struct xen_snd_front_info *front_info)
- 			goto fail;
- 	}
- 
--	strncpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
--	strncpy(card->shortname, cfg->name_short, sizeof(card->shortname));
--	strncpy(card->longname, cfg->name_long, sizeof(card->longname));
-+	strscpy(card->driver, XENSND_DRIVER_NAME, sizeof(card->driver));
-+	strscpy(card->shortname, cfg->name_short, sizeof(card->shortname));
-+	strscpy(card->longname, cfg->name_long, sizeof(card->longname));
- 
- 	ret = snd_card_register(card);
- 	if (ret < 0)
-
----
-base-commit: 57012c57536f8814dec92e74197ee96c3498d24e
-change-id: 20230727-sound-xen-398c9927b3d8
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
