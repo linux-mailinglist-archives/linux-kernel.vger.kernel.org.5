@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1745A765053
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D599B765059
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231645AbjG0JxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S231880AbjG0Jxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233283AbjG0JxH (ORCPT
+        with ESMTP id S231233AbjG0JxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:53:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD0B9C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690451543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=do+1XQ4XtuaJ5dTD1s4r7DH6OWn683D2dxF2fQV74s4=;
-        b=gy1Dq8YCIu+4w2aQo7KKi4w2aDh7Siv7WhcHDjlSU01t8fL94J2t7jNJdGSI3mvbDXJ9IK
-        oxu4bEPSbtmVxG6krzvTqDcFUbq/gpR65jtKqfy96FeuTuUTCwCh6eLfgszrxHA9VOv1sk
-        TopMgRoURwHM4uE1EEA+BFhHMGUhNl8=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-zkybDLQzM4GQw-1yU-UIMw-1; Thu, 27 Jul 2023 05:52:21 -0400
-X-MC-Unique: zkybDLQzM4GQw-1yU-UIMw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-4fe0800f960so779869e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:52:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690451539; x=1691056339;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=do+1XQ4XtuaJ5dTD1s4r7DH6OWn683D2dxF2fQV74s4=;
-        b=LeIgLLPPlEaWeiZF6kKPCGgUq+VEjuAy0rPLZ4GiHVyoSRLIBFee7tlAlXCPTwQVYh
-         rftvySJFzvv5TLlW0Qco1RD8HPG97AHn7Ha8c+DXheulSU43OFqXXinfZGACWEC9bKcj
-         LVdOfm3jHv/00DR1tdxEg+AOI/C5kWQf4EmdJtQgCqR7X1aoEkNzJ1ZOCIErENcTfFbB
-         UcqFrDRUnROW3eNpwbbMEr/urmYQUW2KKLNydrsUmiARvAVQmnSCklL/fCRzhSQ4RUhi
-         ADdInpvPmEId/6ZalSLD4p/CRiqvNZUYUo5OFCDSwvz18bXun3sYoC+x6x3OD38CHNFS
-         6eGQ==
-X-Gm-Message-State: ABy/qLYAK1ZDe2cIwyZdznM6LAkgXTAHscpBNn54FXjhUep72fNFuEnz
-        sA9hymeyY8Tacg3dAKHMFVmyaNWHBNgx/LUdUSiFNtVR4UuNlfO673o68wdKMm1isQ5b9p4mUb9
-        7q4/vBdRx32mWMgwNtwah2ikr
-X-Received: by 2002:ac2:58fb:0:b0:4fa:6d62:9219 with SMTP id v27-20020ac258fb000000b004fa6d629219mr1338487lfo.62.1690451539699;
-        Thu, 27 Jul 2023 02:52:19 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEJ/eGPBhLAqWIqlahW0bh9+SgNxedHbs2vmptxN14TdlSE0ZUHKbuNVdVqNuo7/CavtrHqWg==
-X-Received: by 2002:ac2:58fb:0:b0:4fa:6d62:9219 with SMTP id v27-20020ac258fb000000b004fa6d629219mr1338472lfo.62.1690451539355;
-        Thu, 27 Jul 2023 02:52:19 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id u19-20020aa7db93000000b0051e1660a34esm445825edt.51.2023.07.27.02.52.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 02:52:18 -0700 (PDT)
-Message-ID: <75da106c-3f00-7be9-d4d5-c83f1e1664bb@redhat.com>
-Date:   Thu, 27 Jul 2023 11:52:18 +0200
+        Thu, 27 Jul 2023 05:53:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E765797;
+        Thu, 27 Jul 2023 02:53:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 75EDC61DFA;
+        Thu, 27 Jul 2023 09:53:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3684EC433C7;
+        Thu, 27 Jul 2023 09:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690451603;
+        bh=EdAZ9yCp4NjWVpXzH6AhTQQee2XgoMhciT9wDsXDj3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CkkEAksCAqLlikCk9JjEcjPhux5P1puAANDl8+6/+YFdpP9MyxEJZmjYWgS9TNlVR
+         D/PuEZi9uV2jU/E9C4t4GZeWLZTMBKdLz3XRpkg24gGeTKUymJLOlyRVjPhhAUhd1J
+         R7XfjrbP+K1pz3BowFAxrPEyZSH7yb3kNfhihY0wUPK43CKgVjQtKxfdhC+BKb4kSZ
+         vauM0v1qddB3XFsxJ84JTIG98VtZ4Sezo0oPi8G0dyOHMT7P7uRtPK7SJwMFGT0iRT
+         wsSpKH6SkCMDV4cWplBERK47w7DXi27cZLxp9y98ByFJ5lFKGEO9cER2P8IuDSrw2p
+         /+AUJuabvTyIw==
+Date:   Thu, 27 Jul 2023 10:53:15 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 05/28] dt-bindings: net: Add support for QMC HDLC
+Message-ID: <20230727-decidable-sterile-06ef617c144b@spud>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-6-herve.codina@bootlin.com>
+ <20230727-talcum-backside-5bdbe2171fb6@spud>
+ <20230727110948.7926a532@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ACPI: scan: Create platform device for CS35L56
-Content-Language: en-US, nl
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, rafael@kernel.org,
-        lenb@kernel.org, markgross@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        Simon Trimmer <simont@opensource.cirrus.com>
-References: <20230726112759.18814-1-rf@opensource.cirrus.com>
- <33cdbf63-8fe4-da7e-5d36-6e63fe303b24@redhat.com>
- <42399566-2d25-e888-7226-05a86767b644@opensource.cirrus.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <42399566-2d25-e888-7226-05a86767b644@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="O7XSXK7XxHjViR5H"
+Content-Disposition: inline
+In-Reply-To: <20230727110948.7926a532@bootlin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 7/27/23 11:48, Richard Fitzgerald wrote:
-> On 26/7/23 15:13, Hans de Goede wrote:
->> Hi Richard,
->>
->> On 7/26/23 13:27, Richard Fitzgerald wrote:
->>> From: Simon Trimmer <simont@opensource.cirrus.com>
->>>
->>> The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
->>> is used in multiples, and can be connected either to I2C or SPI.
->>>
->>> There will be multiple instances under the same Device() node. Add it
->>> to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
->>> driver.
->>>
->>> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
->>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->>
->> Thanks, patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>
->> I have 1 other serial-multi-instantiate.c patches in my fixes branch (see below) and since this just adds new hw-ids I think this can go upstream through my fixes branch too.
->>
->> Rafael, do you agree with me taking this upstream as a 6.5 fix? And if yes may I have your ack for that ?
->>
->> About that 1 patch, that adds a new IRQ type: IRQ_RESOURCE_AUTO and I wonder if this patch should not use that same new type right from the start:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/agit/pdx86/platform-drivers-x86.git/commit/?h=fixes&id=676b7c5ecab36274442887ceadd6dee8248a244f
->>
-> 
-> Link doesn't work, but I think you mean:
-> https://lore.kernel.org/platform-driver-x86/b9f81a5b-0511-9950-5a20-9e6cbd92d085@redhat.com/T/#t
+--O7XSXK7XxHjViR5H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Right an "a" (probably from ctrl + a) snuk in there, correct link:
+On Thu, Jul 27, 2023 at 11:09:48AM +0200, Herve Codina wrote:
+> On Thu, 27 Jul 2023 09:19:59 +0100
+> Conor Dooley <conor@kernel.org> wrote:
+> > On Wed, Jul 26, 2023 at 05:02:01PM +0200, Herve Codina wrote:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=fixes&id=676b7c5ecab36274442887ceadd6dee8248a244f
+> If needed, I can change to:
+>   title: QMC (QUICC Multichannel Controller) HDLC
+> Let me known if it is better to you.
 
-Which is indeed the same patch as you linked.
-
-> I'll send a V2 of this CS35L56 patch to use the new IRQ_RESOURCE_AUTO.
-
-Thanks.
-
-Regards,
-
-Hans
+If it were me writing the binding, I'd probably use something like
+"Freescale/NXP QUICC Multichannel Controller (QMC) HDLC", but it is not
+a big deal, I just had a "wtf is this" moment :)
 
 
 
+> > > +  fsl,qmc-chan:
+> >=20
+> > Perhaps I am just showing my lack of knowledge in this area, but what is
+> > fsl specific about wanting a reference to the channel of a "QMC"?
+> > Is this something that hardware from other manufacturers would not also
+> > want to do?
+>=20
+> The QMC and the QMC channel are something specific to the SoC. This IP is=
+ only
+> available on some Freescale/NXP SoCs.
+>=20
+> When I upstreamed the 'fsl,qmc-audio.yaml', I first used a generic name f=
+or this
+> property and Kristoff asked to change to a vendor prefixed name.
+>   https://lore.kernel.org/linux-kernel/1dfade07-f8c4-2e16-00dc-c7d1837082=
+59@linaro.org/
+>=20
+> Based on this, as the property 'fsl,qmc-chan' has the exact same meaning =
+in
+> fsl,qmc-audio.yaml and fsl,qmc-hdlc.yaml, I use the same name.
 
+Okay, thanks for explaining!
+
+--O7XSXK7XxHjViR5H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMI+iwAKCRB4tDGHoIJi
+0qi3APwL74Mb2llAu7YBw/3bmeFa7gR7fA/ofP+aXSE3vKilNwEAr7q9DVx5VZdT
+1kkQaOjZ61gQb0aNwEfyWDLEqkpWAgw=
+=qYki
+-----END PGP SIGNATURE-----
+
+--O7XSXK7XxHjViR5H--
