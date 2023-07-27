@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06390765B21
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F322A765B23
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbjG0SEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        id S231215AbjG0SEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjG0SEF (ORCPT
+        with ESMTP id S229568AbjG0SEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:04:05 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C213A2D5F
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:04:03 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so1580171a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:04:03 -0700 (PDT)
+        Thu, 27 Jul 2023 14:04:44 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33ACA2D64
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:04:43 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26871992645so525684a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690481042; x=1691085842;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Kc7jh51lvqkyURmJ/OY+7GJErTQWfjzV6VRfqYhkZ5E=;
-        b=rppHm5w00TKozkRuGz0uvydG0ypOWf1pFA2j74AjzokGKVYNnXfWUCLqk/DQ+b1HYT
-         bd0eKpv9UQ3uml+NNWuzyqibNVtkjFifJW8CGm2zZ8YXp6Y8m1OLOVJbby3tUAyEZ/py
-         mbj8D8zlR4b9mNHMTQwpZh7MH3dRI6rcn5CorGyOkyOl8p/aJk+5uhXoj2h9F14pczhO
-         oERMrSgOnqvgyXAyFfxsDC1dA+GaYd03wuKPMWXy5rcWH8Ie3Y31N4gPhM0PvjsK7eXJ
-         1g+TgHkHeKJnCRDPWhNnCNxVo8qQ3IqMjx8/9ffQVRHP8gSUnfgOH6MB+2Pkr9qLe9PT
-         3LRA==
+        d=chromium.org; s=google; t=1690481082; x=1691085882;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=h+I2rUZpDiTUDz1eI1/pLmSTQ4ciwxWtdKkx2t6+9gU=;
+        b=bRiQGknq+7aGWyD59ocPn2d4UDEvTzh+33b2zNoZ8qUVkXCs9cW8kCWTFviZxRD67t
+         mDuVJDfuSJMiS3E+Gya6vTjlmV3wtgFpbpyE/VhiK35nq0s3HwKCLOAq45+uRwboHFTD
+         sg1B4rgVTgCol91uSPM0lWTPiCEXxqu4mgOAE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690481042; x=1691085842;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Kc7jh51lvqkyURmJ/OY+7GJErTQWfjzV6VRfqYhkZ5E=;
-        b=Ni5+hX8SUrq/yTF8kXE+nSVAm1shSrMe9+81MyToMAwH+fhShaFpr9yXcK03o6nE40
-         LhPZEo/WteheXMwBA0QGAZKZzsV1CcVOe0fYyOBymEbyt9d7yGCBPvraKNFLZkK2P15q
-         E6GCBRViMGGCB6lILMuSANnyuajPmmRjn4fBpWngvfBTkp2k82dGWPlcb3c6nhFr/cV+
-         5b93P3r4m7z06iEhcIrpm6akgrX9VmwCP2EjLdY3QJ49QM/TSUVyKXMr/1Q9l2pQq1Vb
-         wNPQLNg8+PuJWoCdUgeuWStdLANXmlrudJmhRPFjxLgwrNXEU7w+DCG9rWvqVzcaXM5E
-         Bcng==
-X-Gm-Message-State: ABy/qLYok5VsINfOzoLhvq5kkAJY5RDrS40braNB6RlJIw8RRSVv5ZgD
-        TQ/YOmHLGdKx9yY7msqWrJI=
-X-Google-Smtp-Source: APBJJlFdNctAXyUHKgDdp3jhdMUPbOH5qbCKi+OoR1cZ/tsEh5z7k9ZfpG/aam4c1VBmxau4/JWZZg==
-X-Received: by 2002:a05:6402:341:b0:522:5873:d4aa with SMTP id r1-20020a056402034100b005225873d4aamr2648866edw.23.1690481042042;
-        Thu, 27 Jul 2023 11:04:02 -0700 (PDT)
-Received: from f.. (cst-prg-78-36.cust.vodafone.cz. [46.135.78.36])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170906481700b009927d4d7a6bsm1039148ejq.53.2023.07.27.11.04.01
+        d=1e100.net; s=20221208; t=1690481082; x=1691085882;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h+I2rUZpDiTUDz1eI1/pLmSTQ4ciwxWtdKkx2t6+9gU=;
+        b=ED7W8ji4Q9SqZLKkVp4RfuXbw6dCsiNnfdL+x0ZFlV048QgbtrQYD/bk6X983E4UHT
+         J1MMZAJjN262nksST5/cjxxtcaBtXFmTZ2iusEen+FOL4U6uJ9EE8SSZjBKzlbLktBYM
+         dophTlbcqtFWASBfkAOFH8ILyjbZByYY5VaJeZSBTG/lCm0ucUUsxyiuKGs92UmjiO/M
+         uikZWe/X8p/c9RzJX3KghHKTZ4XbBI9SnliF+uvGF3uMyNV0YX1gSXIvszG4iPwjvCnG
+         KXJSy7l2plB6M05qQRPDwJwUcQO3Rs5eEmO08D1C9Hr6UwDLLah/rTqmCxLT5YC912DY
+         eGsw==
+X-Gm-Message-State: ABy/qLb8dv18lBZ0y6FaKRpZey5y3K2AzBxDI+gic6FBcrUpAcZZmFry
+        8LyBq64oUDTW1GrFePhb03OnSWcLMuYAhOuG96k=
+X-Google-Smtp-Source: APBJJlGCWTnOQJaIeXyvlGXeaqYb+A8tGwmmSHUsP8rS7iOkRaT0xuDVulIjt81SVYkvZfsbc4BkHw==
+X-Received: by 2002:a17:90a:fc98:b0:262:f06d:c0fc with SMTP id ci24-20020a17090afc9800b00262f06dc0fcmr81171pjb.7.1690481082683;
+        Thu, 27 Jul 2023 11:04:42 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s9-20020a17090ad48900b00265c9062f94sm1486014pju.21.2023.07.27.11.04.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 11:04:01 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH] seqlock: annotate spinning as unlikely() in __read_seqcount_begin
-Date:   Thu, 27 Jul 2023 20:03:55 +0200
-Message-Id: <20230727180355.813995-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 27 Jul 2023 11:04:42 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 11:04:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wifi: mwifiex: Replace strlcpy with strscpy
+Message-ID: <202307271104.9502C1B932@keescook>
+References: <20230710030625.812707-1-azeemshaikh38@gmail.com>
+ <169047317161.2400214.15246406234885315012.b4-ty@chromium.org>
+ <87pm4dz6js.fsf@kernel.org>
+ <202307271003.BCF5F3597@keescook>
+ <CA+ASDXPak0M4zSwiTFpkRxw_WOmBmKJUTi9i5wCOY89fiP1vng@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CA+ASDXPak0M4zSwiTFpkRxw_WOmBmKJUTi9i5wCOY89fiP1vng@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Annotation already used to be there, but got lost in 52ac39e5db5148f7
-("seqlock: seqcount_t: Implement all read APIs as statement expressions").
-Does not look like it was intentional.
+On Thu, Jul 27, 2023 at 10:30:29AM -0700, Brian Norris wrote:
+> On Thu, Jul 27, 2023 at 10:04 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Thu, Jul 27, 2023 at 07:02:31PM +0300, Kalle Valo wrote:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git/commit/?id=caf9ead2c7d06fd7aa4cb48bd569ad61db9a0b4a
+> >
+> > For the patch you linked to -- it's okay to have lost the overflow
+> > detection and warning?
+> 
+> It's a fixed constant string being copied into a larger fixed array.
+> It really doesn't matter functionality-wise. At best, the error check
+> would be useful for human readers or automated tools. So I didn't
+> bother complaining one way or another, as it took enough tries for the
+> submitter to get things right in the first place.
 
-Without it gcc 12 decides to compile the following in path_init:
-        nd->m_seq = __read_seqcount_begin(&mount_lock.seqcount);
-        nd->r_seq = __read_seqcount_begin(&rename_lock.seqcount);
+Gotcha. Thanks!
 
-into 2 cases of conditional jumps forward if the value is even, aka
-branch prediction miss by default in the common case on x86-64.
-
-With the patch jumps are only for odd values.
-
-before:
-[snip]
-    mov    0x104fe96(%rip),%eax        # 0xffffffff82409680 <mount_lock>
-    test   $0x1,%al
-    je     0xffffffff813b97fa <path_init+122>
-    pause
-    mov    0x104fe8a(%rip),%eax        # 0xffffffff82409680 <mount_lock>
-    test   $0x1,%al
-    jne    0xffffffff813b97ee <path_init+110>
-    mov    %eax,0x48(%rbx)
-    mov    0x104fdfd(%rip),%eax        # 0xffffffff82409600 <rename_lock>
-    test   $0x1,%al
-    je     0xffffffff813b9813 <path_init+147>
-    pause
-    mov    0x104fdf1(%rip),%eax        # 0xffffffff82409600 <rename_lock>
-    test   $0x1,%al
-    jne    0xffffffff813b9807 <path_init+135>
-[/snip]
-
-after:
-[snip]
-   mov    0x104fec6(%rip),%eax        # 0xffffffff82409680 <mount_lock>
-   test   $0x1,%al
-   jne    0xffffffff813b99af <path_init+607>
-   mov    %eax,0x48(%rbx)
-   mov    0x104fe35(%rip),%eax        # 0xffffffff82409600 <rename_lock>
-   test   $0x1,%al
-   jne    0xffffffff813b999d <path_init+589>
-[/snip]
-
-Interestingly .text gets slightly smaller (as reported by size(1)):
-before:	20702563
-after:	20702429
-
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- include/linux/seqlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 987a59d977c5..225eb1db35b8 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -326,7 +326,7 @@ SEQCOUNT_LOCKNAME(mutex,        struct mutex,    true,     s->lock,        mutex
- ({									\
- 	unsigned __seq;							\
- 									\
--	while ((__seq = seqprop_sequence(s)) & 1)			\
-+	while (unlikely((__seq = seqprop_sequence(s)) & 1))		\
- 		cpu_relax();						\
- 									\
- 	kcsan_atomic_next(KCSAN_SEQLOCK_REGION_MAX);			\
 -- 
-2.39.2
-
+Kees Cook
