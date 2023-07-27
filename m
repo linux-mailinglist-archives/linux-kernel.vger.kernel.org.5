@@ -2,153 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06D9765BA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B79765BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbjG0SsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
+        id S231791AbjG0SsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231407AbjG0SsF (ORCPT
+        with ESMTP id S231397AbjG0SsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 14:48:05 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2082.outbound.protection.outlook.com [40.107.223.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2122619BF;
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8251BC3;
+        Thu, 27 Jul 2023 11:47:48 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7654e1d83e8so106187585a.1;
+        Thu, 27 Jul 2023 11:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690483667; x=1691088467;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CsJihqU3W0SWy4MPkYCRdSBSFBxwsM2Bi0gkXaNib1k=;
+        b=HbnqsGfmY3seITOXIykIsZwnW5cfZ5mpB6+xAChflATKmIgC2SPtLUQQWQI8vKA3sP
+         kTXcYnMw6LH1Sia9TANJrCeWe9QaZpTLdiHpUCACtKjUzMiJLpJr8jowtdGraxpARaxr
+         rHIDAdBg1lN5aw1Ayu7j3zlLk4dVoDMDFLAYEeAqkP1rwe1AYkNkab70VSUnVgzuDiPn
+         EzB6cfduNcVOKQ2k8Z7wbWgitxOz9hbLeZJXjxCzagi/VZNXeZrXPGxedXMUJCyyTVbs
+         CmD5lB+o0YaFYaqwCWjcgJKRoPAsnap+pRvTHKQNCcahqxpO98VGd+ZsuBjVKtC3p+o+
+         tR9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690483667; x=1691088467;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CsJihqU3W0SWy4MPkYCRdSBSFBxwsM2Bi0gkXaNib1k=;
+        b=LhdySvfk78Birr1F4iu0OvtMMlSsJykR6aYt+Tl6tQCPqEyOoAPnPciy26K3Z/WN+3
+         nFkV/2ctFWOAaf0A4MuNiyS31HSBeFHrG4etVhajcoFJ/FScT00A1EBS+F7KcZibpPOD
+         N5klVeuGrSq9VEC5L7OjsvQfQyiT0qrMjohqhHK6DsegPoMiM+4ejEiI67b9RJIBMPz3
+         3DWtvy8OwnA3ycvzUhwedoNixpKdURLj+XU/hX8jPYvIp8xGujkQvJMPCWHn+mB4pLHU
+         TeUo33n3X+1uyr+zEGq6+Xe3tRY7L0wUcO+f7G/wCRPEERmtxPw/SgAC1bg/zSGfEKQ4
+         ZlCw==
+X-Gm-Message-State: ABy/qLZFpejFtEUvTmVq8tg/x/uMGGQuKIWfxEpKZWVskGWWNhbcAlri
+        l7NzUwIuKRU7ArR9QocBYgI=
+X-Google-Smtp-Source: APBJJlEdqX9cpPhbMqSWWrAxvt/9UKSwWYzZ4Y5b3DvWdY9N0mcDQugsapME6E6W79yamZOjWyf6dA==
+X-Received: by 2002:a05:620a:4727:b0:765:3e81:e74c with SMTP id bs39-20020a05620a472700b007653e81e74cmr315331qkb.21.1690483667103;
         Thu, 27 Jul 2023 11:47:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KTf/4GMXOwFwemAqpHY+w/jXXEgTW8SX2oG4ML+NM/8+YIgmxSMTKmPmqpz+1TGa8LgmBY+FUA94tPVCYvjL58n+1DpkCwxWnJe+bUhGxyWj/ntJScSFaTP8BX7L71E4R3lPKkvfWal5xoQUSJy7WWJAHpfKarATet2WOyts1mAsZSyu0OJXod7unbA+0t9HJa6huv9ZO7zSKS3AKK1vJAOKsZ9aDmjpKeSCZfd+r1O9iKj3qcvCU5XXrAqOqYtZJurJc8w9UMiRB0z4xPYOqvfIF0deao0jPfrlCobDLjb2sfECJ5pP/Z6SYzOdcT88wkZ99jLiu3RYqKeXxWAZIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rUA4cqdattcKG88D6+HIEJThMwIy/+V6TxlWcXMUVeI=;
- b=DHHPJD1AYhSpjOI6DoDCdtqW1FNWNgQNemKRkWb8b+tIvvgZei+XPlPhNDsu7S/+zbQS1GsKcr4l0FBVs3aIAOKCIlR68E+frRxqLhraaTCx6I99ZMLVtVHAIh2M0jJZkUXrb+I12zA7bqISZDgx1yznXEWW5tw5AuVqBfiV3N63G7nAMBAOzh6HOhnYUzW+WTswpbPUTua5RLGyv/DcIjaU1UYGIJtq5Ua0IUF9PMEL4CiLSWhmxYmo6+6A4Mp8GVGZVo5Zb4zRm2wn5BsU2vQOrtNUcISOHdz18EIeNj3By1HNCCIOGCdipPc9dugPjhclLyi+PCuUN9wffOb7CQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rUA4cqdattcKG88D6+HIEJThMwIy/+V6TxlWcXMUVeI=;
- b=t5RpHZHv7XEdwoc8Hqgsp1jbWOKeCOQ9b5ENVTTpJf0b02fbfWeXXvpnoEab9UQMUf9zdV+CfJ8hqfP0YxzzONE8Aj2knbaXT1M9DmtR+UtM3R6GZ/aas8XHOJusKWi2GIkHMvw6WQC9nAb3Z4tldko8OQNYvy9u6a3wnxWwLbTI6DeDyO/5MTdXU9FkF1NctxOgvFAMkLtG9iowXsZTbhaHIV0xfzUu2WpzhixW271p4+TLHZafQWSSksRCYeYI+l/anGCAYhQx0hS5DP0cdmy+eHqvFFjbZNmj+XPhykh1a3KnquytDJ5Fgk7OhpDFOgruaYqLpAuUjq0J9hYlMw==
-Received: from MW4PR04CA0082.namprd04.prod.outlook.com (2603:10b6:303:6b::27)
- by MW4PR12MB5625.namprd12.prod.outlook.com (2603:10b6:303:168::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 18:47:44 +0000
-Received: from CO1NAM11FT114.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6b:cafe::45) by MW4PR04CA0082.outlook.office365.com
- (2603:10b6:303:6b::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Thu, 27 Jul 2023 18:47:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CO1NAM11FT114.mail.protection.outlook.com (10.13.174.103) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 18:47:44 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
- 11:47:34 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Thu, 27 Jul 2023 11:47:34 -0700
-Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Thu, 27 Jul 2023 11:47:33 -0700
-Date:   Thu, 27 Jul 2023 11:47:32 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <kevin.tian@intel.com>, <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>,
-        <alex.williamson@redhat.com>, <shuah@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
-        <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <mjrosato@linux.ibm.com>, <farman@linux.ibm.com>
-Subject: Re: [PATCH v9 3/6] iommufd: Add iommufd_access_change_ioas helper
-Message-ID: <ZMK7xNR+PaBek+Ou@Asurada-Nvidia>
-References: <cover.1690440730.git.nicolinc@nvidia.com>
- <5d7d275ff12c1c991ac80392b19f1ebf5214177d.1690440730.git.nicolinc@nvidia.com>
- <ZMKB0XrtGIvR3lzB@nvidia.com>
+Received: from localhost (modemcable065.128-200-24.mc.videotron.ca. [24.200.128.65])
+        by smtp.gmail.com with ESMTPSA id i10-20020a05620a074a00b0076c60b95b87sm586411qki.96.2023.07.27.11.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 11:47:46 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 14:47:45 -0400
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, leit@meta.com,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] netconsole: Enable compile time configuration
+Message-ID: <ZMK70fqdnfMPpc1x@d3>
+References: <20230727163132.745099-1-leitao@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMKB0XrtGIvR3lzB@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT114:EE_|MW4PR12MB5625:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54e41b4f-b4a2-4139-f0c3-08db8ed1f719
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2IxtQtVHZ9n3we05HBPYam4bQqBaRMkAT/+/7m94U+T7uoJg95sDXjUL0/TX9spE3/qsftA7VUZZmczGUM9u4jFrX/KD7PrtiRLwV19apqVtVfPi8HcLCLBlpfYeWACpUWR9FneQ/gewsYVCZJy4FrNXwQXhCKOKPrBszCMreySIVxz2tZhyIf0m81HHbyEPMqOF1957hd+FoTtwxo+2QbYo53V7T4vyKMxyQfCIP6TDFiaBlgR1OWVlC7FceeLlgg60+c2rPN9zSmLGuFVZUjPWuCcfb0oDa1/9dsaml5tI5/4IIQORP2lDUtjBsF/5cHl7CrQlRCTu6EClmz7XLNq6PNPkw6VYTnKWn+n463prLgaJByYNzHg5m9RxFfKq2uFU8JMRskKncYITcOWaklXfsQnfoMd1ijMSgm99MFvijIKegquFGCDRl43e0352nmLzM14JAE/n9EIKqSiloBjbdmiaQMZIXL9Vhi/k6deFqEv4t+sZYJrGfDt6WDWDHx8VCwrRYivh/+u8st+d3Re22eEFNJ76ZfVIoSWuz41wsie5mhaapQFbV0x4QtiseGTnwgfOrEU3AoqH+yTzLsZsqrLEg9nT0cH5DCKfUGvPl1IZm+S3lPYMy+oBuf+qxoT8N1bdyx8pCbEGyWENlQulCATKPyuqF3lkB0kIZCpeSvmj2c+od69KjWU2+NohFRIUfaGptcsmtawFjRNhpHKsh7VNWfWJ9X9Tn3ZGWfY=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(39860400002)(396003)(451199021)(82310400008)(40470700004)(36840700001)(46966006)(36860700001)(6862004)(8676002)(5660300002)(83380400001)(47076005)(336012)(186003)(26005)(86362001)(33716001)(8936002)(7416002)(4326008)(6636002)(316002)(70206006)(41300700001)(9686003)(478600001)(356005)(82740400003)(70586007)(426003)(54906003)(40480700001)(2906002)(40460700003)(7636003)(55016003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 18:47:44.7101
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54e41b4f-b4a2-4139-f0c3-08db8ed1f719
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT114.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5625
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230727163132.745099-1-leitao@debian.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 11:40:17AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jul 27, 2023 at 12:23:08AM -0700, Nicolin Chen wrote:
-
-> > +	if (new_ioas) {
-> > +		rc = iopt_add_access(&new_ioas->iopt, access);
-> > +		if (rc) {
-> > +			iommufd_put_object(&new_ioas->obj);
-> > +			access->ioas = cur_ioas;
-> > +			return rc;
-> > +		}
-> > +		iommufd_ref_to_users(&new_ioas->obj);
+On 2023-07-27 09:31 -0700, Breno Leitao wrote:
+> Enable netconsole features to be set at compilation time. Create two
+> Kconfig options that allow users to set extended logs and release
+> prepending features enabled at compilation time.
 > 
-> Kevin's suggestion to just open code the refcount_inc here
-
-Will replace this iommufd_ref_to_users with a refcount_inc in v10.
-
-> And have a wrapper func that does:
+> Right now, the user needs to pass command line parameters to netconsole,
+> such as "+"/"r" to enable extended logs and version prepending features.
 > 
-> iommufd_access_change_ioas_id(struct iommufd_access *access, u32 id)
-> {
-> 	struct iommufd_ioas *ioas = iommufd_get_ioas(ictx, ioas_id);
-> 	int rc;
+> With these two options, the user could set the default values for the
+> features at compile time, and don't need to pass it in the command line
+> to get them enabled.
 > 
-> 	if (IS_ERR(ioas))
-> 		return PTR_ERR(ioas);
-> 	rc = iommufd_access_change_ioas(access, ioas);
-> 	iommufd_put_object(&ioas->obj);
-> 	return rc;
-> }
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+> index 368c6f5b327e..4d0c3c532e72 100644
+> --- a/drivers/net/Kconfig
+> +++ b/drivers/net/Kconfig
+> @@ -332,6 +332,26 @@ config NETCONSOLE_DYNAMIC
+>  	  at runtime through a userspace interface exported using configfs.
+>  	  See <file:Documentation/networking/netconsole.rst> for details.
 > 
-> Does looks cleaner
+> +config NETCONSOLE_EXTENDED_LOG
+> +	bool "Enable kernel extended message"
+> +	depends on NETCONSOLE
+> +	default n
+> +	help
+> +	  Enable extended log support for netconsole. Log messages are
+> +	  transmitted with extended metadata header in the following format
+> +	  which is the same as /dev/kmsg.
+> +	  See <file:Documentation/networking/netconsole.rst> for details.
+> +
+> +config NETCONSOLE_APPEND_RELEASE
+                     ^ PREPEND
 
-I see. So we can drop iommufd_put_object(&new_ioas->obj) in
-iommufd_access_change_ioas().
+> +	bool "Enable kernel release version in the message"
+> +	depends on NETCONSOLE_EXTENDED_LOG
+> +	default n
+> +	help
+> +	  Enable kernel release to be prepended to each netcons message. The
+> +	  kernel version is prepended to the first message, so, the peer knows what
+                                         ^ each
 
-> Then we delete iommufd_ref_to_users() as there are no users (once all
-> the branches are merged).
+> +	  kernel version is send the messages.
 
-Ack.
+"kernel release" is one thing and "kernel version" is another:
+root@vsid:~# uname --kernel-release
+6.5.0-rc2+
+root@vsid:~# uname --kernel-version
+#37 SMP PREEMPT_DYNAMIC Thu Jul 27 14:20:44 EDT 2023
 
-Nicolin
+This option relates to the kernel release so please use the correct
+name consistently in the help text.
+
+> +	  See <file:Documentation/networking/netconsole.rst> for details.
+> +
+>  config NETPOLL
+>  	def_bool NETCONSOLE
+> 
+> diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> index 87f18aedd3bd..3a74f8c9cfdb 100644
+
+[...]
+
+Why is it needed to change the default for these parameters? Is there a
+case where it's not possible to specify those values in the netconsole=
+parameter?
+
+If the default is set to on, there is no way to disable it via the
+command line or module parameter, right?
