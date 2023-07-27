@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD15765477
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53C7765478
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbjG0NCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51542 "EHLO
+        id S231586AbjG0NDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjG0NCR (ORCPT
+        with ESMTP id S230187AbjG0NDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:02:17 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365921FFC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:02:16 -0700 (PDT)
+        Thu, 27 Jul 2023 09:03:09 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81471FFC;
+        Thu, 27 Jul 2023 06:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690462937; x=1721998937;
+  t=1690462988; x=1721998988;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=F6awQahw+TUrdL9bQV+qksR//IXVBzUbgGUgF9l3SMs=;
-  b=cCRh/8YV2TRZz6U+03yw2+w1Z76lC5EBcqGTa6shjivwQWpA9rWviqKF
-   /q8nhyDb2YTvmXZemv4TBJc/yIzW4Fn8TrT3SagxYnWNM+dMSCFqKfvDb
-   TBG445SmIYiX7wsIcVs1uchm85B+kAb2c3KUMF8GgE0yT+WsJ96QqIZE4
-   DeC+yXO8Lv+cq71X83f0fziCLI89USfYaPJ4ehxUdfY5l9ApjlKgK/SBF
-   rJbjIn5NTAj+ktxpuG2qxBqeBtR2r4W0I1wlpQSubdW2vfunZ1W5vyMqI
-   MMMwIqjixMXczLXJiNazABaGtP9+wWptI/UjMb4nOVyRZZDfAnQs/0OyH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="367179967"
+  bh=SibNWbJz1DVV6T/0yWdGP00h+XX+UlM1/oidfKMMDXs=;
+  b=drkmFGVut4k6eJB/cWws+Qp2FG0T/vhIyB8HOxOR0kL/IeUjNvY1W+bJ
+   N3tSlWdhcvpdjFLE7SDW8c1Op/yrTpa4sjLWgFikga8hddXrHfFCNoLAe
+   iYJa7F6OcTtr7LjDVlNcZlOsdLlPlvZp9tU47LTuQ+vcLh+7OghWMlIg3
+   NskIrU8PD4w+BHIEtvMWBeMBkjqFjzZ5pt+/WGw1EMz8JMKVjECS5j4e2
+   Yme9gbWmYd8k7z0VODdiLrtgCmBPdM10b0Y8fwzODuV8kmHheC3+o6p1g
+   EZT231PtVeQSptrd6y50yiOSiGBoC9EaxeEtVkVC5egciBGBWijdy9Dhm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="399235995"
 X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="367179967"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:02:14 -0700
+   d="scan'208";a="399235995"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:02:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="756621709"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="900879746"
 X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="756621709"
-Received: from lzhiguno-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.37.222])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:02:10 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id C884D109503; Thu, 27 Jul 2023 16:02:07 +0300 (+03)
-Date:   Thu, 27 Jul 2023 16:02:07 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com
-Subject: Re: [PATCH v3 04/12] x86/tdx: Rename __tdx_module_call() to
- __tdcall()
-Message-ID: <20230727130207.4uzswwgywhdho5i7@box.shutemov.name>
-References: <cover.1690369495.git.kai.huang@intel.com>
- <ba2a29b02a18c9a366fe2364c166d11f401de329.1690369495.git.kai.huang@intel.com>
+   d="scan'208";a="900879746"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 27 Jul 2023 06:02:44 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qP0de-004y1C-2P;
+        Thu, 27 Jul 2023 16:02:42 +0300
+Date:   Thu, 27 Jul 2023 16:02:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Muchun Song <muchun.song@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] seq_file: seq_show_option_n() is used for precise sizes
+Message-ID: <ZMJq8nzPevdSon94@smile.fi.intel.com>
+References: <20230726215957.never.619-kees@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ba2a29b02a18c9a366fe2364c166d11f401de329.1690369495.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230726215957.never.619-kees@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:25:06PM +1200, Kai Huang wrote:
-> __tdx_module_call() is only used by the TDX guest to issue TDCALL to the
-> TDX module.  Rename it to __tdcall() to match its behaviour, e.g., it
-> cannot be used to make host-side SEAMCALL.
-> 
-> Also rename tdx_module_call() which is a wrapper of __tdx_module_call()
-> to tdcall().
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+On Wed, Jul 26, 2023 at 02:59:57PM -0700, Kees Cook wrote:
+> When seq_show_option_n() is used, it is for non-string memory that
+> happens to be printable bytes. As such, we must use memcpy() to copy the
+> bytes and then explicitly NUL-terminate the result.
 
-Fair enough:
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Muchun Song <muchun.song@linux.dev>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/linux/seq_file.h | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+> index bd023dd38ae6..386ab580b839 100644
+> --- a/include/linux/seq_file.h
+> +++ b/include/linux/seq_file.h
+> @@ -249,18 +249,19 @@ static inline void seq_show_option(struct seq_file *m, const char *name,
+>  
+>  /**
+>   * seq_show_option_n - display mount options with appropriate escapes
+> - *		       where @value must be a specific length.
+> + *		       where @value must be a specific length (i.e.
+> + *		       not NUL-terminated).
+>   * @m: the seq_file handle
+>   * @name: the mount option name
+>   * @value: the mount option name's value, cannot be NULL
+> - * @length: the length of @value to display
+> + * @length: the exact length of @value to display, must be constant expression
+>   *
+>   * This is a macro since this uses "length" to define the size of the
+>   * stack buffer.
+>   */
+>  #define seq_show_option_n(m, name, value, length) {	\
+>  	char val_buf[length + 1];			\
+> -	strncpy(val_buf, value, length);		\
+> +	memcpy(val_buf, value, length);			\
+>  	val_buf[length] = '\0';				\
+>  	seq_show_option(m, name, val_buf);		\
+>  }
+> -- 
+> 2.34.1
+> 
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+With Best Regards,
+Andy Shevchenko
+
+
