@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F79765B5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDD765B60
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjG0S3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
+        id S230005AbjG0SaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbjG0S3N (ORCPT
+        with ESMTP id S229450AbjG0SaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:29:13 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52713A97
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:28:51 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-56cf9a86277so12120577b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:28:51 -0700 (PDT)
+        Thu, 27 Jul 2023 14:30:18 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6318D3580
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:30:02 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-986d8332f50so172379466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690482530; x=1691087330;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYD6rkTLiSYQl+qzaa/e799G5U/EZRM1YfnI2GTzV2A=;
-        b=sLjnB0sPTngxPiNbukoCIlg09L30sRsZuMxmeBGW+yyF3CXStNtXFcXwJB+xTqjRSv
-         RAFR0PsBB9oxZZ1fXPP5gF5yfM21wlPFwklW6KezALjohicrNsTNsVx9Gf7/8soKq5JA
-         OkkuGVmv19Q3wy1mdJEgtAoBAlSN1mHkfnOIqHpFQAlTXstcMK+Zv4LmS6K4yC2kDhr+
-         B3v56N560Ut8/P+1nX9Do+57ytbqaOgz5cbk4wkiYlEyoOUZ7H1uuXwQKOoKilB/D+PQ
-         5i9yb0kCMmyb6Xr7DyTUC1IKTO5c19lhzEww4dU3WHeTeNorlN++k6oHnwQVI/CfLoI/
-         Cxlw==
+        d=google.com; s=20221208; t=1690482601; x=1691087401;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gQuUTbCVCGcnG+7JdbJB28lXA8NxfAQJ6tDUsY15cRw=;
+        b=lxY8OpuxyOl+aLXedM/7YSYB5xsPDvxBBgSCoal9QVpCqjXJu0vDvSLXSlAkgQ+knH
+         vp6JJeN6C6tHemFkC2E5R86qmswabSEG8Tw/xKlntiEZVwCUUX3CcnTJ95DcIzJ5jZDH
+         h1nNDfdKoVAAvKzXmkwd/6LwvJCYVoBY4jotE27is864RugaIoNNdjKLfnH4PHrncbro
+         8hxAQT+Qrh3de9u7hE/YK28Tp8qpRU+ncMIx6on8qjsyZtRPZdZTwiWIN9Jyce+YQsOb
+         +xdlsW9DUxE002/zAPopJ+x63wqQIyuENJhWj7MU2Pdbjl4U1Dvbb3wgfOrIhMgEIbPP
+         y91Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690482530; x=1691087330;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYD6rkTLiSYQl+qzaa/e799G5U/EZRM1YfnI2GTzV2A=;
-        b=ZptDsRB2zHOPT1N/KC+2U7+QTUennoM4jcr4AnGeDzAsgb1vSBFE5yjgw8OTe4HmeA
-         06bJSkBgDrarqCTpjAIXxnpQfSz06KGywiTxuhcMU0D70Bo6Q/36GYQcW8TR/VoNMcuS
-         jUi5msvzRS5k1V/ONs4aFG6RwIYNKa2Dz7m5kWX8MeHIRH0N8OQfRrcJKacLvlipoSb4
-         e3GDypvEFVX80fp5yTW022p7caya++LgrwMwaj78S9LOXWGyOZG4BcnHTTxNNku8UNAE
-         8H1OMin5QD1bE2CeJYwnBUxHbqtBuDyEBS4cUnpdSc1xL1GqcecOZ6aEFxBApm09fwr/
-         w37w==
-X-Gm-Message-State: ABy/qLa3BV3/cjPk1kelZPyw2EfUyAIZ1etw34FI5v5mLSBhTtVmzYHE
-        9UVuWNlt3yVknDJ6K6vHswleFxfA2cxK
-X-Google-Smtp-Source: APBJJlG9GRz0W5tO8K0INJnEP2XJxQy3Y/FqlUtR1HDc8TBzbx6g+6Y5gT1YOgptPNV2dshZ6g5/aJdBK+wc
-X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:780f:26da:d952:3463])
- (user=mshavit job=sendgmr) by 2002:a5b:743:0:b0:c4d:9831:9712 with SMTP id
- s3-20020a5b0743000000b00c4d98319712mr1200ybq.0.1690482530704; Thu, 27 Jul
- 2023 11:28:50 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 02:26:23 +0800
-In-Reply-To: <20230727182647.4106140-1-mshavit@google.com>
-Mime-Version: 1.0
-References: <20230727182647.4106140-1-mshavit@google.com>
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230727182647.4106140-8-mshavit@google.com>
-Subject: [PATCH v1 7/7] iommu/arm-smmu-v3: Move CD table to arm_smmu_master
-From:   Michael Shavit <mshavit@google.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Michael Shavit <mshavit@google.com>, jean-philippe@linaro.org,
-        nicolinc@nvidia.com, jgg@nvidia.com, baolu.lu@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
+        d=1e100.net; s=20221208; t=1690482601; x=1691087401;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gQuUTbCVCGcnG+7JdbJB28lXA8NxfAQJ6tDUsY15cRw=;
+        b=W8rw/0uOmuRLfDi9wxkeTysVrRCFPTcSngoN2qF7yF71Nmuo8Zjgb8+TzNdFTImmJv
+         o/vsdjLmJ1P68zJH6GhlGlo8uY/IUxrqboBFDFUAM3GCxrrAEBRDVty/EI8Ghsme9g7q
+         c9Hvi3+A8wh5S1VBLLoCI2yWcNi7jraV+Wt/pBwqViUs6zJBDqjsJc1H3dLiu8yj1za+
+         uHKcQE2Xeb/IeqquvBZFRjsVrNZR3gjWs2jFSqf7lwhnSZHatD2vtbChFzwiRJyew19d
+         cQ5Cx4Je1wNSJ9Scoud+A6nJpn3hzoNgcI69bZVYLi5p2xtANG1mRJlhWaNCGztF7xbC
+         C9gQ==
+X-Gm-Message-State: ABy/qLYpxHKPpxOvwjpzcRAvHl729fc7yJzGWljhLS9KjH6MbKfvfYn0
+        6DzqLLb73a1AoQJeUgOsw9euSY0Ng7JhfJeA/zN//A==
+X-Google-Smtp-Source: APBJJlFPEsT8C6iMwpUThAHnHk70lIkWwoq2M5crzE+bNa7W/QtZewT74DMVt0WzVSWjfhDht/ItI/D+MJbQON76Phw=
+X-Received: by 2002:a17:906:3f0c:b0:99b:44aa:fae0 with SMTP id
+ c12-20020a1709063f0c00b0099b44aafae0mr19137ejj.21.1690482600566; Thu, 27 Jul
+ 2023 11:30:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230727162343.1415598-1-hannes@cmpxchg.org> <20230727162343.1415598-4-hannes@cmpxchg.org>
+In-Reply-To: <20230727162343.1415598-4-hannes@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 27 Jul 2023 11:29:24 -0700
+Message-ID: <CAJD7tkZqAfJ9uR8B0=nq_ZhTfFQWG=Tns4_tcm9YoA7PURx63Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: zswap: kill zswap_get_swap_cache_page()
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,233 +72,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each master is now allocated a CD table at probe time, and attaching a
-stage 1 domain now installs CD entries into the master's CD table. SVA
-writes its CD entries into each master's CD table if the domain is
-shared across masters.
+On Thu, Jul 27, 2023 at 9:23=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> The __read_swap_cache_async() interface isn't more difficult to
+> understand than what the helper abstracts. Save the indirection and a
+> level of indentation for the primary work of the writeback func.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Signed-off-by: Michael Shavit <mshavit@google.com>
----
-v4->v5: The master's CD table allocation was previously split to a
-different commit. This change now atomically allocates the new CD
-table, uses it, and removes the old one.
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 65 +++++++++------------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  4 +-
- 2 files changed, 28 insertions(+), 41 deletions(-)
+Arguably any abstraction to the swap code is better than dealing with
+the swap code, but I am not against this :P
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index b211424a85fb2..a58a0f811d531 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -985,7 +985,7 @@ static void arm_smmu_sync_cd(struct arm_smmu_master *master,
- 		},
- 	};
- 
--	if (!master->domain->cd_table.installed)
-+	if (!master->cd_table.installed)
- 		return;
- 
- 	smmu = master->smmu;
-@@ -1028,7 +1028,7 @@ static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_master *master, u32 ssid)
- 	__le64 *l1ptr;
- 	unsigned int idx;
- 	struct arm_smmu_l1_ctx_desc *l1_desc;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->domain->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
- 
- 	if (!cdcfg->l1_desc)
- 		return cdcfg->cdtab + ssid * CTXDESC_CD_DWORDS;
-@@ -1065,7 +1065,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_master *master, int ssid,
- 	u64 val;
- 	bool cd_live;
- 	__le64 *cdptr;
--	struct arm_smmu_ctx_desc_cfg *cd_table = &master->domain->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
- 
- 	if (WARN_ON(ssid >= (1 << cd_table->max_cds_bits)))
- 		return -E2BIG;
-@@ -1128,14 +1128,13 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_master *master, int ssid,
- 	return 0;
- }
- 
--static int arm_smmu_alloc_cd_tables(struct arm_smmu_domain *smmu_domain,
--				    struct arm_smmu_master *master)
-+static int arm_smmu_alloc_cd_tables(struct arm_smmu_master *master)
- {
- 	int ret;
- 	size_t l1size;
- 	size_t max_contexts;
- 	struct arm_smmu_device *smmu = master->smmu;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
- 
- 	cdcfg->stall_enabled = master->stall_enabled;
- 	cdcfg->max_cds_bits = master->ssid_bits;
-@@ -1177,12 +1176,12 @@ static int arm_smmu_alloc_cd_tables(struct arm_smmu_domain *smmu_domain,
- 	return ret;
- }
- 
--static void arm_smmu_free_cd_tables(struct arm_smmu_domain *smmu_domain)
-+static void arm_smmu_free_cd_tables(struct arm_smmu_master *master)
- {
- 	int i;
- 	size_t size, l1size;
--	struct arm_smmu_device *smmu = smmu_domain->smmu;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
-+	struct arm_smmu_device *smmu = master->smmu;
-+	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
- 
- 	if (cdcfg->l1_desc) {
- 		size = CTXDESC_L2_ENTRIES * (CTXDESC_CD_DWORDS << 3);
-@@ -1290,7 +1289,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
- 	if (smmu_domain) {
- 		switch (smmu_domain->stage) {
- 		case ARM_SMMU_DOMAIN_S1:
--			cd_table = &smmu_domain->cd_table;
-+			cd_table = &master->cd_table;
- 			break;
- 		case ARM_SMMU_DOMAIN_S2:
- 		case ARM_SMMU_DOMAIN_NESTED:
-@@ -2081,14 +2080,10 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
- 
- 	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
- 
--	/* Free the CD and ASID, if we allocated them */
-+	/* Free the ASID or VMID */
- 	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
--		struct arm_smmu_ctx_desc_cfg *cdcfg = &smmu_domain->cd_table;
--
- 		/* Prevent SVA from touching the CD while we're freeing it */
- 		mutex_lock(&arm_smmu_asid_lock);
--		if (cdcfg->cdtab)
--			arm_smmu_free_cd_tables(smmu_domain);
- 		arm_smmu_free_asid(&smmu_domain->cd);
- 		mutex_unlock(&arm_smmu_asid_lock);
- 	} else {
-@@ -2100,7 +2095,7 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
- 	kfree(smmu_domain);
- }
- 
--static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
-+static int arm_smmu_domain_finalise_cd(struct arm_smmu_domain *smmu_domain,
- 				       struct arm_smmu_master *master,
- 				       struct io_pgtable_cfg *pgtbl_cfg)
- {
-@@ -2119,10 +2114,6 @@ static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
- 	if (ret)
- 		goto out_unlock;
- 
--	ret = arm_smmu_alloc_cd_tables(smmu_domain, master);
--	if (ret)
--		goto out_free_asid;
--
- 	cd->asid	= (u16)asid;
- 	cd->ttbr	= pgtbl_cfg->arm_lpae_s1_cfg.ttbr;
- 	cd->tcr		= FIELD_PREP(CTXDESC_CD_0_TCR_T0SZ, tcr->tsz) |
-@@ -2134,17 +2125,9 @@ static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
- 			  CTXDESC_CD_0_TCR_EPD1 | CTXDESC_CD_0_AA64;
- 	cd->mair	= pgtbl_cfg->arm_lpae_s1_cfg.mair;
- 
--	ret = arm_smmu_write_ctx_desc(master, 0, cd);
--	if (ret)
--		goto out_free_cd_tables;
--
- 	mutex_unlock(&arm_smmu_asid_lock);
- 	return 0;
- 
--out_free_cd_tables:
--	arm_smmu_free_cd_tables(smmu_domain);
--out_free_asid:
--	arm_smmu_free_asid(cd);
- out_unlock:
- 	mutex_unlock(&arm_smmu_asid_lock);
- 	return ret;
-@@ -2207,7 +2190,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
- 		ias = min_t(unsigned long, ias, VA_BITS);
- 		oas = smmu->ias;
- 		fmt = ARM_64_LPAE_S1;
--		finalise_stage_fn = arm_smmu_domain_finalise_s1;
-+		finalise_stage_fn = arm_smmu_domain_finalise_cd;
- 		break;
- 	case ARM_SMMU_DOMAIN_NESTED:
- 	case ARM_SMMU_DOMAIN_S2:
-@@ -2447,16 +2430,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	} else if (smmu_domain->smmu != smmu) {
- 		ret = -EINVAL;
- 		goto out_unlock;
--	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
--		   master->ssid_bits != smmu_domain->cd_table.max_cds_bits) {
--		ret = -EINVAL;
--		goto out_unlock;
--	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 &&
--		   smmu_domain->cd_table.stall_enabled != master->stall_enabled) {
--		ret = -EINVAL;
--		goto out_unlock;
- 	}
--
- 	master->domain = smmu_domain;
- 
- 	/*
-@@ -2469,6 +2443,14 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	if (smmu_domain->stage != ARM_SMMU_DOMAIN_BYPASS)
- 		master->ats_enabled = arm_smmu_ats_supported(master);
- 
-+	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-+		ret = arm_smmu_write_ctx_desc(master, 0, &smmu_domain->cd);
-+		if (ret) {
-+			master->domain = NULL;
-+			goto out_unlock;
-+		}
-+	}
-+
- 	arm_smmu_install_ste_for_dev(master);
- 
- 	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-@@ -2706,6 +2688,12 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- 	    smmu->features & ARM_SMMU_FEAT_STALL_FORCE)
- 		master->stall_enabled = true;
- 
-+	ret = arm_smmu_alloc_cd_tables(master);
-+	if (ret) {
-+		arm_smmu_disable_pasid(master);
-+		arm_smmu_remove_master(master);
-+		goto err_free_master;
-+	}
- 	return &smmu->iommu;
- 
- err_free_master:
-@@ -2723,6 +2711,7 @@ static void arm_smmu_release_device(struct device *dev)
- 	arm_smmu_detach_dev(master);
- 	arm_smmu_disable_pasid(master);
- 	arm_smmu_remove_master(master);
-+	arm_smmu_free_cd_tables(master);
- 	kfree(master);
- }
- 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index a8cc2de0cc254..ebd082b552699 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -696,6 +696,7 @@ struct arm_smmu_master {
- 	struct arm_smmu_domain		*domain;
- 	struct list_head		domain_head;
- 	struct arm_smmu_stream		*streams;
-+	struct arm_smmu_ctx_desc_cfg	cd_table;
- 	unsigned int			num_streams;
- 	bool				ats_enabled;
- 	bool				stall_enabled;
-@@ -722,10 +723,7 @@ struct arm_smmu_domain {
- 
- 	enum arm_smmu_domain_stage		stage;
- 	union {
--		struct {
- 		struct arm_smmu_ctx_desc	cd;
--		struct arm_smmu_ctx_desc_cfg	cd_table;
--		};
- 		struct arm_smmu_s2_cfg		s2_cfg;
- 	};
- 
--- 
-2.41.0.585.gd2178a4bd4-goog
+The diffstat looks nice and the code looks correct to me.
 
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+
+> ---
+>  mm/zswap.c | 142 ++++++++++++++++++++---------------------------------
+>  1 file changed, 53 insertions(+), 89 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index e34ac89e6098..bba4ead672be 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1016,43 +1016,6 @@ static int zswap_enabled_param_set(const char *val=
+,
+>  /*********************************
+>  * writeback code
+>  **********************************/
+> -/* return enum for zswap_get_swap_cache_page */
+> -enum zswap_get_swap_ret {
+> -       ZSWAP_SWAPCACHE_NEW,
+> -       ZSWAP_SWAPCACHE_EXIST,
+> -       ZSWAP_SWAPCACHE_FAIL,
+> -};
+> -
+> -/*
+> - * zswap_get_swap_cache_page
+> - *
+> - * This is an adaption of read_swap_cache_async()
+> - *
+> - * This function tries to find a page with the given swap entry
+> - * in the swapper_space address space (the swap cache).  If the page
+> - * is found, it is returned in retpage.  Otherwise, a page is allocated,
+> - * added to the swap cache, and returned in retpage.
+> - *
+> - * If success, the swap cache page is returned in retpage
+> - * Returns ZSWAP_SWAPCACHE_EXIST if page was already in the swap cache
+> - * Returns ZSWAP_SWAPCACHE_NEW if the new page needs to be populated,
+> - *     the new page is added to swapcache and locked
+> - * Returns ZSWAP_SWAPCACHE_FAIL on error
+> - */
+> -static int zswap_get_swap_cache_page(swp_entry_t entry,
+> -                               struct page **retpage)
+> -{
+> -       bool page_was_allocated;
+> -
+> -       *retpage =3D __read_swap_cache_async(entry, GFP_KERNEL,
+> -                       NULL, 0, &page_was_allocated);
+> -       if (page_was_allocated)
+> -               return ZSWAP_SWAPCACHE_NEW;
+> -       if (!*retpage)
+> -               return ZSWAP_SWAPCACHE_FAIL;
+> -       return ZSWAP_SWAPCACHE_EXIST;
+> -}
+> -
+>  /*
+>   * Attempts to free an entry by adding a page to the swap cache,
+>   * decompressing the entry data into the page, and issuing a
+> @@ -1073,7 +1036,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>         struct scatterlist input, output;
+>         struct crypto_acomp_ctx *acomp_ctx;
+>         struct zpool *pool =3D entry->pool->zpool;
+> -
+> +       bool page_was_allocated;
+>         u8 *src, *tmp =3D NULL;
+>         unsigned int dlen;
+>         int ret;
+> @@ -1088,65 +1051,66 @@ static int zswap_writeback_entry(struct zswap_ent=
+ry *entry,
+>         }
+>
+>         /* try to allocate swap cache page */
+> -       switch (zswap_get_swap_cache_page(swpentry, &page)) {
+> -       case ZSWAP_SWAPCACHE_FAIL: /* no memory or invalidate happened */
+> +       page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, NULL, 0,
+> +                                      &page_was_allocated);
+> +       if (!page) {
+>                 ret =3D -ENOMEM;
+>                 goto fail;
+> +       }
+>
+> -       case ZSWAP_SWAPCACHE_EXIST:
+> -               /* page is already in the swap cache, ignore for now */
+> +       /* Found an existing page, we raced with load/swapin */
+> +       if (!page_was_allocated) {
+>                 put_page(page);
+>                 ret =3D -EEXIST;
+>                 goto fail;
+> +       }
+>
+> -       case ZSWAP_SWAPCACHE_NEW: /* page is locked */
+> -               /*
+> -                * Having a local reference to the zswap entry doesn't ex=
+clude
+> -                * swapping from invalidating and recycling the swap slot=
+. Once
+> -                * the swapcache is secured against concurrent swapping t=
+o and
+> -                * from the slot, recheck that the entry is still current=
+ before
+> -                * writing.
+> -                */
+> -               spin_lock(&tree->lock);
+> -               if (zswap_rb_search(&tree->rbroot, swp_offset(entry->swpe=
+ntry)) !=3D entry) {
+> -                       spin_unlock(&tree->lock);
+> -                       delete_from_swap_cache(page_folio(page));
+> -                       ret =3D -ENOMEM;
+> -                       goto fail;
+> -               }
+> +       /*
+> +        * Page is locked, and the swapcache is now secured against
+> +        * concurrent swapping to and from the slot. Verify that the
+> +        * swap entry hasn't been invalidated and recycled behind our
+> +        * backs (our zswap_entry reference doesn't prevent that), to
+> +        * avoid overwriting a new swap page with old compressed data.
+> +        */
+> +       spin_lock(&tree->lock);
+> +       if (zswap_rb_search(&tree->rbroot, swp_offset(entry->swpentry)) !=
+=3D entry) {
+>                 spin_unlock(&tree->lock);
+> +               delete_from_swap_cache(page_folio(page));
+> +               ret =3D -ENOMEM;
+> +               goto fail;
+> +       }
+> +       spin_unlock(&tree->lock);
+>
+> -               /* decompress */
+> -               acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> -               dlen =3D PAGE_SIZE;
+> +       /* decompress */
+> +       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> +       dlen =3D PAGE_SIZE;
+>
+> -               src =3D zpool_map_handle(pool, entry->handle, ZPOOL_MM_RO=
+);
+> -               if (!zpool_can_sleep_mapped(pool)) {
+> -                       memcpy(tmp, src, entry->length);
+> -                       src =3D tmp;
+> -                       zpool_unmap_handle(pool, entry->handle);
+> -               }
+> +       src =3D zpool_map_handle(pool, entry->handle, ZPOOL_MM_RO);
+> +       if (!zpool_can_sleep_mapped(pool)) {
+> +               memcpy(tmp, src, entry->length);
+> +               src =3D tmp;
+> +               zpool_unmap_handle(pool, entry->handle);
+> +       }
+>
+> -               mutex_lock(acomp_ctx->mutex);
+> -               sg_init_one(&input, src, entry->length);
+> -               sg_init_table(&output, 1);
+> -               sg_set_page(&output, page, PAGE_SIZE, 0);
+> -               acomp_request_set_params(acomp_ctx->req, &input, &output,=
+ entry->length, dlen);
+> -               ret =3D crypto_wait_req(crypto_acomp_decompress(acomp_ctx=
+->req), &acomp_ctx->wait);
+> -               dlen =3D acomp_ctx->req->dlen;
+> -               mutex_unlock(acomp_ctx->mutex);
+> -
+> -               if (!zpool_can_sleep_mapped(pool))
+> -                       kfree(tmp);
+> -               else
+> -                       zpool_unmap_handle(pool, entry->handle);
+> +       mutex_lock(acomp_ctx->mutex);
+> +       sg_init_one(&input, src, entry->length);
+> +       sg_init_table(&output, 1);
+> +       sg_set_page(&output, page, PAGE_SIZE, 0);
+> +       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->=
+length, dlen);
+> +       ret =3D crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), =
+&acomp_ctx->wait);
+> +       dlen =3D acomp_ctx->req->dlen;
+> +       mutex_unlock(acomp_ctx->mutex);
+> +
+> +       if (!zpool_can_sleep_mapped(pool))
+> +               kfree(tmp);
+> +       else
+> +               zpool_unmap_handle(pool, entry->handle);
+>
+> -               BUG_ON(ret);
+> -               BUG_ON(dlen !=3D PAGE_SIZE);
+> +       BUG_ON(ret);
+> +       BUG_ON(dlen !=3D PAGE_SIZE);
+>
+> -               /* page is up to date */
+> -               SetPageUptodate(page);
+> -       }
+> +       /* page is up to date */
+> +       SetPageUptodate(page);
+>
+>         /* move it to the tail of the inactive list after end_writeback *=
+/
+>         SetPageReclaim(page);
+> @@ -1157,16 +1121,16 @@ static int zswap_writeback_entry(struct zswap_ent=
+ry *entry,
+>         zswap_written_back_pages++;
+>
+>         return ret;
+> +
+>  fail:
+>         if (!zpool_can_sleep_mapped(pool))
+>                 kfree(tmp);
+>
+>         /*
+> -       * if we get here due to ZSWAP_SWAPCACHE_EXIST
+> -       * a load may be happening concurrently.
+> -       * it is safe and okay to not free the entry.
+> -       * it is also okay to return !0
+> -       */
+> +        * If we get here because the page is already in swapcache, a
+> +        * load may be happening concurrently. It is safe and okay to
+> +        * not free the entry. It is also okay to return !0.
+> +        */
+>         return ret;
+>  }
+>
+> --
+> 2.41.0
+>
