@@ -2,52 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6040776498C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB1C76498E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbjG0H5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S233052AbjG0H5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232432AbjG0H4X (ORCPT
+        with ESMTP id S232433AbjG0H4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:56:23 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4190122;
-        Thu, 27 Jul 2023 00:53:56 -0700 (PDT)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBNGv5Hd1zNmXN;
-        Thu, 27 Jul 2023 15:50:31 +0800 (CST)
-Received: from [10.67.102.17] (10.67.102.17) by kwepemi500006.china.huawei.com
- (7.221.188.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
- 2023 15:53:54 +0800
-Message-ID: <f5d61a2b-ed36-1048-4ea9-e789550232d9@hisilicon.com>
-Date:   Thu, 27 Jul 2023 15:53:54 +0800
+        Thu, 27 Jul 2023 03:56:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836AF9B;
+        Thu, 27 Jul 2023 00:54:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1335A61D95;
+        Thu, 27 Jul 2023 07:54:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1434EC433C7;
+        Thu, 27 Jul 2023 07:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690444440;
+        bh=N4vD5j/AWTskadRXxiH3iN9/rRLw1xJvEc+0YLJvx8U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m+ao2uFgcShr6jnD/bBgFiLj0mFMLOdwcj2dj1/w+jGR4Bu9NGX2MwMrGZ/zJ/3mq
+         O86ypdhEOvfgOUl+2VGAt44TviqCUlHpLwDv5uMe8bVhdORFDDzB26HFN356gYnYxx
+         5rRIofqncHudt0bO6kSxlz8jsV+L9DtR4Bp/EMmaHNpk0jq9uYrACx+Sz9ilqqFr4k
+         BasN2UO+iMZBhocwQq7HqwF4TB20ciGb7RjKqLcScb5Cswg3A5todAM20llwGaSaYJ
+         0g0Snm/d6lFMu5ukoubQtfRALvL/pLSLIrQXXyG9FByaZBmq5FpGEz6cqi5u4qlOve
+         YBVMx4AvmE+kA==
+Date:   Thu, 27 Jul 2023 08:53:55 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230727-briskness-sappy-e2d9e4c1ef36@spud>
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+ <20230726-outclass-parade-2ccea9f6688a@spud>
+ <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
+ <20230726-armchair-evasive-427dd245a9fe@spud>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
- <20230724111938.GB9776@unreal>
- <01d762f7-6388-9539-68ee-5425b4d56e58@hisilicon.com>
- <20230727065820.GZ11388@unreal>
-Content-Language: en-US
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20230727065820.GZ11388@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.17]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dEwon71W2kG8wE2d"
+Content-Disposition: inline
+In-Reply-To: <20230726-armchair-evasive-427dd245a9fe@spud>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,85 +67,112 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--dEwon71W2kG8wE2d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/7/27 14:58, Leon Romanovsky wrote:
-> On Thu, Jul 27, 2023 at 11:44:50AM +0800, Junxian Huang wrote:
->>
->>
->> On 2023/7/24 19:19, Leon Romanovsky wrote:
->>> On Fri, Jul 21, 2023 at 05:20:52PM +0800, Junxian Huang wrote:
->>>> From: Haoyue Xu <xuhaoyue1@hisilicon.com>
->>>>
->>>> Previously, there was no way to query the number of lanes for a network
->>>> card, so the same netdev_speed would result in a fixed pair of width and
->>>> speed. As network card specifications become more diverse, such fixed
->>>> mode is no longer suitable, so a method is needed to obtain the correct
->>>> width and speed based on the number of lanes.
->>>>
->>>> This patch retrieves netdev lanes and speed from net_device and
->>>> translates them to IB width and speed.
->>>>
->>>> Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
->>>> Signed-off-by: Luoyouming <luoyouming@huawei.com>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/core/verbs.c | 100 +++++++++++++++++++++++++-------
->>>>  1 file changed, 79 insertions(+), 21 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
->>>> index b99b3cc283b6..25367bd6dd97 100644
->>>> --- a/drivers/infiniband/core/verbs.c
->>>> +++ b/drivers/infiniband/core/verbs.c
->>>> @@ -1880,6 +1880,80 @@ int ib_modify_qp_with_udata(struct ib_qp *ib_qp, struct ib_qp_attr *attr,
->>>>  }
->>>>  EXPORT_SYMBOL(ib_modify_qp_with_udata);
->>>>  
->>>> +static void ib_get_width_and_speed(u32 netdev_speed, u32 lanes,
->>>> +				   u16 *speed, u8 *width)
->>>
->>> <...>
->>>
->>>> +	switch (netdev_speed / lanes) {
->>>> +	case SPEED_2500:
->>>> +		*speed = IB_SPEED_SDR;
->>>> +		break;
->>>> +	case SPEED_5000:
->>>> +		*speed = IB_SPEED_DDR;
->>>> +		break;
->>>> +	case SPEED_10000:
->>>> +		*speed = IB_SPEED_FDR10;
->>>> +		break;
->>>> +	case SPEED_14000:
->>>> +		*speed = IB_SPEED_FDR;
->>>> +		break;
->>>> +	case SPEED_25000:
->>>> +		*speed = IB_SPEED_EDR;
->>>> +		break;
->>>> +	case SPEED_50000:
->>>> +		*speed = IB_SPEED_HDR;
->>>> +		break;
->>>> +	case SPEED_100000:
->>>> +		*speed = IB_SPEED_NDR;
->>>> +		break;
->>>> +	default:
->>>> +		*speed = IB_SPEED_SDR;
->>>> +	}
->>>
->>> How did you come to these translation values?
->>>
->>> Thanks
->>
->> The IB spec defines the mapping relationship between IB speed and transfer
->> rate. For example, if the transfer rate of is 2.5Gbps(SPEED_2500), the IB
->> speed will be set to IB_SPEED_SDR.
-> 
-> Are you referring to "Table 250 - Enumeration of the Rate"?
-> 
-> Thanks
-> 
->>
->> Junxian
+On Wed, Jul 26, 2023 at 08:41:55PM +0100, Conor Dooley wrote:
+> On Thu, Jul 27, 2023 at 03:34:16AM +0800, Mingzheng Xing wrote:
+> > On 7/27/23 02:02, Conor Dooley wrote:
+>=20
+> > > This is still broken for:
+> > > CONFIG_CLANG_VERSION=3D0
+> > > CONFIG_AS_IS_GNU=3Dy
+> > > CONFIG_AS_VERSION=3D23500
+> > > CONFIG_LD_IS_BFD=3Dy
+> > > CONFIG_LD_VERSION=3D23500
+> >=20
+> > Do you mean that these CONFIG_* will cause kernel
+> > compilation errors when paired with certain versions of GCC?
+> > Or perhaps I misunderstood your meaning.
+>=20
+> No, this section is generated by kconfig, although I messed up my
+> trimming of the list & accidentally removed the gcc version, rather
+> than the clang version. Here's the full thing:
+>=20
+> CONFIG_CC_VERSION_TEXT=3D"riscv64-unknown-linux-gnu-gcc (g2ee5e430018) 12=
+=2E2.0"
+> CONFIG_CC_IS_GCC=3Dy
+> CONFIG_GCC_VERSION=3D120200
+> CONFIG_CLANG_VERSION=3D0
+> CONFIG_AS_IS_GNU=3Dy
+> CONFIG_AS_VERSION=3D23500
+> CONFIG_LD_IS_BFD=3Dy
+> CONFIG_LD_VERSION=3D23500
+> CONFIG_LLD_VERSION=3D0
+> CONFIG_CC_CAN_LINK=3Dy
+> CONFIG_CC_CAN_LINK_STATIC=3Dy
+> CONFIG_CC_HAS_ASM_GOTO_OUTPUT=3Dy
+> CONFIG_CC_HAS_ASM_GOTO_TIED_OUTPUT=3Dy
+> CONFIG_CC_HAS_ASM_INLINE=3Dy
+> CONFIG_CC_HAS_NO_PROFILE_FN_ATTR=3Dy
+> CONFIG_PAHOLE_VERSION=3D0
+> CONFIG_CONSTRUCTORS=3Dy
+> CONFIG_IRQ_WORK=3Dy
+> CONFIG_BUILDTIME_TABLE_SORT=3Dy
 
-Yes.
+I think this should sort things out for the even-older binutils case. I
+took the opportunity to fix some grammatical issues that seem to have
+snuck into the help text in your patch & to drop the \, since the
+depends on fits in one line.
 
-Junxian
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index e1b66ee88323..2d0d89213c97 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -571,25 +571,27 @@ config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+ 	def_bool y
+ 	# https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed4428=
+6efa8ae8717a77d94b51ac3614e2ca6dc
+ 	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579d4a7=
+a4a76bab51b5b52fec2cd
+-	depends on GCC_VERSION >=3D 120100 || (AS_IS_GNU && AS_VERSION >=3D 23800)
++	depends on AS_IS_GNU
++	depends on (GCC_VERSION >=3D 120100 && AS_VERSION >=3D 23600) || AS_VERSI=
+ON >=3D 23800
+ 	help
+-	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
++	  Binutils-2.38 and GCC-12.1.0 bump the default ISA spec to version
+ 	  20191213 which moves some instructions from the I extension to the
+-	  Zicsr and Zifencei extensions.
++	  Zicsr and Zifencei extensions. On the other hand, Binutils prior to
++	  2.35 does not understand these arguments and will error if they are
++	  passed.
+=20
+ config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+ 	def_bool y
+ 	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+ 	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d449=
+8694e15bf8a16
+ 	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad08c382da4=
+7e048007a78fa3fb4ef49
+-	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
+-		   (CC_IS_GCC && GCC_VERSION < 110100)
++	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_V=
+ERSION < 110100)
+ 	help
+-	  Certain versions of clang (or GCC) do not support zicsr and zifencei via
++	  Certain versions of clang and GCC do not support zicsr and zifencei via
+ 	  -march but newer versions of binutils require it for the reasons noted
+ 	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+ 	  option causes an older ISA spec compatible with these older versions
+-	  of clang (or GCC) to be passed to GAS, which has the same result as
++	  of clang and GCC to be passed to GAS, which has the same result as
+ 	  passing zicsr and zifencei to -march.
+=20
+ config FPU
+
+
+--dEwon71W2kG8wE2d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMIikwAKCRB4tDGHoIJi
+0mJTAQCcVmPmrdY2nAX7oDB6KjPT6SR3RrzjqiuOt7KYjgKgwgEAm67Q03vVDHxp
+3ehmCH7U3lO1Yol4wFTLp9UNPt9cWw8=
+=byRz
+-----END PGP SIGNATURE-----
+
+--dEwon71W2kG8wE2d--
