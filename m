@@ -2,243 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D054765D62
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8431765D5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbjG0UbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
+        id S231280AbjG0Uaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjG0UbR (ORCPT
+        with ESMTP id S231421AbjG0Uaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:31:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B4C2688
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690489830;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AuxACaLiBeZZ2plyxBG2ZphRqj/+K7EVaUkCF5E72Uk=;
-        b=TXdqxj556hIQReAX8Io5G5dtm83wst1ubQym8sjxCYZxNE6s8Al8TZ5cJDd16d+xDPiqyb
-        mT4a3S6irjkEgzDHJnoejxaD3CUBE4CiF9+AiYp5iH/nKlJR+g2SiFx5sIJjRWsFXvBHqr
-        ug6VkUhDNI7jPuIs1aCtq+dKkFckXBk=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-682-3b9fZzLaPvSZSZ9daSXJow-1; Thu, 27 Jul 2023 16:30:28 -0400
-X-MC-Unique: 3b9fZzLaPvSZSZ9daSXJow-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63cc3a44aedso3417726d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690489828; x=1691094628;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AuxACaLiBeZZ2plyxBG2ZphRqj/+K7EVaUkCF5E72Uk=;
-        b=j1ziU0RmTIlr3yOE5mtd/2fMYL93b2CAztIps5DhRQwFlEVJ8Sn/J0jtLyFIMw3i+s
-         9jCj5Kn2Hwd8vK3R3BwCpyn5xoGN4dX7lQcEaxiTfPhR9Cax8ykLa8LBzhUtfPPxGexZ
-         Zl3QjHCrDhl+VK6jSEjZ5bYQsuGEfXvXAaoRZcPg/woPdC/nZ0YEAdTT08l2F+So51Im
-         fqavfq9nkpSTaxWI0g8lcod5nwqyoLpof0kkyBudMZItVdbzOevpyy/wbSsJR/Afg41o
-         /lQs79SmeFw27qzUN92mAeJF++8IUvmhQ8NBYNlF/BqP7puXdegaSqB5zMs1p7AMwG7a
-         RGQA==
-X-Gm-Message-State: ABy/qLYn5eTaCO4arM4G/CvwGfma7X/MNVyzqFjoDJeNjllNQWmczZ0a
-        QHIknGDrUBfnkFM/ZF0tzgDzmCn2Bbp7VVMP6pcBlsgmNQ7hLfRZRj70WOJsMhIuVy+KnKIivHa
-        Ai53dzeqGXGkIPzA1qpLLHKDv
-X-Received: by 2002:a05:6214:5199:b0:621:65de:f60c with SMTP id kl25-20020a056214519900b0062165def60cmr528116qvb.3.1690489828023;
-        Thu, 27 Jul 2023 13:30:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEwAq1H9Am2PHeCbRrVcdzYzTz5Q+S34HkYrd4o7DwHgFLizyaB4rVJvw/NpwLKHXexx5kqig==
-X-Received: by 2002:a05:6214:5199:b0:621:65de:f60c with SMTP id kl25-20020a056214519900b0062165def60cmr528101qvb.3.1690489827673;
-        Thu, 27 Jul 2023 13:30:27 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id h13-20020a0cab0d000000b00635eeb8a4fcsm668775qvb.114.2023.07.27.13.30.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 13:30:27 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 16:30:25 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     liubo <liubo254@huawei.com>, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hughd@google.com, willy@infradead.org
-Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
- through /proc/pid/smaps
-Message-ID: <ZMLT4aL9V61Bl5TG@x1n>
-References: <20230726073409.631838-1-liubo254@huawei.com>
- <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
- <ZMJt+VWzIG4GAjeb@x1n>
- <f49c2a51-4dd8-784b-57fa-34fb397db2b7@redhat.com>
- <ZMKJjDaqZ7FW0jfe@x1n>
- <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
- <ZMK+jSDgOmJKySTr@x1n>
- <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
+        Thu, 27 Jul 2023 16:30:52 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37BB30E4;
+        Thu, 27 Jul 2023 13:30:42 -0700 (PDT)
+X-QQ-mid: bizesmtp89t1690489832t5sr73z5
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 28 Jul 2023 04:30:31 +0800 (CST)
+X-QQ-SSF: 01200000000000D0X000000A0000000
+X-QQ-FEAT: pmyeiOl6PGn82x4eFXPNEITOuWWU+TvnNm56XXJBynRue1cBZR4uW6sldlrWd
+        4avjCims+5xy9Qf/PYidPSKOOcbnAkxppQvdPEejuwpc4PM6jyWFcyZTUuDqVJdJ5JmoooI
+        jL/XkwNL1y1hjcw8FyqydaCs4yicA/VuDE3SFw6wgCvkTXIyWQZt4DRiLIMNPr6eEUD+m72
+        f+xek+riwnuTGiwPrYymmfQffQqEBn7xLjaQbhA9sfEOtixwjGr0uWR3dBgWyKcpPJduAeb
+        K2hMuJGt0tN6UMAuv3o32/8NH0U0c6Xm8snJ0+XJly6iTA9nuPqlwdvO8mQAPAd/qr53uSM
+        1WulUhXMoKeKR1ocG/O6MNH8ckx1LbDykelL+Evnc/anK0xbMA1VPoKqamurc2uMWMOEz1E
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6404872216917566907
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de, w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 08/12] selftests/nolibc: allow quit qemu-system when poweroff fails
+Date:   Fri, 28 Jul 2023 04:30:31 +0800
+Message-Id: <4b4d792299ca5356f8f5af5fc9a27c687b0e4e38.1690489039.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690489039.git.falcon@tinylab.org>
+References: <cover.1690489039.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:17:45PM +0200, David Hildenbrand wrote:
-> On 27.07.23 20:59, Peter Xu wrote:
-> > On Thu, Jul 27, 2023 at 07:27:02PM +0200, David Hildenbrand wrote:
-> > > > > 
-> > > > > This was wrong from the very start. If we're not in GUP, we shouldn't call
-> > > > > GUP functions.
-> > > > 
-> > > > My understanding is !GET && !PIN is also called gup.. otherwise we don't
-> > > > need GET and it can just be always implied.
-> > > 
-> > > That's not the point. The point is that _arbitrary_ code shouldn't call into
-> > > GUP internal helper functions, where they bypass, for example, any sanity
-> > > checks.
-> > 
-> > What's the sanity checks that you're referring to?
-> > 
-> 
-> For example in follow_page()
-> 
-> if (vma_is_secretmem(vma))
-> 	return NULL;
-> 
-> if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
-> 	return NULL;
-> 
-> 
-> Maybe you can elaborate why you think we should *not* be using
-> vm_normal_page_pmd() and instead some arbitrary GUP internal helper? I don't
-> get it.
+The kernel of some architectures can not poweroff qemu-system normally,
+especially for tinyconfig.
 
-Because the old code was written like that?
+Some architectures may have no kernel poweroff support, the others may
+require more kernel config options and therefore slow down the
+tinyconfig build and test. and also, it's very hard (and some even not
+possible) to find out the exact poweroff related kernel config options
+for every architecture.
 
-You're proposing to change it here.  Again, I'm fine with the change, but
-please don't ask me to justify why the original code is fine.. because I
-simply don't see anything majorly wrong with either, it's the change that
-needs justification, not keeping it as-is (since Kirill wrote it in 2014).
+Since the low-level poweroff support is heavily kernel & qemu dependent,
+it is not that critical to both nolibc and nolibc-test, let's simply
+ignore the poweroff required kernel config options for tinyconfig (and
+even for defconfig) and quit qemu-system after a specified timeout or
+with an expected system halt or poweroff string (these strings mean our
+reboot() library routine is perfectly ok).
 
-Well.. I feel like this becomes less helpful to discuss. let's try to move
-on.
+QEMU_TIMEOUT can be configured for every architecture based on their
+time cost requirement of bios boot + kernel boot + test + poweroff.
 
-> 
-> > > 
-> > > > 
-> > > > The other proof is try_grab_page() doesn't fail hard on !GET && !PIN.  So I
-> > > > don't know whether that's "wrong" to be used..
-> > > > 
-> > > 
-> > > To me, that is arbitrary code using a GUP internal helper and, therefore,
-> > > wrong.
-> > > 
-> > > > Back to the topic: I'd say either of the patches look good to solve the
-> > > > problem.  If p2pdma pages are mapped as PFNMAP/MIXEDMAP (?), I guess
-> > > > vm_normal_page_pmd() proposed here will also work on it, so nothing I see
-> > > > wrong on 2nd one yet.
-> > > > 
-> > > > It looks nicer indeed to not have FOLL_FORCE here, but it also makes me
-> > > > just wonder whether we should document NUMA behavior for FOLL_* somewhere,
-> > > > because we have an implication right now on !FOLL_FORCE over NUMA, which is
-> > > > not obvious to me..
-> > > 
-> > > Yes, we probably should. For get_use_pages() and friends that behavior was
-> > > always like that and it makes sense: usually it represent application
-> > > behavior.
-> > > 
-> > > > 
-> > > > And to look more over that aspect, see follow_page(): previously we can
-> > > > follow a page for protnone (as it never applies FOLL_NUMA) but now it won't
-> > > > (it never applies FOLL_FORCE, either, so it seems "accidentally" implies
-> > > > FOLL_NUMA now).  Not sure whether it's intended, though..
-> > > 
-> > > That was certainly an oversight, thanks for spotting that. That patch was
-> > > not supposed to change semantics:
-> > > 
-> > > diff --git a/mm/gup.c b/mm/gup.c
-> > > index 76d222ccc3ff..ac926e19ff72 100644
-> > > --- a/mm/gup.c
-> > > +++ b/mm/gup.c
-> > > @@ -851,6 +851,13 @@ struct page *follow_page(struct vm_area_struct *vma,
-> > > unsigned long address,
-> > >          if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
-> > >                  return NULL;
-> > > 
-> > > +       /*
-> > > +        * In contrast to get_user_pages() and friends, we don't want to
-> > > +        * fail if the PTE is PROT_NONE: see gup_can_follow_protnone().
-> > > +        */
-> > > +       if (!(foll_flags & FOLL_WRITE))
-> > > +               foll_flags |= FOLL_FORCE;
-> > > +
-> > >          page = follow_page_mask(vma, address, foll_flags, &ctx);
-> > >          if (ctx.pgmap)
-> > >                  put_dev_pagemap(ctx.pgmap);
-> > 
-> > This seems to be slightly against your other solution though for smaps,
-> > where we want to avoid abusing FOLL_FORCE.. isn't it..
-> 
-> This is GUP internal, not some arbitrary code, so to me a *completely*
-> different discussion.
-> 
-> > 
-> > Why read only?  That'll always attach FOLL_FORCE to all follow page call
-> > sites indeed for now, but just curious - logically "I want to fetch the
-> > page even if protnone" is orthogonal to do with write permission here to
-> > me.
-> 
-> Historical these were not the semantics, so I won't change them.
-> 
-> FOLL_FORCE | FOLL_WRITE always had a special taste to it (COW ...).
-> 
-> > 
-> > I still worry about further abuse of FOLL_FORCE, I believe you also worry
-> > that so you proposed the other way for the smaps issue.
-> > 
-> > Do you think we can just revive FOLL_NUMA?  That'll be very clear to me
-> > from that aspect that we do still have valid use cases for it.
-> 
-> FOLL_NUMA naming was nowadays wrong to begin with (not to mention, confusing
-> a we learned). There are other reasons why we have PROT_NONE -- mprotect(),
-> for example.
+By default, 10 seconds timeout is configured, this is enough for most of
+the architectures, otherwise, customize one by architecture.
 
-It doesn't really violate with the name, IMHO - protnone can be either numa
-hint or PROT_NONE for real. As long as we return NULL for a FOLL_NUMA
-request we're achieving the goal we want - we guarantee a NUMA balancing to
-trigger with when FOLL_NUMA provided.  It doesn't need to guarantee
-anything else, afaiu.  The final check relies in vma_is_accessible() in the
-fault paths anyway.  So I don't blame the old name that much.
+To tell users the test running progress in time, some critical running
+status are also printed and detected.
 
-> 
-> We could have a flag that goes the other way around: FOLL_IGNORE_PROTNONE
-> ... which surprisingly then ends up being exactly what FOLL_FORCE means
-> without FOLL_WRITE, and what this patch does.
-> 
-> Does that make sense to you?
-> 
-> 
-> > 
-> > The very least is if with above we should really document FOLL_FORCE - we
-> > should mention NUMA effects.  But that's ... really confusing. Thinking
-> > about that I personally prefer a revival of FOLL_NUMA, then smaps issue all
-> > go away.
-> 
-> smaps needs to be changed in any case IMHO. And I'm absolutely not in favor
-> of revicing FOLL_NUMA.
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230722130248.GK17311@1wt.eu/
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 30 +++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-As stated above, to me FOLL_NUMA is all fine and clear.  If you think
-having a flag back for protnone is worthwhile no matter as-is (FOLL_NUMA)
-or with reverted meaning, then that sounds all fine to me. Maybe the old
-name at least makes old developers know what's that.
-
-I don't have a strong opinion on names though; mostly never had.
-
-Thanks,
-
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index a214745e0f3e..9a57de3b283c 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -105,6 +105,9 @@ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
+ 
++# QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
++QEMU_TIMEOUT           = $(or $(QEMU_TIMEOUT_$(XARCH)),10)
++
+ # OUTPUT is only set when run from the main makefile, otherwise
+ # it defaults to this nolibc directory.
+ OUTPUT ?= $(CURDIR)/
+@@ -229,16 +232,39 @@ kernel: $(KERNEL_CONFIG)
+ # common macros for qemu run/rerun targets
+ QEMU_SYSTEM_RUN = qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(KERNEL_IMAGE)" -serial stdio $(QEMU_ARGS)
+ 
++TIMEOUT_CMD = t=$(QEMU_TIMEOUT); past=0; \
++	bios_timeout=$$(expr $$t - 7); kernel_timeout=$$(expr $$t - 5); init_timeout=$$(expr $$t - 3); test_timeout=$$(expr $$t - 1);              \
++	err=""; bios=0; kernel=0; init=0; test=0; poweredoff=0; panic=0;                                                                           \
++	echo "Running $(KERNEL_IMAGE) on qemu-system-$(QEMU_ARCH)";                                                                                \
++	while [ $$t -gt 0 ]; do                                                                                                                    \
++	    sleep 2; t=$$(expr $$t - 2); past=$$(expr $$past + 2);                                                                                 \
++	    if [ $$bios -eq 0 ] && grep -E "Linux version|Kernel command line|printk: console" "$(RUN_OUT)"; then bios=1; fi;                      \
++	    if [ $$bios -eq 1 -a $$kernel -eq 0 ] && grep -E "Run .* as init process" "$(RUN_OUT)"; then kernel=1; fi;                             \
++	    if [ $$kernel -eq 1 -a $$init -eq 0 ] && grep -E "Running test" "$(RUN_OUT)"; then init=1; fi;                                         \
++	    if [ $$init -eq 1 -a $$test -eq 0 ] && grep -E "Leaving init with final status|Exiting with status" "$(RUN_OUT)"; then test=1; fi;     \
++	    if [ $$init -eq 1 ] && grep -E "Kernel panic - not syncing: Attempted to kill init" "$(RUN_OUT)"; then err="test"; sleep 1; break; fi; \
++	    if [ $$test -eq 1 ] && grep -E "reboot: System halted|reboot: Power down" "$(RUN_OUT)"; then poweredoff=1; sleep 1; break; fi;         \
++	    if [ $$past -gt $$bios_timeout -a $$bios -eq 0 ]; then err="bios"; break; fi;                                                          \
++	    if [ $$past -gt $$kernel_timeout -a $$kernel -eq 0 ]; then err="kernel"; break; fi;                                                    \
++	    if [ $$past -gt $$init_timeout -a $$init -eq 0 ]; then err="init"; break; fi;                                                          \
++	    if [ $$past -gt $$test_timeout -a $$test -eq 0 ]; then err="test"; break; fi;                                                          \
++	done;                                                                                                                                      \
++	if [ -z "$$err" -a $$poweredoff -eq 0 -a $$panic -eq 0 ]; then err="qemu-system-$(QEMU_ARCH)"; fi;                                         \
++	if [ -n "$$err" ]; then echo "$$err may timeout, test failed"; tail -10 $(RUN_OUT); else echo "powered off, test finish"; fi;              \
++	pkill -15 qemu-system-$(QEMU_ARCH) || true
++
++TIMEOUT_QEMU_RUN = ($(QEMU_SYSTEM_RUN) > "$(RUN_OUT)" &); $(TIMEOUT_CMD)
++
+ # run the tests after building the kernel
+ PHONY += $(KERNEL_IMAGE)
+ $(KERNEL_IMAGE): kernel
+ run: $(KERNEL_IMAGE)
+-	$(Q)$(QEMU_SYSTEM_RUN) > "$(RUN_OUT)"
++	$(Q)$(TIMEOUT_QEMU_RUN)
+ 	$(Q)$(REPORT) "$(RUN_OUT)"
+ 
+ # re-run the tests from an existing kernel
+ rerun:
+-	$(Q)$(QEMU_SYSTEM_RUN) > "$(RUN_OUT)"
++	$(Q)$(TIMEOUT_QEMU_RUN)
+ 	$(Q)$(REPORT) "$(RUN_OUT)"
+ 
+ # report with existing test log
 -- 
-Peter Xu
+2.25.1
 
