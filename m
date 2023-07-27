@@ -2,172 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2163F764DA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FF1764DF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbjG0IhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        id S233398AbjG0IqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234466AbjG0Ign (ORCPT
+        with ESMTP id S233195AbjG0Ipw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:36:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A4A30D3;
-        Thu, 27 Jul 2023 01:20:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DE8861D98;
-        Thu, 27 Jul 2023 08:20:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5238C433C8;
-        Thu, 27 Jul 2023 08:20:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690446007;
-        bh=ZOrVyIMfU4XpSn7UdLHa8hRU7oEBnQJsIPlHeRvuFcU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EHBQpkdojMRAPtSSVOI2WRnZN/AvXm08ZGy/3AMvUkfeEDcPsrHPGTekUyW5fXJxJ
-         zdCTcLMIRhvFYCbBMh4fLTN/Splo6c8g7EpZUzV+kc3CWBEA9+e87aztnL7Pnando+
-         pwIu0dDAaTMZGUJpqT7v9ut6SYL3i3U0Lok2Ul2QmbFjy/c+qomP7DFNMWOB3UHcT+
-         W/OUOtWHyqFJfluyEgawYuM9loJtKVM7uM3V+VQ0I9nzojooaE7vyShQC2nj6AT86L
-         oYjCYV5xUeE+UK2ny6qdJMEbyR0c7Mfu2nsJKb4l9IqecATQzsXax4HK0eXNkTiSJ0
-         dqlMmnFwcjcow==
-Date:   Thu, 27 Jul 2023 09:19:59 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 05/28] dt-bindings: net: Add support for QMC HDLC
-Message-ID: <20230727-talcum-backside-5bdbe2171fb6@spud>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-6-herve.codina@bootlin.com>
+        Thu, 27 Jul 2023 04:45:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442EB83CC
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690446438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RGeV47pO7s8gps9ksu/4+lDYD8FHRHT3YEWZYPUU9kM=;
+        b=N2tcRLMao8GCSz3YHJm/KILK4kuQLXceKHs8MkcCfl1Epwdqsk8Nm7T2TZ4oXtxu55u0u1
+        8zwAQ7NfTksHYMiFt2YNjNPtiLfRv6Qb8GIn/UiTOHvzYa3+LfyUYV5wri5inroI6p3Jv2
+        ryJGILZfJIoDADj4VBUjw6ch+qpX9XQ=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-296-6oNo8XWcMt2fZDwVQhUQAA-1; Thu, 27 Jul 2023 04:21:13 -0400
+X-MC-Unique: 6oNo8XWcMt2fZDwVQhUQAA-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-767b80384a3so16379285a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:21:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690446073; x=1691050873;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RGeV47pO7s8gps9ksu/4+lDYD8FHRHT3YEWZYPUU9kM=;
+        b=bT0zKYWGngcN15M4dd2fR/hBwFhWS47QY8XbMExkW5GWmFOgTexSoJxBvmIZXEclWD
+         haVS5bwd3kn+k+2FKrsH7BYmeYJQcomve+/H/vMQmatXXxe/tAN4o50JZjotfaGXUCKy
+         nNVyOU00gOgxQ2kMP3OEQbAjNgcbR87Xp2jV4mjNIKP8kUigeX4A8OT1vhRi3e5eqgdm
+         Xu8JkIWYJnfOAYXOBYGnTQ1uLgl2MZLzOdNzjrDoA2UPL0eBVb4VrB/XHrIsj3s6dDS1
+         qxjE4FFoZLJ7vzVKWpwcSP61yu4ENEluTu+MymOsO8ltGplhJYsaGjSuYeR60MMSSu55
+         t9WA==
+X-Gm-Message-State: ABy/qLaqA+7BV1+J2y3aeFPWHseRBR2nInWwmd5unTgCz1j5M/0vQo4O
+        Ts8vjgcOJf+S+qBYAOt5Fky3SoimegnVhCORrytdpzNS5RHDlmjqB5PnCVtPZEFM0jZ5jCS9jrX
+        SRYoOg6YTxR9eUo5CcHWoVsMI
+X-Received: by 2002:a05:620a:31a1:b0:75b:23a1:69ee with SMTP id bi33-20020a05620a31a100b0075b23a169eemr4576177qkb.5.1690446073024;
+        Thu, 27 Jul 2023 01:21:13 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHs3zPOBeUj9ojGrgUE/X3gQH8r73DGALfDrJ+7Y3EtRQm+q4OZUXkV2TRkziNvYTa7JtMfZA==
+X-Received: by 2002:a05:620a:31a1:b0:75b:23a1:69ee with SMTP id bi33-20020a05620a31a100b0075b23a169eemr4576160qkb.5.1690446072769;
+        Thu, 27 Jul 2023 01:21:12 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-238-55.dyn.eolo.it. [146.241.238.55])
+        by smtp.gmail.com with ESMTPSA id j4-20020a05620a000400b00767d8663b3asm253886qki.53.2023.07.27.01.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 01:21:12 -0700 (PDT)
+Message-ID: <9cfa70cca3cb1dd20bb2cab70a213e5a4dd28f89.camel@redhat.com>
+Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>, Zheng Wang <zyytlz.wz@163.com>
+Cc:     s.shtylyov@omp.ru, lee@kernel.org, linyunsheng@huawei.com,
+        davem@davemloft.net, edumazet@google.com, richardcochran@gmail.com,
+        p.zabel@pengutronix.de, geert+renesas@glider.be,
+        magnus.damm@gmail.com, yoshihiro.shimoda.uh@renesas.com,
+        biju.das.jz@bp.renesas.com, wsa+renesas@sang-engineering.com,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hackerzheng666@gmail.com,
+        1395428693sheep@gmail.com, alex000young@gmail.com
+Date:   Thu, 27 Jul 2023 10:21:07 +0200
+In-Reply-To: <20230725201952.2f23bb3b@kernel.org>
+References: <20230725030026.1664873-1-zyytlz.wz@163.com>
+         <20230725201952.2f23bb3b@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DM6e+RDa3XBbMs9a"
-Content-Disposition: inline
-In-Reply-To: <20230726150225.483464-6-herve.codina@bootlin.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---DM6e+RDa3XBbMs9a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jul 26, 2023 at 05:02:01PM +0200, Herve Codina wrote:
-> The QMC (QUICC mutichannel controller) is a controller present in some
-> PowerQUICC SoC such as MPC885.
-> The QMC HDLC uses the QMC controller to transfer HDLC data.
+On Tue, 2023-07-25 at 20:19 -0700, Jakub Kicinski wrote:
+> On Tue, 25 Jul 2023 11:00:26 +0800 Zheng Wang wrote:
+> > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/eth=
+ernet/renesas/ravb_main.c
+> > index 4d6b3b7d6abb..ce2da5101e51 100644
+> > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > @@ -2885,6 +2885,9 @@ static int ravb_remove(struct platform_device *pd=
+ev)
+> >  	struct ravb_private *priv =3D netdev_priv(ndev);
+> >  	const struct ravb_hw_info *info =3D priv->info;
+> > =20
+> > +	netif_carrier_off(ndev);
+> > +	netif_tx_disable(ndev);
+> > +	cancel_work_sync(&priv->work);
 >=20
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  .../devicetree/bindings/net/fsl,qmc-hdlc.yaml | 41 +++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/fsl,qmc-hdlc.ya=
-ml
->=20
-> diff --git a/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml b/Do=
-cumentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-> new file mode 100644
-> index 000000000000..8bb6f34602d9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/fsl,qmc-hdlc.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/fsl,qmc-hdlc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: QMC HDLC
+> Still racy, the carrier can come back up after canceling the work.
 
-"QMC HDLC" seems excessively terse.
+I must admit I don't see how/when this driver sets the carrier on ?!?
 
-> +
-> +maintainers:
-> +  - Herve Codina <herve.codina@bootlin.com>
-> +
-> +description: |
-> +  The QMC HDLC uses a QMC (QUICC Multichannel Controller) channel to tra=
-nsfer
-> +  HDLC data.
-> +
-> +properties:
-> +  compatible:
-> +    const: fsl,qmc-hdlc
-> +
-> +  fsl,qmc-chan:
+> But whatever, this is a non-issue in the first place.
 
-Perhaps I am just showing my lack of knowledge in this area, but what is
-fsl specific about wanting a reference to the channel of a "QMC"?
-Is this something that hardware from other manufacturers would not also
-want to do?
+Do you mean the UaF can't happen? I think that is real.=20
 
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    items:
-> +      - items:
-> +          - description: phandle to QMC node
-> +          - description: Channel number
-> +    description:
-> +      Should be a phandle/number pair. The phandle to QMC node and the Q=
-MC
-> +      channel to use.
-> +
-> +required:
-> +  - compatible
-> +  - fsl,qmc-chan
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    hdlc {
-> +        compatible =3D "fsl,qmc-hdlc";
-> +        fsl,qmc-chan =3D <&qmc 16>;
-> +    };
-> --=20
-> 2.41.0
->=20
+> The fact that ravb_tx_timeout_work doesn't take any locks seems much
+> more suspicious.
 
---DM6e+RDa3XBbMs9a
-Content-Type: application/pgp-signature; name="signature.asc"
+Indeed! But that should be a different patch, right?
 
------BEGIN PGP SIGNATURE-----
+Waiting a little more for feedback from renesas.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMIorwAKCRB4tDGHoIJi
-0qkLAQC6sDWnGDv+x5El1pIJ5VwJJnPS/IZlV0Qs715IhJHxvwEAzt3hBjT6R02J
-luBI20Rzy9YB7KndWqGrmYR7rVtFKgk=
-=8ut0
------END PGP SIGNATURE-----
+/P
 
---DM6e+RDa3XBbMs9a--
