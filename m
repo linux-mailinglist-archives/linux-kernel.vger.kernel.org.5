@@ -2,173 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA3C76601B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D1F766023
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 01:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjG0XFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 19:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S231206AbjG0XIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 19:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjG0XFr (ORCPT
+        with ESMTP id S229552AbjG0XIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 19:05:47 -0400
+        Thu, 27 Jul 2023 19:08:38 -0400
 Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3396C30C5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 16:05:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AD030CD
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 16:08:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690499146; x=1722035146;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=kGZIs7MT6wwmmn5G7hHXAacyNdZlrE4JpExO8rJtWGc=;
-  b=La/LMKqkf1guXD43C21AZQ1hBM2wb4TLdk84V/ts6s6flIOrP7YJbV/n
-   vrhanKUePBmKDw/MW5NF2SqsBdRlm3HcmrUkiRojm2M79EQN4i9+yGAa/
-   9sLXTRET/8evIeAW02ziMGnCWgRh6FSL48ayxf096rehf9sapLTAJBLJw
-   ldDnKEq+06HRcWNI78DaMgkGRYrma3+KQj7qhKSH25QRibD4hsSCAUUDc
-   489QgVWUHND50l+TgeOAx33Fd/KiwnRkD6bKWPlLWtgptf9RSRN1ovLyw
-   uGcPYbf4QeWSGOq68TdxfwluzCNuoIUJukSMPSzpXhPQEf2quFT0dgqOW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348733414"
+  t=1690499314; x=1722035314;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1Pch5lpsDk+3w/CzZ1DNlF+ia3fZB4B7Zj+PnF+VAZc=;
+  b=eXx8WPFFZmzD4HsXguVOQ1qnBRowpuhg9XJH7dTaSotTBn57w4+7eqDp
+   kPT8mrJ55HL8by1ax3bztjc4vDxcEUJQSJAZKyLEWNazWMMyBjXxXot5S
+   U4MDlEJuhQ6TQxpLEknTdNBtO7oI0CAuqWthr3FannfVbLVjjJuDOaQKg
+   WfzND4hsxGAHjQrJdNacyryJc+Zfmk7vGfPaZH6drY6Cc4dzMgX/fAgA8
+   ghNKx7AfBkkwleNmXpznr6ZnP7IC6nOaAMLKZhAPxcxTBUAMavmYHCjkY
+   rJfS1KeAfMgiX0Y+Gf2V+DzDq0DUMw1Sm4I2dg/NZ6lU/Hi+PTId8vlvn
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348733909"
 X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="348733414"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 16:05:45 -0700
+   d="scan'208";a="348733909"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 16:08:33 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="901014803"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727180959"
 X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="901014803"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga005.jf.intel.com with ESMTP; 27 Jul 2023 16:05:45 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 16:05:45 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 16:05:45 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 27 Jul 2023 16:05:45 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 27 Jul 2023 16:05:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QrZziMsb2ayw8oF0P6VBOX4E2pzsJsoxwXIeJoR18cjXrw+h1Dg91ael2W4UjkUDkfbcQlkOZDBXcYCpVWUvprjYpjWZCmgp8326uH9tEosqiZEu9UU7nT2QMY1qPbKujblFZjeBxVOXqV3G0KZRkPSAcBZ4Gs2BH5bILFRR5gh/DcqeNjClnG6rsbz6FIdceDZx8jQGBwFPFsg8cD8iXWjeeOhgy5tTQ4ZIz3pebSOGlbD52xmZKrcS0a0qT21FJ8FJ4FYqX8QJL4dVRG33/Fp2mvd4DcZWJvu+FBaXZWu71PTiyGKBBgSdPtG4aiJNQUW9NgbLPQdYj7QjaNFcnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kGZIs7MT6wwmmn5G7hHXAacyNdZlrE4JpExO8rJtWGc=;
- b=Ez/MnjB4ceMnGlU7hyZPrXPdSmqvWHsyaCMohG1/j+4tdlHXVpdVpaU/M9p9EBoo6xXF9NwMdr6jTbot8wED4wHfwG/t9iE69kQjSfmPpggxWWrOHatfBDEcNnqA4ugGO8HKrWZvvSnpJyvL8YQK6+Cwloc2wLACdv3j+cKX9hJTV6BXJPhywOM8PzcfIJRMNFIIJtCBxc8gnNzW6f+dhoo58CPh+PM5ruLedfjNv9fvFVJo27ycEWI5g6koeSOJpYmZiY8Zl9DNG+GL0wx4liUdYOEfoXsymNGPqIX3ck9ky6I1bnqFV1rwLgEbUIsCHKeZmBrHdBDPspj69G07eQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by PH7PR11MB7121.namprd11.prod.outlook.com (2603:10b6:510:20c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
- 2023 23:05:35 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::3729:308d:4f:81c8]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::3729:308d:4f:81c8%3]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
- 23:05:35 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "n.borisov.lkml@gmail.com" <n.borisov.lkml@gmail.com>
-Subject: Re: [PATCH v3 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
- TDX_MODULE_CALL
-Thread-Topic: [PATCH v3 07/12] x86/tdx: Make TDX_HYPERCALL asm similar to
- TDX_MODULE_CALL
-Thread-Index: AQHZv7Ew9wXfCjaIFkeFM7YTTvK7Ya/N2wEAgABjTAA=
-Date:   Thu, 27 Jul 2023 23:05:35 +0000
-Message-ID: <e75603996f88941892a19181c852ecfdc9adf06c.camel@intel.com>
-References: <cover.1690369495.git.kai.huang@intel.com>
-         <6f92d08855491b3e9ff1221d2bb7af873d546afd.1690369495.git.kai.huang@intel.com>
-         <20230727171008.aw3z6oxh4vfnahep@box.shutemov.name>
-In-Reply-To: <20230727171008.aw3z6oxh4vfnahep@box.shutemov.name>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|PH7PR11MB7121:EE_
-x-ms-office365-filtering-correlation-id: e4a22c5d-f6e0-4729-ea2b-08db8ef5fc32
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3HqtY37B1AxvGdQurpHLouQ2vVNPOURHzqcwt1fZmuK37wAdZjUP3g7CUdo45AkMzaDizxoD2EvoXXSxmRs73tjRyFhY0PYdTqs/613sitlvcQ9d+/7XMq/UgoYadRz7M3PplNjkWumvPOXvISnMukvb5dFVPszgoZE/ZpR2ClEsGbl2x6tcaCGcB2GmYWIJ+qYYUXvhN0FqARlYgoTQiHLGmSi4rJy+ln0LctJ2VGqi7PiMLcqA9EY3E7mih0rtokdGljy23udA19aCTWLP+Y3KEfvZ0E15mdmtd6556kCVmyAF31WiZkDqBBnFB6VUE5DYVbgihGQS5yU86gZ54apPeUtV1xNzPQi4m1L02KtRRZcrf2SPukxXhNumQuQDsfPVu72SGbAQv5vs9GPJwT9dO8qsD9hB6gN7Q564M1qiijFzsK/Jf3EZOb8qvkCoeZMXbv2FC6tt/wxNVBJRK9jWBRCChkeinnJY6EjMo/kmz0lOLB8VsdzHEk6vJtCXPz4gyvRq46CleaWw8aaOv6hdopJiDXgyZk2GqeR4Wu4hJLF/clqeGNmzuB6DDxdrSQDKQxe98PP/5rgxlz7FLJ9i3m+78tQiaugRq1iokntWoTCdljWQxhu/eRks2lox
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(396003)(136003)(376002)(39860400002)(451199021)(54906003)(6512007)(6486002)(478600001)(71200400001)(186003)(26005)(6506007)(5660300002)(66446008)(4744005)(66556008)(2906002)(66476007)(6916009)(316002)(76116006)(7416002)(2616005)(41300700001)(8676002)(91956017)(66946007)(4326008)(8936002)(122000001)(64756008)(82960400001)(38100700002)(86362001)(36756003)(38070700005)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cGF0WE1tTzY4NExaZUVrV2hyZU5FQllvbjgzSVh4QktudDJYMzJod1AzRDR1?=
- =?utf-8?B?OTJxMjBQOTA3aHpFUDNjT0g2L1Bsa2NVazlwdkZzRWp5NzUxSHFYbC9NbmdE?=
- =?utf-8?B?UG9CQmQ5YzdBcGVUUUNiMTluL2lGVU5kbE9HSnJjekZvTnFCcFJhZWFLMEVL?=
- =?utf-8?B?V1B0YkhwcjMyc1RoQ2hwYmJZbXdpRlFXNzgxTFIrNVFTVGhKS1czMWVLQXlv?=
- =?utf-8?B?bFFFbS9mWkJHLzY3R09aazRQcnpieXg4NGx1RktYTHhYalQzOXpsckhlYnQr?=
- =?utf-8?B?dlFTZFJ2RFJlY2hEZWRtMjNkRFZ6YnUxT1FCaGxRbjZ2RGU0MFhka2wvUTRN?=
- =?utf-8?B?OHZ6MjIxRVE3NithT2dWVW5HbEVjSU9KYjJVT1V2ZEdLWjd3S0RJNVMzY0wz?=
- =?utf-8?B?RWNKOHdRSU44YkJDcmZlS0tVVlJTNkwyVUhqYVhIUkVpdURCMmdlenAwNmZG?=
- =?utf-8?B?U0tDT3lHamFyVFdGeWVKVjdEanFIa2RQRXZabStIOExQa291MTQwZVBaWGND?=
- =?utf-8?B?SS9maG9nOWN3YmVSaURObHdlbXU4Z1BwTEZVZmRQOENmRTJLc29kaWhyVkk4?=
- =?utf-8?B?eVEwMUZROG1BRjNzTGRXZkdGamZPLzRiOWFBd2Q5VFJxTFZMM3JzaCtkR3BY?=
- =?utf-8?B?ZmVXSnU4ZlhLbTNlUS9Tcml0UnlpL01LRlZ0Z2pvS05BWGdXdUVYWEx4V3B3?=
- =?utf-8?B?Rnh2Vm9QR21oR2pnZmcyeHlmYzhWa3VMVVBLdEpoSGZYNzYvQWluSk5Oam96?=
- =?utf-8?B?TzFlZzFYTUd1OHV6MEZPbnE3N2ZuS05oZmxubDFxMTVpUjFhd1ZzbldGa1ht?=
- =?utf-8?B?cTN0Q3cyNUpGbGZETGszUGtZQ0JNc2Rtbzg5aGpjMExOMHh1VWl4cTVoODFU?=
- =?utf-8?B?bUp6TFI2blc2d01yTkVPenVZR3ZDM0ZDdDcwSGQ1ZGtOMVhiNElYN2ZFdmNj?=
- =?utf-8?B?MWMyZmRIaEJ0NU1EVzNqaU1sdXE4UGJkOGFrWTIxam9Hb1drcTY0Y2lhSjJH?=
- =?utf-8?B?SHMvTGVwazRYUHJvTE1BUy8zUEhwNGxjS3dhYWxxUFJkTzlKMzJ0SEpscXFx?=
- =?utf-8?B?bUh5U0R4UXlwM0xpRWRQNDV3THBlbzBQOG81alM0ajArNnJOQ0ZncVRvc3dj?=
- =?utf-8?B?blRIU0xZdHFGWkVuTjRWd1ZlRkhXWC9NRU9wZGRFNFNWUzduVjZJL2NRSzJ4?=
- =?utf-8?B?RTVxT1BsV2lpeDVtbEhMSjFZVzVOMGxiYTdQcjVHMmovd1o3cUFST0RleHQw?=
- =?utf-8?B?bWpBcytEajlBTERMUlA2MzFSdUFtdU1XVHJkcUxUSndXZ3hGWTJ5VlNIcUQ0?=
- =?utf-8?B?L2JtVVRWUzNpSlVaWGZSY0VsSzlUSUtWaTRPQmVRVXVQVzg2T3VJaUJDNzJX?=
- =?utf-8?B?V09zN3pyMmNNZFFHaURwTnRCbDk0RTZtSUs0TUZjQ3ZCNTN4alp4Zm9qZXFD?=
- =?utf-8?B?VjZEVCtueUZGRVROcC9UMDhmWVM3ZjlKK3BNR2p6S3V4Wk42V1pOR1VvS0ZU?=
- =?utf-8?B?MThWYzVQdHFzenRBc0pPUkUrcjc0SkplUnN5Z1U5YWhmQkFPczl0VVB3Q3pV?=
- =?utf-8?B?cGVXVWlJZm5EeXZiNk5ha25ZRmdvKzZnTTRUV1kvWmw2N2F0dEgxbUdEMTJZ?=
- =?utf-8?B?TFdOQWUvL0czK3pnaWpOVWZ3aXh0OFNiaDNXbVVScWphUEI2MmZXeGppSHR4?=
- =?utf-8?B?TXdHdWJmemhOdml3c0krQWtVTHpBYmtXc3VjeGtUQUVnRFdkM2kwd1g5K1pW?=
- =?utf-8?B?RzZLekJXUllPWVE4S0IrSzVmRm56SDhPOWYzbHFWOXUzK1NWb3RKNGhmNVh1?=
- =?utf-8?B?ZlU1bmFzdmliSHQ1STQwS0NCckFoVkplNGpRcUR2aTgzL3Z1M3JKSk9xaWx2?=
- =?utf-8?B?cTQ3T1c4N0s0N29zLzN6MFN0RjQ5R1lPSm5mTStLNXRNQWE1OWFlUzJ5VC9k?=
- =?utf-8?B?SkY2QVNYQUVEQVJ1dVQ3UGIzaDBHMUdwRmIyNUdzblBuYWwrUExzMXhUVzVk?=
- =?utf-8?B?VGtEY0dFeEhQYVVYcVIvQWdJaTM1WUNnckhqTkhTcWdaWFoyYTFvOHpmblJq?=
- =?utf-8?B?ZUkwM2tTWG12TWFNcGJrOWVxWlI4dUc0NlFtbnZoWFFxM2MwV1d5clVJTXlm?=
- =?utf-8?Q?DVCLuZ2t7dIfmGFzEdYVGne+V?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1734DC0DB682144DB01BDD1AE2623CF7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+   d="scan'208";a="727180959"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 27 Jul 2023 16:08:30 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPA5t-0002hH-2D;
+        Thu, 27 Jul 2023 23:08:29 +0000
+Date:   Fri, 28 Jul 2023 07:07:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: net/rxrpc/af_rxrpc.c:697:13: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202307280759.RA4cH0yQ-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4a22c5d-f6e0-4729-ea2b-08db8ef5fc32
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2023 23:05:35.2149
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 03GWwRvNlzaFV6bjKgEkxXGq71txH95JQViITq6QMenc3lfJvz/AtYVet2sy+d99CZvvoJhiTIuatukim5xSmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7121
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -179,16 +63,975 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA3LTI3IGF0IDIwOjEwICswMzAwLCBraXJpbGwuc2h1dGVtb3ZAbGludXgu
-aW50ZWwuY29tIHdyb3RlOg0KPiBPbiBXZWQsIEp1bCAyNiwgMjAyMyBhdCAxMToyNTowOVBNICsx
-MjAwLCBLYWkgSHVhbmcgd3JvdGU6DQo+ID4gDQo+ID4gUmVtb3ZlIHRoZSBfX3RkeF9oeXBlcmNh
-bGxfcmV0KCkgYXMgX190ZHhfaHlwZXJjYWxsKCkgYWxyZWFkeSBkb2VzIHNvLg0KPiANCj4gSG0u
-IFNvIHdlIG5vdyB1cGRhdGUgc3RydWN0IG9uIGFsbCBWTUNBTExzLiBJcyBpdCBhIGdvb2QgaWRl
-YT/CoA0KPiANCg0KRG8geW91IG1lYW4gd2UgInVuY29uZGl0aW9uYWxseSBzYXZlIG91dHB1dCBy
-ZWdpc3RlcnMgdG8gIHRoZSBzdHJ1Y3R1cmUiLCByaWdodD8NCg0KPiBXZSBnaXZlDQo+IG1vcmUg
-Y29udHJvbCB0byBWTU0gd2hlcmUgaXQgaXMgbm90IG5lZWRlZC7CoA0KPiANCg0KSSBkb24ndCBx
-dWl0ZSBmb2xsb3cgdGhpcy4gIENhbiB5b3UgZWxhYm9yYXRlPw0KDQpEbyB5b3Ugd29ycnkgYWJv
-dXQgVk1NIGJlaW5nIG1hbGljaW91cyBhbmQgcHV0dGluZyBtYWxpY2lvdXMgdmFsdWVzIHRvIHRo
-ZQ0KcmVnaXN0ZXJzPw0KDQo+IEkgd291bGQgcmF0aGVyIGtlZXAgdGhlIHN0cnVjdA0KPiByZWFk
-LW9ubHkgd2hlcmUgcG9zc2libGUuDQo+IA0KDQpXZSBjYW4gYWNoaWV2ZSB0aGlzIGlmIHRoZXJl
-J3MgYSBjbGVhbiB3YXkgdG8gZG8sIGJ1dCBJIGRvbid0IHNlZSB0aGF0Lg0K
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0a8db05b571ad5b8d5c8774a004c0424260a90bd
+commit: e5fc436f06eef54ef512ea55a9db8eb9f2e76959 sparse: use static inline for __chk_{user,io}_ptr()
+date:   2 years, 11 months ago
+config: sh-randconfig-r081-20230727 (https://download.01.org/0day-ci/archive/20230728/202307280759.RA4cH0yQ-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230728/202307280759.RA4cH0yQ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307280759.RA4cH0yQ-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   net/rxrpc/af_rxrpc.c:697:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *_optlen @@
+   net/rxrpc/af_rxrpc.c:697:13: sparse:     expected int const *__gu_addr
+   net/rxrpc/af_rxrpc.c:697:13: sparse:     got int [noderef] __user *_optlen
+>> net/rxrpc/af_rxrpc.c:697:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/rxrpc/af_rxrpc.c:697:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/rxrpc/af_rxrpc.c:697:13: sparse:     got int const *__gu_addr
+--
+   net/kcm/kcmsock.c:1310:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/kcm/kcmsock.c:1310:13: sparse:     expected int const *__gu_addr
+   net/kcm/kcmsock.c:1310:13: sparse:     got int [noderef] __user *optlen
+>> net/kcm/kcmsock.c:1310:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/kcm/kcmsock.c:1310:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/kcm/kcmsock.c:1310:13: sparse:     got int const *__gu_addr
+--
+   net/l2tp/l2tp_ppp.c:1376:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/l2tp/l2tp_ppp.c:1376:13: sparse:     expected int const *__gu_addr
+   net/l2tp/l2tp_ppp.c:1376:13: sparse:     got int [noderef] __user *optlen
+>> net/l2tp/l2tp_ppp.c:1376:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/l2tp/l2tp_ppp.c:1376:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/l2tp/l2tp_ppp.c:1376:13: sparse:     got int const *__gu_addr
+--
+   net/phonet/datagram.c:47:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   net/phonet/datagram.c:47:29: sparse:     expected unsigned int const *__gu_addr
+   net/phonet/datagram.c:47:29: sparse:     got unsigned int [noderef] [usertype] __user *
+>> net/phonet/datagram.c:47:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   net/phonet/datagram.c:47:29: sparse:     expected void const volatile [noderef] __user *ptr
+   net/phonet/datagram.c:47:29: sparse:     got unsigned int const *__gu_addr
+--
+   net/phonet/socket.c:367:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned short const *__gu_addr @@     got unsigned short [noderef] [usertype] __user * @@
+   net/phonet/socket.c:367:21: sparse:     expected unsigned short const *__gu_addr
+   net/phonet/socket.c:367:21: sparse:     got unsigned short [noderef] [usertype] __user *
+>> net/phonet/socket.c:367:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short const *__gu_addr @@
+   net/phonet/socket.c:367:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/phonet/socket.c:367:21: sparse:     got unsigned short const *__gu_addr
+   net/phonet/socket.c:623:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   net/phonet/socket.c:623:14: sparse:    struct sock [noderef] __rcu *
+   net/phonet/socket.c:623:14: sparse:    struct sock *
+   net/phonet/socket.c:646:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   net/phonet/socket.c:646:17: sparse:    struct sock [noderef] __rcu *
+   net/phonet/socket.c:646:17: sparse:    struct sock *
+   net/phonet/socket.c:662:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   net/phonet/socket.c:662:17: sparse:    struct sock [noderef] __rcu *
+   net/phonet/socket.c:662:17: sparse:    struct sock *
+   net/phonet/socket.c:681:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   net/phonet/socket.c:681:25: sparse:    struct sock [noderef] __rcu *
+   net/phonet/socket.c:681:25: sparse:    struct sock *
+   net/phonet/socket.c:730:21: sparse: sparse: context imbalance in 'pn_res_seq_start' - wrong count at exit
+   net/phonet/socket.c:745:13: sparse: sparse: context imbalance in 'pn_res_seq_stop' - wrong count at exit
+--
+   net/phonet/pep.c:1047:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/phonet/pep.c:1047:13: sparse:     expected int const *__gu_addr
+   net/phonet/pep.c:1047:13: sparse:     got int [noderef] __user *optlen
+>> net/phonet/pep.c:1047:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/phonet/pep.c:1047:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/phonet/pep.c:1047:13: sparse:     got int const *__gu_addr
+--
+   net/dccp/proto.c:535:52: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted __be32 const [usertype] service @@     got int [addressable] val @@
+   net/dccp/proto.c:535:52: sparse:     expected restricted __be32 const [usertype] service
+   net/dccp/proto.c:535:52: sparse:     got int [addressable] val
+   net/dccp/proto.c:620:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/dccp/proto.c:620:13: sparse:     expected int const *__gu_addr
+   net/dccp/proto.c:620:13: sparse:     got int [noderef] __user *optlen
+>> net/dccp/proto.c:620:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/dccp/proto.c:620:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/dccp/proto.c:620:13: sparse:     got int const *__gu_addr
+   net/dccp/proto.c:718:57: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted __be32 [usertype] param @@     got int cmsg_type @@
+   net/dccp/proto.c:718:57: sparse:     expected restricted __be32 [usertype] param
+   net/dccp/proto.c:718:57: sparse:     got int cmsg_type
+--
+   net/sctp/socket.c: note: in included file (through include/net/sctp/sctp.h):
+   include/net/sctp/structs.h:329:41: sparse: sparse: array of flexible structures
+   net/sctp/socket.c:7814:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/sctp/socket.c:7814:13: sparse:     expected int const *__gu_addr
+   net/sctp/socket.c:7814:13: sparse:     got int [noderef] __user *optlen
+>> net/sctp/socket.c:7814:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/sctp/socket.c:7814:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/sctp/socket.c:7814:13: sparse:     got int const *__gu_addr
+   net/sctp/socket.c:8210:20: sparse: sparse: context imbalance in 'sctp_get_port_local' - unexpected unlock
+--
+   net/rds/af_rds.c:245:22: sparse: sparse: invalid assignment: |=
+   net/rds/af_rds.c:245:22: sparse:    left side has type restricted __poll_t
+   net/rds/af_rds.c:245:22: sparse:    right side has type int
+   net/rds/af_rds.c:262:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char const *__gu_addr @@     got unsigned char [noderef] [usertype] __user * @@
+   net/rds/af_rds.c:262:21: sparse:     expected unsigned char const *__gu_addr
+   net/rds/af_rds.c:262:21: sparse:     got unsigned char [noderef] [usertype] __user *
+>> net/rds/af_rds.c:262:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned char const *__gu_addr @@
+   net/rds/af_rds.c:262:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/rds/af_rds.c:262:21: sparse:     got unsigned char const *__gu_addr
+   net/rds/af_rds.c:493:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/rds/af_rds.c:493:13: sparse:     expected int const *__gu_addr
+   net/rds/af_rds.c:493:13: sparse:     got int [noderef] __user *optlen
+>> net/rds/af_rds.c:493:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/rds/af_rds.c:493:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/rds/af_rds.c:493:13: sparse:     got int const *__gu_addr
+--
+   net/rds/info.c:171:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/rds/info.c:171:13: sparse:     expected int const *__gu_addr
+   net/rds/info.c:171:13: sparse:     got int [noderef] __user *optlen
+>> net/rds/info.c:171:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/rds/info.c:171:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/rds/info.c:171:13: sparse:     got int const *__gu_addr
+--
+   net/nfc/llcp_sock.c:308:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/nfc/llcp_sock.c:308:13: sparse:     expected int const *__gu_addr
+   net/nfc/llcp_sock.c:308:13: sparse:     got int [noderef] __user *optlen
+>> net/nfc/llcp_sock.c:308:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/nfc/llcp_sock.c:308:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/nfc/llcp_sock.c:308:13: sparse:     got int const *__gu_addr
+--
+   net/vmw_vsock/af_vsock.c:1612:15: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/vmw_vsock/af_vsock.c:1612:15: sparse:     expected int const *__gu_addr
+   net/vmw_vsock/af_vsock.c:1612:15: sparse:     got int [noderef] __user *optlen
+>> net/vmw_vsock/af_vsock.c:1612:15: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/vmw_vsock/af_vsock.c:1612:15: sparse:     expected void const volatile [noderef] __user *ptr
+   net/vmw_vsock/af_vsock.c:1612:15: sparse:     got int const *__gu_addr
+--
+   net/bluetooth/hci_core.c:2099:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned short const *__gu_addr @@     got unsigned short [noderef] [usertype] __user * @@
+   net/bluetooth/hci_core.c:2099:13: sparse:     expected unsigned short const *__gu_addr
+   net/bluetooth/hci_core.c:2099:13: sparse:     got unsigned short [noderef] [usertype] __user *
+>> net/bluetooth/hci_core.c:2099:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short const *__gu_addr @@
+   net/bluetooth/hci_core.c:2099:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/hci_core.c:2099:13: sparse:     got unsigned short const *__gu_addr
+--
+   net/bluetooth/hci_sock.c:1941:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/hci_sock.c:1941:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/hci_sock.c:1941:13: sparse:     got int [noderef] __user *optlen
+>> net/bluetooth/hci_sock.c:1941:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/hci_sock.c:1941:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/hci_sock.c:1941:13: sparse:     got int const *__gu_addr
+--
+   net/bluetooth/l2cap_sock.c:428:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/l2cap_sock.c:428:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/l2cap_sock.c:428:13: sparse:     got int [noderef] __user *optlen
+>> net/bluetooth/l2cap_sock.c:428:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/l2cap_sock.c:428:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/l2cap_sock.c:428:13: sparse:     got int const *__gu_addr
+   net/bluetooth/l2cap_sock.c:553:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/l2cap_sock.c:553:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/l2cap_sock.c:553:13: sparse:     got int [noderef] __user *optlen
+   net/bluetooth/l2cap_sock.c:553:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/l2cap_sock.c:553:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/l2cap_sock.c:553:13: sparse:     got int const *__gu_addr
+--
+   net/bluetooth/sco.c:892:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/sco.c:892:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/sco.c:892:13: sparse:     got int [noderef] __user *optlen
+>> net/bluetooth/sco.c:892:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/sco.c:892:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/sco.c:892:13: sparse:     got int const *__gu_addr
+   net/bluetooth/sco.c:957:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/sco.c:957:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/sco.c:957:13: sparse:     got int [noderef] __user *optlen
+   net/bluetooth/sco.c:957:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/sco.c:957:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/sco.c:957:13: sparse:     got int const *__gu_addr
+--
+>> arch/sh/kernel/cpu/sh3/clock-sh7706.c:24:21: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:24:21: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:24:21: sparse:     got unsigned int
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:36:21: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:36:21: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:36:21: sparse:     got unsigned int
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:48:21: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:48:21: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:48:21: sparse:     got unsigned int
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:60:21: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:60:21: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/kernel/cpu/sh3/clock-sh7706.c:60:21: sparse:     got unsigned int
+--
+>> arch/sh/boards/board-shmin.c:21:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned long @@
+   arch/sh/boards/board-shmin.c:21:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/boards/board-shmin.c:21:9: sparse:     got unsigned long
+   arch/sh/boards/board-shmin.c:22:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned long @@
+   arch/sh/boards/board-shmin.c:22:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/boards/board-shmin.c:22:9: sparse:     got unsigned long
+--
+   kernel/locking/lockdep_proc.c:448:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/locking/lockdep_proc.c:448:17: sparse:    char const [noderef] __rcu *
+   kernel/locking/lockdep_proc.c:448:17: sparse:    char const *
+   kernel/locking/lockdep_proc.c:449:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/locking/lockdep_proc.c:449:17: sparse:    struct lockdep_subclass_key const [noderef] __rcu *
+   kernel/locking/lockdep_proc.c:449:17: sparse:    struct lockdep_subclass_key const *
+   kernel/locking/lockdep_proc.c:649:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user *buf @@
+   kernel/locking/lockdep_proc.c:649:21: sparse:     expected char const *__gu_addr
+   kernel/locking/lockdep_proc.c:649:21: sparse:     got char const [noderef] __user *buf
+>> kernel/locking/lockdep_proc.c:649:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   kernel/locking/lockdep_proc.c:649:21: sparse:     expected void const volatile [noderef] __user *ptr
+   kernel/locking/lockdep_proc.c:649:21: sparse:     got char const *__gu_addr
+--
+   fs/jfs/ioctl.c:83:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   fs/jfs/ioctl.c:83:21: sparse:     expected int const *__gu_addr
+   fs/jfs/ioctl.c:83:21: sparse:     got int [noderef] __user *
+>> fs/jfs/ioctl.c:83:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   fs/jfs/ioctl.c:83:21: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/jfs/ioctl.c:83:21: sparse:     got int const *__gu_addr
+--
+   fs/nfsd/nfs4recover.c:798:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char const *__gu_addr @@     got unsigned char const [noderef] __user * @@
+   fs/nfsd/nfs4recover.c:798:13: sparse:     expected unsigned char const *__gu_addr
+   fs/nfsd/nfs4recover.c:798:13: sparse:     got unsigned char const [noderef] __user *
+>> fs/nfsd/nfs4recover.c:798:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned char const *__gu_addr @@
+   fs/nfsd/nfs4recover.c:798:13: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/nfsd/nfs4recover.c:798:13: sparse:     got unsigned char const *__gu_addr
+   fs/nfsd/nfs4recover.c:807:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned short const *__gu_addr @@     got unsigned short const [noderef] __user * @@
+   fs/nfsd/nfs4recover.c:807:29: sparse:     expected unsigned short const *__gu_addr
+   fs/nfsd/nfs4recover.c:807:29: sparse:     got unsigned short const [noderef] __user *
+>> fs/nfsd/nfs4recover.c:807:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short const *__gu_addr @@
+   fs/nfsd/nfs4recover.c:807:29: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/nfsd/nfs4recover.c:807:29: sparse:     got unsigned short const *__gu_addr
+   fs/nfsd/nfs4recover.c:813:25: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned char const *__gu_addr @@     got unsigned char const [noderef] __user * @@
+   fs/nfsd/nfs4recover.c:813:25: sparse:     expected unsigned char const *__gu_addr
+   fs/nfsd/nfs4recover.c:813:25: sparse:     got unsigned char const [noderef] __user *
+   fs/nfsd/nfs4recover.c:813:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned char const *__gu_addr @@
+   fs/nfsd/nfs4recover.c:813:25: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/nfsd/nfs4recover.c:813:25: sparse:     got unsigned char const *__gu_addr
+   fs/nfsd/nfs4recover.c:827:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned short const *__gu_addr @@     got unsigned short const [noderef] __user * @@
+   fs/nfsd/nfs4recover.c:827:29: sparse:     expected unsigned short const *__gu_addr
+   fs/nfsd/nfs4recover.c:827:29: sparse:     got unsigned short const [noderef] __user *
+   fs/nfsd/nfs4recover.c:827:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned short const *__gu_addr @@
+   fs/nfsd/nfs4recover.c:827:29: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/nfsd/nfs4recover.c:827:29: sparse:     got unsigned short const *__gu_addr
+   fs/nfsd/nfs4recover.c:878:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected signed short const *__gu_addr @@     got signed short [noderef] __user * @@
+   fs/nfsd/nfs4recover.c:878:13: sparse:     expected signed short const *__gu_addr
+   fs/nfsd/nfs4recover.c:878:13: sparse:     got signed short [noderef] __user *
+>> fs/nfsd/nfs4recover.c:878:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got signed short const *__gu_addr @@
+   fs/nfsd/nfs4recover.c:878:13: sparse:     expected void const volatile [noderef] __user *ptr
+   fs/nfsd/nfs4recover.c:878:13: sparse:     got signed short const *__gu_addr
+--
+   security/tomoyo/common.c:915:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:915:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:915:9: sparse:    struct list_head *
+   security/tomoyo/common.c:915:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:915:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:915:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1600:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1600:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1600:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1600:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1600:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1600:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1622:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1622:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1622:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1622:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1622:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1622:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1803:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1803:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1803:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1807:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1807:17: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1807:17: sparse:    struct list_head *
+   security/tomoyo/common.c:1807:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1807:17: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1807:17: sparse:    struct list_head *
+   security/tomoyo/common.c:1803:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1803:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1803:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1862:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1862:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1862:9: sparse:    struct list_head *
+   security/tomoyo/common.c:1862:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   security/tomoyo/common.c:1862:9: sparse:    struct list_head [noderef] __rcu *
+   security/tomoyo/common.c:1862:9: sparse:    struct list_head *
+   security/tomoyo/common.c:2687:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user *buffer @@
+   security/tomoyo/common.c:2687:21: sparse:     expected char const *__gu_addr
+   security/tomoyo/common.c:2687:21: sparse:     got char const [noderef] __user *buffer
+>> security/tomoyo/common.c:2687:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   security/tomoyo/common.c:2687:21: sparse:     expected void const volatile [noderef] __user *ptr
+   security/tomoyo/common.c:2687:21: sparse:     got char const *__gu_addr
+   security/tomoyo/common.c:948:26: sparse: sparse: dereference of noderef expression
+   security/tomoyo/common.c:948:26: sparse: sparse: dereference of noderef expression
+   security/tomoyo/common.c:949:26: sparse: sparse: dereference of noderef expression
+   security/tomoyo/common.c:949:26: sparse: sparse: dereference of noderef expression
+--
+   drivers/android/binder.c:3613:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3613:21: sparse:     expected unsigned int const *__gu_addr
+   drivers/android/binder.c:3613:21: sparse:     got unsigned int [noderef] [usertype] __user *
+>> drivers/android/binder.c:3613:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/android/binder.c:3613:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3613:21: sparse:     got unsigned int const *__gu_addr
+   drivers/android/binder.c:3633:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3633:29: sparse:     expected unsigned int const *__gu_addr
+   drivers/android/binder.c:3633:29: sparse:     got unsigned int [noderef] [usertype] __user *
+   drivers/android/binder.c:3633:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/android/binder.c:3633:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3633:29: sparse:     got unsigned int const *__gu_addr
+   drivers/android/binder.c:3699:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long const *__gu_addr @@     got unsigned long long [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3699:29: sparse:     expected unsigned long long const *__gu_addr
+   drivers/android/binder.c:3699:29: sparse:     got unsigned long long [noderef] [usertype] __user *
+>> drivers/android/binder.c:3699:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned long long const *__gu_addr @@
+   drivers/android/binder.c:3699:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3699:29: sparse:     got unsigned long long const *__gu_addr
+   drivers/android/binder.c:3702:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long const *__gu_addr @@     got unsigned long long [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3702:29: sparse:     expected unsigned long long const *__gu_addr
+   drivers/android/binder.c:3702:29: sparse:     got unsigned long long [noderef] [usertype] __user *
+   drivers/android/binder.c:3702:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned long long const *__gu_addr @@
+   drivers/android/binder.c:3702:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3702:29: sparse:     got unsigned long long const *__gu_addr
+   drivers/android/binder.c:3771:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long const *__gu_addr @@     got unsigned long long [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3771:29: sparse:     expected unsigned long long const *__gu_addr
+   drivers/android/binder.c:3771:29: sparse:     got unsigned long long [noderef] [usertype] __user *
+   drivers/android/binder.c:3771:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned long long const *__gu_addr @@
+   drivers/android/binder.c:3771:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3771:29: sparse:     got unsigned long long const *__gu_addr
+   drivers/android/binder.c:3868:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3868:29: sparse:     expected unsigned int const *__gu_addr
+   drivers/android/binder.c:3868:29: sparse:     got unsigned int [noderef] [usertype] __user *
+   drivers/android/binder.c:3868:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/android/binder.c:3868:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3868:29: sparse:     got unsigned int const *__gu_addr
+   drivers/android/binder.c:3871:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long const *__gu_addr @@     got unsigned long long [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3871:29: sparse:     expected unsigned long long const *__gu_addr
+   drivers/android/binder.c:3871:29: sparse:     got unsigned long long [noderef] [usertype] __user *
+   drivers/android/binder.c:3871:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned long long const *__gu_addr @@
+   drivers/android/binder.c:3871:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3871:29: sparse:     got unsigned long long const *__gu_addr
+   drivers/android/binder.c:3990:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long const *__gu_addr @@     got unsigned long long [noderef] [usertype] __user * @@
+   drivers/android/binder.c:3990:29: sparse:     expected unsigned long long const *__gu_addr
+   drivers/android/binder.c:3990:29: sparse:     got unsigned long long [noderef] [usertype] __user *
+   drivers/android/binder.c:3990:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned long long const *__gu_addr @@
+   drivers/android/binder.c:3990:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/android/binder.c:3990:29: sparse:     got unsigned long long const *__gu_addr
+   drivers/android/binder.c:4824:24: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __poll_t @@     got int @@
+   drivers/android/binder.c:4824:24: sparse:     expected restricted __poll_t
+   drivers/android/binder.c:4824:24: sparse:     got int
+--
+   drivers/block/rbd.c:699:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/block/rbd.c:699:13: sparse:     expected int const *__gu_addr
+   drivers/block/rbd.c:699:13: sparse:     got int [noderef] __user *
+>> drivers/block/rbd.c:699:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/block/rbd.c:699:13: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/block/rbd.c:699:13: sparse:     got int const *__gu_addr
+--
+   sound/soc/uniphier/aio-compress.c:295:23: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   sound/soc/uniphier/aio-compress.c:295:23: sparse:     expected unsigned int const *__gu_addr
+   sound/soc/uniphier/aio-compress.c:295:23: sparse:     got unsigned int [noderef] [usertype] __user *
+>> sound/soc/uniphier/aio-compress.c:295:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   sound/soc/uniphier/aio-compress.c:295:23: sparse:     expected void const volatile [noderef] __user *ptr
+   sound/soc/uniphier/aio-compress.c:295:23: sparse:     got unsigned int const *__gu_addr
+   sound/soc/uniphier/aio-compress.c:309:34: sparse: sparse: cast to restricted __be16
+--
+   drivers/infiniband/core/user_mad.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, include/trace/events/ib_umad.h):
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be32
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be32
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be16
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be32
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be16
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be16
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be64
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be16
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: cast to restricted __be32
+   drivers/infiniband/core/user_mad.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, include/trace/events/ib_umad.h):
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] qpn @@     got restricted __be32 [usertype] qpn @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] qpn
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] qpn
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] qkey @@     got restricted __be32 [usertype] qkey @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] qkey
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] qkey
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] lid @@     got restricted __be16 [usertype] lid @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] lid
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] lid
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] flow_label @@     got restricted __be32 [usertype] flow_label @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] flow_label
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] flow_label
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] mad_status @@     got restricted __be16 [usertype] status @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] mad_status
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] status
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] class_specific @@     got restricted __be16 [usertype] class_specific @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] class_specific
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] class_specific
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] tid @@     got restricted __be64 [usertype] tid @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned long long [usertype] tid
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be64 [usertype] tid
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] attr_id @@     got restricted __be16 [usertype] attr_id @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] attr_id
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] attr_id
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] attr_mod @@     got restricted __be32 [usertype] attr_mod @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] attr_mod
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] attr_mod
+   drivers/infiniband/core/user_mad.c: note: in included file (through include/trace/perf.h, include/trace/define_trace.h, include/trace/events/ib_umad.h):
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] qpn @@     got restricted __be32 [usertype] qpn @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] qpn
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] qpn
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] qkey @@     got restricted __be32 [usertype] qkey @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] qkey
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] qkey
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] lid @@     got restricted __be16 [usertype] lid @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] lid
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] lid
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] flow_label @@     got restricted __be32 [usertype] flow_label @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] flow_label
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] flow_label
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] mad_status @@     got restricted __be16 [usertype] status @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] mad_status
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] status
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] class_specific @@     got restricted __be16 [usertype] class_specific @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] class_specific
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] class_specific
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] tid @@     got restricted __be64 [usertype] tid @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned long long [usertype] tid
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be64 [usertype] tid
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] attr_id @@     got restricted __be16 [usertype] attr_id @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned short [usertype] attr_id
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be16 [usertype] attr_id
+   include/trace/events/ib_umad.h:16:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] attr_mod @@     got restricted __be32 [usertype] attr_mod @@
+   include/trace/events/ib_umad.h:16:1: sparse:     expected unsigned int [usertype] attr_mod
+   include/trace/events/ib_umad.h:16:1: sparse:     got restricted __be32 [usertype] attr_mod
+   drivers/infiniband/core/user_mad.c:886:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user *arg @@
+   drivers/infiniband/core/user_mad.c:886:13: sparse:     expected unsigned int const *__gu_addr
+   drivers/infiniband/core/user_mad.c:886:13: sparse:     got unsigned int [noderef] [usertype] __user *arg
+>> drivers/infiniband/core/user_mad.c:886:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/infiniband/core/user_mad.c:886:13: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/infiniband/core/user_mad.c:886:13: sparse:     got unsigned int const *__gu_addr
+--
+   net/socket.c:1126:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   net/socket.c:1126:29: sparse:     expected int const *__gu_addr
+   net/socket.c:1126:29: sparse:     got int [noderef] __user *
+>> net/socket.c:1126:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/socket.c:1126:29: sparse:     expected void const volatile [noderef] __user *ptr
+   net/socket.c:1126:29: sparse:     got int const *__gu_addr
+   net/socket.c:227:15: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ulen @@
+   net/socket.c:227:15: sparse:     expected int const *__gu_addr
+   net/socket.c:227:15: sparse:     got int [noderef] __user *ulen
+   net/socket.c:227:15: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/socket.c:227:15: sparse:     expected void const volatile [noderef] __user *ptr
+   net/socket.c:227:15: sparse:     got int const *__gu_addr
+--
+   net/core/pktgen.c:720:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user * @@
+   net/core/pktgen.c:720:21: sparse:     expected char const *__gu_addr
+   net/core/pktgen.c:720:21: sparse:     got char const [noderef] __user *
+>> net/core/pktgen.c:720:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   net/core/pktgen.c:720:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/pktgen.c:720:21: sparse:     got char const *__gu_addr
+   net/core/pktgen.c:738:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user * @@
+   net/core/pktgen.c:738:21: sparse:     expected char const *__gu_addr
+   net/core/pktgen.c:738:21: sparse:     got char const [noderef] __user *
+   net/core/pktgen.c:738:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   net/core/pktgen.c:738:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/pktgen.c:738:21: sparse:     got char const *__gu_addr
+   net/core/pktgen.c:764:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user * @@
+   net/core/pktgen.c:764:21: sparse:     expected char const *__gu_addr
+   net/core/pktgen.c:764:21: sparse:     got char const [noderef] __user *
+   net/core/pktgen.c:764:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   net/core/pktgen.c:764:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/pktgen.c:764:21: sparse:     got char const *__gu_addr
+   net/core/pktgen.c:781:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user * @@
+   net/core/pktgen.c:781:21: sparse:     expected char const *__gu_addr
+   net/core/pktgen.c:781:21: sparse:     got char const [noderef] __user *
+   net/core/pktgen.c:781:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   net/core/pktgen.c:781:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/pktgen.c:781:21: sparse:     got char const *__gu_addr
+   net/core/pktgen.c:815:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user * @@
+   net/core/pktgen.c:815:21: sparse:     expected char const *__gu_addr
+   net/core/pktgen.c:815:21: sparse:     got char const [noderef] __user *
+   net/core/pktgen.c:815:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   net/core/pktgen.c:815:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/pktgen.c:815:21: sparse:     got char const *__gu_addr
+--
+   net/core/sock.c:1313:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/core/sock.c:1313:13: sparse:     expected int const *__gu_addr
+   net/core/sock.c:1313:13: sparse:     got int [noderef] __user *optlen
+>> net/core/sock.c:1313:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/core/sock.c:1313:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/core/sock.c:1313:13: sparse:     got int const *__gu_addr
+   net/core/sock.c:1997:9: sparse: sparse: context imbalance in 'sk_clone_lock' - wrong count at exit
+   net/core/sock.c:2001:6: sparse: sparse: context imbalance in 'sk_free_unlock_clone' - unexpected unlock
+   net/core/sock.c:3093:6: sparse: sparse: context imbalance in 'lock_sock_fast' - different lock contexts for basic block
+   net/core/sock.c:3565:13: sparse: sparse: context imbalance in 'proto_seq_start' - wrong count at exit
+   net/core/sock.c:3577:13: sparse: sparse: context imbalance in 'proto_seq_stop' - wrong count at exit
+--
+   drivers/isdn/mISDN/socket.c:319:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/socket.c:319:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:319:21: sparse:     got int [noderef] __user *
+>> drivers/isdn/mISDN/socket.c:319:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/socket.c:319:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/socket.c:319:21: sparse:     got int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:333:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/socket.c:333:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:333:21: sparse:     got int [noderef] __user *
+   drivers/isdn/mISDN/socket.c:333:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/socket.c:333:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/socket.c:333:21: sparse:     got int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:371:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/socket.c:371:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:371:21: sparse:     got int [noderef] __user *
+   drivers/isdn/mISDN/socket.c:371:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/socket.c:371:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/socket.c:371:21: sparse:     got int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:441:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   drivers/isdn/mISDN/socket.c:441:13: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:441:13: sparse:     got int [noderef] __user *optlen
+   drivers/isdn/mISDN/socket.c:441:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/socket.c:441:13: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/socket.c:441:13: sparse:     got int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:654:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/socket.c:654:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/socket.c:654:21: sparse:     got int [noderef] __user *
+   drivers/isdn/mISDN/socket.c:654:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/socket.c:654:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/socket.c:654:21: sparse:     got int const *__gu_addr
+--
+   drivers/isdn/mISDN/timerdev.c:229:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/timerdev.c:229:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/timerdev.c:229:21: sparse:     got int [noderef] __user *
+>> drivers/isdn/mISDN/timerdev.c:229:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/timerdev.c:229:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/timerdev.c:229:21: sparse:     got int const *__gu_addr
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse:     expected int const *__gu_addr
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse:     got int [noderef] __user *
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/isdn/mISDN/timerdev.c:245:21: sparse:     got int const *__gu_addr
+--
+>> drivers/mmc/host/dw_mmc.c:602:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int * @@
+   drivers/mmc/host/dw_mmc.c:602:29: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/mmc/host/dw_mmc.c:602:29: sparse:     got unsigned int *
+>> drivers/mmc/host/dw_mmc.c:602:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int * @@
+   drivers/mmc/host/dw_mmc.c:602:29: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/mmc/host/dw_mmc.c:602:29: sparse:     got unsigned int *
+   drivers/mmc/host/dw_mmc.c:615:25: sparse: sparse: restricted __le32 degrades to integer
+   drivers/mmc/host/dw_mmc.c:615:25: sparse: sparse: restricted __le32 degrades to integer
+>> drivers/mmc/host/dw_mmc.c:674:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got restricted __le32 * @@
+   drivers/mmc/host/dw_mmc.c:674:29: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/mmc/host/dw_mmc.c:674:29: sparse:     got restricted __le32 *
+   drivers/mmc/host/dw_mmc.c:674:29: sparse: sparse: restricted __le32 degrades to integer
+>> drivers/mmc/host/dw_mmc.c:674:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *ptr @@     got restricted __le32 * @@
+   drivers/mmc/host/dw_mmc.c:674:29: sparse:     expected void const volatile [noderef] __iomem *ptr
+   drivers/mmc/host/dw_mmc.c:674:29: sparse:     got restricted __le32 *
+   drivers/mmc/host/dw_mmc.c:674:29: sparse: sparse: restricted __le32 degrades to integer
+--
+   drivers/net/hamradio/mkiss.c:829:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/net/hamradio/mkiss.c:829:21: sparse:     expected int const *__gu_addr
+   drivers/net/hamradio/mkiss.c:829:21: sparse:     got int [noderef] __user *
+>> drivers/net/hamradio/mkiss.c:829:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/hamradio/mkiss.c:829:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/hamradio/mkiss.c:829:21: sparse:     got int const *__gu_addr
+--
+   drivers/scsi/sg.c:415:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/scsi/sg.c:415:21: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:415:21: sparse:     got int [noderef] __user *
+>> drivers/scsi/sg.c:415:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:415:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:415:21: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:419:32: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/scsi/sg.c:419:32: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:419:32: sparse:     got int [noderef] __user *
+   drivers/scsi/sg.c:419:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:419:32: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:419:32: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:425:32: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected signed int const *__gu_addr @@     got signed int [noderef] __user * @@
+   drivers/scsi/sg.c:425:32: sparse:     expected signed int const *__gu_addr
+   drivers/scsi/sg.c:425:32: sparse:     got signed int [noderef] __user *
+>> drivers/scsi/sg.c:425:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got signed int const *__gu_addr @@
+   drivers/scsi/sg.c:425:32: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:425:32: sparse:     got signed int const *__gu_addr
+   drivers/scsi/sg.c:431:32: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/scsi/sg.c:431:32: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:431:32: sparse:     got int [noderef] __user *
+   drivers/scsi/sg.c:431:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:431:32: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:431:32: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:638:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const *__gu_addr @@     got char const [noderef] __user *[assigned] buf @@
+   drivers/scsi/sg.c:638:13: sparse:     expected char const *__gu_addr
+   drivers/scsi/sg.c:638:13: sparse:     got char const [noderef] __user *[assigned] buf
+>> drivers/scsi/sg.c:638:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got char const *__gu_addr @@
+   drivers/scsi/sg.c:638:13: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:638:13: sparse:     got char const *__gu_addr
+   drivers/scsi/sg.c:955:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:955:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:955:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:955:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:955:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:955:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:998:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:998:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:998:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:998:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:998:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:998:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:1026:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:1026:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:1026:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:1026:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:1026:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:1026:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:1051:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:1051:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:1051:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:1051:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:1051:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:1051:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:1059:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:1059:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:1059:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:1059:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:1059:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:1059:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:1067:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:1067:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:1067:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:1067:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:1067:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:1067:26: sparse:     got int const *__gu_addr
+   drivers/scsi/sg.c:1111:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *ip @@
+   drivers/scsi/sg.c:1111:26: sparse:     expected int const *__gu_addr
+   drivers/scsi/sg.c:1111:26: sparse:     got int [noderef] __user *ip
+   drivers/scsi/sg.c:1111:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/scsi/sg.c:1111:26: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/scsi/sg.c:1111:26: sparse:     got int const *__gu_addr
+--
+   drivers/tty/ipwireless/network.c:174:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *user_arg @@
+   drivers/tty/ipwireless/network.c:174:21: sparse:     expected int const *__gu_addr
+   drivers/tty/ipwireless/network.c:174:21: sparse:     got int [noderef] __user *user_arg
+>> drivers/tty/ipwireless/network.c:174:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/tty/ipwireless/network.c:174:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/tty/ipwireless/network.c:174:21: sparse:     got int const *__gu_addr
+   drivers/tty/ipwireless/network.c:188:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *user_arg @@
+   drivers/tty/ipwireless/network.c:188:21: sparse:     expected int const *__gu_addr
+   drivers/tty/ipwireless/network.c:188:21: sparse:     got int [noderef] __user *user_arg
+   drivers/tty/ipwireless/network.c:188:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/tty/ipwireless/network.c:188:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/tty/ipwireless/network.c:188:21: sparse:     got int const *__gu_addr
+   drivers/tty/ipwireless/network.c:200:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *user_arg @@
+   drivers/tty/ipwireless/network.c:200:21: sparse:     expected int const *__gu_addr
+   drivers/tty/ipwireless/network.c:200:21: sparse:     got int [noderef] __user *user_arg
+   drivers/tty/ipwireless/network.c:200:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/tty/ipwireless/network.c:200:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/tty/ipwireless/network.c:200:21: sparse:     got int const *__gu_addr
+   drivers/tty/ipwireless/network.c:228:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *user_arg @@
+   drivers/tty/ipwireless/network.c:228:21: sparse:     expected int const *__gu_addr
+   drivers/tty/ipwireless/network.c:228:21: sparse:     got int [noderef] __user *user_arg
+   drivers/tty/ipwireless/network.c:228:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/tty/ipwireless/network.c:228:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/tty/ipwireless/network.c:228:21: sparse:     got int const *__gu_addr
+--
+   drivers/net/ppp/ppp_generic.c:925:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:925:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:925:21: sparse:     got int [noderef] __user *p
+>> drivers/net/ppp/ppp_generic.c:925:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:925:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:925:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:939:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:939:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:939:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:939:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:939:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:939:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:954:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:954:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:954:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:954:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:954:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:954:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:651:29: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:651:29: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:651:29: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:651:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:651:29: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:651:29: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:681:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:681:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:681:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:681:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:681:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:681:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:688:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:688:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:688:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:688:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:688:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:688:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:726:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:726:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:726:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:726:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:726:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:726:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:755:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:755:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:755:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:755:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:755:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:755:21: sparse:     got int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:823:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *p @@
+   drivers/net/ppp/ppp_generic.c:823:21: sparse:     expected int const *__gu_addr
+   drivers/net/ppp/ppp_generic.c:823:21: sparse:     got int [noderef] __user *p
+   drivers/net/ppp/ppp_generic.c:823:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/net/ppp/ppp_generic.c:823:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/net/ppp/ppp_generic.c:823:21: sparse:     got int const *__gu_addr
+--
+   drivers/vhost/scsi.c:1697:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user *eventsp @@
+   drivers/vhost/scsi.c:1697:21: sparse:     expected unsigned int const *__gu_addr
+   drivers/vhost/scsi.c:1697:21: sparse:     got unsigned int [noderef] [usertype] __user *eventsp
+>> drivers/vhost/scsi.c:1697:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/vhost/scsi.c:1697:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/vhost/scsi.c:1697:21: sparse:     got unsigned int const *__gu_addr
+--
+   drivers/vhost/vringh.c:567:18: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected restricted __virtio16 const *__gu_addr @@     got restricted __virtio16 [noderef] [usertype] __user * @@
+   drivers/vhost/vringh.c:567:18: sparse:     expected restricted __virtio16 const *__gu_addr
+   drivers/vhost/vringh.c:567:18: sparse:     got restricted __virtio16 [noderef] [usertype] __user *
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got restricted __virtio16 const *__gu_addr @@
+   drivers/vhost/vringh.c:567:18: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/vhost/vringh.c:567:18: sparse:     got restricted __virtio16 const *__gu_addr
+--
+   drivers/vhost/vhost.c:1571:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user *idxp @@
+   drivers/vhost/vhost.c:1571:13: sparse:     expected unsigned int const *__gu_addr
+   drivers/vhost/vhost.c:1571:13: sparse:     got unsigned int [noderef] [usertype] __user *idxp
+>> drivers/vhost/vhost.c:1571:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/vhost/vhost.c:1571:13: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/vhost/vhost.c:1571:13: sparse:     got unsigned int const *__gu_addr
+   drivers/vhost/vhost.c:1771:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user * @@
+   drivers/vhost/vhost.c:1771:21: sparse:     expected int const *__gu_addr
+   drivers/vhost/vhost.c:1771:21: sparse:     got int [noderef] __user *
+>> drivers/vhost/vhost.c:1771:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   drivers/vhost/vhost.c:1771:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/vhost/vhost.c:1771:21: sparse:     got int const *__gu_addr
+--
+   drivers/video/fbdev/s3c-fb.c:1024:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user * @@
+   drivers/video/fbdev/s3c-fb.c:1024:21: sparse:     expected unsigned int const *__gu_addr
+   drivers/video/fbdev/s3c-fb.c:1024:21: sparse:     got unsigned int [noderef] [usertype] __user *
+>> drivers/video/fbdev/s3c-fb.c:1024:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   drivers/video/fbdev/s3c-fb.c:1024:21: sparse:     expected void const volatile [noderef] __user *ptr
+   drivers/video/fbdev/s3c-fb.c:1024:21: sparse:     got unsigned int const *__gu_addr
+--
+   net/llc/af_llc.c:1147:14: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/llc/af_llc.c:1147:14: sparse:     expected int const *__gu_addr
+   net/llc/af_llc.c:1147:14: sparse:     got int [noderef] __user *optlen
+>> net/llc/af_llc.c:1147:14: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/llc/af_llc.c:1147:14: sparse:     expected void const volatile [noderef] __user *ptr
+   net/llc/af_llc.c:1147:14: sparse:     got int const *__gu_addr
+--
+   net/netlink/af_netlink.c:1734:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/netlink/af_netlink.c:1734:13: sparse:     expected int const *__gu_addr
+   net/netlink/af_netlink.c:1734:13: sparse:     got int [noderef] __user *optlen
+>> net/netlink/af_netlink.c:1734:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/netlink/af_netlink.c:1734:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/netlink/af_netlink.c:1734:13: sparse:     got int const *__gu_addr
+   net/netlink/af_netlink.c:2535:13: sparse: sparse: context imbalance in 'netlink_walk_start' - wrong count at exit
+   net/netlink/af_netlink.c:2541:13: sparse: sparse: context imbalance in 'netlink_walk_stop' - unexpected unlock
+   net/netlink/af_netlink.c:2591:9: sparse: sparse: context imbalance in 'netlink_seq_start' - wrong count at exit
+--
+   net/bluetooth/rfcomm/sock.c:769:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/rfcomm/sock.c:769:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/rfcomm/sock.c:769:13: sparse:     got int [noderef] __user *optlen
+>> net/bluetooth/rfcomm/sock.c:769:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/rfcomm/sock.c:769:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/rfcomm/sock.c:769:13: sparse:     got int const *__gu_addr
+   net/bluetooth/rfcomm/sock.c:847:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/bluetooth/rfcomm/sock.c:847:13: sparse:     expected int const *__gu_addr
+   net/bluetooth/rfcomm/sock.c:847:13: sparse:     got int [noderef] __user *optlen
+   net/bluetooth/rfcomm/sock.c:847:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/bluetooth/rfcomm/sock.c:847:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/bluetooth/rfcomm/sock.c:847:13: sparse:     got int const *__gu_addr
+--
+   net/ethtool/ioctl.c:81:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned int const *__gu_addr @@     got unsigned int [noderef] [usertype] __user *[assigned] sizeaddr @@
+   net/ethtool/ioctl.c:81:13: sparse:     expected unsigned int const *__gu_addr
+   net/ethtool/ioctl.c:81:13: sparse:     got unsigned int [noderef] [usertype] __user *[assigned] sizeaddr
+>> net/ethtool/ioctl.c:81:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got unsigned int const *__gu_addr @@
+   net/ethtool/ioctl.c:81:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ethtool/ioctl.c:81:13: sparse:     got unsigned int const *__gu_addr
+--
+   net/ipv4/ip_sockglue.c:1530:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/ip_sockglue.c:1530:13: sparse:     expected int const *__gu_addr
+   net/ipv4/ip_sockglue.c:1530:13: sparse:     got int [noderef] __user *optlen
+>> net/ipv4/ip_sockglue.c:1530:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/ip_sockglue.c:1530:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/ip_sockglue.c:1530:13: sparse:     got int const *__gu_addr
+   net/ipv4/ip_sockglue.c:1775:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/ip_sockglue.c:1775:21: sparse:     expected int const *__gu_addr
+   net/ipv4/ip_sockglue.c:1775:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/ip_sockglue.c:1775:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/ip_sockglue.c:1775:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/ip_sockglue.c:1775:21: sparse:     got int const *__gu_addr
+--
+   net/ipv4/tcp.c:3577:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3577:13: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3577:13: sparse:     got int [noderef] __user *optlen
+>> net/ipv4/tcp.c:3577:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3577:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3577:13: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3626:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3626:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3626:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3626:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3626:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3626:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3644:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3644:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3644:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3644:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3644:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3644:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3663:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3663:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3663:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3663:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3663:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3663:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3673:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3673:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3673:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3673:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3673:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3673:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3691:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3691:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3691:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3691:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3691:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3691:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3725:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3725:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3725:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3725:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3725:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3725:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3786:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3786:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3786:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3786:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3786:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3786:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c:3823:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/tcp.c:3823:21: sparse:     expected int const *__gu_addr
+   net/ipv4/tcp.c:3823:21: sparse:     got int [noderef] __user *optlen
+   net/ipv4/tcp.c:3823:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/tcp.c:3823:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/tcp.c:3823:21: sparse:     got int const *__gu_addr
+   net/ipv4/tcp.c: note: in included file (through include/net/inet_sock.h, include/net/ip.h, include/linux/errqueue.h):
+   include/net/sock.h:1610:31: sparse: sparse: context imbalance in 'tcp_ioctl' - unexpected unlock
+   include/net/sock.h:1610:31: sparse: sparse: context imbalance in 'tcp_get_info' - unexpected unlock
+--
+   net/ipv4/raw.c:825:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/raw.c:825:13: sparse:     expected int const *__gu_addr
+   net/ipv4/raw.c:825:13: sparse:     got int [noderef] __user *optlen
+>> net/ipv4/raw.c:825:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/raw.c:825:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/raw.c:825:13: sparse:     got int const *__gu_addr
+   net/ipv4/raw.c: note: in included file (through arch/sh/include/asm/checksum.h, include/net/checksum.h, include/linux/skbuff.h, ...):
+   arch/sh/include/asm/checksum_32.h:116:27: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __wsum [usertype] sum @@     got unsigned int [assigned] sum @@
+   arch/sh/include/asm/checksum_32.h:116:27: sparse:     expected restricted __wsum [usertype] sum
+   arch/sh/include/asm/checksum_32.h:116:27: sparse:     got unsigned int [assigned] sum
+--
+   net/ipv4/udp.c:2720:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/udp.c:2720:13: sparse:     expected int const *__gu_addr
+   net/ipv4/udp.c:2720:13: sparse:     got int [noderef] __user *optlen
+>> net/ipv4/udp.c:2720:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/udp.c:2720:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/udp.c:2720:13: sparse:     got int const *__gu_addr
+   net/ipv4/udp.c:1457:28: sparse: sparse: context imbalance in 'udp_rmem_release' - unexpected unlock
+   net/ipv4/udp.c:1489:19: sparse: sparse: context imbalance in 'busylock_acquire' - wrong count at exit
+   net/ipv4/udp.c:1501:28: sparse: sparse: context imbalance in 'busylock_release' - unexpected unlock
+   net/ipv4/udp.c: note: in included file (through include/net/inet_sock.h, include/net/icmp.h):
+   include/net/sock.h:1610:31: sparse: sparse: context imbalance in 'skb_consume_udp' - unexpected unlock
+   include/net/sock.h:1610:31: sparse: sparse: context imbalance in 'udp_destroy_sock' - unexpected unlock
+   net/ipv4/udp.c:2888:9: sparse: sparse: context imbalance in 'udp_get_first' - wrong count at exit
+   net/ipv4/udp.c:2910:39: sparse: sparse: context imbalance in 'udp_get_next' - unexpected unlock
+   net/ipv4/udp.c:2960:31: sparse: sparse: context imbalance in 'udp_seq_stop' - unexpected unlock
+--
+   net/ipv4/bpfilter/sockopt.c:65:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ipv4/bpfilter/sockopt.c:65:13: sparse:     expected int const *__gu_addr
+   net/ipv4/bpfilter/sockopt.c:65:13: sparse:     got int [noderef] __user *optlen
+>> net/ipv4/bpfilter/sockopt.c:65:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ipv4/bpfilter/sockopt.c:65:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ipv4/bpfilter/sockopt.c:65:13: sparse:     got int const *__gu_addr
+--
+   net/tls/tls_main.c:341:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/tls/tls_main.c:341:13: sparse:     expected int const *__gu_addr
+   net/tls/tls_main.c:341:13: sparse:     got int [noderef] __user *optlen
+>> net/tls/tls_main.c:341:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/tls/tls_main.c:341:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/tls/tls_main.c:341:13: sparse:     got int const *__gu_addr
+--
+   net/packet/af_packet.c:3942:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/packet/af_packet.c:3942:13: sparse:     expected int const *__gu_addr
+   net/packet/af_packet.c:3942:13: sparse:     got int [noderef] __user *optlen
+>> net/packet/af_packet.c:3942:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/packet/af_packet.c:3942:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/packet/af_packet.c:3942:13: sparse:     got int const *__gu_addr
+   net/packet/af_packet.c:1008:13: sparse: sparse: context imbalance in '__packet_lookup_frame_in_block' - different lock contexts for basic block
+   net/packet/af_packet.c:2402:17: sparse: sparse: context imbalance in 'tpacket_rcv' - unexpected unlock
+--
+   net/x25/af_x25.c:470:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/x25/af_x25.c:470:13: sparse:     expected int const *__gu_addr
+   net/x25/af_x25.c:470:13: sparse:     got int [noderef] __user *optlen
+>> net/x25/af_x25.c:470:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/x25/af_x25.c:470:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/x25/af_x25.c:470:13: sparse:     got int const *__gu_addr
+--
+   net/netrom/af_netrom.c:359:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/netrom/af_netrom.c:359:13: sparse:     expected int const *__gu_addr
+   net/netrom/af_netrom.c:359:13: sparse:     got int [noderef] __user *optlen
+>> net/netrom/af_netrom.c:359:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/netrom/af_netrom.c:359:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/netrom/af_netrom.c:359:13: sparse:     got int const *__gu_addr
+--
+   net/ax25/af_ax25.c:695:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/ax25/af_ax25.c:695:13: sparse:     expected int const *__gu_addr
+   net/ax25/af_ax25.c:695:13: sparse:     got int [noderef] __user *optlen
+>> net/ax25/af_ax25.c:695:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/ax25/af_ax25.c:695:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ax25/af_ax25.c:695:13: sparse:     got int const *__gu_addr
+   net/ax25/af_ax25.c:1742:21: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected long const *__gu_addr @@     got long [noderef] __user * @@
+   net/ax25/af_ax25.c:1742:21: sparse:     expected long const *__gu_addr
+   net/ax25/af_ax25.c:1742:21: sparse:     got long [noderef] __user *
+>> net/ax25/af_ax25.c:1742:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got long const *__gu_addr @@
+   net/ax25/af_ax25.c:1742:21: sparse:     expected void const volatile [noderef] __user *ptr
+   net/ax25/af_ax25.c:1742:21: sparse:     got long const *__gu_addr
+--
+   net/can/raw.c:659:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected int const *__gu_addr @@     got int [noderef] __user *optlen @@
+   net/can/raw.c:659:13: sparse:     expected int const *__gu_addr
+   net/can/raw.c:659:13: sparse:     got int [noderef] __user *optlen
+>> net/can/raw.c:659:13: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __user *ptr @@     got int const *__gu_addr @@
+   net/can/raw.c:659:13: sparse:     expected void const volatile [noderef] __user *ptr
+   net/can/raw.c:659:13: sparse:     got int const *__gu_addr
+
+vim +697 net/rxrpc/af_rxrpc.c
+
+17926a79320afa David Howells 2007-04-26  685  
+515559ca217132 David Howells 2017-06-07  686  /*
+515559ca217132 David Howells 2017-06-07  687   * Get socket options.
+515559ca217132 David Howells 2017-06-07  688   */
+515559ca217132 David Howells 2017-06-07  689  static int rxrpc_getsockopt(struct socket *sock, int level, int optname,
+515559ca217132 David Howells 2017-06-07  690  			    char __user *optval, int __user *_optlen)
+515559ca217132 David Howells 2017-06-07  691  {
+515559ca217132 David Howells 2017-06-07  692  	int optlen;
+515559ca217132 David Howells 2017-06-07  693  
+515559ca217132 David Howells 2017-06-07  694  	if (level != SOL_RXRPC)
+515559ca217132 David Howells 2017-06-07  695  		return -EOPNOTSUPP;
+515559ca217132 David Howells 2017-06-07  696  
+515559ca217132 David Howells 2017-06-07 @697  	if (get_user(optlen, _optlen))
+515559ca217132 David Howells 2017-06-07  698  		return -EFAULT;
+515559ca217132 David Howells 2017-06-07  699  
+515559ca217132 David Howells 2017-06-07  700  	switch (optname) {
+515559ca217132 David Howells 2017-06-07  701  	case RXRPC_SUPPORTED_CMSG:
+515559ca217132 David Howells 2017-06-07  702  		if (optlen < sizeof(int))
+515559ca217132 David Howells 2017-06-07  703  			return -ETOOSMALL;
+515559ca217132 David Howells 2017-06-07  704  		if (put_user(RXRPC__SUPPORTED - 1, (int __user *)optval) ||
+515559ca217132 David Howells 2017-06-07  705  		    put_user(sizeof(int), _optlen))
+515559ca217132 David Howells 2017-06-07  706  			return -EFAULT;
+515559ca217132 David Howells 2017-06-07  707  		return 0;
+515559ca217132 David Howells 2017-06-07  708  
+515559ca217132 David Howells 2017-06-07  709  	default:
+515559ca217132 David Howells 2017-06-07  710  		return -EOPNOTSUPP;
+515559ca217132 David Howells 2017-06-07  711  	}
+515559ca217132 David Howells 2017-06-07  712  }
+515559ca217132 David Howells 2017-06-07  713  
+
+:::::: The code at line 697 was first introduced by commit
+:::::: 515559ca21713218595f3a4dad44a4e7eea2fcfb rxrpc: Provide a getsockopt call to query what cmsgs types are supported
+
+:::::: TO: David Howells <dhowells@redhat.com>
+:::::: CC: David Howells <dhowells@redhat.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
