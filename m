@@ -2,63 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BEB7653AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4418B7653B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbjG0MX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
+        id S233790AbjG0MYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233983AbjG0MXc (ORCPT
+        with ESMTP id S233043AbjG0MXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:23:32 -0400
+        Thu, 27 Jul 2023 08:23:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAEF30F3;
-        Thu, 27 Jul 2023 05:23:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE5D30FB;
+        Thu, 27 Jul 2023 05:23:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C7DB61E39;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 60AE561E61;
+        Thu, 27 Jul 2023 12:23:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D6F3C433C8;
         Thu, 27 Jul 2023 12:23:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FA5EC433C7;
-        Thu, 27 Jul 2023 12:22:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690460580;
-        bh=YEUaN3MAYqvBNyV2BN0EfRdtbsnSlDcYdBV+Ec5bGew=;
+        s=k20201202; t=1690460582;
+        bh=aBgrpdn2C/ogY6Z8opCycuHSOFI29w3XA6CeMb63NLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=al5StR1U2A5QhAkVjg9jgc8Xl+SdFwMukysvKgeAqH83RA9BmwjXj+oPuFL3gv/SQ
-         +Ff3/x6ESWNEXYFWR6Rkb7LjADpheGl4rRvUdvbPAsSa9eivD5gFGEpETwmIJBUSK5
-         6RQdYwmlGSS6vPAF5bHCeGcSc3gOIU0B6SswuBbZTdT0ZoH89g5MwrvlX5MFYI6OLp
-         dwKx6sZpCqie0ZKmB2z1FjO4M50Or7P+DOAUvO8FnYHzp7s3ptqHaXohOJ4S6Ye+Ru
-         oXxhSTKZ+ehFR+bJwXOIP3Iw+Xbu1aGnuRBNNRWbsa7gEKpuhDC4xPzL2qROn0oGvJ
-         GB7MoYz1arqVg==
+        b=kjeMMoSMJlEKvvONBbiwnALXHp+zkTwWQibQZ5Kz2LqtYsmQCLIIArdpB2wFfyYaz
+         Q8qW2GAufCGIGaMvxkxaP6MFaVIvy2qc5jjEvb2AQ/C94NPZe1Zi751oIPsAzAhp1C
+         HWKnfpUNNvHKgPTCRByn6945mbMlQD+V7G9oealDDfQWZ2CfzaL7DNWTa2sdtzzarc
+         s0EKSZ2s1m4+mIWCrRU1h/YiqUg0j9fT7nN/248gO/YANO/jq+uRjz03k4q3nGe23P
+         4DvqM//cpWbxE4L6E0tQ5CVBut4slDY6zUQCtcZAzn3ckrXKLDzxvJ/xJ9lnOTWN0X
+         dIiYS87MlA5+w==
 From:   Will Deacon <will@kernel.org>
-To:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        linux-arm-kernel@lists.infradead.org,
-        James Clark <james.clark@arm.com>, Leo Yan <leo.yan@linaro.org>
-Subject: Re: [PATCH v4 0/4] Add JSON metrics for Yitian710 DDR
-Date:   Thu, 27 Jul 2023 13:22:33 +0100
-Message-Id: <169045902550.3247310.8131913678229023529.b4-ty@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: errata: Group all Cortex-A510 errata together
+Date:   Thu, 27 Jul 2023 13:22:34 +0100
+Message-Id: <169045187546.2092077.1260688948809023815.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1687245156-61215-1-git-send-email-renyu.zj@linux.alibaba.com>
-References: <1687245156-61215-1-git-send-email-renyu.zj@linux.alibaba.com>
+In-Reply-To: <20230706203030.276437-1-robh@kernel.org>
+References: <20230706203030.276437-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -72,25 +58,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jun 2023 15:12:32 +0800, Jing Zhang wrote:
-> I add an identifier sysfs file for the yitian710 SoC DDR to allow
-> userspace to identify the specific implementation of the device,
-> so that the perf tool can match the corresponding uncore events and
-> metrics through the identifier. Then added yitian710 SoC DDR
-> metrics and events alias.
+On Thu, 6 Jul 2023 14:30:31 -0600, Rob Herring wrote:
+> There are 2 sections of Cortex-A510 errata. As the ordering within
+> vendors is in order by CPU/IP name, move the 2nd section up to the 1st
+> section of A510 errata.
 > 
-> Change since v3:
-> - Split the CMN and ali_drw patches. This patchset only contains
->   ali_drw PMU related patches. The CMN metric related patches will
->   be in another patchset.
-> - Link: https://lore.kernel.org/all/1685438374-33287-1-git-send-email-renyu.zj@linux.alibaba.com/
 > 
-> [...]
 
-Applied first patch to will (for-next/perf), thanks!
+Applied to arm64 (for-next/errata), thanks!
 
-[1/4] driver/perf: Add identifier sysfs file for Yitian 710 DDR
-      https://git.kernel.org/will/c/cbbc6fdd85be
+[1/1] arm64: errata: Group all Cortex-A510 errata together
+      https://git.kernel.org/arm64/c/cce8365fc47b
 
 Cheers,
 -- 
