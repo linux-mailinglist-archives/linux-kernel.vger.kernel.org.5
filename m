@@ -2,103 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8BF76529C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3FE76529F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjG0LiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        id S232954AbjG0Lit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjG0LiF (ORCPT
+        with ESMTP id S233061AbjG0Lid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:38:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92544135;
-        Thu, 27 Jul 2023 04:38:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D8A961E3F;
-        Thu, 27 Jul 2023 11:38:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C123BC433C7;
-        Thu, 27 Jul 2023 11:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690457883;
-        bh=qrtv8LuFgEy9QtuElB5WTipNRE0V3By2gWSVepbtQ7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sdkokuZRWEn5yIwSR1hterBm6FSsAhtG+jbCndMx6XxALfVuCKl/EuleMUM0bdERm
-         vlG8lLoK9tRysxzXpnsga85ookK4+x+9YHw0BPl1ctmktShDIArBwU7+W/PUuA3DEq
-         QttNbUx/ftjwscPBLVMWfcPWyXLu6TbOK8n6MSdFNhTNVv4xQ/Ow4o5Xxq1PC2YovR
-         gkzKJ2zZZNatXj68QCgBJ+KxsY+LkjnARjJLeBK2ORPV571h3PusBzcTgdLXDMxFY+
-         3jU0d9WnX771OebuCQXc7gGm8oprPDHIPtkNEe7yEv7FdNpz8gD3L1cDbPFlHktI22
-         CjXyDZ/NpL4jA==
-Date:   Thu, 27 Jul 2023 12:37:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v13 2/2] spi: loongson: add bus driver for the loongson
- spi controller
-Message-ID: <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
-References: <20230613075834.5219-1-zhuyinbo@loongson.cn>
- <20230613075834.5219-3-zhuyinbo@loongson.cn>
- <3822f248-39dc-fb8d-321a-7b6c833cbb3e@loongson.cn>
+        Thu, 27 Jul 2023 07:38:33 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F892681
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:38:27 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-522294c0d5bso1049385a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690457906; x=1691062706;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HKAs431Bm4xEbaSQXQ9BM/afLY0CvDY23KSbDRlnwNo=;
+        b=Ypv1o8BgYjuDcZ7ushj3SbpVo+KU32Wn1eqygnl0xhiiuYEIuF+gmqHNCpssfyFTw2
+         Tns7UgypDi0+5EPISF/czQcPOzPkfY9HuRsaTR6ik1l/3/LZfw7RuiQxX+cw+lOv8rf9
+         nNdnJk2vWMdzApDrUVuSWPea5KWcSDsZdQ3WBUvKPO8Qf7SDCg38GktEHVJ8vhTkD12m
+         zty2aRplk1k53murNiBXni6LlbqsDqZZa+++XzAOkCGrCTxcJwHNrUKRBNssrzCFCcc/
+         1CnnFlKe1v5r1C/Qj8cxWc9gmAWZBOLT0+vJX4FMMhcgUgzTy9UgCA76E1fxcHobeTQ/
+         qBDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690457906; x=1691062706;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HKAs431Bm4xEbaSQXQ9BM/afLY0CvDY23KSbDRlnwNo=;
+        b=dj2Ba5tDyGY/8uaV5gkJnmPnN+KK5WBlNmigVx1O1XRohge+eeOIjZlgwsdre2rkab
+         m3zbh0i6diiFP4zsJuLiw/PmakZrZmST7fNkkDMPYoxef22qg/szfZTW0hla02/F/Wyn
+         khKcK0v2I2Nh90wjMz2U3bH+8hkNAp6VQ2b85LdWqd2LOC//gtxtaaleol/cqY9bVKcv
+         BTepG128Usga/GtHrIti+f+UrbAayIAq9SzYw3bUqngOl3of0NOHrK6/b2WmJhHBU/B1
+         rHiaVkXS9G+V/Y4fQTI/fUb+2dxyJDEFtQY984uuAzuqhxsAjm9dhf/ze86QDdD6ZFkQ
+         R2VQ==
+X-Gm-Message-State: ABy/qLZYw/MZJQ1xG/8VkDmUHxdvxtNgmTatI9PWm4riBgskGY/YtWyJ
+        F6sWg0SHm80eOpYWCOD8/vI=
+X-Google-Smtp-Source: APBJJlGNYgdM1ATO7HXpFFiXg7RPLrFw7t8B2RPgdSyryAXi7EBk0RN/kbsDCbjxYlmuPVSHaleyHw==
+X-Received: by 2002:aa7:d612:0:b0:521:a4bb:374f with SMTP id c18-20020aa7d612000000b00521a4bb374fmr1797881edr.5.1690457906040;
+        Thu, 27 Jul 2023 04:38:26 -0700 (PDT)
+Received: from f.. (cst-prg-78-36.cust.vodafone.cz. [46.135.78.36])
+        by smtp.gmail.com with ESMTPSA id b26-20020aa7d49a000000b0051dfa2e30b2sm550336edr.9.2023.07.27.04.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 04:38:25 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH] file: mostly eliminate spurious relocking in __range_close
+Date:   Thu, 27 Jul 2023 13:38:09 +0200
+Message-Id: <20230727113809.800067-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JjBX8JpJbtjo1Snt"
-Content-Disposition: inline
-In-Reply-To: <3822f248-39dc-fb8d-321a-7b6c833cbb3e@loongson.cn>
-X-Cookie: Go 'way!  You're bothering me!
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Stock code takes a lock trip for every fd in range, but this can be
+trivially avoided and real-world consumers do have plenty of already
+closed cases.
 
---JjBX8JpJbtjo1Snt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just booting Debian 12 with a debug printk shows:
+(sh) min 3 max 17 closed 15 empty 0
+(sh) min 19 max 63 closed 31 empty 14
+(sh) min 4 max 63 closed 0 empty 60
+(spawn) min 3 max 63 closed 13 empty 48
+(spawn) min 3 max 63 closed 13 empty 48
+(mount) min 3 max 17 closed 15 empty 0
+(mount) min 19 max 63 closed 32 empty 13
 
-On Thu, Jul 27, 2023 at 11:09:16AM +0800, Yinbo Zhu wrote:
+and so on.
 
-> Friendly ping ?
+While here use more idiomatic naming.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
+An avoidable relock is left in place to avoid uglifying the code.
+The code was not switched to bitmap traversal for the same reason.
 
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, so sending again is generally a better approach though there are
-some other maintainers who like them - if in doubt look at how patches
-for the subsystem are normally handled.
+Tested with ltp kernel/syscalls/close_range
 
---JjBX8JpJbtjo1Snt
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ fs/file.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/file.c b/fs/file.c
+index 35c62b54c9d6..5483c052ce93 100644
+--- a/fs/file.c
++++ b/fs/file.c
+@@ -693,29 +693,25 @@ static inline void __range_cloexec(struct files_struct *cur_fds,
+ 	spin_unlock(&cur_fds->file_lock);
+ }
+ 
+-static inline void __range_close(struct files_struct *cur_fds, unsigned int fd,
++static inline void __range_close(struct files_struct *files, unsigned int fd,
+ 				 unsigned int max_fd)
+ {
++	struct file *file;
+ 	unsigned n;
+ 
+-	rcu_read_lock();
+-	n = last_fd(files_fdtable(cur_fds));
+-	rcu_read_unlock();
++	spin_lock(&files->file_lock);
++	n = last_fd(files_fdtable(files));
+ 	max_fd = min(max_fd, n);
+-
+-	while (fd <= max_fd) {
+-		struct file *file;
+-
+-		spin_lock(&cur_fds->file_lock);
+-		file = pick_file(cur_fds, fd++);
+-		spin_unlock(&cur_fds->file_lock);
+-
+-		if (file) {
+-			/* found a valid file to close */
+-			filp_close(file, cur_fds);
++	for (; fd <= max_fd; fd++) {
++		file = pick_file(files, fd);
++		if (file != NULL) {
++			spin_unlock(&files->file_lock);
++			filp_close(file, files);
+ 			cond_resched();
++			spin_lock(&files->file_lock);
+ 		}
+ 	}
++	spin_unlock(&files->file_lock);
+ }
+ 
+ /**
+-- 
+2.34.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTCVxYACgkQJNaLcl1U
-h9DDmQf/SxCfcU7xLJb1VQ6Trs2YQcIm+5DBqkYB2kwMc7RkN149QH3JVV7WDZ81
-r88Ke9O2Ytk+ahFIoRXEYFwF+tUKgusjLDl3vqBqAYkERSiDA1y+/d1L7/sd2Yl5
-MYjnvsPV4EFsWaueRhUruviD1j2uj+4XtvQ30H1Uc4tt1VrjdaLHKFXE+dXB00PL
-VgVsNRdRNt/WsHQG7KRgzco/SZXfgmO1HcN/2xO42L4usItL5a+6lWzfoWDs50Co
-OePM/jOw0Bpik43CrmG2jZWlZYHCTAfUaz43FGW+qbIMpwjtl3lwMJUh1TKvHcw0
-09aP7Uv6TrzACgTRB6T3wMPjY8GKYQ==
-=7E8u
------END PGP SIGNATURE-----
-
---JjBX8JpJbtjo1Snt--
