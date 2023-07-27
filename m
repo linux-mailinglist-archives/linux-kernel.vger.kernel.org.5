@@ -2,43 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662FE764B54
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B75764A8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbjG0IOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49994 "EHLO
+        id S233670AbjG0IKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234270AbjG0INn (ORCPT
+        with ESMTP id S233648AbjG0IKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:13:43 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8AEF065A0;
-        Thu, 27 Jul 2023 01:09:03 -0700 (PDT)
-Received: from prodtpl.icoremail.net (unknown [10.12.1.20])
-        by hzbj-icmmx-7 (Coremail) with SMTP id AQAAfwCHClxrJcJkzK62BQ--.24861S2;
-        Thu, 27 Jul 2023 16:06:03 +0800 (CST)
-Received: from phytium.com.cn (unknown [60.27.159.40])
-        by mail (Coremail) with SMTP id AQAAfwCHsgRoJcJkvl0AAA--.2811S3;
-        Thu, 27 Jul 2023 16:06:01 +0800 (CST)
-From:   Zhang Yiqun <zhangyiqun@phytium.com.cn>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Yiqun <zhangyiqun@phytium.com.cn>
-Subject: [PATCH] crypto: all - alloc and init all req alloc as zero
-Date:   Thu, 27 Jul 2023 16:05:48 +0800
-Message-Id: <20230727080548.8666-1-zhangyiqun@phytium.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAfwCHsgRoJcJkvl0AAA--.2811S3
-X-CM-SenderInfo: x2kd0wp1lt30o6sk53xlxphulrpou0/
-Authentication-Results: hzbj-icmmx-7; spf=neutral smtp.mail=zhangyiqun
-        @phytium.com.cn;
-X-Coremail-Antispam: 1Uk129KBjvJXoW7AFy7WF1rJrWktw1xAw4Dtwb_yoW8KryfpF
-        sIka92yFW5XFyvkr18uF93tr95Ww48u3W3t348Ww1xAr4agryvqrZxArW8ZF1UAFZ5GrW8
-        CFZFgw15Xw1DWFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        DUYxn0WfASr-VFAU7a7-sFnT9fnUUIcSsGvfJ3UbIYCTnIWIevJa73UjIFyTuYvj4RJUUU
-        UUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        Thu, 27 Jul 2023 04:10:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382132D4F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:07:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C4BD61DA9
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:05:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540E1C433C9;
+        Thu, 27 Jul 2023 08:05:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690445152;
+        bh=hI1dHJR15QlDn6+LJsqscQtpSytDcyxsnuee5JIyW8M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RFkiZjLFKiKpljvj7vWwExrxR0zEF2+1S+0hJia2KkSuScTxnPuo1SF1Jk2JnJqHG
+         h8424eeFLhOaQIUy7lTufjLSNzdVH+fxbNZOwqv3j5swHI6eYWjNEGRWNdAnBzNNlS
+         ktWgDq6gTLRYrS8qqvof3G88ijRjWdl1z2snkekc=
+Date:   Thu, 27 Jul 2023 10:05:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tree Davies <tdavies@darkphysics.net>
+Cc:     philipp.g.hortmann@gmail.com, anjan@momi.ca, error27@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] Staging: rtl8192e: Rename function ResetBaEntry
+Message-ID: <2023072731-turtle-reassure-568d@gregkh>
+References: <20230727061948.579480-1-tdavies@darkphysics.net>
+ <20230727061948.579480-6-tdavies@darkphysics.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727061948.579480-6-tdavies@darkphysics.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -47,70 +53,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to change all req struct alloc function from kmalloc
-to kzalloc. Sometimes, it will incur some errors without initialized
-zero.
+On Wed, Jul 26, 2023 at 11:19:48PM -0700, Tree Davies wrote:
+> Rename function ResetBaEntry to reset_ba_entry in order to Fix checkpatch
+> warning: Avoid CamelCase
+> 
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+> v2: Sent with git send-email
+>  drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
+>  drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
+>  drivers/staging/rtl8192e/rtllib.h         | 2 +-
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> index 9662d75257ce..cb6450206763 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> @@ -54,7 +54,7 @@ static u8 rx_ts_delete_ba(struct rtllib_device *ieee, struct rx_ts_record *pRxTs
+>  	return bSendDELBA;
+>  }
+>  
+> -void ResetBaEntry(struct ba_record *pBA)
+> +void reset_ba_entry(struct ba_record *pBA)
+>  {
+>  	pBA->b_valid			  = false;
+>  	pBA->ba_param_set.short_data	  = 0;
+> diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> index c61fdf73c572..21ffbb6b231f 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> @@ -117,8 +117,8 @@ static void ResetTxTsEntry(struct tx_ts_record *pTS)
+>  	pTS->bAddBaReqDelayed = false;
+>  	pTS->bUsingBa = false;
+>  	pTS->bDisable_AddBa = false;
+> -	ResetBaEntry(&pTS->TxAdmittedBARecord);
+> -	ResetBaEntry(&pTS->TxPendingBARecord);
+> +	reset_ba_entry(&pTS->TxAdmittedBARecord);
+> +	reset_ba_entry(&pTS->TxPendingBARecord);
+>  }
+>  
+>  static void ResetRxTsEntry(struct rx_ts_record *pTS)
+> @@ -126,7 +126,7 @@ static void ResetRxTsEntry(struct rx_ts_record *pTS)
+>  	ResetTsCommonInfo(&pTS->ts_common_info);
+>  	pTS->rx_indicate_seq = 0xffff;
+>  	pTS->rx_timeout_indicate_seq = 0xffff;
+> -	ResetBaEntry(&pTS->rx_admitted_ba_record);
+> +	reset_ba_entry(&pTS->rx_admitted_ba_record);
+>  }
+>  
+>  void TSInitialize(struct rtllib_device *ieee)
+> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> index e3ce4431d460..ccc9e7bbbcbb 100644
+> --- a/drivers/staging/rtl8192e/rtllib.h
+> +++ b/drivers/staging/rtl8192e/rtllib.h
+> @@ -2016,7 +2016,7 @@ void TsInitDelBA(struct rtllib_device *ieee,
+>  void BaSetupTimeOut(struct timer_list *t);
+>  void TxBaInactTimeout(struct timer_list *t);
+>  void RxBaInactTimeout(struct timer_list *t);
+> -void ResetBaEntry(struct ba_record *pBA);
+> +void reset_ba_entry(struct ba_record *pBA);
 
-Signed-off-by: Zhang Yiqun <zhangyiqun@phytium.com.cn>
----
- include/crypto/akcipher.h | 2 +-
- include/crypto/hash.h     | 2 +-
- include/crypto/kpp.h      | 2 +-
- include/crypto/skcipher.h | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+Again, this is a global symbol name, please prefix it with rtllib_
 
-diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
-index 670508f1dca1..b6f2121fcb85 100644
---- a/include/crypto/akcipher.h
-+++ b/include/crypto/akcipher.h
-@@ -223,7 +223,7 @@ static inline struct akcipher_request *akcipher_request_alloc(
- {
- 	struct akcipher_request *req;
- 
--	req = kmalloc(sizeof(*req) + crypto_akcipher_reqsize(tfm), gfp);
-+	req = kzalloc(sizeof(*req) + crypto_akcipher_reqsize(tfm), gfp);
- 	if (likely(req))
- 		akcipher_request_set_tfm(req, tfm);
- 
-diff --git a/include/crypto/hash.h b/include/crypto/hash.h
-index f7c2a22cd776..38429fb7bbf7 100644
---- a/include/crypto/hash.h
-+++ b/include/crypto/hash.h
-@@ -651,7 +651,7 @@ static inline struct ahash_request *ahash_request_alloc(
- {
- 	struct ahash_request *req;
- 
--	req = kmalloc(sizeof(struct ahash_request) +
-+	req = kzalloc(sizeof(struct ahash_request) +
- 		      crypto_ahash_reqsize(tfm), gfp);
- 
- 	if (likely(req))
-diff --git a/include/crypto/kpp.h b/include/crypto/kpp.h
-index 1988e24a0d1d..b4622bb747f9 100644
---- a/include/crypto/kpp.h
-+++ b/include/crypto/kpp.h
-@@ -201,7 +201,7 @@ static inline struct kpp_request *kpp_request_alloc(struct crypto_kpp *tfm,
- {
- 	struct kpp_request *req;
- 
--	req = kmalloc(sizeof(*req) + crypto_kpp_reqsize(tfm), gfp);
-+	req = kzalloc(sizeof(*req) + crypto_kpp_reqsize(tfm), gfp);
- 	if (likely(req))
- 		kpp_request_set_tfm(req, tfm);
- 
-diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
-index 080d1ba3611d..a35e6e6221e1 100644
---- a/include/crypto/skcipher.h
-+++ b/include/crypto/skcipher.h
-@@ -521,7 +521,7 @@ static inline struct skcipher_request *skcipher_request_alloc(
- {
- 	struct skcipher_request *req;
- 
--	req = kmalloc(sizeof(struct skcipher_request) +
-+	req = kzalloc(sizeof(struct skcipher_request) +
- 		      crypto_skcipher_reqsize(tfm), gfp);
- 
- 	if (likely(req))
--- 
-2.17.1
+thanks,
 
+greg k-h
