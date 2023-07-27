@@ -2,151 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E109C764F6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A8764F84
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234000AbjG0JVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
+        id S232486AbjG0JXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231883AbjG0JU7 (ORCPT
+        with ESMTP id S231587AbjG0JWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:20:59 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1315FE7
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686f74a8992so86822b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690449072; x=1691053872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cACJ3NT7rSPHksG1CSCDv/QZVUluNTqq4KXvaW886oI=;
-        b=lKnOasFRjAEbGh7P40XbzLKtOkahlmVFUDvqCWW3ZgaRuzNJSwp4sTaKgMwNwz+Jpc
-         hA4nVDJPH5aqf4q8bVxcWLUkzXpK23oeAFnlJRwJaEUIleLrrgs7btXzJpx3+9HaPfQV
-         hGIP/T6lERVA8hpdk6KZN9Q4J/+wilHe5ZItz/9QQ1qHO3gv2Y4k+BaS5cDcOKz/WLAL
-         6NaRvNv6KF2mZ19RDXY6rbQZ5sQKyx2Yj2LrfaBgxjqmYdHbumQCN0WmWtbB+gjDIGzm
-         PXmUTQGLOY5T8H3PnVo3H27NG4eQhipuKvHt4yAhK97ujnI+IJGqA8lmlUO0fy4wYeay
-         +oXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690449072; x=1691053872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cACJ3NT7rSPHksG1CSCDv/QZVUluNTqq4KXvaW886oI=;
-        b=Q8XG53IfgfYg5AKWyONQ84/IKpTnpHnu7OLUbGbBmUVKlLKVgYDHPXkG/Vl5lV5Tnm
-         KzKIrc8rI2xE+oPbrlRZ1I9Mtgp50qTEsX542r6sAA7g60GmcfhiN1hy3rTs7LFTTQEP
-         Qbzjpvu98er4JyICDW9yCq1PeDfv83inppShchCCgJlm535KSczm4c2P+s3PXwafZN+L
-         RgIQCHxGJcF59a8AIReR51AIH+pSSEEIDctL1NVZqopWOeB61rwtPk6slFyYCO+RsVBD
-         MyCrY9IhZC0/MhtcewIQXnaY91oNUzRRFN6CeRGojxkk2sxtKT4y+rQXNFIOVuciBVUV
-         qjVw==
-X-Gm-Message-State: ABy/qLb0/BhtEtvFPiMZfCu+fJoaApRe8ETFb83mFk1/z3FXmuV2hfHv
-        te7XK/cj22hthL6uRafRXqQfvg==
-X-Google-Smtp-Source: APBJJlFfFWIsc+pfSeu4dzuDSzimKXTbXaekoL0gFKsbHel8kB/qljY4u0PtyM2mUW/wDh3jQGEPVg==
-X-Received: by 2002:a05:6a00:2d82:b0:675:8627:a291 with SMTP id fb2-20020a056a002d8200b006758627a291mr4692915pfb.3.1690449072033;
-        Thu, 27 Jul 2023 02:11:12 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id h4-20020aa786c4000000b00682a99b01basm1038080pfo.0.2023.07.27.02.11.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 02:11:11 -0700 (PDT)
-Message-ID: <1eb30b9e-c43b-b81e-4d96-5d6fa4f2894a@bytedance.com>
-Date:   Thu, 27 Jul 2023 17:10:57 +0800
+        Thu, 27 Jul 2023 05:22:55 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E799430F7;
+        Thu, 27 Jul 2023 02:13:06 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36R9ClEM057559;
+        Thu, 27 Jul 2023 04:12:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690449167;
+        bh=UMJv1zhoAkuL+8u7yVRzA38imljTc6TwiPqib+okbo8=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=qI4Ii7B9LfPg5YAAYuqWAHEIl/pxy/t8IW4+x9b0rlY5EK32Fo0BPAkUic67smXET
+         LGaYw/fEfnVi2VkIqNGDzCgxZRWfQxMUy9ke+nZmiD1nRJNJ8UifD9licp0RZvH40l
+         /lqgqEPlrviU5D5OaR60lCVFRFigZdL5IY9DF/oU=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36R9ClCk015693
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 27 Jul 2023 04:12:47 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 27
+ Jul 2023 04:12:47 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 27 Jul 2023 04:12:47 -0500
+Received: from [10.249.135.225] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36R9Cesi026479;
+        Thu, 27 Jul 2023 04:12:41 -0500
+Message-ID: <354e3bb2-268c-e7ed-ead0-a68a05e2d591@ti.com>
+Date:   Thu, 27 Jul 2023 14:42:39 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 22/49] sunrpc: dynamically allocate the sunrpc_cred
- shrinker
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [EXTERNAL] Re: [EXTERNAL] Re: [PATCH v11 06/10] net: ti:
+ icssg-prueth: Add ICSSG ethernet driver
 Content-Language: en-US
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-23-zhengqi.arch@bytedance.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230727080502.77895-23-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230724112934.2637802-1-danishanwar@ti.com>
+ <20230724112934.2637802-7-danishanwar@ti.com>
+ <20230725210939.56d77726@kernel.org>
+ <9b11e602-6503-863a-f825-b595effd5e1d@ti.com>
+ <20230726083707.623da581@kernel.org>
+From:   "Anwar, Md Danish" <a0501179@ti.com>
+In-Reply-To: <20230726083707.623da581@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/7/27 16:04, Qi Zheng wrote:
-> Use new APIs to dynamically allocate the sunrpc_cred shrinker.
+On 7/26/2023 9:07 PM, Jakub Kicinski wrote:
+> On Wed, 26 Jul 2023 16:01:23 +0530 Md Danish Anwar wrote:
+>> I think MAX_SKB_FRAGS is OK. If the available pool = MAX_SKB_FRAGS we should be
+>> able to wake the queue.
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->   net/sunrpc/auth.c | 19 +++++++++++--------
->   1 file changed, 11 insertions(+), 8 deletions(-)
+> MAX_SKB_FRAGS only counts frags and you also need space to map the head, no?
 > 
-> diff --git a/net/sunrpc/auth.c b/net/sunrpc/auth.c
-> index 2f16f9d17966..6b898b1be6f5 100644
-> --- a/net/sunrpc/auth.c
-> +++ b/net/sunrpc/auth.c
-> @@ -861,11 +861,7 @@ rpcauth_uptodatecred(struct rpc_task *task)
->   		test_bit(RPCAUTH_CRED_UPTODATE, &cred->cr_flags) != 0;
->   }
->   
-> -static struct shrinker rpc_cred_shrinker = {
-> -	.count_objects = rpcauth_cache_shrink_count,
-> -	.scan_objects = rpcauth_cache_shrink_scan,
-> -	.seeks = DEFAULT_SEEKS,
-> -};
-> +static struct shrinker *rpc_cred_shrinker;
->   
->   int __init rpcauth_init_module(void)
->   {
-> @@ -874,9 +870,16 @@ int __init rpcauth_init_module(void)
->   	err = rpc_init_authunix();
->   	if (err < 0)
->   		goto out1;
-> -	err = register_shrinker(&rpc_cred_shrinker, "sunrpc_cred");
-> -	if (err < 0)
-> +	rpc_cred_shrinker = shrinker_alloc(0, "sunrpc_cred");
-> +	if (!rpc_cred_shrinker)
+> In general we advise to wait until there's at least 2 * MAX_SKB_FRAGS
+> to avoid frequent sleep/wake cycles. But IDK how long your queue is,
+> maybe it's too much.
+> 
+>> No I don't think any lock is required here. emac_set_port_state() aquires lock
+>> before updating port status. Also emac_ndo_set_rx_mode_work() is scheduled by a
+>> singlethreaded workqueue.
+> 
+> if (netif_running()) outside of any locks is usually a red flag, but if
+> you're confident it's fine it's fine :)
 
-Here should set err to -ENOMEM, will fix.
+Sure Jakub. I will keep these as it is.
 
->   		goto out2;
-> +
-> +	rpc_cred_shrinker->count_objects = rpcauth_cache_shrink_count;
-> +	rpc_cred_shrinker->scan_objects = rpcauth_cache_shrink_scan;
-> +	rpc_cred_shrinker->seeks = DEFAULT_SEEKS;
-> +
-> +	shrinker_register(rpc_cred_shrinker);
-> +
->   	return 0;
->   out2:
->   	rpc_destroy_authunix();
-> @@ -887,5 +890,5 @@ int __init rpcauth_init_module(void)
->   void rpcauth_remove_module(void)
->   {
->   	rpc_destroy_authunix();
-> -	unregister_shrinker(&rpc_cred_shrinker);
-> +	shrinker_free(rpc_cred_shrinker);
->   }
+-- 
+Thanks and Regards,
+Md Danish Anwar
