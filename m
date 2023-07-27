@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8AD765855
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96296765857
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234277AbjG0QJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
+        id S232373AbjG0QKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbjG0QJk (ORCPT
+        with ESMTP id S231221AbjG0QKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:09:40 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C5535B6;
-        Thu, 27 Jul 2023 09:09:33 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-317744867a6so1171031f8f.1;
-        Thu, 27 Jul 2023 09:09:32 -0700 (PDT)
+        Thu, 27 Jul 2023 12:10:51 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595C52D45
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:10:50 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fd28ae8b90so84835e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 09:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690474171; x=1691078971;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vAoR31rZg49NpXbv1aFgdZp7tnqrEIUqJ2I4BIKyoFI=;
-        b=j1T1T91u0Wt7PYvcWOx9nbIvMyI6zoLy583NklWtskisxDG9KL3fJfTwmmNkiOw3bJ
-         tnLYcvVQyV+4u67jq3ex4ckXTCeg03G2Qs53xAj+IAb0Tr9aaRJQM8lyQQYw6BQ0tfdS
-         6Mn7g7nAvK/z+ewCzCvrVFNub0zBF3SCMt9SF0lKiA8Ui6EqBuPkgcy4pKX9YCuwr8qX
-         E/QP5Bxckdh6mtb0fjKjHm7n5W+rzTGY8EXWUnnZQhmzFjCu8Y8Rv5s1iL/42W5gWS4N
-         Gg1IBflOaK5yTPibm1AEx+fD434IWVt8a/+gIfnKsZifd80VYoqhHpKhZIGHGuVYbPaL
-         5i6g==
+        d=google.com; s=20221208; t=1690474249; x=1691079049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X+xfXf+SFs/NOQ0ksDMyvLO9Rn9nyk/jrsGlS1L+bV0=;
+        b=HNw8nz0xuMd6I06v9gLe+J2yV8MPgI8J2E5/EZv/9K3qWytBcWtWVxd/j8l3ukt38o
+         oM7WDr546z3dwDSFzyEapFRJ9fefeWObkTYraPGNw+mLrVSFsFWyFJ0SxDIFQlC46Jts
+         BtvyD/9uo3LZXF1kkibNRVOk1ovES2+gn7X8ClzU2sNt854JwBI7jkypTw809782Gpbg
+         NZ2dDpFhYyaAlXpWOo92DRA4/ABK/KJhmP0aKtOulHfSiH8OfBmIR2ifp4mxbpzP0drz
+         LqQX8wBjQCuHL186Lmb5WfDmCq/npG9nCajsEEhBCVYJUK9iwjTc1E35hiq+nUKvNtW0
+         Z/tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690474171; x=1691078971;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vAoR31rZg49NpXbv1aFgdZp7tnqrEIUqJ2I4BIKyoFI=;
-        b=i1f+U4h/6S2v2OqFxJTesuajH1gRKMQADCUIuZ5tBsBMOpwdeyfsV2J+AeCJA3pQsN
-         il3R/0GTuaoryzCFmZF7rbefHqfvmo+KQXjIfD+j1exLmojbXpT4T/gcsJpg7OiFCgYP
-         FbjgjOKljEJScjgCMlNWS3MwhvrAV9lPttrc3Rs1pdnZknpxAjxNXZUZvYNt/yQ0kdQ0
-         Ajz5saT24xro2c80PEZPlahqsolHxOXESaBIqV0bo768nWa+P7ieTYVAGwazmHmFoaut
-         LtlN9sXqQIiKMs2qNfCOqTLq/lpfXGX12noqMtHqT5q1HZavd7uY7Vb5U6zKST4qYQwk
-         HuWA==
-X-Gm-Message-State: ABy/qLZoTU1r4M34rjbvniJBDvy4bqEfzmpwqCHdjsi0cevPnEwW9QI6
-        fTYhV/aOVUXD8vAklrKAgpIgll58RBJrTg==
-X-Google-Smtp-Source: APBJJlFTtTRut05zFYXHOLW7MzbLE4yUtHK46sLKj0VFjTM0SVmnbMOQcM4PXvY4oS1INRovcGZxCA==
-X-Received: by 2002:a5d:4292:0:b0:315:9021:6dc3 with SMTP id k18-20020a5d4292000000b0031590216dc3mr2226017wrq.27.1690474171180;
-        Thu, 27 Jul 2023 09:09:31 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id c3-20020a056000104300b003141e629cb6sm2365898wrx.101.2023.07.27.09.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 09:09:30 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] radix tree test suite: Fix incorrect allocation size for pthreads
-Date:   Thu, 27 Jul 2023 17:09:30 +0100
-Message-Id: <20230727160930.632674-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20221208; t=1690474249; x=1691079049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X+xfXf+SFs/NOQ0ksDMyvLO9Rn9nyk/jrsGlS1L+bV0=;
+        b=MJpZbRyvMbFLE7yt4Nc/a6kg/917jaPAeikVmMCbpQBm2ror5ylEIoB7y1Ni5grLZZ
+         XLv3HyhGyAPxicddd4FaKz4JnpkQ4uWrbzW73qDPtjRhp7e4RVpFtdzIYhFOckbfb+Po
+         ApFnXBpV7UiFA1kTxPC0jt1YDbTBhlsHBrkRq+4xFRrj7aI4m9NnCvoFdWavbvvNiljX
+         H0/3tSIdUa/qvKirTWL5FsL9rj98WyGtAIblGgfdKTaX0/Zv7NqtV+ebntqUKLF9qOr6
+         aK+0fVR30do4y8PKDl9xF4thN95C6eptz1FGihGKIuyoiAJMHuJcrL3ij1+puh/91tUU
+         yqbA==
+X-Gm-Message-State: ABy/qLZWl+J9Vnuh8FqG6qgZwxnuvbedPnN8OCSsHlg9dBdHsvZy8HQ5
+        fVIKAWsqfzyjIOx/qpph08ytFah417uFndstwUayMQ==
+X-Google-Smtp-Source: APBJJlG5VES8QxpxVaDTzmDFfw3ngkuISlX1JRoJU8AZ/7z1v8YbcFTVffCgNO7Uu39CC/q8qvlVgovVBaTNMEm38V8=
+X-Received: by 2002:a05:600c:4fcc:b0:3f7:e4d8:2569 with SMTP id
+ o12-20020a05600c4fcc00b003f7e4d82569mr88727wmq.5.1690474248653; Thu, 27 Jul
+ 2023 09:10:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
+ <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
+ <20230727145747.GB19940@willie-the-truck> <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
+In-Reply-To: <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 27 Jul 2023 18:10:12 +0200
+Message-ID: <CAG48ez3OXbiruoATeSp-PZ9ZdDcFuwJ4+XCS6EgY_jrtcqqGcw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
+ anon_vma memory ordering
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Will Deacon <will@kernel.org>, paulmck@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,34 +87,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the pthread allocation for each array item is based on the
-size of a pthread_t pointer and should be the size of the pthread_t
-structure, so the allocation is under-allocating the correct size.
-Fix this by using the size of each element in the pthreads array.
+On Thu, Jul 27, 2023 at 5:44=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
+du> wrote:
+> On Thu, Jul 27, 2023 at 03:57:47PM +0100, Will Deacon wrote:
+> > On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
+>
+> > > Assume that we are holding some kind of lock that ensures that the
+> > > only possible concurrent update to "vma->anon_vma" is that it changes
+> > > from a NULL pointer to a non-NULL pointer (using smp_store_release())=
+.
+> > >
+> > >
+> > > if (READ_ONCE(vma->anon_vma) !=3D NULL) {
+> > >   // we now know that vma->anon_vma cannot change anymore
+> > >
+> > >   // access the same memory location again with a plain load
+> > >   struct anon_vma *a =3D vma->anon_vma;
+> > >
+> > >   // this needs to be address-dependency-ordered against one of
+> > >   // the loads from vma->anon_vma
+> > >   struct anon_vma *root =3D a->root;
+> > > }
+>
+> This reads a little oddly, perhaps because it's a fragment from a larger
+> piece of code.
 
-Static analysis cppcheck reported:
-tools/testing/radix-tree/regression1.c:180:2: warning: Size of pointer
-'threads' used instead of size of its data. [pointerSize]
+Yes, exactly. The READ_ONCE() would be in anon_vma_prepare(), which is
+a helper used to ensure that a VMA is associated with an anon_vma, and
+then the vma->anon_vma is used further down inside the fault handling
+path. Something like:
 
-Fixes: 1366c37ed84b ("radix tree test harness")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/testing/radix-tree/regression1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+do_cow_fault
+  anon_vma_prepare
+    READ_ONCE(vma->anon_vma)
+    barrier()
+  finish_fault
+    do_set_pte
+      page_add_new_anon_rmap
+        folio_add_new_anon_rmap
+          __page_set_anon_rmap
+            [reads vma->anon_vma]
 
-diff --git a/tools/testing/radix-tree/regression1.c b/tools/testing/radix-tree/regression1.c
-index a61c7bcbc72d..63f468bf8245 100644
---- a/tools/testing/radix-tree/regression1.c
-+++ b/tools/testing/radix-tree/regression1.c
-@@ -177,7 +177,7 @@ void regression1_test(void)
- 	nr_threads = 2;
- 	pthread_barrier_init(&worker_barrier, NULL, nr_threads);
- 
--	threads = malloc(nr_threads * sizeof(pthread_t *));
-+	threads = malloc(nr_threads * sizeof(*threads));
- 
- 	for (i = 0; i < nr_threads; i++) {
- 		arg = i;
--- 
-2.39.2
-
+Anyway, I guess I'll follow what Paul and Matthew said and go with
+smp_load_acquire().
