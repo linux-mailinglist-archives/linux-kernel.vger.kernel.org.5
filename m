@@ -2,174 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278FE7651E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CD57651D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjG0LCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S231753AbjG0LBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjG0LCQ (ORCPT
+        with ESMTP id S230466AbjG0LBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:02:16 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD9110D2;
-        Thu, 27 Jul 2023 04:02:15 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RAFLYO027025;
-        Thu, 27 Jul 2023 07:02:12 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s36ahws23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 07:02:12 -0400
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 36RB2B9v032980
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 27 Jul 2023 07:02:11 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 27 Jul
- 2023 07:02:10 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 27 Jul 2023 07:02:10 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36RB1uro001199;
-        Thu, 27 Jul 2023 07:02:02 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v2 2/2] drivers:iio:admv1013: add vcc regulators
-Date:   Thu, 27 Jul 2023 14:01:21 +0300
-Message-ID: <20230727110121.93546-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230727110121.93546-1-antoniu.miclaus@analog.com>
-References: <20230727110121.93546-1-antoniu.miclaus@analog.com>
+        Thu, 27 Jul 2023 07:01:49 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8B11FEC;
+        Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso38725566b.1;
+        Thu, 27 Jul 2023 04:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690455706; x=1691060506;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
+        b=bRqxGL26+Cd4UDJMsCRgvHHMbT81l6+oh+WQ2BqDYUGtTo2K3iTnsbNqccRgY/Byz/
+         vPTwqRRFSrPzJpytHiM28SzqGji9BPWO15KZPEvup3CQnvFvmTFzESAYuHycDgwKiPCa
+         MuoOQdSAgoLgmr2wkrqPECTLGd8mdI9SeZj5LBE14vMx2qYPhrwXbcO5UuyWNGtiOIck
+         jky8AGRxvfIKKr+qHyZ/JqPG/hpATQmDozL0O6tSm37W5PUT3XnjWVSwTUEOyFc6lK/b
+         rQUV+kox2Rs5IBQ/Ic1X9hohq1x4QWvZtt7SGI4bbL4TXB0mQsE39lHid+Bg8EsQFvDc
+         4wsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690455706; x=1691060506;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YHfvgh8rSSrdkQk5e+JkE++Yn7WaF+CVtRWpok9XC9Y=;
+        b=Ai37Gn0oqMZSQFFHmyvY76jf+oXyHPAFRnorri+ylwa30ZRjlYnEK0rIfDK9F3E4lj
+         acpEMEOsqYTnLS4v2jcgEJCShioS+Kk/hKcR1UDrXr0kXkXUfsR9nhZO92E8jqFgrdSf
+         /0JUZIo1BfE8wgerFzcAEj0c2QWHg8mVS1RSz73uSNAfqtbzvQrnqrVC+UM01ufIYMzj
+         n6085oedJ6vRwSV3pMG8lW4Oi+jAoHtMY77xrM40ZAYh3iWc8UFCQdjQkeHlY6QA4Bze
+         C0V/Zw927PhJLzHlrjvLVxNRRNGF83IfmeyPjEGGg98NcTZuSzwozohHl4vq41Esjh77
+         QwBw==
+X-Gm-Message-State: ABy/qLbKZfFQdKrpLNU8e5rh2XI21xGfK4zG+WSn6tS1H72wLmwxnH4g
+        W7ctKxiZmOhlHWBPPbTerKtTmNH5JcY=
+X-Google-Smtp-Source: APBJJlHcPaJ1NwM9+BwKxljX/Y1e7qZR3xAoj+zouHwkhYPy0b2mQN0JduuiJF3a/uJPaZ2Eq8zdWw==
+X-Received: by 2002:a17:906:10cd:b0:99b:d243:157c with SMTP id v13-20020a17090610cd00b0099bd243157cmr1845316ejv.31.1690455706292;
+        Thu, 27 Jul 2023 04:01:46 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id t26-20020a1709064f1a00b0099bd86f9248sm631649eju.63.2023.07.27.04.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 04:01:45 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 27 Jul 2023 13:01:43 +0200
+To:     Xiangyu Chen <xiangyu.chen@eng.windriver.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] libbpf: fix warnings "'pad_type' 'pad_bits' 'new_off'
+ may be used uninitialized"
+Message-ID: <ZMJOl5uLrK9rucXB@krava>
+References: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: ArSfbOZw0eIGroNO4JsVPDHSoDtdp-SS
-X-Proofpoint-GUID: ArSfbOZw0eIGroNO4JsVPDHSoDtdp-SS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_06,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 mlxscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 impostorscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270098
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727082536.1974154-1-xiangyu.chen@eng.windriver.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add regulators for the VCC supplies of the admv1013.
+On Thu, Jul 27, 2023 at 04:25:36PM +0800, Xiangyu Chen wrote:
+> From: Xiangyu Chen <xiangyu.chen@windriver.com>
+> 
+> When turn on the yocto DEBUG_BUILD flag, the build options for gcc would enable maybe-uninitialized,
+> and following warnings would be reported as below:
 
-The patch aims to align the implementation with the current admv1014
-driver where all the VCC supplies are handled as regulators.
+curious, what's the gcc version? I can't reproduce that,
+and we already have all warnings enabled:
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-no changes in v2.
- drivers/iio/frequency/admv1013.c | 35 ++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+  CFLAGS += -Werror -Wall
 
-diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
-index 9bf8337806fc..086e2f35b52c 100644
---- a/drivers/iio/frequency/admv1013.c
-+++ b/drivers/iio/frequency/admv1013.c
-@@ -73,6 +73,7 @@
- #define ADMV1013_REG_ADDR_READ_MSK		GENMASK(6, 1)
- #define ADMV1013_REG_ADDR_WRITE_MSK		GENMASK(22, 17)
- #define ADMV1013_REG_DATA_MSK			GENMASK(16, 1)
-+#define ADMV1013_VCC_NUM_REGULATORS		10
- 
- enum {
- 	ADMV1013_IQ_MODE,
-@@ -96,6 +97,7 @@ struct admv1013_state {
- 	/* Protect against concurrent accesses to the device and to data */
- 	struct mutex		lock;
- 	struct regulator	*reg;
-+	struct regulator_bulk_data vcc_regs[ADMV1013_VCC_NUM_REGULATORS];
- 	struct notifier_block	nb;
- 	unsigned int		input_mode;
- 	unsigned int		quad_se_mode;
-@@ -379,6 +381,11 @@ static const struct iio_info admv1013_info = {
- 	.debugfs_reg_access = &admv1013_reg_access,
- };
- 
-+static const char * const admv1013_reg_name[] = {
-+	 "vcc-drv", "vcc2-drv", "vcc-vva", "vcc-amp1", "vcc-amp2",
-+	 "vcc-env", "vcc-bg", "vcc-bg2", "vcc-mixer", "vcc-quad"
-+};
-+
- static int admv1013_freq_change(struct notifier_block *nb, unsigned long action, void *data)
- {
- 	struct admv1013_state *st = container_of(nb, struct admv1013_state, nb);
-@@ -495,6 +502,11 @@ static void admv1013_reg_disable(void *data)
- 	regulator_disable(data);
- }
- 
-+static void admv1013_vcc_reg_disable(void *data)
-+{
-+	regulator_bulk_disable(ADMV1013_VCC_NUM_REGULATORS, data);
-+}
-+
- static void admv1013_powerdown(void *data)
- {
- 	unsigned int enable_reg, enable_reg_msk;
-@@ -520,6 +532,7 @@ static void admv1013_powerdown(void *data)
- static int admv1013_properties_parse(struct admv1013_state *st)
- {
- 	int ret;
-+	unsigned int i;
- 	const char *str;
- 	struct spi_device *spi = st->spi;
- 
-@@ -554,6 +567,17 @@ static int admv1013_properties_parse(struct admv1013_state *st)
- 		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
- 				     "failed to get the common-mode voltage\n");
- 
-+	for (i = 0; i < ADMV1013_VCC_NUM_REGULATORS; ++i)
-+		st->vcc_regs[i].supply = admv1013_reg_name[i];
-+
-+	ret = devm_regulator_bulk_get(&st->spi->dev,
-+				      ADMV1013_VCC_NUM_REGULATORS,
-+				      st->vcc_regs);
-+	if (ret) {
-+		dev_err(&spi->dev, "Failed to request VCC regulators");
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -591,6 +615,17 @@ static int admv1013_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
-+	ret = regulator_bulk_enable(ADMV1013_VCC_NUM_REGULATORS, st->vcc_regs);
-+	if (ret) {
-+		dev_err(&spi->dev, "Failed to enable regulators");
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(&spi->dev, admv1013_vcc_reg_disable,
-+				       st->vcc_regs);
-+	if (ret)
-+		return ret;
-+
- 	st->clkin = devm_clk_get_enabled(&spi->dev, "lo_in");
- 	if (IS_ERR(st->clkin))
- 		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
--- 
-2.41.0
+they seem like false warnings also, because ARRAY_SIZE(pads)
+will be always > 0
 
+jirka
+
+> 
+> | btf_dump.c: In function 'btf_dump_emit_bit_padding':
+> | btf_dump.c:916:4: error: 'pad_type' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> |   916 |    btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type,
+> |       |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> |   917 |      in_bitfield ? new_off - cur_off : 0);
+> |       |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> | btf_dump.c:929:6: error: 'pad_bits' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> |   929 |   if (bits == pad_bits) {
+> |       |      ^
+> | btf_dump.c:913:28: error: 'new_off' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> |   913 |       (new_off == next_off && roundup(cur_off, next_align * 8) != new_off) ||
+> |       |       ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> |   HOSTLD  scripts/mod/modpost
+> 
+> Signed-off-by: Xiangyu Chen <xiangyu.chen@windriver.com>
+> ---
+>  tools/lib/bpf/btf_dump.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 4d9f30bf7f01..79923c3b8777 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -867,8 +867,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
+>  	} pads[] = {
+>  		{"long", d->ptr_sz * 8}, {"int", 32}, {"short", 16}, {"char", 8}
+>  	};
+> -	int new_off, pad_bits, bits, i;
+> -	const char *pad_type;
+> +	int new_off = 0, pad_bits = 0, bits, i;
+> +	const char *pad_type = NULL;
+>  
+>  	if (cur_off >= next_off)
+>  		return; /* no gap */
+> -- 
+> 2.34.1
+> 
+> 
