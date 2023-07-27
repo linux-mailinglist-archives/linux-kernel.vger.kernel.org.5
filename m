@@ -2,150 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CE7765F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D50765F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbjG0WOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        id S232803AbjG0WPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjG0WOn (ORCPT
+        with ESMTP id S232802AbjG0WPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:14:43 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E9F187
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:14:41 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 270A16016E;
-        Fri, 28 Jul 2023 00:14:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690496079; bh=GGrU1py5zBySjol9/sf+8EqAi+AHIoToMAFQhr4/TBc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=14OIyMHaGDofQIH6MRLDh5gcK0BazSY6YhAdiqI7CrrsqLfr8V/g1WJKCfLnhsrd/
-         rhvhziSECbjFKYhw9vjCAqYLILZX2nyXQA699+5WiwquxWjakplB+yaTVfTuHpOmif
-         wFsHbVOIwK4VA+hCxTN5v+BB/YZQUhxLyP30kD+9cJi7pTQ1l6p8RP/uI8LF2oejpd
-         Oz4k38YbY5o/OX54jvGsPL9D5yhaam1Gwi4q4KU0GBcQWs3G+wkiFnlIYRwm56sqo7
-         y5Iff99YYllQwf0t36sl6AGdmd7HU1BCG58QACM7Kevlktk2r3KFQaBr7ecn94Shah
-         QwyvYnZJywMaQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5pVsXPRFA-xD; Fri, 28 Jul 2023 00:14:36 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 63E566015E;
-        Fri, 28 Jul 2023 00:14:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690496076; bh=GGrU1py5zBySjol9/sf+8EqAi+AHIoToMAFQhr4/TBc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=1SdeapKW/9ica7Axz4tDvx0pR7/kLklPF35BdGigQlU4EmtuWPhEXJlTZi6VpOnLC
-         4k/Jum59J5Vv+H3t8rlxhPTBZiYDVZcYzgsEELtP4385Vz5uqwM4/JDM7CV23AQug4
-         4XU/oVBVbgxIiBeGhRFYml5zOGdWcpHJkOHs3xGwHs1vextMo4R0be8JFpPPyEy4v1
-         +V/zUF07jitYm7408vJlrhyvjDP33tji2mdkbsFizdCsZTcrKbZZsdPQ/dSkjliMTc
-         lL6nLPBX53R6C3yE8WmFjSVE7A5yTuk9QR9/2dKiDggrh9FTLrDLBqowQgvyIrhz/4
-         28Vz4zTw+4Aqw==
-Message-ID: <8f6e7b28-e59d-96dd-1c46-bde3e3e56b54@alu.unizg.hr>
-Date:   Fri, 28 Jul 2023 00:14:22 +0200
+        Thu, 27 Jul 2023 18:15:51 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7DB187
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:15:50 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d05a63946e0so1381316276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690496149; x=1691100949;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wOD8KgEEEOPljbiXkTM7e1vfVTCZeMVuNm+H/5ZnzWI=;
+        b=GF4vQe9Q2QXiQ5WqN59LH2CNoeRi202CwB4ya41H6AykiczHuvb3xG7B9i0XkWfSfu
+         Q373vkJ0dfBCgTbdj2Ah4chkhSclTnE9x/rRp6Nw0C51Wg23bAfqRJl5nMDYR/TgyfCw
+         8ei61KySxvKUxN8R/Mvg48HyG2oHfvYRGHRfXVsXl6O1HFcJbkPpLFVUP3ZkEEtpGFQC
+         35dCp96KyFPyZ3wVBzADGxTnXGR7/J7j6duhBE7cT04CsstMEbrEihLsYTKQPxe/7ceI
+         Wu1Fs2DXxGwUGe9W6MBfBuoDYMkANMrNUHoh0KHRSEbofSezXX6mX/rC0Vilgz4OPWpy
+         0M3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690496149; x=1691100949;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wOD8KgEEEOPljbiXkTM7e1vfVTCZeMVuNm+H/5ZnzWI=;
+        b=Q58Qz0PkoO3kiOJEcL5JmrvhGj8PDjcy4d39saOR1GSFvFscXN8JmOmdVIOz4Xp+ZB
+         hmOelT5UCcaRJUhuOesNl17TnBotjEbI0by2OTMXWvdG7tb1vb9hro27U1p7xfLrPPVZ
+         GH9UkKWNl1o6gdRZL299lc6e9c+TIijosDd3yDIaFJd5CXLXuE51lPU22h3kyp7we5f9
+         atYl0EpHWhXvDRHvBoETcEwJWiwype/4/GVIjUMbqXB4rWe6lLPQlSEk3KxyQR6VJyHc
+         3z3uUpjirHtWrZD7lj7g0sUyVNAF02kfqOTw0kdXMi7Pjzy2eAiuev9zLAPEqOOSyau+
+         xQMA==
+X-Gm-Message-State: ABy/qLYE2STlBWmB1Zt2ykK5XlzgjwWxltrYEAw0/r8wVU+tCbw9o8VS
+        lU3KIs1fv/38FdafM0X7ag0hjAFoNpXULbJ6ZCyS5Q==
+X-Google-Smtp-Source: APBJJlFzvXJKovMYoMWH82NS6t0YgsjfzUuSbj76qs0bG32xlSJYCovy3Xv5KwXJHF2gt393R3/Esr0VFOB/cKbMMZM=
+X-Received: by 2002:a25:c78b:0:b0:d12:25d:fd5c with SMTP id
+ w133-20020a25c78b000000b00d12025dfd5cmr698418ybe.13.1690496149389; Thu, 27
+ Jul 2023 15:15:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH RESEND v4 1/1] test_firmware: fix some memory leaks and
- racing conditions
-Content-Language: en-US
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Scott Branden <sbranden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tianfei zhang <tianfei.zhang@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-References: <20230421185205.28743-1-mirsad.todorovac@alu.unizg.hr>
- <ZEgbkoSjHcVLcCcp@bombadil.infradead.org>
- <e9af482f-5b8a-70c0-d767-e98703cd1b03@alu.unizg.hr>
- <ZMKPCtftDQnfakId@bombadil.infradead.org>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <ZMKPCtftDQnfakId@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230727212208.102501-1-robdclark@gmail.com> <20230727212208.102501-10-robdclark@gmail.com>
+In-Reply-To: <20230727212208.102501-10-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 28 Jul 2023 01:15:38 +0300
+Message-ID: <CAA8EJpo4hGkB=DMyCM+gU11Mfiqd2S9J660P+GtVUZSuDBCCNA@mail.gmail.com>
+Subject: Re: [PATCH v2 09/13] drm/msm/adreno: Add adreno family
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Rob Herring <robh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 17:36, Luis Chamberlain wrote:
-> On Thu, Jul 27, 2023 at 08:16:17AM +0200, Mirsad Todorovac wrote:
->> On 25.4.2023. 20:27, Luis Chamberlain wrote:
->>> On Fri, Apr 21, 2023 at 08:52:06PM +0200, Mirsad Goran Todorovac wrote:
->>>> Some functions were called both from locked and unlocked context, so
->>>> the lock was dropped prematurely, introducing a race condition when
->>>> deadlock was avoided.
->>>>
->>>> Having two locks wouldn't assure a race-proof mutual exclusion.
->>>>
->>>> __test_dev_config_update_bool(), __test_dev_config_update_u8() and
->>>> __test_dev_config_update_size_t() unlocked versions of the functions
->>>> were introduced to be called from the locked contexts as a workaround
->>>> without releasing the main driver's lock and causing a race condition.
->>>>
->>>> This should guarantee mutual exclusion and prevent any race conditions.
->>>>
->>>> Locked versions simply allow for mutual exclusion and call the unlocked
->>>> counterparts, to avoid duplication of code.
->>>>
->>>> trigger_batched_requests_store() and trigger_batched_requests_async_store()
->>>> now return -EBUSY if called with test_fw_config->reqs already allocated,
->>>> so the memory leak is prevented.
->>>>
->>>> The same functions now keep track of the allocated buf for firmware in
->>>> req->fw_buf as release_firmware() will not deallocate this storage for us.
->>>>
->>>> Additionally, in __test_release_all_firmware(), req->fw_buf is released
->>>> before calling release_firmware(req->fw),
->>>> foreach test_fw_config->reqs[i], i = 0 .. test_fw_config->num_requests-1
->>>>
->>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>>> Cc: Luis Chamberlain <mcgrof@kernel.org>
->>>> Cc: Russ Weight <russell.h.weight@intel.com>
->>>> Cc: Tianfei zhang <tianfei.zhang@intel.com>
->>>> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>>> Cc: Zhengchao Shao <shaozhengchao@huawei.com>
->>>> Cc: Colin Ian King <colin.i.king@gmail.com>
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Cc: Takashi Iwai <tiwai@suse.de>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Scott Branden <sbranden@broadcom.com>
->>>> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
->>>> Suggested-by: Dan Carpenter <error27@gmail.com>
->>>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
->>>
->>> Mirad, thanks for this work, good stuff! So the patch just needs to be
->>> adjust with:
->>>
->>> Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf"
->>> Cc: stable@vger.kernel.org # v5.4
->>>
->>> Then, can you split the patch in two, one which fixes the memory leaks
->>> and another that deals with the mutexes. The second patch might be a fix
->>> for the original code but I can't tell until I see the changes split out.
->>>
->>> The commit log should account for the memory leak and be clear how it
->>> happens. The other commit log for the second patch should clarify what
->>> it fixes and why as well.
->>
->> It seems to me that there is something wrong with the patchwork, as this commit
->> had not yet appeared in 5.4 LTS stable tree?
-> 
-> Did you resend a new v5 with the requested changes?
+On Fri, 28 Jul 2023 at 00:23, Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> Sometimes it is useful to know the sub-generation (or "family").  And in
+> any case, this helps us get away from infering the generation from the
 
-Actually, I am not sure what is the procedure, for it is accepted and visible in 5.10+ trees?
+Nit: inferring
 
-Mirsad
+> numerical chip-id.
+>
+> v2: Fix is_a2xx() typo
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/adreno_device.c | 31 ++++++++++++++-
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c    | 11 +++---
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h    | 46 ++++++++++++++++------
+>  3 files changed, 70 insertions(+), 18 deletions(-)
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+>
+
+[skipped]
+
+
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index fe7afac5b059..14af16080bd0 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -29,6 +29,25 @@ enum {
+>         ADRENO_FW_MAX,
+>  };
+>
+> +/**
+> + * @enum adreno_family: identify generation and possibly sub-generation
+> + *
+> + * In some cases there are distinct sub-generations within a major revision
+> + * so it helps to be able to group the GPU devices by generation and if
+> + * necessary sub-generation.
+> + */
+> +enum adreno_family {
+> +       ADRENO_2XX_GEN1,  /* a20x */
+> +       ADRENO_2XX_GEN2,  /* a22x */
+> +       ADRENO_3XX,
+> +       ADRENO_4XX,
+> +       ADRENO_5XX,
+
+reserves himself a right to glance at splitting 3xx and 5xx later on.
+
+> +       ADRENO_6XX_GEN1,  /* a630 family */
+> +       ADRENO_6XX_GEN2,  /* a640 family */
+> +       ADRENO_6XX_GEN3,  /* a650 family */
+> +       ADRENO_6XX_GEN4,  /* a660 family */
+> +};
+> +
+>  #define ADRENO_QUIRK_TWO_PASS_USE_WFI          BIT(0)
+>  #define ADRENO_QUIRK_FAULT_DETECT_MASK         BIT(1)
+>  #define ADRENO_QUIRK_LMLOADKILL_DISABLE                BIT(2)
+> @@ -68,6 +87,7 @@ struct adreno_speedbin {
+>  struct adreno_info {
+>         const char *machine;
+>         struct adreno_rev rev;
+> +       enum adreno_family family;
+>         uint32_t revn;
+>         const char *fw[ADRENO_FW_MAX];
+>         uint32_t gmem;
+> @@ -193,14 +213,14 @@ static inline bool adreno_is_a2xx(const struct adreno_gpu *gpu)
+>  {
+>         if (WARN_ON_ONCE(!gpu->info))
+>                 return false;
+> -       return (gpu->info->revn < 300);
+> +       return gpu->info->family <= ADRENO_2XX_GEN2;
+>  }
+>
+>  static inline bool adreno_is_a20x(const struct adreno_gpu *gpu)
+>  {
+>         if (WARN_ON_ONCE(!gpu->info))
+>                 return false;
+> -       return (gpu->info->revn < 210);
+> +       return gpu->info->family == ADRENO_2XX_GEN1;
+>  }
+>
+>  static inline bool adreno_is_a225(const struct adreno_gpu *gpu)
+> @@ -343,29 +363,31 @@ static inline int adreno_is_a690(const struct adreno_gpu *gpu)
+>  /* check for a615, a616, a618, a619 or any a630 derivatives */
+>  static inline int adreno_is_a630_family(const struct adreno_gpu *gpu)
+>  {
+> -       return adreno_is_revn(gpu, 630) ||
+> -               adreno_is_revn(gpu, 615) ||
+> -               adreno_is_revn(gpu, 616) ||
+> -               adreno_is_revn(gpu, 618) ||
+> -               adreno_is_revn(gpu, 619);
+> +       if (WARN_ON_ONCE(!gpu->info))
+> +               return false;
+> +       return gpu->info->family == ADRENO_6XX_GEN1;
+>  }
+>
+>  static inline int adreno_is_a660_family(const struct adreno_gpu *gpu)
+>  {
+> -       return adreno_is_a660(gpu) || adreno_is_a690(gpu) || adreno_is_7c3(gpu);
+> +       if (WARN_ON_ONCE(!gpu->info))
+> +               return false;
+> +       return gpu->info->family == ADRENO_6XX_GEN4;
+>  }
+>
+>  /* check for a650, a660, or any derivatives */
+>  static inline int adreno_is_a650_family(const struct adreno_gpu *gpu)
+>  {
+> -       return adreno_is_revn(gpu, 650) ||
+> -               adreno_is_revn(gpu, 620) ||
+> -               adreno_is_a660_family(gpu);
+> +       if (WARN_ON_ONCE(!gpu->info))
+> +               return false;
+> +       return gpu->info->family >= ADRENO_6XX_GEN3;
+>  }
+>
+>  static inline int adreno_is_a640_family(const struct adreno_gpu *gpu)
+>  {
+> -       return adreno_is_a640(gpu) || adreno_is_a680(gpu);
+> +       if (WARN_ON_ONCE(!gpu->info))
+> +               return false;
+> +       return gpu->info->family == ADRENO_6XX_GEN2;
+>  }
+>
+>  u64 adreno_private_address_space_size(struct msm_gpu *gpu);
+> --
+> 2.41.0
+>
+
+
+-- 
+With best wishes
+Dmitry
