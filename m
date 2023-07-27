@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEF7765848
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E8A76586C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 18:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjG0QHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 12:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        id S233497AbjG0QTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 12:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233470AbjG0QH0 (ORCPT
+        with ESMTP id S233100AbjG0QTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 12:07:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86C9359A;
-        Thu, 27 Jul 2023 09:07:09 -0700 (PDT)
+        Thu, 27 Jul 2023 12:19:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9B519B;
+        Thu, 27 Jul 2023 09:19:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D40C61EEA;
-        Thu, 27 Jul 2023 16:07:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCFBBC433C8;
-        Thu, 27 Jul 2023 16:07:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E883861EBD;
+        Thu, 27 Jul 2023 16:19:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 480EAC433C7;
+        Thu, 27 Jul 2023 16:18:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690474028;
-        bh=uBvzXfHO1nsSRjLcionOhLpZMwIec1LCVD6wwCarigE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RYz+SK6ZEzLzz1Mdh24O+2stfplmHIts9XxT584v30nxRw0nUPQc6XakHgC9iMd7n
-         pBUkiritFqLokBmoWgQ0P7Hh+mjz5+KZ2Tkqf/KACVUkVKX8ww2DMg7L7y7eKqsb3M
-         UGben2x0vnCsT4p3UJDQjMrvKLX0ddut/p7gPmhBeb5DEsp1QzXINvdytZZ6udQX49
-         YCGjV5+fy1hEdtaU5ABOsUqrT4Ky8ITEea9kbNnHA8RDeMj9jBWTvArHq+yrGNsKxA
-         cRcSJJ7lEWQYvzY6H2Y9PLW53FfW4zmH/NaJqS4kjZrr4yXi5LiZv+UtWpTAXiEAY/
-         TWS7V31i+PJLA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 53053CE0B66; Thu, 27 Jul 2023 09:07:08 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 09:07:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-Message-ID: <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
- <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
- <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
- <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
+        s=k20201202; t=1690474741;
+        bh=cJ2cDKD5pRIvYteZ8B5krBjQ4B4gVvlooKDjuLtiIhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eoEWnIFD83r351XEsxp9P0RXdeJV9VdRPJaqQPVxSVr+jN5IyccVQ+/S7XbnWF1Xd
+         Fi+dY6eaQa23fbjGqg2iiL5vy4lk5My42x+IeOBgu6/Vz6lhzioUngM6bqQFiGNu0u
+         wgRlTKneUqioguLi9gLciGvCkezMfKq77xSpfiEVbeBMvcEdXBnuz0eBMOKi9D4ZTo
+         KqUZn6yavNDS4R4qWv8utnfN/dvR3VaY2wxM2oAx98sOa1SVtQn0Wv55LyLTdWCfej
+         P7s8JBf02WimlJBXF6drFLzt7hynejm9FD0sQgC5VonCyvwRzgAuIXXGEA3y4z85Dc
+         pYP+KCwIP6b6g==
+Date:   Fri, 28 Jul 2023 00:07:23 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Kwanghoon Son <k.son@samsung.com>
+Cc:     'Drew Fustini' <dfustini@baylibre.com>,
+        'Conor Dooley' <conor@kernel.org>,
+        'Guo Ren' <guoren@kernel.org>, 'Fu Wei' <wefu@redhat.com>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        'Krzysztof Kozlowski' <krzysztof.kozlowski+dt@linaro.org>,
+        'Conor Dooley' <conor+dt@kernel.org>,
+        'Paul Walmsley' <paul.walmsley@sifive.com>,
+        'Palmer Dabbelt' <palmer@dabbelt.com>,
+        'Albert Ou' <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        'Robert Nelson' <robertcnelson@beagleboard.org>,
+        'Jason Kridner' <jkridner@beagleboard.org>
+Subject: Re: [PATCH 1/3] riscv: dts: thead: add BeagleV Ahead board device
+ tree
+Message-ID: <ZMKWO2vksQn8dUR4@xhacker>
+References: <20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com>
+ <20230722-upstream-beaglev-ahead-dts-v1-1-ccda511357f4@baylibre.com>
+ <20230723-savor-trolling-e35ed4a7a751@spud>
+ <ZL1jlacHj7sgNg8M@x1>
+ <CGME20230724003542epcas1p4c6c8dbd042af792bc168e10c6e81e45d@epcas1p4.samsung.com>
+ <ZL3Eenj4lGZDhZTM@xhacker>
+ <000001d9c070$82638290$872a87b0$@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <000001d9c070$82638290$872a87b0$@samsung.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,74 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 07:39:54AM -0700, Guenter Roeck wrote:
-> On 7/27/23 07:06, Paul E. McKenney wrote:
-> > On Thu, Jul 27, 2023 at 09:26:52AM -0400, Joel Fernandes wrote:
-> > > 
-> > > 
-> > > > On Jul 27, 2023, at 7:35 AM, Pavel Machek <pavel@denx.de> wrote:
-> > > > 
-> > > > ﻿Hi!
-> > > > 
-> > > > > > This is the start of the stable review cycle for the 6.4.7 release.
-> > > > > > There are 227 patches in this series, all will be posted as a response
-> > > > > > to this one.  If anyone has any issues with these being applied, please
-> > > > > > let me know.
-> > > > > > 
-> > > > > > Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
-> > > > > > Anything received after that time might be too late.
-> > > > > > 
-> > > > > > The whole patch series can be found in one patch at:
-> > > > > >     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.7-rc1.gz
-> > > > > > or in the git tree and branch at:
-> > > > > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> > > > > > and the diffstat can be found below.
-> > > > > 
-> > > > > I saw this when running rcutorture, this one happened in the TREE04
-> > > > > configuration. This is likely due to the stuttering issues we are discussing
-> > > > > in the other thread. Anyway I am just making a note here while I am
-> > > > > continuing to look into it.
-> > > > 
-> > > > So is the stuttering new in 6.4.7?
-> > > 
-> > > No it is an old feature in RCU torture tests. But is dependent on timing. Something
-> > > changed in recent kernels that is making the issues with it more likely. Its hard to bisect as failure sometimes takes hours.
-> > > 
-> > > > 
-> > > > > Other than that, all tests pass:
-> > > > > Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > 
-> > > > ...or you still believe 6.4.7 is okay to release?
-> > > 
-> > > As such, it should be Ok. However naturally I am not happy that the RCU testing
-> > > is intermittently failing. These issues have been seen in last several 6.4 stable releases
-> > > so since those were released, maybe this one can be too?
-> > > The fix for stuttering is currently being reviewed.
+On Thu, Jul 27, 2023 at 06:55:37PM +0900, Kwanghoon Son wrote:
+> > On Sun, Jul 23, 2023 at 10:29:57AM -0700, Drew Fustini wrote:
+> > > On Sun, Jul 23, 2023 at 11:32:17AM +0100, Conor Dooley wrote:
+> > > > On Sat, Jul 22, 2023 at 02:55:39PM -0700, Drew Fustini wrote:
+> > > >
+> > > > > +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+> > > > > @@ -0,0 +1,61 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > >
+> > > > Hmm, should this not be dual licensed?
+> > > > I notice the other th1520 stuff isn't either..
+> > >
+> > > Good point, I'll resubmit with a dual license.
+> > >
+> > > Jisheng: are you okay with the other arch/riscv/boot/dts/thead files
+> > > changing to a dual license?
 > > 
-> > Or, to look at it another way, the stuttering fix is specific to torture
-> > testing.  Would we really want to hold up a -stable release only because
-> > rcutorture occasionally gives a false-positive failure on certain types
-> > of systems?
-> > 
+> > When cooking the initial patch, I wrote the lpi4a dts files from
+> > scratch based on sipeed opened sch file, and currently only I made
+> > contributions to them, so it's easy to make the lpi4a dts files
+> > dual license.
 > 
-> No. However, (unrelated) in linux-next, rcu tests sometimes result in apparent hangs
-> or long runtime.
-> 
-> [    0.778841] Mount-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
-> [    0.779011] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes, linear)
-> [    0.797998] Running RCU synchronous self tests
-> [    0.798209] Running RCU synchronous self tests
-> [    0.912368] smpboot: CPU0: AMD Opteron 63xx class CPU (family: 0x15, model: 0x2, stepping: 0x0)
-> [    0.923398] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1.
-> [    0.925419] Running RCU-tasks wait API self tests
-> 
-> (hangs until aborted). This is primarily with Opteron CPUs, but also with others such as Haswell,
-> Icelake-Server, and pentium3. It is all but impossible to bisect because it doesn't happen
-> all the time. All I was able to figure out was that it has to do with rcu changes in linux-next.
-> I'd be much more concerned about that.
+> Thanks for your work.
+> Is there any datasheet or user manual can get on public?
 
-First I have heard of this, so thank you for letting me know.
+Sorry I can't help on datasheet.
 
-About what fraction of the time does this happen?
-
-							Thanx, Paul
+> I'm going to contribute drivers in my spare time,
+> but it's hard to know the register file and dma information.
+>  
