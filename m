@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23023764E41
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2264D764E4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233462AbjG0Izs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
+        id S231423AbjG0I4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbjG0IzU (ORCPT
+        with ESMTP id S234210AbjG0Izp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:55:20 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2048.outbound.protection.outlook.com [40.107.244.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1316A6F;
-        Thu, 27 Jul 2023 01:36:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a83mGDjDnvEVbSywTYKlT/igLppNzV3tdA1sefrrqD7gyNYxXXXK3fc/NtL2LoAjPTvboD+7Cmdknpl5r0W6abjQyog8qYEi06VmNZKIlhWzVvtnlX+b8uhUAMgYj2GOouE8zJWJMr6NjgPYB6T0dpKWe2DvJ/IHpnj/pkdH6yeb64lPJ+/0vpvX+sT3TUb8tHYZRz0PXT1y3IzgIp90mgON/STpoJqEi2sC9BfieqEAmPItPxpKce2ltIWwbgMMbG4Id8dr/W6Xx2eYgojBg2/at5P36/30T4j7e2R5nStdHU3Nkhbrt0KBWtiNpLdCKOuMq+mcrK0pV1RsTdNwoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oAKWSb5v2yj+bm0yXnxZDsBo+xDnWlKcWxp2Z7ZAVmc=;
- b=EbCtSiF7h87A1jYUBnwcy0hWHcpy+4x9BeId5M37S22oFlHKcZuY0TCzVVbpjZ9BLMwyRoHkyiM+AA4uByBS8q/7+R+kFGgndk9Yt6mb/MIluSRF/InQqE0KySITihyRqRsoOncvm4UOJQwUPrC7c9YGoxtijLzbBuzkwBQjOMDiOLwxaRY3IvYwFqGggZ70wsqCmS/4ren4J5SdJ4oxtdx22MVHt1gPBmte7v2VQmDGCXqAtE/Ocrdcc+a9DMTipH0A0FXtZrSoY80vQXQtou05ELr9Q+gVMmslkR6nhNvkkwRnYkKHTihD813dGfDkQD+LSfiJ8xVxTJfqmwHhQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oAKWSb5v2yj+bm0yXnxZDsBo+xDnWlKcWxp2Z7ZAVmc=;
- b=ZNgeRC+3zMYgXaBZFCXKYCPrVGm995aV1QnBl3peXC4OAiOfDJ87x6bE+Rjhy0z6uM/NZYV6vpzXgne8dWkTLLk0fUrWQ+pHteNUxsK0+XeZxHEYJrcoyOtzjdP+tHfQC77IYFEdj/K+APYHMd5bu8AiGjkd1Kifn6wrNWJMb5aK5u+H+0JLqbhRsNNt2MNaJvRueaqXFtX38fiPu95VHlp2G8imWFHZRmSEwK6FMkCmqqnQn8JBgO2QXrxujjOBMdFnWraTx/oQN3dgTK++t+sAO1W7KHDtNmkJCo3wwNflqv4W+nm6lpPn4yVWv3CAiU5XwU4+ZQ9f9QVSm6xWkQ==
-Received: from MW4PR03CA0289.namprd03.prod.outlook.com (2603:10b6:303:b5::24)
- by DM4PR12MB7765.namprd12.prod.outlook.com (2603:10b6:8:113::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
- 2023 08:35:49 +0000
-Received: from CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:b5:cafe::80) by MW4PR03CA0289.outlook.office365.com
- (2603:10b6:303:b5::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Thu, 27 Jul 2023 08:35:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CO1NAM11FT040.mail.protection.outlook.com (10.13.174.140) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 08:35:48 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
- 01:35:30 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 27 Jul
- 2023 01:35:29 -0700
-Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Thu, 27 Jul 2023 01:35:28 -0700
-Date:   Thu, 27 Jul 2023 01:35:27 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v4 4/4] iommufd/selftest: Add coverage for
- IOMMU_GET_HW_INFO ioctl
-Message-ID: <ZMIsTzdVlwSHMrly@Asurada-Nvidia>
-References: <20230724105936.107042-1-yi.l.liu@intel.com>
- <20230724105936.107042-5-yi.l.liu@intel.com>
- <ZL66TtuWZXhxWFKP@nvidia.com>
+        Thu, 27 Jul 2023 04:55:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AB56EAB;
+        Thu, 27 Jul 2023 01:36:23 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R815AH017015;
+        Thu, 27 Jul 2023 08:36:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=jzs5shYSZEN3HBx98PZkGJRGQooHn1deSpD5bbutirM=;
+ b=NLtOTyQaZzR0Xc/GLpiPbZ1OIeSVHszrNAonEyjuxANWihwxBPatJVwnklho/BuDZyz6
+ qW64LRjCfyBP/iYdPODtvwmuoqziJygn5SdViJ/+NxK+RvWYoOzIBbxoB9MVnuDzmmid
+ u9PvDyyica8MLkQcHCmvDnGyNeAw/Eaz/79YSZvlVYSO4mG9MWBMqtmyWkWDJPH6OaTS
+ ba1jW6aNk1eyiak6TTkEZp9fnNPJDJcEYESxqkVGnabl9o8jJYF4218R9NZzKinUZras
+ OkGAIEja1uSWHE0SjvHusGvM2rSqFJf6GD+iBCcpwobvOTqRge7kc2u+7pPi1RB1fssn ZQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3mpt03a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 08:36:11 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R8a8PR021443
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 08:36:09 GMT
+Received: from tjiang-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 27 Jul 2023 01:36:05 -0700
+From:   Tim Jiang <quic_tjiang@quicinc.com>
+To:     <johan@kernel.org>
+CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
+        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <quic_tjiang@quicinc.com>, <quic_bgodavar@quicinc.com>,
+        <quic_hemantg@quicinc.com>
+Subject: [PATCH v14 0/2] Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
+Date:   Thu, 27 Jul 2023 16:35:53 +0800
+Message-ID: <20230727083555.1023992-1-quic_tjiang@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZL66TtuWZXhxWFKP@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT040:EE_|DM4PR12MB7765:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4631be4e-6614-410a-e4db-08db8e7c7ad2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rax310OJ8PRiSHisbpZMsM+nXRs93bUQHBOY914ZrhPKVoHC9nrHeTuv9TL4viS9VPiw+QU4+9vZwA7VTZ+/+8zrVBT/cKp9oKvahFxGA0MpAXFPT/nwY4cUlXdHxMZoC1ToJj6IuD3/3ziyR2oNk6XNHgQf9qwJ3JPtQKyKMPM46fn761enzJvPT0JiKhioMWWKdA9XBUcypFs3fLm3HkPQ9xRU3mpAgPdvK2uRyDqYZHm8sovUevxvr8/oF5xpwPtGnPjIFlh/ZBwV67wpTUWI4qFuaSKsWHb1ZZqoZwWBI6ixWkfAPES5t2Tz1dq+pxhBLboIMkON63w9RpbzuZoWtXYbR92u8GQVGO2Hm5uMt3yuBD4zp6VLE3e04Q7jJsf50RKqzDwQyES0VBjQtd40GEa6OSLEArtNxUC7dyhhC0o3nWX1ye5D15m8CtI30lNu8PTt8qegC79l9SEBPn8o13SUqUtrBNrlja7o51SC86VfDj6fvFTSrnhhNXSovIu+oT1W8hZdRsYT4gVKNo+PxAFpfO0Hq0faXIXcJ843Ogd3j0nEMhhjATJBpLJh8C54zjPLPbksWvU/RWBmi7+THaBCJbyscy/y9JJxNKXudQKeK6IZ1Sw071AsKvrKGw8rVFB4+mW5mTv37n4i/1AZnvCmyOeCJi2EnC41zo9sOjk9k9TKsmXXxMw/UwrbKwr5u6Dm8N0WowNFIj0rGAGqppgbmH67pqUqNPfR50x8p/4bJ95ED3ANQ5DPVwsc
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(376002)(39860400002)(136003)(451199021)(82310400008)(40470700004)(46966006)(36840700001)(356005)(7636003)(26005)(54906003)(478600001)(82740400003)(336012)(186003)(426003)(47076005)(6636002)(4326008)(9686003)(36860700001)(70206006)(70586007)(4744005)(5660300002)(7416002)(40460700003)(41300700001)(33716001)(316002)(2906002)(6862004)(8676002)(8936002)(40480700001)(86362001)(55016003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 08:35:48.9225
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4631be4e-6614-410a-e4db-08db8e7c7ad2
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT040.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7765
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2vdeeyeQZhtH8ctKjW23tOctWw7f6X7S
+X-Proofpoint-GUID: 2vdeeyeQZhtH8ctKjW23tOctWw7f6X7S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 spamscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 mlxlogscore=763
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307270075
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 02:52:14PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jul 24, 2023 at 03:59:36AM -0700, Yi Liu wrote:
-> > diff --git a/tools/testing/selftests/iommu/iommufd_utils.h b/tools/testing/selftests/iommu/iommufd_utils.h
-> > index 70353e68e599..f13df84f6b42 100644
-> > --- a/tools/testing/selftests/iommu/iommufd_utils.h
-> > +++ b/tools/testing/selftests/iommu/iommufd_utils.h
-> > @@ -348,3 +348,29 @@ static void teardown_iommufd(int fd, struct __test_metadata *_metadata)
-> >  	})
-> >  
-> >  #endif
-> > +
-> > +static int _test_cmd_get_hw_info(int fd, __u32 device_id,
-> > +				 __u32 data_len, void *data)
-> 
-> void * data,size_t data_len
+This series adds support for qualcomm bluetooth soc qca2066
 
-OK!
+Changes in v14
+ - remove stray newline
+
+Changes in v13
+ - change the subject name for patch 1/2, and move the qca066 type code to patch 2/2.
+ - correct log style and sort qca2066 btsoc type for patch 2/2
+
+Changes in v12
+ - fix compile error issue for patch 1/2
+
+Changes in v11
+ - reverse two patches order
+
+Changes in v10
+ - break out btsoc type print into seperate patch
+
+Changes in v2-v9
+ - solve review comments for code style and commit message context
+
+
+Tim Jiang (2):
+  Bluetooth: hci_qca: adjust qca btsoc type print expression
+  Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
+
+ drivers/bluetooth/btqca.c   | 76 ++++++++++++++++++++++++++++++++++++-
+ drivers/bluetooth/btqca.h   |  4 +-
+ drivers/bluetooth/hci_qca.c | 41 ++++++++++++++++++--
+ 3 files changed, 114 insertions(+), 7 deletions(-)
+
+-- 
+2.41.0
+
