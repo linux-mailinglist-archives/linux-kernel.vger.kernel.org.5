@@ -2,139 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F816765D61
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D054765D62
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjG0UbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
+        id S231283AbjG0UbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbjG0UbF (ORCPT
+        with ESMTP id S231295AbjG0UbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:31:05 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D68271C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d087ffcc43cso1308475276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690489854; x=1691094654;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lEKw26+6RZdhI/anFRn58wCKq7xAbjFEyn0dAkNnpG0=;
-        b=JQC4MlN38CgOxQdZXvHWUw5mbVGP5ZPWx3/5G8h/aF0HPkdXFJcNXoEoXMLjnMoF+x
-         4Hu7uggmX2FpspBq6lxF6wv2JjPXaPL+uGbaW+Nd7y8gpo8X88P8w29kKuvtOUw19yXA
-         zphnSGDV8E05vxXMRCAAt9K2cv2wVtwHz4LUJ5smBonEAlaEnG7uioYbPbvxaUBOgFyn
-         f9D0nZZnJcuVdYQjNi024aRj9xHd9AEX9poOXq/xImJab3PtyMVu7Znmvks/rO0yWHkY
-         cFEs01yQ6Z2Gh4IzSHsnInDvM54A6RIJuGDOnwXLr9ngP2bmUs2Orsu+Gx7Slb7I84Di
-         fGSw==
+        Thu, 27 Jul 2023 16:31:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B4C2688
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690489830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AuxACaLiBeZZ2plyxBG2ZphRqj/+K7EVaUkCF5E72Uk=;
+        b=TXdqxj556hIQReAX8Io5G5dtm83wst1ubQym8sjxCYZxNE6s8Al8TZ5cJDd16d+xDPiqyb
+        mT4a3S6irjkEgzDHJnoejxaD3CUBE4CiF9+AiYp5iH/nKlJR+g2SiFx5sIJjRWsFXvBHqr
+        ug6VkUhDNI7jPuIs1aCtq+dKkFckXBk=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-682-3b9fZzLaPvSZSZ9daSXJow-1; Thu, 27 Jul 2023 16:30:28 -0400
+X-MC-Unique: 3b9fZzLaPvSZSZ9daSXJow-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63cc3a44aedso3417726d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:30:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690489854; x=1691094654;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lEKw26+6RZdhI/anFRn58wCKq7xAbjFEyn0dAkNnpG0=;
-        b=RyT5AgVcCbbk6ikitpUFLdJgkeokjrBIFBna2UeK2F/BfRtOwjGp2rqJQryv4l5RWt
-         eX5PRZleQ2zKGyEq8ZFc0e5noeyDcQlWf95jgH98Cx6HfFK+T0vGjuDV5dKxfpZ/4uq8
-         4EluRD3szN+xLqZCdfD0hbv2uXUVrDuGCISNQ2y8uLy2ruOqQLPjuP8rk4WIyM3fzD7I
-         AP2dOZ6/OS+5idhMbZyGseJWtEx1HgT2uYPZDqNj+4HRRieqZTOR5Fsitdxd7YOBYctH
-         t7zLvZ41Neg8FlPx0b3TpDlbvADDnkifNtemku55u/sjBGIX8FhQYwgXqumkuSsTr5nQ
-         Tw6A==
-X-Gm-Message-State: ABy/qLbsYxW5kcUL+smRUWQG8R42U9R+T1nemWJaZSJwgS0Ym20H32fN
-        zmkYy2s9U2zcTF4KyvbFX9iiGuRNUdQ6elniog==
-X-Google-Smtp-Source: APBJJlGl9kr0YKjXXClaNvO5YXYK+bsI4pnNFzpD0RmmC23yYTH1+wRPxm/hihZJnIhi6nmd3x0pGnlwMsmYe8YXBg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:c0cd:0:b0:d0f:dec4:87a0 with SMTP
- id c196-20020a25c0cd000000b00d0fdec487a0mr2722ybf.2.1690489854578; Thu, 27
- Jul 2023 13:30:54 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 20:30:18 +0000
-In-Reply-To: <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
-Mime-Version: 1.0
-References: <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690489451; l=2099;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=ekRYz8xbmy5B35whJHZOKa2NN55Pqt6uzdTr4Owj6tU=; b=ZHerNq4/0/izYJjYC4OPRwRQsf1JjGaWzyKG1n6tatiOox8osMHj5IC5H3w7pomkovsRZW+Mr
- ZalieCCjJkOBFVxsodA8i2CfMpi8W7SOSDjFdBjxoR32Os1IBvPaV8a
-X-Mailer: b4 0.12.3
-Message-ID: <20230727-asoc-intel-skylake-remove-deprecated-strncpy-v2-1-152830093921@google.com>
-Subject: [PATCH v2] ASoC: Intel: Skylake: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690489828; x=1691094628;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AuxACaLiBeZZ2plyxBG2ZphRqj/+K7EVaUkCF5E72Uk=;
+        b=j1ziU0RmTIlr3yOE5mtd/2fMYL93b2CAztIps5DhRQwFlEVJ8Sn/J0jtLyFIMw3i+s
+         9jCj5Kn2Hwd8vK3R3BwCpyn5xoGN4dX7lQcEaxiTfPhR9Cax8ykLa8LBzhUtfPPxGexZ
+         Zl3QjHCrDhl+VK6jSEjZ5bYQsuGEfXvXAaoRZcPg/woPdC/nZ0YEAdTT08l2F+So51Im
+         fqavfq9nkpSTaxWI0g8lcod5nwqyoLpof0kkyBudMZItVdbzOevpyy/wbSsJR/Afg41o
+         /lQs79SmeFw27qzUN92mAeJF++8IUvmhQ8NBYNlF/BqP7puXdegaSqB5zMs1p7AMwG7a
+         RGQA==
+X-Gm-Message-State: ABy/qLYn5eTaCO4arM4G/CvwGfma7X/MNVyzqFjoDJeNjllNQWmczZ0a
+        QHIknGDrUBfnkFM/ZF0tzgDzmCn2Bbp7VVMP6pcBlsgmNQ7hLfRZRj70WOJsMhIuVy+KnKIivHa
+        Ai53dzeqGXGkIPzA1qpLLHKDv
+X-Received: by 2002:a05:6214:5199:b0:621:65de:f60c with SMTP id kl25-20020a056214519900b0062165def60cmr528116qvb.3.1690489828023;
+        Thu, 27 Jul 2023 13:30:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEwAq1H9Am2PHeCbRrVcdzYzTz5Q+S34HkYrd4o7DwHgFLizyaB4rVJvw/NpwLKHXexx5kqig==
+X-Received: by 2002:a05:6214:5199:b0:621:65de:f60c with SMTP id kl25-20020a056214519900b0062165def60cmr528101qvb.3.1690489827673;
+        Thu, 27 Jul 2023 13:30:27 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id h13-20020a0cab0d000000b00635eeb8a4fcsm668775qvb.114.2023.07.27.13.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 13:30:27 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 16:30:25 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     liubo <liubo254@huawei.com>, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hughd@google.com, willy@infradead.org
+Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
+ through /proc/pid/smaps
+Message-ID: <ZMLT4aL9V61Bl5TG@x1n>
+References: <20230726073409.631838-1-liubo254@huawei.com>
+ <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
+ <ZMJt+VWzIG4GAjeb@x1n>
+ <f49c2a51-4dd8-784b-57fa-34fb397db2b7@redhat.com>
+ <ZMKJjDaqZ7FW0jfe@x1n>
+ <5a2c9ae4-50f5-3301-3b50-f57026e1f8e8@redhat.com>
+ <ZMK+jSDgOmJKySTr@x1n>
+ <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <30e58727-0a6a-4461-e9b1-f64d6eea026c@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Jul 27, 2023 at 09:17:45PM +0200, David Hildenbrand wrote:
+> On 27.07.23 20:59, Peter Xu wrote:
+> > On Thu, Jul 27, 2023 at 07:27:02PM +0200, David Hildenbrand wrote:
+> > > > > 
+> > > > > This was wrong from the very start. If we're not in GUP, we shouldn't call
+> > > > > GUP functions.
+> > > > 
+> > > > My understanding is !GET && !PIN is also called gup.. otherwise we don't
+> > > > need GET and it can just be always implied.
+> > > 
+> > > That's not the point. The point is that _arbitrary_ code shouldn't call into
+> > > GUP internal helper functions, where they bypass, for example, any sanity
+> > > checks.
+> > 
+> > What's the sanity checks that you're referring to?
+> > 
+> 
+> For example in follow_page()
+> 
+> if (vma_is_secretmem(vma))
+> 	return NULL;
+> 
+> if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
+> 	return NULL;
+> 
+> 
+> Maybe you can elaborate why you think we should *not* be using
+> vm_normal_page_pmd() and instead some arbitrary GUP internal helper? I don't
+> get it.
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
+Because the old code was written like that?
 
-It was pretty difficult, in this case, to try and figure out whether or
-not the destination buffer was zero-initialized. If it is and this
-behavior is relied on then perhaps `strscpy_pad` is the preferred
-option here.
+You're proposing to change it here.  Again, I'm fine with the change, but
+please don't ask me to justify why the original code is fine.. because I
+simply don't see anything majorly wrong with either, it's the change that
+needs justification, not keeping it as-is (since Kirill wrote it in 2014).
 
-Kees was able to help me out and identify the following code snippet
-which seems to show that the destination buffer is zero-initialized.
+Well.. I feel like this becomes less helpful to discuss. let's try to move
+on.
 
-|       skl = devm_kzalloc(&pci->dev, sizeof(*skl), GFP_KERNEL);
+> 
+> > > 
+> > > > 
+> > > > The other proof is try_grab_page() doesn't fail hard on !GET && !PIN.  So I
+> > > > don't know whether that's "wrong" to be used..
+> > > > 
+> > > 
+> > > To me, that is arbitrary code using a GUP internal helper and, therefore,
+> > > wrong.
+> > > 
+> > > > Back to the topic: I'd say either of the patches look good to solve the
+> > > > problem.  If p2pdma pages are mapped as PFNMAP/MIXEDMAP (?), I guess
+> > > > vm_normal_page_pmd() proposed here will also work on it, so nothing I see
+> > > > wrong on 2nd one yet.
+> > > > 
+> > > > It looks nicer indeed to not have FOLL_FORCE here, but it also makes me
+> > > > just wonder whether we should document NUMA behavior for FOLL_* somewhere,
+> > > > because we have an implication right now on !FOLL_FORCE over NUMA, which is
+> > > > not obvious to me..
+> > > 
+> > > Yes, we probably should. For get_use_pages() and friends that behavior was
+> > > always like that and it makes sense: usually it represent application
+> > > behavior.
+> > > 
+> > > > 
+> > > > And to look more over that aspect, see follow_page(): previously we can
+> > > > follow a page for protnone (as it never applies FOLL_NUMA) but now it won't
+> > > > (it never applies FOLL_FORCE, either, so it seems "accidentally" implies
+> > > > FOLL_NUMA now).  Not sure whether it's intended, though..
+> > > 
+> > > That was certainly an oversight, thanks for spotting that. That patch was
+> > > not supposed to change semantics:
+> > > 
+> > > diff --git a/mm/gup.c b/mm/gup.c
+> > > index 76d222ccc3ff..ac926e19ff72 100644
+> > > --- a/mm/gup.c
+> > > +++ b/mm/gup.c
+> > > @@ -851,6 +851,13 @@ struct page *follow_page(struct vm_area_struct *vma,
+> > > unsigned long address,
+> > >          if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
+> > >                  return NULL;
+> > > 
+> > > +       /*
+> > > +        * In contrast to get_user_pages() and friends, we don't want to
+> > > +        * fail if the PTE is PROT_NONE: see gup_can_follow_protnone().
+> > > +        */
+> > > +       if (!(foll_flags & FOLL_WRITE))
+> > > +               foll_flags |= FOLL_FORCE;
+> > > +
+> > >          page = follow_page_mask(vma, address, foll_flags, &ctx);
+> > >          if (ctx.pgmap)
+> > >                  put_dev_pagemap(ctx.pgmap);
+> > 
+> > This seems to be slightly against your other solution though for smaps,
+> > where we want to avoid abusing FOLL_FORCE.. isn't it..
+> 
+> This is GUP internal, not some arbitrary code, so to me a *completely*
+> different discussion.
+> 
+> > 
+> > Why read only?  That'll always attach FOLL_FORCE to all follow page call
+> > sites indeed for now, but just curious - logically "I want to fetch the
+> > page even if protnone" is orthogonal to do with write permission here to
+> > me.
+> 
+> Historical these were not the semantics, so I won't change them.
+> 
+> FOLL_FORCE | FOLL_WRITE always had a special taste to it (COW ...).
+> 
+> > 
+> > I still worry about further abuse of FOLL_FORCE, I believe you also worry
+> > that so you proposed the other way for the smaps issue.
+> > 
+> > Do you think we can just revive FOLL_NUMA?  That'll be very clear to me
+> > from that aspect that we do still have valid use cases for it.
+> 
+> FOLL_NUMA naming was nowadays wrong to begin with (not to mention, confusing
+> a we learned). There are other reasons why we have PROT_NONE -- mprotect(),
+> for example.
 
-With this information, I opted for `strscpy` since padding is seemingly
-not required.
+It doesn't really violate with the name, IMHO - protnone can be either numa
+hint or PROT_NONE for real. As long as we return NULL for a FOLL_NUMA
+request we're achieving the goal we want - we guarantee a NUMA balancing to
+trigger with when FOLL_NUMA provided.  It doesn't need to guarantee
+anything else, afaiu.  The final check relies in vma_is_accessible() in the
+fault paths anyway.  So I don't blame the old name that much.
 
-[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> We could have a flag that goes the other way around: FOLL_IGNORE_PROTNONE
+> ... which surprisingly then ends up being exactly what FOLL_FORCE means
+> without FOLL_WRITE, and what this patch does.
+> 
+> Does that make sense to you?
+> 
+> 
+> > 
+> > The very least is if with above we should really document FOLL_FORCE - we
+> > should mention NUMA effects.  But that's ... really confusing. Thinking
+> > about that I personally prefer a revival of FOLL_NUMA, then smaps issue all
+> > go away.
+> 
+> smaps needs to be changed in any case IMHO. And I'm absolutely not in favor
+> of revicing FOLL_NUMA.
 
-Link: https://github.com/KSPP/linux/issues/90
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- Remove extraneous logic change (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com
----
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As stated above, to me FOLL_NUMA is all fine and clear.  If you think
+having a flag back for protnone is worthwhile no matter as-is (FOLL_NUMA)
+or with reverted meaning, then that sounds all fine to me. Maybe the old
+name at least makes old developers know what's that.
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 96cfebded072..0ead3ea605cd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3159,7 +3159,7 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
- 			return -EINVAL;
- 		}
- 
--		strncpy(skl->lib_info[ref_count].name,
-+		strscpy(skl->lib_info[ref_count].name,
- 			str_elem->string,
- 			ARRAY_SIZE(skl->lib_info[ref_count].name));
- 		ref_count++;
+I don't have a strong opinion on names though; mostly never had.
 
----
-base-commit: 0b4a9fdc9317440a71d4d4c264a5650bf4a90f3c
-change-id: 20230726-asoc-intel-skylake-remove-deprecated-strncpy-9dbcfc26040c
+Thanks,
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+Peter Xu
 
