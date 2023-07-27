@@ -2,176 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88E57659B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8389D7659B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjG0RNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S233019AbjG0RNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjG0RNS (ORCPT
+        with ESMTP id S232761AbjG0RNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:13:18 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9725830F0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:13:10 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bbb97d27d6so8137135ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690477989; x=1691082789;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7oDMpfc0bW6NSyfuHNNNYlN2HFPFEuCSHvjU51+NBs=;
-        b=uR617wLpg6qNB677nCTpj/mRcHCn7jeMQ6T975dwFWafb05LBOA5GXBHggNBovfIzX
-         O/7M392ccdTOGZqesE1qC7szLmXDUVbpTkdUSAnDKesUZGTHf6YrHw7iRdcLemcslWSD
-         KrRYixDmKkhke5BhBNDcGGoexHbctICnVSugeNNjkFTNcd3g+7vTx3m4xPX98nUwGt3/
-         mWhf+uFvINzhg7lFN3O3GR8jmx04AReHHh1Ek1sP09ZwG+oxGwlWe7n39MiREf5a36wi
-         QECqs1dJt2n4+euTMFmAQH0Oiz0RKLy4HgS6MVL8RVa78gxf6JRosPxL/mvaakJouVeF
-         ho3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690477989; x=1691082789;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F7oDMpfc0bW6NSyfuHNNNYlN2HFPFEuCSHvjU51+NBs=;
-        b=bEAWiU1PIhKUKGV6BvBYO3AFqG9EnikBoRlHJUQV8MIaf+Y2DX+GxR/fuKw8Oj/VUe
-         U5SlY+5e8mBS0Hw0lo2cYI+/UCO5lqHUwe4SCY4gnGTNv2lcKsD8/T80UwnmkneF2/Al
-         GyBwBszj4fxjPCRg3KOzIZAJHB2sFKMy8ShyPmjGAM5N3Z9PomUOWpCmKPyMwf2omSXF
-         JM/iM+hrC3K93CW3XUwAotpDz1lWZl39I3PDcbrQB3EOhvsBEniHsMSiqYQS96RFawY1
-         xKVT5bLvqiuIBm0+L8plV/dX+xm9zYm32He/ZyvcACGdGe1t0QN90nWRuW4CSiU9FGo8
-         RZQA==
-X-Gm-Message-State: ABy/qLY9CE1HF9gbEbqZu+rTTdz5WhCf9djlPrB/+g3gf7qlHc6bqa8b
-        c4wbnZ0DOhcJMz0I5hQwIJIgunNpPLM=
-X-Google-Smtp-Source: APBJJlEiCX9DyxliShqr2xPxTiyej7fUi+PkS+4LO77eNeghg1Fiv4b0fvD5YH2w9mP2/cy4q9w9vNXHRRI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:22c6:b0:1b5:2b14:5f2c with SMTP id
- y6-20020a17090322c600b001b52b145f2cmr24803plg.4.1690477989357; Thu, 27 Jul
- 2023 10:13:09 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 10:13:07 -0700
-In-Reply-To: <CA+EHjTzP2fypgkJbRpSPrKaWytW7v8ANEifofMnQCkdvYaX6Eg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
- <CA+EHjTzP2fypgkJbRpSPrKaWytW7v8ANEifofMnQCkdvYaX6Eg@mail.gmail.com>
-Message-ID: <ZMKlo+Fe8n/eLQ82@google.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 13:13:31 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB6835AF;
+        Thu, 27 Jul 2023 10:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690477999;
+        bh=iFsAPYra+5zB7SbmQBhq7Uej9I4TXLurpkpXK8lfY88=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=qKICobUHVChuchM5XNZtsd3hyErdxqqvEQfrGceKZSedROERX72DR2lIeR38XUcNk
+         z9W+rXIXbcbldrs6SvSLXcajaIllDecFcoXND+HsRb2Lb99fuiEjdsDGudWcyDtUSg
+         mcCg66QeouxTutPCnTj7nuw0N0nUVeMkQ/YA4v4k=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id BF6721286121;
+        Thu, 27 Jul 2023 13:13:19 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id cznVXVcn1UHD; Thu, 27 Jul 2023 13:13:19 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690477999;
+        bh=iFsAPYra+5zB7SbmQBhq7Uej9I4TXLurpkpXK8lfY88=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=qKICobUHVChuchM5XNZtsd3hyErdxqqvEQfrGceKZSedROERX72DR2lIeR38XUcNk
+         z9W+rXIXbcbldrs6SvSLXcajaIllDecFcoXND+HsRb2Lb99fuiEjdsDGudWcyDtUSg
+         mcCg66QeouxTutPCnTj7nuw0N0nUVeMkQ/YA4v4k=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id F1853128611A;
+        Thu, 27 Jul 2023 13:13:18 -0400 (EDT)
+Message-ID: <7e4c7af1adbfa91d05259ae65cade66521c3b182.camel@HansenPartnership.com>
+Subject: Re: [PATCH] 53c700: add 'slot' check to NULL
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Alexandra Diupina <adiupina@astralinux.ru>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org,
+        Vladimir Telezhnikov <vtelezhnikov@astralinux.ru>
+Date:   Thu, 27 Jul 2023 13:13:15 -0400
+In-Reply-To: <20230727153925.15297-1-adiupina@astralinux.ru>
+References: <20230727153925.15297-1-adiupina@astralinux.ru>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023, Fuad Tabba wrote:
-> Hi Sean,
+On Thu, 2023-07-27 at 18:39 +0300, Alexandra Diupina wrote:
+> The 'slot' variable allows a NULL value.
+> It is necessary to add a check for a null
+> value to avoid dereferencing the null pointer.
 > 
-> <snip>
-> ...
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
 > 
-> > @@ -5134,6 +5167,16 @@ static long kvm_vm_ioctl(struct file *filp,
-> >         case KVM_GET_STATS_FD:
-> >                 r = kvm_vm_ioctl_get_stats_fd(kvm);
-> >                 break;
-> > +       case KVM_CREATE_GUEST_MEMFD: {
-> > +               struct kvm_create_guest_memfd guest_memfd;
-> > +
-> > +               r = -EFAULT;
-> > +               if (copy_from_user(&guest_memfd, argp, sizeof(guest_memfd)))
-> > +                       goto out;
-> > +
-> > +               r = kvm_gmem_create(kvm, &guest_memfd);
-> > +               break;
-> > +       }
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Co-developed-by: Vladimir Telezhnikov <vtelezhnikov@astralinux.ru>
+> Signed-off-by: Vladimir Telezhnikov <vtelezhnikov@astralinux.ru>
+> Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+> ---
+>  drivers/scsi/53c700.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I'm thinking line of sight here, by having this as a vm ioctl (rather
-> than a system iocl), would it complicate making it possible in the
-> future to share/donate memory between VMs?
+> diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+> index e1e4f9d10887..8e5468d1733d 100644
+> --- a/drivers/scsi/53c700.c
+> +++ b/drivers/scsi/53c700.c
+> @@ -1598,6 +1598,8 @@ NCR_700_intr(int irq, void *dev_id)
+>                                 printk("scsi%d (%d:%d) PHASE MISMATCH
+> IN SEND MESSAGE %d remain, return %p[%04x], phase %s\n", host-
+> >host_no, pun, lun, count, (void *)temp, temp - hostdata->pScript,
+> sbcl_to_string(NCR_700_readb(host, SBCL_REG)));
+>  #endif
+>                                 resume_offset = hostdata->pScript +
+> Ent_SendMessagePhaseMismatch;
+> +                       } else if (!slot) {
+> +                               printk(KERN_ERR "53c700: SCSI DONE
+> HAS NULL SCp\n");
+>                         } else if(dsp >= to32bit(&slot->pSG[0].ins)
+> &&
 
-Maybe, but I hope not?
+I don't believe anyone has ever hit this, but if slot were null, it
+would have to drop through to the else clause to get a bus reset to
+kick the device.  If we do what you propose above, the driver would
+hang instead of crashing, which isn't a better outcome.  Something like
+this.
 
-There would still be a primary owner of the memory, i.e. the memory would still
-need to be allocated in the context of a specific VM.  And the primary owner should
-be able to restrict privileges, e.g. allow a different VM to read but not write
-memory.
+James
 
-My current thinking is to (a) tie the lifetime of the backing pages to the inode,
-i.e. allow allocations to outlive the original VM, and (b) create a new file each
-time memory is shared/donated with a different VM (or other entity in the kernel).
+---
 
-That should make it fairly straightforward to provide different permissions, e.g.
-track them per-file, and I think should also avoid the need to change the memslot
-binding logic since each VM would have it's own view/bindings.
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index e1e4f9d10887..5296a13404cf 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -1598,7 +1598,7 @@ NCR_700_intr(int irq, void *dev_id)
+ 				printk("scsi%d (%d:%d) PHASE MISMATCH IN SEND MESSAGE %d remain, return %p[%04x], phase %s\n", host->host_no, pun, lun, count, (void *)temp, temp - hostdata->pScript, sbcl_to_string(NCR_700_readb(host, SBCL_REG)));
+ #endif
+ 				resume_offset = hostdata->pScript + Ent_SendMessagePhaseMismatch;
+-			} else if(dsp >= to32bit(&slot->pSG[0].ins) &&
++			} else if(slot && dsp >= to32bit(&slot->pSG[0].ins) &&
+ 				  dsp <= to32bit(&slot->pSG[NCR_700_SG_SEGMENTS].ins)) {
+ 				int data_transfer = NCR_700_readl(host, DBC_REG) & 0xffffff;
+ 				int SGcount = (dsp - to32bit(&slot->pSG[0].ins))/sizeof(struct NCR_700_SG_List);
 
-Copy+pasting a relevant snippet from a lengthier response in a different thread[*]:
-
-  Conceptually, I think KVM should to bind to the file.  The inode is effectively
-  the raw underlying physical storage, while the file is the VM's view of that
-  storage. 
-  
-  Practically, I think that gives us a clean, intuitive way to handle intra-host
-  migration.  Rather than transfer ownership of the file, instantiate a new file
-  for the target VM, using the gmem inode from the source VM, i.e. create a hard
-  link.  That'd probably require new uAPI, but I don't think that will be hugely
-  problematic.  KVM would need to ensure the new VM's guest_memfd can't be mapped
-  until KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM (which would also need to verify the
-  memslots/bindings are identical), but that should be easy enough to enforce.
-  
-  That way, a VM, its memslots, and its SPTEs are tied to the file, while allowing
-  the memory and the *contents* of memory to outlive the VM, i.e. be effectively
-  transfered to the new target VM.  And we'll maintain the invariant that each
-  guest_memfd is bound 1:1 with a single VM.
-  
-  As above, that should also help us draw the line between mapping memory into a
-  VM (file), and freeing/reclaiming the memory (inode).
-  
-  There will be extra complexity/overhead as we'll have to play nice with the
-  possibility of multiple files per inode, e.g. to zap mappings across all files
-  when punching a hole, but the extra complexity is quite small, e.g. we can use
-  address_space.private_list to keep track of the guest_memfd instances associated
-  with the inode.
-  
-  Setting aside TDX and SNP for the moment, as it's not clear how they'll support
-  memory that is "private" but shared between multiple VMs, I think per-VM files
-  would work well for sharing gmem between two VMs.  E.g. would allow a give page
-  to be bound to a different gfn for each VM, would allow having different permissions
-  for each file (e.g. to allow fallocate() only from the original owner).
-
-[*] https://lore.kernel.org/all/ZLGiEfJZTyl7M8mS@google.com
