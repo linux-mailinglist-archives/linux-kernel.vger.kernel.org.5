@@ -2,91 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F1D7651A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD047651A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbjG0Kto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
+        id S232444AbjG0KuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjG0Ktk (ORCPT
+        with ESMTP id S232141AbjG0Kt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:49:40 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126841B0;
-        Thu, 27 Jul 2023 03:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690454980; x=1721990980;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=57mYT2f2RrP9FiodEMMr76QgapJHPnR1nBjKTCXuo1A=;
-  b=Bi/vMRdkZVZxLAFy/AyZsxOHd1O385HsZNSAUgBSEPgCtl7NJ0bMrHZP
-   2ZDvMMzxANjrls/b06H6teoDo082hcbTAnFN08R/SZm++EKRk5O8NvjKZ
-   641xVzMzR2X0Nk86/B6H15JrKvbxliXPJdtmC+Lxt47kwglDK8PGPoHaq
-   nAmMljOxBijv9XtvfIcuxgwPhC1x07I8CM6o4/D1SMblws0KZyZRBww4w
-   iKngxMPJcWq0f8VDAaloV1SszdfKHsCF9v5tWYOROKDrnjDsEjg75pqoD
-   FlVw8/iVZhn1XIShnNmPiBvaCloY7QKrpOuYZ1OxRFVnzBILY1ZaT+2Kk
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="358278571"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="358278571"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 03:49:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="677111514"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="677111514"
-Received: from mylly.fi.intel.com (HELO [10.237.72.154]) ([10.237.72.154])
-  by orsmga003.jf.intel.com with ESMTP; 27 Jul 2023 03:49:36 -0700
-Message-ID: <d1ec82a2-5c16-c3dd-147f-1e5256acffcd@linux.intel.com>
-Date:   Thu, 27 Jul 2023 13:49:36 +0300
+        Thu, 27 Jul 2023 06:49:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609961B0;
+        Thu, 27 Jul 2023 03:49:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E794061E2D;
+        Thu, 27 Jul 2023 10:49:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54CBFC433C8;
+        Thu, 27 Jul 2023 10:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690454996;
+        bh=9W2ljgkyM4tLPmmGQe1w7tQZutLGGSdtT7DBysYE1gM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ujDlYZ1htpoVL0FDx0sd0QeI5j1BmBtMpui+5/gA8V45dat8OAdStu6qcfdxh2LcK
+         7Lj+pwFXHuYP8kxrhtmfTzXm0gUA+nqF6EbwV5B4DmjEGkDPZbVFx6fcz5UYhapJm9
+         QGwzEjmtpT3Lvqwmy3hnkaTEdSE0vC9dcJRl+S0wv/LlGqKOx506px/rVfcnc48f7f
+         2aEP3dZScCyOR+FjxcwnKphVpW99wEy3uYIkI7nqJg20bxMpHd5Nh0UyCL5w+qxUVB
+         pMadIs4imOl5s7rv47EGLX2hZf/8fCTN8J4pLC/0GHz677PQ4wbWM8mhgtnS1NMJ8c
+         AKimb8tnAvIiw==
+Date:   Thu, 27 Jul 2023 12:49:51 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>, viro@zeniv.linux.org.uk,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org
+Subject: Re: [PATCH v2] init: Add support for rootwait timeout parameter
+Message-ID: <20230727-speerwerfen-tiefpunkt-c4cde40994af@brauner>
+References: <20230726152232.932288-1-loic.poulain@linaro.org>
+ <1d363177-2629-1ab3-7a4b-bc67d94bb87a@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/2] i2c: designware: Handle invalid SMBus block data
- response length value
-Content-Language: en-US
-To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Cc:     patches@amperecomputing.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, jsd@semihalf.com,
-        chuong@os.amperecomputing.com, darren@os.amperecomputing.com,
-        stable@vger.kernel.org
-References: <20230726080001.337353-1-tamnguyenchi@os.amperecomputing.com>
- <20230726080001.337353-3-tamnguyenchi@os.amperecomputing.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230726080001.337353-3-tamnguyenchi@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1d363177-2629-1ab3-7a4b-bc67d94bb87a@infradead.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 11:00, Tam Nguyen wrote:
-> In the I2C_FUNC_SMBUS_BLOCK_DATA case, the invalid length byte value
-> (outside of 1-32) of the SMBus block data response from the Slave device
-> is not correctly handled by the I2C Designware driver.
+On Wed, Jul 26, 2023 at 11:08:35PM -0700, Randy Dunlap wrote:
+> Hi--
 > 
-> In case IC_EMPTYFIFO_HOLD_MASTER_EN==1, which cannot be detected
-> from the registers, the Master can be disabled only if the STOP bit
-> is set. Without STOP bit set, the Master remains active, holding the bus
-> until receiving a block data response length. This hangs the bus and
-> is unrecoverable.
+> On 7/26/23 08:22, Loic Poulain wrote:
+> > Add an optional timeout arg to 'rootwait' as the maximum time in
+> > seconds to wait for the root device to show up before attempting
+> > forced mount of the root filesystem.
+> > 
+> > Use case:
+> > In case of device mapper usage for the rootfs (e.g. root=/dev/dm-0),
+> > if the mapper is not able to create the virtual block for any reason
+> > (wrong arguments, bad dm-verity signature, etc), the `rootwait` param
+> > causes the kernel to wait forever. It may however be desirable to only
+> > wait for a given time and then panic (force mount) to cause device reset.
+> > This gives the bootloader a chance to detect the problem and to take some
+> > measures, such as marking the booted partition as bad (for A/B case) or
+> > entering a recovery mode.
+> > 
+> > In success case, mounting happens as soon as the root device is ready,
+> > unlike the existing 'rootdelay' parameter which performs an unconditional
+> > pause.
+> > 
+> > Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+> > ---
+> >  v2: rebase + reword: add use case example
+> > 
+> >  .../admin-guide/kernel-parameters.txt         |  4 ++++
+> >  init/do_mounts.c                              | 19 +++++++++++++++++--
+> >  2 files changed, 21 insertions(+), 2 deletions(-)
+> > 
 > 
-> Avoid this by issuing another dump read to reach the stop condition when
-> an invalid length byte is received.
+> > diff --git a/init/do_mounts.c b/init/do_mounts.c
+> > index 1aa015883519..118f2bbe7b38 100644
+> > --- a/init/do_mounts.c
+> > +++ b/init/do_mounts.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/ramfs.h>
+> >  #include <linux/shmem_fs.h>
+> > +#include <linux/ktime.h>
+> >  
+> >  #include <linux/nfs_fs.h>
+> >  #include <linux/nfs_fs_sb.h>
+> > @@ -71,12 +72,20 @@ static int __init rootwait_setup(char *str)
+> >  {
+> >  	if (*str)
+> >  		return 0;
+> > -	root_wait = 1;
+> > +	root_wait = -1;
+> >  	return 1;
+> >  }
+> >  
+> >  __setup("rootwait", rootwait_setup);
+> >  
+> > +static int __init rootwait_timeout_setup(char *str)
+> > +{
+> > +	root_wait = simple_strtoul(str, NULL, 0);
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
-> ---
->   drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++++++--
->   1 file changed, 13 insertions(+), 2 deletions(-)
+> Better to use kstrtoul().  simple_strtoul() says:
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+>  * This function has caveats. Please use kstrtoul instead.
+> 
+> and kstrtoul() says:
+> 
+>  * Returns 0 on success, -ERANGE on overflow and -EINVAL on parsing error.
+>  * Preferred over simple_strtoul(). Return code must be checked.
+
+Yes, this should check and at least log an error that rootwait is
+ignored and fall back to either indefinite waiting or no waiting.
