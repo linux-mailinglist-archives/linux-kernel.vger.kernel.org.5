@@ -2,80 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402727654AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB4C7654AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjG0NM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        id S231657AbjG0NNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:13:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjG0NMV (ORCPT
+        with ESMTP id S229589AbjG0NNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:12:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830011715;
-        Thu, 27 Jul 2023 06:12:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 27 Jul 2023 09:13:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE22D1715
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690463586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FYy7XLdCnALp3/D9ahfmtvQ5zGKKrEf0N94s0r+0boI=;
+        b=DRpAhGKnyavOAJSqtPnxWjj2gmSMf5OmYR2ozGuVv76vU66D5GJ7624NCGd92me/cw2UBq
+        ypRki15zkiO6Y0y5umgJ0Gui9onSOU3PyQlbQApBuXLhYh5wsfmOVr8+91LrIkktQnJqvf
+        IRuBLdY/aq+jr+owOTFBhkV5XmuLvy4=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-63-FPN6QHfIP2erXVmf6daIOQ-1; Thu, 27 Jul 2023 09:13:05 -0400
+X-MC-Unique: FPN6QHfIP2erXVmf6daIOQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2087C61E71;
-        Thu, 27 Jul 2023 13:12:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D31C433C8;
-        Thu, 27 Jul 2023 13:12:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690463539;
-        bh=9dsD6qht9F/b5jq523+Sku0tJDHSRASAuDdE3hK28X8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FYECEGQ5Fy7k8XN9uei3Ju2nUDmE/L0NnLipfyqsyZp0k0r9HpmtRnuPeGjH1CkdR
-         Ss4AtRlEpUv4wNES6j9km4m+th3oQGt0nejciOeOhHBRUpADqErk8n6a4MNa2wdAwF
-         vySWhTE9z3UIA0CRdNXQQ2to0/GoGRCXCYA0vmcipvKXFDXWds3GCedCykFFylQ3wQ
-         z6uGkXRlNwgApJUWUe0wIw3rYuOhlzPKxvTI802CNJkqB++IigCuhCP0kbfoHZpSzN
-         rENDcPTa/y9xYBw2ctxR7P2DeMq/O1y3uYVouqLIfpPH+tRU9XOr7ASAJh/GfCzVFW
-         a5x6QZKhfqNnw==
-Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qP0mu-00HMdJ-Ub;
-        Thu, 27 Jul 2023 14:12:17 +0100
-Date:   Thu, 27 Jul 2023 14:12:16 +0100
-Message-ID: <87jzulqz0v.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
-In-Reply-To: <20230722022251.3446223-13-rananta@google.com>
-References: <20230722022251.3446223-1-rananta@google.com>
-        <20230722022251.3446223-13-rananta@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 104.132.45.102
-X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C64529AA385;
+        Thu, 27 Jul 2023 13:13:04 +0000 (UTC)
+Received: from gerbillo.redhat.com (unknown [10.45.225.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 76FA74094DC0;
+        Thu, 27 Jul 2023 13:13:03 +0000 (UTC)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Networking for 6.5-rc4
+Date:   Thu, 27 Jul 2023 15:12:50 +0200
+Message-ID: <20230727131250.40515-1-pabeni@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,82 +59,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 Jul 2023 03:22:51 +0100,
-Raghavendra Rao Ananta <rananta@google.com> wrote:
-> 
-> The current implementation of the stage-2 unmap walker traverses
-> the given range and, as a part of break-before-make, performs
-> TLB invalidations with a DSB for every PTE. A multitude of this
-> combination could cause a performance bottleneck on some systems.
-> 
-> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
-> invalidations until the entire walk is finished, and then
-> use range-based instructions to invalidate the TLBs in one go.
-> Condition deferred TLB invalidation on the system supporting FWB,
-> as the optimization is entirely pointless when the unmap walker
-> needs to perform CMOs.
-> 
-> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
-> now serves the stage-2 unmap walker specifically, rather than
-> acting generic.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
->  1 file changed, 58 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 5ef098af1736..cf88933a2ea0 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgtable_visit_ctx *ctx, kvm_pte_t n
->  	smp_store_release(ctx->ptep, new);
->  }
->  
-> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, struct kvm_s2_mmu *mmu,
-> -			   struct kvm_pgtable_mm_ops *mm_ops)
-> +struct stage2_unmap_data {
-> +	struct kvm_pgtable *pgt;
-> +	bool defer_tlb_flush_init;
-> +};
-> +
-> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
-> +{
-> +	/*
-> +	 * If FEAT_TLBIRANGE is implemented, defer the individual
-> +	 * TLB invalidations until the entire walk is finished, and
-> +	 * then use the range-based TLBI instructions to do the
-> +	 * invalidations. Condition deferred TLB invalidation on the
-> +	 * system supporting FWB, as the optimization is entirely
-> +	 * pointless when the unmap walker needs to perform CMOs.
-> +	 */
-> +	return system_supports_tlb_range() && stage2_has_fwb(pgt);
-> +}
-> +
-> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unmap_data)
-> +{
-> +	bool defer_tlb_flush = __stage2_unmap_defer_tlb_flush(unmap_data->pgt);
-> +
-> +	/*
-> +	 * Since __stage2_unmap_defer_tlb_flush() is based on alternative
-> +	 * patching and the TLBIs' operations behavior depend on this,
-> +	 * track if there's any change in the state during the unmap sequence.
-> +	 */
-> +	WARN_ON(unmap_data->defer_tlb_flush_init != defer_tlb_flush);
-> +	return defer_tlb_flush;
+Hi Linus!
 
-I really don't understand what you're testing here. The ability to
-defer TLB invalidation is a function of the system capabilities
-(range+FWB) and a single flag that is only set on the host for pKVM.
+The following changes since commit 57f1f9dd3abea322173ea75a15887ccf14bbbe51:
 
-How could that change in the middle of the life of the system? if
-further begs the question about the need for the unmap_data data
-structure.
+  Merge tag 'net-6.5-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-07-20 14:46:39 -0700)
 
-It looks to me that we could simply pass the pgt pointer around and be
-done with it. Am I missing something obvious?
+are available in the Git repository at:
 
-	M.
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.5-rc4
 
--- 
-Without deviation from the norm, progress is not possible.
+for you to fetch changes up to de52e17326c3e9a719c9ead4adb03467b8fae0ef:
+
+  tipc: stop tipc crypto on failure in tipc_node_create (2023-07-27 11:45:05 +0200)
+
+----------------------------------------------------------------
+Networking fixes for 6.5-rc4, including fixes from can, netfilter
+
+Current release - regressions:
+
+  - core: fix splice_to_socket() for O_NONBLOCK socket
+
+  - af_unix: fix fortify_panic() in unix_bind_bsd().
+
+  - can: raw: fix lockdep issue in raw_release()
+
+Previous releases - regressions:
+
+  - tcp: reduce chance of collisions in inet6_hashfn().
+
+  - netfilter: skip immediate deactivate in _PREPARE_ERROR
+
+  - tipc: stop tipc crypto on failure in tipc_node_create
+
+  - eth: igc: fix kernel panic during ndo_tx_timeout callback
+
+  - eth: iavf: fix potential deadlock on allocation failure
+
+Previous releases - always broken:
+
+  - ipv6: fix bug where deleting a mngtmpaddr can create a new temporary address
+
+  - eth: ice: fix memory management in ice_ethtool_fdir.c
+
+  - eth: hns3: fix the imp capability bit cannot exceed 32 bits issue
+
+  - eth: vxlan: calculate correct header length for GPE
+
+  - eth: stmmac: apply redundant write work around on 4.xx too
+
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+
+----------------------------------------------------------------
+Alex Elder (1):
+      net: ipa: only reset hashed tables when supported
+
+Arkadiusz Kubalewski (2):
+      tools: ynl-gen: fix enum index in _decode_enum(..)
+      tools: ynl-gen: fix parse multi-attr enum attribute
+
+Christian Marangi (4):
+      net: dsa: qca8k: enable use_single_write for qca8xxx
+      net: dsa: qca8k: fix search_and_insert wrong handling of new rule
+      net: dsa: qca8k: fix broken search_and_del
+      net: dsa: qca8k: fix mdb add/del case with 0 VID
+
+David S. Miller (2):
+      Merge branch 'hns3-fixes'
+      Merge branch 'vxlan-gro-fixes'
+
+Eric Dumazet (1):
+      can: raw: fix lockdep issue in raw_release()
+
+Fedor Pchelkin (1):
+      tipc: stop tipc crypto on failure in tipc_node_create
+
+Florian Westphal (1):
+      netfilter: nft_set_rbtree: fix overlap expiration walk
+
+Hangbin Liu (2):
+      bonding: reset bond's flags when down link is P2P device
+      team: reset team's flags when down link is P2P device
+
+Hao Lan (2):
+      net: hns3: fix the imp capability bit cannot exceed 32 bits issue
+      net: hns3: add tm flush when setting tm
+
+Jacob Keller (2):
+      iavf: fix potential deadlock on allocation failure
+      iavf: check for removal state before IAVF_FLAG_PF_COMMS_FAILED
+
+Jakub Kicinski (7):
+      docs: net: clarify the NAPI rules around XDP Tx
+      Merge tag 'linux-can-fixes-for-6.5-20230724' of git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+      Merge branch 'net-fix-error-warning-by-fstrict-flex-arrays-3'
+      Merge branch 'tools-ynl-gen-fix-parse-multi-attr-enum-attribute'
+      Merge branch 'mptcp-more-fixes-for-6-5'
+      Merge tag 'nf-23-07-26' of https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
+
+Jan Stancek (1):
+      splice, net: Fix splice_to_socket() for O_NONBLOCK socket
+
+Jason Wang (1):
+      virtio-net: fix race between set queues and probe
+
+Jedrzej Jagielski (1):
+      ice: Fix memory management in ice_ethtool_fdir.c
+
+Jiawen Wu (1):
+      net: phy: marvell10g: fix 88x3310 power up
+
+Jijie Shao (2):
+      net: hns3: fix wrong tc bandwidth weight data issue
+      net: hns3: fix wrong bw weight of disabled tc issue
+
+Jiri Benc (3):
+      vxlan: calculate correct header length for GPE
+      vxlan: generalize vxlan_parse_gpe_hdr and remove unused args
+      vxlan: fix GRO with VXLAN-GPE
+
+Kuniyuki Iwashima (3):
+      af_unix: Fix fortify_panic() in unix_bind_bsd().
+      af_packet: Fix warning of fortified memcpy() in packet_getname().
+      af_unix: Terminate sun_path when bind()ing pathname socket.
+
+Lin Ma (2):
+      macvlan: add forgotten nla_policy for IFLA_MACVLAN_BC_CUTOFF
+      net/sched: mqprio: Add length check for TCA_MQPRIO_{MAX/MIN}_RATE64
+
+Maciej Żenczykowski (1):
+      ipv6 addrconf: fix bug where deleting a mngtmpaddr can create a new temporary address
+
+Marc Kleine-Budde (1):
+      can: gs_usb: gs_can_close(): add missing set of CAN state to CAN_STATE_STOPPED
+
+Matthieu Baerts (1):
+      selftests: mptcp: join: only check for ip6tables if needed
+
+Muhammad Husaini Zulkifli (1):
+      igc: Fix Kernel Panic during ndo_tx_timeout callback
+
+Pablo Neira Ayuso (2):
+      netfilter: nf_tables: skip immediate deactivate in _PREPARE_ERROR
+      netfilter: nf_tables: disallow rule addition to bound chain via NFTA_RULE_CHAIN_ID
+
+Paolo Abeni (2):
+      Merge branch 'fix-up-dev-flags-when-add-p2p-down-link'
+      mptcp: more accurate NL event generation
+
+Stewart Smith (1):
+      tcp: Reduce chance of collisions in inet6_hashfn().
+
+Suman Ghosh (1):
+      octeontx2-af: Fix hash extraction enable configuration
+
+Vincent Whitchurch (1):
+      net: stmmac: Apply redundant write work around on 4.xx too
+
+Wang Ming (1):
+      i40e: Fix an NULL vs IS_ERR() bug for debugfs_create_dir()
+
+Wei Fang (2):
+      net: fec: avoid tx queue timeout when XDP is enabled
+      net: fec: tx processing does not call XDP APIs if budget is 0
+
+Yuanjun Gong (5):
+      ethernet: atheros: fix return value check in atl1c_tso_csum()
+      atheros: fix return value check in atl1_tso()
+      ethernet: atheros: fix return value check in atl1e_tso_csum()
+      benet: fix return value check in be_lancer_xmit_workarounds()
+      tipc: check return value of pskb_trim()
+
+ Documentation/networking/napi.rst                  |  13 +-
+ drivers/net/bonding/bond_main.c                    |   5 +
+ drivers/net/can/usb/gs_usb.c                       |   2 +
+ drivers/net/dsa/qca/qca8k-8xxx.c                   |   7 +-
+ drivers/net/dsa/qca/qca8k-common.c                 |  19 ++-
+ drivers/net/ethernet/atheros/atl1c/atl1c_main.c    |   7 +-
+ drivers/net/ethernet/atheros/atl1e/atl1e_main.c    |   7 +-
+ drivers/net/ethernet/atheros/atlx/atl1.c           |   7 +-
+ drivers/net/ethernet/emulex/benet/be_main.c        |   3 +-
+ drivers/net/ethernet/freescale/fec_main.c          |  18 ++-
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   7 +-
+ .../hisilicon/hns3/hns3_common/hclge_comm_cmd.c    |  22 ++-
+ .../hisilicon/hns3/hns3_common/hclge_comm_cmd.h    |   2 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |   3 +
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_dcb.c |  51 ++++++-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c |   3 +-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c  |  34 ++++-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.h  |   4 +
+ drivers/net/ethernet/intel/i40e/i40e_debugfs.c     |   2 +-
+ drivers/net/ethernet/intel/iavf/iavf_main.c        |  11 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool_fdir.c  |  26 ++--
+ drivers/net/ethernet/intel/igc/igc_main.c          |  40 +++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   2 +-
+ .../ethernet/marvell/octeontx2/af/rvu_npc_hash.c   |  43 +++++-
+ .../ethernet/marvell/octeontx2/af/rvu_npc_hash.h   |   8 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_lib.c   |   4 +-
+ drivers/net/ipa/ipa_table.c                        |  20 +--
+ drivers/net/macvlan.c                              |   1 +
+ drivers/net/phy/marvell10g.c                       |   7 +
+ drivers/net/team/team.c                            |   9 ++
+ drivers/net/virtio_net.c                           |   4 +-
+ drivers/net/vxlan/vxlan_core.c                     | 165 +++++++++++++--------
+ fs/splice.c                                        |   2 +
+ include/net/ipv6.h                                 |   8 +-
+ include/net/vxlan.h                                |  13 +-
+ include/uapi/linux/if_packet.h                     |   6 +-
+ net/can/raw.c                                      |   5 +-
+ net/ipv6/addrconf.c                                |  14 +-
+ net/mptcp/protocol.c                               |   3 +-
+ net/netfilter/nf_tables_api.c                      |   5 +-
+ net/netfilter/nft_immediate.c                      |  27 ++--
+ net/netfilter/nft_set_rbtree.c                     |  20 ++-
+ net/packet/af_packet.c                             |   2 +-
+ net/sched/sch_mqprio.c                             |  14 ++
+ net/tipc/crypto.c                                  |   3 +-
+ net/tipc/node.c                                    |   2 +-
+ net/unix/af_unix.c                                 |  23 ++-
+ tools/net/ynl/lib/ynl.py                           |  16 +-
+ tools/testing/selftests/net/mptcp/mptcp_join.sh    |   4 +-
+ 49 files changed, 522 insertions(+), 201 deletions(-)
+
