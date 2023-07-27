@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 170187655CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C5F7655CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbjG0OTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52868 "EHLO
+        id S233681AbjG0OTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbjG0OSz (ORCPT
+        with ESMTP id S233589AbjG0OS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:18:55 -0400
+        Thu, 27 Jul 2023 10:18:57 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4513122
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:18:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E0BE30D3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:18:56 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1A5C1474;
-        Thu, 27 Jul 2023 07:19:36 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0D851477;
+        Thu, 27 Jul 2023 07:19:38 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD0863F6C4;
-        Thu, 27 Jul 2023 07:18:51 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC1323F6C4;
+        Thu, 27 Jul 2023 07:18:53 -0700 (PDT)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
@@ -33,9 +33,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
-Subject: [PATCH v4 2/3] mm: Implement folio_remove_rmap_range()
-Date:   Thu, 27 Jul 2023 15:18:36 +0100
-Message-Id: <20230727141837.3386072-3-ryan.roberts@arm.com>
+Subject: [PATCH v4 3/3] mm: Batch-zap large anonymous folio PTE mappings
+Date:   Thu, 27 Jul 2023 15:18:37 +0100
+Message-Id: <20230727141837.3386072-4-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230727141837.3386072-1-ryan.roberts@arm.com>
 References: <20230727141837.3386072-1-ryan.roberts@arm.com>
@@ -50,192 +50,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like page_remove_rmap() but batch-removes the rmap for a range of pages
-belonging to a folio. This can provide a small speedup due to less
-manipuation of the various counters. But more crucially, if removing the
-rmap for all pages of a folio in a batch, there is no need to
-(spuriously) add it to the deferred split list, which saves significant
-cost when there is contention for the split queue lock.
+This allows batching the rmap removal with folio_remove_rmap_range(),
+which means we avoid spuriously adding a partially unmapped folio to the
+deferred split queue in the common case, which reduces split queue lock
+contention.
 
-All contained pages are accounted using the order-0 folio (or base page)
-scheme.
+Previously each page was removed from the rmap individually with
+page_remove_rmap(). If the first page belonged to a large folio, this
+would cause page_remove_rmap() to conclude that the folio was now
+partially mapped and add the folio to the deferred split queue. But
+subsequent calls would cause the folio to become fully unmapped, meaning
+there is no value to adding it to the split queue.
 
-page_remove_rmap() is refactored so that it forwards to
-folio_remove_rmap_range() for !compound cases, and both functions now
-share a common epilogue function. The intention here is to avoid
-duplication of code.
+A complicating factor is that for platforms where MMU_GATHER_NO_GATHER
+is enabled (e.g. s390), __tlb_remove_page() drops a reference to the
+page. This means that the folio reference count could drop to zero while
+still in use (i.e. before folio_remove_rmap_range() is called). This
+does not happen on other platforms because the actual page freeing is
+deferred.
+
+Solve this by appropriately getting/putting the folio to guarrantee it
+does not get freed early. Given the need to get/put the folio in the
+batch path, we stick to the non-batched path if the folio is not large.
+While the batched path is functionally correct for a folio with 1 page,
+it is unlikely to be as efficient as the existing non-batched path in
+this case.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/linux/rmap.h |   2 +
- mm/rmap.c            | 125 ++++++++++++++++++++++++++++++++-----------
- 2 files changed, 97 insertions(+), 30 deletions(-)
+ mm/memory.c | 132 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 132 insertions(+)
 
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index b87d01660412..f578975c12c0 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -200,6 +200,8 @@ void page_add_file_rmap(struct page *, struct vm_area_struct *,
- 		bool compound);
- void page_remove_rmap(struct page *, struct vm_area_struct *,
- 		bool compound);
-+void folio_remove_rmap_range(struct folio *folio, struct page *page,
-+		int nr, struct vm_area_struct *vma);
- 
- void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
- 		unsigned long address, rmap_t flags);
-diff --git a/mm/rmap.c b/mm/rmap.c
-index eb0bb00dae34..c3ef56f7ec15 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1359,6 +1359,94 @@ void page_add_file_rmap(struct page *page, struct vm_area_struct *vma,
- 	mlock_vma_folio(folio, vma, compound);
+diff --git a/mm/memory.c b/mm/memory.c
+index 01f39e8144ef..d35bd8d2b855 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1391,6 +1391,99 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
+ 	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
  }
  
-+/**
-+ * __remove_rmap_finish - common operations when taking down a mapping.
-+ * @folio:	Folio containing all pages taken down.
-+ * @vma:	The VM area containing the range.
-+ * @compound:	True if pages were taken down from PMD or false if from PTE(s).
-+ * @nr_unmapped: Number of pages within folio that are now unmapped.
-+ * @nr_mapped:	Number of pages within folio that are still mapped.
-+ */
-+static void __remove_rmap_finish(struct folio *folio,
-+				struct vm_area_struct *vma, bool compound,
-+				int nr_unmapped, int nr_mapped)
++static inline unsigned long page_cont_mapped_vaddr(struct page *page,
++				struct page *anchor, unsigned long anchor_vaddr)
 +{
-+	enum node_stat_item idx;
++	unsigned long offset;
++	unsigned long vaddr;
 +
-+	if (nr_unmapped) {
-+		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
-+		__lruvec_stat_mod_folio(folio, idx, -nr_unmapped);
++	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
++	vaddr = anchor_vaddr + offset;
 +
-+		/*
-+		 * Queue large anon folio for deferred split if at least one
-+		 * page of the folio is unmapped and at least one page is still
-+		 * mapped.
-+		 */
-+		if (folio_test_large(folio) &&
-+		    folio_test_anon(folio) && nr_mapped)
-+			deferred_split_folio(folio);
-+	}
-+
-+	/*
-+	 * It would be tidy to reset folio_test_anon mapping when fully
-+	 * unmapped, but that might overwrite a racing page_add_anon_rmap
-+	 * which increments mapcount after us but sets mapping before us:
-+	 * so leave the reset to free_pages_prepare, and remember that
-+	 * it's only reliable while mapped.
-+	 */
-+
-+	munlock_vma_folio(folio, vma, compound);
-+}
-+
-+/**
-+ * folio_remove_rmap_range - Take down PTE mappings from a range of pages.
-+ * @folio:	Folio containing all pages in range.
-+ * @page:	First page in range to unmap.
-+ * @nr:		Number of pages to unmap.
-+ * @vma:	The VM area containing the range.
-+ *
-+ * All pages in the range must belong to the same VMA & folio. They must be
-+ * mapped with PTEs, not a PMD.
-+ *
-+ * Context: Caller holds the pte lock.
-+ */
-+void folio_remove_rmap_range(struct folio *folio, struct page *page,
-+					int nr, struct vm_area_struct *vma)
-+{
-+	atomic_t *mapped = &folio->_nr_pages_mapped;
-+	int nr_unmapped = 0;
-+	int nr_mapped = 0;
-+	bool last;
-+
-+	if (unlikely(folio_test_hugetlb(folio))) {
-+		VM_WARN_ON_FOLIO(1, folio);
-+		return;
-+	}
-+
-+	VM_WARN_ON_ONCE(page < &folio->page ||
-+			page + nr > (&folio->page + folio_nr_pages(folio)));
-+
-+	if (!folio_test_large(folio)) {
-+		/* Is this the page's last map to be removed? */
-+		last = atomic_add_negative(-1, &page->_mapcount);
-+		nr_unmapped = last;
++	if (anchor > page) {
++		if (vaddr > anchor_vaddr)
++			return 0;
 +	} else {
-+		for (; nr != 0; nr--, page++) {
-+			/* Is this the page's last map to be removed? */
-+			last = atomic_add_negative(-1, &page->_mapcount);
-+			if (last)
-+				nr_unmapped++;
-+		}
-+
-+		/* Pages still mapped if folio mapped entirely */
-+		nr_mapped = atomic_sub_return_relaxed(nr_unmapped, mapped);
-+		if (nr_mapped >= COMPOUND_MAPPED)
-+			nr_unmapped = 0;
++		if (vaddr < anchor_vaddr)
++			return ULONG_MAX;
 +	}
 +
-+	__remove_rmap_finish(folio, vma, false, nr_unmapped, nr_mapped);
++	return vaddr;
 +}
 +
- /**
-  * page_remove_rmap - take down pte mapping from a page
-  * @page:	page to remove mapping from
-@@ -1385,15 +1473,13 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
- 		return;
- 	}
- 
--	/* Is page being unmapped by PTE? Is this its last map to be removed? */
-+	/* Is page being unmapped by PTE? */
- 	if (likely(!compound)) {
--		last = atomic_add_negative(-1, &page->_mapcount);
--		nr = last;
--		if (last && folio_test_large(folio)) {
--			nr = atomic_dec_return_relaxed(mapped);
--			nr = (nr < COMPOUND_MAPPED);
--		}
--	} else if (folio_test_pmd_mappable(folio)) {
-+		folio_remove_rmap_range(folio, page, 1, vma);
-+		return;
++static int folio_nr_pages_cont_mapped(struct folio *folio,
++				      struct page *page, pte_t *pte,
++				      unsigned long addr, unsigned long end)
++{
++	pte_t ptent;
++	int floops;
++	int i;
++	unsigned long pfn;
++	struct page *folio_end;
++
++	if (!folio_test_large(folio))
++		return 1;
++
++	folio_end = &folio->page + folio_nr_pages(folio);
++	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
++	floops = (end - addr) >> PAGE_SHIFT;
++	pfn = page_to_pfn(page);
++	pfn++;
++	pte++;
++
++	for (i = 1; i < floops; i++) {
++		ptent = ptep_get(pte);
++
++		if (!pte_present(ptent) || pte_pfn(ptent) != pfn)
++			break;
++
++		pfn++;
++		pte++;
 +	}
 +
-+	if (folio_test_pmd_mappable(folio)) {
- 		/* That test is redundant: it's for safety or to optimize out */
- 
- 		last = atomic_add_negative(-1, &folio->_entire_mapcount);
-@@ -1421,29 +1507,8 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
- 			idx = NR_FILE_PMDMAPPED;
- 		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
- 	}
--	if (nr) {
--		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
--		__lruvec_stat_mod_folio(folio, idx, -nr);
--
--		/*
--		 * Queue anon large folio for deferred split if at least one
--		 * page of the folio is unmapped and at least one page
--		 * is still mapped.
--		 */
--		if (folio_test_large(folio) && folio_test_anon(folio))
--			if (!compound || nr < nr_pmdmapped)
--				deferred_split_folio(folio);
--	}
--
--	/*
--	 * It would be tidy to reset folio_test_anon mapping when fully
--	 * unmapped, but that might overwrite a racing page_add_anon_rmap
--	 * which increments mapcount after us but sets mapping before us:
--	 * so leave the reset to free_pages_prepare, and remember that
--	 * it's only reliable while mapped.
--	 */
- 
--	munlock_vma_folio(folio, vma, compound);
-+	__remove_rmap_finish(folio, vma, compound, nr, nr_pmdmapped - nr);
- }
- 
- /*
++	return i;
++}
++
++static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
++					    struct vm_area_struct *vma,
++					    struct folio *folio,
++					    struct page *page, pte_t *pte,
++					    unsigned long addr, int nr_pages,
++					    struct zap_details *details)
++{
++	struct mm_struct *mm = tlb->mm;
++	pte_t ptent;
++	bool full;
++	int i;
++
++	/* __tlb_remove_page may drop a ref; prevent going to 0 while in use. */
++	folio_get(folio);
++
++	for (i = 0; i < nr_pages;) {
++		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
++		tlb_remove_tlb_entry(tlb, pte, addr);
++		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
++		full = __tlb_remove_page(tlb, page, 0);
++
++		if (unlikely(page_mapcount(page) < 1))
++			print_bad_pte(vma, addr, ptent, page);
++
++		i++;
++		page++;
++		pte++;
++		addr += PAGE_SIZE;
++
++		if (unlikely(full))
++			break;
++	}
++
++	folio_remove_rmap_range(folio, page - i, i, vma);
++
++	folio_put(folio);
++
++	return i;
++}
++
+ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 				struct vm_area_struct *vma, pmd_t *pmd,
+ 				unsigned long addr, unsigned long end,
+@@ -1428,6 +1521,45 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			page = vm_normal_page(vma, addr, ptent);
+ 			if (unlikely(!should_zap_page(details, page)))
+ 				continue;
++
++			/*
++			 * Batch zap large anonymous folio mappings. This allows
++			 * batching the rmap removal, which means we avoid
++			 * spuriously adding a partially unmapped folio to the
++			 * deferrred split queue in the common case, which
++			 * reduces split queue lock contention.
++			 */
++			if (page && PageAnon(page)) {
++				struct folio *folio = page_folio(page);
++
++				if (folio_test_large(folio)) {
++					int nr_pages_req, nr_pages;
++					int counter = mm_counter(page);
++
++					nr_pages_req = folio_nr_pages_cont_mapped(
++							folio, page, pte, addr,
++							end);
++
++					/* folio may be freed on return. */
++					nr_pages = try_zap_anon_pte_range(
++							tlb, vma, folio, page,
++							pte, addr, nr_pages_req,
++							details);
++
++					rss[counter] -= nr_pages;
++					nr_pages--;
++					pte += nr_pages;
++					addr += nr_pages << PAGE_SHIFT;
++
++					if (unlikely(nr_pages < nr_pages_req)) {
++						force_flush = 1;
++						addr += PAGE_SIZE;
++						break;
++					}
++					continue;
++				}
++			}
++
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
 -- 
 2.25.1
 
