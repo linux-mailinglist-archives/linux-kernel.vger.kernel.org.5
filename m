@@ -2,126 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C873765549
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C1B76554D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjG0NnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S232705AbjG0Noc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233609AbjG0NnE (ORCPT
+        with ESMTP id S232566AbjG0Nob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:43:04 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6EC2D64;
-        Thu, 27 Jul 2023 06:43:03 -0700 (PDT)
-Message-ID: <05178cf3-df1c-80a7-12ad-816fafbc2df7@linux.intel.com>
-Date:   Thu, 27 Jul 2023 15:42:58 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
+        Thu, 27 Jul 2023 09:44:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB5E1BD1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690465427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6IdfiH6mIMbR0FSXPQIGzj7LBm5xu56D2rRO//Z4diQ=;
+        b=KIKYoMz1HP1/pScbuSig/DnzN2+esasij7fMZ3xpJOb2O9ekacEz1nn2l1p9XEhD0wxjs1
+        ups1M+lhlndAMCAFGQm8EBWjMCCGU883BOqMr/HsJ5wL5ARUkWXrU54tnfzZIsfYr92rCY
+        BUC/fqeYiT9y4syh1Wfwo0NFouqSW3U=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-O4T2f3kIMJ-HF-RQhQasBA-1; Thu, 27 Jul 2023 09:43:46 -0400
+X-MC-Unique: O4T2f3kIMJ-HF-RQhQasBA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fd2dec82b7so5708335e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:43:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690465425; x=1691070225;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6IdfiH6mIMbR0FSXPQIGzj7LBm5xu56D2rRO//Z4diQ=;
+        b=cRpYa+PkCd5VU9UvRQG1+4arNdH/GHJXrfaeJjMhMKYHNlQbNTu/61qBgMX7czmsKg
+         cHCiGciMnAjrOUnEFFVBfQbA34POQbjYaAvaZWxiLLr8kppKSZxGPLtR1MUkV0yyT6Ic
+         ChnJnbb0brUzZNcSffBD7BLEUl/WtOePFeSktxOnqC6ENNIGFRCtrfDFk/6xwV6MJSes
+         p+4GhJ/q9Gn0/85+pWSZYOQYA5r49JOpSEcl8LudlLG5I+vlbq9beW+wA4CgM0nhuCf2
+         zCDrZzUQEo7oMoEfdw8a/53OzhXeizUzXORmWHGwRBANvSh+CFBeyP5ZCAan17T7LgD/
+         Sc0g==
+X-Gm-Message-State: ABy/qLZG9e54AMbAd5BHM4v8s5FzszrYgr5Mm30BYuEXKI6prGAWsxBO
+        w0zG1saWi2va6x/p+z37PT5sjAf5cnWmgASU9Q074XfMcd9L9db0RKd8osWQ79kE+GPAFYAfeYy
+        JKkkyraeNPmy0v9sYgG39Y6lG
+X-Received: by 2002:a05:600c:2310:b0:3fb:d1db:5454 with SMTP id 16-20020a05600c231000b003fbd1db5454mr1655360wmo.35.1690465425397;
+        Thu, 27 Jul 2023 06:43:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFNNkcpZZZoQTCtuvLKA9S/2aEqx3XjLUzUW8H6jP7uraezXsHXbBMd93Ho1Ikj5PKWqof+3A==
+X-Received: by 2002:a05:600c:2310:b0:3fb:d1db:5454 with SMTP id 16-20020a05600c231000b003fbd1db5454mr1655348wmo.35.1690465425050;
+        Thu, 27 Jul 2023 06:43:45 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id h4-20020adffa84000000b0031417fd473csm2077965wrr.78.2023.07.27.06.43.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 06:43:44 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
- <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
- <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
- <ZMF3rLioJK9QJ0yj@slm.duckdns.org>
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <ZMF3rLioJK9QJ0yj@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v4] drm/ssd130x: Allocate buffers in the plane's
+ .atomic_check callback
+In-Reply-To: <76cea601-2730-21a7-f52b-1d53be343d6e@suse.de>
+References: <20230721070955.1170974-1-javierm@redhat.com>
+ <76cea601-2730-21a7-f52b-1d53be343d6e@suse.de>
+Date:   Thu, 27 Jul 2023 15:43:44 +0200
+Message-ID: <874jlp5v1r.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-On 2023-07-26 21:44, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Jul 26, 2023 at 12:14:24PM +0200, Maarten Lankhorst wrote:
->>> So, yeah, if you want to add memory controls, we better think through how
->>> the fd ownership migration should work.
->>
->> I've taken a look at the series, since I have been working on cgroup memory
->> eviction.
->>
->> The scheduling stuff will work for i915, since it has a purely software
->> execlist scheduler, but I don't think it will work for GuC (firmware)
->> scheduling or other drivers that use the generic drm scheduler.
->>
->> For something like this,  you would probably want it to work inside the drm
->> scheduler first. Presumably, this can be done by setting a weight on each
->> runqueue, and perhaps adding a callback to update one for a running queue.
->> Calculating the weights hierarchically might be fun..
-> 
-> I don't have any idea on this front. The basic idea of making high level
-> distribution decisions in core code and letting individual drivers enforce
-> that in a way which fits them the best makes sense to me but I don't know
-> enough to have an opinion here.
-> 
->> I have taken a look at how the rest of cgroup controllers change ownership
->> when moved to a different cgroup, and the answer was: not at all. If we
-> 
-> For persistent resources, that's the general rule. Whoever instantiates a
-> resource gets to own it until the resource gets freed. There is an exception
-> with the pid controller and there are discussions around whether we want
-> some sort of migration behavior with memcg but yes by and large instantiator
-> being the owner is the general model cgroup follows.
-> 
->> attempt to create the scheduler controls only on the first time the fd is
->> used, you could probably get rid of all the tracking.
->> This can be done very easily with the drm scheduler.
->>
->> WRT memory, I think the consensus is to track system memory like normal
->> memory. Stolen memory doesn't need to be tracked. It's kernel only memory,
->> used for internal bookkeeping  only.
->>
->> The only time userspace can directly manipulate stolen memory, is by mapping
->> the pinned initial framebuffer to its own address space. The only allocation
->> it can do is when a framebuffer is displayed, and framebuffer compression
->> creates some stolen memory. Userspace is not
->> aware of this though, and has no way to manipulate those contents.
-> 
-> So, my dumb understanding:
-> 
-> * Ownership of an fd can be established on the first ioctl call and doesn't
->    need to be migrated afterwards. There are no persistent resources to
->    migration on the first call.
-> 
-> * Memory then can be tracked in a similar way to memcg. Memory gets charged
->    to the initial instantiator and doesn't need to be moved around
->    afterwards. There may be some discrepancies around stolen memory but the
->    magnitude of inaccuracy introduced that way is limited and bound and can
->    be safely ignored.
-> 
-> Is that correct?
+Hello Thomas,
 
-Hey,
+Thanks a lot for the feedback!
 
-Yeah mostly, I think we can stop tracking stolen memory. I stopped doing 
-that for Xe, there is literally nothing to control for userspace in there.
+> Hi Javier,
+>
+> this patch is completely broken. It's easy to fix though.
+>
+> Am 21.07.23 um 09:09 schrieb Javier Martinez Canillas:
 
-Cheers,
-Maarten
+[...]
+
+>> +struct ssd130x_plane_state {
+>> +	struct drm_plane_state base;
+>
+> You need to use a struct drm_shadow_plane_state here.
+>
+
+Yes, I already noticed this when testing Arnd's patch to drop
+DRM_GEM_SHADOW_PLANE_FUNCS. I already have a patch ready.
+
+[...]
+
++
+>>   static const struct drm_plane_helper_funcs ssd130x_primary_plane_helper_funcs = {
+>>   	DRM_GEM_SHADOW_PLANE_HELPER_FUNCS,
+>
+> This macro sets the callbacks that vmap/vunmap the GEM buffer during the 
+> display update. They expect to upcast from drm_plane_state to 
+> drm_shadow_plane_state.  And hence, your driver's plane state needs to 
+> inherit from drm_shadow_plane_state.
+>
+
+Yup. I missed that. I'm now testing my patch and will post it.
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
