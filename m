@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74138765611
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F778765614
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbjG0Ogc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
+        id S233814AbjG0Oji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjG0Og3 (ORCPT
+        with ESMTP id S231713AbjG0Ojg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:36:29 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3CC30D3;
-        Thu, 27 Jul 2023 07:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690468588; x=1722004588;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TjuMUfQ5gRMaae5Age8wszPVJmes8/brvAgOH+GendI=;
-  b=E24wKkfyTQ5x6ODqoAsEPOWO5AiQhzVtI5b6I3HqtLCO6dFSS82tHiI6
-   ZzvRapraufrATz7luvMkvRHYTKzUYC/YHPN1GierEyHKm82D5dBYysPT8
-   YJ0p2touGaLdUv/cVAahdW8wweYNg1+1NZ8BxqxIkryz7q9cCUMFf8FKd
-   t38iomxhq0yzaGEYviqAhBZ18UITzQCvTHclZiY7fepKEas19fgmWtWIL
-   ZymnzbpJx4q0wcpdC0nh61ft6Uc0+L8dGcHyB3KiirBJOYqx7uBx56gG5
-   Z8ORiTV+aRTnLn2zWVTFVWi0TqaOMtovX25YikwfluIjnSfVIIY91CgW/
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="353240739"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="353240739"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 07:36:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="756709514"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="756709514"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 27 Jul 2023 07:36:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qP25x-00893s-2O;
-        Thu, 27 Jul 2023 17:36:01 +0300
-Date:   Thu, 27 Jul 2023 17:36:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 1/1] serial: core: Replace strncmp()+strlen() with
- plain strcmp()
-Message-ID: <ZMKA0f987+Oac8eT@smile.fi.intel.com>
-References: <20230727090507.81962-1-andriy.shevchenko@linux.intel.com>
- <ZMJcKc49Z69ZhfGk@smile.fi.intel.com>
+        Thu, 27 Jul 2023 10:39:36 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3088F2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:39:35 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso1774325e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690468774; x=1691073574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QWogpP48VAKbZixYqHyKGdj9UJnQsYfWULQuSx+fR9M=;
+        b=D91f7wsGFHfzZp28yTfC6cbBGSIy0tZxbq5YuDkBy89TvucBCcQwZOXZ4qSueWIM+q
+         600JgTjqoFsRryoySOnd2qrt9yBHANGH7qqOvYdEOe6DhDFUZeSaOagJBxE1aiLHM2aN
+         0pGKrN/BIoMv7Sa4Komax3LtgxkbnV/Y03755oHkMHLGSGxznhz+47XrhabjwSq32KIY
+         YevQkajAmS2iSOVdXdYMNQlq9ZGm1R9W9+WQ3MZ3Abbx027Ix+GTYM6Fp4eOzaPP4n7X
+         MATH5L2CkFU7wKpGRi5ipoYCFnZwZdvWRn9boESOz+VKHhv9d4P7ESCTMcO4MFB799SX
+         Zdxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690468774; x=1691073574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QWogpP48VAKbZixYqHyKGdj9UJnQsYfWULQuSx+fR9M=;
+        b=PNBplgVxMld6p9vHVwFZS4rgnPyLC5pCuFX+8MRE2t91i8/t5Q1F6Ev+tf5B6Gu0h5
+         sDLjtmzEPf6cHHrWwPgnZPHKn2gX6aWLOZIObBQyCqmoDqbjDc+nxfAUz4+aQ1oTXvRp
+         QIqRGUrRGy0wu9hmNnIosvqp+DUFPqJGWJuH76drK0n7xiOESk/66k3pDwi2BXvQZ0Lq
+         Oif+jnXy+s+rwJ2oNxTIU8ml3gRHRsr2ErckhXmBedkcJu0giuX54w5oPSIwVOmBt3D9
+         EtzffNOl9qWSjdKoTCptcKfVTrucFHA9QqW/lTJorjrpxZzfdHzpMaWq6Dbhtm1GbiSN
+         QLMw==
+X-Gm-Message-State: ABy/qLYHGSFnuUXTCROcS+XJ0w6w2PMEbQTDO8yAvozQtX7VefPQ5qS/
+        SrSMTj6TDUdvMHrnBt00xiF50zAc+IdGQFGXo/zAKY/H+l4=
+X-Google-Smtp-Source: APBJJlHh668a6d2D2aViLXMZVaf2JZCqffs1So06/NrZbeP1DEcA38cHH9cuboqEYcUWMG1fA4Ms7S54jow+J+E8cW4=
+X-Received: by 2002:a05:6512:2210:b0:4fb:73d1:58e5 with SMTP id
+ h16-20020a056512221000b004fb73d158e5mr2197695lfu.53.1690468773435; Thu, 27
+ Jul 2023 07:39:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMJcKc49Z69ZhfGk@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230727020207.36314-1-yury.norov@gmail.com> <20230727020207.36314-7-yury.norov@gmail.com>
+ <ZMJBwAwTN0pTZMkf@smile.fi.intel.com>
+In-Reply-To: <ZMJBwAwTN0pTZMkf@smile.fi.intel.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Thu, 27 Jul 2023 07:39:22 -0700
+Message-ID: <CAAH8bW87RcXR4ZkaXnGpyz6mMVh4mCOksYE8NMXuQVkHsbd7eg@mail.gmail.com>
+Subject: Re: [PATCH 6/6] bitmap: move bitmap_*_region functions to bitmap.h
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 02:59:37PM +0300, Andy Shevchenko wrote:
-> On Thu, Jul 27, 2023 at 12:05:07PM +0300, Andy Shevchenko wrote:
-> > There is no sense to call strlen() ahead of strncmp().
-> > The same effect can be achieved by calling strcmp() directly.
-> > Replace strncmp()+strlen() with plain strcmp().
-> 
-> It seems I will have more against serial core, perhaps it makes sense to unite
-> them in a single series.
+On Thu, Jul 27, 2023 at 3:07=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Jul 26, 2023 at 07:02:07PM -0700, Yury Norov wrote:
+> > Now that bitmap_*_region() functions are implemented as thin wrappers
+> > around others, it's worth to move them to the header, as it opens room
+> > for compile-time optimizations.
+>
+> Don't forget to run
+>
+>         scripts/kernel-doc -v -none -Wall
+>
+> against this header.
 
-Actually this change is simply wrong. Sorry for the noise.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+OK, will do. Also, I seemingly created patched from the wrong branch,
+so it's a wrong order of declarations in the header. Sorry that, I'll
+send v2 after collecting some more comments.
