@@ -2,147 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1F276540B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CB3765413
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbjG0MeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S233960AbjG0MeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjG0Md7 (ORCPT
+        with ESMTP id S231157AbjG0MeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:33:59 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A52A128;
-        Thu, 27 Jul 2023 05:33:57 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230727123355euoutp011fa6bb3dcb52f181f616466d2d83a260~1uYmBa5aY2650726507euoutp01E;
-        Thu, 27 Jul 2023 12:33:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230727123355euoutp011fa6bb3dcb52f181f616466d2d83a260~1uYmBa5aY2650726507euoutp01E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690461235;
-        bh=ESao0eb/63+IOmT+CrRxQc0TcsKVTFJG1DZ6DhG4oFk=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=QrhkT+yHOVk6ZIQla3AsA+uw6V4Vt4grecFFjbwNuJUE8j5OpswY67jc3l+cDZCqw
-         x6iXvYkVOpHUahtsSIc2vfjHMusn/pKQPzDaZDmefklc/76rcACjcV/KVj9TV3tz81
-         t8we/+oAUc8vdeX9RlalMwoRWC809Fq6daSbc9Hw=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230727123355eucas1p121bfab9abf76d47b1fd2f6401b827ca0~1uYluVjjE2818128181eucas1p1k;
-        Thu, 27 Jul 2023 12:33:55 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id B8.EF.42423.23462C46; Thu, 27
-        Jul 2023 13:33:54 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230727123354eucas1p17dfd7ad69206f1e22095fa2fa74cc46c~1uYlObG3o2951129511eucas1p1n;
-        Thu, 27 Jul 2023 12:33:54 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230727123354eusmtrp1774137adf3f8a42b8db0385aedd59942~1uYlMOYAG0066900669eusmtrp1a;
-        Thu, 27 Jul 2023 12:33:54 +0000 (GMT)
-X-AuditID: cbfec7f2-25927a800002a5b7-d1-64c26432a8d3
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 20.4D.10549.23462C46; Thu, 27
-        Jul 2023 13:33:54 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230727123354eusmtip1feb09772860766eae1779718ee7beb64~1uYk--V7o1930419304eusmtip1F;
-        Thu, 27 Jul 2023 12:33:54 +0000 (GMT)
-Received: from localhost (106.210.248.223) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Thu, 27 Jul 2023 13:33:53 +0100
+        Thu, 27 Jul 2023 08:34:19 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2103.outbound.protection.outlook.com [40.107.243.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A4AE64;
+        Thu, 27 Jul 2023 05:34:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gIzDErRAV5ji97O0zTJ+L/lxEt0Re1609iN4/MFUqc/iKx+98QdUDueJQ2O4xQ0XNKBZwetuwu1Z5AcM/ZTwjv8rAgHV8cIA+MIvfIIxm4aobbuYqex0z2QtHZ57/uXlHIJ3t+nionlBeN2BjrP1xkdxMwzg/VGL2Y/VhTLvJGZpduorYcZuoQhmyehAmX2xkFp7NmFNTivBDVoUEN24Xxiu+j/DnLQdKzGKMLNbc+55Lw4F/fiTMSXWKP5ZyPk9uNgmxXV76ZCES0a9/uPmKBBdFnFn0O2qsitEcWCMhUy3RFcRcGMYhOTZnjcz4Z7DgAfK0DpN3i2Xyr/TVCx7QA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QL4me+7eoEUDPPolV082EW//OfXkead99x3Pkk70I/M=;
+ b=iQoI9knXh4j+xHQ6pwd4wJcr97JFflug3yjyGu4OS49rtoNQxU+13dMHrJdQ5lOD1ONsmyKxzsPTJaOGwAf13bqCsNSHfcfWyrGCaSrqoPVunw24LRUv7LKaTcwUPTck5UexLm/BiPrfZKusrKRtzXtEqRKIR1rqOOxEhyJf+P/jH5vNreXNbbWPjorY9roAjcIiEfCTfcOsgIptLl69+h2+0UxpsHoNobtY+H2dEb99Lpg9fmsj5oeBmI5wWtTOXE3lE01kE/JJ7jiBHPDAVo9+XupiUX5bErM32TSHkZP6+YMNMRw2EvJbSKoio69VCoBKTKRxY0U7FP5fASBSFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QL4me+7eoEUDPPolV082EW//OfXkead99x3Pkk70I/M=;
+ b=cx9+Al/xirTXm23GwmAjZ8MOhkEJVlvmsK72TBWfrK//cNVpdYg3sbUMz33VL3PTBRc+Tx1u17ljDziQ3zdJ6UNwviU4ByWcMGI2tb+XuA3uEHYCuQUEq6tEu8u/ITyWyDkDyuBG7g1GoH1ouYP8HJxlK+79FKLM9Nlz9K0FbU4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CH0PR13MB4715.namprd13.prod.outlook.com (2603:10b6:610:de::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 12:34:11 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::fde7:9821:f2d9:101d%7]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 12:34:11 +0000
 Date:   Thu, 27 Jul 2023 14:33:52 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Andreas Larsson <andreas@gaisler.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Taras Chorny i <taras.chornyi@plvision.eu>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Timur Tabi <timur@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Steve Glendinning <steve.glendinning@shawell.net>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Kevin Brace <kevinbrace@bracecomputerlab.com>,
+        Francois Romieu <romieu@fr.zoreil.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
         Alexander Aring <alex.aring@gmail.com>,
-        "Stefan Schmidt" <stefan@datenfreihafen.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <martineau@kernel.org>,
-        "Santosh Shilimkar" <santosh.shilimkar@oracle.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>, <willy@infradead.org>,
-        <keescook@chromium.org>, <josh@joshtriplett.org>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-        <mptcp@lists.linux.dev>, <linux-rdma@vger.kernel.org>,
-        <rds-devel@oss.oracle.com>, <linux-sctp@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH 11/14] networking: Update to register_net_sysctl_sz
-Message-ID: <20230727123352.tz4orwpczgkzgout@localhost>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="hkodhcvqkudu4q33"
+        Alex Elder <elder@kernel.org>, A ndrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alex Elder <elder@linaro.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-oxnas@groups.io,
+        linux-arm-msm@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-wpan@vger.kernel.org
+Subject: Re: [PATCH net-next v3] net: Explicitly include correct DT includes
+Message-ID: <ZMJkMMLOcs3uyX8x@corigine.com>
+References: <20230727014944.3972546-1-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMFgZHsnhrXNIQ53@bombadil.infradead.org>
-X-Originating-IP: [106.210.248.223]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTZxjG951zes4pruxQDHxcIgrqEJDbCHwILC5Z2MlcAtn+cCHz0tAT
-        wEFLWlCmmQGmqDhcpQYBEQsy5LIBA6wDFsa6AeNiKZNtgG5CB0igUoGOcok46sHNZP/93vd5
-        ni/v88dH4+JV0pVOkqVxCpkk2ZO0I7RdKwN7g6U6aaB+cB/SZYah8e9yBahk4AyB6lrPYmiy
-        y0ihO4+sJLo4446GKp+Q6JlGjvovpiBzwTUMGbSXBOheawmJpnR5BFKVfYajSc2sAD1QVxLI
-        WG/G0GpVtwDp857hqKp/CkPDqkmAfjzXLkD99dkU6tI4oaU+E0D6pkUBGlcNEEhd1YyhtgvL
-        FPrL+ohEWf1aCq0tl5D7d7ClX51ir2UOEuzqig/bXD2CsS3Ff1CstmMXq2lMZ5uqfNjR2Si2
-        seYCybaMh7Oq8g7ATjcVAXZ+cpRgDZUmkjW3/0rGOsbZRUq55KTjnCLgzaN2iaqJLCz1iltG
-        Qf4SyAQFTrlASEMmBOpqVkEusKPFTBWAmpJh0iaIGQuAxutuvLAIYHbrEHiRWLNYCV64BeCC
-        cQz/1zV8R0vxw20A+1tLN2w0TTC74MOf3relScYPDpge4DbeynjDdlUeZvPjzA0hbPvaRNkE
-        R+YdOL9eTthYxITBrqudgGcH2FM08XyPMxlw6m4ZaXsfZ9zgrXXahkImFPZWePCHesEfKtYo
-        nj+Fvc2jGM+FW+Ci5j2e34YN5nObxRzhTHfzpt8d9qk/f14SMmoAv19/QvFDLYCVWX9vvhQB
-        zwxNbCbeguXrBsx2BGTs4fBjB/5Me5ivvYrzaxE8nyPm3bth7Z8mQgW8il8qVvxSseL/ivFr
-        P6hpW/j/2hdWls3iPEfBujozoQFUDXDm0pUpCZwySMad8FdKUpTpsgT/eHlKI9j4En3r3Qvf
-        gusz8/46gNFAB3ZuhI0NtQbgSsjkMs5zq6g3VicVi6SST05yCvkRRXoyp9QBN5rwdBb5RvXE
-        i5kESRr3McelcooXKkYLXTOxwLHTFmHhqyuN8tiwQx6n0koMX5qT9IVjhe1LO8KNIa/djg6Y
-        z349MuUNZUWZomWE8BUdHv8tLLTonjDYl7GmHlBbpNIPm34/ts1SMRhXLdi+bPpmMdLpl+Up
-        +wzrQXRpVth41hLjtWff3ajl4tWOnw99JJJVJwnEsvPvRvc0aEOZ1IzLnhEGnAu0iktdlO7Z
-        4P7joC05Lt2B03V+vtNuTZ3h+VA/F2N09Tqau8fsfWQ24APtzQO7Y3K8w4KrXQSnn25v0GGK
-        Tv8GD6dXxAePRXRtUx93rp6by1uLi7kcfz8kbu8NQQE1SLdG78dF9Q+/qD1ZmFgzcvhE4JpM
-        7jCc8NSTUCZKgnxwhVLyD3dk40WNBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSe0xTVxzHd+69vS0O5rU8PAMStcPBcFzayuOAoMu2zItxiZnLNll8VHsH
-        OtpiHwwkzrphXHGwYs14jlRAVsQUbRWETcY6HhkQqHMoIITHVlBg6VC3ykMYtVlmsv8+5/d9
-        nJOTHw/nF5GBvMNyNauUS9IE5Cqia6ljOEIstUmF9268iGzaWDT2fS4HlfXmEMjcdApDjvZx
-        LmqYdJHozFQw+rX6TxItGxWo+4wMOb8uxZC9Pp+DbjWVkWjClkcg/fnPceQwTnPQkKGaQON1
-        TgzNmzo4qCdvGUem7gkM9esdAP10upmDuus+46J2YwD6u2sGoB7rQw4a0/cSyGC6iqHvdI+5
-        6DfXJIlOdtdz0cLjMvK1DUz5pWymVHuTYObnwpmrNQMY01gyzGXqWzYyRouGsZrCmcHpRMZy
-        UUcyjWNxjL6iBTD3rMWAmXUMEoy9eoZknM195C7fZDpBqdCo2fWpCpU6UfChCIlpURyixVFx
-        tGhz7N54cbQgcmuClE07nMEqI7ceoFP7+wuw9LNBmYOlWkwLzgXkAi8epKLgwiMXkQtW8fjU
-        BQBdI9eBRwiGVx71cTzsCxdv55Ie0yyANRWLuOdwDcD8vMoVF49HUBvhSOs77gBJvQp7Z4Zw
-        N/tRYbBZn4e5/Tj1jRecu2Qg3IIvtR3OLlU8ZR8qFrYXtgFP6QMA680W3COsgT8X//7UhFMZ
-        cPTOZcx9GU4FwW+XeG70omJgZ9U6z0Nfgj9WLXA9fBw+fDIB9MC35JmikmeKSv4r8ozDYf/S
-        /f+PN8Hq89O4hxOh2ewkjIB7EfixGpUsRaYS0SqJTKWRp9CHFDILWFnL+vY563VQPjVL2wDG
-        AzYQspIcv1xrB4GEXCFnBX4+nbtsUr6PVJJ1jFUq9is1aazKBqJXPrEAD/Q/pFjZcbl6vyhG
-        GC2KiokTRsfFbBas9UlK/0LCp1IkavZjlk1nlf/mMJ5XoBarFST17BT6T+7IjPSeCqWHKoOm
-        W9ue57acoOePvmev09wRrlve9yAYM1x7/3TOEfPEkcq7YYlLHxy9ad2QVHw/U2/Yk7OYNzBV
-        sqm8eBsI2f1Lti8Tei7NMapzJuu+yuR0phcMh2ypMiSHqe1N8R0ZJ18WzDMWjbOoLUM3QI32
-        5Xc08LKNf+AHvQsHJ6188U5OBHzBsi1LaHrryq3AnN3eN2qPW/pDHca+avunF3SNyuKANyvX
-        CFpeD+byUw6euj0zNBUyOjC2fl/0jiDzgYIfntBfip/z/0hbiCWYiu7ueXcmK8S/wTWX9EnX
-        2WM+dWvfbt+yOuJEa3C88K9X/N7o3DtSIyBUqRJROK5USf4Bb+3wOysEAAA=
-X-CMS-MailID: 20230727123354eucas1p17dfd7ad69206f1e22095fa2fa74cc46c
-X-Msg-Generator: CA
-X-RootMTR: 20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc
-References: <20230726140635.2059334-1-j.granados@samsung.com>
-        <CGME20230726140709eucas1p2033d64aec69a1962fd7e64c57ad60adc@eucas1p2.samsung.com>
-        <20230726140635.2059334-12-j.granados@samsung.com>
-        <ZMFgZHsnhrXNIQ53@bombadil.infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+In-Reply-To: <20230727014944.3972546-1-robh@kernel.org>
+X-ClientProxiedBy: AS4P195CA0050.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:65a::8) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|CH0PR13MB4715:EE_
+X-MS-Office365-Filtering-Correlation-Id: 849540a0-3eb2-40bd-ed82-08db8e9dc75c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zC4iiaZzXGN+CVkGITa21od1fYonNkgFgUBFr5yag5ZfZdIDzjHp/u6C9clrx5Eb10rniZ0uZU0YxRM9JYeobtqS4DwXQY/dqK6aZHDgBsNquDBluT5H/spf/d1G5oXFgcZM7WVjlOwHk0Gyvg4GyOcKUOmKYXqQ9yE0L11OvwsCZUQehmLQ15/GS75yJP3ae1yJcrbGezHjsRN6yHJ2WASj2lZ2Xdt8k/0808MULj6iRdlYLdPd6r8zUhlcfwyJmEQm+ERVjbwibe1NS2Xpfxb1RNdbidjmQOCihE5LpY8hOK12huzWRwCiB+vxY0jP0dTcUZgh8zuhQetrQ4wUS5thrwBgIsNE55j/mgODVd4IZ+QTBlqHx6BdtEJDWSINgXfoMhYKE1APWJBz4wNcWchXmjwCIbdOxuY/bwi+PSyCguhX0p6uA8l3SfojN0sFZ1ZX2d+bnxrvlXXUv6iPv6Faf/jDnGoXk2R19bUR2BQV+Ag+GhxNB4z9m5+pewua2RTnCDyL+hGiyDrCd282aVatd6SoHhlFvDzSPzuykZa1QGY66lL9lq0zEfxCT+4Sn5mpMT60qq8KzmDXcs0t0l7qkfbUd5ajuqriOq/wlro=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(136003)(39840400004)(396003)(376002)(451199021)(6512007)(6486002)(6666004)(186003)(83380400001)(36756003)(2616005)(86362001)(38100700002)(6506007)(6916009)(4326008)(2906002)(66476007)(66556008)(66946007)(4744005)(316002)(5660300002)(7406005)(7416002)(44832011)(7366002)(7336002)(41300700001)(8936002)(8676002)(478600001)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/yyDPbEP8pBOd96E1nSCH/qCgn3Hr7U3pByWjyK9x3gglh5Ksb0nzhZxmqOj?=
+ =?us-ascii?Q?DvYin5NLWMKjIOCD+ATzYhwuznp3Eub1v1/33D6MKb89J8Lct7A+lKikeGM6?=
+ =?us-ascii?Q?sTdImcRa08F7OKGYZGfTgDr5VGmAQXDIzEvt4vy2r0FLAwWqDdgjsNtrdJv5?=
+ =?us-ascii?Q?XIA/4N+tlF6Xit5kyoyxijcagcvQfV3/+fTai7DLxt6/V6hk9FpKReopglh2?=
+ =?us-ascii?Q?KQEkciEv/SUMh8z3Ld17iO6zTDHyQ2xrv32aYUSIMe1OQmHiflsDtwyDT04A?=
+ =?us-ascii?Q?kWCIFcQdWqEP2poTBrzjoelcqWD+Pf1nBMV7f0FcdfaWDa5JBjoeCbp0LyW7?=
+ =?us-ascii?Q?4O1Dm1xGv9vnKyyDot40SjKX15A76nUli6nWXdJ1+foAAurRwxKczM7rNF8X?=
+ =?us-ascii?Q?ybMLIHcNJeWwj4kZXlHVfCi17fTmm5LmvBzPh9knRN/q0M8LwqOcLrs82cUa?=
+ =?us-ascii?Q?nGidGmUmK396GLm2tlVBnb0O9PJkG3SmWBU9PORPNvwtn6MDKIvgmgmqHV9K?=
+ =?us-ascii?Q?n8yuOGXwxCyQUnkhg/0mjHaYer54TBTJWeB/yDiPY6km5+/PsiScM6GpG+q9?=
+ =?us-ascii?Q?SnaXpiB0wA///zihMDEKUPb0vKiO90XhqxfOWK21pANSIxHvmEIqBhThZun6?=
+ =?us-ascii?Q?DmHNCPYfIJYReElnmIzUohHMh1QFTiVbV+8frU+uzvPKzIH0nzjZx5kfAthx?=
+ =?us-ascii?Q?7NuKpwgAuU4mXtoxHkBAsMn2dJLWcCE2mBBqFbfdPIaAciRtwMumUlWXMD2a?=
+ =?us-ascii?Q?QxRNrAspj91C/Le0XTU31Vu5mVkqjfusnY/s3wa3qSaAdelUpPFMuWCMSxi1?=
+ =?us-ascii?Q?ZUEjBv9froVpdlQ650QzyJ72uMCkY1vA/NaerVuub9Q9M61LZyb/fFWRZMuF?=
+ =?us-ascii?Q?rFVFx577dF0BIcUSRKPZpMm4mM9ym4L2LEzQy15bIjXUe5ZnkOXysC1/V3Pn?=
+ =?us-ascii?Q?sqPuKITyeAWITNHSzGGgipvcvQ9ktM9CBW88WeH/c5L3pm53hi5TME2orQo9?=
+ =?us-ascii?Q?cwNjgzWSwG6ullyr2hNCdrWdu4ySDfHwWynufC/E/p0JBM5Xz03mKOHUC/+Z?=
+ =?us-ascii?Q?CVj+f0vh1+wPy7gPxEKQZ4x2mBFvbk4Hqw9voUSijie30cXVX8FWp1/o0RzK?=
+ =?us-ascii?Q?EIg+aEGiHsnMsV9gnNMrdFxSSsFSiVrOXNv9myl9oMdfWL3Oyjx+g1nQHn+6?=
+ =?us-ascii?Q?SEOXRLD0+ZBZSurqzbFR67l9GK2m0x8zttbDhlRO6S8AHUL/v9kJbhP6nGrm?=
+ =?us-ascii?Q?slLFYNqOWTf6aGnTGF980I87OrATAUpw6fk/nRq/G8hFQiPQYtJdxnYw+HTL?=
+ =?us-ascii?Q?7FdAy8DI1ZtT3onu6USTMzxl1tvhDC3JZWjHAgYggfa4Fekygflyl3JUr1e1?=
+ =?us-ascii?Q?2KUWzCrawK0ZcBLMf7d8J2q83tezXxp1eRJwUVGYxUcHTIwMq5vDeL9hyeHB?=
+ =?us-ascii?Q?4kiryPHMIQGkQcFTGW9m/2ee6zM7wq/B73wnE6gzP3uGkPyR9YJrjKC/sAa8?=
+ =?us-ascii?Q?CkrnLI9sx1WoswH6GLImPFGyGtSue/aprFpJpfnCv5iu8Gf25JsffwdKih8n?=
+ =?us-ascii?Q?Iylm9G6xD2PBb/u3gUHV8dD6hvFzFxqHLQ7BMAX4VhGkJr8kAuf1WFz/yLND?=
+ =?us-ascii?Q?kwz7NqyNFsrLFJKTitYj4YuBlG5U3Alev5r7ivbIFXnibPhaah6B9xRDuQis?=
+ =?us-ascii?Q?OL8qPg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 849540a0-3eb2-40bd-ed82-08db8e9dc75c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 12:34:11.1035
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 80rNwJ7GWW1rA2/2LFEasklTPljFCwxg9JzU8bIJFrxNMNZOXmckCBV3igX2kL1dPYz3G60/sGfNk0AzE36I0YKnoLoycspImi4HNCtQsjo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR13MB4715
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -150,102 +197,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---hkodhcvqkudu4q33
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jul 26, 2023 at 07:49:39PM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Acked-by: Alex Elder <elder@linaro.org>
+> Reviewed-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> Reviewed-by: Wei Fang <wei.fang@nxp.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-On Wed, Jul 26, 2023 at 11:05:24AM -0700, Luis Chamberlain wrote:
-> On Wed, Jul 26, 2023 at 04:06:31PM +0200, Joel Granados wrote:
-> > This is part of the effort to remove the sentinel (last empty) element
-> > from the ctl_table arrays. We update to the new function and pass it the
-> > array size. Care is taken to mirror the NULL assignments with a size of
-> > zero (for the unprivileged users). An additional size function was added
-> > to the following files in order to calculate the size of an array that
-> > is defined in another file:
-> >     include/net/ipv6.h
-> >     net/ipv6/icmp.c
-> >     net/ipv6/route.c
-> >     net/ipv6/sysctl_net_ipv6.c
-> >=20
->=20
-> Same here as with the other patches, the "why" and size impact should go =
-here.
-> I'll skip mentioning that in the other patches.
-Indeed. FYI: I answered in your original feedback.
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
->=20
-> > diff --git a/net/mpls/af_mpls.c b/net/mpls/af_mpls.c
-> > index bf6e81d56263..5bad14b3c71e 100644
-> > --- a/net/mpls/af_mpls.c
-> > +++ b/net/mpls/af_mpls.c
-> > @@ -1396,6 +1396,40 @@ static const struct ctl_table mpls_dev_table[] =
-=3D {
-> >  	{ }
-> >  };
-> > =20
-> > +static int mpls_platform_labels(struct ctl_table *table, int write,
-> > +				void *buffer, size_t *lenp, loff_t *ppos);
-> > +#define MPLS_NS_SYSCTL_OFFSET(field)		\
-> > +	(&((struct net *)0)->field)
-> > +
-> > +static const struct ctl_table mpls_table[] =3D {
-> > +	{
-> > +		.procname	=3D "platform_labels",
-> > +		.data		=3D NULL,
-> > +		.maxlen		=3D sizeof(int),
-> > +		.mode		=3D 0644,
-> > +		.proc_handler	=3D mpls_platform_labels,
-> > +	},
-> > +	{
-> > +		.procname	=3D "ip_ttl_propagate",
-> > +		.data		=3D MPLS_NS_SYSCTL_OFFSET(mpls.ip_ttl_propagate),
-> > +		.maxlen		=3D sizeof(int),
-> > +		.mode		=3D 0644,
-> > +		.proc_handler	=3D proc_dointvec_minmax,
-> > +		.extra1		=3D SYSCTL_ZERO,
-> > +		.extra2		=3D SYSCTL_ONE,
-> > +	},
-> > +	{
-> > +		.procname	=3D "default_ttl",
-> > +		.data		=3D MPLS_NS_SYSCTL_OFFSET(mpls.default_ttl),
-> > +		.maxlen		=3D sizeof(int),
-> > +		.mode		=3D 0644,
-> > +		.proc_handler	=3D proc_dointvec_minmax,
-> > +		.extra1		=3D SYSCTL_ONE,
-> > +		.extra2		=3D &ttl_max,
-> > +	},
-> > +	{ }
-> > +};
->=20
-> Unless we hear otherwise from networking folks, I think this move alone
-> should probably go as a separate patch with no functional changes to
-> make the changes easier to review / bisect.
-
-Ok. I'll take it out in its own commit and prepend it as a preparation
-patch.
-
-thx for the feedback
-Best
-
-Joel Granados
-
---hkodhcvqkudu4q33
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTCZC8ACgkQupfNUreW
-QU++Cgv+L+FesAof5vpcRR2uXQ6W1aCB2JYlyD4lhEiA2jdr7vqQcYM5arelBnZ3
-zLPO574TF5h9CcWe/fec4Cxt5UqisMDcprEwz867PZjsAnbEYD1at9ECzkPSWi+6
-FFh9/UJA1Trh3xlYmuGMt7QCfGauxBj/8uX2uvCZYCfdLkms1Fl7tznqCdYowhNy
-HfWTnAAg7obXUhb9TcrmYmrcKdAvU7julEHblDunvyamW78pfLwBZf0QMiJD0rJA
-y4u3GMOeNvK4cWOZXZcTkGDmL3J19POwGEER3WCqBzNZKgMkZwlMOxcF1ExXZMze
-OUWv0MnkaqJCBqpX+ZoAmtpV14hCV6Hd8jyh9ACVIrwm1IBqz3Kznpis7HvX8S+c
-LLuBb7Cn5CDNHQ+Y293dIhjVYhY4nYQ8l9K3N4GKj53ge6/zCfFgYGKnDdv310gO
-tqje0Ur0CQwUR47VCq23yqJ/FrNvokpoDLcsDZ+T0vVsx6Ekj8SoQlH3V3FaBEiN
-1/E+oc6T
-=hoeA
------END PGP SIGNATURE-----
-
---hkodhcvqkudu4q33--
