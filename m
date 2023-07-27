@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265B8764EA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DF4764EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjG0JIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
+        id S231685AbjG0JI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjG0JIl (ORCPT
+        with ESMTP id S233018AbjG0JIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:08:41 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF2059E1;
-        Thu, 27 Jul 2023 01:50:09 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R4wFrY025115;
-        Thu, 27 Jul 2023 08:50:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Dg/6iMgZ3+ILLBF9d/6F/4xH4zT9eUYv7MT1t6eVGO8=;
- b=Xg18iGmbn5eUtdsxoLB3gLENgrkL3S8ogVUBiGonN1Y1E3w1z2PiK+7CRyMAOoBuS2u2
- U+qC50NPz5K7lZOtg2Y4K+o3xq2JkG/MwxHrpmZ712tUalBh86LneLw8Yx58TgNqK1cr
- W+70FszufdALTpv8Ms5vp4FZGX+ibvUg0gzQbzbHAVwh3vgUI7qFyhXcZJqLRSyL0U4d
- Uxc1g4hfSJgeTUklg5vKFKydOyFISrm9AVKaFa+4zIa3uaFZAABrRfiKKwJGJhDHsTEO
- ixMLTHanhkTEleXuDeE0bGRvmx5sZWmw3Ef8EfG+vQ5DPr0/Ds5bzG1Vq4OUiZK4Oc4F /g== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3b0g13px-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 08:50:05 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36R8o4Iq001276
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 Jul 2023 08:50:04 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 01:49:28 -0700
-Message-ID: <ba733dbe-c44e-2199-e7f4-7152a9be065b@quicinc.com>
-Date:   Thu, 27 Jul 2023 16:49:25 +0800
+        Thu, 27 Jul 2023 05:08:42 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030EC59E6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:50:34 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe04882c66so1215736e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690447832; x=1691052632;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bTPr6htwM3Aij5CLD7r7Y7TamLm7+8o6pc1M7Zo8TSE=;
+        b=pvHmCMMddcHQU9PZ4sD2YCKY3GJdkQT9HBAYiQc/XJOcmINq/AnLCQAymYRDNUMo5X
+         J01mx6LgpbSU6jruqBNrhI/PkhUbPAu4cYkeV4gYhIADKpulw/xbD/hn0aZiCxD9X1Jk
+         8qtzA3JbYjERURWA8SunmPJCSnbI00j4HRo8Ex1fCQAZ2Ju4Q21CZ5YK1cXFkGKrG0mm
+         uHfu/z9nt+hcW0nGHjoUILtWzvR4QwZ245yWCts2KTR91IUlqAMoUvQ0d8D0f1t6EQ92
+         FkN3eb1XuF/YhSzcx7pDXlJksL0GiT21XLMkUt5ZbDDfB6PZcFlq1Qm9ocJa96nd3zgT
+         ZZHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690447832; x=1691052632;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bTPr6htwM3Aij5CLD7r7Y7TamLm7+8o6pc1M7Zo8TSE=;
+        b=kGSlkkqFKAE492f45HsNCC56VTRSeflJnTNT/3ZuS3KOu6hdfDPRJNm/FIP9XhkW9r
+         2XK7+JVdly2pxclg+gOuA9kEfao1JwSqeg7sMesbGdR5MmHQPhGewqAZpwD82TRzDP6m
+         swNAkmQDI6J+IrTU4xBLmaSYL79gnNdHW0nEgbsAqRWJIFK3LSToQ+87jBOD3sN5ueNF
+         z3HJY/I7SF667qEKKu/ekR2lDpXScmYF6HNbZLrvn8hkNuv97nSsk/6RDLZGGO0vABnx
+         EGXxQfF/6y0NzPGbkpphJ8gytPfM0bhkNJY/K9ik234+q96gGRRS49UnelF3cPVvrIKN
+         6Lxw==
+X-Gm-Message-State: ABy/qLZdR20SKN+rwFTlrhBF5pz995PZDFPvqHbWvvh3PQymEfbnv8Ys
+        ZQDXjyK72gHZJu4FOAUKIxMnsA==
+X-Google-Smtp-Source: APBJJlHYjvq+7TFp9xVBfruh/QwNHUZ1W1ugGkKWUeVSfwpvm58C0ADTdi/rwkftDTbX1QmNm/Q5/w==
+X-Received: by 2002:a05:6512:3690:b0:4f9:6842:afc with SMTP id d16-20020a056512369000b004f968420afcmr1028058lfs.64.1690447832238;
+        Thu, 27 Jul 2023 01:50:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id w5-20020aa7d285000000b005227ead61d0sm391742edq.83.2023.07.27.01.50.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 01:50:31 -0700 (PDT)
+Message-ID: <e20781ea-09ba-2190-7318-dc62e713302d@linaro.org>
+Date:   Thu, 27 Jul 2023 10:50:29 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
 Subject: Re: [PATCH v2 4/6] arm64: dts: qcom: Add base SM4450 QRD DTS
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
-        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
-        <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230727023508.18002-1-quic_tengfan@quicinc.com>
  <20230727023508.18002-5-quic_tengfan@quicinc.com>
  <f974f48a-05b0-530d-25a0-7ccf1b1ad113@linaro.org>
- <518770c2-05ad-a2a2-4e73-7ceb30687614@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <518770c2-05ad-a2a2-4e73-7ceb30687614@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ <dba27a60-8681-e2e7-b89f-608bfbc05e93@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <dba27a60-8681-e2e7-b89f-608bfbc05e93@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Di7yZVm7FCKkLzMyC06m29HlQKckRgJx
-X-Proofpoint-ORIG-GUID: Di7yZVm7FCKkLzMyC06m29HlQKckRgJx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307270078
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 7/27/2023 3:59 PM, Konrad Dybcio 写道:
-> On 27.07.2023 08:56, Krzysztof Kozlowski wrote:
+On 27/07/2023 10:27, Tengfei Fan wrote:
+> 
+> 
+> 在 7/27/2023 2:56 PM, Krzysztof Kozlowski 写道:
 >> On 27/07/2023 04:35, Tengfei Fan wrote:
 >>> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
 >>>
@@ -139,19 +136,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 >> (again don't add fake stuff). So the only suitable argument is console,
 >> but this should be actually used via stdout path, although it seems
 >> there is no device node for such usage?
-> hvc totally comes from Qualcomm downstream and all the Gunyah
-> shenanigans..
-> 
-> Tengfei, please ensure the patches are tested against linux-next
-> with no additional changes or modules, with a clean Linux userspace
-> (or at least a ramdisk).
-> 
-> Konrad
-Hi Konrad,
-All these patches are tesed on linux-next, and get DCC console.
-For support this test, I did a temporal for enable CONFIG_HVC_DCC(this 
-change haven't push to upstream).
+> Hi Krzysztof,
+> Checked upstream linux kernel code, there is not "hvc_dcc.enable", but 
+> have other parameters, like earlycon, cpuidle.off.
+> Do you mean we should not set "earlycon=hvc0 cpuidle.off=1" parameters, 
 
--- 
-Thx and BRs,
-Tengfei Fan
+Of course not. Why production code would have earlycon? This is debug
+argument, not suitable for each user of this DTS.
+
+cpuidle.off is neither explained nor needed. Otherwise please add a
+comment why this is part of hardware description.
+
+> right? only need: bootargs = "console=hvc0" ?
+
+You should use stdout-path if possible. If not, then only console.
+
+Best regards,
+Krzysztof
+
