@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E02764650
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC6B764654
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 07:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjG0Fzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 01:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        id S232573AbjG0F4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 01:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjG0Fzf (ORCPT
+        with ESMTP id S232753AbjG0F43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 01:55:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F184335A4
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 22:54:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6F00E21B4A;
-        Thu, 27 Jul 2023 05:54:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690437289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6FH6OIxXDPjwY8sydASc46G8K1EY8W062wfCfb4fRCg=;
-        b=HqhW8p9pnfIc8hqmnaUp9hzNa5djKaGAydk7hjJ130knCRHZNpY0aXsgitgLTSt/zZRQBu
-        cy7ISdtJ3xNeHUbFtZnD2Mku0dyyGFtwolteWJ7DA9lr/Bm9q9oevlOnCVE5GVw5stMK+S
-        34P2us1ndd5uo7U+ZAgeTG+gkSZC6bk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2B1C81341F;
-        Thu, 27 Jul 2023 05:54:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id s8W7CKkGwmS6CQAAMHmgww
-        (envelope-from <jgross@suse.com>); Thu, 27 Jul 2023 05:54:49 +0000
-Message-ID: <270ed8f7-c645-502e-39c5-c93823037b9c@suse.com>
-Date:   Thu, 27 Jul 2023 07:54:48 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3] xen/evtchn: Introduce new IOCTL to bind static evtchn
-Content-Language: en-US
-To:     Rahul Singh <rahul.singh@arm.com>, xen-devel@lists.xenproject.org,
+        Thu, 27 Jul 2023 01:56:29 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA03130D7;
+        Wed, 26 Jul 2023 22:55:46 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36R5qxTj018845;
+        Thu, 27 Jul 2023 05:55:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=o+EIBjujxUgUO2otmKEQSeb4Vv3m4Ywk+cFlo5Tu4sc=;
+ b=RPw1QxQsDTWZXKUS044YRNVdeBGnJCTiLuvsu510FNjN2gvNYa52pIcRXAvkhhsSwbmh
+ IWK1sEja39IoBLMsUO8kL8JWMysL9jpAOj+GcHo9uPcatI4nmnNufi5taVnW5xe7GDnE
+ 3VhBlKiPhrHeX/GqbZFLjiKvxTFPxyFuqqfq0Vy/jBX4JWRNOGYyFfb7nDSnb+rIlBST
+ xH1t6RYrxsGgC5ElTqIIg11wX4vissuyFXxboyHOeW5h1hKh63GdARGmOHE2NrfAzbOO
+ mBP5On0Opi5f9AS7S+28Nvkgv+RdQ0JQ2DySY9oji9LtRZthsGgd2uNmRSqSH8Az/3+h PQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3jtp011v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:55:22 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36R5sHW5021175;
+        Thu, 27 Jul 2023 05:55:22 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3jtp0119-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:55:22 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36R5AEXP026209;
+        Thu, 27 Jul 2023 05:55:21 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0sesbecd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:55:21 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36R5tJX619595956
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jul 2023 05:55:19 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7E3D2004B;
+        Thu, 27 Jul 2023 05:55:19 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CB1020040;
+        Thu, 27 Jul 2023 05:55:19 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Thu, 27 Jul 2023 05:55:19 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     =?us-ascii?Q?=3D=3FUTF-8=3FB=3FT25kcmVqIE1vc27DocSNZWs=3D=3F=3D?= 
+        <omosnacek@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Harald Freudenberger <freude@linux.vnet.ibm.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, regressions@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Jane Malalane <jane.malalane@citrix.com>
-References: <ae7329bf1713f83e4aad4f3fa0f316258c40a3e9.1689677042.git.rahul.singh@arm.com>
-From:   Juergen Gross <jgross@suse.com>
-In-Reply-To: <ae7329bf1713f83e4aad4f3fa0f316258c40a3e9.1689677042.git.rahul.singh@arm.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------4Tdk1AVzYvRkV0W5o1dum3uz"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+Subject: Re: [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
+References: <CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com>
+        <97730.1690408399@warthog.procyon.org.uk>
+Date:   Thu, 27 Jul 2023 07:55:18 +0200
+In-Reply-To: <97730.1690408399@warthog.procyon.org.uk> (David Howells's
+        message of "Wed, 26 Jul 2023 22:53:19 +0100")
+Message-ID: <yt9dbkfxsxtl.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain; charset=utf-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jEHmCZ_RSXWAXdm5e4N3Lm_egRSNPA8H
+X-Proofpoint-GUID: w2jNjsW5JfH-1HDwdVHh2Yyp_g7YSTeI
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-26_08,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
+ malwarescore=0 spamscore=0 bulkscore=0 impostorscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270049
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,125 +101,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------4Tdk1AVzYvRkV0W5o1dum3uz
-Content-Type: multipart/mixed; boundary="------------JsMbhU8vs3WUa8yM8kUzxvI6";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Rahul Singh <rahul.singh@arm.com>, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- David Woodhouse <dwmw@amazon.co.uk>, Jane Malalane <jane.malalane@citrix.com>
-Message-ID: <270ed8f7-c645-502e-39c5-c93823037b9c@suse.com>
-Subject: Re: [PATCH v3] xen/evtchn: Introduce new IOCTL to bind static evtchn
-References: <ae7329bf1713f83e4aad4f3fa0f316258c40a3e9.1689677042.git.rahul.singh@arm.com>
-In-Reply-To: <ae7329bf1713f83e4aad4f3fa0f316258c40a3e9.1689677042.git.rahul.singh@arm.com>
+David Howells <dhowells@redhat.com> writes:
 
---------------JsMbhU8vs3WUa8yM8kUzxvI6
-Content-Type: multipart/mixed; boundary="------------m72s06cVtq9GZZjNVYRxdBq1"
+>=20=20=20=20=20
+> Fix af_alg_alloc_areq() to initialise areq->first_rsgl.sgl.sgt.sgl to poi=
+nt
+> to the scatterlist array in areq->first_rsgl.sgl.sgl.
+>
+> Without this, the gcm-aes-s390 driver will oops when it tries to do
+> gcm_walk_start() on req->dst because req->dst is set to the value of
+> areq->first_rsgl.sgl.sgl by _aead_recvmsg() calling
+> aead_request_set_crypt().
+>
+> The problem comes if an empty ciphertext is passed: the loop in
+> af_alg_get_rsgl() just passes straight out and doesn't set areq->first_rs=
+gl
+> up.
+>
+> This isn't a problem on x86_64 using gcmaes_crypt_by_sg() because, as far
+> as I can tell, that ignores req->dst and only uses req->src[*].
+>
+> [*] Is this a bug in aesni-intel_glue.c?
+>
+> The s390x oops looks something like:
+>
+>  Unable to handle kernel pointer dereference in virtual kernel address sp=
+ace
+>  Failing address: 0000000a00000000 TEID: 0000000a00000803
+>  Fault in home space mode while using kernel ASCE.
+>  AS:00000000a43a0007 R3:0000000000000024
+>  Oops: 003b ilc:2 [#1] SMP
+>  ...
+>  Call Trace:
+>   [<000003ff7fc3d47e>] gcm_walk_start+0x16/0x28 [aes_s390]
+>   [<00000000a2a342f2>] crypto_aead_decrypt+0x9a/0xb8
+>   [<00000000a2a60888>] aead_recvmsg+0x478/0x698
+>   [<00000000a2e519a0>] sock_recvmsg+0x70/0xb0
+>   [<00000000a2e51a56>] sock_read_iter+0x76/0xa0
+>   [<00000000a273e066>] vfs_read+0x26e/0x2a8
+>   [<00000000a273e8c4>] ksys_read+0xbc/0x100
+>   [<00000000a311d808>] __do_syscall+0x1d0/0x1f8
+>   [<00000000a312ff30>] system_call+0x70/0x98
+>  Last Breaking-Event-Address:
+>   [<000003ff7fc3e6b4>] gcm_aes_crypt+0x104/0xa68 [aes_s390]
+>
+> Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create =
+scatterlists")
+> Reported-by: Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com>
+> Link: https://lore.kernel.org/r/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStP=
+qBhubxyk_A@mail.gmail.com/
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Herbert Xu <herbert@gondor.apana.org.au>
+> cc: Sven Schnelle <svens@linux.ibm.com>
+> cc: Harald Freudenberger <freude@linux.vnet.ibm.com>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: Paolo Abeni <pabeni@redhat.com>
+> cc: linux-crypto@vger.kernel.org
+> cc: linux-s390@vger.kernel.org
+> cc: regressions@lists.linux.dev
+> ---
+>  crypto/af_alg.c |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+> index 06b15b9f661c..9ee8575d3b1a 100644
+> --- a/crypto/af_alg.c
+> +++ b/crypto/af_alg.c
+> @@ -1192,6 +1192,7 @@ struct af_alg_async_req *af_alg_alloc_areq(struct s=
+ock *sk,
+>=20=20
+>  	areq->areqlen =3D areqlen;
+>  	areq->sk =3D sk;
+> +	areq->first_rsgl.sgl.sgt.sgl =3D areq->first_rsgl.sgl.sgl;
+>  	areq->last_rsgl =3D NULL;
+>  	INIT_LIST_HEAD(&areq->rsgl_list);
+>  	areq->tsgl =3D NULL;
 
---------------m72s06cVtq9GZZjNVYRxdBq1
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Just tested, with this fix the kernel no longer crashes. Thanks!
 
-T24gMTguMDcuMjMgMTM6MzEsIFJhaHVsIFNpbmdoIHdyb3RlOg0KPiBYZW4gNC4xNyBzdXBw
-b3J0c8KgdGhlIGNyZWF0aW9uIG9mIHN0YXRpYyBldnRjaG5zLiBUbyBhbGxvdyB1c2VyIHNw
-YWNlDQo+IGFwcGxpY2F0aW9uIHRvIGJpbmQgc3RhdGljIGV2dGNobnMgaW50cm9kdWNlIG5l
-dyBpb2N0bA0KPiAiSU9DVExfRVZUQ0hOX0JJTkRfU1RBVElDIi4gRXhpc3RpbmcgSU9DVEwg
-ZG9pbmcgbW9yZSB0aGFuIGJpbmRpbmcNCj4gdGhhdOKAmXMgd2h5IHdlIG5lZWQgdG8gaW50
-cm9kdWNlIHRoZSBuZXcgSU9DVEwgdG8gb25seSBiaW5kIHRoZSBzdGF0aWMNCj4gZXZlbnQg
-Y2hhbm5lbHMuDQo+IA0KPiBTdGF0aWMgZXZ0Y2hucyB0byBiZSBhdmFpbGFibGUgZm9yIHVz
-ZSBkdXJpbmcgdGhlIGxpZmV0aW1lIG9mIHRoZQ0KPiBndWVzdC4gV2hlbiB0aGUgYXBwbGlj
-YXRpb24gZXhpdHMsIF9fdW5iaW5kX2Zyb21faXJxKCkgZW5kcyB1cCBiZWluZw0KPiBjYWxs
-ZWQgZnJvbSByZWxlYXNlKCkgZmlsZSBvcGVyYXRpb25zIGJlY2F1c2Ugb2YgdGhhdCBzdGF0
-aWMgZXZ0Y2hucw0KPiBhcmUgZ2V0dGluZyBjbG9zZWQuIFRvIGF2b2lkIGNsb3NpbmcgdGhl
-IHN0YXRpYyBldmVudCBjaGFubmVsLCBhZGQgdGhlDQo+IG5ldyBib29sIHZhcmlhYmxlICJp
-c19zdGF0aWMiIGluICJzdHJ1Y3QgaXJxX2luZm8iIHRvIG1hcmsgdGhlIGV2ZW50DQo+IGNo
-YW5uZWwgc3RhdGljIHdoZW4gY3JlYXRpbmcgdGhlIGV2ZW50IGNoYW5uZWwgdG8gYXZvaWQg
-Y2xvc2luZyB0aGUNCj4gc3RhdGljIGV2dGNobi4NCj4gDQo+IEFsc28sIHRha2UgdGhpcyBv
-cHBvcnR1bml0eSB0byByZW1vdmUgdGhlIG9wZW4tY29kZWQgdmVyc2lvbiBvZiB0aGUNCj4g
-ZXZ0Y2huIGNsb3NlIGluIGRyaXZlcnMveGVuL2V2dGNobi5jIGZpbGUgYW5kIHVzZSB4ZW5f
-ZXZ0Y2huX2Nsb3NlKCkuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBSYWh1bCBTaW5naCA8cmFo
-dWwuc2luZ2hAYXJtLmNvbT4NCg0KUHVzaGVkIHRvIHhlbi90aXAuZ2l0IGZvci1saW51cy02
-LjVhDQoNCg0KSnVlcmdlbg0KDQo=
---------------m72s06cVtq9GZZjNVYRxdBq1
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------m72s06cVtq9GZZjNVYRxdBq1--
-
---------------JsMbhU8vs3WUa8yM8kUzxvI6--
-
---------------4Tdk1AVzYvRkV0W5o1dum3uz
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTCBqgFAwAAAAAACgkQsN6d1ii/Ey8p
-3Af9HHbe22wpgQFipYJxDkdLtVudyWkHZ3Ao6K1SlQa5Cz+AO/CBQ28CrN2WnxSCfpmnzyhJ1YY/
-1Zk3NcI4Jqs6Aj7vw3LCcpS/t1JpH2p5+xqS6dwW3HsVZ6/NTyT46iQFRnC3CxR+YT8KwsUfN80v
-Ru85mn2Nm41J61JUFJEtJj66VVjeRuF2zVh2zG+/dOA+NsvvezP5RImEpYA8mmGYnUDnNjn0VBVG
-aICgbAYCZ4qgPbJyMu8h8gdYWWUWmDet4yl6IfRhGNAvVSRbUtKdoYHplFPvQfgzmOht50W7XqVD
-s3AoPqpeakiehqZrd9vGVk+sxN8RUCzfoZioTSGDWw==
-=kdGh
------END PGP SIGNATURE-----
-
---------------4Tdk1AVzYvRkV0W5o1dum3uz--
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
