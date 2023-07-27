@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C32765D8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529FF765D93
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjG0UqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
+        id S231404AbjG0UrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjG0UqF (ORCPT
+        with ESMTP id S229716AbjG0Uqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:46:05 -0400
-Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975FDF5
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:03 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by sonata.ens-lyon.org (Postfix) with ESMTP id D9724200E6;
-        Thu, 27 Jul 2023 22:45:55 +0200 (CEST)
-Received: from sonata.ens-lyon.org ([127.0.0.1])
-        by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ncy_lJg80Nmi; Thu, 27 Jul 2023 22:45:54 +0200 (CEST)
-Received: from begin (125.170.185.81.rev.sfr.net [81.185.170.125])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sonata.ens-lyon.org (Postfix) with ESMTPSA id C64C1200E4;
-        Thu, 27 Jul 2023 22:45:53 +0200 (CEST)
-Received: from samy by begin with local (Exim 4.96)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1qP7rZ-00685J-1R;
-        Thu, 27 Jul 2023 22:45:33 +0200
-Date:   Thu, 27 Jul 2023 22:45:33 +0200
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     oushixiong <oushixiong@kylinos.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] tty: vt: Fix spelling typo in comment
-Message-ID: <20230727204533.jf6ezvfairj64n7j@begin>
-Mail-Followup-To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        oushixiong <oushixiong@kylinos.cn>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org
-References: <20230726091044.705393-1-oushixiong@kylinos.cn>
+        Thu, 27 Jul 2023 16:46:55 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05360F5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:33 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso15078435e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 13:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690490791; x=1691095591;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HbnBGeBUXtAMeUnmfrzncXKhjFpmdZ1Ibsl5jI52YQY=;
+        b=TZTSLg2srssGLFinivNe8tD/8JmAqGYtYWeVDxr09UOH0jkDx0FAa7HglO3MPM88Lu
+         ucO7fyfS/+s1OWwyFraRBy4ir+dGEArgEyHbUBGYo392JKFfbFxcRbiMR2apBj+BVkbb
+         hq01LmWnAotWgkoMuhLatMW4vRztuEFaRMRJmvp3TxatrOIPIOCHdywLUYqANhcgFKy4
+         n/q7E+1sDDqsxXzWz604h5ypYXxP0Z+ewkSP4BuiYsfBpJCorV1Rwl0lKtOg8upaWle2
+         v6AjFshQp5whq2T3fMYoePfy/j7abM3CQnCAlbwyNGI5HvgO6kK0R3UGvVL2MxaeQ8qa
+         BwRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690490791; x=1691095591;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HbnBGeBUXtAMeUnmfrzncXKhjFpmdZ1Ibsl5jI52YQY=;
+        b=WwMHlBF3iUbE+wwcxBD1MxzyYDNRM5knP+56STFOTUljRe/MmpTS1QUS8I1gvtAhBQ
+         ax5kGU39dZtsqfi8UXdSob5Csc8ZX221fOx7Xgfew6r0257/vKJZ8JSZw8KPs2vE7fG5
+         8h49KB8jWPFDRmzUGX60Nlm2jGBJDzcpYyLMyJXssFkrfdmq61opO5PaiR7g7PDH6SPE
+         +FScK/2p8cMrIm3o6RPdfotvZn/zeIzIYfLBCHzxGNb4/LCxN41DM4y5zFS9VvW/LO6d
+         1tw3uffgmHxNKEsAB9vfkIh2iPdm0enOqOWy1DoIKXlM5V/pYhiGqTIK+AzeGXd9jlU2
+         3WlA==
+X-Gm-Message-State: ABy/qLasfOH/GMrYwXte8n3tOwWF3iVoDmXUoiRwqDCDnJ0sBEbR5YMQ
+        S3oL+7dQmnW4YHa5XIsBVG6wByUaoHsLt5T0qVk=
+X-Google-Smtp-Source: APBJJlGPxKyzuKwKs5yC1mRbohixE0NIULYu5NjvVcdpxTFrVGqV4CkuVZHZVgSvO66XUC5FJZLgNg==
+X-Received: by 2002:adf:facc:0:b0:317:63a9:d11c with SMTP id a12-20020adffacc000000b0031763a9d11cmr152870wrs.48.1690490791133;
+        Thu, 27 Jul 2023 13:46:31 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:6b6a:b465:0:7e3e:db9e:70fa:9ccb])
+        by smtp.gmail.com with ESMTPSA id k1-20020a7bc401000000b003fc06169abdsm2701400wmi.2.2023.07.27.13.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 13:46:30 -0700 (PDT)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
+Subject: [v1 0/6] mm/memblock: Skip prep and initialization of struct pages freed later by HVO
+Date:   Thu, 27 Jul 2023 21:46:18 +0100
+Message-Id: <20230727204624.1942372-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726091044.705393-1-oushixiong@kylinos.cn>
-Organization: I am not organized
-User-Agent: NeoMutt/20170609 (1.8.3)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,26 +71,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-oushixiong, le mer. 26 juil. 2023 17:10:43 +0800, a ecrit:
-> Signed-off-by: oushixiong <oushixiong@kylinos.cn>
-> ---
->  drivers/tty/vt/vt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index 1e8e57b45688..bcdd249e47a0 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -3473,7 +3473,7 @@ static int __init con_init(void)
->  		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
->  		tty_port_init(&vc->port);
->  		visual_init(vc, currcons, 1);
-> -		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
-> +		/* Assuming vc->vc_{cols,rows,screenbuf_size} are same here. */
+If the region is for gigantic hugepages and if HVO is enabled, then those
+struct pages which will be freed later by HVO don't need to be prepared and
+initialized. This can save significant time when a large number of hugepages
+are allocated at boot time.
 
-? No, this is really meant to be "sane" here, i.e. they are not getting
-checked, and just used as they are.
+For a 1G hugepage, this series avoid initialization and preparation of
+262144 - 64 = 262080 struct pages per hugepage.
 
->  		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
->  		vc_init(vc, vc->vc_rows, vc->vc_cols,
->  			currcons || !vc->vc_sw->con_save_screen);
+When tested on a 512G system (which can allocate max 500 1G hugepages), the
+kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without this
+patchseries to running init is 3.9 seconds. With this patch it is 1.2 seconds.
+This represents an approximately 70% reduction in boot time and will
+significantly reduce server downtime when using a large number of
+gigantic pages.
+
+Thanks,
+Usama
+
+[RFC->v1]:
+- (Mike Rapoport) Change from passing hugepage_size in
+memblock_alloc_try_nid_raw for skipping struct page initialization to
+using MEMBLOCK_RSRV_NOINIT flag
+
+Usama Arif (6):
+  mm: hugetlb: Skip prep of tail pages when HVO is enabled
+  mm: hugetlb_vmemmap: Use nid of the head page to reallocate it
+  memblock: add parameter to memblock_setclr_flag for selecting
+    memblock_type
+  memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+  mm: move allocation of gigantic hstates to the start of mm_core_init
+  mm: hugetlb: Skip initialization of struct pages freed later by HVO
+
+ include/linux/hugetlb.h  |  1 +
+ include/linux/memblock.h |  7 ++++
+ mm/hugetlb.c             | 71 ++++++++++++++++++++++++++++++----------
+ mm/hugetlb_vmemmap.c     |  6 ++--
+ mm/hugetlb_vmemmap.h     | 10 ++++++
+ mm/memblock.c            | 51 +++++++++++++++++++++--------
+ mm/mm_init.c             |  4 +++
+ 7 files changed, 117 insertions(+), 33 deletions(-)
+
+-- 
+2.25.1
+
