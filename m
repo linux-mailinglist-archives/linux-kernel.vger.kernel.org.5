@@ -2,204 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E037656B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040F17656BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbjG0PDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S234283AbjG0PEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234190AbjG0PDj (ORCPT
+        with ESMTP id S232513AbjG0PEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:03:39 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3573E1B8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:03:38 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B0B1321A8D;
-        Thu, 27 Jul 2023 15:03:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690470216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HtVKHpn6WN3hMRwTOaSK+eHyRHrVFLJIgpFMhXvcwPM=;
-        b=Yox6lbedr9Qey1tFISOM2w2vdBnxQgALeGbIvW+BoTafCc4Y+tNZwRZVOENWUpGnOuBsKU
-        3THg5Oe8X88AhgEXhHDpujupffWuuCWtu0zWGJ6Ia8ZRaF6t9hYdcJywgE0fL/TFS9e6Tb
-        iOmMKDfELX6PIr/FbP4kRUXtpKSny6w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690470216;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HtVKHpn6WN3hMRwTOaSK+eHyRHrVFLJIgpFMhXvcwPM=;
-        b=w7uzixGnzD3BrDYdgW8Kl1VBvbJ6wVIEDo6nnQ6XF9ri6IrvjpeQBgAl50hIm6X3ILCZNh
-        GsZvoACLAZE2XEAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8F19B13902;
-        Thu, 27 Jul 2023 15:03:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qpoJIkiHwmSVIAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 27 Jul 2023 15:03:36 +0000
-Message-ID: <0ce32153-cfc0-e701-3863-803fcdb897ff@suse.de>
-Date:   Thu, 27 Jul 2023 17:03:35 +0200
+        Thu, 27 Jul 2023 11:04:38 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243061B8;
+        Thu, 27 Jul 2023 08:04:34 -0700 (PDT)
+X-QQ-mid: bizesmtp70t1690470266t586bzuu
+Received: from linux-lab-host.localdomain ( [61.141.78.189])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 27 Jul 2023 23:04:25 +0800 (CST)
+X-QQ-SSF: 01200000002000D0X000B00A0000000
+X-QQ-FEAT: 3M0okmaRx3gPFTAlMPOq33XYBppQ3ibHL9kcA4lcT102GiH/EzFE2/pUKdKg/
+        qX746XefN/rEXBljm6dggSvFNhOHt957ygPgTxnvJDL8JQuUCQhkrUB/2CT/zuq1iuCqXxz
+        X3enym8Rq/k8b/Ex50PlgNuPDG11o6TQHTdWK5gR9JBdQxtqcFZQG2oNeXGqbQW66HJQv/g
+        44i3g4qQQaZgDCTy5SChRCYUYs1rq3zW9h2ZJBr7KkJHhMYikt750oVmV3M0KLZbQVYLVPA
+        sH6GpIGoWlyh+iQB0EZ14rHAetiIANAQlOyk3o918hY9MfrU7lkwNgDo2RzT8R61jTasdTg
+        aey92Igt3Y4evnlgFO5IrY+GpTTvO1VprhEewU5/qacrSvOqXBQSqUP7U7sxDEFCOi3W93c
+        CuqI6uKNy58=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 14717604939975229498
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v3 5/7] selftests/nolibc: add test support for ppc
+Date:   Thu, 27 Jul 2023 23:04:24 +0800
+Message-Id: <8019280baee8efb6c82f5ce766fcd826b7d1ffa2.1690468707.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690468707.git.falcon@tinylab.org>
+References: <cover.1690468707.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/ssd130x: Use shadow-buffer helpers when managing
- plane's state
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20230727140453.577445-1-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20230727140453.577445-1-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------YvoX32TKqnUBuFI6oynwzo4l"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------YvoX32TKqnUBuFI6oynwzo4l
-Content-Type: multipart/mixed; boundary="------------2tTbaUHItKBowkIkmouYxoW0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <mripard@kernel.org>,
- dri-devel@lists.freedesktop.org
-Message-ID: <0ce32153-cfc0-e701-3863-803fcdb897ff@suse.de>
-Subject: Re: [PATCH] drm/ssd130x: Use shadow-buffer helpers when managing
- plane's state
-References: <20230727140453.577445-1-javierm@redhat.com>
-In-Reply-To: <20230727140453.577445-1-javierm@redhat.com>
+Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
+ppc variant for 32-bit PowerPC and uses it as the default variant of
+powerpc architecture.
 
---------------2tTbaUHItKBowkIkmouYxoW0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Users can pass ARCH=powerpc or ARCH=ppc to test 32-bit PowerPC.
 
-SGkgSmF2aWVyDQoNCkFtIDI3LjA3LjIzIHVtIDE2OjA0IHNjaHJpZWIgSmF2aWVyIE1hcnRp
-bmV6IENhbmlsbGFzOg0KPiBUaGUgY29tbWl0IDQ1YjU4NjY5ZTUzMiAoImRybS9zc2QxMzB4
-OiBBbGxvY2F0ZSBidWZmZXIgaW4gdGhlIHBsYW5lJ3MNCj4gLmF0b21pY19jaGVjaygpIGNh
-bGxiYWNrIikgbW92ZWQgdGhlIGJ1ZmZlcnMgYWxsb2NhdGlvbiB0byBiZSBkb25lIGluDQo+
-IHRoZSBwcmltYXJ5IHBsYW5lJ3MgLmF0b21pY19jaGVjaygpIGNhbGxiYWNrLg0KPiANCj4g
-QnV0IGl0IG1pc3NlZCB0aGF0IHNpbmNlIHRoZSBkcml2ZXIgdXNlcyBhIHNoYWRvdy1idWZm
-ZXJlZCBwbGFuZSwgdGhlDQo+IF9fZHJtX2dlbV97cmVzZXQsZHVwbGljYXRlLGRlc3Ryb3l9
-X3NoYWRvd19wbGFuZSgpIGhlbHBlciBmdW5jdGlvbnMNCj4gbXVzdCBiZSB1c2VkIGluIHRo
-ZSBzdHJ1Y3QgZHJtX3BsYW5lX2Z1bmNzIGhhbmRsZXJzLg0KPiANCj4gVGhpcyB3YXMgbWlz
-c2VkIGJlY2F1c2UgdGhlIG1lbnRpb25lZCBjb21taXQgZGlkIG5vdCByZW1vdmUgdGhlIG1h
-Y3JvDQo+IERSTV9HRU1fU0hBRE9XX1BMQU5FX0ZVTkNTLCB3aGljaCBsZWFkcyB0byB0aGUg
-Y3VzdG9tIHBsYW5lJ3MgYXRvbWljDQo+IHN0YXRlIG1hbmFnZW1lbnQgaGFuZGxlcnMgdG8g
-bm90IGJlIHVzZWQuDQo+IA0KPiBGaXhlczogNDViNTg2NjllNTMyICgiZHJtL3NzZDEzMHg6
-IEFsbG9jYXRlIGJ1ZmZlciBpbiB0aGUgcGxhbmUncyAuYXRvbWljX2NoZWNrKCkgY2FsbGJh
-Y2siKQ0KPiBSZXBvcnRlZC1ieTogQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4NCg0K
-UmVwb3J0ZWQtYnkgbmVlZHMgdG8gYmUgZm9sbG93ZWQgYnkNCg0KQ2xvc2VzOiA8dXJsPg0K
-DQp3aGVyZSA8dXJsPiB3b3VsZCBwb2ludCB0byBBcm5kJ3MgYnVnIHJlcG9ydCBvbiBkcmkt
-ZGV2ZWwuDQoNCj4gU3VnZ2VzdGVkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1h
-bm5Ac3VzZS5kZT4NCj4gU2lnbmVkLW9mZi1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFz
-IDxqYXZpZXJtQHJlZGhhdC5jb20+DQoNClRoaXMgbG9va3MgY29ycmVjdCBub3cuIFRoYW5r
-cyBmb3IgZml4aW5nIHRoaXMgYnVnIHF1aWNrbHkuIFdpdGggdGhlIA0KQ2xvc2UgYWRkZWQ6
-DQoNClJldmlld2VkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5k
-ZT4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiAtLS0NCj4gDQo+ICAgZHJpdmVycy9n
-cHUvZHJtL3NvbG9tb24vc3NkMTMweC5jIHwgMTYgKysrKysrKysrLS0tLS0tLQ0KPiAgIDEg
-ZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3NvbG9tb24vc3NkMTMweC5jIGIvZHJpdmVy
-cy9ncHUvZHJtL3NvbG9tb24vc3NkMTMweC5jDQo+IGluZGV4IGQyZjhkZDZhNjM0Ny4uOTcx
-YzQyNTM0MGMxIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2Qx
-MzB4LmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3NvbG9tb24vc3NkMTMweC5jDQo+IEBA
-IC0xNDIsNyArMTQyLDcgQEAgY29uc3Qgc3RydWN0IHNzZDEzMHhfZGV2aWNlaW5mbyBzc2Qx
-MzB4X3ZhcmlhbnRzW10gPSB7DQo+ICAgRVhQT1JUX1NZTUJPTF9OU19HUEwoc3NkMTMweF92
-YXJpYW50cywgRFJNX1NTRDEzMFgpOw0KPiAgIA0KPiAgIHN0cnVjdCBzc2QxMzB4X3BsYW5l
-X3N0YXRlIHsNCj4gLQlzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlIGJhc2U7DQo+ICsJc3RydWN0
-IGRybV9zaGFkb3dfcGxhbmVfc3RhdGUgYmFzZTsNCj4gICAJLyogSW50ZXJtZWRpYXRlIGJ1
-ZmZlciB0byBjb252ZXJ0IHBpeGVscyBmcm9tIFhSR0I4ODg4IHRvIEhXIGZvcm1hdCAqLw0K
-PiAgIAl1OCAqYnVmZmVyOw0KPiAgIAkvKiBCdWZmZXIgdG8gc3RvcmUgcGl4ZWxzIGluIEhX
-IGZvcm1hdCBhbmQgd3JpdHRlbiB0byB0aGUgcGFuZWwgKi8NCj4gQEAgLTE1MSw3ICsxNTEs
-NyBAQCBzdHJ1Y3Qgc3NkMTMweF9wbGFuZV9zdGF0ZSB7DQo+ICAgDQo+ICAgc3RhdGljIGlu
-bGluZSBzdHJ1Y3Qgc3NkMTMweF9wbGFuZV9zdGF0ZSAqdG9fc3NkMTMweF9wbGFuZV9zdGF0
-ZShzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlICpzdGF0ZSkNCj4gICB7DQo+IC0JcmV0dXJuIGNv
-bnRhaW5lcl9vZihzdGF0ZSwgc3RydWN0IHNzZDEzMHhfcGxhbmVfc3RhdGUsIGJhc2UpOw0K
-PiArCXJldHVybiBjb250YWluZXJfb2Yoc3RhdGUsIHN0cnVjdCBzc2QxMzB4X3BsYW5lX3N0
-YXRlLCBiYXNlLmJhc2UpOw0KPiAgIH0NCj4gICANCj4gICBzdGF0aWMgaW5saW5lIHN0cnVj
-dCBzc2QxMzB4X2RldmljZSAqZHJtX3RvX3NzZDEzMHgoc3RydWN0IGRybV9kZXZpY2UgKmRy
-bSkNCj4gQEAgLTY4OSwxMSArNjg5LDEyIEBAIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJpbWFy
-eV9wbGFuZV9yZXNldChzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSkNCj4gICAJaWYgKCFzc2Qx
-MzB4X3N0YXRlKQ0KPiAgIAkJcmV0dXJuOw0KPiAgIA0KPiAtCV9fZHJtX2F0b21pY19oZWxw
-ZXJfcGxhbmVfcmVzZXQocGxhbmUsICZzc2QxMzB4X3N0YXRlLT5iYXNlKTsNCj4gKwlfX2Ry
-bV9nZW1fcmVzZXRfc2hhZG93X3BsYW5lKHBsYW5lLCAmc3NkMTMweF9zdGF0ZS0+YmFzZSk7
-DQo+ICAgfQ0KPiAgIA0KPiAgIHN0YXRpYyBzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlICpzc2Qx
-MzB4X3ByaW1hcnlfcGxhbmVfZHVwbGljYXRlX3N0YXRlKHN0cnVjdCBkcm1fcGxhbmUgKnBs
-YW5lKQ0KPiAgIHsNCj4gKwlzdHJ1Y3QgZHJtX3NoYWRvd19wbGFuZV9zdGF0ZSAqbmV3X3No
-YWRvd19wbGFuZV9zdGF0ZTsNCj4gICAJc3RydWN0IHNzZDEzMHhfcGxhbmVfc3RhdGUgKm9s
-ZF9zc2QxMzB4X3N0YXRlOw0KPiAgIAlzdHJ1Y3Qgc3NkMTMweF9wbGFuZV9zdGF0ZSAqc3Nk
-MTMweF9zdGF0ZTsNCj4gICANCj4gQEAgLTcwOSw5ICs3MTAsMTEgQEAgc3RhdGljIHN0cnVj
-dCBkcm1fcGxhbmVfc3RhdGUgKnNzZDEzMHhfcHJpbWFyeV9wbGFuZV9kdXBsaWNhdGVfc3Rh
-dGUoc3RydWN0IGRybV8NCj4gICAJc3NkMTMweF9zdGF0ZS0+YnVmZmVyID0gTlVMTDsNCj4g
-ICAJc3NkMTMweF9zdGF0ZS0+ZGF0YV9hcnJheSA9IE5VTEw7DQo+ICAgDQo+IC0JX19kcm1f
-YXRvbWljX2hlbHBlcl9wbGFuZV9kdXBsaWNhdGVfc3RhdGUocGxhbmUsICZzc2QxMzB4X3N0
-YXRlLT5iYXNlKTsNCj4gKwluZXdfc2hhZG93X3BsYW5lX3N0YXRlID0gJnNzZDEzMHhfc3Rh
-dGUtPmJhc2U7DQo+ICAgDQo+IC0JcmV0dXJuICZzc2QxMzB4X3N0YXRlLT5iYXNlOw0KPiAr
-CSBfX2RybV9nZW1fZHVwbGljYXRlX3NoYWRvd19wbGFuZV9zdGF0ZShwbGFuZSwgbmV3X3No
-YWRvd19wbGFuZV9zdGF0ZSk7DQo+ICsNCj4gKwlyZXR1cm4gJm5ld19zaGFkb3dfcGxhbmVf
-c3RhdGUtPmJhc2U7DQo+ICAgfQ0KPiAgIA0KPiAgIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJp
-bWFyeV9wbGFuZV9kZXN0cm95X3N0YXRlKHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLA0KPiBA
-QCAtNzIyLDcgKzcyNSw3IEBAIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJpbWFyeV9wbGFuZV9k
-ZXN0cm95X3N0YXRlKHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLA0KPiAgIAlrZnJlZShzc2Qx
-MzB4X3N0YXRlLT5kYXRhX2FycmF5KTsNCj4gICAJa2ZyZWUoc3NkMTMweF9zdGF0ZS0+YnVm
-ZmVyKTsNCj4gICANCj4gLQlfX2RybV9hdG9taWNfaGVscGVyX3BsYW5lX2Rlc3Ryb3lfc3Rh
-dGUoJnNzZDEzMHhfc3RhdGUtPmJhc2UpOw0KPiArCV9fZHJtX2dlbV9kZXN0cm95X3NoYWRv
-d19wbGFuZV9zdGF0ZSgmc3NkMTMweF9zdGF0ZS0+YmFzZSk7DQo+ICAgDQo+ICAgCWtmcmVl
-KHNzZDEzMHhfc3RhdGUpOw0KPiAgIH0NCj4gQEAgLTc0MSw3ICs3NDQsNiBAQCBzdGF0aWMg
-Y29uc3Qgc3RydWN0IGRybV9wbGFuZV9mdW5jcyBzc2QxMzB4X3ByaW1hcnlfcGxhbmVfZnVu
-Y3MgPSB7DQo+ICAgCS5hdG9taWNfZHVwbGljYXRlX3N0YXRlID0gc3NkMTMweF9wcmltYXJ5
-X3BsYW5lX2R1cGxpY2F0ZV9zdGF0ZSwNCj4gICAJLmF0b21pY19kZXN0cm95X3N0YXRlID0g
-c3NkMTMweF9wcmltYXJ5X3BsYW5lX2Rlc3Ryb3lfc3RhdGUsDQo+ICAgCS5kZXN0cm95ID0g
-ZHJtX3BsYW5lX2NsZWFudXAsDQo+IC0JRFJNX0dFTV9TSEFET1dfUExBTkVfRlVOQ1MsDQo+
-ICAgfTsNCj4gICANCj4gICBzdGF0aWMgZW51bSBkcm1fbW9kZV9zdGF0dXMgc3NkMTMweF9j
-cnRjX2hlbHBlcl9tb2RlX3ZhbGlkKHN0cnVjdCBkcm1fY3J0YyAqY3J0YywNCg0KLS0gDQpU
-aG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VTRSBTb2Z0
-d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYsIDkwNDYx
-IE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJzLCBBbmRy
-ZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVybmJlcmcp
-DQo=
+The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
+powerpc kernel.
 
---------------2tTbaUHItKBowkIkmouYxoW0--
+The pmac32_defconfig is used with extra PMACZILOG console options to
+enable normal print.
 
---------------YvoX32TKqnUBuFI6oynwzo4l
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Note, zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
+overlapping" error, so, vmlinux is used instead.
 
------BEGIN PGP SIGNATURE-----
+[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTCh0cFAwAAAAAACgkQlh/E3EQov+BR
-TA//RjFVfd5lpyXkMoOlsyHQCs14O4GUl0iVPGxrnXJ/tiD1oC9QvxzCYx6RktCy91cGkEsbd5uO
-ySvMD2XcX/QBcbpEBP51tdFz2IJ9XyWfXVpHLqwNaa5u+kmQj3UxyPhSqp6QqsCadYUPRL+pE3KY
-4kZYTPARobYqUw8jkZXcSLAweKsF5QorMxdnnV6Pj/PIcztM1XrLQ6ZISCb+S59EeT1q8j5jnEIb
-M+kJFwfRdxl2OiJeQSJoZjv4ZvnS0yw3thZZyy/OeyqIpKvkrpV8IxQPEkSMkf0g1tH8ruUR8l/0
-H9vwO3wVfsJlFDoNCre1MemCHP77e35A9n0DgSNIVKwLmSPQBTZJS6pEfoTk78HlNquPGmN4/boW
-pd3RImgSkrujInr3yCo88a7q8x8Dz802e9595cO/pr7AbbhS7MHkbtUEZo1tGU003EOaTBshefYQ
-H1Xq2yKuIDONTt/skXaQ0r4b/wQKK44GEhfSwLVWezUxCCuO5h2ePP0lDSwFEo/G8a7k4jhThreo
-Uf9f43+/5AFWhVoD1Kft+GeQMVSh0bBg9x9DqxRR8DBm/6xkCjjFcc4jxYmwcyMr90xi/cGWY6hJ
-hbC+vjEAv4T+eNBGWFnho4N58myNL2sN7U0rdtzoi7umuUeMtvR+zRrXX3f0qZw00rXUz08hcwoX
-N28=
-=egm6
------END PGP SIGNATURE-----
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile           | 6 ++++++
+ tools/testing/selftests/nolibc/configs/ppc.config | 3 +++
+ 2 files changed, 9 insertions(+)
+ create mode 100644 tools/testing/selftests/nolibc/configs/ppc.config
 
---------------YvoX32TKqnUBuFI6oynwzo4l--
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 5afb3e7d7723..832b9ffcbac4 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -16,10 +16,12 @@ endif
+ 
+ # XARCH is used to save user-input ARCH variant
+ # configure default variants for target kernel supported architectures
++XARCH_powerpc    = ppc
+ XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
+ 
+ # ARCH is supported by kernel
+ # map from user input variants to their kernel supported architectures
++ARCH_ppc         = powerpc
+ override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
+ 
+ # kernel image names by architecture
+@@ -29,6 +31,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
+ IMAGE_arm64      = arch/arm64/boot/Image
+ IMAGE_arm        = arch/arm/boot/zImage
+ IMAGE_mips       = vmlinuz
++IMAGE_ppc        = vmlinux
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+@@ -42,6 +45,7 @@ DEFCONFIG_x86        = defconfig
+ DEFCONFIG_arm64      = defconfig
+ DEFCONFIG_arm        = multi_v7_defconfig
+ DEFCONFIG_mips       = malta_defconfig
++DEFCONFIG_ppc        = pmac32_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+@@ -60,6 +64,7 @@ QEMU_ARCH_x86        = x86_64
+ QEMU_ARCH_arm64      = aarch64
+ QEMU_ARCH_arm        = arm
+ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
++QEMU_ARCH_ppc        = ppc
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+@@ -72,6 +77,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
+ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
++QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+diff --git a/tools/testing/selftests/nolibc/configs/ppc.config b/tools/testing/selftests/nolibc/configs/ppc.config
+new file mode 100644
+index 000000000000..b1975f8253f7
+--- /dev/null
++++ b/tools/testing/selftests/nolibc/configs/ppc.config
+@@ -0,0 +1,3 @@
++CONFIG_SERIAL_PMACZILOG=y
++CONFIG_SERIAL_PMACZILOG_TTYS=y
++CONFIG_SERIAL_PMACZILOG_CONSOLE=y
+-- 
+2.25.1
+
