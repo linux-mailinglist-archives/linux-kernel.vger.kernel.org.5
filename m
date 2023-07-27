@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C25376516E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920EC76515C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjG0Kjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S233698AbjG0Kh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjG0Kjh (ORCPT
+        with ESMTP id S233332AbjG0Khy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:39:37 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69FE268B;
-        Thu, 27 Jul 2023 03:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690454376; x=1721990376;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ap72cX/8T3ny+bqu7pGgd944OAjKiuy6FxPkyIxDrT0=;
-  b=P8gqo9JDyWiWqzRJlS5rt/PFuDL/PNOv6nLXfSUO97NN8XM+tWpAK514
-   G3hJJ7YY8sJNWSqJvTstNt1a797qYGujJwnz8vFrwFHXl8VJ/D/eaTthc
-   ci6atyGHFZVwn9+Y2eu/05hPGIJFFWIwtGtrfchwFNJnnTNqoFbrQZzRM
-   iPaxgnrS/OfmXn5nYHDL9JX0SWvPRecojFufzJC8KHD6vwTckg/EjciB2
-   H1laNXLt1VQK48BcVairDKGuMtaIKfKC+tevKmBm8/GtkuBPoyEHlChQI
-   UMGCMrRmG73sVjy1bMwxBoOLe8yT70gDogA+9gsrJxCAcePd3PT5vTmVn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="368291799"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="368291799"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 03:39:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="720858331"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="720858331"
-Received: from mylly.fi.intel.com (HELO [10.237.72.154]) ([10.237.72.154])
-  by orsmga007.jf.intel.com with ESMTP; 27 Jul 2023 03:36:48 -0700
-Message-ID: <afacba7f-c836-9d0c-3ffa-2b1cf3d4bdaa@linux.intel.com>
-Date:   Thu, 27 Jul 2023 13:36:47 +0300
+        Thu, 27 Jul 2023 06:37:54 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3AF26A4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:37:51 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so106246066b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690454270; x=1691059070;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mUepUY1ETJBpPCS0rz2zlbE3uVvxNdDGso2o/AQI4jo=;
+        b=Tb6AZRgUS/lthT4HEjc/nP8w/VjoCG8j8LUADVxrSJcPVEqZPnZ/9sIGQ/0A65h9nf
+         fFvENy5bDBFLuONVr24tJZsqt5yUbE+HpbcghUl+xy0mZCi150XvN2bM9XJn/odW2AG0
+         j3oa/2NJcV+7zbi9D9022hLLvVwTb+k+FP8Y7d1+8rHVNmG6jnePGroAYH5PFViFD4wG
+         zU8yvVA/1adhFiURMlP1JOBNkr2C1L1q1aFNyl1uGBmXF0Zkq4w2u3r7WOZoWBDzaU2L
+         M8AMJmaxEpk8eBrzmeRKrbSgqWgE2ULn6gtBNW+cZcs/w5Fq/m2HD+Q4RAMLWSPj76OO
+         jIPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690454270; x=1691059070;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mUepUY1ETJBpPCS0rz2zlbE3uVvxNdDGso2o/AQI4jo=;
+        b=JSu0picCewJuRUq2nkGQYjbqrSyzxXNXDlkr1KEQy1Pa/4h36YZ2KwTpdT1BzFzfz+
+         HNWCHYEYr+M4CvaqDwDAdc0bErCB7TqmZBYtfmlbC9Rm2sLvkszl2mwHTw1vqC0MQldM
+         m1dpCQsth6S83XIsGCNrFAY/CkNrpdUZ+WTqAXj0KFzJXT8u6USIgJl0UuswX4eioXED
+         iOJEqG+lLeaV+pCeJY4Wu3NnSFdZWrI/DTXEIlzTjjJjOrVATGvfEDqERprz0T7unO1G
+         MccICGJclO9wNtLoaIL4k2pwLhoyqWzWjfyf9nG1wKp2jbPO9Kx4NBsrXRXBDejRdBhx
+         az2A==
+X-Gm-Message-State: ABy/qLbLj51pyE7s6QJ+AHRFJ6ckJno/CdGN4g3DXp7/29H2Xl2iYdkD
+        62oj5rg7C6vsdZZRr+5MI4FGmw==
+X-Google-Smtp-Source: APBJJlH7XY3+rjbYP7kE0i960l4gmZpZUAnVjWzO3suqYO8UT1jOMw/KclUI2AbLbLl2euWq4KrN7w==
+X-Received: by 2002:a17:906:310d:b0:969:93f2:259a with SMTP id 13-20020a170906310d00b0096993f2259amr1581738ejx.73.1690454270359;
+        Thu, 27 Jul 2023 03:37:50 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id f5-20020a1709064dc500b0098f33157e7dsm617483ejw.82.2023.07.27.03.37.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 03:37:49 -0700 (PDT)
+Message-ID: <96a82a51-6e26-cee2-c095-98fac749393f@linaro.org>
+Date:   Thu, 27 Jul 2023 12:37:47 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] i2c: designware: Correct length byte validation
- logic
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] dt-bindings:iio:frequency:admv1013: add vcc regs
 Content-Language: en-US
-To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Cc:     patches@amperecomputing.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, jsd@semihalf.com,
-        chuong@os.amperecomputing.com, darren@os.amperecomputing.com,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        stable@vger.kernel.org
-References: <20230726080001.337353-1-tamnguyenchi@os.amperecomputing.com>
- <20230726080001.337353-2-tamnguyenchi@os.amperecomputing.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230726080001.337353-2-tamnguyenchi@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230727102309.92479-1-antoniu.miclaus@analog.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230727102309.92479-1-antoniu.miclaus@analog.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,27 +76,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/23 11:00, Tam Nguyen wrote:
-> From: Quan Nguyen <quan@os.amperecomputing.com>
+On 27/07/2023 12:23, Antoniu Miclaus wrote:
+> Add bindings for the VCC regulators of the ADMV1013 microware
+> upconverter.
 > 
-> Commit 0daede80f870 ("i2c: designware: Convert driver to using regmap API")
-> changes the logic to validate the whole 32-bit return value of
-> DW_IC_DATA_CMD register instead of 8-bit LSB without reason.
-> 
-> Later, commit f53f15ba5a85 ("i2c: designware: Get right data length"),
-> introduced partial fix but not enough because the "tmp > 0" still test
-> tmp as 32-bit value and is wrong in case the IC_DATA_CMD[11] is set.
-> 
-> Revert the logic to just before commit 0daede80f870
-> ("i2c: designware: Convert driver to using regmap API").
-> 
-> Fixes: f53f15ba5a85 ("i2c: designware: Get right data length")
-> Fixes: 0daede80f870 ("i2c: designware: Convert driver to using regmap API")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+
+Subject: missing spaces between prefix parts.
+
 > ---
->   drivers/i2c/busses/i2c-designware-master.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>  .../bindings/iio/frequency/adi,admv1013.yaml  | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
 > 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+> index fc813bcb6532..6660299ac1ad 100644
+> --- a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
+> @@ -39,6 +39,46 @@ properties:
+>      description:
+>        Analog voltage regulator.
+>  
+> +  vcc-drv-supply:
+> +    description:
+> +      RF Driver voltage regulator.
+> +
+> +  vcc2-drv-supply:
+> +    description:
+> +      RF predriver voltage regulator.
+> +
+> +  vcc-vva-supply:
+> +    description:
+> +      VVA Control Circuit voltage regulator.
+> +
+> +  vcc-amp1-supply:
+> +    description:
+> +      RF Amplifier 1 voltage regulator.
+> +
+> +  vcc-amp2-supply:
+> +    description:
+> +      RF Amplifier 2 voltage regulator.
+> +
+> +  vcc-env-supply:
+> +    description:
+> +      Envelope Detector voltage regulator.
+> +
+> +  vcc-bg-supply:
+> +    description:
+> +      Mixer Chip Band Gap Circuit voltage regulator.
+> +
+> +  vcc-bg2-supply:
+> +    description:
+> +      VGA Chip Band Gap Circuit voltage regulator.
+> +
+> +  vcc-mixer-supply:
+> +    description:
+> +      Mixer voltage regulator.
+> +
+> +  vcc-quad-supply:
+> +    description:
+> +      Quadruppler voltage regulator.
+> +
+
+You made them required in the driver, so they should be required here as
+well. They should be required anyway, because AFAIU they have to be
+provided.
+
+OTOH, this will break the ABI, so your driver might need to take them as
+optional.
+
+Best regards,
+Krzysztof
+
