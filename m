@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECE576579D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A01B7657A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjG0P27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
+        id S231219AbjG0PaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjG0P25 (ORCPT
+        with ESMTP id S232251AbjG0PaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:28:57 -0400
-Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77991BE4;
-        Thu, 27 Jul 2023 08:28:55 -0700 (PDT)
-Received: from [2001:a61:6209:7f40:c80a:ff:fe00:4098] (helo=cs-office3.lan.local); authenticated
-        by wp534.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qP2v5-0008UE-9I; Thu, 27 Jul 2023 17:28:51 +0200
-Date:   Thu, 27 Jul 2023 17:28:42 +0200
-From:   Carsten =?UTF-8?B?U3BpZcOf?= <mail@carsten-spiess.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
-Message-ID: <20230727172842.3fe20026.mail@carsten-spiess.de>
-In-Reply-To: <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
-References: <20230726152235.249569-1-mail@carsten-spiess.de>
- <20230726152235.249569-2-mail@carsten-spiess.de>
- <bbf1aba4-48ce-289d-aaa9-bc861effaffd@roeck-us.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 27 Jul 2023 11:30:13 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECCB171D;
+        Thu, 27 Jul 2023 08:30:11 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 209FD2CD;
+        Thu, 27 Jul 2023 15:30:11 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 209FD2CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1690471811; bh=liQq2dcD8ikYAEgx+GWN26TRs+v1bIlFG3MTf+1itqY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=avPa/rGgULsp1j+Cpn2BIWYNrjNSMozHL9lue2atTdqGANTUOuLXoKBpkC+KL0VbR
+         1nZggUD7uNlCkl1kZLVVw172es5QALetfyfgTQHHK8qiK5yII7EU3eLq8syIg7jpMO
+         jIDgBICSsTGpmeMfhxHxC2UOtG6nqUy8K6PGiSKsWsn9g8dUap05O6wEAD7zKC3Wd+
+         0wLowEKT54mnR/+cWs+Xz6uHT8xdtqUehi8LC/j+f+PeJIR/5WLB/GbsmZsVz9lI3e
+         7u8yEELx/fm+BBhr1wb3kdwFUisvruAz3p753//0Wwp1iok35JULL1g2YxvsgFXepZ
+         vISupjmKZHhtg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     David Reaver <me@davidreaver.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        David Reaver <me@davidreaver.com>
+Subject: Re: [PATCH] docs: ABI: sysfs-bus-nvdimm: fix unexpected indentation
+ error
+In-Reply-To: <20230727152234.86923-1-me@davidreaver.com>
+References: <20230727152234.86923-1-me@davidreaver.com>
+Date:   Thu, 27 Jul 2023 09:30:10 -0600
+Message-ID: <87o7jx5q4d.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VKN5LQy7FMPezGOzlhGiZtM";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690471736;7dc0dfdb;
-X-HE-SMSGID: 1qP2v5-0008UE-9I
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VKN5LQy7FMPezGOzlhGiZtM
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+David Reaver <me@davidreaver.com> writes:
 
+> Fix the following error when running make htmldocs:
+>
+> Documentation/ABI/testing/sysfs-bus-nvdimm:10: ERROR: Unexpected indentation.
+>
+> This is caused by missing newlines before the code examples. In particular,
+> before this patch, the second example for ctl_res_cnt doesn't render properly.
+>
+> Link: https://docs.kernel.org/admin-guide/abi-testing.html#abi-sys-bus-event-source-devices-nmemx-format
+>
+> Signed-off-by: David Reaver <me@davidreaver.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-nvdimm | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/ABI/testing/sysfs-bus-nvdimm b/Documentation/ABI/testing/sysfs-bus-nvdimm
+> index de8c5a59c77f..8564a0ff0d3e 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-nvdimm
+> +++ b/Documentation/ABI/testing/sysfs-bus-nvdimm
+> @@ -18,7 +18,9 @@ Description:	(RO) Attribute group to describe the magic bits
+>  		Each attribute under this group defines a bit range of the
+>  		perf_event_attr.config. Supported attribute is listed
+>  		below::
+> +
+>  		  event  = "config:0-4"  - event ID
+>
+>  		For example::
+> +
+>  			ctl_res_cnt = "event=0x1"
+>
+>  What:           /sys/bus/event_source/devices/nmemX/events
 
-> On 7/26/23 18:19, Guenter Roeck wrote:
-> I strongly suspect that the conversions will result in overflows and that=
- they are not always correct.
-> I'll want to write unit test code before accepting the driver.
-I changed the conversion for current to=20
-				*val =3D ((long)regval * 1250L * (long)data->gain) /
-					(long)data->shunt;
+Thanks for the patch.  This problem is already fixed in docs-next,
+though, and thus in linux-next as well.
 
-The term (1250 * gain) will be 10000 max, fits to 14 bit.
-So no risk for 32bit overflow when multiply with 16bit value.
-
-And changed the conversion for power to=20
-				*val =3D ((51200000L * ((long)data->gain)) /
-					(long)data->shunt) * (long)regval;
-
-The first term (51200000 * gain / shunt) will be larger than 16bit when=20
-(shunt/gain) is less than ~800. So min values for shunt are=20
-- 6400 =C2=B5Ohm for 320 mV range
-- 3200 =C2=B5Ohm for 160 mV range
-- 1600 =C2=B5Ohm for 80 mV range
-- 800 =C2=B5Ohm for 40 mV range
-Can i set this conditionally in the .yaml file?
-
-Regards Carsten
-
---Sig_/VKN5LQy7FMPezGOzlhGiZtM
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEWM+MlUpz/bWsZllTM1JQzV9LKSwFAmTCjSoACgkQM1JQzV9L
-KSxNEQ//Zl3WGNjRRHcZX/AnLzHLLmhKq3QZw9OreJLcnES+G85wGIqyXVg6gFYx
-1dSzoUgMJWN/DL8PyjR8AnJayQ0cLbQPqQF0xG/Ki7y2/CmvaQxc1Yy/vc9fDj0N
-sFnuqjBTATNIiKpbGNG8WBBmWRZMD1v9AezG4YqHXxRyiAV+394BrAj4K5ectyxI
-ZpQgYzGwXntGpf9LU3MyEvNaVyWK7SchOOXvBf8b60D2bUnLZft304UTKBoe6isw
-7bI7nY5ENeZJK41l1mYK6LDyqJiuCL7QuMaRuQkTBr4EbXrsvUA+xxXDnQ+CfGID
-yb3jAjfHyWUy9gajeBJGpsQqEjCGHlOnzb8n/6EdfXmrtLD+XShX3pj/Hm1Udkzr
-PUl++5gnu23nLppwB8XaNh/ssyx1tFxs7Fs1oOdBVe59PRSJvf4YKBaFb6J5ZH6r
-eQQj2owJy/vKPl1ASigwUVIVYg6bm/TlVZWdbMn2LXDZCWIOZjqZw2dS0SO7/sbm
-8J2BewTiX9M4vqBM716CIj/7Z++iA9bTHPlhG1LI0Q+nbPEgez68mz2kgMGNxIFB
-LVE7OzFac95rI7REi7rJadDi8DufWama2M1UycM1uUii1feDPYoJ5eCTPBq1AeuQ
-EShQ0pHmiph0Pn2Po3ALEMSJbay4jgGEQDNhZclWC/gjRhDPVnE=
-=QSkV
------END PGP SIGNATURE-----
-
---Sig_/VKN5LQy7FMPezGOzlhGiZtM--
+jon
