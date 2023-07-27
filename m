@@ -2,45 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6223A765D19
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C48765D1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 22:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjG0UVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 16:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
+        id S229526AbjG0UV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 16:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjG0UVv (ORCPT
+        with ESMTP id S229487AbjG0UVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 16:21:51 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B2319BA;
-        Thu, 27 Jul 2023 13:21:48 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1690489296tws862vv
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 28 Jul 2023 04:21:34 +0800 (CST)
-X-QQ-SSF: 01200000000000D0X000000A0000000
-X-QQ-FEAT: LrCnY+iDm+O9BsCx7wECHlZ1cmX5U7VxpBnSEWEJeHuEudDsYPNN+MIzBnrTE
-        uMhMJ4/t9cjVkxE4LNm/hm1E/ulnGHHDfmLReKCltns9Ql4FI46jaD1vD9rVsvVa6Xrq840
-        f+XEchByXBKe3iV/Xr8BApGk3H/lszaIO2GO9wD/d3RGdYbhEHL4XG/JA02a3m7uu4+pA+i
-        GYIqy1IIfUMzLa54eXrPqOjri2Tjkjkw8HXmGFLGV1N/+fLIDTDjw4fscDD304pEy9klmKy
-        JXfUmBT/bD9fmsGt0jMBeJMFEHNqhbsnBM+AEUQVgMrr9afZt/leYNroIhkcHgQR8Q+oDJg
-        YGvGO/EsnfMXLWKelAmFRGxc7RM2x6UvT1f5NK4
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1905233204736184143
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 00/12] selftests/nolibc: add minimal kernel config support - part1
-Date:   Fri, 28 Jul 2023 04:21:34 +0800
-Message-Id: <cover.1690489039.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 27 Jul 2023 16:21:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F15719BA;
+        Thu, 27 Jul 2023 13:21:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CD06461F2D;
+        Thu, 27 Jul 2023 20:21:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EBEC433C7;
+        Thu, 27 Jul 2023 20:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690489312;
+        bh=3rw7ZIN3BKsO676ed+02hCwwOMbF4a1g3XcYswtgriM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=niPNNtu7vCRsKPXg3YUeFLFf07Onh1mbdg8Q/7inkmKkPSokapGpJhLuNcdk+hBfw
+         4JlitXrp3JNPQKAw+3tJje1+Jah4cZ6QQlBZfS5vJPrUViev9FPqmQ9ympRdgg7oTD
+         7cL2Wun/TREvTm4CmpMz8Ezu0+GjORpi/7T9i/4uVxJ+WaCCPACWd4qpWV8C86aeK7
+         in0qEkY2nEl3B2O7MSHXcCJ4F6BaxGGj3uI266IuKngQhSnDHN1dXmUUUy0mQQuvot
+         ogM5SaW5SMb3dhNaPlntdVspMkDT6CydUgFxqp5LHomYbo4x1TXI8/0pgruVF+fGFq
+         Epa/3HqT+6NVA==
+Date:   Thu, 27 Jul 2023 15:21:49 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Davidlohr Bueso <dave@stgolabs.net>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI/DOE: Fix destroy_work_on_stack() race
+Message-ID: <20230727202149.GA793572@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726-doe-fix-v1-1-af07e614d4dd@intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -49,169 +58,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+On Wed, Jul 26, 2023 at 11:29:42AM -0700, Ira Weiny wrote:
+> The following debug object splat was observed in testing.
+> 
+>   [   14.061937] ------------[ cut here ]------------
+>   [   14.063899] ODEBUG: free active (active state 0) object: 0000000097d23782 object type: work_struct hint: doe_statemachine_work+0x0/0x510
+>   [   14.067480] WARNING: CPU: 1 PID: 71 at lib/debugobjects.c:514 debug_print_object+0x7d/0xb0
+>   ...
+>   [   14.080951] Workqueue: pci 0000:36:00.0 DOE [1 doe_statemachine_work
+>   [   14.083485] RIP: 0010:debug_print_object+0x7d/0xb0
+>   ...
+>   [   14.116231] Call Trace:
+>   [   14.117652]  <TASK>
+>   [   14.118958]  ? debug_print_object+0x7d/0xb0
+>   [   14.120782]  ? __warn+0x7d/0x130
+>   [   14.122399]  ? debug_print_object+0x7d/0xb0
+>   [   14.123746]  ? report_bug+0x18d/0x1c0
+>   [   14.125025]  ? handle_bug+0x3c/0x80
+>   [   14.126506]  ? exc_invalid_op+0x13/0x60
+>   [   14.127796]  ? asm_exc_invalid_op+0x16/0x20
+>   [   14.129380]  ? debug_print_object+0x7d/0xb0
+>   [   14.130688]  ? debug_print_object+0x7d/0xb0
+>   [   14.131997]  ? __pfx_doe_statemachine_work+0x10/0x10
+>   [   14.133597]  debug_object_free.part.0+0x11b/0x150
+>   [   14.134940]  doe_statemachine_work+0x45e/0x510
+>   [   14.136348]  process_one_work+0x1d4/0x3c0
+>   ...
+>   [   14.161484]  </TASK>
+>   [   14.162434] ---[ end trace 0000000000000000 ]---
+> 
+> This occurs because destroy_work_on_stack() was called after signaling
+> the completion in the calling thread.  This creates a race between
+> destroy_work_on_stack() and the task->work struct going of scope in the
+> pci_doe().
+> 
+> Signal the work complete after destroying the work struct.  This is safe
+> because signal_task_complete() is the final thing the work item does and
+> the workqueue code is careful not to access the work struct after.
+> 
+> Fixes: abf04be0e707 ("PCI/DOE: Fix memory leak with CONFIG_DEBUG_OBJECTS=y")
+> Cc: Lukas Wunner <lukas@wunner.de>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Most of the suggestions of v2 [1] have been applied in this v3 revision,
-except the local menuconfig and mrproper targets, as explained in [2].
+Thanks, applied to pci/misc with Lukas' reviewed-by and Dan's ack for
+v6.6.  I edited out the timestamps and some of the call trace from the
+splat because they didn't seem relevant.
 
-A fresh run with tinyconfig for ppc, ppc64 and ppc64le:
-
-    $ for arch in ppc ppc64 ppc64le; do \
-        mkdir -p $PWD/kernel-$arch;
-        time make defconfig run DEFCONFIG=tinyconfig ARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out;
-      done
-
-rerun for ppc, ppc64 and ppc64le:
-
-    $ for arch in ppc ppc64 ppc64le; do \
-        make rerun ARCH=$arch O=$PWD/kernel-$arch RUN_OUT=$PWD/run.$arch.out;
-      done
-    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc/vmlinux on qemu-system-ppc
-    >> [ppc] Kernel command line: console=ttyS0 panic=-1 
-    printk: console [ttyS0] enabled
-    Run /init as init process
-    Running test 'startup'
-    Running test 'syscall'
-    Running test 'stdlib'
-    Running test 'vfprintf'
-    Running test 'protection'
-    Leaving init with final status: 0
-    reboot: Power down
-    powered off, test finish
-    qemu-system-ppc: terminating on signal 15 from pid 190248 ()
-
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-
-    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc.out
-    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc64/vmlinux on qemu-system-ppc64
-    Linux version 6.4.0+ (ubuntu@linux-lab) (powerpc64le-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #2 SMP Fri Jul 28 01:40:55 CST 2023
-    Kernel command line: console=hvc0 panic=-1 
-    printk: console [hvc0] enabled
-    printk: console [hvc0] enabled
-    Run /init as init process
-    Running test 'startup'
-    Running test 'syscall'
-    Running test 'stdlib'
-    Running test 'vfprintf'
-    Running test 'protection'
-    Leaving init with final status: 0
-    reboot: Power down
-    powered off, test finish
-
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-
-    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc64.out
-    Running /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/kernel-ppc64le/arch/powerpc/boot/zImage on qemu-system-ppc64le
-    Linux version 6.4.0+ (ubuntu@linux-lab) (powerpc64le-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #2 SMP Fri Jul 28 01:41:12 CST 2023
-    Kernel command line: console=hvc0 panic=-1 
-    Run /init as init process
-    Running test 'startup'
-    Running test 'syscall'
-    Running test 'stdlib'
-    Running test 'vfprintf'
-    Running test 'protection'
-    Leaving init with final status: 0
-    reboot: Power down
-    powered off, test finish
-
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-
-    See all results in /labs/linux-lab/src/linux-stable/tools/testing/selftests/nolibc/run.ppc64le.out
-
-A fast report on existing test logs:
-
-    $ for arch in ppc ppc64 ppc64le; do \
-        make report ARCH=$arch RUN_OUT=$PWD/run.$arch.out | grep status; \
-      done
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-    165 test(s): 156 passed,   9 skipped,   0 failed => status: warning
-
-Changes from v2 --> v3:
-
-* selftests/nolibc: allow report with existing test log
-  selftests/nolibc: fix up O= option support
-  selftests/nolibc: allow customize CROSS_COMPILE by architecture
-  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
-  selftests/nolibc: tinyconfig: add extra common options
-
-    No Change.
-
-* selftests/nolibc: add macros to reduce duplicated changes
-
-    Remove REPORT_RUN_OUT and LOG_OUT.
-
-* selftests/nolibc: string the core targets
-
-    Removed extconfig target from our v3 powerpc patchset [3], the
-    operations have been merged into the defconfig target.
-
-    Let kernel depends on $(KERNEL_CONFIG) instead of the removed
-    extconfig.
-
-* selftests/nolibc: add menuconfig and mrproper for development
-
-    like the other local nolibc targets, still require local menuconfig
-    and mrproper targets for consistent usage with the same ARCH and no -C
-    /path/to/srctree
-
-    Merge them together to reduce duplicated entries.
-
-* selftests/nolibc: allow quit qemu-system when poweroff fails
-
-    Enhance timeout logic with more expected strings print and detection
-    about the booting of bios, kernel, init and test.
-
-    Add a default 10 seconds of QEMU_TIMEOUT for every architecture to
-    detect all of the potential boog hang or failed poweroff.
-
-* selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
-
-    Reduce QEMU_TIMEOUT from 60 seconds to a more normal 15 and 20
-    seconds for ppc64 and ppc64le respectively. the main time cost is
-    the slow bios used.
-
-* selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
-
-    Rename the file names to shorter ones as suggestions from the powerpc
-    patchset.
-
-* selftests/nolibc: speed up some targets with multiple jobs
-
-    New to speed up with -j<N> by default.
-
-Best regards,
-Zhangjin
----
-[1]: https://lore.kernel.org/lkml/cover.1689759351.git.falcon@tinylab.org/
-[2]: https://lore.kernel.org/lkml/20230727132418.117924-1-falcon@tinylab.org/
-[3]: https://lore.kernel.org/lkml/8e9e5ac6283c6ec2ecf10a70ce55b219028497c1.1690468707.git.falcon@tinylab.org/
-
-
-Zhangjin Wu (12):
-  selftests/nolibc: allow report with existing test log
-  selftests/nolibc: add macros to reduce duplicated changes
-  selftests/nolibc: fix up O= option support
-  selftests/nolibc: string the core targets
-  selftests/nolibc: allow customize CROSS_COMPILE by architecture
-  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
-  selftests/nolibc: add menuconfig and mrproper for development
-  selftests/nolibc: allow quit qemu-system when poweroff fails
-  selftests/nolibc: customize QEMU_TIMEOUT for ppc64/ppc64le
-  selftests/nolibc: tinyconfig: add extra common options
-  selftests/nolibc: tinyconfig: add support for 32/64-bit powerpc
-  selftests/nolibc: speed up some targets with multiple jobs
-
- tools/testing/selftests/nolibc/Makefile       | 102 ++++++++++++++----
- .../selftests/nolibc/configs/common.config    |   4 +
- .../selftests/nolibc/configs/ppc.config       |   3 +
- .../selftests/nolibc/configs/ppc64.config     |   3 +
- .../selftests/nolibc/configs/ppc64le.config   |   4 +
- 5 files changed, 98 insertions(+), 18 deletions(-)
- create mode 100644 tools/testing/selftests/nolibc/configs/common.config
- create mode 100644 tools/testing/selftests/nolibc/configs/ppc64.config
- create mode 100644 tools/testing/selftests/nolibc/configs/ppc64le.config
-
--- 
-2.25.1
-
+> ---
+>  drivers/pci/doe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> index 1b97a5ab71a9..e3aab5edaf70 100644
+> --- a/drivers/pci/doe.c
+> +++ b/drivers/pci/doe.c
+> @@ -293,8 +293,8 @@ static int pci_doe_recv_resp(struct pci_doe_mb *doe_mb, struct pci_doe_task *tas
+>  static void signal_task_complete(struct pci_doe_task *task, int rv)
+>  {
+>  	task->rv = rv;
+> -	task->complete(task);
+>  	destroy_work_on_stack(&task->work);
+> +	task->complete(task);
+>  }
+>  
+>  static void signal_task_abort(struct pci_doe_task *task, int rv)
+> 
+> ---
+> base-commit: 20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
+> change-id: 20230726-doe-fix-f57943f9ea82
+> 
+> Best regards,
+> -- 
+> Ira Weiny <ira.weiny@intel.com>
+> 
