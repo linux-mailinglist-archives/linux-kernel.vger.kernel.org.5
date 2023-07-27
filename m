@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C965B765107
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD5176510D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjG0KZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        id S234290AbjG0K0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbjG0KZH (ORCPT
+        with ESMTP id S233972AbjG0KZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:25:07 -0400
+        Thu, 27 Jul 2023 06:25:44 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F432726;
-        Thu, 27 Jul 2023 03:25:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC40930FC;
+        Thu, 27 Jul 2023 03:25:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DD1061DF7;
-        Thu, 27 Jul 2023 10:25:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB852C433C8;
-        Thu, 27 Jul 2023 10:25:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D82061E0A;
+        Thu, 27 Jul 2023 10:25:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71561C433C8;
+        Thu, 27 Jul 2023 10:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690453505;
-        bh=R8krPfSKTiP+fZ6h8cW7bvgjz3LQoVz5UVKDFLuUGqs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=i+08kTNdICfOHkXpJS8Dnt78vDILN63pwVErn0O9THCO6qIZuIJcr6ckPCwpL7nFG
-         F2wwiOdvzItDNQdAdTLTDXfK/VmwvBOBe7QcdHqUHH+FXb+/JWTLTqt5YX2/WgEVK2
-         Joav6J63eMVpMVODxlXyzJfajgXkHaIE9iv2VgEfSeQP4pTeDMRSR1sxwmeM6TBuMh
-         LLvMw2Qp6PhAucJ+0kNvil0DFxHvvc0P3wad3CHSvUxt+oqXQfxAXuuhlMkToFrOif
-         mbDlETKXqsZtfaxwlNNSNf/R5GInD3dcfWUBHaGtSGnIulp2/OaczqNYEI3C4Dgrdc
-         uQxsEawrBlmiQ==
-Message-ID: <e348b705-9522-93b6-4dd9-ab62fd1a1a98@kernel.org>
-Date:   Thu, 27 Jul 2023 19:25:03 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
-Content-Language: en-US
-To:     TW <dalzot@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     regressions@lists.linux.dev,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
- <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
- <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
- <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
- <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1690453528;
+        bh=FJXkSwPbNKQ95t2XWfcMnomXfcixhy3pOfTMwv/ZpIY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d34o//Y1Y5dfRtLOi0HwE+uJT9nrmc86QQYqcYJdz/AHsxhgaNQsqF7UP/xrRQ2NT
+         w8XAntI7jmFAiqr/E/wpvRSLxf8uYhHIRwLomfc5yXPAGjUbx3beZtQNZ3NO8/bGfM
+         SO5/yPRn5VmsYTc7wQYtVoHKkQRyfoXt+XI6wnSciqBudTsm5vTNHzV6U0EoZJ9zvp
+         VEjRTroyGZQkKHhywR4iNOZS+o9Xy/q3CaBfdzJcrSXh3BtJWUfXdfO3scRNsBFKo2
+         oEg05/s96neKp6o3O5RgRJGeS0EgRhuiHLkhrd/kdMqtGtukWh7A6507mmz3a6kWSD
+         rjB0xXlHJI8dA==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qOyBR-00HK5u-Rg;
+        Thu, 27 Jul 2023 11:25:26 +0100
+Date:   Thu, 27 Jul 2023 11:25:25 +0100
+Message-ID: <87tttpr6qy.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+In-Reply-To: <20230722022251.3446223-3-rananta@google.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-3-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 19:22, TW wrote:
-> I managed to fix the patch file, guess the formatting messed up a bit. So will
-> try with those patches installed.
-
-Please do not top post.
-
-Again, I sent you a single patch. What other patches are you talking about ?
-
+On Sat, 22 Jul 2023 03:22:41 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
 > 
-> On 7/27/23 04:06, TW wrote:
->> I retried on 6.5 rc3 without the Nvidia drivers and still received the same
->> error and going to try for the patch next but got a malformed patch error on
->> line 6 for the first patch for libata-scsi.c. The other two seem to go
->> through just fine however.
+> Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
+> standardize on kvm_arch_flush_remote_tlbs() since it avoids
+> duplicating the generic TLB stats across architectures that implement
+> their own remote TLB flush.
+> 
+> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
+> path, but that is a small cost in comparison to flushing remote TLBs.
+
+Well, there is no such thing as a "remote TLB" anyway. We either have
+a non-shareable or inner-shareable invalidation. The notion of remote
+would imply that we track who potentially has a TLB, which we
+obviously don't.
+
+More x86 nonsense...
+
+>
+> In addition, instead of just incrementing remote_tlb_flush_requests
+> stat, the generic interface would also increment the
+> remote_tlb_flush stat.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h | 3 +++
+>  arch/arm64/kvm/Kconfig            | 1 -
+>  arch/arm64/kvm/mmu.c              | 6 +++---
+>  3 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 8b6096753740..7281222f24ef 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -1111,6 +1111,9 @@ int __init kvm_set_ipa_limit(void);
+>  #define __KVM_HAVE_ARCH_VM_ALLOC
+>  struct kvm *kvm_arch_alloc_vm(void);
+>  
+> +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
+> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+
+See my earlier comment about making this prototype global.
+
+	M.
 
 -- 
-Damien Le Moal
-Western Digital Research
-
+Without deviation from the norm, progress is not possible.
