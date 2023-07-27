@@ -2,377 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 539837643F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B715B7643F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 04:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjG0CrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 22:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        id S230478AbjG0CuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 22:50:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjG0CrF (ORCPT
+        with ESMTP id S229957AbjG0CuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 22:47:05 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A960B1724;
-        Wed, 26 Jul 2023 19:47:02 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8DxRvGk2sFkG38KAA--.26381S3;
-        Thu, 27 Jul 2023 10:47:00 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbSOj2sFkdW88AA--.47372S3;
-        Thu, 27 Jul 2023 10:46:59 +0800 (CST)
-Subject: Re: [PATCH v15 1/2] thermal: loongson-2: add thermal management
- support
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn,
-        zhanghongchen <zhanghongchen@loongson.cn>, zhuyinbo@loongson.cn
-References: <20230620012944.28877-1-zhuyinbo@loongson.cn>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <2ca4e5cc-425f-f84d-895d-36637ac21ddc@loongson.cn>
-Date:   Thu, 27 Jul 2023 10:46:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 26 Jul 2023 22:50:13 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5B51BC6
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:50:12 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3a425ef874dso465321b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 19:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.washington.edu; s=goo201206; t=1690426211; x=1691031011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QspNxTEi/qT/BgadxTLzSVy271O3r6BuXIduCGxDThQ=;
+        b=PW+Z4MAXfmTsIC4QJrUmg8YYjdyWhJ6IhZUavqqEeBCQOPaFQ1g5W9qC+LHtQmKagn
+         RNRG2Y723njUpytpzaDDDvnEwfrqlFDmZOC9olbtGumU7dw6y881t4YawFUzW923Hn73
+         jDgdAssqqFIlNR3VDZ2L4zokbuRF+8aD1NmSU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690426211; x=1691031011;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QspNxTEi/qT/BgadxTLzSVy271O3r6BuXIduCGxDThQ=;
+        b=OLdqK9lAOQClfSGKs775aubz0VQne2Bhi4F+XUjoHaXFEmSUtE2NjjGmyQyQ3vakY2
+         J5pM2FKyM5KAIoTz/6l2UJRrdniTYooVhYhwy1iG+KrSicTF/Up/4nDzdM2NeqSsAUZE
+         e4oZKcy8a6gdZFiCtCXykAFytnzTrfdxXMLe3CjZRP4I6cYAKk7oeOnNRGR2z/vbGStF
+         ckpaE7x1aEi9YSPiyoacWyIeg1+b0tSBhRPNqOmWHm5zgjALbBc6eSVqUZ9eenNSUa7E
+         lziYMRqbZ0JQgRNFBFPlfKEPk861ogjxmh8eVE77Sksy/yMoGZDC7iQ4wLaq0r9d5lob
+         RaMA==
+X-Gm-Message-State: ABy/qLbbM0VTOcxD9X+ITkFIRAGZ1Wvzg5JtlIFP13lTY33vWs3/Vjyr
+        uTLmkUYavhvINq7mqBOv/L0PvQ==
+X-Google-Smtp-Source: APBJJlEXoJUhxPgiBoapPWNXWPOoG4MBDEOp2OM0y2T2xlmygi47Kcm0f/Z4g8ETBkWfrszT1jJT8A==
+X-Received: by 2002:a05:6808:1a92:b0:3a1:ed1b:9541 with SMTP id bm18-20020a0568081a9200b003a1ed1b9541mr1443669oib.40.1690426211687;
+        Wed, 26 Jul 2023 19:50:11 -0700 (PDT)
+Received: from marth.. (75-172-111-252.tukw.qwest.net. [75.172.111.252])
+        by smtp.gmail.com with ESMTPSA id f25-20020a633819000000b0055bf13811f5sm240782pga.15.2023.07.26.19.50.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 19:50:11 -0700 (PDT)
+From:   Luke Nelson <lukenels@cs.washington.edu>
+X-Google-Original-From: Luke Nelson <luke.r.nels@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Luke Nelson <luke.r.nels@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] riscv/bpf: Fix truncated immediate warning in rv_s_insn
+Date:   Wed, 26 Jul 2023 19:49:31 -0700
+Message-Id: <20230727024931.17156-1-luke.r.nels@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230620012944.28877-1-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxbSOj2sFkdW88AA--.47372S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sparse warns that a cast in rv_s_insn truncates bits from the constant
+0x7ff to 0xff.  The warning originates from the use of a constant offset
+of -8 in a store instruction in bpf_jit_comp64.c:
 
-Friendly ping ?
+  emit(rv_sd(RV_REG_SP, -8, RV_REG_RA), &ctx);
 
-ÔÚ 2023/6/20 ÉÏÎç9:29, Yinbo Zhu Ð´µÀ:
-> This patch adds the support for Loongson-2 thermal sensor controller,
-> which can support maximum four sensor selectors that corresponding to four
-> sets of thermal control registers and one set of sampling register. The
-> sensor selector can selector a speific thermal sensor as temperature input.
-> The sampling register is used to obtain the temperature in real time, the
-> control register GATE field is used to set the threshold of high or low
-> temperature, when the input temperature is higher than the high temperature
-> threshold or lower than the low temperature threshold, an interrupt will
-> occur.
-> 
-> Signed-off-by: zhanghongchen <zhanghongchen@loongson.cn>
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
-> Change in v15:
-> 		1. Remove the unused head file.
-> 		2. Remove the invalid conditions that such as (low > high).
-> 		3. Use the clamp() to replace max() and min().
-> 		4. Use the macros to replace some constant.
-> 		5. Use the struct data point as data field of of_device_id.
-> 		6. Use the thermal_sensor_sel to replace the sensor id.
-> 		7. Use the thermal_zone_device_priv to replace tz->devdata.
-> 		8. Reword the commit log information.
-> Change in v14:
-> 		1. Add back depends on COMPILE_TEST.
-> 		2. The implementation of devm_thermal_add_hwmon_sysfs has changed in
-> 		   recent community code that cause compile fail issue and this verison
-> 		   add a dev args in devm_thermal_add_hwmon_sysfs to fix compile issue.
-> Change in v13:
-> 		1. Add a description about that how works the sensor.
-> 		2. Drop the COMPILE_TEST.
-> 		3. Rework the help prograph in LOONGSON2_THERMAL Kconfig.
-> 		4. Drop the 'tzd' 'irq' and 'pdev' element in loongson2_thermal_data.
-> 		5. Drop the reset of variable in loongson2_thermal_set.
-> 		6. Drop the function loongson2_thermal_get_sensor_id.
-> 		7. Drop the function loongson2_thermal_alarm_irq.
-> 		8. Rework the devm_thermal_of_zone_register.
-> 		9. Pass 'tzd' instead of 'data' in devm_request_threaded_irq.
-> 		10. Drop the "data->tzd->tzp->no_hwmon = false".
-> 		11. Drop the loongson2_thermal_remove.
-> 		12. Add the sensor id in the of_device_id data field.
-> 		13. Drop the save and restore function.
-> Change in v12:
-> 		1. Fixup it about min and max.
-> 		2. Use dev_err_probe replace dev_err in devm_request_threaded_irq context.
-> Change in v11:
-> 		1. Add min() and max() to replace related code in function
-> 		   loongson2_thermal_set.
-> 		2. Add dev_err_probe to to replace related code for function
-> 		   return value use devm_thermal_of_zone_register.
-> 		3. Replace thermal_add_hwmon_sysfs with devm_thermal_add_hwmon_sysfs
-> 		   and use dev_warn replace dev_err in this context.
-> Change in v10:
-> 		1. Add all history change log information.
-> Change in v9:
-> 		1. Switch new API that use devm_thermal_of_zone_register
-> 		   to replace previous interfaces.
-> 		2. Add depend on LOONGARCH || COMPILE_TEST.
-> Change in v8:
->                  1. Replace string loongson2/Loongson2/LOONGSON2 with loongson-2/
->                     Loongson-2/LOONGSON-2 in Kconfig and commit log and MAINTAINERS
-> 		   files.
-> Change in v7:
-> 		1. Split the modification of patch 3 and merge it into this patch.
-> 		2. Remove the unless code annotation to fix the compile warning
-> 		   when compile C code with W=1.
-> Change in v6:
-> 		1. NO change, but other patch in this series of patches set has
-> 		   changes.
-> Change in v5:
-> 		1. NO change, but other patch in this series of patches set has
-> 		   changes.
-> Change in v4:
-> 		1. Fixup the compatible.
-> Change in v3:
-> 		1. Add a function to gain sensor id an remove dts id.
-> Change in v2:
-> 		1. Remove error msg printing when addr ioremap has error.
-> 		2. Make loongson2 thermal driver was built-in by default.
-> 		3. Replace ls2k with loongson2.
-> 		4. Remove CONFIG_PM_SLEEP and set pm function type was
-> 		   __maybe_unused.
-> 
->   MAINTAINERS                         |   7 ++
->   drivers/thermal/Kconfig             |  12 ++
->   drivers/thermal/Makefile            |   1 +
->   drivers/thermal/loongson2_thermal.c | 170 ++++++++++++++++++++++++++++
->   4 files changed, 190 insertions(+)
->   create mode 100644 drivers/thermal/loongson2_thermal.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7a91f14cad2e..f9277fa2a728 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12198,6 +12198,13 @@ S:	Maintained
->   F:	Documentation/devicetree/bindings/pinctrl/loongson,ls2k-pinctrl.yaml
->   F:	drivers/pinctrl/pinctrl-loongson2.c
->   
-> +LOONGSON-2 SOC SERIES THERMAL DRIVER
-> +M:	zhanghongchen <zhanghongchen@loongson.cn>
-> +M:	Yinbo Zhu <zhuyinbo@loongson.cn>
-> +L:	linux-pm@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/thermal/loongson2_thermal.c
-> +
->   LOONGSON GPIO DRIVER
->   M:	Yinbo Zhu <zhuyinbo@loongson.cn>
->   L:	linux-gpio@vger.kernel.org
-> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-> index 4cd7ab707315..c4de94e972f4 100644
-> --- a/drivers/thermal/Kconfig
-> +++ b/drivers/thermal/Kconfig
-> @@ -502,4 +502,16 @@ config KHADAS_MCU_FAN_THERMAL
->   	  If you say yes here you get support for the FAN controlled
->   	  by the Microcontroller found on the Khadas VIM boards.
->   
-> +config LOONGSON2_THERMAL
-> +	tristate "Loongson-2 SoC series thermal driver"
-> +	depends on LOONGARCH || COMPILE_TEST
-> +	depends on OF
-> +	help
-> +	  Support for Thermal driver found on Loongson-2 SoC series platforms.
-> +	  The thermal driver realizes get_temp and set_trips function, which
-> +	  are used to obtain the temperature of the current node and set the
-> +	  temperature range to trigger the interrupt. When the input temperature
-> +	  is higher than the high temperature threshold or lower than the low
-> +	  temperature threshold, the interrupt will occur.
-> +
->   endif
-> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-> index 058664bc3ec0..c934cab309ae 100644
-> --- a/drivers/thermal/Makefile
-> +++ b/drivers/thermal/Makefile
-> @@ -63,3 +63,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
->   obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
->   obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
->   obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
-> +obj-$(CONFIG_LOONGSON2_THERMAL)	+= loongson2_thermal.o
-> diff --git a/drivers/thermal/loongson2_thermal.c b/drivers/thermal/loongson2_thermal.c
-> new file mode 100644
-> index 000000000000..2be8e0f5fea3
-> --- /dev/null
-> +++ b/drivers/thermal/loongson2_thermal.c
-> @@ -0,0 +1,170 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Author: zhanghongchen <zhanghongchen@loongson.cn>
-> + *         Yinbo Zhu <zhuyinbo@loongson.cn>
-> + * Copyright (C) 2022-2023 Loongson Technology Corporation Limited
-> + */
-> +
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/minmax.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/thermal.h>
-> +#include <linux/units.h>
-> +#include "thermal_hwmon.h"
-> +
-> +#define LOONGSON2_MAX_SENSOR_SEL_NUM			3
-> +
-> +#define LOONGSON2_THSENS_CTRL_HI_REG			0x0
-> +#define LOONGSON2_THSENS_CTRL_LOW_REG			0x8
-> +#define LOONGSON2_THSENS_STATUS_REG			0x10
-> +#define LOONGSON2_THSENS_OUT_REG			0x14
-> +
-> +#define LOONGSON2_THSENS_INT_LO				BIT(0)
-> +#define LOONGSON2_THSENS_INT_HIGH			BIT(1)
-> +#define LOONGSON2_THSENS_OUT_MASK			0xFF
-> +
-> +struct loongson2_thermal_chip_data {
-> +	unsigned int	thermal_sensor_sel;
-> +};
-> +
-> +struct loongson2_thermal_data {
-> +	void __iomem	*regs;
-> +	const struct loongson2_thermal_chip_data *chip_data;
-> +};
-> +
-> +static int loongson2_thermal_set(struct loongson2_thermal_data *data,
-> +					int low, int high, bool enable)
-> +{
-> +	u64 reg_ctrl = 0;
-> +	int reg_off = data->chip_data->thermal_sensor_sel * 2;
-> +
-> +	low = clamp(-40, low, high);
-> +	high = clamp(125, low, high);
-> +
-> +	low += HECTO;
-> +	high += HECTO;
-> +
-> +	reg_ctrl = low;
-> +	reg_ctrl |= enable ? 0x100 : 0;
-> +	writew(reg_ctrl, data->regs + LOONGSON2_THSENS_CTRL_LOW_REG + reg_off);
-> +
-> +	reg_ctrl = high;
-> +	reg_ctrl |= enable ? 0x100 : 0;
-> +	writew(reg_ctrl, data->regs + LOONGSON2_THSENS_CTRL_HI_REG + reg_off);
-> +
-> +	return 0;
-> +}
-> +
-> +static int loongson2_thermal_get_temp(struct thermal_zone_device *tz, int *temp)
-> +{
-> +	u32 reg_val;
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tz);
-> +
-> +	reg_val = readl(data->regs + LOONGSON2_THSENS_OUT_REG);
-> +	*temp = ((reg_val & LOONGSON2_THSENS_OUT_MASK) - HECTO) * KILO;
-> +
-> +	return 0;
-> +}
-> +
-> +static irqreturn_t loongson2_thermal_irq_thread(int irq, void *dev)
-> +{
-> +	struct thermal_zone_device *tzd = dev;
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tzd);
-> +
-> +	writeb(LOONGSON2_THSENS_INT_LO | LOONGSON2_THSENS_INT_HIGH, data->regs +
-> +		LOONGSON2_THSENS_STATUS_REG);
-> +
-> +	thermal_zone_device_update(tzd, THERMAL_EVENT_UNSPECIFIED);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int loongson2_thermal_set_trips(struct thermal_zone_device *tz, int low, int high)
-> +{
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tz);
-> +
-> +	return loongson2_thermal_set(data, low/MILLI, high/MILLI, true);
-> +}
-> +
-> +static const struct thermal_zone_device_ops loongson2_of_thermal_ops = {
-> +	.get_temp = loongson2_thermal_get_temp,
-> +	.set_trips = loongson2_thermal_set_trips,
-> +};
-> +
-> +static int loongson2_thermal_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct loongson2_thermal_data *data;
-> +	struct thermal_zone_device *tzd;
-> +	int ret, irq, i;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->chip_data = device_get_match_data(dev);
-> +
-> +	data->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(data->regs))
-> +		return PTR_ERR(data->regs);
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
-> +
-> +	writeb(LOONGSON2_THSENS_INT_LO | LOONGSON2_THSENS_INT_HIGH, data->regs +
-> +		LOONGSON2_THSENS_STATUS_REG);
-> +
-> +	loongson2_thermal_set(data, 0, 0, false);
-> +
-> +	for (i = 0; i <= LOONGSON2_MAX_SENSOR_SEL_NUM; i++) {
-> +		tzd = devm_thermal_of_zone_register(dev, i, data,
-> +			&loongson2_of_thermal_ops);
-> +
-> +		if (!IS_ERR(tzd))
-> +			break;
-> +
-> +		if (PTR_ERR(tzd) != ENODEV)
-> +			continue;
-> +
-> +		return dev_err_probe(dev, PTR_ERR(tzd), "failed to register");
-> +	}
-> +
-> +	ret = devm_request_threaded_irq(dev, irq, NULL, loongson2_thermal_irq_thread,
-> +			IRQF_ONESHOT, "loongson2_thermal", tzd);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "failed to request alarm irq\n");
-> +
-> +	if (devm_thermal_add_hwmon_sysfs(dev, tzd))
-> +		dev_warn(dev, "Failed to add hwmon sysfs attributes\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct loongson2_thermal_chip_data loongson2_thermal_ls2k1000_data = {
-> +	.thermal_sensor_sel = 0,
-> +};
-> +
-> +static const struct of_device_id of_loongson2_thermal_match[] = {
-> +	{
-> +		.compatible = "loongson,ls2k1000-thermal",
-> +		.data = &loongson2_thermal_ls2k1000_data,
-> +	},
-> +	{ /* end */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, of_loongson2_thermal_match);
-> +
-> +static struct platform_driver loongson2_thermal_driver = {
-> +	.driver = {
-> +		.name		= "loongson2_thermal",
-> +		.of_match_table = of_loongson2_thermal_match,
-> +	},
-> +	.probe	= loongson2_thermal_probe,
-> +};
-> +module_platform_driver(loongson2_thermal_driver);
-> +
-> +MODULE_DESCRIPTION("Loongson2 thermal driver");
-> +MODULE_LICENSE("GPL");
-> 
+rv_sd then calls rv_s_insn, with imm11_0 equal to (u16)(-8), or 0xfff8.
+
+Here's the current implementation of rv_s_insn:
+
+  static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
+  {
+          u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
+
+          return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
+                 (imm4_0 << 7) | opcode;
+  }
+
+imm11_0 is a signed 12-bit immediate offset of the store instruction. The
+instruction encoding requires splitting the immediate into bits 11:5 and
+bits 4:0. In this case, imm11_0 >> 5 = 0x7ff, which then gets truncated
+to 0xff when cast to u8, causing the warning from sparse. However, this is
+not actually an issue because the immediate offset is signed---truncating
+upper bits that are all set to 1 has no effect on the value of the
+immediate.
+
+There is another subtle quirk with this code, which is imm11_5 is
+supposed to be the upper 7 bits of the 12-bit signed immediate, but its
+type is u8 with no explicit mask to select out only the bottom 7 bits.
+This happens to be okay here because imm11_5 is the left-most field in
+the instruction and the "extra" bit will be shifted out when imm11_5 is
+shifted left by 25.
+
+This commit fixes the warning by changing the type of imm11_5 and imm4_0
+to be u32 instead of u8, and adding an explicit mask to compute imm11_5
+instead of relying on truncation + shifting.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307260704.dUElCrWU-lkp@intel.com/
+In-Reply-To: <202307260704.dUElCrWU-lkp@intel.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Cc: Xi Wang <xi.wang@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+---
+ arch/riscv/net/bpf_jit.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index 2717f5490428..e159c6e3ff43 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -238,7 +238,7 @@ static inline u32 rv_i_insn(u16 imm11_0, u8 rs1, u8 funct3, u8 rd, u8 opcode)
+
+ static inline u32 rv_s_insn(u16 imm11_0, u8 rs2, u8 rs1, u8 funct3, u8 opcode)
+ {
+-	u8 imm11_5 = imm11_0 >> 5, imm4_0 = imm11_0 & 0x1f;
++	u32 imm11_5 = (imm11_0 >> 5) & 0x7f, imm4_0 = imm11_0 & 0x1f;
+
+ 	return (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) |
+ 		(imm4_0 << 7) | opcode;
+--
+2.34.1
 
