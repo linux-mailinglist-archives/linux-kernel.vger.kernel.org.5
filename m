@@ -2,61 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5D3764D7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A401764D7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234044AbjG0Ifc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        id S234388AbjG0IfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234251AbjG0IfK (ORCPT
+        with ESMTP id S234082AbjG0IeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:35:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9486195;
-        Thu, 27 Jul 2023 01:18:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 27 Jul 2023 04:34:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6898949D3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:18:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6D6961D91;
-        Thu, 27 Jul 2023 08:18:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE550C433C8;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 48ADB1F747;
         Thu, 27 Jul 2023 08:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690445890;
-        bh=f23MYfOTjtmXZu5cjF+AYtaCTsegaO8tfeUfGNU27g8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0X74+uHNUnKOZ6Gbbo8+PbWMLNdb35arh/4yxQ9hKLzQXNV+2xv73GViJ4XtuYstL
-         AV43yNpTvaZA2CjgBTh26/HtT7DstPVVqnX1lnksab26k/Bhp7VdzzVWMe+WMslxHv
-         yLrQOX3yoJRrJ+ImO1gRVOEEIglqjJ2xtzVcs9Y4=
-Date:   Thu, 27 Jul 2023 10:18:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Surong Pang <surong.pang@unisoc.com>
-Cc:     Thinh.Nguyen@synopsys.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Orson.Zhai@unisoc.com,
-        Zhiyong.liu@unisoc.com, Surong.Pang@gmail.com
-Subject: Re: [PATCH] usb: dwc3: gadget: let pm runtime get/put paired
-Message-ID: <2023072757-struggle-quirk-2c4b@gregkh>
-References: <20230727005150.18836-1-surong.pang@unisoc.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690445889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vEZggNbc6DGoi3i2Ep2+ExdQTZDFALTtNMLWFugNXY=;
+        b=C/77BzXTfBrVPOhMw4lZFYjA2YCLI46gcQbQ+iI259zIdarqgGNQPTDzOzLRyo+Qzp9k9F
+        tzXNzjGyC7J/DVZNdqpbBldFblkGUkzRIeOrXbZK3bO8QWomMOM3Ow7FAtmqBupCY/MasF
+        TMKjyhQzUt0McY0L2n2QgmqqaIas5iY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2A4E913902;
+        Thu, 27 Jul 2023 08:18:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id q9bpB0EowmS2SgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 27 Jul 2023 08:18:09 +0000
+Date:   Thu, 27 Jul 2023 10:18:08 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ross Zwisler <zwisler@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: collision between ZONE_MOVABLE and memblock allocations
+Message-ID: <ZMIoQIS1t53XE4Kw@dhcp22.suse.cz>
+References: <20230718220106.GA3117638@google.com>
+ <ZLd/WEZTH5rlwYjP@dhcp22.suse.cz>
+ <20230719224821.GC3528218@google.com>
+ <9ef757dc-da4b-9fa1-de84-1328a74f18a7@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230727005150.18836-1-surong.pang@unisoc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9ef757dc-da4b-9fa1-de84-1328a74f18a7@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:51:50AM +0800, Surong Pang wrote:
-> ________________________________
->  This email (including its attachments) is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential or otherwise protected from disclosure. Unauthorized use, dissemination, distribution or copying of this email or the information herein or taking any action in reliance on the contents of this email or the information herein, by anyone other than the intended recipient, or an employee or agent responsible for delivering the message to the intended recipient, is strictly prohibited. If you are not the intended recipient, please do not read, copy, use or disclose any part of this e-mail to others. Please notify the sender immediately and permanently delete this e-mail and any attachments if you received it in error. Internet communications cannot be guaranteed to be timely, secure, error-free or virus-free. The sender does not accept liability for any errors or omissions.
-> 本邮件及其附件具有保密性质，受法律保护不得泄露，仅发送给本邮件所指特定收件人。严禁非经授权使用、宣传、发布或复制本邮件或其内容。若非该特定收件人，请勿阅读、复制、 使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件的方式即刻告知发件人。无法保证互联网通信及时、安全、无误或防毒。发件人对任何错漏均不承担责任。
+On Wed 26-07-23 10:44:21, David Hildenbrand wrote:
+> On 20.07.23 00:48, Ross Zwisler wrote:
+> > On Wed, Jul 19, 2023 at 08:14:48AM +0200, Michal Hocko wrote:
+> > > On Tue 18-07-23 16:01:06, Ross Zwisler wrote:
+> > > [...]
+> > > > I do think that we need to fix this collision between ZONE_MOVABLE and memmap
+> > > > allocations, because this issue essentially makes the movablecore= kernel
+> > > > command line parameter useless in many cases, as the ZONE_MOVABLE region it
+> > > > creates will often actually be unmovable.
+> > > 
+> > > movablecore is kinda hack and I would be more inclined to get rid of it
+> > > rather than build more into it. Could you be more specific about your
+> > > use case?
+> > 
+> > The problem that I'm trying to solve is that I'd like to be able to get kernel
+> > core dumps off machines (chromebooks) so that we can debug crashes.  Because
+> > the memory used by the crash kernel ("crashkernel=" kernel command line
+> > option) is consumed the entire time the machine is booted, there is a strong
+> > motivation to keep the crash kernel as small and as simple as possible.  To
+> > this end I'm trying to get away without SSD drivers, not having to worry about
+> > encryption on the SSDs, etc.
+> 
+> Okay, so you intend to keep the crashkernel area as small as possible.
+> 
+> > 
+> > So, the rough plan right now is:
+> >  > 1) During boot set aside some memory that won't contain kernel
+> allocations.
+> > I'm trying to do this now with ZONE_MOVABLE, but I'm open to better ways.
+> > 
+> > We set aside memory for a crash kernel & arm it so that the ZONE_MOVABLE
+> > region (or whatever non-kernel region) will be set aside as PMEM in the crash
+> > kernel.  This is done with the memmap=nn[KMG]!ss[KMG] kernel command line
+> > parameter passed to the crash kernel.
+> > 
+> > So, in my sample 4G VM system, I see:
+> > 
+> >    # lsmem --split ZONES --output-all
+> >    RANGE                                  SIZE  STATE REMOVABLE BLOCK NODE   ZONES
+> >    0x0000000000000000-0x0000000007ffffff  128M online       yes     0    0    None
+> >    0x0000000008000000-0x00000000bfffffff  2.9G online       yes  1-23    0   DMA32
+> >    0x0000000100000000-0x000000012fffffff  768M online       yes 32-37    0  Normal
+> >    0x0000000130000000-0x000000013fffffff  256M online       yes 38-39    0 Movable
+> >    Memory block size:       128M
+> >    Total online memory:       4G
+> >    Total offline memory:      0B
+> > 
+> > so I'll pass "memmap=256M!0x130000000" to the crash kernel.
+> > 
+> > 2) When we hit a kernel crash, we know (hope?) that the PMEM region we've set
+> > aside only contains user data, which we don't want to store anyway.
+> 
+> I raised that in different context already, but such assumptions are not
+> 100% future proof IMHO. For example, we might at one point be able to make
+> user page tables movable and place them on there.
+> 
+> But yes, most kernel data structures (which you care about) will probably
+> never be movable and never end up on these regions.
+> 
+> > We make a
+> > filesystem in there, and create a kernel crash dump using 'makedumpfile':
+> > 
+> >    mkfs.ext4 /dev/pmem0
+> >    mount /dev/pmem0 /mnt
+> >    makedumpfile -c -d 31 /proc/vmcore /mnt/kdump
+> > 
+> > We then set up the next full kernel boot to also have this same PMEM region,
+> > using the same memmap kernel parameter.  We reboot back into a full kernel.
+> > 
+> > 3) The next full kernel will be a normal boot with a full networking stack,
+> > SSD drivers, disk encryption, etc.  We mount up our PMEM filesystem, pull out
+> > the kdump and either store it somewhere persistent or upload it somewhere.  We
+> > can then unmount the PMEM and reconfigure it back to system ram so that the
+> > live system isn't missing memory.
+> > 
+> >    ndctl create-namespace --reconfig=namespace0.0 -m devdax -f
+> >    daxctl reconfigure-device --mode=system-ram dax0.0
+> > 
+> > This is the flow I'm trying to support, and have mostly working in a VM,
+> > except up until now makedumpfile would crash because all the memblock
+> > structures it needed were in the PMEM area that I had just wiped out by making
+> > a new filesystem. :)
+> 
+> 
+> Thinking out loud (and remembering that some architectures relocate the
+> crashkernel during kexec, if I am not wrong), maybe the following would also
+> work and make your setup eventually easier:
+> 
+> 1) Don't reserve a crashkernel area in the traditional way, instead reserve
+> that area using CMA. It can be used for MOVABLE allocations.
+> 
+> 2) Let kexec load the crashkernel+initrd into ordinary memory only
+> (consuming as much as you would need there).
+> 
+> 3) On kexec, relocate the crashkernel+initrd into the CMA area (overwriting
+> any movable data in there)
+> 
+> 4) In makedumpfile, don't dump any memory that falls into the crashkernel
+> area. It might already have been overwritten by the second kernel
 
-Now deleted.
+This is more or less what Jiri is looking into.
+
+-- 
+Michal Hocko
+SUSE Labs
