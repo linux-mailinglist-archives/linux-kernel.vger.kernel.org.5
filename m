@@ -2,315 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B0676533D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F29E76535D
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjG0MHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        id S233409AbjG0MNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbjG0MHg (ORCPT
+        with ESMTP id S230156AbjG0MNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:07:36 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287442D5F;
-        Thu, 27 Jul 2023 05:07:35 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RBTkN5Wt0z9ttCd;
-        Thu, 27 Jul 2023 19:56:12 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.209.69])
-        by APP2 (Coremail) with SMTP id GxC2BwBnGkGaXcJkfMYUBQ--.33878S4;
-        Thu, 27 Jul 2023 13:06:41 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
-        linux-mm@kvack.org (open list:SLAB ALLOCATOR)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v6 2/9] swiotlb: make io_tlb_default_mem local to swiotlb.c
-Date:   Thu, 27 Jul 2023 14:05:30 +0200
-Message-Id: <e97d4eca870c3eb2ca86e173e22c0d0b14485bbf.1690459412.git.petr.tesarik.ext@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
-References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
+        Thu, 27 Jul 2023 08:13:30 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFE12719;
+        Thu, 27 Jul 2023 05:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690460009; x=1721996009;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5uIFR6uMssEWsFWrPUBKU4Ccoe4vSSRYqdWErrCk1QM=;
+  b=nD5da08hrqWZYfqxY9qqHyZQJV/OR/is6Z4dQiCsj3sYtrr65ht50r4N
+   RqlcRb4fEHzsV2RjKLiL+QIByotFcKe9CrWAoiwbnCys29oa8nRcbiKil
+   SahW4RvEv+YlemunI1ggldFablRhvEtQFmgkJicWo93aViMOoAkyQBHbQ
+   vb0BlWado5gm7YsHAY77peGoK9AqGPUMj3ffuj2mq+eEgtYKJjp6d/OsF
+   L7C1eAViWAEUIl/RB9fQ+NqiUhtZHJAsLHnKIDWhRXMh7smaULSzPQskM
+   As4rI95H+VNH76LQBRPWWb1Efp9o+bHJXatTGVFK5U/w4Syh34m9xzh6S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="367167844"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="367167844"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 05:06:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="730252652"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="730252652"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 27 Jul 2023 05:06:02 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOzkn-0002Fk-2Y;
+        Thu, 27 Jul 2023 12:06:01 +0000
+Date:   Thu, 27 Jul 2023 20:05:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Charles Boyer <Charles.Boyer@fii-usa.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Vivekanand Veeracholan <vveerach@google.com>,
+        Lancelot Kao <lancelot.cy.kao@fii-na.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Charles Boyer <Charles.Boyer@fii-usa.com>
+Subject: Re: [PATCH] ARM: dts: nuvoton: Add Fii Mori system
+Message-ID: <202307271949.TXhf41ue-lkp@intel.com>
+References: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwBnGkGaXcJkfMYUBQ--.33878S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4DZw13KF1DAF48Zw13Arb_yoWxZry7pr
-        yUAFyrGF42qrn7urW3Cw1kAF1Ygwn2kay7CryS9wn8Z3WDJwn5JFWDtrWYyr1rJrW8uF4f
-        AFyvvryYkF47Aw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQm14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
-        IY04v7MxkF7I0En4kS14v26r1q6r43MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU1tCzDUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726184651.1221-1-Charles.Boyer@fii-usa.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+Hi Charles,
 
-SWIOTLB implementation details should not be exposed to the rest of the
-kernel. This will allow to make changes to the implementation without
-modifying non-swiotlb code.
+kernel test robot noticed the following build errors:
 
-To avoid breaking existing users, provide helper functions for the few
-required fields.
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on linus/master v6.5-rc3 next-20230727]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-As a bonus, using a helper function to initialize struct device allows to
-get rid of an #ifdef in driver core.
+url:    https://github.com/intel-lab-lkp/linux/commits/Charles-Boyer/ARM-dts-nuvoton-Add-Fii-Mori-system/20230727-024931
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20230726184651.1221-1-Charles.Boyer%40fii-usa.com
+patch subject: [PATCH] ARM: dts: nuvoton: Add Fii Mori system
+config: arm-randconfig-r046-20230726 (https://download.01.org/0day-ci/archive/20230727/202307271949.TXhf41ue-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230727/202307271949.TXhf41ue-lkp@intel.com/reproduce)
 
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
----
- arch/mips/pci/pci-octeon.c |  2 +-
- drivers/base/core.c        |  4 +---
- drivers/xen/swiotlb-xen.c  |  2 +-
- include/linux/swiotlb.h    | 25 +++++++++++++++++++++++-
- kernel/dma/swiotlb.c       | 39 +++++++++++++++++++++++++++++++++++++-
- mm/slab_common.c           |  5 ++---
- 6 files changed, 67 insertions(+), 10 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307271949.TXhf41ue-lkp@intel.com/
 
-diff --git a/arch/mips/pci/pci-octeon.c b/arch/mips/pci/pci-octeon.c
-index e457a18cbdc5..d19d9d456309 100644
---- a/arch/mips/pci/pci-octeon.c
-+++ b/arch/mips/pci/pci-octeon.c
-@@ -664,7 +664,7 @@ static int __init octeon_pci_setup(void)
- 
- 		/* BAR1 movable regions contiguous to cover the swiotlb */
- 		octeon_bar1_pci_phys =
--			io_tlb_default_mem.start & ~((1ull << 22) - 1);
-+			default_swiotlb_base() & ~((1ull << 22) - 1);
- 
- 		for (index = 0; index < 32; index++) {
- 			union cvmx_pci_bar1_indexx bar1_index;
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 3dff5037943e..46d1d78c5beb 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -3108,9 +3108,7 @@ void device_initialize(struct device *dev)
-     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
- 	dev->dma_coherent = dma_default_coherent;
- #endif
--#ifdef CONFIG_SWIOTLB
--	dev->dma_io_tlb_mem = &io_tlb_default_mem;
--#endif
-+	swiotlb_dev_init(dev);
- }
- EXPORT_SYMBOL_GPL(device_initialize);
- 
-diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index 67aa74d20162..946bd56f0ac5 100644
---- a/drivers/xen/swiotlb-xen.c
-+++ b/drivers/xen/swiotlb-xen.c
-@@ -381,7 +381,7 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
- static int
- xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
- {
--	return xen_phys_to_dma(hwdev, io_tlb_default_mem.end - 1) <= mask;
-+	return xen_phys_to_dma(hwdev, default_swiotlb_limit()) <= mask;
- }
- 
- const struct dma_map_ops xen_swiotlb_dma_ops = {
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 4e52cd5e0bdc..2d453b3e7771 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -110,7 +110,6 @@ struct io_tlb_mem {
- 	atomic_long_t used_hiwater;
- #endif
- };
--extern struct io_tlb_mem io_tlb_default_mem;
- 
- static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- {
-@@ -128,13 +127,22 @@ static inline bool is_swiotlb_force_bounce(struct device *dev)
- 
- void swiotlb_init(bool addressing_limited, unsigned int flags);
- void __init swiotlb_exit(void);
-+void swiotlb_dev_init(struct device *dev);
- size_t swiotlb_max_mapping_size(struct device *dev);
-+bool is_swiotlb_allocated(void);
- bool is_swiotlb_active(struct device *dev);
- void __init swiotlb_adjust_size(unsigned long size);
-+phys_addr_t default_swiotlb_base(void);
-+phys_addr_t default_swiotlb_limit(void);
- #else
- static inline void swiotlb_init(bool addressing_limited, unsigned int flags)
- {
- }
-+
-+static inline void swiotlb_dev_init(struct device *dev)
-+{
-+}
-+
- static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- {
- 	return false;
-@@ -151,6 +159,11 @@ static inline size_t swiotlb_max_mapping_size(struct device *dev)
- 	return SIZE_MAX;
- }
- 
-+static inline bool is_swiotlb_allocated(void)
-+{
-+	return false;
-+}
-+
- static inline bool is_swiotlb_active(struct device *dev)
- {
- 	return false;
-@@ -159,6 +172,16 @@ static inline bool is_swiotlb_active(struct device *dev)
- static inline void swiotlb_adjust_size(unsigned long size)
- {
- }
-+
-+static inline phys_addr_t default_swiotlb_base(void)
-+{
-+	return 0;
-+}
-+
-+static inline phys_addr_t default_swiotlb_limit(void)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_SWIOTLB */
- 
- extern void swiotlb_print_info(void);
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 66fc8ec9ae45..0b173303e088 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -71,7 +71,7 @@ struct io_tlb_slot {
- static bool swiotlb_force_bounce;
- static bool swiotlb_force_disable;
- 
--struct io_tlb_mem io_tlb_default_mem;
-+static struct io_tlb_mem io_tlb_default_mem;
- 
- static unsigned long default_nslabs = IO_TLB_DEFAULT_SIZE >> IO_TLB_SHIFT;
- static unsigned long default_nareas;
-@@ -489,6 +489,15 @@ void __init swiotlb_exit(void)
- 	memset(mem, 0, sizeof(*mem));
- }
- 
-+/**
-+ * swiotlb_dev_init() - initialize swiotlb fields in &struct device
-+ * @dev:	Device to be initialized.
-+ */
-+void swiotlb_dev_init(struct device *dev)
-+{
-+	dev->dma_io_tlb_mem = &io_tlb_default_mem;
-+}
-+
- /*
-  * Return the offset into a iotlb slot required to keep the device happy.
-  */
-@@ -953,6 +962,14 @@ size_t swiotlb_max_mapping_size(struct device *dev)
- 	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE - min_align;
- }
- 
-+/**
-+ * is_swiotlb_allocated() - check if the default software IO TLB is initialized
-+ */
-+bool is_swiotlb_allocated(void)
-+{
-+	return io_tlb_default_mem.nslabs;
-+}
-+
- bool is_swiotlb_active(struct device *dev)
- {
- 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
-@@ -961,6 +978,26 @@ bool is_swiotlb_active(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(is_swiotlb_active);
- 
-+/**
-+ * default_swiotlb_base() - get the base address of the default SWIOTLB
-+ *
-+ * Get the lowest physical address used by the default software IO TLB pool.
-+ */
-+phys_addr_t default_swiotlb_base(void)
-+{
-+	return io_tlb_default_mem.start;
-+}
-+
-+/**
-+ * default_swiotlb_limit() - get the address limit of the default SWIOTLB
-+ *
-+ * Get the highest physical address used by the default software IO TLB pool.
-+ */
-+phys_addr_t default_swiotlb_limit(void)
-+{
-+	return io_tlb_default_mem.end - 1;
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- 
- static int io_tlb_used_get(void *data, u64 *val)
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index d1555ea2981a..c639dba9a3b7 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -864,10 +864,9 @@ void __init setup_kmalloc_cache_index_table(void)
- 
- static unsigned int __kmalloc_minalign(void)
- {
--#ifdef CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC
--	if (io_tlb_default_mem.nslabs)
-+	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
-+	    is_swiotlb_allocated())
- 		return ARCH_KMALLOC_MINALIGN;
--#endif
- 	return dma_get_cache_alignment();
- }
- 
+All errors (new ones prefixed by >>):
+
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:649.1-6 Label or path emc0 not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:662.1-7 Label or path ohci1 not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:666.1-5 Label or path aes not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:670.1-5 Label or path sha not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:761.1-8 Label or path sdhci0 not found
+   Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:769.1-7 Label or path ohci1 not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:773.1-6 Label or path vdma not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:777.1-9 Label or path pcimbox not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:781.1-5 Label or path vcd not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:785.1-5 Label or path ece not found
+>> Error: arch/arm/boot/dts/nuvoton/nuvoton-npcm730-mori.dts:818.1-5 Label or path otp not found
+>> FATAL ERROR: Syntax error parsing input tree
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
