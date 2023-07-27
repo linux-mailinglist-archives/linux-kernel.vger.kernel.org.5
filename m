@@ -2,71 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674197646AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B4F7646CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 08:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjG0GVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 02:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56776 "EHLO
+        id S231838AbjG0GYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 02:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjG0GVM (ORCPT
+        with ESMTP id S229837AbjG0GYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 02:21:12 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E3F1990
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:21:10 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso5900465e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 23:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690438869; x=1691043669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gJVdwD2hN1IoV2iHEFfG+qqTN9wFexemBdbel1dZ6/0=;
-        b=jOdOIVAoSVB6mUY+/XF74SvOGVCPzCApWYNMNO7abuOVW8e8S2iK83xe3k41Jm6poH
-         j7j21aDANuJdILLIFcpjma2bm2ZxglHLRgiEq8dtK11DKz3omZehCTzTgUNf/Ec4ohHB
-         +Q/+V42Eiwr13mKbKdmyPk/JyGR8QULoO3kyAH26m9b3IE/4dM4LgKX021QeMoYVxd/r
-         /qDq/1DjStCa/Q2FAxTflQtUz+78+z2HDJz9aDPa80iwZIQo0yY/+TmmqwobsMtaDMu3
-         o61eABOU4ygCtkRP3cMvxObriYkqIn0/x2pgS506IwJ1Pj8ytOIncnUM1lmrYIDFm7I2
-         eM5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690438869; x=1691043669;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gJVdwD2hN1IoV2iHEFfG+qqTN9wFexemBdbel1dZ6/0=;
-        b=VasGJ2Bh9twUpgGO8DsELtilBgsby2XzOwnA/JEtUBrZQA6ya39sfHCo/gpt2Up3bd
-         y58N3ABzXDNj51drE9yQEmtmd0tNJo9e6lyaEritIyA7Yx1GiQbjrRw1g39eMJSV9sql
-         /I1aNLnsvX8sGI2Es5rt071dmCQZ1o0Lv+0tGVKByO6wA0PGPixe9bJzI+8kgDWAzOOa
-         7+lxHcoAasYhl7C+ZUQvwdBBV8zsDySo2+UXwMDhO/Wq+mIDsxybgW4XJ/ZiMqgU0+xb
-         vj3c8bfqUUvPNnPbgpZOKz02vgj2aCgoUUDOQSF2UYLYexwR7l2p1dYQbTQSx9+v42XY
-         4eeg==
-X-Gm-Message-State: ABy/qLZH9tEBNGcz/a56FBleP2aAdzmCjZNaZgKci86xb8dKJQngrPnc
-        qzjcVA2+W9QHgF06JvnymAoW/Q==
-X-Google-Smtp-Source: APBJJlF3IgSEbyph9IM4JI2qxZemsymqPAaq2UVNfuIr0Q6pddfHRid63sQxM6o3GBzU1yNQslwnMg==
-X-Received: by 2002:a05:600c:2244:b0:3f9:c8b2:dfbd with SMTP id a4-20020a05600c224400b003f9c8b2dfbdmr837449wmm.19.1690438868685;
-        Wed, 26 Jul 2023 23:21:08 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id q14-20020a7bce8e000000b003fb41491670sm3715509wmj.24.2023.07.26.23.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jul 2023 23:21:08 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 09:21:04 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Jorge Lopez <jorgealtxwork@gmail.com>
-Cc:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
-        ilpo.jarvinen@linux.intel.com
-Subject: Re: [PATCH 2/5] hp-bioscfg: Fix memory leaks in
- ordered_list_elements_from_package
-Message-ID: <77867e93-7785-457c-9e37-4b41503bb509@moroto.mountain>
-References: <20230725220056.25560-1-jorge.lopez2@hp.com>
- <20230725220056.25560-3-jorge.lopez2@hp.com>
+        Thu, 27 Jul 2023 02:24:10 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D69C1;
+        Wed, 26 Jul 2023 23:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690439049; x=1721975049;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=J6zKGGmMyTwOXbeuX7h5Bu1db3e4R2xVDtZ/aYkMLBo=;
+  b=QP0lFU1H+5AsqR39J2Escw9TWl4Swtz0eu2YSKoyiddMa58Q6wKw/vAH
+   rbzSPsbn4k0/IqIHbooNcpgNWx+0ycFhGlHT2Z8mDovxuga/W/SWzwHho
+   5TWUIuIMjiI5cu9Z/ETs8a/QZXnh30oPBcOBiYH0/fkZDtMze4wUCC+Zo
+   bpoVYCBXFAtXSG5onbhcQR1zyQSdSwzPf3er/6qCoXKPMmlCJf9J93uvi
+   H+YFYr2rgiCsoOMAHm9VIvVSqO8X9/pP3LziJXTXI3BTSQ8HUBg4rLxQr
+   DndWfWQ4mTx+41aozY01W/7gv9iAKCU4G1TAf08VREgyDOs9RdkPEgkbF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="353119128"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="353119128"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 23:24:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="816989344"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="816989344"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Jul 2023 23:24:05 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 23:24:05 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 26 Jul 2023 23:24:05 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 26 Jul 2023 23:24:05 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 26 Jul 2023 23:24:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=StLYsl/U/92NhqlO7PNkTwPMYDNqPxw8dRl+Od25M8FuH8gJsAf+qmAUzbU8P5IOnRkhP6hG+yqYOGiKUEuf/+E2vuXhqURzWlAckhPtxvktwHGqDWz4Ta3jPA+EPnFPZ55jpmMmcr0ewjo1bIvJrizNhsFsz5Z8xq04TwsbqjAhZl/E4aXl8Avo9pOZuetSuSDolwOrsJY0k1LT+YBldzcRqPxeVvA3UAkWZJrM2zJ7+dxxOY9CAqSjD8NON/QC+SzpfTmh3nKGkSTPiW1uyGGyCYtFagL73l560FPBSWnQ1U7FAHfgTTdkOyKP01+aXoqAwZmdbct0tbybwRUtAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tcllsWqG6XEQK1DC18mw6Tdci19LRA1fz8B2naPkg9Y=;
+ b=kATLKOwbtpBkrSYsmSuvTbfRu+vAQ2VqKlbT8R8iLN9ij7zphtWPf2Oxze7I3p/A8lT5kq+8LGX6+pXacVulE3znfrX62g69EZL52Ozk0TYLavV1XL+RfLN/m0brYP5910mPNTZRAhdyjgW7iteOA6fDTYGZ6h7ud09nNZ4lOPlLeN0r9sCu1nbIKh62lDbENorlV4jeG2FYtM+d63uR3zjTccjWFsbvMmXjfvUAq3RDN1NeqGvxlpyy2oio2QdpgtBRJGBmkhrgK3mdlc8OUZsbYC/4jj9Y+WEv/iRQzjdcmT9T9UNqN0V5Ksc11o9mNrScUKxrdgvCLFe3r8jTIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by LV8PR11MB8510.namprd11.prod.outlook.com (2603:10b6:408:1e8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Thu, 27 Jul
+ 2023 06:24:02 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::e19b:4538:227d:3d37]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::e19b:4538:227d:3d37%6]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
+ 06:24:02 +0000
+Message-ID: <74a728c0-6f63-260b-de9d-348fb6efb41b@intel.com>
+Date:   Thu, 27 Jul 2023 14:23:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 16/20] KVM:x86: Optimize CET supervisor SSP save/reload
+Content-Language: en-US
+To:     Chao Gao <chao.gao@intel.com>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <peterz@infradead.org>,
+        <john.allen@amd.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rick.p.edgecombe@intel.com>,
+        <binbin.wu@linux.intel.com>
+References: <20230721030352.72414-1-weijiang.yang@intel.com>
+ <20230721030352.72414-17-weijiang.yang@intel.com>
+ <ZMHkFOwsNaAm3WWu@chao-email>
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <ZMHkFOwsNaAm3WWu@chao-email>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR04CA0167.apcprd04.prod.outlook.com (2603:1096:4::29)
+ To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725220056.25560-3-jorge.lopez2@hp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|LV8PR11MB8510:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0ff498a-6916-4b93-4657-08db8e6a1211
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tzQ3XA5FrzK3YkMDG5EovY3ngGLu+yrw0cfwrKZGU9jZoBphXzZml4gT6U3D9r6QxHzGy0lxTaz182evccYoM6zZfq9EXxdGr+wSYXGEBdpfg8cEcSqFPXj+MgxKVljG6zk6bVCglg1w50QXif9DQAmige6Jf5jHvh3BUVYxLUdrZz1UCf198uI3ePdON/TbkbW4E0wgOjGK3H6pUJ9NqkR+awiXT6L3FUl5/OsJpzQioCkC7F7prkVF7eFyRbUC36661pDO2NERIpXRqYIXHbmJ8y8d6kL2qSDAdgqJAWSbdLoU9gnvEMEPnhv+a7segVPr5Ti/Dh+ovXDTry8JOtl4OfcQY7hmSD7jiK94xTQldct8be1FDtJWJMcd7AIvcRP3Qa8bEhHWZc7fYWebPYzJxJ9bkCOsrcRgrotUiSf+BHPFZ6iGdqO1iVC5iyZqbk+LByEXfi9C8nQ4LUd+TAL8ldu8dfJo0zfMOtlEuoPRdlYq2XvBq9Dl25B9SZdhKum3KBFprcFAKGUAmJmYfAzXnKzP4uU7wqQitxJzaQxPQdsDbFN7qhw6bZp9fX7uKMBwQKSmffv3OB6ikmaIvQu8WCYp3fBv82+6vQz+77FMh5nyd3MekrsIHxLHGrJG32M+LLnDBmhEdI+o3wrIMQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(376002)(366004)(136003)(346002)(39860400002)(451199021)(6512007)(6666004)(6486002)(186003)(36756003)(38100700002)(86362001)(31696002)(2616005)(82960400001)(6506007)(53546011)(26005)(6636002)(66476007)(4326008)(66946007)(66556008)(2906002)(316002)(5660300002)(41300700001)(8936002)(6862004)(31686004)(37006003)(478600001)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVZjd2Q1UzhxY2Z1amFWV3BzTmRiUmJITWd6YUNOVWE4bzNPOUtiS0JyMmVm?=
+ =?utf-8?B?cVFKaStmNnQ5UHpYZ3BkTEM5S2Rua1RNZHdlNW1mbjQ2RGw4cEw4VjVIaW1O?=
+ =?utf-8?B?eWpMVGxBZENaQURGQTI4MXJmcjM5N3dmQVRnQ3lwVzVqTmtTQnpSOFg3TThK?=
+ =?utf-8?B?czJNdTJCSTd4aERpWFNqSnNIanBGTjc2Tjdjb3J5ODlDalE5UlpYL3R0VUlp?=
+ =?utf-8?B?L0pLL2lHcWZyMkFrN1FjYmpZSGZ6VHl2VTJ4dkhNVXZqVlFtRTRTVlpFeEtI?=
+ =?utf-8?B?U0ZQRks2SGdqRjE3d1l0MXR1dTY5NHhxRDFmbWRydk0rYmlrUFA2RnlhRy9P?=
+ =?utf-8?B?b2lkZFVvUGxGdzdPbG10TVNEcFFIc0hQbUFmNWFyaVN2bWVYZ095MzhXN3RL?=
+ =?utf-8?B?ckZPS203VElDL0RsREZVNmE2YXphb1dtN0lEeXg1UmdkYlNONDdIdDJkb1ow?=
+ =?utf-8?B?V01oZVZyNk9DSHI5Tkp6bXh0MjNpbmIrTFN5UmlYV0hldlVrRmw1ZWFVVDB5?=
+ =?utf-8?B?Z2dkTzRlbVFoZkhNSUd2bE5JMGpNTXZSVmFmdm5zT2dzVlM1TW1yS1hqV0RV?=
+ =?utf-8?B?MlFrbjBFeUQrdmhhYzFabXpXV0N4Mk5rM2JEMjFZcUlYaFRvYXNIMTlad3V2?=
+ =?utf-8?B?OERSTStPUFNiT01pZTM4R3pFZlJOcU9TQU82VTk1NmFNRGhyTzZaRUYreDVw?=
+ =?utf-8?B?MkdQa3VlTFkweHduUDk0NVlzVDMyNVd5cmRsT2RjYW8zUjFyV2tYODZHY2t1?=
+ =?utf-8?B?WU1HVi9GdmIrL1N4Qld2bmdQTjZBQm9EM0RjeWp5c1Z1eGpZUW9ueDRlUFY0?=
+ =?utf-8?B?SXJDY1NKWmZZeFRKVTIzNFpyeUZBRVVVU0wrWTVLd25zNWZ2aXhRL2ZZbFla?=
+ =?utf-8?B?c0g1R1F5RWNEc0FRcGNaMTZuRFhQUjJPbjFkc2lNNm5uNWR3SVlPRmRDOVAw?=
+ =?utf-8?B?dWlpV2pmK2duZmx5NUhkaWZZV3BBREZ5V3NBUm5oQ2tRbTdFcFc2bU1LTjRF?=
+ =?utf-8?B?NUJ1M3JzK0VlTW1aOGJOWTVIZFFPdHczWDQ4SkE0SlVWUGJKUmtsV1U3NlJN?=
+ =?utf-8?B?WVRMWExuek9KbEkwRG1CWFZralcxWWRDL3FMOVpJTE0zV1VnL0dZTUhIeklM?=
+ =?utf-8?B?bjIzMEE5MFNXMWNITm85bEZuWlpQOE1mOXl2WTEzZitWRXZQQWNZTmQ0K1Z6?=
+ =?utf-8?B?ZkFkckE4QzU0cXdaSXgyRjRtVWVxMGZmdXVLZXVuUzlrWm55YzVkQ2xnVFZo?=
+ =?utf-8?B?K3R0VmdSUGxXaXVlNHk4YThZeUI3d2piZGdCOTFRUFYzd1JETGZyS2Yvd25D?=
+ =?utf-8?B?WnE4cm1TekpOdzhSaG1BblM5aHpUNUFibFA3RjlrV2I4ZkVheitzdVVjRkpS?=
+ =?utf-8?B?aHNmVlkyRWdwZlVhZ0duSWFCbWpzQjc4V0NZSnM2VWhycWo4MnoxZWIrbCtY?=
+ =?utf-8?B?Z1k0VG85Y2hBNlZSeDY4anM1dTQycjBmUlhxSEpicU1EME9UWElEK01XWE5S?=
+ =?utf-8?B?UTRFUC9FamZTVGMxbEpwS0NlNklQakg0MXg0cXljRHB1U2FmMVdXY2llTmJ4?=
+ =?utf-8?B?YzYzRUV0K0R6SllSK2dkcW1NWURKWmMvdHJaOXNTQ3hISU9hVC9zSGR2bysw?=
+ =?utf-8?B?Q1B4UlRGaUtPUUNMYlBxbHJkMFJoVldiRlBSSlZrV1Y0SGo2d2tGQnczenpT?=
+ =?utf-8?B?RmNhdTVacEFRa3VoQ3JRZVJWayt1WGI2SVIzcnF2V09iRkNOL3pSaHdkazIz?=
+ =?utf-8?B?ekt1SzMxYXIrRHcrR1NrQXI3T3dYQjdzclg3ZlJ3WlNxUzRuTHJ4L2pROXg5?=
+ =?utf-8?B?ai9WWldBdzBPdzh1Wk5xckJmWHh6Wk12dG9rSEhWOWZVK3JrRWJWUndJR2w1?=
+ =?utf-8?B?bFkrQkhhM3VEN0dMSGNVTnFFZmUvTGxUdTlJeVdJRGJWak9IclhHaXRvanJu?=
+ =?utf-8?B?OVd1UlFlRWdJNkMyZ25TVXduc2tTNHluRWdTaEk1S3R1aHBMNVQ3UHoxMFBq?=
+ =?utf-8?B?T3l3QnJUbE41cERtWWY3QzJUSGJIYVpiZi96SC93TWM4N1ZqVUhtTkw0OFYx?=
+ =?utf-8?B?cDhCMnFOSHpOOEZlbVNtdFQxZ3hEWlRNSlQzWUtZclp6ZmoydlZMT1hqMmRP?=
+ =?utf-8?B?OVJjYXFUWkxuNUxPQndGTytzSlN2VGtGN2h4L1dQcDF1Ri9ud3piU3ZpMnBy?=
+ =?utf-8?B?MVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0ff498a-6916-4b93-4657-08db8e6a1211
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 06:24:02.6776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CVRUD/xnr/2KS4XEBAqfjaqokOHi2PtVSW+V43WV5dd6nhoPzD6DZNCF4BAWpHfOzXzUjVDwnq0x7P+BeaPz5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8510
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,273 +165,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I went through this pretty carefully.  There is a small bug in the
-ORD_LIST_ELEMENTS case where the value_len is wrong.  Otherwise, I
-complained a little about style nits...  You can feel free to ignore
-everything except the ORD_LIST_ELEMENTS stuff.
 
-regards,
-dan carpenter
+On 7/27/2023 11:27 AM, Chao Gao wrote:
+> On Thu, Jul 20, 2023 at 11:03:48PM -0400, Yang Weijiang wrote:
+>> /*
+>>   * Writes msr value into the appropriate "register".
+>>   * Returns 0 on success, non-0 otherwise.
+>> @@ -2427,7 +2439,16 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>> #define CET_LEG_BITMAP_BASE(data)	((data) >> 12)
+>> #define CET_EXCLUSIVE_BITS		(CET_SUPPRESS | CET_WAIT_ENDBR)
+>> 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+>> -		return kvm_set_msr_common(vcpu, msr_info);
+>> +		if (kvm_set_msr_common(vcpu, msr_info))
+>> +			return 1;
+>> +		/*
+>> +		 * Write to the base SSP MSRs should happen ahead of toggling
+>> +		 * of IA32_S_CET.SH_STK_EN bit.
+> Is this a requirement from SDM? And how is this related to the change below?
 
-drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-   129  static int hp_populate_ordered_list_elements_from_package(union acpi_object *order_obj,
-   130                                                            int order_obj_count,
-   131                                                            int instance_id)
-   132  {
-   133          char *str_value = NULL;
+No, after a second thought, the usage of the supervisor SSPs doesn't 
+necessary mean
 
-It would be better to make str_value local to the loop.  Then we
-could delete all the str_value = NULL assignments and the exit_list:
-code at the end.  At the end of the loop we could do something like:
+supervisor SHSTK is being enabled, e.g., used as some HW registers. I'll 
+remove it.
 
-	kfree(str_value);
-	if (ret)
-		return ret;
+>
+> Note that PLx_SSP MSRs are linear addresses of shadow stacks for different CPLs.
+> I may think using the page at 0 (assuming 0 is the reset value of PLx SSP) is
+> allowed in architecture although probably no kernel will do so.
+>
+> I don't understand why this comment is needed. I suggest dropping it.
 
-   134          int value_len = 0;
-   135          int ret;
-   136          u32 size;
-   137          u32 int_value = 0;
+will drop it, thanks!
 
-It confused me that it's called int_value when it's not an int.  Just
-call it "u32 value = 0;".
-
-   138          int elem;
-   139          int reqs;
-   140          int eloc;
-   141          char *tmpstr = NULL;
-   142          char *part_tmp = NULL;
-   143          int tmp_len = 0;
-   144          char *part = NULL;
-   145          struct ordered_list_data *ordered_list_data = &bioscfg_drv.ordered_list_data[instance_id];
-   146  
-   147          if (!order_obj)
-   148                  return -EINVAL;
-   149  
-   150          for (elem = 1, eloc = 1; elem < order_obj_count; elem++, eloc++) {
-   151                  /* ONLY look at the first ORDERED_ELEM_CNT elements */
-   152                  if (eloc == ORD_ELEM_CNT)
-   153                          goto exit_list;
-
-We really expect to exit when eloc is ORD_ELEM_CNT.  So I think this
-would be more clear as:
-
-	for (elem = 1, eloc = 1; eloc < ORD_ELEM_CNT; elem++, eloc++) {
-
-I don't really know what eloc stands for...  dst_idx?
-
-		if (elem >= order_obj_count)
-			return -EINVAL;
-
-		obj = &order_obj[elem];
-
-Let's move the "Check that both expected and read object type match"
-stuff from line 173 up to here.
-
-		if (obj->type != expected_order_types[eloc]) {
-			pr_err("Error expected type %d for elem %d, but got type %d instead\n",
-				expected_order_types[eloc], elem, obj->type);
-			return -EINVAL;
-		}
-
-   154  
-   155                  switch (order_obj[elem].type) {
-
-	switch(obj->type) {
-
-   156                  case ACPI_TYPE_STRING:
-   157                          if (elem != PREREQUISITES && elem != ORD_LIST_ELEMENTS) {
-   158                                  ret = hp_convert_hexstr_to_str(order_obj[elem].string.pointer,
-   159                                                                 order_obj[elem].string.length,
-   160                                                                 &str_value, &value_len);
-   161                                  if (ret)
-   162                                          continue;
-
-return ret;
-
-   163                          }
-   164                          break;
-   165                  case ACPI_TYPE_INTEGER:
-   166                          int_value = (u32)order_obj[elem].integer.value;
-   167                          break;
-   168                  default:
-   169                          pr_warn("Unsupported object type [%d]\n", order_obj[elem].type);
-   170                          continue;
-
-return -EINVAL;
-
-   171                  }
-   172  
-   173                  /* Check that both expected and read object type match */
-   174                  if (expected_order_types[eloc] != order_obj[elem].type) {
-   175                          pr_err("Error expected type %d for elem %d, but got type %d instead\n",
-   176                                 expected_order_types[eloc], elem, order_obj[elem].type);
-   177                          kfree(str_value);
-   178                          return -EIO;
-   179                  }
-   180  
-   181                  /* Assign appropriate element value to corresponding field*/
-   182                  switch (eloc) {
-   183                  case VALUE:
-   184                          strscpy(ordered_list_data->current_value,
-   185                                  str_value, sizeof(ordered_list_data->current_value));
-   186                          replace_char_str(ordered_list_data->current_value, COMMA_SEP, SEMICOLON_SEP);
-   187                          break;
-   188                  case PATH:
-   189                          strscpy(ordered_list_data->common.path, str_value,
-   190                                  sizeof(ordered_list_data->common.path));
-   191                          break;
-   192                  case IS_READONLY:
-   193                          ordered_list_data->common.is_readonly = int_value;
-   194                          break;
-   195                  case DISPLAY_IN_UI:
-   196                          ordered_list_data->common.display_in_ui = int_value;
-   197                          break;
-   198                  case REQUIRES_PHYSICAL_PRESENCE:
-   199                          ordered_list_data->common.requires_physical_presence = int_value;
-   200                          break;
-   201                  case SEQUENCE:
-   202                          ordered_list_data->common.sequence = int_value;
-   203                          break;
-   204                  case PREREQUISITES_SIZE:
-   205                          ordered_list_data->common.prerequisites_size = int_value;
-   206                          if (int_value > MAX_PREREQUISITES_SIZE)
-   207                                  pr_warn("Prerequisites size value exceeded the maximum number of elements supported or data may be malformed\n");
-
-	ret = -EINVAL;
-	break;
-
-   208  
-   209                          /*
-   210                           * This HACK is needed to keep the expected
-   211                           * element list pointing to the right obj[elem].type
-   212                           * when the size is zero. PREREQUISITES
-   213                           * object is omitted by BIOS when the size is
-   214                           * zero.
-
-It's not really a HACK.
-
-	/*
-	 * If prerequisites_size is zero then there isn't a PREREQUISITES
-	 * object so skip that and jump to SECURITY_LEVEL.
-	 *
-	 */
-
-
-   215                           */
-   216                          if (int_value == 0)
-   217                                  eloc++;
-   218                          break;
-   219                  case PREREQUISITES:
-   220                          size = min_t(u32, ordered_list_data->common.prerequisites_size,
-   221                                       MAX_PREREQUISITES_SIZE);
-
-If we returned when we hit invalid data then there is no need for this
-min_t().
-
-	size = ordered_list_data->common.prerequisites_size;
-
-   222                          for (reqs = 0; reqs < size; reqs++) {
-   223                                  ret = hp_convert_hexstr_to_str(order_obj[elem + reqs].string.pointer,
-   224                                                                 order_obj[elem + reqs].string.length,
-   225                                                                 &str_value, &value_len);
-
-This is fine but it might be nicer to do what ORD_LIST_ELEMENTS does
-and use tmpstr instead of str_value.
-
-   226  
-   227                                  if (ret)
-   228                                          continue;
-
-break;
-
-   229  
-   230                                  strscpy(ordered_list_data->common.prerequisites[reqs],
-   231                                          str_value,
-   232                                          sizeof(ordered_list_data->common.prerequisites[reqs]));
-   233  
-   234                                  kfree(str_value);
-   235                                  str_value = NULL;
-   236                          }
-   237                          break;
-   238  
-   239                  case SECURITY_LEVEL:
-   240                          ordered_list_data->common.security_level = int_value;
-   241                          break;
-   242  
-   243                  case ORD_LIST_SIZE:
-   244                          ordered_list_data->elements_size = int_value;
-   245                          if (int_value > MAX_ELEMENTS_SIZE)
-   246                                  pr_warn("Ordered List size value exceeded the maximum number of elements supported or data may be malformed\n");
-
-ret = -EINVAL;
-break;
-
-   247                          /*
-   248                           * This HACK is needed to keep the expected
-   249                           * element list pointing to the right obj[elem].type
-   250                           * when the size is zero. ORD_LIST_ELEMENTS
-   251                           * object is omitted by BIOS when the size is
-   252                           * zero.
-   253                           */
-   254                          if (int_value == 0)
-   255                                  eloc++;
-   256                          break;
-   257                  case ORD_LIST_ELEMENTS:
-   258                          size = ordered_list_data->elements_size;
-
-We don't use size anywhere so this can be deleted.
-
-   259  
-   260                          /*
-   261                           * Ordered list data is stored in hex and comma separated format
-   262                           * Convert the data and split it to show each element
-   263                           */
-   264                          ret = hp_convert_hexstr_to_str(str_value, value_len, &tmpstr, &tmp_len);
-
-The value_len here is wrong.  We don't read value_len for ORD_LIST_ELEMENTS
-or PREREQUISITES so this value_len comes from the PATH object.
-
-   265                          if (ret)
-   266                                  goto exit_list;
-   267  
-   268                          part_tmp = tmpstr;
-   269                          part = strsep(&part_tmp, COMMA_SEP);
-   270                          if (!part)
-   271                                  strscpy(ordered_list_data->elements[0],
-   272                                          tmpstr,
-   273                                          sizeof(ordered_list_data->elements[0]));
-   274  
-   275                          for (elem = 1; elem < MAX_ELEMENTS_SIZE && part; elem++) {
-
-Please don't re-use the "elem" iterator for this inner loop.
-
-regards,
-dan carpenter
-
-   276                                  strscpy(ordered_list_data->elements[elem],
-   277                                          part,
-   278                                          sizeof(ordered_list_data->elements[elem]));
-   279                                  part = strsep(&part_tmp, SEMICOLON_SEP);
-   280                          }
-   281
-   282                          kfree(str_value);
-   283                          str_value = NULL;
-   284                          break;
-   285                  default:
-   286                          pr_warn("Invalid element: %d found in Ordered_List attribute or data may be malformed\n", elem);
-   287                          break;
-   288                  }
-   289                  kfree(tmpstr);
-   290                  tmpstr = NULL;
-   291                  kfree(str_value);
-   292                  str_value = NULL;
-   293          }
-   294
-   295  exit_list:
-   296          kfree(tmpstr);
-   297          kfree(str_value);
-   298          return 0;
-   299  }
-
-
+>
+>> +		 */
+>> +		if (msr_index != MSR_IA32_PL3_SSP && data) {
+>> +			vmx_disable_write_intercept_sss_msr(vcpu);
+>> +			wrmsrl(msr_index, data);
+>> +		}
