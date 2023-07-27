@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE20C76597C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49660765979
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbjG0REh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S230223AbjG0REO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbjG0REf (ORCPT
+        with ESMTP id S229817AbjG0REM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:04:35 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75ED52D75
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=sbcgdPd7//5eQ2jdrq
-        nCNHQO+6z0ts+727955oICVbA=; b=ffE4gZ1mCC8ezIx91G59KavYQcd9/fejqp
-        LLXv7V71YIKTYrraooyMUheXmLU5OVNpCUYZvTm8cBc4srp2vg8PCLUpK/hwGCTH
-        KT0voO/8hh7PdktVxHq/hpvgWYdev9SMwZ3FhnnEsuV+tCf2rvRFFD46AxFDb25p
-        5ebg/x0mw=
-Received: from localhost.localdomain (unknown [202.112.113.212])
-        by zwqz-smtp-mta-g3-4 (Coremail) with SMTP id _____wAXXCF+o8JkAvnRBQ--.3132S4;
-        Fri, 28 Jul 2023 01:04:06 +0800 (CST)
-From:   Yuanjun Gong <ruc_gongyuanjun@163.com>
-To:     Joel Stanley <joel@jms.id.au>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Yuanjun Gong <ruc_gongyuanjun@163.com>
-Subject: [PATCH 1/1] gpu: drm: aspeed: fix value check in aspeed_gfx_load()
-Date:   Fri, 28 Jul 2023 01:03:42 +0800
-Message-Id: <20230727170342.18506-1-ruc_gongyuanjun@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wAXXCF+o8JkAvnRBQ--.3132S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4rAw4fGw18tFWfKw4UArb_yoWDCFgE9r
-        WxursxXFsrurWDGa45Zws3Jr92kF97uFWxWF18t34YyFy7ZryDXrWUWa4DZ343Ja1IyF98
-        tF1UZw43CFnrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRNdgAUUUUUU==
-X-Originating-IP: [202.112.113.212]
-X-CM-SenderInfo: 5uxfsw5rqj53pdqm30i6rwjhhfrp/1tbiUQe55WDESc5Q-gAAsH
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 27 Jul 2023 13:04:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF54F7;
+        Thu, 27 Jul 2023 10:04:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 90DAA61EEC;
+        Thu, 27 Jul 2023 17:04:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED1BC433C8;
+        Thu, 27 Jul 2023 17:04:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690477451;
+        bh=eImfQdtW4BdLj71xuN6/ItkgYPB00aTK9XN90ZGDmxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qoXeDg9ASXfjw/Y5vIj/JtbVJ56ktXnxmiHd08Tvn+otZjM6cXD6Ymc9vhhp2BzGG
+         OVW9OuuKiOjNbKcS8OdCnLyrqCeZwLmt6dKEAvktrwzRn8A5zHsRyozbnw5gOlyJ5w
+         WFQOq55OU0oSE1drbbqOxb4fSHINfuGYemulDJ6g8egH8SpD1KaKMZjan+sFhCzZ6u
+         8FPfYxL/tE1Ydb/H7LL2ALYAJCQCGQDzIbbIZDd5/ZwkMuqJVpHBVUMO8mZA/iq13b
+         12OJ1+83/P3yRiQyvgZtVdLvqr8eiEbqX5IIID/LD09XwI5egvhUwShhmpkfGI9D2/
+         BBfuzPxbU5zmw==
+Received: (nullmailer pid 1813074 invoked by uid 1000);
+        Thu, 27 Jul 2023 17:04:09 -0000
+Date:   Thu, 27 Jul 2023 11:04:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ruan Jinjie <ruanjinjie@huawei.com>
+Cc:     frowand.list@gmail.com, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] of: unittest: fix null pointer dereferencing in
+ of_unittest_find_node_by_name()
+Message-ID: <169047744793.1813007.10204887890918817559.robh@kernel.org>
+References: <20230727080246.519539-1-ruanjinjie@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727080246.519539-1-ruanjinjie@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in aspeed_gfx_load(), check the return value of clk_prepare_enable()
-and return the error code if clk_prepare_enable() returns an
-unexpected value.
 
-Fixes: 4f2a8f5898ec ("drm: Add ASPEED GFX driver")
-Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
----
- drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Thu, 27 Jul 2023 16:02:46 +0800, Ruan Jinjie wrote:
+> when kmalloc() fail to allocate memory in kasprintf(), name
+> or full_name will be NULL, strcmp() will cause
+> null pointer dereference.
+> 
+> Fixes: 0d638a07d3a1 ("of: Convert to using %pOF instead of full_name")
+> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> ---
+> v2:
+> - add fixes tag
+> ---
+>  drivers/of/unittest.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
 
-diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-index c8c7f8215155..3bfa39bc4f7e 100644
---- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-+++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-@@ -199,7 +199,11 @@ static int aspeed_gfx_load(struct drm_device *drm)
- 			"missing or invalid clk device tree entry");
- 		return PTR_ERR(priv->clk);
- 	}
--	clk_prepare_enable(priv->clk);
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to enable clock\n");
-+		return ret;
-+	}
- 
- 	/* Sanitize control registers */
- 	writel(0, priv->base + CRT_CTRL1);
--- 
-2.17.1
+Applied, thanks!
 
