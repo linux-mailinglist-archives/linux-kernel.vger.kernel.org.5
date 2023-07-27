@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3D076597E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF90765982
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbjG0REx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        id S232021AbjG0RFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjG0REu (ORCPT
+        with ESMTP id S232287AbjG0RFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:04:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B53F7;
-        Thu, 27 Jul 2023 10:04:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7503D61EEA;
-        Thu, 27 Jul 2023 17:04:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EA6DC433C8;
-        Thu, 27 Jul 2023 17:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690477483;
-        bh=wx7pEgEpcjzZV0HZM5v6UOhxEOweIToIwi8mVUCF90M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Np9UNJesVhDbFHPKhi7euJlnSDVbsgrUwU5yNRCuDTUkbzA7DARtyoagVtM0GGQ91
-         sXbg/IZhsa/j19NwFztvfus+uN/7TgkMs1iECO86Envs3SZcmcuFIwfgRQLSl3kUFC
-         rirUvGDxwlbsT3lebfnUrf3Fvy4r6bsFeRwhj2kFGZnHrSq6G/fVlxZH/061mJGsM3
-         eZNRf5F9zQ04Yt22HfKbJ1HjobBPoKWypyr+Q8Vx5NmaJt8ZpdzPd5BGlqgVXOTSdk
-         DlB4VCnKAJ7G/5SV2W6+qgYYoi9i+KRYPX6tY/zTDHIhlMyBaoqsyZCSVTjmK4rsSE
-         8JsrOpp1yU5Rw==
-Received: (nullmailer pid 1814150 invoked by uid 1000);
-        Thu, 27 Jul 2023 17:04:42 -0000
-Date:   Thu, 27 Jul 2023 11:04:42 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: arm: cpus: Add Cortex A520, A720, and X4
-Message-ID: <169047748130.1814093.15874479054846290050.robh@kernel.org>
-References: <20230706205334.306483-1-robh@kernel.org>
+        Thu, 27 Jul 2023 13:05:35 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C720730D6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:05:32 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 6E6FD240027
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:05:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1690477531; bh=qaQROcTztgDRo5sZ8BJWrWwgKHfZqQrdq/uRSJEyT7A=;
+        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=WF6HvPGK6XdEH+dialYIJhpR043AC7A6fLb7j0dqDAt3fkSRpysAkesJdG8naYiGY
+         lN6aYYH5M/0NmU1JuyLcshMARYWrgXeZAYVEIL2VXC2MTBDAd3q7m3UW9ZtxQI8LxC
+         /5OXac3aV56XWqHFVByYBmRVG9Wu+taczXqbNLSnoC9gCNNQtt9aCleVcl/wdXINIk
+         y8c84xpMq5qwmXYUEC188ghNNr0sywEH7hr3q3nNFlmykJPQER5mU1Vvgr4C3WVMcz
+         smABoVhB0hZScm6wLNSpJm9ue1fJzjuf76jGURYiM187FWb92owy6tJzezUFLXWbH3
+         VoyGAm2Uhsr2Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4RBcbG1C2nz6ty1;
+        Thu, 27 Jul 2023 19:05:30 +0200 (CEST)
+Date:   Thu, 27 Jul 2023 17:05:27 +0000
+From:   Daniil Stas <daniil.stas@posteo.net>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        jarkko@kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+        stable@vger.kernel.org, torvalds@linux-foundation.org
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+Message-ID: <20230727200527.4080c595@g14>
+In-Reply-To: <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
+References: <20230727183805.69c36d6e@g14>
+        <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
+        <20230727193949.55c18805@g14>
+        <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+        <20230727195019.41abb48d@g14>
+        <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230706205334.306483-1-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 Jul 2023 11:51:21 -0500
+Mario Limonciello <mario.limonciello@amd.com> wrote:
 
-On Thu, 06 Jul 2023 14:53:34 -0600, Rob Herring wrote:
-> Add compatible strings for the Arm Cortex-A520, Cortex-A720, and
-> Cortex-X4 2023 CPUs.
+> On 7/27/2023 11:50, Daniil Stas wrote:
+> > On Thu, 27 Jul 2023 11:41:55 -0500
+> > Mario Limonciello <mario.limonciello@amd.com> wrote:
+> >   
+> >> On 7/27/2023 11:39, Daniil Stas wrote:  
+>  [...]  
+>  [...]  
+> >>   [...]  
+>  [...]  
+>  [...]  
+> >>
+> >> drivers/other is fine.  If there is a better category we can move
+> >> it later.  
+> > 
+> > I see there are already several bug reports similar to mine. This
+> > one for example: https://bugzilla.kernel.org/show_bug.cgi?id=217212
+> > Should I still make a new one?  
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->  - Also add Cortex-X4
-> ---
->  Documentation/devicetree/bindings/arm/cpus.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> Yes; please make a separate one.  If we decide it's the same we can 
+> always mark as a duplicate.
 
-Applied, thanks!
-
+Here is the bug report I created:
+https://bugzilla.kernel.org/show_bug.cgi?id=217719
