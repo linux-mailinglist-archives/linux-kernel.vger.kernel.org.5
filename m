@@ -2,143 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 040F17656BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266EF7656E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbjG0PEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S234360AbjG0PGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbjG0PEi (ORCPT
+        with ESMTP id S234385AbjG0PFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:04:38 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243061B8;
-        Thu, 27 Jul 2023 08:04:34 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1690470266t586bzuu
-Received: from linux-lab-host.localdomain ( [61.141.78.189])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 27 Jul 2023 23:04:25 +0800 (CST)
-X-QQ-SSF: 01200000002000D0X000B00A0000000
-X-QQ-FEAT: 3M0okmaRx3gPFTAlMPOq33XYBppQ3ibHL9kcA4lcT102GiH/EzFE2/pUKdKg/
-        qX746XefN/rEXBljm6dggSvFNhOHt957ygPgTxnvJDL8JQuUCQhkrUB/2CT/zuq1iuCqXxz
-        X3enym8Rq/k8b/Ex50PlgNuPDG11o6TQHTdWK5gR9JBdQxtqcFZQG2oNeXGqbQW66HJQv/g
-        44i3g4qQQaZgDCTy5SChRCYUYs1rq3zW9h2ZJBr7KkJHhMYikt750oVmV3M0KLZbQVYLVPA
-        sH6GpIGoWlyh+iQB0EZ14rHAetiIANAQlOyk3o918hY9MfrU7lkwNgDo2RzT8R61jTasdTg
-        aey92Igt3Y4evnlgFO5IrY+GpTTvO1VprhEewU5/qacrSvOqXBQSqUP7U7sxDEFCOi3W93c
-        CuqI6uKNy58=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 14717604939975229498
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v3 5/7] selftests/nolibc: add test support for ppc
-Date:   Thu, 27 Jul 2023 23:04:24 +0800
-Message-Id: <8019280baee8efb6c82f5ce766fcd826b7d1ffa2.1690468707.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690468707.git.falcon@tinylab.org>
-References: <cover.1690468707.git.falcon@tinylab.org>
+        Thu, 27 Jul 2023 11:05:44 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06751BD1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:05:32 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36RF4XT6008682;
+        Thu, 27 Jul 2023 15:05:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pS227uY4BbdSxySBAg72bwIzI+1gb9a3SYZsf0PplaI=;
+ b=V89ccfcbILjNUk9eTdJYPmg8gKRFOQikAVNknmhk/+hOYYvsDDAJ4RMUx8szOWU2vt9s
+ GlmXJHt8lvjCuMxdtJKp20/SsQ5fLnmVVs+9NMwNfnmdmRcu789BCN/b+pCZVGELKpqa
+ /zaezZCmuMegCA1kfcDy6IBOGDAfr+c698V+sECfj0zbHgBVd+5nIgYQTPV85H1rw8xA
+ 5KSFSR+HVm+xrZtHn4AHKcCxmflhH6aGJu7SCT6zA+Fv1wl0CN5gpFX+W0i5Dx7cv+5F
+ PvqoezVfNyAioxUvIRjQKpkIF0X74HWqll4Y9LrGoQ3gyL9hRKZ6dsQ6OeUGp+oL9s7S ZQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3t7shay2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 15:05:01 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36REbGp2009666;
+        Thu, 27 Jul 2023 15:05:00 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s3t7shawv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 15:05:00 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36RDttT7002079;
+        Thu, 27 Jul 2023 15:04:59 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0teneddp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 15:04:59 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36RF4wBQ35586736
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 27 Jul 2023 15:04:58 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6165F5805A;
+        Thu, 27 Jul 2023 15:04:58 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04AFE58051;
+        Thu, 27 Jul 2023 15:04:55 +0000 (GMT)
+Received: from [9.179.9.200] (unknown [9.179.9.200])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 27 Jul 2023 15:04:54 +0000 (GMT)
+Message-ID: <8ca8f35c-a3af-c663-e254-fd325a7d39ca@linux.vnet.ibm.com>
+Date:   Thu, 27 Jul 2023 20:34:53 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH] sched/fair: Skip idle CPU search on busy system
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     peterz@infradead.org, vincent.guittot@linaro.org,
+        srikar@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, dietmar.eggemann@arm.com, mgorman@suse.de,
+        rui.zhang@intel.com, tim.c.chen@intel.com
+References: <20230726093612.1882644-1-sshegde@linux.vnet.ibm.com>
+ <ZMIb6TYMrtzLHSBb@chenyu5-mobl2>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <ZMIb6TYMrtzLHSBb@chenyu5-mobl2>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HvsrsQXdJFbtEn1S-NlNXJpuQg6QIr41
+X-Proofpoint-ORIG-GUID: GHUR5irjWScWo2vJ-st-gU9snuhiLfm6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_07,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 clxscore=1011 spamscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307270135
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-ppc variant for 32-bit PowerPC and uses it as the default variant of
-powerpc architecture.
 
-Users can pass ARCH=powerpc or ARCH=ppc to test 32-bit PowerPC.
 
-The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
-powerpc kernel.
+On 7/27/23 12:55 PM, Chen Yu wrote:
+> On 2023-07-26 at 15:06:12 +0530, Shrikanth Hegde wrote:
+>> When the system is fully busy, there will not be any idle CPU's.
+>> In that case, load_balance will be called mainly with CPU_NOT_IDLE
+>> type. In should_we_balance its currently checking for an idle CPU if
+>> one exist. When system is 100% busy, there will not be an idle CPU and
+>> these idle_cpu checks can be skipped. This would avoid fetching those rq
+>> structures.
+>>
+> 
+> Yes, I guess this could help reducing the cost if the sched group
+> has many CPUs. 
 
-The pmac32_defconfig is used with extra PMACZILOG console options to
-enable normal print.
+Thank you for the review Chen Yu. 
 
-Note, zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
-overlapping" error, so, vmlinux is used instead.
+> 
+>> This is a minor optimization for a specific case of 100% utilization.
+>>
+>> .....
+>> Coming to the current implementation. It is a very basic approach to the
+>> issue. It may not be the best/perfect way to this.  It works only in
+>> case of CONFIG_NO_HZ_COMMON. nohz.nr_cpus is a global info available which
+>> tracks idle CPU's. AFAIU there isn't any other. If there is such info, we
+>> can use that instead. nohz.nr_cpus is atomic, which might be costly too.
+>>
+>> Alternative way would be to add a new attribute to sched_domain and update
+>> it in cpu idle entry/exit path per CPU. Advantage is, check can be per
+>> env->sd instead of global. Slightly complicated, but maybe better. there
+>> could other advantage at wake up to limit the scan etc.
+>>
+> 
+> When checking the code, I found that there is per domain nr_busy_cpus.
+> However that variable is only for LLC domain. Maybe extend the sd_share
+> for domains under NUMA is applicable IMO.
 
-[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
+True. I did see that. Doing at every level when there are large number 
+of CPU's will likely need lock when updating the sd_share and that would 
+be the bottleneck as well. Since sd_share never makes sense for NUMA, 
+This would cause different code check for NUMA and non-NUMA. Though main benefit 
+for this corner case would be in NUMA as there would be large number of CPU's there.
 
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile           | 6 ++++++
- tools/testing/selftests/nolibc/configs/ppc.config | 3 +++
- 2 files changed, 9 insertions(+)
- create mode 100644 tools/testing/selftests/nolibc/configs/ppc.config
+I will keep that thought and will try to work something along.
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 5afb3e7d7723..832b9ffcbac4 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -16,10 +16,12 @@ endif
- 
- # XARCH is used to save user-input ARCH variant
- # configure default variants for target kernel supported architectures
-+XARCH_powerpc    = ppc
- XARCH           := $(or $(XARCH_$(ARCH)),$(ARCH))
- 
- # ARCH is supported by kernel
- # map from user input variants to their kernel supported architectures
-+ARCH_ppc         = powerpc
- override ARCH   := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -29,6 +31,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
- IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips       = vmlinuz
-+IMAGE_ppc        = vmlinux
- IMAGE_riscv      = arch/riscv/boot/Image
- IMAGE_s390       = arch/s390/boot/bzImage
- IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-@@ -42,6 +45,7 @@ DEFCONFIG_x86        = defconfig
- DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips       = malta_defconfig
-+DEFCONFIG_ppc        = pmac32_defconfig
- DEFCONFIG_riscv      = defconfig
- DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
-@@ -60,6 +64,7 @@ QEMU_ARCH_x86        = x86_64
- QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
-+QEMU_ARCH_ppc        = ppc
- QEMU_ARCH_riscv      = riscv64
- QEMU_ARCH_s390       = s390x
- QEMU_ARCH_loongarch  = loongarch64
-@@ -72,6 +77,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
- QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-diff --git a/tools/testing/selftests/nolibc/configs/ppc.config b/tools/testing/selftests/nolibc/configs/ppc.config
-new file mode 100644
-index 000000000000..b1975f8253f7
---- /dev/null
-+++ b/tools/testing/selftests/nolibc/configs/ppc.config
-@@ -0,0 +1,3 @@
-+CONFIG_SERIAL_PMACZILOG=y
-+CONFIG_SERIAL_PMACZILOG_TTYS=y
-+CONFIG_SERIAL_PMACZILOG_CONSOLE=y
--- 
-2.25.1
-
+> 
+> thanks,
+> Chenyu
+> 
+>> Your feedback would really help. Does this optimization makes sense?
+>>
+>> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+>> ---
+>>  kernel/sched/fair.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 373ff5f55884..903d59b5290c 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -10713,6 +10713,12 @@ static int should_we_balance(struct lb_env *env)
+>>  		return 1;
+>>  	}
+>>
+>> +#ifdef CONFIG_NO_HZ_COMMON
+>> +	/* If the system is fully busy, its better to skip the idle checks */
+>> +	if (env->idle == CPU_NOT_IDLE && atomic_read(&nohz.nr_cpus) == 0)
+>> +		return group_balance_cpu(sg) == env->dst_cpu;
+>> +#endif
+>> +
+>>  	/* Try to find first idle CPU */
+>>  	for_each_cpu_and(cpu, group_balance_mask(sg), env->cpus) {
+>>  		if (!idle_cpu(cpu))
+>> --
+>> 2.31.1
+>>
