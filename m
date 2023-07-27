@@ -2,117 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262F77642FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC6C764300
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjG0Af7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 20:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39270 "EHLO
+        id S230424AbjG0Agk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 20:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjG0Af4 (ORCPT
+        with ESMTP id S229954AbjG0Agj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 20:35:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4AC268B;
-        Wed, 26 Jul 2023 17:35:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FCF561CE2;
-        Thu, 27 Jul 2023 00:35:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 288A3C433C8;
-        Thu, 27 Jul 2023 00:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690418154;
-        bh=asGQMrcLTGnqdLEv4v7h7MunHSk6hn+xQskVyzD00EI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KX/GU4x5ISX6eCdyK9NiseW4INm7QCa1E6gqTkMaJlrasrY6D9UzfMbLKEtoYGky6
-         qbUSZ5OCCkRUDACuVWL0uwyDJ47s52VDav03kw3bxkKI6jS+L1wp5jjOqZfJx4uAVr
-         mXX9G2lNhpRBgyUzIavpmq0W5HdbXWaNcU1ivKwuLFAEVMRiT3A4cya5Fohz8w+pUA
-         UAL2dEjEru2u2acsZ2OFMUArUokuXxZu6UJbpBSh5DiUs2FgXTiA1xh8hKH3IFeWIp
-         VJl0f7FwVTGRzVdra/U7qjviX/fgWHzolZ1Jg8x7f2U7nlM7UwZ/9QmNVZ0cUF96Us
-         elrTHN+6Rk5kQ==
-Date:   Thu, 27 Jul 2023 02:35:51 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Peter Korsgaard <peter@korsgaard.com>,
-        Andrew Lunn <andrew@lunn.ch>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: ocores: Move system PM hooks to the NOIRQ phase
-Message-ID: <20230727003551.dtjx3shwpjs3le6x@intel.intel>
-References: <20230717203857.2626773-1-samuel.holland@sifive.com>
+        Wed, 26 Jul 2023 20:36:39 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15B4269E
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:36:36 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40631c5b9e9so74621cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690418195; x=1691022995;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=amy0eD2LrrlzU6N3hjR3QwTAzIiyiWPIAr1XXg/QRho=;
+        b=OC+tT4IuaUrIHQCGBvRai4fpV/7DmYK1yOhAqVhnmU3muuUBqnIbKEqtcmMKr576dV
+         LChjUzg/6mhLrA70UCUxLJv0okTw5symeW8ns0Txt40yl3ipX6K6cLUpl9RVcBxgHnxS
+         N1O6zatY6lgekrxecI1VbpAOQSwj9F4IhmUGaekiD6n3RBtfOw/iwZvghWvUldvBVgdy
+         BPe/3oaDXcPEni3iBXd9Wc2X+vDeFeWOwr2NcIzcTSMUMs+NfBlBjHnfMDe3x/6cJz/4
+         koUXjlahHst9jBTH23sZr5ovqMwddnRlfDZ3JURWpLngI2fbKmpJM4LcTtdsGsrYzI/T
+         xfmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690418196; x=1691022996;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=amy0eD2LrrlzU6N3hjR3QwTAzIiyiWPIAr1XXg/QRho=;
+        b=HOO/pBDmqhi9mibs2bfDWJD43Wb/02tY/BYCacU7xX5NUgUrclqtnmdwYslhoQpSi9
+         9wjIvMDDy0bW/5AwVFavtOpJGRrRTTJk1PZfsUJfgQeF6Hw7oKiiV5taTeMMKjrmZ7Cf
+         qSL/aYtSWrt7A9BGtH2uJFMOvySy8IRu0K6mzDm+uZvFG8vG7v8tTaDL2IYj7MAmdqF1
+         kNgGGhRmkBQQ8bFeKkH1mEwF3KOrOER8A3xdX3McEkmvgYL2j9c4tuQmwcLKHRaQuk0s
+         5kDCEFuuOqN9R+J8fDWi528TdvV2t47cN+m9VuxqfmbmXAZ3i7CTpIXMRFlBIQ+uPB4r
+         GnQA==
+X-Gm-Message-State: ABy/qLZUcrGD0NawdSKkXJe7LLkC8ob71G5YVxyyDbAkgZq654Vop1bJ
+        2aCrNM7+tRbeMXXAgqDToL8GSLtw/XeFwwxrtb+u3g==
+X-Google-Smtp-Source: APBJJlG/XjuTAh5W6aOfGDPHr2RC3h3gUwu78ey/G5POFF3pAUocagsjlzvSx05Y7ZrlOiwIHV3Vmy9p45i0q3kWr7I=
+X-Received: by 2002:a05:622a:14:b0:403:ac17:c18a with SMTP id
+ x20-20020a05622a001400b00403ac17c18amr107946qtw.14.1690418195645; Wed, 26 Jul
+ 2023 17:36:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717203857.2626773-1-samuel.holland@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230726133642.750342-1-namhyung@kernel.org> <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
+ <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
+In-Reply-To: <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 26 Jul 2023 17:36:24 -0700
+Message-ID: <CAP-5=fVbwf9=ZFszgFpb_6Qb003WpZC3_vtO7fB1pL_vH-OhQw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+On Wed, Jul 26, 2023 at 3:57=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Hi Ian,
+>
+> On Wed, Jul 26, 2023 at 8:48=E2=80=AFAM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > On Wed, Jul 26, 2023 at 6:36=E2=80=AFAM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > The bison and flex generate C files from the source (.y and .l)
+> > > files.  When O=3D option is used, they are saved in a separate direct=
+ory
+> > > but the default build rule assumes the .C files are in the source
+> > > directory.  So it might read invalid file if there are generated file=
+s
+> > > from an old version.  The same is true for the pmu-events files.
+> > >
+> > > For example, the following command would cause a build failure:
+> > >
+> > >   $ git checkout v6.3
+> > >   $ make -C tools/perf  # build in the same directory
+> > >
+> > >   $ git checkout v6.5-rc2
+> > >   $ mkdir build  # create a build directory
+> > >   $ make -C tools/perf O=3Dbuild  # build in a different directory bu=
+t it
+> > >                                 # refers files in the source director=
+y
+> > >
+> > > Let's update the build rule to specify those cases explicitly to depe=
+nd
+> > > on the files in the output directory.
+> > >
+> > > Note that it's not a complete fix and it needs the next patch for the
+> > > include path too.
+> > >
+> > > Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/build/Makefile.build  | 8 ++++++++
+> > >  tools/perf/pmu-events/Build | 4 ++++
+> > >  2 files changed, 12 insertions(+)
+> > >
+> > > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
+> > > index 89430338a3d9..f9396696fcbf 100644
+> > > --- a/tools/build/Makefile.build
+> > > +++ b/tools/build/Makefile.build
+> > > @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
+> > >         $(call rule_mkdir)
+> > >         $(call if_changed_dep,cc_s_c)
+> > >
+> > > +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
+> > > +       $(call rule_mkdir)
+> > > +       $(call if_changed_dep,$(host)cc_o_c)
+> > > +
+> > > +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
+> > > +       $(call rule_mkdir)
+> > > +       $(call if_changed_dep,$(host)cc_o_c)
+> > > +
+> >
+> > Hi Namhyung,
+> >
+> > as we have:
+> > ```
+> > $(OUTPUT)%.o: %.c FORCE
+> >        $(call rule_mkdir)
+> >        $(call if_changed_dep,$(host)cc_o_c)
+> > ```
+> > I'm not sure what the 2 additional rules achieve.
+>
+> The above rule assumes the .c files are in the source directory
+> (without $(OUTPUT) prefix).  It caused a trouble when the
+> flex and bison files are generated in the output directory and
+> you have an old version of them in the source directory.
+>
+>
+> >
+> > >  # Gather build data:
+> > >  #   obj-y        - list of build objects
+> > >  #   subdir-y     - list of directories to nest
+> > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Buil=
+d
+> > > index 150765f2baee..f38a27765604 100644
+> > > --- a/tools/perf/pmu-events/Build
+> > > +++ b/tools/perf/pmu-events/Build
+> > > @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY)=
+ $(METRIC_PY) $(METRIC_TEST_L
+> > >         $(call rule_mkdir)
+> > >         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARC=
+H) $(JEVENTS_MODEL) pmu-events/arch $@
+> > >  endif
+> > > +
+> > > +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
+> > > +       $(call rule_mkdir)
+> > > +       $(call if_changed_dep,$(host)cc_o_c)
+> >
+> > If we add this, do the Makefile.build changes still need to happen?
+>
+> The Makefile.build changes are specific to flex and bison files.
+> So yes, we need this for pmu-events.c to work properly with O=3D
+> option.
 
-On Mon, Jul 17, 2023 at 01:38:57PM -0700, Samuel Holland wrote:
-> When an I2C device contains a wake IRQ subordinate to a regmap-irq chip,
-> the regmap-irq code must be able to perform I2C transactions during
-> suspend_device_irqs() and resume_device_irqs(). Therefore, the bus must
-> be suspended/resumed during the NOIRQ phase.
-> 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+Got it, you are right I was confusing the flex/bison with the jevents
+case. Can we get away with a single rule then:
+```
+ $(OUTPUT)%.o:  $(OUTPUT)%.c FORCE
+        $(call rule_mkdir)
+        $(call if_changed_dep,$(host)cc_o_c)
+```
 
-it's OK for me.
+Thanks,
+Ian
 
-Peter, any comment on this?
-
-Andi
-
-> ---
-> 
->  drivers/i2c/busses/i2c-ocores.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
-> index 4ac77e57bbbf..b1f621d42910 100644
-> --- a/drivers/i2c/busses/i2c-ocores.c
-> +++ b/drivers/i2c/busses/i2c-ocores.c
-> @@ -743,7 +743,6 @@ static void ocores_i2c_remove(struct platform_device *pdev)
->  	i2c_del_adapter(&i2c->adap);
->  }
->  
-> -#ifdef CONFIG_PM_SLEEP
->  static int ocores_i2c_suspend(struct device *dev)
->  {
->  	struct ocores_i2c *i2c = dev_get_drvdata(dev);
-> @@ -772,11 +771,9 @@ static int ocores_i2c_resume(struct device *dev)
->  	return ocores_init(dev, i2c);
->  }
->  
-> -static SIMPLE_DEV_PM_OPS(ocores_i2c_pm, ocores_i2c_suspend, ocores_i2c_resume);
-> -#define OCORES_I2C_PM	(&ocores_i2c_pm)
-> -#else
-> -#define OCORES_I2C_PM	NULL
-> -#endif
-> +static const struct dev_pm_ops ocores_i2c_pm_ops = {
-> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(ocores_i2c_suspend, ocores_i2c_resume)
-> +};
->  
->  static struct platform_driver ocores_i2c_driver = {
->  	.probe   = ocores_i2c_probe,
-> @@ -784,7 +781,7 @@ static struct platform_driver ocores_i2c_driver = {
->  	.driver  = {
->  		.name = "ocores-i2c",
->  		.of_match_table = ocores_i2c_match,
-> -		.pm = OCORES_I2C_PM,
-> +		.pm = &ocores_i2c_pm_ops,
->  	},
->  };
->  
-> -- 
-> 2.40.1
-> 
+> Thanks,
+> Namhyung
