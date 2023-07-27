@@ -2,183 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C229976529D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ADE7652A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbjG0LiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        id S233321AbjG0Liy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjG0LiK (ORCPT
+        with ESMTP id S233132AbjG0Lip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:38:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F268E10EC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690457839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wWuGOPXZ2ZIchq+tvQ7qiMCMX91zMGr7l3TLmDAYNuM=;
-        b=EBLs2Ub8BRpjNWYm1PUrNDLR1VFDurr6gj1snAedRA8gNglMYeN0nuYDXNi/8D+GeaDIN0
-        5fXxEGChHBTaDB1JdZrGHA24VZMtzfjTaYxBG/fhuiCCYWxxFhcU+YuZ6dklJF7SbfePmX
-        4A7UAe9qH21m7qarSjl6Ois16ZEocTM=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-83-XgM8hHHTPUOUjMUAXlOelA-1; Thu, 27 Jul 2023 07:37:17 -0400
-X-MC-Unique: XgM8hHHTPUOUjMUAXlOelA-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7866b16c6f5so66035839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:37:17 -0700 (PDT)
+        Thu, 27 Jul 2023 07:38:45 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4BB30D8
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:38:31 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d124309864dso728790276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690457911; x=1691062711;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5hwP5Yjltzhcjg0+28iB6NeIFoqy4kUssAl46J2XgM=;
+        b=ndyt1UJvTyr1g3MaHQB9IT4i/YnzIhZGnFtSNhOZKtHIzlcEl2z4HGwddtCz96O6/c
+         Bqu29SDrwzv+Ve71lNIR0gUoi4qs6eJhX5pzX5vWKx7XK2MclMk1mnoA7sdgnB+33RU4
+         oSTP/2eGYA520uRZilL7R3SqcpzuXFYWyNtg+mVgT8j735oPCRxsxC6BP6NF2YIyt8py
+         QTIXeEpI8zUHULmOXLsGmCr++L9ON7ZNZROsKpD8PoJWfNAta+vNfsgSfe624KdSlE1K
+         KoyC4ktqTT7JJxG4fAoTZ8TdDh2bBeBQv4QEl0uP+iupbY5+pupypUtkeOu8VpFN/W8M
+         oPAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690457837; x=1691062637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wWuGOPXZ2ZIchq+tvQ7qiMCMX91zMGr7l3TLmDAYNuM=;
-        b=ZmaSsND9o9binM9MgDjqnTMFr3BYZZ7VDGW4rL8LfFelTYemDt9zP/D3jXZy2xM+QL
-         ebsYxRHxHGi9mkGJILBvFOWUBuoeF2U45ga32MMZNqCdVC4nBDGO3wHu/wLN/NsF1hah
-         j1Ad1ZBi4dOHkboigV3yeAc9DKUv1IgpzA4QBPP0dp60TXCdM62GtOW1+e8v3ZwYIKh3
-         gQU2170WmtEOkb7wyEdz7/FlIkaO1teowHugIc3VKMhi7yw0W7xf3Ibil1OAVl7iWrqR
-         FFeSTE5pOH/F3LDYlWjzrUMymNFzNst45Oe4EJzuSJ0ENGUJBnHXLp5rXZxiB3mD62hm
-         7j3A==
-X-Gm-Message-State: ABy/qLYhMat5I82qjXipPr89oMvXkWqG2cAXcmAkfkMvGzYwYtbZ9sAp
-        BMuDoarSyuZhUstkfwz+9bda7Sr+QN3Eekwrc1mtGmR+gsK5+beg3G5HffZYIKMx4Gfc5c8+dei
-        pserF1kO0JgPV6aa5NMAtYsbUYhyVxN74qa3NEJk0
-X-Received: by 2002:a05:6e02:1e07:b0:346:4f37:8a3 with SMTP id g7-20020a056e021e0700b003464f3708a3mr3040603ila.5.1690457837168;
-        Thu, 27 Jul 2023 04:37:17 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEGytVCvsiSOyBgeKRlfoTGCx1Mr7l2fVlWvdfLzhGSqzQGTBQynqQJtvR+kFOXIT2FKSSQF9Ah+zY9oNY4QVo=
-X-Received: by 2002:a05:6e02:1e07:b0:346:4f37:8a3 with SMTP id
- g7-20020a056e021e0700b003464f3708a3mr3040590ila.5.1690457836860; Thu, 27 Jul
- 2023 04:37:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690457911; x=1691062711;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q5hwP5Yjltzhcjg0+28iB6NeIFoqy4kUssAl46J2XgM=;
+        b=LqG+rt263O3AOTZnf4304+lc3I6kfYBVMYzcHxE6HgOz/xZvigJELRxQ5UDD9GHrfe
+         C3Fu9A7b/IgwGtvq2q4zf9DSC9TCE4zJ7+5uyaO5rVfzjHRrKKUp/UlwC2Gr6r1Fb8h1
+         JC2pG+ykaZIzX8BIC8Br4QKPkxtwa/jXfFJ4Q0xef+eVrps1RlPofCq5oshsbO7fMS+L
+         ddypl7n2JT2/oVW9UDzPPjV8vs1tWyA/NURiR+debx7fgpHf4mxch9NHHvjlHYNO0M9o
+         bQ4nLoNufEA4DaJ75tdHDuGGtFrW/o0eisutZ4jgwI0JVeZ/vw7H/VZGOyzMOxEWlf46
+         KAyA==
+X-Gm-Message-State: ABy/qLbWaMmwXORBgTjWuKwxrYVRzMFf11snRPCwFULYhKhywNAUrrCX
+        Fyvie2RZbHvT0NxrkS3NlYskph1Br6ltITc5fRNlpw==
+X-Google-Smtp-Source: APBJJlG0mw/YXbnpbIAdV8u/ZB4HN9+QW+c/1g+oFO6AU4eaqLh/dtA7s3jf42Q/rRPL8k7inqYpXBoXFSLORTirKB0=
+X-Received: by 2002:a25:5087:0:b0:d0e:2e5c:2f80 with SMTP id
+ e129-20020a255087000000b00d0e2e5c2f80mr4218084ybb.64.1690457910929; Thu, 27
+ Jul 2023 04:38:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230726073409.631838-1-liubo254@huawei.com>
-In-Reply-To: <20230726073409.631838-1-liubo254@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Date:   Thu, 27 Jul 2023 13:37:06 +0200
-Message-ID: <CADFyXm5nkgZjVMj3iJhqQnyA1AOmqZ-AKdaWyUD=UvZsOEOcPg@mail.gmail.com>
-Subject: Re: [PATCH] smaps: Fix the abnormal memory statistics obtained
- through /proc/pid/smaps
-To:     liubo <liubo254@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hughd@google.com, peterx@redhat.com,
-        willy@infradead.org
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-11-ulf.hansson@linaro.org> <ZLf4c7ejFBJLH7iN@e120937-lin>
+ <CAPDyKFr3ann52GAtOLfnLSGgsdF+EZBNz_apNo_OHzrQ-Hg55Q@mail.gmail.com> <ZME4MQpYd7kJmFzF@e120937-lin>
+In-Reply-To: <ZME4MQpYd7kJmFzF@e120937-lin>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 27 Jul 2023 13:37:50 +0200
+Message-ID: <CAPDyKFou5Vq-7j5HpZ1AT7AF-+y4wgEqs9tLyNWV0uE2isS85w@mail.gmail.com>
+Subject: Re: [PATCH v2 10/11] firmware: arm_scmi: Add the SCMI performance domain
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 9:40=E2=80=AFAM liubo <liubo254@huawei.com> wrote:
+[...]
+
+> > >
+> > > Is it not possible that, once registered, GenPD can decide, at some point
+> > > in the future, to try act on some of these domains associated with a CPU ?
+> > > (like Clock framework does at the end of boot trying to disable unused
+> > >  clocks...not familiar with internals of GenPD, though)
+> >
+> > The "magic" that exists in genpd is to save/restore the performance
+> > state at genpd_runtime_suspend|resume().
+> >
+> > That means the consumer device needs to be attached and runtime PM
+> > enabled, otherwise genpd will just leave the performance level
+> > unchanged. In other words, the control is entirely at the consumer
+> > driver (scmi cpufreq driver).
+> >
 >
-> In commit 474098edac26 ("mm/gup: replace FOLL_NUMA by
-> gup_can_follow_protnone()"), FOLL_NUMA was removed and replaced by
-> the gup_can_follow_protnone interface.
+> Ok, so if the DT is well formed and a CPU-related perf domain is not
+> wrongly referred from a driver looking for a device perf-domain, the
+> genPD subsystem wont act on the CPUs domains.
+
+Yes, correct!
+
 >
-> However, for the case where the user-mode process uses transparent
-> huge pages, when analyzing the memory usage through
-> /proc/pid/smaps_rollup, the obtained memory usage is not consistent
-> with the RSS in /proc/pid/status.
+> > >
+> > > > +             scmi_pd->domain_id = i;
+> > > > +             scmi_pd->perf_ops = perf_ops;
+> > > > +             scmi_pd->ph = ph;
+> > > > +             scmi_pd->genpd.name = scmi_pd->info->name;
+> > > > +             scmi_pd->genpd.flags = GENPD_FLAG_OPP_TABLE_FW;
+> > > > +             scmi_pd->genpd.set_performance_state = scmi_pd_set_perf_state;
+> > > > +
+> > > > +             ret = perf_ops->level_get(ph, i, &perf_level, false);
+> > > > +             if (ret) {
+> > > > +                     dev_dbg(dev, "Failed to get perf level for %s",
+> > > > +                              scmi_pd->genpd.name);
+> > > > +                     perf_level = 0;
+> > > > +             }
+> > > > +
+> > > > +             /* Let the perf level indicate the power-state too. */
+> > > > +             ret = pm_genpd_init(&scmi_pd->genpd, NULL, perf_level == 0);
+> > >
+> > > In SCMI world PERF levels should have nothing to do with the Power
+> > > state of a domain: you have the POWER protocol for that, so you should
+> > > not assume that perf level 0 means OFF, but you can use the POWER protocol
+> > > operation .state_get() to lookup the power state. (and you can grab both
+> > > perf and power ops from the same driver)
+> >
+> > Well, I think this may be SCMI FW implementation specific, but
+> > honestly I don't know exactly what the spec says about this. In any
+> > case, I don't think it's a good idea to mix this with the POWER
+> > domain, as that's something that is entirely different. We have no
+> > clue of those relationships (domain IDs).
+> >
+> > My main idea behind this, is just to give the genpd internals a
+> > reasonably defined value for its power state.
+> >
 >
-> Related examples are as follows:
-> cat /proc/15427/status
-> VmRSS:  20973024 kB
-> RssAnon:        20971616 kB
-> RssFile:            1408 kB
-> RssShmem:              0 kB
+> The thing is that in the SCMI world you cannot assume that perf_level 0
+> means powered off, the current SCP/SCMI platform fw, as an example, wont
+> advertise a 0-perf-level and wont act on such a request, because you are
+> supposed to use POWER protocol to get/set the power-state of a device.
+
+Right, thanks for clarifying this!
+
 >
-> cat /proc/15427/smaps_rollup
-> 00400000-7ffcc372d000 ---p 00000000 00:00 0 [rollup]
-> Rss:            14419432 kB
-> Pss:            14418079 kB
-> Pss_Dirty:      14418016 kB
-> Pss_Anon:       14418016 kB
-> Pss_File:             63 kB
-> Pss_Shmem:             0 kB
-> Anonymous:      14418016 kB
-> LazyFree:              0 kB
-> AnonHugePages:  14417920 kB
->
-> The root cause is that the traversal In the page table, the number of
-> pages obtained by smaps_pmd_entry does not include the pages
-> corresponding to PROTNONE,resulting in a different situation.
->
+> So it could be fine, as long as genPD wont try to set the level to 0
+> expecting the domain to be as a consequence also powered off and as
+> long as it is fine for these genpd domains to be always initialized
+> as ON. (since perf_level could never be found as zero..)
 
-Thanks for reporting and debugging!
+Okay, so to me, it sounds like that we should set GENPD_FLAG_ALWAYS_ON
+for the genpd. This makes it clear that the domain can't be powered
+off.
 
-> Therefore, when obtaining pages through the follow_trans_huge_pmd
-> interface, add the FOLL_FORCE flag to count the pages corresponding to
-> PROTNONE to solve the above problem.
->
+Moreover, we should prevent genpd internals from setting the
+performance state to 0 for the scmi performance domain. Let me look
+into how to best deal with that.
 
-We really want to avoid the usage of FOLL_FORCE, and ideally limit it
-to ptrace only.
-
-> Signed-off-by: liubo <liubo254@huawei.com>
-> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnon=
-e()")
-> ---
->  fs/proc/task_mmu.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index c1e6531cb02a..ed08f9b869e2 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -571,8 +571,10 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned lon=
-g addr,
->         bool migration =3D false;
->
->         if (pmd_present(*pmd)) {
-> -               /* FOLL_DUMP will return -EFAULT on huge zero page */
-> -               page =3D follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP)=
-;
-> +               /* FOLL_DUMP will return -EFAULT on huge zero page
-> +                * FOLL_FORCE follow a PROT_NONE mapped page
-> +                */
-> +               page =3D follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP =
-| FOLL_FORCE);
->         } else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd=
-))) {
->                 swp_entry_t entry =3D pmd_to_swp_entry(*pmd);
-
-Might do as an easy fix. But we really should get rid of that
-absolutely disgusting usage of follow_trans_huge_pmd().
-
-We don't need 99% of what follow_trans_huge_pmd() does here.
-
-Would the following also fix your issue?
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 507cd4e59d07..fc744964816e 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -587,8 +587,7 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long a=
-ddr,
-        bool migration =3D false;
-
-        if (pmd_present(*pmd)) {
--               /* FOLL_DUMP will return -EFAULT on huge zero page */
--               page =3D follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
-+               page =3D vm_normal_page_pmd(vma, addr, *pmd);
-        } else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd))=
-) {
-                swp_entry_t entry =3D pmd_to_swp_entry(*pmd);
-
-It also skips the shared zeropage and pmd_devmap(),
-
-Otherwise, a simple pmd_page(*pmd) + is_huge_zero_pmd(*pmd) check will do, =
-but I
-suspect vm_normal_page_pmd() might be what we actually want to have here.
-
-Because smaps_pte_entry() properly checks for vm_normal_page().
-
+Kind regards
+Uffe
