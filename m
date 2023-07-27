@@ -2,189 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E609176444B
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F118764458
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 05:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjG0DZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 23:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
+        id S230224AbjG0D3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 23:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjG0DY6 (ORCPT
+        with ESMTP id S229819AbjG0D2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 23:24:58 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDBA1FFC
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 20:24:50 -0700 (PDT)
-X-UUID: 22a4cd2c2c2d11ee9cb5633481061a41-20230727
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=UfomMOAkuINvMMJVjhJY01msWeY50EeJfQAJoYrJXnQ=;
-        b=rTtJfl5fX4iiaM5/nRgtHVRRwqpSjhDs5u7w6plewNyXwE3GkXgyMdwAX+fF5kqfIFLqHeSeV+esrRjfDS7cTorPYPwVUpwRHQIz0uQZvH4RU4If5O2rxkfgQ1fdv5kYOZuSIsq9EGWB1C7rP0oGaNb6GquoaWf+q5/UJdmxlzw=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.29,REQID:fefe81dc-1332-44db-85cc-8d79bd810a62,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:e7562a7,CLOUDID:e286d6b3-a467-4aa9-9e04-f584452e3794,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 22a4cd2c2c2d11ee9cb5633481061a41-20230727
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 468341594; Thu, 27 Jul 2023 11:24:46 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 27 Jul 2023 11:24:45 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 27 Jul 2023 11:24:45 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oejzSeyL7Utu/GbUbSoISu2GxOa/H9nk5Pp3oph9VJTcsQ86E0N/HPSxve70Q07pTBfhm6FexzeUX57uL4ICwR7i9zglig/vjQFWIkYUxehMejFy8JC3S5jVVqINxSPmXEjCLHD6u/UiBNc0UHFnA7lGDZEeusGjcRhPYKv6rKbYkgLEXAJl32hjWmepdAja9urH5ybG6ppbfFhIHqPFo1A6XrqVTxvSfdQorDttv/K65CmrjrEijCZECVyZ1S8CLieBE5xzaRb0t1MtSN1SF+C7un64Au//xqFs+8E/Gf+lz2BcXd9TGDSBuxYcRG/WeLuIJT9XMPFRPYXiEgqlkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UfomMOAkuINvMMJVjhJY01msWeY50EeJfQAJoYrJXnQ=;
- b=jCXUZSCOzEKd8ED3XY3/lUwvvyVEaWxvyi/7XTvPP1UjDaWPngcNPuw+mJne3RO32M3pJA632ANVQNJHNKRj0HYqCk17BpGANfG/mmKcFnOhDQiBA3Nfr7K3zBjz7H+B7SS6s86gS8c0J99DUY7Ax8LrwBh6Akg8R1aCi8y/cUdaL3K5P8IB7BHX733pWZ7khJyNp9oi49W8iA+KdLHZOOLpwsD1umDUC99ZE+CO1l4jxS6glSeYpyi90+zEhKTfxo6icfbza/rOTA8cz8N6IEETztjdgA8rIvInT7yaAU5a1ZjXD/ZtqzuCJtquonec4l2jGz1sXFwfFwAtgwc3tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UfomMOAkuINvMMJVjhJY01msWeY50EeJfQAJoYrJXnQ=;
- b=guezgm0zLAzRlUhlsJZHmahPs9PiTDdiYEvZcrtMJyn8HKzmJH9OblFVbPc+CXHzmI/dk0Sa/MkNKejgaowTgyISGACPpZNUpeGcVWf7WqzPfYBuAf3ZYYRdddfTqLnuyBHEiY5X5u0lLQ8N/p8RYnojEeDvC26Cv/4YwSvXMts=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by SI2PR03MB6615.apcprd03.prod.outlook.com (2603:1096:4:1e6::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Thu, 27 Jul
- 2023 03:24:41 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95%4]) with mapi id 15.20.6631.026; Thu, 27 Jul 2023
- 03:24:41 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "fshao@chromium.org" <fshao@chromium.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kernel@collabora.com" <kernel@collabora.com>
-Subject: Re: [PATCH v3 3/6] drm/mediatek: mtk_dpi: Switch to
- devm_drm_of_get_bridge()
-Thread-Topic: [PATCH v3 3/6] drm/mediatek: mtk_dpi: Switch to
- devm_drm_of_get_bridge()
-Thread-Index: AQHZv5p1pfg2KNJMjEGUqyHq52IsNK/M9I2A
-Date:   Thu, 27 Jul 2023 03:24:41 +0000
-Message-ID: <c3e1553b8f55e107b548bd14c60d55b6b46de0bb.camel@mediatek.com>
-References: <20230726082245.550929-1-angelogioacchino.delregno@collabora.com>
-         <20230726082245.550929-4-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230726082245.550929-4-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SI2PR03MB6615:EE_
-x-ms-office365-filtering-correlation-id: a0b1ec55-058b-4514-cb5d-08db8e51041d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dlBB9BZfcjNmCOH6ZPIndBKhDFjy4c4OAbUkPHpOxM7QClD5sDSPdpQM34XIX/8083s38oiCz5ak+rbBwTY+5EUmSPbyP+yhHErN/MscDGEHzU2/93RfHJClDTUo5ST23WKeAdSWmFLsdE7hJhXUrYEEjAhpZ9efP97CjmGoWjfrhW1bgeHnWvanIwMyS6IyhQdBShinSgpEiE0C3bDIYIpRdGAa/Q5DI+phrN5T+mDozffP5M/kblhz1KSTAI7cyljkEsUa/mPG0im5ztJ/HPlhOcoQj6uA/wSSKREFlAMoSWX636ryLCowVCu4DkocGICiNYh5XhprrkDcgRTpqlaHtGsZN2xkiNe5cY7I72E1wqFygtfbJgoYg/RA/nS3cqFuoUYes5plnRTggZVK4loyPtjRlCp9tN30tbVOsJBmnbi1ITq+HcQozK8aXNaG8zxEA1uPgQn6DwbjCulkWYpYPp3I9rO7y2HnsMBZzsvAnZ1Bl4lfiIyneo76AzxweCq9+hZbXp/xZ0i9nWs3chB8A14KDoTmuahUHJgP6sJQ6JDfEe+FFpb50iOeEnqBy3pnyneVBmidiff57ZwOex+v8b4FH7wAfISiGv0J+pHgCM4EhMn8RnDeUGRBVpva3kjYUF39jj9dKWtUIJb1vjMdFTaXLq8Kd3UD8vCrtrE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(451199021)(38070700005)(85182001)(36756003)(2906002)(86362001)(83380400001)(186003)(6506007)(26005)(6512007)(54906003)(478600001)(122000001)(6486002)(110136005)(2616005)(316002)(8936002)(4326008)(66476007)(8676002)(76116006)(38100700002)(66446008)(66946007)(66556008)(71200400001)(64756008)(41300700001)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MTV6UDRPd29Ua292T0dRWDVOSUY1SWNkS2JYbzZjN0FuYmlma2EzSm94cGxM?=
- =?utf-8?B?SStvdU85R0N3bnNwY2daZnpPSndFZExrV0NYZlBNdkRWOWYrZWlFaFZqYXcy?=
- =?utf-8?B?Uk95OHEyQjFBWklrMmJGRXk0aEsvV1RwdVV5YWUvT0pHRE1mYUlUS0tFakNF?=
- =?utf-8?B?NHpPdEZscDBXME0rTmkyRG40WkZuclNEbmFBbUE4VjdtOXN5M1lYMXEyQkpr?=
- =?utf-8?B?S3JZWklqTXZuem1nU3lHQWtMYW8reUdFKzY4eVNGdDJLMU5tUUUvaXJEUzdL?=
- =?utf-8?B?Wk9NYWNld0NZT2d5QUtKaVJqRHdHR0NxdVI1T3p4TGhNR3BncEVBNnYyM01N?=
- =?utf-8?B?dStUV240UllSY1duaDhSWDZTRXgvUWY1WU1xRnl3WTZRWUJLcHppUVNRM1Zx?=
- =?utf-8?B?c0RSNW9kbDhhM0RoQWZiUnN5SEE5Z3JoSGtkQmtwZUxGSS9MaVhMSHlyNlVL?=
- =?utf-8?B?NGNSeDVOekxxYTc5N2RXbFQ0RjQvWkduNXVPVlpFdlJFYWIyM1FKZkdkZ3Jr?=
- =?utf-8?B?SnVqSTlMQkdpT3IvYzdRZFp2eFpOcjZIdkcvNVVDc1FYczQ3WFE2QjVsNTRT?=
- =?utf-8?B?ZFFLQ2xrL1NDaEZoYVVrOUJsWFUzOHZjTWpXeFNyUEVBL2JiMUc3VEdEakRE?=
- =?utf-8?B?THFpZllkdFZLUjNBaEpiY1BVanBrWWdoSnRJZ2M0UUJCSVdUclpEMlF1bUZF?=
- =?utf-8?B?bGc0M0JXWXp2MlcrRnZFQi9LczNWdW9xaDRYUCtjTjkwRmpNR2VzRkQ5UW52?=
- =?utf-8?B?YzlhVlVXRVV0SHZ1cXpGSnRBSFRxNGtOMWJjcXk2K2FSbFpxS2lvVXJmWWRM?=
- =?utf-8?B?NFF6WFo2Wml3QVBwR3pIVlhOR2RxVGp6VFJneHRXK0pVMGJTanZvamNVTWJI?=
- =?utf-8?B?Mi85NWFxK2dkSU9ZWDlLWHc4c3l3YThBc1FsbnVOa1NsWWNQR1Ftc2FIREE5?=
- =?utf-8?B?aFcrSTJRZ2JJemFmTitoTnpXajFuWGkxL285cXVOdGpHaVBwUDlId2hKL3Er?=
- =?utf-8?B?ZE90UVB4eFYxK0c2RnZ3alIraXJiL1RUZVQrWStOMzJVUHZlQWRQd3lRUmZs?=
- =?utf-8?B?Q3VrVXAyZElTbDhaNnE4Rmo3WkNmSzg4M2p1eUZjZkVJZU1wT0ZVMUF0OHJD?=
- =?utf-8?B?Y3p4djhlRE1wQnkwR3BxZWFLZUFpOFdlL3orVWhJUUt6NVhCU2xZSW9semFm?=
- =?utf-8?B?VVZwZGJFY1hnZ1ZpMkxJbVJxZFc5MW1KbVdJbGZ6MEgyV2FZV2c2TEtCMTNK?=
- =?utf-8?B?b0R2YkVVRWlwcHFiYlI0TjJRd0pJOG1OUGpEb214dzlHeXMvSjc4SnRsbVk3?=
- =?utf-8?B?QVd2MEt6TGI3RThwOGpRVGV5QjFRQ2NMemVzcWlXYmRrblZYcVBlTncrYUw5?=
- =?utf-8?B?aUxNbFdtU0RqT2V3YUQvdGpUNmxLSll5RCsxRklZZGFZSkxvKzY5alBvZnlq?=
- =?utf-8?B?UVFRcTFKZ3V3cityMi9nclEyck9VS1JHZ3I1Wmp5ZHBlR1E5alZaTGtaWUhK?=
- =?utf-8?B?enR5N2tKTUxxNlhvV29vczdIbTA4Z1RtWjkwaG5DTStoSEJaMnhmQlRReVdC?=
- =?utf-8?B?Si9Sc2VTTW5oVGdyMFRhQS9DNTdiUjJ5ZTFYVElCajJoSGdkK2VBZXpMbE5T?=
- =?utf-8?B?SEhuMXZDN0hCeUllQjNOTzZ4b0lVUjF4S3pCWVI2NUc5bEFXRTFIemdaaGZt?=
- =?utf-8?B?d2JrMnptajRiUDJKVG1vYlpoZHNuMU5ZTUV2dHpoL0lNcDMwQXg2TTY5eDRE?=
- =?utf-8?B?TG5JWDVoQUJUVUpaZ0ZWNTRJSjlkZmhZdXlkUFhKNTNhTW9ZZStPUDNXcmNw?=
- =?utf-8?B?QTIvL0k0RUQvL1o5cHBISHNXL2FQRmpkVEV1NkxmSEhQYkQySkppU2grTUlX?=
- =?utf-8?B?Z2pRMDBtK05tQUtRdDlSQ3V5emJpK1F6VXBHVWlwS3k3OW9Xc1RkaFdIWXRR?=
- =?utf-8?B?dWFaZjV6MllxRWh0NWVnSGxiTlpRSWZEQmxndEtrNzM4cmhabWkyZ0RZTU9Q?=
- =?utf-8?B?STQwYytHcThpRjZCUVNGY21McWNvWS9zdmlXTnI4U1pIekMvRFZIWmdUMzVo?=
- =?utf-8?B?MUd2cCt0ditVU2g3d0NKMXluU1FUMnVPa2xha1dLbitlV1dHMkRmOHh1Z2pK?=
- =?utf-8?B?SEp3WkplVldsVzJtOTBGNVpaYnd6SE5LRmtKWUlBSmVWclFRWENyZnZSQjBu?=
- =?utf-8?B?SFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A68BD86FEB7F4C4EAD4936430299E183@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 26 Jul 2023 23:28:43 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 520F5F2;
+        Wed, 26 Jul 2023 20:28:41 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 36R3Pwt8028003;
+        Thu, 27 Jul 2023 05:25:58 +0200
+Date:   Thu, 27 Jul 2023 05:25:58 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-next@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Paul E. McKenney" <paulmck@kernel.org>, thomas@t-8ch.de,
+        linux-kernel@vger.kernel.org, shuah <shuah@kernel.org>
+Subject: Re: Request for linux-kselftest nolibc branch Inclusion in linux-next
+Message-ID: <20230727032558.GA27996@1wt.eu>
+References: <4a007283-be03-907a-094f-6651a44e631f@linuxfoundation.org>
+ <f28bfb83-49c6-53b1-71db-aba815505af4@infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0b1ec55-058b-4514-cb5d-08db8e51041d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2023 03:24:41.5276
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: i11k3HIbd+Z/6l7Xcq8ewdgV1bC+bE0E+tBuR7RI0FpVLHCqEYhIcvkkCKbi7ZV0SWjfmBGRV7VH4hNfWtIB6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR03MB6615
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f28bfb83-49c6-53b1-71db-aba815505af4@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFuZ2VsbzoNCg0KT24gV2VkLCAyMDIzLTA3LTI2IGF0IDEwOjIyICswMjAwLCBBbmdlbG9H
-aW9hY2NoaW5vIERlbCBSZWdubyB3cm90ZToNCj4gRnVuY3Rpb24gZHJtX29mX2ZpbmRfcGFuZWxf
-b3JfYnJpZGdlKCkgaXMgbWFya2VkIGFzIGRlcHJlY2F0ZWQ6IHNpbmNlDQo+IHRoZSB1c2FnZSBv
-ZiB0aGF0IGluIHRoaXMgZHJpdmVyIGV4YWN0bHkgY29ycmVzcG9uZHMgdG8gdGhlIG5ldw0KPiBm
-dW5jdGlvbg0KPiBkZXZtX2RybV9vZl9nZXRfYnJpZGdlKCksIHN3aXRjaCB0byBpdC4NCg0KUmV2
-aWV3ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCj4gDQo+IFNpZ25lZC1vZmYt
-Ynk6IEFuZ2Vsb0dpb2FjY2hpbm8gRGVsIFJlZ25vIDwNCj4gYW5nZWxvZ2lvYWNjaGluby5kZWxy
-ZWdub0Bjb2xsYWJvcmEuY29tPg0KPiBSZXZpZXdlZC1ieTogRmVpIFNoYW8gPGZzaGFvQGNocm9t
-aXVtLm9yZz4NCj4gLS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RwaS5jIHwg
-OCArKysrLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rw
-aS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcGkuYw0KPiBpbmRleCBmZGQ1
-YjcxMjZlMjcuLjA4ODIyZmU4OGM5MyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21l
-ZGlhdGVrL210a19kcGkuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rw
-aS5jDQo+IEBAIC0xMDYyLDEwICsxMDYyLDEwIEBAIHN0YXRpYyBpbnQgbXRrX2RwaV9wcm9iZShz
-dHJ1Y3QNCj4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCWlmIChkcGktPmlycSA8PSAwKQ0K
-PiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gIA0KPiAtCXJldCA9IGRybV9vZl9maW5kX3BhbmVsX29y
-X2JyaWRnZShkZXYtPm9mX25vZGUsIDAsIDAsDQo+IC0JCQkJCSAgTlVMTCwgJmRwaS0+bmV4dF9i
-cmlkZ2UpOw0KPiAtCWlmIChyZXQpDQo+IC0JCXJldHVybiByZXQ7DQo+ICsJZHBpLT5uZXh0X2Jy
-aWRnZSA9IGRldm1fZHJtX29mX2dldF9icmlkZ2UoZGV2LCBkZXYtPm9mX25vZGUsIDAsDQo+IDAp
-Ow0KPiArCWlmIChJU19FUlIoZHBpLT5uZXh0X2JyaWRnZSkpDQo+ICsJCXJldHVybiBkZXZfZXJy
-X3Byb2JlKGRldiwgUFRSX0VSUihkcGktPm5leHRfYnJpZGdlKSwNCj4gKwkJCQkgICAgICJGYWls
-ZWQgdG8gZ2V0IGJyaWRnZVxuIik7DQo+ICANCj4gIAlkZXZfaW5mbyhkZXYsICJGb3VuZCBicmlk
-Z2Ugbm9kZTogJXBPRlxuIiwgZHBpLT5uZXh0X2JyaWRnZS0NCj4gPm9mX25vZGUpOw0KPiAgDQo=
+Hi Randy,
+
+On Wed, Jul 26, 2023 at 04:17:41PM -0700, Randy Dunlap wrote:
+> 
+> 
+> On 7/24/23 15:22, Shuah Khan wrote:
+> > Hi Stephen,
+> > 
+> > Please include the following linux-kselftest nolibc branch for linux-next
+> > coverage. This will be based on Linus's tree.
+> > 
+> > I will be using this branch to send nolibc pull requests to Linus.
+> > 
+> > URL for the branch:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=nolibc
+> > 
+> > Primary Contacts:
+> > Shuah Khan - shuah@kernel.org or Shuah Khan <skhan@linuxfoundation.org>
+> > 
+> > Please cc:
+> > Willy Tarreau <w@1wt.eu>
+> > Thomas Weiﬂschuh <thomas@t-8ch.de>
+> > Paul E. McKenney <paulmck@kernel.org>
+> 
+> Should the MAINTAINERS file entry for NOLIBC be updated?
+> (I think so.)
+
+Yes we planned to do it and will do it soon.
+
+Thanks,
+Willy
