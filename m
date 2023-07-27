@@ -2,257 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE6D76494F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A4F76494B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 09:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbjG0Hu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 03:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
+        id S233545AbjG0HuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 03:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233561AbjG0HuD (ORCPT
+        with ESMTP id S233398AbjG0HuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 03:50:03 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2065.outbound.protection.outlook.com [40.107.255.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99085272E;
-        Thu, 27 Jul 2023 00:43:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M1DFD4OVahGhL3lwMNBnrTpFm94K0kZvGYQuflPBy9PW3KYzl2IKf6a1IkZzCl2xtyk3A0XfnAs3zHb6TVZo1CYUqmIMMLwzMVvmjHfIpm45TwQgA4rfwcyIpFu1l4YSBbTx58NqurHz1hQ4v3GVk//wlk2iiuG4of/H8T3B3y0vR4eGJYcaRny1/e6lF5F1tibXrl6BiWKgv/3grMIsB5JRYvj1O97xBVFl7OSckbl0q9KZXgCkhh3AHv+EGHD4jEX1sxe2x/B9BGMTIboSnTsU48pxGJVM/htGnx24AP6sGkKxTYeT96B7Q/g5sgiXFFX1Pz0WY8FMJk2SWELqJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uAR100qg24jW3v+EYBFVaMTnJkcucJoDl2533ugBoL0=;
- b=jSoKGrJAygAvHc4VImwBjD8+1s100w4Xz58gmfqNP8G0NXTmbdd/IMgVFETUufgY1Ggdy6Lb+PzW43s5m+NNIHmolRyYOTioqG2CtXm9zMsyyINASsq4r0XEUHFphViNhMQtTGpENs0S/D7LZIS/BOL6DqnEjItoVJGeemVFiYXwmTRxnQhFl3efwEU7OYgBsFs6PJ1bObhv8JiEbW+CrT/BwOWavXYH3Xy8dotpdj+rw0XXGqtY++F1oswzOiKEeSe5Bmlz2Lj6OCew7fkBswf3OAyKipnM/CVdnECVLt/Tiw66ahO8FS8x9PWXZN49XN9rbe84nWpw9JfGUV+yBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 211.75.126.7) smtp.rcpttodomain=baylibre.com smtp.mailfrom=nuvoton.com;
- dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=gmail.com;
- dkim=none (message not signed); arc=none
+        Thu, 27 Jul 2023 03:50:02 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0977D4C04
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:41 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7679ea01e16so52515185a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uAR100qg24jW3v+EYBFVaMTnJkcucJoDl2533ugBoL0=;
- b=OQsrvNLeFkmloAA7f8GwGgNwfnk5ZvhgrZJseu3N+9NZtAYsuRXqAmR8r/828edIELnZRVwagspqtdu6AiFAQNNO9ON9l0fpqonhciSISXy4wDl7wMfcohlReZal2ny2TO3/5h+1m0+NJ6ptHnsblMF5zrAWz7iDvGzfanMnvKY=
-Received: from SG2PR04CA0175.apcprd04.prod.outlook.com (2603:1096:4:14::13) by
- TYZPR03MB5661.apcprd03.prod.outlook.com (2603:1096:400:82::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.33; Thu, 27 Jul 2023 07:43:40 +0000
-Received: from SG2APC01FT0059.eop-APC01.prod.protection.outlook.com
- (2603:1096:4:14:cafe::b2) by SG2PR04CA0175.outlook.office365.com
- (2603:1096:4:14::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Thu, 27 Jul 2023 07:43:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
- smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=gmail.com;
-Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
- 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
-Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
- SG2APC01FT0059.mail.protection.outlook.com (10.13.36.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6631.29 via Frontend Transport; Thu, 27 Jul 2023 07:43:38 +0000
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 27 Jul
- 2023 15:43:38 +0800
-Received: from taln60.nuvoton.co.il (10.191.1.180) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Thu, 27 Jul 2023 15:43:37 +0800
-Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
-        id D2D2164740; Thu, 27 Jul 2023 10:43:36 +0300 (IDT)
-From:   Tomer Maimon <tmaimon77@gmail.com>
-To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <avifishman70@gmail.com>, <tali.perry1@gmail.com>,
-        <joel@jms.id.au>, <venture@google.com>, <yuenn@google.com>,
-        <benjaminfair@google.com>
-CC:     <openbmc@lists.ozlabs.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Tomer Maimon <tmaimon77@gmail.com>
-Subject: [PATCH v18 0/1] Introduce Nuvoton Arbel NPCM8XX BMC SoC
-Date:   Thu, 27 Jul 2023 10:43:27 +0300
-Message-ID: <20230727074328.34144-1-tmaimon77@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        d=chromium.org; s=google; t=1690443819; x=1691048619;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sn8sesRltxTsvGZPwjqFOVYdqOt+0ePbjNVrO+NvsVI=;
+        b=R2VjX1bEkK/wSa0IZkJIxTRe3q9R5KoePY/bouYE39NsO0oIGVw47WASgbslll3YBc
+         Pp1ORtFOCrvjgNLDBe6bi/b8i1HxWSI9TKHc74lvCjSKoSvKX6D2P2Ek3vlwRwdXlNXZ
+         sksdyNpKupk8vAKa/03ovrzw66ttGol74EXos=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690443819; x=1691048619;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sn8sesRltxTsvGZPwjqFOVYdqOt+0ePbjNVrO+NvsVI=;
+        b=JslKCE7E9HvT59SLEyCbQF5Q/nx58lLbjwLLXcuRbwBBM+Z3Q2GGcMkAr9CWOdmkMg
+         fOV6ArwFFNP49yG3Zetz5HPCy4JbsN8KRy3Foc9MMWUcrtoTeVV2YJj5NQtkNl6PNMl9
+         9tbfhIgY1YJaMSvENaUe8/qWryFFTeexdJo6q0+Navm6beMTGw77IASkcTBjvEL9vea6
+         Y0UPiCATd4rZkLYFSSo/8EhH4UierA0MbgnrNUflbIWWPgmAxOwMimHhwYAymATzei2d
+         7BOuYkxp65KM9GsSJyHjeqPlNH2HkbCaVyO9NDiisJhPG2pkts4ZuXzJA22VrqQoowSF
+         C+jw==
+X-Gm-Message-State: ABy/qLaOSzZ1GnI60gG4gJ5YeHf5Va7I/CKZWKeO5e11G3C9mrG2F7Do
+        4AkeeCfunTIOgvkeWYC2KkxeFe7vUIx44G2GW5UoEA==
+X-Google-Smtp-Source: APBJJlG2GK1hCQDdCWcahWUhX0BxnZVjDA7wEZnExpvwR+i4/5tCmh23NmF3WjCMvTbrtSsb+g8b7Q==
+X-Received: by 2002:a05:620a:c50:b0:767:596f:a9e2 with SMTP id u16-20020a05620a0c5000b00767596fa9e2mr5345285qki.15.1690443819424;
+        Thu, 27 Jul 2023 00:43:39 -0700 (PDT)
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com. [209.85.219.53])
+        by smtp.gmail.com with ESMTPSA id x8-20020ae9f808000000b0076745f352adsm235130qkh.59.2023.07.27.00.43.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 00:43:38 -0700 (PDT)
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-63d09d886a3so4830906d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:43:38 -0700 (PDT)
+X-Received: by 2002:ad4:438f:0:b0:63d:d83:8808 with SMTP id
+ s15-20020ad4438f000000b0063d0d838808mr3291222qvr.63.1690443818431; Thu, 27
+ Jul 2023 00:43:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotSetDelaration: True
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2APC01FT0059:EE_|TYZPR03MB5661:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ccdc3a4-d433-4227-237e-08db8e753131
-X-MS-Exchange-SenderADCheck: 0
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IbNnj9GZA4FDg3qUyqcyo5DrCONLILMJtnMIS7jzPCdtK52nkYiV9xH4wu8dPNwOqiqR9nvHZ03oownq8EEzD+Z9t1skajAH6biZ+4KOfBPyca8wMXl4hpGyg0ZijEohRxS914iiAUuOnQuPvpusst9EinLW4+h3CC7NiKRnGEdFeh2aYb7+kWNHs9LiuQXC4J6+h7BahB4mSp2w5jdsgnXX9D22BihcqjkfDFX66cbCoPZilRxIQHclW+ms5s+De6d95hyC1XthjnuMqXu+aHgGEdCn/3k9InWYht4cuJHcqx9p2nnhGvNOEpw23RxCiQGX3m3oBUBn4DxLZjrVTsMiVGdJtr88nOg6GeEwJVirzsu0oHP8JdIX1YcqzLL6JM5Xjc2W+UDrDbS2cGSjysV0c1yrRKVwPlLmW/iBmOPvnhP8JEv+KCqDQqp+mCwuwIBxTv2idJdlHboCBdtPYM72O0Sj4zoCZF6SjkoKDRvmWF4zBQo0+KXfKLW7wHPGEPB+gMkCdx7D7Mx8Edwz+GER9RukaGdxtOtvwjsZnIs8x0UJee6Q78wm7ltsu4DmNzBvRX0Q9pU4Cz+iEV2oFrzlIKJPrAv+VWIZpRXMNDBFWn7PLCXXQy42hXNUxvvdGUq/s4bs0Wdng25Ps31MZa8nhzdPJ1BF15AriW9xIsTuam1yoJUyKGYdk2lfsluy7gdyIKkpd5aAjGNemuXFKXiGtn+dRwUGtCKHnjM68pPdHODLWjumNSJr8rUvXre7/y9/UTl9ANeyFjEbEyS176yafo5BMMcfGkeytvvO69FTNzZ5sYB3WVqr+uMUISnYM/A93sCfXvjhssYI1TfLrmSYXvasa4fOAKbNr4nr+CcJbXI4aXm8Vs8M+rkmxlLY/JHGJIdeTFmNf/Z1F4/Etw==
-X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(346002)(376002)(396003)(84050400002)(61400799003)(82310400008)(451199021)(46966006)(40470700004)(36840700001)(36756003)(55446002)(7416002)(2906002)(40480700001)(83380400001)(36860700001)(47076005)(336012)(42882007)(6266002)(186003)(26005)(82202003)(1076003)(41300700001)(356005)(6666004)(110136005)(54906003)(83170400001)(478600001)(76482006)(81166007)(40460700003)(82740400003)(70206006)(73392003)(4326008)(316002)(70586007)(8936002)(42186006)(8676002)(5660300002)(2616005)(45356006)(32563001)(35450700002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: nuvoton.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2023 07:43:38.9585
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ccdc3a4-d433-4227-237e-08db8e753131
-X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
-X-MS-Exchange-CrossTenant-AuthSource: SG2APC01FT0059.eop-APC01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB5661
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
-        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230704040044.681850-1-randy.li@synaptics.com>
+ <20230704040044.681850-3-randy.li@synaptics.com> <20230712093301.nkj2vok2x7esdhb3@chromium.org>
+ <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
+In-Reply-To: <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 27 Jul 2023 16:43:27 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
+Message-ID: <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Hsia-Jun Li <randy.li@synaptics.com>, linux-media@vger.kernel.org,
+        ayaka@soulik.info, hans.verkuil@cisco.com, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
+        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds clock support for the Nuvoton 
-Arbel NPCM8XX Board Management controller (BMC) SoC family.
+On Mon, Jul 17, 2023 at 11:07=E2=80=AFPM Nicolas Dufresne <nicolas@ndufresn=
+e.ca> wrote:
+>
+> Le mercredi 12 juillet 2023 =C3=A0 09:33 +0000, Tomasz Figa a =C3=A9crit =
+:
+> > On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
+> > > From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
+> > >
+> > > Many drivers have to create its own buf_struct for a
+> > > vb2_queue to track such a state. Also driver has to
+> > > iterate over rdy_queue every times to find out a buffer
+> > > which is not sent to hardware(or firmware), this new
+> > > list just offers the driver a place to store the buffer
+> > > that hardware(firmware) has acknowledged.
+> > >
+> > > One important advance about this list, it doesn't like
+> > > rdy_queue which both bottom half of the user calling
+> > > could operate it, while the v4l2 worker would as well.
+> > > The v4l2 core could only operate this queue when its
+> > > v4l2_context is not running, the driver would only
+> > > access this new hw_queue in its own worker.
+> >
+> > Could you describe in what case such a list would be useful for a
+> > mem2mem driver?
+>
+> Today all driver must track buffers that are "owned by the hardware". Thi=
+s is a
+> concept dictated by the m2m framework and enforced through the ACTIVE fla=
+g. All
+> buffers from this list must be mark as done/error/queued after streamoff =
+of the
+> respective queue in order to acknowledge that they are no longer in use b=
+y the
+> HW. Not doing so will warn:
+>
+>   videobuf2_common: driver bug: stop_streaming operation is leaving buf .=
+..
+>
+> Though, there is no queue to easily iterate them. All driver endup having=
+ their
+> own queue, or just leaving the buffers in the rdy_queue (which isn't bett=
+er).
+>
 
-This patchset cover letter is based from the initial support for NPCM8xx BMC to
-keep tracking the version history.
+Thanks for the explanation. I see how it could be useful now.
 
-all the other initial support patches had been applied to Linux kernel 6.0.
+Although I guess this is a problem specifically for hardware (or
+firmware) which can internally queue more than 1 buffer, right?
+Otherwise the current buffer could just stay at the top of the
+rdy_queue until it's removed by the driver's completion handler,
+timeout/error handler or context destruction.
 
-This patchset was tested on the Arbel NPCM8XX evaluation board.
+Best regards,
+Tomasz
 
-Changes since version 17:
- - NPCM8XX clock driver did not changed from version 17 only build and tested under kernel 6.5-rc3.
-
-Changes since version 16:
- - NPCM8XX clock driver
-	- Using devm_kzalloc instead kzalloc.
-	- Remove unnecessary parenthesis.
-	- Modify incorrect spelling.
-
-Changes since version 15:
- - NPCM8XX clock driver
-	- Remove unused regs parameter from npcm8xx_pll_data structure.
-	- Using index and clk_hw parameters to set the clock parent in the clock structures.
-
-Changes since version 14:
- - NPCM8XX clock driver
-	- Remove unnecessary register definitions.
-	- Remove the internal reference clock, instead use the external DT reference clock.
-	- rearrange the driver.
-	- using .names parameter in DT to define clock (refclk).
-
-Changes since version 13:
- - NPCM8XX clock driver
-	- Remove unnecessary definitions and add module.h define
-	- Use in clk_parent_data struct.fw_name and .name.
-	- Add module_exit function.
-	- Add const to divider clock names.
-	- Add MODULE_DESCRIPTION and MODULE_LICENSE
-
-Changes since version 12:
- - NPCM8XX clock driver
-	- Use clk_parent_data in mux and div clock structure.
-	- Add const to mux tables.
-	- Using devm_clk_hw_register_fixed_rate function.
-	- use only .name clk_parent_data instead .name and .fw_name.
-	- Modify mask values in mux clocks. 
-
-Changes since version 11:
- - NPCM8XX clock driver
-	- Modify Kconfig help.
-	- Modify loop variable to unsigned int.
-
-Changes since version 11:
- - NPCM8XX clock driver
-	- Modify Kconfig help.
-	- Modify loop variable to unsigned int.
-
-Changes since version 10:
- - NPCM8XX clock driver
-	- Fix const warning.
-
-Changes since version 9:
- - NPCM8XX clock driver
-	- Move configuration place.
-	- Using clk_parent_data instead of parent_name
-	- using devm_ioremap instead of ioremap. deeply sorry, I know we had
-	 a long discussion on what should the driver use, from other examples 
-	 (also in other clock drivers) I see the combination of 
-	 platform_get_resource and devm_ioremap are commonly used and it answer
-	 the reset and clock needs.
-
-Changes since version 8:
- - NPCM8XX clock driver
-	- Move configuration place.
-	- Add space before and aftre '{' '}'.
-	- Handle devm_of_clk_add_hw_provider function error.
-
-Changes since version 7:
- - NPCM8XX clock driver
-	- The clock and reset registers using the same memory region, 
-	  due to it the clock driver should claim the ioremap directly 
-	  without checking the memory region.
-
-Changes since version 6:
- - NPCM reset driver
-	- Modify warning message.
- - dt-bindings: serial: 8250: Add npcm845 compatible string patch accepted, due
-   to it the patch removed from the patchset.
-
-Changes since version 5:
- - NPCM8XX clock driver
-	- Remove refclk if devm_of_clk_add_hw_provider function failed.
- - NPCM8XX clock source driver
-	- Remove NPCM8XX TIMER_OF_DECLARE support, using the same as NPCM7XX.
-
-Changes since version 4:
- - NPCM8XX clock driver
-	- Use the same quote in the dt-binding file.
-
-Changes since version 3:
- - NPCM8XX clock driver
-	- Rename NPCM8xx clock dt-binding header file.
-	- Remove unused structures.
-	- Improve Handling the clocks registration.
- - NPCM reset driver
-	- Add ref phandle to dt-binding.
-
-Changes since version 2:
- - Remove NPCM8xx WDT compatible patch.
- - Remove NPCM8xx UART compatible patch.
- - NPCM8XX clock driver
-	- Add debug new line.
-	- Add 25M fixed rate clock.
-	- Remove unused clocks and clock name from dt-binding.
- - NPCM reset driver
-	- Revert to npcm7xx dt-binding.
-	- Skip dt binding quotes.
-	- Adding DTS backward compatibility.
-	- Remove NPCM8xx binding include file.
-	- Warp commit message.
-- NPCM8XX device tree:
-	- Remove unused clock nodes (used in the clock driver)
-	- Modify gcr and rst node names.
-
-Changes since version 1:
- - NPCM8XX clock driver
-	- Modify dt-binding.
-	- Remove unsed definition and include.
-	- Include alphabetically.
-	- Use clock devm.
- - NPCM reset driver
-	- Modify dt-binding.
-	- Modify syscon name.
-	- Add syscon support to NPCM7XX dts reset node.
-	- use data structure.
- - NPCM8XX device tree:
-	- Modify evb compatible name.
-	- Add NPCM7xx compatible.
-	- Remove disable nodes from the EVB DTS.
-
-Tomer Maimon (1):
-  clk: npcm8xx: add clock controller
-
- drivers/clk/Kconfig       |   8 +
- drivers/clk/Makefile      |   1 +
- drivers/clk/clk-npcm8xx.c | 565 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 574 insertions(+)
- create mode 100644 drivers/clk/clk-npcm8xx.c
-
--- 
-2.33.0
-
+> Nicolas
+> >
+> > >
+> > > Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
+> > > ---
+> > >  drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++-------=
+-
+> > >  include/media/v4l2-mem2mem.h           | 10 +++++++++-
+> > >  2 files changed, 26 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v=
+4l2-core/v4l2-mem2mem.c
+> > > index c771aba42015..b4151147d5bd 100644
+> > > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> > > @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v4l2_m2=
+m_dev *m2m_dev,
+> > >             goto job_unlock;
+> > >     }
+> > >
+> > > -   src =3D v4l2_m2m_next_src_buf(m2m_ctx);
+> > > -   dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
+> > > -   if (!src && !m2m_ctx->out_q_ctx.buffered) {
+> > > -           dprintk("No input buffers available\n");
+> > > -           goto job_unlock;
+> > > +   if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
+> > > +           src =3D v4l2_m2m_next_src_buf(m2m_ctx);
+> > > +
+> > > +           if (!src && !m2m_ctx->out_q_ctx.buffered) {
+> > > +                   dprintk("No input buffers available\n");
+> > > +                   goto job_unlock;
+> > > +           }
+> > >     }
+> > > -   if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
+> > > -           dprintk("No output buffers available\n");
+> > > -           goto job_unlock;
+> > > +
+> > > +   if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
+> > > +           dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
+> > > +           if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
+> > > +                   dprintk("No output buffers available\n");
+> > > +                   goto job_unlock;
+> > > +           }
+> > >     }
+> >
+> > src and dst would be referenced unitialized below if neither of the
+> > above ifs hits...
+> >
+> > Best regards,
+> > Tomasz
+> >
+> > >
+> > >     m2m_ctx->new_frame =3D true;
+> > > @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, struct =
+v4l2_m2m_ctx *m2m_ctx,
+> > >     INIT_LIST_HEAD(&q_ctx->rdy_queue);
+> > >     q_ctx->num_rdy =3D 0;
+> > >     spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
+> > > +   INIT_LIST_HEAD(&q_ctx->hw_queue);
+> > >
+> > >     if (m2m_dev->curr_ctx =3D=3D m2m_ctx) {
+> > >             m2m_dev->curr_ctx =3D NULL;
+> > > @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(struct v=
+4l2_m2m_dev *m2m_dev,
+> > >
+> > >     INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
+> > >     INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
+> > > +   INIT_LIST_HEAD(&out_q_ctx->hw_queue);
+> > > +   INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
+> > >     spin_lock_init(&out_q_ctx->rdy_spinlock);
+> > >     spin_lock_init(&cap_q_ctx->rdy_spinlock);
+> > >
+> > > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2me=
+m.h
+> > > index d6c8eb2b5201..2342656e582d 100644
+> > > --- a/include/media/v4l2-mem2mem.h
+> > > +++ b/include/media/v4l2-mem2mem.h
+> > > @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
+> > >   * processed
+> > >   *
+> > >   * @q:             pointer to struct &vb2_queue
+> > > - * @rdy_queue:     List of V4L2 mem-to-mem queues
+> > > + * @rdy_queue:     List of V4L2 mem-to-mem queues. If v4l2_m2m_buf_q=
+ueue() is
+> > > + *         called in struct vb2_ops->buf_queue(), the buffer enqueue=
+d
+> > > + *         by user would be added to this list.
+> > >   * @rdy_spinlock: spin lock to protect the struct usage
+> > >   * @num_rdy:       number of buffers ready to be processed
+> > > + * @hw_queue:      A list for tracking the buffer is occupied by the=
+ hardware
+> > > + *                 (or device's firmware). A buffer could only be in=
+ either
+> > > + *                 this list or @rdy_queue.
+> > > + *                 Driver may choose not to use this list while uses=
+ its own
+> > > + *                 private data to do this work.
+> > >   * @buffered:      is the queue buffered?
+> > >   *
+> > >   * Queue for buffers ready to be processed as soon as this
+> > > @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
+> > >     struct list_head        rdy_queue;
+> > >     spinlock_t              rdy_spinlock;
+> > >     u8                      num_rdy;
+> > > +   struct list_head        hw_queue;
+> > >     bool                    buffered;
+> > >  };
+> > >
+> > > --
+> > > 2.17.1
+> > >
+>
