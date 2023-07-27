@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 920EC76515C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62AB765161
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbjG0Kh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
+        id S232370AbjG0KiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjG0Khy (ORCPT
+        with ESMTP id S234482AbjG0KiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:37:54 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3AF26A4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:37:51 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so106246066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690454270; x=1691059070;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mUepUY1ETJBpPCS0rz2zlbE3uVvxNdDGso2o/AQI4jo=;
-        b=Tb6AZRgUS/lthT4HEjc/nP8w/VjoCG8j8LUADVxrSJcPVEqZPnZ/9sIGQ/0A65h9nf
-         fFvENy5bDBFLuONVr24tJZsqt5yUbE+HpbcghUl+xy0mZCi150XvN2bM9XJn/odW2AG0
-         j3oa/2NJcV+7zbi9D9022hLLvVwTb+k+FP8Y7d1+8rHVNmG6jnePGroAYH5PFViFD4wG
-         zU8yvVA/1adhFiURMlP1JOBNkr2C1L1q1aFNyl1uGBmXF0Zkq4w2u3r7WOZoWBDzaU2L
-         M8AMJmaxEpk8eBrzmeRKrbSgqWgE2ULn6gtBNW+cZcs/w5Fq/m2HD+Q4RAMLWSPj76OO
-         jIPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690454270; x=1691059070;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mUepUY1ETJBpPCS0rz2zlbE3uVvxNdDGso2o/AQI4jo=;
-        b=JSu0picCewJuRUq2nkGQYjbqrSyzxXNXDlkr1KEQy1Pa/4h36YZ2KwTpdT1BzFzfz+
-         HNWCHYEYr+M4CvaqDwDAdc0bErCB7TqmZBYtfmlbC9Rm2sLvkszl2mwHTw1vqC0MQldM
-         m1dpCQsth6S83XIsGCNrFAY/CkNrpdUZ+WTqAXj0KFzJXT8u6USIgJl0UuswX4eioXED
-         iOJEqG+lLeaV+pCeJY4Wu3NnSFdZWrI/DTXEIlzTjjJjOrVATGvfEDqERprz0T7unO1G
-         MccICGJclO9wNtLoaIL4k2pwLhoyqWzWjfyf9nG1wKp2jbPO9Kx4NBsrXRXBDejRdBhx
-         az2A==
-X-Gm-Message-State: ABy/qLbLj51pyE7s6QJ+AHRFJ6ckJno/CdGN4g3DXp7/29H2Xl2iYdkD
-        62oj5rg7C6vsdZZRr+5MI4FGmw==
-X-Google-Smtp-Source: APBJJlH7XY3+rjbYP7kE0i960l4gmZpZUAnVjWzO3suqYO8UT1jOMw/KclUI2AbLbLl2euWq4KrN7w==
-X-Received: by 2002:a17:906:310d:b0:969:93f2:259a with SMTP id 13-20020a170906310d00b0096993f2259amr1581738ejx.73.1690454270359;
-        Thu, 27 Jul 2023 03:37:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id f5-20020a1709064dc500b0098f33157e7dsm617483ejw.82.2023.07.27.03.37.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 03:37:49 -0700 (PDT)
-Message-ID: <96a82a51-6e26-cee2-c095-98fac749393f@linaro.org>
-Date:   Thu, 27 Jul 2023 12:37:47 +0200
+        Thu, 27 Jul 2023 06:38:12 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18995269E;
+        Thu, 27 Jul 2023 03:38:10 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36R70rMr014780;
+        Thu, 27 Jul 2023 05:38:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=n
+        NTgqr4yvsi49EeWilsO6dT55ZXkVS4hNXcw1nvD10M=; b=fpShysrRjoTa2BgUQ
+        pPTLRPXxq5d7EBo5BuOKqaLShUJoSXjfj0924Y8bCecNcujPR6TJtFWneVI1DBVZ
+        rOVHV1/QN8CFOYG6o+4SA9E5xtILDkhJQgigp48890xnMzWlDNRY8VAYBIKCt+hO
+        JcG2gLowzdobO0dpw8sqnnWmWVXJGLJ/RuZ/yUN0p+LRpv556HoPif9fN0RvFyac
+        t+PjGLMH7/7syOHDeIJEV0Uq/9TV7VvpFe89XwhToXGnLbeHWDxkleVHn1LY2/ap
+        DHlHiz3sqbMQsm/PxyPb1UcySW0CBghzM0hllaCWlR6R/3uwH+u9EWBISklU5kUH
+        okK5Q==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s2q7121h4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Jul 2023 05:38:05 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
+ 2023 11:38:03 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 27 Jul 2023 11:38:03 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.196])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2364E45D;
+        Thu, 27 Jul 2023 10:38:03 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <rafael@kernel.org>, <hdegoede@redhat.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2] ACPI: scan: Create platform device for CS35L56
+Date:   Thu, 27 Jul 2023 11:37:54 +0100
+Message-ID: <20230727103754.9914-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] dt-bindings:iio:frequency:admv1013: add vcc regs
-Content-Language: en-US
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230727102309.92479-1-antoniu.miclaus@analog.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727102309.92479-1-antoniu.miclaus@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: iHJnrucHbbJIPKeNcK56SnkQmrp3LCI0
+X-Proofpoint-ORIG-GUID: iHJnrucHbbJIPKeNcK56SnkQmrp3LCI0
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 12:23, Antoniu Miclaus wrote:
-> Add bindings for the VCC regulators of the ADMV1013 microware
-> upconverter.
-> 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Subject: missing spaces between prefix parts.
+The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
+is used in multiples, and can be connected either to I2C or SPI.
 
-> ---
->  .../bindings/iio/frequency/adi,admv1013.yaml  | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> index fc813bcb6532..6660299ac1ad 100644
-> --- a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> @@ -39,6 +39,46 @@ properties:
->      description:
->        Analog voltage regulator.
->  
-> +  vcc-drv-supply:
-> +    description:
-> +      RF Driver voltage regulator.
-> +
-> +  vcc2-drv-supply:
-> +    description:
-> +      RF predriver voltage regulator.
-> +
-> +  vcc-vva-supply:
-> +    description:
-> +      VVA Control Circuit voltage regulator.
-> +
-> +  vcc-amp1-supply:
-> +    description:
-> +      RF Amplifier 1 voltage regulator.
-> +
-> +  vcc-amp2-supply:
-> +    description:
-> +      RF Amplifier 2 voltage regulator.
-> +
-> +  vcc-env-supply:
-> +    description:
-> +      Envelope Detector voltage regulator.
-> +
-> +  vcc-bg-supply:
-> +    description:
-> +      Mixer Chip Band Gap Circuit voltage regulator.
-> +
-> +  vcc-bg2-supply:
-> +    description:
-> +      VGA Chip Band Gap Circuit voltage regulator.
-> +
-> +  vcc-mixer-supply:
-> +    description:
-> +      Mixer voltage regulator.
-> +
-> +  vcc-quad-supply:
-> +    description:
-> +      Quadruppler voltage regulator.
-> +
+There will be multiple instances under the same Device() node. Add it
+to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
+driver.
 
-You made them required in the driver, so they should be required here as
-well. They should be required anyway, because AFAIU they have to be
-provided.
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/acpi/scan.c                             |  1 +
+ drivers/platform/x86/serial-multi-instantiate.c | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
 
-OTOH, this will break the ABI, so your driver might need to take them as
-optional.
-
-Best regards,
-Krzysztof
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 5b145f1aaa1b..87e385542576 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1714,6 +1714,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+ 		{"BSG1160", },
+ 		{"BSG2150", },
+ 		{"CSC3551", },
++		{"CSC3556", },
+ 		{"INT33FE", },
+ 		{"INT3515", },
+ 		/* Non-conforming _HID for Cirrus Logic already released */
+diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
+index 2c2abf69f049..8afbeb008d3e 100644
+--- a/drivers/platform/x86/serial-multi-instantiate.c
++++ b/drivers/platform/x86/serial-multi-instantiate.c
+@@ -329,6 +329,17 @@ static const struct smi_node cs35l41_hda = {
+ 	.bus_type = SMI_AUTO_DETECT,
+ };
+ 
++static const struct smi_node cs35l56_hda = {
++	.instances = {
++		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
++		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
++		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
++		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
++		{}
++	},
++	.bus_type = SMI_AUTO_DETECT,
++};
++
+ /*
+  * Note new device-ids must also be added to ignore_serial_bus_ids in
+  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+@@ -337,6 +348,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)&bsg1160_data },
+ 	{ "BSG2150", (unsigned long)&bsg2150_data },
+ 	{ "CSC3551", (unsigned long)&cs35l41_hda },
++	{ "CSC3556", (unsigned long)&cs35l56_hda },
+ 	{ "INT3515", (unsigned long)&int3515_data },
+ 	/* Non-conforming _HID for Cirrus Logic already released */
+ 	{ "CLSA0100", (unsigned long)&cs35l41_hda },
+-- 
+2.30.2
 
