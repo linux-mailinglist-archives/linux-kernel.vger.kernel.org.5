@@ -2,196 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC6C764300
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8608764303
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjG0Agk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 20:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
+        id S230148AbjG0AiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 20:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjG0Agj (ORCPT
+        with ESMTP id S229954AbjG0AiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 20:36:39 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15B4269E
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:36:36 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40631c5b9e9so74621cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:36:36 -0700 (PDT)
+        Wed, 26 Jul 2023 20:38:02 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7545119BF;
+        Wed, 26 Jul 2023 17:38:01 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbc2e1c6b2so2701025ad.3;
+        Wed, 26 Jul 2023 17:38:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690418195; x=1691022995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=amy0eD2LrrlzU6N3hjR3QwTAzIiyiWPIAr1XXg/QRho=;
-        b=OC+tT4IuaUrIHQCGBvRai4fpV/7DmYK1yOhAqVhnmU3muuUBqnIbKEqtcmMKr576dV
-         LChjUzg/6mhLrA70UCUxLJv0okTw5symeW8ns0Txt40yl3ipX6K6cLUpl9RVcBxgHnxS
-         N1O6zatY6lgekrxecI1VbpAOQSwj9F4IhmUGaekiD6n3RBtfOw/iwZvghWvUldvBVgdy
-         BPe/3oaDXcPEni3iBXd9Wc2X+vDeFeWOwr2NcIzcTSMUMs+NfBlBjHnfMDe3x/6cJz/4
-         koUXjlahHst9jBTH23sZr5ovqMwddnRlfDZ3JURWpLngI2fbKmpJM4LcTtdsGsrYzI/T
-         xfmg==
+        d=gmail.com; s=20221208; t=1690418281; x=1691023081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ATN7YAlsVZEJporVO50g2aQeIWoActMrVk97ztgwhKo=;
+        b=mEHu84UG0JCx6PjN43cEokYue0X1BsIq+1lT8qqreA9qCCoE85OhqPIA1n32XncHLo
+         mlm7TypRofs/9imuJukupCkb5MRl7l/1D5FNTZhsFMvsKMFsEgr9Jt320+d1f9y2g/0P
+         DpZAMd4fsdp8KbTPipAK+517AVyGB41Qob1yp83ldlFI01GjW1uaBjHzcVkEffI4Opnb
+         yvvRenDe26KN9bVJ1RM9i/wuN2OdKn2aBGToVcSsggYJ6aHJdc73/TYJgrbfQYFNXGtr
+         VdoWgdeOYY6g9WreuXQLIBAPG8I7ZdS48DO0pGgcWeraQ6tFjuIJ3v+X1jgKjRxlv+WY
+         Xk+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690418196; x=1691022996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=amy0eD2LrrlzU6N3hjR3QwTAzIiyiWPIAr1XXg/QRho=;
-        b=HOO/pBDmqhi9mibs2bfDWJD43Wb/02tY/BYCacU7xX5NUgUrclqtnmdwYslhoQpSi9
-         9wjIvMDDy0bW/5AwVFavtOpJGRrRTTJk1PZfsUJfgQeF6Hw7oKiiV5taTeMMKjrmZ7Cf
-         qSL/aYtSWrt7A9BGtH2uJFMOvySy8IRu0K6mzDm+uZvFG8vG7v8tTaDL2IYj7MAmdqF1
-         kNgGGhRmkBQQ8bFeKkH1mEwF3KOrOER8A3xdX3McEkmvgYL2j9c4tuQmwcLKHRaQuk0s
-         5kDCEFuuOqN9R+J8fDWi528TdvV2t47cN+m9VuxqfmbmXAZ3i7CTpIXMRFlBIQ+uPB4r
-         GnQA==
-X-Gm-Message-State: ABy/qLZUcrGD0NawdSKkXJe7LLkC8ob71G5YVxyyDbAkgZq654Vop1bJ
-        2aCrNM7+tRbeMXXAgqDToL8GSLtw/XeFwwxrtb+u3g==
-X-Google-Smtp-Source: APBJJlG/XjuTAh5W6aOfGDPHr2RC3h3gUwu78ey/G5POFF3pAUocagsjlzvSx05Y7ZrlOiwIHV3Vmy9p45i0q3kWr7I=
-X-Received: by 2002:a05:622a:14:b0:403:ac17:c18a with SMTP id
- x20-20020a05622a001400b00403ac17c18amr107946qtw.14.1690418195645; Wed, 26 Jul
- 2023 17:36:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690418281; x=1691023081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ATN7YAlsVZEJporVO50g2aQeIWoActMrVk97ztgwhKo=;
+        b=gjt0i4Z4sCtwoslnL19frfgEJRcbGtPxFW+3DfP/mHXxrt22J1o5dQAe8VD3pu0P5C
+         mDA8aNY1oC9y7bye8EanZtzTtxAlRCj6w9iOjGc717JLPeRblRqtJ+MMYyQSPa8ofZKT
+         YIJ5vE1dSxn+6zAEpishv+1DNWf+o35zkPpA4th7IsxIjEf139h2wVRG/hR4OBogM2Au
+         bSXqoQ8kt9/2lSRHXHXtokSgdqbupI/9SXloS67bHdXSpyOGvWo6qX1gj4MaUaQVW3k4
+         GDmQryKIrDPdrG1Xhp//TlxNxuf9wiW9H9a0Nsl1wKTALA58hgQBoju24vVDivMThHHm
+         rhvA==
+X-Gm-Message-State: ABy/qLaacNQYvyaB6qfV4popNDfa/+9ufuHGnTn2JKCe/kQW/Cypwa8k
+        zq144GELGpXORfLP7BHmGw0=
+X-Google-Smtp-Source: APBJJlGqM1dx3AW8MZ9SKEPfOeMJLPVLdXzJ8/yaPStsQ8rRnWHSGj8+BHndAGRWRU0M6kZaxA9B1A==
+X-Received: by 2002:a17:902:d2cc:b0:1bb:dc48:644a with SMTP id n12-20020a170902d2cc00b001bbdc48644amr395035plc.49.1690418280789;
+        Wed, 26 Jul 2023 17:38:00 -0700 (PDT)
+Received: from localhost ([192.55.54.50])
+        by smtp.gmail.com with ESMTPSA id jh3-20020a170903328300b001b50cbc0b4fsm161140plb.111.2023.07.26.17.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 17:38:00 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 17:37:59 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>
+Subject: Re: [RFC PATCH v4 09/10] KVM: x86: Make struct sev_cmd common for
+ KVM_MEM_ENC_OP
+Message-ID: <20230727003759.GA2021422@ls.amr.corp.intel.com>
+References: <cover.1689893403.git.isaku.yamahata@intel.com>
+ <8c0b7babbdd777a33acd4f6b0f831ae838037806.1689893403.git.isaku.yamahata@intel.com>
+ <ZLqbWFnm7jyB8JuY@google.com>
+ <9e8a98ad-1f8d-a09c-3173-71c5c3ab5ed4@intel.com>
+ <ZL/r6Vca8WkFVaic@google.com>
 MIME-Version: 1.0
-References: <20230726133642.750342-1-namhyung@kernel.org> <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
- <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
-In-Reply-To: <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 26 Jul 2023 17:36:24 -0700
-Message-ID: <CAP-5=fVbwf9=ZFszgFpb_6Qb003WpZC3_vtO7fB1pL_vH-OhQw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZL/r6Vca8WkFVaic@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 3:57=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> Hi Ian,
->
-> On Wed, Jul 26, 2023 at 8:48=E2=80=AFAM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Wed, Jul 26, 2023 at 6:36=E2=80=AFAM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> > >
-> > > The bison and flex generate C files from the source (.y and .l)
-> > > files.  When O=3D option is used, they are saved in a separate direct=
-ory
-> > > but the default build rule assumes the .C files are in the source
-> > > directory.  So it might read invalid file if there are generated file=
-s
-> > > from an old version.  The same is true for the pmu-events files.
-> > >
-> > > For example, the following command would cause a build failure:
-> > >
-> > >   $ git checkout v6.3
-> > >   $ make -C tools/perf  # build in the same directory
-> > >
-> > >   $ git checkout v6.5-rc2
-> > >   $ mkdir build  # create a build directory
-> > >   $ make -C tools/perf O=3Dbuild  # build in a different directory bu=
-t it
-> > >                                 # refers files in the source director=
-y
-> > >
-> > > Let's update the build rule to specify those cases explicitly to depe=
-nd
-> > > on the files in the output directory.
-> > >
-> > > Note that it's not a complete fix and it needs the next patch for the
-> > > include path too.
-> > >
-> > > Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/build/Makefile.build  | 8 ++++++++
-> > >  tools/perf/pmu-events/Build | 4 ++++
-> > >  2 files changed, 12 insertions(+)
-> > >
-> > > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-> > > index 89430338a3d9..f9396696fcbf 100644
-> > > --- a/tools/build/Makefile.build
-> > > +++ b/tools/build/Makefile.build
-> > > @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
-> > >         $(call rule_mkdir)
-> > >         $(call if_changed_dep,cc_s_c)
-> > >
-> > > +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
-> > > +       $(call rule_mkdir)
-> > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > +
-> > > +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
-> > > +       $(call rule_mkdir)
-> > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > +
-> >
-> > Hi Namhyung,
-> >
-> > as we have:
-> > ```
-> > $(OUTPUT)%.o: %.c FORCE
-> >        $(call rule_mkdir)
-> >        $(call if_changed_dep,$(host)cc_o_c)
-> > ```
-> > I'm not sure what the 2 additional rules achieve.
->
-> The above rule assumes the .c files are in the source directory
-> (without $(OUTPUT) prefix).  It caused a trouble when the
-> flex and bison files are generated in the output directory and
-> you have an old version of them in the source directory.
->
->
-> >
-> > >  # Gather build data:
-> > >  #   obj-y        - list of build objects
-> > >  #   subdir-y     - list of directories to nest
-> > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Buil=
-d
-> > > index 150765f2baee..f38a27765604 100644
-> > > --- a/tools/perf/pmu-events/Build
-> > > +++ b/tools/perf/pmu-events/Build
-> > > @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY)=
- $(METRIC_PY) $(METRIC_TEST_L
-> > >         $(call rule_mkdir)
-> > >         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARC=
-H) $(JEVENTS_MODEL) pmu-events/arch $@
-> > >  endif
-> > > +
-> > > +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
-> > > +       $(call rule_mkdir)
-> > > +       $(call if_changed_dep,$(host)cc_o_c)
-> >
-> > If we add this, do the Makefile.build changes still need to happen?
->
-> The Makefile.build changes are specific to flex and bison files.
-> So yes, we need this for pmu-events.c to work properly with O=3D
-> option.
+On Tue, Jul 25, 2023 at 08:36:09AM -0700,
+Sean Christopherson <seanjc@google.com> wrote:
 
-Got it, you are right I was confusing the flex/bison with the jevents
-case. Can we get away with a single rule then:
-```
- $(OUTPUT)%.o:  $(OUTPUT)%.c FORCE
-        $(call rule_mkdir)
-        $(call if_changed_dep,$(host)cc_o_c)
-```
+> On Tue, Jul 25, 2023, Xiaoyao Li wrote:
+> > On 7/21/2023 10:51 PM, Sean Christopherson wrote:
+> > > On Thu, Jul 20, 2023, isaku.yamahata@intel.com wrote:
+> > > > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> > > > index aa7a56a47564..32883e520b00 100644
+> > > > --- a/arch/x86/include/uapi/asm/kvm.h
+> > > > +++ b/arch/x86/include/uapi/asm/kvm.h
+> > > > @@ -562,6 +562,39 @@ struct kvm_pmu_event_filter {
+> > > >   /* x86-specific KVM_EXIT_HYPERCALL flags. */
+> > > >   #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
+> > > > +struct kvm_mem_enc_cmd {
+> > > > +	/* sub-command id of KVM_MEM_ENC_OP. */
+> > > > +	__u32 id;
+> > > > +	/*
+> > > > +	 * Auxiliary flags for sub-command.  If sub-command doesn't use it,
+> > > > +	 * set zero.
+> > > > +	 */
+> > > > +	__u32 flags;
+> > > > +	/*
+> > > > +	 * Data for sub-command.  An immediate or a pointer to the actual
+> > > > +	 * data in process virtual address.  If sub-command doesn't use it,
+> > > > +	 * set zero.
+> > > > +	 */
+> > > > +	__u64 data;
+> > > > +	/*
+> > > > +	 * Supplemental error code in the case of error.
+> > > > +	 * SEV error code from the PSP or TDX SEAMCALL status code.
+> > > > +	 * The caller should set zero.
+> > > > +	 */
+> > > > +	union {
+> > > > +		struct {
+> > > > +			__u32 error;
+> > > > +			/*
+> > > > +			 * KVM_SEV_LAUNCH_START and KVM_SEV_RECEIVE_START
+> > > > +			 * require extra data. Not included in struct
+> > > > +			 * kvm_sev_launch_start or struct kvm_sev_receive_start.
+> > > > +			 */
+> > > > +			__u32 sev_fd;
+> > > > +		};
+> > > > +		__u64 error64;
+> > > > +	};
+> > > > +};
+> > > 
+> > > Eww.  Why not just use an entirely different struct for TDX?  I don't see what
+> > > benefit this provides other than a warm fuzzy feeling that TDX and SEV share a
+> > > struct.  Practically speaking, KVM will likely take on more work to forcefully
+> > > smush the two together than if they're separate things.
+> > 
+> > generalizing the struct of KVM_MEM_ENC_OP should be the first step.
+> 
+> It's not just the one structure though.  The "data" field is a pointer to yet
+> another layer of commands, and SEV has a rather big pile of those.  Making
+> kvm_mem_enc_cmd common is just putting lipstick on a pig since the vast majority
+> of the structures associated with the ioctl() would still be vendor specific.
+
+>   struct kvm_sev_launch_start
+>   struct kvm_sev_launch_update_data
+>   struct kvm_sev_launch_secret
+>   struct kvm_sev_launch_measure
+>   struct kvm_sev_guest_status
+>   struct kvm_sev_dbg
+>   struct kvm_sev_attestation_report
+>   struct kvm_sev_send_start
+>   struct kvm_sev_send_update_data
+>   struct kvm_sev_receive_start
+>   struct kvm_sev_receive_update_data
+> 
+> FWIW, I really dislike KVM's uAPI for KVM_MEM_ENC_OP.  The above structures are
+> all basically copied verbatim from PSP firmware structures, i.e. the commands and
+> their payloads are tightly coupled to "hardware" and essentially have no abstraction
+> whatsoever.   But that ship has already sailed, and practically speaking trying to
+> provide a layer of abstraction might not of worked very well anyways.
+> 
+> In other words, unless there's an obvious and easy way path to convergence, I
+> recommend you don't spend much time/effort on trying to share code with TDX.
+
+I think we can easily unify vcpu initialization, populating/measure initial
+memory, completing guest creation, and guest memory access for debug.
+
+KVM_SEV_LAUNCH_UPDATE_VMSA <-> KVM_TDX_INIT_VCPU
+KVM_SEV_LAUNCH_UPDATE_DATA and KVM_SEV_LAUNCH_MEASURE <-> KVM_INIT_MEM_REGION
+KVM_SEV_LAUNCH_FINISH <-> KVM_TDX_FINALIZE_VM
+KVM_SEV_DBG_DECRYPT, KVM_SEV_DBG_ENCRYPT: KVM common API for access protected guest memory
+
+
+Here's my assessment. For now I don't address migration.
+
+For creating confidential guest:
+
+- Get the capability of underlying platform
+  KVM_TDX_CAPABILITY: no sev correspondence.
+
+- Initialize VM as confidential VM
+  struct kvm_sev_launch_start
+  KVM_SEV{,_ES}_INIT, and KVM_SEV_LAUNCH_START:
+  KVM_TDX_INIT_VM
+  They take vendor specific data.
+
+
+- Initialize vcpu
+  KVM_SEV_LAUNCH_UPDATE_VMSA: no extra argument
+  KVM_TDX_INIT_VCPU:          no extra argument
+
+
+- populate initial memory + measurement
+  KVM_SEV_LAUNCH_UPDATE_DATA and KVM_SEV_LAUNCH_MEASURE,
+  struct kvm_sev_launch_update_data {
+        __u64 uaddr;
+        __u32 len;
+  };
+  struct kvm_sev_launch_measure {
+        __u64 uaddr;
+        __u32 len;
+  };
+  => GPA is calculated from uaddr.
+
+  KVM_INIT_MEM_REGION:
+  struct kvm_tdx_init_mem_region {
+        __u64 source_addr;      // uaddr
+        __u64 gpa;
+        __u64 nr_pages;
+  };
+
+  I think those can same structure. Or prefault or prepopulating
+  e.g.
+  struct {
+        __u64 uaddr;
+        __u64 gpa;
+        __u64 len;
+  #define FLAG_MEASURE    BIT(0)
+  #define FLAG_GPA        BIT(1)  // GPA is valid or calculated from uaddr
+        __u64 flags;
+  };
+  
+
+- Complete initialization. Make the guest ready to run vcpu
+  KVM_SEV_LAUNCH_FINISH: no argument
+  KVM_TDX_FINALIZE_VM:   no argument
+
+- KVM_SEV_LAUNCH_SECRET: no TDX correspondence
+  struct kvm_sev_launch_secret
+
+
+For guest debug
+
+- KVM_SEV_DBG_DECRYPT, KVM_SEV_DBG_ENCRYPT: struct kvm_sev_dbg
+  This is to read/write guest memory for debug. We can easily have a common
+  API.
+
+- KVM_SEV_GUEST_STATUS
+  struct kvm_sev_guest_status
+  No TDX correspondence
 
 Thanks,
-Ian
-
-> Thanks,
-> Namhyung
+-- 
+Isaku Yamahata <isaku.yamahata@gmail.com>
