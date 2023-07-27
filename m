@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62091765FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2940A765FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 00:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbjG0Wph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 18:45:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+        id S232906AbjG0WqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 18:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbjG0Wpe (ORCPT
+        with ESMTP id S229804AbjG0WqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 18:45:34 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981581BC1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LoduP1UamaT/+ogLoNIAgvTkfNZr7ByPIP2cFFFsEHQ=; b=WeE/qkMqWe9tCCn7KaOqLaImq9
-        3jwa0ngavxNXZ+D6yU8R24mwAx04zhYAkwShZuhn+zCj6p7+/ao1tYD0xxFMLQrbN1lgKuLcWE1uA
-        RRtz9jFZ7ZpqUSwBH1WY5+dj8IGGjxVn7QPTXwWGcLJ+cihb9WYPIGZwn0aOTKrqZWogOSaEZttte
-        JAe7RRCRPUd5hdngMXnk5ba0JJ3ewGGssnMXvCYmq5/QrO1Hc+dU1cA/WnrnuYHWfPa+6EUsr48Oh
-        BpxNdviGdDGlaUKf/HrAjz6aTR+LlZsCofLS4KpJkZxzTmmP+TOndlF7QGtobA1aTQDmqBK1lzCHg
-        qfVZk0jg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qP9ja-000lxH-1U;
-        Thu, 27 Jul 2023 22:45:26 +0000
-Date:   Thu, 27 Jul 2023 15:45:26 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     Scott Branden <sbranden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tianfei zhang <tianfei.zhang@intel.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>,
+        Thu, 27 Jul 2023 18:46:16 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58881BC3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:46:15 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57320c10635so14862037b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 15:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690497975; x=1691102775;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+xSxR3hp/I+0TJm3Gw1q3yDgLZR8du1mEjkS4CS9C3Y=;
+        b=3p4mB6hS4bB4DjFvuA8AjBwm5q5y+9Rzo3bKtgHjsDBsRvfkB/zxRokoM6g5pNE/r/
+         ZnvKnqADVXicY1zIdf1mIprFzlLZImIXH/CI0gtSf2ESS1Z/gZYWL+ArRYrb1YIZUMSD
+         mqlsU25BuAOrvimQaJpZ08nOy4tHf6aQQSFHSU/YU6HpRljTxIg5nDzc51mMJc3On4pJ
+         64Vx2T9bnQutSKVxTtf0+xyW6SO/QUumDNILCURJWyNR1tewKdbLlTqGU9Cju7temypD
+         L90tLrBo5GwqkwwwM0PC2+/H8f8qPtaM/j9HpULrmpfBJfIF9O2PBwZxWbEpTb/MOFCA
+         2aXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690497975; x=1691102775;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+xSxR3hp/I+0TJm3Gw1q3yDgLZR8du1mEjkS4CS9C3Y=;
+        b=ioLq1RxQOf2HuZ7NRE9ynIoPx5P+iU9jNO0x9EjTsFcqgqM7ogzEMM5pPyEWVo9bVr
+         BLPZGa9AANP3ZC2jZ7FgWAOjNfS0HOXvcDTpjaqQvbBFRWQB/Y1yXy2z7GcA1pe3I0Kx
+         IUkqFsxulhQWb/VEhJ/qfC9tzXWz+7TCgWQ28jAjwD5bVAOsuFxmZ4O/Zgr01R7yWEgA
+         BuQ9rR1c8gOw5UGKUbhmrZCCKVM0L465u1fdQKQl02Y1AuOuD0rUhpOBZvdPDqpLVBxg
+         n0lnMOSwX4erQ5ifL0CpUlu3HPGJ50MSfybNSnrKywID8pYJriAD2E8xSuIKOGgPPTVI
+         otDg==
+X-Gm-Message-State: ABy/qLYh6c5mUFmAxfXi1S5A/xLmaBIt6geUv1KEzlDnRrQtPXtqNhdt
+        LHlwdv9Qj4cf6jZfhonvxVfbwbfolblUcPByZA==
+X-Google-Smtp-Source: APBJJlFtIfNRWhxKI9ReVlZVrIdSJVbc68FHmf1QrwaTAqeS7qwdelvTuwenzmSR6B4vHHVO4ceb+3rUp6w8zZjxvA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:c58a:0:b0:d07:9d79:881c with SMTP
+ id v132-20020a25c58a000000b00d079d79881cmr4ybe.11.1690497974749; Thu, 27 Jul
+ 2023 15:46:14 -0700 (PDT)
+Date:   Thu, 27 Jul 2023 22:46:13 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALTzwmQC/x2MywqAIBAAfyX2nGD2kPqV6GDrVnvRcCkC6d+TL
+ gNzmMkglJgEpipDopuFYyjS1BXg4cJOin1xMNq02hqrJF7BF6LC6AlFjZ3dcB37dnAWSnYm2vj 5l/Pyvh9K+aHLYgAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690497974; l=2418;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=bZgCYDFF558H9+uGABOoX1/6Falrihq1b+s55TkP1Rc=; b=RXhH5b4I6Sx8dSLpV7dWRHWahWzUnLIfmT5bv+HNz20DE0PdQ7UaHD8k8TSZLqjCeBJjEBK26
+ QNpKX4HQNG5ANdl4Q781Tn39kh8DTU+nTEgSo6JdYZ3svnd/iWTQW6q
+X-Mailer: b4 0.12.3
+Message-ID: <20230727-sound-soc-codecs-v1-1-562fa2836bf4@google.com>
+Subject: [PATCH] ASoC: 88pm860x: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         Kees Cook <keescook@chromium.org>,
-        Dan Carpenter <error27@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Subject: Re: [PATCH RESEND v4 1/1] test_firmware: fix some memory leaks and
- racing conditions
-Message-ID: <ZMLzhsqv6F4wNZq1@bombadil.infradead.org>
-References: <20230421185205.28743-1-mirsad.todorovac@alu.unizg.hr>
- <ZEgbkoSjHcVLcCcp@bombadil.infradead.org>
- <e9af482f-5b8a-70c0-d767-e98703cd1b03@alu.unizg.hr>
- <ZMKPCtftDQnfakId@bombadil.infradead.org>
- <8f6e7b28-e59d-96dd-1c46-bde3e3e56b54@alu.unizg.hr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f6e7b28-e59d-96dd-1c46-bde3e3e56b54@alu.unizg.hr>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,75 +76,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 12:14:22AM +0200, Mirsad Todorovac wrote:
-> On 7/27/23 17:36, Luis Chamberlain wrote:
-> > On Thu, Jul 27, 2023 at 08:16:17AM +0200, Mirsad Todorovac wrote:
-> > > On 25.4.2023. 20:27, Luis Chamberlain wrote:
-> > > > On Fri, Apr 21, 2023 at 08:52:06PM +0200, Mirsad Goran Todorovac wrote:
-> > > > > Some functions were called both from locked and unlocked context, so
-> > > > > the lock was dropped prematurely, introducing a race condition when
-> > > > > deadlock was avoided.
-> > > > > 
-> > > > > Having two locks wouldn't assure a race-proof mutual exclusion.
-> > > > > 
-> > > > > __test_dev_config_update_bool(), __test_dev_config_update_u8() and
-> > > > > __test_dev_config_update_size_t() unlocked versions of the functions
-> > > > > were introduced to be called from the locked contexts as a workaround
-> > > > > without releasing the main driver's lock and causing a race condition.
-> > > > > 
-> > > > > This should guarantee mutual exclusion and prevent any race conditions.
-> > > > > 
-> > > > > Locked versions simply allow for mutual exclusion and call the unlocked
-> > > > > counterparts, to avoid duplication of code.
-> > > > > 
-> > > > > trigger_batched_requests_store() and trigger_batched_requests_async_store()
-> > > > > now return -EBUSY if called with test_fw_config->reqs already allocated,
-> > > > > so the memory leak is prevented.
-> > > > > 
-> > > > > The same functions now keep track of the allocated buf for firmware in
-> > > > > req->fw_buf as release_firmware() will not deallocate this storage for us.
-> > > > > 
-> > > > > Additionally, in __test_release_all_firmware(), req->fw_buf is released
-> > > > > before calling release_firmware(req->fw),
-> > > > > foreach test_fw_config->reqs[i], i = 0 .. test_fw_config->num_requests-1
-> > > > > 
-> > > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > > Cc: Luis Chamberlain <mcgrof@kernel.org>
-> > > > > Cc: Russ Weight <russell.h.weight@intel.com>
-> > > > > Cc: Tianfei zhang <tianfei.zhang@intel.com>
-> > > > > Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > > Cc: Zhengchao Shao <shaozhengchao@huawei.com>
-> > > > > Cc: Colin Ian King <colin.i.king@gmail.com>
-> > > > > Cc: linux-kernel@vger.kernel.org
-> > > > > Cc: Takashi Iwai <tiwai@suse.de>
-> > > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > > Cc: Scott Branden <sbranden@broadcom.com>
-> > > > > Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-> > > > > Suggested-by: Dan Carpenter <error27@gmail.com>
-> > > > > Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-> > > > 
-> > > > Mirad, thanks for this work, good stuff! So the patch just needs to be
-> > > > adjust with:
-> > > > 
-> > > > Fixes: 7feebfa487b92 ("test_firmware: add support for request_firmware_into_buf"
-> > > > Cc: stable@vger.kernel.org # v5.4
-> > > > 
-> > > > Then, can you split the patch in two, one which fixes the memory leaks
-> > > > and another that deals with the mutexes. The second patch might be a fix
-> > > > for the original code but I can't tell until I see the changes split out.
-> > > > 
-> > > > The commit log should account for the memory leak and be clear how it
-> > > > happens. The other commit log for the second patch should clarify what
-> > > > it fixes and why as well.
-> > > 
-> > > It seems to me that there is something wrong with the patchwork, as this commit
-> > > had not yet appeared in 5.4 LTS stable tree?
-> > 
-> > Did you resend a new v5 with the requested changes?
-> 
-> Actually, I am not sure what is the procedure, for it is accepted and visible in 5.10+ trees?
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Ah its upstream but not on v5.4. Just send a patch to stable folks and
-include its commit IDs as stable patches typically do.
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ always the case for `strncpy`!
 
-  Luis
+In this case, though, there was care taken to ensure that the
+destination buffer would be NUL-terminated. The destination buffer is
+zero-initialized and each `pm860x->name[i]` has a size of
+`MAX_NAME_LENGTH + 1`. This means that there is unlikely to be a bug
+here.
+
+However, in an attempt to eliminate the usage of the `strncpy` API as
+well as disambiguate implementations, replacements such as: `strscpy`,
+`strscpy_pad`, `strtomem` and `strtomem_pad` should be preferred.
+
+We are able to eliminate the need for `len + 1` since `strscpy`
+guarantees NUL-termination for its destination buffer as per its
+implementation [3]:
+
+|       /* Hit buffer length without finding a NUL; force NUL-termination. */
+|       if (res)
+| 	        dest[res-1] = '\0';
+
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+[3]: https://elixir.bootlin.com/linux/v6.3/source/lib/string.c#L183
+
+Link: https://github.com/KSPP/linux/issues/90
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ sound/soc/codecs/88pm860x-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
+index 3574c68e0dda..d99b674d574b 100644
+--- a/sound/soc/codecs/88pm860x-codec.c
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -143,7 +143,7 @@ struct pm860x_priv {
+ 	struct pm860x_det	det;
+ 
+ 	int			irq[4];
+-	unsigned char		name[4][MAX_NAME_LEN+1];
++	unsigned char		name[4][MAX_NAME_LEN];
+ };
+ 
+ /* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
+@@ -1373,7 +1373,7 @@ static int pm860x_codec_probe(struct platform_device *pdev)
+ 			return -EINVAL;
+ 		}
+ 		pm860x->irq[i] = res->start + chip->irq_base;
+-		strncpy(pm860x->name[i], res->name, MAX_NAME_LEN);
++		strscpy(pm860x->name[i], res->name, MAX_NAME_LEN);
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+
+---
+base-commit: 57012c57536f8814dec92e74197ee96c3498d24e
+change-id: 20230727-sound-soc-codecs-947fcb9536a7
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
