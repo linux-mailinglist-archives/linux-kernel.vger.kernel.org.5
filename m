@@ -2,92 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCCB76546D
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C564765474
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjG0NAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
+        id S232632AbjG0NBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjG0NAQ (ORCPT
+        with ESMTP id S230466AbjG0NBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:00:16 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4811FFC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690462815; x=1721998815;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xHS7xsfQ8zvAAbvSCWBxFjUjiHKlwN7kYd5pBgiPVDs=;
-  b=FDhi+8M/SLvHZ0vvBxSPpKxW0dAFWhszBRbOeVasZDWJcuJSPJ/kfTUb
-   1SQqDhEJmAP1ARjVyPfDQpcuSpTLvvShdf1a0ZhPJXEyZKfgXhHPgTee4
-   c03FEv5HlaQ6MpymA6dn1V0Izzp+/k5SEn1PhB+E+mJuXY+ka1juUdLXe
-   Z6khw4HoRrhhsLBZvEveXNOAXg91ePGBjc1Gy+BE1/GTHNaDgaSEdApH4
-   wLcJzxFNkWhk6nJj65AxW3atr9EfbY8HVq2NVtnzt5AeTKEY/N/Fqi7lz
-   LiO3tMho3YJPrBCGKX/zQViuDHBNRIcUx2UCyhXZ7v6las4dTWaqBa4WG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="367179048"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="367179048"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:00:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="973542437"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="973542437"
-Received: from lzhiguno-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.37.222])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:00:11 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id DAB09109503; Thu, 27 Jul 2023 16:00:08 +0300 (+03)
-Date:   Thu, 27 Jul 2023 16:00:08 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        n.borisov.lkml@gmail.com
-Subject: Re: [PATCH v3 03/12] x86/tdx: Make macros of TDCALLs consistent with
- the spec
-Message-ID: <20230727130008.jx3olv4pwpdsrui2@box.shutemov.name>
-References: <cover.1690369495.git.kai.huang@intel.com>
- <b3f5a25e72094a11add22e1a7c5dda3ea91d0e98.1690369495.git.kai.huang@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b3f5a25e72094a11add22e1a7c5dda3ea91d0e98.1690369495.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 27 Jul 2023 09:01:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BC11FF3;
+        Thu, 27 Jul 2023 06:01:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1ED6561E73;
+        Thu, 27 Jul 2023 13:01:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79519C433C8;
+        Thu, 27 Jul 2023 13:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690462900;
+        bh=fTbtHKK1LWSfhgfXTFe0mRYDtIWLTxFwG5CNFQRWExE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GElMKdALwdZ4HchNwP1G+tH9ejPeU808clyr6GKzYes2dYD+trW0cO9gEhlMRDWRC
+         r8B3HQNGi4HMq7nvM6j9vK8beyMbFY5EOjXWTYl/r/0sg5iGFLfUzFuuQPLFScGfau
+         zm1pH2jzU1dVK3kHCSsdIgJOomGWNVCZwHT+Qs7kfurcMDuok3PvaJnGQx7CrexKdN
+         aDYRqoHbivRfbA39VLOEr8CVnfBYglE3rO8pnDoHhZmFW7rX/78Q1zX25tjEXuFJT1
+         BcXE/6jlMnEPBq9OcrA1g3Op80T5c1K7ERXxnhOegh7PUM1BSB6hTyoolW1RBT1rbB
+         FyMeC8mFV1Dqg==
+Received: from [104.132.45.102] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qP0cc-00HMRx-18;
+        Thu, 27 Jul 2023 14:01:38 +0100
+Date:   Thu, 27 Jul 2023 14:01:37 +0100
+Message-ID: <87lef1qzim.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v7 08/12] KVM: arm64: Define kvm_tlb_flush_vmid_range()
+In-Reply-To: <87o7jxr06t.wl-maz@kernel.org>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-9-rananta@google.com>
+        <87o7jxr06t.wl-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.45.102
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, gshan@redhat.com, shahuang@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:25:05PM +1200, Kai Huang wrote:
-> The TDX spec names all TDCALLs with prefix "TDG".  Currently, the kernel
-> doesn't follow such convention for the macros of those TDCALLs but uses
-> prefix "TDX_" for all of them.  Although it's arguable whether the TDX
-> spec names those TDCALLs properly, it's better for the kernel to follow
-> the spec when naming those macros.
+On Thu, 27 Jul 2023 13:47:06 +0100,
+Marc Zyngier <maz@kernel.org> wrote:
 > 
-> Change all macros of TDCALLs to make them consistent with the spec.  As
-> a bonus, they get distinguished easily from the host-side SEAMCALLs,
-> which all have prefix "TDH".
+> On Sat, 22 Jul 2023 03:22:47 +0100,
+> Raghavendra Rao Ananta <rananta@google.com> wrote:
+> > 
+> > Implement the helper kvm_tlb_flush_vmid_range() that acts
+> > as a wrapper for range-based TLB invalidations. For the
+> > given VMID, use the range-based TLBI instructions to do
+> > the job or fallback to invalidating all the TLB entries.
+> > 
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
+> >  arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
+> >  2 files changed, 30 insertions(+)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> > index 8294a9a7e566..5e8b1ff07854 100644
+> > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > @@ -754,4 +754,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
+> >   *	   kvm_pgtable_prot format.
+> >   */
+> >  enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
+> > +
+> > +/**
+> > + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entries
+> > + *
+> > + * @mmu:	Stage-2 KVM MMU struct
+> > + * @addr:	The base Intermediate physical address from which to invalidate
+> > + * @size:	Size of the range from the base to invalidate
+> > + */
+> > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> > +				phys_addr_t addr, size_t size);
+> >  #endif	/* __ARM64_KVM_PGTABLE_H__ */
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> > index aa740a974e02..5d14d5d5819a 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -670,6 +670,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *pgt)
+> >  	return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
+> >  }
+> >  
+> > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> > +				phys_addr_t addr, size_t size)
+> > +{
+> > +	unsigned long pages, inval_pages;
+> > +
+> > +	if (!system_supports_tlb_range()) {
+> > +		kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
+> > +		return;
+> > +	}
+> > +
+> > +	pages = size >> PAGE_SHIFT;
+> > +	while (pages > 0) {
+> > +		inval_pages = min(pages, MAX_TLBI_RANGE_PAGES);
+> > +		kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inval_pages);
+> > +
+> > +		addr += inval_pages << PAGE_SHIFT;
+> > +		pages -= inval_pages;
+> > +	}
+> > +}
+> > +
 > 
-> No functional change intended.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> This really shouldn't live in pgtable.c. This code gets linked into
+> the EL2 object. What do you think happens if, for some reason, this
+> gets called *from EL2*?
 
-I remember we had few back-and-forth on naming this defines. I think
-matching names to the spec is helpful for future readers:
+Ah, actually, nothing too bad would happen, as we convert the
+kvm_call_hyp() into a function call.
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+But still, we don't need two copies of this stuff, and it can live in
+mmu.c.
+
+	M.
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Without deviation from the norm, progress is not possible.
