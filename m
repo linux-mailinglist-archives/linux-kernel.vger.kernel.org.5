@@ -2,167 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4404A7651EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6864E7651EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbjG0LEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
+        id S233013AbjG0LD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbjG0LEt (ORCPT
+        with ESMTP id S231387AbjG0LD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:04:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D049F30D2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690455845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dk3LN9ysCMp0nX/c571qwFAAMC2Qp+rntI/6p9s/CFU=;
-        b=U3NuZVGQwSwuLwWTmTtzjcntHvaj3sRMmpjQhgDuhwFaJuUbnH6INY6nXRSiuWj2KciT8G
-        q68MhdiUkFOENuXzBS+YR6HIPxreA+Zk7cdoSX2R/tbk9JTRY2vVPBCMmW2a07Ss+WVcUR
-        6qUK+vGD6YoSFovCcOq8DCd05QNfwLg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-288-TcWP7TS-PI2LdyOhCHXttg-1; Thu, 27 Jul 2023 07:04:04 -0400
-X-MC-Unique: TcWP7TS-PI2LdyOhCHXttg-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51bee352ffcso536744a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:04:04 -0700 (PDT)
+        Thu, 27 Jul 2023 07:03:57 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C740DA0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:03:55 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso11946991fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690455834; x=1691060634;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cZF3XtrIp2bOiTmk2h41l3lxAy20S9f02tlSc0yU7eM=;
+        b=W2K8qz+7PujcvBXOJtpjKU8HGHnsNuuCRo2r+LB0U2bYRQ75DJUW6ayx11pWS84xP5
+         6/CYqd4Q+USeDvQYGl4cyIRi6UXvlVghF1HK60pkqVCcYPLPKncN4G+GBoWSY9ydl77i
+         LimmOT+vSvt5nwyYBWfJjsb7K/5EhNkQlqX+kOwvoShtqD4xjPnXHGmP2IHFSUVwW0Lv
+         e6+C3NSA5zNkO4dWidxxwylmlTaGWoatKkuMqKlZy3Za3NDcY3psnOMxUhyx9L7NS6pe
+         /bYJBbuVMqzN03BkBxERxBK6HL6eaGVCeBuGiBxRUXOQTRaHlI8YK6YdxvpI/YbkAnaN
+         SQjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690455843; x=1691060643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dk3LN9ysCMp0nX/c571qwFAAMC2Qp+rntI/6p9s/CFU=;
-        b=K7SAzuaX64yGwDbkqCPS23Pom8agIhipSlSFksb3ZwmCji4MTxoVl72NFsUh7n8K2B
-         fFkYEkUNYPFT9qmk292DDP+ztMogRSS5M90bT5oEPE7h+H1Uzsj9GVDeZTfp9e1MFdcK
-         dwsv5eRWF4c0kyBTxbdyO5ORce/Y+FOukEG9AyhWeiCoNGh3/+dtvNKh4heMZeJzf3Xb
-         A5QclH/hDVjVznv2nVgXHNnCGpW0x3GVl9iwVID7TZBnCanKm4HporKwoNdlEtovum2P
-         Bzas2kH8tYD+qRkojJ0B4itCJop2c6VERurZwNIDwE62OGjFXc5XimMO7ZpgaWOLPqYH
-         CAjg==
-X-Gm-Message-State: ABy/qLbQCxJBncJ4HY1D9s9txLGispJeTwww2ZnafVwre2x6TmB4sM3n
-        PPeDHj3KTM9UGakwp7DDm1GFDQ7u2U7x+4JvwMsxo92QXoFFmBlSWVUZShK/X/5kB5KKVKat8aZ
-        8jXzSIn7RqbOfjQIkfU68RKhX3KdN0AspR0yAKy7I
-X-Received: by 2002:a05:6402:1816:b0:522:3790:1303 with SMTP id g22-20020a056402181600b0052237901303mr1439875edy.32.1690455843443;
-        Thu, 27 Jul 2023 04:04:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGVNw/Z6wVqm/KZzUEarit/lmkOUef30Ga5juO1p3ACM6osXPaYMMA5sLXXHwivu6UQMvBnH0lT00nmKBGSQa4=
-X-Received: by 2002:a05:6402:1816:b0:522:3790:1303 with SMTP id
- g22-20020a056402181600b0052237901303mr1439861edy.32.1690455843131; Thu, 27
- Jul 2023 04:04:03 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690455834; x=1691060634;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cZF3XtrIp2bOiTmk2h41l3lxAy20S9f02tlSc0yU7eM=;
+        b=MW4XnKKEYy6Fauq6OdqakfC/qF2g74nF3EYHs/d9ZTIKEidRnNpvpU70dKsxK1JXE8
+         G0WZf89S7S4JZH0nQk8NSwdcOT1Dstxbjcg5E9bE2R3aDZe0ttDrtQbqkI5zDXtlT760
+         fGuWQPzSeBFDvyDRbcvrnNeAzQfRw5gt29bcYJyaSwiMajY0XbLONQz/0ju3LTbRbD7I
+         4I3YoROO/PF4wqPS3MF2BDFx6fgmKYfNHC8A9bVy3G4KNU+MPSeifjKEPRp2HMecexf0
+         htkO//krnz4OrMKmpQngQokJo0voqdf208Jn5bj/X78uvdnGcGAAvKlCoBTdPH0rAdyM
+         1FzQ==
+X-Gm-Message-State: ABy/qLbWBr9d1hlfe1woKZkZqiQwg8bebd/qknSmcCD9SqpC/ERmoteN
+        jiPrj0AMGMAL3ShEXO3pekFouA==
+X-Google-Smtp-Source: APBJJlHK3JMIN7o6/6Mbuizxurh3A/QfIfawJ73wXqooHzlUEfbBjgXc17g25yWxQ+DfBbpe8Wk8QA==
+X-Received: by 2002:a2e:804e:0:b0:2b5:7fba:18ac with SMTP id p14-20020a2e804e000000b002b57fba18acmr1516711ljg.48.1690455833779;
+        Thu, 27 Jul 2023 04:03:53 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id a24-20020a170906245800b0099bcd1fa5b0sm626339ejb.192.2023.07.27.04.03.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 04:03:53 -0700 (PDT)
+Message-ID: <ec66e067-642e-1512-3e4b-b51065ccc75d@baylibre.com>
+Date:   Thu, 27 Jul 2023 13:03:51 +0200
 MIME-Version: 1.0
-References: <20230601072043.24439-1-ltao@redhat.com> <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
- <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com> <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
-In-Reply-To: <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
-From:   Tao Liu <ltao@redhat.com>
-Date:   Thu, 27 Jul 2023 19:03:26 +0800
-Message-ID: <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
-        kexec@lists.infradead.org, linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND v6 09/11] drm/mediatek: gamma: Add support for
+ 12-bit LUT and MT8195
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
+        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com, ehristev@collabora.com,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
+References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
+ <20230727094633.22505-10-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230727094633.22505-10-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav,
+Hi Angelo !
 
-Sorry for the late response. I spent some time retesting your patch
-against 6.5.0-rc1 and 6.5.0-rc3, and it is OK. So
+On 27/07/2023 11:46, AngeloGioacchino Del Regno wrote:
+> Add support for 12-bit gamma lookup tables and introduce the first
+> user for it: MT8195.
+> While at it, also reorder the variables in mtk_gamma_set_common()
+> and rename `lut_base` to `lut0_base` to improve readability.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> ---
+>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 61 ++++++++++++++++++-----
+>   1 file changed, 48 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+> index f1a0b18b6c1a..e0e2d2bdbf59 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+> @@ -27,12 +27,20 @@
+>   #define DISP_GAMMA_SIZE_VSIZE				GENMASK(12, 0)
+>   #define DISP_GAMMA_BANK				0x0100
+>   #define DISP_GAMMA_BANK_BANK				GENMASK(1, 0)
+> +#define DISP_GAMMA_BANK_DATA_MODE			BIT(2)
+>   #define DISP_GAMMA_LUT				0x0700
+> +#define DISP_GAMMA_LUT1				0x0b00
 
-Reported-and-tested-by: Tao Liu <ltao@redhat.com>
+Is this offset generic to all MTK SoC which support this driver ?
 
-And will we use this patch as a workaround or will we wait for a
-better solution as proposed by Michael?
+>   
+> +/* For 10 bit LUT layout, R/G/B are in the same register */
+>   #define DISP_GAMMA_LUT_10BIT_R			GENMASK(29, 20)
+>   #define DISP_GAMMA_LUT_10BIT_G			GENMASK(19, 10)
+>   #define DISP_GAMMA_LUT_10BIT_B			GENMASK(9, 0)
+>   
+> +/* For 12 bit LUT layout, R/G are in LUT, B is in LUT1 */
 
-On Mon, Jul 17, 2023 at 10:14=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
-te:
->
-> On Mon, Jul 17, 2023 at 09:53:06PM +0800, Tao Liu wrote:
-> > ...snip...
-> > [   21.360763]  nvme0n1: p1 p2 p3
-> > [   21.364207] igc 0000:03:00.0: PTM enabled, 4ns granularity
-> > [   21.421097] pps pps1: new PPS source ptp1
-> > [   21.425396] igc 0000:03:00.0 (unnamed net_device) (uninitialized): P=
-HC added
-> > [   21.457005] igc 0000:03:00.0: 4.000 Gb/s available PCIe bandwidth
-> > (5.0 GT/s PCIe x1 link)
-> > [   21.465210] igc 0000:03:00.0 eth1: MAC: ...snip...
-> > [   21.473424] igc 0000:03:00.0 enp3s0: renamed from eth1
-> > [   21.479446] BUG: kernel NULL pointer dereference, address: 000000000=
-0000008
-> > [   21.486405] #PF: supervisor read access in kernel mode
-> > [   21.491519] mmc1: Failed to initialize a non-removable card
-> > [   21.491538] #PF: error_code(0x0000) - not-present page
-> > [   21.502229] PGD 0 P4D 0
-> > [   21.504773] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > [   21.509133] CPU: 3 PID: 402 Comm: systemd-udevd Not tainted 6.5.0-rc=
-1+ #1
-> > [   21.515905] Hardware name: ...snip...
-> > [   21.522851] RIP: 0010:kernfs_dop_revalidate+0x2b/0x120
->
-> So something's weird here - my patch should not cause a null ptr deref
-> here.
+As I understood from the application processor registers (v0.4), R/G are 
+in LUT, B is in LUT1 for 10bit and 12bit for MT8195. Can you check 
+please to be sure ?
 
-The random kernel panic I encountered is irrelevant to this patch, and
-I'm pretty sure it is caused by some driver, highly suspicious it is
-the graphic card driver i915.ko. When I apply this patch, 1)
-disconnect the monitor(using serial port to login) and keep i915, or
-2) connect the monitor but remove i915, the kexec kernel will not
-fail. Though i915 has provided a pci shutdown function, maybe some bug
-triggered and caused memory overwrite after kexec. Anyway, it is
-another issue.
+> +#define DISP_GAMMA_LUT_12BIT_R			GENMASK(11, 0)
+> +#define DISP_GAMMA_LUT_12BIT_G			GENMASK(23, 12)
+> +#define DISP_GAMMA_LUT_12BIT_B			GENMASK(11, 0)
+> +
+>   #define LUT_10BIT_MASK				0x03ff
+>   #define LUT_BITS_DEFAULT			10
+>   #define LUT_SIZE_DEFAULT			512
+> @@ -83,14 +91,15 @@ unsigned int mtk_gamma_get_lut_size(struct device *dev)
+>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crtc_state *state)
+>   {
+>   	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
+> -	unsigned int i;
+> +	void __iomem *lut0_base = regs + DISP_GAMMA_LUT;
+> +	void __iomem *lut1_base = regs + DISP_GAMMA_LUT1;
+> +	u32 cfg_val, data_mode, lbank_val, word[2];
+> +	int cur_bank, num_lut_banks;
+> +	u16 lut_bank_size, lut_size;
+>   	struct drm_color_lut *lut;
+> -	void __iomem *lut_base;
+> +	unsigned int i;
+>   	bool lut_diff;
+> -	u16 lut_bank_size, lut_size;
+>   	u8 lut_bits;
+> -	u32 cfg_val, lbank_val, word;
+> -	int cur_bank, num_lut_banks;
+>   
+>   	/* If there's no gamma lut there's nothing to do here. */
+>   	if (!state->gamma_lut)
+> @@ -110,14 +119,17 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crt
+>   	num_lut_banks = lut_size / lut_bank_size;
+>   
+>   	cfg_val = readl(regs + DISP_GAMMA_CFG);
+> -	lut_base = regs + DISP_GAMMA_LUT;
+>   	lut = (struct drm_color_lut *)state->gamma_lut->data;
+>   
+> +	/* Switch to 12 bits data mode if supported */
+> +	data_mode = FIELD_PREP(DISP_GAMMA_BANK_DATA_MODE, !!(lut_bits == 12));
+> +
+>   	for (cur_bank = 0; cur_bank < num_lut_banks; cur_bank++) {
+>   
+>   		/* Switch gamma bank and set data mode before writing LUT */
+>   		if (num_lut_banks > 1) {
+>   			lbank_val = FIELD_PREP(DISP_GAMMA_BANK_BANK, cur_bank);
+> +			lbank_val |= data_mode;
+>   			writel(lbank_val, regs + DISP_GAMMA_BANK);
+>   		}
+>   
+> @@ -130,9 +142,15 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crt
+>   			hwlut.blue = drm_color_lut_extract(lut[n].blue, lut_bits);
+>   
+>   			if (!lut_diff || (i % 2 == 0)) {
+> -				word = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, hwlut.red);
+> -				word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, hwlut.green);
+> -				word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, hwlut.blue);
+> +				if (lut_bits == 12) {
+> +					word[0] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_R, hwlut.red);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_12BIT_G, hwlut.green);
+> +					word[1] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_B, hwlut.blue);
+> +				} else {
+> +					word[0] = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, hwlut.red);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, hwlut.green);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, hwlut.blue);
+> +				}
+>   			} else {
+>   				diff.red = lut[n].red - lut[n - 1].red;
+>   				diff.red = drm_color_lut_extract(diff.red, lut_bits);
+> @@ -143,11 +161,19 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs, struct drm_crt
+>   				diff.blue = lut[n].blue - lut[n - 1].blue;
+>   				diff.blue = drm_color_lut_extract(diff.blue, lut_bits);
+>   
+> -				word = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, diff.red);
+> -				word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, diff.green);
+> -				word |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, diff.blue);
+> +				if (lut_bits == 12) {
+> +					word[0] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_R, diff.red);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_12BIT_G, diff.green);
+> +					word[1] = FIELD_PREP(DISP_GAMMA_LUT_12BIT_B, diff.blue);
+> +				} else {
+> +					word[0] = FIELD_PREP(DISP_GAMMA_LUT_10BIT_R, diff.red);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_G, diff.green);
+> +					word[0] |= FIELD_PREP(DISP_GAMMA_LUT_10BIT_B, diff.blue);
+> +				}
+>   			}
+> -			writel(word, (lut_base + i * 4));
+> +			writel(word[0], (lut0_base + i * 4));
+> +			if (lut_bits == 12)
+> +				writel(word[1], (lut1_base + i * 4));
 
-Thanks,
-Tao Liu
+ditto
 
->
-> > [   21.527995] Code: 1f 44 00 00 83 e6 40 0f 85 07 01 00 00 41 55 41
-> > 54 55 53 48 8b 47 30 48 89 fb 48 85 c0 0f 84 a2 00 00 00 48 8b a87
->
-> This looks weird too. There's no "<>" brackets denoting which byte it
-> was exactly where RIP pointed to when the NULL ptr happened.
->
-> Do
->
-> make fs/kernfs/dir.s
->
-> and upload dir.s and the dir.o file somewhere.
->
-> In any case, my patch shouldn't be causing this. At least I don't see
-> it.
->
-> I'm testing a better version of the patch and it should not cause this
-> thing even less.
->
-> > The stack trace may not be the same all the time, I didn't dive deep
-> > into the root cause, but it looks to me the patch will cause an
-> > unknown issue. Also I tested the patch on kernel-5.14.0-318.el9, it
->
-> This is the upstream kernel mailing list so those Frankenstein kernels
-> are all left to you.
->
-> Good luck. :-)
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
->
+>   		}
+>   	}
+>   
+> @@ -271,11 +297,20 @@ static const struct mtk_disp_gamma_data mt8183_gamma_driver_data = {
+>   	.lut_size = 512,
+>   };
+>   
+> +static const struct mtk_disp_gamma_data mt8195_gamma_driver_data = {
+> +	.lut_bank_size = 256,
+> +	.lut_bits = 12,
 
+If I'm right, ".lut_bits = 10" will not work properly.
+
+> +	.lut_diff = true,
+> +	.lut_size = 1024,
+> +};
+> +
+>   static const struct of_device_id mtk_disp_gamma_driver_dt_match[] = {
+>   	{ .compatible = "mediatek,mt8173-disp-gamma",
+>   	  .data = &mt8173_gamma_driver_data},
+>   	{ .compatible = "mediatek,mt8183-disp-gamma",
+>   	  .data = &mt8183_gamma_driver_data},
+> +	{ .compatible = "mediatek,mt8195-disp-gamma",
+> +	  .data = &mt8195_gamma_driver_data},
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, mtk_disp_gamma_driver_dt_match);
+
+-- 
+Regards,
+Alexandre
