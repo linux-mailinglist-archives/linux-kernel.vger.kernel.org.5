@@ -2,42 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1B97651E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4404A7651EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbjG0LDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
+        id S233080AbjG0LEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjG0LCs (ORCPT
+        with ESMTP id S232058AbjG0LEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:02:48 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5871330CF
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:02:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96136D75;
-        Thu, 27 Jul 2023 04:03:16 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAFA03F5A1;
-        Thu, 27 Jul 2023 04:02:31 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v1] mm: Fix use-after-free for MMU_GATHER_NO_GATHER
-Date:   Thu, 27 Jul 2023 12:02:24 +0100
-Message-Id: <20230727110224.3333682-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 27 Jul 2023 07:04:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D049F30D2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690455845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dk3LN9ysCMp0nX/c571qwFAAMC2Qp+rntI/6p9s/CFU=;
+        b=U3NuZVGQwSwuLwWTmTtzjcntHvaj3sRMmpjQhgDuhwFaJuUbnH6INY6nXRSiuWj2KciT8G
+        q68MhdiUkFOENuXzBS+YR6HIPxreA+Zk7cdoSX2R/tbk9JTRY2vVPBCMmW2a07Ss+WVcUR
+        6qUK+vGD6YoSFovCcOq8DCd05QNfwLg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-288-TcWP7TS-PI2LdyOhCHXttg-1; Thu, 27 Jul 2023 07:04:04 -0400
+X-MC-Unique: TcWP7TS-PI2LdyOhCHXttg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51bee352ffcso536744a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:04:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690455843; x=1691060643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dk3LN9ysCMp0nX/c571qwFAAMC2Qp+rntI/6p9s/CFU=;
+        b=K7SAzuaX64yGwDbkqCPS23Pom8agIhipSlSFksb3ZwmCji4MTxoVl72NFsUh7n8K2B
+         fFkYEkUNYPFT9qmk292DDP+ztMogRSS5M90bT5oEPE7h+H1Uzsj9GVDeZTfp9e1MFdcK
+         dwsv5eRWF4c0kyBTxbdyO5ORce/Y+FOukEG9AyhWeiCoNGh3/+dtvNKh4heMZeJzf3Xb
+         A5QclH/hDVjVznv2nVgXHNnCGpW0x3GVl9iwVID7TZBnCanKm4HporKwoNdlEtovum2P
+         Bzas2kH8tYD+qRkojJ0B4itCJop2c6VERurZwNIDwE62OGjFXc5XimMO7ZpgaWOLPqYH
+         CAjg==
+X-Gm-Message-State: ABy/qLbQCxJBncJ4HY1D9s9txLGispJeTwww2ZnafVwre2x6TmB4sM3n
+        PPeDHj3KTM9UGakwp7DDm1GFDQ7u2U7x+4JvwMsxo92QXoFFmBlSWVUZShK/X/5kB5KKVKat8aZ
+        8jXzSIn7RqbOfjQIkfU68RKhX3KdN0AspR0yAKy7I
+X-Received: by 2002:a05:6402:1816:b0:522:3790:1303 with SMTP id g22-20020a056402181600b0052237901303mr1439875edy.32.1690455843443;
+        Thu, 27 Jul 2023 04:04:03 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGVNw/Z6wVqm/KZzUEarit/lmkOUef30Ga5juO1p3ACM6osXPaYMMA5sLXXHwivu6UQMvBnH0lT00nmKBGSQa4=
+X-Received: by 2002:a05:6402:1816:b0:522:3790:1303 with SMTP id
+ g22-20020a056402181600b0052237901303mr1439861edy.32.1690455843131; Thu, 27
+ Jul 2023 04:04:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+References: <20230601072043.24439-1-ltao@redhat.com> <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com> <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
+In-Reply-To: <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
+From:   Tao Liu <ltao@redhat.com>
+Date:   Thu, 27 Jul 2023 19:03:26 +0800
+Message-ID: <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -46,111 +80,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent change to batch-zap anonymous ptes did not take into account
-that for platforms where MMU_GATHER_NO_GATHER is enabled (e.g. s390),
-__tlb_remove_page() drops a reference to the page. This means that the
-folio reference count can drop to zero while still in use (i.e. before
-folio_remove_rmap_range() is called). This does not happen on other
-platforms because the actual page freeing is deferred.
+Hi Borislav,
 
-Solve this by appropriately getting/putting the folio to guarrantee it
-does not get freed early.
+Sorry for the late response. I spent some time retesting your patch
+against 6.5.0-rc1 and 6.5.0-rc3, and it is OK. So
 
-Given the new need to get/put the folio in the batch path, let's stick
-to the non-batched path if the folio is not large. In this case batching
-is not helpful since the batch size is 1.
+Reported-and-tested-by: Tao Liu <ltao@redhat.com>
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-Fixes: 904d9713b3b0 ("mm: batch-zap large anonymous folio PTE mappings")
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/linux-mm/20230726161942.GA1123863@dev-arch.thelio-3990X/
----
+And will we use this patch as a workaround or will we wait for a
+better solution as proposed by Michael?
 
-Hi Andrew,
+On Mon, Jul 17, 2023 at 10:14=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
+te:
+>
+> On Mon, Jul 17, 2023 at 09:53:06PM +0800, Tao Liu wrote:
+> > ...snip...
+> > [   21.360763]  nvme0n1: p1 p2 p3
+> > [   21.364207] igc 0000:03:00.0: PTM enabled, 4ns granularity
+> > [   21.421097] pps pps1: new PPS source ptp1
+> > [   21.425396] igc 0000:03:00.0 (unnamed net_device) (uninitialized): P=
+HC added
+> > [   21.457005] igc 0000:03:00.0: 4.000 Gb/s available PCIe bandwidth
+> > (5.0 GT/s PCIe x1 link)
+> > [   21.465210] igc 0000:03:00.0 eth1: MAC: ...snip...
+> > [   21.473424] igc 0000:03:00.0 enp3s0: renamed from eth1
+> > [   21.479446] BUG: kernel NULL pointer dereference, address: 000000000=
+0000008
+> > [   21.486405] #PF: supervisor read access in kernel mode
+> > [   21.491519] mmc1: Failed to initialize a non-removable card
+> > [   21.491538] #PF: error_code(0x0000) - not-present page
+> > [   21.502229] PGD 0 P4D 0
+> > [   21.504773] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> > [   21.509133] CPU: 3 PID: 402 Comm: systemd-udevd Not tainted 6.5.0-rc=
+1+ #1
+> > [   21.515905] Hardware name: ...snip...
+> > [   21.522851] RIP: 0010:kernfs_dop_revalidate+0x2b/0x120
+>
+> So something's weird here - my patch should not cause a null ptr deref
+> here.
 
-This fixes patch 3 in the series at [1], which is currently in mm-unstable. I'm
-not sure whether you want to take the fix or whether I should re-post the entire
-series?
+The random kernel panic I encountered is irrelevant to this patch, and
+I'm pretty sure it is caused by some driver, highly suspicious it is
+the graphic card driver i915.ko. When I apply this patch, 1)
+disconnect the monitor(using serial port to login) and keep i915, or
+2) connect the monitor but remove i915, the kexec kernel will not
+fail. Though i915 has provided a pci shutdown function, maybe some bug
+triggered and caused memory overwrite after kexec. Anyway, it is
+another issue.
 
 Thanks,
-Ryan
+Tao Liu
 
-
- mm/memory.c | 42 +++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 2130bad76eb1..808f6408a570 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1456,6 +1456,9 @@ static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
- 	bool full;
- 	int i;
-
-+	/* __tlb_remove_page drops a ref; prevent it going to 0 while in use. */
-+	folio_get(folio);
-+
- 	for (i = 0; i < nr_pages;) {
- 		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
- 		tlb_remove_tlb_entry(tlb, pte, addr);
-@@ -1476,6 +1479,8 @@ static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
-
- 	folio_remove_rmap_range(folio, page - i, i, vma);
-
-+	folio_put(folio);
-+
- 	return i;
- }
-
-@@ -1526,26 +1531,33 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			 */
- 			if (page && PageAnon(page)) {
- 				struct folio *folio = page_folio(page);
--				int nr_pages_req, nr_pages;
-
--				nr_pages_req = folio_nr_pages_cont_mapped(
--						folio, page, pte, addr, end);
-+				if (folio_test_large(folio)) {
-+					int nr_pages_req, nr_pages;
-+					int counter = mm_counter(page);
-
--				nr_pages = try_zap_anon_pte_range(tlb, vma,
--						folio, page, pte, addr,
--						nr_pages_req, details);
-+					nr_pages_req = folio_nr_pages_cont_mapped(
-+							folio, page, pte, addr,
-+							end);
-
--				rss[mm_counter(page)] -= nr_pages;
--				nr_pages--;
--				pte += nr_pages;
--				addr += nr_pages << PAGE_SHIFT;
-+					/* folio may be freed on return. */
-+					nr_pages = try_zap_anon_pte_range(
-+							tlb, vma, folio, page,
-+							pte, addr, nr_pages_req,
-+							details);
-
--				if (unlikely(nr_pages < nr_pages_req)) {
--					force_flush = 1;
--					addr += PAGE_SIZE;
--					break;
-+					rss[counter] -= nr_pages;
-+					nr_pages--;
-+					pte += nr_pages;
-+					addr += nr_pages << PAGE_SHIFT;
-+
-+					if (unlikely(nr_pages < nr_pages_req)) {
-+						force_flush = 1;
-+						addr += PAGE_SIZE;
-+						break;
-+					}
-+					continue;
- 				}
--				continue;
- 			}
-
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
---
-2.25.1
+>
+> > [   21.527995] Code: 1f 44 00 00 83 e6 40 0f 85 07 01 00 00 41 55 41
+> > 54 55 53 48 8b 47 30 48 89 fb 48 85 c0 0f 84 a2 00 00 00 48 8b a87
+>
+> This looks weird too. There's no "<>" brackets denoting which byte it
+> was exactly where RIP pointed to when the NULL ptr happened.
+>
+> Do
+>
+> make fs/kernfs/dir.s
+>
+> and upload dir.s and the dir.o file somewhere.
+>
+> In any case, my patch shouldn't be causing this. At least I don't see
+> it.
+>
+> I'm testing a better version of the patch and it should not cause this
+> thing even less.
+>
+> > The stack trace may not be the same all the time, I didn't dive deep
+> > into the root cause, but it looks to me the patch will cause an
+> > unknown issue. Also I tested the patch on kernel-5.14.0-318.el9, it
+>
+> This is the upstream kernel mailing list so those Frankenstein kernels
+> are all left to you.
+>
+> Good luck. :-)
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
+>
 
