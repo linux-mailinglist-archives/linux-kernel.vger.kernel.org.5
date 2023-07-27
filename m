@@ -2,135 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB18A765332
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E467D76533B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 14:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbjG0MGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 08:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S233707AbjG0MHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 08:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbjG0MGR (ORCPT
+        with ESMTP id S233705AbjG0MH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 08:06:17 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C5726A6
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:05:52 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9e9765f2cso5051615ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 05:05:51 -0700 (PDT)
+        Thu, 27 Jul 2023 08:07:27 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838E2D5B;
+        Thu, 27 Jul 2023 05:07:26 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63d09d886a6so6129346d6.2;
+        Thu, 27 Jul 2023 05:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690459551; x=1691064351;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690459645; x=1691064445;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:references:cc:to:subject:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BwmFLONIOYK7ou7AxfGRdP9bRNPLFN3Vwa8VGbk/YHs=;
-        b=RNxfAkB6CcRACh5rhHmxAkp5vnYxV0AIKYF3lzqbywIos8+89XoAyQG6m7j5hjiqcM
-         CPyTO3A/iGiPxbvlAI4tI/As2dYzjeRzzrvZHIW7x8C5FrH5LJVdY/4E4JVWFGwmsqpa
-         A2fifj2199zlUpSaS5tbjy5FkA0apVj36cYh0Dlf/r/W/69gQ5orqMxT6quUdZZmiYQm
-         G93bbPe1CZwS72g+ua9mlFrnYY/b2XsGr4rhqJ2NgSlNjn7IcppvsbppQ+D4YEA8tIxx
-         8KzNLstuu1PHSSiky5j9/8sJnK+WDW84Tr46OyhI2Iz9NmKXbBAfE8PkV7e+kDdMjb2O
-         1F3Q==
+        bh=dnC0KU6XOkUWTwawkrEv0U18JS8bB3ff8im2fzrjaTg=;
+        b=N8/DkxFz3tL5pYXLLkY1KuGFeRL2dDwg5psU2g9TGEjlsWJzNLXPSqA+cGCUapdpYt
+         EMVefpdRE+jPiFfst4Xuksyv8bCdjlvLDHw3/C1a01/OwcGuhr5YbJQiSoWoUY/5OPwI
+         zoumO8ZuEqe1jEyhzjpKgIiTX/ro27lYOvlZjEI+KOoqhgGGpYLjHhYC+pDkYTrQfpga
+         NUDJQYPFa50O4TMvfGE2JVwkfwVuFjSK3SSbTNYmqqVBiqvTTC8VFYT/8FTFFJh+Ew1N
+         V5jPTP6usybJnNo4c+tD1562guFKg6yXp8BifJ3cVoiBIyI5CtDvTrIJBuTtHp13Eo61
+         VW1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690459551; x=1691064351;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=1e100.net; s=20221208; t=1690459645; x=1691064445;
+        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
+         :message-id:from:references:cc:to:subject:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=BwmFLONIOYK7ou7AxfGRdP9bRNPLFN3Vwa8VGbk/YHs=;
-        b=UaPHW0z/1UDF+jKSFc6FloQB+jwQadYqt2ZP45T8m//TvFoCHLnksbHaTF7orH5GJT
-         7lTWld2K9a+PboDckpnK1mbWSuAKp5XEba8WP1cqJAWJD0yBP+ydMBb7mW4Vxin3cNUP
-         ETUp0EPNfC+0CNCEbUJQy6ZwljW482ge9p1utQ7EE6U1gdzs5vhx6n8njy9ittANjtDN
-         jf6DH4UyDAmSHH8zB2KI2Gb8CpHD3/Hk3n/SNa1ZWaKzjYhUHYaUKLxujf4xJ58voZ8L
-         z6XwqUDAfjisw878wf76oHtj2Ef0r5jUdKAQfJqBpvGDLRD8JJwb4ITV9wsquSdbu58Y
-         Lp5g==
-X-Gm-Message-State: ABy/qLYvTfCgfKUurGO29iZEmTlWmQlBgj03H3iolE5UEweSXrSQL5iI
-        GI0P/thiIZaShhPGvDNBtfqB3w==
-X-Google-Smtp-Source: APBJJlFjJHOftyjOvJAGevlCpI+03ZofFgqqbos+NnQhswgcV75ZqE3w1ltXd+wMTUeA0zFvSuVFeQ==
-X-Received: by 2002:a17:902:9a0b:b0:1b8:9f6a:39de with SMTP id v11-20020a1709029a0b00b001b89f6a39demr3969803plp.65.1690459551262;
-        Thu, 27 Jul 2023 05:05:51 -0700 (PDT)
-Received: from [10.85.115.102] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id l15-20020a17090aec0f00b0025bdc3454c6sm2703969pjy.8.2023.07.27.05.05.47
+        bh=dnC0KU6XOkUWTwawkrEv0U18JS8bB3ff8im2fzrjaTg=;
+        b=E7D5kDJnDnk79mQuCCKYlmje1mISjaSxTALAImvBjnaBL6Ytwk8Ds4xVhFeYZB31SD
+         U+csuLV0OnDmED0x/eQ1Kj6BnhZwHzvHicVJSBqTPwJUNutF0xUQCA3X5aV5Mzh0uq0u
+         YM9oH7X4Waf2cNfdmDqHmVzviLtx1nWJpvSPcwtLqz9xAQdfQtZDwNbY1hVzH1WEivDf
+         Z/Rb7PuQL8V/a2xMXlXgxEy78CfIBauCji/YLa2+FTJ6pOdbCrNbTJ3ZAIBraxloyLhj
+         On7brhsveHjowvaCN4NUl5U4vRKXI8Ee3AaqWOQ2AhOF5m1TNqHkF78gl/Ivs1bSsJAB
+         HzWw==
+X-Gm-Message-State: ABy/qLZw2WQOyk6rhfybUoO7eIO/6565Pvl35x4iTddsWs3HpRerxhFt
+        LglQrS360OCVa+pAS4ll6A==
+X-Google-Smtp-Source: APBJJlHthRuDqnjjwC1LhWRkktbaKrqCADZc1Mik4EmIab/UuoDusOrZDQ2LA55xv3Ob+BYoXRkKPg==
+X-Received: by 2002:a0c:c541:0:b0:628:2e08:78b7 with SMTP id y1-20020a0cc541000000b006282e0878b7mr4832675qvi.31.1690459645131;
+        Thu, 27 Jul 2023 05:07:25 -0700 (PDT)
+Received: from [120.7.1.38] (198-84-239-141.cpe.teksavvy.com. [198.84.239.141])
+        by smtp.gmail.com with ESMTPSA id p7-20020a0ce187000000b0063d0159e1f6sm365781qvl.109.2023.07.27.05.07.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 05:05:50 -0700 (PDT)
-Message-ID: <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
-Date:   Thu, 27 Jul 2023 20:05:44 +0800
+        Thu, 27 Jul 2023 05:07:24 -0700 (PDT)
+Subject: Re: Kernel 6.5-rc2: system crash on suspend bisected
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     imammedo@redhat.com, bhelgaas@google.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        regressions@lists.linux.dev,
+        "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>,
+        Woody Suwalski <terraluna977@gmail.com>
+References: <11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com>
+ <20230720202110.GA544761@bhelgaas>
+ <20230727020621-mutt-send-email-mst@kernel.org>
+From:   Woody Suwalski <terraluna977@gmail.com>
+Message-ID: <1d51d250-9524-33c5-9b3a-af8c33582eee@gmail.com>
+Date:   Thu, 27 Jul 2023 08:07:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:91.0) Gecko/20100101 Firefox/91.0
+ SeaMonkey/2.53.16
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
- per-cpu time of cgroup and its descendants
-From:   Hao Jia <jiahao.os@bytedance.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
- <ZLWb-LsBD041hMvr@slm.duckdns.org>
- <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
- <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
- <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
-In-Reply-To: <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
+In-Reply-To: <20230727020621-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/7/19 Hao Jia wrote:
-> 
-> 
-> On 2023/7/19 Tejun Heo wrote:
->> On Tue, Jul 18, 2023 at 06:08:50PM +0800, Hao Jia wrote:
->>> https://github.com/jiaozhouxiaojia/cgv2-stat-percpu_test/tree/main
+Michael S. Tsirkin wrote:
+> On Thu, Jul 20, 2023 at 03:21:10PM -0500, Bjorn Helgaas wrote:
+>> [+cc regressions list]
 >>
->> So, we run `stress -c 1` for 1 second in the asdf/test0 cgroup and
->> asdf/cpu.stat correctly reports the cumulative usage. After removing
->> asdf/test0 cgroup, asdf's usage_usec is still there. What's missing here?
-> 
-> Sorry, some of my expressions may have misled you.
-> 
-> Yes, cpu.stat will display the cumulative **global** cpu time of the 
-> cgroup and its descendants (the corresponding kernel variable is 
-> "cgrp->bstat"), and it will not be lost when the child cgroup is removed.
-> 
-> Similarly, we need a **per-cpu** variable to record the accumulated 
-> per-cpu time of cgroup and its descendants.
-> The existing kernel variable "cgroup_rstat_cpu(cgrp, cpu)->bstat" is not 
-> satisfied, it only records the per-cpu time of cgroup itself,
-> So I try to add "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" to record 
-> per-cpu time of cgroup and its descendants.
-> 
-> In order to verify the correctness of my patch, I wrote a kernel module 
-> to compare the results of calculating the per-cpu time of cgroup and its 
-> descendants in two ways:
->    Method 1. Traverse and add the per-cpu rstatc->bstat of cgroup and 
-> each of its descendants.
->    Method 2. Directly read "cgroup_rstat_cpu(cgrp, cpu)->cumul_bstat" in 
-> the kernel.
-> 
-> When the child cgroup is not removed, the results calculated by the two 
-> methods should be equal.
-> 
->> What are you adding?
-> I want to add a **per-cpu variable** to record the cumulative per-cpu 
-> time of cgroup and its descendants, which is similar to the variable 
-> "cgrp->bstat", but it is a per-cpu variable.
-> It is very useful and convenient for calculating the usage of cgroup on 
-> each cpu, and its behavior is similar to the "cpuacct.usage*" interface 
-> of cgroup v1.
-> 
+>> On Wed, Jul 19, 2023 at 11:36:51PM -0400, Woody Suwalski wrote:
+>>> Laptop shows a kernel crash trace after a first suspend to ram, on a second
+>>> attempt to suspend it becomes frozen solid. This is 100% repeatable with a
+>>> 6.5-rc2 kernel, not happening with a 6.4 kernel - see the attached dmesg
+>>> output.
+>>>
+>>> I have bisected the kernel uilds and it points to :
+>>> [40613da52b13fb21c5566f10b287e0ca8c12c4e9] PCI: acpiphp: Reassign resources
+>>> on bridge if necessary
+>>>
+>>> Reversing this patch seems to fix the kernel crash problem on my laptop.
+>> Thank you very much for all your work debugging, bisecting, and
+>> reporting this!  This is incredibly helpful.
+>>
+>> Original report, including complete dmesg logs for both v6.4 and
+>> v6.5-rc2:
+>> https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
+>>
+>> I queued up a revert of 40613da52b13 ("PCI: acpiphp: Reassign
+>> resources on bridge if necessary") (on my for-linus branch for v6.5).
+>>
+>> It looks like a NULL pointer dereference; hopefully the fix is obvious
+>> and I can drop the revert and replace it with the fix.
+>>
+>> Bjorn
+> Patch on list now:
+> https://lore.kernel.org/all/20230726123518.2361181-1-imammedo%40redhat.com
+Confirm works OK.
+--
+Tested-by: Woody Suwalski <terraluna977@gmail.com>
+--
 
-Hello Tejun,
+Thanks, Woody
 
-I don't know if I explained it clearly, and do you understand what I mean?
-
-Would you mind adding a variable like this to facilitate per-cpu usage 
-calculations and migration from cgroup v1 to cgroup v2?
-
-Thanks,
-Hao
