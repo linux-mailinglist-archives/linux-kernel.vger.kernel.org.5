@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB217642DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795EE7642DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 02:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229759AbjG0AKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 20:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+        id S229850AbjG0AOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 20:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjG0AKj (ORCPT
+        with ESMTP id S229495AbjG0AOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 20:10:39 -0400
-Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D408619B5
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:10:38 -0700 (PDT)
-Received: from cmgw15.mail.unifiedlayer.com (unknown [10.0.90.130])
-        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id 826E110049133
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 00:10:38 +0000 (UTC)
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTP
-        id OoaUq2rrmDsKwOoaUqPxTq; Thu, 27 Jul 2023 00:10:38 +0000
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=ZZvYiuZA c=1 sm=1 tr=0 ts=64c1b5fe
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10:nop_charset_1 a=ws7JD89P4LkA:10:nop_rcvd_month_year
- a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=mdOrbuIhtOySShl96DIA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+o6mJHXUL/3m9vwbrVIhvNY6qcHqa0T22htzLIe+8f4=; b=wzE3qDG7xzpzjm8FQv2lxLFW8A
-        GqkKcLYli6ok9uGZSOK0pQslH1MYIBs9/mwogou5HfWlIbE9Wy9rhWWKlKd052MtiLO9wTSXRoaoY
-        eqPoPD+gAJQZzCvh2pJ2BpOEWTvvgluLvGNHblClta4F0FaAVVfo5dAuxqIFQvYWdfBnxQIGwbkHL
-        agO3BEKtLOMAqIWukGOhjx9rYhMcvTSTi2QXj7Ma15B4K+SgUXXhgNDycpIMLgRi+j3MOA70bVjw/
-        U5FHIBTamJf0BPaWNIsa847ZZ+aXZfc1B3sFo+mcEVp5dQV152942J4Fbl3t7seiWm6dwKMKSZkfL
-        ntNajBuw==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:49612 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qOoaT-003tnp-2W;
-        Wed, 26 Jul 2023 18:10:37 -0600
-Subject: Re: [PATCH 5.15 00/78] 5.15.123-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230725104451.275227789@linuxfoundation.org>
-In-Reply-To: <20230725104451.275227789@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <89c4733b-3dd9-9025-0359-2d414e4ce993@w6rz.net>
-Date:   Wed, 26 Jul 2023 17:10:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 26 Jul 2023 20:14:51 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5461AD
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:14:49 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686ea67195dso335304b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 17:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690416889; x=1691021689;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ueENmT0DIXCVaUSH4rOLoKo2KUhTNxrToyXv/aFduM0=;
+        b=kvy9161sn4Hxo1x6t+xx0pZ/ZoZymqHOCwF+5vDNn4ghPPfr6eQt0jnFx4qflvimfu
+         wTAmHiEZwSt5N/fgXePw1BqbsQPe1lSZ7VkSwBpqcmoUbQvnWb/qFUxLwHUJVvmTeNoQ
+         1tH9xWJhCmdPWUEmLpyLmcl8sfwtM8fPItox6Hdb1uhZnPvEQ0V4xbYfrzCS4XtKjR47
+         cB5ndary9xxRVqEgtgwuB1Krssb0vSG6P87n9mrgESnGUNBWZ4SAcTupLBJIF8r0f+Fj
+         DxEnCBbDAgQ8faKqJaoz/hMxbFi/B/kkHb/AvgHcUfdhf2izoK2d2fGi4Oh2lBbkUnT0
+         ELRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690416889; x=1691021689;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ueENmT0DIXCVaUSH4rOLoKo2KUhTNxrToyXv/aFduM0=;
+        b=aNWQMy7/vgMpFWCC3lDF8LCdcV/9lltIishi/sDRakRgvpDhgtoAMk7okTI4cCs3IA
+         rLup7VoR2Dj6rCoY+dxVjQ2v/rsNe6A3dblT25+HAugzIqPv/z8dmG4e3yZVgN+uZGiu
+         GdG6BaVmsyk0kk8hAtksKv9G5PtZvpv3Uko/batStc6CkaWjy/5ISgQQgSfVQgsQHD2x
+         WhsM8z11HnKVSAipC4o2Aet95ZedXCxl0FNB5McwjciYABE2qTO+cVEyqineqG/q0c3d
+         HsSirZarH+SDtJ16f4ljujyYqjOku/Bqxz16nLR0vmWIvpOsumXxj31iORt20oTMmPug
+         qR0w==
+X-Gm-Message-State: ABy/qLaLs4/B3kdWKJjIOBAEafYQsNVzKqahwhx4UxK6OjNdJY2E6jF+
+        cem7JulZFL7kFSpHbP/3hfI=
+X-Google-Smtp-Source: APBJJlGzjFbtkfWUQBbmU2XWl86jGzZAIZEXjxcNS/2jYBgHjSVQCICnzOLt/PfvGlQLpvZluIEjyg==
+X-Received: by 2002:a05:6a00:b4c:b0:680:98c:c58d with SMTP id p12-20020a056a000b4c00b00680098cc58dmr4336170pfo.2.1690416889150;
+        Wed, 26 Jul 2023 17:14:49 -0700 (PDT)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id x9-20020a056a00270900b00682c8637109sm185143pfv.34.2023.07.26.17.14.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jul 2023 17:14:48 -0700 (PDT)
+Date:   Wed, 26 Jul 2023 17:14:45 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZMG29WmwQFVgTSCv@yury-ThinkPad>
+References: <20230720173956.3674987-1-glider@google.com>
+ <20230720173956.3674987-2-glider@google.com>
+ <ZLyI+0EL1VztnHLe@yury-ThinkPad>
+ <CAG_fn=V4wyHjXT41byPbAkrZzisZRfKszwM4EUFV-FNWuXXfbw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qOoaT-003tnp-2W
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:49612
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG_fn=V4wyHjXT41byPbAkrZzisZRfKszwM4EUFV-FNWuXXfbw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,26 +80,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 3:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.123 release.
-> There are 78 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 27 Jul 2023 10:44:26 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.123-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Jul 26, 2023 at 10:08:28AM +0200, Alexander Potapenko wrote:
+> On Sun, Jul 23, 2023 at 3:57 AM Yury Norov <yury.norov@gmail.com> wrote:
+> >
+> > On Thu, Jul 20, 2023 at 07:39:52PM +0200, Alexander Potapenko wrote:
+> > > +/**
+> > > + * bitmap_write - write n-bit value within a memory region
+> > > + * @map: address to the bitmap memory region
+> > > + * @value: value of nbits
+> > > + * @start: bit offset of the n-bit value
+> > > + * @nbits: size of value in bits, up to BITS_PER_LONG
+> > > + */
+> > > +static inline void bitmap_write(unsigned long *map,
+> > > +                             unsigned long value,
+> > > +                             unsigned long start, unsigned long nbits)
+> > > +{
+> > > +     size_t index = BIT_WORD(start);
+> > > +     unsigned long offset = start % BITS_PER_LONG;
+> > > +     unsigned long space = BITS_PER_LONG - offset;
+> > > +
+> > > +     if (unlikely(!nbits))
+> > > +             return;
+> > > +     value &= GENMASK(nbits - 1, 0);
+> >
+> > Strictly speaking, a 'value' shouldn't contain set bits beyond nbits
+> > because otherwise it's an out-of-bonds type of error.
+> 
+> I can easily imagine someone passing -1 (or ~0) as a value, but
+> wanting to only write n bits of n.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+This is an abuse of new API because we've got a bitmap_set(). But
+whatever, let's keep that masking.
 
-Tested-by: Ron Economos <re@w6rz.net>
+...
+ 
+> I like the idea of sharing the first write between the branches, and
+> it can be made even shorter:
+> 
+> ===========================================================
+> void bitmap_write_new(unsigned long *map, unsigned long value,
+>                       unsigned long start, unsigned long nbits)
+> {
+>         unsigned long offset;
+>         unsigned long space;
+>         size_t index;
+>         bool fit;
+> 
+>         if (unlikely(!nbits))
+>                 return;
+> 
+>         value &= GENMASK(nbits - 1, 0);
+>         offset = start % BITS_PER_LONG;
+>         space = BITS_PER_LONG - offset;
+>         index = BIT_WORD(start);
+>         fit = space >= nbits;
 
+        space >= nbits <=>
+        BITS_PER_LONG - offset >= nbits <=> 
+        offset + nbits <= BITS_PER_LONG
+
+>         map[index] &= (fit ? (~(GENMASK(nbits - 1, 0) << offset)) :
+
+So here GENMASK(nbits + offset - 1, offset) is at max:
+GENMASK(BITS_PER_LONG - 1, offset). And it never overflows, which is my
+point. Does it make sense?
+
+> ~BITMAP_FIRST_WORD_MASK(start));
+
+As I said, ~BITMAP_FIRST_WORD_MASK() is the same as BITMAP_LAST_WORD_MASK()
+and vise-versa.
+
+>         map[index] |= value << offset;
+>         if (fit)
+>                 return;
+> 
+>         map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+>         map[index + 1] |= (value >> space);
+> }
+> ===========================================================
+> 
+> According to Godbolt (https://godbolt.org/z/n5Te779bf), this function
+> is 32 bytes shorter than yours under x86 Clang, and 8 bytes - under
+> GCC (which on the other hand does a poor job optimizing both).
+> 
+> Overall, given that there's currently a single user of these
+> functions, isn't it premature to optimize them without knowing
+> anything about their performance?
+> 
+> > In previous iteration, I asked you to share disassembly listings for the
+> > functions. Can you please do that now?
+> 
+> Will godbolt work for you (see above)?
+
+I don't know for how long an external resource will keep the reference
+alive. My SSD keeps emails long enough.
+
+...
+
+> > You're mentioning that the compression ratio is 2 to 20x. Can you
+> > share the absolute numbers? If it's 1k vs 2k, I think most people
+> > just don't care...
+> 
+> I'll provide the exact numbers with the next patch series. Last time I
+> checked, the order of magnitude was tens of megabytes.
+
+That's impressive. Fruitful idea. It would be important for embedded guys
+who may disable MTE because of memory overhead. I think it's worth to
+mention that in Kconfig together with associate performance overhead,
+if it ever measurable.
+
+> > Can you share the code that you used to measure the compression ratio?
+> > Would it make sense to export the numbers via sysfs?
+> 
+> For out-of-line allocations the data can be derived from
+> /proc/slabinfo, but we don't calculate inline allocations.
+> Agreed, a debugfs interface won't hurt.
