@@ -2,235 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C5F7655CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61307655D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbjG0OTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        id S233546AbjG0OUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbjG0OS5 (ORCPT
+        with ESMTP id S232955AbjG0OUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:18:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E0BE30D3
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:18:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0D851477;
-        Thu, 27 Jul 2023 07:19:38 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC1323F6C4;
-        Thu, 27 Jul 2023 07:18:53 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v4 3/3] mm: Batch-zap large anonymous folio PTE mappings
-Date:   Thu, 27 Jul 2023 15:18:37 +0100
-Message-Id: <20230727141837.3386072-4-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230727141837.3386072-1-ryan.roberts@arm.com>
-References: <20230727141837.3386072-1-ryan.roberts@arm.com>
+        Thu, 27 Jul 2023 10:20:39 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8810110CB
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:20:38 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a3efee1d44so835718b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 07:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1690467638; x=1691072438;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mC/8dT0tbAgVPKUdoYex0WCuu0voI4R5OMKo5aDOKZM=;
+        b=Oele9AnG3ahVCgEL7oOMUC6ZgJCO0eufkr86ZMpvFvAuohGbxNOE6LC7Ripx/UoCk5
+         gv2dkZy06BpAnsyABkfNUizbH3hNqGJgp5tK56pN9unGXH9kg+TM2d4W4+TQZr4bfbWB
+         b5AJk4OTF5H0S+TzViJR2ob0AkxdCo+X2jCc6gp4Js/dRRb1ECRrm2sILEBYcFZNRVfK
+         Y6aTwdWoW2xzc5P5j/mgukYsnRWijhbxe3UrlkIHvqreSyJdVepbthR2ZF1vcN51bjlT
+         aGmnACLfdRUONpRmap0i2ZLgPPk0DcCtUAdtmXJKQNXaqigtG75Hagq4G5bZUR9pAzGz
+         QFAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690467638; x=1691072438;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mC/8dT0tbAgVPKUdoYex0WCuu0voI4R5OMKo5aDOKZM=;
+        b=mF+lSFxHaAWSInXRrI/MC3+sEweC3CcWN8sVmGScAmEdw/1hUXT+kmvrVwMLBcPh6t
+         7L5lMusIZY2yhIzsLhDj+9pzjCbt+90hzQR5U0nTYSX1stT48Q/p6dTDof+c0Pa8Mu0d
+         IIRclLGWWBnBZCsG1sKKQ/jDbsj17pfqMC7v4oQVRZjyhYNVicExP4bci2RFaOWNkvLy
+         qc2SbhyZ3rNg0SyGiHvrLS6olQhvLLDzXl+6tW8bZv75EPjMdtDTYNhBi7T6Nl9oi71l
+         7/uXPn+btEZpx6+WkYG1L1DguMxQ3HkR6qZJLD9y0EoQc8qhSIK/FZZ4GXR3as9DI82H
+         IRLg==
+X-Gm-Message-State: ABy/qLZn2bP1KwzjVrNo85dvJ4iecVyUM2hw7WUnggnQO28XYcKbLlGY
+        MwO3CqspaMvGLTMTtX11HRzwwg==
+X-Google-Smtp-Source: APBJJlFERWkt+8NnUJfszQzEUSanMHktHMuKfMAKA6dmMjeCPBSe0dzn0I3d/DlYO4abwGOj1HeEYQ==
+X-Received: by 2002:a05:6808:2085:b0:3a3:7245:d36c with SMTP id s5-20020a056808208500b003a37245d36cmr3468249oiw.43.1690467637836;
+        Thu, 27 Jul 2023 07:20:37 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:10:580::7a9])
+        by smtp.gmail.com with ESMTPSA id t13-20020ac8530d000000b004033992e2dbsm449569qtn.45.2023.07.27.07.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 07:20:02 -0700 (PDT)
+Message-ID: <51e4ece5250c3345dae4956fbb4d4dbb5ffdde38.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 2/2] media: imagination: Add E5010 JPEG Encoder driver
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, eugen.hristev@collabora.com,
+        ezequiel@vanguardiasur.com.ar, u.kleine-koenig@pengutronix.de,
+        sakari.ailus@linux.intel.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     praneeth@ti.com, nm@ti.com, vigneshr@ti.com, a-bhatia1@ti.com,
+        j-luthra@ti.com, b-brnich@ti.com, detheridge@ti.com,
+        p-mantena@ti.com, vijayp@ti.com
+Date:   Thu, 27 Jul 2023 10:19:29 -0400
+In-Reply-To: <ef4825d6-1016-cbf2-0cd3-94b0fc4165f4@linaro.org>
+References: <20230727112546.2201995-1-devarsht@ti.com>
+         <20230727112546.2201995-3-devarsht@ti.com>
+         <ef4825d6-1016-cbf2-0cd3-94b0fc4165f4@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows batching the rmap removal with folio_remove_rmap_range(),
-which means we avoid spuriously adding a partially unmapped folio to the
-deferred split queue in the common case, which reduces split queue lock
-contention.
+Hi Krzysztof,
 
-Previously each page was removed from the rmap individually with
-page_remove_rmap(). If the first page belonged to a large folio, this
-would cause page_remove_rmap() to conclude that the folio was now
-partially mapped and add the folio to the deferred split queue. But
-subsequent calls would cause the folio to become fully unmapped, meaning
-there is no value to adding it to the split queue.
+Le jeudi 27 juillet 2023 =C3=A0 14:13 +0200, Krzysztof Kozlowski a =C3=A9cr=
+it=C2=A0:
+> On 27/07/2023 13:25, Devarsh Thakkar wrote:
+> ...
+>=20
+> > +
+> > +static int e5010_release(struct file *file)
+> > +{
+> > +	struct e5010_dev *dev =3D video_drvdata(file);
+> > +	struct e5010_context *ctx =3D file->private_data;
+> > +
+> > +	dprintk(dev, 1, "Releasing instance: 0x%p, m2m_ctx: 0x%p\n", ctx, ctx=
+->fh.m2m_ctx);
+>=20
+> Why do you print pointers? Looks like code is buggy and you still keep
+> debugging it.
 
-A complicating factor is that for platforms where MMU_GATHER_NO_GATHER
-is enabled (e.g. s390), __tlb_remove_page() drops a reference to the
-page. This means that the folio reference count could drop to zero while
-still in use (i.e. before folio_remove_rmap_range() is called). This
-does not happen on other platforms because the actual page freeing is
-deferred.
+Its relatively common practice in linux-media to leave a certain level of t=
+races
+to help future debugging if a bug is seen. These uses v4l2 debug helper, an=
+d are
+only going to print if users enable them through the associated sysfs
+configuration. I do hope though there isn't any issue with IRQ triggering a=
+fter
+the instance is released, that would be buggy for sure, but I don't think t=
+his
+is the case considering the level of documented testing that have been done=
+.
 
-Solve this by appropriately getting/putting the folio to guarrantee it
-does not get freed early. Given the need to get/put the folio in the
-batch path, we stick to the non-batched path if the folio is not large.
-While the batched path is functionally correct for a folio with 1 page,
-it is unlikely to be as efficient as the existing non-batched path in
-this case.
+I'd be happy to see what others have to say on the subject, as its been a
+recurrent subject of confrontation lately. With pretty agressive messages
+associated with that.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- mm/memory.c | 132 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 132 insertions(+)
+regards,
+Nicolas
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 01f39e8144ef..d35bd8d2b855 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1391,6 +1391,99 @@ zap_install_uffd_wp_if_needed(struct vm_area_struct *vma,
- 	pte_install_uffd_wp_if_needed(vma, addr, pte, pteval);
- }
- 
-+static inline unsigned long page_cont_mapped_vaddr(struct page *page,
-+				struct page *anchor, unsigned long anchor_vaddr)
-+{
-+	unsigned long offset;
-+	unsigned long vaddr;
-+
-+	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
-+	vaddr = anchor_vaddr + offset;
-+
-+	if (anchor > page) {
-+		if (vaddr > anchor_vaddr)
-+			return 0;
-+	} else {
-+		if (vaddr < anchor_vaddr)
-+			return ULONG_MAX;
-+	}
-+
-+	return vaddr;
-+}
-+
-+static int folio_nr_pages_cont_mapped(struct folio *folio,
-+				      struct page *page, pte_t *pte,
-+				      unsigned long addr, unsigned long end)
-+{
-+	pte_t ptent;
-+	int floops;
-+	int i;
-+	unsigned long pfn;
-+	struct page *folio_end;
-+
-+	if (!folio_test_large(folio))
-+		return 1;
-+
-+	folio_end = &folio->page + folio_nr_pages(folio);
-+	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
-+	floops = (end - addr) >> PAGE_SHIFT;
-+	pfn = page_to_pfn(page);
-+	pfn++;
-+	pte++;
-+
-+	for (i = 1; i < floops; i++) {
-+		ptent = ptep_get(pte);
-+
-+		if (!pte_present(ptent) || pte_pfn(ptent) != pfn)
-+			break;
-+
-+		pfn++;
-+		pte++;
-+	}
-+
-+	return i;
-+}
-+
-+static unsigned long try_zap_anon_pte_range(struct mmu_gather *tlb,
-+					    struct vm_area_struct *vma,
-+					    struct folio *folio,
-+					    struct page *page, pte_t *pte,
-+					    unsigned long addr, int nr_pages,
-+					    struct zap_details *details)
-+{
-+	struct mm_struct *mm = tlb->mm;
-+	pte_t ptent;
-+	bool full;
-+	int i;
-+
-+	/* __tlb_remove_page may drop a ref; prevent going to 0 while in use. */
-+	folio_get(folio);
-+
-+	for (i = 0; i < nr_pages;) {
-+		ptent = ptep_get_and_clear_full(mm, addr, pte, tlb->fullmm);
-+		tlb_remove_tlb_entry(tlb, pte, addr);
-+		zap_install_uffd_wp_if_needed(vma, addr, pte, details, ptent);
-+		full = __tlb_remove_page(tlb, page, 0);
-+
-+		if (unlikely(page_mapcount(page) < 1))
-+			print_bad_pte(vma, addr, ptent, page);
-+
-+		i++;
-+		page++;
-+		pte++;
-+		addr += PAGE_SIZE;
-+
-+		if (unlikely(full))
-+			break;
-+	}
-+
-+	folio_remove_rmap_range(folio, page - i, i, vma);
-+
-+	folio_put(folio);
-+
-+	return i;
-+}
-+
- static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				struct vm_area_struct *vma, pmd_t *pmd,
- 				unsigned long addr, unsigned long end,
-@@ -1428,6 +1521,45 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			page = vm_normal_page(vma, addr, ptent);
- 			if (unlikely(!should_zap_page(details, page)))
- 				continue;
-+
-+			/*
-+			 * Batch zap large anonymous folio mappings. This allows
-+			 * batching the rmap removal, which means we avoid
-+			 * spuriously adding a partially unmapped folio to the
-+			 * deferrred split queue in the common case, which
-+			 * reduces split queue lock contention.
-+			 */
-+			if (page && PageAnon(page)) {
-+				struct folio *folio = page_folio(page);
-+
-+				if (folio_test_large(folio)) {
-+					int nr_pages_req, nr_pages;
-+					int counter = mm_counter(page);
-+
-+					nr_pages_req = folio_nr_pages_cont_mapped(
-+							folio, page, pte, addr,
-+							end);
-+
-+					/* folio may be freed on return. */
-+					nr_pages = try_zap_anon_pte_range(
-+							tlb, vma, folio, page,
-+							pte, addr, nr_pages_req,
-+							details);
-+
-+					rss[counter] -= nr_pages;
-+					nr_pages--;
-+					pte += nr_pages;
-+					addr += nr_pages << PAGE_SHIFT;
-+
-+					if (unlikely(nr_pages < nr_pages_req)) {
-+						force_flush = 1;
-+						addr += PAGE_SIZE;
-+						break;
-+					}
-+					continue;
-+				}
-+			}
-+
- 			ptent = ptep_get_and_clear_full(mm, addr, pte,
- 							tlb->fullmm);
- 			tlb_remove_tlb_entry(tlb, pte, addr);
--- 
-2.25.1
+p.s. does not invalidate the question, since for this driver, there is only=
+ ever
+going to be one m2m_ctx, so the question "Why do you print pointers?" is
+entirely valid I believe.
 
+. . .
