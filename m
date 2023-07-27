@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBE876513C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D565765150
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 12:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233972AbjG0Kcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 06:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S234126AbjG0Ke7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 06:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjG0Kc3 (ORCPT
+        with ESMTP id S234043AbjG0Ke6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 06:32:29 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0911739
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2659b1113c2so160326a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 03:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=Zr/NhsMbDbdIdSqoueTQTw00LusmUmyLrdR7MeDx+ZO5Q+75jdmzv373GL0Ee5CtKr
-         W6fluKiuFJCg5ZU3kW0Km101UvphMU1vBCY7hDEO6TFqab4XzqrIV8fVDPR2Owpqim7U
-         N3OX4eAxVQVjc5z6Zvv7YweV9TAIgzv2mVUZoaytYD45Z4tHHiC7Kn023GaYmi5v6RKy
-         g9n+r/2KPb5qfD2ZK/MDUQIwCLsfUVl7c4q/2XRu1uefpNinWMEwlZLohyik+zojbFUF
-         urJtl81vW3ulTBjRT5ht+WLfC03kh8PaMNuzZ2kESl6uu5dT49u0KrVoAN4kKuQ8SPSD
-         k2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690453945; x=1691058745;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4VsKgOIlO7JTMbURB3u+V7Qr/QzOpc+0Bt56AjhAYAM=;
-        b=UdSVsaHOBrxDPvJAY+jXK3GeItj95VxqZvoPj4qpKizUBJnaznB7Aayg22rO4sM8hy
-         59Z2AjKFoGuRq9uctY2ADs1gH4DC8N/nEj1f8YLTWZSwUGtcK9frUhe4+TB8IEtUSgql
-         8eUhDv3lSscp7r2i9WaH+aJGtJDTsBZpGY7iULtd5fXi6XbWi2n0ZGY1mOEvRhcHyQ0a
-         c0k2riEEoBbyxvQGxHaLf/7ywbR/znDUJKNht6Pfa7oRwxoFwVL3Y/EOch4VCI2RLFfU
-         Qzh7MNuOb6bJW+CMCemY1fO0cRUL4AixTauAAgSDm8gXQAOhn5xrco3pOFI00AqRXbp6
-         TiZg==
-X-Gm-Message-State: ABy/qLaK4PYGdWTvhZNCpBfizl5UJZb211G86/p871gfH2TUDROmVra5
-        jyIL0bSo54/RNMeY3TLs+DNNEg==
-X-Google-Smtp-Source: APBJJlGmzPZn88CMJAqpsojyTb97uikW28yo5O3pi8rH8SDlSH8BwjASuoOudfeGFyxgCSRxAf0mLA==
-X-Received: by 2002:a17:90a:1b06:b0:263:2312:60c2 with SMTP id q6-20020a17090a1b0600b00263231260c2mr4299433pjq.3.1690453945653;
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b0026309d57724sm2755058pjc.39.2023.07.27.03.32.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 03:32:25 -0700 (PDT)
-Message-ID: <cc819e13-cb25-ddaa-e0e3-7328f5ea3a4f@bytedance.com>
-Date:   Thu, 27 Jul 2023 18:32:10 +0800
+        Thu, 27 Jul 2023 06:34:58 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D8D19A7;
+        Thu, 27 Jul 2023 03:34:56 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CBAA01BF207;
+        Thu, 27 Jul 2023 10:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690454095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=49SapdFsUUzXkb0zmYsMHZkg7CHiz7VOLc7j0san1b4=;
+        b=D7sErss6g6hwoemn0ONI4uqJb+K/IsweOTLB1naVOQSB0jnxItj4HIIYOc01Bt1PCbQWls
+        x2lcEAR9Bd9VjcK6MIkZw2GgBXiwTdL0BWCBkLp6FGIk8zL9HeoByCjQcU71EgLZvHIX9c
+        ENATbxHfRlfF0SU97Zp8/habefY7ZArdGsISAkXbKwdQKnHTa46Poh7Izti1MQgJHfgtY+
+        +trXOG76m0g/9BUX139rvy1EaJBvWlTKa0L2vTIHxz+5+JsANW+49ziW/vf766xYPBj86D
+        /xe6CDk60hgIFLNs0LFEukyLTaCTJBZRtsZB+11cVUQUOpWASao2sGMwjhfrJQ==
+Date:   Thu, 27 Jul 2023 12:34:49 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 05/28] dt-bindings: net: Add support for QMC HDLC
+Message-ID: <20230727123449.0ab1c58e@bootlin.com>
+In-Reply-To: <20230727-decidable-sterile-06ef617c144b@spud>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+        <20230726150225.483464-6-herve.codina@bootlin.com>
+        <20230727-talcum-backside-5bdbe2171fb6@spud>
+        <20230727110948.7926a532@bootlin.com>
+        <20230727-decidable-sterile-06ef617c144b@spud>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v3 28/49] dm zoned: dynamically allocate the dm-zoned-meta
- shrinker
-Content-Language: en-US
-To:     Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-erofs@lists.ozlabs.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        rcu@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        dm-devel@redhat.com, linux-raid@vger.kernel.org,
-        linux-bcache@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev
-References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
- <20230727080502.77895-29-zhengqi.arch@bytedance.com>
- <baaf7de4-9a0e-b953-2b6a-46e60c415614@kernel.org>
- <56ee1d92-28ee-81cb-9c41-6ca7ea6556b0@bytedance.com>
- <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <ba0868b2-9f90-3d81-1c91-8810057fb3ce@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Conor,
 
+On Thu, 27 Jul 2023 10:53:15 +0100
+Conor Dooley <conor@kernel.org> wrote:
 
-On 2023/7/27 18:20, Damien Le Moal wrote:
-> On 7/27/23 17:55, Qi Zheng wrote:
->>>>            goto err;
->>>>        }
->>>>    +    zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
->>>> +    zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
->>>> +    zmd->mblk_shrinker->seeks = DEFAULT_SEEKS;
->>>> +    zmd->mblk_shrinker->private_data = zmd;
->>>> +
->>>> +    shrinker_register(zmd->mblk_shrinker);
->>>
->>> I fail to see how this new shrinker API is better... Why isn't there a
->>> shrinker_alloc_and_register() function ? That would avoid adding all this code
->>> all over the place as the new API call would be very similar to the current
->>> shrinker_register() call with static allocation.
->>
->> In some registration scenarios, memory needs to be allocated in advance.
->> So we continue to use the previous prealloc/register_prepared()
->> algorithm. The shrinker_alloc_and_register() is just a helper function
->> that combines the two, and this increases the number of APIs that
->> shrinker exposes to the outside, so I choose not to add this helper.
+> On Thu, Jul 27, 2023 at 11:09:48AM +0200, Herve Codina wrote:
+> > On Thu, 27 Jul 2023 09:19:59 +0100
+> > Conor Dooley <conor@kernel.org> wrote:  
+> > > On Wed, Jul 26, 2023 at 05:02:01PM +0200, Herve Codina wrote:  
 > 
-> And that results in more code in many places instead of less code + a simple
-> inline helper in the shrinker header file... So not adding that super simple
+> > If needed, I can change to:
+> >   title: QMC (QUICC Multichannel Controller) HDLC
+> > Let me known if it is better to you.  
+> 
+> If it were me writing the binding, I'd probably use something like
+> "Freescale/NXP QUICC Multichannel Controller (QMC) HDLC", but it is not
+> a big deal, I just had a "wtf is this" moment :)
 
-It also needs to be exported to the driver for use.
-
-> helper is not exactly the best choice in my opinion.
-
-Hm, either one is fine for me. If no one else objects, I can add this
-helper. ;)
+I will change to "Freescale/NXP QUICC Multichannel Controller (QMC) HDLC" in
+the next iteration.
 
 > 
+> 
+> 
+> > > > +  fsl,qmc-chan:  
+> > > 
+> > > Perhaps I am just showing my lack of knowledge in this area, but what is
+> > > fsl specific about wanting a reference to the channel of a "QMC"?
+> > > Is this something that hardware from other manufacturers would not also
+> > > want to do?  
+> > 
+> > The QMC and the QMC channel are something specific to the SoC. This IP is only
+> > available on some Freescale/NXP SoCs.
+> > 
+> > When I upstreamed the 'fsl,qmc-audio.yaml', I first used a generic name for this
+> > property and Kristoff asked to change to a vendor prefixed name.
+> >   https://lore.kernel.org/linux-kernel/1dfade07-f8c4-2e16-00dc-c7d183708259@linaro.org/
+> > 
+> > Based on this, as the property 'fsl,qmc-chan' has the exact same meaning in
+> > fsl,qmc-audio.yaml and fsl,qmc-hdlc.yaml, I use the same name.  
+> 
+> Okay, thanks for explaining!
+
+You're welcome.
+
+Regards,
+Hervé
+
