@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D6C76560F
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74138765611
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 16:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbjG0OfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 10:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S233812AbjG0Ogc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 10:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjG0OfN (ORCPT
+        with ESMTP id S232141AbjG0Og3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 10:35:13 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A522D47;
-        Thu, 27 Jul 2023 07:35:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31781e15a0cso675789f8f.3;
-        Thu, 27 Jul 2023 07:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690468507; x=1691073307;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BWvrBBI0xeShoFk34NbmQuANn71umzLfZCKEpR5Gmg8=;
-        b=sOmsxuOEWzRHYy24bTXdFP8ZH6spjFMw8Ab3/zPupI0xiwahJLv+/I+rft3AigBK72
-         30+sZv1jP9lQpmT2mat9zJBREOTrBSb9dTbUyi/q1cCprkrPKLkUrDwTOiz0N/KkVASD
-         ZiSRRpi2uroa5HiB4t8qLqBDKneQ/HTk+oaXZo+XTR2Cd3tIyEgsdCl9LAE2e3MsHmm9
-         7pHN23pBgbnKTwbBANXGCOYwdDePyGf5m+yBU185fd9Koggsx0qN9aNorC78cwkjOpML
-         lnoaJFsuYOFxvCRnENFRJPSBcxGDWkUhdiAZnPDrabUtqveFyKeFQipWCuHx6YQITbo3
-         8Mhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690468507; x=1691073307;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BWvrBBI0xeShoFk34NbmQuANn71umzLfZCKEpR5Gmg8=;
-        b=kbk3LAhQdyD8OnHrRPjqHbRBv1dw1di1nGOZlPa8LYZCjxi0c5jHd1C6CcRebcdbq2
-         YyLrLMaVp+Vdsq4rZjXFJsAONisqyUm2+kqhfc7ByNiSrBhACGgu4XE2O00nsJxxq9+e
-         oUNn5Sd60mgDwJerEX4gIHrBWYk1d3AdbNnJuE8czVyiW6z9NmdyNfMfgaP36xdTfWvc
-         jCBjb/53tA8CTyCTukBcyyC8w6arwpqv7LgkL4KdTlYm0FwV8uzQR7i6vVKQQcZe7+hK
-         2AoUyrSSraw/KSUnybD5znfO3QD1N5HHqlYunpLjwtlY+ttZUbab22YTwALw2XRzhgMS
-         G+4Q==
-X-Gm-Message-State: ABy/qLZaFNhlWwku31nU2zwaZw6H6Csrpkb68HlGlWUUeVYp7Df+8eJY
-        EIW1ewpv6mSpjh+Y05ku1G/dZpnxPxl8+DU5QiP9oaEfnTKVOTtT
-X-Google-Smtp-Source: APBJJlEJnkjeSx+q1sdaO3TLxk0CMnDvOrQQJUSSoYfmLABPx1kZPhDMnuoUpLdnFcrLH+H0a3WJkzsZFbDVhYZqBMo=
-X-Received: by 2002:adf:f549:0:b0:317:5849:c2e0 with SMTP id
- j9-20020adff549000000b003175849c2e0mr1930019wrp.9.1690468507116; Thu, 27 Jul
- 2023 07:35:07 -0700 (PDT)
+        Thu, 27 Jul 2023 10:36:29 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3CC30D3;
+        Thu, 27 Jul 2023 07:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690468588; x=1722004588;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TjuMUfQ5gRMaae5Age8wszPVJmes8/brvAgOH+GendI=;
+  b=E24wKkfyTQ5x6ODqoAsEPOWO5AiQhzVtI5b6I3HqtLCO6dFSS82tHiI6
+   ZzvRapraufrATz7luvMkvRHYTKzUYC/YHPN1GierEyHKm82D5dBYysPT8
+   YJ0p2touGaLdUv/cVAahdW8wweYNg1+1NZ8BxqxIkryz7q9cCUMFf8FKd
+   t38iomxhq0yzaGEYviqAhBZ18UITzQCvTHclZiY7fepKEas19fgmWtWIL
+   ZymnzbpJx4q0wcpdC0nh61ft6Uc0+L8dGcHyB3KiirBJOYqx7uBx56gG5
+   Z8ORiTV+aRTnLn2zWVTFVWi0TqaOMtovX25YikwfluIjnSfVIIY91CgW/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="353240739"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="353240739"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 07:36:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="756709514"
+X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
+   d="scan'208";a="756709514"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 27 Jul 2023 07:36:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qP25x-00893s-2O;
+        Thu, 27 Jul 2023 17:36:01 +0300
+Date:   Thu, 27 Jul 2023 17:36:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: core: Replace strncmp()+strlen() with
+ plain strcmp()
+Message-ID: <ZMKA0f987+Oac8eT@smile.fi.intel.com>
+References: <20230727090507.81962-1-andriy.shevchenko@linux.intel.com>
+ <ZMJcKc49Z69ZhfGk@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20230726104827.60382-1-dg573847474@gmail.com> <9378e69f-2bd4-9d8d-c736-b8799f6ebecc@deltatee.com>
- <ecf68b20-0a07-18bb-42a8-e622054b01f8@wanadoo.fr> <0e4caa6c-d5bd-61e7-2ef6-300973cd2db6@deltatee.com>
- <CAAo+4rW_rTsY=TpxZwO8yHB5gFkRKyTvy6kQ-eeiY0vg4+fuYg@mail.gmail.com> <46ceea13-c8ba-8d67-604e-b761feabc50c@sw-optimization.com>
-In-Reply-To: <46ceea13-c8ba-8d67-604e-b761feabc50c@sw-optimization.com>
-From:   Chengfeng Ye <dg573847474@gmail.com>
-Date:   Thu, 27 Jul 2023 22:34:55 +0800
-Message-ID: <CAAo+4rXJkWsTtsjDCY-b7bfqhMms1HSRQiXVHL2WfXNMLD8uSg@mail.gmail.com>
-Subject: Re: [PATCH] dmaengine: plx_dma: Fix potential deadlock on &plxdev->ring_lock
-To:     Eric Schwarz <eas@sw-optimization.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        vkoul@kernel.org, Yunbo Yu <yuyunbo519@gmail.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMJcKc49Z69ZhfGk@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Thu, Jul 27, 2023 at 02:59:37PM +0300, Andy Shevchenko wrote:
+> On Thu, Jul 27, 2023 at 12:05:07PM +0300, Andy Shevchenko wrote:
+> > There is no sense to call strlen() ahead of strncmp().
+> > The same effect can be achieved by calling strcmp() directly.
+> > Replace strncmp()+strlen() with plain strcmp().
+> 
+> It seems I will have more against serial core, perhaps it makes sense to unite
+> them in a single series.
 
-> W/ special emphasis on commit edf10919e5fc ("dmaengine: altera: fix
-> spinlock usage")
-> spin_lock_bh was changed to spin_lock_irqsave w/ this patch.
+Actually this change is simply wrong. Sorry for the noise.
 
-Yeah, that patch is to fix the deadlock between irq and kernel thread
-thus use spin_lock_irqsave(), exactly the kind of bug that I am reporting
-about. But slight difference is the deadlock on that commit concerns
-hardirq and thus fixed by spin_lock_irqsave(), but this one concerns softirq.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> For uniformity reason across drivers and also that not something else
-> gets missed please compare your requirements and solution to the
-> implementation of the "altera-msgdma" driver (altera-msgdma.c).
 
-Maybe for our case spin_lock_bh() seems to be enough since we are handling
-deadlock between tasklet and kernel thread. It's truth that uniformity
-is an important concern, also as I glance at other DMA driver, in general
-spin_lock_irqsave() is more frequently used than spin_lock_bh(). But this driver
-already consistently uses spin_lock_bh() on &plxdev->ring_lock, only change to
-spin_lock_irqsave() at this function could instead make the code seems
-a bit weird.
-
-Even though my original patch did use spin_lock_irqsave(), now I think at least
-for this bug fix just revert back to spin_lock_bh() may be better and
-will not complicate
-things much.
-
-Thanks,
-Chengfeng
