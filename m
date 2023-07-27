@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB6B76437C
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E826B76437F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 03:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbjG0BoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 26 Jul 2023 21:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        id S231201AbjG0Bo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 26 Jul 2023 21:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjG0Bn6 (ORCPT
+        with ESMTP id S229957AbjG0BoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 26 Jul 2023 21:43:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F23BE61;
-        Wed, 26 Jul 2023 18:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=hp6cp7A51G4iktXiOcxoO4u7miw3X4y4lxN8UCoOFWg=; b=pm49HYnGqpGvPGwRRyIdGfVUc2
-        TFYKuzsKW2So1LPZo3brH+GTA99n8QIX5QZYOJLgYu/V24erEs15gpmatnxht7iZItH9owzL7eo93
-        h2hKM/IvPr5qdke5XTWavQebJhczW5N/TWUItH7co+Iy3lHHgLJXTQlUnrsVcbPlwkUpHL4h3aIl9
-        HWRd8YHH8vvLj/OBR9gNlHF+P/VR69zsB7c7ZV0qhhPj/D9mwq4HUxYDF9HkBeABgR/s+EdzotJZ/
-        RgsCAPEw0uKdqMJEnevaxO3y+xhvUzL4hNgzSiJLfp22HiAJZjXxARy+gM9SiabRDj/8K3Cq4Zks2
-        rnjpX+3w==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qOq2j-00BszC-25;
-        Thu, 27 Jul 2023 01:43:53 +0000
-Message-ID: <d811b6c7-fe01-4f9c-be14-31defce4d864@infradead.org>
-Date:   Wed, 26 Jul 2023 18:43:52 -0700
+        Wed, 26 Jul 2023 21:44:24 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D64E8E61;
+        Wed, 26 Jul 2023 18:44:20 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36R1hn833004771, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36R1hn833004771
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 27 Jul 2023 09:43:49 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 27 Jul 2023 09:44:01 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 27 Jul 2023 09:44:00 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Thu, 27 Jul 2023 09:44:00 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     "Lukas F. Hartmann" <lukas@mntre.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>
+Subject: RE: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX path
+Thread-Topic: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX
+ path
+Thread-Index: AQHZsp+XbJMjQ56edkCHhTIfjugPgq+yJqHggAT+3gCAAUh3EIATdm2AgAELPyA=
+Date:   Thu, 27 Jul 2023 01:44:00 +0000
+Message-ID: <7738fcc180e6403ba4d0def0ae7ca31a@realtek.com>
+References: <20230709195712.603200-1-martin.blumenstingl@googlemail.com>
+ <b55cd3172ea7474ba1a67db2d5b39301@realtek.com> <87pm4w3rjp.fsf@mntre.com>
+ <208ee32354b44205bb76a55c0d4bc93b@realtek.com>
+ <CAFBinCDRWJGr1F0vLj_=k7TYQmGOQRWS=3n1DDQwpxr5AYtt9Q@mail.gmail.com>
+In-Reply-To: <CAFBinCDRWJGr1F0vLj_=k7TYQmGOQRWS=3n1DDQwpxr5AYtt9Q@mail.gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dma-buf/sync_file: Fix missing colon in kernel-doc for
- num_fences
-Content-Language: en-US
-To:     David Reaver <me@davidreaver.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     linux-doc@vger.kernel.org, Sumit Semwal <sumit.semwal@linaro.org>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230727011944.327807-1-me@davidreaver.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230727011944.327807-1-me@davidreaver.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 7/26/23 18:19, David Reaver wrote:
-> The struct sync_fence_info member num_fences was missing a colon in the
-> kernel-doc, causing this warning when running make htmldocs:
-> 
-> ./include/uapi/linux/sync_file.h:77: warning: Function parameter or member 'num_fences' not described in 'sync_file_info'
-> 
-> num_fences was also clearly missing from
-> https://docs.kernel.org/driver-api/dma-buf.html#c.sync_file_info before
-> this patch.
-> 
-> Signed-off-by: David Reaver <me@davidreaver.com>
-> ---
->  include/uapi/linux/sync_file.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
-> index 7e42a5b7558b..b389a5495181 100644
-> --- a/include/uapi/linux/sync_file.h
-> +++ b/include/uapi/linux/sync_file.h
-> @@ -56,7 +56,7 @@ struct sync_fence_info {
->   * @name:	name of fence
->   * @status:	status of fence. 1: signaled 0:active <0:error
->   * @flags:	sync_file_info flags
-> - * @num_fences	number of fences in the sync_file
-> + * @num_fences: number of fences in the sync_file
->   * @pad:	padding for 64-bit alignment, should always be zero
->   * @sync_fence_info: pointer to array of struct &sync_fence_info with all
->   *		 fences in the sync_file
-
-
-Same as https://lore.kernel.org/all/20230330142720.882045-1-robdclark@gmail.com/
-
-Hopefully someone will merge/apply that one. Rob, can you make that happen?
-
-thanks.
--- 
-~Randy
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFydGluIEJsdW1lbnN0
+aW5nbCA8bWFydGluLmJsdW1lbnN0aW5nbEBnb29nbGVtYWlsLmNvbT4NCj4gU2VudDogVGh1cnNk
+YXksIEp1bHkgMjcsIDIwMjMgMTozOCBBTQ0KPiBUbzogUGluZy1LZSBTaGloIDxwa3NoaWhAcmVh
+bHRlay5jb20+DQo+IENjOiBMdWthcyBGLiBIYXJ0bWFubiA8bHVrYXNAbW50cmUuY29tPjsgbGlu
+dXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+Ow0KPiBqZXJuZWouc2tyYWJlY0BnbWFpbC5jb207IHVsZi5oYW5zc29uQGxpbmFyby5vcmc7IGt2
+YWxvQGtlcm5lbC5vcmc7IHRvbnkwNjIwZW1tYUBnbWFpbC5jb20NCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSF0gd2lmaTogcnR3ODg6IHNkaW86IEhvbm9yIHRoZSBob3N0IG1heF9yZXFfc2l6ZSBpbiB0
+aGUgUlggcGF0aA0KPiANCj4gSGVsbG8gUGluZy1LZSwNCj4gDQo+IE9uIEZyaSwgSnVsIDE0LCAy
+MDIzIGF0IDI6MzTigK9BTSBQaW5nLUtlIFNoaWggPHBrc2hpaEByZWFsdGVrLmNvbT4gd3JvdGU6
+DQo+IFsuLi5dDQo+ID4gPiBIZXJlIGFyZSB0aGUgZXJyb3JzIHRoYXQgbGVhZCB1cCB0byB0aGlz
+Og0KPiA+ID4gaHR0cDovL2R1bXAubW50bW4uY29tL3J0dzg4LWZhaWx1cmUtMWgtZG1lc2cudHh0
+DQo+ID4NCj4gPiBIaSBNYXJ0aW4sDQo+ID4NCj4gPiBUaGUgZG1lc2cgc2hvd3MgdGhhdA0KPiA+
+ICJydHdfODgyMmNzIG1tYzI6MDAwMToxOiBGYWlsZWQgdG8gcmVhZCAxNTM2IGJ5dGUocykgZnJv
+bSBTRElPIHBvcnQgMHgwMDAwMDBkMSINCj4gPg0KPiA+IFNob3VsZG4ndCB3ZSByZXR1cm4gYW4g
+ZXJyb3IgY29kZSAod2l0aCBwcm9wZXIgZXJyb3IgaGFuZGxpbmcpIGluc3RlYWQgb2YNCj4gPiBq
+dXN0IGJyZWFrIHRoZSBsb29wPyBCZWNhdXNlICdidWYnIGNvbnRlbnQgaXNuJ3QgdXNhYmxlLg0K
+PiBJbiBteSBvcGluaW9uIHdlIGFyZSBwcm9wZXJseSBicmVha2luZyB0aGUgbG9vcDoNCj4gInJl
+dCIgd2lsbCBiZSBub24temVybyBzbyB0aGUgZXJyb3IgY29kZSBpcyByZXR1cm5lZCBmcm9tDQo+
+IHJ0d19zZGlvX3JlYWRfcG9ydCgpIHRvIHRoZSBjYWxsZXIuDQo+IFRoZSAob25seSkgY2FsbGVy
+IGlzIHJ0d19zZGlvX3J4Zmlmb19yZWN2KCkgd2hpY2ggc2VlcyB0aGUgbm9uLXplcm8NCj4gcmV0
+dXJuIGNvZGUgYW5kIGFib3J0cyBwcm9jZXNzaW5nLg0KPiBXaGF0IGRvIHlvdSB0aGluaz8NCg0K
+WW91IGFyZSBjb3JyZWN0LiANCg0KSSBjaGVjayB0aGUga2VybmVsIGxvZyBhZ2Fpbi4gSXQgbWln
+aHQgdHJ5IHRvIHJlYWQgdHdvIHRpbWVzIGZvciBhIGxhcmdlIHBhY2tldC4NCg0KRmlyc3QgcmVh
+ZCBpcyAxNTM2IGJ5dGVzLCBidXQgaXQgZmFpbGVkOiANCiAgWyA0MDAyLjA5NjY2NF0gcnR3Xzg4
+MjJjcyBtbWMyOjAwMDE6MTogRmFpbGVkIHRvIHJlYWQgMTUzNiBieXRlKHMpIGZyb20gU0RJTyBw
+b3J0IDB4MDAwMDAwZDENCg0KU2Vjb25kIHJlYWQgaXMgbGVzcyBieXRlLCBhbmQgaXQgc3VjY2Vl
+ZCwgYnV0IHNrYi0+ZGF0YSBjb250ZW50IGlzIGluY29ycmVjdC4gVGhlbiwgDQogIFsgNDAwMi4x
+MDAxNDBdIHJ0d184ODIyY3MgbW1jMjowMDAxOjE6IHVudXNlZCBwaHkgc3RhdHVzIHBhZ2UgKDMp
+DQogIFsgNDAwMi4xMDUwNjVdIHJ0d184ODIyY3MgbW1jMjowMDAxOjE6IHVudXNlZCBwaHkgc3Rh
+dHVzIHBhZ2UgKDIpDQogIFsgNDAwMi4xMTA4NjJdIC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0t
+LS0tLS0tLS0tLQ0KICBbIDQwMDIuMTEwODY4XSBSYXRlIG1hcmtlZCBhcyBhIFZIVCByYXRlIGJ1
+dCBkYXRhIGlzIGludmFsaWQ6IE1DUzogMCwgTlNTOiAwDQoNClNvLCBzaG93aW5nIHRvdGFsIHNp
+emUgKCdjb3VudCcgYXJndW1lbnQpIG1pZ2h0IGhlbHAgdG8gZmluZCB0aGUgY2F1c2UNCm9yIGEg
+d29ya2Fyb3VuZC4gDQoNClBpbmctS2UNCg0K
