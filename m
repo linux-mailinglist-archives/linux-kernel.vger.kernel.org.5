@@ -2,173 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D043765B16
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DC6765B1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 20:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbjG0SAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 14:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        id S229731AbjG0SCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 14:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjG0SAN (ORCPT
+        with ESMTP id S230012AbjG0SCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 14:00:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC38030E4
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:00:11 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbb07e7155so10075e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:00:11 -0700 (PDT)
+        Thu, 27 Jul 2023 14:02:03 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AC02D5B
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:02:01 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso2209404e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690480810; x=1691085610;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oTn2+kxGlhVp4f9iv6z1bXXGresETQByJPAsZA28KKw=;
-        b=O9vN5oXrlqmXbSF6WeTcBJkLLHF4H1Q/1miHlegLRnV6C+vMSCP8ZAd+E+F3vEpmOO
-         dOez8aEDj4dPCWiiwlXCgWmCD0KnBIgiylrn9LkmEZ6SaE7zWu1Ku+/s/HXGwR9C+H6S
-         8hqrmWwHpqPyjvXrGGH8gCFKx7ty71CWff/iRa27sSTPhqHNXsBExUZ/Kt49yoAZLQfh
-         mLvz2FZwyv568Wb+F1n/71KJh5U1+G0GDS9rXXcoXp0g7t1jOfah3H9lxhZCqjicYa0r
-         JyLBntNWxqxNG4aZaNYof2jS7R8QLqMOgoLOvlpDib6sF0AHX6jYA1ftMbgLadRWlau3
-         sjGw==
+        d=linuxfoundation.org; s=google; t=1690480919; x=1691085719;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vgVYZd/78+/O2NatRupV28b+UFJ4EhyFHfWo2O8AZQc=;
+        b=Yj/vpp25ZUIvO6N/U/QM9aowGr4KaB0g7afTBf7DGyIDu1G1V3EENWpXTQzvi6qkw/
+         TlA7IQtC80kM+dmzcOD/CtfqgqNRZfGfw1Rfh95l2olGG09qZ7hCzKsc2Gc0df4Aak0y
+         AJT2CfiAHregytIW4zc6PtI3doJreA4RD9wrc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690480810; x=1691085610;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oTn2+kxGlhVp4f9iv6z1bXXGresETQByJPAsZA28KKw=;
-        b=N5D0vZ+5kinL717IBvgo6YfNvNmcOqJiDp13i/OmLP2bcWVKonRGEq8WTcCbQusSXa
-         SJOpg1zjq35+BRj1itG4RyZzGrvfiLHKo8UqCbUWBaB1ALokkHdpYkAVhr678ZswZcQg
-         VpBvxIqW5KfWBkmcnyVjScXuVHH1A3m38O6BPIx7KxHUpcA3LsBb41jxZefW2lkUNqaA
-         ONQFllZ7t2ZI5VGgBPnneW0YYU9CtVZT0529K/BwE8WJYMgrLPdKsQMRC7nn/CjWfacA
-         0G+I3ENZ1E34OWvEpUDKIBsT9ged03X9Vk1tmJ/J62pUdjlIeh/Mns38WYj7yGj5EZ6p
-         tR2A==
-X-Gm-Message-State: ABy/qLbb3hI1GP5YHFHazhcgSesIaq8385oyefMW29LqysqOSlNKanV2
-        kdHjQWKGjOZAkXR029iAknGP8fW8Gd7IHVZPCeKrQg==
-X-Google-Smtp-Source: APBJJlGuQWxAL4fqerBwoIv5mRHCYPIZPVe1BZ+MTPguHtmK71dR2/dAWktplHcOEGAI+WfFEOlqcL34Mu47y4FY3ac=
-X-Received: by 2002:a05:600c:3d1a:b0:3f1:73b8:b5fe with SMTP id
- bh26-20020a05600c3d1a00b003f173b8b5femr9532wmb.3.1690480810201; Thu, 27 Jul
- 2023 11:00:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690480919; x=1691085719;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vgVYZd/78+/O2NatRupV28b+UFJ4EhyFHfWo2O8AZQc=;
+        b=NA3/vcdzWvyzQCsQ3DQQ4fOlWG4aJOhw7Fn5Uk7EmPJM3FSpBWeddvRjvx9aA+6Vqi
+         gCF27LHpyQVphlhzzTN0AxEDm8Q0wVdF3aojZ2T+wVduhaUt/stQEDPCu9AWn+WscCb/
+         4rpZhTY1L4Vpd6uOXI7o/yeh4ZTKdDrxXv0BQIlhgXXpJsrINYSZdfA4fInCThTy+4Y/
+         4nqBVZ16nCWfWT9p7G/lWrEz2wD6wxByxzTmrRBIkEuJI5Jo9VMpDPdei8gae8PxGeRm
+         yyIwYq5ZFUzoYExG0M+41AQ4h2DMiSDC0+NAcA3Vy6eSTB+2Y8w6DnjO/QBGD6PePipF
+         4DZQ==
+X-Gm-Message-State: ABy/qLY9Vth8E+m+eb06MoF5Bi52kiL9vpHsdDQ6pdg8e0eozTSaNMhQ
+        KdV6Di+6b0y2W+Qe750IoUdGCkybA91LToJ0VdIdCtvp
+X-Google-Smtp-Source: APBJJlE4V4PVdcHx8C5WC0kB9LcKjxStMgQ+I7AW/JaZYqPzYV8Zn3t0Eqhi0+X6lCC8klwLGG3qvQ==
+X-Received: by 2002:ac2:4bd5:0:b0:4fe:6fc:1fc7 with SMTP id o21-20020ac24bd5000000b004fe06fc1fc7mr2787869lfq.27.1690480919653;
+        Thu, 27 Jul 2023 11:01:59 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id p15-20020a19f00f000000b004fdfd4c1fcesm411363lfc.36.2023.07.27.11.01.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 11:01:57 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso2209284e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 11:01:56 -0700 (PDT)
+X-Received: by 2002:ac2:4f15:0:b0:4fe:181f:2736 with SMTP id
+ k21-20020ac24f15000000b004fe181f2736mr2122365lfr.33.1690480916074; Thu, 27
+ Jul 2023 11:01:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000607ff905ffc8e477@google.com> <0000000000000aeb7f06015e5cbd@google.com>
- <20230727164757.e2di75xjybxncohn@revolver> <CAJuCfpEyE18kbH84FfmfzUnar2dxgzpi=FOYPbU8MOpz-SbVjg@mail.gmail.com>
-In-Reply-To: <CAJuCfpEyE18kbH84FfmfzUnar2dxgzpi=FOYPbU8MOpz-SbVjg@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 27 Jul 2023 19:59:33 +0200
-Message-ID: <CAG48ez1yg7m=aNsjNiGt_s0_tEBEmEXXx0-vijuN9MBmoxL7PQ@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (2)
-To:     Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com>
+References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
+ <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
+ <20230727145747.GB19940@willie-the-truck> <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
+ <CAHk-=whGjpt77tUYRQA6TxiGERp_rSbcNhuKaWbvoJ6yXPwhhQ@mail.gmail.com> <af1eed90-a1d5-4da0-84a0-05e61767ab37@rowland.harvard.edu>
+In-Reply-To: <af1eed90-a1d5-4da0-84a0-05e61767ab37@rowland.harvard.edu>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Thu, 27 Jul 2023 11:01:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whXP+27F-k7qrkmMYRZLD1Q05expC2x=esgC5qJJS7M1A@mail.gmail.com>
+Message-ID: <CAHk-=whXP+27F-k7qrkmMYRZLD1Q05expC2x=esgC5qJJS7M1A@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
+ anon_vma memory ordering
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
+        paulmck@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 7:22=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
-> On Thu, Jul 27, 2023 at 9:48=E2=80=AFAM Liam R. Howlett <Liam.Howlett@ora=
-cle.com> wrote:
-> >
-> > * syzbot <syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com> [23072=
-6 02:57]:
-> > > syzbot has bisected this issue to:
-> > >
-> > > commit a52f58b34afe095ebc5823684eb264404dad6f7b
-> > > Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > Date:   Mon Jul 24 18:54:10 2023 +0000
-> > >
-> > >     mm: handle faults that merely update the accessed bit under the V=
-MA lock
-> > >
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D178358=
-5ea80000
-> > > start commit:   [unknown]
-> > > git tree:       linux-next
-> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D144358=
-5ea80000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D1043585ea=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df481ab36c=
-e878b84
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D8645fe63c4d=
-22c8d27b8
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1697cec=
-9a80000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1566986ea=
-80000
-> > >
-> > > Reported-by: syzbot+8645fe63c4d22c8d27b8@syzkaller.appspotmail.com
-> > > Fixes: a52f58b34afe ("mm: handle faults that merely update the access=
-ed bit under the VMA lock")
-> > >
-> > > For information about bisection process see: https://goo.gl/tpsmEJ#bi=
-section
-> >
-> > This is caused by walking the maple tree without holding the mmap or rc=
-u
-> > read lock when per-vma locking is used for the page fault.
-> >
-> > We could wrap the find_mergeable_anon_vma() walk with an rcu read lock,
-> > but I am unsure if that's the correct way to handle this as the anon_vm=
-a
-> > lock is taken later in __anon_vma_prepare().  Note that the anon_vma
-> > lock is per-anon_vma, so we cannot just relocate that lock.
+On Thu, 27 Jul 2023 at 10:41, Alan Stern <stern@rowland.harvard.edu> wrote:
 >
-> Hmm. lock_vma_under_rcu() specifically checks for vma->anon_vma=3D=3DNULL
-> condition (see [1]) to avoid going into find_mergeable_anon_vma() (a
-> check inside anon_vma_prepare() should prevent that). So, it should
-> fall back to mmap_lock'ing.
+> But in the presence of data races (as in the example that Will posted
+> earlier), all bets are off.  So if you want to use a plain access rather
+> than READ_ONCE, you need to be certain that it won't race with anything.
 
-This syzkaller report applies to a tree with Willy's in-progress patch
-series, where lock_vma_under_rcu() only checks for vma->anon_vma if
-vma_is_anonymous() is true - it permits private non-anonymous VMAs
-(which require an anon_vma for handling write faults)  even if they
-don't have an anon_vma.
+So in this case, the initial NULL check really is just checking for
+"has the smp_store_release() happened". The reason even tearing
+wouldn't matter is that seeing *any* value other than all-zeroes (aka
+NULL) is already sufficient information.
 
-The commit bisected by syzkaller
-(https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit=
-/?id=3Da52f58b34afe095ebc5823684eb264404dad6f7b)
-removes the vma_is_anonymous() check in handle_pte_fault(), so it lets
-us reach do_wp_page() with a non-anonymous private VMA without
-anon_vma, even though that requires allocation of an anon_vma.
+Because once the smp_store_release() has been seen by this CPU, the
+data race no longer exists, and the value is stable.
 
-So I think this is pretty clearly an issue with Willy's in-progress
-patch series that syzkaller blamed correctly.
+Which is why I argue that even without READ_ONCE() the code would
+*work* due to all the circumstances around it (one of them is that we
+just took a lock, after doing an optimistic check that really has no
+semantic effect at all except for the "don't even take the lock if it
+looks like things are going to fail").
 
+But if we want to have the code be obvious, and not have to refer to
+those kinds of arguments, I think smp_load_acquire() is the only
+actual "obvious" thing to use. At that point it's no longer some chain
+of "because of X, Y and Z".
 
-
-> Jann Horn is fixing an issue with this check in [2] which happens
-> before we take the vma lock. So, it's possible that this race is
-> causing a call to find_mergeable_anon_vma() while holding per-VMA
-> lock. Another possibility is that the recent addition of vma_is_tcp()
-> is messing things up here... Either way, find_mergeable_anon_vma()
-> should never be called under per-VMA locks because it relies on
-> neighboring VMAs to be stable and we do not lock those.
->
-> [1] https://elixir.bootlin.com/linux/v6.5-rc3/source/mm/memory.c#L5396
-> [2] https://lore.kernel.org/all/20230726214103.3261108-3-jannh@google.com=
-/
->
->
-> >
-> > I'm wondering if we need find_mergeable_anon_vma() to take a read lock
-> > on the VMA which contains the anon_vma to ensure it doesn't go away?
-> > Maybe a find_and_lock_mergeable_anon_vma() and return a locked anon_vma=
-?
-> > Basically lock_vma_under_rcu(), anon_vma_lock_write(), vma_end_read().
-> >
-> > Thoughts?
-> >
-> > Thanks,
-> > Liam
-> >
+              Linus
