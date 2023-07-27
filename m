@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E9A764E90
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D92764E91
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 11:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbjG0JGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 05:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S232177AbjG0JGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 05:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbjG0JGE (ORCPT
+        with ESMTP id S231790AbjG0JGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 05:06:04 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C569B9C
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:47:22 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e28b299adso918366a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:47:22 -0700 (PDT)
+        Thu, 27 Jul 2023 05:06:05 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332BC59CF;
+        Thu, 27 Jul 2023 01:47:25 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe0cfc7ef9so181954e87.0;
+        Thu, 27 Jul 2023 01:47:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690447641; x=1691052441;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WzKatOpTuOf7u3V1+Io5ntUtp+jfKhFzQY0d22Yamro=;
-        b=rMUaou1GMHD/Ppm/ABaEvZk+9IPfdWuR6e/BqVMYRUMWGYjAUCvbQzTl2xUi+kgwuW
-         Z3Othwr6+aAHS/Ty9q4QDxmb9OwNpdvJ591B4LDH6hSDG9Bpzzzu/nBLNOJxloVdNF/y
-         g+QAX9iBoyE6VG5R+MjdqUa1NqA3Nvaj/ES7oy/ivcMvKYBYcWTD/vPLl1r+1ZCAWem/
-         B0nxD1tBxxFkxCW62wO1CJk+0MqZRGIqdSEt5onYhar32PnNQ+MDMvc3I/LVjCCmOKOy
-         Oc8NPq8Tuhg1bOJ+tzZIgFReBBwjiIMBFRu61TBSVkFyvzTls9cXEpoqSyetIez2MrSs
-         beCA==
+        d=gmail.com; s=20221208; t=1690447643; x=1691052443;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=eTo6Edh8lHo2BapE1JCqPWXw2K03R9O2WOf57wkgONA=;
+        b=UCr1BwouF4RfBo7hbx5lAgeH4wSlqENLK4DJ/7C6ujZkkwccylqrZOyqOyDMBWZbvT
+         SgBidTwmevoiZm0WZj1pX32k9MZsg2nPBCW+U80K3qMg7wqPRbXq28eaMXRqE331Zah9
+         sKSpkrxhf3UmkN1ab8AMjZ0c9m+2ZteV6/HKV+y2qM3w7iSLcfKKKfM30GdvkSLGIThQ
+         L68qbARtnB1265yCYnBi39rmrvY1BPLVgQwsLy0xz0ato0KIJgEmKcSvMwedNmex1x78
+         JZ379MGM9mdUMoiLHjwmmBsd1d4WGOV9rbQcrHT0EkpL33aRwPpwRC9vRMGrXXW1PyzN
+         Hgww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690447641; x=1691052441;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690447643; x=1691052443;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WzKatOpTuOf7u3V1+Io5ntUtp+jfKhFzQY0d22Yamro=;
-        b=AVWWKpEU4BHEBzJrQitKm0J+A9RGHPKyAlTRoWnadJI+H3SA6Qrx4OM0aqvyaG/wii
-         cT4A+3wb58mGp8Hoj9AGwqrHJ7ivafIpAZbwEpfvk6z5T6PhH6qZl7eM8S+I8ia+5lh4
-         O3jpuPziX7YRO5MmzuczCbcixPzgIWDeEYAmevJZ+sjzrm/1RYTsrDeor/QzJ8TQeDg9
-         Nhc6d6aDM8cs4ySap4Wwer+dhITIu7cCR5PpGe6FtOUdZ0+pUouKhHCqIeK064VuIA0t
-         tGu6HhzC+X5AJUm1zmRWJq+X9oJ8OfIUitwBKTeYnF9BMam7uOIDH60474UXrXlgdJNg
-         xYJg==
-X-Gm-Message-State: ABy/qLa+MV5acHTl0xjiE+ti5lPsJq3dfPqcmL8YH+cDdGYVrg+Ykhpf
-        adcpvPUYh/bPYd0j1SnduVyfuNWP6Swx5BMQrvo=
-X-Google-Smtp-Source: APBJJlFXYKAmU8kgOJQ9A1L1krKXklKAx7nVxl3lbA6oBJ8lJHPiF5FiQMkJFq+bdVLrDODUxSM7bQ==
-X-Received: by 2002:a50:ee01:0:b0:521:7ab6:b95d with SMTP id g1-20020a50ee01000000b005217ab6b95dmr1302613eds.29.1690447641270;
-        Thu, 27 Jul 2023 01:47:21 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id a18-20020aa7d752000000b0051dd16f7e50sm395972eds.44.2023.07.27.01.47.19
+        bh=eTo6Edh8lHo2BapE1JCqPWXw2K03R9O2WOf57wkgONA=;
+        b=Kqb+7phlLVL1w9Pcwz3XCYXbEaILjnasC2XMHkl737pl2VoB6NR14MsGmbhEv/ljD4
+         CtY9ZE8aXn8m9caeOtyiSDp1j1yRaKR7SgX8OCeNM3QH9dIYKCtIWtGSlyK76m2/2ayr
+         Uircol1gnsju12k0QuSCCsqkBi0GCLkh2jGiXLU1EWLTLTqMwSiRGSm8dcJAweE6P00x
+         RbQ54nu/6VFwblVqAEIYoPYGxRS6jR9ZNe4krDBjuVpBbxO8xpRhidbmqAWK+q+A2YCM
+         r9kj6ba9/U2VVsvDIKz5K0dxuT7TwWbCNZFCBvkQdt9SvOTCXQgsNdQgkHV3k6nekzVG
+         LE/Q==
+X-Gm-Message-State: ABy/qLabVlVXaPCh0fcQRYP3ZgSaP/9ej2obmWUzKQNrG2GkWIaf80wl
+        RsaxRcxNBDGZBA3N7VIOJqByLiimklE=
+X-Google-Smtp-Source: APBJJlGs4tNJ17hoIOZ54mQyDzSi0jMyBxbdIcNT5QDYsnlHPfzXLcYPgUri69ktswyfD6HezZZTqg==
+X-Received: by 2002:a2e:5759:0:b0:2b9:3c1d:6ec0 with SMTP id r25-20020a2e5759000000b002b93c1d6ec0mr2784929ljd.4.1690447643102;
+        Thu, 27 Jul 2023 01:47:23 -0700 (PDT)
+Received: from [192.168.0.192] ([194.146.248.75])
+        by smtp.gmail.com with ESMTPSA id d10-20020a2e890a000000b002b6d7682050sm222911lji.89.2023.07.27.01.47.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 01:47:20 -0700 (PDT)
-Message-ID: <10fdcad5-c61b-6721-8cd6-165882cf8c90@linaro.org>
-Date:   Thu, 27 Jul 2023 10:47:18 +0200
+        Thu, 27 Jul 2023 01:47:22 -0700 (PDT)
+Message-ID: <fb0b48af-3bf7-184c-2a99-d1e06fcdabba@gmail.com>
+Date:   Thu, 27 Jul 2023 10:47:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 18/42] clk: at91: at91rm9200: fix checkpatch.pl check
+Subject: Re: [PATCH -next] media: jpeg-core: Remove redundant dev_err()
+To:     Ruan Jinjie <ruanjinjie@huawei.com>, jacek.anaszewski@gmail.com,
+        s.nawrocki@samsung.com, mchehab@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230727100632.2737656-1-ruanjinjie@huawei.com>
 Content-Language: en-US
-To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>, mturquette@baylibre.com,
-        sboyd@kernel.org, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, mripard@kernel.org
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, varshini.rajendran@microchip.com
-References: <20230727053156.13587-1-claudiu.beznea@tuxon.dev>
- <20230727053156.13587-19-claudiu.beznea@tuxon.dev>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727053156.13587-19-claudiu.beznea@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+In-Reply-To: <20230727100632.2737656-1-ruanjinjie@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 07:31, Claudiu Beznea wrote:
-> Fix the following checkpatch.pl check:
-> drivers/clk/at91/at91rm9200.c:216: CHECK: Please use a blank line after function/struct/union/enum declarations
+Thanks!
+
+W dniu 27.07.2023 o 12:06, Ruan Jinjie pisze:
+> There is no need to call the dev_err() function directly to print a custom
+> message when handling an error from platform_get_irq() function as
+> it is going to display an appropriate error message in case of a failure.
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+
+Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+
 > ---
->  drivers/clk/at91/at91rm9200.c | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/media/platform/samsung/s5p-jpeg/jpeg-core.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/drivers/clk/at91/at91rm9200.c b/drivers/clk/at91/at91rm9200.c
-> index a862a0a18972..e0418ab5d65c 100644
-> --- a/drivers/clk/at91/at91rm9200.c
-> +++ b/drivers/clk/at91/at91rm9200.c
-> @@ -222,6 +222,7 @@ static void __init at91rm9200_pmc_setup(struct device_node *np)
->  err_free:
->  	kfree(at91rm9200_pmc);
->  }
-> +
->  /*
-
-Again, one commit per one blank line added. This is just ridiculous.
-
-Best regards,
-Krzysztof
-
+> diff --git a/drivers/media/platform/samsung/s5p-jpeg/jpeg-core.c b/drivers/media/platform/samThsung/s5p-jpeg/jpeg-core.c
+> index 5e819b8b38a4..d2c4a0178b3c 100644
+> --- a/drivers/media/platform/samsung/s5p-jpeg/jpeg-core.c
+> +++ b/drivers/media/platform/samsung/s5p-jpeg/jpeg-core.c
+> @@ -2870,10 +2870,8 @@ static int s5p_jpeg_probe(struct platform_device *pdev)
+>   
+>   	/* interrupt service routine registration */
+>   	jpeg->irq = ret = platform_get_irq(pdev, 0);
+> -	if (ret < 0) {
+> -		dev_err(&pdev->dev, "cannot find IRQ\n");
+> +	if (ret < 0)
+>   		return ret;
+> -	}
+>   
+>   	ret = devm_request_irq(&pdev->dev, jpeg->irq, jpeg->variant->jpeg_irq,
+>   				0, dev_name(&pdev->dev), jpeg);
