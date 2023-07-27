@@ -2,238 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB1E76450E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22B376450F
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 06:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjG0Es1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 00:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
+        id S231403AbjG0Ety (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 00:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjG0EsX (ORCPT
+        with ESMTP id S230356AbjG0Etv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 00:48:23 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF4B271B
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:48:22 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40540a8a3bbso116991cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690433301; x=1691038101;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O9HSIrtFkclUh08WUnO+B+BwRK/qFesZ9SqYpqIojYc=;
-        b=lYZHABINhBqe1G2mHVSCBYrzOcWQYVQfYcYaDJNHjGJdTu9KeiY3yRKyAWhtUaN2ht
-         Sab6Gf2VrE1ndiMbct5kct6iC1F1m87Z3yc9X3G6vaddsXvEo4LqVmm+ZmwpG8Ep91M1
-         6exzt/amwArbgZJzW2lI4QLQEoIdUOM+25iiWAGXKv6bv491IrKi/KkQQG93y4Y6G/In
-         kE/TfE2WaCxyMlu2SuAjndZTL+6/byI15lVfJ/ui3uLEUtNWDcqGHKNlv3QrOI9orn8P
-         krI8ZQw8UCWfhfEewkfFcwKjznHIKiwzYSOuwwgODxBFQeW60kKQab2HR0q/uf4tZoOt
-         BWlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690433301; x=1691038101;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O9HSIrtFkclUh08WUnO+B+BwRK/qFesZ9SqYpqIojYc=;
-        b=Hc/HPUM5zE5V021bkJ2G+GwNZB3h3a5McnEgRx4rWKZTGG4RJwaooaQdAFFiA7XD8O
-         LkwY7evq1ajgmRNYfmpSPNvco/gEnfuRGsPGl6ZAfdmfXsmwzpXE/lgFNkO8puzNYFk9
-         NN25emiJjecf3pRg0k3ywfDZ88iJY9dotvBr/tAZviTGf2LL03lgPLIYTokZqPFsU+Hw
-         sYjy1mGlhefadZVOLwFk25oYGXQeJTRCrueen+G5dYT/jXrlmIWsJeLl/Ea+RN/sHxei
-         QrSpjai1UebBh7wb9ihNFsLOFM9tcaOR4veOdO2gw6UYzPWFaY474w5KL+hYuk6AdLIr
-         2u5w==
-X-Gm-Message-State: ABy/qLZH+cspLiESY5kEl9OeLTHkkTZFXwJ9Zg5RkNOiF22QzxQYDDwM
-        FqWoVsoYSljwMuurNhy1HYjeZ7pLXCIeizqOZwstZw==
-X-Google-Smtp-Source: APBJJlFZSj/4XZDQSkXKf9GLMLlJ1OhH7auW0F8ddBeujJvWq3cHpEA81n7a9v2R6peR2nyx3IoSQxBsrOHoKGEbQZc=
-X-Received: by 2002:a05:622a:349:b0:3f6:97b4:1a4d with SMTP id
- r9-20020a05622a034900b003f697b41a4dmr86468qtw.23.1690433301294; Wed, 26 Jul
- 2023 21:48:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230726133642.750342-1-namhyung@kernel.org> <CAP-5=fWM9Fhq5WvsBf2n=hGwwwRDt3-mUQ=_qzu8qYGtD1OeWQ@mail.gmail.com>
- <CAM9d7citVc4ad65MLBWxvE-_AbwxO1DQWHf5w+ofSgWnWSx=Fw@mail.gmail.com>
- <CAP-5=fVbwf9=ZFszgFpb_6Qb003WpZC3_vtO7fB1pL_vH-OhQw@mail.gmail.com> <CAM9d7chcrd8mN55yb+oCBi3=AF4-a=oCr66+cv7eaquzx0Kvpw@mail.gmail.com>
-In-Reply-To: <CAM9d7chcrd8mN55yb+oCBi3=AF4-a=oCr66+cv7eaquzx0Kvpw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 26 Jul 2023 21:48:09 -0700
-Message-ID: <CAP-5=fUPPRVSx9x4riCkkwEAza1N_r5qCxwqmdj0d7CEaKmCdw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf build: Update build rule for generated files
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 00:49:51 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C777E2116
+        for <linux-kernel@vger.kernel.org>; Wed, 26 Jul 2023 21:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690433390; x=1721969390;
+  h=date:from:to:cc:subject:message-id;
+  bh=fuNS/SiM9mMJqkrS6jI9mXIPbinWE6OeUSKMomTQMgE=;
+  b=ZGg7GAMEK3vUsKADok9M0l5ktZt65+U1MVA2Os+VV21dxF6TwlAT6P/Q
+   lqP9nzeavtivnMt3GubFXunS29yHOImVEyQAWcZP6q3hfGRZswekM+FoA
+   OzBRlJ5eQVAXqDa+wN4GLdICHs9e9loiuJUxbAqAAtSNH3SiNxRsqUwln
+   moA/H7ltWAUT793pzFOLw/f2expwDTSc7tWYCsMCTMWMG3u31BuIH6FRg
+   EK9S5xhkSEJbUsBxK4H9URMrZrUUojrHJko+BYzKB6kjhR80bQMfc2mDO
+   GMqTzs5vsFmcdKjYTrlFheb/d21GV3FXY5iSUCjwuypGtxiYqS9kgfv3/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="365664400"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="365664400"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2023 21:49:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726801434"
+X-IronPort-AV: E=Sophos;i="6.01,233,1684825200"; 
+   d="scan'208";a="726801434"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2023 21:49:48 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOswd-0001ux-2R;
+        Thu, 27 Jul 2023 04:49:47 +0000
+Date:   Thu, 27 Jul 2023 12:49:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 3f3422d644e12169456bbf141d685a6ae4c12fa6
+Message-ID: <202307271223.EqqggO3M-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 6:01=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Wed, Jul 26, 2023 at 5:36=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Wed, Jul 26, 2023 at 3:57=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> > >
-> > > Hi Ian,
-> > >
-> > > On Wed, Jul 26, 2023 at 8:48=E2=80=AFAM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > On Wed, Jul 26, 2023 at 6:36=E2=80=AFAM Namhyung Kim <namhyung@kern=
-el.org> wrote:
-> > > > >
-> > > > > The bison and flex generate C files from the source (.y and .l)
-> > > > > files.  When O=3D option is used, they are saved in a separate di=
-rectory
-> > > > > but the default build rule assumes the .C files are in the source
-> > > > > directory.  So it might read invalid file if there are generated =
-files
-> > > > > from an old version.  The same is true for the pmu-events files.
-> > > > >
-> > > > > For example, the following command would cause a build failure:
-> > > > >
-> > > > >   $ git checkout v6.3
-> > > > >   $ make -C tools/perf  # build in the same directory
-> > > > >
-> > > > >   $ git checkout v6.5-rc2
-> > > > >   $ mkdir build  # create a build directory
-> > > > >   $ make -C tools/perf O=3Dbuild  # build in a different director=
-y but it
-> > > > >                                 # refers files in the source dire=
-ctory
-> > > > >
-> > > > > Let's update the build rule to specify those cases explicitly to =
-depend
-> > > > > on the files in the output directory.
-> > > > >
-> > > > > Note that it's not a complete fix and it needs the next patch for=
- the
-> > > > > include path too.
-> > > > >
-> > > > > Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file"=
-)
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > > > ---
-> > > > >  tools/build/Makefile.build  | 8 ++++++++
-> > > > >  tools/perf/pmu-events/Build | 4 ++++
-> > > > >  2 files changed, 12 insertions(+)
-> > > > >
-> > > > > diff --git a/tools/build/Makefile.build b/tools/build/Makefile.bu=
-ild
-> > > > > index 89430338a3d9..f9396696fcbf 100644
-> > > > > --- a/tools/build/Makefile.build
-> > > > > +++ b/tools/build/Makefile.build
-> > > > > @@ -117,6 +117,14 @@ $(OUTPUT)%.s: %.c FORCE
-> > > > >         $(call rule_mkdir)
-> > > > >         $(call if_changed_dep,cc_s_c)
-> > > > >
-> > > > > +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
-> > > > > +       $(call rule_mkdir)
-> > > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > > > +
-> > > > > +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
-> > > > > +       $(call rule_mkdir)
-> > > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > > > +
-> > > >
-> > > > Hi Namhyung,
-> > > >
-> > > > as we have:
-> > > > ```
-> > > > $(OUTPUT)%.o: %.c FORCE
-> > > >        $(call rule_mkdir)
-> > > >        $(call if_changed_dep,$(host)cc_o_c)
-> > > > ```
-> > > > I'm not sure what the 2 additional rules achieve.
-> > >
-> > > The above rule assumes the .c files are in the source directory
-> > > (without $(OUTPUT) prefix).  It caused a trouble when the
-> > > flex and bison files are generated in the output directory and
-> > > you have an old version of them in the source directory.
-> > >
-> > >
-> > > >
-> > > > >  # Gather build data:
-> > > > >  #   obj-y        - list of build objects
-> > > > >  #   subdir-y     - list of directories to nest
-> > > > > diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/=
-Build
-> > > > > index 150765f2baee..f38a27765604 100644
-> > > > > --- a/tools/perf/pmu-events/Build
-> > > > > +++ b/tools/perf/pmu-events/Build
-> > > > > @@ -35,3 +35,7 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS=
-_PY) $(METRIC_PY) $(METRIC_TEST_L
-> > > > >         $(call rule_mkdir)
-> > > > >         $(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS=
-_ARCH) $(JEVENTS_MODEL) pmu-events/arch $@
-> > > > >  endif
-> > > > > +
-> > > > > +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
-> > > > > +       $(call rule_mkdir)
-> > > > > +       $(call if_changed_dep,$(host)cc_o_c)
-> > > >
-> > > > If we add this, do the Makefile.build changes still need to happen?
-> > >
-> > > The Makefile.build changes are specific to flex and bison files.
-> > > So yes, we need this for pmu-events.c to work properly with O=3D
-> > > option.
-> >
-> > Got it, you are right I was confusing the flex/bison with the jevents
-> > case. Can we get away with a single rule then:
-> > ```
-> >  $(OUTPUT)%.o:  $(OUTPUT)%.c FORCE
-> >         $(call rule_mkdir)
-> >         $(call if_changed_dep,$(host)cc_o_c)
-> > ```
->
-> Probably, but I wonder if it affects the normal .c files expecting
-> them in the OUTPUT directory.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 3f3422d644e12169456bbf141d685a6ae4c12fa6  Merge branch into tip/master: 'x86/mm'
 
-Hmm.. I think the longer matches may be necessary to trigger the "more
-specific" ordering:
-https://www.gnu.org/software/make/manual/html_node/Pattern-Match.html
+elapsed time: 1271m
 
-I'm not keen on these extra rules that mirror existing rules, it is a
-bit cryptic what is going on. I wonder if it would be cleaner just to
-fail the build if the bogus pmu-events.c exists. For example:
-```
---- a/tools/perf/pmu-events/Build
-+++ b/tools/perf/pmu-events/Build
-@@ -12,6 +12,14 @@ EMPTY_PMU_EVENTS_C =3D pmu-events/empty-pmu-events.c
-PMU_EVENTS_C   =3D  $(OUTPUT)pmu-events/pmu-events.c
-METRIC_TEST_LOG        =3D  $(OUTPUT)pmu-events/metric_test.log
+configs tested: 108
+configs skipped: 3
 
-+ifneq ($(OUTPUT),)
-+ifneq ($(wildcard pmu-events/pmu-events.c),)
-+dummy :=3D $(error OUTPUT set but tools/perf/pmu-events/pmu-events.c exist=
-s. \
-+           This can mean the generated version of pmu-events.c is not
-compiled. \
-+           Try 'cd tools/perf; make clean; cd -' and then rebuilding.)
-+endif
-+endif
-+
-ifeq ($(JEVENTS_ARCH),)
-JEVENTS_ARCH=3D$(SRCARCH)
-endif
-```
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Ian
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r022-20230726   gcc  
+alpha                randconfig-r032-20230726   gcc  
+alpha                randconfig-r034-20230726   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r012-20230726   gcc  
+arc                  randconfig-r043-20230726   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230726   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r011-20230726   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r016-20230726   gcc  
+hexagon              randconfig-r024-20230726   clang
+hexagon              randconfig-r033-20230726   clang
+hexagon              randconfig-r041-20230726   clang
+hexagon              randconfig-r045-20230726   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230726   gcc  
+i386         buildonly-randconfig-r005-20230726   gcc  
+i386         buildonly-randconfig-r006-20230726   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230726   gcc  
+i386                 randconfig-i002-20230726   gcc  
+i386                 randconfig-i003-20230726   gcc  
+i386                 randconfig-i004-20230726   gcc  
+i386                 randconfig-i005-20230726   gcc  
+i386                 randconfig-i006-20230726   gcc  
+i386                 randconfig-i011-20230726   clang
+i386                 randconfig-i012-20230726   clang
+i386                 randconfig-i013-20230726   clang
+i386                 randconfig-i014-20230726   clang
+i386                 randconfig-i015-20230726   clang
+i386                 randconfig-i016-20230726   clang
+i386                 randconfig-r006-20230726   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230726   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r003-20230726   clang
+mips                 randconfig-r004-20230726   clang
+nios2                               defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r014-20230726   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r005-20230726   gcc  
+powerpc              randconfig-r013-20230726   clang
+powerpc              randconfig-r035-20230726   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r015-20230726   clang
+riscv                randconfig-r021-20230726   clang
+riscv                randconfig-r023-20230726   clang
+riscv                randconfig-r031-20230726   gcc  
+riscv                randconfig-r042-20230726   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r025-20230726   clang
+s390                 randconfig-r044-20230726   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r001-20230726   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230726   gcc  
+x86_64       buildonly-randconfig-r002-20230726   gcc  
+x86_64       buildonly-randconfig-r003-20230726   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r036-20230726   gcc  
+x86_64               randconfig-x001-20230726   clang
+x86_64               randconfig-x002-20230726   clang
+x86_64               randconfig-x003-20230726   clang
+x86_64               randconfig-x004-20230726   clang
+x86_64               randconfig-x005-20230726   clang
+x86_64               randconfig-x006-20230726   clang
+x86_64               randconfig-x011-20230726   gcc  
+x86_64               randconfig-x012-20230726   gcc  
+x86_64               randconfig-x013-20230726   gcc  
+x86_64               randconfig-x014-20230726   gcc  
+x86_64               randconfig-x015-20230726   gcc  
+x86_64               randconfig-x016-20230726   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-> Thanks,
-> Namhyung
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
