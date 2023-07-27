@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C872F7652F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9A97652F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbjG0Lya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        id S231704AbjG0L4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233543AbjG0Ly2 (ORCPT
+        with ESMTP id S231219AbjG0L4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:54:28 -0400
-X-Greylist: delayed 92395 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 27 Jul 2023 04:54:25 PDT
-Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD45272E;
-        Thu, 27 Jul 2023 04:54:25 -0700 (PDT)
-Message-ID: <fb734626-6041-1e68-38d7-221837284cf1@linux.intel.com>
-Date:   Thu, 27 Jul 2023 13:54:21 +0200
+        Thu, 27 Jul 2023 07:56:07 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4597D272A;
+        Thu, 27 Jul 2023 04:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690458967; x=1721994967;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Efx8SU0zT/55gwggD9encEin8NWX/ogU9zQy6lkXD6U=;
+  b=grLyzPAzgIGENc4QtgxZPNecrb7v5z13WGdiAxVBYH8zVCwDzjAGDdfZ
+   jiAOVRB4pFAgzGem8UlZ8iD5YTXu2NveJGuPm/kvecQKurMyB+wx9BT8R
+   Zqrqr/jTe809gRXRaOLm9Nz/q1arDXs0YQCv0Vbq1YIeIF8RElzLfBGZS
+   vTG7dop3MZ5M/ADTnm/IrFF3aWOzl+7JgSl3YzYjKepj7abfl6kH83Y2L
+   D3kiI5MSBmxNgCHWJ8PnTaYoSajEEt5VEd+MemWm/bpAXdNO59ewrJZbN
+   te/8ThyAibEaxQ0kNUN9ePwYwi8lmoXX0Ym5kUV3TLU6KyYZFbaJ+Av3m
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="348567988"
+X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
+   d="scan'208";a="348567988"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 04:56:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="870339754"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Jul 2023 04:56:03 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qOzb7-0002FJ-1A;
+        Thu, 27 Jul 2023 11:56:01 +0000
+Date:   Thu, 27 Jul 2023 19:55:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org
+Subject: [tip:x86/shstk 6/42] htmldocs: Warning: arch/x86/Kconfig references
+ a file that doesn't exist: Documentation/x86/shstk.rst
+Message-ID: <202307271956.IxoG9X0c-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 16/17] cgroup/drm: Expose memory stats
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Rob Clark <robdclark@chromium.org>,
-        =?UTF-8?Q?St=c3=a9phane_Marchesin?= <marcheu@chromium.org>,
-        "T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Brian Welty <brian.welty@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-References: <20230712114605.519432-1-tvrtko.ursulin@linux.intel.com>
- <20230712114605.519432-17-tvrtko.ursulin@linux.intel.com>
- <ZLsFBHqCQdPHoZVw@slm.duckdns.org>
- <ea64d7bf-c01b-f4ad-a36b-f77e2c2ea931@linux.intel.com>
- <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
-Content-Language: en-US
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <89d7181c-6830-ca6e-0c39-caa49d14d474@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,128 +65,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/shstk
+head:   c19a153cc0b172c8e1869d6dee52f6aadd73d3c4
+commit: 18e66b695e787374ca762ecdeaa1ab5e3772af94 [6/42] x86/shstk: Add Kconfig option for shadow stack
+reproduce: (https://download.01.org/0day-ci/archive/20230727/202307271956.IxoG9X0c-lkp@intel.com/reproduce)
 
-On 2023-07-26 13:41, Tvrtko Ursulin wrote:
-> 
-> On 26/07/2023 11:14, Maarten Lankhorst wrote:
->> Hey,
->>
->> On 2023-07-22 00:21, Tejun Heo wrote:
->>> On Wed, Jul 12, 2023 at 12:46:04PM +0100, Tvrtko Ursulin wrote:
->>>>    $ cat drm.memory.stat
->>>>    card0 region=system total=12898304 shared=0 active=0 
->>>> resident=12111872 purgeable=167936
->>>>    card0 region=stolen-system total=0 shared=0 active=0 resident=0 
->>>> purgeable=0
->>>>
->>>> Data is generated on demand for simplicty of implementation ie. no 
->>>> running
->>>> totals are kept or accounted during migrations and such. Various
->>>> optimisations such as cheaper collection of data are possible but
->>>> deliberately left out for now.
->>>>
->>>> Overall, the feature is deemed to be useful to container orchestration
->>>> software (and manual management).
->>>>
->>>> Limits, either soft or hard, are not envisaged to be implemented on 
->>>> top of
->>>> this approach due on demand nature of collecting the stats.
->>>
->>> So, yeah, if you want to add memory controls, we better think through 
->>> how
->>> the fd ownership migration should work.
->> I've taken a look at the series, since I have been working on cgroup 
->> memory eviction.
->>
->> The scheduling stuff will work for i915, since it has a purely 
->> software execlist scheduler, but I don't think it will work for GuC 
->> (firmware) scheduling or other drivers that use the generic drm 
->> scheduler.
-> 
-> It actually works - I used to have a blurb in the cover letter about it 
-> but apparently I dropped it. Just a bit less well with many clients, 
-> since there are fewer priority levels.
-> 
-> All that the design requires from the invididual drivers is some way to 
-> react to the "you are over budget by this much" signal. The rest is 
-> driver and backend specific.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307271956.IxoG9X0c-lkp@intel.com/
 
-What I mean is that this signal may not be applicable since the drm 
-scheduler just schedules jobs that run. Adding a weight might be done in 
-hardware, since it's responsible for  scheduling which context gets to 
-run. The over budget signal is useless in that case, and you just need 
-to set a scheduling priority for the hardware instead.
+All warnings (new ones prefixed by >>):
 
->> For something like this,  you would probably want it to work inside 
->> the drm scheduler first. Presumably, this can be done by setting a 
->> weight on each runqueue, and perhaps adding a callback to update one 
->> for a running queue. Calculating the weights hierarchically might be 
->> fun..
-> 
-> It is not needed to work in drm scheduler first. In fact drm scheduler 
-> based drivers can plug into what I have since it already has the notion 
-> of scheduling priorities.
-> 
-> They would only need to implement a hook which allow the cgroup 
-> controller to query client GPU utilisation and another to received the 
-> over budget signal.
-> 
-> Amdgpu and msm AFAIK could be easy candidates because they both support 
-> per client utilisation and priorities.
-> 
-> Looks like I need to put all this info back into the cover letter.
-> 
-> Also, hierarchic weights and time budgets are all already there. What 
-> could be done later is make this all smarter and respect the time budget 
-> with more precision. That would however, in many cases including Intel, 
-> require co-operation with the firmware. In any case it is only work in 
-> the implementation, while the cgroup control interface remains the same.
-> 
->> I have taken a look at how the rest of cgroup controllers change 
->> ownership when moved to a different cgroup, and the answer was: not at 
->> all. If we attempt to create the scheduler controls only on the first 
->> time the fd is used, you could probably get rid of all the tracking.
-> 
-> Can you send a CPU file descriptor from process A to process B and have 
-> CPU usage belonging to process B show up in process' A cgroup, or 
-> vice-versa? Nope, I am not making any sense, am I? My point being it is 
-> not like-to-like, model is different.
-> 
-> No ownership transfer would mean in wide deployments all GPU utilisation 
-> would be assigned to Xorg and so there is no point to any of this. No 
-> way to throttle a cgroup with un-important GPU clients for instance.
-If you just grab the current process' cgroup when a drm_sched_entity is 
-created, you don't have everything charged to X.org. No need for 
-complicated ownership tracking in drm_file. The same equivalent should 
-be done in i915 as well when a context is created as it's not using the 
-drm scheduler.
+>> Warning: arch/x86/Kconfig references a file that doesn't exist: Documentation/x86/shstk.rst
 
->> This can be done very easily with the drm scheduler.
->>
->> WRT memory, I think the consensus is to track system memory like 
->> normal memory. Stolen memory doesn't need to be tracked. It's kernel 
->> only memory, used for internal bookkeeping  only.
->>
->> The only time userspace can directly manipulate stolen memory, is by 
->> mapping the pinned initial framebuffer to its own address space. The 
->> only allocation it can do is when a framebuffer is displayed, and 
->> framebuffer compression creates some stolen memory. Userspace is not
->> aware of this though, and has no way to manipulate those contents.
-> 
-> Stolen memory is irrelevant and not something cgroup controller knows 
-> about. Point is drivers say which memory regions they have and their 
-> utilisation.
-> 
-> Imagine instead of stolen it said vram0, or on Intel multi-tile it shows 
-> local0 and local1. People working with containers are interested to see 
-> this breakdown. I guess the parallel and use case here is closer to 
-> memory.numa_stat.
-Correct, but for the same reason, I think it might be more useful to 
-split up the weight too.
-
-A single scheduling weight for the global GPU might be less useful than 
-per engine, or per tile perhaps..
-
-Cheers,
-~Maarten
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
