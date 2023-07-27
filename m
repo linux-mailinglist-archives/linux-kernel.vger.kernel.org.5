@@ -2,204 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B50EF765572
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD0776551A
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 15:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjG0N6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 09:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        id S233554AbjG0NdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 09:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjG0N6c (ORCPT
+        with ESMTP id S233171AbjG0NdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 09:58:32 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C74E30D8
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 06:58:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690466310; x=1722002310;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=XN0HL492BWwqQUJmRY6mFdf1jif2qQBvqZI3+P1xBvo=;
-  b=UNPdmmIMMZiE70aa6oon5YVgmyp+xFPIE71m9kIXndHMnbCteCO0vh3A
-   DUNg/5lFHH+ESaL3ieWaoskaUoFzIptF+UyGGB1GIYYb/nXTMdHPS6m1R
-   +d36qu4dI3nm19kI6zwVx4Zw0A1JodB81wiCQljgKmdt4jzZHoXy60yod
-   8UXIWD7PFGfMG8APSGdMxloKiFgwsiNMHxHFvF33jYO5GgF1BjSVfuUw8
-   Q4FXr8gHulHGH3+oYmY8xgQff6EFu0WRWbtDagsPxtMOfneTf8DlC2+dw
-   /zqhKkfKgKaTOlS+nqfgrYEUgpY5wTyiW3J51dIk29QXnK/OTj2Y2D2Lb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="371005770"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="371005770"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:33:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="900884138"
-X-IronPort-AV: E=Sophos;i="6.01,235,1684825200"; 
-   d="scan'208";a="900884138"
-Received: from akhaw1-mobl2.gar.corp.intel.com (HELO [10.213.157.76]) ([10.213.157.76])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 06:32:48 -0700
-Message-ID: <6b20e0c0cd82d0d1aafc2a7fb14d9456e19c2c85.camel@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, peterz@infradead.org
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
-        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
-        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
-        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
-        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
-        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
-        yangyicong@hisilicon.com, yu.c.chen@intel.com
-Date:   Thu, 27 Jul 2023 06:32:44 -0700
-In-Reply-To: <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
-References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
-         <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
-         <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
+        Thu, 27 Jul 2023 09:33:03 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD8A272D;
+        Thu, 27 Jul 2023 06:33:01 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so1708442e87.0;
+        Thu, 27 Jul 2023 06:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690464780; x=1691069580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fNVKS520fpom9zikP7GGO5Kqp+pwk56e852uQYR5BkU=;
+        b=gf7mfFC/0wfbZM46ODlqyIyv7XknlmYmjPR9vw7W5BQFPqJU4Dvn9yg6veiQ6fM+pF
+         nXMnhG+yw5I01J267ZuyGzRO+SBrZT5Ef7m0FLLGY9NKG0RlwXGjD+1LMmc3UAC9NNHr
+         5MZ9vcBrJBzR5IPUFe8K4GI2jvTKyLZbhCpJqQ6KOhz7oMxf7TApXZhC35oHvSEKuiTV
+         0JPds7aR9qmkiwwpjA8m8S8lhBB7gmQiAHH1osDN3JVV+9Wsr1PBsUnme1rLbEHHVLWh
+         jf5nnPwwXx0EbPQTKmCDOaIDuQc3ep2i+cyOCkN+ou+PX1360JxiRMWouq3mX2m3+Zf9
+         QyDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690464780; x=1691069580;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fNVKS520fpom9zikP7GGO5Kqp+pwk56e852uQYR5BkU=;
+        b=GmWrAG0/uVonbj9ngt9PNNYcqqHMjZW33OAHl6duy5LetTIm6b2EER71cu2sgLnS4+
+         P3XKj3lBEeoT2y/caVMuM9oBoOzKbLXjt5iAr8p77vKMbBpceWU1SVeQHMaYPqa8fapU
+         6rDORcfDJdYZbrDWkw8jAEaYILfd9Lo6+Twwm7GMp1ua3+nBoigVn5NuttbFgzpUX7HU
+         k86quOO9EhbZ5RJHIz4j89R3FS6TN95jTEWGgVxZGDyqIW6T4t2cFuY6S+Zish+Ss9Db
+         jDIU4UYjCVBBW8Ke73fLPCXEOk1qgYbSaOaYI2xbpgbh+/17JCwvgV0RzPvUIdsrCdOn
+         5yjA==
+X-Gm-Message-State: ABy/qLbPFAgT0HPkjbdqIYU0Ng7Kx99byc7KSl2qmbLG4QwShLWE7QKU
+        721ryxot7/NSDgkWRN77tqwxd1AjtKr7J5/VmCs=
+X-Google-Smtp-Source: APBJJlEoaBon0qIf+o3H5ybsdyY2J571wEx/HePSoiAhvwnMkjCJxjZ1SwZXzaOy8H1h8XAtUs9aG/a95vBooddqtpQ=
+X-Received: by 2002:a2e:b015:0:b0:2b6:d326:156d with SMTP id
+ y21-20020a2eb015000000b002b6d326156dmr1776436ljk.19.1690464779581; Thu, 27
+ Jul 2023 06:32:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230726164535.230515-1-amiculas@cisco.com> <20230726164535.230515-7-amiculas@cisco.com>
+In-Reply-To: <20230726164535.230515-7-amiculas@cisco.com>
+From:   Ariel Miculas <ariel.miculas@gmail.com>
+Date:   Thu, 27 Jul 2023 16:32:48 +0300
+Message-ID: <CAPDJoNs_VTnVATXr4AFs5D8unOihrpYXLDn69fjT0OshrYADXA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 06/10] rust: file: pass the filesystem context to
+ the open function
+To:     Ariel Miculas <amiculas@cisco.com>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tycho@tycho.pizza,
+        brauner@kernel.org, viro@zeniv.linux.org.uk, ojeda@kernel.org,
+        alex.gaynor@gmail.com, wedsonaf@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-26 at 20:11 -0700, Tim Chen wrote:
-> On Mon, 2023-07-17 at 20:28 +0530, Shrikanth Hegde wrote:
-> > From: Tim Chen <tim.c.chen@linux.intel.com>
-> >=20
-> > For SMT4, any group with more than 2 tasks will be marked as
-> > group_smt_balance. Retain the behaviour of group_has_spare by marking
-> > the busiest group as the group which has the least number of idle_cpus.
-> >=20
-> > Also, handle rounding effect of adding (ncores_local + ncores_busy)
-> > when the local is fully idle and busy group has more than 2 tasks.
-> > Local group should try to pull at least 1 task in this case.
-> >=20
-> > Originally-by: Tim Chen <tim.c.chen@linux.intel.com>
-> > Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-> > Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-> > ---
-> >  kernel/sched/fair.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 932e7b78894a..9502013abe33 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9532,7 +9532,7 @@ static inline long sibling_imbalance(struct lb_en=
-v *env,
-> >  	imbalance /=3D ncores_local + ncores_busiest;
-> >=20
-> >  	/* Take advantage of resource in an empty sched group */
-> > -	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-> > +	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
-> >  	    busiest->sum_nr_running > 1)
-> >  		imbalance =3D 2;
-> >=20
-> > @@ -9720,6 +9720,17 @@ static bool update_sd_pick_busiest(struct lb_env=
- *env,
-> >  		break;
-> >=20
-> >  	case group_smt_balance:
-> > +		/* no idle cpus on both groups handled by group_fully_busy below */
-> > +		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-> > +			if (sgs->idle_cpus > busiest->idle_cpus)
-> > +				return false;
-> > +			if (sgs->idle_cpus < busiest->idle_cpus)
-> > +				return true;
-> > +			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
-> > +				return false;
-> > +		}
-> > +		break;
+On Wed, Jul 26, 2023 at 7:58=E2=80=AFPM Ariel Miculas <amiculas@cisco.com> =
+wrote:
+>
+> This allows us to create a Vfsmount structure and pass it to the read
+> callback.
+>
+> Signed-off-by: Ariel Miculas <amiculas@cisco.com>
+> ---
+>  rust/kernel/file.rs      | 17 +++++++++++++++--
+>  samples/rust/puzzlefs.rs | 40 +++++++++++++++++++++++++++++++++++-----
+>  samples/rust/rust_fs.rs  |  3 ++-
+>  3 files changed, 52 insertions(+), 8 deletions(-)
+>
+> diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
+> index a3002c416dbb..af1eb1ee9267 100644
+> --- a/rust/kernel/file.rs
+> +++ b/rust/kernel/file.rs
+> @@ -457,9 +457,15 @@ impl<A: OpenAdapter<T::OpenData>, T: Operations> Ope=
+rationsVtable<A, T> {
+>              // `fileref` never outlives this function, so it is guarante=
+ed to be
+>              // valid.
+>              let fileref =3D unsafe { File::from_ptr(file) };
+> +
+> +            // SAFETY: into_foreign was called in fs::NewSuperBlock<...,=
+ NeedsInit>::init and
+> +            // it is valid until from_foreign will be called in fs::Tabl=
+es::free_callback
+> +            let fs_info =3D
+> +                unsafe { <T::Filesystem as fs::Type>::Data::borrow((*(*i=
+node).i_sb).s_fs_info) };
+> +
+>              // SAFETY: `arg` was previously returned by `A::convert` and=
+ must
+>              // be a valid non-null pointer.
+> -            let ptr =3D T::open(unsafe { &*arg }, fileref)?.into_foreign=
+();
+> +            let ptr =3D T::open(fs_info, unsafe { &*arg }, fileref)?.int=
+o_foreign();
+>              // SAFETY: The C contract guarantees that `private_data` is =
+available
+>              // for implementers of the file operations (no other C code =
+accesses
+>              // it), so we know that there are no concurrent threads/CPUs=
+ accessing
+> @@ -930,10 +936,17 @@ pub trait Operations {
+>      /// The type of the context data passed to [`Operations::open`].
+>      type OpenData: Sync =3D ();
+>
+> +    /// Data associated with each file system instance.
+> +    type Filesystem: fs::Type;
+> +
+>      /// Creates a new instance of this file.
+>      ///
+>      /// Corresponds to the `open` function pointer in `struct file_opera=
+tions`.
+> -    fn open(context: &Self::OpenData, file: &File) -> Result<Self::Data>=
+;
+> +    fn open(
+> +        fs_info: <<Self::Filesystem as fs::Type>::Data as ForeignOwnable=
+>::Borrowed<'_>,
+> +        context: &Self::OpenData,
+> +        file: &File,
+> +    ) -> Result<Self::Data>;
+>
+>      /// Cleans up after the last reference to the file goes away.
+>      ///
+> diff --git a/samples/rust/puzzlefs.rs b/samples/rust/puzzlefs.rs
+> index 9afd82745b64..8a64e0bd437d 100644
+> --- a/samples/rust/puzzlefs.rs
+> +++ b/samples/rust/puzzlefs.rs
+> @@ -3,8 +3,14 @@
+>  //! Rust file system sample.
+>
+>  use kernel::module_fs;
+> +use kernel::mount::Vfsmount;
+>  use kernel::prelude::*;
+> -use kernel::{c_str, file, fs, io_buffer::IoBufferWriter};
+> +use kernel::{
+> +    c_str, file, fmt, fs,
+> +    io_buffer::IoBufferWriter,
+> +    str::CString,
+> +    sync::{Arc, ArcBorrow},
+> +};
+>
+>  mod puzzle;
+>  // Required by the autogenerated '_capnp.rs' files
+> @@ -19,6 +25,12 @@
+>
+>  struct PuzzleFsModule;
+>
+> +#[derive(Debug)]
+> +struct PuzzlefsInfo {
+> +    base_path: CString,
+> +    vfs_mount: Arc<Vfsmount>,
+> +}
+> +
+>  #[vtable]
+>  impl fs::Context<Self> for PuzzleFsModule {
+>      type Data =3D ();
+> @@ -46,14 +58,23 @@ fn try_new() -> Result {
+>  impl fs::Type for PuzzleFsModule {
+>      type Context =3D Self;
+>      type INodeData =3D &'static [u8];
+> +    type Data =3D Box<PuzzlefsInfo>;
+>      const SUPER_TYPE: fs::Super =3D fs::Super::Independent;
+>      const NAME: &'static CStr =3D c_str!("puzzlefs");
+>      const FLAGS: i32 =3D fs::flags::USERNS_MOUNT;
+>      const DCACHE_BASED: bool =3D true;
+>
+>      fn fill_super(_data: (), sb: fs::NewSuperBlock<'_, Self>) -> Result<=
+&fs::SuperBlock<Self>> {
+> +        let base_path =3D CString::try_from_fmt(fmt!("hello world"))?;
+> +        pr_info!("base_path {:?}\n", base_path);
+> +        let vfs_mount =3D Vfsmount::new_private_mount(c_str!("/home/puzz=
+lefs_oci"))?;
+> +        pr_info!("vfs_mount {:?}\n", vfs_mount);
+> +
+>          let sb =3D sb.init(
+> -            (),
+> +            Box::try_new(PuzzlefsInfo {
+> +                base_path,
+> +                vfs_mount: Arc::try_new(vfs_mount)?,
+> +            })?,
+>              &fs::SuperParams {
+>                  magic: 0x72757374,
+>                  ..fs::SuperParams::DEFAULT
+> @@ -88,14 +109,23 @@ fn fill_super(_data: (), sb: fs::NewSuperBlock<'_, S=
+elf>) -> Result<&fs::SuperBl
+>
+>  #[vtable]
+>  impl file::Operations for FsFile {
+> +    // must be the same as INodeData
+>      type OpenData =3D &'static [u8];
+> +    type Filesystem =3D PuzzleFsModule;
+> +    // this is an Arc because Data must be ForeignOwnable and the only i=
+mplementors of it are Box,
+> +    // Arc and (); we cannot pass a reference to read, so we share Vfsmo=
+unt using and Arc
+> +    type Data =3D Arc<Vfsmount>;
+>
+> -    fn open(_context: &Self::OpenData, _file: &file::File) -> Result<Sel=
+f::Data> {
+> -        Ok(())
+> +    fn open(
+> +        fs_info: &PuzzlefsInfo,
+> +        _context: &Self::OpenData,
+> +        _file: &file::File,
+> +    ) -> Result<Self::Data> {
+> +        Ok(fs_info.vfs_mount.clone())
+>      }
+>
+>      fn read(
+> -        _data: (),
+> +        data: ArcBorrow<'_, Vfsmount>,
+>          file: &file::File,
+>          writer: &mut impl IoBufferWriter,
+>          offset: u64,
+> diff --git a/samples/rust/rust_fs.rs b/samples/rust/rust_fs.rs
+> index 7527681ee024..c58ed1560e06 100644
+> --- a/samples/rust/rust_fs.rs
+> +++ b/samples/rust/rust_fs.rs
+> @@ -85,8 +85,9 @@ fn fill_super(_data: (), sb: fs::NewSuperBlock<'_, Self=
+>) -> Result<&fs::SuperBl
+>  #[vtable]
+>  impl file::Operations for FsFile {
+>      type OpenData =3D &'static [u8];
+> +    type Filesystem =3D RustFs;
+>
+> -    fn open(_context: &Self::OpenData, _file: &file::File) -> Result<Sel=
+f::Data> {
+> +    fn open(_fs_info: (), _context: &Self::OpenData, _file: &file::File)=
+ -> Result<Self::Data> {
+>          Ok(())
+>      }
+>
+> --
+> 2.41.0
+>
+>
+Hey Wedson,
 
-Shrikanth and Peter,
+Is it ok to couple file::Operations with fs::Type? I didn't find a
+better way to implement this.
+I'm asking because I've seen you've gone to great lengths to decouple them.
 
-Sorry, I acked Shrikanth's fixup patch too quickly without seeing that Shri=
-kanth added
-a "break" in the patch above.  My original code did not have that break sta=
-tement as
-I did intend the code to fall through to the "group_fully_busy" code path w=
-hen
-there are no idle cpus in both groups.  To make the compiler happy and putt=
-ing
-in the correct logic, I refresh the patch as below.
-
-Thanks.
-
-Tim
-
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Fri, 14 Jul 2023 16:09:30 -0700
-Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-
-For SMT4, any group with more than 2 tasks will be marked as
-group_smt_balance. Retain the behaviour of group_has_spare by marking
-the busiest group as the group which has the least number of idle_cpus.
-
-Also, handle rounding effect of adding (ncores_local + ncores_busy)
-when the local is fully idle and busy group has more than 2 tasks.
-Local group should try to pull at least 1 task in this case.
-
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- kernel/sched/fair.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a87988327f88..566686c5f2bd 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9563,7 +9563,7 @@ static inline long sibling_imbalance(struct lb_env *e=
-nv,
- 	imbalance /=3D ncores_local + ncores_busiest;
-=20
- 	/* Take advantage of resource in an empty sched group */
--	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-+	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
- 	    busiest->sum_nr_running > 1)
- 		imbalance =3D 2;
-=20
-@@ -9751,6 +9751,20 @@ static bool update_sd_pick_busiest(struct lb_env *en=
-v,
- 		break;
-=20
- 	case group_smt_balance:
-+		/* no idle cpus on both groups handled by group_fully_busy below */
-+		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-+			if (sgs->idle_cpus > busiest->idle_cpus)
-+				return false;
-+			if (sgs->idle_cpus < busiest->idle_cpus)
-+				return true;
-+			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
-+				return false;
-+			else
-+				return true;
-+		}
-+		goto fully_busy;
-+		break;
-+
- 	case group_fully_busy:
- 		/*
- 		 * Select the fully busy group with highest avg_load. In
-@@ -9763,7 +9777,7 @@ static bool update_sd_pick_busiest(struct lb_env *env=
-,
- 		 * select the 1st one, except if @sg is composed of SMT
- 		 * siblings.
- 		 */
--
-+fully_busy:
- 		if (sgs->avg_load < busiest->avg_load)
- 			return false;
-=20
---=20
-2.32.0
-
-
+Cheers,
+Ariel
