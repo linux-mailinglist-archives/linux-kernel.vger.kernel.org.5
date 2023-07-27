@@ -2,230 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F037764C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3798D764B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 10:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbjG0IV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 04:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        id S232270AbjG0IPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 04:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234722AbjG0IUF (ORCPT
+        with ESMTP id S231993AbjG0IMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 04:20:05 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F119358A
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690445561; x=1721981561;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7pp6T/77kywCBngbY/3TOicHmUuENooeVcc07EjxAaA=;
-  b=npN5Ny5vlhhlqAht8l/jApz3jQWLhBWz+0jRYkZHQvehfyXKfQsQaKsm
-   ZcSJp1JLDfNFRfIsC4rMO5xiuijrxpZvVMNF7Vz7NFAeuW6HJgxEej7TR
-   DAbJRdkN5I2Kqs8ooUmPELNs9iCj+tsH2f7Zpl1YyCLZUR/dGmU+u9qTq
-   fnSJWAInQkb3SXJbV/PMJlfF7lOdzXd/7ObkF/PWAR58/ZmBvKYn1e12M
-   VKmTUeHyx7+azZ8b7feNoi8wDaCXJJrJEvAjZjgJx5Xp60rxHk1P1KqiI
-   EtOyKnErp4ZCOT+OuGhNqlZRlX2T50c1ofyiKXo0K2zSf3pliayJyhdRY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="348522467"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="348522467"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 01:11:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10783"; a="726850167"
-X-IronPort-AV: E=Sophos;i="6.01,234,1684825200"; 
-   d="scan'208";a="726850167"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 27 Jul 2023 01:11:43 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qOw5Y-00024r-12;
-        Thu, 27 Jul 2023 08:11:22 +0000
-Date:   Thu, 27 Jul 2023 16:05:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: arch/powerpc/mm/book3s64/pgtable.c:422:6: warning: no previous
- prototype for function 'arch_report_meminfo'
-Message-ID: <202307271640.lJoABLx9-lkp@intel.com>
+        Thu, 27 Jul 2023 04:12:07 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5253935AB
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:07:55 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso6767975e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 01:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690445222; x=1691050022;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9FYxBpzPpC5O6YqpkIvrfnMVqesGcNf08sa9kAENUdY=;
+        b=DPHqd4jJ4aCJ/ldSJMSi2jpGa9mD88lGm346gmWtivG/pxsYPMaWip1zoYbH/a4coT
+         1u6SknFx4FWBaUj+1vMwJ0oZicCLV8K9PG7TQkgYkxQyICErAjNTPFvGWLAh8lWw6dpY
+         q+i1F4j2Lf4KXij+sw2p6q2WkpVclXZTptS/Vr7lgFgU8IJs+YeRZair63x655FFyIBR
+         ScsonJm1JrPcdavl7kjoD49RAbj77BQVPfADOUA8GYdLyC88Ie3tCCgUJKFBVfxWjBLR
+         FibTVEScPEX8iUoEtf3jR3zNd61RhU4cxrNaGtBGbfjpcE8O8saA1d41XdwB/xiGsrZZ
+         1SLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690445222; x=1691050022;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9FYxBpzPpC5O6YqpkIvrfnMVqesGcNf08sa9kAENUdY=;
+        b=HcV5WqNpcdK0cmxJkByuTzHIQ/tToBQ/UknrSXvI3xzRQ1EZwJ9QfFDCGLNXUmcuiS
+         dhg4mJv+CprqQVGCQQXKkoIfGHtS3p2CUKWcWZplDER5urS1eHWRD6RRHB88b/lwkbrV
+         oOqqcwC+Oh/DZRMyyc7IRefnosS+eorknlJNk1ZqGru5DhF2y6vHhTNIqLnfu+8CYwaB
+         kN7z3IoPGvhc9oG/DPyEnMk78uRX6cXOWJmLVtUdvX/J/gXp3wpsrOZhikDo4Ba8PlXj
+         2AlI2HuPxc5szuytScSi7T4g0W9hynvbbatBwKgahhHA1CVGAgQX8g2TlNLqEtbc20f8
+         6N7g==
+X-Gm-Message-State: ABy/qLbxojcIMIA6YMs3cW7bEnytBmPYQseNbdBF/Pq+z4QuE8csXrUW
+        hn9o00IrPOrjw76RDY1M0DOVn+6SFtdrqTuOjDE3Ig==
+X-Google-Smtp-Source: APBJJlESVm3o8EnthSnO0wSdv89jxTgM1e60N2vrTcCIowIo43OPkYeplR8UZwVzk03vqs4NZslRBGLk21TmdRmjyEM=
+X-Received: by 2002:a05:600c:ad6:b0:3fc:2dfb:3cd3 with SMTP id
+ c22-20020a05600c0ad600b003fc2dfb3cd3mr1012433wmr.41.1690445222226; Thu, 27
+ Jul 2023 01:07:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <9e72b7ea-9598-415d-bc55-f2f42b7fcb3b@kadam.mountain>
+In-Reply-To: <9e72b7ea-9598-415d-bc55-f2f42b7fcb3b@kadam.mountain>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 27 Jul 2023 10:06:25 +0200
+Message-ID: <CANpmjNMWqcseZAijhVP_TDORXxBTgj0GWbTzq5ive2e+0Xto+A@mail.gmail.com>
+Subject: Re: mm/kfence/kfence_test.c:287 test_alloc() warn: use 'gfp' here
+ instead of GFP_KERNEL?
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     oe-kbuild@lists.linux.dev, Helge Deller <deller@gmx.de>,
+        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0a8db05b571ad5b8d5c8774a004c0424260a90bd
-commit: ef104443bffa004f631729dfc924f0b84abbd602 procfs: consolidate arch_report_meminfo declaration
-date:   2 months ago
-config: powerpc-microwatt_defconfig (https://download.01.org/0day-ci/archive/20230727/202307271640.lJoABLx9-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230727/202307271640.lJoABLx9-lkp@intel.com/reproduce)
+On Thu, 27 Jul 2023 at 06:51, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+[...]
+> smatch warnings:
+> mm/kfence/kfence_test.c:287 test_alloc() warn: use 'gfp' here instead of GFP_KERNEL?
+>
+> (Just included these for the LOLs)
+> mm/kfence/kfence_test.c:395 test_double_free() error: double free of 'expect.addr'
+> mm/kfence/kfence_test.c:671 test_memcache_typesafe_by_rcu() error: dereferencing freed memory 'expect.addr'
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307271640.lJoABLx9-lkp@intel.com/
+Nice! ;-)
 
-All warnings (new ones prefixed by >>):
+> vim +/gfp +287 mm/kfence/kfence_test.c
+>
+[...]
+> bc8fbc5f305aec Marco Elver     2021-02-25  278          do {
+> bc8fbc5f305aec Marco Elver     2021-02-25  279                  if (test_cache)
+> bc8fbc5f305aec Marco Elver     2021-02-25  280                          alloc = kmem_cache_alloc(test_cache, gfp);
+> bc8fbc5f305aec Marco Elver     2021-02-25  281                  else
+> bc8fbc5f305aec Marco Elver     2021-02-25  282                          alloc = kmalloc(size, gfp);
+>                                                                                               ^^^
+>
+> bc8fbc5f305aec Marco Elver     2021-02-25  283
+> bc8fbc5f305aec Marco Elver     2021-02-25  284                  if (is_kfence_address(alloc)) {
+> 8dae0cfed57357 Vlastimil Babka 2021-11-03  285                          struct slab *slab = virt_to_slab(alloc);
+> 588c7fa022d7b2 Hyeonggon Yoo   2021-06-28  286                          struct kmem_cache *s = test_cache ?:
+> 588c7fa022d7b2 Hyeonggon Yoo   2021-06-28 @287                                          kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)];
+>                                                                                                                     ^^^^^^^^^^
+> I feel like using gfp might be correct but I'm not sure?  This code
+> is from prior to this commit.  Let's add Marco to the CC.
 
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:155:1: note: expanded from here
-     155 | __do_insb
-         | ^
-   arch/powerpc/include/asm/io.h:614:56: note: expanded from macro '__do_insb'
-     614 | #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from arch/powerpc/mm/book3s64/pgtable.c:8:
-   In file included from include/linux/memblock.h:13:
-   In file included from arch/powerpc/include/asm/dma.h:22:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      45 | DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      46 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:157:1: note: expanded from here
-     157 | __do_insw
-         | ^
-   arch/powerpc/include/asm/io.h:615:56: note: expanded from macro '__do_insw'
-     615 | #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from arch/powerpc/mm/book3s64/pgtable.c:8:
-   In file included from include/linux/memblock.h:13:
-   In file included from arch/powerpc/include/asm/dma.h:22:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      47 | DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      48 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:159:1: note: expanded from here
-     159 | __do_insl
-         | ^
-   arch/powerpc/include/asm/io.h:616:56: note: expanded from macro '__do_insl'
-     616 | #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
-         |                                        ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from arch/powerpc/mm/book3s64/pgtable.c:8:
-   In file included from include/linux/memblock.h:13:
-   In file included from arch/powerpc/include/asm/dma.h:22:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      49 | DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      50 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:161:1: note: expanded from here
-     161 | __do_outsb
-         | ^
-   arch/powerpc/include/asm/io.h:617:58: note: expanded from macro '__do_outsb'
-     617 | #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from arch/powerpc/mm/book3s64/pgtable.c:8:
-   In file included from include/linux/memblock.h:13:
-   In file included from arch/powerpc/include/asm/dma.h:22:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      51 | DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      52 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:163:1: note: expanded from here
-     163 | __do_outsw
-         | ^
-   arch/powerpc/include/asm/io.h:618:58: note: expanded from macro '__do_outsw'
-     618 | #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
-   In file included from arch/powerpc/mm/book3s64/pgtable.c:8:
-   In file included from include/linux/memblock.h:13:
-   In file included from arch/powerpc/include/asm/dma.h:22:
-   In file included from arch/powerpc/include/asm/io.h:677:
-   arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-      53 | DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      54 |                  (p, b, c), pio, p)
-         |                  ~~~~~~~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:674:3: note: expanded from macro 'DEF_PCI_AC_NORET'
-     674 |                 __do_##name al;                                 \
-         |                 ^~~~~~~~~~~~~~
-   <scratch space>:165:1: note: expanded from here
-     165 | __do_outsl
-         | ^
-   arch/powerpc/include/asm/io.h:619:58: note: expanded from macro '__do_outsl'
-     619 | #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
-         |                                         ~~~~~~~~~~~~~~~~~~~~~^
->> arch/powerpc/mm/book3s64/pgtable.c:422:6: warning: no previous prototype for function 'arch_report_meminfo' [-Wmissing-prototypes]
-     422 | void arch_report_meminfo(struct seq_file *m)
-         |      ^
-   arch/powerpc/mm/book3s64/pgtable.c:422:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     422 | void arch_report_meminfo(struct seq_file *m)
-         | ^
-         | static 
-   arch/powerpc/mm/book3s64/pgtable.c:478:5: warning: no previous prototype for function 'pmd_move_must_withdraw' [-Wmissing-prototypes]
-     478 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-         |     ^
-   arch/powerpc/mm/book3s64/pgtable.c:478:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     478 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
-         | ^
-         | static 
-   14 warnings generated.
+It's not a bug today: If we were testing something other than
+GFP_KERNEL, then yes, we should use gfp here. But the only reason
+"gfp" is a function arg at all, is that 1 test case also uses
+__GFP_ZERO, but that's irrelevant in getting the kmalloc type (at
+least today).
 
+The cache is used to test the below "helpers return the right values
+even for KFENCE objects".
 
-vim +/arch_report_meminfo +422 arch/powerpc/mm/book3s64/pgtable.c
+I think when I wrote the test I just chose GFP_KERNEL, because none of
+the test cases use something else, and didn't give it a second
+thought. Not sure it's worth changing, because functionally it doesn't
+matter.
 
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  421  
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13 @422  void arch_report_meminfo(struct seq_file *m)
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  423  {
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  424  	/*
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  425  	 * Hash maps the memory with one size mmu_linear_psize.
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  426  	 * So don't bother to print these on hash
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  427  	 */
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  428  	if (!radix_enabled())
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  429  		return;
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  430  	seq_printf(m, "DirectMap4k:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  431  		   atomic_long_read(&direct_pages_count[MMU_PAGE_4K]) << 2);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  432  	seq_printf(m, "DirectMap64k:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  433  		   atomic_long_read(&direct_pages_count[MMU_PAGE_64K]) << 6);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  434  	seq_printf(m, "DirectMap2M:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  435  		   atomic_long_read(&direct_pages_count[MMU_PAGE_2M]) << 11);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  436  	seq_printf(m, "DirectMap1G:    %8lu kB\n",
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  437  		   atomic_long_read(&direct_pages_count[MMU_PAGE_1G]) << 20);
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  438  }
-a2dc009afa9ae8 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2018-08-13  439  #endif /* CONFIG_PROC_FS */
-579b9239c1f386 arch/powerpc/mm/pgtable-book3s64.c Aneesh Kumar K.V 2019-01-23  440  
+I'm open to changing it, if it makes this warning go away. Preferences?
 
-:::::: The code at line 422 was first introduced by commit
-:::::: a2dc009afa9ae8b92305be7728676562a104cb40 powerpc/mm/book3s/radix: Add mapping statistics
-
-:::::: TO: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> bc8fbc5f305aec Marco Elver     2021-02-25  288
+> bc8fbc5f305aec Marco Elver     2021-02-25  289                          /*
+> bc8fbc5f305aec Marco Elver     2021-02-25  290                           * Verify that various helpers return the right values
+> bc8fbc5f305aec Marco Elver     2021-02-25  291                           * even for KFENCE objects; these are required so that
+> bc8fbc5f305aec Marco Elver     2021-02-25  292                           * memcg accounting works correctly.
+> bc8fbc5f305aec Marco Elver     2021-02-25  293                           */
+> 8dae0cfed57357 Vlastimil Babka 2021-11-03  294                          KUNIT_EXPECT_EQ(test, obj_to_index(s, slab, alloc), 0U);
+> 8dae0cfed57357 Vlastimil Babka 2021-11-03  295                          KUNIT_EXPECT_EQ(test, objs_per_slab(s, slab), 1);
