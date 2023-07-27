@@ -2,57 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AEF76574E
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B57765755
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 17:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjG0PUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 11:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S234536AbjG0PVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 11:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjG0PUT (ORCPT
+        with ESMTP id S234561AbjG0PVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 11:20:19 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37041FCF
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:20:17 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EA7F1E0006;
-        Thu, 27 Jul 2023 15:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690471216;
+        Thu, 27 Jul 2023 11:21:42 -0400
+Received: from out-116.mta0.migadu.com (out-116.mta0.migadu.com [91.218.175.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B11130C5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 08:21:37 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690471295;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e+tYkLqI/WHrzy+gF3ZWvjwYtLENNnrtaJxq1JAle3Y=;
-        b=HLUlE8oW95FKHARC7HKx6eY3PtnWvzRFtTOmg8SgLOq64ABxby+KSfWbA+NhcJUVlyiHSZ
-        Vl+FJqjQvGqeRNKNMeZk16JYDW0TF3y4mAzrZvA7fRXDW8BOCJdV0b4H2/al9pS5NnAtPX
-        cvWHou+1dyV3AR8zbnoiTIBrZBTrYW74jqJD8XIGJiPaINvohZ5yQaRvaLwLEKYESWgOmL
-        j19gfF1nWf5alNn/8r135+OE9Jpfol33imFbIengD0pojeZRVN5H0ROnePihUCD+BLNb/w
-        Myz32U2fUNjWBDqn5lJnbp38lR07GbEjrjXunsw7UgawWPFXcRhj9GPbQc8Pcg==
-Date:   Thu, 27 Jul 2023 17:20:13 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <20230727172013.7c85c05d@xps-13>
-In-Reply-To: <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-        <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IlwsvGNRJnMmWnx4X81rM4zHsMyVpGxID3lfp4Wm+1A=;
+        b=UnKls/jjqZcZzftvuk3ljzIPLwoprqIWOu7LoFbkkVSAIBhLiG4rj7MDXbC/wSvtMI359l
+        N6V7bn3EnXoWjtBGCXe0jAO/FTTa0piMOgDtLsfDpCDWkAJsdhdkz/EHKYdP3PVjE+UdzQ
+        hRtC43R6653je6/DHV9wtgV6FW0mNXk=
+From:   chengming.zhou@linux.dev
+To:     axboe@kernel.dk, osandov@fb.com, ming.lei@redhat.com,
+        kbusch@kernel.org, krisman@suse.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com
+Subject: [PATCH v2 1/3] sbitmap: fix hint wrap in the failure case
+Date:   Thu, 27 Jul 2023 23:20:18 +0800
+Message-ID: <20230727152020.3633009-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,53 +45,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-andriy.shevchenko@linux.intel.com wrote on Thu, 27 Jul 2023 18:12:04
-+0300:
+```
+hint = nr + 1;
+if (hint >= depth - 1)
+	hint = 0;
+```
 
-> On Thu, Jul 27, 2023 at 05:57:58PM +0300, Alexander Usyskin wrote:
-> > I case of partition device_unregister in mtd_device_release =20
->=20
-> In
->=20
-> device_unregister()
-> mtd_device_release()
->=20
-> > calls mtd_release which frees mtd_info structure for partition. =20
->=20
-> mtd_release()
->=20
-> > All code after device_unregister in mtd_device_release thus =20
->=20
-> device_unregister()
-> mtd_device_release()
->=20
-> > works already freed memory. =20
->=20
-> uses?
->=20
-> > Move part of code to mtd_release and restict mtd->dev cleanup =20
->=20
-> mtd_release()
+Now we wrap the hint to 0 in the failure case, but has two problems:
+1. hint == depth - 1, is actually an available offset hint, in which
+   case we shouldn't wrap hint to 0.
+2. In the strict round_robin non-wrap case, we shouldn't wrap at all.
 
-Yup, thanks for all these suggestions, I agree with them.
+```
+wrap = wrap && hint;
+```
 
-> > to non-partion object.
-> > For partition object such cleanup have no sense as partition
-> > mtd_info is removed.
-> >=20
-> > Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Cc: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-> > Fixes: 19bfa9ebebb5 ("mtd: use refcount to prevent corruption") =20
->=20
-> Closes: ?
+We only need to check wrap based on the original hint ( > 0), don't need
+to recheck the new hint which maybe updated in the failure case, which
+may cause second wrap. We set wrap to false after we wrap once to avoid
+repeated wrap, which is clearer than rechecking the hint.
 
-Did I miss a recent update on the use of Fixes? I thought Closes was
-supposed to point at a bug report while Fixes would point to the faulty
-commit. Right now I feel like Fixes is the right tag, but if you have a
-source explaining why we should not longer do it like I am used to,
-I would appreciate a link.
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ lib/sbitmap.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-Thanks,
-Miqu=C3=A8l
+diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+index d0a5081dfd12..ac4027884765 100644
+--- a/lib/sbitmap.c
++++ b/lib/sbitmap.c
+@@ -149,7 +149,8 @@ static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+ 			 * offset to 0 in a failure case, so start from 0 to
+ 			 * exhaust the map.
+ 			 */
+-			if (hint && wrap) {
++			if (wrap) {
++				wrap = false;
+ 				hint = 0;
+ 				continue;
+ 			}
+@@ -160,8 +161,14 @@ static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+ 			break;
+ 
+ 		hint = nr + 1;
+-		if (hint >= depth - 1)
+-			hint = 0;
++		if (unlikely(hint >= depth)) {
++			if (wrap) {
++				wrap = false;
++				hint = 0;
++				continue;
++			}
++			return -1;
++		}
+ 	}
+ 
+ 	return nr;
+-- 
+2.41.0
+
