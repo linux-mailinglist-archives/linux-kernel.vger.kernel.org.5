@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D680F7652D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55F07652DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 13:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbjG0LrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 07:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
+        id S233479AbjG0Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 07:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233466AbjG0LrO (ORCPT
+        with ESMTP id S233217AbjG0Lrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 07:47:14 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276E92127
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:13 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99454855de1so107717866b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 04:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690458431; x=1691063231;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/gqSRYXyIiQxJrNLAqE8d2UZxktKUrnnw3/Y1qTE4og=;
-        b=Xz7ibKY7UnAcjypV7aAgcV9oAS2BidIzlerD9Fro2fqZCVHnnBIyTSbS7Pdhfy2rrU
-         2cLTNtZabSg5eRH78cKBg5luY5OsfVjOPtsno7fWxmyjp6Kghy5byuWms19dL7I1Gr6e
-         H/zo2p3Jxjovdpl304/je5rJ7rfk/ZjQt0u5zpMJ95TOCkx86hfVYWiWSbhWJuKChfnR
-         2QaQ1OFrB4khiZxIdNx10KZWfxpuEnCFWzPosCjyOIzDB+x2PInqx0PBu/I4Ry3eg5DA
-         csJcIoPENrjhYnHDzN8j0DqDYsZs+M4lRkYWzebYa82mTMuWaeKa81MTy64A2iLvn6GF
-         tQwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690458431; x=1691063231;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/gqSRYXyIiQxJrNLAqE8d2UZxktKUrnnw3/Y1qTE4og=;
-        b=YiE/ddupnc6JcpGdLFazl8zufVaZuVJG5rIQkmks7pSA+VVq987PG78Mayzwm6jWnR
-         FlE09q395oixabYQCMqOBCqvCfx3fwHoEIKTmWGBPWklqT6R27sLUiHCJtS9dnMADh/D
-         dqiBhdlyDY01JxUkiTbI068O2AOslhZJ12aujtdVcgSvRH548AQxkzPDmBpe3PhoLPg1
-         20qnRDCEEXE7UHLr0isImYIANkhZkDPzzo+sfEEH5yHpdhiWyDd2WbFd1ciuwR6aPeoE
-         yDt+8LkRdok6ikdK8IqK7vRiizJ3bOWitAK8tFTfoHiG93nZiCUYcn9ULPBCN+zROAFK
-         LYWw==
-X-Gm-Message-State: ABy/qLbGcoiHndbBxAjrYIsyWs42CAqH84BNrrMA3YhUk2mkl5ClAT28
-        otwQLS43mz7zr0ZpEvHMMRToag==
-X-Google-Smtp-Source: APBJJlHc02BBYqqYKQubEhzgD06aEdh4kXzo48JCdj+2N3cMsM0ox7BZSV7xs9qUUHBQfaGEhn+9Ng==
-X-Received: by 2002:a17:907:a04d:b0:993:f349:c98c with SMTP id gz13-20020a170907a04d00b00993f349c98cmr1502329ejc.4.1690458431574;
-        Thu, 27 Jul 2023 04:47:11 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id pw3-20020a17090720a300b00987e2f84768sm696396ejb.0.2023.07.27.04.47.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 04:47:11 -0700 (PDT)
-Message-ID: <7f7d1c90-9969-66bd-fd71-defffe0e05d6@linaro.org>
-Date:   Thu, 27 Jul 2023 13:47:09 +0200
+        Thu, 27 Jul 2023 07:47:49 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49231271F;
+        Thu, 27 Jul 2023 04:47:40 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RBTTT4RSGzLnsJ;
+        Thu, 27 Jul 2023 19:45:01 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 27 Jul
+ 2023 19:47:37 +0800
+Subject: Re: [PATCH net-next v2] page_pool: split types and declarations from
+ page_pool.h
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230725131258.31306-1-linyunsheng@huawei.com>
+ <ZL/fVF7WetuLgB0l@hera> <20230725141223.19c1c34c@kernel.org>
+ <a5d91458-d494-6000-7607-0f17c4461b6e@intel.com>
+ <20230726084742.7dc67c79@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <d6dd7cb3-5d06-cc1d-ff0d-6933cb9994b9@huawei.com>
+Date:   Thu, 27 Jul 2023 19:47:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: iio: admv1014: make all regs required
+In-Reply-To: <20230726084742.7dc67c79@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230727113136.98037-1-antoniu.miclaus@analog.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727113136.98037-1-antoniu.miclaus@analog.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 13:31, Antoniu Miclaus wrote:
-> Since the regulators are required in the driver implementation, make
-> them required also in the bindings.
+On 2023/7/26 23:47, Jakub Kicinski wrote:
+> On Wed, 26 Jul 2023 12:48:05 +0200 Alexander Lobakin wrote:
+>>> I prefer the more systematic approach of creating a separate types.h
+>>> file, so I don't have to keep chasing people or cleaning up the include
+>>> hell myself. I think it should be adopted more widely going forward,
+>>> it's not just about the page pool.  
+>>
+>> I have this patch reworked to introduce
+>> include/net/page_pool/{types,helpers}.h in my tree, maybe someone could
+>> take a quick look[0] and say if this works while I'm preparing the next
+>> version for sending? Not the most MLish way, I know :s
+>>
+>> [0]
+>> https://github.com/alobakin/linux/commit/19741ee072c32eb1d30033cd4fcb236d1c00bfbf
 > 
+> LGTM!
 
-The true reason should be whether the hardware requires them. Because if
-hardware does not need some, the driver should be fixed.
+Hi, Alexander
+It seems you have taken it and adjust it accordingly, do you mind sending
+the next version along with your patchset, so that there is less patch
+conflict for both of us:)
 
-Best regards,
-Krzysztof
-
+> 
+> .
+> 
