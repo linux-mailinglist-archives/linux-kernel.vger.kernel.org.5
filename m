@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6431D76599A
-	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6526E76599B
+	for <lists+linux-kernel@lfdr.de>; Thu, 27 Jul 2023 19:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjG0RLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 13:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
+        id S231640AbjG0RL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 13:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjG0RL1 (ORCPT
+        with ESMTP id S231624AbjG0RLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 13:11:27 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D4730ED
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:11:24 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso18475261fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:11:24 -0700 (PDT)
+        Thu, 27 Jul 2023 13:11:55 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CDD2D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:11:50 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5221f193817so1551997a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690477882; x=1691082682;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SBbf2syuRIw8JyAjPtp/cVqlfqIQVNdrVeEynwYMxXg=;
-        b=sTNcib6+VM1f/L7et/IKdD6pyGmOLtnuUo0j06e5m3EzssAyOguH5QGtgMezutJaM/
-         Mf2V4e3B8roPoGcQq1jvR4Vl38flaBMGgGnI5xHVILM1qUFXQaCbfwCkdRUX+PXdjZCi
-         eEXaE2fVUbuozsUB2/ARGAoklcx02gcturkTu2fbTK2eHNHP2+CEWNwYECzK3y6UcSL3
-         Ew6ByP0mplHDLnmELii/BTIMPEo6EWVmMWiRWzq9aW4Cx6HQPaf9KUt9Ek/nmWGspapS
-         ijbCJFz40EZecpN7oV6Qpz1Q5NaWG5O6Dkff0oUvMyZzXVS81DzSXolvbNOxwstaxOa9
-         GWMQ==
+        d=linuxfoundation.org; s=google; t=1690477908; x=1691082708;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GvxANQuFKNvKufAyX6mUm0ShC2KKTHC+l1CTdx+XIO8=;
+        b=bIXWjHAQipbL2wfAXLamLx5ZXtUMJ9LF7m3R/sNdvy0IQJNfE8afEchWmW6ZEZZ3ub
+         DlmG8QFZ4lSv9sRcwGmn5ObSPvzRBUvMWqs/dKhKdePfW47/mL19svD90UcuB3oUF4SA
+         buCEXKAUhrdmnzS62lEN7CNr/ns8iS4gKv9D8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690477882; x=1691082682;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SBbf2syuRIw8JyAjPtp/cVqlfqIQVNdrVeEynwYMxXg=;
-        b=YyBCDjfE6ax8nvLbFYhnCJ4xqImHBKK0dnlcHML2WaKu+5SW31PTiRl3qBaO/bjC2z
-         kimsXEOUKJjVv0KoqJjAWKaTTWJhsgF9IUIwfL1+e0BINWR3XP9oQVD3VrDUkK09nbli
-         2lMNeu/CZ77Yp5Y8UbHsKijBLpG4jO8Ih8rchHBZp9qNHC2HzVB+g/26p9bYyjrGXrQE
-         laWyS8wDnCYsq5asENK1LSCHrjf+kY72iMTwufTF/P8uUx1iEHMpIT6ndtuVQUITRkl+
-         OHTL/vfTojk1pqE4u9BectYRP/SBTZCsM0Cd9nHK6dHyYVuLT1tgzEYbRtC32e8f3xyU
-         V8xg==
-X-Gm-Message-State: ABy/qLbY8Jl9zfhjzNnAcwUXinVEC32y3DNov/3im5VugGDEv4ZwNaPs
-        IeDVaJkc6dm5pvdSBkelVKe4hg==
-X-Google-Smtp-Source: APBJJlELmZwyCPa7KKXeBVZ6EMYGO8Qy32qfqqCmrQes2UzEM5wF5kVZtcUh7uBWVqrZLbJFB/PSLw==
-X-Received: by 2002:a05:651c:205:b0:2b7:a64:6c3c with SMTP id y5-20020a05651c020500b002b70a646c3cmr2210462ljn.37.1690477882687;
-        Thu, 27 Jul 2023 10:11:22 -0700 (PDT)
-Received: from [192.168.1.101] (abxi99.neoplus.adsl.tpnet.pl. [83.9.2.99])
-        by smtp.gmail.com with ESMTPSA id y4-20020a2eb004000000b002b944151da5sm441863ljk.81.2023.07.27.10.11.21
+        d=1e100.net; s=20221208; t=1690477908; x=1691082708;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GvxANQuFKNvKufAyX6mUm0ShC2KKTHC+l1CTdx+XIO8=;
+        b=LL0Ns4BOvKhZwnzqYepVvboI/5imELNRG1Nn8ZNmql/oRMv/jfYQhIYfUzazK+xmS0
+         mK1CUfhTpWc9SG66rRBj3PKjPZl+klf89dxvW4LeB9uuWbCS8XiytiSGBFZMg7xk8bwx
+         iVXzoQVOP2YW/Xmu8Ijy96AWTnRV1xMsZmFZvZetFEnb/85f33Cc7YKih6U2Ft1oJQzh
+         FtrUmtU/EJYvkZ17vuDanqnqp7H09/hskuWcxapEa6K15MXJOkQhxc6XrYDHOtKNd1AA
+         PRhNKgN1xJmT+UyFL8wxxKQw5W+v5WcY0lKyCaWOff2jt4JYP13MgpxVbnrr+2cLJm9Q
+         CPsg==
+X-Gm-Message-State: ABy/qLZlhv/Ly8IoG8r1H76dbw1gSnvgKG3VWY6rA0b81soLTcWxyn9c
+        Tk8FpeWpCM28YPBYKvt97K3VTGYiP1XyMNf/N9dDcQmN
+X-Google-Smtp-Source: APBJJlG7oWcmkQAsuB1Bgn57431Og6/aC3bXfwLqcrC/IyZrf5wVvWHpD4hSStxjUDV4yEL+M8qElg==
+X-Received: by 2002:aa7:d6d0:0:b0:522:28fa:3009 with SMTP id x16-20020aa7d6d0000000b0052228fa3009mr2261103edr.13.1690477908749;
+        Thu, 27 Jul 2023 10:11:48 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id n21-20020aa7d055000000b0051e26c7a154sm844527edo.18.2023.07.27.10.11.47
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 10:11:22 -0700 (PDT)
-Message-ID: <d146e175-bbc2-3f25-9b97-49c9c402357c@linaro.org>
-Date:   Thu, 27 Jul 2023 19:11:21 +0200
+        Thu, 27 Jul 2023 10:11:47 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bcf2de59cso166417866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 10:11:47 -0700 (PDT)
+X-Received: by 2002:a17:907:2c6a:b0:982:870f:9e8f with SMTP id
+ ib10-20020a1709072c6a00b00982870f9e8fmr2474183ejc.62.1690477906607; Thu, 27
+ Jul 2023 10:11:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] venus: hfi_parser: Add check to keep the number of
- codecs within range
-Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, tfiga@chromium.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <1690432469-14803-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690432469-14803-5-git-send-email-quic_vgarodia@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690432469-14803-5-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20230726214103.3261108-1-jannh@google.com> <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
+ <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
+ <20230727145747.GB19940@willie-the-truck> <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
+In-Reply-To: <13dc448b-712e-41ce-b74b-b95a55f3e740@rowland.harvard.edu>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Thu, 27 Jul 2023 10:11:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whGjpt77tUYRQA6TxiGERp_rSbcNhuKaWbvoJ6yXPwhhQ@mail.gmail.com>
+Message-ID: <CAHk-=whGjpt77tUYRQA6TxiGERp_rSbcNhuKaWbvoJ6yXPwhhQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
+ anon_vma memory ordering
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
+        paulmck@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,31 +90,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.2023 06:34, Vikash Garodia wrote:
-> Supported codec bitmask is populated from the payload from venus firmware.
-> There is a possible case when all the bits in the codec bitmask is set. In
-> such case, core cap for decoder is filled  and MAX_CODEC_NUM is utilized.
-> Now while filling the caps for encoder, it can lead to access the caps
-> array beyong 32 index. Hence leading to OOB write.
-> The fix counts the supported encoder and decoder. If the count is more than
-> max, then it skips accessing the caps.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 1a73374a04e5 ("media: venus: hfi_parser: add common capability parser")
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
->  drivers/media/platform/qcom/venus/hfi_parser.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/media/platform/qcom/venus/hfi_parser.c
-> index ec73cac..651e215 100644
-> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
-> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
-> @@ -14,11 +14,26 @@
->  typedef void (*func)(struct hfi_plat_caps *cap, const void *data,
->  		     unsigned int size);
->  
-> +static int count_setbits(u32 input)
-hweight_long()?
+On Thu, 27 Jul 2023 at 08:44, Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> This reads a little oddly, perhaps because it's a fragment from a larger
+> piece of code.
 
-Konrad
+Yes. As Jann already said, this is basically a preparatory step in a
+much longer sequence, and the code simply wants to make sure that any
+later code (possibly quite a bit later) will not see a NULL value.
+
+I do believe it happens to be safe to use READ_ONCE() for a number of
+reasons, but I will argue that we should *never* use a bare READ_ONCE
+if there is any actual real question about what any memory ordering
+might be.
+
+And yes, the RCU code obviously does use READ_ONCE(), so that's why I
+say "bare" - the RCU code wraps it in helper accessors with strict
+semantics.
+
+The reason I think it would be techncially *safe* to do here is that
+
+ (a) code like this:
+
+        if (READ_ONCE(..))
+
+     may end up having the conditional speculated by the CPU, and have
+the actual read done without any ordering by the CPU, but we do have
+*one* guarantee: the memory load instruction will be before the
+conditional branch (or whatever) in the instruction stream.
+
+     So the code may be *executed* out of order, but we know the
+memory load can not be moved after the conditional (whatever form that
+conditional then takes) by a compiler.
+
+     (We do have various barriers like "rcu_read_unlock()" that
+guarantees that the READ_ONCE() couldn't be moved lmuch later even in
+the absence of the conditional, but we can ignore that).
+
+ (b) the later use of the anon_vma (that depends on the value being
+stable) is *so* much later, and behind things that the compiler sees
+as barriers (again, that rcu_read_unlock() acts at a minimum as a
+compiler barrier) that any subsequent use would not have its load
+moved down to before the READ_ONCE() in the instruction stream.
+
+     Again, this is purely a "location in the instruction stream"
+ordering argument, not a "execution order" ordering argument.
+
+And finally
+
+ (c) I do think that all our architectures have the rules that when
+you read from the *same* memory location from the same CPU, the
+accesses are ordered.
+
+Now, I didn't actually find (c) spelled out anywhere, but even alpha -
+the worst memory ordering ever devised - had that particular rule (the
+alpha architecture manual calls it "Location Access Order").
+
+Now, with that said, I did argue to Jann that we should use
+smp_store_release and smp_load_acquire pairs here, because honestly,
+the above (a)-(c) argument is too damn subtle for me, and I don't
+think this particular use requires it.
+
+With smp_load_acquire(), you don't need any of the (a)-(c) rules. The
+rule is "the load is done before any subsequent memory operations".
+End of story.
+
+So while I do think READ_ONCE() is sufficient here, I actually think
+that once you start going down that path you can argue that
+READ_ONCE() is actually entirely unnecessary, because we also have
+other ordering rules that mean that the compiler can't really do
+anythinig else even *without* the READ_ONCE().
+
+End result: I can trivially extend the (a)-(c) to say "even
+READ_ONCE() isn't strictly necessary here, because even any access
+tearing - which won't happen anyway - wouldn't actually change the
+result.
+
+So if we want to make it *obvious* that it's safe, we should use
+smp_load_acquire().
+
+And if we do find that there are situations where we care so much
+about the (generally fairly cheap) possible additional
+synchronization, and we really want to use READ_ONCE() rather than
+smp_load_acquire(), I'd rather try to wrap a READ_ONCE in some kind of
+better abstraction (maybe make the conditional part of the operation,
+and make it clear that you are doing a "one-time test which depends on
+the same-location rule".
+
+Do we even have the same-location rule in the LKMM?
+
+                       Linus
