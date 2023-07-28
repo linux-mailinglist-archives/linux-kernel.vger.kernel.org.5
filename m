@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 225D17669A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680527669AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbjG1KAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
+        id S235462AbjG1KCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235252AbjG1KAb (ORCPT
+        with ESMTP id S235627AbjG1KC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:00:31 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943E33A94;
-        Fri, 28 Jul 2023 03:00:30 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7907d03b0aeso3783339f.3;
-        Fri, 28 Jul 2023 03:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690538430; x=1691143230;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oYXdlsQto59N+qOsgizsXhnZeTGMmsgMUbVA8ztPdWQ=;
-        b=aHefiETL4Akp0qM06eTNacvkc8f8HKl8q1ews7dzmibtTWhK+prLcyxveeLTs8Bumd
-         P1HNe/jMXsGE+QeA6oMR4cKZsQdera4ymlEmKJpOGbstbgjUiYfb3QokGDeqbngOVOul
-         +bqJljrkIumPOT+VOnLBjof1cUP3EuEokK8eCLqQP9rfFMpBnAhDhhcaGEGjA0GbfJIA
-         H2/ff/i9yDMjntBH8QPZnNn5A8s0MYvHM96rQlfX4rTuXGIbdKlnQUjLyezZPlKNDKGD
-         AUhEB6MVSt/kKw9dKxFI2JyI0j+lNvdkM2mMwSV9GC5hYFzo2L+UC79bEGlS6Bjw91BP
-         BXdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690538430; x=1691143230;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oYXdlsQto59N+qOsgizsXhnZeTGMmsgMUbVA8ztPdWQ=;
-        b=Xd1KxQ5Ntb39+j0Utz72lwmIoHGh737BNTrcPEK6oMGgNlkpnvpkuZVMcBdn8haSB6
-         N78GY2WhvL351JXjxIJqdQAY/wQp0jh69V7TXYbTHvHVZQ6rz4dE5bWfvxrHIqJuxRbu
-         8MFz3V3UVVJMSLPSERJPHVrofZdluRs/UY4dVc+MncjKOQ9E5GxeASfP84+DlsVWCoDi
-         EJLIrzDGtfTKPn8eldFhxZClOKXK2Oxbdr64JsfrrAlpbXlHeLfWrz2MlDJOWCsGcV/j
-         0YzO8p1/+0OjvkSPjmaNWSCPVlu4AHu7OD+tyUAvTvxOYd/zNlPu+YcPIB8sa10BlY43
-         6Oyw==
-X-Gm-Message-State: ABy/qLZ6IJFQ6N5mntw3RmBs5Z4LngMouyeDv1GAZtLTsrTgAIY3x8gc
-        yZEJifedwpjzsWpyPJOGvx8PXVzsfEc=
-X-Google-Smtp-Source: APBJJlHY5xMZETE/p7ghrMbZ6XCDtc+EHNCKu76F4xacN1bnbu28RgN13vMuwvFaibjnkz4LvGXyaw==
-X-Received: by 2002:a05:6602:2773:b0:783:47cd:27b5 with SMTP id l19-20020a056602277300b0078347cd27b5mr2419334ioe.3.1690538429649;
-        Fri, 28 Jul 2023 03:00:29 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u20-20020a02c054000000b0042b4f9ddecasm1006280jam.85.2023.07.28.03.00.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:00:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <1cc12337-759e-c932-0303-b1b78e254c27@roeck-us.net>
-Date:   Fri, 28 Jul 2023 03:00:27 -0700
+        Fri, 28 Jul 2023 06:02:29 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA446A2;
+        Fri, 28 Jul 2023 03:01:55 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RC3683prdzVjn4;
+        Fri, 28 Jul 2023 18:00:16 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 18:01:53 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <yoshfuji@linux-ipv6.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+Date:   Fri, 28 Jul 2023 18:00:35 +0800
+Message-ID: <20230728100035.32092-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-References: <20230728082527.3531940-1-Naresh.Solanki@9elements.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: (pmbus/mp2975) Fix PGOOD in READ_STATUS_WORD
-In-Reply-To: <20230728082527.3531940-1-Naresh.Solanki@9elements.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 01:25, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> MPS returns PGOOD instead of PB_STATUS_POWER_GOOD_N.
-> Fix that in the read_word_data hook.
-> 
-Datasheets are not public, so I can not verify, but the code below
-only handles MP2973 and MP2971. What about MP2975 ?
+ skbuff: skb_under_panic: text:ffffffff88771f69 len:56 put:-4
+ head:ffff88805f86a800 data:ffff887f5f86a850 tail:0x88 end:0x2c0 dev:pim6reg
+ ------------[ cut here ]------------
+ kernel BUG at net/core/skbuff.c:192!
+ invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+ CPU: 2 PID: 22968 Comm: kworker/2:11 Not tainted 6.5.0-rc3-00044-g0a8db05b571a #236
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+ Workqueue: ipv6_addrconf addrconf_dad_work
+ RIP: 0010:skb_panic+0x152/0x1d0
+ Call Trace:
+  <TASK>
+  skb_push+0xc4/0xe0
+  ip6mr_cache_report+0xd69/0x19b0
+  reg_vif_xmit+0x406/0x690
+  dev_hard_start_xmit+0x17e/0x6e0
+  __dev_queue_xmit+0x2d6a/0x3d20
+  vlan_dev_hard_start_xmit+0x3ab/0x5c0
+  dev_hard_start_xmit+0x17e/0x6e0
+  __dev_queue_xmit+0x2d6a/0x3d20
+  neigh_connected_output+0x3ed/0x570
+  ip6_finish_output2+0x5b5/0x1950
+  ip6_finish_output+0x693/0x11c0
+  ip6_output+0x24b/0x880
+  NF_HOOK.constprop.0+0xfd/0x530
+  ndisc_send_skb+0x9db/0x1400
+  ndisc_send_rs+0x12a/0x6c0
+  addrconf_dad_completed+0x3c9/0xea0
+  addrconf_dad_work+0x849/0x1420
+  process_one_work+0xa22/0x16e0
+  worker_thread+0x679/0x10c0
+  ret_from_fork+0x28/0x60
+  ret_from_fork_asm+0x11/0x20
 
-Either case, this appears to affect most Monolithic chips, but
-not all of them. Please limit the statement to known to be affected
-chips.
+When setup a vlan device on dev pim6reg, DAD ns packet may sent on reg_vif_xmit().
+reg_vif_xmit()
+    ip6mr_cache_report()
+        skb_push(skb, -skb_network_offset(pkt));//skb_network_offset(pkt) is 4
+And skb_push declar as this:
+	void *skb_push(struct sk_buff *skb, unsigned int len);
+		skb->data -= len;
+		//0xffff888f5f86a84c - 0xfffffffc = 0xffff887f5f86a850
+skb->data is set to 0xffff887f5f86a850, which is invalid mem addr, lead to skb_push() fails.
 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> ---
->   drivers/hwmon/pmbus/mp2975.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-> index 28f33f4618fa..410b6eae6d02 100644
-> --- a/drivers/hwmon/pmbus/mp2975.c
-> +++ b/drivers/hwmon/pmbus/mp2975.c
-> @@ -297,6 +297,10 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
->   	int ret;
->   
->   	switch (reg) {
-> +	case PMBUS_STATUS_WORD:
-> +		ret = pmbus_read_word_data(client, page, phase, reg);
+Fixes: 14fb64e1f449 ("[IPV6] MROUTE: Support PIM-SM (SSM).")
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ net/ipv6/ip6mr.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-		if (ret < 0)
-			return ret;
-
-Please add a comment explaining what is going on.
-
-> +		ret ^= PB_STATUS_POWER_GOOD_N;
-> +		break;
->   	case PMBUS_OT_FAULT_LIMIT:
->   		ret = mp2975_read_word_helper(client, page, phase, reg,
->   					      GENMASK(7, 0));
-> 
-> base-commit: a4bb1ce5b9e3ca403c04e20ebeae77fd6447cb11
+diff --git a/net/ipv6/ip6mr.c b/net/ipv6/ip6mr.c
+index cc3d5ad17257..ee9c2ff8b0e4 100644
+--- a/net/ipv6/ip6mr.c
++++ b/net/ipv6/ip6mr.c
+@@ -1051,9 +1051,9 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
+ 	int ret;
+ 
+ #ifdef CONFIG_IPV6_PIMSM_V2
++	int nhoff = skb_network_offset(pkt);
+ 	if (assert == MRT6MSG_WHOLEPKT || assert == MRT6MSG_WRMIFWHOLE)
+-		skb = skb_realloc_headroom(pkt, -skb_network_offset(pkt)
+-						+sizeof(*msg));
++		skb = skb_realloc_headroom(pkt, -nhoff + sizeof(*msg));
+ 	else
+ #endif
+ 		skb = alloc_skb(sizeof(struct ipv6hdr) + sizeof(*msg), GFP_ATOMIC);
+@@ -1073,7 +1073,8 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
+ 		   And all this only to mangle msg->im6_msgtype and
+ 		   to set msg->im6_mbz to "mbz" :-)
+ 		 */
+-		skb_push(skb, -skb_network_offset(pkt));
++		skb->data += nhoff;
++		skb->len  -= nhoff;
+ 
+ 		skb_push(skb, sizeof(*msg));
+ 		skb_reset_transport_header(skb);
+-- 
+2.34.1
 
