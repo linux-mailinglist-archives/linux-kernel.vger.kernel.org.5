@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C4C766277
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB49B766279
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbjG1DfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
+        id S233166AbjG1Dg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjG1DfN (ORCPT
+        with ESMTP id S229632AbjG1Dgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:35:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DAB271E;
-        Thu, 27 Jul 2023 20:35:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E445461F71;
-        Fri, 28 Jul 2023 03:35:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 367D9C433C7;
-        Fri, 28 Jul 2023 03:35:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690515311;
-        bh=YsPGLotLiq3ZDtYso7Nm9Hr1y+5naXdx1RmexdOkaC4=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=FJpu+5sO6ijbdbzJ+chrgTH7WRx/oxwu/DSLSQjt0gSUPB36k2XvuutP7UYsPKtYe
-         NeUAnlDWxfeVPLoo7h1SpIg9LWurRTye4g9nvMGf61bL2c43Pd36FHoRRyk34imgu8
-         bAfC7MnI1leR+g8mUdG9ztRQx1+SMeiRHJDQLulIZFosB+daxSOPqxnXsaRc458QVI
-         FozDb+MlGnZmV5z+SZv5xKzizLJw0VxkNtxMFXmpIG0Fi9eL7IHB5Y1QljIFGl2yUC
-         lv0qxk574hF4rYSHJKzp4NNrbf9hEQ1/BcSmrg+T2jFzVEet06F5BeTYgQJsV100GQ
-         IOZSf/rUro3Aw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B9AD5CE0AD7; Thu, 27 Jul 2023 20:35:10 -0700 (PDT)
-Date:   Thu, 27 Jul 2023 20:35:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     akpm@linux-foundation.org, adobriyan@gmail.com, mhiramat@kernel.org
-Cc:     arnd@kernel.org, ndesaulniers@google.com, paulmck@kernel.org,
-        sfr@canb.auug.org.au, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: [PATCH RFC bootconfig 0/2] Distinguish bootloader and embedded
- kernel parameters
-Message-ID: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        Thu, 27 Jul 2023 23:36:53 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9141B271E;
+        Thu, 27 Jul 2023 20:36:51 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.201])
+        by gateway (Coremail) with SMTP id _____8Cx7+vQN8Nk6B8LAA--.26613S3;
+        Fri, 28 Jul 2023 11:36:48 +0800 (CST)
+Received: from [10.20.42.201] (unknown [10.20.42.201])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax8uTQN8NkcNM9AA--.33631S3;
+        Fri, 28 Jul 2023 11:36:48 +0800 (CST)
+Subject: Re: [PATCH v13 2/2] spi: loongson: add bus driver for the loongson
+ spi controller
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        Liu Peibao <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        zhuyinbo@loongson.cn
+References: <20230613075834.5219-1-zhuyinbo@loongson.cn>
+ <20230613075834.5219-3-zhuyinbo@loongson.cn>
+ <3822f248-39dc-fb8d-321a-7b6c833cbb3e@loongson.cn>
+ <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+Message-ID: <8ad55123-fbf2-2b0f-faba-f71bb89c7fb1@loongson.cn>
+Date:   Fri, 28 Jul 2023 11:36:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax8uTQN8NkcNM9AA--.33631S3
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,36 +58,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
 
-This series provides /proc interfaces parallel to /proc/cmdline that
-provide only those kernel boot parameters that were provided by the
-bootloader (/proc/cmdline_load) and only those parameters that were
-embedded in the kernel image (/proc/cmdline_image, in boot-config format).
-This is especially important when these parameters are presented to the
-boot loader by automation that might gather them from diverse sources,
-and also when a kexec-based reboot process pulls the kernel boot
-parameters from /proc.  If such a reboot process uses /proc/cmdline,
-the kernel parameters from the image are replicated on every reboot,
-which can be frustrating when the new kernel has different embedded
-kernel boot parameters.
 
-Why put these in /proc?  Because they is quite similar to /proc/cmdline,
-so it makes sense to put it in the same place that /proc/cmdline is
-located.
+在 2023/7/27 下午7:37, Mark Brown 写道:
+> On Thu, Jul 27, 2023 at 11:09:16AM +0800, Yinbo Zhu wrote:
+> 
+>> Friendly ping ?
+> 
+> Please don't send content free pings and please allow a reasonable time
+> for review.  People get busy, go on holiday, attend conferences and so
+> on so unless there is some reason for urgency (like critical bug fixes)
+> please allow at least a couple of weeks for review.  If there have been
+> review comments then people may be waiting for those to be addressed.
 
-1.	fs/proc: Add /proc/cmdline_load for boot loader arguments.
 
-2.	fs/proc: Add /proc/cmdline_image for embedded arguments.
+Sorry, my community experience is poor.  How many weeks does the
+community usually take to review ?  and this time that I waited for six
+weeks and then ping.
 
-						Thanx, Paul
+> 
+> Sending content free pings adds to the mail volume (if they are seen at
+> all) which is often the problem and since they can't be reviewed
+> directly if something has gone wrong you'll have to resend the patches
+> anyway, so sending again is generally a better approach though there are
+> some other maintainers who like them - if in doubt look at how patches
+> for the subsystem are normally handled.
 
-------------------------------------------------------------------------
 
- b/fs/proc/cmdline.c    |   13 +++++++++++++
- b/include/linux/init.h |    3 ++-
- b/init/main.c          |    2 +-
- fs/proc/cmdline.c      |   12 ++++++++++++
- include/linux/init.h   |   11 ++++++-----
- init/main.c            |    9 +++++++++
- 6 files changed, 43 insertions(+), 7 deletions(-)
+Sorry, I don't got it, that free ping usually only needs to be sent to
+the subsystem maintainer?
+
+Not recommended to use free ping?  or resend the same patch.  If the
+patch does not need to be modified, does it require sending the same
+patch ?  And the version number remains the same?
+> 
+
+Thanks,
+Yinbo
+
