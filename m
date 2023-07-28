@@ -2,90 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E757663A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922EC76637D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbjG1F3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 01:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
+        id S233018AbjG1FFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 01:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjG1F3E (ORCPT
+        with ESMTP id S230512AbjG1FFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 01:29:04 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8894A30FF
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:28:59 -0700 (PDT)
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230728052855epoutp01a2a1e2d5fc97fc7a385de667680161d6~18OzsSj-V2191521915epoutp01r
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:28:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230728052855epoutp01a2a1e2d5fc97fc7a385de667680161d6~18OzsSj-V2191521915epoutp01r
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690522135;
-        bh=vGRRultiFfnmCKJ6+H+vx2w/kEBScSd8rkAGbBRfaYk=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=Pi6NjrgTw+p5YAuBKak8JMKK8JgWO0l/iGf82nn6FIzVp8FbP26wHYBUv05qbk8o5
-         rRZwqHn+eMlfcGqC0UP9XQVD8LkFoaGM86bP1qw+so2OcRG8Tdhzr1BSzR2dg93LZa
-         879ovnjy+xdOCzT8eUVzn1dUP7gA+Zejn80176YA=
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.42.80]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20230728052854epcas5p4596c08e6a1c73eb517651bfd5e912a9f~18Oy4scK31507015070epcas5p49;
-        Fri, 28 Jul 2023 05:28:54 +0000 (GMT)
-X-AuditID: b6c32a50-e61c07000001d785-63-64c35216a25d
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E4.1D.55173.61253C46; Fri, 28 Jul 2023 14:28:54 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH] USB: Fix race condition during UVC webcam
- disconnect
-Reply-To: aman.deep@samsung.com
-Sender: AMAN DEEP <aman.deep@samsung.com>
-From:   AMAN DEEP <aman.deep@samsung.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        "oe-kbuild@lists.linux.dev" <oe-kbuild@lists.linux.dev>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>
-CC:     "lkp@intel.com" <lkp@intel.com>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anuj Gupta <anuj01.gupta@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230728050206epcms5p80a1e40db7bec854cb6ac6676f28c6c3b@epcms5p8>
-Date:   Fri, 28 Jul 2023 10:32:06 +0530
-X-CMS-MailID: 20230728050206epcms5p80a1e40db7bec854cb6ac6676f28c6c3b
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7bCmpq5Y0OEUg5lP5Syu3PSx+DCvld2i
-        efF6NovOiUvYLS7vmsNmsWhZK7PFq+ZHbBaHVl5hsmhYd5bdYsLvC2wOXB6zO2ayeize85LJ
-        4861PWwe++euYfd4sXkmo8fsuz8YPfq2rGL0+LxJLoAjissmJTUnsyy1SN8ugStj8e2ljAW7
-        jjJWfP5/nbGBcc4Bxi5GTg4JAROJ0+8OM3UxcnEICexhlLh+eTFzFyMHB6+AoMTfHcIgNcIC
-        /hKPtv1lB7GFBOQlVj/axAgR15Q4N+kbWJxNQF3i1J+P7CBzRARWMUks2N7IBuIwC3QySRy8
-        sJ0dYhuvxIz2pywQtrTE9uVboa4Qlbi5+i07jP3+2HyouIhE672zzBC2oMSDn7uh4jISHZN2
-        QM2plpjQfB3sAwmBFkaJOxcmQhWZS+z6uRrM5hXwlTh18A9YA4uAqsTnm5uYQL6UEHCRuLnV
-        HiTMLKAtsWzha7DnmYE+W79LH2KKrMTUU+uYIEr4JHp/P2GCeWXHPBhbWeL9zQ9Q50tKHLzU
-        A3Wyh8SFH1NZIQEXKNHx4TDbBEb5WYjgnYVk8SyExQsYmVcxSqUWFOempyabFhjq5qWW6xUn
-        5haX5qXrJefnbmIEJyStgB2Mqzf81TvEyMTBeIhRgoNZSYT3VMChFCHelMTKqtSi/Pii0pzU
-        4kOM0hwsSuK8r1vnpggJpCeWpGanphakFsFkmTg4pRqYtkdxzveu/7BHJkr7ifP7Rzmb2HJe
-        Nmw6esAlzMQt3OdG4McLWZqfQ+wT36+5eem2grp3R0f0f5HGsG86vUqpi36tzt190Yu/53p8
-        r/Ilr+3arpKaR7NPXlisecfh0YwNxjUT22/88+mUMubnUJave6pwrP3yu5+z71au/9u/zefi
-        vv292jtX8MnPez617RxLxPXm4geKxf+qNfz9uOO2J/6OkPZpX73C5aG0VtZ3xx9Rhd9rvT+/
-        YFuRcqxgg5J1W6Xy1YNid++8UL6Qr1tb94cjMNb38HmpXQrqJ+X/VSSaiCR8z7Futzy2o6JQ
-        OMvB9pktV/m6qxdfb6ypfmmWb3kx/YYFz/O0z1u1z09TYinOSDTUYi4qTgQA6ajSlLcDAAA=
-X-CMS-RootMailID: 20230727051400epcas5p37b126b7496a916be24632d805ec8a47b
-References: <CGME20230727051400epcas5p37b126b7496a916be24632d805ec8a47b@epcms5p8>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Fri, 28 Jul 2023 01:05:40 -0400
+Received: from bagheera.iewc.co.za (bagheera.iewc.co.za [IPv6:2c0f:f720:0:3::9a49:2249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB282D67;
+        Thu, 27 Jul 2023 22:05:38 -0700 (PDT)
+Received: from [154.73.32.4] (helo=tauri.local.uls.co.za)
+        by bagheera.iewc.co.za with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qPFf1-0005PS-Vn; Fri, 28 Jul 2023 07:05:08 +0200
+Received: from [192.168.1.145]
+        by tauri.local.uls.co.za with esmtp (Exim 4.94.2)
+        (envelope-from <jaco@uls.co.za>)
+        id 1qPFf0-0005t6-R4; Fri, 28 Jul 2023 07:05:06 +0200
+Message-ID: <c4d98da8-1931-4165-9212-c502c71d4bbd@uls.co.za>
+Date:   Fri, 28 Jul 2023 07:05:06 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] fuse: enable larger read buffers for readdir [v2].
+Content-Language: en-GB
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Antonio SJ Musumeci <trapexit@spawn.link>
+References: <20230726105953.843-1-jaco@uls.co.za>
+ <20230727081237.18217-1-jaco@uls.co.za>
+ <CAJfpegvJ7FOS35yiKsTAzQh5Uf71FatU-kTJpXJtDPQbXeMgxA@mail.gmail.com>
+ <d9ec13de-ebb2-af50-6026-408b49ff979b@fastmail.fm>
+From:   Jaco Kroon <jaco@uls.co.za>
+Organization: Ultimate Linux Solutions (Pty) Ltd
+In-Reply-To: <d9ec13de-ebb2-af50-6026-408b49ff979b@fastmail.fm>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,333 +54,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+>>>          plus = fuse_use_readdirplus(inode, ctx);
+>>>          ap->args.out_pages = true;
+>>> -       ap->num_pages = 1;
+>>> +       ap->num_pages = READDIR_PAGES;
+>>
+>> No.  This is the array lenght, which is 1.  This is the hack I guess,
+>> which makes the above trick work.
+>
+> Hmm, ap->num_pages / ap->pages[] is used in fuse_copy_pages, but so is 
+> ap->descs[] - shouldn't the patch caused an out-of-bound access?
+> Out of interest, would you mind to explain how the hack worked?
 
+Apparently it shouldn't ... my understanding of how pages* worked was 
+all wrong.
 
-Thanks Den Carpenter for information.
-yes, i will modify new patch version accordingly to add for=C2=A0mutex_unlo=
-ck(hcd->bandwidth_mutex);=20before=20returning.=0D=0A=C2=A0=C2=A0=0D=0A>Hi=
-=20Aman,=0D=0A>=0D=0A>kernel=20test=20robot=20noticed=20the=20following=20b=
-uild=20warnings:=0D=0A>=0D=0A>https://git-scm.com/docs/git-format-patch=23_=
-base_tree_information=5D=0D=0A>=0D=0A>url:=C2=A0=20=C2=A0=20https://protect=
-2.fireeye.com/v1/url?k=3Dc33c7aba-a2b76f89-c33df1f5-000babff9bb7-672d2cfefe=
-2327a5&q=3D1&e=3D0dbea670-3cf3-4a45-a999->157e4e0dcad9&u=3Dhttps%3A%2F%2Fgi=
-thub.com%2Fintel-lab-lkp%2Flinux%2Fcommits%2FAman-Deep%2FUSB-Fix-race-condi=
-tion-during-UVC-webcam-disconnect%2F20230720->202046=0D=0A>base:=C2=A0=20=
-=20https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git=20usb-tes=
-ting=0D=0A>patch=20link:=C2=A0=20=C2=A0=20https://lore.kernel.org/r/2023072=
-0113142.3070583-1-aman.deep%40samsung.com=0D=0A>patch=20subject:=20=5BPATCH=
-=5D=20USB:=20Fix=20race=20condition=20during=20UVC=20webcam=20disconnect=0D=
-=0A>config:=20parisc-randconfig-m041-20230726=20(https://download.01.org/0d=
-ay-ci/archive/20230727/202307270834.rpaexQSs-lkp=40intel.com/config)=0D=0A>=
-compiler:=20hppa-linux-gcc=20(GCC)=2012.3.0=0D=0A>reproduce:=20(https://dow=
-nload.01.org/0day-ci/archive/20230727/202307270834.rpaexQSs-lkp=40intel.com=
-/reproduce)=0D=0A>=0D=0A>If=20you=20fix=20the=20issue=20in=20a=20separate=
-=20patch/commit=20(i.e.=20not=20just=20a=20new=20version=20of=0D=0A>the=20s=
-ame=20patch/commit),=20kindly=20add=20following=20tags=0D=0A>=7C=20Reported=
--by:=20kernel=20test=20robot=20<lkp=40intel.com>=0D=0A>=7C=20Reported-by:=
-=20Dan=20Carpenter=20<dan.carpenter=40linaro.org>=0D=0A>=7C=20Closes:=20htt=
-ps://lore.kernel.org/r/202307270834.rpaexQSs-lkp=40intel.com/=0D=0A=0D=0A=
-=0D=0Awe=20will=20add=20it=20when=20creating=20new=20patch=20version.=0D=0A=
-=0D=0A=0D=0A>=0D=0A>smatch=20warnings:=0D=0A>drivers/usb/core/message.c:166=
-8=20usb_set_interface()=20warn:=20inconsistent=20returns=20'hcd->bandwidth_=
-mutex'.=0D=0A>=0D=0A>vim=20+1668=20drivers/usb/core/message.c=0D=0A>=0D=0A>=
-=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201528=C2=A0=20int=20usb_=
-set_interface(struct=20usb_device=20*dev,=20int=20interface,=20int=20altern=
-ate)=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201529=C2=A0=
-=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201530=C2=A0=
-=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_interface=20*iface;=0D=
-=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201531=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_host_interface=20*alt;=0D=0A>3f0=
-479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201532=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_hcd=20*hcd=20=3D=20bus_to_hcd(de=
-v->bus);=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=201533=
-=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0int=20i,=20ret,=20manual=20=3D=
-=200;=0D=0A>3e35bf39e0b909=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=202008-01-30=C2=A0=201534=C2=A0=20=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0unsigned=20int=20epaddr;=0D=0A>3e35bf39e0b909=20Gre=
-g=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008=
--01-30=C2=A0=201535=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0unsigned=20=
-int=20pipe;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201536=
-=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201537=C2=
-=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(dev->state=20=3D=3D=20USB_S=
-TATE_SUSPENDED)=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
-38=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0return=20-EHOSTUNREACH;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20200=
-5-04-16=C2=A0=201539=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
-4-16=C2=A0=201540=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface=20=3D=
-=20usb_ifnum_to_if(dev,=20interface);=0D=0A>=5E1da177e4c3f41=20Linus=20Torv=
-alds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=202005-04-16=C2=A0=201541=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=
-=20(=21iface)=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=
-=A0=201542=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0dev_dbg(&dev->dev,=20=22selecting=20invalid=20interface=
-=20%d=5Cn=22,=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
-43=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0interface);=0D=0A>=5E1da177e4c=
-3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201544=C2=A0=20=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20-EINVAL;=0D=0A>=
-=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201545=C2=A0=20=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>e534c5b831c8b8=20Alan=20Stern=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=202011-07-01=C2=A0=201546=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0i=
-f=20(iface->unregistering)=0D=0A>e534c5b831c8b8=20Alan=20Stern=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=202011-07-01=C2=A0=201547=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20-ENODEV;=0D=0A>=5E1da177e4c3f41=
-=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=202005-04-16=C2=A0=201548=C2=A0=20=0D=0A>=5E1da177e4c3f41=
-=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=202005-04-16=C2=A0=201549=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0alt=20=3D=20usb_altnum_to_altsetting(iface,=20alternate);=0D=0A=
->=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201550=C2=A0=20=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0if=20(=21alt)=20=7B=0D=0A>385f690bc058ba=20Thade=
-u=20Lima=20de=20Souza=20Cascardo=202010-01-17=C2=A0=201551=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0dev_warn(=
-&dev->dev,=20=22selecting=20invalid=20altsetting=20%d=5Cn=22,=0D=0A>3b6004f=
-3b5a8b4=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=202008-08-14=C2=A0=201552=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20alternate);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
-53=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0return=20-EINVAL;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-1=
-6=C2=A0=201554=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>f9a5b4=
-f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=201555=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0/*=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=
-=C2=A0=201556=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20usb3=20hos=
-ts=20configure=20the=20interface=20in=20usb_hcd_alloc_bandwidth,=0D=0A>f9a5=
-b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=201557=C2=A0=20=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20*=20including=20freeing=20dropped=20endpoint=20r=
-ing=20buffers.=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=2015=
-58=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20Make=20sure=20the=20i=
-nterface=20endpoints=20are=20flushed=20before=20that=0D=0A>f9a5b4f58b280c=
-=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=202018-09-03=C2=A0=201559=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20*/=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=
-=201560=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0usb_disable_interface(d=
-ev,=20iface,=20false);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=
-=C2=A0=201561=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-1=
-2-03=C2=A0=201562=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Make=20s=
-ure=20we=20have=20enough=20bandwidth=20for=20this=20alternate=20interface.=
-=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201563=C2=
-=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20Remove=20the=20current=20a=
-lt=20setting=20and=20add=20the=20new=20alt=20setting.=0D=0A>3f0479e00a3fca=
-=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201564=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20*/=0D=0A>d673bfcbfffdeb=20Sarah=20Sharp=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
-0-10-15=C2=A0=201565=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_lock=
-(hcd->bandwidth_mutex);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-0=
-5-02=C2=A0=201566=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Disable=
-=20LPM,=20and=20re-enable=20it=20once=20the=20new=20alt=20setting=20is=20in=
-stalled,=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=2015=
-67=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20so=20that=20the=20xHC=
-I=20driver=20can=20recalculate=20the=20U1/U2=20timeouts.=0D=0A>8306095fd2c1=
-10=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=201568=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20*/=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
-2-05-02=C2=A0=201569=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(usb_=
-disable_lpm(dev))=20=7B=0D=0A>1ccc417e6c3201=20Joe=20Perches=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202017-1=
-2-05=C2=A0=201570=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0dev_err(&iface->dev,=20=22%s=20Failed=20to=20disabl=
-e=20LPM=5Cn=22,=20__func__);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
-2012-05-02=C2=A0=201571=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex);=0D=0A>830=
-6095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=201572=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20=
--ENOMEM;=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=2015=
-73=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>7a7b562d08ad6d=20H=
-ans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=202013-11-08=C2=A0=201574=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0/*=20Changing=20alt-setting=20also=20frees=20any=20allocated=20=
-streams=20*/=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=2015=
-75=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=
-=20iface->cur_altsetting->desc.bNumEndpoints;=20i++)=0D=0A>7a7b562d08ad6d=
-=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=201576=C2=A0=20=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface->cur_altsetting->e=
-ndpoint=5Bi=5D.streams=20=3D=200;=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
-2013-11-08=C2=A0=201577=C2=A0=20=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=202023-07-20=C2=A0=201578=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0if=20(dev->state=20=3D=3D=20USB_STATE_NOTATTACHED)=0D=0A>4682bbb9e2f1=
-96=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202023-07-20=C2=A0=201579=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20=
--ENODEV;=0D=0A>=0D=0A>=0D=0A>mutex_unlock(hcd->bandwidth_mutex);=20before=
-=20returning=0D=0A>=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20202=
-3-07-20=C2=A0=201580=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
-2009-12-03=C2=A0=201581=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=
-=3D=20usb_hcd_alloc_bandwidth(dev,=20NULL,=20iface->cur_altsetting,=20alt);=
-=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202023-07-20=C2=A0=2015=
-82=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=
-=201583=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(ret=20<=200)=20=
-=7B=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201584=
-=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0dev_info(&dev->dev,=20=22Not=20enough=20bandwidth=20for=20altsetting=
-=20%d=5Cn=22,=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=
-=A0=201585=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0alternate);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
-2-05-02=C2=A0=201586=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0usb_enable_lpm(dev);=0D=0A>d673bfcbfffdeb=20Sara=
-h=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=202010-10-15=C2=A0=201587=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth=
-_mutex);=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=2015=
-88=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0return=20ret;=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-1=
-2-03=C2=A0=201589=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>3f0=
-479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201590=C2=A0=20=0D=0A>=
-392e1d9817d002=20Alan=20Stern=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008-03-11=C2=A0=201591=C2=A0=
-=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(dev->quirks=20&=20USB_QUIRK_NO=
-_SET_INTF)=0D=0A>392e1d9817d002=20Alan=20Stern=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008-03-11=
-=C2=A0=201592=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0ret=20=3D=20-EPIPE;=0D=0A>392e1d9817d002=20Alan=20Ster=
-n=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=202008-03-11=C2=A0=201593=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0else=0D=0A>297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=201594=C2=A0=20=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=
-=3D=20usb_control_msg_send(dev,=200,=0D=0A>297e84c04d76b9=20Greg=20Kroah-Ha=
-rtman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=
-=201595=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=C2=A0=20=20USB_REQ_SET_INT=
-ERFACE,=0D=0A>297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=201596=C2=A0=20=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=C2=A0=20=20USB_RECIP_INTERFACE,=20alternate,=0D=0A>ddd11=
-98e3e0935=20Oliver=20Neukum=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=202020-09-23=C2=A0=201597=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=C2=A0=20=20interface,=20NULL,=200,=205000,=0D=0A>ddd1198e3e=
-0935=20Oliver=20Neukum=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=202020-09-23=C2=A0=201598=C2=A0=20=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=C2=A0=20=20GFP_NOIO);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvald=
-s=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=2020=
-05-04-16=C2=A0=201599=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
-4-16=C2=A0=201600=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=209.4.10=
-=20says=20devices=20don't=20need=20this=20and=20are=20free=20to=20STALL=20t=
-he=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201601=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20request=20if=20the=20interface=
-=20only=20has=20one=20alternate=20setting.=0D=0A>=5E1da177e4c3f41=20Linus=
-=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=202005-04-16=C2=A0=201602=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20*/=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201603=C2=
-=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(ret=20=3D=3D=20-EPIPE=20&&=
-=20iface->num_altsetting=20=3D=3D=201)=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=
-=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=202005-04-16=C2=A0=201604=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0dev_dbg(&dev->dev,=0D=0A>=5E1da177e4=
-c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201605=C2=A0=20=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=22manual=20set_interface=20for=20iface=20%d,=20alt=20%d=5Cn=22=
-,=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201606=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0interface,=20alternate);=0D=0A>=5E1da177e4=
-c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201607=C2=A0=20=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0manual=20=3D=201;=0D=0A>=
-297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=202020-09-14=C2=A0=201608=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=7D=20else=20if=20(ret)=20=7B=0D=0A>3f0479e00a3fca=20Sarah=20Sh=
-arp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=202009-12-03=C2=A0=201609=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Re-instate=20the=20old=20alt=
-=20setting=20*/=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=
-=C2=A0=201610=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0usb_hcd_alloc_bandwidth(dev,=20NULL,=20alt,=20iface->c=
-ur_altsetting);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=
-=C2=A0=201611=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0usb_enable_lpm(dev);=0D=0A>d673bfcbfffdeb=20Sarah=20Sh=
-arp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=202010-10-15=C2=A0=201612=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex=
-);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201613=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=
-urn=20ret;=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=
-=201614=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>d673bfcbfffde=
-b=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=202010-10-15=C2=A0=201615=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex);=0D=0A>=5E1da177e4c=
-3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201616=C2=A0=20=0D=0A>=5E1da177e4c3f4=
-1=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=202005-04-16=C2=A0=201617=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0/*=20FIXME=20drivers=20shouldn't=20need=20to=20replicate/bugfix=
-=20the=20logic=20here=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=
-=A0=201618=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20when=20they=
-=20implement=20async=20or=20easily-killable=20versions=20of=20this=20or=0D=
-=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201619=C2=A0=20=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20other=20=22should-be-internal=22=20fun=
-ctions=20(like=20clear_halt).=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
-4-16=C2=A0=201620=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20should=
-=20hcd+usbcore=20postprocess=20control=20requests?=0D=0A>=0D=0A>--=20=0D=0A=
->0-DAY=20CI=20Kernel=20Test=20Service=0D=0A>https://protect2.fireeye.com/v1=
-/url?k=3Df58bda35-9400cf06-f58a517a-000babff9bb7-d72ab9bab3df6b4a&q=3D1&e=
-=3D0dbea670-3cf3-4a45-a999->157e4e0dcad9&u=3Dhttps%3A%2F%2Fgithub.com%2Fint=
-el%2Flkp-tests%2Fwiki=0D=0A>=0D=0A>=0D=0A=0D=0A=0D=0AThanks,=0D=0AAman=0D=
-=0A=C2=A0=0D=0A=0D=0A
+I'm guessing since all the data fits in the first page (ap->pages[0] in 
+other words, of length/size desc.length) that the other pages are never 
+accessed.  Looking at fuse_copy_pages this does indeed seem to be the 
+case.  So I ended up just being really, really lucky here.
+
+Kind regards,
+Jaco
+
