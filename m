@@ -2,207 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ADD766EBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E46766EC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236920AbjG1NtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        id S236974AbjG1Nte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236911AbjG1Nsy (ORCPT
+        with ESMTP id S236881AbjG1NtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:48:54 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3402B3C33
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:44 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcd6c0282so299634066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1690552122; x=1691156922;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xglqSrB2iPFW2I/fuXfPFH2AjeG9G8DHiCGCdZ7AftA=;
-        b=AB6+MgpeqsfDfT0Gtsokz5BQci7npK3FQ2KziJGiv0UyZ8bcgvhqc+jcNFZrgvptI9
-         AIrPkUC39/8FTuu/2fdqNt4nPY7RpvzNBpE7u/1AXmaIiKrDozV1gP+5xgOZOIjJVg14
-         v4JrgVF+IQYC8AW77Co4dn69YatbvqQJ1SQm5mYkHE6NZyD60qjFEj4H0s0FvdQ5X9/s
-         ujEuMICe9jOyJ0EPcuouBIXvftZ9Tthnvhpr+wf+Bx5uPEZrkR50ZxRGeActqvJAADh7
-         bvgMp3mmy12GUl0qjKexge/lNeaeMf3tZsrb+qxNw4/y3M9VQ2w6+z84jeC0dMO0xJRS
-         5fFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690552122; x=1691156922;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xglqSrB2iPFW2I/fuXfPFH2AjeG9G8DHiCGCdZ7AftA=;
-        b=k62UN8w2lP2VW1eBNun0lF1rl6t9piMHfewpxuoUwe56q0A1CRawwJuFY/bntYtqgu
-         6Uj29Alfb06wXpEkGBKz3bi6lzIEvSajgMWL2GXFSZEMZ80kzZSqjqy5c4PaGf+4xQHG
-         S0Kew9fMSPuF3EhNEaB72rDFBxoPkRifa4d3//dTo71zUVR1Ta/OJvXs67/4Oqgc+H/i
-         Dk66BWJalvGv6LcbLYCUbrtQdaPiExFcr5bgqVUwb7S8tWYGdEPZABn9XQFA6UyyNez9
-         Grc6vH1r/G+ntXqeW5xDilXwMCgxQFAWy89rsi5NsZuzJjZYlalA1MtEnh31rYmMU/iU
-         2WhQ==
-X-Gm-Message-State: ABy/qLanDcpxYkO5hLnh/6Xf4dXGbCYzOjqkEqtFNGpM/j7GRVeZYvoJ
-        Ez8vMxYRXfKG2ZEuZCDZoH3qiw==
-X-Google-Smtp-Source: APBJJlGnEXAlsMCADN+Nq6BK+wfKYf1MY6AOSQRz7CvibJgwy8Y7+jhKeE+hbVuLfVBpD8mGaYmFsQ==
-X-Received: by 2002:a17:907:7710:b0:988:6491:98e1 with SMTP id kw16-20020a170907771000b00988649198e1mr2173678ejc.42.1690552122403;
-        Fri, 28 Jul 2023 06:48:42 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id t10-20020a17090616ca00b00982a352f078sm2066763ejd.124.2023.07.28.06.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 06:48:41 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 15:48:41 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        Fri, 28 Jul 2023 09:49:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF162D60;
+        Fri, 28 Jul 2023 06:48:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 022A462130;
+        Fri, 28 Jul 2023 13:48:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9FFCC433C7;
+        Fri, 28 Jul 2023 13:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690552136;
+        bh=ybAewDSIihhc9NHGhos2fH++UkcTbQSngJl7W7DzYpc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oDxPzCSS6ehCZesw8RUEPFEJvyhTJvVh/bwVCf/zMFZ8ahhmcU1v6L0qxMJrJC2L1
+         w826i3oZYo16kjtBfSrcWXLvw6+wzJ2+FfBRzoHEUuji3Bv8PjcYMMN/M7wq19U5om
+         pTRClACtk8Rf797gBpL8u1ns1MFtNCc1p/zQy208F+rrB4NmB91JIcbgVi4933dC8U
+         dsVa93vqJe190+Jrf2LYiyNfjf4nPqBs721jYiR33v0p1IF6WIRgVG4e0ltAL9hYdm
+         tH3MGCT6juqTCo29mUJHmtAxdLhsC170M6MBzonGxxguVNCrDMDSXp3MimuOTrf00F
+         fwPwf68IjUrHw==
+Received: (nullmailer pid 3224739 invoked by uid 1000);
+        Fri, 28 Jul 2023 13:48:55 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     David Airlie <airlied@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] riscv: Improve flush_tlb_kernel_range()
-Message-ID: <20230728-f5c389ac7f2a9aadf93939f5@orel>
-References: <20230727185553.980262-1-alexghiti@rivosinc.com>
- <20230727185553.980262-5-alexghiti@rivosinc.com>
+Subject: [PATCH v3] char: Explicitly include correct DT includes
+Date:   Fri, 28 Jul 2023 07:48:45 -0600
+Message-Id: <20230728134845.3224553-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727185553.980262-5-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:55:53PM +0200, Alexandre Ghiti wrote:
-> This function used to simply flush the whole tlb of all harts, be more
-> subtile and try to only flush the range.
-> 
-> The problem is that we can only use PAGE_SIZE as stride since we don't know
-> the size of the underlying mapping and then this function will be improved
-> only if the size of the region to flush is < threshold * PAGE_SIZE.
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
->  arch/riscv/mm/tlbflush.c          | 35 +++++++++++++++++++++++--------
->  2 files changed, 32 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-> index f5c4fb0ae642..7426fdcd8ec5 100644
-> --- a/arch/riscv/include/asm/tlbflush.h
-> +++ b/arch/riscv/include/asm/tlbflush.h
-> @@ -37,6 +37,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
->  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
->  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  		     unsigned long end);
-> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> @@ -53,15 +54,15 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
->  	local_flush_tlb_all();
->  }
->  
-> -#define flush_tlb_mm(mm) flush_tlb_all()
-> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> -
->  /* Flush a range of kernel pages */
->  static inline void flush_tlb_kernel_range(unsigned long start,
->  	unsigned long end)
->  {
-> -	flush_tlb_all();
-> +	local_flush_tlb_all();
->  }
->  
-> +#define flush_tlb_mm(mm) flush_tlb_all()
-> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> +
->  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 8017d2130e27..96aeacb269d5 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -117,18 +117,27 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
->  			      unsigned long size, unsigned long stride)
->  {
->  	struct flush_tlb_range_data ftd;
-> -	struct cpumask *cmask = mm_cpumask(mm);
-> -	unsigned int cpuid;
-> +	struct cpumask *cmask, full_cmask;
->  	bool broadcast;
->  
-> -	if (cpumask_empty(cmask))
-> -		return;
-> +	if (mm) {
-> +		unsigned int cpuid;
-> +
-> +		cmask = mm_cpumask(mm);
-> +		if (cpumask_empty(cmask))
-> +			return;
-> +
-> +		cpuid = get_cpu();
-> +		/* check if the tlbflush needs to be sent to other CPUs */
-> +		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> +	} else {
-> +		cpumask_setall(&full_cmask);
-> +		cmask = &full_cmask;
-> +		broadcast = true;
-> +	}
->  
-> -	cpuid = get_cpu();
-> -	/* check if the tlbflush needs to be sent to other CPUs */
-> -	broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
->  	if (static_branch_unlikely(&use_asid_allocator)) {
-> -		unsigned long asid = atomic_long_read(&mm->context.id) & asid_mask;
-> +		unsigned long asid = mm ? atomic_long_read(&mm->context.id) & asid_mask : 0;
->  
->  		if (broadcast) {
->  			if (riscv_use_ipi_for_rfence()) {
-> @@ -162,7 +171,8 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
->  		}
->  	}
->  
-> -	put_cpu();
-> +	if (mm)
-> +		put_cpu();
->  }
->  
->  void flush_tlb_mm(struct mm_struct *mm)
-> @@ -194,6 +204,13 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  	__flush_tlb_range(vma->vm_mm,
->  			  start, end - start, 1 << stride_shift);
->  }
-> +
-> +void flush_tlb_kernel_range(unsigned long start,
-> +			    unsigned long end)
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it was merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. They also include platform_device.h
+and of.h. As a result, there's a pretty much random mix of those include
+files used throughout the tree. In order to detangle these headers and
+replace the implicit includes with struct declarations, users need to
+explicitly include the correct includes.
 
-No need to wrap this line.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v3:
+ - Split out hw_random, ipmi and tpm
+---
+ drivers/char/agp/uninorth-agp.c | 1 +
+ drivers/char/bsr.c              | 3 +--
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> +{
-> +	__flush_tlb_range(NULL, start, end, PAGE_SIZE);
-> +}
-> +
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  			unsigned long end)
-> -- 
-> 2.39.2
->
+diff --git a/drivers/char/agp/uninorth-agp.c b/drivers/char/agp/uninorth-agp.c
+index 62de7f4ba864..84411b13c49f 100644
+--- a/drivers/char/agp/uninorth-agp.c
++++ b/drivers/char/agp/uninorth-agp.c
+@@ -3,6 +3,7 @@
+  * UniNorth AGPGART routines.
+  */
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/pci.h>
+ #include <linux/slab.h>
+ #include <linux/init.h>
+diff --git a/drivers/char/bsr.c b/drivers/char/bsr.c
+index 12143854aeac..70d31aed9011 100644
+--- a/drivers/char/bsr.c
++++ b/drivers/char/bsr.c
+@@ -6,11 +6,10 @@
+  * Author: Sonny Rao <sonnyrao@us.ibm.com>
+  */
+ 
++#include <linux/device.h>
+ #include <linux/kernel.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/of_platform.h>
+ #include <linux/fs.h>
+ #include <linux/module.h>
+ #include <linux/cdev.h>
+-- 
+2.40.1
 
-Otherwise,
-
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-
-Thanks,
-drew
