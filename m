@@ -2,225 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AA9767680
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84B0767688
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbjG1Tn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 15:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
+        id S234663AbjG1To0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 15:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjG1Tn1 (ORCPT
+        with ESMTP id S234612AbjG1ToY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:43:27 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF55D2688;
-        Fri, 28 Jul 2023 12:43:24 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qPTMx-0004vy-3H; Fri, 28 Jul 2023 21:43:23 +0200
-Message-ID: <da2bfc5b-8c98-17a4-1dbc-ef7989facc54@leemhuis.info>
-Date:   Fri, 28 Jul 2023 21:43:22 +0200
+        Fri, 28 Jul 2023 15:44:24 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42AAD3C07
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:44:23 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-78706966220so24602139f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1690573462; x=1691178262;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IVYlyy1phIaXLckqq8rcJcrT6tAP9YEvkh5U2YAuBjA=;
+        b=gbxFAICkUa/e7YZ60wNF06DmZ9EZ5eTjiwhQrucRQ4mWWAAWg3UGTbAC5bzenvxANC
+         DygyMU802VySwy1Gt+ry6yeNZcqZTl0/N4m47KcwL1CB66nZfXBQCF5cwvAWSGA5lU84
+         I8n84qDcqRRotzCACQXhPYr4dFSs9DTZqpJaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690573462; x=1691178262;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IVYlyy1phIaXLckqq8rcJcrT6tAP9YEvkh5U2YAuBjA=;
+        b=FpSDT7mYqVTuuiiBtCE52zvj7BuCneauO9NNYBUcpNF2acvSjh04vixFkqntZCEt/F
+         KT2RphdhCnoPGbu8WuiNL2Hk1XEdfYFMd8jjIBO0lNT63mYInt/FDDfKmlp+9klf+q+6
+         7ubJV2LGSgxMmGadF9GcNrmh3TQz/9dPUhVj9I5YhME8pe1bVx21twT4pW8X8/ske2pw
+         nUt52Td1GrrQLgkMsv+GMwUUNU8pFE2H53mKgdgyyzVkG0OOwyzMWd6ze+ofU+CL376Q
+         QPcjSOEYVIxeX8jrKriIMF6W9xKhSomUbMDOmL8R+178neHEsecH64j8O+Y4FoLUWvwk
+         PnOQ==
+X-Gm-Message-State: ABy/qLapavG68QFcUOsT8VRZ3BjgpBzikpi55eVfCgm9GrmzjEy6d+5Z
+        iltCzGjMb7IrWl/DvnNMsly3XA==
+X-Google-Smtp-Source: APBJJlHIRa/HS3RQAAZ2Lt+w0eqEG9zHSdhaKUD7cHdWfrtWI3sfdzsr0rUmGfe+T4Wcbja3cx2doQ==
+X-Received: by 2002:a6b:c9d3:0:b0:788:2d78:813c with SMTP id z202-20020a6bc9d3000000b007882d78813cmr575240iof.0.1690573462600;
+        Fri, 28 Jul 2023 12:44:22 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id f19-20020a056638119300b0042b31920313sm1299632jas.9.2023.07.28.12.44.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 12:44:22 -0700 (PDT)
+Message-ID: <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
+Date:   Fri, 28 Jul 2023 13:44:21 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: XPS 17 9730 runs significantly warmer on Kernel 6.5-rc3
- compared to Kernel 6.4.3
-Content-Language: en-US, de-DE
-To:     Goran Brkuljan <goran.brkuljan@gmail.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Power Management <linux-pm@vger.kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-References: <107f05b8-0104-501c-130c-4f89f3f8a628@gmail.com>
- <2e512646-816f-ff98-d466-b82f3a7d05ef@leemhuis.info>
- <CANhdOJEq-+KaMv=TX7E4ggf7rm456ibha2W_+Y5m1580ngCw_A@mail.gmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <CANhdOJEq-+KaMv=TX7E4ggf7rm456ibha2W_+Y5m1580ngCw_A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
+ error paths to skip
+Content-Language: en-US
+To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1690564372.git.skhan@linuxfoundation.org>
+ <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
+ <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
+ <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690573404;a2ae5249;
-X-HE-SMSGID: 1qPTMx-0004vy-3H
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 20:13, Goran Brkuljan wrote:
-> Hi Everyone,
+On 7/28/23 13:06, Shuah Khan wrote:
+> On 7/28/23 12:10, Anjali Kulkarni wrote:
+>>
+>>
+>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>
+>>> proc_filter test requires root privileges. Add root privilege check
+>>> and skip the test. Also fix argument parsing paths to skip in their
+>>> error legs.
+>>>
+>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>> ---
+>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
+>>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
+>>> index 4fe8c6763fd8..7b2081b98e5c 100644
+>>> --- a/tools/testing/selftests/connector/proc_filter.c
+>>> +++ b/tools/testing/selftests/connector/proc_filter.c
+>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
+>>>
+>>>     if (argc > 2) {
+>>>         printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
+>>> -        exit(1);
+>>> +        exit(KSFT_SKIP);
+>>>     }
+>>>
+>>>     if (argc == 2) {
+>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
+>>>             filter = 1;
+>>>         } else {
+>>>             printf("Valid option : -f (for filter feature)\n");
+>>> -            exit(1);
+>>> +            exit(KSFT_SKIP);
+>>>         }
+>>>     }
+>>>
+>>> +    if (geteuid()) {
+>>> +        printf("Connector test requires root privileges.\n");
+>>> +        exit(KSFT_SKIP);
+>>> +    }
+>>> +
+>>
+>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
+>>
+> 
+> It failed for me when I ran it saying it requires root privileges.
+> I had to run it as root.
+> 
 
-Please don't sent HTML mail to Linux kernel lists, it often will be
-rejected.
+The following is what I see when I run the test as non-root
+user:
 
->     Goran: On Tuesday, I asked you to perform bisection. Any update on it?
-> 
->  
-> Sorry for the delayed response. I wasn't able to do git bisection as I
-> was quite busy this week. 
-> 
-> However, I am no longer convinced that there is a kernel related issue.
-> I reinstalled both kernels and now I get consistent results between two,
-> and they both return higher values.
-> Now on both kernels, core20 spikes to +100.0°C and it stays there for
-> the duration of the test. Other cores are going from 80-95°C.
->
-> Note that I used the mainline kernel installer for handling installation. 
+bind failed: Operation not permitted
 
-FWIW, I (and likely many others that read this) have no idea what
-(distro specifc?) tool you are talking about. But I guess that doesn't
-matter. :-D
+thanks,
+-- Shuah
 
-> I would close the issue as tests and behaviour don't suggest significant
-> differences between kernel versions. 
 
-Okydo, thx for the update.
-
-#regzbot resolve: notabug: seems everything is working fine
-
-Ciao, Thorsten
-
-> On Fri, Jul 28, 2023 at 3:42 PM Thorsten Leemhuis
-> <regressions@leemhuis.info <mailto:regressions@leemhuis.info>> wrote:
-> 
->     [CCing Thermal maintainer Rafael, maybe he can help guide us]
-> 
->     Hi Bagas and everyone!
-> 
->     On 27.07.23 16:24, Bagas Sanjaya wrote:
->     >
->     > I notice a regression report on Bugzilla [1].
-> 
->     Bagas, it looks like you forwarded this to the maintainers of
->     "THERMAL/CPU_COOLING"; I think "THERMAL" would have been the way better
->     entry in MAINTAINERS, as many (all?) of the former are Linaro employees
->     and thus primarily care about ARM based devices. That's why I CCed
->     Rafael.
-> 
->     > Quoting from it:
->     >
->     >> On my new XPS 17 9730 laptop, I recently installed the Kernel
->     6.5-rc3. I noticed, however, that during its operation, the laptop
->     was getting significantly warmer than before. I did some analysis
->     using the 'stress' tool to measure and compare the difference in CPU
->     temperatures between Kernel 6.4.3 and Kernel 6.5-rc3. Here are my
->     results:
-> 
->     One thought: I wonder if there something wrong now or was there
->     something wrong earlier that was fixed to unleash the full performance
->     potential of the device. That 100°C there sounds like it's the latter
->     case, as that's the TJUNCTION temp for that processor. But would be good
->     to confirm from someone that knows better how hot such processors are
->     allowed to get these days.
-> 
->     Ciao, Thorsten
-> 
->     >> OS: Ubuntu 23.10
->     >> CPU: i7-13700H
->     >>
->     >> kernel 6.4.3:
->     >>                                                                 
->                                                                        
->                                                        
->     >> Initial CPU temperature:
->     >> coretemp-isa-0000
->     >> Core 0:        +47.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 4:        +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 8:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 12:       +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 16:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 20:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 24:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 25:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 26:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 27:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 28:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 29:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 30:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 31:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Stressing CPU for 30 seconds...
->     >> stress: info: [4858] dispatching hogs: 14 cpu, 0 io, 0 vm, 0 hdd
->     >> stress: info: [4858] successful run completed in 30s
->     >> CPU temperature immediately after stress test:
->     >> coretemp-isa-0000
->     >> Core 0:        +67.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 4:        +76.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 8:        +69.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 12:       +77.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 16:       +69.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 20:       +76.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 24:       +68.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 25:       +68.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 26:       +68.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 27:       +68.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 28:       +71.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 29:       +71.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 30:       +71.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 31:       +71.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Test ended at: Tue Jul 25 01:10:16 PM CEST 2023
->     >>
->     >>
->     >> kernel 6.5-rc-3:
->     >>
->     >> Initial CPU temperature:
->     >> coretemp-isa-0000
->     >> Core 0:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 4:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 8:        +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 12:       +46.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 16:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 20:       +44.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 24:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 25:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 26:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 27:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 28:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 29:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 30:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 31:       +45.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Stressing CPU for 30 seconds...
->     >> stress: info: [11146] dispatching hogs: 14 cpu, 0 io, 0 vm, 0 hdd
->     >> stress: info: [11146] successful run completed in 30s
->     >> CPU temperature immediately after stress test:
->     >> coretemp-isa-0000
->     >> Core 0:        +84.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 4:        +97.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 8:        +87.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 12:      +100.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 16:       +86.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 20:       +99.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 24:       +83.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 25:       +83.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 26:       +83.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 27:       +83.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 28:       +89.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 29:       +89.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 30:       +89.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Core 31:       +89.0°C  (high = +100.0°C, crit = +100.0°C)
->     >> Test ended at: Tue Jul 25 01:05:42 PM CEST 2023
->     >>
->     >> I tested few times with different setup and CPU temp on 6.5-rc3
->     is always higher especially when stressing with fewer cores.
->     >
->     > See Bugzilla for the full thread.
->     >
->     > Goran: On Tuesday, I asked you to perform bisection. Any update on it?
->     >
->     > Anyway, I'm adding this regression to regzbot:
->     >
->     > #regzbot introduced: v6.4..v6.5-rc3
->     https://bugzilla.kernel.org/show_bug.cgi?id=217703
->     <https://bugzilla.kernel.org/show_bug.cgi?id=217703>
->     > #regzbot title: significant temperature increase on XPS 17 9730
->     >
->     > Thanks.
->     >
->     > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217703
->     <https://bugzilla.kernel.org/show_bug.cgi?id=217703>
->     >
-> 
