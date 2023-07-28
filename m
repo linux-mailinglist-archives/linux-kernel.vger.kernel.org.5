@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CDD766E41
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28CD766E47
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbjG1N1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        id S236813AbjG1N13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236763AbjG1N0x (ORCPT
+        with ESMTP id S236620AbjG1N1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:26:53 -0400
+        Fri, 28 Jul 2023 09:27:03 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ED546A2;
-        Fri, 28 Jul 2023 06:26:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9983C04;
+        Fri, 28 Jul 2023 06:26:16 -0700 (PDT)
 Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SCxrHi021636;
-        Fri, 28 Jul 2023 13:25:57 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S9WeRs005403;
+        Fri, 28 Jul 2023 13:26:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=U4+TVMRsJZjMgXnPzsJ3uOErxFdZEK3WZbIk30sRS3k=;
- b=VDUodzfXkqHniCWJiWTMazRg4ZEymFQVe79lDGdouSr04j5QQk3SKl8qoh+znpZcKT2F
- XmBnVPsYHszo+eT6epRjRzGkVFeyt360SgS0EaCl66TsS6u5CcyjofIt9ZSvOUZUgcmv
- PQrWZpLnaZfFPZ+1yNcQbWcLXxBbJhKdghkF6RS8IF1aX5NvqLXlzPrqsOFTehJB9eJR
- 34xDF3zZtvpxvIBbmfi0WSBcTr4LA9LqD8yjTc6AsKUB6UNL8wAscHTDicE+H0fHJqT+
- HJhG20nNZMwMsyLvgnjsRf/bOVfMZjD5FrpMsbZgYvvCrBZjqnrafWA9R48cjj5su2Gx WQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s469hh1gy-1
+ bh=nGbFeuevhwIZKzxFOr1pwWXYD6KxFBmbckJHvwBIpvo=;
+ b=FYTVszJ6alKc08Yvp2rrUG46VAAuSGnE7CAN/HjlTFQMe38GE3PsftSMJNo22+timfvw
+ uU1A0Jf38dj4qRP7p/hJgGB3Iv9JFxAiG7y9xyXcvld4Eiuxd1VDbMueSDKR/Kpy73ux
+ /JlJ3fkVzPfO9SKbXbVG4d6jM50WOyr1OQqMrT4a79x8gwcQSCQhRxhcasLhSfyvOMxd
+ PHhb6tKsRnrIxJct5oY06gejwoiZmlqHcvvYnWpmEJJMF8OTtbYUtvr+iCj6BwyHwblP
+ 1ouhT3TtK12kLAPlJebhr9jYl7gp2wevgm8CM8Lt6+0pRnZaGPrjPtIDZfztUMmKg26r Ig== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s469hh1h2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:56 +0000
+        Fri, 28 Jul 2023 13:26:00 +0000
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPuN1002374
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPx2g025873
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:56 GMT
+        Fri, 28 Jul 2023 13:25:59 GMT
 Received: from hu-vgarodia-hyd.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 06:25:52 -0700
+ 15.2.1118.30; Fri, 28 Jul 2023 06:25:56 -0700
 From:   Vikash Garodia <quic_vgarodia@quicinc.com>
 To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -47,9 +47,9 @@ To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <linux-arm-msm@vger.kernel.org>
 CC:     <quic_dikshita@quicinc.com>,
         Vikash Garodia <quic_vgarodia@quicinc.com>
-Subject: [PATCH 13/33] iris: vidc: add helper functions for power management
-Date:   Fri, 28 Jul 2023 18:53:24 +0530
-Message-ID: <1690550624-14642-14-git-send-email-quic_vgarodia@quicinc.com>
+Subject: [PATCH 14/33] iris: vidc: add helpers for state management
+Date:   Fri, 28 Jul 2023 18:53:25 +0530
+Message-ID: <1690550624-14642-15-git-send-email-quic_vgarodia@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
 References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
@@ -60,8 +60,8 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LAx9nLJITVufFzoxgXQqC8UGYFFAtuSD
-X-Proofpoint-GUID: LAx9nLJITVufFzoxgXQqC8UGYFFAtuSD
+X-Proofpoint-ORIG-GUID: m_zyt9yoo2guwI-gGpOPnikZ0CTR3Ksv
+X-Proofpoint-GUID: m_zyt9yoo2guwI-gGpOPnikZ0CTR3Ksv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
@@ -72,695 +72,1746 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspect
  scancount=1 engine=8.12.0-2306200000 definitions=main-2307280124
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-
-this implements functions for calculating current load of the
-hardware. Depending on the count of instances and
-resolutions it selects the best clock rate for the video
-core. Also it scales clocks, power and enable/disable dcvs.
+This implements the functions to handle different core
+and instance state transitions.
 
 Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
 ---
- .../platform/qcom/iris/vidc/inc/msm_vidc_power.h   |  94 ++++
- .../platform/qcom/iris/vidc/src/msm_vidc_power.c   | 560 +++++++++++++++++++++
- 2 files changed, 654 insertions(+)
- create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_power.h
- create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_power.c
+ .../platform/qcom/iris/vidc/inc/msm_vidc_state.h   |  102 ++
+ .../platform/qcom/iris/vidc/src/msm_vidc_state.c   | 1607 ++++++++++++++++++++
+ 2 files changed, 1709 insertions(+)
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_state.h
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_state.c
 
-diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_power.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_power.h
+diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_state.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_state.h
 new file mode 100644
-index 0000000..cb424f5
+index 0000000..7fe4fcc
 --- /dev/null
-+++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_power.h
-@@ -0,0 +1,94 @@
++++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_state.h
+@@ -0,0 +1,102 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
 + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
 +
-+#ifndef _MSM_VIDC_POWER_H_
-+#define _MSM_VIDC_POWER_H_
++#ifndef _MSM_VIDC_STATE_H_
++#define _MSM_VIDC_STATE_H_
 +
-+#include "msm_vidc_debug.h"
-+#include "msm_vidc_inst.h"
 +#include "msm_vidc_internal.h"
 +
-+#define COMPRESSION_RATIO_MAX 5
-+
-+/* TODO: Move to dtsi OR use source clock instead of branch clock.*/
-+#define MSM_VIDC_CLOCK_SOURCE_SCALING_RATIO 3
-+
-+enum vidc_bus_type {
-+	PERF,
-+	DDR,
-+	LLCC,
++enum msm_vidc_core_state {
++	MSM_VIDC_CORE_DEINIT,
++	MSM_VIDC_CORE_INIT_WAIT,
++	MSM_VIDC_CORE_INIT,
++	MSM_VIDC_CORE_ERROR,
 +};
 +
++enum msm_vidc_core_sub_state {
++	CORE_SUBSTATE_NONE                   = 0x0,
++	CORE_SUBSTATE_POWER_ENABLE           = BIT(0),
++	CORE_SUBSTATE_GDSC_HANDOFF           = BIT(1),
++	CORE_SUBSTATE_PM_SUSPEND             = BIT(2),
++	CORE_SUBSTATE_FW_PWR_CTRL            = BIT(3),
++	CORE_SUBSTATE_PAGE_FAULT             = BIT(4),
++	CORE_SUBSTATE_CPU_WATCHDOG           = BIT(5),
++	CORE_SUBSTATE_VIDEO_UNRESPONSIVE     = BIT(6),
++	CORE_SUBSTATE_MAX                    = BIT(7),
++};
++
++enum msm_vidc_core_event_type {
++	CORE_EVENT_NONE                      = BIT(0),
++	CORE_EVENT_UPDATE_SUB_STATE          = BIT(1),
++};
++
++enum msm_vidc_state {
++	MSM_VIDC_OPEN,
++	MSM_VIDC_INPUT_STREAMING,
++	MSM_VIDC_OUTPUT_STREAMING,
++	MSM_VIDC_STREAMING,
++	MSM_VIDC_CLOSE,
++	MSM_VIDC_ERROR,
++};
++
++#define MSM_VIDC_SUB_STATE_NONE          0
++#define MSM_VIDC_MAX_SUB_STATES          6
 +/*
-+ * Minimum dimensions for which to calculate bandwidth.
-+ * This means that anything bandwidth(0, 0) ==
-+ * bandwidth(BASELINE_DIMENSIONS.width, BASELINE_DIMENSIONS.height)
++ * max value of inst->sub_state if all
++ * the 6 valid bits are set i.e 111111==>63
 + */
-+static const struct {
-+	int height, width;
-+} BASELINE_DIMENSIONS = {
-+	.width = 1280,
-+	.height = 720,
++#define MSM_VIDC_MAX_SUB_STATE_VALUE     ((1 << MSM_VIDC_MAX_SUB_STATES) - 1)
++
++enum msm_vidc_sub_state {
++	MSM_VIDC_DRAIN                     = BIT(0),
++	MSM_VIDC_DRC                       = BIT(1),
++	MSM_VIDC_DRAIN_LAST_BUFFER         = BIT(2),
++	MSM_VIDC_DRC_LAST_BUFFER           = BIT(3),
++	MSM_VIDC_INPUT_PAUSE               = BIT(4),
++	MSM_VIDC_OUTPUT_PAUSE              = BIT(5),
 +};
 +
-+/* converts Mbps to bps (the "b" part can be bits or bytes based on context) */
-+#define kbps(__mbps) ((__mbps) * 1000)
-+#define bps(__mbps) (kbps(__mbps) * 1000)
-+
-+static inline u32 get_type_frm_name(const char *name)
-+{
-+	if (!strcmp(name, "venus-llcc"))
-+		return LLCC;
-+	else if (!strcmp(name, "venus-ddr"))
-+		return DDR;
-+	else
-+		return PERF;
-+}
-+
-+#define DUMP_HEADER_MAGIC 0xdeadbeef
-+#define DUMP_FP_FMT "%FP" /* special format for fp_t */
-+
-+struct dump {
-+	char *key;
-+	char *format;
-+	size_t val;
++enum msm_vidc_event {
++	MSM_VIDC_TRY_FMT,
++	MSM_VIDC_S_FMT,
++	MSM_VIDC_REQBUFS,
++	MSM_VIDC_S_CTRL,
++	MSM_VIDC_STREAMON,
++	MSM_VIDC_STREAMOFF,
++	MSM_VIDC_CMD_START,
++	MSM_VIDC_CMD_STOP,
++	MSM_VIDC_BUF_QUEUE,
 +};
 +
-+void __dump(struct dump dump[], int len);
++/* core statemachine functions */
++enum msm_vidc_allow msm_vidc_allow_core_state_change(struct msm_vidc_core *core,
++						     enum msm_vidc_core_state req_state);
++int msm_vidc_update_core_state(struct msm_vidc_core *core,
++			       enum msm_vidc_core_state request_state, const char *func);
++bool core_in_valid_state(struct msm_vidc_core *core);
++bool is_core_state(struct msm_vidc_core *core, enum msm_vidc_core_state state);
++bool is_core_sub_state(struct msm_vidc_core *core, enum msm_vidc_core_sub_state sub_state);
++const char *core_state_name(enum msm_vidc_core_state state);
++const char *core_sub_state_name(enum msm_vidc_core_sub_state sub_state);
 +
-+static inline bool __ubwc(enum msm_vidc_colorformat_type f)
-+{
-+	switch (f) {
-+	case MSM_VIDC_FMT_NV12C:
-+	case MSM_VIDC_FMT_TP10C:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
++/* inst statemachine functions */
++bool is_drc_pending(struct msm_vidc_inst *inst);
++bool is_drain_pending(struct msm_vidc_inst *inst);
++int msm_vidc_update_state(struct msm_vidc_inst *inst,
++			  enum msm_vidc_state request_state, const char *func);
++int msm_vidc_change_state(struct msm_vidc_inst *inst,
++			  enum msm_vidc_state request_state, const char *func);
++int msm_vidc_change_sub_state(struct msm_vidc_inst *inst,
++			      enum msm_vidc_sub_state clear_sub_state,
++			      enum msm_vidc_sub_state set_sub_state,
++			      const char *func);
++const char *state_name(enum msm_vidc_state state);
++const char *sub_state_name(enum msm_vidc_sub_state sub_state);
++bool is_state(struct msm_vidc_inst *inst, enum msm_vidc_state state);
++bool is_sub_state(struct msm_vidc_inst *inst,
++		  enum msm_vidc_sub_state sub_state);
 +
-+static inline int __bpp(enum msm_vidc_colorformat_type f)
-+{
-+	switch (f) {
-+	case MSM_VIDC_FMT_NV12:
-+	case MSM_VIDC_FMT_NV21:
-+	case MSM_VIDC_FMT_NV12C:
-+	case MSM_VIDC_FMT_RGBA8888C:
-+		return 8;
-+	case MSM_VIDC_FMT_P010:
-+	case MSM_VIDC_FMT_TP10C:
-+		return 10;
-+	default:
-+		d_vpr_e("Unsupported colorformat (%x)", f);
-+		return INT_MAX;
-+	}
-+}
-+
-+u64 msm_vidc_max_freq(struct msm_vidc_inst *inst);
-+int msm_vidc_scale_power(struct msm_vidc_inst *inst, bool scale_buses);
-+void msm_vidc_power_data_reset(struct msm_vidc_inst *inst);
-+
-+#endif
-diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_power.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_power.c
++#endif // _MSM_VIDC_STATE_H_
+diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_state.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_state.c
 new file mode 100644
-index 0000000..cb5c7b7c
+index 0000000..0361e69
 --- /dev/null
-+++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_power.c
-@@ -0,0 +1,560 @@
++++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_state.c
+@@ -0,0 +1,1607 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
 + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
 +
-+#include "msm_vidc_buffer.h"
++#include "msm_vidc.h"
++#include "msm_vidc_control.h"
 +#include "msm_vidc_core.h"
 +#include "msm_vidc_debug.h"
 +#include "msm_vidc_driver.h"
-+#include "msm_vidc_inst.h"
-+#include "msm_vidc_internal.h"
-+#include "msm_vidc_platform.h"
-+#include "msm_vidc_power.h"
++#include "msm_vidc_state.h"
++#include "msm_vidc_vb2.h"
 +#include "venus_hfi.h"
 +
-+/* Q16 Format */
-+#define MSM_VIDC_MIN_UBWC_COMPLEXITY_FACTOR (1 << 16)
-+#define MSM_VIDC_MAX_UBWC_COMPLEXITY_FACTOR (4 << 16)
-+#define MSM_VIDC_MIN_UBWC_COMPRESSION_RATIO (1 << 16)
-+#define MSM_VIDC_MAX_UBWC_COMPRESSION_RATIO (5 << 16)
-+
-+void __dump(struct dump dump[], int len)
++bool core_in_valid_state(struct msm_vidc_core *core)
 +{
-+	int c = 0;
-+
-+	for (c = 0; c < len; ++c) {
-+		char format_line[128] = "", formatted_line[128] = "";
-+
-+		if (dump[c].val == DUMP_HEADER_MAGIC) {
-+			snprintf(formatted_line, sizeof(formatted_line), "%s\n",
-+				 dump[c].key);
-+		} else {
-+			snprintf(format_line, sizeof(format_line),
-+				 "    %-35s: %s\n", dump[c].key,
-+					 dump[c].format);
-+			snprintf(formatted_line, sizeof(formatted_line),
-+				 format_line, dump[c].val);
-+		}
-+		d_vpr_b("%s", formatted_line);
-+	}
++	return (core->state == MSM_VIDC_CORE_INIT ||
++		core->state == MSM_VIDC_CORE_INIT_WAIT);
 +}
 +
-+u64 msm_vidc_max_freq(struct msm_vidc_inst *inst)
++bool is_core_state(struct msm_vidc_core *core, enum msm_vidc_core_state state)
 +{
-+	struct msm_vidc_core *core;
-+	struct frequency_table *freq_tbl;
-+	u64 freq = 0;
-+
-+	core = inst->core;
-+
-+	if (!core->resource || !core->resource->freq_set.freq_tbl ||
-+	    !core->resource->freq_set.count) {
-+		i_vpr_e(inst, "%s: invalid frequency table\n", __func__);
-+		return freq;
-+	}
-+	freq_tbl = core->resource->freq_set.freq_tbl;
-+	freq = freq_tbl[0].freq;
-+
-+	i_vpr_l(inst, "%s: rate = %llu\n", __func__, freq);
-+	return freq;
++	return core->state == state;
 +}
 +
-+static int fill_dynamic_stats(struct msm_vidc_inst *inst,
-+			      struct vidc_bus_vote_data *vote_data)
++bool is_drc_pending(struct msm_vidc_inst *inst)
 +{
-+	struct msm_vidc_input_cr_data *temp, *next;
-+	u32 cf = MSM_VIDC_MAX_UBWC_COMPLEXITY_FACTOR;
-+	u32 cr = MSM_VIDC_MIN_UBWC_COMPRESSION_RATIO;
-+	u32 input_cr = MSM_VIDC_MIN_UBWC_COMPRESSION_RATIO;
-+	u32 frame_size;
-+
-+	if (inst->power.fw_cr)
-+		cr = inst->power.fw_cr;
-+
-+	if (inst->power.fw_cf) {
-+		cf = inst->power.fw_cf;
-+		frame_size = (msm_vidc_get_mbs_per_frame(inst) / (32 * 8) * 3) / 2;
-+		if (frame_size)
-+			cf = cf / frame_size;
-+	}
-+
-+	list_for_each_entry_safe(temp, next, &inst->enc_input_crs, list)
-+		input_cr = min(input_cr, temp->input_cr);
-+
-+	vote_data->compression_ratio = cr;
-+	vote_data->complexity_factor = cf;
-+	vote_data->input_cr = input_cr;
-+
-+	/* Sanitize CF values from HW */
-+	cf = clamp_t(u32, cf, MSM_VIDC_MIN_UBWC_COMPLEXITY_FACTOR,
-+		     MSM_VIDC_MAX_UBWC_COMPLEXITY_FACTOR);
-+	cr = clamp_t(u32, cr, MSM_VIDC_MIN_UBWC_COMPRESSION_RATIO,
-+		     MSM_VIDC_MAX_UBWC_COMPRESSION_RATIO);
-+	input_cr = clamp_t(u32, input_cr, MSM_VIDC_MIN_UBWC_COMPRESSION_RATIO,
-+			   MSM_VIDC_MAX_UBWC_COMPRESSION_RATIO);
-+
-+	vote_data->compression_ratio = cr;
-+	vote_data->complexity_factor = cf;
-+	vote_data->input_cr = input_cr;
-+
-+	i_vpr_l(inst,
-+		"Input CR = %d Recon CR = %d Complexity Factor = %d\n",
-+		vote_data->input_cr, vote_data->compression_ratio,
-+		vote_data->complexity_factor);
-+
-+	return 0;
++	return is_sub_state(inst, MSM_VIDC_DRC) &&
++		is_sub_state(inst, MSM_VIDC_DRC_LAST_BUFFER);
 +}
 +
-+static int msm_vidc_set_buses(struct msm_vidc_inst *inst)
++bool is_drain_pending(struct msm_vidc_inst *inst)
 +{
-+	int rc = 0;
-+	struct msm_vidc_core *core;
-+	struct msm_vidc_inst *temp;
-+	u64 total_bw_ddr = 0, total_bw_llcc = 0;
-+	u64 curr_time_ns;
-+
-+	core = inst->core;
-+
-+	mutex_lock(&core->lock);
-+	curr_time_ns = ktime_get_ns();
-+	list_for_each_entry(temp, &core->instances, list) {
-+		/* skip for session where no input is there to process */
-+		if (!temp->max_input_data_size)
-+			continue;
-+
-+		/* skip inactive session bus bandwidth */
-+		if (!is_active_session(temp->last_qbuf_time_ns, curr_time_ns)) {
-+			temp->active = false;
-+			continue;
-+		}
-+
-+		if (temp->power.power_mode == VIDC_POWER_TURBO) {
-+			total_bw_ddr = INT_MAX;
-+			total_bw_llcc = INT_MAX;
-+			break;
-+		}
-+
-+		total_bw_ddr += temp->power.ddr_bw;
-+		total_bw_llcc += temp->power.sys_cache_bw;
-+	}
-+	mutex_unlock(&core->lock);
-+
-+	rc = venus_hfi_scale_buses(inst, total_bw_ddr, total_bw_llcc);
-+	if (rc)
-+		return rc;
-+
-+	return 0;
++	return is_sub_state(inst, MSM_VIDC_DRAIN) &&
++		is_sub_state(inst, MSM_VIDC_DRAIN_LAST_BUFFER);
 +}
 +
-+int msm_vidc_scale_buses(struct msm_vidc_inst *inst)
++static const char * const core_state_name_arr[] = {
++	[MSM_VIDC_CORE_DEINIT] =    "CORE_DEINIT",
++	[MSM_VIDC_CORE_INIT_WAIT] = "CORE_INIT_WAIT",
++	[MSM_VIDC_CORE_INIT] =      "CORE_INIT",
++	[MSM_VIDC_CORE_ERROR] =     "CORE_ERROR",
++};
++
++const char *core_state_name(enum msm_vidc_core_state state)
 +{
-+	int rc = 0;
-+	struct msm_vidc_core *core;
-+	struct vidc_bus_vote_data *vote_data;
-+	struct v4l2_format *out_f;
-+	struct v4l2_format *inp_f;
-+	u32 operating_rate, frame_rate;
++	const char *name = "UNKNOWN STATE";
 +
-+	core = inst->core;
-+	if (!core->resource) {
-+		i_vpr_e(inst, "%s: invalid resource params\n", __func__);
-+		return -EINVAL;
-+	}
-+	vote_data = &inst->bus_data;
-+
-+	vote_data->power_mode = VIDC_POWER_NORMAL;
-+	if (inst->power.buffer_counter < DCVS_WINDOW)
-+		vote_data->power_mode = VIDC_POWER_TURBO;
-+
-+	if (vote_data->power_mode == VIDC_POWER_TURBO)
-+		goto set_buses;
-+
-+	out_f = &inst->fmts[OUTPUT_PORT];
-+	inp_f = &inst->fmts[INPUT_PORT];
-+
-+	vote_data->codec = inst->codec;
-+	vote_data->input_width = inp_f->fmt.pix_mp.width;
-+	vote_data->input_height = inp_f->fmt.pix_mp.height;
-+	vote_data->output_width = out_f->fmt.pix_mp.width;
-+	vote_data->output_height = out_f->fmt.pix_mp.height;
-+	vote_data->lcu_size = (inst->codec == MSM_VIDC_HEVC ||
-+			inst->codec == MSM_VIDC_VP9) ? 32 : 16;
-+	vote_data->fps = inst->max_rate;
-+
-+	if (is_encode_session(inst)) {
-+		vote_data->domain = MSM_VIDC_ENCODER;
-+		vote_data->bitrate = inst->capabilities[BIT_RATE].value;
-+		vote_data->rotation = inst->capabilities[ROTATION].value;
-+		vote_data->b_frames_enabled =
-+			inst->capabilities[B_FRAME].value > 0;
-+
-+		/* scale bitrate if operating rate is larger than frame rate */
-+		frame_rate = msm_vidc_get_frame_rate(inst);
-+		operating_rate = inst->max_rate;
-+		if (frame_rate && operating_rate && operating_rate > frame_rate)
-+			vote_data->bitrate = (vote_data->bitrate / frame_rate) * operating_rate;
-+
-+		vote_data->num_formats = 1;
-+		vote_data->color_formats[0] =
-+			v4l2_colorformat_to_driver(inst,
-+						   inst->fmts[INPUT_PORT].fmt.pix_mp.pixelformat,
-+						   __func__);
-+	} else if (is_decode_session(inst)) {
-+		u32 color_format;
-+
-+		vote_data->domain = MSM_VIDC_DECODER;
-+		vote_data->bitrate = inst->max_input_data_size * vote_data->fps * 8;
-+		color_format =
-+			v4l2_colorformat_to_driver(inst,
-+						   inst->fmts[OUTPUT_PORT].fmt.pix_mp.pixelformat,
-+						   __func__);
-+		if (is_linear_colorformat(color_format)) {
-+			vote_data->num_formats = 2;
-+			/*
-+			 * 0 index - dpb colorformat
-+			 * 1 index - opb colorformat
-+			 */
-+			if (is_10bit_colorformat(color_format))
-+				vote_data->color_formats[0] = MSM_VIDC_FMT_TP10C;
-+			else
-+				vote_data->color_formats[0] = MSM_VIDC_FMT_NV12;
-+			vote_data->color_formats[1] = color_format;
-+		} else {
-+			vote_data->num_formats = 1;
-+			vote_data->color_formats[0] = color_format;
-+		}
-+	}
-+	vote_data->work_mode = inst->capabilities[STAGE].value;
-+	if (core->resource->subcache_set.set_to_fw)
-+		vote_data->use_sys_cache = true;
-+	vote_data->num_vpp_pipes = core->capabilities[NUM_VPP_PIPE].value;
-+	fill_dynamic_stats(inst, vote_data);
-+
-+	call_session_op(core, calc_bw, inst, vote_data);
-+
-+	inst->power.ddr_bw = vote_data->calc_bw_ddr;
-+	inst->power.sys_cache_bw = vote_data->calc_bw_llcc;
-+
-+	if (!inst->stats.avg_bw_llcc)
-+		inst->stats.avg_bw_llcc = inst->power.sys_cache_bw;
-+	else
-+		inst->stats.avg_bw_llcc =
-+			(inst->stats.avg_bw_llcc + inst->power.sys_cache_bw) / 2;
-+
-+	if (!inst->stats.avg_bw_ddr)
-+		inst->stats.avg_bw_ddr = inst->power.ddr_bw;
-+	else
-+		inst->stats.avg_bw_ddr =
-+			(inst->stats.avg_bw_ddr + inst->power.ddr_bw) / 2;
-+
-+set_buses:
-+	inst->power.power_mode = vote_data->power_mode;
-+	rc = msm_vidc_set_buses(inst);
-+	if (rc)
-+		return rc;
-+
-+	return 0;
-+}
-+
-+int msm_vidc_set_clocks(struct msm_vidc_inst *inst)
-+{
-+	int rc = 0;
-+	struct msm_vidc_core *core;
-+	struct msm_vidc_inst *temp;
-+	u64 freq;
-+	u64 rate = 0;
-+	bool increment, decrement;
-+	u64 curr_time_ns;
-+	int i = 0;
-+
-+	core = inst->core;
-+
-+	if (!core->resource || !core->resource->freq_set.freq_tbl ||
-+	    !core->resource->freq_set.count) {
-+		d_vpr_e("%s: invalid frequency table\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&core->lock);
-+	increment = false;
-+	decrement = true;
-+	freq = 0;
-+	curr_time_ns = ktime_get_ns();
-+	list_for_each_entry(temp, &core->instances, list) {
-+		/* skip for session where no input is there to process */
-+		if (!temp->max_input_data_size)
-+			continue;
-+
-+		/* skip inactive session clock rate */
-+		if (!is_active_session(temp->last_qbuf_time_ns, curr_time_ns)) {
-+			temp->active = false;
-+			continue;
-+		}
-+		freq += temp->power.min_freq;
-+
-+		/* increment even if one session requested for it */
-+		if (temp->power.dcvs_flags & MSM_VIDC_DCVS_INCR)
-+			increment = true;
-+		/* decrement only if all sessions requested for it */
-+		if (!(temp->power.dcvs_flags & MSM_VIDC_DCVS_DECR))
-+			decrement = false;
-+	}
-+
-+	/*
-+	 * keep checking from lowest to highest rate until
-+	 * table rate >= requested rate
-+	 */
-+	for (i = core->resource->freq_set.count - 1; i >= 0; i--) {
-+		rate = core->resource->freq_set.freq_tbl[i].freq;
-+		if (rate >= freq)
-+			break;
-+	}
-+	if (i < 0)
-+		i = 0;
-+	if (increment) {
-+		if (i > 0)
-+			rate = core->resource->freq_set.freq_tbl[i - 1].freq;
-+	} else if (decrement) {
-+		if (i < (int)(core->platform->data.freq_tbl_size - 1))
-+			rate = core->resource->freq_set.freq_tbl[i + 1].freq;
-+	}
-+	core->power.clk_freq = (u32)rate;
-+
-+	i_vpr_p(inst, "%s: clock rate %llu requested %llu increment %d decrement %d\n",
-+		__func__, rate, freq, increment, decrement);
-+	mutex_unlock(&core->lock);
-+
-+	rc = venus_hfi_scale_clocks(inst, rate);
-+	if (rc)
-+		return rc;
-+
-+	return 0;
-+}
-+
-+static int msm_vidc_apply_dcvs(struct msm_vidc_inst *inst)
-+{
-+	int rc = 0;
-+	int bufs_with_fw = 0;
-+	struct msm_vidc_power *power;
-+
-+	/* skip dcvs */
-+	if (!inst->power.dcvs_mode)
-+		return 0;
-+
-+	power = &inst->power;
-+
-+	if (is_decode_session(inst)) {
-+		bufs_with_fw = msm_vidc_num_buffers(inst, MSM_VIDC_BUF_OUTPUT,
-+						    MSM_VIDC_ATTR_QUEUED);
-+	} else {
-+		bufs_with_fw = msm_vidc_num_buffers(inst, MSM_VIDC_BUF_INPUT,
-+						    MSM_VIDC_ATTR_QUEUED);
-+	}
-+
-+	/* +1 as one buffer is going to be queued after the function */
-+	bufs_with_fw += 1;
-+
-+	/*
-+	 * DCVS decides clock level based on below algorithm
-+	 *
-+	 * Limits :
-+	 * min_threshold : Buffers required for reference by FW.
-+	 * nom_threshold : Midpoint of Min and Max thresholds
-+	 * max_threshold : Min Threshold + DCVS extra buffers, allocated
-+	 *				   for smooth flow.
-+	 * 1) When buffers outside FW are reaching client's extra buffers,
-+	 *    FW is slow and will impact pipeline, Increase clock.
-+	 * 2) When pending buffers with FW are less than FW requested,
-+	 *    pipeline has cushion to absorb FW slowness, Decrease clocks.
-+	 * 3) When DCVS has engaged(Inc or Dec):
-+	 *    For decode:
-+	 *        - Pending buffers with FW transitions past the nom_threshold,
-+	 *        switch to calculated load, this smoothens the clock transitions.
-+	 *    For encode:
-+	 *        - Always switch to calculated load.
-+	 * 4) Otherwise maintain previous Load config.
-+	 */
-+	if (bufs_with_fw >= power->max_threshold) {
-+		power->dcvs_flags = MSM_VIDC_DCVS_INCR;
++	if (state >= ARRAY_SIZE(core_state_name_arr))
 +		goto exit;
-+	} else if (bufs_with_fw < power->min_threshold) {
-+		power->dcvs_flags = MSM_VIDC_DCVS_DECR;
-+		goto exit;
-+	}
 +
-+	/* encoder: dcvs window handling */
-+	if (is_encode_session(inst)) {
-+		power->dcvs_flags = 0;
-+		goto exit;
-+	}
-+
-+	/* decoder: dcvs window handling */
-+	if ((power->dcvs_flags & MSM_VIDC_DCVS_DECR && bufs_with_fw >= power->nom_threshold) ||
-+	    (power->dcvs_flags & MSM_VIDC_DCVS_INCR && bufs_with_fw <= power->nom_threshold)) {
-+		power->dcvs_flags = 0;
-+	}
++	name = core_state_name_arr[state];
 +
 +exit:
-+	i_vpr_p(inst, "dcvs: bufs_with_fw %d th[%d %d %d] flags %#x\n",
-+		bufs_with_fw, power->min_threshold,
-+		power->nom_threshold, power->max_threshold,
-+		power->dcvs_flags);
++	return name;
++}
++
++static const char * const event_name_arr[] = {
++	[MSM_VIDC_TRY_FMT] =   "TRY_FMT",
++	[MSM_VIDC_S_FMT] =     "S_FMT",
++	[MSM_VIDC_REQBUFS] =   "REQBUFS",
++	[MSM_VIDC_S_CTRL] =    "S_CTRL",
++	[MSM_VIDC_STREAMON] =  "STREAMON",
++	[MSM_VIDC_STREAMOFF] = "STREAMOFF",
++	[MSM_VIDC_CMD_START] = "CMD_START",
++	[MSM_VIDC_CMD_STOP] =  "CMD_STOP",
++	[MSM_VIDC_BUF_QUEUE] = "BUF_QUEUE",
++};
++
++static const char *event_name(enum msm_vidc_event event)
++{
++	const char *name = "UNKNOWN EVENT";
++
++	if (event >= ARRAY_SIZE(event_name_arr))
++		goto exit;
++
++	name = event_name_arr[event];
++
++exit:
++	return name;
++}
++
++static int __strict_inst_check(struct msm_vidc_inst *inst, const char *function)
++{
++	bool fatal = !mutex_is_locked(&inst->lock);
++
++	WARN_ON(fatal);
++
++	return fatal ? -EINVAL : 0;
++}
++
++struct msm_vidc_core_sub_state_allow {
++	enum msm_vidc_core_state       state;
++	enum msm_vidc_allow            allow;
++	u32                            sub_state_mask;
++};
++
++static u32 msm_vidc_core_sub_state_mask(enum msm_vidc_core_state state,
++					u32 allow)
++{
++	int cnt;
++	u32 sub_state_mask = 0;
++	static struct msm_vidc_core_sub_state_allow sub_state[] = {
++		/* state, allow, sub_state */
++		{MSM_VIDC_CORE_DEINIT,    MSM_VIDC_ALLOW,       CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_DEINIT,     MSM_VIDC_IGNORE,     CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_INIT_WAIT,  MSM_VIDC_ALLOW,      CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_INIT_WAIT,  MSM_VIDC_DISALLOW,   CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_INIT_WAIT,  MSM_VIDC_IGNORE,     CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_INIT,       MSM_VIDC_ALLOW,      CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_ERROR,      MSM_VIDC_ALLOW,      CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++		{MSM_VIDC_CORE_ERROR,      MSM_VIDC_DISALLOW,   CORE_SUBSTATE_POWER_ENABLE       |
++								CORE_SUBSTATE_GDSC_HANDOFF       |
++								CORE_SUBSTATE_PM_SUSPEND         |
++								CORE_SUBSTATE_FW_PWR_CTRL        |
++								CORE_SUBSTATE_PAGE_FAULT         |
++								CORE_SUBSTATE_CPU_WATCHDOG       |
++								CORE_SUBSTATE_VIDEO_UNRESPONSIVE },
++	};
++
++	for (cnt = 0; cnt < ARRAY_SIZE(sub_state); cnt++) {
++		if (sub_state[cnt].state == state && sub_state[cnt].allow == allow) {
++			sub_state_mask = sub_state[cnt].sub_state_mask;
++			break;
++		}
++	}
++
++	return sub_state_mask;
++}
++
++static int msm_vidc_core_deinit_state(struct msm_vidc_core *core,
++				      enum msm_vidc_core_event_type type,
++				      struct msm_vidc_event_data *data)
++{
++	int rc = 0;
++
++	switch (type) {
++	case CORE_EVENT_UPDATE_SUB_STATE:
++	{
++		u32 req_sub_state = data->edata.uval;
++		u32 allow_mask = msm_vidc_core_sub_state_mask(core->state, MSM_VIDC_ALLOW);
++
++		req_sub_state = data->edata.uval;
++
++		/* none of the requested substate supported */
++		if (!(req_sub_state & allow_mask)) {
++			d_vpr_e("%s: invalid substate update request %#x\n",
++				__func__, req_sub_state);
++			return -EINVAL;
++		}
++
++		/* update core substate */
++		core->sub_state |= req_sub_state & allow_mask;
++		return rc;
++	}
++	default: {
++		d_vpr_e("%s: unexpected core event type %u\n",
++			__func__, type);
++		return -EINVAL;
++	}
++	}
 +
 +	return rc;
 +}
 +
-+int msm_vidc_scale_clocks(struct msm_vidc_inst *inst)
-+{
-+	struct msm_vidc_core *core;
-+
-+	core = inst->core;
-+
-+	if (inst->power.buffer_counter < DCVS_WINDOW ||
-+	    is_sub_state(inst, MSM_VIDC_DRC) ||
-+	    is_sub_state(inst, MSM_VIDC_DRAIN)) {
-+		inst->power.min_freq = msm_vidc_max_freq(inst);
-+		inst->power.dcvs_flags = 0;
-+	} else {
-+		inst->power.min_freq =
-+			call_session_op(core, calc_freq, inst, inst->max_input_data_size);
-+		msm_vidc_apply_dcvs(inst);
-+	}
-+	inst->power.curr_freq = inst->power.min_freq;
-+	msm_vidc_set_clocks(inst);
-+
-+	return 0;
-+}
-+
-+int msm_vidc_scale_power(struct msm_vidc_inst *inst, bool scale_buses)
-+{
-+	struct msm_vidc_core *core;
-+	struct msm_vidc_buffer *vbuf;
-+	u32 data_size = 0;
-+	u32 cnt = 0;
-+	u32 fps;
-+	u32 frame_rate, operating_rate;
-+	u32 timestamp_rate = 0, input_rate = 0;
-+
-+	core = inst->core;
-+
-+	if (!inst->active) {
-+		/* scale buses for inactive -> active session */
-+		scale_buses = true;
-+		inst->active = true;
-+	}
-+
-+	/*
-+	 * consider avg. filled length in decode batching case
-+	 * to avoid overvoting for the entire batch due to single
-+	 * frame with huge filled length
-+	 */
-+	if (inst->decode_batch.enable) {
-+		list_for_each_entry(vbuf, &inst->buffers.input.list, list) {
-+			if (vbuf->attr & MSM_VIDC_ATTR_DEFERRED ||
-+			    vbuf->attr & MSM_VIDC_ATTR_QUEUED) {
-+				data_size += vbuf->data_size;
-+				cnt++;
-+			}
-+		}
-+		if (cnt)
-+			data_size /= cnt;
-+	} else {
-+		list_for_each_entry(vbuf, &inst->buffers.input.list, list)
-+			data_size = max(data_size, vbuf->data_size);
-+	}
-+	inst->max_input_data_size = data_size;
-+
-+	frame_rate = msm_vidc_get_frame_rate(inst);
-+	operating_rate = msm_vidc_get_operating_rate(inst);
-+	fps = max(frame_rate, operating_rate);
-+	/*
-+	 * Consider input queuing rate in power scaling in
-+	 * because client may not set the frame rate / operating rate
-+	 * and we need to rely on input queue rate
-+	 */
-+	if (is_decode_session(inst)) {
-+		/*
-+		 * when buffer detected fps is more than client set value by 12.5%,
-+		 * utilize buffer detected fps to scale clock.
-+		 */
-+		timestamp_rate = msm_vidc_get_timestamp_rate(inst);
-+		input_rate = msm_vidc_get_input_rate(inst);
-+		if (timestamp_rate > (fps + fps / 8))
-+			fps = timestamp_rate;
-+
-+		if (input_rate > fps)
-+			fps = input_rate;
-+	}
-+	inst->max_rate = fps;
-+
-+	/* no pending inputs - skip scale power */
-+	if (!inst->max_input_data_size)
-+		return 0;
-+
-+	if (msm_vidc_scale_clocks(inst))
-+		i_vpr_e(inst, "failed to scale clock\n");
-+
-+	if (scale_buses) {
-+		if (msm_vidc_scale_buses(inst))
-+			i_vpr_e(inst, "failed to scale bus\n");
-+	}
-+
-+	i_vpr_hp(inst,
-+		 "power: inst: clk %lld ddr %d llcc %d dcvs flags %#x fps %u (%u %u %u %u) core: clk %lld ddr %lld llcc %lld\n",
-+		 inst->power.curr_freq, inst->power.ddr_bw,
-+		 inst->power.sys_cache_bw, inst->power.dcvs_flags,
-+		 inst->max_rate, frame_rate, operating_rate, timestamp_rate,
-+		 input_rate, core->power.clk_freq, core->power.bw_ddr,
-+		 core->power.bw_llcc);
-+
-+	return 0;
-+}
-+
-+void msm_vidc_dcvs_data_reset(struct msm_vidc_inst *inst)
-+{
-+	struct msm_vidc_power *dcvs;
-+	u32 min_count, actual_count, max_count;
-+
-+	dcvs = &inst->power;
-+	if (is_encode_session(inst)) {
-+		min_count = inst->buffers.input.min_count;
-+		actual_count = inst->buffers.input.actual_count;
-+		max_count = min((min_count + DCVS_ENC_EXTRA_INPUT_BUFFERS), actual_count);
-+	} else if (is_decode_session(inst)) {
-+		min_count = inst->buffers.output.min_count;
-+		actual_count = inst->buffers.output.actual_count;
-+		max_count = min((min_count + DCVS_DEC_EXTRA_OUTPUT_BUFFERS), actual_count);
-+	} else {
-+		i_vpr_e(inst, "%s: invalid domain type %d\n",
-+			__func__, inst->domain);
-+		return;
-+	}
-+
-+	dcvs->min_threshold = min_count;
-+	dcvs->max_threshold = max_count;
-+	dcvs->dcvs_window = min_count < max_count ? max_count - min_count : 0;
-+	dcvs->nom_threshold = dcvs->min_threshold + (dcvs->dcvs_window / 2);
-+	dcvs->dcvs_flags = 0;
-+
-+	i_vpr_p(inst, "%s: dcvs: thresholds [%d %d %d] flags %#x\n",
-+		__func__, dcvs->min_threshold,
-+		dcvs->nom_threshold, dcvs->max_threshold,
-+		dcvs->dcvs_flags);
-+}
-+
-+void msm_vidc_power_data_reset(struct msm_vidc_inst *inst)
++static int msm_vidc_core_init_wait_state(struct msm_vidc_core *core,
++					 enum msm_vidc_core_event_type type,
++					 struct msm_vidc_event_data *data)
 +{
 +	int rc = 0;
 +
-+	msm_vidc_dcvs_data_reset(inst);
++	switch (type) {
++	case CORE_EVENT_UPDATE_SUB_STATE:
++	{
++		u32 req_sub_state = data->edata.uval;
++		u32 allow_mask = msm_vidc_core_sub_state_mask(core->state, MSM_VIDC_ALLOW);
 +
-+	inst->power.buffer_counter = 0;
-+	inst->power.fw_cr = 0;
-+	inst->power.fw_cf = INT_MAX;
++		req_sub_state = data->edata.uval;
 +
-+	rc = msm_vidc_scale_power(inst, true);
++		/* none of the requested substate supported */
++		if (!(req_sub_state & allow_mask)) {
++			d_vpr_e("%s: invalid substate update request %#x\n",
++				__func__, req_sub_state);
++			return -EINVAL;
++		}
++
++		/* update core substate */
++		core->sub_state |= req_sub_state & allow_mask;
++		return rc;
++	}
++	default: {
++		d_vpr_e("%s: unexpected core event type %u\n",
++			__func__, type);
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_core_init_state(struct msm_vidc_core *core,
++				    enum msm_vidc_core_event_type type,
++				    struct msm_vidc_event_data *data)
++{
++	int rc = 0;
++
++	switch (type) {
++	case CORE_EVENT_UPDATE_SUB_STATE:
++	{
++		u32 req_sub_state = data->edata.uval;
++		u32 allow_mask = msm_vidc_core_sub_state_mask(core->state, MSM_VIDC_ALLOW);
++
++		req_sub_state = data->edata.uval;
++
++		/* none of the requested substate supported */
++		if (!(req_sub_state & allow_mask)) {
++			d_vpr_e("%s: invalid substate update request %#x\n",
++				__func__, req_sub_state);
++			return -EINVAL;
++		}
++
++		/* update core substate */
++		core->sub_state |= req_sub_state & allow_mask;
++		return rc;
++	}
++	default: {
++		d_vpr_e("%s: unexpected core event type %u\n",
++			__func__, type);
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_core_error_state(struct msm_vidc_core *core,
++				     enum msm_vidc_core_event_type type,
++				     struct msm_vidc_event_data *data)
++{
++	int rc = 0;
++
++	switch (type) {
++	case CORE_EVENT_UPDATE_SUB_STATE:
++	{
++		u32 req_sub_state = data->edata.uval;
++		u32 allow_mask = msm_vidc_core_sub_state_mask(core->state, MSM_VIDC_ALLOW);
++
++		req_sub_state = data->edata.uval;
++
++		/* none of the requested substate supported */
++		if (!(req_sub_state & allow_mask)) {
++			d_vpr_e("%s: invalid substate update request %#x\n",
++				__func__, req_sub_state);
++			return -EINVAL;
++		}
++
++		/* update core substate */
++		core->sub_state |= req_sub_state & allow_mask;
++		return rc;
++	}
++	default: {
++		d_vpr_e("%s: unexpected core event type %u\n",
++			__func__, type);
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++struct msm_vidc_core_state_handle {
++	enum msm_vidc_core_state   state;
++	int			 (*handle)(struct msm_vidc_core *core,
++					   enum msm_vidc_core_event_type type,
++					   struct msm_vidc_event_data *data);
++};
++
++static struct msm_vidc_core_state_handle
++	*msm_vidc_get_core_state_handle(enum msm_vidc_core_state req_state)
++{
++	int cnt;
++	struct msm_vidc_core_state_handle *core_state_handle = NULL;
++	static struct msm_vidc_core_state_handle state_handle[] = {
++		{MSM_VIDC_CORE_DEINIT,      msm_vidc_core_deinit_state      },
++		{MSM_VIDC_CORE_INIT_WAIT,   msm_vidc_core_init_wait_state   },
++		{MSM_VIDC_CORE_INIT,        msm_vidc_core_init_state        },
++		{MSM_VIDC_CORE_ERROR,       msm_vidc_core_error_state       },
++	};
++
++	for (cnt = 0; cnt < ARRAY_SIZE(state_handle); cnt++) {
++		if (state_handle[cnt].state == req_state) {
++			core_state_handle = &state_handle[cnt];
++			break;
++		}
++	}
++
++	/* if req_state does not exist in the table */
++	if (cnt == ARRAY_SIZE(state_handle)) {
++		d_vpr_e("%s: invalid core state \"%s\" requested\n",
++			__func__, core_state_name(req_state));
++		return core_state_handle;
++	}
++
++	return core_state_handle;
++}
++
++int msm_vidc_update_core_state(struct msm_vidc_core *core,
++			       enum msm_vidc_core_state request_state, const char *func)
++{
++	struct msm_vidc_core_state_handle *state_handle = NULL;
++	int rc = 0;
++
++	/* get core state handler for requested state */
++	state_handle = msm_vidc_get_core_state_handle(request_state);
++	if (!state_handle)
++		return -EINVAL;
++
++	d_vpr_h("%s: core state changed to %s from %s\n", func,
++		core_state_name(state_handle->state), core_state_name(core->state));
++
++	/* finally update core state and handler */
++	core->state = state_handle->state;
++	core->state_handle = state_handle->handle;
++
++	return rc;
++}
++
++struct msm_vidc_core_state_allow {
++	enum msm_vidc_core_state   from;
++	enum msm_vidc_core_state   to;
++	enum msm_vidc_allow        allow;
++};
++
++enum msm_vidc_allow msm_vidc_allow_core_state_change(struct msm_vidc_core *core,
++						     enum msm_vidc_core_state req_state)
++{
++	int cnt;
++	enum msm_vidc_allow allow = MSM_VIDC_DISALLOW;
++	static struct msm_vidc_core_state_allow state[] = {
++		/* from, to, allow */
++		{MSM_VIDC_CORE_DEINIT,      MSM_VIDC_CORE_DEINIT,      MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_DEINIT,      MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_DEINIT,      MSM_VIDC_CORE_INIT,        MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CORE_DEINIT,      MSM_VIDC_CORE_ERROR,       MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_CORE_DEINIT,      MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_CORE_INIT,        MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_CORE_ERROR,       MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_INIT,        MSM_VIDC_CORE_DEINIT,      MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_INIT,        MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CORE_INIT,        MSM_VIDC_CORE_INIT,        MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_INIT,        MSM_VIDC_CORE_ERROR,       MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_ERROR,       MSM_VIDC_CORE_DEINIT,      MSM_VIDC_ALLOW     },
++		{MSM_VIDC_CORE_ERROR,       MSM_VIDC_CORE_INIT_WAIT,   MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_ERROR,       MSM_VIDC_CORE_INIT,        MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CORE_ERROR,       MSM_VIDC_CORE_ERROR,       MSM_VIDC_IGNORE    },
++	};
++
++	for (cnt = 0; cnt < ARRAY_SIZE(state); cnt++) {
++		if (state[cnt].from == core->state && state[cnt].to == req_state) {
++			allow = state[cnt].allow;
++			break;
++		}
++	}
++
++	return allow;
++}
++
++int msm_vidc_change_core_state(struct msm_vidc_core *core,
++			       enum msm_vidc_core_state request_state, const char *func)
++{
++	enum msm_vidc_allow allow;
++	int rc = 0;
++
++	/* core must be locked */
++	rc = __strict_check(core, func);
++	if (rc) {
++		d_vpr_e("%s(): core was not locked\n", func);
++		return rc;
++	}
++
++	/* current and requested state is same */
++	if (core->state == request_state)
++		return 0;
++
++	/* check if requested state movement is allowed */
++	allow = msm_vidc_allow_core_state_change(core, request_state);
++	if (allow == MSM_VIDC_IGNORE) {
++		d_vpr_h("%s: %s core state change %s -> %s\n", func,
++			allow_name(allow), core_state_name(core->state),
++			core_state_name(request_state));
++		return 0;
++	} else if (allow == MSM_VIDC_DISALLOW) {
++		d_vpr_e("%s: %s core state change %s -> %s\n", func,
++			allow_name(allow), core_state_name(core->state),
++			core_state_name(request_state));
++		return -EINVAL;
++	}
++
++	/* go ahead and update core state */
++	return msm_vidc_update_core_state(core, request_state, func);
++}
++
++bool is_core_sub_state(struct msm_vidc_core *core, enum msm_vidc_core_sub_state sub_state)
++{
++	return !!(core->sub_state & sub_state);
++}
++
++const char *core_sub_state_name(enum msm_vidc_core_sub_state sub_state)
++{
++	switch (sub_state) {
++	case CORE_SUBSTATE_NONE:                 return "NONE ";
++	case CORE_SUBSTATE_GDSC_HANDOFF:         return "GDSC_HANDOFF ";
++	case CORE_SUBSTATE_PM_SUSPEND:           return "PM_SUSPEND ";
++	case CORE_SUBSTATE_FW_PWR_CTRL:          return "FW_PWR_CTRL ";
++	case CORE_SUBSTATE_POWER_ENABLE:         return "POWER_ENABLE ";
++	case CORE_SUBSTATE_PAGE_FAULT:           return "PAGE_FAULT ";
++	case CORE_SUBSTATE_CPU_WATCHDOG:         return "CPU_WATCHDOG ";
++	case CORE_SUBSTATE_VIDEO_UNRESPONSIVE:   return "VIDEO_UNRESPONSIVE ";
++	case CORE_SUBSTATE_MAX:                  return "MAX ";
++	}
++
++	return "UNKNOWN ";
++}
++
++static int prepare_core_sub_state_name(enum msm_vidc_core_sub_state sub_state,
++				       char *buf, u32 size)
++{
++	int i = 0;
++
++	if (!buf || !size)
++		return -EINVAL;
++
++	strscpy(buf, "\0", size);
++	if (sub_state == CORE_SUBSTATE_NONE) {
++		strscpy(buf, "CORE_SUBSTATE_NONE", size);
++		return 0;
++	}
++
++	for (i = 0; BIT(i) < CORE_SUBSTATE_MAX; i++) {
++		if (sub_state & BIT(i))
++			strlcat(buf, core_sub_state_name(BIT(i)), size);
++	}
++
++	return 0;
++}
++
++static int msm_vidc_update_core_sub_state(struct msm_vidc_core *core,
++					  enum msm_vidc_core_sub_state sub_state,
++					  const char *func)
++{
++	struct msm_vidc_event_data data;
++	char sub_state_name[MAX_NAME_LENGTH];
++	int ret = 0, rc = 0;
++
++	/* no substate update */
++	if (!sub_state)
++		return 0;
++
++	/* invoke update core substate event */
++	memset(&data, 0, sizeof(struct msm_vidc_event_data));
++	data.edata.uval = sub_state;
++	rc = core->state_handle(core, CORE_EVENT_UPDATE_SUB_STATE, &data);
++	if (rc) {
++		ret = prepare_core_sub_state_name(sub_state, sub_state_name,
++						  sizeof(sub_state_name) - 1);
++		if (!ret)
++			d_vpr_e("%s: state %s, requested invalid core substate %s\n",
++				func, core_state_name(core->state), sub_state_name);
++		return rc;
++	}
++
++	return rc;
++}
++
++int msm_vidc_change_core_sub_state(struct msm_vidc_core *core,
++				   enum msm_vidc_core_sub_state clear_sub_state,
++				   enum msm_vidc_core_sub_state set_sub_state,
++				   const char *func)
++{
++	int rc = 0;
++	enum msm_vidc_core_sub_state prev_sub_state;
++
++	/* core must be locked */
++	rc = __strict_check(core, func);
++	if (rc) {
++		d_vpr_e("%s(): core was not locked\n", func);
++		return rc;
++	}
++
++	/* sanitize core state handler */
++	if (!core->state_handle) {
++		d_vpr_e("%s: invalid core state handle\n", __func__);
++		return -EINVAL;
++	}
++
++	/* final value will not change */
++	if (clear_sub_state == set_sub_state)
++		return 0;
++
++	/* sanitize clear & set value */
++	if (set_sub_state > CORE_SUBSTATE_MAX ||
++	    clear_sub_state > CORE_SUBSTATE_MAX) {
++		d_vpr_e("%s: invalid sub states. clear %#x or set %#x\n",
++			func, clear_sub_state, set_sub_state);
++		return -EINVAL;
++	}
++
++	prev_sub_state = core->sub_state;
++
++	/* set sub state */
++	rc = msm_vidc_update_core_sub_state(core, set_sub_state, func);
 +	if (rc)
-+		i_vpr_e(inst, "%s: failed to scale power\n", __func__);
++		return rc;
++
++	/* check if all core substates updated */
++	if ((core->sub_state & set_sub_state) != set_sub_state)
++		d_vpr_e("%s: all substates not updated %#x, expected %#x\n",
++			func, core->sub_state & set_sub_state, set_sub_state);
++
++	/* clear sub state */
++	core->sub_state &= ~clear_sub_state;
++
++	/* print substates only when there is a change */
++	if (core->sub_state != prev_sub_state) {
++		rc = prepare_core_sub_state_name(core->sub_state, core->sub_state_name,
++						 sizeof(core->sub_state_name) - 1);
++		if (!rc)
++			d_vpr_h("%s: core sub state changed to %s\n", func, core->sub_state_name);
++	}
++
++	return 0;
++}
++
++/* do not modify the state names as it is used in test scripts */
++static const char * const state_name_arr[] = {
++	[MSM_VIDC_OPEN] =             "OPEN",
++	[MSM_VIDC_INPUT_STREAMING] =  "INPUT_STREAMING",
++	[MSM_VIDC_OUTPUT_STREAMING] = "OUTPUT_STREAMING",
++	[MSM_VIDC_STREAMING] =        "STREAMING",
++	[MSM_VIDC_CLOSE] =            "CLOSE",
++	[MSM_VIDC_ERROR] =            "ERROR",
++};
++
++const char *state_name(enum msm_vidc_state state)
++{
++	const char *name = "UNKNOWN STATE";
++
++	if (state >= ARRAY_SIZE(state_name_arr))
++		goto exit;
++
++	name = state_name_arr[state];
++
++exit:
++	return name;
++}
++
++bool is_state(struct msm_vidc_inst *inst, enum msm_vidc_state state)
++{
++	return inst->state == state;
++}
++
++bool is_sub_state(struct msm_vidc_inst *inst, enum msm_vidc_sub_state sub_state)
++{
++	return (inst->sub_state & sub_state);
++}
++
++const char *sub_state_name(enum msm_vidc_sub_state sub_state)
++{
++	switch (sub_state) {
++	case MSM_VIDC_DRAIN:               return "DRAIN ";
++	case MSM_VIDC_DRC:                 return "DRC ";
++	case MSM_VIDC_DRAIN_LAST_BUFFER:   return "DRAIN_LAST_BUFFER ";
++	case MSM_VIDC_DRC_LAST_BUFFER:     return "DRC_LAST_BUFFER ";
++	case MSM_VIDC_INPUT_PAUSE:         return "INPUT_PAUSE ";
++	case MSM_VIDC_OUTPUT_PAUSE:        return "OUTPUT_PAUSE ";
++	}
++
++	return "SUB_STATE_NONE";
++}
++
++static int prepare_sub_state_name(enum msm_vidc_sub_state sub_state,
++				  char *buf, u32 size)
++{
++	int i = 0;
++
++	if (!buf || !size)
++		return -EINVAL;
++
++	strscpy(buf, "\0", size);
++	if (sub_state == MSM_VIDC_SUB_STATE_NONE) {
++		strscpy(buf, "SUB_STATE_NONE", size);
++		return 0;
++	}
++
++	for (i = 0; i < MSM_VIDC_MAX_SUB_STATES; i++) {
++		if (sub_state & BIT(i))
++			strlcat(buf, sub_state_name(BIT(i)), size);
++	}
++
++	return 0;
++}
++
++struct msm_vidc_state_allow {
++	enum msm_vidc_state        from;
++	enum msm_vidc_state        to;
++	enum msm_vidc_allow        allow;
++};
++
++static enum msm_vidc_allow msm_vidc_allow_state_change(struct msm_vidc_inst *inst,
++						       enum msm_vidc_state req_state)
++{
++	int cnt;
++	enum msm_vidc_allow allow = MSM_VIDC_DISALLOW;
++	static struct msm_vidc_state_allow state[] = {
++		/* from, to, allow */
++		{MSM_VIDC_OPEN,             MSM_VIDC_OPEN,               MSM_VIDC_IGNORE    },
++		{MSM_VIDC_OPEN,             MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OPEN,             MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OPEN,             MSM_VIDC_STREAMING,          MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_OPEN,             MSM_VIDC_CLOSE,              MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OPEN,             MSM_VIDC_ERROR,              MSM_VIDC_ALLOW     },
++
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_OPEN,               MSM_VIDC_ALLOW     },
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_IGNORE    },
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_STREAMING,          MSM_VIDC_ALLOW     },
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_CLOSE,              MSM_VIDC_ALLOW     },
++		{MSM_VIDC_INPUT_STREAMING,  MSM_VIDC_ERROR,              MSM_VIDC_ALLOW     },
++
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_OPEN,               MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_IGNORE    },
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_STREAMING,          MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_CLOSE,              MSM_VIDC_ALLOW     },
++		{MSM_VIDC_OUTPUT_STREAMING, MSM_VIDC_ERROR,              MSM_VIDC_ALLOW     },
++
++		{MSM_VIDC_STREAMING,        MSM_VIDC_OPEN,               MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_STREAMING,        MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_ALLOW     },
++		{MSM_VIDC_STREAMING,        MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_ALLOW     },
++		{MSM_VIDC_STREAMING,        MSM_VIDC_STREAMING,          MSM_VIDC_IGNORE    },
++		{MSM_VIDC_STREAMING,        MSM_VIDC_CLOSE,              MSM_VIDC_ALLOW     },
++		{MSM_VIDC_STREAMING,        MSM_VIDC_ERROR,              MSM_VIDC_ALLOW     },
++
++		{MSM_VIDC_CLOSE,            MSM_VIDC_OPEN,               MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CLOSE,            MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CLOSE,            MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CLOSE,            MSM_VIDC_STREAMING,          MSM_VIDC_DISALLOW  },
++		{MSM_VIDC_CLOSE,            MSM_VIDC_CLOSE,              MSM_VIDC_IGNORE    },
++		{MSM_VIDC_CLOSE,            MSM_VIDC_ERROR,              MSM_VIDC_IGNORE    },
++
++		{MSM_VIDC_ERROR,            MSM_VIDC_OPEN,               MSM_VIDC_IGNORE    },
++		{MSM_VIDC_ERROR,            MSM_VIDC_INPUT_STREAMING,    MSM_VIDC_IGNORE    },
++		{MSM_VIDC_ERROR,            MSM_VIDC_OUTPUT_STREAMING,   MSM_VIDC_IGNORE    },
++		{MSM_VIDC_ERROR,            MSM_VIDC_STREAMING,          MSM_VIDC_IGNORE    },
++		{MSM_VIDC_ERROR,            MSM_VIDC_CLOSE,              MSM_VIDC_IGNORE    },
++		{MSM_VIDC_ERROR,            MSM_VIDC_ERROR,              MSM_VIDC_IGNORE    },
++	};
++
++	for (cnt = 0; cnt < ARRAY_SIZE(state); cnt++) {
++		if (state[cnt].from == inst->state && state[cnt].to == req_state) {
++			allow = state[cnt].allow;
++			break;
++		}
++	}
++
++	return allow;
++}
++
++static int msm_vidc_open_state(struct msm_vidc_inst *inst,
++			       enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_TRY_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* allow try_fmt request in open state */
++		rc = msm_vidc_try_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* allow s_fmt request in open state */
++		rc = msm_vidc_s_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_CTRL:
++	{
++		struct v4l2_ctrl *ctrl = (struct v4l2_ctrl *)data;
++
++		/* allow set_control request in open state */
++		rc = msm_vidc_s_ctrl(inst, ctrl);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_REQBUFS:
++	{
++		struct v4l2_requestbuffers *b = (struct v4l2_requestbuffers *)data;
++
++		/* allow reqbufs request in open state */
++		rc = msm_vidc_reqbufs(inst, b);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMON:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* allow streamon request in open state */
++		rc = msm_vidc_start_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* ignore streamoff request in open state */
++		i_vpr_h(inst, "%s: streamoff of (%s) ignored in state (%s)\n",
++			__func__, v4l2_type_name(q->type), state_name(inst->state));
++		break;
++	}
++	case MSM_VIDC_CMD_START:
++	{
++		/* disallow start cmd request in open state */
++		i_vpr_e(inst, "%s: (%s) not allowed, sub_state (%s)\n",
++			__func__, event_name(event), inst->sub_state_name);
++
++		return -EBUSY;
++	}
++	case MSM_VIDC_CMD_STOP:
++	{
++		/* ignore stop cmd request in open state */
++		i_vpr_h(inst, "%s: (%s) ignored, sub_state (%s)\n",
++			__func__, event_name(event), inst->sub_state_name);
++		break;
++	}
++	case MSM_VIDC_BUF_QUEUE:
++	{
++		struct msm_vidc_buffer *buf = (struct msm_vidc_buffer *)data;
++
++		/* defer qbuf request in open state */
++		print_vidc_buffer(VIDC_LOW, "low ", "qbuf deferred", inst, buf);
++		break;
++	}
++	default:
++	{
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_input_streaming_state(struct msm_vidc_inst *inst,
++					  enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_BUF_QUEUE:
++	{
++		struct msm_vidc_buffer *buf = (struct msm_vidc_buffer *)data;
++
++		/* disallow */
++		if (!is_input_buffer(buf->type) && !is_output_buffer(buf->type)) {
++			i_vpr_e(inst, "%s: invalid buf type %u\n", __func__, buf->type);
++			return -EINVAL;
++		}
++
++		/* defer output port */
++		if (is_output_buffer(buf->type)) {
++			print_vidc_buffer(VIDC_LOW, "low ", "qbuf deferred", inst, buf);
++			return 0;
++		}
++
++		rc = msm_vidc_buf_queue(inst, buf);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_TRY_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* disallow */
++		if (f->type == INPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(f->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_try_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* disallow */
++		if (f->type == INPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(f->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_s_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_CTRL:
++	{
++		struct v4l2_ctrl *ctrl = (struct v4l2_ctrl *)data;
++		u32 cap_id = msm_vidc_get_cap_id(inst, ctrl->id);
++
++		if (cap_id == INST_CAP_NONE) {
++			i_vpr_e(inst, "%s: invalid cap_id %u\n", __func__, cap_id);
++			return -EINVAL;
++		}
++
++		/* disallow */
++		if (is_decode_session(inst)) {
++			/* check dynamic allowed if master port is streaming */
++			if (!(inst->capabilities[cap_id].flags & CAP_FLAG_DYNAMIC_ALLOWED)) {
++				i_vpr_e(inst, "%s: cap_id %#x not allowed in state %s\n",
++					__func__, cap_id, state_name(inst->state));
++				return -EINVAL;
++			}
++		}
++
++		rc = msm_vidc_s_ctrl(inst, ctrl);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_REQBUFS:
++	{
++		struct v4l2_requestbuffers *b = (struct v4l2_requestbuffers *)data;
++
++		/* disallow */
++		if (b->type == INPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(b->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_reqbufs(inst, b);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMON:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* disallow */
++		if (q->type == INPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) type\n",
++				__func__, event_name(event), v4l2_type_name(q->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_start_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* ignore */
++		if (q->type == OUTPUT_MPLANE) {
++			i_vpr_h(inst, "%s: streamoff of (%s) ignored in state (%s)\n",
++				__func__, v4l2_type_name(q->type), state_name(inst->state));
++			return 0;
++		}
++
++		/* sanitize type field */
++		if (q->type != INPUT_MPLANE) {
++			i_vpr_e(inst, "%s: invalid type %d\n", __func__, q->type);
++			return -EINVAL;
++		}
++
++		rc = msm_vidc_stop_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_START:
++	{
++		/* disallow if START called for non DRC/drain cases */
++		if (!is_drc_pending(inst) && !is_drain_pending(inst)) {
++			i_vpr_e(inst, "%s: (%s) not allowed, sub_state (%s)\n",
++				__func__, event_name(event), inst->sub_state_name);
++			return -EBUSY;
++		}
++
++		/* client would call start(resume) to complete DRC/drain sequence */
++		rc = msm_vidc_start_cmd(inst);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_STOP:
++	{
++		/* back to back drain not allowed */
++		if (is_sub_state(inst, MSM_VIDC_DRAIN)) {
++			i_vpr_e(inst, "%s: drain (%s) not allowed, sub_state (%s)\n\n",
++				__func__, event_name(event), inst->sub_state_name);
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_stop_cmd(inst);
++		if (rc)
++			return rc;
++		break;
++	}
++	default:
++	{
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_output_streaming_state(struct msm_vidc_inst *inst,
++					   enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_BUF_QUEUE:
++	{
++		struct msm_vidc_buffer *buf = (struct msm_vidc_buffer *)data;
++
++		/* disallow */
++		if (!is_input_buffer(buf->type) && !is_output_buffer(buf->type)) {
++			i_vpr_e(inst, "%s: invalid buf type %u\n", __func__, buf->type);
++			return -EINVAL;
++		}
++
++		/* defer input port */
++		if (is_input_buffer(buf->type)) {
++			print_vidc_buffer(VIDC_LOW, "low ", "qbuf deferred", inst, buf);
++			return 0;
++		}
++
++		rc = msm_vidc_buf_queue(inst, buf);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_TRY_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* disallow */
++		if (f->type == OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(f->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_try_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_FMT:
++	{
++		struct v4l2_format *f = (struct v4l2_format *)data;
++
++		/* disallow */
++		if (f->type == OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(f->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_s_fmt(inst, f);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_CTRL:
++	{
++		struct v4l2_ctrl *ctrl = (struct v4l2_ctrl *)data;
++		u32 cap_id = msm_vidc_get_cap_id(inst, ctrl->id);
++
++		if (cap_id == INST_CAP_NONE) {
++			i_vpr_e(inst, "%s: invalid cap_id %u\n", __func__, cap_id);
++			return -EINVAL;
++		}
++
++		/* disallow */
++		if (is_encode_session(inst)) {
++			/* check dynamic allowed if master port is streaming */
++			if (!(inst->capabilities[cap_id].flags & CAP_FLAG_DYNAMIC_ALLOWED)) {
++				i_vpr_e(inst, "%s: cap_id %#x not allowed in state %s\n",
++					__func__, cap_id, state_name(inst->state));
++				return -EINVAL;
++			}
++		}
++
++		rc = msm_vidc_s_ctrl(inst, ctrl);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_REQBUFS:
++	{
++		struct v4l2_requestbuffers *b = (struct v4l2_requestbuffers *)data;
++
++		/* disallow */
++		if (b->type == OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) port\n",
++				__func__, event_name(event), v4l2_type_name(b->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_reqbufs(inst, b);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMON:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* disallow */
++		if (q->type == OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: (%s) not allowed for (%s) type\n",
++				__func__, event_name(event), v4l2_type_name(q->type));
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_start_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* ignore */
++		if (q->type == INPUT_MPLANE) {
++			i_vpr_h(inst, "%s: streamoff of (%s) ignored in state (%s)\n",
++				__func__, v4l2_type_name(q->type), state_name(inst->state));
++			return 0;
++		}
++
++		/* sanitize type field */
++		if (q->type != OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: invalid type %d\n", __func__, q->type);
++			return -EINVAL;
++		}
++
++		rc = msm_vidc_stop_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_START:
++	{
++		/* disallow if START called for non DRC/drain cases */
++		if (!is_drc_pending(inst) && !is_drain_pending(inst)) {
++			i_vpr_e(inst, "%s: (%s) not allowed, sub_state (%s)\n",
++				__func__, event_name(event), inst->sub_state_name);
++			return -EBUSY;
++		}
++
++		/* client would call start(resume) to complete DRC/drain sequence */
++		rc = msm_vidc_start_cmd(inst);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_STOP:
++	{
++		/* drain not allowed as input is not streaming */
++		i_vpr_e(inst, "%s: drain (%s) not allowed, sub state %s\n",
++			__func__, event_name(event), inst->sub_state_name);
++		return -EBUSY;
++	}
++	default: {
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_streaming_state(struct msm_vidc_inst *inst,
++				    enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_BUF_QUEUE:
++	{
++		struct msm_vidc_buffer *buf = (struct msm_vidc_buffer *)data;
++
++		/* disallow */
++		if (!is_input_buffer(buf->type) && !is_output_buffer(buf->type)) {
++			i_vpr_e(inst, "%s: invalid buf type %u\n", __func__, buf->type);
++			return -EINVAL;
++		}
++
++		rc = msm_vidc_buf_queue(inst, buf);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_S_CTRL:
++	{
++		struct v4l2_ctrl *ctrl = (struct v4l2_ctrl *)data;
++		u32 cap_id = msm_vidc_get_cap_id(inst, ctrl->id);
++
++		if (cap_id == INST_CAP_NONE) {
++			i_vpr_e(inst, "%s: invalid cap_id %u\n", __func__, cap_id);
++			return -EINVAL;
++		}
++
++		/* disallow */
++		if (!(inst->capabilities[cap_id].flags & CAP_FLAG_DYNAMIC_ALLOWED)) {
++			i_vpr_e(inst, "%s: cap_id %#x not allowed in state %s\n",
++				__func__, cap_id, state_name(inst->state));
++			return -EINVAL;
++		}
++
++		rc = msm_vidc_s_ctrl(inst, ctrl);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		/* sanitize type field */
++		if (q->type != INPUT_MPLANE && q->type != OUTPUT_MPLANE) {
++			i_vpr_e(inst, "%s: invalid type %d\n", __func__, q->type);
++			return -EINVAL;
++		}
++
++		rc = msm_vidc_stop_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_START:
++	{
++		/* disallow if START called for non DRC/drain cases */
++		if (!is_drc_pending(inst) && !is_drain_pending(inst)) {
++			i_vpr_e(inst, "%s: (%s) not allowed, sub_state (%s)\n",
++				__func__, event_name(event), inst->sub_state_name);
++			return -EBUSY;
++		}
++
++		/* client would call start(resume) to complete DRC/drain sequence */
++		rc = msm_vidc_start_cmd(inst);
++		if (rc)
++			return rc;
++		break;
++	}
++	case MSM_VIDC_CMD_STOP:
++	{
++		/* back to back drain not allowed */
++		if (is_sub_state(inst, MSM_VIDC_DRAIN)) {
++			i_vpr_e(inst, "%s: drain (%s) not allowed, sub_state (%s)\n\n",
++				__func__, event_name(event), inst->sub_state_name);
++			return -EBUSY;
++		}
++
++		rc = msm_vidc_stop_cmd(inst);
++		if (rc)
++			return rc;
++		break;
++	}
++	default: {
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_close_state(struct msm_vidc_inst *inst,
++				enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		rc = msm_vidc_stop_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	default: {
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++static int msm_vidc_error_state(struct msm_vidc_inst *inst,
++				enum msm_vidc_event event, void *data)
++{
++	int rc = 0;
++
++	/* inst must be locked */
++	rc = __strict_inst_check(inst, __func__);
++	if (rc) {
++		i_vpr_e(inst, "%s(): inst was not locked\n", __func__);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case MSM_VIDC_STREAMOFF:
++	{
++		struct vb2_queue *q = (struct vb2_queue *)data;
++
++		rc = msm_vidc_stop_streaming(inst, q);
++		if (rc)
++			return rc;
++		break;
++	}
++	default: {
++		i_vpr_e(inst, "%s: unexpected event %s\n", __func__, event_name(event));
++		return -EINVAL;
++	}
++	}
++
++	return rc;
++}
++
++struct msm_vidc_state_handle {
++	enum msm_vidc_state   state;
++	int                 (*handle)(struct msm_vidc_inst *inst,
++				      enum msm_vidc_event event, void *data);
++};
++
++static struct msm_vidc_state_handle *msm_vidc_get_state_handle(struct msm_vidc_inst *inst,
++							       enum msm_vidc_state req_state)
++{
++	int cnt;
++	struct msm_vidc_state_handle *inst_state_handle = NULL;
++	static struct msm_vidc_state_handle state_handle[] = {
++		{MSM_VIDC_OPEN,             msm_vidc_open_state             },
++		{MSM_VIDC_INPUT_STREAMING,  msm_vidc_input_streaming_state  },
++		{MSM_VIDC_OUTPUT_STREAMING, msm_vidc_output_streaming_state },
++		{MSM_VIDC_STREAMING,        msm_vidc_streaming_state        },
++		{MSM_VIDC_CLOSE,            msm_vidc_close_state            },
++		{MSM_VIDC_ERROR,            msm_vidc_error_state            },
++	};
++
++	for (cnt = 0; cnt < ARRAY_SIZE(state_handle); cnt++) {
++		if (state_handle[cnt].state == req_state) {
++			inst_state_handle = &state_handle[cnt];
++			break;
++		}
++	}
++
++	/* check if req_state does not exist in the table */
++	if (cnt == ARRAY_SIZE(state_handle)) {
++		i_vpr_e(inst, "%s: invalid state %s\n", __func__, state_name(req_state));
++		return inst_state_handle;
++	}
++
++	return inst_state_handle;
++}
++
++int msm_vidc_update_state(struct msm_vidc_inst *inst,
++			  enum msm_vidc_state request_state, const char *func)
++{
++	struct msm_vidc_state_handle *state_handle = NULL;
++	int rc = 0;
++
++	/* get inst state handler for requested state */
++	state_handle = msm_vidc_get_state_handle(inst, request_state);
++	if (!state_handle)
++		return -EINVAL;
++
++	if (request_state == MSM_VIDC_ERROR)
++		i_vpr_e(inst, FMT_STRING_STATE_CHANGE,
++			func, state_name(request_state), state_name(inst->state));
++	else
++		i_vpr_h(inst, FMT_STRING_STATE_CHANGE,
++			func, state_name(request_state), state_name(inst->state));
++
++	/* finally update inst state and handler */
++	inst->state = state_handle->state;
++	inst->event_handle = state_handle->handle;
++
++	return rc;
++}
++
++int msm_vidc_change_state(struct msm_vidc_inst *inst,
++			  enum msm_vidc_state request_state, const char *func)
++{
++	enum msm_vidc_allow allow;
++	int rc;
++
++	if (is_session_error(inst)) {
++		i_vpr_h(inst,
++			"%s: inst is in bad state, can not change state to %s\n",
++			func, state_name(request_state));
++		return 0;
++	}
++
++	/* current and requested state is same */
++	if (inst->state == request_state)
++		return 0;
++
++	/* check if requested state movement is allowed */
++	allow = msm_vidc_allow_state_change(inst, request_state);
++	if (allow != MSM_VIDC_ALLOW) {
++		i_vpr_e(inst, "%s: %s state change %s -> %s\n", func,
++			allow_name(allow), state_name(inst->state),
++			state_name(request_state));
++		return (allow == MSM_VIDC_DISALLOW ? -EINVAL : 0);
++	}
++
++	/* go ahead and update inst state */
++	rc = msm_vidc_update_state(inst, request_state, func);
++	if (rc)
++		return rc;
++
++	return 0;
++}
++
++struct msm_vidc_sub_state_allow {
++	enum msm_vidc_state            state;
++	enum msm_vidc_allow            allow;
++	u32                            sub_state_mask;
++};
++
++static int msm_vidc_set_sub_state(struct msm_vidc_inst *inst,
++				  enum msm_vidc_sub_state sub_state, const char *func)
++{
++	char sub_state_name[MAX_NAME_LENGTH];
++	int cnt, rc = 0;
++	static struct msm_vidc_sub_state_allow sub_state_allow[] = {
++		/* state, allow, sub_state */
++		{MSM_VIDC_OPEN,              MSM_VIDC_DISALLOW,    MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_INPUT_PAUSE         |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++
++		{MSM_VIDC_INPUT_STREAMING,   MSM_VIDC_DISALLOW,    MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++		{MSM_VIDC_INPUT_STREAMING,   MSM_VIDC_ALLOW,       MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_INPUT_PAUSE          },
++
++		{MSM_VIDC_OUTPUT_STREAMING,  MSM_VIDC_DISALLOW,    MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_INPUT_PAUSE          },
++		{MSM_VIDC_OUTPUT_STREAMING,  MSM_VIDC_ALLOW,       MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++
++		{MSM_VIDC_STREAMING,         MSM_VIDC_ALLOW,       MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_INPUT_PAUSE         |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++
++		{MSM_VIDC_CLOSE,             MSM_VIDC_ALLOW,       MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_INPUT_PAUSE         |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++
++		{MSM_VIDC_ERROR,             MSM_VIDC_ALLOW,       MSM_VIDC_DRC                 |
++								   MSM_VIDC_DRAIN               |
++								   MSM_VIDC_DRC_LAST_BUFFER     |
++								   MSM_VIDC_DRAIN_LAST_BUFFER   |
++								   MSM_VIDC_INPUT_PAUSE         |
++								   MSM_VIDC_OUTPUT_PAUSE         },
++	};
++
++	/* no substate to update */
++	if (!sub_state)
++		return 0;
++
++	/* check if any substate is disallowed */
++	for (cnt = 0; cnt < ARRAY_SIZE(sub_state_allow); cnt++) {
++		/* skip other states */
++		if (sub_state_allow[cnt].state != inst->state)
++			continue;
++
++		/* continue if not disallowed */
++		if (sub_state_allow[cnt].allow != MSM_VIDC_DISALLOW)
++			continue;
++
++		if (sub_state_allow[cnt].sub_state_mask & sub_state) {
++			prepare_sub_state_name(sub_state, sub_state_name, sizeof(sub_state_name));
++			i_vpr_e(inst, "%s: state (%s), disallow substate (%s)\n",
++				func, state_name(inst->state), sub_state_name);
++			return -EINVAL;
++		}
++	}
++
++	/* remove ignorable substates from a given substate */
++	for (cnt = 0; cnt < ARRAY_SIZE(sub_state_allow); cnt++) {
++		/* skip other states */
++		if (sub_state_allow[cnt].state != inst->state)
++			continue;
++
++		/* continue if not ignored */
++		if (sub_state_allow[cnt].allow != MSM_VIDC_IGNORE)
++			continue;
++
++		if (sub_state_allow[cnt].sub_state_mask & sub_state) {
++			prepare_sub_state_name(sub_state, sub_state_name, sizeof(sub_state_name));
++			i_vpr_h(inst, "%s: state (%s), ignore substate (%s)\n",
++				func, state_name(inst->state), sub_state_name);
++
++			/* remove ignorable substate bits from actual */
++			sub_state &= ~(sub_state_allow[cnt].sub_state_mask & sub_state);
++			break;
++		}
++	}
++
++	/* check if all substate bits are allowed */
++	for (cnt = 0; cnt < ARRAY_SIZE(sub_state_allow); cnt++) {
++		/* skip other states */
++		if (sub_state_allow[cnt].state != inst->state)
++			continue;
++
++		/* continue if not allowed */
++		if (sub_state_allow[cnt].allow != MSM_VIDC_ALLOW)
++			continue;
++
++		if ((sub_state_allow[cnt].sub_state_mask & sub_state) != sub_state) {
++			prepare_sub_state_name(sub_state, sub_state_name, sizeof(sub_state_name));
++			i_vpr_e(inst, "%s: state (%s), not all substates allowed (%s)\n",
++				func, state_name(inst->state), sub_state_name);
++			return -EINVAL;
++		}
++	}
++
++	/* update substate */
++	inst->sub_state |= sub_state;
++
++	return rc;
++}
++
++int msm_vidc_change_sub_state(struct msm_vidc_inst *inst,
++			      enum msm_vidc_sub_state clear_sub_state,
++			      enum msm_vidc_sub_state set_sub_state, const char *func)
++{
++	enum msm_vidc_sub_state prev_sub_state;
++	int rc = 0;
++
++	if (is_session_error(inst)) {
++		i_vpr_h(inst,
++			"%s: inst is in bad state, can not change sub state\n", func);
++		return 0;
++	}
++
++	/* final value will not change */
++	if (!clear_sub_state && !set_sub_state)
++		return 0;
++
++	/* sanitize clear & set value */
++	if ((clear_sub_state & set_sub_state) ||
++	    set_sub_state > MSM_VIDC_MAX_SUB_STATE_VALUE ||
++	    clear_sub_state > MSM_VIDC_MAX_SUB_STATE_VALUE) {
++		i_vpr_e(inst, "%s: invalid sub states to clear %#x or set %#x\n",
++			func, clear_sub_state, set_sub_state);
++		return -EINVAL;
++	}
++
++	prev_sub_state = inst->sub_state;
++
++	/* set sub state */
++	rc = msm_vidc_set_sub_state(inst, set_sub_state, __func__);
++	if (rc)
++		return rc;
++
++	/* clear sub state */
++	inst->sub_state &= ~clear_sub_state;
++
++	/* print substates only when there is a change */
++	if (inst->sub_state != prev_sub_state) {
++		rc = prepare_sub_state_name(inst->sub_state, inst->sub_state_name,
++					    sizeof(inst->sub_state_name));
++		if (!rc)
++			i_vpr_h(inst, "%s: state %s and sub state changed to %s\n",
++				func, state_name(inst->state), inst->sub_state_name);
++	}
++
++	return 0;
 +}
 -- 
 2.7.4
