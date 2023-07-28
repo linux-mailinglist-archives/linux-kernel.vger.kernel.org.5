@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2748A766F7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C018766F83
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237081AbjG1O3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
+        id S237089AbjG1OcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237082AbjG1O3k (ORCPT
+        with ESMTP id S235782AbjG1Ob7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:29:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37373C21;
-        Fri, 28 Jul 2023 07:29:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EAAC562167;
-        Fri, 28 Jul 2023 14:29:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1862C433C8;
-        Fri, 28 Jul 2023 14:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690554576;
-        bh=rl3ICyI1xb8NNYkUwggQGBZkbkR4Fw6St3ciX3au0Os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clQ2nEznsKNV/N0TmTO8FkMUEae6XMBZM9RCvoH+GKRFp4Xjy4WiE0n2GDAjourB9
-         v2NBSyFn5QCZ2XLYfolJCD/9hci42tVbye1rAn3W6ne79ZvxomoSHDjuXcdKM8But1
-         C4bWT1N5sckW+LXAmAlixhmmmOuueWhBSycLaVsc8mIJDaba/XkPJNL7er51/41cGM
-         Y+WyK8oQp7gB59Ylse/o97ZftI9IkyjP+COmJrtx0i2++CODJGjkXx3y6v5iqBkBBu
-         mvAjsZ4HFVXqCwQHdMFz2ejRD3agLUBNS4YT8fGK8PPlpwF79G1ITGek4srCtZ0IiA
-         U6XO9w/4Yxg5w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6381540096; Fri, 28 Jul 2023 11:29:33 -0300 (-03)
-Date:   Fri, 28 Jul 2023 11:29:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>
-Subject: Re: [PATCH v1 0/3] Remove BPF arrays from perf event parsing
-Message-ID: <ZMPQze90mGEdYFtr@kernel.org>
-References: <20230728001212.457900-1-irogers@google.com>
+        Fri, 28 Jul 2023 10:31:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879143A99
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690554671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FeGRjWxDaYUdtoK9jxbdP+48ZJkpz3RFiBrIfQMbJzQ=;
+        b=A7XF9kYx0qkhiNYk1BxrIHHWYdOQWujovA26pZWVn0mCAWYwzP5RVY4B7W2rhubvIS25c2
+        YPFjredI49DjWlgsscZ7bcY/1ByCCqyta4RUXtl8SN7zlF/LDfwzk4rjAWZgPu6nS2JFou
+        /yQFbUOVG1pRtmasyGU3jROYXc92Zlw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-611-V_id0ZdZNFW9OTfKn3nZnQ-1; Fri, 28 Jul 2023 10:31:09 -0400
+X-MC-Unique: V_id0ZdZNFW9OTfKn3nZnQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fd0fa4d08cso14435035e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:31:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690554668; x=1691159468;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FeGRjWxDaYUdtoK9jxbdP+48ZJkpz3RFiBrIfQMbJzQ=;
+        b=CJuqCGK18uAja6E8nTD2c1Qid4DufSO6d8qqZl8I9W4tY47W4wEy3NHQ87mL17/DN6
+         3H7nfG7epwjh1FWpZSj3sRkh9OPaeX2FvW23TzmK1lsHrXTgeCpwC2wfMs8Nk9JwQnDp
+         nTp5RIrh9Lf2+ekU1GLxPgQXfF+1GldBVQhLs3AlGPxzgBrZA3+gRjY3jidXxogzLbFv
+         fUz9eemioXeCj+Fsx49CKhX6KunkgKkE2BDugM3zpUwR+EYH+ttlscpEc/RoBC2/Gm/G
+         GzPS17w0T3yY9gSWoIJLsmEoqLY6Oiaaerkm8vnMIgw4dewQZi12kFuLWQ8iDGCGMEYr
+         +3oA==
+X-Gm-Message-State: ABy/qLawz36t2WrfkKgKWa+yfHuAzkskIsiAyZpluJV2q4+gzrC9wD+B
+        PrBbj5wCHpLl4Rp9QktpBJ4gyldWWn9ZkQmZIF9dvXMxWKBW3GObP/QC7BkKimapQNll+owE0tx
+        sS0V7Tq0WE7GbNYVHB4RoJFHu
+X-Received: by 2002:a7b:cd09:0:b0:3fb:a62d:1992 with SMTP id f9-20020a7bcd09000000b003fba62d1992mr1917303wmj.0.1690554668715;
+        Fri, 28 Jul 2023 07:31:08 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHvR678AaOAPH0Ktddko3poH/AAsjmtvPyK2t555cXew7r0tr80sLKPjF+jQl7V+acgYsBVWQ==
+X-Received: by 2002:a7b:cd09:0:b0:3fb:a62d:1992 with SMTP id f9-20020a7bcd09000000b003fba62d1992mr1917286wmj.0.1690554668382;
+        Fri, 28 Jul 2023 07:31:08 -0700 (PDT)
+Received: from [192.168.1.67] (198.red-88-3-59.dynamicip.rima-tde.net. [88.3.59.198])
+        by smtp.gmail.com with ESMTPSA id m25-20020a7bcb99000000b003fc0505be19sm4227803wmi.37.2023.07.28.07.31.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 07:31:07 -0700 (PDT)
+Message-ID: <990b0e22-63ad-f747-4ea2-0c3ba78b0b37@redhat.com>
+Date:   Fri, 28 Jul 2023 16:31:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728001212.457900-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 net-next 5/5] selftests: openvswitch: add ct-nat test
+ case with ipv4
+Content-Language: en-US
+To:     Aaron Conole <aconole@redhat.com>, netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Ilya Maximets <i.maximets@ovn.org>
+References: <20230728115940.578658-1-aconole@redhat.com>
+ <20230728115940.578658-6-aconole@redhat.com>
+From:   Adrian Moreno <amorenoz@redhat.com>
+In-Reply-To: <20230728115940.578658-6-aconole@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,107 +90,231 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 27, 2023 at 05:12:09PM -0700, Ian Rogers escreveu:
-> Event parsing was recently refactored:
-> https://lore.kernel.org/all/20230502223851.2234828-1-irogers@google.com/
+
+
+On 7/28/23 13:59, Aaron Conole wrote:
+> Building on the previous work, add a very simplistic NAT case
+> using ipv4.  This just tests dnat transformation
 > 
-> During these changes I wanted to get coverage of all parts of the
-> parse-events.y and found that I couldn't test the array code.
+> Signed-off-by: Aaron Conole <aconole@redhat.com>
+> ---
+>   .../selftests/net/openvswitch/openvswitch.sh  | 64 ++++++++++++++++
+>   .../selftests/net/openvswitch/ovs-dpctl.py    | 75 +++++++++++++++++++
+>   2 files changed, 139 insertions(+)
 > 
-> The first patch fixes a BPF testing issue.
-> The 2nd and 3rd patch remove the BPF array event parsing code so that
-> it isn't adding complexity to event parsing.
+> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> index 40a66c72af0f..dced4f612a78 100755
+> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> @@ -14,6 +14,7 @@ tests="
+>   	arp_ping				eth-arp: Basic arp ping between two NS
+>   	ct_connect_v4				ip4-ct-xon: Basic ipv4 tcp connection using ct
+>   	connect_v4				ip4-xon: Basic ipv4 ping between two NS
+> +	nat_connect_v4				ip4-nat-xon: Basic ipv4 tcp connection via NAT
+>   	netlink_checks				ovsnl: validate netlink attrs and settings
+>   	upcall_interfaces			ovs: test the upcall interfaces"
+>   
+> @@ -300,6 +301,69 @@ test_connect_v4 () {
+>   	return 0
+>   }
+>   
+> +# nat_connect_v4 test
+> +#  - client has 1500 byte MTU
+> +#  - server has 1500 byte MTU
+> +#  - use ICMP to ping in each direction
+> +#  - only allow CT state stuff to pass through new in c -> s
+> +test_nat_connect_v4 () {
+> +	which nc >/dev/null 2>/dev/null || return $ksft_skip
+> +
+> +	sbx_add "test_nat_connect_v4" || return $?
+> +
+> +	ovs_add_dp "test_nat_connect_v4" nat4 || return 1
+> +	info "create namespaces"
+> +	for ns in client server; do
+> +		ovs_add_netns_and_veths "test_nat_connect_v4" "nat4" "$ns" \
+> +		    "${ns:0:1}0" "${ns:0:1}1" || return 1
+> +	done
+> +
+> +	ip netns exec client ip addr add 172.31.110.10/24 dev c1
+> +	ip netns exec client ip link set c1 up
+> +	ip netns exec server ip addr add 172.31.110.20/24 dev s1
+> +	ip netns exec server ip link set s1 up
+> +
+> +	ip netns exec client ip route add default via 172.31.110.20
+> +
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		'in_port(1),eth(),eth_type(0x0806),arp()' '2' || return 1
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		'in_port(2),eth(),eth_type(0x0806),arp()' '1' || return 1
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		"ct_state(-trk),in_port(1),eth(),eth_type(0x0800),ipv4(dst=192.168.0.20)" \
+> +		"ct(commit,nat(dst=172.31.110.20)),recirc(0x1)"
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		"ct_state(-trk),in_port(2),eth(),eth_type(0x0800),ipv4()" \
+> +		"ct(commit,nat),recirc(0x2)"
+> +
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		"recirc_id(0x1),ct_state(+trk-inv),in_port(1),eth(),eth_type(0x0800),ipv4()" "2"
+> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+> +		"recirc_id(0x2),ct_state(+trk-inv),in_port(2),eth(),eth_type(0x0800),ipv4()" "1"
+> +
+> +	# do a ping
+> +	ovs_sbx "test_nat_connect_v4" ip netns exec client ping 192.168.0.20 -c 3 || return 1
+> +
+> +	# create an echo server in 'server'
+> +	echo "server" | \
+> +		ovs_netns_spawn_daemon "test_nat_connect_v4" "server" \
+> +				nc -lvnp 4443
+> +	ovs_sbx "test_nat_connect_v4" ip netns exec client nc -i 1 -zv 192.168.0.20 4443 || return 1
+> +
+> +	# Now test in the other direction (should fail)
+> +	echo "client" | \
+> +		ovs_netns_spawn_daemon "test_nat_connect_v4" "client" \
+> +				nc -lvnp 4443
+> +	ovs_sbx "test_nat_connect_v4" ip netns exec client nc -i 1 -zv 172.31.110.10 4443
+> +	if [ $? == 0 ]; then
+> +	   info "connect to client was successful"
+> +	   return 1
+> +	fi
+> +
+> +	info "done..."
+> +	return 0
+> +}
+> +
+>   # netlink_validation
+>   # - Create a dp
+>   # - check no warning with "old version" simulation
+> diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> index 6e258ab9e635..258c9ef263d9 100644
+> --- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> +++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> @@ -530,6 +530,81 @@ class ovsactions(nla):
+>                           else:
+>                               ctact["attrs"].append([scan[1], None])
+>                           actstr = actstr[strspn(actstr, ", ") :]
+> +                    # it seems strange to put this here, but nat() is a complex
+> +                    # sub-action and this lets it sit anywhere in the ct() action
+> +                    if actstr.startswith("nat"):
+> +                        actstr = actstr[3:]
+> +                        natact = ovsactions.ctact.natattr()
+> +
+> +                        if actstr.startswith("("):
+> +                            t = None
+> +                            actstr = actstr[1:]
+> +                            if actstr.startswith("src"):
+> +                                t = "OVS_NAT_ATTR_SRC"
+> +                                actstr = actstr[3:]
+> +                            elif actstr.startswith("dst"):
+> +                                t = "OVS_NAT_ATTR_DST"
+> +                                actstr = actstr[3:]
+> +
+> +                            actstr, ip_block_min = parse_extract_field(
+> +                                actstr, "=", "([0-9a-fA-F:\.\[]+)", str, False
+> +                            )
+> +                            actstr, ip_block_max = parse_extract_field(
+> +                                actstr, "-", "([0-9a-fA-F:\.\[]+)", str, False
+> +                            )
+> +
+> +                            # [XXXX:YYY::Z]:123
+> +                            # following RFC 3986
+> +                            # More complete parsing, ala RFC5952 isn't
+> +                            # supported.
+> +                            if actstr.startswith("]"):
+> +                                actstr = actstr[1:]
+> +                            if ip_block_min is not None and \
+> +                               ip_block_min.startswith("["):
+> +                                ip_block_min = ip_block_min[1:]
+> +                            if ip_block_max is not None and \
+> +                               ip_block_max.startswith("["):
+> +                                ip_block_max = ip_block_max[1:]
+> +
+> +                            actstr, proto_min = parse_extract_field(
+> +                                actstr, ":", "(\d+)", int, False
+> +                            )
+> +                            actstr, proto_max = parse_extract_field(
+> +                                actstr, "-", "(\d+)", int, False
+> +                            )
 
-Thanks, applied and tested that 'perf trace' using the old BPF perf
-integration continues to work modulo the sockaddr collectors, but that
-is a problem with a newer kernel BPF verifier or clang, will
-investigate.
+I'm still struggling to make this part work:
+On the one hand, ipv6 seems not fully supported by ovs-dpctl.py. If I try adding 
+an ipv6 flow I end up needing to add a function such as as the following and use 
+it to parse "ipv6()" field:
 
-With those commented out:
+def convert_ipv6(data):
+     ip, _, mask = data.partition('/')
+     max_ip = pow(2, 128) - 1
 
-diff --git a/tools/perf/examples/bpf/augmented_raw_syscalls.c b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-index 9a03189d33d3816a..97871e2bd3a47bdf 100644
---- a/tools/perf/examples/bpf/augmented_raw_syscalls.c
-+++ b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-@@ -176,6 +176,7 @@ int syscall_unaugmented(struct syscall_enter_args *args)
- 	return 1;
- }
- 
-+#if 0
- /*
-  * These will be tail_called from SEC("raw_syscalls:sys_enter"), so will find in
-  * augmented_args_tmp what was read by that raw_syscalls:sys_enter and go
-@@ -219,6 +220,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
- 
- 	return augmented__output(args, augmented_args, len + socklen);
- }
-+#endif
- 
- SEC("!syscalls:sys_enter_open")
- int sys_enter_open(struct syscall_enter_args *args)
+     if not ip:
+         ip = mask = 0
+     elif not mask:
+         mask = max
+     elif mask.isdigit():
+         mask = (max_ip << (128 - int(mask))) & max_ip
+
+     return ipaddress.IPv6Address(ip).packed, ipaddress.IPv6Address(mask).packed
+
+OTOH, trying to support ipv6 makes ct ip/port range parsing more complex, for 
+instance, this action: "ct(nat(src=10.0.0.240-10.0.0.254:32768-65535))"
+
+fails, because it's parsed as:
+ip_block_min = 10.0.0.240
+ip_block_max = 10.0.0.254:32768
+proto_min = None
+proto_max = 65535
+
+I would say we could drop ipv6 support for nat() action, making it simpler to 
+parse or first detect if we're parsing ipv4 or ipv6 and use appropriate regexp 
+on each case. E.g: 
+https://github.com/openvswitch/ovs/blob/d460c473ebf9e9ab16da44cbfbb13a4911352195/python/ovs/flow/decoders.py#L430-L486
+
+Another approach would be to stop trying to be human friendly and use an easier 
+to parse syntax, something closer to key-value, e.g: 
+"ct(ip_block_min=10.0.0.240, ip_block_max=10.0.0.254, proto_min=32768, 
+proto_max=65535)". It'd be more verbose and not compatible with ovs tooling but 
+this is a testing tool afterall. WDYT?
 
 
+> +
+> +                            if t is not None:
+> +                                natact["attrs"].append([t, None])
+> +
+> +                                if ip_block_min is not None:
+> +                                    natact["attrs"].append(
+> +                                        ["OVS_NAT_ATTR_IP_MIN", ip_block_min]
+> +                                    )
+> +                                if ip_block_max is not None:
+> +                                    natact["attrs"].append(
+> +                                        ["OVS_NAT_ATTR_IP_MAX", ip_block_max]
+> +                                    )
+> +                                if proto_min is not None:
+> +                                    natact["attrs"].append(
+> +                                        ["OVS_NAT_ATTR_PROTO_MIN", proto_min]
+> +                                    )
+> +                                if proto_max is not None:
+> +                                    natact["attrs"].append(
+> +                                        ["OVS_NAT_ATTR_PROTO_MAX", proto_max]
+> +                                    )
+> +
+> +                            for natscan in (
+> +                                ("persist", "OVS_NAT_ATTR_PERSISTENT"),
 
+odp-util.c defines this flag as "persistent", not sure if you intend to keep it 
+compatible at all.
 
-  # perf trace -e /home/acme/git/perf-tools-next/tools/perf/examples/bpf/augmented_raw_syscalls.c,open*
-     0.000 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", flags: RDONLY|CLOEXEC) = 12
-    95.302 thermald/1231 openat(dfd: CWD, filename: "/sys/class/powercap/intel-rapl/intel-rapl:0/intel-rapl:0:2/energy_uj") = 13
-    95.586 thermald/1231 openat(dfd: CWD, filename: "/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj") = 13
-    95.857 thermald/1231 openat(dfd: CWD, filename: "/sys/class/thermal/thermal_zone2/temp") = 13
-   250.064 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", flags: RDONLY|CLOEXEC) = 12
-   500.054 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", flags: RDONLY|CLOEXEC) = 12
-   500.472 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   500.669 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-   500.777 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.min", flags: RDONLY|CLOEXEC) = 12
-   500.873 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.low", flags: RDONLY|CLOEXEC) = 12
-   500.968 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.swap.current", flags: RDONLY|CLOEXEC) = 12
-   501.062 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/session.slice/memory.stat", flags: RDONLY|CLOEXEC) = 12
-   501.435 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   501.585 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-   501.676 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.min", flags: RDONLY|CLOEXEC) = 12
-   501.761 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.low", flags: RDONLY|CLOEXEC) = 12
-   501.845 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.swap.current", flags: RDONLY|CLOEXEC) = 12
-   501.929 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/memory.stat", flags: RDONLY|CLOEXEC) = 12
-   502.118 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   502.272 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-   502.367 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.min", flags: RDONLY|CLOEXEC) = 12
-   502.454 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.low", flags: RDONLY|CLOEXEC) = 12
-   502.542 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.swap.current", flags: RDONLY|CLOEXEC) = 12
-   502.628 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x2dmanager.slice/memory.stat", flags: RDONLY|CLOEXEC) = 12
-   502.796 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   502.928 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-   503.037 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.min", flags: RDONLY|CLOEXEC) = 12
-   503.162 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.low", flags: RDONLY|CLOEXEC) = 12
-   503.255 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.swap.current", flags: RDONLY|CLOEXEC) = 12
-   503.341 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal.slice/memory.stat", flags: RDONLY|CLOEXEC) = 12
-   503.495 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   503.620 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-   503.703 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.min", flags: RDONLY|CLOEXEC) = 12
-   503.782 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.low", flags: RDONLY|CLOEXEC) = 12
-   503.861 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.swap.current", flags: RDONLY|CLOEXEC) = 12
-   503.939 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/system.slice/memory.stat", flags: RDONLY|CLOEXEC) = 12
-   504.079 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1001.slice/user@1001.service/app.slice/memory.pressure", flags: RDONLY|CLOEXEC) = 12
-   504.240 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/user.slice/user-1001.slice/user@1001.service/app.slice/memory.current", flags: RDONLY|CLOEXEC) = 12
-^C
-
-- Arnaldo
- 
-> Ian Rogers (3):
->   perf parse-event: Avoid BPF test segv
->   perf tools: Revert enable indices setting syntax for BPF map
->   perf parse-events: Remove array remnants
-> 
->  tools/perf/util/bpf-loader.c   | 101 ---------------------------
->  tools/perf/util/parse-events.c |  18 +----
->  tools/perf/util/parse-events.h |  10 ---
->  tools/perf/util/parse-events.l |  11 ---
->  tools/perf/util/parse-events.y | 122 ---------------------------------
->  5 files changed, 2 insertions(+), 260 deletions(-)
-> 
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
-> 
+> +                                ("hash", "OVS_NAT_ATTR_PROTO_HASH"),
+> +                                ("random", "OVS_NAT_ATTR_PROTO_RANDOM"),
+> +                            ):
+> +                                if actstr.startswith(natscan[0]):
+> +                                    actstr = actstr[len(natscan[0]) :]
+> +                                    natact["attrs"].append([natscan[1], None])
+> +                                    actstr = actstr[strspn(actstr, ", ") :]
+> +
+> +                        ctact["attrs"].append(["OVS_CT_ATTR_NAT", natact])
+> +                        actstr = actstr[strspn(actstr, ",) ") :]
+>   
+>                   self["attrs"].append(["OVS_ACTION_ATTR_CT", ctact])
+>                   parsed = True
 
 -- 
+Adrián Moreno
 
-- Arnaldo
