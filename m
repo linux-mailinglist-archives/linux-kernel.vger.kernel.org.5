@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869347671D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9B77671D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbjG1Q20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        id S231570AbjG1Q3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjG1Q2Y (ORCPT
+        with ESMTP id S229462AbjG1Q3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:28:24 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136D73AAC;
-        Fri, 28 Jul 2023 09:28:23 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SEIM4C005087;
-        Fri, 28 Jul 2023 16:28:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=w0oGhDyW9VdO2m5FSV0ApOWQSQ6yHZfu9JMXkORo2A4=;
- b=Vi1n7mSVETaFyQ2vYTLrQNirsdWhi2Dz5wvecVRq81uVi/b8WQMzCsKduTyUb+StB49O
- Kn8RqUisfZdw43W8bRHYrjyyBip2We1ud1oIXvPimaVYl3r986xwDRWf7pnH9L4ysj8o
- BvySdfzgR1kUIili/Hccnl2LnMqYJcx+CWLBW7BBkzB3Zq1htNRKAhXAU1Ug0MJFvq4O
- Qwo18K4tY2ABcVnT8tibMxK5EMkjC9LBGY71zGC6qLarZqG5W0e583AvMLsjhrDGLOGy
- +UZhEjuDMMDqMQcnqoEmRZU/f4PIya4Y9N/PgMnTTwaJV4tPylggLwj1PdFxR9Gir+na gg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s403vj1dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 16:28:19 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SGSIW1013242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 16:28:18 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 09:28:18 -0700
-Date:   Fri, 28 Jul 2023 09:28:17 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>
-CC:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_dikshita@quicinc.com>
-Subject: Re: [PATCH 11/33] iris: vidc: add helpers for memory management
-Message-ID: <20230728162817.GE1428172@hu-bjorande-lv.qualcomm.com>
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-12-git-send-email-quic_vgarodia@quicinc.com>
+        Fri, 28 Jul 2023 12:29:46 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B7833AAC
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:29:45 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D4242F4;
+        Fri, 28 Jul 2023 09:30:27 -0700 (PDT)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B480F3F67D;
+        Fri, 28 Jul 2023 09:29:41 -0700 (PDT)
+Message-ID: <6513da1c-ae84-14a3-1e95-30704e1162a4@arm.com>
+Date:   Fri, 28 Jul 2023 17:29:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1690550624-14642-12-git-send-email-quic_vgarodia@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FlWOmzjyQT2xxyu7ikpawU1qJjPo6G5V
-X-Proofpoint-ORIG-GUID: FlWOmzjyQT2xxyu7ikpawU1qJjPo6G5V
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0
- mlxlogscore=771 mlxscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307280149
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 21/24] x86/resctrl: Allow overflow/limbo handlers to be
+ scheduled on any-but cpu
+Content-Language: en-GB
+To:     "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        "carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+        "lcherian@marvell.com" <lcherian@marvell.com>,
+        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+        "xingxin.hx@openanolis.org" <xingxin.hx@openanolis.org>,
+        "baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>,
+        "peternewman@google.com" <peternewman@google.com>,
+        "dfustini@baylibre.com" <dfustini@baylibre.com>
+References: <20230525180209.19497-1-james.morse@arm.com>
+ <20230525180209.19497-22-james.morse@arm.com>
+ <TYAPR01MB63307451E66EBDB7F885F13D8B51A@TYAPR01MB6330.jpnprd01.prod.outlook.com>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <TYAPR01MB63307451E66EBDB7F885F13D8B51A@TYAPR01MB6330.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 06:53:22PM +0530, Vikash Garodia wrote:
-> diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_memory.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_memory.c
-[..]
-> +static const struct msm_vidc_memory_ops msm_mem_ops = {
-> +	.dma_buf_get                    = msm_vidc_dma_buf_get,
-> +	.dma_buf_put                    = msm_vidc_dma_buf_put,
-> +	.dma_buf_put_completely         = msm_vidc_dma_buf_put_completely,
-> +	.dma_buf_attach                 = msm_vidc_dma_buf_attach,
-> +	.dma_buf_detach                 = msm_vidc_dma_buf_detach,
-> +	.dma_buf_map_attachment         = msm_vidc_dma_buf_map_attachment,
-> +	.dma_buf_unmap_attachment       = msm_vidc_dma_buf_unmap_attachment,
-> +	.memory_alloc_map               = msm_vidc_memory_alloc_map,
-> +	.memory_unmap_free              = msm_vidc_memory_unmap_free,
-> +	.buffer_region                  = msm_vidc_buffer_region,
+Hi Shaopeng Tan,
 
-Will there ever be more than one implementation of the
-msm_vidc_memory_ops?
+On 09/06/2023 12:10, Shaopeng Tan (Fujitsu) wrote:
+>> When a CPU is taken offline resctrl may need to move the overflow or limbo
+>> handlers to run on a different CPU.
+>>
+>> Once the offline callbacks have been split, cqm_setup_limbo_handler() will be
+>> called while the CPU that is going offline is still present in the cpu_mask.
+>>
+>> Pass the CPU to exclude to cqm_setup_limbo_handler() and
+>> mbm_setup_overflow_handler(). These functions can use a variant of
+>> cpumask_any_but() when selecting the CPU. -1 is used to indicate no CPUs
+>> need excluding.
+>>
+>> A subsequent patch moves these calls to be before CPUs have been removed,
+>> so this exclude_cpus behaviour is temporary.
 
-Unless there's a really strong reason, just call the functions directly
-without the function pointers and call_mem_op(), this will be slightly
-faster, but more importantly it allows for much faster navigation of the
-code base.
+>> diff --git
+>> a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index ced933694f60..ae02185f3354 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -875,9 +895,15 @@ void mbm_setup_overflow_handler(struct rdt_domain
+>> *dom, unsigned long delay_ms)
+>>  	 */
+>>  	if (!resctrl_mounted || !resctrl_arch_mon_capable())
+>>  		return;
+>> -	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+>> +	if (exclude_cpu == -1)
+>> +		cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+> 
+> Should RESCTRL_PICK_ANY_CPU be used instead of -1?
 
-Regards,
-Bjorn
+Yup, that would be more readable. I did this for cqm_setup_limbo_handler(), but for some
+reason missed this one.
+
+
+Thanks,
+
+James
