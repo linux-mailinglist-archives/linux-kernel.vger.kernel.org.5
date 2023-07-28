@@ -2,577 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B65767237
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88D7767244
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbjG1Qnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
+        id S234473AbjG1Qod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233852AbjG1Qm6 (ORCPT
+        with ESMTP id S236028AbjG1Qne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:42:58 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EFC420F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:46 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7835bbeb6a0so33278039f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562566; x=1691167366;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KxccK53kF0FsYbBmNLwXJRJproEpiVcxC/RyBoM24d8=;
-        b=u0RbFeidp9UhOJK1a3Hb1TuJ7h0f8PXpaMtwzvFaeZT9PIlq3REg/9saBdqEhrt4+A
-         JW1hUymVr7UIr6oNywNAU2EuBgfAvpkHlWrCGHIbzGnYzd+vq4ZvAfAEcpmA2/vm1M1X
-         9HYJ2iUL6j0AtyhN+HXxvXQSGLjv/oDulfSIywaU7DODMoX9iWa75mjPRZSpDvwil0k4
-         ++GUwJQ6KIMV674BIuIq3srumNa03p8blvzaWeublUaNB26ke2s3L9Ywl/0J5ZuHIvlp
-         xdy37+Td7k+MYtkayv07/uPMm2wLqXOjQOCuNQshSWoGJYhc6HBgW9MrbkcwxzuBKApt
-         sGNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562566; x=1691167366;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KxccK53kF0FsYbBmNLwXJRJproEpiVcxC/RyBoM24d8=;
-        b=O+1INYS612UVY06q6F9UUKHqJQH/fmIdGqe9tW5ARuEeq6G6gc2VlSTc1wPe8900YX
-         1KGnHA1Ia2nBjOAoGbTAg5o/KkgSD5IImC6tqSMK+XHTzxd1M41f+6c6aCrLn1yewG+G
-         GGaEHe5Y03o6OgSpM/Gg0w/4Q34AM2z/yWSQsmIFnrj4JmEbDNrDzpOA3rNqGAysZ/lm
-         zISKGCdOZcln/TTK8OMMTRQaXCVAOIJlbpvIr7rOpus8Hw3z2jC/iuSPrwFpovsZFwJ3
-         2qE29pfuZq9GOo2N5BNvgHegoVL3+YCWMtByevixGfOcGjNe3QpWwqRtmkVUi/JOOGyB
-         3gGg==
-X-Gm-Message-State: ABy/qLYNBwdvhgx2GTTL6TbzwgMbEb1RbBQh7dRfGKbSExsn1Yp4Bo5v
-        Ayk0F6KNdbo+vYNPxvMh4bSdSw==
-X-Google-Smtp-Source: APBJJlFgk5MuogC7OHVEOEtKJTQky0i+pWAXzKC2+KtzNucigB6Y36QlIkt/oVIBUJRJecVkipq5vg==
-X-Received: by 2002:a6b:b214:0:b0:780:d6ef:160 with SMTP id b20-20020a6bb214000000b00780d6ef0160mr90008iof.1.1690562565890;
-        Fri, 28 Jul 2023 09:42:45 -0700 (PDT)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1158808jal.136.2023.07.28.09.42.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:42:45 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 08/12] io_uring: add support for futex wake and wait
-Date:   Fri, 28 Jul 2023 10:42:31 -0600
-Message-Id: <20230728164235.1318118-9-axboe@kernel.dk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230728164235.1318118-1-axboe@kernel.dk>
-References: <20230728164235.1318118-1-axboe@kernel.dk>
+        Fri, 28 Jul 2023 12:43:34 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 961AF4217
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 630F21570;
+        Fri, 28 Jul 2023 09:44:07 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E63A3F67D;
+        Fri, 28 Jul 2023 09:43:21 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+Subject: [PATCH v5 02/24] x86/resctrl: Access per-rmid structures by index
+Date:   Fri, 28 Jul 2023 16:42:32 +0000
+Message-Id: <20230728164254.27562-3-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
+References: <20230728164254.27562-1-james.morse@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for FUTEX_WAKE/WAIT primitives.
+x86 systems identify traffic using the CLOSID and RMID. The CLOSID is
+used to lookup the control policy, the RMID is used for monitoring. For
+x86 these are independent numbers.
+Arm's MPAM has equivalent features PARTID and PMG, where the PARTID is
+used to lookup the control policy. The PMG in contrast is a small number
+of bits that are used to subdivide PARTID when monitoring. The
+cache-occupancy monitors require the PARTID to be specified when monitoring.
 
-IORING_OP_FUTEX_WAKE is mix of FUTEX_WAKE and FUTEX_WAKE_BITSET, as
-it does support passing in a bitset.
+This means MPAM's PMG field is not unique. There are multiple PMG-0, one
+per allocated CLOSID/PARTID. If PMG is treated as equivalent to RMID, it
+cannot be allocated as an independent number. Bitmaps like rmid_busy_llc
+need to be sized by the number of unique entries for this resource.
 
-Similary, IORING_OP_FUTEX_WAIT is a mix of FUTEX_WAIT and
-FUTEX_WAIT_BITSET.
+Treat the combined CLOSID and RMID as an index, and provide architecture
+helpers to pack and unpack an index. This makes the MPAM values unique.
+The domain's rmid_busy_llc and rmid_ptrs[] are then sized by index, as
+are domain mbm_local[] and mbm_total[].
 
-FUTEX_WAKE is straight forward, as those can always be done directly from
-the io_uring submission without needing async handling. For FUTEX_WAIT,
-things are a bit more complicated. If the futex isn't ready, then we
-rely on a callback via futex_queue->wake() when someone wakes up the
-futex. From that calback, we queue up task_work with the original task,
-which will post a CQE and wake it, if necessary.
+x86 can ignore the CLOSID field when packing and unpacking an index, and
+report as many indexes as RMID.
 
-Cancelations are supported, both from the application point-of-view,
-but also to be able to cancel pending waits if the ring exits before
-all events have occurred.
-
-This is just the barebones wait/wake support. PI or REQUEUE support is
-not added at this point, unclear if we might look into that later.
-
-Likewise, explicit timeouts are not supported either. It is expected
-that users that need timeouts would do so via the usual io_uring
-mechanism to do that using linked timeouts.
-
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+Signed-off-by: James Morse <james.morse@arm.com>
 ---
- include/linux/io_uring_types.h |   3 +
- include/uapi/linux/io_uring.h  |   3 +
- io_uring/Makefile              |   4 +-
- io_uring/cancel.c              |   5 +
- io_uring/cancel.h              |   4 +
- io_uring/futex.c               | 230 +++++++++++++++++++++++++++++++++
- io_uring/futex.h               |  34 +++++
- io_uring/io_uring.c            |   5 +
- io_uring/opdef.c               |  24 +++-
- 9 files changed, 310 insertions(+), 2 deletions(-)
- create mode 100644 io_uring/futex.c
- create mode 100644 io_uring/futex.h
+Changes since v1:
+ * Added X86_BAD_CLOSID macro to make it clear what this value means
+ * Added second WARN_ON() for closid checking, and made both _ONCE()
 
-diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
-index f04ce513fadb..a7f03d8d879f 100644
---- a/include/linux/io_uring_types.h
-+++ b/include/linux/io_uring_types.h
-@@ -273,6 +273,9 @@ struct io_ring_ctx {
- 	struct io_wq_work_list	locked_free_list;
- 	unsigned int		locked_free_nr;
+Changes since v2:
+ * Added RESCTRL_RESERVED_CLOSID
+ * Removed a newline
+ * Repharsed some comments
+ * Renamed a variable 'ignore'd
+ * Moved X86_RESCTRL_BAD_CLOSID to a previous patch
+
+Changes since v3:
+ * Changed a variable name
+ * Fixed various typos
+
+Changes since v4:
+ * Removed resource paramter from has_busy_rmid()
+ * Rewrote commit message
+---
+ arch/x86/include/asm/resctrl.h         | 17 +++++
+ arch/x86/kernel/cpu/resctrl/core.c     |  4 +-
+ arch/x86/kernel/cpu/resctrl/internal.h |  3 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 92 +++++++++++++++++---------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c |  9 +--
+ include/linux/resctrl.h                |  4 ++
+ 6 files changed, 92 insertions(+), 37 deletions(-)
+
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 29999f52b461..9510c23db62d 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -101,6 +101,23 @@ static inline void resctrl_sched_in(struct task_struct *tsk)
+ 		__resctrl_sched_in(tsk);
+ }
  
-+	struct hlist_head	futex_list;
-+	struct io_alloc_cache	futex_cache;
-+
- 	const struct cred	*sq_creds;	/* cred used for __io_sq_thread() */
- 	struct io_sq_data	*sq_data;	/* if using sq thread polling */
- 
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 36f9c73082de..3bd2d765f593 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -65,6 +65,7 @@ struct io_uring_sqe {
- 		__u32		xattr_flags;
- 		__u32		msg_ring_flags;
- 		__u32		uring_cmd_flags;
-+		__u32		futex_flags;
- 	};
- 	__u64	user_data;	/* data to be passed back at completion time */
- 	/* pack this to avoid bogus arm OABI complaints */
-@@ -235,6 +236,8 @@ enum io_uring_op {
- 	IORING_OP_URING_CMD,
- 	IORING_OP_SEND_ZC,
- 	IORING_OP_SENDMSG_ZC,
-+	IORING_OP_FUTEX_WAIT,
-+	IORING_OP_FUTEX_WAKE,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
-diff --git a/io_uring/Makefile b/io_uring/Makefile
-index 8cc8e5387a75..2e4779bc550c 100644
---- a/io_uring/Makefile
-+++ b/io_uring/Makefile
-@@ -7,5 +7,7 @@ obj-$(CONFIG_IO_URING)		+= io_uring.o xattr.o nop.o fs.o splice.o \
- 					openclose.o uring_cmd.o epoll.o \
- 					statx.o net.o msg_ring.o timeout.o \
- 					sqpoll.o fdinfo.o tctx.o poll.o \
--					cancel.o kbuf.o rsrc.o rw.o opdef.o notif.o
-+					cancel.o kbuf.o rsrc.o rw.o opdef.o \
-+					notif.o
- obj-$(CONFIG_IO_WQ)		+= io-wq.o
-+obj-$(CONFIG_FUTEX)		+= futex.o
-diff --git a/io_uring/cancel.c b/io_uring/cancel.c
-index 7b23607cf4af..3dba8ccb1cd8 100644
---- a/io_uring/cancel.c
-+++ b/io_uring/cancel.c
-@@ -15,6 +15,7 @@
- #include "tctx.h"
- #include "poll.h"
- #include "timeout.h"
-+#include "futex.h"
- #include "cancel.h"
- 
- struct io_cancel {
-@@ -119,6 +120,10 @@ int io_try_cancel(struct io_uring_task *tctx, struct io_cancel_data *cd,
- 	if (ret != -ENOENT)
- 		return ret;
- 
-+	ret = io_futex_cancel(ctx, cd, issue_flags);
-+	if (ret != -ENOENT)
-+		return ret;
-+
- 	spin_lock(&ctx->completion_lock);
- 	if (!(cd->flags & IORING_ASYNC_CANCEL_FD))
- 		ret = io_timeout_cancel(ctx, cd);
-diff --git a/io_uring/cancel.h b/io_uring/cancel.h
-index fc98622e6166..c0a8e7c520b6 100644
---- a/io_uring/cancel.h
-+++ b/io_uring/cancel.h
-@@ -1,4 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
-+#ifndef IORING_CANCEL_H
-+#define IORING_CANCEL_H
- 
- #include <linux/io_uring_types.h>
- 
-@@ -22,3 +24,5 @@ void init_hash_table(struct io_hash_table *table, unsigned size);
- 
- int io_sync_cancel(struct io_ring_ctx *ctx, void __user *arg);
- bool io_cancel_req_match(struct io_kiocb *req, struct io_cancel_data *cd);
-+
-+#endif
-diff --git a/io_uring/futex.c b/io_uring/futex.c
-new file mode 100644
-index 000000000000..f58ab33bfb32
---- /dev/null
-+++ b/io_uring/futex.c
-@@ -0,0 +1,230 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/fs.h>
-+#include <linux/file.h>
-+#include <linux/io_uring.h>
-+
-+#include <uapi/linux/io_uring.h>
-+
-+#include "../kernel/futex/futex.h"
-+#include "io_uring.h"
-+#include "rsrc.h"
-+#include "futex.h"
-+
-+struct io_futex {
-+	struct file	*file;
-+	u32 __user	*uaddr;
-+	unsigned long	futex_val;
-+	unsigned long	futex_mask;
-+	u32		futex_flags;
-+};
-+
-+struct io_futex_data {
-+	union {
-+		struct futex_q		q;
-+		struct io_cache_entry	cache;
-+	};
-+	struct io_kiocb	*req;
-+};
-+
-+void io_futex_cache_init(struct io_ring_ctx *ctx)
++static inline u32 resctrl_arch_system_num_rmid_idx(void)
 +{
-+	io_alloc_cache_init(&ctx->futex_cache, IO_NODE_ALLOC_CACHE_MAX,
-+				sizeof(struct io_futex_data));
++	/* RMID are independent numbers for x86. num_rmid_idx == num_rmid */
++	return boot_cpu_data.x86_cache_max_rmid + 1;
 +}
 +
-+static void io_futex_cache_entry_free(struct io_cache_entry *entry)
++static inline void resctrl_arch_rmid_idx_decode(u32 idx, u32 *closid, u32 *rmid)
 +{
-+	kfree(container_of(entry, struct io_futex_data, cache));
++	*rmid = idx;
++	*closid = X86_RESCTRL_EMPTY_CLOSID;
 +}
 +
-+void io_futex_cache_free(struct io_ring_ctx *ctx)
++static inline u32 resctrl_arch_rmid_idx_encode(u32 ignored, u32 rmid)
 +{
-+	io_alloc_cache_free(&ctx->futex_cache, io_futex_cache_entry_free);
++	return rmid;
 +}
 +
-+static void io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
-+{
-+	struct io_futex_data *ifd = req->async_data;
-+	struct io_ring_ctx *ctx = req->ctx;
+ void resctrl_cpu_detect(struct cpuinfo_x86 *c);
+ 
+ #else
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 030d3b409768..8dfede01b0c9 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -585,7 +585,7 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+ 			mbm_setup_overflow_handler(d, 0);
+ 		}
+ 		if (is_llc_occupancy_enabled() && cpu == d->cqm_work_cpu &&
+-		    has_busy_rmid(r, d)) {
++		    has_busy_rmid(d)) {
+ 			cancel_delayed_work(&d->cqm_limbo);
+ 			cqm_setup_limbo_handler(d, 0);
+ 		}
+@@ -600,7 +600,7 @@ static void clear_closid_rmid(int cpu)
+ 	state->default_rmid = 0;
+ 	state->cur_closid = 0;
+ 	state->cur_rmid = 0;
+-	wrmsr(MSR_IA32_PQR_ASSOC, 0, 0);
++	wrmsr(MSR_IA32_PQR_ASSOC, 0, RESCTRL_RESERVED_CLOSID);
+ }
+ 
+ static int resctrl_online_cpu(unsigned int cpu)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index f2da908bb079..b48715bb8762 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -7,6 +7,7 @@
+ #include <linux/kernfs.h>
+ #include <linux/fs_context.h>
+ #include <linux/jump_label.h>
++#include <asm/resctrl.h>
+ 
+ #define L3_QOS_CDP_ENABLE		0x01ULL
+ 
+@@ -550,7 +551,7 @@ void __init intel_rdt_mbm_apply_quirk(void);
+ bool is_mba_sc(struct rdt_resource *r);
+ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms);
+ void cqm_handle_limbo(struct work_struct *work);
+-bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d);
++bool has_busy_rmid(struct rdt_domain *d);
+ void __check_limbo(struct rdt_domain *d, bool force_free);
+ void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+ void __init thread_throttle_mode_init(void);
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index fa66029de41c..bd234b66dddf 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -142,12 +142,29 @@ static inline u64 get_corrected_mbm_count(u32 rmid, unsigned long val)
+ 	return val;
+ }
+ 
+-static inline struct rmid_entry *__rmid_entry(u32 closid, u32 rmid)
++/*
++ * x86 and arm64 differ in their handling of monitoring.
++ * x86's RMID are an independent number, there is only one source of traffic
++ * with an RMID value of '1'.
++ * arm64's PMG extend the PARTID/CLOSID space, there are multiple sources of
++ * traffic with a PMG value of '1', one for each CLOSID, meaning the RMID
++ * value is no longer unique.
++ * To account for this, resctrl uses an index. On x86 this is just the RMID,
++ * on arm64 it encodes the CLOSID and RMID. This gives a unique number.
++ *
++ * The domain's rmid_busy_llc and rmid_ptrs[] are sized by index. The arch code
++ * must accept an attempt to read every index.
++ */
++static inline struct rmid_entry *__rmid_entry(u32 idx)
+ {
+ 	struct rmid_entry *entry;
++	u32 closid, rmid;
+ 
+-	entry = &rmid_ptrs[rmid];
+-	WARN_ON(entry->rmid != rmid);
++	entry = &rmid_ptrs[idx];
++	resctrl_arch_rmid_idx_decode(idx, &closid, &rmid);
 +
-+	io_tw_lock(ctx, ts);
-+	if (!io_alloc_cache_put(&ctx->futex_cache, &ifd->cache))
-+		kfree(ifd);
-+	req->async_data = NULL;
-+	hlist_del_init(&req->hash_node);
-+	io_req_task_complete(req, ts);
-+}
++	WARN_ON_ONCE(entry->closid != closid);
++	WARN_ON_ONCE(entry->rmid != rmid);
+ 
+ 	return entry;
+ }
+@@ -277,8 +294,9 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+ void __check_limbo(struct rdt_domain *d, bool force_free)
+ {
+ 	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+ 	struct rmid_entry *entry;
+-	u32 crmid = 1, nrmid;
++	u32 idx, cur_idx = 1;
+ 	bool rmid_dirty;
+ 	u64 val = 0;
+ 
+@@ -289,12 +307,11 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 	 * RMID and move it to the free list when the counter reaches 0.
+ 	 */
+ 	for (;;) {
+-		nrmid = find_next_bit(d->rmid_busy_llc, r->num_rmid, crmid);
+-		if (nrmid >= r->num_rmid)
++		idx = find_next_bit(d->rmid_busy_llc, idx_limit, cur_idx);
++		if (idx >= idx_limit)
+ 			break;
+ 
+-		entry = __rmid_entry(X86_RESCTRL_EMPTY_CLOSID, nrmid);// temporary
+-
++		entry = __rmid_entry(idx);
+ 		if (resctrl_arch_rmid_read(r, d, entry->closid, entry->rmid,
+ 					   QOS_L3_OCCUP_EVENT_ID, &val)) {
+ 			rmid_dirty = true;
+@@ -303,19 +320,21 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 		}
+ 
+ 		if (force_free || !rmid_dirty) {
+-			clear_bit(entry->rmid, d->rmid_busy_llc);
++			clear_bit(idx, d->rmid_busy_llc);
+ 			if (!--entry->busy) {
+ 				rmid_limbo_count--;
+ 				list_add_tail(&entry->list, &rmid_free_lru);
+ 			}
+ 		}
+-		crmid = nrmid + 1;
++		cur_idx = idx + 1;
+ 	}
+ }
+ 
+-bool has_busy_rmid(struct rdt_resource *r, struct rdt_domain *d)
++bool has_busy_rmid(struct rdt_domain *d)
+ {
+-	return find_first_bit(d->rmid_busy_llc, r->num_rmid) != r->num_rmid;
++	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
 +
-+static bool __io_futex_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
-+{
-+	struct io_futex_data *ifd = req->async_data;
++	return find_first_bit(d->rmid_busy_llc, idx_limit) != idx_limit;
+ }
+ 
+ /*
+@@ -345,6 +364,9 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ 	struct rdt_domain *d;
+ 	int cpu, err;
+ 	u64 val = 0;
++	u32 idx;
 +
-+	/* futex wake already done or in progress */
-+	if (!futex_unqueue(&ifd->q))
-+		return false;
-+
-+	hlist_del_init(&req->hash_node);
-+	io_req_set_res(req, -ECANCELED, 0);
-+	req->io_task_work.func = io_futex_complete;
-+	io_req_task_work_add(req);
-+	return true;
-+}
-+
-+int io_futex_cancel(struct io_ring_ctx *ctx, struct io_cancel_data *cd,
-+		    unsigned int issue_flags)
-+{
-+	struct hlist_node *tmp;
-+	struct io_kiocb *req;
-+	int nr = 0;
-+
-+	if (cd->flags & (IORING_ASYNC_CANCEL_FD|IORING_ASYNC_CANCEL_FD_FIXED))
-+		return -ENOENT;
-+
-+	io_ring_submit_lock(ctx, issue_flags);
-+	hlist_for_each_entry_safe(req, tmp, &ctx->futex_list, hash_node) {
-+		if (req->cqe.user_data != cd->data &&
-+		    !(cd->flags & IORING_ASYNC_CANCEL_ANY))
-+			continue;
-+		if (__io_futex_cancel(ctx, req))
-+			nr++;
-+		if (!(cd->flags & IORING_ASYNC_CANCEL_ALL))
-+			break;
-+	}
-+	io_ring_submit_unlock(ctx, issue_flags);
-+
-+	if (nr)
-+		return nr;
-+
-+	return -ENOENT;
-+}
-+
-+bool io_futex_remove_all(struct io_ring_ctx *ctx, struct task_struct *task,
-+			 bool cancel_all)
-+{
-+	struct hlist_node *tmp;
-+	struct io_kiocb *req;
-+	bool found = false;
-+
-+	lockdep_assert_held(&ctx->uring_lock);
-+
-+	hlist_for_each_entry_safe(req, tmp, &ctx->futex_list, hash_node) {
-+		if (!io_match_task_safe(req, task, cancel_all))
-+			continue;
-+		__io_futex_cancel(ctx, req);
-+		found = true;
-+	}
-+
-+	return found;
-+}
-+
-+int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-+{
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	u32 flags;
-+
-+	if (unlikely(sqe->fd || sqe->len || sqe->buf_index || sqe->file_index))
-+		return -EINVAL;
-+
-+	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	iof->futex_val = READ_ONCE(sqe->addr2);
-+	iof->futex_mask = READ_ONCE(sqe->addr3);
-+	flags = READ_ONCE(sqe->futex_flags);
-+
-+	if (flags & ~FUTEX2_MASK)
-+		return -EINVAL;
-+
-+	iof->futex_flags = futex2_to_flags(flags);
-+	if (!futex_flags_valid(iof->futex_flags))
-+		return -EINVAL;
-+
-+	if (!futex_validate_input(iof->futex_flags, iof->futex_val) ||
-+	    !futex_validate_input(iof->futex_flags, iof->futex_mask))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static void io_futex_wake_fn(struct wake_q_head *wake_q, struct futex_q *q)
-+{
-+	struct io_futex_data *ifd = container_of(q, struct io_futex_data, q);
-+	struct io_kiocb *req = ifd->req;
-+
-+	if (unlikely(!__futex_wake_mark(q)))
++	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+ 
+ 	entry->busy = 0;
+ 	cpu = get_cpu();
+@@ -362,9 +384,9 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ 		 * For the first limbo RMID in the domain,
+ 		 * setup up the limbo worker.
+ 		 */
+-		if (!has_busy_rmid(r, d))
++		if (!has_busy_rmid(d))
+ 			cqm_setup_limbo_handler(d, CQM_LIMBOCHECK_INTERVAL);
+-		set_bit(entry->rmid, d->rmid_busy_llc);
++		set_bit(idx, d->rmid_busy_llc);
+ 		entry->busy++;
+ 	}
+ 	put_cpu();
+@@ -377,14 +399,17 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ 
+ void free_rmid(u32 closid, u32 rmid)
+ {
++	u32 idx = resctrl_arch_rmid_idx_encode(closid, rmid);
+ 	struct rmid_entry *entry;
+ 
+-	if (!rmid)
+-		return;
+-
+ 	lockdep_assert_held(&rdtgroup_mutex);
+ 
+-	entry = __rmid_entry(closid, rmid);
++	/* do not allow the default rmid to be free'd */
++	if (idx == resctrl_arch_rmid_idx_encode(RESCTRL_RESERVED_CLOSID,
++						RESCTRL_RESERVED_RMID))
 +		return;
 +
-+	io_req_set_res(req, 0, 0);
-+	req->io_task_work.func = io_futex_complete;
-+	io_req_task_work_add(req);
-+}
-+
-+static struct io_futex_data *io_alloc_ifd(struct io_ring_ctx *ctx)
-+{
-+	struct io_cache_entry *entry;
-+
-+	entry = io_alloc_cache_get(&ctx->futex_cache);
-+	if (entry)
-+		return container_of(entry, struct io_futex_data, cache);
-+
-+	return kmalloc(sizeof(struct io_futex_data), GFP_NOWAIT);
-+}
-+
-+int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	struct io_ring_ctx *ctx = req->ctx;
-+	struct io_futex_data *ifd = NULL;
-+	struct futex_hash_bucket *hb;
-+	int ret;
-+
-+	if (!iof->futex_mask) {
-+		ret = -EINVAL;
-+		goto done;
-+	}
-+
-+	io_ring_submit_lock(ctx, issue_flags);
-+	ifd = io_alloc_ifd(ctx);
-+	if (!ifd) {
-+		ret = -ENOMEM;
-+		goto done_unlock;
-+	}
-+
-+	req->async_data = ifd;
-+	ifd->q = futex_q_init;
-+	ifd->q.bitset = iof->futex_mask;
-+	ifd->q.wake = io_futex_wake_fn;
-+	ifd->req = req;
-+
-+	ret = futex_wait_setup(iof->uaddr, iof->futex_val,
-+			       futex2_to_flags(iof->futex_flags), &ifd->q, &hb);
-+	if (!ret) {
-+		hlist_add_head(&req->hash_node, &ctx->futex_list);
-+		io_ring_submit_unlock(ctx, issue_flags);
-+
-+		futex_queue(&ifd->q, hb);
-+		return IOU_ISSUE_SKIP_COMPLETE;
-+	}
-+
-+done_unlock:
-+	io_ring_submit_unlock(ctx, issue_flags);
-+done:
-+	if (ret < 0)
-+		req_set_fail(req);
-+	io_req_set_res(req, ret, 0);
-+	kfree(ifd);
-+	return IOU_OK;
-+}
-+
-+int io_futex_wake(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-+	int ret;
-+
-+	ret = futex_wake(iof->uaddr, futex2_to_flags(iof->futex_flags),
-+			 iof->futex_val, iof->futex_mask);
-+	if (ret < 0)
-+		req_set_fail(req);
-+	io_req_set_res(req, ret, 0);
-+	return IOU_OK;
-+}
-diff --git a/io_uring/futex.h b/io_uring/futex.h
-new file mode 100644
-index 000000000000..ddc9e0d73c52
---- /dev/null
-+++ b/io_uring/futex.h
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "cancel.h"
-+
-+int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
-+int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags);
-+int io_futex_wake(struct io_kiocb *req, unsigned int issue_flags);
-+
-+#if defined(CONFIG_FUTEX)
-+int io_futex_cancel(struct io_ring_ctx *ctx, struct io_cancel_data *cd,
-+		    unsigned int issue_flags);
-+bool io_futex_remove_all(struct io_ring_ctx *ctx, struct task_struct *task,
-+			 bool cancel_all);
-+void io_futex_cache_init(struct io_ring_ctx *ctx);
-+void io_futex_cache_free(struct io_ring_ctx *ctx);
-+#else
-+static inline int io_futex_cancel(struct io_ring_ctx *ctx,
-+				  struct io_cancel_data *cd,
-+				  unsigned int issue_flags)
-+{
-+	return 0;
-+}
-+static inline bool io_futex_remove_all(struct io_ring_ctx *ctx,
-+				       struct task_struct *task, bool cancel_all)
-+{
-+	return false;
-+}
-+static inline void io_futex_cache_init(struct io_ring_ctx *ctx)
-+{
-+}
-+static inline void io_futex_cache_free(struct io_ring_ctx *ctx)
-+{
-+}
-+#endif
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index 135da2fd0eda..e52cbdcb29b8 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -92,6 +92,7 @@
- #include "cancel.h"
- #include "net.h"
- #include "notif.h"
-+#include "futex.h"
++	entry = __rmid_entry(idx);
  
- #include "timeout.h"
- #include "poll.h"
-@@ -330,6 +331,7 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
- 			    sizeof(struct async_poll));
- 	io_alloc_cache_init(&ctx->netmsg_cache, IO_ALLOC_CACHE_MAX,
- 			    sizeof(struct io_async_msghdr));
-+	io_futex_cache_init(ctx);
- 	init_completion(&ctx->ref_comp);
- 	xa_init_flags(&ctx->personalities, XA_FLAGS_ALLOC1);
- 	mutex_init(&ctx->uring_lock);
-@@ -349,6 +351,7 @@ static __cold struct io_ring_ctx *io_ring_ctx_alloc(struct io_uring_params *p)
- 	INIT_LIST_HEAD(&ctx->tctx_list);
- 	ctx->submit_state.free_list.next = NULL;
- 	INIT_WQ_LIST(&ctx->locked_free_list);
-+	INIT_HLIST_HEAD(&ctx->futex_list);
- 	INIT_DELAYED_WORK(&ctx->fallback_work, io_fallback_req_func);
- 	INIT_WQ_LIST(&ctx->submit_state.compl_reqs);
- 	return ctx;
-@@ -2869,6 +2872,7 @@ static __cold void io_ring_ctx_free(struct io_ring_ctx *ctx)
- 	io_eventfd_unregister(ctx);
- 	io_alloc_cache_free(&ctx->apoll_cache, io_apoll_cache_free);
- 	io_alloc_cache_free(&ctx->netmsg_cache, io_netmsg_cache_free);
-+	io_futex_cache_free(ctx);
- 	io_destroy_buffers(ctx);
- 	mutex_unlock(&ctx->uring_lock);
- 	if (ctx->sq_creds)
-@@ -3281,6 +3285,7 @@ static __cold bool io_uring_try_cancel_requests(struct io_ring_ctx *ctx,
- 	ret |= io_cancel_defer_files(ctx, task, cancel_all);
- 	mutex_lock(&ctx->uring_lock);
- 	ret |= io_poll_remove_all(ctx, task, cancel_all);
-+	ret |= io_futex_remove_all(ctx, task, cancel_all);
- 	mutex_unlock(&ctx->uring_lock);
- 	ret |= io_kill_timeouts(ctx, task, cancel_all);
- 	if (task)
-diff --git a/io_uring/opdef.c b/io_uring/opdef.c
-index 3b9c6489b8b6..c9f23c21a031 100644
---- a/io_uring/opdef.c
-+++ b/io_uring/opdef.c
-@@ -33,6 +33,7 @@
- #include "poll.h"
- #include "cancel.h"
- #include "rw.h"
-+#include "futex.h"
- 
- static int io_no_issue(struct io_kiocb *req, unsigned int issue_flags)
+ 	if (is_llc_occupancy_enabled())
+ 		add_rmid_to_limbo(entry);
+@@ -395,11 +420,13 @@ void free_rmid(u32 closid, u32 rmid)
+ static struct mbm_state *get_mbm_state(struct rdt_domain *d, u32 closid,
+ 				       u32 rmid, enum resctrl_event_id evtid)
  {
-@@ -426,11 +427,26 @@ const struct io_issue_def io_issue_defs[] = {
- 		.issue			= io_sendmsg_zc,
- #else
- 		.prep			= io_eopnotsupp_prep,
-+#endif
-+	},
-+	[IORING_OP_FUTEX_WAIT] = {
-+#if defined(CONFIG_FUTEX)
-+		.prep			= io_futex_prep,
-+		.issue			= io_futex_wait,
-+#else
-+		.prep			= io_eopnotsupp_prep,
-+#endif
-+	},
-+	[IORING_OP_FUTEX_WAKE] = {
-+#if defined(CONFIG_FUTEX)
-+		.prep			= io_futex_prep,
-+		.issue			= io_futex_wake,
-+#else
-+		.prep			= io_eopnotsupp_prep,
- #endif
- 	},
- };
++	u32 idx = resctrl_arch_rmid_idx_encode(closid, rmid);
++
+ 	switch (evtid) {
+ 	case QOS_L3_MBM_TOTAL_EVENT_ID:
+-		return &d->mbm_total[rmid];
++		return &d->mbm_total[idx];
+ 	case QOS_L3_MBM_LOCAL_EVENT_ID:
+-		return &d->mbm_local[rmid];
++		return &d->mbm_local[idx];
+ 	default:
+ 		return NULL;
+ 	}
+@@ -441,7 +468,8 @@ static int __mon_event_count(u32 closid, u32 rmid, struct rmid_read *rr)
+  */
+ static void mbm_bw_count(u32 closid, u32 rmid, struct rmid_read *rr)
+ {
+-	struct mbm_state *m = &rr->d->mbm_local[rmid];
++	u32 idx = resctrl_arch_rmid_idx_encode(closid, rmid);
++	struct mbm_state *m = &rr->d->mbm_local[idx];
+ 	u64 cur_bw, bytes, cur_bytes;
  
--
- const struct io_cold_def io_cold_defs[] = {
- 	[IORING_OP_NOP] = {
- 		.name			= "NOP",
-@@ -648,6 +664,12 @@ const struct io_cold_def io_cold_defs[] = {
- 		.fail			= io_sendrecv_fail,
- #endif
- 	},
-+	[IORING_OP_FUTEX_WAIT] = {
-+		.name			= "FUTEX_WAIT",
-+	},
-+	[IORING_OP_FUTEX_WAKE] = {
-+		.name			= "FUTEX_WAKE",
-+	},
- };
+ 	cur_bytes = rr->val;
+@@ -531,7 +559,7 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
+ {
+ 	u32 closid, rmid, cur_msr_val, new_msr_val;
+ 	struct mbm_state *pmbm_data, *cmbm_data;
+-	u32 cur_bw, delta_bw, user_bw;
++	u32 cur_bw, delta_bw, user_bw, idx;
+ 	struct rdt_resource *r_mba;
+ 	struct rdt_domain *dom_mba;
+ 	struct list_head *head;
+@@ -544,7 +572,8 @@ static void update_mba_bw(struct rdtgroup *rgrp, struct rdt_domain *dom_mbm)
  
- const char *io_uring_get_opcode(u8 opcode)
+ 	closid = rgrp->closid;
+ 	rmid = rgrp->mon.rmid;
+-	pmbm_data = &dom_mbm->mbm_local[rmid];
++	idx = resctrl_arch_rmid_idx_encode(closid, rmid);
++	pmbm_data = &dom_mbm->mbm_local[idx];
+ 
+ 	dom_mba = get_domain_from_cpu(smp_processor_id(), r_mba);
+ 	if (!dom_mba) {
+@@ -662,7 +691,7 @@ void cqm_handle_limbo(struct work_struct *work)
+ 
+ 	__check_limbo(d, false);
+ 
+-	if (has_busy_rmid(r, d))
++	if (has_busy_rmid(d))
+ 		schedule_delayed_work_on(cpu, &d->cqm_limbo, delay);
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
+@@ -727,19 +756,20 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+ 
+ static int dom_data_init(struct rdt_resource *r)
+ {
++	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+ 	struct rmid_entry *entry = NULL;
+-	int i, nr_rmids;
++	u32 idx;
++	int i;
+ 
+-	nr_rmids = r->num_rmid;
+-	rmid_ptrs = kcalloc(nr_rmids, sizeof(struct rmid_entry), GFP_KERNEL);
++	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
+ 	if (!rmid_ptrs)
+ 		return -ENOMEM;
+ 
+-	for (i = 0; i < nr_rmids; i++) {
++	for (i = 0; i < idx_limit; i++) {
+ 		entry = &rmid_ptrs[i];
+ 		INIT_LIST_HEAD(&entry->list);
+ 
+-		entry->rmid = i;
++		resctrl_arch_rmid_idx_decode(i, &entry->closid, &entry->rmid);
+ 		list_add_tail(&entry->list, &rmid_free_lru);
+ 	}
+ 
+@@ -748,7 +778,9 @@ static int dom_data_init(struct rdt_resource *r)
+ 	 * used for rdtgroup_default control group, which will be setup later.
+ 	 * See rdtgroup_setup_root().
+ 	 */
+-	entry = __rmid_entry(0, 0);
++	idx = resctrl_arch_rmid_idx_encode(RESCTRL_RESERVED_CLOSID,
++					   RESCTRL_RESERVED_RMID);
++	entry = __rmid_entry(idx);
+ 	list_del(&entry->list);
+ 
+ 	return 0;
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index f7fda4fc2c9e..6b7190f9cff6 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3727,7 +3727,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
+ 
+ 	if (is_mbm_enabled())
+ 		cancel_delayed_work(&d->mbm_over);
+-	if (is_llc_occupancy_enabled() && has_busy_rmid(r, d)) {
++	if (is_llc_occupancy_enabled() && has_busy_rmid(d)) {
+ 		/*
+ 		 * When a package is going down, forcefully
+ 		 * decrement rmid->ebusy. There is no way to know
+@@ -3745,16 +3745,17 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
+ 
+ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+ {
++	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+ 	size_t tsize;
+ 
+ 	if (is_llc_occupancy_enabled()) {
+-		d->rmid_busy_llc = bitmap_zalloc(r->num_rmid, GFP_KERNEL);
++		d->rmid_busy_llc = bitmap_zalloc(idx_limit, GFP_KERNEL);
+ 		if (!d->rmid_busy_llc)
+ 			return -ENOMEM;
+ 	}
+ 	if (is_mbm_total_enabled()) {
+ 		tsize = sizeof(*d->mbm_total);
+-		d->mbm_total = kcalloc(r->num_rmid, tsize, GFP_KERNEL);
++		d->mbm_total = kcalloc(idx_limit, tsize, GFP_KERNEL);
+ 		if (!d->mbm_total) {
+ 			bitmap_free(d->rmid_busy_llc);
+ 			return -ENOMEM;
+@@ -3762,7 +3763,7 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+ 	}
+ 	if (is_mbm_local_enabled()) {
+ 		tsize = sizeof(*d->mbm_local);
+-		d->mbm_local = kcalloc(r->num_rmid, tsize, GFP_KERNEL);
++		d->mbm_local = kcalloc(idx_limit, tsize, GFP_KERNEL);
+ 		if (!d->mbm_local) {
+ 			bitmap_free(d->rmid_busy_llc);
+ 			kfree(d->mbm_total);
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index c413bb11d336..660752406174 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -6,6 +6,10 @@
+ #include <linux/list.h>
+ #include <linux/pid.h>
+ 
++/* CLOSID, RMID value used by the default control group */
++#define RESCTRL_RESERVED_CLOSID		0
++#define RESCTRL_RESERVED_RMID		0
++
+ #ifdef CONFIG_PROC_CPU_RESCTRL
+ 
+ int proc_resctrl_show(struct seq_file *m,
 -- 
-2.40.1
+2.39.2
 
