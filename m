@@ -2,201 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CEE7671DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6396B7671E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbjG1Qcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        id S232474AbjG1QfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjG1Qco (ORCPT
+        with ESMTP id S233114AbjG1Qez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:32:44 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C23AA30FA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:32:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BAD92F4;
-        Fri, 28 Jul 2023 09:33:25 -0700 (PDT)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0B6A3F67D;
-        Fri, 28 Jul 2023 09:32:39 -0700 (PDT)
-Message-ID: <cabf6ebd-1fba-d73f-b281-12f70d53ef55@arm.com>
-Date:   Fri, 28 Jul 2023 17:32:33 +0100
+        Fri, 28 Jul 2023 12:34:55 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB86449E
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690562087; x=1722098087;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vq0+8lK1LOBofmSZdxT7FLCHIA8ARl33ApAwAmmruzQ=;
+  b=nuEyBzvn5FK+LBWq6YXvoOUdIrz8Puc/GHwSdoKPuL37dPddmygQi6ii
+   NJ4In+p8A4EOtob7PnFuEQzcP8yfYU8G5GQhH6EiogssFruWQocG6IP8c
+   HcWhfrrfOxg8ppCZlVHwllv65H0IpDHh1urfUZEjMJZoh5Tnx4UztULeF
+   KkD8DAnPURckn5bx8bLR3kJScheRQD9bElqH0ILJxHC62CtqygqVz5J6m
+   5jsGTgpdOXLprgHZOzxPM9jtEH4I/skrqMZHGnmZhiLgaTiTcKc7oDEmx
+   +pnA3toJTy86j901F/BLz2Wke6qz01UJz+pU5rldP+eouen95Xu1o+RJ7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="371333600"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="371333600"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 09:34:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="792985287"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="792985287"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2023 09:34:29 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPQPj-0003Nr-2a;
+        Fri, 28 Jul 2023 16:34:09 +0000
+Date:   Sat, 29 Jul 2023 00:33:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, rppt@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        simon.evans@bytedance.com, punit.agrawal@bytedance.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [v1 6/6] mm: hugetlb: Skip initialization of struct pages freed
+ later by HVO
+Message-ID: <202307290029.Kr5EEBeY-lkp@intel.com>
+References: <20230727204624.1942372-7-usama.arif@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
- sleep
-Content-Language: en-GB
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        carl@os.amperecomputing.com, lcherian@marvell.com,
-        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-        dfustini@baylibre.com
-References: <20230525180209.19497-1-james.morse@arm.com>
- <20230525180209.19497-15-james.morse@arm.com>
- <201aff6a-7bd0-e0e6-5ee8-1b9eab223cb0@intel.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <201aff6a-7bd0-e0e6-5ee8-1b9eab223cb0@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727204624.1942372-7-usama.arif@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+Hi Usama,
 
-On 15/06/2023 23:13, Reinette Chatre wrote:
-> On 5/25/2023 11:01 AM, James Morse wrote:
->> MPAM's cache occupancy counters can take a little while to settle once
->> the monitor has been configured. The maximum settling time is described
->> to the driver via a firmware table. The value could be large enough
->> that it makes sense to sleep. To avoid exposing this to resctrl, it
->> should be hidden behind MPAM's resctrl_arch_rmid_read().
->>
->> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
->> to sleep. In this case resctrl_arch_rmid_read() should return an error
->> if it needs to sleep. This will only affect MPAM platforms where
->> the cache occupancy counter isn't available immediately, nohz_full is
->> in use, and there are there are no housekeeping CPUs in the necessary
->> domain.
->>
->> There are three callers of resctrl_arch_rmid_read():
->> __mon_event_count() and __check_limbo() are both called from a
->> non-migrateable context. mon_event_read() invokes __mon_event_count()
->> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
->> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
->> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
->> also adds work to a per-cpu workqueue.
->>
->> The remaining call is add_rmid_to_limbo() which is called in response
->> to a user-space syscall that frees an rmid. This opportunistically
->> reads the llc occupancy counter on the current domain to see if the
->> RMID is over the dirty threshold. This has to disable preemption to
->> avoid reading the wrong domain's value. Disabling pre-emption here
->> prevents resctrl_arch_rmid_read() from sleeping.
->>
->> add_rmid_to_limbo() walks each domain, but only reads the counter
->> on one domain. If the system has more than one domain, the RMID will
->> always be added to the limbo list. If the RMIDs usage was not over the
->> threshold, it will be removed from the list when __check_limbo() runs.
->> Make this the default behaviour. Free RMIDs are always added to the
->> limbo list for each domain.
->>
->> The user visible effect of this is that a clean RMID is not available
->> for re-allocation immediately after 'rmdir()' completes, this behaviour
->> was never portable as it never happened on a machine with multiple
->> domains.
->>
->> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
->> with interrupts unmasked. Document this is the expected behaviour, and
->> add a might_sleep() annotation to catch changes that won't work on arm64.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Usama-Arif/mm-hugetlb-Skip-prep-of-tail-pages-when-HVO-is-enabled/20230728-044839
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230727204624.1942372-7-usama.arif%40bytedance.com
+patch subject: [v1 6/6] mm: hugetlb: Skip initialization of struct pages freed later by HVO
+config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20230729/202307290029.Kr5EEBeY-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290029.Kr5EEBeY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307290029.Kr5EEBeY-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from mm/hugetlb.c:49:
+   mm/hugetlb_vmemmap.h:56:6: warning: no previous prototype for 'vmemmap_should_optimize' [-Wmissing-prototypes]
+      56 | bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~
+   mm/hugetlb.c: In function '__alloc_bootmem_huge_page':
+   mm/hugetlb.c:3198:17: error: 'HUGETLB_VMEMMAP_RESERVE_SIZE' undeclared (first use in this function)
+    3198 |                 HUGETLB_VMEMMAP_RESERVE_SIZE * sizeof(struct page);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mm/hugetlb.c:3198:17: note: each undeclared identifier is reported only once for each function it appears in
+>> mm/hugetlb.c:3210:42: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    3210 |                                 (void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+         |                                          ^
+>> mm/hugetlb.c:3210:33: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    3210 |                                 (void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+         |                                 ^
+   mm/hugetlb.c:3233:42: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    3233 |                                 (void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+         |                                          ^
+   mm/hugetlb.c:3233:33: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+    3233 |                                 (void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+         |                                 ^
 
 
->> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
->> index 6ba40495589a..fb33100e172b 100644
->> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
->> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
->> @@ -491,7 +481,6 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
->>  		set_bit(idx, d->rmid_busy_llc);
->>  		entry->busy++;
->>  	}
->> -	put_cpu();
->>  
->>  	if (entry->busy)
->>  		rmid_limbo_count++;
-> 
-> Would entry->busy ever be 0 after this change?
+vim +3210 mm/hugetlb.c
 
-Good point - the domains list can never be empty!
+  3190	
+  3191	int alloc_bootmem_huge_page(struct hstate *h, int nid)
+  3192		__attribute__ ((weak, alias("__alloc_bootmem_huge_page")));
+  3193	int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+  3194	{
+  3195		struct huge_bootmem_page *m = NULL; /* initialize for clang */
+  3196		int nr_nodes, node;
+  3197		phys_addr_t hugetlb_vmemmap_reserve_size =
+  3198			HUGETLB_VMEMMAP_RESERVE_SIZE * sizeof(struct page);
+  3199		phys_addr_t noinit_base;
+  3200	
+  3201		/* do node specific alloc */
+  3202		if (nid != NUMA_NO_NODE) {
+  3203			m = memblock_alloc_try_nid_raw(huge_page_size(h), huge_page_size(h),
+  3204					0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+  3205			if (!m)
+  3206				return 0;
+  3207	
+  3208			if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
+  3209				noinit_base = virt_to_phys(
+> 3210					(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+  3211				memblock_rsrv_mark_noinit(
+  3212					noinit_base,
+  3213					huge_page_size(h) - hugetlb_vmemmap_reserve_size);
+  3214			}
+  3215	
+  3216			goto found;
+  3217		}
+  3218		/* allocate from next node when distributing huge pages */
+  3219		for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
+  3220			m = memblock_alloc_try_nid_raw(
+  3221					huge_page_size(h), huge_page_size(h),
+  3222					0, MEMBLOCK_ALLOC_ACCESSIBLE, node);
+  3223			/*
+  3224			 * Use the beginning of the huge page to store the
+  3225			 * huge_bootmem_page struct (until gather_bootmem
+  3226			 * puts them into the mem_map).
+  3227			 */
+  3228			if (!m)
+  3229				return 0;
+  3230	
+  3231			if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
+  3232				noinit_base = virt_to_phys(
+  3233					(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+  3234				memblock_rsrv_mark_noinit(
+  3235					noinit_base,
+  3236					huge_page_size(h) - hugetlb_vmemmap_reserve_size);
+  3237			}
+  3238	
+  3239			goto found;
+  3240		}
+  3241	
+  3242	found:
+  3243		/* Put them into a private list first because mem_map is not up yet */
+  3244		INIT_LIST_HEAD(&m->list);
+  3245		list_add(&m->list, &huge_boot_pages);
+  3246		m->hstate = h;
+  3247		return 1;
+  3248	}
+  3249	
 
-
->> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
->> index ff7452f644e4..b961936decfa 100644
->> --- a/include/linux/resctrl.h
->> +++ b/include/linux/resctrl.h
->> @@ -234,7 +234,12 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
->>   * @eventid:		eventid to read, e.g. L3 occupancy.
->>   * @val:		result of the counter read in bytes.
->>   *
->> - * Call from process context on a CPU that belongs to domain @d.
->> + * Some architectures need to sleep when first programming some of the counters.
->> + * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
->> + *  for a short period of time). Call from a non-migrateable process context on
->> + * a CPU that belongs to domain @d. e.g. use smp_call_on_cpu() or
->> + * schedule_work_on(). This function can be called with interrupts masked,
->> + * e.g. using smp_call_function_any(), but may concistently return an error.
->>   *
-> 
-> concistently -> consistently?
-> 
->>   * Return:
->>   * 0 on success, or -EIO, -EINVAL etc on error.
->> @@ -243,6 +248,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->>  			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
->>  			   u64 *val);
->>  
->> +/**
->> + * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
->> + *
->> + * When built with CONFIG_DEBUG_ATOMIC_SLEEP, this function will generate a
->> + * warning when resctrl_arch_rmid_read() is called from an invalid context.
-> 
-> No need to say "this function" 
-> Could this comment be more specific about which contexts are invalid instead of
-> just referring to it as "invalid context". This seems to expect the reader to
-> already know what an invalid context would be. 
-
-I thought the implementation was enough - the comment was intended to say this does
-nothing unless you select that build option. I've changed it to:
-| * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
-| * resctrl_arch_rmid_read() is called with preemption disabled.
-
-
->> + */
->> +static inline void resctrl_arch_rmid_read_context_check(void)
->> +{
->> +	if (!irqs_disabled())
->> +		might_sleep();
->> +}
-
-> Could you please elaborate why the "!irqs_disabled()" is needed?
-
-It's a question of what the interface should support.
-It needs to support being called via IPI because that is going to happen on NOHZ_FULL
-platforms. In this case the platforms where the MPAM code needs to sleep will have to
-return an error. For folk that see this in practice: they need at least one housekeeping
-CPU per domain.
-
-Outside that the function shouldn't be called with pre-emption disabled, as that would
-prevent it from sleeping, but the lockdep annotations that check for pre-emption also go
-off when interrupts are masked, hence the slightly funny check.
-
-It's documented against resctrl_arch_rmid_read():
-| * Some architectures need to sleep when first programming some of the counters.
-| * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
-| *  for a short period of time). Call from a non-migrateable process context on
-| * a CPU that belongs to domain @d. e.g. use smp_call_on_cpu() or
-| * schedule_work_on(). This function can be called with interrupts masked,
-| * e.g. using smp_call_function_any(), but may consistently return an error.
-
-
-Thanks,
-
-James
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
