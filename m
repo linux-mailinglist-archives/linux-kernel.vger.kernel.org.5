@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 660DC766F08
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFAF766F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235834AbjG1OJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S237023AbjG1OYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjG1OJg (ORCPT
+        with ESMTP id S237131AbjG1OWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:09:36 -0400
+        Fri, 28 Jul 2023 10:22:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0BB35A8;
-        Fri, 28 Jul 2023 07:09:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3F744B3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:22:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 477326214B;
-        Fri, 28 Jul 2023 14:09:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCC2C433C8;
-        Fri, 28 Jul 2023 14:09:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0145362160
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:22:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A798C433C7;
+        Fri, 28 Jul 2023 14:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690553374;
-        bh=KLjExLhXnoctgt1F9lPT4E5ymQFk/shVtkceDCu/DEw=;
+        s=k20201202; t=1690554167;
+        bh=Q4/k4P2dqUmrtwh4epIswDRV1O6WVzXd1ZzdcykMzQs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t1etBMMWEBHJC08coP28YOQwC8VVdJesVcfvy18HnTq4G3U1ROuBFX3sNmyhnlKTl
-         wzoA/DYjJ9eVCXjIoEXKzN04peXut9x/9jSSA7B5xCwZsMzPTHo90weaB40QoBvyld
-         uQk112OiQI6MIxJprD1k1RhOn5ktNfrkPrD8vBnsS3PjIaVFvXg9U+vWyl4e81df8f
-         flm6vvxxn/AdxotNwvTgG3a4NQ9YzWxOBMIojxnRRBZOG+Vez+N0ASvKC0jf5k5S3U
-         u28l5ip/GchiYuL7gT1qqst1buMHlNuF6xlr1ijT4wdC3CrUJvKzQob07kx4kyawIR
-         MHlq42gPSy/bA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 37CD740096; Fri, 28 Jul 2023 11:09:32 -0300 (-03)
-Date:   Fri, 28 Jul 2023 11:09:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] perf build: Update build rule for generated files
-Message-ID: <ZMPMHNjX2IxsLbAe@kernel.org>
-References: <20230728022447.1323563-1-namhyung@kernel.org>
+        b=HXgwWVobIMhag8kRKa1fpslTUp8NIm0uFxXJVqWplVIfERV1wUu5snDIro91YqCPh
+         pQaRHAc97m2qXmslbXzjvHe3CifDgMGf4QMgduyI5W4kYmqYmW6idB3/+wl8ZppDN5
+         tLctMrSfoGi4SbksNsd2jLItjoZfsaDcFcOrGXS43pZ1k9hPdNX1vjasiuSkyLg7r9
+         +e3mZC0pC2IGdboXVdXpdhWgBNDobBC+zmGDHRuaMBHbwTchhFifWEXBrU+YshcYXN
+         t7tkNTUDBZjM743N3dIwFNR0EpQmkdc8JPB1y9SvBgWNADz8EiXE9uT5S90jC4oXOT
+         /02TYAXwfAq/Q==
+Date:   Fri, 28 Jul 2023 22:11:08 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] riscv: vdso.lds.S: merge .data section into .rodata
+ section
+Message-ID: <ZMPMfMPoG/KnuWLN@xhacker>
+References: <20230726173024.3684-1-jszhang@kernel.org>
+ <20230726173024.3684-3-jszhang@kernel.org>
+ <20230728-cec389a85a7dc8dcca803e06@orel>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230728022447.1323563-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20230728-cec389a85a7dc8dcca803e06@orel>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 27, 2023 at 07:24:46PM -0700, Namhyung Kim escreveu:
-> The bison and flex generate C files from the source (.y and .l)
-> files.  When O= option is used, they are saved in a separate directory
-> but the default build rule assumes the .C files are in the source
-> directory.  So it might read invalid file if there are generated files
-> from an old version.  The same is true for the pmu-events files.
+On Fri, Jul 28, 2023 at 02:57:03PM +0200, Andrew Jones wrote:
+> On Thu, Jul 27, 2023 at 01:30:23AM +0800, Jisheng Zhang wrote:
+> > The .data section doesn't need to be separate from .rodata section,
+> > they are both readonly.
+> > 
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > ---
+> >  arch/riscv/kernel/vdso/vdso.lds.S | 15 +++++++--------
+> >  1 file changed, 7 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
+> > index d43fd7c7dd11..671aa21769bc 100644
+> > --- a/arch/riscv/kernel/vdso/vdso.lds.S
+> > +++ b/arch/riscv/kernel/vdso/vdso.lds.S
+> > @@ -29,7 +29,13 @@ SECTIONS
+> >  	.eh_frame_hdr	: { *(.eh_frame_hdr) }		:text	:eh_frame_hdr
+> >  	.eh_frame	: { KEEP (*(.eh_frame)) }	:text
+> >  
+> > -	.rodata		: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+> > +	.rodata		: {
+> > +		*(.rodata .rodata.* .gnu.linkonce.r.*)
+> > +		*(.got.plt) *(.got)
+> > +		*(.data .data.* .gnu.linkonce.d.*)
+> > +		*(.dynbss)
+> > +		*(.bss .bss.* .gnu.linkonce.b.*)
 > 
-> For example, the following command would cause a build failure:
-> 
->   $ git checkout v6.3
->   $ make -C tools/perf  # build in the same directory
-> 
->   $ git checkout v6.5-rc2
->   $ mkdir build  # create a build directory
->   $ make -C tools/perf O=build  # build in a different directory but it
->                                 # refers files in the source directory
-> 
-> Let's update the build rule to specify those cases explicitly to depend
-> on the files in the output directory.
-> 
-> Note that it's not a complete fix and it needs the next patch for the
-> include path too.
+> Looking at other architectures, it appears the last three lines of
+> sections could be discarded, but I don't know enough about this to
 
-Applied, testing it on the container builds.
+Hi Andrew,
 
-- Arnaldo
- 
-> Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/build/Makefile.build  | 10 ++++++++++
->  tools/perf/pmu-events/Build |  6 ++++++
->  2 files changed, 16 insertions(+)
+I checked x86, they still keep those sections. From another side,
+even if those sections are not needed, removing unused sections could
+be an independent patch, for safe reason or bisect reason.
+
+Thanks
+
+
+> state they should be.
 > 
-> diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
-> index 89430338a3d9..fac42486a8cf 100644
-> --- a/tools/build/Makefile.build
-> +++ b/tools/build/Makefile.build
-> @@ -117,6 +117,16 @@ $(OUTPUT)%.s: %.c FORCE
->  	$(call rule_mkdir)
->  	$(call if_changed_dep,cc_s_c)
->  
-> +# bison and flex files are generated in the OUTPUT directory
-> +# so it needs a separate rule to depend on them properly
-> +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
-> +	$(call rule_mkdir)
-> +	$(call if_changed_dep,$(host)cc_o_c)
-> +
-> +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
-> +	$(call rule_mkdir)
-> +	$(call if_changed_dep,$(host)cc_o_c)
-> +
->  # Gather build data:
->  #   obj-y        - list of build objects
->  #   subdir-y     - list of directories to nest
-> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-> index 150765f2baee..1d18bb89402e 100644
-> --- a/tools/perf/pmu-events/Build
-> +++ b/tools/perf/pmu-events/Build
-> @@ -35,3 +35,9 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY) $(METRIC_PY) $(METRIC_TEST_L
->  	$(call rule_mkdir)
->  	$(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARCH) $(JEVENTS_MODEL) pmu-events/arch $@
->  endif
-> +
-> +# pmu-events.c file is generated in the OUTPUT directory so it needs a
-> +# separate rule to depend on it properly
-> +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
-> +	$(call rule_mkdir)
-> +	$(call if_changed_dep,cc_o_c)
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
+> Thanks,
+> drew
 > 
-
--- 
-
-- Arnaldo
+> 
+> > +	}
+> >  
+> >  	/*
+> >  	 * This linker script is used both with -r and with -shared.
+> > @@ -44,13 +50,6 @@ SECTIONS
+> >  	.alternative : {
+> >  		*(.alternative)
+> >  	}
+> > -
+> > -	.data		: {
+> > -		*(.got.plt) *(.got)
+> > -		*(.data .data.* .gnu.linkonce.d.*)
+> > -		*(.dynbss)
+> > -		*(.bss .bss.* .gnu.linkonce.b.*)
+> > -	}
+> >  }
+> >  
+> >  /*
+> > -- 
+> > 2.40.1
+> > 
