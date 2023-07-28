@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A65766977
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C734076697F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233905AbjG1Jzm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 05:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
+        id S234259AbjG1J42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbjG1Jzi (ORCPT
+        with ESMTP id S234678AbjG1J4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:55:38 -0400
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D66530E2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:55:35 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-bcb6dbc477eso1734503276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:55:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690538134; x=1691142934;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fr+d0SM+t1ll9J/Ut8OphhRP6Lk+iPkNWRIXF2VIFmc=;
-        b=f/G+3ruk/LMir9iSnaIy/xBRCbqG4ULAo8e/yjjmLVMwYokclNm6Cty+istPeiYI1o
-         DwmuhbaL8Xr8+mdfGu7FEPcCBTJSu4BwrLh3acQ9z52bTfU8KkoRbN/W8bOo3SkzcSQD
-         Joj5n55GIbsYDkwLOiwqCVxyUEm0FB/qAxyPd4TtqlMe+sbWfMJv+YVQXFlzKCI4Alq4
-         DYSfXvauCcjVbhk/1gR9zGI8icjVbRQb8f8KmmghJooIzwnfaqj6d11rzLjVa7jWd4kj
-         m7bQaqyk9p9C8xgPbK69k0t+kAqlbmTKa9nsPfhLH8DOJuAOfQclW/aMnocQ3YeNKoZg
-         kYhA==
-X-Gm-Message-State: ABy/qLaR2rW1vVTkXuytR7klCuQeQevqUyySdRh2BX6oZ9cZPuFVsBhJ
-        7CGMgsL3kFfxoG60ytRybB8AofFuXF1UGg==
-X-Google-Smtp-Source: APBJJlEyggUpQgUz0uL61KEL39nIG63l1oaNNR/Nbr7PiVKeLMWGcA5lKe1JMoor4nTTTj4Onus3pg==
-X-Received: by 2002:a81:6a55:0:b0:579:5bbe:b022 with SMTP id f82-20020a816a55000000b005795bbeb022mr1257976ywc.30.1690538133712;
-        Fri, 28 Jul 2023 02:55:33 -0700 (PDT)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id i12-20020a0ddf0c000000b00583fdbfa001sm967070ywe.98.2023.07.28.02.55.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 02:55:32 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5774335bb2aso20734317b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:55:32 -0700 (PDT)
-X-Received: by 2002:a81:a143:0:b0:56d:de2:94d1 with SMTP id
- y64-20020a81a143000000b0056d0de294d1mr1328111ywg.24.1690538132157; Fri, 28
- Jul 2023 02:55:32 -0700 (PDT)
+        Fri, 28 Jul 2023 05:56:25 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D532430E1;
+        Fri, 28 Jul 2023 02:56:19 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qPKBs-0011CA-9u; Fri, 28 Jul 2023 17:55:21 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 28 Jul 2023 17:55:20 +0800
+Date:   Fri, 28 Jul 2023 17:55:20 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Haren Myneni <haren@us.ibm.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        qat-linux@intel.com, linuxppc-dev@lists.ozlabs.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 00/21] crypto: consolidate and clean up compression
+ APIs
+Message-ID: <ZMOQiPadP2jggZ2i@gondor.apana.org.au>
+References: <20230718125847.3869700-1-ardb@kernel.org>
 MIME-Version: 1.0
-References: <b8c9c1a8a05dbf0be8e8be98cfdeafa9cecd8cef.1690535002.git.geert+renesas@glider.be>
- <87pm4ctl9b.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87pm4ctl9b.fsf@minerva.mail-host-address-is-not-set>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 28 Jul 2023 11:55:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXs47Jt9Kqf-Gm0eoFP8Wpe38cg4POO14GnPZCfWSs_FA@mail.gmail.com>
-Message-ID: <CAMuHMdXs47Jt9Kqf-Gm0eoFP8Wpe38cg4POO14GnPZCfWSs_FA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/atomic-helper: Update reference to drm_crtc_force_disable_all()
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230718125847.3869700-1-ardb@kernel.org>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
-
-On Fri, Jul 28, 2023 at 11:53 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> Geert Uytterhoeven <geert+renesas@glider.be> writes:
-> > drm_crtc_force_disable_all() was renamed to
-> > drm_helper_force_disable_all(), but one reference was not updated.
-> >
-> > Fixes: c2d88e06bcb98540 ("drm: Move the legacy kms disable_all helper to crtc helpers")
+On Tue, Jul 18, 2023 at 02:58:26PM +0200, Ard Biesheuvel wrote:
 >
-> The dim tool complains that:
->
-> -:10: WARNING:BAD_FIXES_TAG: Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<title line>")'
->
-> So I've fixed it locally to only use the first 12 chars of the sha1.
+> Patch #2 removes the support for on-the-fly allocation of destination
+> buffers and scatterlists from the Intel QAT driver. This is never used,
+> and not even implemented by all drivers (the HiSilicon ZIP driver does
+> not support it). The diffstat of this patch makes a good case why the
+> caller should be in charge of allocating the memory, not the driver.
 
-Good luck restoring them in the future (you do care about Y2038,
-do you? ;-)
+The implementation in qat may not be optimal, but being able to
+allocate memory in the algorithm is a big plus for IPComp at least.
 
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> > ---
->
-> Pushed to drm-misc (drm-misc-next). Thanks!
+Being able to allocate memory page by page as you decompress
+means that:
 
-Thanks!
+1. We're not affected by memory fragmentation.
+2. We don't waste memory by always allocating for the worst case.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Cheers,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
