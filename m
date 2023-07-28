@@ -2,344 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1950767189
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941FD76718C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjG1QJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
+        id S230349AbjG1QJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjG1QJV (ORCPT
+        with ESMTP id S232586AbjG1QJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:09:21 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA55FC
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:09:19 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76c93abeb83so32532985a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:09:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1690560558; x=1691165358;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ld+nM/1zXTAVwHrwzbKz7bP+9LjxWSIMdgn7IeyAbR8=;
-        b=Q1vZsqxv5k0kwqXFUTHXkwZL29lzoohdebSIOXXNisvMD6xdGsUbEpCkB+XSwwjWMm
-         /Ns+JNfM7+4Axhhk3fhP0MgExW12v4JCBJ644wecl8sLh38VIXNzWzN5L0V0272WF5/r
-         Fv91fT87rJIHlHAloXHCvYtfwy3dCyNs29SN6ZjhT1ELZncyBNhM0WtBAAeQDzv68cYM
-         FCr+3xW5BF23peeYy2ZuX9Bzwb/klEyt9+KdvKArmgR1uMzanM74p3TmW2I1RXmBSWq9
-         V9z2YMV9/cIrtpTr41oQZDP9cSUJ9dEu8IZffa6aJUJBBupKu/x9PLkYD+Wo1nPMUX52
-         GG6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690560558; x=1691165358;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ld+nM/1zXTAVwHrwzbKz7bP+9LjxWSIMdgn7IeyAbR8=;
-        b=afvKEcaulhq4kEWurI85LiXi3eFPKgUIScsbPh1VoEawAHPKGJAfKd/o/Oz0Z61gDq
-         25iCRw5VON+Y09OWvC2CArcKZ84A7IUbJHHtn2Wob0m0dBTaohKwXzddo7nd6XP4RNCS
-         sASdemaGogibQ3VHuOGyRF6+pfJ0sprMnZESAFOa1kFqz0zEcFmGzvt+BkS0NDyjD7No
-         LOCv8N+HQAa5c9M5/dgmtncA8LNwgvpHtijjTTUm00dxhRVWxYi42h98i5OH0KV9eNtk
-         og6cCUKzYNKWqPZnnmfX6X5BXTpkCzKjxSros1+cCM/9JKbtiIWPUFXziIr4imKl5Uce
-         hVTg==
-X-Gm-Message-State: ABy/qLbVgxsh0dD1Dg/f8eyi+AWdIhMc/90Jhi1e58sUXlt0g1E7ZzM9
-        KoQkA4FJLTEXANIw6PrtNB75dA==
-X-Google-Smtp-Source: APBJJlHueX+1xKQ98oP1u1VgAUbhw2UnG/8LAs2PsXCCzwwA1g1Sg6PY8mFaSyLUc/Hu9B7qJ5Unmg==
-X-Received: by 2002:ad4:4e61:0:b0:621:170:68b7 with SMTP id ec1-20020ad44e61000000b00621017068b7mr2568136qvb.35.1690560558048;
-        Fri, 28 Jul 2023 09:09:18 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:10:2688::7a9])
-        by smtp.gmail.com with ESMTPSA id x11-20020a0ce24b000000b0063d06946b2bsm1319744qvl.100.2023.07.28.09.09.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:09:17 -0700 (PDT)
-Message-ID: <40f67a27804be5d9e85ec01bf12646908caf15a3.camel@ndufresne.ca>
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Hsia-Jun Li <randy.li@synaptics.com>
-Cc:     linux-media@vger.kernel.org, ayaka@soulik.info,
-        hans.verkuil@cisco.com, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
-Date:   Fri, 28 Jul 2023 12:09:16 -0400
-In-Reply-To: <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
-References: <20230704040044.681850-1-randy.li@synaptics.com>
-         <20230704040044.681850-3-randy.li@synaptics.com>
-         <20230712093301.nkj2vok2x7esdhb3@chromium.org>
-         <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
-         <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
-         <583e22718b80cc5e1ae631528c83c95e97de5cae.camel@ndufresne.ca>
-         <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 28 Jul 2023 12:09:34 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2041.outbound.protection.outlook.com [40.107.8.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9FB4236;
+        Fri, 28 Jul 2023 09:09:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m1HfzQuhOTypRSdQ6ivQR/MEZElb5ELa1uZ0ZM3I7ra8DWEEK+oOqZlJgHgaLKjncKS3JIHbsbTBV+QQk6ORgmgXTg0/o6//UB+fZBjao3X+bnxM94VxPWMxTHa8uZcTyXrpnmj4kTdE8Lm3flwi3Dyh63PLc0yCDKsjNlIs/CRUY61rxO60aJwRHdTtALoHE6L+iKGt8Ku+XeCAr3P2c1VnCplsVTSG1zB4GGEfg33m96jFoETp+cn/jiEcbevdabYbbZjAlJBNd9wdt9SXZKnCdSC6+16VGT8Ns5MUPvYz9tDA+RnPodcKFrsX05XEw+JiQUb44zM2t8rb5PkYXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A/wtqdeGIhqexDWteR5SbI0NJNB1cbv4zHnDzzYRjRU=;
+ b=A++dVbC5WOMeo1+bJcOJ0syL4VlgpsxHdPBNFulZA2Wk/71bOwfJFtCSg/q+nMp8Xxv8sm1oERpA9ltFQ4hIIkIIB44yZNjAAU91NHOLSOTE0MDQl5xNmfFsZ7/UhjULpP/TygZpHahZ0dqTmJvY07i/ebkykfxW7HkmUTBD56LBQkQ0jZ1s8apLUZmcXuvn8rcY4IZN7OjTy0btxtouup4N6Z6X+oXrw6OFep3YrF7AypteV6siUNLYxXxfvdp3DRl4WYHWIsmzyNSvEYDyWNUQm8pSWNc3xrtN9CUuPV9JOl5W6wTbKkqzQGf0REtcKgiqvrMoEL60l73IXNVTCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A/wtqdeGIhqexDWteR5SbI0NJNB1cbv4zHnDzzYRjRU=;
+ b=f3EScmtDMM1oIl96kUADqNdZ9NAE4egDD0MZ/WT0PWJm2Z3tItzgHMurDv9tUaMDJXWSIF4TWXaS0byIvbyjEHD9toWMNgtqhbMPMp0ZOAKJWlZkJhSoCxKxxtgeEGYaH/he2TwU9p0PWms9hNRGkLzmUlabk6MD9PzI9Md3DFU=
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11)
+ by DB8PR04MB6956.eurprd04.prod.outlook.com (2603:10a6:10:11b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 16:09:29 +0000
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671]) by PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671%3]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 16:09:29 +0000
+From:   Shenwei Wang <shenwei.wang@nxp.com>
+To:     Will Deacon <will@kernel.org>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Andrew Halaney <ahalaney@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        Frank Li <frank.li@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the
+ TXC clock in fixed-link
+Thread-Topic: [EXT] Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the
+ TXC clock in fixed-link
+Thread-Index: AQHZwJ6ZmPtrsmRv9UGenRTta+C4Xq/N8VmAgAFcAoCAAAPhAIAAB8xg
+Date:   Fri, 28 Jul 2023 16:09:29 +0000
+Message-ID: <PAXPR04MB918542A7030A3193562C4A948906A@PAXPR04MB9185.eurprd04.prod.outlook.com>
+References: <20230727152503.2199550-1-shenwei.wang@nxp.com>
+ <20230727152503.2199550-3-shenwei.wang@nxp.com>
+ <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
+ <ZMPdKyOtpZKEMLsO@shell.armlinux.org.uk>
+ <20230728153611.GH21718@willie-the-truck>
+In-Reply-To: <20230728153611.GH21718@willie-the-truck>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9185:EE_|DB8PR04MB6956:EE_
+x-ms-office365-filtering-correlation-id: 452117ac-b961-4715-0f83-08db8f8505d5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: r1cl+21UBhfC+GvyOLwGX6gqTJsg9Tf4VmH1xx0xsmLzVJ9ACwGlOWt3XpQcmsTX2x357JJBZi5ArdeTZZPI6eRIXijJk5lYGT6iATy1oWbVzn+Ec6pb0hFGtqJ9TvgNLS/ppJnUwJPWTp4oYzPb9vp1lola5WksB0JVDf0voXj11spChvCn63eDjaIOzMnEH4UG9FS0MBpt9TRURLkB+Uei3NKLIXrd4SrMhpDsAmvhHTvsBsvZB4PnIaSgVt5L+0rW57FF/qp9jNyvjA162iYcOVSHWwCxiTdYqIe6WSiXXfQo3OrW2xbJBOxlrE+vB6ijxNfPAGX4zIRms8C4QBWk76UUkajoM1T3OOSxhADODaOWVO95hF8Nao1oRshZ/LPE51okcHRGMaF1sQfAQXfaQEGbWBJHDZiXvYZgqX/Jf5nyVwCcVbDowVWmHFS462Fat/xc4UNzMbOmRwnEyE+SILhRxKJ2R2a0HC0jRjzLeuVtEuIkGpUfqsp1Fes73IYxQk5Y1AV4vLNP9kllJOS7U/0C2lzjyh5glZKnZC1eBFLLp7Zq7emTjk+epl7saGM3BdOK7XuqygqY0WGLw6b67IpeIaNaHVqIwb7Iuro=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9185.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(346002)(136003)(376002)(396003)(451199021)(86362001)(2906002)(8936002)(38070700005)(52536014)(316002)(8676002)(33656002)(7406005)(44832011)(83380400001)(5660300002)(66476007)(64756008)(66946007)(66556008)(66446008)(4326008)(76116006)(38100700002)(110136005)(54906003)(122000001)(186003)(45080400002)(26005)(53546011)(41300700001)(55236004)(6506007)(478600001)(71200400001)(7416002)(966005)(55016003)(9686003)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?PM7LpVr2AEujg2dv+FGfD0b9wP4pQb4XMIEqBCezCVK5Tw67FsYpkFpe0+wP?=
+ =?us-ascii?Q?g9peRCnyuHJFiw/v8KdtYmbExPbViQoBt3OUM8cj2MrAv7GgqVTA2bVqLrcI?=
+ =?us-ascii?Q?6/+izTYRqhgd6ed/SnuWoRKwbG65jLCpzs8c47W1D9Y8ZRtICmr+oYhzKfO+?=
+ =?us-ascii?Q?qvO+JP/KvehaRZFLtc8EA74QRrZtpZYaIt9DSaB8aahnw8C7hvi9TWzmg8qZ?=
+ =?us-ascii?Q?6cMRic7EKpCpAI3YPZn5dSp9Ua0VSF8TxAA+s/UsgEJD3ZoBLMFvcLkMRVoF?=
+ =?us-ascii?Q?cxkg32DbyzWGNbZcJhLGo2s+ypF+/N5JiRRNiZJpWpVuZt+DFafgReRzk5l/?=
+ =?us-ascii?Q?6I+hE/YHUBpv9K1KwFjWJ4lBSJ0TaRPIMYh5bvIQg4/xLdexUA8IEEwzzd0n?=
+ =?us-ascii?Q?rLDqeXF3gMX7FGXoT6PzJajbhX+ftnehUsEgKDRA1CPUcE9tkt3c8F61GfxN?=
+ =?us-ascii?Q?bKBeDsz+yK2dJmaYSfkGYqTKSrwnYBl7akb4zd6sChrV5YpQvGb2rMxCnqWa?=
+ =?us-ascii?Q?XoMr1kOwoa71rJjZttmlM7jrNDj9Ii3LbtnKITKTQ2UKmclEkEjnVgheQkV8?=
+ =?us-ascii?Q?rOu+O3etCzfrIEZrqqEoAdy+QSjg0aATg812rqxK6tJxV5nhLCiWBPTh+uOn?=
+ =?us-ascii?Q?jkDUWtASgmsxvE9CpajC/f0hSoIV2o0ulcxbqSHxzIcXvr3ujZBYLoT33vdf?=
+ =?us-ascii?Q?zVYSAH+qgavgFvUIUkXJo6K0m6k4lWKrAsbP38DoVrysMzzC1fyRWL3vuMju?=
+ =?us-ascii?Q?ottLZGs4T0+/jaAuDfSUcAoA7x5uObpF9NcvGONNXT7BVs9zMpcQ5us9+0ff?=
+ =?us-ascii?Q?M8nFKBE/y5oVuFfuWWwGpQoUhrOKkHL7p2p+YeJqT1/kb7Ei926el5mB1eJk?=
+ =?us-ascii?Q?fwMf2zo+jP6sez4v255CSZxVEjAweS7Yu9yTo4UqpHS6V7TP19OJ20MtZZQC?=
+ =?us-ascii?Q?7OL7g9XdQ0k41XtgZRzYt6LtOzurTODmQSVKJhYozhYNiiWC3gveOXlvLs7i?=
+ =?us-ascii?Q?k+Iach1O0VWHcyOrm67hNrVGbRBsYxskc440dg2yyj/2CaLtbuRZGQBdmW6w?=
+ =?us-ascii?Q?lwIpBDtRHB5BUo6EAAes9Q5p2kMmpdJP3tF4r+sBZZfOvE8q/ttQfo6jOlD1?=
+ =?us-ascii?Q?Di+7qjFmnOuY82ZEprKDEK+2q2Ug91Fl+fZU3F5yoP8ZHG6BO14QEMEhUQIP?=
+ =?us-ascii?Q?j/kuJszFi5oPqnT8KtmQTQQemR5w5HYThVryBPEYE7PhsN4LikvkS4rUtfH0?=
+ =?us-ascii?Q?YKkFJQZ+PTJgOmDax2sCutAQ77hPBdbMT/49s5bqi5REfin+lQaISt4OC5Zr?=
+ =?us-ascii?Q?72B0Foj5GtCxTJftM9HPngtQACDESqTH5ZJpsqoT+eP8tPa055eRJuDUus/e?=
+ =?us-ascii?Q?hWl+lwvPWopvRkuAE9e+QSjQdoiJuaz027wsTiuGFH6wDTtDAJ2lw1lIZJQQ?=
+ =?us-ascii?Q?A2CNB7NIEloQ8WT4dNzKsT+ZeJNuEJDaYJLgutVhVCtQNFC2s5Rqtga3A67e?=
+ =?us-ascii?Q?D75j2drcUaKdcWNXgUiL0DSkkFg9a6KKKOFWhxKRIBzpUFtV+N+3dx9PcfhR?=
+ =?us-ascii?Q?0w7L+mBKSOeJhV8AzwIO5/oDKvX9jX6gdjVKGQar?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9185.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 452117ac-b961-4715-0f83-08db8f8505d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 16:09:29.4010
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H5S7fIKe+uz55onENv08oY2pfS/yShoWc7nClbaxRRiHgklqBAPF1Uniqz0R4TSPTb+h1omgW0EaZbywUb2SgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6956
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 28 juillet 2023 =C3=A0 13:43 +0900, Tomasz Figa a =C3=A9crit=C2=
-=A0:
-> On Fri, Jul 28, 2023 at 1:58=E2=80=AFAM Nicolas Dufresne <nicolas@ndufres=
-ne.ca> wrote:
-> >=20
-> > Le jeudi 27 juillet 2023 =C3=A0 16:43 +0900, Tomasz Figa a =C3=A9crit :
-> > > On Mon, Jul 17, 2023 at 11:07=E2=80=AFPM Nicolas Dufresne <nicolas@nd=
-ufresne.ca> wrote:
-> > > >=20
-> > > > Le mercredi 12 juillet 2023 =C3=A0 09:33 +0000, Tomasz Figa a =C3=
-=A9crit :
-> > > > > On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
-> > > > > > From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
-> > > > > >=20
-> > > > > > Many drivers have to create its own buf_struct for a
-> > > > > > vb2_queue to track such a state. Also driver has to
-> > > > > > iterate over rdy_queue every times to find out a buffer
-> > > > > > which is not sent to hardware(or firmware), this new
-> > > > > > list just offers the driver a place to store the buffer
-> > > > > > that hardware(firmware) has acknowledged.
-> > > > > >=20
-> > > > > > One important advance about this list, it doesn't like
-> > > > > > rdy_queue which both bottom half of the user calling
-> > > > > > could operate it, while the v4l2 worker would as well.
-> > > > > > The v4l2 core could only operate this queue when its
-> > > > > > v4l2_context is not running, the driver would only
-> > > > > > access this new hw_queue in its own worker.
-> > > > >=20
-> > > > > Could you describe in what case such a list would be useful for a
-> > > > > mem2mem driver?
-> > > >=20
-> > > > Today all driver must track buffers that are "owned by the hardware=
-". This is a
-> > > > concept dictated by the m2m framework and enforced through the ACTI=
-VE flag. All
-> > > > buffers from this list must be mark as done/error/queued after stre=
-amoff of the
-> > > > respective queue in order to acknowledge that they are no longer in=
- use by the
-> > > > HW. Not doing so will warn:
-> > > >=20
-> > > >   videobuf2_common: driver bug: stop_streaming operation is leaving=
- buf ...
-> > > >=20
-> > > > Though, there is no queue to easily iterate them. All driver endup =
-having their
-> > > > own queue, or just leaving the buffers in the rdy_queue (which isn'=
-t better).
-> > > >=20
-> > >=20
-> > > Thanks for the explanation. I see how it could be useful now.
-> > >=20
-> > > Although I guess this is a problem specifically for hardware (or
-> > > firmware) which can internally queue more than 1 buffer, right?
-> > > Otherwise the current buffer could just stay at the top of the
-> > > rdy_queue until it's removed by the driver's completion handler,
-> > > timeout/error handler or context destruction.
-> >=20
-> > Correct, its only an issue when you need to process multiple src buffer=
-s before
-> > producing a dst buffer. If affects stateful decoder, stateful encoders =
-and
-> > deinterlacer as far as I'm aware.
->=20
-> Is it actually necessary to keep those buffers in a list in that case, th=
-ough?
-> I can see that a deinterlacer would indeed need 2 input buffers to
-> perform the deinterlacing operation, but those would be just known to
-> the driver, since it's running the task currently.
-> For a stateful decoder, wouldn't it just consume the bitstream buffer
-> (producing something partially decoded to its own internal buffers)
-> and return it shortly?
 
-In practice, in stateful decoder, we pace the consumption of input buffers,
-otherwise we just endup consuming the entire video into a ring buffer, whic=
-h
-makes operation like seeks quite heavy and cause CPU spikes.
 
-That being said, I'm not sure how useful a list would be for bitstream buff=
-ers.
-At the moment, in my current work, I'm leaving buffers in the ready queue, =
-and
-just tagging the one I have already copied into the ring buffer. And I remo=
-ve
-them from the ready list, when the related data has been decoded. This is w=
-hen I
-actually copy the timestamp from src to dst buffer. So in short, I don't us=
-e an
-extra list, but use some marking on the buffers though, to remember which o=
-ne
-have already been copied. This is specific to ring buffer based codecs of
-course.
+> -----Original Message-----
+> From: Will Deacon <will@kernel.org>
+> Sent: Friday, July 28, 2023 10:36 AM
+> To: Russell King (Oracle) <linux@armlinux.org.uk>
+> Cc: Andrew Halaney <ahalaney@redhat.com>; Shenwei Wang
+> <shenwei.wang@nxp.com>; David S. Miller <davem@davemloft.net>; Eric
+> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo
+> Abeni <pabeni@redhat.com>; Maxime Coquelin
+> <mcoquelin.stm32@gmail.com>; Shawn Guo <shawnguo@kernel.org>; Sascha
+> Hauer <s.hauer@pengutronix.de>; Neil Armstrong <neil.armstrong@linaro.org=
+>;
+> Kevin Hilman <khilman@baylibre.com>; Vinod Koul <vkoul@kernel.org>; Chen-
+> Yu Tsai <wens@csie.org>; Jernej Skrabec <jernej.skrabec@gmail.com>; Samue=
+l
+> Holland <samuel@sholland.org>; Giuseppe Cavallaro
+> <peppe.cavallaro@st.com>; Alexandre Torgue <alexandre.torgue@foss.st.com>=
+;
+> Jose Abreu <joabreu@synopsys.com>; Pengutronix Kernel Team
+> <kernel@pengutronix.de>; Fabio Estevam <festevam@gmail.com>; dl-linux-imx
+> <linux-imx@nxp.com>; Jerome Brunet <jbrunet@baylibre.com>; Martin
+> Blumenstingl <martin.blumenstingl@googlemail.com>; Bhupesh Sharma
+> <bhupesh.sharma@linaro.org>; Nobuhiro Iwamatsu
+> <nobuhiro1.iwamatsu@toshiba.co.jp>; Simon Horman
+> <simon.horman@corigine.com>; Bartosz Golaszewski
+> <bartosz.golaszewski@linaro.org>; Wong Vee Khee <veekhee@apple.com>;
+> Revanth Kumar Uppala <ruppala@nvidia.com>; Jochen Henneberg
+> <jh@henneberg-systemdesign.com>; netdev@vger.kernel.org; linux-stm32@st-
+> md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org; linux-
+> kernel@vger.kernel.org; linux-amlogic@lists.infradead.org; imx@lists.linu=
+x.dev;
+> Frank Li <frank.li@nxp.com>
+> Subject: [EXT] Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the T=
+XC
+> clock in fixed-link
+>
+> Caution: This is an external email. Please take care when clicking links =
+or
+> opening attachments. When in doubt, report the message using the 'Report =
+this
+> email' button
+>
+>
+> On Fri, Jul 28, 2023 at 04:22:19PM +0100, Russell King (Oracle) wrote:
+> > On Thu, Jul 27, 2023 at 01:36:45PM -0500, Andrew Halaney wrote:
+> > > I don't have any documentation for the registers here, and as you
+> > > can see I'm an amateur with respect to memory ordering based on my
+> > > prior comment.
+> > >
+> > > But you:
+> > >
+> > >     1. Read intf_reg_off into variable iface
+> > >     2. Write the RESET_SPEED for the appropriate mode to MAC_CTRL_REG
+> > >     3. wmb() to ensure that write goes through
+> >
+> > I wonder about whether that wmb() is required. If the mapping is
+> > device-like rather than memory-like, the write should be committed
+> > before the read that regmap_update_bits() does according to the ARM
+> > memory model. Maybe a bit of information about where this barrier has
+> > come from would be good, and maybe getting it reviewed by the
+> > arm64 barrier specialist, Will Deacon. :)
+> >
+> > wmb() is normally required to be paired with a rmb(), but we're not
+> > talking about system memory here, so I also wonder whether wmb() is
+> > the correct barrier to use.
+>
+> Yes, I don't think wmb() is the right thing here. If you need to ensure t=
+hat the
+> write to MAC_CTRL_REG has taken effect, then you'll need to go through so=
+me
+> device-specific sequence which probably involves reading something back. =
+If you
+> just need things to arrive in order eventually, the memory type already g=
+ives you
+> that.
+>
+> It's also worth pointing out that udelay() isn't necessarily ordered wrt =
+MMIO
+> writes, so that usleep_range() might need some help as well.
+> Non-relaxed MMIO reads, however, _are_ ordered against a subsequent
+> udelay(), so if you add the readback then this might all work out.
+>
 
-The one where a second list helps is for display picture buffers.=C2=A0When=
- a buffer
-has been filled, if its in the ready queue, I currently remove that buffer =
-and
-put it in a custom list. It will then be removed when/if the firmware decid=
-es to
-display it. It may also never be displayed, and reused by the firmware. I s=
-hort,
-these are the frame "owned" by the firmware and containing valid pixels. Th=
-e rdy
-list contains free pictures buffers, and the pixels are undefined.
+    1. Write RESET_SPEED
+    2. Write 0 to MX93_GPR_ENET_QOS_INTF_MODE_MASK
+    3. usleep_range()
+    4. Restore MX93_GPR_ENET_QOS_CLK_GEN_EN | iface
 
-Maybe, and I'm ready to try, I could also leave them in ready queue and opt=
- for
-marking and a counter. As I'm using a job_ready() function, its my driver t=
-hat
-decides if a device_run() should be executed or not. So what matters is
-basically if there is a free buffer for a new decode operation, and a count=
-er of
-filled but not displayed buffer could probably do that.
+In the above example, if a readback after step #2 could ensure sufficient t=
+ime has passed
+before step #4, the wmb() here should be abandoned.
 
-> The most realistic scenario would be for stateful encoders which could
-> keep some input buffers as reference frames for further encoding, but
-> then would this patch actually work for them? It would make
-> __v4l2_m2m_try_queue never add the context to the job_queue if there
-> are some buffers in that hw_queue list.
+Thanks,
+Shenwei
 
-Encoders have 3 set of buffers, despite m2m having two queues. OUTPUT buffe=
-rs
-are the pictures, there is a set of internal reconstruction buffers, and fi=
-nally
-the CAPTURE buffers are the bitstream. Bitstream buffers are subject to
-reordering, so conceptually the firmware holds more then 1, and reconstruct=
-ion
-buffers are completely hidden.
-
->=20
-> Maybe what I need here are actual patches modifying some existing
-> drivers. Randy, would you be able to include that in the next version?
-> Thanks.
-
-Agreed.
-
->=20
-> Best regards,
-> Tomasz
->=20
-> >=20
-> > Nicolas
-> >=20
-> > >=20
-> > > Best regards,
-> > > Tomasz
-> > >=20
-> > > > Nicolas
-> > > > >=20
-> > > > > >=20
-> > > > > > Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
-> > > > > > ---
-> > > > > >  drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++-=
--------
-> > > > > >  include/media/v4l2-mem2mem.h           | 10 +++++++++-
-> > > > > >  2 files changed, 26 insertions(+), 9 deletions(-)
-> > > > > >=20
-> > > > > > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/m=
-edia/v4l2-core/v4l2-mem2mem.c
-> > > > > > index c771aba42015..b4151147d5bd 100644
-> > > > > > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > > > > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > > > > @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v=
-4l2_m2m_dev *m2m_dev,
-> > > > > >             goto job_unlock;
-> > > > > >     }
-> > > > > >=20
-> > > > > > -   src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > > > > -   dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > > > > -   if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > > > > -           dprintk("No input buffers available\n");
-> > > > > > -           goto job_unlock;
-> > > > > > +   if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
-> > > > > > +           src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > > > > +
-> > > > > > +           if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > > > > +                   dprintk("No input buffers available\n");
-> > > > > > +                   goto job_unlock;
-> > > > > > +           }
-> > > > > >     }
-> > > > > > -   if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > > > > -           dprintk("No output buffers available\n");
-> > > > > > -           goto job_unlock;
-> > > > > > +
-> > > > > > +   if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
-> > > > > > +           dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > > > > +           if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > > > > +                   dprintk("No output buffers available\n");
-> > > > > > +                   goto job_unlock;
-> > > > > > +           }
-> > > > > >     }
-> > > > >=20
-> > > > > src and dst would be referenced unitialized below if neither of t=
-he
-> > > > > above ifs hits...
-> > > > >=20
-> > > > > Best regards,
-> > > > > Tomasz
-> > > > >=20
-> > > > > >=20
-> > > > > >     m2m_ctx->new_frame =3D true;
-> > > > > > @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, s=
-truct v4l2_m2m_ctx *m2m_ctx,
-> > > > > >     INIT_LIST_HEAD(&q_ctx->rdy_queue);
-> > > > > >     q_ctx->num_rdy =3D 0;
-> > > > > >     spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
-> > > > > > +   INIT_LIST_HEAD(&q_ctx->hw_queue);
-> > > > > >=20
-> > > > > >     if (m2m_dev->curr_ctx =3D=3D m2m_ctx) {
-> > > > > >             m2m_dev->curr_ctx =3D NULL;
-> > > > > > @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(st=
-ruct v4l2_m2m_dev *m2m_dev,
-> > > > > >=20
-> > > > > >     INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
-> > > > > >     INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
-> > > > > > +   INIT_LIST_HEAD(&out_q_ctx->hw_queue);
-> > > > > > +   INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
-> > > > > >     spin_lock_init(&out_q_ctx->rdy_spinlock);
-> > > > > >     spin_lock_init(&cap_q_ctx->rdy_spinlock);
-> > > > > >=20
-> > > > > > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-=
-mem2mem.h
-> > > > > > index d6c8eb2b5201..2342656e582d 100644
-> > > > > > --- a/include/media/v4l2-mem2mem.h
-> > > > > > +++ b/include/media/v4l2-mem2mem.h
-> > > > > > @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
-> > > > > >   * processed
-> > > > > >   *
-> > > > > >   * @q:             pointer to struct &vb2_queue
-> > > > > > - * @rdy_queue:     List of V4L2 mem-to-mem queues
-> > > > > > + * @rdy_queue:     List of V4L2 mem-to-mem queues. If v4l2_m2m=
-_buf_queue() is
-> > > > > > + *         called in struct vb2_ops->buf_queue(), the buffer e=
-nqueued
-> > > > > > + *         by user would be added to this list.
-> > > > > >   * @rdy_spinlock: spin lock to protect the struct usage
-> > > > > >   * @num_rdy:       number of buffers ready to be processed
-> > > > > > + * @hw_queue:      A list for tracking the buffer is occupied =
-by the hardware
-> > > > > > + *                 (or device's firmware). A buffer could only=
- be in either
-> > > > > > + *                 this list or @rdy_queue.
-> > > > > > + *                 Driver may choose not to use this list whil=
-e uses its own
-> > > > > > + *                 private data to do this work.
-> > > > > >   * @buffered:      is the queue buffered?
-> > > > > >   *
-> > > > > >   * Queue for buffers ready to be processed as soon as this
-> > > > > > @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
-> > > > > >     struct list_head        rdy_queue;
-> > > > > >     spinlock_t              rdy_spinlock;
-> > > > > >     u8                      num_rdy;
-> > > > > > +   struct list_head        hw_queue;
-> > > > > >     bool                    buffered;
-> > > > > >  };
-> > > > > >=20
-> > > > > > --
-> > > > > > 2.17.1
-> > > > > >=20
-> > > >=20
-> >=20
-
+> I gave a (slightly dated) talk about some of this at ELC a while back:
+>
+> https://www.yo/
+> utube.com%2Fwatch%3Fv%3Di6DayghhA8Q&data=3D05%7C01%7Cshenwei.wang
+> %40nxp.com%7C32396fd0396e4e46975f08db8f806680%7C686ea1d3bc2b4c6fa
+> 92cd99c5c301635%7C0%7C0%7C638261553857503588%7CUnknown%7CTWFp
+> bGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6
+> Mn0%3D%7C3000%7C%7C%7C&sdata=3DX5CQrQEVmUjYafYJ%2BzcnGXI9mhDT%
+> 2BMzDazGHOcoomas%3D&reserved=3D0
+>
+> which might help.
+>
+> Will
