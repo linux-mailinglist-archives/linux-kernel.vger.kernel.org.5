@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB304766A68
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD6F766A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235893AbjG1K0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        id S233976AbjG1K0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbjG1KZq (ORCPT
+        with ESMTP id S235880AbjG1K0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:25:46 -0400
+        Fri, 28 Jul 2023 06:26:14 -0400
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C8A3AA9;
-        Fri, 28 Jul 2023 03:25:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B424C03;
+        Fri, 28 Jul 2023 03:25:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690539919; x=1722075919;
+  t=1690539936; x=1722075936;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=sXObJvFOIGK/mqhYpuwAgl4c9CSw6fuF7YraS2BMD6g=;
-  b=vU9cF4V9SJPimPydujYeblaKIwX0QK/fvZrWLQORXK07itfEemy5CP2T
-   8nLxvTvNXtnoRk+yYXXkJzF4/OMZdeznDvQrHnVOqc5ThERptXvVzHEP5
-   SpWaDzMQR369I0D0PJW8IPOsQcUkPS1mmJ3CAw5vx8cE7JM8MdoRF47Tu
-   ird5sASlIq/9LKRJ1P1lBft8yYAkgVgv62OkuLQ/7rUKbgnGj4gb/OrYE
-   WThHx+3m0HtZ1bk/Ls/EKnBKTZ7oEvr3a975XUFp9x6VUUevBwZEpxDHQ
-   Pkmp1fb4Xtd9ivHFUOjI9JTfOvvTKRpqu9ooCv7wsZwbsLYnfH900zDkB
-   Q==;
+  bh=sRLGSv7OHPaSSgY+DXCN/5ykvJ8nOKn3Qv2L9vPlPD0=;
+  b=A91Ri5tWVTt5AOhYGgAIEsFaVrXgTKs9VNO/VH3y9uBihaJBDnnIJOC4
+   GdB7Fi8/31wKVlo9mYex5unyKT0+we/1dUfkl082eR+IM+0+KqqP4oN+l
+   f+wmcQQJIaClseK5Zh/gldz6cZGmSA7pYe2+6wjaknqmAjg2H8FzyCP9R
+   qDbYLcw1e3nx0AxSTjYfNd6pB1nP2J5ApmOI48CHpgprfmag/bfp1jFFP
+   kG/n5cW1WRfbSvK0L5Qwnr0H/XdXZ7GXb+p/z6mT32DXMdWeSaUfbuHVU
+   a4JHnabVghL7j2yJ8Lc6Reo0obTYtu39v7wd+TJ3ZVPjU5qJZSFeGotTb
+   A==;
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="163712550"
+   d="scan'208";a="222728663"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:25:16 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:25:31 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 03:25:14 -0700
+ 15.1.2507.21; Fri, 28 Jul 2023 03:25:27 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:25:10 -0700
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:25:22 -0700
 From:   Varshini Rajendran <varshini.rajendran@microchip.com>
-To:     <andi.shyti@kernel.org>, <robh+dt@kernel.org>,
+To:     <lee@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@microchip.com>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
+        <claudiu.beznea@microchip.com>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <varshini.rajendran@microchip.com>
-Subject: [PATCH v3 13/50] dt-bindings: i2c: at91: Add sam9x7 compatible string
-Date:   Fri, 28 Jul 2023 15:55:06 +0530
-Message-ID: <20230728102506.265917-1-varshini.rajendran@microchip.com>
+Subject: [PATCH v3 14/50] dt-bindings: mfd: at91: Add SAM9X7 compatible string
+Date:   Fri, 28 Jul 2023 15:55:15 +0530
+Message-ID: <20230728102515.265971-1-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,35 +66,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for sam9x7.
+Document sam9x7 DT for flexcom.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/mfd/atmel-flexcom.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-index 6adedd3ec399..6f3158604d02 100644
---- a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-@@ -27,6 +27,9 @@ properties:
-       - items:
-           - const: microchip,sama7g5-i2c
-           - const: microchip,sam9x60-i2c
-+      - items:
-+          - const: microchip,sam9x7-i2c
-+          - const: microchip,sam9x60-i2c
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt b/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
+index 9d837535637b..af692e8833a5 100644
+--- a/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
++++ b/Documentation/devicetree/bindings/mfd/atmel-flexcom.txt
+@@ -6,6 +6,7 @@ at boot time according to the device tree.
  
-   reg:
-     maxItems: 1
-@@ -84,6 +87,7 @@ allOf:
-               - atmel,sama5d4-i2c
-               - atmel,sama5d2-i2c
-               - microchip,sam9x60-i2c
-+              - microchip,sam9x7-i2c
-               - microchip,sama7g5-i2c
-     then:
-       properties:
+ Required properties:
+ - compatible:		Should be "atmel,sama5d2-flexcom"
++			or "microchip,sam9x7-flexcom", "atmel,sama5d2-flexcom"
+ - reg:			Should be the offset/length value for Flexcom dedicated
+ 			I/O registers (without USART, TWI or SPI registers).
+ - clocks:		Should be the Flexcom peripheral clock from PMC.
 -- 
 2.25.1
 
