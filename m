@@ -2,100 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8747667FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FBB766801
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234679AbjG1I77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S234810AbjG1JAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:00:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbjG1I75 (ORCPT
+        with ESMTP id S232771AbjG1JAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:59:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55126B6;
-        Fri, 28 Jul 2023 01:59:56 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 13BD3219B8;
-        Fri, 28 Jul 2023 08:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690534795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 28 Jul 2023 05:00:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D872106
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:00:20 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690534818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+1yAQj2+drdxOg7W1xMMihj39vdtsCy+k9dgFHWRk9A=;
-        b=N0rVU+qUJPLE+5c9Fe2qfiQ4QbEZQ7uOazDWiF4qTaPR4NpWdkKkS8jI1Ck9Zwe6bae+mr
-        im99wL/jnP6faUX3Uo+ijZIgeoz6KKw7xaNAQ915XLzDNdTC3uQAKTpq9JFAvSll8YZiD7
-        G2jza5/bdosUUSWdRG9M5kbJdc7MUAM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690534795;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=jnmY0M8OuuhSiSh/x+he+nRFbUG1l3nvKg0ZHWRzi+Q=;
+        b=AY5tD1omkM4ZkaDNWVQYQWflmux6ksKh4Bth/5nsZrIvkJP5e8qM5dxJOSTAcyQ7WAVCbN
+        qZJvhv8k3KIwPZ4tK92bOAsMZiMmB4dfOV/dQ3Vy3zr/NJtedfJDUC09rtolx00mx9z73c
+        Fsb9AwihdB8umuwQBEa2M938uGBl3Ot42Hojfb0kOorMzRPtfvZBz7HD2gwSOCzLl4ax8/
+        W0bRqntrVzPLhCB9EssYPj1DHg/4dXfMDLFYEln/Tj4oWnPWoQsYqw91VtCU+vqGru9+jj
+        zet/GVo53+t+07bEU4Pw+mGOy+tcCzsbjUjuE/DnY4fjY4cQnn5myDLAnSa0qQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690534818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+1yAQj2+drdxOg7W1xMMihj39vdtsCy+k9dgFHWRk9A=;
-        b=XmNFzsCzeT8aHQNyOZo67JTXE5Qr3GO1uEDjLw+BvbWChknTYmwEHmuilIIvi327JDHha2
-        NIeacs1hzD+6y8AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04B0D133F7;
-        Fri, 28 Jul 2023 08:59:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3oH3AIuDw2SleQAAMHmgww
-        (envelope-from <dwagner@suse.de>); Fri, 28 Jul 2023 08:59:55 +0000
-Date:   Fri, 28 Jul 2023 10:59:54 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Cc:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>
-Subject: Re: [PATCH blktests v1 00/11] Switch to allowed_host
-Message-ID: <ldlkosfmplhb4cqunws5nknpxrgcenbgytlabszl547vygxtbh@xsd7pzil6nk4>
-References: <20230726124644.12619-1-dwagner@suse.de>
- <hqi4yxhc3jc7v7ywf5qvy3u2th676irollqngbsh62rrlitkyy@rhl6axqsve5s>
+        bh=jnmY0M8OuuhSiSh/x+he+nRFbUG1l3nvKg0ZHWRzi+Q=;
+        b=/fIDc4E8awRRUfh41aqLOsBZVfoRbacCbBLYyVy6kaXs4bY7rAZFXjutjNxHH8ZiHQ8mWC
+        ZZcN3ute/jY2mhDw==
+To:     kernel test robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 5/8] printk: nbcon: Add sequence handling
+In-Reply-To: <202307280939.4IPb76dh-lkp@intel.com>
+References: <20230728000233.50887-6-john.ogness@linutronix.de>
+ <202307280939.4IPb76dh-lkp@intel.com>
+Date:   Fri, 28 Jul 2023 11:06:17 +0206
+Message-ID: <87bkfw1kda.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hqi4yxhc3jc7v7ywf5qvy3u2th676irollqngbsh62rrlitkyy@rhl6axqsve5s>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 08:20:55AM +0000, Shinichiro Kawasaki wrote:
-> > Except the last two patches are just refactoring patches. So if we decide to use
-> > common target setup/cleanup helpers, I think we could add them before the last
-> > two patches, which would make the last patch way smaller.
-> 
-> I ran 'make check' and saw shellecheck complaints below. I added 'export' to the
-> variables then they disappeared.
-> 
-> tests/nvme/rc:19:1: warning: def_subsysnqn appears unused. Verify use (or export if used externally). [SC2034]
-> tests/nvme/rc:20:1: warning: def_file_path appears unused. Verify use (or export if used externally). [SC2034]
-> tests/nvme/rc:21:1: warning: def_file_path appears unused. Verify use (or export if used externally). [SC2034]
+On 2023-07-28, kernel test robot <lkp@intel.com> wrote:
+>>> kernel/printk/printk_nbcon.c:168: warning: expecting prototype for nbcon_read_seq(). Prototype was for nbcon_seq_read() instead
+>    kernel/printk/printk_nbcon.c:182: warning: Function parameter or member 'seq' not described in 'nbcon_seq_force'
 
-These variables are not used in nvme/rc at the point I introduce them. Only in
-the tests. I could add the nvmet setup/cleanup helpers with the variables which
-would make those warnings go away. But these helpers would then add the end of
-the series. Also not really good. I don't what is best here.
+Thanks kernel test robot for spotting the 2 kerneldoc errors. I will fix
+them for v3.
 
-> I also ran nvme tests with the export fixes and saw no regression. Looks good
-> from test run point of view.
-
-Thanks!
-
-BTW, I am off next week, so I don't think I send soon an update.
+John
