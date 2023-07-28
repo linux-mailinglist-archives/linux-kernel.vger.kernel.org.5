@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B3C76777F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03ACE76778F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbjG1VQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 17:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
+        id S233562AbjG1VWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 17:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjG1VQZ (ORCPT
+        with ESMTP id S231993AbjG1VWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 17:16:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E633C30;
-        Fri, 28 Jul 2023 14:16:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39EF2621FF;
-        Fri, 28 Jul 2023 21:16:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A2D3C433CA;
-        Fri, 28 Jul 2023 21:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690578981;
-        bh=NsRxddDlLqahYaViS384MxGc/Qfc6oFDePNf6w+QqoY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PuJnstbUtkvCNp0Gra75/xOdXcaWKDCRTsYO+r99XiqpVJMvOk5JoSnrODw9gYXkQ
-         YsssH2Tfc3A1NY8tPToUhRchUl7f1O7ZK2B/NZxmZKEScUI6fq2/fYDacML1YuVJPi
-         gvLISQMOlUCyh1aRg5mZoqqySEtaUZPRRJn5qY9NpRVHpHZRORG0/rpCAqVjtCuOse
-         VYYF02YAVdhnsDqivNZGsQHGZ+Xnww1AGd4xMzkzKK9YjIaht+FmJgjgdmDO6yuhao
-         4ySUCN1mtWsGu+J6lxLZjbKPV2zB7XSdK3lSSjN0AMa+wiMMedQgQ5DZ5b8/PaNjb4
-         Ofq7f3H3Lat5A==
-From:   SeongJae Park <sj@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     SeongJae Park <sj@kernel.org>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Docs/process/changes: Replace http:// with https://
-Date:   Fri, 28 Jul 2023 21:16:16 +0000
-Message-Id: <20230728211616.59550-2-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230728211616.59550-1-sj@kernel.org>
-References: <20230728211616.59550-1-sj@kernel.org>
+        Fri, 28 Jul 2023 17:22:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0ED44B1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690579270;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ac7QCjU27us9pWCzIU7wIhVCfe0T3FQhf/CkOGsKAAQ=;
+        b=LYhSe/6OtEFll5aplWdy4d8CrHxzCAQ8zW2bCaN7e3SauRBnQ7L5ETkDUEGg1tBAJy8OGM
+        Rde9tAHap2nU/doxLLjyPZAyxbineQooQNttMMSc6jJ9r5SeJJuTA3NXk385ozQ50OOLZc
+        FxcsIDYdl9O6/fRL2IzmAzWvflSvksI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-261-05H7r-28PnSRsyvM8gsyhg-1; Fri, 28 Jul 2023 17:21:08 -0400
+X-MC-Unique: 05H7r-28PnSRsyvM8gsyhg-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63d05a56b4dso5500666d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:21:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690579268; x=1691184068;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ac7QCjU27us9pWCzIU7wIhVCfe0T3FQhf/CkOGsKAAQ=;
+        b=g+CSBWb7odeNnKRPAfTOgtEjnKdz1MZ2GADual7tib1tKO9pDLf4pZTXQ24fS+9yQT
+         N6s1xkZKrBlhnBkRjdDtyUwk3XiDOLuNxMtx0k0WCavz57OrLxo3VhwBdDFo+LiswXTp
+         lyHv56VYwTLhZvIP4IDUL70KccFwQqBoVDiyT9DBv87mLNTAs+HHP48SujLU8pFRzSd8
+         GIrOseV2GZI+PtxjpQyIf6O3JEbZr5VJv6PYQbhGcoJlHHNoXOSH7rT7wFalJcHoBND2
+         Zb9CKeHfWF+nMoZmPQuJ5ffjHwdr05TsXMptQToWbGkgDv4aTm5SZb1WBp7NbYvSTmBZ
+         31hw==
+X-Gm-Message-State: ABy/qLZHnHiz1z5j9MAKe9vsRfqsi1fUYIGTpgrin/yutEelOflujIGV
+        +f+tqxDf0bm1EIPPC5HGP3L1dqRym1pa2rO6YqCHq7XiAHqn/RtSjXmdycFyqSR7ZAMU3lMUygB
+        9WLS8JUFdw3hf2RWHdtqS+79o
+X-Received: by 2002:a05:6214:5190:b0:635:fa38:5216 with SMTP id kl16-20020a056214519000b00635fa385216mr571669qvb.0.1690579268035;
+        Fri, 28 Jul 2023 14:21:08 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG+YMOCBtzBXkVZi5qKTKhmwdfdvIXgbKwZ5wE8cXxoJVGwXu7gH3KYSZRnh2FZGnuM3gaciQ==
+X-Received: by 2002:a05:6214:5190:b0:635:fa38:5216 with SMTP id kl16-20020a056214519000b00635fa385216mr571651qvb.0.1690579267641;
+        Fri, 28 Jul 2023 14:21:07 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id h13-20020a0cab0d000000b00635eeb8a4fcsm1538086qvb.114.2023.07.28.14.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 14:21:07 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 17:20:55 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+Message-ID: <ZMQxNzDcYTQRjWNh@x1n>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <ZMQZfn/hUURmfqWN@x1n>
+ <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
+ <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
+ <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
+ <69a5f457-63b6-2d4f-e5c0-4b3de1e6c9f1@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <69a5f457-63b6-2d4f-e5c0-4b3de1e6c9f1@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some links are still using 'http://'.  Replace those with 'https://'.
+On Fri, Jul 28, 2023 at 11:02:46PM +0200, David Hildenbrand wrote:
+> Can we get a simple revert in first (without that FOLL_FORCE special casing
+> and ideally with a better name) to handle stable backports, and I'll
+> follow-up with more documentation and letting GUP callers pass in that flag
+> instead?
+> 
+> That would help a lot. Then we also have more time to let that "move it to
+> GUP callers" mature a bit in -next, to see if we find any surprises?
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/process/changes.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+As I raised my concern over the other thread, I still worry numa users can
+be affected by this change. After all, numa isn't so uncommon to me, at
+least fedora / rhel as CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y. I highly
+suspect that's also true to major distros.  Meanwhile all kernel modules
+use gup..
 
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index f05eada0383e..1982fa896f3b 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -482,7 +482,7 @@ E2fsprogs
- JFSutils
- --------
- 
--- <http://jfs.sourceforge.net/>
-+- <https://jfs.sourceforge.net/>
- 
- Reiserfsprogs
- -------------
-@@ -503,7 +503,7 @@ Pcmciautils
- Quota-tools
- -----------
- 
--- <http://sourceforge.net/projects/linuxquota/>
-+- <https://sourceforge.net/projects/linuxquota/>
- 
- 
- Intel P6 microcode
-@@ -524,7 +524,7 @@ FUSE
- mcelog
- ------
- 
--- <http://www.mcelog.org/>
-+- <https://www.mcelog.org/>
- 
- cpio
- ----
-@@ -544,8 +544,8 @@ PPP
- NFS-utils
- ---------
- 
--- <http://sourceforge.net/project/showfiles.php?group_id=14>
--- <http://nfs.sourceforge.net/>
-+- <https://sourceforge.net/project/showfiles.php?group_id=14>
-+- <https://nfs.sourceforge.net/>
- 
- Iptables
- --------
-@@ -560,7 +560,7 @@ Ip-route2
- OProfile
- --------
- 
--- <http://oprofile.sf.net/download/>
-+- <https://oprofile.sf.net/download/>
- 
- Kernel documentation
- ********************
+I'd say we can go ahead and try if we want, but I really don't know why
+that helps in any form to move it to the callers.. with the risk of
+breaking someone.
+
+Logically it should also be always better to migrate earlier than later,
+not only because the page will be local earlier, but also per I discussed
+also in the other thread (that the gup can hold a ref to the page, and it
+could potentially stop numa balancing to succeed later).
+
+Thanks,
+
 -- 
-2.25.1
+Peter Xu
 
