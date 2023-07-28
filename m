@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E13766B83
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D7D766B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbjG1LO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S236210AbjG1LQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236196AbjG1LOz (ORCPT
+        with ESMTP id S234076AbjG1LP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:14:55 -0400
+        Fri, 28 Jul 2023 07:15:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8830F2723;
-        Fri, 28 Jul 2023 04:14:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585DA10FC;
+        Fri, 28 Jul 2023 04:15:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 26233620CD;
-        Fri, 28 Jul 2023 11:14:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 690B9C433C8;
-        Fri, 28 Jul 2023 11:14:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB46D620F9;
+        Fri, 28 Jul 2023 11:15:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51377C433C7;
+        Fri, 28 Jul 2023 11:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690542893;
-        bh=WS0nmvdraHwRzCUZAn+1znFrZP3+1jWKj9lAGH87O1o=;
+        s=k20201202; t=1690542956;
+        bh=PyjP3f+9n31jt+0umASnjiOR5uaUistYcsi/8tErtnc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=vCV6Vamz2Z+3PEuVoJUo0O5Oos52qqZfLuBps7e/4zzDo5/NSWbWx0ndFx80nzT1r
-         pSNFH0M8nirFkAzVZHTvI6T0M8NTAA/sfeWWmF/JJ3XIzGMVz/13rRA8QWef/0GH9z
-         s3hneMinEtTZa6iF7V/YJGCKD22oibVNQ5Rpjlw+HiQaYUnEqEvEWqGVUhyCE0Ct15
-         dQrB27GPQf8dzxKrbep2TTx1wxG60BDJiUJh7QkWCOuuotUsmyIHIRPnYHLV6zVFOW
-         AkKZOWbzvfgbfrOY2G34IF/RYC7vYamySUDQ9LvJ4MoDTnTvcSXkQXXdfyrUbEOdyI
-         inaIrG0mMYfDQ==
+        b=AL4uWCfq7psiR7Q1q/6e6RYblllNHpbpHFJVHUydQwjpU1hdIrf22MSGjYDrvA8xz
+         3DlpVraKInnVgdjXPUNqC4ze62jgBc1LdgHGgmgElE5b0+QDh872hijGtlz0wQQeJX
+         G+SoIqMnA9rezSwaRvgrnXJYvqDqjMpdYEm+xmhRfZhcLwS8f7memAiQ8wHgWgFnJo
+         KQvYYGjVPR08I+RCjVZK2FDhy6l/MieP/K/gwwEfNC/gt5cFPksznsZiDzKoKMD1EI
+         GxRqVtpt0gaswH662hD1Gjr01tNKY87jS8W8sqVvuY9NgC0+e/x50EriCfF83x+gKY
+         lF/NipaRAddZg==
 From:   Lee Jones <lee@kernel.org>
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ying Liu <victor.liu@nxp.com>
-Cc:     lee@kernel.org, daniel.thompson@linaro.org, jingoohan1@gmail.com,
-        deller@gmx.de, andy@kernel.org, linus.walleij@linaro.org,
-        brgl@bgdev.pl
-In-Reply-To: <20230721093342.1532531-1-victor.liu@nxp.com>
-References: <20230721093342.1532531-1-victor.liu@nxp.com>
-Subject: Re: (subset) [PATCH v4] backlight: gpio_backlight: Drop output
- GPIO direction check for initial power state
-Message-Id: <169054289117.346169.12583682764198130810.b4-ty@kernel.org>
-Date:   Fri, 28 Jul 2023 12:14:51 +0100
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Iskren Chernev <me@iskren.info>, Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230724230258.1017258-1-robh@kernel.org>
+References: <20230724230258.1017258-1-robh@kernel.org>
+Subject: Re: (subset) [PATCH v2] dt-bindings: leds: Convert Panasonic
+ AN30259A to DT schema
+Message-Id: <169054295404.346923.17511363398089527190.b4-ty@kernel.org>
+Date:   Fri, 28 Jul 2023 12:15:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -59,16 +61,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 09:29:03 +0000, Ying Liu wrote:
-> So, let's drop output GPIO direction check and only check GPIO value to set
-> the initial power state.
+On Mon, 24 Jul 2023 17:02:58 -0600, Rob Herring wrote:
+> Convert the Panasonic AN30259A 3-channel LED controller binding to DT
+> schema format.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] backlight: gpio_backlight: Drop output GPIO direction check for initial power state
-      commit: fe1328b5b2a087221e31da77e617f4c2b70f3b7f
+[1/1] dt-bindings: leds: Convert Panasonic AN30259A to DT schema
+      commit: 02a3fa1edeb4fa7bac2cc7f604adf23e34cb2e40
 
 --
 Lee Jones [李琼斯]
