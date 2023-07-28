@@ -2,233 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE53B7661AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733D87661AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbjG1CI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
+        id S230521AbjG1CJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbjG1CIT (ORCPT
+        with ESMTP id S232697AbjG1CJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:08:19 -0400
-Received: from mail-m12739.qiye.163.com (mail-m12739.qiye.163.com [115.236.127.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97012D6A;
-        Thu, 27 Jul 2023 19:08:17 -0700 (PDT)
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 49AA44A01AF;
-        Fri, 28 Jul 2023 10:08:15 +0800 (CST)
-From:   Elaine Zhang <zhangqing@rock-chips.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org,
-        kever.yang@rock-chips.com, zhangqing@rock-chips.com,
-        heiko@sntech.de
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangtao@rock-chips.com
-Subject: [PATCH v2 3/3] clk: rockchip: rk3588: Adjust the GATE_LINK parameter
-Date:   Fri, 28 Jul 2023 10:08:10 +0800
-Message-Id: <20230728020810.29732-4-zhangqing@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230728020810.29732-1-zhangqing@rock-chips.com>
-References: <20230728020810.29732-1-zhangqing@rock-chips.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ0kaGFZDThkdSU5LHxlKT09VEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-        kG
-X-HM-Tid: 0a899a40f466b212kuuu49aa44a01af
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORA6Mhw6Qj0DFjgYIzALCQEV
-        QikaFEtVSlVKTUJLTkpLS0JNS0lCVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
-        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUpJT09ONwY+
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Thu, 27 Jul 2023 22:09:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD3D2D75
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:09:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0139A61F8B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:09:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12ACDC433C8;
+        Fri, 28 Jul 2023 02:09:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690510172;
+        bh=Ret+BePR9nqIq/mJb5VuaqGEst0mgMQLaZuEFmWudjQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qkWhGuyBStVu5kf1RD9bgHQD8g3GJZuM4cpuMoYg3hZkcdW6ursCMXBALcpXijv9N
+         U2zFItnDo6l2AJelQwfW/otvVcvp2mo52NXY8qtYVb+YmVQdIUEl1mNeaTw2d+yvEs
+         VsiRSuMpZMXjWhCuSiGSwowiOBTUtfqq56IvwaXRG9mqds3ATO8MLow0jiKx4zx49a
+         bpkWQkhFun3iVrxp3IIUBWi22WaiU0wr5V9ZEbDKx0cFF0BMSOO1n5lIknsNwEJYTQ
+         wXqTBSfUfMtQl2rr99PYN9GCHs0lliB6XAvIeonx+Q1HyUVtH5OAB5ivSPmFvkYoMw
+         wHrJ8SzC2cEDA==
+Date:   Fri, 28 Jul 2023 02:09:29 +0000
+From:   Eric Van Hensbergen <ericvh@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fs/9p fixes for v6.5-rc3
+Message-ID: <ZMMjWSvfFutpaK6t@e8f1df9eb5bc>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+r45bYtt1Kdf9dWo"
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using Id instead of name, if use name needs to use __clk_lookup().
-But __clk_lookup() is not exported and is not friendly for GKI.
 
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
----
- drivers/clk/rockchip/clk-rk3588.c | 110 ++++++++++++++++--------------
- 1 file changed, 59 insertions(+), 51 deletions(-)
+--+r45bYtt1Kdf9dWo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/clk/rockchip/clk-rk3588.c b/drivers/clk/rockchip/clk-rk3588.c
-index 6994165e0395..4135e96f44ee 100644
---- a/drivers/clk/rockchip/clk-rk3588.c
-+++ b/drivers/clk/rockchip/clk-rk3588.c
-@@ -12,28 +12,6 @@
- #include <dt-bindings/clock/rockchip,rk3588-cru.h>
- #include "clk.h"
- 
--/*
-- * Recent Rockchip SoCs have a new hardware block called Native Interface
-- * Unit (NIU), which gates clocks to devices behind them. These effectively
-- * need two parent clocks.
-- *
-- * Downstream enables the linked clock via runtime PM whenever the gate is
-- * enabled. This implementation uses separate clock nodes for each of the
-- * linked gate clocks, which leaks parts of the clock tree into DT.
-- *
-- * The GATE_LINK macro instead takes the second parent via 'linkname', but
-- * ignores the information. Once the clock framework is ready to handle it, the
-- * information should be passed on here. But since these clocks are required to
-- * access multiple relevant IP blocks, such as PCIe or USB, we mark all linked
-- * clocks critical until a better solution is available. This will waste some
-- * power, but avoids leaking implementation details into DT or hanging the
-- * system.
-- */
--#define GATE_LINK(_id, cname, pname, linkname, f, o, b, gf) \
--	GATE(_id, cname, pname, f, o, b, gf)
--#define RK3588_LINKED_CLK		CLK_IS_CRITICAL
--
--
- #define RK3588_GRF_SOC_STATUS0		0x600
- #define RK3588_PHYREF_ALT_GATE		0xc38
- 
-@@ -1456,7 +1434,7 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 	COMPOSITE_NODIV(HCLK_NVM_ROOT,  "hclk_nvm_root", mux_200m_100m_50m_24m_p, 0,
- 			RK3588_CLKSEL_CON(77), 0, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(31), 0, GFLAGS),
--	COMPOSITE(ACLK_NVM_ROOT, "aclk_nvm_root", gpll_cpll_p, RK3588_LINKED_CLK,
-+	COMPOSITE(ACLK_NVM_ROOT, "aclk_nvm_root", gpll_cpll_p, 0,
- 			RK3588_CLKSEL_CON(77), 7, 1, MFLAGS, 2, 5, DFLAGS,
- 			RK3588_CLKGATE_CON(31), 1, GFLAGS),
- 	GATE(ACLK_EMMC, "aclk_emmc", "aclk_nvm_root", 0,
-@@ -1685,13 +1663,13 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 			RK3588_CLKGATE_CON(42), 9, GFLAGS),
- 
- 	/* vdpu */
--	COMPOSITE(ACLK_VDPU_ROOT, "aclk_vdpu_root", gpll_cpll_aupll_p, RK3588_LINKED_CLK,
-+	COMPOSITE(ACLK_VDPU_ROOT, "aclk_vdpu_root", gpll_cpll_aupll_p, 0,
- 			RK3588_CLKSEL_CON(98), 5, 2, MFLAGS, 0, 5, DFLAGS,
- 			RK3588_CLKGATE_CON(44), 0, GFLAGS),
- 	COMPOSITE_NODIV(ACLK_VDPU_LOW_ROOT, "aclk_vdpu_low_root", mux_400m_200m_100m_24m_p, 0,
- 			RK3588_CLKSEL_CON(98), 7, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(44), 1, GFLAGS),
--	COMPOSITE_NODIV(HCLK_VDPU_ROOT, "hclk_vdpu_root", mux_200m_100m_50m_24m_p, RK3588_LINKED_CLK,
-+	COMPOSITE_NODIV(HCLK_VDPU_ROOT, "hclk_vdpu_root", mux_200m_100m_50m_24m_p, 0,
- 			RK3588_CLKSEL_CON(98), 9, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(44), 2, GFLAGS),
- 	COMPOSITE(ACLK_JPEG_DECODER_ROOT, "aclk_jpeg_decoder_root", gpll_cpll_aupll_spll_p, 0,
-@@ -1742,9 +1720,9 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 	COMPOSITE(ACLK_RKVENC0_ROOT, "aclk_rkvenc0_root", gpll_cpll_npll_p, 0,
- 			RK3588_CLKSEL_CON(102), 7, 2, MFLAGS, 2, 5, DFLAGS,
- 			RK3588_CLKGATE_CON(47), 1, GFLAGS),
--	GATE(HCLK_RKVENC0, "hclk_rkvenc0", "hclk_rkvenc0_root", RK3588_LINKED_CLK,
-+	GATE(HCLK_RKVENC0, "hclk_rkvenc0", "hclk_rkvenc0_root", 0,
- 			RK3588_CLKGATE_CON(47), 4, GFLAGS),
--	GATE(ACLK_RKVENC0, "aclk_rkvenc0", "aclk_rkvenc0_root", RK3588_LINKED_CLK,
-+	GATE(ACLK_RKVENC0, "aclk_rkvenc0", "aclk_rkvenc0_root", 0,
- 			RK3588_CLKGATE_CON(47), 5, GFLAGS),
- 	COMPOSITE(CLK_RKVENC0_CORE, "clk_rkvenc0_core", gpll_cpll_aupll_npll_p, 0,
- 			RK3588_CLKSEL_CON(102), 14, 2, MFLAGS, 9, 5, DFLAGS,
-@@ -1754,10 +1732,10 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 			RK3588_CLKGATE_CON(48), 6, GFLAGS),
- 
- 	/* vi */
--	COMPOSITE(ACLK_VI_ROOT, "aclk_vi_root", gpll_cpll_npll_aupll_spll_p, RK3588_LINKED_CLK,
-+	COMPOSITE(ACLK_VI_ROOT, "aclk_vi_root", gpll_cpll_npll_aupll_spll_p, 0,
- 			RK3588_CLKSEL_CON(106), 5, 3, MFLAGS, 0, 5, DFLAGS,
- 			RK3588_CLKGATE_CON(49), 0, GFLAGS),
--	COMPOSITE_NODIV(HCLK_VI_ROOT, "hclk_vi_root", mux_200m_100m_50m_24m_p, RK3588_LINKED_CLK,
-+	COMPOSITE_NODIV(HCLK_VI_ROOT, "hclk_vi_root", mux_200m_100m_50m_24m_p, 0,
- 			RK3588_CLKSEL_CON(106), 8, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(49), 1, GFLAGS),
- 	COMPOSITE_NODIV(PCLK_VI_ROOT, "pclk_vi_root", mux_100m_50m_24m_p, 0,
-@@ -1929,10 +1907,10 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 	COMPOSITE(ACLK_VOP_ROOT, "aclk_vop_root", gpll_cpll_dmyaupll_npll_spll_p, 0,
- 			RK3588_CLKSEL_CON(110), 5, 3, MFLAGS, 0, 5, DFLAGS,
- 			RK3588_CLKGATE_CON(52), 0, GFLAGS),
--	COMPOSITE_NODIV(ACLK_VOP_LOW_ROOT, "aclk_vop_low_root", mux_400m_200m_100m_24m_p, RK3588_LINKED_CLK,
-+	COMPOSITE_NODIV(ACLK_VOP_LOW_ROOT, "aclk_vop_low_root", mux_400m_200m_100m_24m_p, 0,
- 			RK3588_CLKSEL_CON(110), 8, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(52), 1, GFLAGS),
--	COMPOSITE_NODIV(HCLK_VOP_ROOT, "hclk_vop_root", mux_200m_100m_50m_24m_p, RK3588_LINKED_CLK,
-+	COMPOSITE_NODIV(HCLK_VOP_ROOT, "hclk_vop_root", mux_200m_100m_50m_24m_p, 0,
- 			RK3588_CLKSEL_CON(110), 10, 2, MFLAGS,
- 			RK3588_CLKGATE_CON(52), 2, GFLAGS),
- 	COMPOSITE_NODIV(PCLK_VOP_ROOT, "pclk_vop_root", mux_100m_50m_24m_p, 0,
-@@ -2433,26 +2411,56 @@ static struct rockchip_clk_branch rk3588_clk_branches[] __initdata = {
- 	GATE(ACLK_AV1, "aclk_av1", "aclk_av1_pre", 0,
- 			RK3588_CLKGATE_CON(68), 2, GFLAGS),
- 
--	GATE_LINK(ACLK_ISP1_PRE, "aclk_isp1_pre", "aclk_isp1_root", "aclk_vi_root", 0, RK3588_CLKGATE_CON(26), 6, GFLAGS),
--	GATE_LINK(HCLK_ISP1_PRE, "hclk_isp1_pre", "hclk_isp1_root", "hclk_vi_root", 0, RK3588_CLKGATE_CON(26), 8, GFLAGS),
--	GATE_LINK(HCLK_NVM, "hclk_nvm", "hclk_nvm_root", "aclk_nvm_root", RK3588_LINKED_CLK, RK3588_CLKGATE_CON(31), 2, GFLAGS),
--	GATE_LINK(ACLK_USB, "aclk_usb", "aclk_usb_root", "aclk_vo1usb_top_root", 0, RK3588_CLKGATE_CON(42), 2, GFLAGS),
--	GATE_LINK(HCLK_USB, "hclk_usb", "hclk_usb_root", "hclk_vo1usb_top_root", 0, RK3588_CLKGATE_CON(42), 3, GFLAGS),
--	GATE_LINK(ACLK_JPEG_DECODER_PRE, "aclk_jpeg_decoder_pre", "aclk_jpeg_decoder_root", "aclk_vdpu_root", 0, RK3588_CLKGATE_CON(44), 7, GFLAGS),
--	GATE_LINK(ACLK_VDPU_LOW_PRE, "aclk_vdpu_low_pre", "aclk_vdpu_low_root", "aclk_vdpu_root", 0, RK3588_CLKGATE_CON(44), 5, GFLAGS),
--	GATE_LINK(ACLK_RKVENC1_PRE, "aclk_rkvenc1_pre", "aclk_rkvenc1_root", "aclk_rkvenc0", 0, RK3588_CLKGATE_CON(48), 3, GFLAGS),
--	GATE_LINK(HCLK_RKVENC1_PRE, "hclk_rkvenc1_pre", "hclk_rkvenc1_root", "hclk_rkvenc0", 0, RK3588_CLKGATE_CON(48), 2, GFLAGS),
--	GATE_LINK(HCLK_RKVDEC0_PRE, "hclk_rkvdec0_pre", "hclk_rkvdec0_root", "hclk_vdpu_root", 0, RK3588_CLKGATE_CON(40), 5, GFLAGS),
--	GATE_LINK(ACLK_RKVDEC0_PRE, "aclk_rkvdec0_pre", "aclk_rkvdec0_root", "aclk_vdpu_root", 0, RK3588_CLKGATE_CON(40), 6, GFLAGS),
--	GATE_LINK(HCLK_RKVDEC1_PRE, "hclk_rkvdec1_pre", "hclk_rkvdec1_root", "hclk_vdpu_root", 0, RK3588_CLKGATE_CON(41), 4, GFLAGS),
--	GATE_LINK(ACLK_RKVDEC1_PRE, "aclk_rkvdec1_pre", "aclk_rkvdec1_root", "aclk_vdpu_root", 0, RK3588_CLKGATE_CON(41), 5, GFLAGS),
--	GATE_LINK(ACLK_HDCP0_PRE, "aclk_hdcp0_pre", "aclk_vo0_root", "aclk_vop_low_root", 0, RK3588_CLKGATE_CON(55), 9, GFLAGS),
--	GATE_LINK(HCLK_VO0, "hclk_vo0", "hclk_vo0_root", "hclk_vop_root", 0, RK3588_CLKGATE_CON(55), 5, GFLAGS),
--	GATE_LINK(ACLK_HDCP1_PRE, "aclk_hdcp1_pre", "aclk_hdcp1_root", "aclk_vo1usb_top_root", 0, RK3588_CLKGATE_CON(59), 6, GFLAGS),
--	GATE_LINK(HCLK_VO1, "hclk_vo1", "hclk_vo1_root", "hclk_vo1usb_top_root", 0, RK3588_CLKGATE_CON(59), 9, GFLAGS),
--	GATE_LINK(ACLK_AV1_PRE, "aclk_av1_pre", "aclk_av1_root", "aclk_vdpu_root", 0, RK3588_CLKGATE_CON(68), 1, GFLAGS),
--	GATE_LINK(PCLK_AV1_PRE, "pclk_av1_pre", "pclk_av1_root", "hclk_vdpu_root", 0, RK3588_CLKGATE_CON(68), 4, GFLAGS),
--	GATE_LINK(HCLK_SDIO_PRE, "hclk_sdio_pre", "hclk_sdio_root", "hclk_nvm", 0, RK3588_CLKGATE_CON(75), 1, GFLAGS),
-+	/*
-+	 * Recent Rockchip SoCs have a new hardware block called Native Interface
-+	 * Unit (NIU), which gates clocks to devices behind them. These effectively
-+	 * need two parent clocks.
-+	 */
-+	GATE_LINK(ACLK_ISP1_PRE, "aclk_isp1_pre", "aclk_isp1_root", ACLK_VI_ROOT, 0,
-+			RK3588_CLKGATE_CON(26), 6, GFLAGS),
-+	GATE_LINK(HCLK_ISP1_PRE, "hclk_isp1_pre", "hclk_isp1_root", HCLK_VI_ROOT, 0,
-+			RK3588_CLKGATE_CON(26), 8, GFLAGS),
-+	GATE_LINK(HCLK_NVM, "hclk_nvm", "hclk_nvm_root", ACLK_NVM_ROOT, 0,
-+			RK3588_CLKGATE_CON(31), 2, GFLAGS),
-+	GATE_LINK(ACLK_USB, "aclk_usb", "aclk_usb_root", ACLK_VO1USB_TOP_ROOT, 0,
-+			RK3588_CLKGATE_CON(42), 2, GFLAGS),
-+	GATE_LINK(HCLK_USB, "hclk_usb", "hclk_usb_root", HCLK_VO1USB_TOP_ROOT, 0,
-+			RK3588_CLKGATE_CON(42), 3, GFLAGS),
-+	GATE_LINK(ACLK_JPEG_DECODER_PRE, "aclk_jpeg_decoder_pre", "aclk_jpeg_decoder_root",
-+			ACLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(44), 7, GFLAGS),
-+	GATE_LINK(ACLK_VDPU_LOW_PRE, "aclk_vdpu_low_pre", "aclk_vdpu_low_root", ACLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(44), 5, GFLAGS),
-+	GATE_LINK(ACLK_RKVENC1_PRE, "aclk_rkvenc1_pre", "aclk_rkvenc1_root", ACLK_RKVENC0, 0,
-+			RK3588_CLKGATE_CON(48), 3, GFLAGS),
-+	GATE_LINK(HCLK_RKVENC1_PRE, "hclk_rkvenc1_pre", "hclk_rkvenc1_root", HCLK_RKVENC0, 0,
-+			RK3588_CLKGATE_CON(48), 2, GFLAGS),
-+	GATE_LINK(HCLK_RKVDEC0_PRE, "hclk_rkvdec0_pre", "hclk_rkvdec0_root", HCLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(40), 5, GFLAGS),
-+	GATE_LINK(ACLK_RKVDEC0_PRE, "aclk_rkvdec0_pre", "aclk_rkvdec0_root", ACLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(40), 6, GFLAGS),
-+	GATE_LINK(HCLK_RKVDEC1_PRE, "hclk_rkvdec1_pre", "hclk_rkvdec1_root", HCLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(41), 4, GFLAGS),
-+	GATE_LINK(ACLK_RKVDEC1_PRE, "aclk_rkvdec1_pre", "aclk_rkvdec1_root", ACLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(41), 5, GFLAGS),
-+	GATE_LINK(ACLK_HDCP0_PRE, "aclk_hdcp0_pre", "aclk_vo0_root", ACLK_VOP_LOW_ROOT, 0,
-+			RK3588_CLKGATE_CON(55), 9, GFLAGS),
-+	GATE_LINK(HCLK_VO0, "hclk_vo0", "hclk_vo0_root", HCLK_VOP_ROOT, 0,
-+			RK3588_CLKGATE_CON(55), 5, GFLAGS),
-+	GATE_LINK(ACLK_HDCP1_PRE, "aclk_hdcp1_pre", "aclk_hdcp1_root", ACLK_VO1USB_TOP_ROOT, 0,
-+			RK3588_CLKGATE_CON(59), 6, GFLAGS),
-+	GATE_LINK(HCLK_VO1, "hclk_vo1", "hclk_vo1_root", HCLK_VO1USB_TOP_ROOT, 0,
-+			RK3588_CLKGATE_CON(59), 9, GFLAGS),
-+	GATE_LINK(ACLK_AV1_PRE, "aclk_av1_pre", "aclk_av1_root", ACLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(68), 1, GFLAGS),
-+	GATE_LINK(PCLK_AV1_PRE, "pclk_av1_pre", "pclk_av1_root", HCLK_VDPU_ROOT, 0,
-+			RK3588_CLKGATE_CON(68), 4, GFLAGS),
-+	GATE_LINK(HCLK_SDIO_PRE, "hclk_sdio_pre", "hclk_sdio_root", HCLK_NVM, 0,
-+			RK3588_CLKGATE_CON(75), 1, GFLAGS),
-+	GATE_LINK(PCLK_VO0GRF, "pclk_vo0grf", "pclk_vo0_root", HCLK_VO0, CLK_IGNORE_UNUSED,
-+			RK3588_CLKGATE_CON(55), 10, GFLAGS),
-+	GATE_LINK(PCLK_VO1GRF, "pclk_vo1grf", "pclk_vo1_root", HCLK_VO1, CLK_IGNORE_UNUSED,
-+			RK3588_CLKGATE_CON(59), 12, GFLAGS),
- };
- 
- static void __init rk3588_clk_init(struct device_node *np)
--- 
-2.17.1
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git fixes/next
+
+for you to fetch changes up to e6ab0b914c12acefbb0880dded48cb930ccab5cf:
+
+  fs/9p: Remove unused extern declaration (2023-07-20 19:21:48 +0000)
+
+--------------
+
+Misc set of fixes for 9p in 6.5
+
+Most of these clean up warnings we've gotten out of compilation tools, but
+several of them were from inspection while hunting down a couple of
+regressions.
+
+The most important one to pull is 75b396821cb71164dac3a1ad51dda4781ea8dbad
+(fs/9p: remove unnecessary and overrestrictive check)
+which caused a regression for some folks by restricting mmap
+in any case where writeback caches weren't enabled.
+
+Most of the other bugs caught via inspection were type mismatches.
+
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      fs/9p: Fix a datatype used with V9FS_DIRECT_IO
+
+Dominique Martinet (5):
+      9p: fix ignored return value in v9fs_dir_release
+      9p: virtio: fix unlikely null pointer deref in handle_rerror
+      9p: virtio: make sure 'offs' is initialized in zc_request
+      9p: virtio: skip incrementing unused variable
+      9p: remove dead stores (variable set again without being read)
+
+Eric Van Hensbergen (4):
+      fs/9p: remove unnecessary and overrestrictive check
+      fs/9p: fix typo in comparison logic for cache mode
+      fs/9p: fix type mismatch in file cache mode helper
+      fs/9p: remove unnecessary invalidate_inode_pages2
+
+YueHaibing (1):
+      fs/9p: Remove unused extern declaration
+
+ fs/9p/fid.h            |  6 +++---
+ fs/9p/v9fs.c           |  2 --
+ fs/9p/v9fs.h           |  2 +-
+ fs/9p/vfs_dir.c        |  5 +++--
+ fs/9p/vfs_file.c       |  5 +----
+ fs/9p/vfs_inode.c      |  6 ------
+ fs/9p/vfs_inode_dotl.c |  1 -
+ net/9p/client.c        | 46 ++++++++++++----------------------------------
+ net/9p/trans_virtio.c  |  8 ++++----
+ 9 files changed, 24 insertions(+), 57 deletions(-)
+
+
+--+r45bYtt1Kdf9dWo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElpbw0ZalkJikytFRiP/V+0pf/5gFAmTDI1kACgkQiP/V+0pf
+/5hFCQ/9Hp1iDIvM58rkGcDD1qkpwi8jHchF3Sn4i6V+gqEams7oqK3phJq3fYsR
+6EIuNW5cTSEfWCeusTQxsu1ISRAEHb1QbHVREWsZXma5kucwad1rZCE3PULmrlIv
+NucVMBJ09e+rMFeFB78Ej/FgPXHyRAp2Junf4zNtAs+Md9Yc4UYnpLE87EH4M9R/
+Ao1QskCKXPWRcu2pEhkxnQxwUQdJyQa/gr6IOmemlkslmnPmBnLN3oEh76lw3Vni
+EtzqhK0BxXfldao1laXpr63yXAJoUXfANg2WY3U3gw5VQICqqYEJk5KR5CSWj5KZ
+Wn709UxagDPI9aX5NqhY6Z1p+D5R7hV1av5CB0PdOI4vMRaMxzh39JKWsoVFQtX4
+XLIOgDpSH6BhFJ5t7i8MCoNKRMhx/iR5Ln+r79sFR8Hwz7j0QnR0bqfdxywfoP3N
+eZEYbefIXFZscwFkA+gBxZIKu2Ljbtf6ZCxdhlT/O9jWMGLNV54VmcuXUGlLoaad
+cC/Dej7xIM3n1U+DWfsQlW2N47y5WEl8bVvJEpG3uytGMFuZ5rqOF46lkDf41Mrh
+W42nX+qeWln/ymZigSm+bCyRKkfM7SGbWlta0fHRsEYLvlBkQSTfpFJIgm5iqcFG
+aZLEwrSLAN9hi5zgDPTm49RyE/7Bel6Ib9FnewwxvW1+bmCME5w=
+=SXb4
+-----END PGP SIGNATURE-----
+
+--+r45bYtt1Kdf9dWo--
