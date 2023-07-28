@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1240D766E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E535766E0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236343AbjG1NW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        id S236456AbjG1NW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbjG1NWZ (ORCPT
+        with ESMTP id S236478AbjG1NW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:22:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4303B1FC8;
-        Fri, 28 Jul 2023 06:22:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE2AF62139;
-        Fri, 28 Jul 2023 13:22:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD2BC433C8;
-        Fri, 28 Jul 2023 13:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690550543;
-        bh=W/bcRxC7HKPq+WV1f0L7wqNL6qKipJr/pW8p28YHdiw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WRfiWNezqz7bKg30pZXD9X14kxEezE9wiYwkdXSnfB9e+W2dalsxwO+Ip8ZQuQ4kI
-         49CdbPIsyF8p+LM4O80t51G+DEGUm8blJxgq8PTJsh/LGn/lN28HdcE3PM/U9TfJ2+
-         dBcI+nCVLbcN38q9DDzvYOcCcjUxVlp77CpntqV8yxVWTBgozAzX/YpQLpCPnrJlz5
-         cMzM2yTUOo47ItovedppYQM4XN6YXyRNnihXTUxD2QNB2Mh5/SWATuzDw/pLSEijwL
-         CQaZuhmta93WbqOlceD4iFd6vElUnKsoNOdEJI1vw9Qh263vGKqEH3r6rFufzRUtQw
-         MII83kK+lAC3g==
-Date:   Fri, 28 Jul 2023 14:22:17 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Besar Wicaksono <bwicaksono@nvidia.com>, suzuki.poulose@arm.com
-Cc:     robin.murphy@arm.com, ilkka@os.amperecomputing.com,
-        catalin.marinas@arm.com, mark.rutland@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, treding@nvidia.com,
-        jonathanh@nvidia.com, vsethi@nvidia.com, rwiley@nvidia.com,
-        efunsten@nvidia.com
-Subject: Re: [PATCH v5] perf: arm_cspmu: Separate Arm and vendor module
-Message-ID: <20230728132216.GA21394@willie-the-truck>
-References: <20230705104745.52255-1-bwicaksono@nvidia.com>
+        Fri, 28 Jul 2023 09:22:57 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D355211C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:22:54 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso14814375e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:22:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690550573; x=1691155373;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t86fEk1B48Jhf5PGXA8uJZQumipRoCPOJsUE1d8YRCM=;
+        b=I5pAB+18R2+dx1wq/ZGauDPjeDbH0NfpPC5bHPSwYGWvSKcCsgREL+dEaLCCscjJfX
+         faKocywBv3vgb/20PmviQnUnE8DF4z3yPJmwjGLszgYFmNSSAxqx4DYhC112fmIYJZSJ
+         50bigVm9HhJcF9S1kJJaI4DQqkjLhamBTF0ndwqDaTie7cYu+eLJ4lQCm5t7wVN52jeH
+         fTMla8zNu0rKI1FL4cD88rY/VUEspZp9wIL0U4L6CwzU3cw7+MNy4OA/MgNFK/5AKiD/
+         9FGB0CxuLDbUYogCp5O9jmTd2+rW1yzlE06cvKtjGe76zsFSi9Cx2+I5wFaQEHsRMihe
+         a3Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690550573; x=1691155373;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t86fEk1B48Jhf5PGXA8uJZQumipRoCPOJsUE1d8YRCM=;
+        b=QJw2vnbYHyFivWnN2nr64kwVumvucMTwNaOER2QwDPN/uUEmZ4/5B0g85tiFk09crr
+         PCu5J/mkzbcpoaYG04eTjxWK935qspGBWs8gDdfm/BDpg3G5VayM7sRSdaFIAjhBvd6P
+         biG6ebcirqPpDeVoAUEs2pZtTlFrLo9357fc0l2/kSJVxMY04BhziELNdWjiJICZi6Qv
+         P9wj+UW3yoAWy8nrxVAjpT0IMJ5pbXpi1YmzLi+Z2yH4aXJc567YwSinp3Yc+rSjjjEO
+         bb6Vr96iP8cof7sB033DIuP0tegs45VkZGZa51TWOGIXid7Sjy0Rvq9YMLJS40XjfSnv
+         /bfA==
+X-Gm-Message-State: ABy/qLYfWTD28hoG5/lr6yPAtZBdgxLIuV5bo4inG3Tzafk8VeQIp/ef
+        tXQ+PsLvLWL0lZJ7dRNnd7tczg==
+X-Google-Smtp-Source: APBJJlHImMAVgco6lnO2EZ30XvL84WDSKwCfHrqNfAxxnVJY79gWRp11k/XtM/0DucWy4yuI+ySlKg==
+X-Received: by 2002:a05:600c:82c7:b0:3fa:821e:1fb5 with SMTP id eo7-20020a05600c82c700b003fa821e1fb5mr5010086wmb.5.1690550572892;
+        Fri, 28 Jul 2023 06:22:52 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c240900b003fa98908014sm7009317wmp.8.2023.07.28.06.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 06:22:52 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org
+In-Reply-To: <20230314-topic-2290_compats-v1-0-47e26c3c0365@linaro.org>
+References: <20230314-topic-2290_compats-v1-0-47e26c3c0365@linaro.org>
+Subject: Re: (subset) [PATCH 0/6] QCM2290 compatibles
+Message-Id: <169055057157.6557.3890207774670962574.b4-ty@linaro.org>
+Date:   Fri, 28 Jul 2023 14:22:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230705104745.52255-1-bwicaksono@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 05, 2023 at 05:47:45AM -0500, Besar Wicaksono wrote:
-> Arm Coresight PMU driver consists of main standard code and
-> vendor backend code. Both are currently built as a single module.
-> This patch adds vendor registration API to separate the two to
-> keep things modular. The main driver requests each known backend
-> module during initialization and defer device binding process.
-> The backend module then registers an init callback to the main
-> driver and continue the device driver binding process.
+
+On Tue, 14 Mar 2023 13:52:55 +0100, Konrad Dybcio wrote:
+> Document a couple of compatibles for IPs found on the QCM2290 that don't
+> require any specific driver changes
 > 
-> Signed-off-by: Besar Wicaksono <bwicaksono@nvidia.com>
-> ---
 > 
-> Changes from v4:
->  * Fix warning reported by kernel test robot
-> v4: https://lore.kernel.org/linux-arm-kernel/20230620041438.32514-1-bwicaksono@nvidia.com/T/#u
 
-One minor comment below, but this mostly looks good to me. I'd like Suzuki's
-Ack before I queue it, though.
+Applied, thanks!
 
-> +	/* Load implementer module and initialize the callbacks. */
-> +	if (match) {
-> +		mutex_lock(&arm_cspmu_lock);
-> +
-> +		if (match->impl_init_ops) {
-> +			if (try_module_get(match->module)) {
-> +				cspmu->impl.match = match;
-> +				ret = match->impl_init_ops(cspmu);
-> +				module_put(match->module);
+[3/6] dt-bindings: nvmem: Add compatible for QCM2290
+      commit: 4b71b2a44d7d692ae681961a9b2865724652d1f6
 
-Why is it safe to drop the module reference here? If I'm understanding the
-flow correctly, ->impl_init_ops() will populate more function pointers
-in the cspmu->impl.ops structure, and we don't appear to take a module
-reference when calling those.
+Best regards,
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-What happens if the backend module is unloaded while the core module
-is executed those functions?
-
-Cheers,
-
-Will
