@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A483F767378
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A281767382
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjG1ReX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S234696AbjG1RfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG1ReW (ORCPT
+        with ESMTP id S234203AbjG1RfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:34:22 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D4D3A9B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:34:19 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-77dcff76e35so29412839f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:34:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690565658; x=1691170458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JJok0QwvQYR36IKSjL8u59VRoTv1ncFddhWzUUY4CBU=;
-        b=XtTBKKi+apn2fenZceCkRVw6TxyPthsMizJvUJrPqjkPN2XI4pbqgSDa4uDCTSd/FZ
-         Luwhkl++4arII4ixaGEnK+WoPSnFplB1+9+0uYlYuXC3ax638pDV07ieqSvgaYshQcyp
-         rzWhvpVh7VgJH0aZBOO0gZz5olNyXWLlSAzTQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565658; x=1691170458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JJok0QwvQYR36IKSjL8u59VRoTv1ncFddhWzUUY4CBU=;
-        b=FLqCtFg7faSv6KhvOpGQob1CYDbkoAuw0Q2Cv6Gh3r4CZqqvOzjiYTN5O949M8lU7r
-         lplrlfzBir61MP/Hl9+8rAyqQq9tkp32IsktuFweNLBsv4UdBH8FN0dTzMYC6q7h94N9
-         OtU6xKdXW/rBAMNh5GSeQSrLRfW/2w3jK1J/VROVF7jLoZ/fKa2GddS1Fls6jpsIIDGL
-         Bvpq6WIyCsSB04P+icMWj7nuyiudCn6lQv1LTtRWAPsme3uftwKboNLLeU1hMEFQTTKH
-         w5Erwy30s72NZfxIAzNgeDp7jJ3mKyczYzg+mLjMIEa6ALefD7wVP5z6QaNQNpvwVmkn
-         7fhQ==
-X-Gm-Message-State: ABy/qLazxPSOhGs6Q/fka2cbQjdTV0RfdH4Ncro9hCVt/dMyE48qqteK
-        Y0NgYxBGo/0b++A8LWHHCaUWBA==
-X-Google-Smtp-Source: APBJJlGurOK8bCZ2RudKd5/e+thD+HiWjwVIx2Tiv/Vlhq/itMoQKBCYEu4Myp6ksjRe3coqJq70vw==
-X-Received: by 2002:a6b:3b09:0:b0:780:cb36:6f24 with SMTP id i9-20020a6b3b09000000b00780cb366f24mr199256ioa.2.1690565658763;
-        Fri, 28 Jul 2023 10:34:18 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id a10-20020a056638018a00b0042b599b224bsm1244019jaq.121.2023.07.28.10.34.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:34:18 -0700 (PDT)
-Message-ID: <b247219c-f988-bcc2-36f5-22659e2ced96@linuxfoundation.org>
-Date:   Fri, 28 Jul 2023 11:34:17 -0600
+        Fri, 28 Jul 2023 13:35:00 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E14C35B8;
+        Fri, 28 Jul 2023 10:34:58 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36SHYeAi002916;
+        Fri, 28 Jul 2023 12:34:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690565680;
+        bh=RP+HRN01GvCpuLHa+K+zuLzVcQpXjb4bgF/7YnW6uXY=;
+        h=From:To:CC:Subject:Date;
+        b=x4TQFCgvRLIeBk11C/rA5lqYLyzy9Ugq/Tvgkz3I+HPjulOqozoo3mg4b5ejiIGi5
+         GOdXApZWMSR3o7cPX8r9R+PuGibnAJAr/EHPhq6dsUEexS+AG7X5JwV2MGxa2dJ1oa
+         l3RkIFm1nI7xSgZOfO192OPtIEVxneFwhPgYNO9k=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36SHYeBp061014
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Jul 2023 12:34:40 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
+ Jul 2023 12:34:40 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 28 Jul 2023 12:34:40 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36SHYdiu003961;
+        Fri, 28 Jul 2023 12:34:39 -0500
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Rahul T R <r-ravikumar@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jai Luthra <j-luthra@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+Subject: [PATCH v3 0/8] arm64: ti: k3-am62: Add display support
+Date:   Fri, 28 Jul 2023 23:04:30 +0530
+Message-ID: <20230728173438.12995-1-a-bhatia1@ti.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: selftests: connector: proc_filter.c:48:20: error: invalid
- application of 'sizeof' to an incomplete type 'struct proc_input'
-Content-Language: en-US
-To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        Netdev <netdev@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <CA+G9fYt=6ysz636XcQ=-KJp7vJcMZ=NjbQBrn77v7vnTcfP2cA@mail.gmail.com>
- <E8C72537-4280-401A-B25D-9734D2756A6A@oracle.com>
- <BB43F17E-EC00-4E72-BB3D-F4E6FA65F954@oracle.com>
- <799d6088-e28f-f386-6a00-2291304171a2@linuxfoundation.org>
- <DD53AFBE-F948-40F9-A980-2DA155236237@oracle.com>
- <20230727194311.6a51f285@kernel.org>
- <5844361F-E776-4C52-BA8F-7E13D6B4EDE1@oracle.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <5844361F-E776-4C52-BA8F-7E13D6B4EDE1@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,32 +74,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 10:46, Anjali Kulkarni wrote:
-> 
-> 
->> On Jul 27, 2023, at 7:43 PM, Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Fri, 28 Jul 2023 01:38:40 +0000 Anjali Kulkarni wrote:
->>> Jakub,
->>> Do I need to revert the -f runtime filter option back to compile time
->>> and commit with that disabled so the selftest compiles on a kernel on
->>> which the new options are not defined?
->>
->> I'm not 100% sure myself on what's the expectations for building
->> selftests against uAPI headers is..
->>
->> I _think_ that you're supposed to add an -I$something to
->> the CFLAGS in your Makefile. KHDR_INCLUDES maybe? So that the uAPI
->> headers from the build get used (rendered by make headers).
->>
->> Take a look at Documentation/dev-tools/kselftest.rst, I hope
->> the answer is somewhere there.
-> Ok thanks, I will look into your suggestions.
-> Anjali
-> 
+Hi all,
 
-I sent a 3 patch series with the fix to this problem and a couple of
-others I found during testing.
+Reviving this old patch series, after a long time. This was paused
+because the compatible for the Display SubSystem (DSS) had to be
+changed, along with the driver.
 
-thanks,
--- Shuah
+The patch series adds DT nodes for Display SubSystem (DSS) and other
+peripherals required to enable the HDMI audio and video on the AM625 SK,
+AM62-LP SK, as well as the AM625 based Beagle-Play platforms. An HDMI
+monitor can be connected to the boards for the audio/video outputs.
+
+The series adding the compatible and basic driver support[0] is in the
+drm-misc-next and linux-next queues and is expected to be in the
+mainline by v6.6-rc1.
+
+Patches 5 and 7 have been picked up from TI's linux tree[1] based off
+linux-kernel v6.1.
+
+Change Log:
+V2 -> V3:
+  - Updated the compatible from "ti,am65x-dss" to "ti,am625-dss".
+  - Peripheral nodes like HDMI TX, HDMI connector are now added to
+    k3-am62x-sk-common.dtsi instead of k3-am625-sk.dts, in order to
+    support AM62-LP SK-EVM as well.
+  - Dropped the HDMI master clock node as it is not connected on the
+    EVM, and should not have been added in the first place.
+  - Re-worded and Re-ordered commits.
+  - Dropped Rahul Ravikumar's R-bs because of the changes.
+  - Added AM625 based Beagle-Play for HDMI support.
+  - Added HDMI audio support as well.
+
+V1 -> V2:
+ - Removed repetitive data in dss_ports
+
+V2: https://lore.kernel.org/all/20220505134303.23208-1-a-bhatia1@ti.com/
+V1: https://lore.kernel.org/all/20220427090850.32280-1-a-bhatia1@ti.com/
+
+[0]: https://lore.kernel.org/all/20230616150900.6617-1-a-bhatia1@ti.com/
+[1]: https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/log/?h=ti-linux-6.1.y-cicd
+
+Aradhya Bhatia (6):
+  arm64: dts: ti: k3-am62x-sk-common: Update main-i2c1 frequency
+  arm64: dts: ti: k3-am62-main: Add node for Display SubSystem
+  arm64: dts: ti: k3-am62x-sk-common: Add DSS pinmux info
+  arm64: dts: ti: k3-am62x-sk-common: Add support for HDMI output
+  arm64: dts: ti: k3-am625-beagleplay: Add DSS pinmux info
+  arm64: defconfig: Enable ITE_IT66121 HDMI transmitter
+
+Jai Luthra (1):
+  arm64: dts: ti: am62x-sk: Add overlay for HDMI audio
+
+Nishanth Menon (1):
+  arm64: dts: ti: k3-am625-beagleplay: Add HDMI support
+
+ arch/arm64/boot/dts/ti/Makefile               |   3 +
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |  23 +++
+ .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 182 ++++++++++++++++++
+ .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 119 +++++++++++-
+ .../boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso   |  40 ++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 6 files changed, 367 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am62x-sk-hdmi-audio.dtso
+
+-- 
+2.40.1
+
