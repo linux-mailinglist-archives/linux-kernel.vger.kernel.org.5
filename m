@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D1776671C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD814766725
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbjG1I2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S234821AbjG1Ib1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 04:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbjG1I1X (ORCPT
+        with ESMTP id S234973AbjG1Iax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:27:23 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E142035A9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:27:21 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe1c285690so1906311e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:27:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690532840; x=1691137640;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wjknMk9xDOdfH8tlcXEgST094q3tv+7K3A03BMiS3S8=;
-        b=yAWwa/GRLkDZZ4Rykif2uAUtYp20wQlJjIM/2pHOafKd8dC7tf2fAwuqDhVoCgwlQL
-         vFjNP8uv2Wp38EdfqcTxdkfiKmsLid5aBHt+ivLuJH7nkWcx3a/m8eLq7YGwtBcYgb6D
-         xPEYuwkxCtT8dKNQhFuyLGx576ny357Frkunl/FF2VY8p2FUO1ziVgp4sVVNgzzQHXJM
-         Q3U/qs0yM4pSB2soclGhm6Qt1KbVhfDj/eFtWUEdKKkJsnolCHV2XjflaTQr3lynn5f9
-         E8tD7Iflhv3cw3iKswUXQtpGqB+2jC2zEXHBGy+EnCs3PVowXfTMuzMvjq+JZ0oTYS5I
-         u+gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690532840; x=1691137640;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wjknMk9xDOdfH8tlcXEgST094q3tv+7K3A03BMiS3S8=;
-        b=V5QyzIjVjqF+bs4f5+ygbcpE8BBwybEtHrTZIYXUg32fw+DKpEEhBQeRUJ+Ap2EWyt
-         OQeaRBiYXtGmtHhWGKBg05BHj/SpmkCFA9mNa3hvDICBnkZk+0Rdm/agGgc4/4zRpck3
-         m+ZnofCXis8X9TxBDzkGcqNvUciuS9pyJoRyOHNNGOvPw1n++1kEVCxLkkMxk44V6yEW
-         RvtRI9PCqHFmq4p1QnJjYk3tsq3+X0mpwvprvnz3zGnw9XpeAnT1g2uRya5Yy2VT6rRR
-         eLn0jLRZ7SMT+WDZioUKn7aFyPW0zXlugZdl6m+S2Fg8XZe9hu2CA/DVpRcCYjru/LwM
-         qlNQ==
-X-Gm-Message-State: ABy/qLYllJB35o1QH+44yqp1Y/7EJWzHFOh3qZXVzPa0WG27SINNAH/F
-        V3MUNnaxWbHbB3Oe+lbmv0bKRA==
-X-Google-Smtp-Source: APBJJlF3I5wf7RWZJLYXn4nrVP+lvIHaqAMcKZc3ypHI+/2MRCVd46QbfOZh+nv/toPn/5epDiSLMg==
-X-Received: by 2002:ac2:5f4c:0:b0:4fb:a990:bb28 with SMTP id 12-20020ac25f4c000000b004fba990bb28mr1052611lfz.18.1690532840066;
-        Fri, 28 Jul 2023 01:27:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w6-20020aa7dcc6000000b005223ad8d7d7sm1520005edu.30.2023.07.28.01.27.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 01:27:19 -0700 (PDT)
-Message-ID: <117f6341-55d7-601b-203f-8a09dd4bb22f@linaro.org>
-Date:   Fri, 28 Jul 2023 10:27:16 +0200
+        Fri, 28 Jul 2023 04:30:53 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6475B3A9C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:29:53 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-59-spQ2bcCCN6uK73WIrMkiVA-1; Fri, 28 Jul 2023 09:29:50 +0100
+X-MC-Unique: spQ2bcCCN6uK73WIrMkiVA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
+ 2023 09:29:48 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 28 Jul 2023 09:29:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jijie Shao' <shaojijie@huawei.com>,
+        "yisen.zhuang@huawei.com" <yisen.zhuang@huawei.com>,
+        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+CC:     "shenjian15@huawei.com" <shenjian15@huawei.com>,
+        "wangjie125@huawei.com" <wangjie125@huawei.com>,
+        "liuyonglong@huawei.com" <liuyonglong@huawei.com>,
+        "wangpeiyang1@huawei.com" <wangpeiyang1@huawei.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net 1/6] net: hns3: fix side effects passed to min_t()
+Thread-Topic: [PATCH net 1/6] net: hns3: fix side effects passed to min_t()
+Thread-Index: AQHZwSodHT1OfdHQgUOtv3IG+DBXRa/O1ztQ
+Date:   Fri, 28 Jul 2023 08:29:48 +0000
+Message-ID: <85e3c423aa5a400981ae5c53a29ee280@AcuMS.aculab.com>
+References: <20230728075840.4022760-1-shaojijie@huawei.com>
+ <20230728075840.4022760-2-shaojijie@huawei.com>
+In-Reply-To: <20230728075840.4022760-2-shaojijie@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 09/11] remoteproc: qcom: Add Hexagon based multipd
- rproc driver
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mathieu.poirier@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        quic_eberman@quicinc.com, kvalo@kernel.org,
-        loic.poulain@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
-        quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
-        quic_varada@quicinc.com
-References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
- <20230728063412.1641856-10-quic_mmanikan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728063412.1641856-10-quic_mmanikan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 08:34, Manikanta Mylavarapu wrote:
-> +
-> +static int q6_get_inbound_irq(struct qcom_q6v5 *q6,
-> +			      struct platform_device *pdev,
-> +			      const char *int_name,
-> +			      int index, int *pirq,
-> +			      irqreturn_t (*handler)(int irq, void *data))
-> +{
-> +	int ret, irq;
-> +	char *interrupt, *tmp = (char *)int_name;
-> +	struct q6_wcss *wcss = q6->rproc->priv;
-> +
-> +	irq = platform_get_irq(pdev, index);
-> +	if (irq < 0) {
-> +		if (irq != -EPROBE_DEFER)
+From: Jijie Shao
+> Sent: 28 July 2023 08:59
+> 
+> num_online_cpus() may call more than once when passing to min_t(),
+> between calls, it may return different values, so move num_online_cpus()
+> out of min_t().
 
-Still not good... I think I am saying this the third time: drop this
-eprobe defer dance. It is not needed. Just open the definition of
-dev_err_probe().
+Nope, wrong bug:
+min() (and friends) are careful to only evaluate their arguments once.
+The bug is using min_t() - especially with a small type.
 
-> +			return dev_err_probe(&pdev->dev, irq,
-> +					     "failed to retrieve %s IRQ: %d\n",
-> +					     int_name, irq);
-> +	}
-> +
+If/when the number of cpu hits 65536 the (u16) cast will convert
+it to zero.
 
+Looking at the code a lot of the local variables should be
+'unsigned int' not 'u16.
+Just because the domain of a value is small doesn't mean
+you should use a small type (unless you are saving space in
+a structure).
 
+	David
 
-Best regards,
-Krzysztof
+> 
+> Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> index 9f6890059666..823e6d2e85f5 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> @@ -4757,6 +4757,7 @@ static int hns3_nic_alloc_vector_data(struct hns3_nic_priv *priv)
+>  {
+>  	struct hnae3_handle *h = priv->ae_handle;
+>  	struct hns3_enet_tqp_vector *tqp_vector;
+> +	u32 online_cpus = num_online_cpus();
+>  	struct hnae3_vector_info *vector;
+>  	struct pci_dev *pdev = h->pdev;
+>  	u16 tqp_num = h->kinfo.num_tqps;
+> @@ -4766,7 +4767,7 @@ static int hns3_nic_alloc_vector_data(struct hns3_nic_priv *priv)
+> 
+>  	/* RSS size, cpu online and vector_num should be the same */
+>  	/* Should consider 2p/4p later */
+> -	vector_num = min_t(u16, num_online_cpus(), tqp_num);
+> +	vector_num = min_t(u16, online_cpus, tqp_num);
+> 
+>  	vector = devm_kcalloc(&pdev->dev, vector_num, sizeof(*vector),
+>  			      GFP_KERNEL);
+> --
+> 2.30.0
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
