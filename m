@@ -2,143 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19699767238
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E71767243
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbjG1Qnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S234232AbjG1Qoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjG1Qm7 (ORCPT
+        with ESMTP id S233482AbjG1Qnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:42:59 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DD14223
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:49 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-77dcff76e35so28574539f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562568; x=1691167368;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O15ZlJlMRRtfXuiAf9H5Y3NU4zBlFmFQB8XZUfTXeI4=;
-        b=jVw7OGLEOwjjGVchaN6wX+a8JIucwVplUbPRiAybz25B+NvXLDyU7MPnQhfWGs38Or
-         tly/xPZ68rh/HXSyZLyh3dB+QhVmCvxvAMdiAkX5xtV2698P8H6YoT3P6K7zlCkWg5Pe
-         KSMOqbCNSDEgaXVZNh17+j4Kh8wTkzvWbeWeSYy0FtXgwM4clwYUefYE3YOZAuyyOl/s
-         4bjBIQnHWNdnJV45lXmC8uf5CAEFRkgEg2v6HUd/Pj5BwKCAlOJ3RC3gz879bN+YOl70
-         TFXw6nnIQOKHcQKkQX1en86DI89y3zVQKOzMra3/Na90JNMsKytK/54b8vOihTV9bhiE
-         mI0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562568; x=1691167368;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O15ZlJlMRRtfXuiAf9H5Y3NU4zBlFmFQB8XZUfTXeI4=;
-        b=TXhOsfiJTu//JR9u7gODF+ZQm3FTzg9iZQxH/2jO2/jYTFA6tLm4sFhZMDjLOhfm+b
-         jQP5ctbsuWtwi17mxQzJ/ytoDGbfZM1vgyYHLDrKrUDq+M69RRBEYfOMMgxJwXztBbY1
-         ++HergkKwM6Df0szDbUU+nPH1qLxOBcgN7nVFfOyWXmq8RScuRUI1rmMGv43s5JPUujE
-         01d9qQE3rM3pTpGpdiSgo++Vw6waQvhgNLWi7q8cdE5h0Yp0YDshQlysZqtjw+fCU0I8
-         YDPnKytfecpNGF5PiRg//Ke9clbJ9WZo+sWV/ycSQwzFJHZf6LFvVeAR6rZVLwcD34aR
-         YzwA==
-X-Gm-Message-State: ABy/qLbS+rtXAk/oVe/VgL138++/CiKIDMACVT7xYhS5REEVxGnFQOrb
-        m6SSX8GGvpV+5T77RMV88Smcgw==
-X-Google-Smtp-Source: APBJJlGKlSXFxFxxRloaX5Gi5aKRPavKM4FCE0fJPAcWwlHsa0M1NoWfz6vJ0S3r82zpEeCfr/rQRg==
-X-Received: by 2002:a6b:b797:0:b0:783:63e8:3bfc with SMTP id h145-20020a6bb797000000b0078363e83bfcmr116801iof.0.1690562567714;
-        Fri, 28 Jul 2023 09:42:47 -0700 (PDT)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1158808jal.136.2023.07.28.09.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:42:47 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 10/12] futex: make futex_parse_waitv() available as a helper
-Date:   Fri, 28 Jul 2023 10:42:33 -0600
-Message-Id: <20230728164235.1318118-11-axboe@kernel.dk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230728164235.1318118-1-axboe@kernel.dk>
-References: <20230728164235.1318118-1-axboe@kernel.dk>
+        Fri, 28 Jul 2023 12:43:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 79B324223
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CD2C15DB;
+        Fri, 28 Jul 2023 09:44:13 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 764733F67D;
+        Fri, 28 Jul 2023 09:43:27 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+Subject: [PATCH v5 04/24] x86/resctrl: Move rmid allocation out of mkdir_rdt_prepare()
+Date:   Fri, 28 Jul 2023 16:42:34 +0000
+Message-Id: <20230728164254.27562-5-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
+References: <20230728164254.27562-1-james.morse@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make it more generically useful, augment it with allowing the caller
-to pass in the wake handler and wake data. Convert the futex_waitv()
-syscall, passing in the default handlers.
+RMID are allocated for each monitor or control group directory, because
+each of these needs its own RMID. For control groups,
+rdtgroup_mkdir_ctrl_mon() later goes on to allocate the CLOSID.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+MPAM's equivalent of RMID is not an independent number, so can't be
+allocated until the CLOSID is known. An RMID allocation for one CLOSID
+may fail, whereas another may succeed depending on how many monitor
+groups a control group has.
+
+The RMID allocation needs to move to be after the CLOSID has been
+allocated.
+
+Move the RMID allocation out of mkdir_rdt_prepare() to occur in its caller,
+after the mkdir_rdt_prepare() call. This allows the RMID allocator to
+know the CLOSID.
+
+Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+Signed-off-by: James Morse <james.morse@arm.com>
 ---
- kernel/futex/futex.h    |  5 +++++
- kernel/futex/syscalls.c | 14 ++++++++++----
- 2 files changed, 15 insertions(+), 4 deletions(-)
+Changes since v2:
+ * Moved kernfs_activate() later to preserve atomicity of files being visible
+---
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 35 +++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index 4633c99ea4b6..6a13275ca231 100644
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -355,6 +355,11 @@ struct futex_vector {
- 	struct futex_q q;
- };
- 
-+extern int futex_parse_waitv(struct futex_vector *futexv,
-+			     struct futex_waitv __user *uwaitv,
-+			     unsigned int nr_futexes, futex_wake_fn *wake,
-+			     void *wake_data);
-+
- extern int futex_wait_multiple(struct futex_vector *vs, unsigned int count,
- 			       struct hrtimer_sleeper *to);
- 
-diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-index 221c49797de9..bbb3b3ceef51 100644
---- a/kernel/futex/syscalls.c
-+++ b/kernel/futex/syscalls.c
-@@ -184,12 +184,15 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
-  * @futexv:	Kernel side list of waiters to be filled
-  * @uwaitv:     Userspace list to be parsed
-  * @nr_futexes: Length of futexv
-+ * @wake:	Wake to call when futex is woken
-+ * @wake_data:	Data for the wake handler
-  *
-  * Return: Error code on failure, 0 on success
-  */
--static int futex_parse_waitv(struct futex_vector *futexv,
--			     struct futex_waitv __user *uwaitv,
--			     unsigned int nr_futexes)
-+int futex_parse_waitv(struct futex_vector *futexv,
-+		      struct futex_waitv __user *uwaitv,
-+		      unsigned int nr_futexes, futex_wake_fn *wake,
-+		      void *wake_data)
- {
- 	struct futex_waitv aux;
- 	unsigned int i;
-@@ -214,6 +217,8 @@ static int futex_parse_waitv(struct futex_vector *futexv,
- 		futexv[i].w.val = aux.val;
- 		futexv[i].w.uaddr = aux.uaddr;
- 		futexv[i].q = futex_q_init;
-+		futexv[i].q.wake = wake;
-+		futexv[i].q.wake_data = wake_data;
- 	}
- 
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index e7178bbbd30f..7c5cfb373d03 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3189,6 +3189,12 @@ static int mkdir_rdt_prepare_rmid_alloc(struct rdtgroup *rdtgrp)
  	return 0;
-@@ -290,7 +295,8 @@ SYSCALL_DEFINE5(futex_waitv, struct futex_waitv __user *, waiters,
- 		goto destroy_timer;
+ }
+ 
++static void mkdir_rdt_prepare_rmid_free(struct rdtgroup *rgrp)
++{
++	if (rdt_mon_capable)
++		free_rmid(rgrp->closid, rgrp->mon.rmid);
++}
++
+ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
+ 			     const char *name, umode_t mode,
+ 			     enum rdt_group_type rtype, struct rdtgroup **r)
+@@ -3254,12 +3260,6 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
+ 		goto out_destroy;
  	}
  
--	ret = futex_parse_waitv(futexv, waiters, nr_futexes);
-+	ret = futex_parse_waitv(futexv, waiters, nr_futexes, futex_wake_mark,
-+				NULL);
- 	if (!ret)
- 		ret = futex_wait_multiple(futexv, nr_futexes, timeout ? &to : NULL);
+-	ret = mkdir_rdt_prepare_rmid_alloc(rdtgrp);
+-	if (ret)
+-		goto out_destroy;
+-
+-	kernfs_activate(kn);
+-
+ 	/*
+ 	 * The caller unlocks the parent_kn upon success.
+ 	 */
+@@ -3278,7 +3278,6 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
+ static void mkdir_rdt_prepare_clean(struct rdtgroup *rgrp)
+ {
+ 	kernfs_remove(rgrp->kn);
+-	free_rmid(rgrp->closid, rgrp->mon.rmid);
+ 	rdtgroup_remove(rgrp);
+ }
  
+@@ -3300,12 +3299,21 @@ static int rdtgroup_mkdir_mon(struct kernfs_node *parent_kn,
+ 	prgrp = rdtgrp->mon.parent;
+ 	rdtgrp->closid = prgrp->closid;
+ 
++	ret = mkdir_rdt_prepare_rmid_alloc(rdtgrp);
++	if (ret) {
++		mkdir_rdt_prepare_clean(rdtgrp);
++		goto out_unlock;
++	}
++
++	kernfs_activate(rdtgrp->kn);
++
+ 	/*
+ 	 * Add the rdtgrp to the list of rdtgrps the parent
+ 	 * ctrl_mon group has to track.
+ 	 */
+ 	list_add_tail(&rdtgrp->mon.crdtgrp_list, &prgrp->mon.crdtgrp_list);
+ 
++out_unlock:
+ 	rdtgroup_kn_unlock(parent_kn);
+ 	return ret;
+ }
+@@ -3336,10 +3344,17 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node *parent_kn,
+ 	ret = 0;
+ 
+ 	rdtgrp->closid = closid;
+-	ret = rdtgroup_init_alloc(rdtgrp);
+-	if (ret < 0)
++
++	ret = mkdir_rdt_prepare_rmid_alloc(rdtgrp);
++	if (ret)
+ 		goto out_id_free;
+ 
++	kernfs_activate(rdtgrp->kn);
++
++	ret = rdtgroup_init_alloc(rdtgrp);
++	if (ret < 0)
++		goto out_rmid_free;
++
+ 	list_add(&rdtgrp->rdtgroup_list, &rdt_all_groups);
+ 
+ 	if (rdt_mon_capable) {
+@@ -3358,6 +3373,8 @@ static int rdtgroup_mkdir_ctrl_mon(struct kernfs_node *parent_kn,
+ 
+ out_del_list:
+ 	list_del(&rdtgrp->rdtgroup_list);
++out_rmid_free:
++	mkdir_rdt_prepare_rmid_free(rdtgrp);
+ out_id_free:
+ 	closid_free(closid);
+ out_common_fail:
 -- 
-2.40.1
+2.39.2
 
