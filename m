@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BC97661CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763FB7661CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjG1Ccy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
+        id S232636AbjG1CdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjG1Ccs (ORCPT
+        with ESMTP id S232575AbjG1CdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:32:48 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6209E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690511567; x=1722047567;
-  h=date:from:to:cc:subject:message-id;
-  bh=b+WHikH1nFZWlDk2v7iVShwbr33JMmCxAlx0Ji2jDSY=;
-  b=NrQiLdQpJnBLzbgKs5qlOBLVTLM00pUXZdiTdSGtbOcNh+uBmvVHuxZa
-   6WKh9Kfu/VRAN3o1sxx7wO4Hppg3ZE1X1CMhTwNc40z0jyIiD7zwHhRrI
-   GSULkjfR/uPQakOkzEP6qe/BMeu9GqNdS7N6Gfceo/uVZHJNtvoiR4RfO
-   32pScBIZc59B7LYBhfxbwoCzxNDD6ad4P533P7AtbTgBWKkbGPqJEYDJn
-   2/rs7HJG1uY4TUSUJDToy5M8+EZ4/FyojxBZmEyXWxZnKxSJ8FF0GlsGC
-   hjlDVU9fVtLFSmiRHaKKZRRxiCejaQKYqcgW7YgFeKbYbYVZLC6fPP+ZY
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="454850824"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="454850824"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 19:32:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="756975124"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="756975124"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 27 Jul 2023 19:32:46 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPDHZ-0002na-1z;
-        Fri, 28 Jul 2023 02:32:45 +0000
-Date:   Fri, 28 Jul 2023 10:31:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 363664856d3ffbf1482d6b50921c67bdcafdbff5
-Message-ID: <202307281044.0bhZOPgn-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Thu, 27 Jul 2023 22:33:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FB30DA;
+        Thu, 27 Jul 2023 19:33:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B82361F97;
+        Fri, 28 Jul 2023 02:33:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D2DC433C8;
+        Fri, 28 Jul 2023 02:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690511601;
+        bh=H5DZiC+YGeGkUW+jjo5LoBNHhvMZFNEnZwIT7bvrBX4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PRlj79ZaeaAKHeUVKI/L6crpFIc8/WF3LSUJJpTKmFHAppfcCwiUNidwqXpLthN64
+         Nz+AHCbzjyF8JoBmdvX9MC1XueQ+GP1j7qKzto+tRqKQorxKxfbuCZ5l04bH1HXZCp
+         jpwQ3vgc8nCdWH29HYh55CsXYqfxnR+HY7vA6h+ABRoQFkXi6gmeCwhoUF7zsXCqjO
+         5dAMINBKICbmOsWCqpIAV2mZL5/LcXOmGwCo82GEjuNc2ntjPKeoDovaXhxA3JlchZ
+         SptGNaqek6fmbCAu1lScUPo5EoESrHsetYDo3CofFLV2KKw9s81PHFvK+AIwTIxZjg
+         MUoS0pE4me1SA==
+Message-ID: <40365501-283a-408b-3514-48c29db36861@kernel.org>
+Date:   Fri, 28 Jul 2023 11:33:19 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
+Content-Language: en-US
+To:     TW <dalzot@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     regressions@lists.linux.dev,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
+ <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
+ <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
+ <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
+ <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
+ <48bc1736-5e4e-3a9b-3715-60509c333bb1@kernel.org>
+ <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,145 +68,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 363664856d3ffbf1482d6b50921c67bdcafdbff5  Merge branch into tip/master: 'x86/microcode'
+On 7/27/23 21:25, TW wrote:
+> It was all 1 patch but the first change had a formatting issue from the 
+> email format I guess. So I fixed that and the patch went through and 
+> looks like the drive error message has stopped. Still a little slow 
+> coming back but that error is gone at least.
 
-elapsed time: 723m
+"Slow coming back" -> Compared to which version of the kernel ? Do you have
+numbers ?
 
-configs tested: 126
-configs skipped: 6
+If the devices are HDDs, resume will wait for these to spin up. That takes a
+while (about 10s normally).
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r014-20230727   gcc  
-alpha                randconfig-r022-20230727   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r013-20230727   gcc  
-arc                  randconfig-r016-20230727   gcc  
-arc                  randconfig-r022-20230727   gcc  
-arc                  randconfig-r025-20230727   gcc  
-arc                  randconfig-r043-20230727   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r036-20230727   gcc  
-arm                  randconfig-r046-20230727   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r024-20230727   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r011-20230727   gcc  
-csky                 randconfig-r021-20230727   gcc  
-csky                 randconfig-r032-20230727   gcc  
-csky                 randconfig-r036-20230727   gcc  
-hexagon              randconfig-r041-20230727   clang
-hexagon              randconfig-r045-20230727   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230727   clang
-i386         buildonly-randconfig-r005-20230727   clang
-i386         buildonly-randconfig-r006-20230727   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230727   clang
-i386                 randconfig-i002-20230727   clang
-i386                 randconfig-i003-20230727   clang
-i386                 randconfig-i004-20230727   clang
-i386                 randconfig-i005-20230727   clang
-i386                 randconfig-i006-20230727   clang
-i386                 randconfig-i011-20230727   gcc  
-i386                 randconfig-i012-20230727   gcc  
-i386                 randconfig-i013-20230727   gcc  
-i386                 randconfig-i014-20230727   gcc  
-i386                 randconfig-i015-20230727   gcc  
-i386                 randconfig-i016-20230727   gcc  
-i386                 randconfig-r003-20230727   clang
-i386                 randconfig-r012-20230727   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r034-20230727   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r002-20230727   gcc  
-m68k                 randconfig-r026-20230727   gcc  
-m68k                 randconfig-r031-20230727   gcc  
-microblaze           randconfig-r012-20230727   gcc  
-microblaze           randconfig-r025-20230727   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r024-20230727   gcc  
-nios2                randconfig-r033-20230727   gcc  
-openrisc             randconfig-r005-20230727   gcc  
-openrisc             randconfig-r026-20230727   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r035-20230727   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r002-20230727   clang
-powerpc              randconfig-r035-20230727   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230727   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r001-20230727   clang
-s390                 randconfig-r034-20230727   clang
-s390                 randconfig-r044-20230727   gcc  
-sh                               allmodconfig   gcc  
-sh                   randconfig-r006-20230727   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230727   gcc  
-sparc                randconfig-r013-20230727   gcc  
-sparc64              randconfig-r014-20230727   gcc  
-sparc64              randconfig-r015-20230727   gcc  
-sparc64              randconfig-r023-20230727   gcc  
-sparc64              randconfig-r031-20230727   gcc  
-sparc64              randconfig-r033-20230727   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r032-20230727   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230727   clang
-x86_64       buildonly-randconfig-r002-20230727   clang
-x86_64       buildonly-randconfig-r003-20230727   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230727   gcc  
-x86_64               randconfig-x002-20230727   gcc  
-x86_64               randconfig-x003-20230727   gcc  
-x86_64               randconfig-x004-20230727   gcc  
-x86_64               randconfig-x005-20230727   gcc  
-x86_64               randconfig-x006-20230727   gcc  
-x86_64               randconfig-x011-20230727   clang
-x86_64               randconfig-x012-20230727   clang
-x86_64               randconfig-x013-20230727   clang
-x86_64               randconfig-x014-20230727   clang
-x86_64               randconfig-x015-20230727   clang
-x86_64               randconfig-x016-20230727   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r001-20230727   gcc  
-xtensa               randconfig-r003-20230727   gcc  
-xtensa               randconfig-r011-20230727   gcc  
+> 
+> Jul 27 05:05:05 rageworks systemd[1]: Starting System Suspend...
+> Jul 27 05:05:05 rageworks systemd-sleep[1624]: Entering sleep state 
+> 'suspend'...
+> Jul 27 05:05:05 rageworks kernel: PM: suspend entry (deep)
+> Jul 27 05:05:05 rageworks kernel: Filesystems sync: 0.246 seconds
+> Jul 27 05:05:26 rageworks kernel: Freezing user space processes
+> Jul 27 05:05:26 rageworks kernel: Freezing user space processes 
+> completed (elapsed 0.001 seconds)
+> Jul 27 05:05:26 rageworks kernel: OOM killer disabled.
+> Jul 27 05:05:26 rageworks kernel: Freezing remaining freezable tasks
+> Jul 27 05:05:26 rageworks kernel: Freezing remaining freezable tasks 
+> completed (elapsed 0.000 seconds)
+> Jul 27 05:05:26 rageworks kernel: printk: Suspending console(s) (use 
+> no_console_suspend to debug)
+> Jul 27 05:05:26 rageworks kernel: serial 00:05: disabled
+> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Synchronizing SCSI cache
+> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Synchronizing SCSI cache
+> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Synchronizing SCSI cache
+> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Stopping disk
+> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Stopping disk
+> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Stopping disk
+> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Preparing to enter system 
+> sleep state S3
+> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Saving platform NVS memory
+> Jul 27 05:05:26 rageworks kernel: Disabling non-boot CPUs ...
+> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 1 is now offline
+> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 2 is now offline
+> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 3 is now offline
+> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Low-level resume complete
+> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Restoring platform NVS memory
+> Jul 27 05:05:26 rageworks kernel: Enabling non-boot CPUs ...
+> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 1 
+> APIC 0x1
+> Jul 27 05:05:26 rageworks kernel: CPU1 is up
+> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 2 
+> APIC 0x2
+> Jul 27 05:05:26 rageworks kernel: CPU2 is up
+> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 3 
+> APIC 0x3
+> Jul 27 05:05:26 rageworks kernel: CPU3 is up
+> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Waking up from system sleep 
+> state S3
+> Jul 27 05:05:26 rageworks kernel: xhci_hcd 0000:02:00.0: xHC error in 
+> resume, USBSTS 0x401, Reinit
+> Jul 27 05:05:26 rageworks kernel: usb usb1: root hub lost power or was reset
+> Jul 27 05:05:26 rageworks kernel: usb usb2: root hub lost power or was reset
+> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Starting disk
+> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Starting disk
+> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Starting disk
+> Jul 27 05:05:26 rageworks kernel: serial 00:05: activated
+> Jul 27 05:05:26 rageworks kernel: ata6: SATA link down (SStatus 0 
+> SControl 330)
+> Jul 27 05:05:26 rageworks kernel: ata5: SATA link down (SStatus 0 
+> SControl 330)
+> Jul 27 05:05:26 rageworks kernel: ata9: SATA link down (SStatus 0 
+> SControl 300)
+> Jul 27 05:05:26 rageworks kernel: usb 1-10: reset full-speed USB device 
+> number 4 using xhci_hcd
+> Jul 27 05:05:26 rageworks kernel: usb 1-8: reset full-speed USB device 
+> number 3 using xhci_hcd
+> Jul 27 05:05:26 rageworks kernel: usb 1-7: reset full-speed USB device 
+> number 2 using xhci_hcd
+> Jul 27 05:05:26 rageworks kernel: OOM killer enabled.
+> Jul 27 05:05:26 rageworks kernel: Restarting tasks ... done.
+> Jul 27 05:05:26 rageworks kernel: random: crng reseeded on system resumption
+> Jul 27 05:05:26 rageworks kernel: PM: suspend exit
+> 
+> 
+> On 7/27/23 04:27, Damien Le Moal wrote:
+>> On 7/27/23 19:22, TW wrote:
+>>> I managed to fix the patch file, guess the formatting messed up a bit. So will
+>>> try with those patches installed.
+>> Just in case, patch fil attached to avoid formatting issues.
+>>
+>>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Damien Le Moal
+Western Digital Research
+
