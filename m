@@ -2,176 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017E17661C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BDF7661CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbjG1CZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
+        id S232598AbjG1CaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjG1CZD (ORCPT
+        with ESMTP id S232287AbjG1CaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:25:03 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB95930DC;
-        Thu, 27 Jul 2023 19:24:57 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-78847bb8940so68497539f.0;
-        Thu, 27 Jul 2023 19:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690511097; x=1691115897;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qde5oqHOAvsDSREhKG9It0ouCEwVKT5mPlK+bDyfn8=;
-        b=UkixTDoY7LOV17oa9nRZhZAQaN2Mj+2yTSttLogXFgCMFPM9B5TBsPHse2aoZ33Ode
-         xYrl26hQZQ1+kTEVHKTh8uweBic+vNFuELyC07uDGSPXNddhvxAKLtcYmHtL7begeeXc
-         6cvN7hxxx1EUOEN/ziwSi2+yUkTs4EufWFmT+XqvksNatla9NJCK0qJDIFa6tvU4hoSr
-         G1MMOQ6wwsPUifF8YNPoDSWAQjujyOVnBXH1paGDHnjNwkNpcjJxeH+dFidwcAYpq0tU
-         jCSfRQtCwzAS5DldFHdhWfiu5dfX6LFymiJgnpfG77fW3/MSbxxR4B9CJYXSX65fiU/B
-         qj0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690511097; x=1691115897;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3qde5oqHOAvsDSREhKG9It0ouCEwVKT5mPlK+bDyfn8=;
-        b=No43+/o9ZgMIb6gkILBnxROG3+b2LqLQDO+5VqLjyf9QTmNErG2QEycOjcBm9LQJN/
-         vhKK4F4j0ykhWCsy6YKoremtKBQlZSgNEs1+4ZHDGXCmiFnhaJASGkM8kB8jxSJ99/uG
-         UubbrVPDKYriHWmBYc7IJHVNsFHiKOXBaqTep+FBPxYIlpl+D8xnnoYUXKnZhhcSjO8J
-         qwnUrfMgi8vJWmugYLfpKCzyE2cbebeGwWqOcMBhCMkF1LlJWbMXGiFV7bbfMLEFgOhI
-         Mxoa2uC6D+dZ2H8vggq3mfLLYG1+Haoi+H2GPJllLxRRtJO9ekwB3eewH64nhuGc/A3n
-         Cd+g==
-X-Gm-Message-State: ABy/qLb03OYNgR/yUqO2bmrv7/13dSf2S+ccxrvAOCUf9mprw++z0kkN
-        OkmAAFzx3weY7uvWAg5cwy4=
-X-Google-Smtp-Source: APBJJlF6t68jjR7oPSohtE8LKCrzR5k41/zGO4rIXzlObMnzhYO/Huq9UTUwM+T5ScYQqZozzckmCw==
-X-Received: by 2002:a05:6e02:128f:b0:343:c8b1:b7f0 with SMTP id y15-20020a056e02128f00b00343c8b1b7f0mr1280054ilq.23.1690511097076;
-        Thu, 27 Jul 2023 19:24:57 -0700 (PDT)
-Received: from bangji.roam.corp.google.com ([101.235.25.38])
-        by smtp.gmail.com with ESMTPSA id gz24-20020a17090b0ed800b002677739860fsm1696204pjb.34.2023.07.27.19.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 19:24:56 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH v2 2/2] perf build: Include generated header files properly
-Date:   Thu, 27 Jul 2023 19:24:47 -0700
-Message-ID: <20230728022447.1323563-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-In-Reply-To: <20230728022447.1323563-1-namhyung@kernel.org>
-References: <20230728022447.1323563-1-namhyung@kernel.org>
+        Thu, 27 Jul 2023 22:30:14 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2072.outbound.protection.outlook.com [40.107.102.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D15E30DA;
+        Thu, 27 Jul 2023 19:30:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gj7exefdjk0BC5upxEsJaF16NiWsSpD5aqCoq/TyD0UaVlbq1y9Xh6nbr3082ePmMmDR6BLOwc4MRn4OpEGQwY9kcCvY/J8M8ljGcazPEBXERyZOKDMeeQ4zxy3TwBPRt7Vkqa56sIlxC28rsjlwI4/4ULPz51RPFlWhXPohTkLpUD+SZ/UajIlNYEH6hyrHZk7RnEQ14dsm1C6nsrRQdKco+o3Bx6Gm2H2tlWG6PHUPmOeFCtESqoMnTU3gRs4md1DNs5c9YaKJNUKxnLKBUA1dKPWXnFGqd0tFkIGmlpT8Cxef0qSN8YgbMPFsjQ3wkv8JDwwwOrEcB+CvTXsc0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GGQgFr9l7zey7jHcRF3mJhuBqwQEDJceSSW2x8i0EP0=;
+ b=D/1itekzB/L0uQzcYNG9m3pual2oH+VyKeNDBpHJ52atMW6LoVJc+QdheV1l1e9bB5LCkaCq1bAKyiASo5qkH1GzowPU2/w7Hwf7fYeiMYTFn1QbNne0C1JbpCgNnHAmJaX18FwJCpmG4MIuGrenheSI200pmtVMdKOzdU5PWEY7PWgtMHQOjTSV17IJ2Y2I3dwrwRalW7DpXOTO9SbT4X9gGeK5+ImRchoG4IH/4oNdttgHrLuEIC9gwRhlHWiOmwgoZUrzoodEmRjD3/7yO6IwMk1YXqB9CBGgqVbsP+3WueH7cFHwnsdeWaNpktX9814h35XQk5XR4VGAOzGjog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GGQgFr9l7zey7jHcRF3mJhuBqwQEDJceSSW2x8i0EP0=;
+ b=dwgkIkuH0PGW0J4M2PJdQQSeZWU9J8NdkmA4m6PIIfCN9cK4Neuc8xzUm+9yvRuTL9ote1hUmsEg6Mh4JeuuOehPPTO0qPOK/VcughIlvuEkmzviArvzVEMwqj4RQ7RSU67g3m3M8nL1Pi8U7ZjAZeM8qW30J30oqnW4FrS161O1ejhB3aMdPDlpRzwYTYVxuqhhpqAen7WsnCLUDrmV3fskUeHdPYhulMRGXOLkBiZ7hBnQXUNLzdXqkL1Cl/voO9Gkmo2XJH6QGywrTd8Rq9LWH4goyzNY72zpXScgw8+Sl/v8DGHAh3MbX/JgTqzX+aprkgF5sMH6JA/xcR5wXQ==
+Received: from SN7PR04CA0116.namprd04.prod.outlook.com (2603:10b6:806:122::31)
+ by LV8PR12MB9359.namprd12.prod.outlook.com (2603:10b6:408:1fe::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.33; Fri, 28 Jul
+ 2023 02:30:11 +0000
+Received: from SA2PEPF00001504.namprd04.prod.outlook.com
+ (2603:10b6:806:122:cafe::f5) by SN7PR04CA0116.outlook.office365.com
+ (2603:10b6:806:122::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Fri, 28 Jul 2023 02:30:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF00001504.mail.protection.outlook.com (10.167.242.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.22 via Frontend Transport; Fri, 28 Jul 2023 02:30:11 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
+ 19:30:01 -0700
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 27 Jul
+ 2023 19:30:00 -0700
+Message-ID: <55c92738-e402-4657-3d46-162ad2c09d68@nvidia.com>
+Date:   Thu, 27 Jul 2023 19:30:00 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/4] mm/gup: Make follow_page() succeed again on
+ PROT_NONE PTEs/PMDs
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, <stable@vger.kernel.org>
+References: <20230727212845.135673-1-david@redhat.com>
+ <20230727212845.135673-3-david@redhat.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20230727212845.135673-3-david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001504:EE_|LV8PR12MB9359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ab3b403-7c55-469f-89e4-08db8f12916f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F+1yGKS6pQ9yIAPBC2UMxJMx7Q+rqLux+9CJmaIR13CEifiEDgSTG6Q5XuRrbX4YB97p7D/ofu0vRGVmV7rdv/25d2yEW0xIv+yWtSw3Muh0FPNlCbk9LFQOatP1P2cG6hqRnkgUAPPCWl+OAchZb4xHWpA9UByCs+g81KzT5QxWQcXNgUQhYGVPfTMnIM0tFiZpAEKMj/BUzAHAu0x+lSKaq5UToxKKQETDrd6jw5aycYgseWLO84VcVxXU7rSlSbgHGpzMi82ebgMMFOR9brpYy/0HD9Y1rMhJrOwX9m2KbsJI+byYUK3Ol+j+4cKmABKOSPy2yZUdio8eIv38IQqU5OB7XpLx7INtYTmQesWN6hFPGj9fhh7b5+1/a72AQB11Wa9oeJa0kIADSULRUBwokep6UgkQoILD/sIvoPt9pIKXnDkT2HN31Ne4K7fOT6UShLhW25PjA/p0qXocDSOAfuw/Jhlipr2ldbjhIzXfwuJToeRGXaEFc/pxg2v3c7BrTPVK1+QGJ2Z8PFCHNXbpGxPdpLsjnslqokEj7Wxf2p2A+uET8gZ1nXqc7Qyd/ZyVaiF/2TcxHgE2VyudPNV76AzlIzV35p6Uyai4dl1OrzPYmphLZVS4SsczOsaJWAc6QFHX8LYUeURv1BSyvgRZIsTRHSz4QJx4VcWM0kOuNaV61adWGGb12CApqR0aOKDIxoV0Ns9ZVmoFdJI0xA0Bqgwi/dhX4+FtgFoFhteb0CJ94S9VLSl/jcZKhfksWo38IAQMtdbHbJ2Jx3h12Q==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(396003)(376002)(82310400008)(451199021)(40470700004)(36840700001)(46966006)(40480700001)(40460700003)(110136005)(4326008)(7636003)(54906003)(82740400003)(356005)(478600001)(5660300002)(8676002)(41300700001)(2616005)(8936002)(70206006)(16576012)(70586007)(316002)(36860700001)(336012)(186003)(16526019)(426003)(47076005)(83380400001)(53546011)(26005)(31696002)(86362001)(36756003)(2906002)(7416002)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 02:30:11.3840
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ab3b403-7c55-469f-89e4-08db8f12916f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001504.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9359
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The flex and bison generate header files from the source.  When user
-specified a build directory with O= option, it'd generate files under
-the directory.  The build command has -I option to specify the header
-include directory.
+On 7/27/23 14:28, David Hildenbrand wrote:
+> We accidentally enforced PROT_NONE PTE/PMD permission checks for
+> follow_page() like we do for get_user_pages() and friends. That was
+> undesired, because follow_page() is usually only used to lookup a currently
+> mapped page, not to actually access it. Further, follow_page() does not
+> actually trigger fault handling, but instead simply fails.
 
-But the -I option only affects the files included like <...>.  Let's
-change the flex and bison headers to use it instead of "...".
+I see that follow_page() is also completely undocumented. And that
+reduces us to deducing how it should be used...these things that
+change follow_page()'s behavior maybe should have a go at documenting
+it too, perhaps.
 
-Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
-Cc: stable@vger.kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/pmu-events/jevents.py | 2 +-
- tools/perf/util/bpf-filter.c     | 4 ++--
- tools/perf/util/expr.c           | 4 ++--
- tools/perf/util/parse-events.c   | 4 ++--
- tools/perf/util/pmu.c            | 4 ++--
- 5 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> Let's restore that behavior by conditionally setting FOLL_FORCE if
+> FOLL_WRITE is not set. This way, for example KSM and migration code will
+> no longer fail on PROT_NONE mapped PTEs/PMDS.
+> 
+> Handling this internally doesn't require us to add any new FOLL_FORCE
+> usage outside of GUP code.
+> 
+> While at it, refuse to accept FOLL_FORCE: we don't even perform VMA
+> permission checks like in check_vma_flags(), so especially
+> FOLL_FORCE|FOLL_WRITE would be dodgy.
+> 
+> This issue was identified by code inspection. We'll add some
+> documentation regarding FOLL_FORCE next.
+> 
+> Reported-by: Peter Xu <peterx@redhat.com>
+> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>   mm/gup.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 2493ffa10f4b..da9a5cc096ac 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -841,9 +841,17 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
+>   	if (vma_is_secretmem(vma))
+>   		return NULL;
+>   
+> -	if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
+> +	if (WARN_ON_ONCE(foll_flags & (FOLL_PIN | FOLL_FORCE)))
+>   		return NULL;
 
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index 12e80bb7939b..82c42c46d886 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -999,7 +999,7 @@ such as "arm/cortex-a34".''',
-   _args = ap.parse_args()
- 
-   _args.output_file.write("""
--#include "pmu-events/pmu-events.h"
-+#include <pmu-events/pmu-events.h>
- #include "util/header.h"
- #include "util/pmu.h"
- #include <string.h>
-diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-index 0b30688d78a7..47f01df658d9 100644
---- a/tools/perf/util/bpf-filter.c
-+++ b/tools/perf/util/bpf-filter.c
-@@ -9,8 +9,8 @@
- #include "util/evsel.h"
- 
- #include "util/bpf-filter.h"
--#include "util/bpf-filter-flex.h"
--#include "util/bpf-filter-bison.h"
-+#include <util/bpf-filter-flex.h>
-+#include <util/bpf-filter-bison.h>
- 
- #include "bpf_skel/sample-filter.h"
- #include "bpf_skel/sample_filter.skel.h"
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index 4814262e3805..7410a165f68b 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -10,8 +10,8 @@
- #include "debug.h"
- #include "evlist.h"
- #include "expr.h"
--#include "expr-bison.h"
--#include "expr-flex.h"
-+#include <util/expr-bison.h>
-+#include <util/expr-flex.h>
- #include "util/hashmap.h"
- #include "smt.h"
- #include "tsc.h"
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index acde097e327c..f3773467c103 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -18,8 +18,8 @@
- #include "debug.h"
- #include <api/fs/tracing_path.h>
- #include <perf/cpumap.h>
--#include "parse-events-bison.h"
--#include "parse-events-flex.h"
-+#include <util/parse-events-bison.h>
-+#include <util/parse-events-flex.h>
- #include "pmu.h"
- #include "pmus.h"
- #include "asm/bug.h"
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 7f984a7f16ca..b6654b9f55d2 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -19,8 +19,8 @@
- #include "evsel.h"
- #include "pmu.h"
- #include "pmus.h"
--#include "pmu-bison.h"
--#include "pmu-flex.h"
-+#include <util/pmu-bison.h>
-+#include <util/pmu-flex.h>
- #include "parse-events.h"
- #include "print-events.h"
- #include "header.h"
+This is not a super happy situation: follow_page() is now prohibited
+(see above: we should document that interface) from passing in
+FOLL_FORCE...
+
+>   
+> +	/*
+> +	 * Traditionally, follow_page() succeeded on PROT_NONE-mapped pages
+> +	 * but failed follow_page(FOLL_WRITE) on R/O-mapped pages. Let's
+> +	 * keep these semantics by setting FOLL_FORCE if FOLL_WRITE is not set.
+> +	 */
+> +	if (!(foll_flags & FOLL_WRITE))
+> +		foll_flags |= FOLL_FORCE;
+> +
+
+...but then we set it anyway, for special cases. It's awkward because
+FOLL_FORCE is not an "internal to gup" flag (yet?).
+
+I don't yet have suggestions, other than:
+
+1) Yes, the FOLL_NUMA made things bad.
+
+2) And they are still very confusing, especially the new use of
+    FOLL_FORCE.
+
+...I'll try to let this soak in and maybe recommend something
+in a more productive way. :)
+
+thanks,
 -- 
-2.41.0.487.g6d72f3e995-goog
+John Hubbard
+NVIDIA
 
