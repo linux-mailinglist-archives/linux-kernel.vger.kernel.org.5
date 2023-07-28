@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CF9766A16
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FE9766A19
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235775AbjG1KT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
+        id S233817AbjG1KU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbjG1KTz (ORCPT
+        with ESMTP id S232910AbjG1KUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:19:55 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EBC3A8D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:19:47 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-577497ec6c6so21548797b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690539587; x=1691144387;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qCnkLOusAvdrrWTSqkIH6Bmp+W/nX54guZfAcZWLujE=;
-        b=kWhHjCVcQp/OuWXbafYRHpht91G3RCQl9Iq7XIX/NdqEv997TOIHH1xIiL1P1aEYWa
-         QG+23PNU+nYooBkbvWRRRTxPD7gbGHdWo7X+2QAXcZJ7VRkcBpZoft6sWVih8L4+djce
-         CPL20EjiEKiKmJJSe+8VZFqxaZ8vbEj/oAajnwXodK5VBPLClZ6GAeLgrNlYlZV/1tot
-         99+EiJXC0gZWOSVXtX2saNFiIba3Xc0jUyjuhKqIzePWYfN3R2FQW6YVQvSudZaTcSrx
-         6V5qJGryJlONPSQnQWeClWeNy3UD9VyrkKezDpImBJH8XJE104HPChjqxHjFMjKZSvBT
-         S0ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690539587; x=1691144387;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qCnkLOusAvdrrWTSqkIH6Bmp+W/nX54guZfAcZWLujE=;
-        b=NPa3fqd051jTGxlMdfsMgf5coOgwBNTMjP/hp5/+FZzwxhpCux2JvPOsWnOH4qfzmi
-         zYQGRtXaGp0T4kMBFr4bndZsZ2i4XI+UwMBEe4sN78l5qkbHCImoaYD6w3eH7TRDr2U1
-         d5VSTpv+rb8DLvtn0PXzxlFjHIcz5PTM33SLoCg5BcIltqL772BavF5oG5ZjY9daqAo6
-         A59ZunP0t3umUqcnOZAJWXg3L3TSzjXRXxKyD5Oik+ZnOWsLX9BMzIDicxrxH6Ko1MZ5
-         hOsnto1mYiNKFJk9oi3YHykIQxncTiHmYQTeZj4ofIy2DKnGw0zaqmLr+uV55mPjadmP
-         zZxQ==
-X-Gm-Message-State: ABy/qLYqu5+MLNxhQflI+rGwSzY/P33ikDxRn4GfHbVbJXnzEl2l56jJ
-        B4YwGnAv3guwY4xJ5Xr31IxfeFDhskoAMNX3L2iELw==
-X-Google-Smtp-Source: APBJJlForyLt7cNQ7qy3St40y3d0ASTk8IUe6IWJ9Su0XmN9wUU0pUVoHZ1Du58/u5n3xRN+wa69OnPzN+idqcLYWTs=
-X-Received: by 2002:a25:ae68:0:b0:d10:904a:cdf7 with SMTP id
- g40-20020a25ae68000000b00d10904acdf7mr1383429ybe.31.1690539586833; Fri, 28
- Jul 2023 03:19:46 -0700 (PDT)
+        Fri, 28 Jul 2023 06:20:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4AB3A81;
+        Fri, 28 Jul 2023 03:20:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5580762099;
+        Fri, 28 Jul 2023 10:20:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCB2AC433C7;
+        Fri, 28 Jul 2023 10:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690539650;
+        bh=qZC60IgClxhULrjUcadTZkksiKFjYW5USxTj/ronTNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cWemFagFvrKr9wzIQ8JTcxuQSfAoOms8ucgVxnZHgZvj+UL2CyoBbRJXwJ0JCMPYc
+         oVY72cAbdEJBUzlMAIgD1ZyVe3qAzHobCSiPlgMD2iAqLNv125p8bG3npW0C1QCCgZ
+         UkKBxXvsXq7Ggs9AwO+ry+618qvsSAYZdYnywK8naxPiQyWYTrjvxXxaHFH5Pq38WR
+         r9zerdcaV9m0XXK6SU0V7BW2EMJ3MG1C2aso814JC3a0X+xbjCGrhN/phSBseYZKL+
+         woS69E68ReGpLk+CshisiHAyQx+pmFgK4ohH7kX3R0IehkrpX3bcMni+wHx0xnIIpE
+         lWb1SeNijjYvw==
+Date:   Fri, 28 Jul 2023 11:20:45 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Cc:     pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 0/5] Add a multicolor LED driver for groups of
+ monochromatic LEDs
+Message-ID: <20230728102045.GH8175@google.com>
+References: <20230718092527.37516-1-jjhiblot@traphandler.com>
 MIME-Version: 1.0
-References: <20230728100857.471984-1-dmitry.baryshkov@linaro.org> <e4de7d39-978a-0996-1b03-8e7a6712b477@roeck-us.net>
-In-Reply-To: <e4de7d39-978a-0996-1b03-8e7a6712b477@roeck-us.net>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 28 Jul 2023 13:19:36 +0300
-Message-ID: <CAA8EJproo0yv7Zo6T6fVNfvDVy7JrtMCmixHH73iaWbssehZbg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] usb: typec: qcom-pmic-typec: enable DP support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230718092527.37516-1-jjhiblot@traphandler.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 at 13:14, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/28/23 03:08, Dmitry Baryshkov wrote:
-> > To enable DisplayPort on the platforms supported by qcom-pmic-typec
-> > driver, we need to register a corresponding drm_bridge for this device
-> > to be able to receive the OOB hotplug event sent to the corresponding
-> > DRM connector.
-> >
-> > Reception of the hotplug event is implemented by [1], but there is no
-> > direct dependency on that patchset. This series implements the remaining
-> > parts: registration of the drm_bridge and setting of the proper
-> > destination for the OOB hotplug event.
-> >
-> > [1] https://patchwork.freedesktop.org/series/120393/
-> >
-> > Changes since v2:
-> > - Reworded commit message for the first patch to explicitly mention that
-> >    the "displayport" OF property was rejected (Bjorn)
-> > - Removed several #ifdefs from the qcom-pmic-typec patch (Bryan, Konrad,
-> >    Greg K-H)
-> >
-> > Changes since v1:
-> > - Properly handle CONFIG_DRM dependency. Disallow building DRM as a
-> >    module if qcom-pmic-typec driver is built-in (Bryan).
->
->   config TYPEC_QCOM_PMIC
->         tristate "Qualcomm PMIC USB Type-C Port Controller Manager driver"
->         depends on ARCH_QCOM || COMPILE_TEST
-> +       depends on DRM || DRM=n
->
-> This disallows building TYPEC_QCOM_PMIC into the kernel if DRM is built
-> as module, which is pretty much the opposite of what is claimed above.
-> It does not affect DRM at all.
->
-> Not that it matters much, but I find it confusing if the change log
-> claims to do the opposite of what the code is doing.
+On Tue, 18 Jul 2023, Jean-Jacques Hiblot wrote:
 
-Ack. If there is a v4 I'll fix the changelog to invert the condition.
+> Some HW design implement multicolor LEDs with several monochromatic LEDs.
+> Grouping the monochromatic LEDs allows to configure them in sync and use
+> the triggers.
+> The PWM multicolor LED driver implements such grouping but only for
+> PWM-based LEDs. As this feature is also desirable for the other types of
+> LEDs, this series implements it for any kind of LED device.
+> 
+> changes v10->v11:
+>   - updated commit logs of patch 2 and 3
+>   - Improved comments
+> 
+> changes v9->v10:
+>   - updated comments and kconfig description
+>   - renamed all 'led_mcg_xxx' into 'leds_gmc_xxx'
+> 
+> changes v8->v9:
+>   - rebased on top of lee-leds/for-leds-next
+>   - updated kernel version and date for /sys/class/leds/<led>/color in
+>     Documentation/ABI/testing/sysfs-class-led
+>   - dropped patch "leds: class: simplify the implementation of
+>     devm_of_led_get()" because __devm_led_get() is now used by
+>     devm_led_get()
+> 
+> changes v7->v8:
+>  - consistently use "LEDs group multicolor" throughout the code.
+>  - rename some variables with more explicit names.
+>  - improve comments.
+>  - use the 100-characters per line limit.
+> 
+> changes v6->v7:
+>  - in led_mcg_probe() increment the counter at the end of the loop for
+>    clarity.
+> 
+> changes v5->v6:
+>  - restore sysfs access to the leds when the device is removed
+> 
+> changes v4->v5:
+>  - Use "depends on COMPILE_TEST || OF" in Kconfig to indicate that OF
+>    is a functional requirement, not just a requirement for the
+>    compilation.
+>  - in led_mcg_probe() check if devm_of_led_get_optional() returns an
+>    error before testing for the end of the list.
+>  - use sysfs_emit() instead of sprintf() in color_show().
+>  - some grammar fixes in the comments and the commit logs.
+> 
+> changes v2->v3, only minor changes:
+>  - rephrased the Kconfig descritpion
+>  - make the sysfs interface of underlying LEDs read-only only if the probe
+>    is successful.
+>  - sanitize the header files
+>  - removed the useless call to dev_set_drvdata()
+>  - use dev_fwnode() to get the fwnode to the device.
+> 
+> changes v1->v2:
+>  - Followed Rob Herrings's suggestion to make the dt binding much simpler.
+>  - Added a patch to store the color property of a LED in its class
+>    structure (struct led_classdev).
+> 
+> Jean-Jacques Hiblot (5):
+>   devres: provide devm_krealloc_array()
+>   leds: provide devm_of_led_get_optional()
+>   leds: class: store the color index in struct led_classdev
+>   dt-bindings: leds: Add binding for a multicolor group of LEDs
+>   leds: Add a multicolor LED driver to group monochromatic LEDs
+> 
+>  Documentation/ABI/testing/sysfs-class-led     |   9 +
+>  .../bindings/leds/leds-group-multicolor.yaml  |  64 +++++++
+>  drivers/leds/led-class.c                      |  46 +++++
+>  drivers/leds/rgb/Kconfig                      |  12 ++
+>  drivers/leds/rgb/Makefile                     |   1 +
+>  drivers/leds/rgb/leds-group-multicolor.c      | 169 ++++++++++++++++++
+>  include/linux/device.h                        |  13 ++
+>  include/linux/leds.h                          |   3 +
+>  8 files changed, 317 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml
+>  create mode 100644 drivers/leds/rgb/leds-group-multicolor.c
 
->
-> Guenter
->
-> >
-> > Dmitry Baryshkov (2):
-> >    usb: typec: altmodes/displayport: add support for embedded DP cases
-> >    usb: typec: qcom-pmic-typec: register drm_bridge
-> >
-> >   drivers/usb/typec/altmodes/displayport.c      |  5 ++-
-> >   drivers/usb/typec/tcpm/Kconfig                |  1 +
-> >   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 35 +++++++++++++++++++
-> >   3 files changed, 40 insertions(+), 1 deletion(-)
-> >
->
+What base is this set sitting on top of?
 
+It doesn't appear to want to apply to for-leds-next:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git/log/?h=for-leds-next
+
+Please rebase and submit a [RESEND].
 
 -- 
-With best wishes
-Dmitry
+Lee Jones [李琼斯]
