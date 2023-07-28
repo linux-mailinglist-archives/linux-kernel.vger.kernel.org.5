@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A84A5767354
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487EC76735C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbjG1R3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54988 "EHLO
+        id S233140AbjG1R3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjG1R3a (ORCPT
+        with ESMTP id S229580AbjG1R3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:29:30 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Jul 2023 10:29:29 PDT
+        Fri, 28 Jul 2023 13:29:31 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DBE35B6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9162D64;
         Fri, 28 Jul 2023 10:29:29 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 5380B423EA;
-        Fri, 28 Jul 2023 22:20:18 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id DDB78423EC;
+        Fri, 28 Jul 2023 22:20:25 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1690564821; bh=sly5Ld9FbVW+KuV3/jOurF1zGgRbbBgyAKHydvLe2F0=;
-        h=From:Subject:Date:To:Cc:From;
-        b=h5gga1uij9+G4EIydWxMgCA48eZC9USCAN1YH54pngMO/L6mFSYOzIMNwI9I6jBEw
-         y/EqYH1iEF0oUxEgAtmgdPWeRB3WCpKdn5hBR8iBOaNc7dmurs9IFg95ZYqypikrmZ
-         WwpaTZ0Jl6jujRAG47xNKF7cdv7OSfgu2ZEjrO1Qn65zGMaM5gcy1t9bagBADpBW2u
-         +lHPyeUNctZAgy6T4aw1o8Eiv3ydZRM1wLcxugfxXHDU//RYCAcDhZvL9s+vAdHHwY
-         UHUjWD9IL2ff+P++4ij7drI0RcLihLpCsEX4w6ZyNUBIOKG46RSm06xNcUY3d0ffgS
-         ++VHUlAv+uksg==
+        t=1690564826; bh=BTHA7BOdnoILhyKJmbmntYs8hUmm5xyCV/Oj9i4ZnIU=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=5FIPblknc31XzZdfMdV3Va13opX+qyIlbQq0hbjbrBsAQmGOHOFQ9XUEUqq8eXVWC
+         Tmj4hERjnG/0K4rQwqXkFOolRCxMRS5VQAgURYNFo0hZQmnzfQzqUbW8uXgVnf/MlP
+         M/zfSG5qIQsocXRlidm+ZpEzsMD5ptYsUK/wgjPb4CNZB77IYjvGPbqkGEf4Xp9IvM
+         xMDaGjDSJ7RptiomelZzvOarjFcbCvv5LD9Nn2Ei2UZKK9AFKQhtYs/4mMPY6YBu2H
+         qHcEpyNcXJnKQBy/K+IQKE+Y5UGpbEYhws/QbPa/ltXxsWctRpOsTvFDoWmj/xxBBj
+         iNP25yosR28Pg==
 From:   Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH 0/4] Add pm8916 VM-BMS and LBC
-Date:   Fri, 28 Jul 2023 22:19:29 +0500
-Message-Id: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
+Date:   Fri, 28 Jul 2023 22:19:30 +0500
+Subject: [PATCH 1/4] dt-bindings: power: supply: Add pm8916 VM-BMS
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKH4w2QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyNz3YJcC0tDM92k3GLdnKRkXeM0CwNjA1NjI7NEIyWgpoKi1LTMCrC
- B0bG1tQBtO/ypYAAAAA==
+Message-Id: <20230728-pm8916-bms-lbc-v1-1-56da32467487@trvn.ru>
+References: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
+In-Reply-To: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
 To:     Sebastian Reichel <sre@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -47,20 +45,20 @@ To:     Sebastian Reichel <sre@kernel.org>,
 Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1329; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=sly5Ld9FbVW+KuV3/jOurF1zGgRbbBgyAKHydvLe2F0=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBkw/jPIoA39vFC6JD42KtyRW/tttLijfv8Un9SN
- 7zXwiIecpuJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZMP4zwAKCRBDHOzuKBm/
- dU1hD/46X6YBSIWGiN+/XspUNixstd2qBtUZiBw0pcQCSghLg5zrbtoBA79jF1tCOmAdmHhAWVD
- h6DZwoUPVfNCfxk+bHfsh2R59cXczV/En2I3SVttRyVTGE91Ic11Otvn8HTtB4sBHJmZwCoWTJN
- Q9bIVu/qTZ1S+9GrfyZaqbK6InHQIBy6F/5g4IuHzPuz5c5MAl3/mk+jJ02owMgiFluAj9/bAkY
- +VVgfSFKLiNLGU9GYyX4XjlfJhTnpTNTqO/xen6BJkrSdBjIoxhSDhg6SbDLh7UZ+Ipe4+Szv5g
- K/8derIyMV5CwB77LFYY69reXcIgPInjpSXoTy3ydscOcZKB4CxSTCc7fwiGWKAvvLmg2tel/vq
- Cy2/zptNTageOri0xmFya5XcsMrPTmcJCKbOQxzPjcK8AW9KjNss6gF3oVG9ufz/kpIf+AGl9C6
- m9Mo5Vf9xWECoPsL5rd88+UiBRgAO6lZdffD+56qaacYhHUCEKa5h0XHMN6+2JOKH2L44kE+X0X
- nsW8kFj/xyEdAEILMpyhEZsL3EwQAttmKZ//IjwLrn2I/iY21+Vq2ba8JlKMXEYDw5uXLkubs6X
- yFdTE30k0XJ9l03LiXAmoe3RIK1jUCQK0UfZFvcf5+qZSCASHnaRvULKKlrjPE+G4qlWaRxXpdI
- OekT+Yp5hMI1ywQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1993; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=BTHA7BOdnoILhyKJmbmntYs8hUmm5xyCV/Oj9i4ZnIU=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBkw/jPMOUsqaC4ObMgf6S0TqkPHcUNiFvR8xQav
+ AGDHO8BFviJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZMP4zwAKCRBDHOzuKBm/
+ dZg5D/4xlV1nucyc5nXkoL3EYNs4yha/xnMJWNd9KhG0CRPivb9r9JZthm8HmHOvIJXUc8FkkjI
+ psMB9qA2DZqNB4WRN5ASjYRN5DAOrD1q7pMyv68GDV6/uYczFs5hsEiiNHKNyMadftRs9KVSNlF
+ NzWRrWMtTf1u8ileHNrK06prL2f4mstfRWg373VlxpsIPALNUEZ0Rsu7MQxHfWmfhvq1i90Suza
+ SIPRl29cUi7fgw6aeXmb+JG27SDd/PfRa5A3L7dKenhqK8c8/qqdDyMhG/clsTg6E1d2b/iHoFU
+ Uclr5jf9tMu+7K/h0j0ib9eEu8JL1yJ15i4fojch81GuCWO85ivtN6YaMyp46gyB5ORbUFhWTa9
+ NZI1nOzPfC3fpCWbIDKVWLWHSfJkYN5XhYtbJLE9a22ptMykvvXoc0Sm3TmMewFCGMNYC5KkgTH
+ pZ3PhIvle9aOIBMO8Sk1jDpaKbydykv1WPUSf8UbdYLKetj6hfLXEkVXRpr+wZ7xiYJOeU8TOLp
+ DJZyD5WhS3NFZbqtz+2KZf/T3omD0Zt+vYU6zRi/wMB8xqLNO/X2riM9UyO1aJncIYJtxqQB89s
+ tM1n0lIdQTOsMvH3Rn+3RYlXgy3XIoLUCcLBUE1wh8aL2iRGp2z5u9hitzmYwVsxNfV71UKhW0W
+ dIbvZG+5HkigkFA==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,37 +71,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds charger and "fuel-gauge" found in Qualcomm pm8916 PMIC.
-
-The LBC - Linear Battery Charger is a simple CC/CV charger, that works
-autonomously after the current and voltage limits are set.
-
-The VM-BMS - Voltage Mode BMS is a simple hardware block that provides
-average voltage on the battery terminals.
-
-These two hardware blocks are used as the battery charging and
-management solution in some old Qualcomm devices.
+Qualcomm Voltage Mode BMS is a battery monitoring block in PM8916 PMIC.
+Document it's DT binding.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
-Nikita Travkin (4):
-      dt-bindings: power: supply: Add pm8916 VM-BMS
-      dt-bindings: power: supply: Add pm8916 LBC
-      power: supply: Add pm8916 VM-BMS support
-      power: supply: Add driver for pm8916 lbc
+ .../bindings/power/supply/qcom,pm8916-bms-vm.yaml  | 64 ++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
- .../bindings/power/supply/qcom,pm8916-bms-vm.yaml  |  64 ++++
- .../bindings/power/supply/qcom,pm8916-lbc.yaml     |  93 +++++
- drivers/power/supply/Kconfig                       |  22 ++
- drivers/power/supply/Makefile                      |   2 +
- drivers/power/supply/pm8916_bms_vm.c               | 296 ++++++++++++++++
- drivers/power/supply/pm8916_lbc.c                  | 385 +++++++++++++++++++++
- 6 files changed, 862 insertions(+)
----
-base-commit: d7b3af5a77e8d8da28f435f313e069aea5bcf172
-change-id: 20230727-pm8916-bms-lbc-3f80305326a2
+diff --git a/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
+new file mode 100644
+index 000000000000..455973d46862
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Voltage Mode BMS
++
++maintainers:
++  - Nikita Travkin <nikita@trvn.ru>
++
++description:
++  Voltage Mode BMS is a hardware block found in some Qualcomm PMICs
++  such as pm8916. This block performs battery voltage monitoring.
++
++allOf:
++  - $ref: power-supply.yaml#
++
++properties:
++  compatible:
++    const: qcom,pm8916-bms-vm
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: FIFO update done
++
++  interrupt-names:
++    items:
++      - const: fifo
++
++  monitored-battery: true
++
++  power-supplies: true
++
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++  - monitored-battery
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    pmic {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      battery@4000 {
++        compatible = "qcom,pm8916-bms-vm";
++        reg = <0x4000>;
++        interrupts = <0x0 0x40 4 IRQ_TYPE_EDGE_RISING>;
++        interrupt-names = "fifo";
++
++        monitored-battery = <&battery>;
++        power-supplies = <&pm8916_charger>;
++      };
++    };
 
-Best regards,
 -- 
-Nikita Travkin <nikita@trvn.ru>
+2.41.0
 
