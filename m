@@ -2,141 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D271766402
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07E8766408
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbjG1GRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
+        id S232782AbjG1GTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjG1GRi (ORCPT
+        with ESMTP id S233453AbjG1GTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:17:38 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF323273D;
-        Thu, 27 Jul 2023 23:17:36 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VoOxEJY_1690525052;
-Received: from srmbuffer011165236051.sqa.net(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VoOxEJY_1690525052)
-          by smtp.aliyun-inc.com;
-          Fri, 28 Jul 2023 14:17:33 +0800
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-To:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: [PATCH v5 5/5] perf vendor events: Add JSON metrics for Arm CMN
-Date:   Fri, 28 Jul 2023 14:17:20 +0800
-Message-Id: <1690525040-77423-6-git-send-email-renyu.zj@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
-References: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 02:19:04 -0400
+Received: from pb-smtp1.pobox.com (pb-smtp1.pobox.com [64.147.108.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72BB3AAA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:18:36 -0700 (PDT)
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 4ED0C1A8D0A;
+        Fri, 28 Jul 2023 02:18:08 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=sasl; bh=fKEpd+eGjrM67ezGtmXQn9pwwlfJskaOQfpzU8QSZA0=; b=DCuc
+        BFUzh+WbzCwcKpgsEMGxvwNnzjRqKF48SyPpfDfoXmDXCppdqRMK+fYuoPcv3RvM
+        YjN9iEUufB6NXN17QHef0nRXrwcGM5l8w1ItulY+f1cY+JsPKzXAZSGLUaZ5KT6g
+        +pYEx4I0BIWViUq8nk4JIyC+hiKqrPVcZMbJ3uY=
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 417DA1A8D09;
+        Fri, 28 Jul 2023 02:18:08 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
+ h=from:to:cc:subject:date:message-id:mime-version:content-transfer-encoding;
+ s=2019-09.pbsmtp; bh=Fqmo4pPl09EgKH4K9DqTKoHP9GtV8QIg3pdG40LpXgs=;
+ b=LV8RHqY21GNFDdbTbrxAPBpHlgRGdRrXIhb7ErRulU5enh3hhSahKa5hiTkwS5M+eZXD3/mYGRI1W9pKhPruup83Q2RAKB2nx7kHzI6LQ1V1AA8JT/UaYS7XG2cSKU7VSjkDt6UMd3Hq0/M0FzDtpyZwZVNxowvSkYoggSeNDw8=
+Received: from basil.darkphysics (unknown [76.146.178.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 000E91A8D07;
+        Fri, 28 Jul 2023 02:18:06 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+From:   Tree Davies <tdavies@darkphysics.net>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca, error27@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Tree Davies <tdavies@darkphysics.net>
+Subject: [PATCH v4 0/5] Staging: rtl8192e: Function name cleanup series 1
+Date:   Thu, 27 Jul 2023 23:19:25 -0700
+Message-ID: <20230728061930.624540-1-tdavies@darkphysics.net>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+X-Pobox-Relay-ID: 84CB791A-2D0E-11EE-BCC2-C65BE52EC81B-45285927!pb-smtp1.pobox.com
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JSON metrics for Arm CMN. Currently just add part of CMN PMU
-metrics which are general and compatible for any SoC with CMN-ANY.
+Rename functions to fix checkpatch warning: Avoid CamelCase
 
-Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
----
- .../pmu-events/arch/arm64/arm/cmn/sys/metric.json  | 74 ++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
 
-diff --git a/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
-new file mode 100644
-index 0000000..64db534
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/arm64/arm/cmn/sys/metric.json
-@@ -0,0 +1,74 @@
-+[
-+	{
-+		"MetricName": "slc_miss_rate",
-+		"BriefDescription": "The system level cache miss rate.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_cache_miss / hnf_slc_sf_cache_access",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "hnf_message_retry_rate",
-+		"BriefDescription": "HN-F message retry rate indicates whether a lack of credits is causing the bottlenecks.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_pocq_retry / hnf_pocq_reqs_recvd",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "sf_hit_rate",
-+		"BriefDescription": "Snoop filter hit rate can be used to measure the snoop filter efficiency.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_sf_hit / hnf_slc_sf_cache_access",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "mc_message_retry_rate",
-+		"BriefDescription": "The memory controller request retries rate indicates whether the memory controller is the bottleneck.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "hnf_mc_retries / hnf_mc_reqs",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_actual_read_bandwidth.all",
-+		"BriefDescription": "This event measure the actual bandwidth that RN-I bridge sends to the interconnect.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_rxdat_flits * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_actual_write_bandwidth.all",
-+		"BriefDescription": "This event measures the actual write bandwidth at RN-I bridges.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_txdat_flits * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "rni_retry_rate",
-+		"BriefDescription": "RN-I bridge retry rate indicates whether the memory controller is the bottleneck.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "rnid_txreq_flits_retried / rnid_txreq_flits_total",
-+		"ScaleUnit": "100%",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	},
-+	{
-+		"MetricName": "sbsx_actual_write_bandwidth.all",
-+		"BriefDescription": "sbsx actual write bandwidth.",
-+		"MetricGroup": "cmn",
-+		"MetricExpr": "sbsx_txdat_flitv * 32 / 1e6 / duration_time",
-+		"ScaleUnit": "1MB/s",
-+		"Unit": "arm_cmn",
-+		"Compat": "434*;436*;43c*;43a*"
-+	}
-+]
--- 
-1.8.3.1
+Changelist:
+v4: Resending. git send-email failed to send patch #5.
+v3: Changed patch #5, Rename global function ResetBaEntry to rtllib_reset=
+_ba_entry
+v2: Sent to mailing list via git send-email, patches are the same.
+
+Tree Davies (5):
+  Staging: rtl8192e: Rename function ActivateBAEntry
+  Staging: rtl8192e: Rename function DeActivateBAEntry
+  Staging: rtl8192e: Rename function TxTsDeleteBA
+  Staging: rtl8192e: Rename function RxTsDeleteBA
+  Staging: rtl8192e: Rename function ResetBaEntry
+
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 44 +++++++++++------------
+ drivers/staging/rtl8192e/rtl819x_TSProc.c |  6 ++--
+ drivers/staging/rtl8192e/rtllib.h         |  2 +-
+ 3 files changed, 26 insertions(+), 26 deletions(-)
+
+--=20
+2.41.0
 
