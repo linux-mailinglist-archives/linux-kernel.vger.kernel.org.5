@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8057F767728
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670B0767734
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjG1Ulo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
+        id S230027AbjG1Uu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjG1Ull (ORCPT
+        with ESMTP id S229669AbjG1UuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:41:41 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663C7422B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:40 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe11652b64so4465469e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:40 -0700 (PDT)
+        Fri, 28 Jul 2023 16:50:25 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8CC30DA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:50:24 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31765792c7cso2627959f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690576898; x=1691181698;
+        d=linux-foundation.org; s=google; t=1690577422; x=1691182222;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=1o44kCiViu9poWK+pr269ZTRZv94Q/szYxEaIBZbPhc=;
-        b=PWaHtGPoN5IQlEquCn4tZQ9Xaw8HZBNIeKlodAQFA9UjMmPbEx4Zvik+rmvi3Xl2z1
-         Xbj/BWXP+kirOWjWdBCB8SRhKojOTkZeB3KyV9xtbK5YO/ezCWaWvVVNtjpX7o7fsouj
-         AeL8LN4YTxu9oul07qxtWCCQ2Ob9TTv02Xb4o=
+        bh=E17cPNd2JHzAg3XLoM3Zw1DUtM3X2m+hWgsCVuqmSVk=;
+        b=W/LbinD4Enfk+95f1i9+07bWEIlxhNOTGdsSp2hvp+q9c+rQOMicWs73b9Wav3eRi4
+         i+0mpmlDo82O4Uv72peL1MmBNa65WF7ZTBM/hcm86AWEdA8cQBljEK56rYh9QIHQQXqv
+         U7yCW/iA41LuPgI06QQPzMk7IKzj0+nxu+Hu8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690576898; x=1691181698;
+        d=1e100.net; s=20221208; t=1690577422; x=1691182222;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1o44kCiViu9poWK+pr269ZTRZv94Q/szYxEaIBZbPhc=;
-        b=iOQjhOZ2qWul/emWH9WkM7XL3liIbaBHQdTIqvV3+Z9ielOOO5ArNzVBrAA+41QWTh
-         40EhBLewYK1h8BaQ+VwL7k7EqVKWwxx+Sbyfc9SZaj4T+/PNYyWX8gnzCGpkemSuYwjv
-         8QGyA0HHXHVnGtIxRB4FyHP6elcTsmHZ0JAqd9fduPU/VdKJkKp5662vJQl+zIWYLTR7
-         aN0u6FrVZpImd+uinUpt59inIiBHjrvNThkyt7Q+LqSKv7CIcXCGvMW2usPH/JpE1Cjd
-         5bfXLXfsmOnDoW4hLbgAaed7V//5EzNwEKVzAGwkjVUELmMLItA453uTLvR22x30e0C6
-         wH2Q==
-X-Gm-Message-State: ABy/qLaDUi22NDK/5H+Y/WBhKWNIWvHbE5L1Ru0CtBbaSGD6S0pnPiyi
-        ybVFy38TM1nEI3rdAg5PE7HkHXiMfgVmen736fhVXsxh
-X-Google-Smtp-Source: APBJJlFMl4CJmTIRbuMcU7i059vIC8DUzUJzoa+QKEVAyLMbtOkMfyA45JnqvVFPWO8Q1iIJqVfSCw==
-X-Received: by 2002:a05:6512:202e:b0:4f8:6abe:5249 with SMTP id s14-20020a056512202e00b004f86abe5249mr2147394lfs.3.1690576898444;
-        Fri, 28 Jul 2023 13:41:38 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id t9-20020a19ad09000000b004fe26362d48sm145854lfc.75.2023.07.28.13.41.37
+        bh=E17cPNd2JHzAg3XLoM3Zw1DUtM3X2m+hWgsCVuqmSVk=;
+        b=BKmD0XaAU+Gdl3S3rZme6oZDysXhUF8/kgc/YiYjTW1cYQs//guCm2EjkMJoOdznwk
+         dTwG2sBkLssV0tdGTTiotPqsZgu5cJyXlEjBSU6DZYUIZntRYK6tpHP1gz3AbZZDxIvO
+         6yTcZrgEGXq5gvX655MsdCwhrG/G62pu1/ysLHz40fPET1NuXQJxxeLayRx9vSJoc41L
+         ZBfTAUdISxOcJH/ZTebiBMiP4rR23UvmbBOQnnspjuf3bYc6S1tf7NVIBH6ybnYcJCD5
+         5TGjNab6Y50ej5XZmGnIY6KUGryUKT3lk0nR3oXyb24507DpDogmCO8AV9bFhz0tjPZN
+         tCpA==
+X-Gm-Message-State: ABy/qLZn8T9uHNHjO/HbVv1VVuWoN7F2YvhjuWIFnmT9rU8em7pAhtwc
+        nFhmwgOOhfs/xShw+fpCSL5X7rOpPipUkrP6AC+3U4y4
+X-Google-Smtp-Source: APBJJlGp6PR1WAaO58P6TqA6TXOzbvctIWGBzI+qzlMu4p6sCJvfjO48Bn4DAZyXsaptpnPMmcBJmA==
+X-Received: by 2002:adf:f148:0:b0:314:3a4b:6cc6 with SMTP id y8-20020adff148000000b003143a4b6cc6mr2513134wro.53.1690577422501;
+        Fri, 28 Jul 2023 13:50:22 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170906c30400b009926928d486sm2433402ejz.35.2023.07.28.13.50.21
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 13:41:37 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4fe1c285690so3103858e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:37 -0700 (PDT)
-X-Received: by 2002:a05:6512:61c:b0:4fb:90c6:c31a with SMTP id
- b28-20020a056512061c00b004fb90c6c31amr2404424lfe.14.1690576896802; Fri, 28
- Jul 2023 13:41:36 -0700 (PDT)
+        Fri, 28 Jul 2023 13:50:21 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so565384a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:50:21 -0700 (PDT)
+X-Received: by 2002:aa7:dcc6:0:b0:51e:2a1b:6de with SMTP id
+ w6-20020aa7dcc6000000b0051e2a1b06demr2181151edu.40.1690577420993; Fri, 28 Jul
+ 2023 13:50:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727183805.69c36d6e@g14> <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
- <20230727193949.55c18805@g14> <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
- <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com> <20230727200527.4080c595@g14>
-In-Reply-To: <20230727200527.4080c595@g14>
+References: <20230727212845.135673-1-david@redhat.com> <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <ZMQZfn/hUURmfqWN@x1n> <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
+ <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
+In-Reply-To: <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 Jul 2023 13:41:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
-Message-ID: <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
-To:     Daniil Stas <daniil.stas@posteo.net>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
-        jarkko@kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, regressions@leemhuis.info,
-        stable@vger.kernel.org
+Date:   Fri, 28 Jul 2023 13:50:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
+Message-ID: <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone fallout
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -79,27 +82,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 10:05, Daniil Stas <daniil.stas@posteo.net> wrote:
+On Fri, 28 Jul 2023 at 13:33, David Hildenbrand <david@redhat.com> wrote:
 >
-> Here is the bug report I created:
-> https://bugzilla.kernel.org/show_bug.cgi?id=217719
+> So would you rather favor a FOLL_NUMA that has to be passed from the
+> outside by selected callers or a FOLL_NUMA that is set on the GUP path
+> unconditionally (but left clear for follow_page())?
 
-Let's just disable the stupid fTPM hwrnd thing.
+I'd rather see the FOLL_NUMA that has to be set by odd cases, and that
+is never set by any sane user.
 
-Maybe use it for the boot-time "gather entropy from different
-sources", but clearly it should *not* be used at runtime.
+And it should not be called FOLL_NUMA. It should be called something
+else. Because *not* having it doesn't disable following pages across
+NUMA boundaries, and the name is actively misleading.
 
-Why would anybody use that crud when any machine that has it
-supposedly fixed (which apparently didn't turn out to be true after
-all) would also have the CPU rdrand instruction that doesn't have the
-problem?
+It sounds like what KVM actually wants is a "Do NOT follow NUMA pages,
+I'll force a page fault".
 
-If you don't trust the CPU rdrand implementation (and that has had
-bugs too - see clear_rdrand_cpuid_bit() and x86_init_rdrand()), why
-would you trust the fTPM version that has caused even *more* problems?
+And the fact that KVM wants a fault for NUMA pages shouldn't mean that
+others - who clearly cannot care - get that insane behavior by
+default.
 
-So I don't see any downside to just saying "that fTPM thing is not
-working". Even if it ends up working in the future, there are
-alternatives that aren't any worse.
+The name should reflect that, instead of being the misleading mess of
+FOLL_FORCE and bad naming that it is now.
+
+So maybe it can be called "FOLL_HONOR_NUMA_FAULT" or something, to
+make it clear that it's the *opposite* of FOLL_FORCE, and that it
+honors the NUMA faulting that nobody should care about.
+
+Then the KVM code can have a big comment about *why* it sets that bit.
+
+Hmm? Can we please aim for something that is understandable and
+documented? No odd implicit rules. No "force NUMA fault even when it
+makes no sense". No tie-in with FOLL_FORCE.
 
                  Linus
