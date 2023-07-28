@@ -2,158 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0B176738D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7067076738E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbjG1Rg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S233575AbjG1RhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236151AbjG1RgN (ORCPT
+        with ESMTP id S229728AbjG1RhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:36:13 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E8C3C24
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:35:57 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9c0391749so36428311fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:35:57 -0700 (PDT)
+        Fri, 28 Jul 2023 13:37:16 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B584223
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:36:52 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-407db3e9669so15161cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1690565755; x=1691170555;
+        d=google.com; s=20221208; t=1690565807; x=1691170607;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/t220Hmflj/VPTxFmqAg5Xug/KV6ADyc6uAYVTG6Vgk=;
-        b=f8BbsCSuJ+1Vl5ttIizbIBKz3oh9F56xaUVVi0cuYOZXkfp3gq91OmfZRP67EIFml1
-         Du/E3jw+PZmgXdDBcPxp+29WC9u2XxwcLZ2w8s1ro3NfGTKPSHpvBm/9JpVXcimyA8v3
-         7HJmYulel6o02OzFOnuga6a1Nhi3ylXxN+VB0=
+        bh=MiqbSlCh4A2mRbWwF0zI0J8GGrBtWSoOpef1Mjqsfh4=;
+        b=pYUZQ/F9GVmQGyqoYdTsX+D9YZN6NwIGsDTIETwQbNjV5huvfiAY8Pq67nPF5tVJfJ
+         2M4Se4AN1zkO34pOAlXZ75av4zan7pFfSxmIncOE6rNpALf5IzYEBfr0tUq5oNNWs9cs
+         q9CAoUcyg9dgE5uR/u+7A/Scx7vGweSOsizgArz2JN9QvVbHw8IwcFIzh29f4D3H5JcS
+         LRAsmXRns6fjOSWVu5Gxx4LdGgDp2d211uX6cK/VLe0KBlXyH0LBWiIWR5W3YKNMPy8S
+         Vnyd2hCm3pYXQHoHolR001syOUPZIoHOMk8TSJpQtsQBb2Tqwtn/tktEWVkf4bdLV5qs
+         cfqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565755; x=1691170555;
+        d=1e100.net; s=20221208; t=1690565807; x=1691170607;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/t220Hmflj/VPTxFmqAg5Xug/KV6ADyc6uAYVTG6Vgk=;
-        b=LQcT74Dzdx07mDynVjSyb2QqZGINLzovWuI1l6Pp/nV1izOeYjqxIu6idz2kuRQDZ9
-         o4UdYJeWnTMFLnTp+osKu/vi3b93P6dQxvcG9X/fvXLCPUY2wf5eI2WRfzFEDooj+cre
-         ZsywRYqEQkyDy9ZK/Oph5Mtwqpyv2ForhjZXtYy+JtuUOB9lDve5PRaJpo8o26l3FKzR
-         NVCKYQVAaBELMZcl0t0qCJu1HWQtFIOnsi6Ec59cEx5XihMQWsBBOLCA08Oznwz+EZwK
-         qJ9MQSUBS48h2DbPqFHQ5lW7XAYmKKqFhFekoOoosFGsfuX4krcVyBIiVB19SeO//05J
-         9e+A==
-X-Gm-Message-State: ABy/qLaDeZ630ovK490NRKLI54HWqGFefgNT/CWtwNvq4tadxXg/KTKa
-        LgKyXc+QxoLVCdXhGgL3unAjCrM60KI7QMwK3GOLug==
-X-Google-Smtp-Source: APBJJlGeDyQq93qi2ph5y7OaUdlnjpI1araVuyPUyhyGClXnxoOhJ8lj97tWTCK730unzS4pcewYdNRvSpUgA05dIQE=
-X-Received: by 2002:a2e:98da:0:b0:2b6:9909:79bd with SMTP id
- s26-20020a2e98da000000b002b6990979bdmr2211202ljj.24.1690565754899; Fri, 28
- Jul 2023 10:35:54 -0700 (PDT)
+        bh=MiqbSlCh4A2mRbWwF0zI0J8GGrBtWSoOpef1Mjqsfh4=;
+        b=Svpn4VFW1GUgulEFO3vYjXEqnzzHt2H1f6ooe4aR9iewymb2+13dfUrBHuAde0vaWT
+         gNOX6oZspebxUw6YF2bjwlrWXgJKFpi+jH1nJD+HRbEqpEkQOkpeI3g4sKU7P5wDp35E
+         O+VJNnOjYTvi6PETP8NGIgi95GArcF7MgeNttSUtz7uEybGKBVLfGqJpSXnBMneqT3sR
+         eA/RWvVlYND+KY/fRkGPNq+UQ3RUrIL0uu9fx0HeCu+gjCV65ga2D4HfTWd3JHOhcPnQ
+         sB2hB0r5h6s9PvT7X3ziPAc6O61bWlFW2gWuKAhMMl0cPz79tUe2MNt9NpERh3dG/els
+         tVJg==
+X-Gm-Message-State: ABy/qLYLLV9JqPjsOCQuzWSMhys0KOGhkFjRywz/4Xx+2rCLFTGtxCYB
+        9xuo+yXTQmzZsfIvvcFXuh89o6KKMQ399Upjy/kKBw==
+X-Google-Smtp-Source: APBJJlGU8OmELhr7YpQrzOL8HDorgVHUOukFdXrzdpJfthXqD1XAJrcQCyz6QuDg7DEdynM99rxwJh3HnDPBuZF+NtE=
+X-Received: by 2002:ac8:5a92:0:b0:3f9:ab2c:88b9 with SMTP id
+ c18-20020ac85a92000000b003f9ab2c88b9mr4923qtc.25.1690565807279; Fri, 28 Jul
+ 2023 10:36:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <BCDEA397-AA7A-4FDE-8046-C68625CDE166@joelfernandes.org> <20230728124412.GA21303@willie-the-truck>
-In-Reply-To: <20230728124412.GA21303@willie-the-truck>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 28 Jul 2023 13:35:43 -0400
-Message-ID: <CAEXW_YRtUd4jUP68jzMgDgWxAy8tdJQortK07TZgCxVLNAgaNA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-To:     Will Deacon <will@kernel.org>
-Cc:     Jann Horn <jannh@google.com>, paulmck@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
+References: <202307271413.eb0fd426-oliver.sang@intel.com>
+In-Reply-To: <202307271413.eb0fd426-oliver.sang@intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 28 Jul 2023 10:36:30 -0700
+Message-ID: <CAP-5=fUAcG+CzneUx0M0+3bxCvs6iTb=roaLp_qxi3j_KsUVpg@mail.gmail.com>
+Subject: Re: [linus:master] [perf map/maps/thread] bffb5b0c09: perf-sanity-tests.probe_libc's_inet_pton_&_backtrace_it_with_ping.fail
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Brian Robbins <brianrob@linux.microsoft.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        German Gomez <german.gomez@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        James Clark <james.clark@arm.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Garry <john.g.garry@oracle.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ye Xingchen <ye.xingchen@zte.com.cn>,
+        Yuan Can <yuancan@huawei.com>, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 8:44=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
-:
+On Wed, Jul 26, 2023 at 11:43=E2=80=AFPM kernel test robot
+<oliver.sang@intel.com> wrote:
 >
-> On Thu, Jul 27, 2023 at 12:34:44PM -0400, Joel Fernandes wrote:
-> > > On Jul 27, 2023, at 10:57 AM, Will Deacon <will@kernel.org> wrote:
-> > > =EF=BB=BFOn Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
-> > >> if (READ_ONCE(vma->anon_vma) !=3D NULL) {
-> > >>  // we now know that vma->anon_vma cannot change anymore
-> > >>
-> > >>  // access the same memory location again with a plain load
-> > >>  struct anon_vma *a =3D vma->anon_vma;
-> > >>
-> > >>  // this needs to be address-dependency-ordered against one of
-> > >>  // the loads from vma->anon_vma
-> > >>  struct anon_vma *root =3D a->root;
-> > >> }
-> > >>
-> > >>
-> > >> Is this fine? If it is not fine just because the compiler might
-> > >> reorder the plain load of vma->anon_vma before the READ_ONCE() load,
-> > >> would it be fine after adding a barrier() directly after the
-> > >> READ_ONCE()?
-> > >
-> > > I'm _very_ wary of mixing READ_ONCE() and plain loads to the same var=
-iable,
-> > > as I've run into cases where you have sequences such as:
-> > >
-> > >    // Assume *ptr is initially 0 and somebody else writes it to 1
-> > >    // concurrently
-> > >
-> > >    foo =3D *ptr;
-> > >    bar =3D READ_ONCE(*ptr);
-> > >    baz =3D *ptr;
-> > >
-> > > and you can get foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 because the =
-compiler only
-> > > ends up reading from memory twice.
-> > >
-> > > That was the root cause behind f069faba6887 ("arm64: mm: Use READ_ONC=
-E
-> > > when dereferencing pointer to pte table"), which was very unpleasant =
-to
-> > > debug.
-> >
-> > Will, Unless I am missing something fundamental, this case is different=
- though.
-> > This case does not care about fewer reads. As long as the first read is=
- volatile, the subsequent loads (even plain)
-> > should work fine, no?
-> > I am not seeing how the compiler can screw that up, so please do enligh=
-ten :).
 >
-> I guess the thing I'm worried about is if there is some previous read of
-> 'vma->anon_vma' which didn't use READ_ONCE() and the compiler kept the
-> result around in a register. In that case, 'a' could be NULL, even if
-> the READ_ONCE(vma->anon_vma) returned non-NULL.
+> hi, Ian Rogers,
+>
+> we noticed this is a fix commit, and we really found some perf-sanity-tes=
+ts
+> can pass on this commit now.
+> however, probe_libc's_inet_pton_&_backtrace_it_with_ping started to fail =
+on this
+> commit.
+>
+> 1981da1fe2499823 bffb5b0c0976aa46aaa961dd19a
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :6          100%           6:6     perf-sanity-tests.Check_bra=
+nch_stack_sampling.pass
+>            :6          100%           6:6     perf-sanity-tests.Cumulate_=
+child_hist_entries.pass
+>            :6          100%           6:6     perf-sanity-tests.dlfilter_=
+C_API.pass
+>            :6          100%           6:6     perf-sanity-tests.perf_pipe=
+_recording_and_injection_test.pass
+>            :6          100%           6:6     perf-sanity-tests.probe_lib=
+c's_inet_pton_&_backtrace_it_with_ping.fail
+>
+> below is detail.
+>
+> Hello,
+>
+> kernel test robot noticed "perf-sanity-tests.probe_libc's_inet_pton_&_bac=
+ktrace_it_with_ping.fail" on:
+>
+> commit: bffb5b0c0976aa46aaa961dd19a47c9d6301cfe1 ("perf map/maps/thread: =
+Changes to reference counting")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>
+> [test failed on linus/master 18b44bc5a67275641fb26f2c54ba7eef80ac5950]
+> [test failed on linux-next/master 0ba5d07205771c50789fd9063950aa75e7f1183=
+f]
 
-If I can be a bit brave enough to say -- that appears to be a compiler
-bug to me. It seems that the compiler in such an instance violates the
-"Sequential Consistency Per Variable" rule? I mean if it can't even
-keep SCPV true for a same memory-location load (plain or not) for a
-sequence of code, how can it expect the hardware to.
+Is this failing at head or is this another please use my time machine
+and go fix the past request? The most recent fixes in this area were
+in May by Thomas Richter:
+https://lore.kernel.org/r/20230503081255.3372986-1-tmricht@linux.ibm.com
+This isn't failing for me either in 6.5-rc3 or at perf-tools-next
+head. The test output doesn't contain an indication of what the error
+is. I don't think there is anything actionable here.
 
-In other words, with that kind of caching, the value of the variable
-goes back in time which will be tough luck for even a fully ordered
-sequentially-consistent processor!!!
+Thanks,
+Ian
 
-> The crux of the issue is that the compiler can break read-after-read
-> ordering if you don't use READ_ONCE() consistently. Sadly, judging by
-> the other part of the thread from Nadav, it's fiddly to fix this without
-> wrecking the codegen.
-
-Right. Thanks to you and others for sharing your informative
-perspective as always,
-
- - Joel
+> in testcase: perf-sanity-tests
+> version: perf-x86_64-00c7b5f4ddc5-1_20230402
+> with following parameters:
+>
+>         perf_compiler: gcc
+>
+>
+>
+> compiler: gcc-12
+> test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480+ (Sapp=
+hire Rapids) with 256G memory
+>
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>
+>
+>
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202307271413.eb0fd426-oliver.san=
+g@intel.com
+>
+>
+> ...
+>  88: perf pipe recording and injection test                          : Ok
+>  89: Add vfs_getname probe to get syscall args filenames             : Sk=
+ip
+>  90: probe libc's inet_pton & backtrace it with ping                 : FA=
+ILED!   <---
+>  91: Use vfs_getname probe to get syscall args filenames             : Sk=
+ip
+>  92: Zstd perf.data compression/decompression                        : Ok
+> ...
+>
+>
+> To reproduce:
+>
+>         git clone https://github.com/intel/lkp-tests.git
+>         cd lkp-tests
+>         sudo bin/lkp install job.yaml           # job file is attached in=
+ this email
+>         bin/lkp split-job --compatible job.yaml # generate the yaml file =
+for lkp run
+>         sudo bin/lkp run generated-yaml-file
+>
+>         # if come across any failure that blocks the test,
+>         # please remove ~/.lkp and /lkp dir to run from a clean state.
+>
+>
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
+>
