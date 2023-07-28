@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6967767569
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFBC76756A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbjG1S1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
+        id S236771AbjG1S23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236282AbjG1S1Z (ORCPT
+        with ESMTP id S236148AbjG1S1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:27:25 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6334EE6;
-        Fri, 28 Jul 2023 11:26:59 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so5029763a12.0;
-        Fri, 28 Jul 2023 11:26:59 -0700 (PDT)
+        Fri, 28 Jul 2023 14:27:40 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D55244BE;
+        Fri, 28 Jul 2023 11:27:13 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-55bac17b442so1711457a12.3;
+        Fri, 28 Jul 2023 11:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690568739; x=1691173539;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RMy4pVNg828OEBJfbAusmZ7BTQF3Gz3KVtSgqaAE0Ts=;
-        b=iyOv+oRBh5zZnyyVwh7eeDuc4YCFUdus7ENRB9UsnHYk4Hpvb6oxuav5yJhHa+U5h7
-         PlukG4B6yR6faDQfKUmoAQTLbmTbhpAd0sBwcbu+t0VAUU8FRofz2701h75s5ScdgSlD
-         qnH4KZwrYvyyhhDVpmDm7/tSVEcQJMfAb/5mp+sCOG0fXPezXlOTuCoBHsv8mqQNs/NT
-         7+ARrs5Egi8iw09BQA7LYwgRRpdAnOWXi54BjQ7/3Zd+PyipxU4/rRJ1HeOu96Abs/IQ
-         xqcuKqYv0s5y+qgGhon08kZTIB0I5p2zQg0aB9853tx8i6AP96n7kEJgpa9ygconpomy
-         oe4A==
+        d=gmail.com; s=20221208; t=1690568765; x=1691173565;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YAtgBupKkmJANisZxsV/A8KbRVbGfP4y5JFkhGvsuCA=;
+        b=c78uotqEs162djMi3AxdLn4LbmmXt7Mtk8v+dcJtxlTYks0pXrr2wcQHXonUP+dPBH
+         WuKR0R4u712pZRzHIuR3/Qt7TqPwv0vyi+PEOyVpVb+N11oqpO5qScS/F4ZdmusU2MFQ
+         IYwaM5MnK8wFIrWG0UCt1hiRGvR2vxk628G1ShRLpBkVJI522RvLlRSZeVr+bJ5eqmp9
+         w5MfP+WsSClb30Jqzbolk+mDHhPXeadaz6P9NaZi3I5ruLyKbTtHLfUdoLkd8qG/f9st
+         EOzqTTvNpQ2mwT/tq0scFbiAEO62M11gdXoospjg5wiPjf85utZf4TJk40T51RFr+eMI
+         y9bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690568739; x=1691173539;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RMy4pVNg828OEBJfbAusmZ7BTQF3Gz3KVtSgqaAE0Ts=;
-        b=PAJK3AERNIP87vB1zCDSdBBu3D4y5giNArnx+ly1BxxC/C1IcZ+DgwqDutJ4V49yKP
-         KyoG08gv0y/4jo8/XJoHe87zTLLggjhtMWeq1K19Vk5TRJbZ4Bvz0qw4T2NcWGk29fNm
-         6qaKTWzHB+q19VtU4XST5KU8FhSd3U1cSX1ECjKTg9/2c6NRTpXsw4I3Pq9HAu4ik9wQ
-         svYdz3b2NJEDXAHIABXCtI+Lp3feTpDAOntancStRlnATArcXRDlaqcnLk0k/60j/Z+5
-         zk0g4S/7sItJkfyYVsyPwhxxQhJm2uzZ72BROu6uD44D7XKkMlKwcNU6waxNp0HQNDEm
-         nmJA==
-X-Gm-Message-State: ABy/qLY937xdeXj17gS9jR3up3RTqhkPL3G9gh9S5vSxs9x953HUAsuN
-        T78XA+gvlHx0rncYuMmQyZQ7zsiVqliBEQ==
-X-Google-Smtp-Source: APBJJlHajWZEnSdXU36IKQli/dI6jjwynNCjbPYmgiCEr37AHkNOscU6SeGWs9anTgLmH6qkIQGaUQ==
-X-Received: by 2002:a05:6402:5188:b0:522:28b9:e84c with SMTP id q8-20020a056402518800b0052228b9e84cmr5964390edd.21.1690568738884;
-        Fri, 28 Jul 2023 11:25:38 -0700 (PDT)
-Received: from localhost.localdomain ([78.97.234.98])
-        by smtp.gmail.com with ESMTPSA id o24-20020aa7dd58000000b0052236dcacf2sm2025699edw.67.2023.07.28.11.25.37
+        d=1e100.net; s=20221208; t=1690568765; x=1691173565;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YAtgBupKkmJANisZxsV/A8KbRVbGfP4y5JFkhGvsuCA=;
+        b=fWQgInJEETb9YuMfyyHzGoO1cci9Vk8eydAinx/9slLS6FdPmB4oDJiPS4FKfYir8z
+         XBdxo/Uy8vn/27j+ft8d84eQvXIR9abF4BcKTHeqZ/0OQEdunizXjTjJCPK7PYK016OQ
+         /wimTZTy7KWSfi3dL9r8egoHO8iIiMjnbGOYdT6DZ8jFyMimaDnjkod+fGRkO4lIeRji
+         JcjB5x0makZMUHJReGLHi56wtIalwDSj6vf90XPX7/22eUxpaQXSrrDE/dNBRgVV3Ou9
+         sodYo1KklQAEWTNCoI1LI9yfpkWhOAeBr/hLh8WW8x61NuKPoc3QSP6EXNEjHl24O6EL
+         vQ/w==
+X-Gm-Message-State: ABy/qLZgrlPX7jNzfVwm+lVjTfaloErCj+EHxOGyZxoEVoDO78vkns+f
+        shWnxK8WFLbCqWPHJzE3WNE=
+X-Google-Smtp-Source: APBJJlEy+cEJXsT8/Tzdp2unllMozrQBH6PtV/dv7XTOBjF+e0TneXDt8Oa/NcyXsNChXyJ/19hGwg==
+X-Received: by 2002:a17:90b:4d92:b0:268:14d7:bc34 with SMTP id oj18-20020a17090b4d9200b0026814d7bc34mr2413761pjb.20.1690568765503;
+        Fri, 28 Jul 2023 11:26:05 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id bg1-20020a17090b0d8100b002676e961261sm5680504pjb.1.2023.07.28.11.26.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 11:25:38 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-        ludovic.desroches@microchip.com,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH] gpio: sama5d2-piobu: remove unneeded call to platform_set_drvdata()
-Date:   Fri, 28 Jul 2023 21:25:22 +0300
-Message-Id: <20230728182522.18477-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 11:26:04 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, bvanassche@acm.org
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH] scsi: megaraid: Fix potential deadlock on &adapter->lock
+Date:   Fri, 28 Jul 2023 18:25:54 +0000
+Message-Id: <20230728182554.5112-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+As &adapter->lock is acquired by megaraid_isr_iomapped() under irq context,
+process context code acquiring the lock should disable irq, otherwise
+deadlock could happen if the irq preempt the execution while the
+lock is held in process context on the same CPU.
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+Lock acquisition of &adapter->lock in megaraid_reset_handler() does not 
+disable irq. Inside the function there is a calling sequence shows like 
+the below where irq is re-enabled by spin_unlock_irqrestore() on
+PENDING_LIST_LOCK(adapter).
+
+  spin_lock_irqsave(PENDING_LIST_LOCK(adapter), flags);
+  ...
+  spin_unlock_irqrestore(PENDING_LIST_LOCK(adapter), flags);
+
+  spin_lock(&adapter->lock)
+  ...
+  spin_unlock(&adapter->lock)
+
+This flaw was found by an experimental static analysis tool I am developing
+for irq-related deadlock.
+
+The patch fix the potential deadlock by also use spin_lock_irqsave() on
+&adapter->lock.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 ---
- drivers/gpio/gpio-sama5d2-piobu.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/scsi/megaraid/megaraid_mbox.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-sama5d2-piobu.c b/drivers/gpio/gpio-sama5d2-piobu.c
-index 767c33ae3213..d89da7300ddd 100644
---- a/drivers/gpio/gpio-sama5d2-piobu.c
-+++ b/drivers/gpio/gpio-sama5d2-piobu.c
-@@ -189,7 +189,6 @@ static int sama5d2_piobu_probe(struct platform_device *pdev)
- 	if (!piobu)
- 		return -ENOMEM;
+diff --git a/drivers/scsi/megaraid/megaraid_mbox.c b/drivers/scsi/megaraid/megaraid_mbox.c
+index ef2b6380e19a..7edddefcc9a3 100644
+--- a/drivers/scsi/megaraid/megaraid_mbox.c
++++ b/drivers/scsi/megaraid/megaraid_mbox.c
+@@ -2603,7 +2603,7 @@ megaraid_reset_handler(struct scsi_cmnd *scp)
+ 		msleep(1000);
+ 	}
  
--	platform_set_drvdata(pdev, piobu);
- 	piobu->chip.label = pdev->name;
- 	piobu->chip.parent = &pdev->dev;
- 	piobu->chip.owner = THIS_MODULE,
+-	spin_lock(&adapter->lock);
++	spin_lock_irqsave(&adapter->lock, flags);
+ 
+ 	// If still outstanding commands, bail out
+ 	if (adapter->outstanding_cmds) {
+@@ -2643,7 +2643,7 @@ megaraid_reset_handler(struct scsi_cmnd *scp)
+ 	}
+ 
+  out:
+-	spin_unlock(&adapter->lock);
++	spin_unlock_irqrestore(&adapter->lock, flags);
+ 	return rval;
+ }
+ 
 -- 
-2.34.1
+2.17.1
 
