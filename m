@@ -2,119 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FFD767279
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73F6767282
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbjG1Qyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        id S233963AbjG1Q4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjG1Qy2 (ORCPT
+        with ESMTP id S234228AbjG1Q4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:54:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33B1B469C;
-        Fri, 28 Jul 2023 09:53:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4DC82F4;
-        Fri, 28 Jul 2023 09:53:29 -0700 (PDT)
-Received: from [10.57.0.147] (unknown [10.57.0.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC61F3F67D;
-        Fri, 28 Jul 2023 09:52:44 -0700 (PDT)
-Message-ID: <89ce4bc4-00c5-a763-3179-e1d3e9f198b7@arm.com>
-Date:   Fri, 28 Jul 2023 17:52:37 +0100
+        Fri, 28 Jul 2023 12:56:20 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BCBE47;
+        Fri, 28 Jul 2023 09:55:57 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 96B621EC0F5F;
+        Fri, 28 Jul 2023 18:55:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1690563355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=RSQT6kz7q95HmcLEvve4qa6I/xcjQSECnE4yw3Z+BmU=;
+        b=ElxUExeiD9kGERJ+C54vf0jddcWtGvI5ZT3Mn555PFNTBBE7MKO2eostStL4ekhXWvqayv
+        /RbxMcrajN3tUT+GI3UdAdoDqljFLmSmgc8/c+S6Z0XMX67m1enswyiqfJES+T/mCaQhmk
+        IGPpzQg15MRrynSuB7RURODe3GY704k=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rzgwixfY34gw; Fri, 28 Jul 2023 16:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1690563352; bh=RSQT6kz7q95HmcLEvve4qa6I/xcjQSECnE4yw3Z+BmU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ix3uBvolQLGla1R3bo/TEjxXMwOJL8/Q7O4av2ki3Yq7BEv97Jix8mr1kzLolSqTr
+         5DqLxWDwtN3SoMvvLCQ9AVOT7osB5ESpRY7Xei97nqS7lKN05xJCRUqVxE1SQzXKwN
+         TRzemVX4S/G98igilaQAvaSNdf4F3z4zf3+xx0Ut1PrHUybZVCn6eMOrLa2QngOecQ
+         c0OX0nb1ukkw1gyiOPzm8FDUKbW7xyvShChOV5etXZ4ZKji46fl+x01pRSyYoi1qyJ
+         MCahbaVtT+WIk0+TDZusdAjeu//Ma8ic27dWerp/ev8Ch+eOzVPgMwMy0zeyjPnPSY
+         I0G5kEL1fHDbcNt0vLT+ZvO6xYPCIXQ74viHSwwdrVE29TbBCt/XXr62qPUWZFS0pb
+         C5YFxIL4KCLgn0bCujD40bFs0hD7+rXb6AzCFFmIC4/jXbme14LWl3/8Tv+5Npitkn
+         OC2uzSgH0BFrqczdKwI2G7szphKaEDuff8i0GRXutZyGdRoB3tnBEjRBlPplSPrkIh
+         Vh1wCnc4BKb8sWIAykeW2IH+JpPEivnsO9dpenjTFymT+BHUUV1i2fphWSuDZQaHLD
+         5lpJTmpn1ZksxD3H0Zhd95mZ6MIHNpTKPQxOG7HW6OfF86FohclpLRsrbAkT8/FMzn
+         +KMO7sjbO8ULrvhhqcvVlneU=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CEA0740E0184;
+        Fri, 28 Jul 2023 16:55:39 +0000 (UTC)
+Date:   Fri, 28 Jul 2023 18:55:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tao Liu <ltao@redhat.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+Message-ID: <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local>
+References: <20230601072043.24439-1-ltao@redhat.com>
+ <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+ <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
+ <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
+ <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH V13 - RESEND 02/10] arm64/perf: Add BRBE registers and
- fields
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com,
-        Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20230711082455.215983-1-anshuman.khandual@arm.com>
- <20230711082455.215983-3-anshuman.khandual@arm.com>
- <20230728162011.GA22050@willie-the-truck>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230728162011.GA22050@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/07/2023 17:20, Will Deacon wrote:
-> On Tue, Jul 11, 2023 at 01:54:47PM +0530, Anshuman Khandual wrote:
->> This adds BRBE related register definitions and various other related field
->> macros there in. These will be used subsequently in a BRBE driver which is
->> being added later on.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Tested-by: James Clark <james.clark@arm.com>
->> Reviewed-by: Mark Brown <broonie@kernel.org>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/include/asm/sysreg.h | 103 +++++++++++++++++++++
->>  arch/arm64/tools/sysreg         | 158 ++++++++++++++++++++++++++++++++
->>  2 files changed, 261 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
->> index b481935e9314..f95e30c13c8b 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -163,6 +163,109 @@
->>  #define SYS_DBGDTRTX_EL0		sys_reg(2, 3, 0, 5, 0)
->>  #define SYS_DBGVCR32_EL2		sys_reg(2, 4, 0, 7, 0)
->>  
->> +#define __SYS_BRBINFO(n)		sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 0))
->> +#define __SYS_BRBSRC(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 1))
->> +#define __SYS_BRBTGT(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 2))
+On Thu, Jul 27, 2023 at 07:03:26PM +0800, Tao Liu wrote:
+> Hi Borislav,
 > 
-> It's that time on a Friday but... aren't these macros busted? I think you
-> need brackets before adding the offset, otherwise wouldn't, for example,
-> target registers 0-15 all access info register 0 and __SYS_BRBTGT(16) would
-> then start accessing source register 0?
+> Sorry for the late response. I spent some time retesting your patch
+> against 6.5.0-rc1 and 6.5.0-rc3, and it is OK. So
 > 
-> I'm surprised that the compiler doesn't warn about this, but even more
-> surprised that you managed to test this.
+> Reported-and-tested-by: Tao Liu <ltao@redhat.com>
 > 
-> Please tell me I'm wrong!
-> 
-> Will
+> And will we use this patch as a workaround or will we wait for a
+> better solution as proposed by Michael?
 
-No I think you are right, it is wrong. Luckily there is already an
-extraneous bracket so you you can fix it by moving one a place down:
+First of all, please do not top-post.
 
-  sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 2))
+And yes, here's a better one. I'd appreciate it you testing it.
 
-It's interesting because the test [1] is doing quite a bit and looking
-at the branch info, and that src and targets match up to function names.
-I also manually looked at the branch buffers and didn't see anything
-obviously wrong like things that looked like branch infos in the source
-or target fields. Will have to take another look to see if it would be
-possible for the test to catch this.
+Thx.
 
-James
+---
+ arch/x86/boot/compressed/idt_64.c |  5 ++++-
+ arch/x86/boot/compressed/sev.c    | 37 +++++++++++++++++++++++++++++--
+ 2 files changed, 39 insertions(+), 3 deletions(-)
 
-[1]:
-https://gitlab.arm.com/linux-arm/linux-jc/-/commit/3a7ddce70c2daadb63fcc511de0a89055ca48b32
+diff --git a/arch/x86/boot/compressed/idt_64.c b/arch/x86/boot/compressed/idt_64.c
+index 6debb816e83d..0f03ac12e2a6 100644
+--- a/arch/x86/boot/compressed/idt_64.c
++++ b/arch/x86/boot/compressed/idt_64.c
+@@ -63,7 +63,10 @@ void load_stage2_idt(void)
+ 	set_idt_entry(X86_TRAP_PF, boot_page_fault);
+ 
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+-	set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
++	if (sev_status & BIT(1))
++		set_idt_entry(X86_TRAP_VC, boot_stage2_vc);
++	else
++		set_idt_entry(X86_TRAP_VC, NULL);
+ #endif
+ 
+ 	load_boot_idt(&boot_idt_desc);
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index 09dc8c187b3c..c3e343bd4760 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -404,13 +404,46 @@ void sev_enable(struct boot_params *bp)
+ 	if (bp)
+ 		bp->cc_blob_address = 0;
+ 
++	/*
++	 * Do an initial SEV capability check before snp_init() which
++	 * loads the CPUID page and the same checks afterwards are done
++	 * without the hypervisor and are trustworthy.
++	 *
++	 * If the HV fakes SEV support, the guest will crash'n'burn
++	 * which is good enough.
++	 */
++
++	/* Check for the SME/SEV support leaf */
++	eax = 0x80000000;
++	ecx = 0;
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++	if (eax < 0x8000001f)
++		return;
++
++	/*
++	 * Check for the SME/SEV feature:
++	 *   CPUID Fn8000_001F[EAX]
++	 *   - Bit 0 - Secure Memory Encryption support
++	 *   - Bit 1 - Secure Encrypted Virtualization support
++	 *   CPUID Fn8000_001F[EBX]
++	 *   - Bits 5:0 - Pagetable bit position used to indicate encryption
++	 */
++	eax = 0x8000001f;
++	ecx = 0;
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++	/* Check whether SEV is supported */
++	if (!(eax & BIT(1)))
++		return;
++
+ 	/*
+ 	 * Setup/preliminary detection of SNP. This will be sanity-checked
+ 	 * against CPUID/MSR values later.
+ 	 */
+ 	snp = snp_init(bp);
+ 
+-	/* Check for the SME/SEV support leaf */
++	/* Now repeat the checks with the SNP CPUID table. */
++
++	/* Recheck the SME/SEV support leaf */
+ 	eax = 0x80000000;
+ 	ecx = 0;
+ 	native_cpuid(&eax, &ebx, &ecx, &edx);
+@@ -418,7 +451,7 @@ void sev_enable(struct boot_params *bp)
+ 		return;
+ 
+ 	/*
+-	 * Check for the SME/SEV feature:
++	 * Recheck for the SME/SEV feature:
+ 	 *   CPUID Fn8000_001F[EAX]
+ 	 *   - Bit 0 - Secure Memory Encryption support
+ 	 *   - Bit 1 - Secure Encrypted Virtualization support
+-- 
+2.41.0
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
