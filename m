@@ -2,82 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2808B76681A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E164F76681D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbjG1JEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S234241AbjG1JEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjG1JD7 (ORCPT
+        with ESMTP id S233673AbjG1JEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:03:59 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB77197
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:03:58 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:12b0:7b7e:d1ff:7873])
-        by michel.telenet-ops.be with bizsmtp
-        id SZ3v2A0070d1nm806Z3voj; Fri, 28 Jul 2023 11:03:57 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qPJNt-002lhW-Uw;
-        Fri, 28 Jul 2023 11:03:55 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qPJO7-00AnzN-2F;
-        Fri, 28 Jul 2023 11:03:55 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sui Jingfeng <suijingfeng@loongson.cn>
-Subject: [PATCH v2] drm/atomic-helper: Update reference to drm_crtc_force_disable_all()
-Date:   Fri, 28 Jul 2023 11:03:53 +0200
-Message-Id: <b8c9c1a8a05dbf0be8e8be98cfdeafa9cecd8cef.1690535002.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Fri, 28 Jul 2023 05:04:37 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E91B6
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:04:35 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9b904bb04so28639501fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1690535074; x=1691139874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QoUjJ9zL9e663eyjUh3+yZMV+gsB92P640Sm3159mYQ=;
+        b=GWE2v5GO0nR84rzpqfnEgejBzGhN8kmeIhUex9shslMfLPk8x4dv8QTreZX6Xth0FC
+         SJeQBMwslj3Hg8jppS7yNQ41Jg+5J0l6/aJ5iPM0raqiZN+GpksIu2nXTlyYkCXNNw4S
+         VPHZWoR4IgMDrMmwkp3ms++fNSTf/MykV8Ugh41L+duzNuhm2XvaRObJa9FOZgr7uI6y
+         amAEVguzKhWS8ui7CoNHnTNhIjJFZohoStgGhN7io2g3TVUDTHvkeyYhINgDBQYrEDZe
+         mW0R3+Yg0QnEfTlQbNFhmxx90NlZjF7MX3YyJypumLONO3cERP2TLnj3r0TibU9nN/um
+         MpqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690535074; x=1691139874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QoUjJ9zL9e663eyjUh3+yZMV+gsB92P640Sm3159mYQ=;
+        b=aas3z2QTJdhMqjUk7KVhG+OCqVMmTI++doUGshBZe0aZpDZbxG6CdCSr9S6jhm/giI
+         T4a6h5sfhmz/jHM9Hes7n3A6FgqvMvyg71SNQsT9iCMYiVh1hwBTUex3TZPVntArc+be
+         RegQ3Ck0cJHt8noocGPZUWHR+8JNZOjjKTOSggo699dP2NXgmsrJL+CuGpokTZ9r38mD
+         vpi/Mg2RK8DjKz19EzaGuE9d2RWT1+nFXv+f8uwtI4qM24Xo1VXSkhIPZ1lOefD70HOB
+         3mtgjM3feOu7+1jmrA8LcTtK4vJ60GUBThyFmPEgBP7UyO+DKaFM5FpzlXlG6R+CHkNN
+         3s6w==
+X-Gm-Message-State: ABy/qLZXzot1dvTns7slcIJxCbOaPkKYxTSAnBs3YgHeiar53Ne4pamu
+        FeuE2T1Hg3E+C+NWt5m7v2CSKfYYSYHbW2zERVDvfA==
+X-Google-Smtp-Source: APBJJlE2xC/ePHFkPLVLV9/WTr37CR88KoeWLBzMv1tBu7gB0t5QjfHg6H1TPAqSzSN+blmCxSh5RZhbRETHKEBz5Gs=
+X-Received: by 2002:a2e:97d7:0:b0:2b6:fa60:85a1 with SMTP id
+ m23-20020a2e97d7000000b002b6fa6085a1mr1301429ljj.21.1690535074159; Fri, 28
+ Jul 2023 02:04:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
+ <cbf0a8fd-3479-1684-fe90-81f2159804ef@linaro.org> <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
+ <be748338-987b-d474-d040-82af7cfb5f01@linaro.org>
+In-Reply-To: <be748338-987b-d474-d040-82af7cfb5f01@linaro.org>
+From:   Eric Lin <eric.lin@sifive.com>
+Date:   Fri, 28 Jul 2023 17:04:23 +0800
+Message-ID: <CAPqJEFpYOgaEiSJ4HJwxMtpu1MZeUg9=tARTWa7hwTkjsQ3UAA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
+ cache controller
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com, greentime.hu@sifive.com,
+        vincent.chen@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_crtc_force_disable_all() was renamed to
-drm_helper_force_disable_all(), but one reference was not updated.
+On Fri, Jul 28, 2023 at 2:58=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 28/07/2023 08:01, Eric Lin wrote:
+> > Hi Krzysztof,
+> >
+> > On Fri, Jul 21, 2023 at 4:35=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >>
+> >> On 20/07/2023 15:51, Eric Lin wrote:
+> >>> This add YAML DT binding documentation for SiFive Private L2
+> >>> cache controller
+> >>>
+> >>> Signed-off-by: Eric Lin <eric.lin@sifive.com>
+> >>> Reviewed-by: Zong Li <zong.li@sifive.com>
+> >>> Reviewed-by: Nick Hu <nick.hu@sifive.com>
+> >>
+> >>
+> >> ...
+> >>
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    items:
+> >>> +      - const: sifive,pl2cache1
+> >>
+> >> I still have doubts that it is not used in any SoC. This is what you
+> >> said last time: "is not part of any SoC."
+> >> If not part of any SoC, then where is it? Why are you adding it to the
+> >> kernel?
+> >>
+> >
+> > Sorry for the late reply. I didn't describe it clearly last time.
+> > Currently, we have two hardware versions of pl2cache: pl2cache0 and pl2=
+cache1.
+> > The pl2cache0 is used in unmatched board SoC. The pl2cache1 is
+> > utilized in our internal FPGA platform for evaluation; it's our core
+> > IP.
+>
+> And why do you add bindings for some internal FPGA IP block which does
+> not interface with any SW?
+>
 
-Fixes: c2d88e06bcb98540 ("drm: Move the legacy kms disable_all helper to crtc helpers")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
----
-v2:
-  - Add Reviewed-by.
----
- drivers/gpu/drm/drm_atomic_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Krzysztof,
+The pl2cache has mmio interface for SW. Thanks.
 
-diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-index 41b8066f61fff4be..292e38eb621806a0 100644
---- a/drivers/gpu/drm/drm_atomic_helper.c
-+++ b/drivers/gpu/drm/drm_atomic_helper.c
-@@ -3332,7 +3332,7 @@ EXPORT_SYMBOL(drm_atomic_helper_disable_all);
-  * that also takes a snapshot of the modeset state to be restored on resume.
-  *
-  * This is just a convenience wrapper around drm_atomic_helper_disable_all(),
-- * and it is the atomic version of drm_crtc_force_disable_all().
-+ * and it is the atomic version of drm_helper_force_disable_all().
-  */
- void drm_atomic_helper_shutdown(struct drm_device *dev)
- {
--- 
-2.34.1
+Best regards,
+Eric Lin
 
+> Best regards,
+> Krzysztof
+>
