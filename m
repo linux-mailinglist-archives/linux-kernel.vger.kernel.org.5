@@ -2,160 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD6D766E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FA2766E90
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236836AbjG1NiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
+        id S236781AbjG1NjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236982AbjG1NiO (ORCPT
+        with ESMTP id S235839AbjG1NjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:38:14 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0DE30C2;
-        Fri, 28 Jul 2023 06:37:43 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 701451C0007;
-        Fri, 28 Jul 2023 13:37:40 +0000 (UTC)
-From:   Remi Pommarel <repk@triplefau.lt>
-To:     Marek Lindner <mareklindner@neomailbox.ch>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Antonio Quartulli <a@unstable.cc>,
-        Sven Eckelmann <sven@narfation.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        b.a.t.m.a.n@lists.open-mesh.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Remi Pommarel <repk@triplefau.lt>
-Subject: [PATCH net] batman-adv: Do not get eth header before batadv_check_management_packet
-Date:   Fri, 28 Jul 2023 15:38:50 +0200
-Message-Id: <20230728133850.5974-1-repk@triplefau.lt>
-X-Mailer: git-send-email 2.40.0
+        Fri, 28 Jul 2023 09:39:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35B6FC;
+        Fri, 28 Jul 2023 06:39:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fba8e2aa52so23580125e9.1;
+        Fri, 28 Jul 2023 06:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690551560; x=1691156360;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=luuurpFFHIk4Z1YcDdA8iq3kiu+yWaoiyG/BO1MOdDU=;
+        b=U9VxHz8ienoheJCcgcipsYjMczfL9Xbps3Q10DCmbJFBGNuvuK156BNEKRkIAaw9lc
+         s3ULqDTwE4quIGvSbxiZWExzSlh/999oK7gTI4aikAqEu9ZsFdCRs+qB54k8JKpwS004
+         u8xHfqb7hac57pNbLJ2hsylfxQr4JTZXVOHA3jPhyqADYJwfOJCe3THGpCTb+oxjiKcI
+         39Dl95rLpoWDXnUopDH47j2YIrhEaSttjOIZH5UZ2OWMN6mVFSLQaJDxuTGye1JIERg6
+         /bYJV4UOwZyx81lCkJZ7rcxeu29EfVuGnNoljPodJ8ATwOCvGPq//7DirqgSDhosI0sP
+         4xBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690551560; x=1691156360;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=luuurpFFHIk4Z1YcDdA8iq3kiu+yWaoiyG/BO1MOdDU=;
+        b=aGS2w+GBvg5IeuHefsK1lNsTYptacdLucqh7h+THwxqHXGJaDpwvXXFpeCEG9b0c5x
+         QfjLHMwSXeINdZhfqg+8qXAqqW/8LYqAXO+C2WA3hV+K7Ur4nfGax8EzBEJWEW7j36Oi
+         q0gn8YGMWbnbDQ/Mvda+/W+49u1NlyiAnKkhsUR48NnoxTdlfrdUzhA+bWpf5HCA/Z1F
+         cKfYayqBP1H2UuG3zVp8wvMqXpu6HIXFTuu425mtKLZH3r7U58Yl1ChcqRNZ1Vt3qtDi
+         ZkNL0SnsyrYM2LWEO4ZdYNheSg5GHWp29MUK1PnBEaZBlgTihRriwjObs7grNGB7X/H0
+         AQ9g==
+X-Gm-Message-State: ABy/qLbn44wNUvGizkMfkmWPmzM27LcCU3C06GgeO8mM4bvq3zmuLXGH
+        PuH05k9lbVHvUPgfYZCWyNM=
+X-Google-Smtp-Source: APBJJlFJE6u62rT4aWCp1taQAzPphe3a+55s2pVgaakYzFN+g+mDCYK1kVpqsKhjTEHHZFAdUzOJPQ==
+X-Received: by 2002:a7b:c354:0:b0:3fb:e2af:49f6 with SMTP id l20-20020a7bc354000000b003fbe2af49f6mr1538596wmj.39.1690551559839;
+        Fri, 28 Jul 2023 06:39:19 -0700 (PDT)
+Received: from PCBABN.skidata.net ([91.230.2.244])
+        by smtp.gmail.com with ESMTPSA id f17-20020a7bcc11000000b003fd2d33ea53sm4294463wmh.14.2023.07.28.06.39.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 06:39:19 -0700 (PDT)
+From:   Benjamin Bara <bbara93@gmail.com>
+To:     dmitry.torokhov@gmail.com
+Cc:     bbara93@gmail.com, benjamin.bara@skidata.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: ads7846 - don't set ABS_PRESSURE when min == max
+Date:   Fri, 28 Jul 2023 15:38:59 +0200
+Message-Id: <20230728133859.3808994-1-bbara93@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZMLV9BVxHx3jlE5R@google.com>
+References: <ZMLV9BVxHx3jlE5R@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: repk@triplefau.lt
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If received skb in batadv_v_elp_packet_recv or batadv_v_ogm_packet_recv
-is either cloned or non linearized then its data buffer will be
-reallocated by batadv_check_management_packet when skb_cow or
-skb_linearize get called. Thus geting ethernet header address inside
-skb data buffer before batadv_check_management_packet had any chance to
-reallocate it could lead to the following kernel panic:
+Hi Dmitry,
 
-  Unable to handle kernel paging request at virtual address ffffff8020ab069a
-  Mem abort info:
-    ESR = 0x96000007
-    EC = 0x25: DABT (current EL), IL = 32 bits
-    SET = 0, FnV = 0
-    EA = 0, S1PTW = 0
-    FSC = 0x07: level 3 translation fault
-  Data abort info:
-    ISV = 0, ISS = 0x00000007
-    CM = 0, WnR = 0
-  swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000040f45000
-  [ffffff8020ab069a] pgd=180000007fffa003, p4d=180000007fffa003, pud=180000007fffa003, pmd=180000007fefe003, pte=0068000020ab0706
-  Internal error: Oops: 96000007 [#1] SMP
-  Modules linked in: ahci_mvebu libahci_platform libahci dvb_usb_af9035 dvb_usb_dib0700 dib0070 dib7000m dibx000_common ath11k_pci ath10k_pci ath10k_core mwl8k_new nf_nat_sip nf_conntrack_sip xhci_plat_hcd xhci_hcd nf_nat_pptp nf_conntrack_pptp at24 sbsa_gwdt
-  CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.15.42-00066-g3242268d425c-dirty #550
-  Hardware name: A8k (DT)
-  pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-  pc : batadv_is_my_mac+0x60/0xc0
-  lr : batadv_v_ogm_packet_recv+0x98/0x5d0
-  sp : ffffff8000183820
-  x29: ffffff8000183820 x28: 0000000000000001 x27: ffffff8014f9af00
-  x26: 0000000000000000 x25: 0000000000000543 x24: 0000000000000003
-  x23: ffffff8020ab0580 x22: 0000000000000110 x21: ffffff80168ae880
-  x20: 0000000000000000 x19: ffffff800b561000 x18: 0000000000000000
-  x17: 0000000000000000 x16: 0000000000000000 x15: 00dc098924ae0032
-  x14: 0f0405433e0054b0 x13: ffffffff00000080 x12: 0000004000000001
-  x11: 0000000000000000 x10: 0000000000000000 x9 : 0000000000000000
-  x8 : 0000000000000000 x7 : ffffffc076dae000 x6 : ffffff8000183700
-  x5 : ffffffc00955e698 x4 : ffffff80168ae000 x3 : ffffff80059cf000
-  x2 : ffffff800b561000 x1 : ffffff8020ab0696 x0 : ffffff80168ae880
-  Call trace:
-   batadv_is_my_mac+0x60/0xc0
-   batadv_v_ogm_packet_recv+0x98/0x5d0
-   batadv_batman_skb_recv+0x1b8/0x244
-   __netif_receive_skb_core.isra.0+0x440/0xc74
-   __netif_receive_skb_one_core+0x14/0x20
-   netif_receive_skb+0x68/0x140
-   br_pass_frame_up+0x70/0x80
-   br_handle_frame_finish+0x108/0x284
-   br_handle_frame+0x190/0x250
-   __netif_receive_skb_core.isra.0+0x240/0xc74
-   __netif_receive_skb_list_core+0x6c/0x90
-   netif_receive_skb_list_internal+0x1f4/0x310
-   napi_complete_done+0x64/0x1d0
-   gro_cell_poll+0x7c/0xa0
-   __napi_poll+0x34/0x174
-   net_rx_action+0xf8/0x2a0
-   _stext+0x12c/0x2ac
-   run_ksoftirqd+0x4c/0x7c
-   smpboot_thread_fn+0x120/0x210
-   kthread+0x140/0x150
-   ret_from_fork+0x10/0x20
-  Code: f9403844 eb03009f 54fffee1 f94
+thank you for the feedback!
 
-Thus ethernet header address should only be fetched after
-batadv_check_management_packet has been called.
+On Thu, 27 Jul 2023 at 22:39, Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> On Thu, Jul 27, 2023 at 05:19:57PM +0200, Benjamin Bara wrote:
+> > From: Benjamin Bara <benjamin.bara@skidata.com>
+> >
+> > When the optional fields "pressure_min" and "pressure_max" are not set,
+> > both fall back to 0, which results to the following libinput error:
+> >
+> > ADS7846 Touchscreen: kernel bug: device has min == max on ABS_PRESSURE
+> >
+> > Avoid it by only setting ABS_PRESSURE if the values differ.
+>
+> What is the benefit of silently continuing without reporting pressure on
+> models that do support pressure readings, vs. using libinput's errors as
+> signal to adjust DT?
 
-Fixes: 0da0035942d4 ("batman-adv: OGMv2 - add basic infrastructure")
-Signed-off-by: Remi Pommarel <repk@triplefau.lt>
----
- net/batman-adv/bat_v_elp.c | 3 ++-
- net/batman-adv/bat_v_ogm.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+With the current implementation, libinput rejects the device [1] when an
+optional device-tree field is not set, which leads to a "non-functional" device.
+But you are right, silently continuing might also not be the best option...
+I could provide a v2 where the maximum is set to a fallback value (~0) and a
+warning is printed that the pressure is not set and therefore a fallback value
+is used, to signal the user to adjust the DT.
 
-diff --git a/net/batman-adv/bat_v_elp.c b/net/batman-adv/bat_v_elp.c
-index acff565849ae..1d704574e6bf 100644
---- a/net/batman-adv/bat_v_elp.c
-+++ b/net/batman-adv/bat_v_elp.c
-@@ -505,7 +505,7 @@ int batadv_v_elp_packet_recv(struct sk_buff *skb,
- 	struct batadv_priv *bat_priv = netdev_priv(if_incoming->soft_iface);
- 	struct batadv_elp_packet *elp_packet;
- 	struct batadv_hard_iface *primary_if;
--	struct ethhdr *ethhdr = (struct ethhdr *)skb_mac_header(skb);
-+	struct ethhdr *ethhdr;
- 	bool res;
- 	int ret = NET_RX_DROP;
- 
-@@ -513,6 +513,7 @@ int batadv_v_elp_packet_recv(struct sk_buff *skb,
- 	if (!res)
- 		goto free_skb;
- 
-+	ethhdr = eth_hdr(skb);
- 	if (batadv_is_my_mac(bat_priv, ethhdr->h_source))
- 		goto free_skb;
- 
-diff --git a/net/batman-adv/bat_v_ogm.c b/net/batman-adv/bat_v_ogm.c
-index e710e9afe78f..84eac41d4658 100644
---- a/net/batman-adv/bat_v_ogm.c
-+++ b/net/batman-adv/bat_v_ogm.c
-@@ -985,7 +985,7 @@ int batadv_v_ogm_packet_recv(struct sk_buff *skb,
- {
- 	struct batadv_priv *bat_priv = netdev_priv(if_incoming->soft_iface);
- 	struct batadv_ogm2_packet *ogm_packet;
--	struct ethhdr *ethhdr = eth_hdr(skb);
-+	struct ethhdr *ethhdr;
- 	int ogm_offset;
- 	u8 *packet_pos;
- 	int ret = NET_RX_DROP;
-@@ -999,6 +999,7 @@ int batadv_v_ogm_packet_recv(struct sk_buff *skb,
- 	if (!batadv_check_management_packet(skb, if_incoming, BATADV_OGM2_HLEN))
- 		goto free_skb;
- 
-+	ethhdr = eth_hdr(skb);
- 	if (batadv_is_my_mac(bat_priv, ethhdr->h_source))
- 		goto free_skb;
- 
--- 
-2.40.0
+What do you think about that?
 
+Best regards
+Benjamin
+
+[1] https://gitlab.freedesktop.org/libinput/libinput/-/blob/1.23.0/src/evdev.c?ref_type=tags#L1816
