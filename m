@@ -2,98 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 433E7766840
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A6476684B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbjG1JHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        id S235357AbjG1JHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjG1JGo (ORCPT
+        with ESMTP id S235239AbjG1JHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:06:44 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6815B3AA5;
-        Fri, 28 Jul 2023 02:06:34 -0700 (PDT)
-Received: from prodtpl.icoremail.net (unknown [10.12.1.20])
-        by hzbj-icmmx-6 (Coremail) with SMTP id AQAAfwA3cUcPhcNkLUSWBA--.43291S2;
-        Fri, 28 Jul 2023 17:06:23 +0800 (CST)
-Received: from zhangyiqun$phytium.com.cn ( [60.27.159.40] ) by
- ajax-webmail-mail (Coremail) ; Fri, 28 Jul 2023 17:06:21 +0800 (GMT+08:00)
-X-Originating-IP: [60.27.159.40]
-Date:   Fri, 28 Jul 2023 17:06:21 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?5byg6L22576k?= <zhangyiqun@phytium.com.cn>
-To:     "Herbert Xu" <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] crypto: all - alloc and init all req alloc as zero
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230428(d6537451) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-76b96e3b-3ecc-44d5-9200-de81e6d4c242-
-In-Reply-To: <ZMIl1vSitJBU3UJS@gondor.apana.org.au>
-References: <20230727080548.8666-1-zhangyiqun@phytium.com.cn>
- <ZMIl1vSitJBU3UJS@gondor.apana.org.au>
-Content-Transfer-Encoding: base64
-X-CM-CTRLDATA: zjxeZmZvb3Rlcl90eHQ9MTUwNzozODM=
-Content-Type: text/plain; charset=UTF-8
+        Fri, 28 Jul 2023 05:07:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2865420C;
+        Fri, 28 Jul 2023 02:06:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E54936209B;
+        Fri, 28 Jul 2023 09:06:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF1EBC43140;
+        Fri, 28 Jul 2023 09:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690535208;
+        bh=/PJy9fXDrFHeCTVzkqLb6iWkphI6XwY0EAi+vbVT1qo=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=BkjGR0GQZXMDHGmx5LDazP/PpSP5rELwWN+STrYiVgDu1rdUOhslvxOqeCz10GhPH
+         lRKz8wesgMnSDHrsSKspPSdiFDfwUsZj/r8KwyT7dcigN6dvRk9yiu/fDgcnb1H0kt
+         px9opsbrt8sO1YHw3WSrYcFGuMVKAF+gJFlZWpnYV2aBhjhWX6TmnyJ5vetWQKSpVI
+         m2nIkB0eoc2ca8MmylaZd3TqNyaqrqXSSo1e2QQv6b3lZ1NevxPSQRMMBBldLLoqYZ
+         dkl6ajcn4bb7Xn9UqBAzyH7JGAcK182yBGwrX6pe8YYGu7CAA/HDE0Utn7xUEjpTd1
+         qVL5vw49UIIMw==
+From:   Maxime Ripard <mripard@kernel.org>
+Date:   Fri, 28 Jul 2023 11:06:22 +0200
+Subject: [PATCH v3 09/11] drm/vc4: tests: pv-muxing: Switch to managed
+ locking init
 MIME-Version: 1.0
-Message-ID: <6c3f5deb.197.1899bbfbd6f.Coremail.zhangyiqun@phytium.com.cn>
-X-Coremail-Locale: en_US
-X-CM-TRANSID: AQAAfwDHTU4NhcNksIsAAA--.326W
-X-CM-SenderInfo: x2kd0wp1lt30o6sk53xlxphulrpou0/1tbiAQAOCGTCwasCFwABsf
-Authentication-Results: hzbj-icmmx-6; spf=neutral smtp.mail=zhangyiqun
-        @phytium.com.cn;
-X-Coremail-Antispam: 1Uk129KBjvJXoW7ZFW3AF4DWw45WF15Cr17KFg_yoW8Xw13pF
-        ZxCr15GF4Yg3y8Ca47u3WxCryrW395uFyrtrW5X3s2yr43Zry7KasFkw4fuFyDJryrXw45
-        uFW7K3WYqF1UArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        DUYxn0WfASr-VFAU7a7-sFnT9fnUUIcSsGvfJ3UbIYCTnIWIevJa73UjIFyTuYvj4RJUUU
-        UUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230728-kms-kunit-actions-rework-v3-9-952565ccccfe@kernel.org>
+References: <20230728-kms-kunit-actions-rework-v3-0-952565ccccfe@kernel.org>
+In-Reply-To: <20230728-kms-kunit-actions-rework-v3-0-952565ccccfe@kernel.org>
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        dri-devel@lists.freedesktop.org, David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6554; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=/PJy9fXDrFHeCTVzkqLb6iWkphI6XwY0EAi+vbVT1qo=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCmHW7lqxI5dfbowMFfELO3xklX3JF7d//l8WlsJ886SW
+ 1ZyExmqOkpZGMS4GGTFFFlihM2XxJ2a9bqTjW8ezBxWJpAhDFycAjARNn+G/6FrzknsO5O7ds/8
+ jdyS1QF7njJPPRD9zf33az1Tk9IX0lEM/+uzNyVqXE2K3LV++zwZ1k5j05m/rSKj/G973PuXeXu
+ LIzcA
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWN0dWFsbHksIEkgbWV0IGEgcHJvYmxlbSBpbiBteSBvd24gZGV2ZWxvcG1lbnQuIEJlY2F1c2Ug
-c29tZSBtZW1iZXJzIGluIHJlcQpzdHJ1Y3QgaXMgbm90IGludGlhbGl6ZWQsIHRoZXkgY2F1c2Ug
-c29tZSBlcnJvcnMgaW4gdGVzdC4gSWYgd2UgY2hhbmdlIGttYWxsb2MKdG8ga3phbGxvYywgaXQg
-Y2FuIGZhY2lsaXRhdGUgYWxsIGRldmVsb3BlcnMgdG8gY2FyZSBhYm91dCBpbmlhbGl6ZWQgYWxs
-IAptZW1iZXJzLiBJIGhvcGUgbXkgaWRlYSBjYW4gY29udmluY2UgeW91LiBCdXQgSSB0aGluayB5
-b3UgaGF2ZSBvdGhlcgppbXBvcnRhbnQgY29uc2lkZXJhdGlvbi4KClRoYW5rcywKCj4gLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlcy0tLS0tCj4gRnJvbTogIkhlcmJlcnQgWHUiIDxoZXJiZXJ0QGdvbmRv
-ci5hcGFuYS5vcmcuYXU+Cj4gU2VuZCB0aW1lOlRodXJzZGF5LCAwNy8yNy8yMDIzIDE2OjA3OjUw
-Cj4gVG86ICJaaGFuZyBZaXF1biIgPHpoYW5neWlxdW5AcGh5dGl1bS5jb20uY24+Cj4gQ2M6IGRh
-dmVtQGRhdmVtbG9mdC5uZXQsIGxpbnV4LWNyeXB0b0B2Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmcKPiBTdWJqZWN0OiBSZTogW1BBVENIXSBjcnlwdG86IGFsbCAt
-IGFsbG9jIGFuZCBpbml0IGFsbCByZXEgYWxsb2MgYXMgemVybwo+IAo+IE9uIFRodSwgSnVsIDI3
-LCAyMDIzIGF0IDA0OjA1OjQ4UE0gKzA4MDAsIFpoYW5nIFlpcXVuIHdyb3RlOgo+ID4gVGhpcyBw
-YXRjaCBpcyB0byBjaGFuZ2UgYWxsIHJlcSBzdHJ1Y3QgYWxsb2MgZnVuY3Rpb24gZnJvbSBrbWFs
-bG9jCj4gPiB0byBremFsbG9jLiBTb21ldGltZXMsIGl0IHdpbGwgaW5jdXIgc29tZSBlcnJvcnMg
-d2l0aG91dCBpbml0aWFsaXplZAo+ID4gemVyby4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogWmhh
-bmcgWWlxdW4gPHpoYW5neWlxdW5AcGh5dGl1bS5jb20uY24+Cj4gPiAtLS0KPiA+ICBpbmNsdWRl
-L2NyeXB0by9ha2NpcGhlci5oIHwgMiArLQo+ID4gIGluY2x1ZGUvY3J5cHRvL2hhc2guaCAgICAg
-fCAyICstCj4gPiAgaW5jbHVkZS9jcnlwdG8va3BwLmggICAgICB8IDIgKy0KPiA+ICBpbmNsdWRl
-L2NyeXB0by9za2NpcGhlci5oIHwgMiArLQo+ID4gIDQgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRp
-b25zKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IE5hY2suICBVbmxlc3MgeW91IGhhdmUgYSBzcGVj
-aWZpYyBpc3N1ZSBwbGVhc2UgZG9uJ3Qgc3VibWl0IHZhZ3VlCj4gcGF0Y2hlcyBsaWtlIHRoaXMu
-ICBZb3Ugc2hvdWxkIGFsd2F5cyBzdGF0ZSB3aGF0IGlzc3VlIGxlZCB5b3UgdG8KPiBtYWtlIGEg
-Y2hhbmdlIGxpa2UgdGhpcy4KPiAKPiBUaGFua3MsCj4gLS0gCj4gRW1haWw6IEhlcmJlcnQgWHUg
-PGhlcmJlcnRAZ29uZG9yLmFwYW5hLm9yZy5hdT4KPiBIb21lIFBhZ2U6IGh0dHA6Ly9nb25kb3Iu
-YXBhbmEub3JnLmF1L35oZXJiZXJ0Lwo+IFBHUCBLZXk6IGh0dHA6Ly9nb25kb3IuYXBhbmEub3Jn
-LmF1L35oZXJiZXJ0L3B1YmtleS50eHQKCg0KDQrkv6Hmga/lronlhajlo7DmmI7vvJrmnKzpgq7k
-u7bljIXlkKvkv6Hmga/lvZLlj5Hku7bkurrmiYDlnKjnu4Tnu4fmiYDmnIks5Y+R5Lu25Lq65omA
-5Zyo57uE57uH5a+56K+l6YKu5Lu25oul5pyJ5omA5pyJ5p2D5Yip44CC6K+35o6l5pS26ICF5rOo
-5oSP5L+d5a+GLOacque7j+WPkeS7tuS6uuS5pumdouiuuOWPryzkuI3lvpflkJHku7vkvZXnrKzk
-uInmlrnnu4Tnu4flkozkuKrkurrpgI/pnLLmnKzpgq7ku7bmiYDlkKvkv6Hmga/jgIINCkluZm9y
-bWF0aW9uIFNlY3VyaXR5IE5vdGljZTogVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlz
-IG1haWwgaXMgc29sZWx5IHByb3BlcnR5IG9mIHRoZSBzZW5kZXIncyBvcmdhbml6YXRpb24uVGhp
-cyBtYWlsIGNvbW11bmljYXRpb24gaXMgY29uZmlkZW50aWFsLlJlY2lwaWVudHMgbmFtZWQgYWJv
-dmUgYXJlIG9ibGlnYXRlZCB0byBtYWludGFpbiBzZWNyZWN5IGFuZCBhcmUgbm90IHBlcm1pdHRl
-ZCB0byBkaXNjbG9zZSB0aGUgY29udGVudHMgb2YgdGhpcyBjb21tdW5pY2F0aW9uIHRvIG90aGVy
-cy4=
+The new helper to init the locking context allows to remove some
+boilerplate.
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Maíra Canal <mairacanal@riseup.net>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+---
+ drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c | 42 ++++++++++++--------------
+ 1 file changed, 19 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
+index 776a7b01608f..ff1deaed0cab 100644
+--- a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
++++ b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
+@@ -20,7 +20,6 @@
+ 
+ struct pv_muxing_priv {
+ 	struct vc4_dev *vc4;
+-	struct drm_modeset_acquire_ctx ctx;
+ 	struct drm_atomic_state *state;
+ };
+ 
+@@ -725,6 +724,7 @@ static void drm_vc4_test_pv_muxing_invalid(struct kunit *test)
+ static int vc4_pv_muxing_test_init(struct kunit *test)
+ {
+ 	const struct pv_muxing_param *params = test->param_value;
++	struct drm_modeset_acquire_ctx *ctx;
+ 	struct drm_atomic_state *state;
+ 	struct pv_muxing_priv *priv;
+ 	struct drm_device *drm;
+@@ -738,13 +738,14 @@ static int vc4_pv_muxing_test_init(struct kunit *test)
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
+ 	priv->vc4 = vc4;
+ 
+-	drm_modeset_acquire_init(&priv->ctx, 0);
++	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+ 
+ 	drm = &vc4->base;
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &priv->ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	priv->state = state;
+ 
+@@ -757,8 +758,6 @@ static void vc4_pv_muxing_test_exit(struct kunit *test)
+ 	struct drm_atomic_state *state = priv->state;
+ 
+ 	drm_atomic_state_put(state);
+-	drm_modeset_drop_locks(&priv->ctx);
+-	drm_modeset_acquire_fini(&priv->ctx);
+ }
+ 
+ static struct kunit_case vc4_pv_muxing_tests[] = {
+@@ -798,7 +797,7 @@ static struct kunit_suite vc5_pv_muxing_test_suite = {
+  */
+ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *test)
+ {
+-	struct drm_modeset_acquire_ctx ctx;
++	struct drm_modeset_acquire_ctx *ctx;
+ 	struct drm_atomic_state *state;
+ 	struct vc4_crtc_state *new_vc4_crtc_state;
+ 	struct vc4_hvs_state *new_hvs_state;
+@@ -811,13 +810,14 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
+ 	vc4 = vc5_mock_device(test);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
+ 
+-	drm_modeset_acquire_init(&ctx, 0);
++	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+ 
+ 	drm = &vc4->base;
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -844,7 +844,7 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI1);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -866,13 +866,11 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
+ 	KUNIT_EXPECT_NE(test, hdmi0_channel, hdmi1_channel);
+ 
+ 	drm_atomic_state_put(state);
+-	drm_modeset_drop_locks(&ctx);
+-	drm_modeset_acquire_fini(&ctx);
+ }
+ 
+ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
+ {
+-	struct drm_modeset_acquire_ctx ctx;
++	struct drm_modeset_acquire_ctx *ctx;
+ 	struct drm_atomic_state *state;
+ 	struct vc4_crtc_state *new_vc4_crtc_state;
+ 	struct vc4_hvs_state *new_hvs_state;
+@@ -885,13 +883,14 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
+ 	vc4 = vc5_mock_device(test);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
+ 
+-	drm_modeset_acquire_init(&ctx, 0);
++	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+ 
+ 	drm = &vc4->base;
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -929,7 +928,7 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_del_output(test, state, VC4_ENCODER_TYPE_HDMI0);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -954,14 +953,12 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
+ 	}
+ 
+ 	drm_atomic_state_put(state);
+-	drm_modeset_drop_locks(&ctx);
+-	drm_modeset_acquire_fini(&ctx);
+ }
+ 
+ static void
+ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct kunit *test)
+ {
+-	struct drm_modeset_acquire_ctx ctx;
++	struct drm_modeset_acquire_ctx *ctx;
+ 	struct drm_atomic_state *state;
+ 	struct vc4_crtc_state *new_vc4_crtc_state;
+ 	struct drm_device *drm;
+@@ -971,13 +968,14 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
+ 	vc4 = vc5_mock_device(test);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
+ 
+-	drm_modeset_acquire_init(&ctx, 0);
++	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
+ 
+ 	drm = &vc4->base;
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -993,7 +991,7 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
+ 	state = drm_atomic_state_alloc(drm);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
+ 
+-	state->acquire_ctx = &ctx;
++	state->acquire_ctx = ctx;
+ 
+ 	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI1);
+ 	KUNIT_ASSERT_EQ(test, ret, 0);
+@@ -1006,8 +1004,6 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
+ 	KUNIT_EXPECT_NULL(test, new_vc4_crtc_state);
+ 
+ 	drm_atomic_state_put(state);
+-	drm_modeset_drop_locks(&ctx);
+-	drm_modeset_acquire_fini(&ctx);
+ }
+ 
+ static struct kunit_case vc5_pv_muxing_bugs_tests[] = {
+
+-- 
+2.41.0
 
