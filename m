@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100D3767768
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0FA76776C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjG1VF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 17:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
+        id S231955AbjG1VH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 17:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbjG1VF0 (ORCPT
+        with ESMTP id S231822AbjG1VHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 17:05:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32D144B5;
-        Fri, 28 Jul 2023 14:05:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 550436220B;
-        Fri, 28 Jul 2023 21:05:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE97C433C8;
-        Fri, 28 Jul 2023 21:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690578319;
-        bh=7qOs7TnG/8tF9E4QPJWYx9tCPCwzVufdhmnJ191LcHY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=frguYMS9LYFIXpkA2hQ4p752eTEDDRN028mZ8JSp9Cp/XV5nhamo2EG7gQEP+dyvb
-         +7mkpatxWOaRzYliEvatZBbe/w4r1lApI3B185bTcw3KyT9wSPO6z81FUK1ai7+HzV
-         F7WdIFqzzHzqrNonUugUSKfgvyCdEvS7oYdZV248BVIbdWI8uiEdZBUPwx1lIvYXWJ
-         pMavPk7jwjm1bLwVgzVn0CFmSgAuej6JtKv0IV+kBsKd6MnNt3/Mx3L7oJWKr+y+Cz
-         F1jBiQj8T+/CXbwSEJCF0Dbrb/TuNLpzbpD+TugjjQ9x0fWhcXBlPxbosdn+jaGOI8
-         XJDxvgQ9Ku19w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2CEE6CE0A13; Fri, 28 Jul 2023 14:05:19 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 14:05:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     akpm@linux-foundation.org, adobriyan@gmail.com,
-        mhiramat@kernel.org, arnd@kernel.org, ndesaulniers@google.com,
-        sfr@canb.auug.org.au, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig 0/2] Distinguish bootloader and embedded
- kernel parameters
-Message-ID: <2007473f-cdf3-4f15-bee9-470e4b30bb16@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <cc9ba6e9-1154-ad84-0fef-d67834169110@infradead.org>
+        Fri, 28 Jul 2023 17:07:25 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E13449E
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:07:23 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fd190065a8so28216865e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690578442; x=1691183242;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+tc5WwtQqVsq4j0Ng1nFQLroD3hTGoZzgxCO5bF57RU=;
+        b=hgfb1j8+G7jM0SKIFxCQ4YMrmQcm37/bIgbz+iH9Xr5WgM+IzWMQ0uuCEZR2J80atC
+         UvIWv9wpE/+L+bFrOXCQZi0RIz/B0CGjvhF5wiu6LnjVlYi+SkRzVMeH/LDbwU2fZ33D
+         w/iKZkQIDWfC1sYoNaBhcjyTcbzxs9W3eGqZxlRltsX05/WXniJyQhrxDrCsoTwD32n+
+         r6N8MWthvCiNPuV1wS7MiQb+SW0x/Jy14c2F4hq+9zqebL9r3cx6Sl26BbpH/6j5jNQd
+         h60Nbi+PxGBFk2HIE+Ont/euLFzhy0Mth2z7rdK181b7hLbZ63vWaWRbDxseNCWTVhNO
+         ug5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690578442; x=1691183242;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+tc5WwtQqVsq4j0Ng1nFQLroD3hTGoZzgxCO5bF57RU=;
+        b=LVq5q6zpoCgyi0JY6yKiwOGOt60f0QiV3IPW8ywOJpRYvX4BzT69s3YtEFLosB6L7c
+         3wWg8ev0YA9NKGxdIuXMHZ2+BTJJvRZ4UHZNLkuaOa0pqfhoETqM4uFD38kBEA0xN+3T
+         CaWt51bpx8C0fhK2FSZ+j5JScqe9nnjVBRQmOIQi2WAT3+5zHo1kqqYNqVk4xofwGiK9
+         oCW5Mhei3vLjmkEgfYgL8TlH/eU9osbPLQkwaeMYWuHqPAUdkX3R7U55Y9agX5Xo7aDr
+         MPMWfI6NLeynKI6Ym5fd3+xWfHXvkkMXx9Tw2Q2ZYE3cd+eC0d0OsXJFRuIREW7C4NAF
+         0kgg==
+X-Gm-Message-State: ABy/qLZZGjXYASht17pa6Bn3tyE+CKQuX5uTqT/s2+WSpLgQoWs0xLxS
+        IroVAsw9yqxHR8Xuowv1ho1TipQo0jLF5gKhVfs=
+X-Google-Smtp-Source: APBJJlGs4F53MvZH94sNJVHkiwHSOMqi3atyD92zQwepoMb1wRHIcQFnsQuzBmz0B+w9U13MXQRZIA==
+X-Received: by 2002:a05:600c:214d:b0:3fd:4880:2aa5 with SMTP id v13-20020a05600c214d00b003fd48802aa5mr2968219wml.28.1690578441761;
+        Fri, 28 Jul 2023 14:07:21 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y17-20020a05600c20d100b003fba6709c68sm4996962wmm.47.2023.07.28.14.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 14:07:21 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 00:07:18 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev, Simon Horman <horms@kernel.org>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: drivers/remoteproc/pru_rproc.c:341 pru_rproc_set_ctable() warn:
+ variable dereferenced before IS_ERR check 'rproc' (see line 335)
+Message-ID: <ecf8338f-53dd-4de2-b5a1-e7c6f9229edc@kadam.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cc9ba6e9-1154-ad84-0fef-d67834169110@infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:25:06PM -0700, Randy Dunlap wrote:
-> 
-> 
-> On 7/27/23 20:35, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > This series provides /proc interfaces parallel to /proc/cmdline that
-> > provide only those kernel boot parameters that were provided by the
-> > bootloader (/proc/cmdline_load) and only those parameters that were
-> > embedded in the kernel image (/proc/cmdline_image, in boot-config format).
-> > This is especially important when these parameters are presented to the
-> > boot loader by automation that might gather them from diverse sources,
-> > and also when a kexec-based reboot process pulls the kernel boot
-> > parameters from /proc.  If such a reboot process uses /proc/cmdline,
-> > the kernel parameters from the image are replicated on every reboot,
-> > which can be frustrating when the new kernel has different embedded
-> > kernel boot parameters.
-> > 
-> > Why put these in /proc?  Because they is quite similar to /proc/cmdline,
-> > so it makes sense to put it in the same place that /proc/cmdline is
-> > located.
-> > 
-> > 1.	fs/proc: Add /proc/cmdline_load for boot loader arguments.
-> > 
-> > 2.	fs/proc: Add /proc/cmdline_image for embedded arguments.
-> > 
-> > 						Thanx, Paul
-> > 
-> 
-> Hi Paul,
-> 
-> This series seems to be missing updates to
-> Documentation/filesystems/proc.rst.
-> 
-> Please add them.
+Hi Simon,
 
-Good catch, thank you!
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-I will fold the diff below into the three respective commits on my next
-rebase, but in the meantime, please let me know what you think.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f837f0a3c94882a29e38ff211a36c1c8a0f07804
+commit: e752f9b924a1fd1afcf36e51b03dfa9c3096a3bd soc: ti: pruss: Allow compile-testing
+config: csky-randconfig-m041-20230727 (https://download.01.org/0day-ci/archive/20230729/202307290417.hrgfPCcg-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290417.hrgfPCcg-lkp@intel.com/reproduce)
 
-							Thanx, Paul
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202307290417.hrgfPCcg-lkp@intel.com/
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 7897a7dafcbc..98c43c5ef1ee 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -686,7 +686,10 @@ files are there, and which are missing.
-  apm          Advanced power management info
-  buddyinfo    Kernel memory allocator information (see text)	(2.5)
-  bus          Directory containing bus specific information
-- cmdline      Kernel command line
-+ cmdline      Kernel command line, both from bootloader and embedded
-+ 	      in the kernel image
-+ cmdline_image Kernel command line obtained from boot loader	(6.6)
-+ cmdline_load Kernel command line obtained from kernel image	(6.6)
-  cpuinfo      Info about the CPU
-  devices      Available devices (block and character)
-  dma          Used DMS channels
+smatch warnings:
+drivers/remoteproc/pru_rproc.c:341 pru_rproc_set_ctable() warn: variable dereferenced before IS_ERR check 'rproc' (see line 335)
+
+vim +/rproc +341 drivers/remoteproc/pru_rproc.c
+
+102853400321bae Roger Quadros   2023-01-06  333  int pru_rproc_set_ctable(struct rproc *rproc, enum pru_ctable_idx c, u32 addr)
+102853400321bae Roger Quadros   2023-01-06  334  {
+102853400321bae Roger Quadros   2023-01-06 @335  	struct pru_rproc *pru = rproc->priv;
+                                                                                ^^^^^^^^^^^^
+Dereference
+
+102853400321bae Roger Quadros   2023-01-06  336  	unsigned int reg;
+102853400321bae Roger Quadros   2023-01-06  337  	u32 mask, set;
+102853400321bae Roger Quadros   2023-01-06  338  	u16 idx;
+102853400321bae Roger Quadros   2023-01-06  339  	u16 idx_mask;
+102853400321bae Roger Quadros   2023-01-06  340  
+102853400321bae Roger Quadros   2023-01-06 @341  	if (IS_ERR_OR_NULL(rproc))
+102853400321bae Roger Quadros   2023-01-06  342  		return -EINVAL;
+
+Checked too late.  Also ideally it would be:
+
+	if (IS_ERR_OR_NULL(rproc))
+		return PTR_ERR(rproc);
+
+If a pointer can be both error and NULL then generally the NULL is a
+special kind of success.  It means the option is turned off so there
+is nothing to do, so an early return is success.
+
+https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
+
+
+102853400321bae Roger Quadros   2023-01-06  343  
+102853400321bae Roger Quadros   2023-01-06  344  	if (!rproc->dev.parent || !is_pru_rproc(rproc->dev.parent))
+102853400321bae Roger Quadros   2023-01-06  345  		return -ENODEV;
+102853400321bae Roger Quadros   2023-01-06  346  
+102853400321bae Roger Quadros   2023-01-06  347  	/* pointer is 16 bit and index is 8-bit so mask out the rest */
+102853400321bae Roger Quadros   2023-01-06  348  	idx_mask = (c >= PRU_C28) ? 0xFFFF : 0xFF;
+102853400321bae Roger Quadros   2023-01-06  349  
+102853400321bae Roger Quadros   2023-01-06  350  	/* ctable uses bit 8 and upwards only */
+102853400321bae Roger Quadros   2023-01-06  351  	idx = (addr >> 8) & idx_mask;
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
