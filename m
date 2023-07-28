@@ -2,158 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64728766EE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77292766EE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236898AbjG1N4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
+        id S236924AbjG1N5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbjG1N4P (ORCPT
+        with ESMTP id S236913AbjG1N5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:56:15 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10F4DB
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:56:14 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36S81BcW025215;
-        Fri, 28 Jul 2023 08:55:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=chgwWO5YMIJjQv9UF1hYPVXhRGHNmfv4cxQzjsK6WJM=; b=
-        Wqv6HGc5Ft644SU73s4gAw7sCRVoLMQPvnJv5tf5OylMkjWvbynbBgNSln30a3Qv
-        NDodQpDA2m6gm0TrwIbhZU7PRlxX9gtAGZwk9ZUosYp1FabfdkfxYG+3GXSf6d5V
-        7iTIQqmTnoeGHrkjVXHlviV9PJqdhO0QqyGxOXLAnj8EDpugHbIrHY0EyZUZ3wjB
-        Q0AXWVSoivkfJ2iWlEM0DKH3Ib1mlQYBaOan0uaqB/V99OW+dmP6oNl+n9zV27lu
-        GQKXBOSUoJwtizrma6nqryf/nmVrjs/3lXxK4/9ukHSdIxES4tRCp1sNYpscRckU
-        K280eV3Tr9Jh2FycAiUVEA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s2q713g7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 08:55:49 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
- 2023 14:55:46 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Fri, 28 Jul 2023 14:55:46 +0100
-Received: from [198.61.65.141] (LONN2DGDQ73.ad.cirrus.com [198.61.65.141])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8505E11AB;
-        Fri, 28 Jul 2023 13:55:46 +0000 (UTC)
-Message-ID: <ab5a2372-c377-a738-4bce-7f67efd656c1@opensource.cirrus.com>
-Date:   Fri, 28 Jul 2023 14:55:46 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 00/11] Fix support for System Suspend for CS35L41 HDA
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20230721151816.2080453-1-sbinding@opensource.cirrus.com>
- <87jzupwuo9.wl-tiwai@suse.de> <87ila4cmvh.wl-tiwai@suse.de>
-From:   Stefan Binding <sbinding@opensource.cirrus.com>
-In-Reply-To: <87ila4cmvh.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Fri, 28 Jul 2023 09:57:37 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901372D61;
+        Fri, 28 Jul 2023 06:57:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690552654; x=1722088654;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2TmwocSayjWFUfzlzHRRKcTFPEkNFNw4w817ZZ9LCvo=;
+  b=JinvEEYDYc+8G1sDTJoMJMn0A8kQejH3q+TM0yOZsvPnh0FnPdNqGSAa
+   00qBWs9PEkoRr6FQws5aXs+MIlRNviK8xLU7ONQ5fX6vCPvV6VKGJ2j3R
+   /UyVgJTy0k1rSsgP2p+scnvmybicL4L9OcIRrF3hNSw4bHKVTLdXVTYHF
+   tuzU+8W1UrVUdkcc6D/NRTryg6ytIlPC9kP5KTiyYanisdZcj08+bHTDD
+   wkWJ97albwaFMHUtZBG17RzDopZNJehG5/7N8SrYFMy53CzGfe4akAZz/
+   KqhZi1VBuNeaNAfxVNJBENlH65AJYHRrQ5CS00aevl4exKIoFjsp3Lv9+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432408208"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="432408208"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 06:57:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="841315871"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="841315871"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP; 28 Jul 2023 06:57:33 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 28 Jul 2023 06:57:33 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 28 Jul 2023 06:57:32 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 28 Jul 2023 06:57:32 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.175)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 28 Jul 2023 06:57:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWyDjQF7T+CYTFRnnlQ0SB3/JbuA34h/b6NJ2ff2INB1a+fjGyrD49EkuY+xqHoelr3Fe5mZToGhQoG9kezUlQtuNLH0SCw8OxDdi9uHRbaI0S4NalHEFOb0mhHiJDtL9EUjGjrOJqz4pJqoyKQmEpv7LKyC0fsF4DioPLM+NLxwEzAVxF845gQEqGk4PjgjPGRHGAWNhsUyqejBRvOxNk7ZgpD91IU3woXHGCmWEPXkonBKzPGf6EqyUH29hBd2sPEo57acZmEXiP8HYS9ygF4w5SWd7BaaCVm4xj4IRoEP+dQSoki+X2fkzKCcc0GYsV8QATER0YfiLy6MaWknXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TpSFUJNJKX8WHR8n9k33M/FOjucuVXMMlkhZ8VjSojY=;
+ b=BTptQRPzXHu0Xexaw9HBQ9zcouqn0LzoXi/n3MMxUTla0ti8DfqgTBB+JxkVsnEMCJ9yHcHMFeUYb4cRZIoejLkS+4XOAXSRijiAFM2SxKQ0201hqDjGxNr89rGN6KvTfQVAPfA8kiZACOo29L5ZrcagM5CGZbnmohC1CRwuSFJLUpEyespRDkap4Sar9Fdnbi44jOLiJRDhrcDanFPq7FTZRSP2nRy+FAWjtSropLMF62vHslkYJu5Kn/PJcqOIByVcaFbqG5ISr7xYSj05RlUigzP6QL6eWgIKqIGv05N+WNCr0Tn9Qa1y5ya/13Ew5jbXGjiDk2DW4+AGmp+7Gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by SA1PR11MB6565.namprd11.prod.outlook.com (2603:10b6:806:250::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 13:57:31 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::44ff:6a5:9aa4:124a%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 13:57:31 +0000
+Message-ID: <db90161a-a6c0-2078-1a22-0f629d72c38a@intel.com>
+Date:   Fri, 28 Jul 2023 15:55:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH net-next 1/9] page_pool: split types and declarations from
+ page_pool.h
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
+ <20230727144336.1646454-2-aleksander.lobakin@intel.com>
+ <fb6330ef-5e74-01a4-a418-0b33748932ff@huawei.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <fb6330ef-5e74-01a4-a418-0b33748932ff@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: XmUt5XBUa9BKajNgyPuTU-u4oGe3Jn9H
-X-Proofpoint-ORIG-GUID: XmUt5XBUa9BKajNgyPuTU-u4oGe3Jn9H
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR0P281CA0226.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b2::19) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SA1PR11MB6565:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78e829c6-f3a9-4d9a-1189-08db8f7295e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IVd5+enTujylOLpVAAySna5vSsVUdhr8bm79O2k4jWr1IZwsDR50GaESEsCMZ7PEpH5yNT0nbve+oKCnsdb0K0jZS405atEXyhWP6Iunid/1pWAoU9Z6rKECcfbJ+5nuJv3By4P3rX0TB05qkhhQe0ZE46jdbks2f+MLyMhyQ73+7RxmwddbLXDyKlUe4Ph5/oIPoaBPaN8e/4EhJMaEgEjTxsD95pvj5rg3dVylG7lY7qo987/VQOUFcs4uXUhqkNeciG/d9HgjHgyKVJ5j+865aJcx5JDuUIZDKakKZIHnyXJMHjlX76H9rCdM/2lozTZ3G3n7aCUcK3DFHz0ZWzF4MyqMG2+prP80JlYDnF88doifovmtczrLVoPyZv7RJfdih4G037z6fqkWaBTVPpGYrTHe7y3fZGNslso+21kc5eMHEv4FmdubLG3JEkKtwQY2MaaYPppR0hAeNd7fBelflU21ylr3/AMcxM+bFLu+HBLNGeCmFITU7vH3LWsvoVjEiQ8RBAfqfPl0UGZ1mBFE8v9+Oxz/AeAUsCmYCuUmoT1AIwwAKYC1BbX2HhL2l5RMchQZCJ4Xkyb8pmokwncy62nfJ70GdgbEQGyuTWDHudoXMDZGuDKl3P/0dtTZ6uGweQfbF3uOHPuykdUt7Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(366004)(39860400002)(136003)(376002)(451199021)(86362001)(31696002)(36756003)(31686004)(2906002)(4744005)(478600001)(54906003)(38100700002)(82960400001)(26005)(53546011)(2616005)(186003)(6506007)(41300700001)(8676002)(6666004)(66946007)(6486002)(6512007)(316002)(6916009)(66556008)(66476007)(5660300002)(7416002)(4326008)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enlZbzRIZGMzQUhMZ25JRWZqNUViUTNmcUZCZTlYR3ErdWpBYXAyWm4vdUho?=
+ =?utf-8?B?eVFyMzVlSGlXZnVTQU9KRjhCVjlmYnJTSDd3OHlNWWEyNDU5eXpRSVBVbTlN?=
+ =?utf-8?B?ZXRSajJSNWh2a1FLbU45Z21aOU5idGhod3k2NjNyTXhZc2tPYWpSQ0pxcmlw?=
+ =?utf-8?B?cHVJeDlzR255VGNmMDUyVFFhZWw5SWtXMnZoWE55eUJTWnZYUmx2NWxLZHdI?=
+ =?utf-8?B?bXRxazFWbEZudE1JZWJrYktsVUFleDZsQ2toNDRyZTVtU2xxMnNKbmZVVmg4?=
+ =?utf-8?B?Z1FTa3NZN3p0MDdWNCsxaC82VkFVM1hiWVpWbFJaWTRqRDlmbS9lditZVENR?=
+ =?utf-8?B?UVR3c01aQTlSalVURitpTThjeDZDSk81alRpbVYyVG44cVNKYVdtK2YwZkZz?=
+ =?utf-8?B?NEswL0JZVVRwSVdhNHEwN3FCeU1hYThrVCs4bGwvdk5DK25PWGV2STZqdnFj?=
+ =?utf-8?B?Rnk5em5ldFh3OUVreElnMjhYNzEvVG4yaEVBdkxWbENwM2owdFh0U3U4ZXly?=
+ =?utf-8?B?NHd2bUNYbDFpbkpQY29JQWl6R0V2c2ZMbWlPQ0V2WklGVm5lbXc2dFhwVlRB?=
+ =?utf-8?B?bGFCL2haNmcrMy9aMWt0ZFNyNWpvQWpuYjRWRnFqa2h0eTRpcUVyZVl6c2dI?=
+ =?utf-8?B?M3FQVTZabDZyb3NBTis0K0ZBdmhPZ3NUKzREV1l0R3FyejdhTmV1MUlEbFll?=
+ =?utf-8?B?cWlIeXNGM0x4OHpYYk9xVmhxVzd6Y3A2VGZCK1dRNFczQnM1bnE4YWF1L1FH?=
+ =?utf-8?B?MTZJdllyR3lEWml4OU1DYzFBN0NDeFhydXZVWDllNkJyYWRTZ1VOQjhqVUZT?=
+ =?utf-8?B?aWk1TDFicThwQmUwSGx1bmlmaFNseGVORm5kb1VvZVhXWG1kbXhTWjBWLzRh?=
+ =?utf-8?B?dFRaU3JrcFRkQXlMd0E4OWFRQnhrY0xKVWR2TnRBSmMrbHVsZ3VvR2N2RVFQ?=
+ =?utf-8?B?UTcrbWp3czJJTFRwNG9aOE11L0psS01yUnpKTHE4TkFKNVdLTDNZWlJ4VnBk?=
+ =?utf-8?B?U1N0WGpQalF3L0VQd0tacnVPYkRtckYyNHRVSVMrZFJDS1hRMlpwM2RNakJR?=
+ =?utf-8?B?MGd3TVAxczVmQndVRXMwc2ZiQzR1SE90djBScUtVQ20xVzhEOGlsejNEanl5?=
+ =?utf-8?B?TTdrYVFKUVlLUVhmTG1tMlUzdDAwa2pnenJaOUh2Vmorb1dsWHdBbHlabUVs?=
+ =?utf-8?B?WUs3bjJmamlzaXJicnRWUkFXK3BzamE5NVI5R0tacTllS0x3Y1J1ZDJjaDZU?=
+ =?utf-8?B?c293cnhVMThHRXVrZWJjY1F2QTJ5d1h4N0lJazZrYjZldURkRjIrY3ZUOEg4?=
+ =?utf-8?B?U0lmUk5TWGZmaWI5Q1M3ZXRwTTZzOGJpVFRocjJ6T0R6bGwwZWJvWHZIYnRj?=
+ =?utf-8?B?RTFmQXR3aENlM2I5ZmpEV1JsVVcxSDVGVU9MWEZUYm5ZWTc4QUJpeU5FTE5r?=
+ =?utf-8?B?a0tRYzZPci9wT3loUTUyb1Y0bFNQbENxYmJnTXBIOVhiSmZ6amtta1NEUTBt?=
+ =?utf-8?B?eTY3VTlRWStqcmphalpmdEFDdVZrTWJYbzFmbXNwN0RYVWZGTU9VcHVVaFBC?=
+ =?utf-8?B?dnIyeVVIcjQ4NTVISWdPV3BJWVlzNURadzNCamtCYnlrUVdtQ3NKYUp6N2tQ?=
+ =?utf-8?B?YkpUYVd3alg2a3NDUGsvMzZrWU12L081R0JGVTQ3QnNrSmFWOTZ3ZDk3VXM4?=
+ =?utf-8?B?TWs5NVdVTitDKzdaREhIRk5tUzFCTC9YM0hIang1dnd0K3RXc2NvdEhocEM2?=
+ =?utf-8?B?cnpFYlBiVnpXSjFab0N2MS93aDhZZ2pNdWsrbjVaSEJGTTZ2LzNkdDFLTjBR?=
+ =?utf-8?B?ZjBMWlJMZGJPUzdVV1RWSXB1Y1lQeTZSWnRQb1oyY05UclFNSHN4Nml5aytO?=
+ =?utf-8?B?dWJaZFg4c3h3UkZFZ1BJWE1wWmZ5cDZnWjJUSDI3UW0vR3cxNVVDd09NQWlp?=
+ =?utf-8?B?TGlydDBXaGlDTjdLRGxXRGt2R3BRSVl6MEM3eWpXWlhwQmJPaWpYdjVzMWtZ?=
+ =?utf-8?B?eFN0aUFBSVE1dDFKYnJnbTNoQUNFVGZkUW1qQmR3QUpKMUpKbU4wQjdyWENB?=
+ =?utf-8?B?N1k0eDJqcjRaclhWRkxlSlNaYVZFQ3B3ellxY1RKSjFmZm1BTHVGLy9MZkth?=
+ =?utf-8?B?MU5QNFkwVVRvK05xQko1blpFcElpclVOdnlyZGQ0TjQ3MEo3Mks0ekZBSWM3?=
+ =?utf-8?B?V2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78e829c6-f3a9-4d9a-1189-08db8f7295e2
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 13:57:30.8967
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AojW6bBqDdj505OWm86VuIe1DUq7HubsM0LL9zoN7EX38iraBcDYbEKSh96Nkkqdp2t7KNf2dIK7IGsCPn3R2+7U5sdfMFGoKbzp6nq4wyw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6565
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Date: Fri, 28 Jul 2023 19:58:01 +0800
 
-On 28/07/2023 12:10, Takashi Iwai wrote:
-> On Mon, 24 Jul 2023 11:00:38 +0200,
-> Takashi Iwai wrote:
->> On Fri, 21 Jul 2023 17:18:05 +0200,
->> Stefan Binding wrote:
->>> There have been a couple of customer reports of intermittant issues after
->>> system resume, where sometimes the DSP firmware stops responding.
->>> Investigations into this issue show that there is a race between receiving
->>> a prepare from the HDA core, and the firmware reload which is started by
->>> the system resume. This can causes the Global Enable on the CS35L41 to be
->>> enabled during the firmware load, which can sometimes cause issues in the
->>> DSP.
->>>
->>> The existing system resume behaviour also did not resume the audio, if
->>> audio was previously playing when it was suspended.
->>> In addition, during investigation, it was found there were additional
->>> problems in the System Resume sequence, as well as the Playback sequence
->>> with External Boost, where the driver does not correctly follow its
->>> enable sequence for this mode. This can cause additional issues such as
->>> pops and clicks.
->>>
->>> This chain intends to correct the sequences for playback and system
->>> suspend/resume so that the driver: obeys the external boost enable sequence;
->>> resumes audio on system resume; and avoids the race condition on firmware
->>> load and playback during system resume.
->>>
->>> Changes since v1:
->>> - Split patch 1 into 2 separate patches
->>> - Combine Patches 6 and 9
->>>
->>> Stefan Binding (11):
->>>    ALSA: cs35l41: Use mbox command to enable speaker output for external
->>>      boost
->>>    ALSA: cs35l41: Poll for Power Up/Down rather than waiting a fixed
->>>      delay
->>>    ALSA: hda: cs35l41: Check mailbox status of pause command after
->>>      firmware load
->>>    ALSA: hda: cs35l41: Ensure we correctly re-sync regmap before system
->>>      suspending.
->>>    ALSA: hda: cs35l41: Ensure we pass up any errors during system
->>>      suspend.
->>>    ALSA: hda: cs35l41: Move Play and Pause into separate functions
->>>    ALSA: hda: hda_component: Add pre and post playback hooks to
->>>      hda_component
->>>    ALSA: hda: cs35l41: Use pre and post playback hooks
->>>    ALSA: hda: cs35l41: Rework System Suspend to ensure correct call
->>>      separation
->>>    ALSA: hda: cs35l41: Add device_link between HDA and cs35l41_hda
->>>    ALSA: hda: cs35l41: Ensure amp is only unmuted during playback
->> Applied all patches now to for-next branch.
-> It seems that this patch set causes occasional freeze at suspend:
->    https://bugzilla.suse.com/show_bug.cgi?id=1213745
->
-> Could you take a look?
->
->
-> thanks,
->
-> Takashi
+> On 2023/7/27 22:43, Alexander Lobakin wrote:
+> 
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index d0553ad37865..30037d39b82d 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -16015,8 +16015,7 @@ M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>>  L:	netdev@vger.kernel.org
+>>  S:	Supported
+>>  F:	Documentation/networking/page_pool.rst
+>> -F:	include/net/page_pool.h
+>> -F:	include/trace/events/page_pool.h
+> 
+> Is there any reason to remove the above?
 
-Hi Takashi,
+Breh, that was accidental >_<
 
-The initial bug report shows one of the original issues that this patch 
-chain was trying to fix.
- From what I can tell from the second issue, something has caused the 
-CS35L41 to stop responding,
-which in turn caused the system suspend call to fail, and the error is 
-passed up. Since system suspend
-failed, there was no corresponding system resume, which means the 
-CS35L41 was stuck broken.
+> 
+>> +F:	include/net/page_pool/*.h
+> 
+> It seems more common to use 'include/net/page_pool/' in
+> MAINTAINERS.
 
-I'm not sure what was meant by "freeze" and "overheating" in the bug 
-report, since the log seems to
-indicate the laptop is still responsive, even if audio is broken.
+I see now, looks like it. Will fix ._.
 
-There is some oddity in the log, since one of the errors that was 
-printed should only be printed when
-the CS35L41 is using External Boost, but I think this laptop is supposed 
-to use Internal Boost.
-We'll investigate further.
+> 
+>>  F:	net/core/page_pool.c
+>>  
 
 Thanks,
-
-Stefan Binding
-
+Olek
