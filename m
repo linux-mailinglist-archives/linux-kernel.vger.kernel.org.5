@@ -2,133 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D5D766229
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FAE76622E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbjG1DBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
+        id S232667AbjG1DCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjG1DBb (ORCPT
+        with ESMTP id S232692AbjG1DBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:01:31 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CAB2139
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:01:30 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-687087d8ddaso681005b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690513289; x=1691118089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NjkE2QJp5YH+tCDyB0wLIw4y8EiW40HSc+cEgR5MCMk=;
-        b=VvmisaMdxgMcf35NZKkxzBIEMm+XzGMyWPTURum1qlM6CdtFVFyFOTvgV8PL/UH4j4
-         pYW/vUMdOu9tmmkIP9nurlgZFpmnV+Sf8Q+ZXrS9g5r/esBK2irTxDtUbssJ1kxqpSi7
-         Z3Db1fyODX9ZfulI2m/gJ93B6U1o2WboemrLKTVm7MlPdhncKvuUdySAzvvX5VQDQ+OO
-         lsz7Ak8PIVB0y4ziEEJB1WpjZ7pvN24rcU8Z9DvLL7QjoiFEFzdPP+Qk7NlKhOKSttEM
-         OadyR10+iztUXbqtwZMeH654pslG5H9mofHiZUTTfW0BsB34JHkCJLqk3oCFzQC1fVtF
-         p53Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690513289; x=1691118089;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NjkE2QJp5YH+tCDyB0wLIw4y8EiW40HSc+cEgR5MCMk=;
-        b=Nf/Js5wyml4e/SwJzQNfs8yxrZrkztuhUWImmUFB7bQlxSNMH2IsgiQocVvf9GgZ/B
-         Kig7HM2bRUKpj1yd3I7Dd2w4dtv6B9nXX+CiEWN9La8CiluLPGxAznckGhK2oCF/4x0n
-         V1cfHjz/QsU8VX87nWfZ/Wv0+5d/ymV7UWUs/q+6oWFMyka6sbIo9romkXvbTbdfVJju
-         BKUPEn0DJZzlj3UFshb3jQ1rUF51Y5tR7smzedyZBilzkk99yp6rEwfPMSxqxs1IabCG
-         YYPFYkQqtjOEK3Z5rn4JNqpmi2a7Xnv300WOg5a1ll55KjmzBmcDtunZJOOs0n5zrpi1
-         bxEA==
-X-Gm-Message-State: ABy/qLbx6ikAotY8yRyjCgYjZHasbIXspAc+MvveP28WvjdAvZc+M6oC
-        BvAbDq+lAAPUeGQRqGoXgOpiXg==
-X-Google-Smtp-Source: APBJJlE05KfBrHKqDjjmITmxgRbYb1H+7HaT32afOJNe6AQWDwQnF+KrC+py8os6ykbDJb7DHE7RTA==
-X-Received: by 2002:a05:6a00:2353:b0:668:79d6:34df with SMTP id j19-20020a056a00235300b0066879d634dfmr698433pfj.23.1690513289499;
-        Thu, 27 Jul 2023 20:01:29 -0700 (PDT)
-Received: from [10.85.117.81] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id n2-20020aa79042000000b00686a80f431dsm2130125pfo.126.2023.07.27.20.01.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 20:01:29 -0700 (PDT)
-Message-ID: <16326cd3-376b-4d08-409e-e64f43f848af@bytedance.com>
-Date:   Fri, 28 Jul 2023 11:01:23 +0800
+        Thu, 27 Jul 2023 23:01:52 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020020.outbound.protection.outlook.com [52.101.61.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD8A2139;
+        Thu, 27 Jul 2023 20:01:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mPJW/EQO99IqPZ3HaIaODJfa9ySVqCieeEum2NfSVBnhGk3sHc02GA3Iu6qDB7DGEb4762bcyEI+qKt3aMTY26ZxmBxDACZzdAzKZ94J0nzJCjvWoVY4ygoip9/jKvATD4zvReuB8saxEwLJ14p4L/0aaGuPevIAkr6++McYSgGY48ZbOKDLRL46RW8VO7F5v1iDvYScxSLQJzwMaLr+mDW20HQwR+sa30CbOoWPyGYUVaF7LvFrhtm9JudK9vojGNW3gv6snRtwKozpYq9+3Bx2O9Nc3iRtDiOG1czErfiE3hiIPaHe/5UUqO+utdrtO/GJ3sSC/GzM5tYogOdLhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FRvoMXXarnRQaLc2utv9QwBg+e9no3/WQFeWndYYP2s=;
+ b=A6noVhVXcrRrd9xJsv+pyOncyeBSsz4IF7mzjwQN286nIhNWcJAze9epT9XqOmxjyn2ejaR8ZnyoAebcKkSe932+cYnqle9kt/kTVx5dHcngpgJR6mL8Ovx1uS7IwPwe3Llh3Iewib5l3g7CX2N8MSHF1Ihh4zexjaA3WBjvv22kJpXv8nOt+zxIntIB0C9FBVb8cmVnaDV4k2PGAGmUFl4ZVbKno907dSv4FupIAiTlOlZyYhuaYGuOflNC526JCrfsZyB8NaVr2ggRlsxWE44GPnRG2mxVOYVtixrsu7CLT2sG36NqElcWpEswbvrMS65dpEKpgKphmNVYVxKz2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FRvoMXXarnRQaLc2utv9QwBg+e9no3/WQFeWndYYP2s=;
+ b=GaJgQue+uUeB9CwvdFQM+iHqmagTeqNQmhZc9xnD/HxdyemL+LI4wxmXajIGITEyGHUkFOjMjVo76xSagOpfEkWP6Spc1AvF/h3svjQbdLx6wmSHJI8Yjj8lngLnYOcvI6GYfE/654UQR3SHoWjWwSGmRKS8Kb2VrzY3697WNXs=
+Received: from BY5PR21MB1394.namprd21.prod.outlook.com (2603:10b6:a03:21c::20)
+ by DS7PR21MB3365.namprd21.prod.outlook.com (2603:10b6:8:81::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.3; Fri, 28 Jul
+ 2023 03:01:45 +0000
+Received: from BY5PR21MB1394.namprd21.prod.outlook.com
+ ([fe80::9e52:d01f:67f7:2453]) by BY5PR21MB1394.namprd21.prod.outlook.com
+ ([fe80::9e52:d01f:67f7:2453%6]) with mapi id 15.20.6652.004; Fri, 28 Jul 2023
+ 03:01:45 +0000
+From:   Ajay Sharma <sharmaajay@microsoft.com>
+To:     Long Li <longli@microsoft.com>,
+        "sharmaajay@linuxonhyperv.com" <sharmaajay@linuxonhyperv.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: RE: [EXTERNAL] [Patch v3 0/4] RDMA/mana_ib Read Capabilities
+Thread-Topic: [EXTERNAL] [Patch v3 0/4] RDMA/mana_ib Read Capabilities
+Thread-Index: AQHZv/zyU+rWNq0MNkyRetXdYpFlI6/Of59w
+Date:   Fri, 28 Jul 2023 03:01:44 +0000
+Message-ID: <BY5PR21MB1394D8F169F113BB70FABB47D606A@BY5PR21MB1394.namprd21.prod.outlook.com>
+References: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
+In-Reply-To: <1690402104-29518-1-git-send-email-sharmaajay@linuxonhyperv.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=458adced-8393-45b5-9d4e-45327b35987a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-07-28T03:01:26Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR21MB1394:EE_|DS7PR21MB3365:EE_
+x-ms-office365-filtering-correlation-id: 923b4194-e421-44d7-4133-08db8f16fa10
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A3TWtpkou4jIMa7bB3BjJbcR0CDPIYUETFH3fcJR0zGKbUoE7Cw46K/iY4jb3csP8+1LI3xbIIF436UIgekaJQEGs5cBdvUfXqK3FucQ9klW2yImyDw2uBx3bPL5UdgsSbjxIxhMWLJI8Cuxg84PQm6UVEOp7ofr3IUp6j9rIen+6MqMhWga/zqzOSni4kZSHYFt+peiiv/NiYaMwlYb9El4PJfFwVpEjsp0NbUQmNIl8hO6o5APD7W/VmLav4d/7UL3Byhc4TMzdy2tvMEmjMATSuFomca27E28X0+OlewznyNUUVu2m8lTgjI2iNdLrZyPfgeu8Uwa8EFDXnkIaXUpfD8FzCI1dvvJYyZiqdI7rVwvRs617qKgh0acyM8RWG5LHwY8a8KH41BvsYckkITh1m9Srrd1FUBp6uS0echejFaXQqpnPj6PqTYFZAXdnReWeRFepwWUNViHw1G7RwerA6BgC9UL7urh3yeHu9iyJ2YE8kittEANdtdAd4esJ+jWH2aYBfCYQMDBpKVPmXGt2qzDC86ITiWpc6zO1Bco5q2ox877mxtQK5Vb3KtEa1BTIzfpxfxd4CLdAhe83JGXo8O0QSHWv3SiTqVbJwchfqt0hKD09gGoCtAvp2h0VSOGKciR0M/0U7sTSSj9Z5Y+UaSHr2u2kxH9TupMty6UZseOYsZyWiStSHIZUeZJ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1394.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(451199021)(7416002)(38070700005)(921005)(33656002)(7696005)(55016003)(53546011)(6506007)(83380400001)(66446008)(64756008)(9686003)(66556008)(186003)(38100700002)(122000001)(107886003)(76116006)(2906002)(66946007)(66476007)(82950400001)(82960400001)(316002)(71200400001)(4326008)(5660300002)(8990500004)(41300700001)(8676002)(86362001)(52536014)(54906003)(110136005)(478600001)(10290500003)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4GngBbCpZHrDrnZXVQxxR5maP5FjfwjVhqPqJD8Erzsm/eH/Ackh6EWIs7ma?=
+ =?us-ascii?Q?G2UEkkafhoWKhHXdoxQ8VSmvBx0BaUVsikGy/AW+2yLQdp0LYeCJNapby3MI?=
+ =?us-ascii?Q?IIC215z8mH8I7Njt5YlzaUK+aONKTs2aDf50gJ/hgmZw8OSDgRvLudY0WQvD?=
+ =?us-ascii?Q?CHQFRaGkmq6LeMOQlKAqXPRluPbfODrvAgLcR5gZCLFmxAmjErqAm2lyhlpr?=
+ =?us-ascii?Q?Maxqguj3m5M1EdwHDLrWk3tn0CRYju2N9eiul8e/uCnyAFXkeFaX3zf2UdlH?=
+ =?us-ascii?Q?pxEP9CunxVv9HdNZ1krrfItv8D9ao8u6Agk1G5spLU+TQ43WxrUDNIQreGDT?=
+ =?us-ascii?Q?N7as6O2sTIg0HercA308wiyhlI0U32tqMcdiqrb6nG6Lj/2AWs5WqhdPPvmo?=
+ =?us-ascii?Q?YgeimQ38tlvfVPNaU3lBEzsUcUPBKzXt8x/GFg4UI8ZvNVqOA3COq33Hgy+n?=
+ =?us-ascii?Q?jVMQgHJBq7FyJzENhZYFTJOYIaiN0iBplkjooTnwfuUHEnqTK3ZMzeKdOdN5?=
+ =?us-ascii?Q?gGa7yju2kKJRpaLaVhpznDeaOnlP2sZHzl39jH2e5Qgu+8+XLIaYvEjvx3T2?=
+ =?us-ascii?Q?EZVgBJlm5xKF3dB1wvAVlikMBOFEsq3of+GRGbs2OARiGiQTPGPLoa5BDSux?=
+ =?us-ascii?Q?FKfMxic2kqS5YS4TR+F8XSlHLtCZ38LM+CxIPidpY6U5IU28UDGg56YnwphF?=
+ =?us-ascii?Q?IBQRoPAglzD92YLIfGPY0KFH73Y0iE/dEXgZQLtUQOVWVe7GLjlrdftIDjqO?=
+ =?us-ascii?Q?M4LVmCi8nlFWEeuBG9o7OLHK+e4WoedIwa9BVQE0ehpIh8HbwzW0+vpNwY4M?=
+ =?us-ascii?Q?JDxd+Dqab/ZrkQ8w6NpOTwoQpKCZ7tBSuqqRUK4/K2phzgPMu++Z9N5goGxe?=
+ =?us-ascii?Q?sqXyRE4KD9Cm31I3Oa2gFYO1B+SFrLx8KZKhca/wtn8Qcg+hp25Z6j87TJBG?=
+ =?us-ascii?Q?/DP7sHuPMGAsYlSwx/oTnWYvu7gKCaTAGOlSTWYP2PfM4ePxzSUYXQqGK7dz?=
+ =?us-ascii?Q?PFM1f2PpkRF4ayYnY+0feECEnU0njlQ4E5hQufRRNsNAtHsIMoE4G+V7wOmQ?=
+ =?us-ascii?Q?M749V5b860dojPDfN0DXg2bmd6kR/8amvXuLODWg5oQG0s7b8MS5o2tTfR00?=
+ =?us-ascii?Q?92sE1syLE1sy4ZmUNU4xgbo/PZqqMobe6IGezhYg6zXOrERiTFH5Uc4Nbdxm?=
+ =?us-ascii?Q?/JGDQKd0jiFEnksOWLp8JHLZ+So8PZRdDg7WIUfJKWiYdf8fOhAvkdIs7we3?=
+ =?us-ascii?Q?kR+OEL/AeuFw3nAOjoZLeCf4HVXHWO0a2tXD9Oyb7F57vFNU7SXn+7UXwqz5?=
+ =?us-ascii?Q?RvEbr0Ywko5TmB4S5dYKvoGh5IX+JfKrPLOfKNE08O9ONYlJFNBNl+zTud1I?=
+ =?us-ascii?Q?pi+JOaoKgEJ33cN4UCvTE0X6LAQRhhA0Fq7shvZSwKCc41neA2MPIQFBWmEl?=
+ =?us-ascii?Q?1wjEqPqiw6aHxzKHnLTfAyCagZeGp4ZbZlJKqaRBtBRezWY2awmtRr2ZK7YR?=
+ =?us-ascii?Q?iMs/WZyrvn0rbNDiAJ9sbnB3ThQdJey3uGL0rfNpmuLp/saNhmP5QWHLa7w5?=
+ =?us-ascii?Q?QmqR4fGNhtdr6sjbcnVVOn2P+QNnn8UE7b6JLMJ+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 3/5] libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
-To:     Quentin Monnet <quentin@isovalent.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <20230727073632.44983-4-zhouchuyi@bytedance.com>
- <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <b22038a1-d06f-8bca-57f1-cc8da84a8fca@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1394.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 923b4194-e421-44d7-4133-08db8f16fa10
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 03:01:45.0029
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D4NdLkik8tqZue7XL6ReyoYYtLNyctIEeLd/KPTlbrmiBUlm2027lr9xGzmIPBQ3Ku3VJR8sZsSk8RVQsPJVmUkSxNHqxhI/bT7yMcK7f4k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3365
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
++Long
 
-在 2023/7/27 20:26, Quentin Monnet 写道:
-> 2023-07-27 15:36 UTC+0800 ~ Chuyi Zhou <zhouchuyi@bytedance.com>
->> Support BPF_PROG_TYPE_OOM_POLICY program in libbpf and bpftool, so that
->> we can identify and use BPF_PROG_TYPE_OOM_POLICY in our application.
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   tools/bpf/bpftool/common.c     |  1 +
->>   tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
->>   tools/lib/bpf/libbpf.c         |  3 +++
->>   tools/lib/bpf/libbpf_probes.c  |  2 ++
->>   4 files changed, 20 insertions(+)
->>
->> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
->> index cc6e6aae2447..c5c311299c4a 100644
->> --- a/tools/bpf/bpftool/common.c
->> +++ b/tools/bpf/bpftool/common.c
->> @@ -1089,6 +1089,7 @@ const char *bpf_attach_type_input_str(enum bpf_attach_type t)
->>   	case BPF_TRACE_FENTRY:			return "fentry";
->>   	case BPF_TRACE_FEXIT:			return "fexit";
->>   	case BPF_MODIFY_RETURN:			return "mod_ret";
->> +	case BPF_OOM_POLICY:			return "oom_policy";
-> 
-> This case is not necessary. This block is here to keep legacy attach
-> type strings supported by bpftool. In your case, the name is the same as
-> the one provided by libbpf, so...
-> 
->>   	case BPF_SK_REUSEPORT_SELECT:		return "sk_skb_reuseport_select";
->>   	case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:	return "sk_skb_reuseport_select_or_migrate";
->>   	default:	return libbpf_bpf_attach_type_str(t);
-> 
-> ... we just want to pick it up from libbpf directly, here.
-> 
-I see..
+> -----Original Message-----
+> From: sharmaajay@linuxonhyperv.com <sharmaajay@linuxonhyperv.com>
+> Sent: Wednesday, July 26, 2023 3:08 PM
+> To: Jason Gunthorpe <jgg@ziepe.ca>; Leon Romanovsky <leon@kernel.org>;
+> Dexuan Cui <decui@microsoft.com>; Wei Liu <wei.liu@kernel.org>; David S.
+> Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
+> Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>
+> Cc: linux-rdma@vger.kernel.org; linux-hyperv@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Ajay Sharma
+> <sharmaajay@microsoft.com>
+> Subject: [EXTERNAL] [Patch v3 0/4] RDMA/mana_ib Read Capabilities
+>=20
+> From: Ajay Sharma <sharmaajay@microsoft.com>
+>=20
+> This patch series introduces some cleanup changes and resource control
+> changes. The mana and mana_ib devices are used at common places so a
+> consistent naming is introduced. Adapter object container to have a commo=
+n
+> point of object release for resources and query the management software t=
+o
+> prevent resource overflow.
+> It also introduces async channel for management to notify the clients in =
+case of
+> errors/info.
+>=20
+> Ajay Sharma (4):
+>   RDMA/mana_ib : Rename all mana_ib_dev type variables to mib_dev
+>   RDMA/mana_ib : Register Mana IB  device with Management SW
+>   RDMA/mana_ib : Create adapter and Add error eq
+>   RDMA/mana_ib : Query adapter capabilities
+>=20
+>  drivers/infiniband/hw/mana/cq.c               |  12 +-
+>  drivers/infiniband/hw/mana/device.c           |  72 +++--
+>  drivers/infiniband/hw/mana/main.c             | 282 +++++++++++++-----
+>  drivers/infiniband/hw/mana/mana_ib.h          |  96 +++++-
+>  drivers/infiniband/hw/mana/mr.c               |  42 ++-
+>  drivers/infiniband/hw/mana/qp.c               |  82 ++---
+>  drivers/infiniband/hw/mana/wq.c               |  21 +-
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 151 ++++++----
+>  drivers/net/ethernet/microsoft/mana/mana_en.c |   3 +
+>  include/net/mana/gdma.h                       |  16 +-
+>  10 files changed, 529 insertions(+), 248 deletions(-)
+>=20
+> --
+> 2.25.1
 
-Thanks.
-
---
-Chuyi Zhou
-> [...]
-> 
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 214f828ece6b..10496bb9b3bc 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -118,6 +118,7 @@ static const char * const attach_type_name[] = {
->>   	[BPF_TRACE_KPROBE_MULTI]	= "trace_kprobe_multi",
->>   	[BPF_STRUCT_OPS]		= "struct_ops",
->>   	[BPF_NETFILTER]			= "netfilter",
->> +	[BPF_OOM_POLICY]		= "oom_policy",
->>   };
-> 
