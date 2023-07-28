@@ -2,166 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A5876789C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5977678A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbjG1Wr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S232533AbjG1Wsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 18:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233689AbjG1Wry (ORCPT
+        with ESMTP id S229740AbjG1Wss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:47:54 -0400
-Received: from out-107.mta0.migadu.com (out-107.mta0.migadu.com [IPv6:2001:41d0:1004:224b::6b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60341984
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:47:51 -0700 (PDT)
-Message-ID: <791b919c-de82-6dc8-905a-520543f975cd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690584469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rVZMCx5Zounfu2IwD4zBIt/Lk5NqzK7Uhgpsb3XYxGU=;
-        b=miAD6XpnNrSPSzFemTiSEGLsOBUhb/xoNmXZEtVHXAsYbl7GcWaePtQyfPdWGvuVzUoPys
-        c3WVoRo/ghKGhO2pvBCu7WXk3WdeePVw0RywsLcBzajLcA6lRmauMJEwkzVv5Sgtb/xJoj
-        EnMV7xkteVq4ENQMSjMisc/CC7aMDXc=
-Date:   Fri, 28 Jul 2023 15:47:40 -0700
+        Fri, 28 Jul 2023 18:48:48 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17243173F;
+        Fri, 28 Jul 2023 15:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=fEUGYECt2oDj27bF4k63rXsW2mCx4MvE7D8wHux+uSQ=; b=gwMJMcic/WkKtR7UKySv5OXx42
+        ixZdTXNXM4Qxmjp6DO00e2I/JPqbK1TD7lt2d65QuhBG5WnRXz6PtZigHz6vYyF8fK5eBYC8V2H4f
+        /B5mF8D8hB8PULoU08kyzPwObYeHeLhQ5GS1zoeCryNMk7Lln3HwS7WCAdz3xLYrLfP0eEPCn2v3+
+        vOp0MtjhOK9MH24cDtCRO1TNPE+SixYoq6bFe1wRxtzMuvVKy69cOryaKzzljVsyLHs76coXuGjOy
+        BkyKqCK0bMWDgXn5E7PJ9Sf/OvYuekDo78iC7BFXjGeWbT1t2XKgQVnkX4iFZjruZjFR6VrwjMWqo
+        BpcnfKNQ==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qPWGI-005KJb-1s;
+        Fri, 28 Jul 2023 22:48:42 +0000
+Message-ID: <c29d5e28-5b9d-1327-0feb-e5ed27afcd3a@infradead.org>
+Date:   Fri, 28 Jul 2023 15:48:38 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf 2/2] bpf: selftests: add lwt redirect regression
- test cases
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 01/33] MAINTAINERS: Add Qualcomm Iris video accelerator
+ driver
 Content-Language: en-US
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-References: <cover.1690332693.git.yan@cloudflare.com>
- <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <9c4896b109a39c3fa088844addaa1737a84bbbb5.1690332693.git.yan@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     quic_dikshita@quicinc.com
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-2-git-send-email-quic_vgarodia@quicinc.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <1690550624-14642-2-git-send-email-quic_vgarodia@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 6:09 PM, Yan Zhai wrote:
-> diff --git a/tools/testing/selftests/bpf/progs/test_lwt_redirect.c b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
-> new file mode 100644
-> index 000000000000..3674e101f68f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_lwt_redirect.c
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_tracing_net.h"
-> +
-> +/* We don't care about whether the packet can be received by network stack.
-> + * Just care if the packet is sent to the correct device at correct direction
-> + * and not panic the kernel.
-> + */
-> +static __always_inline int prepend_dummy_mac(struct __sk_buff *skb)
-> +{
 
-__always_inline is no longer a must for a long time.
 
-> +	char mac[] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0xf,
-> +		      0xe, 0xd, 0xc, 0xb, 0xa, 0x08, 0x00};
-> +
-> +	if (bpf_skb_change_head(skb, ETH_HLEN, 0)) {
-> +		bpf_printk("%s: fail to change head", __func__);
+On 7/28/23 06:23, Vikash Garodia wrote:
+> Add an entry for Iris video encoder/decoder accelerator driver.
+> 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> ---
+>  MAINTAINERS | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdf..ea633b2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17671,6 +17671,16 @@ T:	git git://linuxtv.org/media_tree.git
+>  F:	Documentation/devicetree/bindings/media/*venus*
+>  F:	drivers/media/platform/qcom/venus/
+>  
+> +QUALCOMM IRIS VIDEO ACCELERATOR DRIVER
 
-Avoid using bpf_printk(). The bpf CI runs other tests also.
+This entry should immediately follow:
+QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
 
-> +		return -1;
-> +	}
-> +
-> +	if (bpf_skb_store_bytes(skb, 0, mac, sizeof(mac), 0)) {
-> +		bpf_printk("%s: fail to update mac", __func__);
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +SEC("redir_ingress")
+to keep the file in alphabetical order.
 
-Use SEC("lwt_xmit"). Then the libbpf will figure out the prog type.
+> +M:	Vikash Garodia <quic_vgarodia@quicinc.com>
+> +M:	Dikshita Agarwal <quic_dikshita@quicinc.com>
+> +L:	linux-media@vger.kernel.org
+> +L:	linux-arm-msm@vger.kernel.org
+> +S:	Maintained
+> +T:	git git://linuxtv.org/media_tree.git
+> +F:	Documentation/devicetree/bindings/media/qcom,*-iris.yaml
+> +F:	drivers/media/platform/qcom/iris/
+> +
+>  QUALCOMM WCN36XX WIRELESS DRIVER
+>  M:	Loic Poulain <loic.poulain@linaro.org>
+>  L:	wcn36xx@lists.infradead.org
 
-> +int test_lwt_redirect_in(struct __sk_buff *skb)
-> +{
-> +	if (prepend_dummy_mac(skb))
-> +		return BPF_DROP;
-> +
-> +	bpf_printk("Redirect skb to link %d ingress", skb->mark);
-> +	return bpf_redirect(skb->mark, BPF_F_INGRESS);
-> +}
-> +
-> +SEC("redir_egress")
-> +int test_lwt_redirect_out(struct __sk_buff *skb)
-> +{
-> +	if (prepend_dummy_mac(skb))
-> +		return BPF_DROP;
-> +
-> +	bpf_printk("Redirect skb to link %d egress", skb->mark);
-> +	return bpf_redirect(skb->mark, 0);
-> +}
-> +
-> +SEC("redir_egress_nomac")
-> +int test_lwt_redirect_out_nomac(struct __sk_buff *skb)
-> +{
-> +	int ret = bpf_redirect(skb->mark, 0);
-> +
-> +	bpf_printk("Redirect skb to link %d egress nomac: %d", skb->mark, ret);
-> +	return ret;
-> +}
-> +
-> +SEC("redir_ingress_nomac")
-> +int test_lwt_redirect_in_nomac(struct __sk_buff *skb)
-> +{
-> +	int ret = bpf_redirect(skb->mark, BPF_F_INGRESS);
-> +
-> +	bpf_printk("Redirect skb to link %d ingress nomac: %d", skb->mark, ret);
-> +	return ret;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_lwt_redirect.sh b/tools/testing/selftests/bpf/test_lwt_redirect.sh
-> new file mode 100755
-> index 000000000000..1b7b78b48174
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_lwt_redirect.sh
-
-This has to be written in the test_progs infrastructure in C. Only test_progs is 
-run by the BPF CI. Take a look at other tests in prog_tests/. For example, 
-tc_redirect.c and xdp_metadata.c which are having setup in netns/link/...etc. It 
-currently has helpers to add tc qdisc and filter but not adding route yet which 
-could be a useful addition.
-
---
-pw-bot: cr
-
+-- 
+~Randy
