@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3584F76727A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FFD767279
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbjG1QzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S234045AbjG1Qyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbjG1Qyl (ORCPT
+        with ESMTP id S233559AbjG1Qy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:54:41 -0400
+        Fri, 28 Jul 2023 12:54:28 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67A4E448D;
-        Fri, 28 Jul 2023 09:53:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33B1B469C;
+        Fri, 28 Jul 2023 09:53:31 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E38A71570;
-        Fri, 28 Jul 2023 09:53:59 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4DC82F4;
+        Fri, 28 Jul 2023 09:53:29 -0700 (PDT)
 Received: from [10.57.0.147] (unknown [10.57.0.147])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4F0A3F67D;
-        Fri, 28 Jul 2023 09:53:14 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AC61F3F67D;
+        Fri, 28 Jul 2023 09:52:44 -0700 (PDT)
 Message-ID: <89ce4bc4-00c5-a763-3179-e1d3e9f198b7@arm.com>
 Date:   Fri, 28 Jul 2023 17:52:37 +0100
 MIME-Version: 1.0
@@ -49,7 +49,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
