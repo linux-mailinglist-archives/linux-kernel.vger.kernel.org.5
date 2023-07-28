@@ -2,225 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9047668B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578017668C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbjG1JYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        id S235530AbjG1JZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235417AbjG1JYF (ORCPT
+        with ESMTP id S235336AbjG1JZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:24:05 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F78D5FC8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:18:35 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bba48b0bd2so11811785ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690535914; x=1691140714;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iFOZyw3a4L5HDpaA5qBNM92wxfMAQCZQe31PNW7OG8k=;
-        b=M9AXIZhBJnnJFIAmSai/pU6RNLtgItUBNQAsss/sK4l2Qb7wL7SATBVSQ8PXHeyAp6
-         5s+ZI8PnMXqAhLEaTu/GmO7rvl1BPGD2ndIzGmMfyqYew7ERn4mYFmMlMIaI8ey+/MRE
-         GXh8XHATUadfihQJ2RXHtkZ4o0SXyzJNIq0V5H0AgE1kXziuLTd9C7J7Nl73VZalsYx8
-         YUHccYOKQEuq49MF55S6Kb892nlc916xQT/Td9hfbPl2Qto0DNz2dlhHB6OzCCzL03Bs
-         CT7OFhuDrIqRWkBDiOq2KfRLJ27yyzSQPn6iBt32ArP327+ByI2lEPUKWmFQIZHeRDmL
-         X3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690535914; x=1691140714;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iFOZyw3a4L5HDpaA5qBNM92wxfMAQCZQe31PNW7OG8k=;
-        b=S8F5k9JMp9Ot38hhs+3ICly++YM3MrN6pdQ9fV53jqkRXOKYHYS+vVNpeTYcSm8kEC
-         N+mprspZEAkBaMEFowCOyndLZygj4AzNDf+5ZRSu2bkTmqERy123zZEh5qC5fhQnN7wy
-         tD4q2CmMJQKXdqQrFlUdxGBoDUErTU5XZJ+FQc4E4xs+pl5ib1HhhZSViSOQ9nf6R0Ay
-         ts1LWfKxRQn3oqFtotMqxIhh3e+ahsg6Cn9gwcw283i0F7GREAmgI6fXYhQl1LkIZs9w
-         ty3hLl11c9WiFB/GytO8emm89eoDJKPMdFWIvQ+7GqHKRf/kjv1Nynk9fkvB9LVjSSpY
-         wOUA==
-X-Gm-Message-State: ABy/qLabokDgpBgpPgwen/1/zv75oPBCVnY0Av3MgoJDT28WhBVsj8j5
-        CzrHLF4HDhbG5TWxWCsR0G8=
-X-Google-Smtp-Source: APBJJlE5RdvllvafPXrjpTA1Byjxa4qJYRrOHFSP9A+OKUt8z2E88KMZkT7kc+DDs/LkT6Og/TpUEg==
-X-Received: by 2002:a17:903:495:b0:1b7:f99f:63c9 with SMTP id jj21-20020a170903049500b001b7f99f63c9mr887490plb.67.1690535913905;
-        Fri, 28 Jul 2023 02:18:33 -0700 (PDT)
-Received: from smtpclient.apple (c-73-162-233-46.hsd1.ca.comcast.net. [73.162.233.46])
-        by smtp.gmail.com with ESMTPSA id e21-20020a170902d39500b001b864add154sm3088956pld.154.2023.07.28.02.18.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 28 Jul 2023 02:18:33 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <2229115A-23F2-4B6B-800C-7182199DF79D@gmail.com>
-Date:   Fri, 28 Jul 2023 02:18:20 -0700
-Cc:     Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <802750CF-1C45-4F10-920A-CE7C55DBF3B2@gmail.com>
-References: <20230726214103.3261108-1-jannh@google.com>
- <31df93bd-4862-432c-8135-5595ffd2bd43@paulmck-laptop>
- <CAG48ez1fDzHzdD8YHEK-9D=7YcsR7Bp-FHCr25x13aqXpz7UnQ@mail.gmail.com>
- <20230727145747.GB19940@willie-the-truck>
- <8EA729DD-F1CE-4C6F-A074-147A6A1BBCE0@gmail.com>
- <CAHk-=wgeMOvL=ko_eruf5St7h0e9dVn4+GMKjcdshTJoxyD8tw@mail.gmail.com>
- <2229115A-23F2-4B6B-800C-7182199DF79D@gmail.com>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 05:25:14 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C69165B0;
+        Fri, 28 Jul 2023 02:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690535973; x=1722071973;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=u5XPF3Vt1StqQYCIWI5YcWOIyc/PAuKXYiBw4jhm1/A=;
+  b=NpE9erayBSSaHi/SvPndUJUenBBfkNnVo5e3AJAd2CZ/XjhGx+YODB/l
+   VDzRHEbMSIyl0jg4a2rDRoYK7vS2nsin9g5yg2nwdNxgsswVFaGP09ice
+   u0n/qdFK5qHD58I5/+ueeYNtaLlnd2bua/y60sMpIBrZPW5BjOKOTDrL8
+   c8Y9TOCmbCxbcBnXKKC/qK2GVOb0aGvzDUg4BnQvMti5EG6uX8Mmvu3q2
+   NiGCN/a1DwlQZHhoLVoWm2fcJ8p3rTQEOHwr2/7NqzQHrc9moePXC9WJv
+   rH57A7OX/0lXkvRcI1U2iAnfOg+ExXZ511mtndm2FeIvFFZksTE28lXUZ
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="asc'?scan'208";a="226615085"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 02:19:31 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 28 Jul 2023 02:19:30 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 28 Jul 2023 02:19:27 -0700
+Date:   Fri, 28 Jul 2023 10:18:52 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     =?utf-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
+        <loongson-kernel@lists.loongnix.cn>, Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        <wanghongliang@loongson.cn>, Liu Peibao <liupeibao@loongson.cn>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>, Liu Yun <liuyun@loongson.cn>
+Subject: Re: [PATCH v5 0/2] soc: loongson2_pm: add power management support
+Message-ID: <20230728-pessimism-exclaim-de0dd7f4bb64@wendy>
+References: <20230728074944.26746-1-zhuyinbo@loongson.cn>
+ <74a37e9d.9a24.1899b9bea85.Coremail.chenhuacai@loongson.cn>
+ <1c8b12b4-79c3-5018-c7df-946fe690e8c8@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="523xuRZw0fU82LBP"
+Content-Disposition: inline
+In-Reply-To: <1c8b12b4-79c3-5018-c7df-946fe690e8c8@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--523xuRZw0fU82LBP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-
-> On Jul 27, 2023, at 1:11 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+On Fri, Jul 28, 2023 at 10:36:42AM +0200, Krzysztof Kozlowski wrote:
+> On 28/07/2023 10:27, =E9=99=88=E5=8D=8E=E6=89=8D wrote:
+> > Reviewd-by: Huacai Chen <chenhuacai@loongson.cn>
+>=20
+> ...
+>=20
+> >=20
+> >=20
+> > =E6=9C=AC=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E5=90=
+=AB=E6=9C=89=E9=BE=99=E8=8A=AF=E4=B8=AD=E7=A7=91=E7=9A=84=E5=95=86=E4=B8=9A=
+=E7=A7=98=E5=AF=86=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E9=99=90=E4=BA=8E=E5=
+=8F=91=E9=80=81=E7=BB=99=E4=B8=8A=E9=9D=A2=E5=9C=B0=E5=9D=80=E4=B8=AD=E5=88=
+=97=E5=87=BA=E7=9A=84=E4=B8=AA=E4=BA=BA=E6=88=96=E7=BE=A4=E7=BB=84=E3=80=82=
+=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E5=85=B6=E4=BB=96=E4=BA=BA=E4=BB=A5=E4=
+=BB=BB=E4=BD=95=E5=BD=A2=E5=BC=8F=E4=BD=BF=E7=94=A8=EF=BC=88=E5=8C=85=E6=8B=
+=AC=E4=BD=86=E4=B8=8D=E9=99=90=E4=BA=8E=E5=85=A8=E9=83=A8=E6=88=96=E9=83=A8=
+=E5=88=86=E5=9C=B0=E6=B3=84=E9=9C=B2=E3=80=81=E5=A4=8D=E5=88=B6=E6=88=96=E6=
+=95=A3=E5=8F=91=EF=BC=89=E6=9C=AC=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=
+=84=E4=BB=B6=E4=B8=AD=E7=9A=84=E4=BF=A1=E6=81=AF=E3=80=82=E5=A6=82=E6=9E=9C=
+=E6=82=A8=E9=94=99=E6=94=B6=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=E8=AF=B7=E6=
+=82=A8=E7=AB=8B=E5=8D=B3=E7=94=B5=E8=AF=9D=E6=88=96=E9=82=AE=E4=BB=B6=E9=80=
+=9A=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=B9=B6=E5=88=A0=E9=99=A4=E6=9C=AC=
+=E9=82=AE=E4=BB=B6=E3=80=82=20
+> > This email and its attachments contain confidential information from Lo=
+ongson Technology , which is intended only for the person or entity whose a=
+ddress is listed above. Any use of the information contained herein in any =
+way (including, but not limited to, total or partial disclosure, reproducti=
+on or dissemination) by persons other than the intended recipient(s) is pro=
+hibited. If you receive this email in error, please notify the sender by ph=
+one or email immediately and delete it.=20
 >=20
 >=20
+> Ooops!
 >=20
->> On Jul 27, 2023, at 12:39 PM, Linus Torvalds =
-<torvalds@linuxfoundation.org> wrote:
->>=20
->> On Thu, 27 Jul 2023 at 12:10, Nadav Amit <nadav.amit@gmail.com> =
-wrote:
->>>=20
->>> Interesting. I wonder if you considered adding to READ_ONCE() =
-something
->>> like:
->>>=20
->>>       asm volatile("" : "+g" (x) );
->>>=20
->>> So later loads (such as baz =3D *ptr) would reload the updated =
-value.
->>=20
->> Not necessarily a bad idea.  Although I suspect you'd want to add
->> *two* of them - on either side - to make sure any previous loads
->> wouldn't be moved around it either.
+> Are we intended person/entities to receive your Reviewed-by tag?
+
+It's okay, you only got a "Reviewd-by" tag ;)
+
+> We will
+> be using it (total/partial disclosure, reproduction, dissemination).
+> People not on To/Cc will also do it and for sure they are not intended
+> recipients.
 >=20
-> You are right, two are needed.
->=20
-> I=E2=80=99ll give it a shot and see if I see changes to the binary.
-
-Just for the record (so nobody will make my mistakes):
-
-I implemented it, but it works poorly. It appears to communicate the
-constraints but the generated code is much worse.
-
-The problem is that if the GCC inline asm decides to use a memory =
-operand
-(e.g. =E2=80=9C+m=E2=80=9D), it computes the address (uses LEA first =
-before the MOV) and
-allocates a register for the address. Using =E2=80=9C+g=E2=80=9D also =
-causes the compiler
-to allocate a register.
-
--- >8 --
-
----
- include/asm-generic/rwonce.h | 32 ++++++++++++++++++++++++++++----
- 1 file changed, 28 insertions(+), 4 deletions(-)
-
-diff --git a/include/asm-generic/rwonce.h b/include/asm-generic/rwonce.h
-index 8d0a6280e982..c6a2f8e3013c 100644
---- a/include/asm-generic/rwonce.h
-+++ b/include/asm-generic/rwonce.h
-@@ -44,10 +44,34 @@
- #define __READ_ONCE(x)	(*(const volatile __unqual_scalar_typeof(x) =
-*)&(x))
- #endif
-=20
--#define READ_ONCE(x)							=
-\
--({									=
-\
--	compiletime_assert_rwonce_type(x);				=
-\
--	__READ_ONCE(x);							=
-\
-+#define as_scalar(x)							=
-\
-+    __builtin_choose_expr(sizeof(x) =3D=3D sizeof(char),  			=
-\
-+				(__force char *)&(x), 			=
-\
-+    __builtin_choose_expr(sizeof(x) =3D=3D sizeof(short),			=
-\
-+				(__force short *)&(x),			=
-\
-+    __builtin_choose_expr(sizeof(x) =3D=3D sizeof(int),			=
-\
-+				(__force int *)&(x), 			=
-\
-+    __builtin_choose_expr(sizeof(x) =3D=3D sizeof(long),			=
-\
-+				(__force long *)&(x),			=
-\
-+    __builtin_choose_expr(sizeof(x) =3D=3D sizeof(long long),		=
-\
-+				(__force long long *)&(x),		=
-\
-+    (void*)0)))))
-+
-+#define READ_ONCE(x)                                                    =
-\
-+({                                                                      =
-\
-+    typeof(x) * px =3D &(x);						=
-\
-+    union {								=
-\
-+        typeof(x) __orig;						=
-\
-+        typeof(*as_scalar(x)) __alias;					=
-\
-+    } __u;								=
-\
-+									=
-\
-+    compiletime_assert_rwonce_type(x);					=
-\
-+    asm volatile ("" :							=
-\
-+               "+g" (*(__force typeof(*as_scalar(x)) *)(px)));		=
-\
-+    __u.__alias =3D __READ_ONCE(*as_scalar(*px));				=
-\
-+    asm volatile ("" :							=
-\
-+               "+g" (*(__force typeof(*as_scalar(x)) *)(px)));		=
-\
-+    __u.__orig;								=
-\
- })
-=20
- #define __WRITE_ONCE(x, val)						=
-\
---=20
-2.34.1
+> Please talk with your IT that such disclaimers in open-source are not
+> desired (if not harmful even).
 
 
+--523xuRZw0fU82LBP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMOH/AAKCRB4tDGHoIJi
+0gMjAQCwuOOqioqhXBcVVNNlEUbzvUFOeQosva5CuZ1VI8i2PgD/eYqFU0jIHamT
+Ph+ow795RHsFOuI0i+//fT4i05v03Aw=
+=OrTB
+-----END PGP SIGNATURE-----
+
+--523xuRZw0fU82LBP--
