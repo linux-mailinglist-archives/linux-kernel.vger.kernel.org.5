@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DDF766E66
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9062766E5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236816AbjG1N3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S235430AbjG1N2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236842AbjG1N2t (ORCPT
+        with ESMTP id S236953AbjG1N2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:28:49 -0400
+        Fri, 28 Jul 2023 09:28:11 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804EB3C25;
-        Fri, 28 Jul 2023 06:28:07 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S7F9CS027724;
-        Fri, 28 Jul 2023 13:26:43 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3617949EA;
+        Fri, 28 Jul 2023 06:27:35 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S9DdlL004300;
+        Fri, 28 Jul 2023 13:26:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=rrbALL2Sz3VNqLuQVEHpUhcQuPUraXFWuuw2tLJ10Mc=;
- b=EZm1tHP1zIzEkt3+fRLU67qSe4qJ7eJfIAut4FPxrFjH3cyt08hYpXN3NABD5qDMV8K5
- XCetvf7BTmohe+OAWDjouodslER69X8zqypX9Aro/gbSXpKTHwyEmV1igFNzM4Q/qGTU
- yWQjTANRtywwtdUM3qS/ncnLerDFqnf++4t+YCHBQy7VW3q2lgUnMkNI79d7hA06PRbb
- uVek8+lQrIGYOkmrQCnhO2R2Qa/q75Rl2PxPQFbIRMjOX9KMTKE5Dvk1n0XwIP/cVYek
- 41Qa1OZ6ObZj1L5/VD1JU8MTrbnDFWUydMvKZNMA1fN5J9wWggrKI5YhFcRM9V56sYib Xg== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3k7u3k02-1
+ bh=+ZaDGwVUfhnyAOVh0gNt/Fg30/Df8MffdW8wq9Xy488=;
+ b=Zj2h3PGEunE1lV8/A/X3R7+SThqj27zK+cZ3IPuvVOoj4gxv9yLAlJEQXT7yZ+Uy/4ZP
+ SKsd6m+3/Qe2g2e19Y5v6ZOaUd3cKzdOdynjs6gZPk0fkW2sxb76JIMu1HIf+8Jd9SAT
+ hqHNKVyfgEGVl4oFHsog4EXxO6SGd7+GA3kvDJQtXW18uDXkaf5iknYqo6XZ85EfJWIv
+ 0oMjvnG9nYPfqEU2FGkRN/tIVqnSPNKDinhwVtKhxIdzG825ACNghiXJ0gDGmgosypAr
+ zc6xIWhNmzqTb9/cFuCCfM72dNWrIVoeoW7r744Xxwyc3qN/QVArtjfry9XqBuKW24mK eg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s403vhk4s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:26:42 +0000
+        Fri, 28 Jul 2023 13:26:31 +0000
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDQQeW026628
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDQUF8003910
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:26:26 GMT
+        Fri, 28 Jul 2023 13:26:30 GMT
 Received: from hu-vgarodia-hyd.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 06:26:23 -0700
+ 15.2.1118.30; Fri, 28 Jul 2023 06:26:26 -0700
 From:   Vikash Garodia <quic_vgarodia@quicinc.com>
 To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -47,9 +47,9 @@ To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <linux-arm-msm@vger.kernel.org>
 CC:     <quic_dikshita@quicinc.com>,
         Vikash Garodia <quic_vgarodia@quicinc.com>
-Subject: [PATCH 22/33] iris: vidc: hfi: defines HFI properties and enums
-Date:   Fri, 28 Jul 2023 18:53:33 +0530
-Message-ID: <1690550624-14642-23-git-send-email-quic_vgarodia@quicinc.com>
+Subject: [PATCH 23/33] iris: vidc: add PIL functionality for video firmware
+Date:   Fri, 28 Jul 2023 18:53:34 +0530
+Message-ID: <1690550624-14642-24-git-send-email-quic_vgarodia@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
 References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
@@ -60,708 +60,364 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ynYBWNuI1yZgWN2LJVZVe_tDLgcsSrAk
-X-Proofpoint-ORIG-GUID: ynYBWNuI1yZgWN2LJVZVe_tDLgcsSrAk
+X-Proofpoint-GUID: 21EPb-dA_DQNaRBeUp6pY0Az-bCLsUjK
+X-Proofpoint-ORIG-GUID: 21EPb-dA_DQNaRBeUp6pY0Az-bCLsUjK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 clxscore=1015 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307280124
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280124
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defines hfi properties supported by firmware and enums like
-codec, colorformat, profile, level, rate control etc.
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+
+Here is the implementation of loading/unloading fw in memory
+via mdt loader. This also implements fw suspend and resume.
 
 Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
 ---
- .../platform/qcom/iris/vidc/inc/hfi_property.h     | 666 +++++++++++++++++++++
- 1 file changed, 666 insertions(+)
- create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/hfi_property.h
+ .../media/platform/qcom/iris/vidc/inc/firmware.h   |  18 ++
+ .../media/platform/qcom/iris/vidc/src/firmware.c   | 294 +++++++++++++++++++++
+ 2 files changed, 312 insertions(+)
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/firmware.h
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/src/firmware.c
 
-diff --git a/drivers/media/platform/qcom/iris/vidc/inc/hfi_property.h b/drivers/media/platform/qcom/iris/vidc/inc/hfi_property.h
+diff --git a/drivers/media/platform/qcom/iris/vidc/inc/firmware.h b/drivers/media/platform/qcom/iris/vidc/inc/firmware.h
 new file mode 100644
-index 0000000..3fb6601
+index 0000000..bd52180
 --- /dev/null
-+++ b/drivers/media/platform/qcom/iris/vidc/inc/hfi_property.h
-@@ -0,0 +1,666 @@
++++ b/drivers/media/platform/qcom/iris/vidc/inc/firmware.h
+@@ -0,0 +1,18 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2022, The Linux Foundation. All rights reserved.
 + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
 +
-+#ifndef __H_HFI_PROPERTY_H__
-+#define __H_HFI_PROPERTY_H__
++#ifndef _MSM_VIDC_FIRMWARE_H_
++#define _MSM_VIDC_FIRMWARE_H_
 +
-+//todo: DP: remove below header
++struct msm_vidc_core;
++
++int fw_load(struct msm_vidc_core *core);
++int fw_unload(struct msm_vidc_core *core);
++int fw_suspend(struct msm_vidc_core *core);
++int fw_resume(struct msm_vidc_core *core);
++void fw_coredump(struct msm_vidc_core *core);
++
++#endif
+diff --git a/drivers/media/platform/qcom/iris/vidc/src/firmware.c b/drivers/media/platform/qcom/iris/vidc/src/firmware.c
+new file mode 100644
+index 0000000..f420096
+--- /dev/null
++++ b/drivers/media/platform/qcom/iris/vidc/src/firmware.c
+@@ -0,0 +1,294 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/firmware.h>
++#include <linux/list.h>
++#include <linux/of_address.h>
++#include <linux/devcoredump.h>
++#include <linux/firmware/qcom/qcom_scm.h>
++#include <linux/soc/qcom/mdt_loader.h>
++#include <linux/soc/qcom/smem.h>
 +#include <linux/types.h>
 +
-+#define HFI_PROP_BEGIN                                          0x03000000
-+#define HFI_PROP_IMAGE_VERSION                                  0x03000001
-+#define HFI_PROP_INTRA_FRAME_POWER_COLLAPSE                     0x03000002
-+#define HFI_PROP_UBWC_MAX_CHANNELS                              0x03000003
-+#define HFI_PROP_UBWC_MAL_LENGTH                                0x03000004
-+#define HFI_PROP_UBWC_HBB                                       0x03000005
-+#define HFI_PROP_UBWC_BANK_SWZL_LEVEL1                          0x03000006
-+#define HFI_PROP_UBWC_BANK_SWZL_LEVEL2                          0x03000007
-+#define HFI_PROP_UBWC_BANK_SWZL_LEVEL3                          0x03000008
-+#define HFI_PROP_UBWC_BANK_SPREADING                            0x03000009
++#include "firmware.h"
++#include "msm_vidc_core.h"
++#include "msm_vidc_debug.h"
++#include "msm_vidc_platform.h"
 +
-+enum hfi_debug_config {
-+	HFI_DEBUG_CONFIG_DEFAULT = 0x00000000,
-+	HFI_DEBUG_CONFIG_CLRDBGQ = 0x00000001,
-+	HFI_DEBUG_CONFIG_WFI     = 0x00000002,
-+	HFI_DEBUG_CONFIG_ARM9WD  = 0x00000004,
++#define MAX_FIRMWARE_NAME_SIZE	128
++
++struct tzbsp_memprot {
++	u32 cp_start;
++	u32 cp_size;
++	u32 cp_nonpixel_start;
++	u32 cp_nonpixel_size;
 +};
 +
-+#define HFI_PROP_DEBUG_CONFIG                                   0x0300000a
-+
-+enum hfi_debug_log_level {
-+	HFI_DEBUG_LOG_NONE   = 0x00000000,
-+	HFI_DEBUG_LOG_ERROR  = 0x00000001,
-+	HFI_DEBUG_LOG_FATAL  = 0x00000002,
-+	HFI_DEBUG_LOG_PERF   = 0x00000004,
-+	HFI_DEBUG_LOG_HIGH   = 0x00000008,
-+	HFI_DEBUG_LOG_MEDIUM = 0x00000010,
-+	HFI_DEBUG_LOG_LOW    = 0x00000020,
++enum tzbsp_video_state {
++	TZBSP_VIDEO_STATE_SUSPEND = 0,
++	TZBSP_VIDEO_STATE_RESUME = 1,
++	TZBSP_VIDEO_STATE_RESTORE_THRESHOLD = 2,
 +};
 +
-+struct hfi_debug_header {
-+	u32   size;
-+	u32   debug_level;
-+	u32   reserved[2];
-+};
-+
-+#define HFI_PROP_DEBUG_LOG_LEVEL                                0x0300000b
-+
-+#define HFI_PROP_FENCE_CLIENT_DATA                              0x0300000d
-+
-+enum hfi_codec_type {
-+	HFI_CODEC_DECODE_AVC   = 1,
-+	HFI_CODEC_ENCODE_AVC   = 2,
-+	HFI_CODEC_DECODE_HEVC  = 3,
-+	HFI_CODEC_ENCODE_HEVC  = 4,
-+	HFI_CODEC_DECODE_VP9   = 5,
-+	HFI_CODEC_DECODE_MPEG2 = 6,
-+	HFI_CODEC_DECODE_AV1   = 7,
-+};
-+
-+#define HFI_PROP_CODEC                                          0x03000100
-+
-+enum hfi_color_format {
-+	HFI_COLOR_FMT_OPAQUE        = 0,
-+	HFI_COLOR_FMT_NV12          = 1,
-+	HFI_COLOR_FMT_NV12_UBWC     = 2,
-+	HFI_COLOR_FMT_P010          = 3,
-+	HFI_COLOR_FMT_TP10_UBWC     = 4,
-+	HFI_COLOR_FMT_RGBA8888      = 5,
-+	HFI_COLOR_FMT_RGBA8888_UBWC = 6,
-+	HFI_COLOR_FMT_NV21          = 7,
-+};
-+
-+#define HFI_PROP_COLOR_FORMAT                                   0x03000101
-+
-+#define HFI_PROP_SECURE                                         0x03000102
-+
-+#define HFI_BITMASK_BITSTREAM_WIDTH                             0xffff0000
-+#define HFI_BITMASK_BITSTREAM_HEIGHT                            0x0000ffff
-+#define HFI_PROP_BITSTREAM_RESOLUTION                           0x03000103
-+
-+#define HFI_BITMASK_LINEAR_STRIDE             0xffff0000
-+#define HFI_BITMASK_LINEAR_SCANLINE           0x0000ffff
-+#define HFI_PROP_LINEAR_STRIDE_SCANLINE                        0x03000104
-+
-+#define HFI_BITMASK_CROP_RIGHT_OFFSET        0xffff0000
-+#define HFI_BITMASK_CROP_BOTTOM_OFFSET       0x0000ffff
-+#define HFI_BITMASK_CROP_LEFT_OFFSET         0xffff0000
-+#define HFI_BITMASK_CROP_TOP_OFFSET          0x0000ffff
-+#define HFI_PROP_CROP_OFFSETS                                   0x03000105
-+
-+#define HFI_PROP_SESSION_PRIORITY                               0x03000106
-+
-+enum hfi_avc_profile_type {
-+	HFI_AVC_PROFILE_BASELINE             = 0,
-+	HFI_AVC_PROFILE_CONSTRAINED_BASELINE = 1,
-+	HFI_AVC_PROFILE_MAIN                 = 2,
-+	HFI_AVC_PROFILE_HIGH                 = 4,
-+	HFI_AVC_PROFILE_CONSTRAINED_HIGH     = 17
-+};
-+
-+enum hfi_hevc_profile_type {
-+	HFI_H265_PROFILE_MAIN                  = 0,
-+	HFI_H265_PROFILE_MAIN_STILL_PICTURE    = 1,
-+	HFI_H265_PROFILE_MAIN_10               = 2,
-+	HFI_H265_PROFILE_MAIN_10_STILL_PICTURE = 3,
-+};
-+
-+enum hfi_vp9_profile_type {
-+	HFI_VP9_PROFILE_0 = 0,
-+	HFI_VP9_PROFILE_1 = 1,
-+	HFI_VP9_PROFILE_2 = 2,
-+	HFI_VP9_PROFILE_3 = 3,
-+};
-+
-+enum hfi_mpeg2_profile_type {
-+	HFI_MP2_PROFILE_SIMPLE = 0,
-+	HFI_MP2_PROFILE_MAIN   = 1,
-+};
-+
-+enum hfi_av1_profile_type {
-+	HFI_AV1_PROFILE_MAIN = 0,
-+	HFI_AV1_PROFILE_HIGH = 1,
-+	HFI_AV1_PROFILE_PROF = 2,
-+};
-+
-+#define HFI_PROP_PROFILE                                        0x03000107
-+
-+enum hfi_avc_level_type {
-+	HFI_AVC_LEVEL_1_0 = 0,
-+	HFI_AVC_LEVEL_1B  = 1,
-+	HFI_AVC_LEVEL_1_1 = 2,
-+	HFI_AVC_LEVEL_1_2 = 3,
-+	HFI_AVC_LEVEL_1_3 = 4,
-+	HFI_AVC_LEVEL_2_0 = 5,
-+	HFI_AVC_LEVEL_2_1 = 6,
-+	HFI_AVC_LEVEL_2_2 = 7,
-+	HFI_AVC_LEVEL_3_0 = 8,
-+	HFI_AVC_LEVEL_3_1 = 9,
-+	HFI_AVC_LEVEL_3_2 = 10,
-+	HFI_AVC_LEVEL_4_0 = 11,
-+	HFI_AVC_LEVEL_4_1 = 12,
-+	HFI_AVC_LEVEL_4_2 = 13,
-+	HFI_AVC_LEVEL_5_0 = 14,
-+	HFI_AVC_LEVEL_5_1 = 15,
-+	HFI_AVC_LEVEL_5_2 = 16,
-+	HFI_AVC_LEVEL_6_0 = 17,
-+	HFI_AVC_LEVEL_6_1 = 18,
-+	HFI_AVC_LEVEL_6_2 = 19,
-+};
-+
-+enum hfi_hevc_level_type {
-+	HFI_H265_LEVEL_1   = 0,
-+	HFI_H265_LEVEL_2   = 1,
-+	HFI_H265_LEVEL_2_1 = 2,
-+	HFI_H265_LEVEL_3   = 3,
-+	HFI_H265_LEVEL_3_1 = 4,
-+	HFI_H265_LEVEL_4   = 5,
-+	HFI_H265_LEVEL_4_1 = 6,
-+	HFI_H265_LEVEL_5   = 7,
-+	HFI_H265_LEVEL_5_1 = 8,
-+	HFI_H265_LEVEL_5_2 = 9,
-+	HFI_H265_LEVEL_6   = 10,
-+	HFI_H265_LEVEL_6_1 = 11,
-+	HFI_H265_LEVEL_6_2 = 12,
-+};
-+
-+enum hfi_vp9_level_type {
-+	HFI_VP9_LEVEL_1_0 = 0,
-+	HFI_VP9_LEVEL_1_1 = 1,
-+	HFI_VP9_LEVEL_2_0 = 2,
-+	HFI_VP9_LEVEL_2_1 = 3,
-+	HFI_VP9_LEVEL_3_0 = 4,
-+	HFI_VP9_LEVEL_3_1 = 5,
-+	HFI_VP9_LEVEL_4_0 = 6,
-+	HFI_VP9_LEVEL_4_1 = 7,
-+	HFI_VP9_LEVEL_5_0 = 8,
-+	HFI_VP9_LEVEL_5_1 = 9,
-+	HFI_VP9_LEVEL_6_0 = 10,
-+	HFI_VP9_LEVEL_6_1 = 11,
-+};
-+
-+enum hfi_mpeg2_level_type {
-+	HFI_MP2_LEVEL_LOW       = 0,
-+	HFI_MP2_LEVEL_MAIN      = 1,
-+	HFI_MP2_LEVEL_HIGH_1440 = 2,
-+	HFI_MP2_LEVEL_HIGH      = 3,
-+};
-+
-+enum hfi_av1_level_type {
-+	HFI_AV1_LEVEL_2_0 = 0,
-+	HFI_AV1_LEVEL_2_1 = 1,
-+	HFI_AV1_LEVEL_2_2 = 2,
-+	HFI_AV1_LEVEL_2_3 = 3,
-+	HFI_AV1_LEVEL_3_0 = 4,
-+	HFI_AV1_LEVEL_3_1 = 5,
-+	HFI_AV1_LEVEL_3_2 = 6,
-+	HFI_AV1_LEVEL_3_3 = 7,
-+	HFI_AV1_LEVEL_4_0 = 8,
-+	HFI_AV1_LEVEL_4_1 = 9,
-+	HFI_AV1_LEVEL_4_2 = 10,
-+	HFI_AV1_LEVEL_4_3 = 11,
-+	HFI_AV1_LEVEL_5_0 = 12,
-+	HFI_AV1_LEVEL_5_1 = 13,
-+	HFI_AV1_LEVEL_5_2 = 14,
-+	HFI_AV1_LEVEL_5_3 = 15,
-+	HFI_AV1_LEVEL_6_0 = 16,
-+	HFI_AV1_LEVEL_6_1 = 17,
-+	HFI_AV1_LEVEL_6_2 = 18,
-+	HFI_AV1_LEVEL_6_3 = 19,
-+	HFI_AV1_LEVEL_7_0 = 20,
-+	HFI_AV1_LEVEL_7_1 = 21,
-+	HFI_AV1_LEVEL_7_2 = 22,
-+	HFI_AV1_LEVEL_7_3 = 23,
-+	HFI_AV1_LEVEL_MAX = 31,
-+};
-+
-+enum hfi_codec_level_type {
-+	HFI_LEVEL_NONE = 0xFFFFFFFF,
-+};
-+
-+#define HFI_PROP_LEVEL                                          0x03000108
-+
-+enum hfi_hevc_tier_type {
-+	HFI_H265_TIER_MAIN = 0,
-+	HFI_H265_TIER_HIGH = 1,
-+};
-+
-+enum hfi_av1_tier_type {
-+	HFI_AV1_TIER_MAIN = 0,
-+	HFI_AV1_TIER_HIGH = 1,
-+};
-+
-+#define HFI_PROP_TIER                                           0x03000109
-+
-+#define HFI_PROP_STAGE                                          0x0300010a
-+
-+#define HFI_PROP_PIPE                                           0x0300010b
-+
-+#define HFI_PROP_FRAME_RATE                                     0x0300010c
-+
-+#define HFI_BITMASK_CONCEAL_LUMA       0x000003ff
-+#define HFI_BITMASK_CONCEAL_CB         0x000ffC00
-+#define HFI_BITMASK_CONCEAL_CR         0x3ff00000
-+#define HFI_PROP_CONCEAL_COLOR_8BIT                             0x0300010d
-+
-+#define HFI_BITMASK_CONCEAL_LUMA       0x000003ff
-+#define HFI_BITMASK_CONCEAL_CB         0x000ffC00
-+#define HFI_BITMASK_CONCEAL_CR         0x3ff00000
-+#define HFI_PROP_CONCEAL_COLOR_10BIT                            0x0300010e
-+
-+#define HFI_BITMASK_LUMA_BIT_DEPTH     0xffff0000
-+#define HFI_BITMASK_CHROMA_BIT_DEPTH   0x0000ffff
-+#define HFI_PROP_LUMA_CHROMA_BIT_DEPTH                          0x0300010f
-+
-+#define HFI_BITMASK_FRAME_MBS_ONLY_FLAG           0x00000001
-+#define HFI_BITMASK_MB_ADAPTIVE_FRAME_FIELD_FLAG  0x00000002
-+#define HFI_PROP_CODED_FRAMES                                   0x03000120
-+
-+#define HFI_PROP_CABAC_SESSION                                  0x03000121
-+
-+#define HFI_PROP_8X8_TRANSFORM                                  0x03000122
-+
-+#define HFI_PROP_BUFFER_HOST_MAX_COUNT                          0x03000123
-+
-+#define HFI_PROP_BUFFER_FW_MIN_OUTPUT_COUNT                     0x03000124
-+
-+#define HFI_PROP_BUFFER_MAXDPB_COUNT                            0x03000125
-+
-+#define HFI_PROP_BUFFER_MAX_NUM_REFERENCE                       0x03000126
-+
-+#define HFI_PROP_MAX_NUM_REORDER_FRAMES                         0x03000127
-+
-+#define HFI_PROP_PIC_ORDER_CNT_TYPE                             0x03000128
-+
-+enum hfi_deblock_mode {
-+	HFI_DEBLOCK_ALL_BOUNDARY              = 0x0,
-+	HFI_DEBLOCK_DISABLE                   = 0x1,
-+	HFI_DEBLOCK_DISABLE_AT_SLICE_BOUNDARY = 0x2,
-+};
-+
-+#define HFI_PROP_DEBLOCKING_MODE                                0x03000129
-+
-+enum hfi_rate_control {
-+	HFI_RC_VBR_CFR        = 0x00000000,
-+	HFI_RC_CBR_CFR        = 0x00000001,
-+	HFI_RC_CQ             = 0x00000002,
-+	HFI_RC_OFF            = 0x00000003,
-+	HFI_RC_CBR_VFR        = 0x00000004,
-+	HFI_RC_LOSSLESS       = 0x00000005,
-+};
-+
-+#define HFI_PROP_RATE_CONTROL                                   0x0300012a
-+
-+#define HFI_PROP_TIME_DELTA_BASED_RATE_CONTROL                  0x0300012b
-+
-+#define HFI_PROP_CONTENT_ADAPTIVE_CODING                        0x0300012c
-+
-+#define HFI_PROP_BITRATE_BOOST                                  0x0300012d
-+
-+#define HFI_BITMASK_QP_I          0x000000ff
-+#define HFI_BITMASK_QP_P          0x0000ff00
-+#define HFI_BITMASK_QP_B          0x00ff0000
-+#define HFI_BITMASK_QP_ENABLE     0x0f000000
-+#define HFI_BITMASK_QP_LAYERS     0xf0000000
-+#define HFI_PROP_QP_PACKED                                      0x0300012e
-+
-+#define HFI_PROP_MIN_QP_PACKED                                  0x0300012f
-+
-+#define HFI_PROP_MAX_QP_PACKED                                  0x03000130
-+
-+#define HFI_PROP_IR_RANDOM_PERIOD                               0x03000131
-+
-+#define HFI_PROP_MULTI_SLICE_MB_COUNT                           0x03000132
-+
-+#define HFI_PROP_MULTI_SLICE_BYTES_COUNT                        0x03000133
-+
-+#define HFI_PROP_LTR_COUNT                                      0x03000134
-+
-+#define HFI_PROP_LTR_MARK                                       0x03000135
-+
-+#define HFI_PROP_LTR_USE                                        0x03000136
-+
-+#define HFI_PROP_LTR_MARK_USE_DETAILS                           0x03000137
-+
-+enum hfi_layer_encoding_type {
-+	HFI_HIER_P_SLIDING_WINDOW = 0x1,
-+	HFI_HIER_P_HYBRID_LTR     = 0x2,
-+	HFI_HIER_B                = 0x3,
-+};
-+
-+#define HFI_PROP_LAYER_ENCODING_TYPE                            0x03000138
-+
-+#define HFI_PROP_LAYER_COUNT                                    0x03000139
-+
-+enum hfi_chromaqp_offset_mode {
-+	HFI_ADAPTIVE_CHROMAQP_OFFSET = 0x0,
-+	HFI_FIXED_CHROMAQP_OFFSET = 0x1,
-+};
-+
-+#define HFI_BITMASK_CHROMA_CB_OFFSET     0x0000ffff
-+#define HFI_BITMASK_CHROMA_CR_OFFSET     0xffff0000
-+#define HFI_PROP_CHROMA_QP_OFFSET                               0x0300013a
-+
-+#define HFI_PROP_TOTAL_BITRATE                                  0x0300013b
-+
-+#define HFI_PROP_BITRATE_LAYER1                                 0x0300013c
-+
-+#define HFI_PROP_BITRATE_LAYER2                                 0x0300013d
-+
-+#define HFI_PROP_BITRATE_LAYER3                                 0x0300013e
-+
-+#define HFI_PROP_BITRATE_LAYER4                                 0x0300013f
-+
-+#define HFI_PROP_BITRATE_LAYER5                                 0x03000140
-+
-+#define HFI_PROP_BITRATE_LAYER6                                 0x03000141
-+
-+#define HFI_PROP_BASELAYER_PRIORITYID                           0x03000142
-+
-+#define HFI_PROP_CONSTANT_QUALITY                               0x03000143
-+
-+#define HFI_PROP_HEIC_GRID_ENABLE                               0x03000144
-+
-+enum hfi_syncframe_request_mode {
-+	HFI_SYNC_FRAME_REQUEST_WITHOUT_SEQ_HDR           = 0x00000001,
-+	HFI_SYNC_FRAME_REQUEST_WITH_PREFIX_SEQ_HDR       = 0x00000002,
-+};
-+
-+#define HFI_PROP_REQUEST_SYNC_FRAME                             0x03000145
-+
-+#define HFI_PROP_MAX_GOP_FRAMES                                 0x03000146
-+
-+#define HFI_PROP_MAX_B_FRAMES                                   0x03000147
-+
-+enum hfi_quality_mode {
-+	HFI_MODE_MAX_QUALITY = 0x1,
-+	HFI_MODE_POWER_SAVE  = 0x2,
-+};
-+
-+#define HFI_PROP_QUALITY_MODE                                   0x03000148
-+
-+enum hfi_seq_header_mode {
-+	HFI_SEQ_HEADER_SEPERATE_FRAME         = 0x00000001,
-+	HFI_SEQ_HEADER_JOINED_WITH_1ST_FRAME  = 0x00000002,
-+	HFI_SEQ_HEADER_PREFIX_WITH_SYNC_FRAME = 0x00000004,
-+	HFI_SEQ_HEADER_METADATA               = 0x00000008,
-+};
-+
-+#define HFI_PROP_SEQ_HEADER_MODE                                0x03000149
-+
-+#define HFI_PROP_METADATA_SEQ_HEADER_NAL                        0x0300014a
-+
-+enum hfi_rotation {
-+	HFI_ROTATION_NONE = 0x00000000,
-+	HFI_ROTATION_90   = 0x00000001,
-+	HFI_ROTATION_180  = 0x00000002,
-+	HFI_ROTATION_270  = 0x00000003,
-+};
-+
-+#define HFI_PROP_ROTATION                                       0x0300014b
-+
-+enum hfi_flip {
-+	HFI_DISABLE_FLIP    = 0x00000000,
-+	HFI_HORIZONTAL_FLIP = 0x00000001,
-+	HFI_VERTICAL_FLIP   = 0x00000002,
-+};
-+
-+#define HFI_PROP_FLIP                                           0x0300014c
-+
-+#define HFI_PROP_SCALAR                                         0x0300014d
-+
-+enum hfi_blur_types {
-+	HFI_BLUR_NONE     = 0x00000000,
-+	HFI_BLUR_EXTERNAL = 0x00000001,
-+	HFI_BLUR_ADAPTIVE = 0x00000002,
-+};
-+
-+#define HFI_PROP_BLUR_TYPES                                     0x0300014e
-+
-+#define HFI_BITMASK_BLUR_WIDTH        0xffff0000
-+#define HFI_BITMASK_BLUR_HEIGHT       0x0000ffff
-+#define HFI_PROP_BLUR_RESOLUTION                                0x0300014f
-+
-+#define HFI_BITMASK_SPS_ID            0x000000ff
-+#define HFI_BITMASK_PPS_ID            0x0000ff00
-+#define HFI_BITMASK_VPS_ID            0x00ff0000
-+#define HFI_PROP_SEQUENCE_HEADER_IDS                            0x03000150
-+
-+#define HFI_PROP_AUD                                            0x03000151
-+
-+#define HFI_PROP_DPB_LUMA_CHROMA_MISR                           0x03000153
-+
-+#define HFI_PROP_OPB_LUMA_CHROMA_MISR                           0x03000154
-+
-+#define HFI_BITMASK_QP_I               0x000000ff
-+#define HFI_BITMASK_QP_P               0x0000ff00
-+#define HFI_BITMASK_QP_B               0x00ff0000
-+#define HFI_BITMASK_QP_ENABLE          0x0f000000
-+#define HFI_BITMASK_QP_LAYERS          0xf0000000
-+#define HFI_PROP_SIGNAL_COLOR_INFO                              0x03000155
-+
-+enum hfi_interlace_info {
-+	HFI_INTERLACE_INFO_NONE                = 0x00000000,
-+	HFI_FRAME_PROGRESSIVE                  = 0x00000001,
-+	HFI_FRAME_MBAFF                        = 0x00000002,
-+	HFI_FRAME_INTERLEAVE_TOPFIELD_FIRST    = 0x00000004,
-+	HFI_FRAME_INTERLEAVE_BOTTOMFIELD_FIRST = 0x00000008,
-+	HFI_FRAME_INTERLACE_TOPFIELD_FIRST     = 0x00000010,
-+	HFI_FRAME_INTERLACE_BOTTOMFIELD_FIRST  = 0x00000020,
-+};
-+
-+#define HFI_PROP_INTERLACE_INFO                                 0x03000156
-+
-+#define HFI_PROP_CSC                                            0x03000157
-+
-+#define HFI_PROP_CSC_MATRIX                                     0x03000158
-+
-+#define HFI_PROP_CSC_BIAS                                       0x03000159
-+
-+#define HFI_PROP_CSC_LIMIT                                      0x0300015a
-+
-+#define HFI_PROP_DECODE_ORDER_OUTPUT                            0x0300015b
-+
-+#define HFI_PROP_TIMESTAMP                                      0x0300015c
-+
-+#define HFI_PROP_FRAMERATE_FROM_BITSTREAM                       0x0300015d
-+
-+#define HFI_PROP_SEI_RECOVERY_POINT                             0x0300015e
-+
-+#define HFI_PROP_CONEALED_MB_COUNT                              0x0300015f
-+
-+#define HFI_BITMASK_SAR_WIDTH        0xffff0000
-+#define HFI_BITMASK_SAR_HEIGHT       0x0000ffff
-+#define HFI_PROP_SAR_RESOLUTION                                 0x03000160
-+
-+#define HFI_PROP_HISTOGRAM_INFO                                 0x03000161
-+
-+enum hfi_picture_type {
-+	HFI_PICTURE_IDR = 0x00000001,
-+	HFI_PICTURE_P   = 0x00000002,
-+	HFI_PICTURE_B   = 0x00000004,
-+	HFI_PICTURE_I   = 0x00000008,
-+	HFI_PICTURE_CRA = 0x00000010,
-+	HFI_PICTURE_BLA = 0x00000020,
-+	HFI_PICTURE_NOSHOW = 0x00000040,
-+};
-+
-+#define HFI_PROP_PICTURE_TYPE                                   0x03000162
-+
-+#define HFI_PROP_SEI_MASTERING_DISPLAY_COLOUR                   0x03000163
-+
-+#define HFI_PROP_SEI_CONTENT_LIGHT_LEVEL                        0x03000164
-+
-+#define HFI_PROP_SEI_HDR10PLUS_USERDATA                         0x03000165
-+
-+#define HFI_PROP_SEI_STREAM_USERDATA                            0x03000166
-+
-+#define HFI_PROP_EVA_STAT_INFO                                  0x03000167
-+
-+#define HFI_PROP_DEC_DEFAULT_HEADER                             0x03000168
-+
-+#define HFI_PROP_DEC_START_FROM_RAP_FRAME                       0x03000169
-+
-+#define HFI_PROP_NO_OUTPUT                                      0x0300016a
-+
-+#define HFI_PROP_BUFFER_TAG                                     0x0300016b
-+
-+#define HFI_PROP_BUFFER_MARK                                    0x0300016c
-+
-+#define HFI_PROP_SUBFRAME_OUTPUT                                0x0300016d
-+
-+#define HFI_PROP_ENC_QP_METADATA                                0x0300016e
-+
-+#define HFI_PROP_DEC_QP_METADATA                                0x0300016f
-+
-+#define HFI_PROP_SEI_FRAME_PACKING_ARRANGEMENT                  0x03000170
-+
-+#define HFI_PROP_SEI_PAN_SCAN_RECT                              0x03000171
-+
-+#define HFI_PROP_THUMBNAIL_MODE                                 0x03000172
-+
-+#define HFI_PROP_ROI_INFO                                       0x03000173
-+
-+#define HFI_PROP_WORST_COMPRESSION_RATIO                        0x03000174
-+
-+#define HFI_PROP_WORST_COMPLEXITY_FACTOR                        0x03000175
-+
-+#define HFI_PROP_VBV_DELAY                                      0x03000176
-+
-+#define HFI_PROP_SEQ_CHANGE_AT_SYNC_FRAME                       0x03000177
-+
-+#define HFI_BITMASK_RAW_WIDTH                           0xffff0000
-+#define HFI_BITMASK_RAW_HEIGHT                          0x0000ffff
-+#define HFI_PROP_RAW_RESOLUTION                                 0x03000178
-+
-+#define HFI_PROP_DPB_TAG_LIST                                   0x03000179
-+
-+#define HFI_PROP_DPB_LIST                                       0x0300017A
-+
-+enum hfi_nal_length_field_type {
-+	HFI_NAL_LENGTH_STARTCODES           = 0,
-+	HFI_NAL_LENGTH_SIZE_4               = 4,
-+};
-+
-+#define HFI_PROP_NAL_LENGTH_FIELD                               0x0300017B
-+
-+#define HFI_PROP_TOTAL_PEAK_BITRATE                             0x0300017C
-+
-+#define HFI_PROP_MAINTAIN_MIN_QUALITY                           0x0300017D
-+
-+#define HFI_PROP_IR_CYCLIC_PERIOD                               0x0300017E
-+
-+#define HFI_PROP_ENABLE_SLICE_DELIVERY                          0x0300017F
-+
-+#define HFI_PROP_AV1_FILM_GRAIN_PRESENT                         0x03000180
-+
-+#define HFI_PROP_AV1_SUPER_BLOCK_ENABLED                        0x03000181
-+
-+#define HFI_PROP_AV1_OP_POINT                                   0x03000182
-+
-+#define HFI_PROP_SUBFRAME_INPUT                                 0x03000183
-+
-+#define HFI_PROP_OPB_ENABLE                                     0x03000184
-+
-+#define HFI_PROP_AV1_TILE_ROWS_COLUMNS                          0x03000187
-+
-+#define HFI_PROP_AV1_DRAP_CONFIG                                0x03000189
-+
-+enum hfi_saliency_type {
-+	HFI_SALIENCY_NONE,
-+	HFI_SALIENCY_TYPE0,
-+};
-+
-+#define HFI_PROP_ROI_AS_SALIENCY_INFO                           0x0300018A
-+
-+#define HFI_PROP_FENCE                                          0x0300018B
-+
-+#define HFI_PROP_REQUEST_PREPROCESS                             0x0300018E
-+
-+#define HFI_PROP_UBWC_STRIDE_SCANLINE                           0x03000190
-+
-+#define HFI_PROP_TRANSCODING_STAT_INFO                          0x03000191
-+
-+#define HFI_PROP_DOLBY_RPU_METADATA                             0x03000192
-+
-+#define HFI_PROP_COMV_BUFFER_COUNT                              0x03000193
-+
-+#define HFI_PROP_DISABLE_VUI_TIMING_INFO                        0x03000194
-+
-+#define HFI_PROP_SLICE_DECODE                                   0x03000196
-+
-+#define HFI_PROP_AV1_UNIFORM_TILE_SPACING                       0x03000197
-+
-+#define HFI_PROP_ENC_RING_BIN_BUF                               0x0300019C
-+
-+/* u32 */
-+enum hfi_fence_type {
-+	HFI_SW_FENCE                      = 0x00000001,
-+	HFI_SYNX_V2_FENCE                 = 0x00000002,
-+};
-+
-+#define HFI_PROP_FENCE_TYPE                                     0x0300019D
-+
-+enum hfi_fence_direction_type {
-+	HFI_FENCE_TX_ENABLE          = 0x00000001,
-+	HFI_FENCE_RX_ENABLE          = 0x00000002,
-+};
-+
-+#define HFI_PROP_FENCE_DIRECTION                                0x0300019E
-+
-+#define HFI_PROP_FENCE_ERROR_DATA_CORRUPT                       0x0300019F
-+
-+#define HFI_PROP_END                                            0x03FFFFFF
-+
-+#define HFI_SESSION_ERROR_BEGIN                                 0x04000000
-+
-+#define HFI_ERROR_UNKNOWN_SESSION                               0x04000001
-+
-+#define HFI_ERROR_MAX_SESSIONS                                  0x04000002
-+
-+#define HFI_ERROR_FATAL                                         0x04000003
-+
-+#define HFI_ERROR_INVALID_STATE                                 0x04000004
-+
-+#define HFI_ERROR_INSUFFICIENT_RESOURCES                        0x04000005
-+
-+#define HFI_ERROR_BUFFER_NOT_SET                                0x04000006
-+
-+#define HFI_ERROR_DRAP_CONFIG_EXCEED                            0x04000007
-+
-+#define HFI_SESSION_ERROR_END                                   0x04FFFFFF
-+
-+#define HFI_SYSTEM_ERROR_BEGIN                                  0x05000000
-+
-+#define HFI_SYS_ERROR_WD_TIMEOUT                                0x05000001
-+
-+#define HFI_SYS_ERROR_NOC                                       0x05000002
-+
-+#define HFI_SYS_ERROR_FATAL                                     0x05000003
-+
-+#define HFI_SYSTEM_ERROR_END                                    0x05FFFFFF
-+
-+#define HFI_INFORMATION_BEGIN                                   0x06000000
-+
-+#define HFI_INFO_UNSUPPORTED                                    0x06000001
-+
-+#define HFI_INFO_DATA_CORRUPT                                   0x06000002
-+
-+#define HFI_INFO_NEGATIVE_TIMESTAMP                             0x06000003
-+
-+#define HFI_INFO_BUFFER_OVERFLOW                                0x06000004
-+
-+#define HFI_INFO_VCODEC_RESET                                   0x06000005
-+
-+#define HFI_INFO_HFI_FLAG_DRAIN_LAST                            0x06000006
-+
-+#define HFI_INFO_HFI_FLAG_PSC_LAST                              0x06000007
-+
-+#define HFI_INFO_FENCE_SIGNAL_ERROR                             0x06000008
-+
-+#define HFI_INFORMATION_END                                     0x06FFFFFF
-+
-+#endif //__H_HFI_PROPERTY_H__
++static int protect_cp_mem(struct msm_vidc_core *core)
++{
++	struct tzbsp_memprot memprot;
++	int rc = 0;
++	struct context_bank_info *cb;
++
++	memprot.cp_start = 0x0;
++	memprot.cp_size = 0x0;
++	memprot.cp_nonpixel_start = 0x0;
++	memprot.cp_nonpixel_size = 0x0;
++
++	venus_hfi_for_each_context_bank(core, cb) {
++		if (cb->region == MSM_VIDC_NON_SECURE) {
++			memprot.cp_size = cb->addr_range.start;
++
++			d_vpr_h("%s: memprot.cp_size: %#x\n",
++				__func__, memprot.cp_size);
++		}
++
++		if (cb->region == MSM_VIDC_SECURE_NONPIXEL) {
++			memprot.cp_nonpixel_start = cb->addr_range.start;
++			memprot.cp_nonpixel_size = cb->addr_range.size;
++
++			d_vpr_h("%s: cp_nonpixel_start: %#x size: %#x\n",
++				__func__, memprot.cp_nonpixel_start,
++				memprot.cp_nonpixel_size);
++		}
++	}
++
++	rc = qcom_scm_mem_protect_video_var(memprot.cp_start,
++					    memprot.cp_size,
++					    memprot.cp_nonpixel_start,
++					    memprot.cp_nonpixel_size);
++	if (rc)
++		d_vpr_e("Failed to protect memory(%d)\n", rc);
++
++	return rc;
++}
++
++static int __load_fw_to_memory(struct platform_device *pdev,
++			       const char *fw_name)
++{
++	int rc = 0;
++	const struct firmware *firmware = NULL;
++	struct msm_vidc_core *core;
++	char firmware_name[MAX_FIRMWARE_NAME_SIZE] = { 0 };
++	struct device_node *node = NULL;
++	struct resource res = { 0 };
++	phys_addr_t phys = 0;
++	size_t res_size = 0;
++	ssize_t fw_size = 0;
++	void *virt = NULL;
++	int pas_id = 0;
++
++	if (!fw_name || !(*fw_name) || !pdev) {
++		d_vpr_e("%s: Invalid inputs\n", __func__);
++		return -EINVAL;
++	}
++	if (strlen(fw_name) >= MAX_FIRMWARE_NAME_SIZE - 4) {
++		d_vpr_e("%s: Invalid fw name\n", __func__);
++		return -EINVAL;
++	}
++
++	core = dev_get_drvdata(&pdev->dev);
++	if (!core) {
++		d_vpr_e("%s: core not found in device %s",
++			__func__, dev_name(&pdev->dev));
++		return -EINVAL;
++	}
++	scnprintf(firmware_name, ARRAY_SIZE(firmware_name), "%s.mbn", fw_name);
++
++	pas_id = core->platform->data.pas_id;
++
++	node = of_parse_phandle(pdev->dev.of_node, "memory-region", 0);
++	if (!node) {
++		d_vpr_e("%s: failed to read \"memory-region\"\n",
++			__func__);
++		return -EINVAL;
++	}
++
++	rc = of_address_to_resource(node, 0, &res);
++	if (rc) {
++		d_vpr_e("%s: failed to read \"memory-region\", error %d\n",
++			__func__, rc);
++		goto exit;
++	}
++	phys = res.start;
++	res_size = (size_t)resource_size(&res);
++
++	rc = request_firmware(&firmware, firmware_name, &pdev->dev);
++	if (rc) {
++		d_vpr_e("%s: failed to request fw \"%s\", error %d\n",
++			__func__, firmware_name, rc);
++		goto exit;
++	}
++
++	fw_size = qcom_mdt_get_size(firmware);
++	if (fw_size < 0 || res_size < (size_t)fw_size) {
++		rc = -EINVAL;
++		d_vpr_e("%s: out of bound fw image fw size: %ld, res_size: %lu",
++			__func__, fw_size, res_size);
++		goto exit;
++	}
++
++	virt = memremap(phys, res_size, MEMREMAP_WC);
++	if (!virt) {
++		d_vpr_e("%s: failed to remap fw memory phys %pa[p]\n",
++			__func__, &phys);
++		return -ENOMEM;
++	}
++
++	/* prevent system suspend during fw_load */
++	pm_stay_awake(pdev->dev.parent);
++	rc = qcom_mdt_load(&pdev->dev, firmware, firmware_name,
++			   pas_id, virt, phys, res_size, NULL);
++	pm_relax(pdev->dev.parent);
++	if (rc) {
++		d_vpr_e("%s: error %d loading fw \"%s\"\n",
++			__func__, rc, firmware_name);
++		goto exit;
++	}
++	rc = qcom_scm_pas_auth_and_reset(pas_id);
++	if (rc) {
++		d_vpr_e("%s: error %d authenticating fw \"%s\"\n",
++			__func__, rc, firmware_name);
++		goto exit;
++	}
++
++	memunmap(virt);
++	release_firmware(firmware);
++	d_vpr_h("%s: firmware \"%s\" loaded successfully\n",
++		__func__, firmware_name);
++
++	return pas_id;
++
++exit:
++	if (virt)
++		memunmap(virt);
++	if (firmware)
++		release_firmware(firmware);
++
++	return rc;
++}
++
++int fw_load(struct msm_vidc_core *core)
++{
++	int rc;
++
++	if (!core->resource->fw_cookie) {
++		core->resource->fw_cookie = __load_fw_to_memory(core->pdev,
++								core->platform->data.fwname);
++		if (core->resource->fw_cookie <= 0) {
++			d_vpr_e("%s: firmware download failed %d\n",
++				__func__, core->resource->fw_cookie);
++			core->resource->fw_cookie = 0;
++			return -ENOMEM;
++		}
++	}
++
++	rc = protect_cp_mem(core);
++	if (rc) {
++		d_vpr_e("%s: protect memory failed\n", __func__);
++		goto fail_protect_mem;
++	}
++
++	return rc;
++
++fail_protect_mem:
++	if (core->resource->fw_cookie)
++		qcom_scm_pas_shutdown(core->resource->fw_cookie);
++	core->resource->fw_cookie = 0;
++	return rc;
++}
++
++int fw_unload(struct msm_vidc_core *core)
++{
++	int ret;
++
++	if (!core->resource->fw_cookie)
++		return -EINVAL;
++
++	ret = qcom_scm_pas_shutdown(core->resource->fw_cookie);
++	if (ret)
++		d_vpr_e("Firmware unload failed rc=%d\n", ret);
++
++	core->resource->fw_cookie = 0;
++
++	return ret;
++}
++
++int fw_suspend(struct msm_vidc_core *core)
++{
++	return qcom_scm_set_remote_state(TZBSP_VIDEO_STATE_SUSPEND, 0);
++}
++
++int fw_resume(struct msm_vidc_core *core)
++{
++	return qcom_scm_set_remote_state(TZBSP_VIDEO_STATE_RESUME, 0);
++}
++
++void fw_coredump(struct msm_vidc_core *core)
++{
++	int rc = 0;
++	struct platform_device *pdev;
++	struct device_node *node = NULL;
++	struct resource res = {0};
++	phys_addr_t mem_phys = 0;
++	size_t res_size = 0;
++	void *mem_va = NULL;
++	char *data = NULL, *dump = NULL;
++	u64 total_size;
++
++	pdev = core->pdev;
++
++	node = of_parse_phandle(pdev->dev.of_node, "memory-region", 0);
++	if (!node) {
++		d_vpr_e("%s: DT error getting \"memory-region\" property\n",
++			__func__);
++		return;
++	}
++
++	rc = of_address_to_resource(node, 0, &res);
++	if (rc) {
++		d_vpr_e("%s: error %d while getting \"memory-region\" resource\n",
++			__func__, rc);
++		return;
++	}
++
++	mem_phys = res.start;
++	res_size = (size_t)resource_size(&res);
++
++	mem_va = memremap(mem_phys, res_size, MEMREMAP_WC);
++	if (!mem_va) {
++		d_vpr_e("%s: unable to remap firmware memory\n", __func__);
++		return;
++	}
++	total_size = res_size + TOTAL_QSIZE + ALIGNED_SFR_SIZE;
++
++	data = vmalloc(total_size);
++	if (!data) {
++		memunmap(mem_va);
++		return;
++	}
++	dump = data;
++
++	/* copy firmware dump */
++	memcpy(data, mem_va, res_size);
++	memunmap(mem_va);
++
++	/* copy queues(cmd, msg, dbg) dump(along with headers) */
++	data += res_size;
++	memcpy(data, (char *)core->iface_q_table.align_virtual_addr, TOTAL_QSIZE);
++
++	/* copy sfr dump */
++	data += TOTAL_QSIZE;
++	memcpy(data, (char *)core->sfr.align_virtual_addr, ALIGNED_SFR_SIZE);
++
++	dev_coredumpv(&pdev->dev, dump, total_size, GFP_KERNEL);
++}
 -- 
 2.7.4
 
