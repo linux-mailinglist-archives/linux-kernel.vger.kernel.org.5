@@ -2,56 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B12E767699
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6D976769C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbjG1Tud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 15:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56584 "EHLO
+        id S234898AbjG1Tuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 15:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjG1Tua (ORCPT
+        with ESMTP id S234961AbjG1Tun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:50:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11594233;
-        Fri, 28 Jul 2023 12:50:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5597A621E8;
-        Fri, 28 Jul 2023 19:50:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1254C433C8;
-        Fri, 28 Jul 2023 19:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690573827;
-        bh=Uhb4CoVwQdUAFNAoTx59QYDdvOku9LQN7I2Xj235slo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kMkDzkupEJ7UwhLqRLDz0S/7K9GODS+QjM73pQ76JpSMCGgY2cheYZwDBWisFTaVW
-         +6dvlZ9K4yUFZ3SwH3vHr46xa/0AnL5nfie9Aea3/O6k+j8Uw1+O+rrTe8WBTzbwB5
-         m4o8uniBCCowQ8svcvdGJ6fni/CT6mzqUI0tpeQMh+EjFYOF4T2LMwM5pdGZYvLbrb
-         3YYsBvF1RNax1Bw4a45EpH7wdiG3aHv2BZ84Qvd8RRhGN23ltYj4DW8prytWIz7csT
-         ZFLfUmXaTTu7PVmuD2biiCo/faf6KD2eu27YF5R0fHCTNfJ6KLZa28lCFNRxU0P59U
-         lCE7rOP4yl4HA==
-Received: (nullmailer pid 1198653 invoked by uid 1000);
-        Fri, 28 Jul 2023 19:50:25 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH] watchdog: Enable COMPILE_TEST for more drivers
-Date:   Fri, 28 Jul 2023 13:50:21 -0600
-Message-Id: <20230728195022.1198555-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Fri, 28 Jul 2023 15:50:43 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7CF44AF
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:50:36 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-76c9334baedso45988485a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1690573836; x=1691178636;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MfuoRJxziujetUXDjXCxwtYvQyq/2gDI4Bjf+Iz8CZU=;
+        b=w9PsARxXlJeqOq3BhxEJ/0Lm6kcbHuVvB0g2WVjpvdO+kcJefm0gzQhZNBGg32lQd1
+         UPbcXCZJZvpN+MWOTvfjSLyyH13pkqcoVvZQdKT9UfrQHD9qEkAgVpnUeYg1cynohv4V
+         n5m/7WmNaogHlDPWjlT8TjwRsbX6qbMeUGwjE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690573836; x=1691178636;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MfuoRJxziujetUXDjXCxwtYvQyq/2gDI4Bjf+Iz8CZU=;
+        b=c/+DKr7frKDYhUwA5f4VrRg/UwuBoidX/vg0zwVZxTh3xeHJMr05G2L96uGWxXOhC+
+         eKERDKT+pGqTMepZitbEt2veM5iqqYp2CFBRE419lIYjkRrXh2rldzSfL5+5Hpngz2Rt
+         hZQyCdrmFXc9hZet8gm80CGOZwTBU+uovjCp0H9r/jBvJsBrP+NsL1EGAkTqokrqN0Km
+         qAgEz67OiPTwgxjF5Qnwg8ZdhdYaBBxfFYWIvcEJ0bXA5j6uE+fHmVx0CP3JAsXGadmS
+         +v7mEJp6P5GgdwhOTdbIz/Nihs8PivJaAdxIp2AoMWeJfpfj+kstEq+T6SK/PpvLDB3W
+         DW0w==
+X-Gm-Message-State: ABy/qLYUVfW3KqEwvuK6m7nt3oAnMkZNi6ysGcGxfTHlDfzgEScacLi6
+        obUlvbhb97Pw/ilyJSSPYrOddw==
+X-Google-Smtp-Source: APBJJlGEGOIBC9+BXrcGUfR9DpWYIGlZ0Tq86INiyBf1Z69+wd/dBeGdTpRCYnTMZSdhU4lLwV+gsw==
+X-Received: by 2002:a05:622a:1790:b0:403:f45d:66d4 with SMTP id s16-20020a05622a179000b00403f45d66d4mr3092112qtk.68.1690573835630;
+        Fri, 28 Jul 2023 12:50:35 -0700 (PDT)
+Received: from smtpclient.apple ([45.85.144.224])
+        by smtp.gmail.com with ESMTPSA id x1-20020ac87001000000b00402ed9adfa1sm1401114qtm.87.2023.07.28.12.50.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 12:50:34 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Joel Fernandes <joel@joelfernandes.org>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix anon_vma memory ordering
+Date:   Fri, 28 Jul 2023 15:50:23 -0400
+Message-Id: <A31BD1BD-FB53-4E5C-B8B7-44817D2BC322@joelfernandes.org>
+References: <ca3706a4-3153-449e-bef0-56183a668d57@paulmck-laptop>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>
+In-Reply-To: <ca3706a4-3153-449e-bef0-56183a668d57@paulmck-laptop>
+To:     paulmck@kernel.org
+X-Mailer: iPhone Mail (20B101)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,392 +84,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's quite a few watchdog drivers which are easily enabled for
-COMPILE_TEST, so let's enable them.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-Passed allyesconfig builds on arm, arm64, x86, riscv, powerpc, sparc
----
- drivers/watchdog/Kconfig         | 80 ++++++++++++++++----------------
- drivers/watchdog/loongson1_wdt.c |  1 +
- 2 files changed, 41 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index ee97d89dfc11..ce293378e548 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -307,7 +307,7 @@ config XILINX_WATCHDOG
- config XILINX_WINDOW_WATCHDOG
- 	tristate "Xilinx window watchdog timer"
- 	depends on HAS_IOMEM
--	depends on ARM64
-+	depends on ARM64 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  Window watchdog driver for the versal_wwdt IP core.
-@@ -343,7 +343,7 @@ config RAVE_SP_WATCHDOG
- 
- config MLX_WDT
- 	tristate "Mellanox Watchdog"
--	depends on MELLANOX_PLATFORM
-+	depends on MELLANOX_PLATFORM || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	select REGMAP
- 	help
-@@ -493,7 +493,7 @@ config FTWDT010_WATCHDOG
- 
- config IXP4XX_WATCHDOG
- 	tristate "IXP4xx Watchdog"
--	depends on ARCH_IXP4XX
-+	depends on ARCH_IXP4XX || (ARM && COMPILE_TEST)
- 	select WATCHDOG_CORE
- 	help
- 	  Say Y here if to include support for the watchdog timer
-@@ -529,7 +529,7 @@ config S3C2410_WATCHDOG
- 
- config SA1100_WATCHDOG
- 	tristate "SA1100/PXA2xx watchdog"
--	depends on ARCH_SA1100 || ARCH_PXA
-+	depends on ARCH_SA1100 || ARCH_PXA || COMPILE_TEST
- 	help
- 	  Watchdog timer embedded into SA11x0 and PXA2xx chips. This will
- 	  reboot your system when timeout is reached.
-@@ -720,7 +720,7 @@ config IMX2_WDT
- config IMX_SC_WDT
- 	tristate "IMX SC Watchdog"
- 	depends on HAVE_ARM_SMCCC
--	depends on IMX_SCU
-+	depends on IMX_SCU || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the system controller watchdog
-@@ -931,7 +931,7 @@ config ASPEED_WATCHDOG
- 
- config STM32_WATCHDOG
- 	tristate "STM32 Independent WatchDoG (IWDG) support"
--	depends on ARCH_STM32
-+	depends on ARCH_STM32 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	default y
- 	help
-@@ -1065,7 +1065,7 @@ config ACQUIRE_WDT
- 
- config ADVANTECH_WDT
- 	tristate "Advantech SBC Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  If you are configuring a Linux kernel for the Advantech single-board
- 	  computer, say `Y' here to support its built-in watchdog timer
-@@ -1074,14 +1074,14 @@ config ADVANTECH_WDT
- 
- config ADVANTECH_EC_WDT
- 	tristate "Advantech Embedded Controller Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 		This driver supports Advantech products with ITE based Embedded Controller.
- 		It does not support Advantech products with other ECs or without EC.
- 
- config ALIM1535_WDT
- 	tristate "ALi M1535 PMU Watchdog Timer"
--	depends on X86 && PCI
-+	depends on (X86 || COMPILE_TEST) && PCI
- 	help
- 	  This is the driver for the hardware watchdog on the ALi M1535 PMU.
- 
-@@ -1105,7 +1105,7 @@ config ALIM7101_WDT
- 
- config EBC_C384_WDT
- 	tristate "WinSystems EBC-C384 Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select ISA_BUS_API
- 	select WATCHDOG_CORE
- 	help
-@@ -1115,7 +1115,7 @@ config EBC_C384_WDT
- 
- config EXAR_WDT
- 	tristate "Exar Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  Enables watchdog timer support for the watchdog timer present
-@@ -1126,7 +1126,7 @@ config EXAR_WDT
- 
- config F71808E_WDT
- 	tristate "Fintek F718xx, F818xx Super I/O Watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the hardware watchdog on the Fintek F71808E,
-@@ -1138,7 +1138,7 @@ config F71808E_WDT
- 
- config SP5100_TCO
- 	tristate "AMD/ATI SP5100 TCO Timer/Watchdog"
--	depends on X86 && PCI
-+	depends on (X86 || COMPILE_TEST) && PCI
- 	select WATCHDOG_CORE
- 	help
- 	  Hardware watchdog driver for the AMD/ATI SP5100 chipset. The TCO
-@@ -1177,7 +1177,7 @@ config SC520_WDT
- 
- config SBC_FITPC2_WATCHDOG
- 	tristate "Compulab SBC-FITPC2 watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the built-in watchdog timer on the fit-PC2,
- 	  fit-PC2i, CM-iAM single-board computers made by Compulab.
-@@ -1202,7 +1202,7 @@ config SBC_FITPC2_WATCHDOG
- 
- config EUROTECH_WDT
- 	tristate "Eurotech CPU-1220/1410 Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  Enable support for the watchdog timer on the Eurotech CPU-1220 and
- 	  CPU-1410 cards.  These are PC/104 SBCs. Spec sheets and product
-@@ -1210,7 +1210,7 @@ config EUROTECH_WDT
- 
- config IB700_WDT
- 	tristate "IB700 SBC Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog on the IB700 Single
- 	  Board Computer produced by TMC Technology (www.tmc-uk.com). This
-@@ -1227,7 +1227,7 @@ config IB700_WDT
- 
- config IBMASR
- 	tristate "IBM Automatic Server Restart"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the IBM Automatic Server Restart watchdog
- 	  timer built-in into some eServer xSeries machines.
-@@ -1237,7 +1237,7 @@ config IBMASR
- 
- config WAFER_WDT
- 	tristate "ICP Single Board Computer Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is a driver for the hardware watchdog on the ICP Single
- 	  Board Computer. This driver is working on (at least) the following
-@@ -1259,7 +1259,7 @@ config I6300ESB_WDT
- 
- config IE6XX_WDT
- 	tristate "Intel Atom E6xx Watchdog"
--	depends on X86 && PCI
-+	depends on (X86 || COMPILE_TEST) && PCI
- 	select WATCHDOG_CORE
- 	select MFD_CORE
- 	select LPC_SCH
-@@ -1319,7 +1319,7 @@ config ITCO_VENDOR_SUPPORT
- 
- config IT8712F_WDT
- 	tristate "IT8712F (Smart Guardian) Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the built-in watchdog timer on the IT8712F
- 	  Super I/0 chipset used on many motherboards.
-@@ -1332,7 +1332,7 @@ config IT8712F_WDT
- 
- config IT87_WDT
- 	tristate "IT87 Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the hardware watchdog on the ITE IT8607,
-@@ -1350,7 +1350,7 @@ config IT87_WDT
- config HP_WATCHDOG
- 	tristate "HP ProLiant iLO2+ Hardware Watchdog Timer"
- 	select WATCHDOG_CORE
--	depends on (ARM64 || X86) && PCI
-+	depends on (ARM64 || X86 || COMPILE_TEST) && PCI
- 	help
- 	  A software monitoring watchdog and NMI handling driver. This driver
- 	  will detect lockups and provide a stack trace. This is a driver that
-@@ -1380,7 +1380,7 @@ config KEMPLD_WDT
- 
- config SC1200_WDT
- 	tristate "National Semiconductor PC87307/PC97307 (ala SC1200) Watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is a driver for National Semiconductor PC87307/PC97307 hardware
- 	  watchdog cards as found on the SC1200. This watchdog is mainly used
-@@ -1403,7 +1403,7 @@ config SCx200_WDT
- 
- config PC87413_WDT
- 	tristate "NS PC87413 watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog on the PC87413 chipset
- 	  This watchdog simply watches your kernel to make sure it doesn't
-@@ -1417,7 +1417,7 @@ config PC87413_WDT
- 
- config NV_TCO
- 	tristate "nVidia TCO Timer/Watchdog"
--	depends on X86 && PCI
-+	depends on (X86 || COMPILE_TEST) && PCI
- 	help
- 	  Hardware driver for the TCO timer built into the nVidia Hub family
- 	  (such as the MCP51).  The TCO (Total Cost of Ownership) timer is a
-@@ -1446,7 +1446,7 @@ config RDC321X_WDT
- 
- config 60XX_WDT
- 	tristate "SBC-60XX Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This driver can be used with the watchdog timer found on some
- 	  single board computers, namely the 6010 PII based computer.
-@@ -1486,7 +1486,7 @@ config SBC7240_WDT
- 
- config CPU5_WDT
- 	tristate "SMA CPU5 Watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  TBD.
- 	  To compile this driver as a module, choose M here: the
-@@ -1494,7 +1494,7 @@ config CPU5_WDT
- 
- config SMSC_SCH311X_WDT
- 	tristate "SMSC SCH311X Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog timer on the
- 	  SMSC SCH3112, SCH3114 and SCH3116 Super IO chipset
-@@ -1506,7 +1506,7 @@ config SMSC_SCH311X_WDT
- 
- config SMSC37B787_WDT
- 	tristate "Winbond SMsC37B787 Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog component on the
- 	  Winbond SMsC37B787 chipset as used on the NetRunner Mainboard
-@@ -1526,7 +1526,7 @@ config SMSC37B787_WDT
- 
- config TQMX86_WDT
- 	tristate "TQ-Systems TQMX86 Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the hardware watchdog timer in the TQMX86 IO
-@@ -1539,7 +1539,7 @@ config TQMX86_WDT
- 
- config VIA_WDT
- 	tristate "VIA Watchdog Timer"
--	depends on X86 && PCI
-+	depends on (X86 || COMPILE_TEST) && PCI
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the hardware watchdog timer on VIA
-@@ -1552,7 +1552,7 @@ config VIA_WDT
- 
- config W83627HF_WDT
- 	tristate "Watchdog timer for W83627HF/W83627DHG and compatibles"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  This is the driver for the hardware watchdog on the following
-@@ -1582,7 +1582,7 @@ config W83627HF_WDT
- 
- config W83877F_WDT
- 	tristate "W83877F (EMACS) Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog on the W83877F chipset
- 	  as used in EMACS PC-104 motherboards (and likely others).  This
-@@ -1597,7 +1597,7 @@ config W83877F_WDT
- 
- config W83977F_WDT
- 	tristate "W83977F (PCM-5335) Watchdog Timer"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the hardware watchdog on the W83977F I/O chip
- 	  as used in AAEON's PCM-5335 SBC (and likely others).  This
-@@ -1610,7 +1610,7 @@ config W83977F_WDT
- 
- config MACHZ_WDT
- 	tristate "ZF MachZ Watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  If you are using a ZF Micro MachZ processor, say Y here, otherwise
- 	  N.  This is the driver for the watchdog timer built-in on that
-@@ -1623,7 +1623,7 @@ config MACHZ_WDT
- 
- config SBC_EPX_C3_WATCHDOG
- 	tristate "Winsystems SBC EPX-C3 watchdog"
--	depends on X86
-+	depends on X86 || COMPILE_TEST
- 	help
- 	  This is the driver for the built-in watchdog timer on the EPX-C3
- 	  Single-board computer made by Winsystems, Inc.
-@@ -1738,7 +1738,7 @@ config INDYDOG
- 
- config JZ4740_WDT
- 	tristate "Ingenic jz4740 SoC hardware watchdog"
--	depends on MIPS
-+	depends on MIPS || COMPILE_TEST
- 	depends on COMMON_CLK
- 	select WATCHDOG_CORE
- 	select MFD_SYSCON
-@@ -1822,7 +1822,7 @@ config BCM_KONA_WDT
- 
- config BCM_KONA_WDT_DEBUG
- 	bool "DEBUGFS support for BCM Kona Watchdog"
--	depends on BCM_KONA_WDT
-+	depends on BCM_KONA_WDT || COMPILE_TEST
- 	help
- 	  If enabled, adds /sys/kernel/debug/bcm_kona_wdt/info which provides
- 	  access to the driver's internal data structures as well as watchdog
-@@ -1863,7 +1863,7 @@ config LANTIQ_WDT
- 
- config LOONGSON1_WDT
- 	tristate "Loongson1 SoC hardware watchdog"
--	depends on MACH_LOONGSON32
-+	depends on MACH_LOONGSON32 || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  Hardware driver for the Loongson1 SoC Watchdog Timer.
-@@ -1877,7 +1877,7 @@ config RALINK_WDT
- 
- config GXP_WATCHDOG
- 	tristate "HPE GXP watchdog support"
--	depends on ARCH_HPE_GXP
-+	depends on ARCH_HPE_GXP || COMPILE_TEST
- 	select WATCHDOG_CORE
- 	help
- 	  Say Y here to include support for the watchdog timer
-diff --git a/drivers/watchdog/loongson1_wdt.c b/drivers/watchdog/loongson1_wdt.c
-index 4ac7810a314d..0587ff44d3a1 100644
---- a/drivers/watchdog/loongson1_wdt.c
-+++ b/drivers/watchdog/loongson1_wdt.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
--- 
-2.40.1
+> On Jul 28, 2023, at 2:18 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Fri, Jul 28, 2023 at 02:03:09PM -0400, Joel Fernandes wrote:
+>>> On Fri, Jul 28, 2023 at 1:51=E2=80=AFPM Alan Stern <stern@rowland.harvar=
+d.edu> wrote:
+>>>=20
+>>> On Fri, Jul 28, 2023 at 01:35:43PM -0400, Joel Fernandes wrote:
+>>>> On Fri, Jul 28, 2023 at 8:44=E2=80=AFAM Will Deacon <will@kernel.org> w=
+rote:
+>>>>>=20
+>>>>> On Thu, Jul 27, 2023 at 12:34:44PM -0400, Joel Fernandes wrote:
+>>>>>>> On Jul 27, 2023, at 10:57 AM, Will Deacon <will@kernel.org> wrote:
+>>>>>>> =EF=BB=BFOn Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
+>>>>>>>> if (READ_ONCE(vma->anon_vma) !=3D NULL) {
+>>>>>>>> // we now know that vma->anon_vma cannot change anymore
+>>>>>>>>=20
+>>>>>>>> // access the same memory location again with a plain load
+>>>>>>>> struct anon_vma *a =3D vma->anon_vma;
+>>>>>>>>=20
+>>>>>>>> // this needs to be address-dependency-ordered against one of
+>>>>>>>> // the loads from vma->anon_vma
+>>>>>>>> struct anon_vma *root =3D a->root;
+>>>>>>>> }
+>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>> Is this fine? If it is not fine just because the compiler might
+>>>>>>>> reorder the plain load of vma->anon_vma before the READ_ONCE() load=
+,
+>>>>>>>> would it be fine after adding a barrier() directly after the
+>>>>>>>> READ_ONCE()?
+>>>>>>>=20
+>>>>>>> I'm _very_ wary of mixing READ_ONCE() and plain loads to the same va=
+riable,
+>>>>>>> as I've run into cases where you have sequences such as:
+>>>>>>>=20
+>>>>>>>   // Assume *ptr is initially 0 and somebody else writes it to 1
+>>>>>>>   // concurrently
+>>>>>>>=20
+>>>>>>>   foo =3D *ptr;
+>>>>>>>   bar =3D READ_ONCE(*ptr);
+>>>>>>>   baz =3D *ptr;
+>>>>>>>=20
+>>>>>>> and you can get foo =3D=3D baz =3D=3D 0 but bar =3D=3D 1 because the=
+ compiler only
+>>>>>>> ends up reading from memory twice.
+>>>>>>>=20
+>>>>>>> That was the root cause behind f069faba6887 ("arm64: mm: Use READ_ON=
+CE
+>>>>>>> when dereferencing pointer to pte table"), which was very unpleasant=
+ to
+>>>>>>> debug.
+>>>>>>=20
+>>>>>> Will, Unless I am missing something fundamental, this case is differe=
+nt though.
+>>>>>> This case does not care about fewer reads. As long as the first read i=
+s volatile, the subsequent loads (even plain)
+>>>>>> should work fine, no?
+>>>>>> I am not seeing how the compiler can screw that up, so please do enli=
+ghten :).
+>>>>>=20
+>>>>> I guess the thing I'm worried about is if there is some previous read o=
+f
+>>>>> 'vma->anon_vma' which didn't use READ_ONCE() and the compiler kept the=
 
+>>>>> result around in a register. In that case, 'a' could be NULL, even if
+>>>>> the READ_ONCE(vma->anon_vma) returned non-NULL.
+>>>>=20
+>>>> If I can be a bit brave enough to say -- that appears to be a compiler
+>>>> bug to me. It seems that the compiler in such an instance violates the
+>>>> "Sequential Consistency Per Variable" rule? I mean if it can't even
+>>>> keep SCPV true for a same memory-location load (plain or not) for a
+>>>> sequence of code, how can it expect the hardware to.
+>>>=20
+>>> It's not a compiler bug.  In this example, some other thread performs a
+>>> write that changes vma->anon_vma from NULL to non-NULL.  This write
+>>> races with the plain reads, and compilers are not required to obey the
+>>> "Sequential Consistency Per Variable" rule (or indeed, any rule) when
+>>> there is a data race.
+>>=20
+>> So you're saying the following code behavior is OK?
+>>=20
+>> /* Say anon_vma can only ever transition from NULL to non-NULL values */
+>> a =3D vma->anon_vma;  // Reads NULL
+>> b =3D READ_ONCE(vma->anon_vma); // Reads non-NULL
+>> c =3D vma->anon_vma;  // Reads NULL!!!
+>> if (b) {
+>>  c->some_attribute++; // Oopsie
+>> }
+>=20
+> Is there some way to obtain (a && !b) that does not involve a data race,
+> and they carte blanche for the compiler to do whatever it pleases?
+> I am not seeing one.
+>=20
+> What am I missing?
+
+Probably nothing. I think I was living briefly in a fantasy world where I
+expected predictable compiler behavior on same-memory accesses
+amidst data traces. It is good to come back to reality.
+
+thanks,
+
+ - Joel
+
+>=20
+>                            Thanx, Paul
