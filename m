@@ -2,79 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE2376706F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174F9767072
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237337AbjG1PX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        id S237342AbjG1PXc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237329AbjG1PXW (ORCPT
+        with ESMTP id S237037AbjG1PXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:23:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313964231
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:23:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF33F6217E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:23:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D714C433C8;
-        Fri, 28 Jul 2023 15:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690557794;
-        bh=5PRrK71y7rg2n66PxfxPqm8XqnCpVt9EPKxD9EZZu6Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rC0kLvBgF94x4Eah648O/bQWSBv0Os9XOVFAX1vMd2o2udNRCgewUJBhJRvS6GBzL
-         f62ZSMgktxCRDhrwY0PFQw7OJHx7VdL6S4GcaIQPGGy4TITJru6orCZZU6vQPVylJZ
-         v4g9hLjTlrCuiNpJ3nedyVGR4NfWzisyUmsxbZ90gwXc8jmZwua79Kq8itpmFEs40o
-         3orj7h3U35G5tshHPTlHrm1dvP5kHIXTHB4o6WrakYvMGdyR1kHjooJwsvk+GV8kTk
-         5LzAnSXX/RpsAZy8vH1jtb7954gdRneZTxZSIsqvjQCZxMIdOwkt/kkSHGJXuwC3UY
-         sN78vGBvywnrw==
-Date:   Fri, 28 Jul 2023 16:23:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: arm64: perf test 26 rpi4 oops
-Message-ID: <20230728152309.GG21718@willie-the-truck>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
- <20230728141852.GA21718@willie-the-truck>
- <1620591d2201c1498f2832b32d26efd0c5cdd5cf.camel@gmx.de>
+        Fri, 28 Jul 2023 11:23:30 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B10235B8
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:23:29 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-405-eJcN3k0sP7Kvuwhq7UFxfw-1; Fri, 28 Jul 2023 16:23:26 +0100
+X-MC-Unique: eJcN3k0sP7Kvuwhq7UFxfw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
+ 2023 16:23:25 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 28 Jul 2023 16:23:25 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Oleksandr Natalenko' <oleksandr@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "GR-QLogic-Storage-Upstream@marvell.com" 
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jozef Bacik <jobacik@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        "Rob Evers" <revers@redhat.com>
+Subject: RE: [PATCH 1/3] scsi: qedf: do not touch __user pointer in
+ qedf_dbg_stop_io_on_error_cmd_read() directly
+Thread-Topic: [PATCH 1/3] scsi: qedf: do not touch __user pointer in
+ qedf_dbg_stop_io_on_error_cmd_read() directly
+Thread-Index: AQHZwSEI7kbXXpGPc0ikqDMKVqIzOK/PS6TQ
+Date:   Fri, 28 Jul 2023 15:23:25 +0000
+Message-ID: <314512939ebd44508b767d799e7c30af@AcuMS.aculab.com>
+References: <20230728065819.139694-1-oleksandr@redhat.com>
+ <20230728065819.139694-2-oleksandr@redhat.com>
+In-Reply-To: <20230728065819.139694-2-oleksandr@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620591d2201c1498f2832b32d26efd0c5cdd5cf.camel@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 05:12:43PM +0200, Mike Galbraith wrote:
-> On Fri, 2023-07-28 at 15:18 +0100, Will Deacon wrote:
-> > On Fri, Jul 28, 2023 at 06:06:33AM +0200, Mike Galbraith wrote:
-> > > perf test 26 in virgin master inspired the below.
-> >
-> > Ah, so this is the 6.5-based panic message below?
+From: Oleksandr Natalenko
+> Sent: 28 July 2023 07:58
 > 
-> Yeah, that was virgin master.
+> The qedf_dbg_stop_io_on_error_cmd_read() function invokes sprintf()
+> directly on a __user pointer, which may crash the kernel.
 > 
-> The oops arrived with 2e1c0170771e, _but_ it turns out to be somehow
-> config related.  The obese distro config rolled forward does not oops,
-> much leaner local config does, despite cute little rpi4 working just
-> fine.. for everything _except_ 'perf test 26' :)
+> Avoid doing that by using a small on-stack buffer for sprintf()
+> and then calling simple_read_from_buffer() which does a proper
+> copy_to_user() call.
+> 
+> Fixes: 61d8658b4a ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
+...
+> diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
+> index a3ed681c8ce3f..4d1b99569d490 100644
+> --- a/drivers/scsi/qedf/qedf_debugfs.c
+> +++ b/drivers/scsi/qedf/qedf_debugfs.c
+> @@ -185,18 +185,17 @@ qedf_dbg_stop_io_on_error_cmd_read(struct file *filp, char __user *buffer,
+>  				   size_t count, loff_t *ppos)
+>  {
+>  	int cnt;
+> +	char cbuf[7];
+>  	struct qedf_dbg_ctx *qedf_dbg =
+>  				(struct qedf_dbg_ctx *)filp->private_data;
+>  	struct qedf_ctx *qedf = container_of(qedf_dbg,
+>  	    struct qedf_ctx, dbg_ctx);
+> 
+>  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
+> -	cnt = sprintf(buffer, "%s\n",
+> +	cnt = sprintf(cbuf, "%s\n",
+>  	    qedf->stop_io_on_error ? "true" : "false");
 
-The commit mentions HARDENED_USERCOPY, so maybe that? In any case, if
-you can share your broken config someplace I can try to give it a spin.
+You've made cbuf[] exactly just big enough.
+If anyone breathes on this code it could overflow.
+You really should use scnprintf() for safety.
 
-Thanks,
+> 
+> -	cnt = min_t(int, count, cnt - *ppos);
+> -	*ppos += cnt;
+> -	return cnt;
+> +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
 
-Will
+Or just:
+	if (gedf->stop_on_error)
+		return simple_read_from_buffer(buffer, count, ppos, "true\n", 5);
+	return simple_read_from_buffer(buffer, count, ppos, "false\n", 6);
+
+	David
+
+	
+>  }
+> 
+>  static ssize_t
+> --
+> 2.41.0
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
