@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEA7766A6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB304766A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbjG1K03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        id S235893AbjG1K0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233779AbjG1KZt (ORCPT
+        with ESMTP id S235890AbjG1KZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:25:49 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA6B3AB9;
-        Fri, 28 Jul 2023 03:25:22 -0700 (PDT)
+        Fri, 28 Jul 2023 06:25:46 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C8A3AA9;
+        Fri, 28 Jul 2023 03:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690539922; x=1722075922;
+  t=1690539919; x=1722075919;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=NmdsIdioGNhECR4FJdb9MMbAPQqdto9pzQBDNtcIUvs=;
-  b=NoYzhLd21LLpXRokSVugsSu5+Kcc/SwydbZaRN0HL6QVFBY7ToVNmPtG
-   VvKP8k4l41BmV7UKxpqfkKYGMHw8nbZmtLQ90aOxNWNH+P+BO8JubWwnr
-   iwhkUbQJrL2bQ2NNUmcpPKkFN7UemL0wkRtj2T79EVgS78wqcuIyLpYTw
-   YKETl9uk5dC55/herKwRlOXGwS82+HGDmcHKfnnq1cSFyqpfWo+E+08o6
-   0SIyPJQ+TnCCB2Jv3Xnpqb209uLf25xyBTcGSYDtjsEACxkSrzpbL1ag2
-   90s6ahVAm+X3sClPJftElFPBHd/frUiHjhMZpM0ZSHB/9rEbUb+r3bi/+
-   w==;
+  bh=sXObJvFOIGK/mqhYpuwAgl4c9CSw6fuF7YraS2BMD6g=;
+  b=vU9cF4V9SJPimPydujYeblaKIwX0QK/fvZrWLQORXK07itfEemy5CP2T
+   8nLxvTvNXtnoRk+yYXXkJzF4/OMZdeznDvQrHnVOqc5ThERptXvVzHEP5
+   SpWaDzMQR369I0D0PJW8IPOsQcUkPS1mmJ3CAw5vx8cE7JM8MdoRF47Tu
+   ird5sASlIq/9LKRJ1P1lBft8yYAkgVgv62OkuLQ/7rUKbgnGj4gb/OrYE
+   WThHx+3m0HtZ1bk/Ls/EKnBKTZ7oEvr3a975XUFp9x6VUUevBwZEpxDHQ
+   Pkmp1fb4Xtd9ivHFUOjI9JTfOvvTKRpqu9ooCv7wsZwbsLYnfH900zDkB
+   Q==;
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="225813102"
+   d="scan'208";a="163712550"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:25:11 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:25:16 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 03:25:05 -0700
+ 15.1.2507.21; Fri, 28 Jul 2023 03:25:14 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:25:00 -0700
+ 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:25:10 -0700
 From:   Varshini Rajendran <varshini.rajendran@microchip.com>
-To:     <vkoul@kernel.org>, <robh+dt@kernel.org>,
+To:     <andi.shyti@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@microchip.com>, <dmaengine@vger.kernel.org>,
+        <claudiu.beznea@microchip.com>, <linux-i2c@vger.kernel.org>,
         <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <varshini.rajendran@microchip.com>
-Subject: [PATCH v3 12/50] dt-bindings: dmaengine: at_xdmac: add compatible with microchip,sam9x7
-Date:   Fri, 28 Jul 2023 15:54:51 +0530
-Message-ID: <20230728102451.265869-1-varshini.rajendran@microchip.com>
+Subject: [PATCH v3 13/50] dt-bindings: i2c: at91: Add sam9x7 compatible string
+Date:   Fri, 28 Jul 2023 15:55:06 +0530
+Message-ID: <20230728102506.265917-1-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,27 +67,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible for sam9x7.
+Add compatible string for sam9x7.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- Documentation/devicetree/bindings/dma/atmel-xdma.txt | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/dma/atmel-xdma.txt b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-index 510b7f25ba24..76d649b3a25d 100644
---- a/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-+++ b/Documentation/devicetree/bindings/dma/atmel-xdma.txt
-@@ -3,7 +3,8 @@
- * XDMA Controller
- Required properties:
- - compatible: Should be "atmel,sama5d4-dma", "microchip,sam9x60-dma" or
--  "microchip,sama7g5-dma".
-+  "microchip,sama7g5-dma" or
-+  "microchip,sam9x7-dma", "atmel,sama5d4-dma".
- - reg: Should contain DMA registers location and length.
- - interrupts: Should contain DMA interrupt.
- - #dma-cells: Must be <1>, used to represent the number of integer cells in
+diff --git a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
+index 6adedd3ec399..6f3158604d02 100644
+--- a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
+@@ -27,6 +27,9 @@ properties:
+       - items:
+           - const: microchip,sama7g5-i2c
+           - const: microchip,sam9x60-i2c
++      - items:
++          - const: microchip,sam9x7-i2c
++          - const: microchip,sam9x60-i2c
+ 
+   reg:
+     maxItems: 1
+@@ -84,6 +87,7 @@ allOf:
+               - atmel,sama5d4-i2c
+               - atmel,sama5d2-i2c
+               - microchip,sam9x60-i2c
++              - microchip,sam9x7-i2c
+               - microchip,sama7g5-i2c
+     then:
+       properties:
 -- 
 2.25.1
 
