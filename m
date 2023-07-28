@@ -2,157 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27763766F76
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4106E766F79
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237065AbjG1O2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S237078AbjG1O3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237059AbjG1O2j (ORCPT
+        with ESMTP id S237067AbjG1O3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:28:39 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0A23A97;
-        Fri, 28 Jul 2023 07:28:38 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2680eee423aso1247150a91.2;
-        Fri, 28 Jul 2023 07:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690554518; x=1691159318;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZtDsi+pEp/nNRMu+KQzhU8MBpSDJijbUVBsN9cf24GY=;
-        b=OmGn8k07nYiaEegv+GN8Im0wQ/MpUTRCtGXnxVIXHRXZhnkinbLI1dHjM0Wy+8280B
-         0B7Tj81pS5VPYDyNSntXbAH52kvELUz6/AeraNGj2ls6QGAi41zzdb0p8Ep63toSfeX4
-         i4wgVCtgk4vvbeJwonFdItN3LBliaSw5obqJjYw9s0D4oyblTc3wvEMSPo1K8+QncJDl
-         N6UN9YdNm4w5hvjkCZ6tAXTBJy4oiit2eN4Zm7QcW4kaWiWA1MtN0VDtGdVwUmAl4mfu
-         FUbLag8pu2jGxZfma8MfyBl+UcQan7RkBzSI14+VZ8wbIlYVlDmqaN46fYGFO5ODfo1e
-         haeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690554518; x=1691159318;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZtDsi+pEp/nNRMu+KQzhU8MBpSDJijbUVBsN9cf24GY=;
-        b=S4CDW/0GgHEGjcJ/zItdMlh/Ka3NaJHmk6v/uCflY6lCd5iX/qgOVD3AEuTobGWNeU
-         ZQ1oUpADr+tpyQuvDbCTh8kypWeixEHxC1v9VOg0ja9dryqMilBZBwg0/A/U1uQy3rEM
-         L1dpj5n0Ls1/UTec57s7VxyiLzSrRcrrtT0FOkshWrf+czDF7tf1yiNtDCqypz2TnCMg
-         PrflM6T6Ow/ME4snhxX3z0zYBqFv7Bqjwfjyj5yLZAUDUXms6CljKAIJ25Eue4GiDuq8
-         uUHIzIk7SMbBqRTVT4mj/qhuxpwOGJ8j4wo+PkHaayJJ40MuFDxXHdaYQv/DkIqVTv4R
-         V8rQ==
-X-Gm-Message-State: ABy/qLb/Wh8Cr3MrOOlwnZ7ZvWgVDZiUiNs5FeS2nXu2YYGD4VQ4X8fg
-        kQVjQTHVFxv9kHTxgu0mBs0=
-X-Google-Smtp-Source: APBJJlGq9Ppy+Td/hyv0vhyaQQiigQlnAv2Qg4dsZhHVbEQ+e/KYrMad5RnxSg1dauRUoujuBVziQA==
-X-Received: by 2002:a17:90b:38c6:b0:268:8da4:72ac with SMTP id nn6-20020a17090b38c600b002688da472acmr1145098pjb.22.1690554517616;
-        Fri, 28 Jul 2023 07:28:37 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ms19-20020a17090b235300b00263f446d432sm4381643pjb.43.2023.07.28.07.28.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 07:28:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <8686c5c3-81b0-278f-d81b-0c906bac62a8@roeck-us.net>
-Date:   Fri, 28 Jul 2023 07:28:35 -0700
+        Fri, 28 Jul 2023 10:29:20 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF993A95;
+        Fri, 28 Jul 2023 07:29:19 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SEBKKR032628;
+        Fri, 28 Jul 2023 14:29:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RrjmBYTAqfz/8WQ4mG2EH7E/i2FnI2ZvWdqZuxb0iFI=;
+ b=jOkmOxsMowxFq6hhAtwoZAsB6W3UXQuKpOp8RMxQEudAPurWa0rn9Hbf0ePEBFlS+YAf
+ bF/8Aa43XRCqpNHVAaPnllPk0/dFVeme34zYL9/8BA/sy9ut6g4dQwWGPeh3VZ6CoKB3
+ eqcshSiIMR5AOEuiWhnMV5/K+4I0yMY3OVxq+boIOat+nWpNQ1GzXqnGEFOyF1RXXQRY
+ DnNV/gp56chZGGRXzWz9lxy0Kutj9yPR8VmazTG9h5BRDtYfmcQ8+Ef8gYFeYO8Cr7TN
+ DKqSClXSDCAR2+CClTWitBa0/yrHAMCStANx1KvfYI3ZBvHvO11U9BQw2JgBb9zlEFWs 0w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s4ebp9xt1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 14:29:19 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36SELofh005970;
+        Fri, 28 Jul 2023 14:29:18 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s4ebp9xss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 14:29:18 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36SDJZUM026227;
+        Fri, 28 Jul 2023 14:29:17 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0sesq54t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 14:29:17 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36SETEoW50462978
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jul 2023 14:29:14 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C448520040;
+        Fri, 28 Jul 2023 14:29:14 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D4692004B;
+        Fri, 28 Jul 2023 14:29:14 +0000 (GMT)
+Received: from [9.152.224.114] (unknown [9.152.224.114])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 28 Jul 2023 14:29:14 +0000 (GMT)
+Message-ID: <1c767675-3ab6-8e4b-e92e-e408b19e1c49@linux.ibm.com>
+Date:   Fri, 28 Jul 2023 16:29:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] Add Silicom Platform Driver
+Subject: Re: [PATCH] KVM: s390: fix sthyi error handling
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mete Durlu <meted@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230727182939.2050744-1-hca@linux.ibm.com>
+ <7fadab86-2b7c-b934-fcfa-61046c0778b6@linux.ibm.com>
+ <20230728091411.6761-A-hca@linux.ibm.com>
 Content-Language: en-US
-To:     Huibin Shi <henrys@silicom-usa.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Cc:     "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-References: <20230718160104.2716-1-henryshi2018@gmail.com>
- <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
- <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20230728091411.6761-A-hca@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: f9z5YhUKjce3Up5pnh-qsbLNl8vPFFQx
+X-Proofpoint-GUID: tEV2qk0PF3L_dNscXWfWwuzw4YKTp4wr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=853 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280130
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 05:59, Huibin Shi wrote:
-> Christophe,
-> 
-> Thanks for the comments. See my comments below.
-> 
-> Updated patch will be sent out later after review comments from other reviewers are addressed.
-> 
-> Henry
-> -----Original Message-----
-> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Sent: Tuesday, July 25, 2023 5:03 PM
-> To: Henry Shi <henryshi2018@gmail.com>; hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux@roeck-us.net; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org
-> Cc: hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
-> Subject: Re: [PATCH] Add Silicom Platform Driver
-> 
-> Caution: This is an external email. Please take care when clicking links or opening attachments.
-> 
-> 
-> Le 18/07/2023 à 18:01, Henry Shi a écrit :
->> The Silicom platform (silicom-platform) Linux driver for Swisscom
->> Business Box (Swisscom BB) as well as Cordoba family products is a
->> software solution designed to facilitate the efficient management and
->> control of devices through the integration of various Linux
->> frameworks. This platform driver provides seamless support for device
->> management via the Linux LED framework, GPIO framework, Hardware
->> Monitoring (HWMON), and device attributes. The Silicom platform
->> driver's compatibility with these Linux frameworks allows applications
->> to access and control Cordoba family devices using existing software
->> that is compatible with these frameworks. This compatibility
->> simplifies the development process, reduces dependencies on
->> proprietary solutions, and promotes interoperability with other
->> Linux-based systems and software.
+
+
+Am 28.07.23 um 11:14 schrieb Heiko Carstens:
+> On Fri, Jul 28, 2023 at 09:28:58AM +0200, Christian Borntraeger wrote:
+>> Am 27.07.23 um 20:29 schrieb Heiko Carstens:
+>>> Commit 9fb6c9b3fea1 ("s390/sthyi: add cache to store hypervisor info")
+>>> added cache handling for store hypervisor info. This also changed the
+>>> possible return code for sthyi_fill().
+>>>
+>>> Instead of only returning a condition code like the sthyi instruction would
+>>> do, it can now also return a negative error value (-ENOMEM). handle_styhi()
+>>> was not changed accordingly. In case of an error, the negative error value
+>>> would incorrectly injected into the guest PSW.
+>>>
+>>> Add proper error handling to prevent this, and update the comment which
+>>> describes the possible return values of sthyi_fill().
 >>
->> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
->> ---
+>> To me it looks like this can only happen if page allocation fails? This should
+>> not happen in normal cases (and return -ENOMEM would likely kill the guest as
+>> QEMU would stop).
+>> But if it happens we better stop.
 > 
-> [...]
-> 
->> +static int __init silicom_mc_leds_register(struct device *dev,
->> +                                        const struct led_classdev_mc
->> +*mc_leds) {
->> +     struct led_classdev_mc *led;
->> +     int i, err;
->> +
->> +     for (i = 0; mc_leds[i].led_cdev.name; i++) {
->> +             /* allocate and copy data from the init constansts */
->> +             led = devm_kzalloc(dev, sizeof(struct led_classdev_mc),
->> + GFP_KERNEL);
-> 
-> sizeof(*led) is shorter.
-> Mostly a matter of taste.
-> 
-> Maybe even devm_kmemdup()?
-> 
-> Henry: thanks. Devm_kmemdup() API requires additional argument that is not necessary of this driver. I prefer devm_kzalloc for now.
-> 
+> Yes, no reason for any stable backports. But things might change in the
+> future, so we better have correct error handling in place.
 
-I am curious: What would that additional argument be ?
-
-Guenter
-
+Feel free to carry via the s390 tree.
