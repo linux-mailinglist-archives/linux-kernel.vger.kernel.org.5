@@ -2,239 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75807766586
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2D676658A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbjG1Hl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S234400AbjG1HmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234352AbjG1Hlx (ORCPT
+        with ESMTP id S234352AbjG1Hl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:41:53 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B7BB6;
-        Fri, 28 Jul 2023 00:41:50 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230728074149euoutp02aa03f38d08b21dca519f3165493919e2~1_C1yISzF0427104271euoutp02S;
-        Fri, 28 Jul 2023 07:41:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230728074149euoutp02aa03f38d08b21dca519f3165493919e2~1_C1yISzF0427104271euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690530109;
-        bh=gb0miwVpBtIdFutOnqdv+X2fb1Y0tMg1ouc2sR7L3Os=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=jP0fYcKVCJeYDv1Gx0jUCRduXfY4vnQsfFN/589lOAwqqHmnGo95sviSApP85HqL/
-         b3N2mBa5tzSY5cdpqkjFos0iAVUm5SnHZIO0zPNk6R4D/CcfBpndnhSc1WHJDTctye
-         vKJqYYTTS5KjUdaB6JnaFL/A8rqxgZ8sffzJ83hk=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230728074148eucas1p2ae388ed7dc413903e0c928858d865465~1_C1hrfZu1594615946eucas1p28;
-        Fri, 28 Jul 2023 07:41:48 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 96.02.37758.C3173C46; Fri, 28
-        Jul 2023 08:41:48 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230728074148eucas1p119baa7ba630f26611d21a9a78aa4f48c~1_C1C-3SU2160921609eucas1p14;
-        Fri, 28 Jul 2023 07:41:48 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230728074148eusmtrp2dbb0a376f74c12352732d7535784f5c4~1_C1CM1wD1226012260eusmtrp2G;
-        Fri, 28 Jul 2023 07:41:48 +0000 (GMT)
-X-AuditID: cbfec7f5-815ff7000002937e-2e-64c3713cfa1f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 1D.4C.10549.C3173C46; Fri, 28
-        Jul 2023 08:41:48 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230728074148eusmtip28b25f50dcc0ee88f4a41f3cc59f47298~1_C01TN9D2079920799eusmtip2G;
-        Fri, 28 Jul 2023 07:41:48 +0000 (GMT)
-Received: from localhost (106.210.248.223) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Fri, 28 Jul 2023 08:41:47 +0100
-Date:   Fri, 28 Jul 2023 09:41:46 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <willy@infradead.org>,
-        <josh@joshtriplett.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH 06/14] sysctl: Add size to register_sysctl
-Message-ID: <20230728074146.lwapkrfyn2kqvyec@localhost>
+        Fri, 28 Jul 2023 03:41:59 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB72D2D51
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:41:57 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so4374801fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690530116; x=1691134916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YH0GXjtaVhK/TMonu2F4Vh27btTOGldL7tUWhIb9bOw=;
+        b=GuCPWiAIiVUTxHq1sCBm0TNcgNB1hUzg8FA5wayoNtyenmyCcQkTgxvdb8V3Dj5xfP
+         4pORprwQ3xAKLAnCmYmQOp78yYjulcOqyQHBoXwuqGbpoBUOKDQDL1DIaF7iqGQ68fuP
+         9ys860YY51xO0XH9AVUO/K7IFRn717Fdrac7sZBXpY8sID+6g/CjtAzKJObHlbcLiGXp
+         txnHjVty//epw7pxugbvUFS1FtlIjW9i8ryp5JEmmamDJL08i0RxdP38ZFF0PJwvv1II
+         VSFg0/SnOoH9gbM+9kVsPb9zZ3p+rMRCfeBNaRS157gOcpApxf0A4Fc/oZPfi3dABYY/
+         YuPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690530116; x=1691134916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YH0GXjtaVhK/TMonu2F4Vh27btTOGldL7tUWhIb9bOw=;
+        b=QIDtkXrroC6ajCznE46m8a3CPUX7P1Jh4zGlqLwMskpnmXGWysgnksFQSmsYMUp9/e
+         2DC/SvjAb4S0H4YTECfUvAL2J8+6RN/IYGRA/w9LOINScJsh10KNqxgdKwQYjnw4K71X
+         4PuTFVVoeG09zOpduMVTAnaYRxUR83Qp3C1Y+JsKY//sXqpO3H6P2C8FnG3cQk7dG2h8
+         +me7fxNmldbp6F2OX30WD8nSIKmf4jOEBCHwDuIWVCf75DOx3vybRVrFaKSKp9led9yx
+         UomuDaEL308sGia1ChGm1nmGu2pzLrKy2SX66uYUFRxOeGj7DtGP6QYlLznemZrwwx1/
+         ukmQ==
+X-Gm-Message-State: ABy/qLa1Stg0d9dVijPR1tePa3rXcsBwlxMlL5rtM9NeyKgredkPOJCO
+        UTIO/SCKkdfPMojOjpapDC3XDw==
+X-Google-Smtp-Source: APBJJlF3Q/+Qg3SilY9zwDKIC0KKV+gjHMUyHV9eMz62tAvUfN8iw9my9w64tWBIJVFh0+mPtkNMzA==
+X-Received: by 2002:a2e:95c6:0:b0:2b7:339c:f791 with SMTP id y6-20020a2e95c6000000b002b7339cf791mr1119023ljh.25.1690530115906;
+        Fri, 28 Jul 2023 00:41:55 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id u22-20020a05600c211600b003fbcdba1a63sm3585055wml.12.2023.07.28.00.41.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 00:41:55 -0700 (PDT)
+Message-ID: <68dbe6b1-891c-76d4-7e5f-97cb6cc81b51@linaro.org>
+Date:   Fri, 28 Jul 2023 09:41:53 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="23prfwofjqduce7c"
-Content-Disposition: inline
-In-Reply-To: <ZMKQSqeKNcJCqkDB@bombadil.infradead.org>
-X-Originating-IP: [106.210.248.223]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSfUxTVxjGc3pvb2+ZxUtp4AwIfxRnnCBsIO4kitkMyW7mR1iMc+jm1tm7
-        QoC2aykwN2M7Kp9OG5eM0DmstVRWPrq2SGQgriXho3WUDdjUoQsCcRMaFK2COBz11s1k/z3P
-        e37P+5EcEhO6iDgyX17MqOSSQjERgXf0Lfo3bPmkV/qK3bAROXx/EWjybw+B5qzHADrl1+No
-        uu8mDw0bH3BR+Vk7gWYabAA9MSnQ5doiNNxxnIuck79yUffFQRyN/HCKQIYz5Ri6YpgGqM8U
-        gx74ZgGy2lt5SD+eiZYWVgBr567XY+iWhhZAf6P9Gafbv7vKoU1ODe1qWk9fm8minbZqgjaY
-        fwT0pW9beLTLcoSe6xkj6HvOxJxV+yK2SJnC/BJGlbb1w4i8iflKrrIqscx2uhdogRvWAD4J
-        qY0wsNiP14AIUkg1AahzjBCsuQ9goPGLsLkHYJ1hAXsW8d6aDkfOATjR04v/S43X9mCsOQ+g
-        L3iXG4rg1EvQN9XFC2mCSoH+2fGnrUTUOthj+JITCmBUOQGNN4ZWBpJkNLUVzvsPhBgB9Ro0
-        G8e4rI6Cg/VTeEhjVBnsPtuKh3CMiofnlslQmU9tgr/VtRHspknQbVnisfow9LZfezoKUo4I
-        6KquBaEspLJhx+T7LBMNb/e3h/kE+KTzdJj/CsBLy3d4rGkG0KoLclhqM9SPToUTb8CWxXqC
-        bRoJrwSi2D0j4cmOOowtC2BVhZCl18LmG7O4ASQZn7vM+Nxlxv8uY8sp0NQ1T/yvnAytZ2Yw
-        VmfBtrY53AR4NhDLaNRFMkadIWdKU9WSIrVGLks9qChygpW/7FvuD14ATbfvpnoAhwQesGYl
-        fPP75mEQh8sVckYsEnhzPFKhQCr59BCjUnyg0hQyag+IJ3FxrCA5a/CgkJJJipkChlEyqmev
-        HJIfp+UoL+78iXO9MIgyib0Vek6pu7Px7Xo8b4fhzuDcZ4PZh4JdZdZ8R8HwUKPrxN7jOSaF
-        YZK/50VXF7O9WPsI/WlpyCw44UnapkkTjWSMPtrmDax++DHarYxyZ2dVngSlfxwb2E/kPp7/
-        6L2Cq5PuusOxfLPC+c7m9AO6CxpLvH3U9kvty6sqdoi0PavpDenbY49KFrviz6MMozm6XTRh
-        q9wpW3AnBszCPQ+PLg0N7CtNF3i/7naUqBIGZNn6+TFruVhHtOKPc0t2JboSEtNz/TFr3vKs
-        Tf89IaZGurwpufNWWoNyf871JKfZMiP+vNAxcj8/8oV3Vbpqu+3NI1WXTSliXJ0neXU9plJL
-        /gF0vnQuRgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsVy+t/xe7o2hYdTDH5sEbHYePolm8Xjv4fY
-        LN4v62G0mHO+hcXi6bFH7BYXZn1jtWhevJ7N4vW8VYwW/xfkW5zpzrW4sK2P1WLT42usFnv2
-        nmSxuLxrDpvFhIXNzBY3JjxltDi2QMzi2+k3jBbL1q9lt2i5Y2rx+wdQwbKdfg5iHmvmrWH0
-        mN1wkcVjy8qbTB4LNpV6bF6h5XHrta3HplWdbB4TFh1g9Ng/dw27x+Yl9R7v911l8/i8SS6A
-        J0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEv49ov
-        jYI2uYqFl78xNzDul+hi5OSQEDCROPX8KUsXIxeHkMBSRom7h/6yQiRkJDZ+uQplC0v8udbF
-        BlH0kVFi/70njBDOVkaJ+5M+sIBUsQioSpx+spsdxGYT0JE4/+YOM4gtIqAhsW9CLxNIA7NA
-        M5vErHvngEZxcAgL2El8Oh8HUsMrYC6xaBbINpChp5kk1v5ZxgSREJQ4OfMJ2AJmgTKJZRPe
-        s4P0MgtISyz/xwES5hQwk7g+fR0bxKXKEgeX/GaHsGslPv99xjiBUXgWkkmzkEyahTAJIqwl
-        cePfSyYMYW2JZQtfM0PYthLr1r1nWcDIvopRJLW0ODc9t9hQrzgxt7g0L10vOT93EyMwNW07
-        9nPzDsZ5rz7qHWJk4mA8xKgC1Plow+oLjFIsefl5qUoivKcCDqUI8aYkVlalFuXHF5XmpBYf
-        YjQFhuJEZinR5Hxg0swriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCU
-        amCaxzk98CTjwqqCHptk3efN3yM279V58FdZinsKz4m7q3l6GOq2bX93sfuN6LSjt6/1dvAw
-        CF6ViPji+SpGTq796J4Svv6VEl8DNqy5LuPDuXK9dc4xS9YjBRslZVzjDu9vnsYRdU12sqr+
-        maL6Y+vqW5OWlHK2sLfmMnadPn125fxXObWHPE6eLNW6wv/2i7V0tM+582c41Pte3Ui5X7mc
-        2dbWv154ycsnBp9nZK222qee9alCdmfD2g/PL3SwJZZYLVrzIWy/0N6zH4PbmdhOXnKdIKU1
-        YZ7hyt/7Jsrtvs1q3jAp+ZtqxZcJVSo+a+sddb91HAl4ltUw+2NWLvt9ncayGcf1HxZai2ea
-        XH2uxFKckWioxVxUnAgAgo+3peIDAAA=
-X-CMS-MailID: 20230728074148eucas1p119baa7ba630f26611d21a9a78aa4f48c
-X-Msg-Generator: CA
-X-RootMTR: 20230726140659eucas1p2c3cd9f57dd13c71ddeb78d2480587e72
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230726140659eucas1p2c3cd9f57dd13c71ddeb78d2480587e72
-References: <20230726140635.2059334-1-j.granados@samsung.com>
-        <CGME20230726140659eucas1p2c3cd9f57dd13c71ddeb78d2480587e72@eucas1p2.samsung.com>
-        <20230726140635.2059334-7-j.granados@samsung.com>
-        <ZMFexmOcfyORkRRs@bombadil.infradead.org>
-        <20230727122200.r5o2mj5qgah5yfwm@localhost>
-        <ZMKQSqeKNcJCqkDB@bombadil.infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] leds: Add Broadchip BCT3024 LED driver
+Content-Language: en-US
+To:     Matus Gajdos <matuszpd@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230727160525.23312-1-matuszpd@gmail.com>
+ <20230727160525.23312-4-matuszpd@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230727160525.23312-4-matuszpd@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---23prfwofjqduce7c
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 27/07/2023 18:05, Matus Gajdos wrote:
+> The BCT3024 chip is an I2C LED driver with independent 24 output
+> channels. Each channel supports 256 levels.
+> 
+> Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
+> ---
+>  drivers/leds/Kconfig        |   9 +
+>  drivers/leds/Makefile       |   1 +
+>  drivers/leds/leds-bct3024.c | 564 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 574 insertions(+)
+>  create mode 100644 drivers/leds/leds-bct3024.c
 
-On Thu, Jul 27, 2023 at 08:42:02AM -0700, Luis Chamberlain wrote:
-> On Thu, Jul 27, 2023 at 02:22:00PM +0200, Joel Granados wrote:
-> > On Wed, Jul 26, 2023 at 10:58:30AM -0700, Luis Chamberlain wrote:
-> > > On Wed, Jul 26, 2023 at 04:06:26PM +0200, Joel Granados wrote:
-> > > > In order to remove the end element from the ctl_table struct arrays=
-, we
-> > > > replace the register_syctl function with a macro that will add the
-> > > > ARRAY_SIZE to the new register_sysctl_sz function. In this way the
-> > > > callers that are already using an array of ctl_table structs do not=
- have
-> > > > to change. We *do* change the callers that pass the ctl_table array=
- as a
-> > > > pointer.
-> > >=20
-> > > Thanks for doing this and this series!
-> > >=20
-> > > > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > > > ---
-> > > > diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> > > > index 0495c858989f..b1168ae281c9 100644
-> > > > --- a/include/linux/sysctl.h
-> > > > +++ b/include/linux/sysctl.h
-> > > > @@ -215,6 +215,9 @@ struct ctl_path {
-> > > >  	const char *procname;
-> > > >  };
-> > > > =20
-> > > > +#define register_sysctl(path, table)	\
-> > > > +	register_sysctl_sz(path, table, ARRAY_SIZE(table))
-> > > > +
-> > > >  #ifdef CONFIG_SYSCTL
-> > >=20
-> > > Wasn't it Greg who had suggested this? Maybe add Suggested-by with him
-> > > on it.
-> > Yes. I mentioned him in the cover letter and did not add the tag because
-> > I had not asked for permission to use it. I'll drop him a mail and
-> > include the suggested-by if he agrees.
->=20
-> FWIW, I never ask, if they ask for it, clearly they suggested it.
-I was following Documentation/process/submitting-patches.rst:
-"... Please note that this tag should not be added without the
-reporter's permission... ".
-In any case, Greg has already said yes :)
+Thank you for your patch. There is something to discuss/improve.
 
->=20
-> > > Also, your cover letter and first few patches are not CC'd to the net=
-dev
-> > > list or others. What you want to do is collect all the email addresses
-> > > for this small patch series and add them to who you email for your
-> > > entire series, otherwise at times they won't be able to properly revi=
-ew
-> > > or understand the exact context of the changes. You want folks to do =
-less
-> > > work to review, not more.
-> > Here I wanted to avoid very big e-mail headers as I have received
-> > rejections from lists in the past. But I for this set, the number of
-> > e-mails is ok to just include everyone.
->=20
-> I hear that from time to time, if you have issues with adding folks on
-> the To address it may be an SMTP server issue, ie, corp email SMTP
-> server issues. To fix that I avoid corp email SMTP servers.
-My experience was more from the lists rejecting the e-mail because the
-header was too big. With that said, I'll look into SMTP alternatives to
-reduce possible errors
 
->=20
->   Luis
+> 
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index 6046dfeca16f..75059db201e2 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -135,6 +135,15 @@ config LEDS_BCM6358
+>  	  This option enables support for LEDs connected to the BCM6358
+>  	  LED HW controller accessed via
 
---=20
+...
 
-Joel Granados
+> +}
+> +
+> +static int bct3024_brightness_set(struct led_classdev *ldev,
+> +				  enum led_brightness brightness)
+> +{
+> +	struct bct3024_led *led = container_of(ldev, struct bct3024_led, ldev);
+> +	struct bct3024_data *priv = led->priv;
+> +	struct device *dev = priv->dev;
+> +	int ret;
+> +	unsigned int ctrl, bright;
+> +
+> +	if (priv->state == BCT3024_STATE_INIT)
+> +		return -EIO;
+> +
+> +	if (brightness == 0) {
+> +		ctrl = 0x00;
+> +		bright = 0;
+> +	} else if (brightness < 256) {
+> +		ctrl = 0x01;
+> +		bright = brightness;
+> +	}
+> +
+> +	mutex_lock(&priv->lock);
 
---23prfwofjqduce7c
-Content-Type: application/pgp-signature; name="signature.asc"
+What do you protect with lock? This must be documented in lock's
+definition in your struct.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +	if (bct3024_any_active(priv) && (priv->state == BCT3024_STATE_IDLE ||
+> +	    priv->state == BCT3024_STATE_SHUTDOWN)) {
+> +		pm_runtime_get_sync(dev);
+> +		priv->state = BCT3024_STATE_ACTIVE;
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTDcToACgkQupfNUreW
-QU8ebwv/XlR1FEHFz9SLvGQjHETNnsFs3RVx30G5KCg+zWiSQoVJOlNktqeQbH35
-CmMfVi3M7mt/wJZ8MiyXFowzmGqVF7lNCpOYIH4s8ppDEylmxhowVw8QKFYLd74Q
-SksNllHUi2tmbhnpH+YuIDL1HTPt+p6ejYhq3kCFTB2DbibH+1uCiNMTYTov3Hq0
-/sLMgb7zpqQviJPX0rR0ctXcwY2w04MQmyAjN4ot8qskmckzvLmoP3ILVFdvbkb/
-/+zuPvocJZxuizrgxUNbpcz7m+4v0yzbTMl+xRl2RnGfHIKNU/jGmT2mDPVAoaOj
-bb9PqgILxfxkhh6arsoTPt0HjTihLhGiJnxSGzyCBJzGjpF98y5g6PU52t0JGid9
-0kX4/EPh31hklspwHaqbhRqWafJy6iU5xW2FkjFHOAPfdEtpRK9Ubwh8Roxa9KR9
-EUjgl6+Bgg0TvcSOjxgEK7HmeudqheOIU939bFeQFh6vs2KCnc3IdxOuhTtC3IHR
-B9dgJcCy
-=qAfE
------END PGP SIGNATURE-----
+I don't understand why you added state machine for handling state. You
+are basically duplicating runtime PM...
 
---23prfwofjqduce7c--
+> +	}
+> +
+> +	for (; led; led = led->next) {
+> +		ret = bct3024_write(priv, BCT3024_REG_CONTROL(led->idx), ctrl);
+> +		if (ret < 0)
+> +			goto exit;
+> +		ret = bct3024_write(priv, BCT3024_REG_BRIGHTNESS(led->idx), bright);
+> +		if (ret < 0)
+> +			goto exit;
+> +	}
+> +
+> +	ret = bct3024_write(priv, BCT3024_REG_UPDATE, 0);
+> +	if (ret < 0)
+> +		goto exit;
+> +
+> +	ret = bct3024_set_shutdown_reg(priv, false);
+> +	if (ret < 0)
+> +		goto exit;
+> +
+> +	if (!ret && priv->state == BCT3024_STATE_ACTIVE) {
+> +		priv->state = BCT3024_STATE_IDLE;
+> +		pm_runtime_mark_last_busy(dev);
+> +		pm_runtime_put_autosuspend(dev);
+> +		/* Activate autosuspend */
+> +		pm_runtime_idle(dev);
+> +	}
+> +
+> +	ret = 0;
+> +
+> +exit:
+> +	mutex_unlock(&priv->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int bct3024_setup_led(struct bct3024_data *priv, u32 reg,
+> +			     struct bct3024_led **prev, struct led_init_data *idata)
+> +{
+> +	struct device *dev = priv->dev;
+> +	struct bct3024_led *led;
+> +	int ret;
+> +
+> +	if (reg >= BCT3024_LED_COUNT) {
+> +		ret = -EINVAL;
+> +		dev_err_probe(dev, ret, "invalid reg value: %u\n", reg);
+> +		return ret;
+
+That's not correct syntax.
+
+return dev_err_probe
+> +	}
+> +
+> +	led = &priv->leds[reg];
+> +
+> +	if (led->active) {
+> +		ret = -EINVAL;
+> +		dev_err_probe(dev, ret, "reg redeclared: %u\n", reg);
+> +		return ret;
+
+Ditto
+
+> +	}
+> +
+> +	led->active = true;
+> +	led->priv = priv;
+> +	led->idx = reg;
+> +
+> +	if (!*prev) {
+> +		led->ldev.max_brightness = 255;
+> +		led->ldev.brightness_set_blocking = bct3024_brightness_set;
+> +
+> +		ret = devm_led_classdev_register_ext(dev, &led->ldev, idata);
+> +		if (ret < 0) {
+> +			dev_err_probe(dev, ret, "failed to register led %u\n", reg);
+> +			return ret;
+
+Ditto
+
+> +		}
+> +	} else
+> +		(*prev)->next = led;
+> +
+> +	*prev = led;
+> +
+> +	return 0;
+> +}
+> +
+> +static int bct3024_of_parse(struct i2c_client *client)
+> +{
+> +	struct bct3024_data *priv = i2c_get_clientdata(client);
+> +	struct device *dev = priv->dev;
+> +	struct device_node *np;
+> +	int ret;
+> +
+> +	ret = of_get_child_count(dev->of_node);
+> +	if (!ret || ret > ARRAY_SIZE(priv->leds)) {
+> +		dev_err_probe(dev, -EINVAL, "invalid nodes count: %d\n", ret);
+> +		return -EINVAL;
+
+Ditto
+
+> +	}
+> +
+> +	for_each_child_of_node(dev->of_node, np) {
+> +		u32 regs[BCT3024_LED_COUNT];
+> +		struct led_init_data idata = {
+> +			.fwnode = of_fwnode_handle(np),
+> +			.devicename = client->name,
+> +		};
+> +		struct bct3024_led *led;
+> +		int count, i;
+> +
+> +		count = of_property_read_variable_u32_array(np, "reg", regs, 1,
+> +							    BCT3024_LED_COUNT);
+> +		if (count < 0) {
+> +			ret = count;
+> +			dev_err_probe(dev, ret, "failed to read node reg\n");
+> +			goto fail;
+
+Ditto
+
+> +		}
+> +
+> +		for (i = 0, led = NULL; i < count; i++) {
+> +			ret = bct3024_setup_led(priv, regs[i], &led, &idata);
+> +			if (ret < 0)
+> +				goto fail;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +fail:
+> +	of_node_put(np);
+> +
+> +	return ret;
+> +}
+> +
+> +static int bct3024_i2c_probe(struct i2c_client *client)
+> +{
+> +	struct bct3024_data *priv;
+> +	struct device *dev = &client->dev;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->dev = dev;
+> +
+> +	priv->supply = devm_regulator_get_optional(dev, "vdd");
+> +	if (IS_ERR(priv->supply)) {
+> +		ret = PTR_ERR(priv->supply);
+> +		if (ret != -ENODEV) {
+> +			dev_err_probe(dev, ret, "failed to get supply\n");
+> +			return ret;
+
+Ditto
+
+> +		}
+> +		priv->supply = NULL;
+> +	}
+> +
+> +	priv->shutdown_gpiod = devm_gpiod_get_optional(dev, "shutdown", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(priv->shutdown_gpiod)) {
+> +		ret = PTR_ERR(priv->shutdown_gpiod);
+> +		dev_err_probe(dev, ret, "failed to get shutdown gpio\n");
+> +		return ret;
+
+Everywhere...
+
+> +	}
+> +
+> +	priv->regmap = devm_regmap_init_i2c(client, &bct3024_regmap);
+> +	if (IS_ERR(priv->regmap)) {
+> +		ret = PTR_ERR(priv->regmap);
+> +		return ret;
+
+
+It's return PTR_ERR....
+
+> +	}
+> +
+> +	mutex_init(&priv->lock);
+> +	i2c_set_clientdata(client, priv);
+> +
+> +	pm_runtime_set_autosuspend_delay(dev, 2000);
+> +	pm_runtime_use_autosuspend(dev);
+> +	pm_runtime_enable(dev);
+> +	if (!pm_runtime_enabled(dev)) {
+> +		ret = bct3024_shutdown(priv, false);
+
+This should go to error handling path... Although why? There was no
+power on code between devm_regmap_init_i2c() and here.
+
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	ret = pm_runtime_resume_and_get(dev);
+> +	if (ret < 0)
+> +		goto fail;
+> +
+> +	ret = bct3024_of_parse(client);
+> +	if (ret < 0)
+> +		goto fail;
+> +
+> +	pm_runtime_mark_last_busy(dev);
+> +	pm_runtime_put_autosuspend(dev);
+> +
+> +	return 0;
+> +
+> +fail:
+> +	dev_err_probe(dev, ret, "probe failed\n");
+
+No, no no. Do you see any driver doing it?
+
+> +	if (!pm_runtime_status_suspended(dev))
+> +		bct3024_shutdown(priv, 2);
+
+Which call this is reversing? Each step in probe should have its reverse
+(when applicable of course). Don't add some new unrelated reverse calls
+which do not have a matching enable. If you shutdown here, I expect
+there was "bct3024_powerup". Where is it? Looks like you put unrelated
+code into the shutdown making it all very difficult to understand.
+
+Where do you reverse PM runtime calls here?
+
+> +	return ret;
+> +}
+> +
+> +static void bct3024_i2c_remove(struct i2c_client *client)
+> +{
+> +	struct bct3024_data *priv = i2c_get_clientdata(client);
+> +
+> +	bct3024_shutdown(priv, true);
+> +	pm_runtime_disable(priv->dev);
+> +	mutex_destroy(&priv->lock);
+> +}
+> +
+> +static void bct3024_i2c_shutdown(struct i2c_client *client)
+> +{
+> +	struct bct3024_data *priv = i2c_get_clientdata(client);
+> +
+> +	bct3024_shutdown(priv, true);
+> +}
+> +
+> +#ifdef CONFIG_PM_SLEEP
+> +static int bct3024_runtime_idle(struct device *dev)
+> +{
+> +	struct bct3024_data *priv = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(dev, "%s: %d\n", __func__, priv->state);
+
+No simple debug statements for entry/exit of functions. There is
+extensive trace infrastructure for all this.
+
+> +
+> +	return priv->state == BCT3024_STATE_ACTIVE ? -EBUSY : 0;
+> +}
+> +
+> +static int bct3024_runtime_suspend(struct device *dev)
+> +{
+> +	struct bct3024_data *priv = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(dev, "%s: %d\n", __func__, priv->state);
+
+Ditto
+
+> +
+> +	switch (priv->state) {
+> +	case BCT3024_STATE_INIT:
+> +	case BCT3024_STATE_SHUTDOWN:
+> +		return 0;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return bct3024_shutdown(priv, true);
+> +}
+> +
+> +static int bct3024_runtime_resume(struct device *dev)
+> +{
+> +	struct bct3024_data *priv = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	dev_dbg(dev, "%s: %d\n", __func__, priv->state);
+
+Ditto
+
+> +
+> +	switch (priv->state) {
+> +	case BCT3024_STATE_INIT:
+> +	case BCT3024_STATE_SHUTDOWN:
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	ret = bct3024_shutdown(priv, false);
+> +	if (ret < 0)
+> +		bct3024_shutdown(priv, 2);
+> +
+> +	return ret;
+> +}
+> +#endif
+> +
+> +static const struct dev_pm_ops bct3024_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(bct3024_runtime_suspend, bct3024_runtime_resume,
+> +			   bct3024_runtime_idle)
+> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+> +};
+> +
+> +static const struct of_device_id bct3024_of_match[] = {
+> +	{ .compatible = "broadchip,bct3024" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, bct3024_of_match);
+> +
+> +static struct i2c_driver bct3024_driver = {
+> +	.driver = {
+> +		.name = "bct3024",
+> +		.of_match_table = bct3024_of_match,
+> +		.pm = &bct3024_pm_ops,
+> +	},
+> +	.probe_new = bct3024_i2c_probe,
+> +	.shutdown = bct3024_i2c_shutdown,
+> +	.remove = bct3024_i2c_remove,
+> +};
+> +
+> +module_i2c_driver(bct3024_driver);
+> +
+> +MODULE_AUTHOR("Matus Gajdos <matuszpd@gmail.com>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("Broadchip BCT3024 LED driver");
+
+Best regards,
+Krzysztof
+
