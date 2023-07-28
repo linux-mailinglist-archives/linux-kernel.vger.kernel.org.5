@@ -2,113 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8696F767362
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E864776736E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbjG1R3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
+        id S234464AbjG1Rc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233756AbjG1R3f (ORCPT
+        with ESMTP id S234338AbjG1RcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:29:35 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7003A99
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:29:33 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-348dfefd2d6so2041495ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690565373; x=1691170173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KuA89WjH66+oRZgNKFoC7RQpjlgTsdzDJBprqnr0FHw=;
-        b=IAy+tr7webKUVIYTbYZ3+jMG9e+SLvCy1lRwlIA6odcD7pfpmsLH4n/Zmptj2QKAN+
-         MjcbIvWBxeRLPNXObo+QhSNvUR5blz1BhmX5B3NYGTkyP7ONmVDuirYJxkDS8cx73hj3
-         Ox5zA+1aTG9Feo6KNRFjFnSS8qc0eIoTzcNL8=
+        Fri, 28 Jul 2023 13:32:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884363A8C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690565438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cl36FnvktkYbvD1zJaMZyNiWy19DEs6ZP3kw5lklrZI=;
+        b=OXnLYqwZbmIwRRRZs+NeDMXHHAXI1va+uLc3oXMmAWY8QK+/ya61xoyuivGk1Yi6dvuuMQ
+        PDZ8/S+EKYub3rnv1lZlrgDUBmx0UNY8Xj2OY/+NWq2VR5exK91EdKDeA2KCYpWKnMlL+Z
+        9ZSqDX3ZTtsqe1+BeayUGCJvW+4nXUE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-wHE345tSMfSaWIDj6MdrPQ-1; Fri, 28 Jul 2023 13:30:37 -0400
+X-MC-Unique: wHE345tSMfSaWIDj6MdrPQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbcae05906so16242285e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:30:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565373; x=1691170173;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KuA89WjH66+oRZgNKFoC7RQpjlgTsdzDJBprqnr0FHw=;
-        b=cAsjzcam1EIwVVvKZmIBwWrXmDzuDk1s+lKSptsc7TaX/kpF6eq4F7KKwj6GtzHKTs
-         7FbTAsV/c/DqwVNxuZIWUbRDVffT2xbkznBmYcge7d8qCBnB8g63ffiNcg+Z3Hec/IOr
-         i0BRMX2nV0ScgGbiLT9hIdwlGaY3jEBX35bf4NWxoeHzJV4pTpOw13ReYxrNPFJqi9eN
-         0ORSuxSsGBh15QGzfj1bD+a3MypOHasmJUtNaejqj8HO6AczeLi3/pwHMYc2C8QkDiU5
-         8Dma+FW+zGpNxdzY6wPH88DKr3bvbQRSRFJkGaswvAa9pBMHa8tYQOhjol8w2w+Rg0lm
-         QqFA==
-X-Gm-Message-State: ABy/qLZXuFwQVvzH1eoddbwwApsqYBCsdTpU9qn2tygQC0SNtA67U2si
-        6l35OTmBRKUo2ULaCwy7wHK1PQ==
-X-Google-Smtp-Source: APBJJlFzdMGCDX1zblqKU916FlQ1jnF3KuGDuuZWNWcFedwwUFsC2XmS+hROGqQpBAcHWPUDGJ1cBQ==
-X-Received: by 2002:a05:6602:2b91:b0:77a:ee79:652 with SMTP id r17-20020a0566022b9100b0077aee790652mr339316iov.1.1690565372907;
-        Fri, 28 Jul 2023 10:29:32 -0700 (PDT)
-Received: from shuah-tx13.internal ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1181050jal.136.2023.07.28.10.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 10:29:32 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, Liam.Howlett@oracle.com,
-        anjali.k.kulkarni@oracle.com, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, davem@davemloft.net,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH next 3/3] selftests:connector: Add root check and fix arg error paths to skip
-Date:   Fri, 28 Jul 2023 11:29:28 -0600
-Message-Id: <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1690564372.git.skhan@linuxfoundation.org>
-References: <cover.1690564372.git.skhan@linuxfoundation.org>
+        d=1e100.net; s=20221208; t=1690565436; x=1691170236;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cl36FnvktkYbvD1zJaMZyNiWy19DEs6ZP3kw5lklrZI=;
+        b=EgSswBkuFWfGOjT1VffgPzh28bynspmiSyLw30TCuG2w+ZKU0tWzX3bQACdajwIWdj
+         gxYR6XVkCI0dR7b8q2vpbW3EvdSC+Jw+nRfgObNuANoqWAIPwLe6MqMtb65Zjxc0R2O9
+         q5aRNfHXGmErXioU1gDZ/nefMNjwL6NDtDPFu7e4hwax4nzFN1mVm1ZmnvXnxbZU6CYB
+         hJZ0mLTvVGrCL70yeTC7RN1n7mnV4cekkgMW9fnxWImNRQ1ooiZuu9yj1q6ebcg/6sJ+
+         6LqKNTE2+9kZOAflwkqNlOqPp0UXvFYfvMVe3dRqg47MfdCcpUiFZb+PD9t1DiYjeA2N
+         mkXQ==
+X-Gm-Message-State: ABy/qLas1o8xYGTUWHJQ4SKPGak4khEvqAgpNW3FkRAgcIdiYbSP2GVq
+        XjUTzXRvQZwzLFQPidBXkVvMuxSSa1JLsOcNmc5yJB+dn+9qwVT8pqj9pZdSwAh9rFf6qvDhWl9
+        Ojzx2n6CCWu2hYBhGKidNNlpF
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr2509507wmm.13.1690565436052;
+        Fri, 28 Jul 2023 10:30:36 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGYuCUIu0HPfQ49F3gjLsVAJ43VYP/e6HVfw6FA/RBySDmmJqoUBeIQbEqCC2TFy39iizz9aA==
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr2509491wmm.13.1690565435629;
+        Fri, 28 Jul 2023 10:30:35 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b003fbc0a49b57sm4712526wml.6.2023.07.28.10.30.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 10:30:35 -0700 (PDT)
+Message-ID: <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
+Date:   Fri, 28 Jul 2023 19:30:33 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+In-Reply-To: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-proc_filter test requires root privileges. Add root privilege check
-and skip the test. Also fix argument parsing paths to skip in their
-error legs.
+On 28.07.23 18:18, Linus Torvalds wrote:
+> On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
+>>
+>> This is my proposal on how to handle the fallout of 474098edac26
+>> ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
+>> accidentially missed that follow_page() and smaps implicitly kept the
+>> FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
+>> not trigger faults on PROT_NONE-mapped PTEs.
+> 
+> Ugh.
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+I was hoping for that reaction, with the assumption that we would get
+something cleaner :)
 
-diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
-index 4fe8c6763fd8..7b2081b98e5c 100644
---- a/tools/testing/selftests/connector/proc_filter.c
-+++ b/tools/testing/selftests/connector/proc_filter.c
-@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
- 
- 	if (argc > 2) {
- 		printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
--		exit(1);
-+		exit(KSFT_SKIP);
- 	}
- 
- 	if (argc == 2) {
-@@ -256,10 +256,15 @@ int main(int argc, char *argv[])
- 			filter = 1;
- 		} else {
- 			printf("Valid option : -f (for filter feature)\n");
--			exit(1);
-+			exit(KSFT_SKIP);
- 		}
- 	}
- 
-+	if (geteuid()) {
-+		printf("Connector test requires root privileges.\n");
-+		exit(KSFT_SKIP);
-+	}
-+
- 	if (filter) {
- 		input.event_type = PROC_EVENT_NONZERO_EXIT;
- 		input.mcast_op = PROC_CN_MCAST_LISTEN;
+> 
+> I hate how it uses FOLL_FORCE that is inherently scary.
+
+I hate FOLL_FORCE, but I hate FOLL_NUMA even more, because to me it
+is FOLL_FORCE in disguise (currently and before 474098edac26, if
+FOLL_FORCE is set, FOLL_NUMA won't be set and the other way around).
+
+> 
+> Why do we have that "gup_can_follow_protnone()" logic AT ALL?
+
+That's what I was hoping for.
+
+> 
+> Couldn't we just get rid of that disgusting thing, and just say that
+> GUP (and follow_page()) always just ignores NUMA hinting, and always
+> just follows protnone?
+> 
+> We literally used to have this:
+> 
+>          if (!(gup_flags & FOLL_FORCE))
+>                  gup_flags |= FOLL_NUMA;
+> 
+> ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
+> be the rare crazy case.
+
+Yes, but my point would be that we now spell that "rare crazy case"
+out for follow_page().
+
+If you're talking about patch #1, I agree, therefore patch #3 to
+avoid all that nasty FOLL_FORCE handling in GUP callers.
+
+But yeah, if we can avoid all that, great.
+
+> 
+> The original reason for not setting FOLL_NUMA all the time is
+> documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
+> page faults from gup/gup_fast") from way back in 2012:
+> 
+>           * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
+>           * would be called on PROT_NONE ranges. We must never invoke
+>           * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
+>           * page faults would unprotect the PROT_NONE ranges if
+>           * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
+>           * bitflag. So to avoid that, don't set FOLL_NUMA if
+>           * FOLL_FORCE is set.
+
+
+In handle_mm_fault(), we never call do_numa_page() if
+!vma_is_accessible(). Same for do_huge_pmd_numa_page().
+
+So, if we would ever end up triggering a page fault on
+mprotect(PROT_NONE) ranges (i.e., via FOLL_FORCE), we
+would simply do nothing.
+
+At least that's the hope, I'll take a closer look just to make
+sure we're good on all call paths.
+
+> 
+> but I don't think the original reason for this is *true* any more.
+> 
+> Because then two years later in 2014, in commit c46a7c817e66 ("x86:
+> define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
+> Mel made the code able to distinguish between PROT_NONE and NUMA
+> pages, and he changed the comment above too.
+
+CCing Mel.
+
+I remember that pte_protnone() can only distinguished between
+NUMA vs. actual mprotect(PROT_NONE) by looking at the VMA -- vma_is_accessible().
+
+Indeed, include/linux/pgtable.h:
+
+/*
+  * Technically a PTE can be PROTNONE even when not doing NUMA balancing but
+  * the only case the kernel cares is for NUMA balancing and is only ever set
+  * when the VMA is accessible. For PROT_NONE VMAs, the PTEs are not marked
+  * _PAGE_PROTNONE so by default, implement the helper as "always no". It
+  * is the responsibility of the caller to distinguish between PROT_NONE
+  * protections and NUMA hinting fault protections.
+  */
+
+> 
+> But I get the very very strong feeling that instead of changing the
+> comment, he should have actually removed the comment and the code.
+> 
+> So I get the strong feeling that all these FOLL_NUMA games should just
+> go away. You removed the FOLL_NUMA bit, but you replaced it with using
+> FOLL_FORCE.
+> 
+> So rather than make this all even more opaque and make it even harder
+> to figure out why we have that code in the first place, I think it
+> should all just be removed.
+
+At least to me, spelling FOLL_FORCE in follow_page() now out is much
+less opaque then getting that implied by lack of FOLL_NUMA.
+
+> 
+> The original reason for FOLL_NUMA simply does not exist any more. We
+> know exactly when a page is marked for NUMA faulting, and we should
+> simply *ignore* it for GUP and follow_page().
+> 
+> I think we should treat a NUMA-faulting page as just being present
+> (and not NUMA-fault it).
+> 
+> Am I missing something?
+
+There was the case for "FOLL_PIN represents application behavior and
+should trigger NUMA faults", but I guess that can be ignored.
+
+But it would be much better to just remove all that if we can.
+
+Let me look into some details.
+
+Thanks Linus!
+
 -- 
-2.39.2
+Cheers,
+
+David / dhildenb
 
