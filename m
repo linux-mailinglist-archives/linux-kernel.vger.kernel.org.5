@@ -2,744 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC9576692A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BC276692D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbjG1Jlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S235648AbjG1JnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbjG1Jls (ORCPT
+        with ESMTP id S235632AbjG1JnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:41:48 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B8E4F;
-        Fri, 28 Jul 2023 02:41:46 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-785d738d3feso44773739f.0;
-        Fri, 28 Jul 2023 02:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690537305; x=1691142105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ilGWk9BpQwsrQv3vbFFhBV7dW4wVdvlfpM5iYiKu8gk=;
-        b=G2Hv3+YWkmqh5Cobs1yXssh+gUqDTi4KHrAtVnZe3+wAwcu02Vs7JKlwBOPhj4OaNP
-         CRQDeRPNI76WrWrzAnuTnKVbtxn+gMJOB4PAfpi69bu+YU4QxxTlB5AjQHKGCrl16Aa9
-         vrdflLkhZ4+E4oyzDfTe3j5TB7gVHtrt9nkId8JVaRK8BZ/VoneTC13yzxEOghOBWh+Z
-         t0zjoZUuBTMXMNvGvfflAlC8DZA+YWt9zHnRqeYz62QF8YLf6mRt88mQ4Xmed1gUFJIe
-         BHE+UvmXu7m0EgBj8XG8bWjO1+4FSN1gVOyakmSfu55jq0FTW5kvnvsWYgZVsd5TYTlb
-         nhfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690537305; x=1691142105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ilGWk9BpQwsrQv3vbFFhBV7dW4wVdvlfpM5iYiKu8gk=;
-        b=eTK0VzvjXrbex8vGkFiJkiFznAiNrHk2bZ3VT10tmbiYMiM6qKgL72J41C9j4CKv1Y
-         rgQ7mBdq2/uI8raDfKz0X9y2v/UZrfiG0WUpLIvpfs3iTcwj9HI8Z02mdotl1XglGDoq
-         kHWfJs3PTu0XtMuTx62ww+cmavneYwc2ZGDqgcMrVtYybh1y5D51BiPmqmV9jHjEoMye
-         BPWQWp9ohZ4ZqR/YNvoEDQOpnhaN172+Jl0wvPkZunCbB7UJnIr4mcCFQQY060g9FgnI
-         rrOlgLlNfWL4yRKYsKaQp73XXcoohml98Bz/3a81uYw5YyF7Bm21ISACu8Pk75iN/fIr
-         NqkQ==
-X-Gm-Message-State: ABy/qLbVvLK/JMqKBO5Kou2e1FH2p1cE/35ES03T6xnKRdgczBq/k7Xm
-        WCnwhDPcjKrCWQRj2xL2az4=
-X-Google-Smtp-Source: APBJJlG+FOGQwndcwaMzN3071ISZlfUsNeWd8VnNAiQimxHkInYaXu8zMROLC7bW/O5SQrreSNjXPg==
-X-Received: by 2002:a6b:b4d4:0:b0:780:c872:5df7 with SMTP id d203-20020a6bb4d4000000b00780c8725df7mr5528080iof.9.1690537305443;
-        Fri, 28 Jul 2023 02:41:45 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f21-20020a056638023500b0042b3042ccd8sm999451jaq.13.2023.07.28.02.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 02:41:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <830ca43a-b64f-c8c0-7367-2e41133e75b9@roeck-us.net>
-Date:   Fri, 28 Jul 2023 02:41:43 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
+        Fri, 28 Jul 2023 05:43:08 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B827B2685;
+        Fri, 28 Jul 2023 02:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690537387; x=1722073387;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=/hSZj5UJ9fmPHQH5sTacYtOU95Pccwyf4jJ2HLbHY/k=;
+  b=EjPL4hf8mSW5GZ5OXRKKhSWLxmDhC0yheX92oqXJMnVRnZdZxAgla7wu
+   dU5UC45tEeymrjhuzEzEXnxdD+Qg3NWVvJQ6fVdnfmi9feO0ZGrMDvBUX
+   MOD5DihiMgJSJTGV4EFhsiigPJhLfI9QYuv7eB1Xk+5L/l50yCbClfmt8
+   MCG1o6iGCcaSBMxyLIxR+53mdsyX67HMJ+mmAmqOlpzwy+Rw/2L96CIBe
+   Fjoj2ktxkUBiFIoenzRaDSukkKafaIiBHctGXq+Kipf5QBZuAo2hutv8+
+   wg25mH4AsNMj51FLVm5C/NaEbxdCzvmRpUIwUecwVfZ31XnJXLy0OVkh8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="353460827"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="353460827"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 02:43:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="1058079930"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="1058079930"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Jul 2023 02:43:06 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 28 Jul 2023 02:43:06 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 28 Jul 2023 02:43:06 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 28 Jul 2023 02:43:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lNBywQlnutw+Biz7OcZsQKg0vnkBHFR+izzk6HLheEcT0F3DzEcl4mi3xleu697L69Q5eV8e+48+vRx34uDXbZUO2RQXLf4KmYopH2cQdhQSyh/+BXPrQrwWGwjwpF5pB7lejettW83fpKfOvH2p46eUO92nomlze4vdAsIKfjQ/ZDbRl/bNELcaRRWXtEdhb4Pto1FD10ttZY0sWtIk8HM/YDDuwlPGSF6biYgUl0frSoPpYx9+zCD9c613vsWdWi4VUxdo/dpQ5SoFMNgqQkw8PmueQYRdD79tkGJQnFCZuUJnoaszuZluXZeFHHI02nXz8zjbJCVoGo7RqtzFcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/hSZj5UJ9fmPHQH5sTacYtOU95Pccwyf4jJ2HLbHY/k=;
+ b=NFo3tGu8gsTgvRtAYU1iRiCVk9Sh4/5sPbERCeEPDfx6Wmsrn8myLgyVhctAKF8bDqQF9tiaQvXVYVxI6PwYpJJ5Yg2Byxfta94crI+6H5SUuXcf0Co+lwALVpenibishtXJ1VgLYXby3/PB/i0f85rQ1nL3i/YUe9vgvVT4mFvRLd4pv6Onm/gNhPAgwOj/oqzoPXw/B97dikIfFUU4BNg26Jr6lZCp8vg6VJZF0izNYXPRgA5XCNXu5ZfmbQQgC9n+Q+7xmkbKkZvGMjCMj3w5YT73ZaRfCwrccCbP2SoJwNCV6qBHV+Ub00/bZKM1s7bWOD4MidYqCiUziDnILQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SA2PR11MB5036.namprd11.prod.outlook.com (2603:10b6:806:114::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 09:43:04 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::3729:308d:4f:81c8]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::3729:308d:4f:81c8%3]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 09:43:04 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "Xu, Yilun" <yilun.xu@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>
+CC:     "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 10/19] x86/virt: KVM: Move VMXOFF helpers into KVM VMX
+Thread-Topic: [PATCH v4 10/19] x86/virt: KVM: Move VMXOFF helpers into KVM VMX
+Thread-Index: AQHZvBCsrzEF+eEEUEalrkxHjypjVa/O7eWAgAAJxYA=
+Date:   Fri, 28 Jul 2023 09:43:04 +0000
+Message-ID: <2c027d5d666eca7d5b4ba31208e72ad6ddb7223c.camel@intel.com>
+References: <20230721201859.2307736-1-seanjc@google.com>
+         <20230721201859.2307736-11-seanjc@google.com>
+         <ZMOFc+RfSuc5I+XB@yilunxu-OptiPlex-7050>
+In-Reply-To: <ZMOFc+RfSuc5I+XB@yilunxu-OptiPlex-7050>
+Accept-Language: en-US
 Content-Language: en-US
-To:     =?UTF-8?Q?Carsten_Spie=c3=9f?= <mail@carsten-spiess.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-References: <20230727195541.2245289-1-mail@carsten-spiess.de>
- <20230727195541.2245289-2-mail@carsten-spiess.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230727195541.2245289-2-mail@carsten-spiess.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SA2PR11MB5036:EE_
+x-ms-office365-filtering-correlation-id: 4b762cbd-5ddc-47aa-a4af-08db8f4f0a55
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zKt50vmnrlNOiyCDlgF1mNNVbWa25q/JwVLhMKYStI3ICkp23vlU/hMc+I3HmzeKaIpZVDIFUDtOw+TAb3yl1yPV1PcAhWVIEy9oylhP038zQnp8OqXCMxDvJ12bZoEDX4UpJGV2P2nEuqVgOqboAqWWXQGN2L0CAlw/vejOoVoBUoAeq2NGr3j0WP+i3a9KwWuh76WC6Z+yBUN0mf7BbEzve29Z6V43HonVdkjkxZaWZDUOV+afjf/hiyVwCZgmZk14vewjtMj7q+mzP8ye3c4LD78AAMjljnDuGqAJGtEHkdYzhGGW27ZMA0MF5cJ3uLG3epG9h57Dt2Z4fUFnig1aqiezE7L51dl8COGPfmfvMVodQvC8Rt69NpDX8k0OQWjkXeaUzY/ZFarVQ+9gL++Suyjg2BIPnxhdE5J7J19LPLpKh9K09vBwWPFdDGgW490Y1pvd8W4pdanVkSN2lsQo4nH2DDBifNkROyOtQVRV/cF3nCp8jypeeV4V4t83hovaTiOFTyGHfOFnj94NLy9gLLnDQodcTdSrU7Pk59n5/sZJbBnmlFRDVJwoKWCfR6CnNxA81iz9LKso0AurTq3Ejlun1xNYt/M2lDkatDw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(366004)(396003)(346002)(136003)(451199021)(91956017)(478600001)(54906003)(110136005)(6486002)(6512007)(53546011)(83380400001)(36756003)(38070700005)(86362001)(66446008)(2906002)(66556008)(2616005)(186003)(66476007)(6506007)(71200400001)(26005)(64756008)(66946007)(122000001)(38100700002)(76116006)(82960400001)(316002)(8936002)(4326008)(5660300002)(41300700001)(7416002)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dyt0Q1EyT0hFYVZlcEdBWTNTRVgwNXpyZGdkcG9LWlBHMHJFSU1LQ09rUlpP?=
+ =?utf-8?B?NUhzdGVseWdjUmlzWWNTRUJkbTNnSFY0TCtZVlpENVQ0K0s1NFBUeU5wWXU2?=
+ =?utf-8?B?WVY5N2JLanBGVGx3andGeTRCRFQwMkFYdTJ2RmYwWTMxZHg5ekJVa0FJMVo4?=
+ =?utf-8?B?TDBrZXJid1NYSGNlRHJIaC9OcmtraWxnWk8yL2lEbTRWSlFvNENYS3NvRHEz?=
+ =?utf-8?B?c3RiN0R3T3lXV1U0YUlzUXdHL2FSa1E5MXQ2RE90cnBMdEt4OTBqZUY4bU9Q?=
+ =?utf-8?B?VCtGRXAyN2VRNDdCNHFiU1VtOTY4bEV0ZCt3R3dEYlpFdEZBYUQ1WGlHOGU4?=
+ =?utf-8?B?TFRnVzRVMmNPMVJYMys3dm9RdksvVUlOc1U4NjBJVEIvMzVlU205WEhrMnRU?=
+ =?utf-8?B?ZFZpMGNTWlJaMkNvd0d4U0lsYkw3TXBIdDFEclFhZkJ3bVd2cmIyOUVrdXZB?=
+ =?utf-8?B?bURldUJRNXozcmdHYWp2VXpZeDRIaW81REpHRlVXVFpoNk9zVVYxK1J5VndP?=
+ =?utf-8?B?Tk01TjRXWTlPa0x1eUdwM1ZFZVRtRHhjeFNRcjdhUnBCc3dpb1huT2JSRlRs?=
+ =?utf-8?B?a3dHSDZaanZZcHM4R1JGUUpySUxVL2RlVzJCQkZLU1VzcEtMOGJZZ3pkc0dk?=
+ =?utf-8?B?Um0rZWMyT2MwaHIrSkJuaU96ZGtIbTRyZ3ErdXo3TWQ4blgwYnNrZXV0WVM4?=
+ =?utf-8?B?Znp0YzhsMXRqYnVCRC9QRElBU1E2REJYcWlQRVMvcll6K3VJbEhIaDRiRDd0?=
+ =?utf-8?B?cHUraFVONjAvTlhOdTBWOFBwQ2ZKQUdBOHBWQlZIMzZNbWFPWUxiVzVwcll5?=
+ =?utf-8?B?Y2NFWXFmM29rZkVpR2crbUtBbWw1VzRSTWliekFUa2pyQzJ1TGdlRWNVVjhQ?=
+ =?utf-8?B?TkUrZVduTG9QMGswZE9CSWRtVS9OcUJseWNQOHkwWVp3V2I0TFNJYVRqdjJH?=
+ =?utf-8?B?Wm9hdmNiSUJFZ21GZy9PSGlGYStScUhFdzRZSzBZaXFGMmRJY0Q3SUU1dUZm?=
+ =?utf-8?B?OXllVENmSE9HeEJuTFNXWVBuZnU3RXdmNWtOaVRadG5ncDBrd0ZwMWZVNUxS?=
+ =?utf-8?B?V21BODhHTFFvTDdacDlkanZsbTQ2UDZZWlMwUitheGcyYzRDQzIrMWVBc2Z4?=
+ =?utf-8?B?dUF4YmJQQVZFV3lOSDYzWk8xYXNpem90Z3ZPcG9xTlRla3hFNlIrM3FWLzRu?=
+ =?utf-8?B?THZIOEF2Y1RkQUtaRGVIY2gyQmpLQ0hmMEh4dkFGdHR4QStvbUI2bjZhaFN1?=
+ =?utf-8?B?S3EvbHR6bHFqbHdyRStweFRPMFFmZnU4L1VEWnc2aTM3aGJGaDFQZFFkbTN0?=
+ =?utf-8?B?V3NBK0pmNUlJYWVVa0RobUxJQUdQK1gxM1ROT2p5NUkvd3I1d0gyVUk0T08r?=
+ =?utf-8?B?ek5aNWlJZ3lZZTVLWjljRFRKelZ2OE0vdVhuZjFpdVMwN212ZkFyZTRaQ01p?=
+ =?utf-8?B?NEhwVXVDNjZBcHNRcFdLdUtNcUp4QjIyQVNPbWVod3UzRFRVMXNTMTYrQUR5?=
+ =?utf-8?B?NG0rViszYkFoMlpLNFU0OTgyMXU2WDA2dkZUOVQyUCtmdUZib0d5UDh6K25E?=
+ =?utf-8?B?VklEZUppTUg5MllEc25peVFHS05tWGs5MS9QbEZTVDVaOUV6eXBicnBaL0xM?=
+ =?utf-8?B?bUZSNHhuNnZWRnQxTDVKZkJyVjJSbC9SWHg3U0EyVXcvMkpCcVBwWUF1dVky?=
+ =?utf-8?B?dkZCa21ZUk1vU2MyVmt2WW1yayt0dVUvdE12ZkN2T2ZhNnZkdnpSRk94OEZz?=
+ =?utf-8?B?T1BwV2dQYi9hZUpTQTRQQTd1R2poWWVJUDNtbGk2RS9XeHJCMERzK0gzaktN?=
+ =?utf-8?B?QmlpbVFueGRVZnYrN25TNnYzQjJ1UU9HcGVCcVRhSkJxd2pUcUY0ZUFOZ3ZU?=
+ =?utf-8?B?ZU1GcTd5c3Nxa1lkdW1ENXRlMCt3YmRlWXgxMDdhNE83SmFlNGdOYjdQQld1?=
+ =?utf-8?B?VC9WUmFTLy9scmlFakpJejdocW10QzZkU1EreHRjZTZPVkdIa0p4K2p4NFBp?=
+ =?utf-8?B?TkdJNmZFZEhZOWJNTmloV3NrWm9lU2ZEQVJHdGQ5aDJJbEpKblUwRmRuUXlt?=
+ =?utf-8?B?aHpyNStZVERUSm51djBIZ3c3NjlUOXBhMTFwVmVhUXNVbkdndHBFZ1Bqbm9t?=
+ =?utf-8?Q?57cT9I2ZACcT1jYBgBesdSwA+?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <69E17135A6CC9D4D8567B0C44E596F11@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b762cbd-5ddc-47aa-a4af-08db8f4f0a55
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 09:43:04.1367
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ozCOad7s/pQ1/Y9m8GKHVzbwSUsVPAdJB33mcetxEi3rqMEkQGhZhY16OUHqBodDsTvegIme2OjoZkfFzrswYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5036
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 12:55, Carsten Spieß wrote:
-> Driver for Renesas ISL28022 power monitor with I2C interface.
-> The device monitors voltage, current via shunt resistor
-> and calculated power.
-> 
-> Signed-off-by: Carsten Spieß <mail@carsten-spiess.de>
-
-Change log missing. I am not going to review patches without change log.
-
-Guenter
-
-> ---
->   Documentation/hwmon/index.rst    |   1 +
->   Documentation/hwmon/isl28022.rst |  63 ++++
->   MAINTAINERS                      |   7 +
->   drivers/hwmon/Kconfig            |  11 +
->   drivers/hwmon/Makefile           |   1 +
->   drivers/hwmon/isl28022.c         | 496 +++++++++++++++++++++++++++++++
->   6 files changed, 579 insertions(+)
->   create mode 100644 Documentation/hwmon/isl28022.rst
->   create mode 100644 drivers/hwmon/isl28022.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index d11924667f76..c9548fc5c40e 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -90,6 +90,7 @@ Hardware Monitoring Kernel Drivers
->      ir35221
->      ir38064
->      ir36021
-> +   isl28022
->      isl68137
->      it87
->      jc42
-> diff --git a/Documentation/hwmon/isl28022.rst b/Documentation/hwmon/isl28022.rst
-> new file mode 100644
-> index 000000000000..8d4422a2dacd
-> --- /dev/null
-> +++ b/Documentation/hwmon/isl28022.rst
-> @@ -0,0 +1,63 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +Kernel driver isl28022
-> +======================
-> +
-> +Supported chips:
-> +
-> +  * Renesas ISL28022
-> +
-> +    Prefix: 'isl28022'
-> +
-> +    Addresses scanned: none
-> +
-> +    Datasheet: Publicly available at the Renesas website
-> +
-> +	       https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
-> +
-> +Author:
-> +    Carsten Spieß <mail@carsten-spiess.de>
-> +
-> +Description
-> +-----------
-> +
-> +The ISL28022 is a power monitor with I2C interface. The device monitors
-> +voltage, current via shunt resistor and calculated power.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +device explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +The shunt value in micro-ohms, shunt voltage range and averaging can be set
-> +with device properties.
-> +Please refer to the Documentation/devicetree/bindings/hwmon/isl,isl28022.yaml
-> +for bindings if the device tree is used.
-> +
-> +The driver supports only shunt and bus continuous ADC mode at 15bit resolution.
-> +Averaging can be set from 1 to 128 samples (power of 2) on both channels.
-> +Shunt voltage range of 40, 80, 160 or 320mV is allowed
-> +The bus voltage range is 60V fixed.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +The following attributes are supported. All attributes are read-only.
-> +
-> +======================= =======================================================
-> +in0_input		bus voltage (milli Volt)
-> +
-> +curr1_input		current (milli Ampere)
-> +power1_input		power (micro Watt)
-> +======================= =======================================================
-> +
-> +Debugfs entries
-> +---------------
-> +
-> +The following attributes are supported. All attributes are read-only.
-> +
-> +======================= =======================================================
-> +shunt_voltage		shunt voltage (micro Volt)
-> +======================= =======================================================
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7abb5710e1bb..b02e3b991676 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11065,6 +11065,13 @@ F:	drivers/isdn/Makefile
->   F:	drivers/isdn/hardware/
->   F:	drivers/isdn/mISDN/
->   
-> +ISL28022 HARDWARE MONITORING DRIVER
-> +M:	Carsten Spieß <mail@carsten-spiess.de>
-> +L:	linux-hwmon@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/hwmon/isl28022.rst
-> +F:	drivers/hwmon/isl28022.c
-> +
->   ISOFS FILESYSTEM
->   M:	Jan Kara <jack@suse.cz>
->   L:	linux-fsdevel@vger.kernel.org
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 2913299c2c9e..3049c519e6ac 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -800,6 +800,17 @@ config SENSORS_CORETEMP
->   	  sensor inside your CPU. Most of the family 6 CPUs
->   	  are supported. Check Documentation/hwmon/coretemp.rst for details.
->   
-> +config SENSORS_ISL28022
-> +	tristate "Renesas ISL28022"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  If you say yes here you get support for ISL28022 power monitor.
-> +	  Check Documentation/hwmon/isl28022.rst for details.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called isl28022.
-> +
->   config SENSORS_IT87
->   	tristate "ITE IT87xx and compatibles"
->   	depends on !PPC
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index ff6bfd109c72..4046fed7f48d 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -98,6 +98,7 @@ obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
->   obj-$(CONFIG_SENSORS_INA238)	+= ina238.o
->   obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
->   obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
-> +obj-$(CONFIG_SENSORS_ISL28022)	+= isl28022.o
->   obj-$(CONFIG_SENSORS_IT87)	+= it87.o
->   obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
->   obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
-> diff --git a/drivers/hwmon/isl28022.c b/drivers/hwmon/isl28022.c
-> new file mode 100644
-> index 000000000000..18b4481d5ff6
-> --- /dev/null
-> +++ b/drivers/hwmon/isl28022.c
-> @@ -0,0 +1,496 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * isl28022.c - driver for Renesas ISL28022 power monitor chip monitoring
-> + *
-> + * Copyright (c) 2023 Carsten Spieß <mail@carsten-spiess.de>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/slab.h>
-> +#include <linux/i2c.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/err.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/util_macros.h>
-> +#include <linux/regulator/consumer.h>
-> +
-> +/* ISL28022 registers */
-> +#define ISL28022_REG_CONFIG	0x00
-> +#define ISL28022_REG_SHUNT	0x01
-> +#define ISL28022_REG_BUS	0x02
-> +#define ISL28022_REG_POWER	0x03
-> +#define ISL28022_REG_CURRENT	0x04
-> +#define ISL28022_REG_CALIB	0x05
-> +#define ISL28022_REG_SHUNT_THR	0x06
-> +#define ISL28022_REG_BUS_THR	0x07
-> +#define ISL28022_REG_INT	0x08
-> +#define ISL28022_REG_AUX	0x09
-> +#define ISL28022_REG_MAX	ISL28022_REG_AUX
-> +
-> +/* ISL28022 config flags */
-> +/* mode flags */
-> +#define ISL28022_MODE_SHIFT	0
-> +#define ISL28022_MODE_MASK	0x0007
-> +
-> +#define ISL28022_MODE_PWR_DOWN	0x0
-> +#define ISL28022_MODE_TRG_S	0x1
-> +#define ISL28022_MODE_TRG_B	0x2
-> +#define ISL28022_MODE_TRG_SB	0x3
-> +#define ISL28022_MODE_ADC_OFF	0x4
-> +#define ISL28022_MODE_CONT_S	0x5
-> +#define ISL28022_MODE_CONT_B	0x6
-> +#define ISL28022_MODE_CONT_SB	0x7
-> +
-> +/* shunt ADC settings */
-> +#define ISL28022_SADC_SHIFT	3
-> +#define ISL28022_SADC_MASK	0x0078
-> +
-> +#define ISL28022_BADC_SHIFT	7
-> +#define ISL28022_BADC_MASK	0x0780
-> +
-> +#define ISL28022_ADC_12		0x0	/* 12 bit ADC */
-> +#define ISL28022_ADC_13		0x1	/* 13 bit ADC */
-> +#define ISL28022_ADC_14		0x2	/* 14 bit ADC */
-> +#define ISL28022_ADC_15		0x3	/* 15 bit ADC */
-> +#define ISL28022_ADC_15_1	0x8	/* 15 bit ADC, 1 sample */
-> +#define ISL28022_ADC_15_2	0x9	/* 15 bit ADC, 2 samples */
-> +#define ISL28022_ADC_15_4	0xA	/* 15 bit ADC, 4 samples */
-> +#define ISL28022_ADC_15_8	0xB	/* 15 bit ADC, 8 samples */
-> +#define ISL28022_ADC_15_16	0xC	/* 15 bit ADC, 16 samples */
-> +#define ISL28022_ADC_15_32	0xD	/* 15 bit ADC, 32 samples */
-> +#define ISL28022_ADC_15_64	0xE	/* 15 bit ADC, 64 samples */
-> +#define ISL28022_ADC_15_128	0xF	/* 15 bit ADC, 128 samples */
-> +
-> +/* shunt voltage range */
-> +#define ISL28022_PG_SHIFT	11
-> +#define ISL28022_PG_MASK	0x1800
-> +
-> +#define ISL28022_PG_40		0x0	/* +/-40 mV */
-> +#define ISL28022_PG_80		0x1	/* +/-80 mV */
-> +#define ISL28022_PG_160		0x2	/* +/-160 mV */
-> +#define ISL28022_PG_320		0x3	/* +/-3200 mV */
-> +
-> +/* bus voltage range */
-> +#define ISL28022_BRNG_SHIFT	13
-> +#define ISL28022_BRNG_MASK	0x6000
-> +
-> +#define ISL28022_BRNG_16	0x0	/* 16 V */
-> +#define ISL28022_BRNG_32	0x1	/* 32 V */
-> +#define ISL28022_BRNG_60	0x3	/* 60 V */
-> +
-> +/* reset */
-> +#define ISL28022_RESET		0x8000
-> +
-> +struct isl28022_data {
-> +	struct i2c_client	*client;
-> +	struct regmap		*regmap;
-> +#ifdef CONFIG_DEBUG_FS
-> +	struct dentry		*debugfs;
-> +#endif
-> +	u32			shunt;
-> +	u32			gain;
-> +	u32			average;
-> +	u16			config;
-> +	u16			calib;
-> +};
-> +
-> +static int isl28022_read(struct device *dev, enum hwmon_sensor_types type,
-> +			 u32 attr, int channel, long *val)
-> +{
-> +	struct isl28022_data *data = dev_get_drvdata(dev);
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	switch (type) {
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_BUS, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			/* driver supports only 60V mode (BRNG 11) */
-> +			*val = (long)(((u16)regval) & 0xFFFC);
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_CURRENT, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			*val = ((long)regval * 1250L * (long)data->gain) /
-> +				(long)data->shunt;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_POWER, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			*val = ((51200000L * ((long)data->gain)) /
-> +				(long)data->shunt) * (long)regval;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static umode_t isl28022_is_visible(const void *data, enum hwmon_sensor_types type,
-> +				   u32 attr, int channel)
-> +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static const struct hwmon_channel_info *isl28022_info[] = {
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT),	/* channel 0: bus voltage (mV) */
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT),	/* channel 1: current (mA) */
-> +	HWMON_CHANNEL_INFO(power,
-> +			   HWMON_P_INPUT),	/* channel 1: power (µW) */
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops isl28022_hwmon_ops = {
-> +	.is_visible = isl28022_is_visible,
-> +	.read = isl28022_read,
-> +};
-> +
-> +static const struct hwmon_chip_info isl28022_chip_info = {
-> +	.ops = &isl28022_hwmon_ops,
-> +	.info = isl28022_info,
-> +};
-> +
-> +static bool isl28022_is_writeable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case ISL28022_REG_CONFIG:
-> +	case ISL28022_REG_CALIB:
-> +	case ISL28022_REG_SHUNT_THR:
-> +	case ISL28022_REG_BUS_THR:
-> +	case ISL28022_REG_INT:
-> +	case ISL28022_REG_AUX:
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +static bool isl28022_is_volatile_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case ISL28022_REG_CONFIG:
-> +	case ISL28022_REG_SHUNT:
-> +	case ISL28022_REG_BUS:
-> +	case ISL28022_REG_POWER:
-> +	case ISL28022_REG_CURRENT:
-> +	case ISL28022_REG_INT:
-> +	case ISL28022_REG_AUX:
-> +		return true;
-> +	}
-> +	return true;
-> +}
-> +
-> +static const struct regmap_config isl28022_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.max_register = ISL28022_REG_MAX,
-> +	.writeable_reg = isl28022_is_writeable_reg,
-> +	.volatile_reg = isl28022_is_volatile_reg,
-> +	.val_format_endian = REGMAP_ENDIAN_BIG,
-> +	.cache_type = REGCACHE_RBTREE,
-> +	.use_single_read = true,
-> +	.use_single_write = true,
-> +};
-> +
-> +static const struct i2c_device_id isl28022_ids[] = {
-> +	{ "isl28022", 0},
-> +	{ /* LIST END */ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, isl28022_ids);
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +static int shunt_voltage_show(struct seq_file *seqf, void *unused)
-> +{
-> +	struct isl28022_data *data = seqf->private;
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err = regmap_read(data->regmap,
-> +			  ISL28022_REG_SHUNT, &regval);
-> +	if (err)
-> +		return err;
-> +
-> +	/* print shunt voltage in micro volt  */
-> +	seq_printf(seqf, "%d\n", regval * 10);
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(shunt_voltage);
-> +
-> +static struct dentry *isl28022_debugfs_root;
-> +
-> +static void isl28022_debugfs_remove(void *res)
-> +{
-> +	debugfs_remove_recursive(res);
-> +}
-> +
-> +static int isl28022_debugfs_init(struct isl28022_data *data)
-> +{
-> +	char name[16];
-> +	int err;
-> +	struct dentry *entry;
-> +
-> +	scnprintf(name, sizeof(name), "%d-%04hx", data->client->adapter->nr, data->client->addr);
-> +
-> +	data->debugfs = debugfs_create_dir(name, isl28022_debugfs_root);
-> +	if (IS_ERR(data->debugfs))
-> +		return PTR_ERR(data->debugfs);
-> +
-> +	err = devm_add_action_or_reset(&data->client->dev, isl28022_debugfs_remove, data->debugfs);
-> +	if (err)
-> +		return err;
-> +
-> +	entry = debugfs_create_file("shunt_voltage", 0444, data->debugfs, data,
-> +			    &shunt_voltage_fops);
-> +	if (IS_ERR(entry))
-> +		return PTR_ERR(entry);
-> +
-> +	return 0;
-> +}
-> +#endif /* CONFIG_DEBUG_FS*/
-> +
-> +/*
-> + * read property values and make consistency checks.
-> + *
-> + * following values for shunt range and resistor are allowed:
-> + *   40 mV -> gain 1, shunt min.  800 micro ohms
-> + *   80 mV -> gain 2, shunt min. 1600 micro ohms
-> + *  160 mV -> gain 4, shunt min. 3200 micro ohms
-> + *  320 mV -> gain 8, shunt min. 6400 micro ohms
-> + */
-> +static int isl28022_read_properties(struct device *dev, struct isl28022_data *data)
-> +{
-> +	u32 val;
-> +	int err;
-> +
-> +	err = device_property_read_u32(dev, "shunt-resistor-micro-ohms", &val);
-> +	if (err == -ENODATA)
-> +		val = 10000;
-> +	else if (err < 0)
-> +		return err;
-> +	data->shunt = val;
-> +
-> +	err = device_property_read_u32(dev, "renesas,shunt-range-microvolt", &val);
-> +	if (err == -ENODATA)
-> +		val = 320000;
-> +	else if (err < 0)
-> +		return err;
-> +	switch (val) {
-> +	case 40000:
-> +		data->gain = 1;
-> +		if (data->shunt < 800)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 80000:
-> +		data->gain = 2;
-> +		if (data->shunt < 1600)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 160000:
-> +		data->gain = 4;
-> +		if (data->shunt < 3200)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 320000:
-> +		data->gain = 8;
-> +		if (data->shunt < 6400)
-> +			goto shunt_invalid;
-> +		break;
-> +	default:
-> +		dev_err(dev, "renesas,shunt-range-microvolt invalid value %d\n", val);
-> +		return -EINVAL;
-> +	}
-> +
-> +	err = device_property_read_u32(dev, "renesas,average-samples", &val);
-> +	if (err == -ENODATA)
-> +		val = 1;
-> +	else if (err < 0)
-> +		return err;
-> +	if ((val > 128) || (BIT(__ffs(val)) != val)) {
-> +		dev_err(dev, "renesas,average-samples invalid value %d\n", val);
-> +		return -EINVAL;
-> +	}
-> +	data->average = val;
-> +
-> +	return 0;
-> +
-> +shunt_invalid:
-> +	dev_err(dev, "renesas,shunt-resistor-microvolt invalid value %d\n", data->shunt);
-> +	return -EINVAL;
-> +}
-> +
-> +/*
-> + * write configuration and calibration registers
-> + *
-> + * The driver supports only shunt and bus continuous ADC mode at 15bit resolution
-> + * with averaging from 1 to 128 samples (pow of 2) on both channels.
-> + * Shunt voltage gain 1,2,4 or 8 is allowed.
-> + * The bus voltage range is 60V fixed.
-> + */
-> +static int isl28022_config(struct isl28022_data *data)
-> +{
-> +	int err;
-> +
-> +	data->config = (ISL28022_MODE_CONT_SB << ISL28022_MODE_SHIFT) |
-> +			(ISL28022_BRNG_60 << ISL28022_BRNG_SHIFT) |
-> +			(__ffs(data->gain) << ISL28022_PG_SHIFT) |
-> +			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_SADC_SHIFT) |
-> +			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_BADC_SHIFT);
-> +
-> +	data->calib = data->shunt ? 0x8000 / data->gain : 0;
-> +
-> +	err = regmap_write(data->regmap, ISL28022_REG_CONFIG, data->config);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	err = regmap_write(data->regmap, ISL28022_REG_CALIB, data->calib);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static int isl28022_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct device *hwmon_dev;
-> +	struct isl28022_data *data;
-> +	int err;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA))
-> +		return -ENODEV;
-> +
-> +	data = devm_kzalloc(dev, sizeof(struct isl28022_data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->client = client;
-> +
-> +	err = isl28022_read_properties(dev, data);
-> +	if (err)
-> +		return err;
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &isl28022_regmap_config);
-> +	if (IS_ERR(data->regmap))
-> +		return PTR_ERR(data->regmap);
-> +
-> +	err = isl28022_config(data);
-> +	if (err)
-> +		return err;
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +	err = isl28022_debugfs_init(data);
-> +	if (err)
-> +		return err;
-> +#endif
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, "isl28022_hwmon",
-> +							 data, &isl28022_chip_info, NULL);
-> +	if (IS_ERR(hwmon_dev))
-> +		return PTR_ERR(hwmon_dev);
-> +
-> +	dev_info(dev, "%s: sensor '%s'\n", dev_name(hwmon_dev), client->name);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id __maybe_unused isl28022_of_match[] = {
-> +	{ .compatible = "renesas,isl28022"},
-> +	{ /* LIST END */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, isl28022_of_match);
-> +
-> +static struct i2c_driver isl28022_driver = {
-> +	.class		= I2C_CLASS_HWMON,
-> +	.driver = {
-> +		.name	= "isl28022",
-> +	},
-> +	.probe_new	= isl28022_probe,
-> +	.id_table	= isl28022_ids,
-> +};
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +static int __init
-> +isl28022_init(void)
-> +{
-> +	int err;
-> +
-> +	isl28022_debugfs_root = debugfs_create_dir("isl28022", NULL);
-> +	err = i2c_add_driver(&isl28022_driver);
-> +	if (!err)
-> +		return 0;
-> +
-> +	debugfs_remove_recursive(isl28022_debugfs_root);
-> +	return err;
-> +}
-> +
-> +static void __exit
-> +isl28022_exit(void)
-> +{
-> +	i2c_del_driver(&isl28022_driver);
-> +	debugfs_remove_recursive(isl28022_debugfs_root);
-> +}
-> +
-> +module_init(isl28022_init);
-> +module_exit(isl28022_exit);
-> +#else /* CONFIG_DEBUG_FS */
-> +module_i2c_driver(isl28022_driver);
-> +#endif /* CONFIG_DEBUG_FS */
-> +
-> +MODULE_AUTHOR("Carsten Spieß <mail@carsten-spiess.de>");
-> +MODULE_DESCRIPTION("ISL28022 driver");
-> +MODULE_LICENSE("GPL");
-
+T24gRnJpLCAyMDIzLTA3LTI4IGF0IDE3OjA4ICswODAwLCBYdSwgWWlsdW4gd3JvdGU6DQo+IE9u
+IDIwMjMtMDctMjEgYXQgMTM6MTg6NTAgLTA3MDAsIFNlYW4gQ2hyaXN0b3BoZXJzb24gd3JvdGU6
+DQo+ID4gTm93IHRoYXQgVk1YIGlzIGRpc2FibGVkIGluIGVtZXJnZW5jaWVzIHZpYSB0aGUgdmly
+dCBjYWxsYmFja3MsIG1vdmUgdGhlDQo+ID4gVk1YT0ZGIGhlbHBlcnMgaW50byBLVk0sIHRoZSBv
+bmx5IHJlbWFpbmluZyB1c2VyLg0KPiANCj4gTm90IHN1cmUgaWYgaXQncyB0b28gZWFybHkgdG8g
+bWVudGlvbi4NCj4gDQo+IEludGVsIFREWCBDb25uZWN0IGNvdWxkIGJlIGEgZnV0dXJlIHVzZXIs
+IGl0IGlzIHRoZSBURFggZXh0ZW5zaW9uIGZvcg0KPiBkZXZpY2Ugc2VjdXJpdHkuIA0KPiANCj4g
+VERYIHVzZXMgU0VBTUNBTEwgdG8gaW50ZXJhY3Qgd2l0aCBURFggTW9kdWxlLCBhbmQgU0VBTUNB
+TEwgZXhlY3V0aW9uDQo+IHJlcXVpcmVzIFZNWE9OLiBUaGlzIGlzIGFsc28gdHJ1ZSBmb3IgVERY
+IENvbm5lY3QuIEJ1dCBURFggQ29ubmVjdA0KPiBjb3ZlcnMgbW9yZSBjb250cm9scyBvdXQgb2Yg
+S1ZNIHNjb3BlLCBsaWtlIFBDSSBJREUsIFNQRE0sIElPTU1VLg0KPiBJT1csIG90aGVyIGRyaXZl
+ciBtb2R1bGVzIG1heSB1c2UgU0VBTUNBTExzIGFuZCBpbiB0dXJuIHVzZSBWTVhPTi9PRkYNCj4g
+Zm9yIFREWCBDb25uZWN0Lg0KPiANCj4gSSdtIHdvbmRlcmluZyBpZiB0aGVuIHdlIHNob3VsZCBh
+Z2FpbiBtb3ZlIFZNWE9OL09GRiBoZWxwZXJzIGJhY2sgdG8NCj4gdmlydGV4dC5oDQo+IA0KPiBP
+ciwgY291bGQgd2UganVzdCBrZWVwIHZteG9mZiB1bmNoYW5nZWQgbm93Pw0KPiANCg0KSSdkIHNh
+eSB3ZSBzaG91bGQganVzdCBwcm9jZWVkIHdpdGggU2VhbidzIHRoaXMgcGF0Y2guICBNb3Zpbmcg
+Vk1YT04vVk1YT0ZGIG91dA0KZnJvbSBLVk0gbmVlZHMgYWRkaXRpb25hbCB0aGluZ3MgYmVzaWRl
+cyBrZWVwaW5nIHRoZSBiYXNpYyB2bXhvbigpL3ZteG9mZigpDQpmdW5jdGlvbnMgYXQgY29yZS14
+ODYgaW4gb3JkZXIgdG8gaGFuZGxlIG11bHRpcGxlIGNhbGxlcnMgZnJvbSBtdWx0aXBsZSBrZXJu
+ZWwNCmNvbXBvbmVudHMuICBBbmQgdm14b24oKS92bXhvZmYoKSBhcmVuJ3QgbmVjZXNzYXJ5IHRv
+IGJlIGluIHZpcnRleHQuaCBlaXRoZXIsDQpkZXBlbmRpbmcgb24gdGhlIGltcGxlbWVudGF0aW9u
+LiAgTGV0J3MgaGFuZGxlIHRoYXQgd2hlbiB3ZSBuZWVkIHRoYXQgaW4gdGhlDQpmdXR1cmUuDQo=
