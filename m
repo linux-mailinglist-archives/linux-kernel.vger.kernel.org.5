@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5507661CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE037661D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbjG1Ceu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
+        id S232693AbjG1CiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjG1Ces (ORCPT
+        with ESMTP id S232336AbjG1CiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:34:48 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7499E
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7654e1d83e8so131532585a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
+        Thu, 27 Jul 2023 22:38:10 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B2530E0;
+        Thu, 27 Jul 2023 19:38:08 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so1438165276.2;
+        Thu, 27 Jul 2023 19:38:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690511686; x=1691116486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690511887; x=1691116687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iV2OpDFH9mfKiN5o/E3y0+fHFzEHfVifc7bcrvvmdpQ=;
-        b=UCo6nPeWk10retrRAhiA6H/0n5V5NFnkQ751kF/vzVAogJRK/dpbvJ2g4b9H6IZCI2
-         xro41pT6S1Whnx9E6Tej+DWrF9WguAIzzvVzwgrkryXtS0Dq4KDolRKNu8lQIn69uuYs
-         WGDGNgzZRXaHPeESlqnZ1CfsZAXGtU8d/KrPmfXxE/nQHNkpH6tDCy5+ZWuuXrKJIZPW
-         D1NZsW9BQN8miX6Rx9ZF3NAsi5bLvkme3Osc3Sijq6nUtED5JgLXQJtsA/5jkJYxIlLx
-         9gJj07IG8b17oBr8Ojk3Ph2KRe2WzlKrkshjVsZiBd5EIvesEJr8cfeMLkxZWBUN/lNH
-         /B9g==
+        bh=4b3n4ix0PVCID/H1AF/PSs6xMKgdCeQOhECeB9MZXrY=;
+        b=hIEE8deFlO6a9hQYyGPt90EuEo57RSABAUGdR6qZzuOqVuRxjthPsgH17pu2HDmCB7
+         nlPeaz4YDPJs/q4s6baeiysbsJF8RxONzgHyOn4XH+pQQ2ONxcJZip2sP4QND5tmCCbu
+         bTwBkjRhnvKgioiqTc8Q7XDDC/zYAlpm1Qe0nadneHd+qBUnuGF+G6tMbGTalJEPxq4f
+         jqC+1p/FEsDYbcBGIS0BJZlmx7zbA1VNMRiYKNonZNrTpPVri74nzQL751NiLQ3cG7v4
+         2VbGGa8N59pdEMZgw31ButQ7Q49PeI4Pvr3UFsWYqW6s4lKN3bVsYYygK2H7nBDxbT9m
+         69fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690511686; x=1691116486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iV2OpDFH9mfKiN5o/E3y0+fHFzEHfVifc7bcrvvmdpQ=;
-        b=P3naQfvtZvwP99UTA7uymWuneeYBP8p79PeimFjcihNbWtlvorkprvgMNt+SolKZzO
-         TGyJYDC4LGzM1A72vLZvYYZjPSuaMhhdFZHuwgSkQow5f6FS5CWMy2tUBq4/WQaUZVml
-         UtbknInkp9jsJI5cW0XwXBGG9Pc4EFr3Cz9P2kiNIi32hUZgb38FUV0QGAY+EgWor86Q
-         YIIu9PuezOGeZA1q1jUDjQD4QN3SMaGXvTpbtGOLzKZHVWfl/WwehSp4pmMkdZMni2P9
-         gNmfqEDU4zL/uhS36Z+uRk4Yr9FM9qX3qevZ8WgGEE3TVaTkQfksqLejvSSCC9cR0n+Y
-         OXpQ==
-X-Gm-Message-State: ABy/qLYdw5BjjTYZGBe11/EtCo3rx3/WcDux0v7JY9L3T/r09Y3hiJnj
-        5Kn9enkF3fRna+2yhlw0UpjYzQ==
-X-Google-Smtp-Source: APBJJlG4B7eb1CM0q5XNynOuTLstLOf606ewnMNnGA0lykt65q4xWGc03YqffuMWfSsD75HOGencBw==
-X-Received: by 2002:a05:620a:2951:b0:768:efd:2685 with SMTP id n17-20020a05620a295100b007680efd2685mr1553377qkp.33.1690511686024;
-        Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
-Received: from [10.85.117.81] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a19c900b00267f7405a3csm1876445pjj.32.2023.07.27.19.34.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 19:34:45 -0700 (PDT)
-Message-ID: <4555470c-ea4f-244b-ed40-9403df3f5e4f@bytedance.com>
-Date:   Fri, 28 Jul 2023 10:34:38 +0800
+        d=1e100.net; s=20221208; t=1690511887; x=1691116687;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4b3n4ix0PVCID/H1AF/PSs6xMKgdCeQOhECeB9MZXrY=;
+        b=bH4anYWbwMD+5C/+GFakQTeeWJ/kxRTUIiuNzc3I1mBX/iUSQ8sIw3HHCX6eTfupPq
+         trVRIFdalH1XZbLoU968yoiVSstzF+wfJ7YtZbhA8jQ+/neQ/5ue32Vd9cienjC2nKjq
+         bD69WthyK5r0ZyueotQO1FmhaTDr9VvcUug7ZcCT4gJWt08QOeBKQDCPFjgbOAmeOHBZ
+         DyoaxZesBStrk4TBafsLT/BEgHrlum4pzPHNRr4vZBurcaR4E75hgIc8k2yy9yzw0Q2p
+         xIKUX8/KjWtOsmJ0pzrF1ZT5Es9wg0VPsXlc1GZycXpd/vOdMZTtubF+KLDuB5b+kJdu
+         7sOQ==
+X-Gm-Message-State: ABy/qLa5R3/+nk9R9bezHNf0hzuBB3NTl5l01Sg7auVk8rHTJET5HF2K
+        z9WztPSlFB2IehCE6QYHdWpX4ORaJfNNOi6M5H4=
+X-Google-Smtp-Source: APBJJlFcW97WvKAmuZ+JBhgClpagVh8f/RtiUWA+CD1OWVXxCqSpQ5+MaiYget9I+0WSTruvnWPKofUdjRJgyuWbj6I=
+X-Received: by 2002:a0d:d453:0:b0:582:5527:ddc with SMTP id
+ w80-20020a0dd453000000b0058255270ddcmr510035ywd.34.1690511887183; Thu, 27 Jul
+ 2023 19:38:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [External] Re: [RFC PATCH 0/5] mm: Select victim memcg using
- BPF_OOM_POLICY
-To:     Alan Maguire <alan.maguire@oracle.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
- <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-2-imagedong@tencent.com> <CANn89iLwLxzSLKtobE9y+ZBU_eizfNo6FUfBa61KeUXsodA2FQ@mail.gmail.com>
+In-Reply-To: <CANn89iLwLxzSLKtobE9y+ZBU_eizfNo6FUfBa61KeUXsodA2FQ@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Fri, 28 Jul 2023 10:37:55 +0800
+Message-ID: <CADxym3YP8zw-bCJxWmfcUWYz7Ncipsa=jDMweR6kZF-xaMwc3Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 1/3] net: tcp: send zero-window ACK when no memory
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,71 +71,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 28, 2023 at 3:17=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Jul 27, 2023 at 2:51=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+> >
+> > From: Menglong Dong <imagedong@tencent.com>
+> >
+> > For now, skb will be dropped when no memory, which makes client keep
+> > retrans util timeout and it's not friendly to the users.
+> >
+> > In this patch, we reply an ACK with zero-window in this case to update
+> > the snd_wnd of the sender to 0. Therefore, the sender won't timeout the
+> > connection and will probe the zero-window with the retransmits.
+> >
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > ---
+> >  include/net/inet_connection_sock.h |  3 ++-
+> >  net/ipv4/tcp_input.c               |  4 ++--
+> >  net/ipv4/tcp_output.c              | 14 +++++++++++---
+> >  3 files changed, 15 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_conn=
+ection_sock.h
+> > index c2b15f7e5516..be3c858a2ebb 100644
+> > --- a/include/net/inet_connection_sock.h
+> > +++ b/include/net/inet_connection_sock.h
+> > @@ -164,7 +164,8 @@ enum inet_csk_ack_state_t {
+> >         ICSK_ACK_TIMER  =3D 2,
+> >         ICSK_ACK_PUSHED =3D 4,
+> >         ICSK_ACK_PUSHED2 =3D 8,
+> > -       ICSK_ACK_NOW =3D 16       /* Send the next ACK immediately (onc=
+e) */
+> > +       ICSK_ACK_NOW =3D 16,      /* Send the next ACK immediately (onc=
+e) */
+> > +       ICSK_ACK_NOMEM =3D 32,
+> >  };
+> >
+> >  void inet_csk_init_xmit_timers(struct sock *sk,
+> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> > index 3cd92035e090..03111af6115d 100644
+> > --- a/net/ipv4/tcp_input.c
+> > +++ b/net/ipv4/tcp_input.c
+> > @@ -5061,7 +5061,8 @@ static void tcp_data_queue(struct sock *sk, struc=
+t sk_buff *skb)
+> >                         reason =3D SKB_DROP_REASON_PROTO_MEM;
+> >                         NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPRCVQDR=
+OP);
+> >                         sk->sk_data_ready(sk);
+> > -                       goto drop;
+> > +                       inet_csk(sk)->icsk_ack.pending |=3D ICSK_ACK_NO=
+MEM;
+>
+> Also set ICSK_ACK_NOW ?
+>
+> We also need to make sure to send an immediate ACK WIN 0 in the case we q=
+ueued
+> the skb in an empty receive queue and we were under pressure.
+>
+> We do not want to have a delayed ACK sending a normal RWIN,
+> then wait for another packet that we will probably drop.
+>
+> Look at the code :
+>
+> if (skb_queue_len(&sk->sk_receive_queue) =3D=3D 0)
+>      sk_forced_mem_schedule(sk, skb->truesize);
+> else if (tcp_try_rmem_schedule(sk, skb, skb->truesize)) {
+>
+> and refactor it to make sure to set  ICSK_ACK_NOMEM even on the first pac=
+ket
+> that bypassed the rmem_schedule().
+>
 
-在 2023/7/27 19:43, Alan Maguire 写道:
-> On 27/07/2023 08:36, Chuyi Zhou wrote:
->> This patchset tries to add a new bpf prog type and use it to select
->> a victim memcg when global OOM is invoked. The mainly motivation is
->> the need to customizable OOM victim selection functionality so that
->> we can protect more important app from OOM killer.
->>
-> 
-> It's a nice use case, but at a high level, the approach pursued here
-> is, as I understand it, discouraged for new BPF program development.
-> Specifically, adding a new BPF program type with semantics like this
-> is not preferred. Instead, can you look at using something like
-> 
-> - using "fmod_ret" instead of a new program type
-> - use BPF kfuncs instead of helpers.
-> - add selftests in tools/testing/selftests/bpf not samples.
-> 
-> There's some examples of how solutions have evolved from the traditional
-> approach (adding a new program type, helpers etc) to using kfuncs etc on
-> this list - for example HID-BPF and the BPF scheduler series - which
-> should help orient you. There are presentations from Linux Plumbers 2022
-> that walk through some of this too.
-> 
-> Judging by the sample program example, all you should need here is a way
-> to override the return value of bpf_oom_set_policy() - a noinline
-> function that by default returns a no-op. It can then be overridden by
-> an "fmod_ret" BPF program.
-> 
-Indeed, I'll try to use kfuncs & fmod_ret.
+Ok, that makes sense.
 
-Thanks for your advice.
---
-Chuyi Zhou
-> One thing you lose is cgroup specificity at BPF attach time, but you can
-> always add predicates based on the cgroup to your BPF program if needed.
-> 
-> Alan
-> 
->> Chuyi Zhou (5):
->>    bpf: Introduce BPF_PROG_TYPE_OOM_POLICY
->>    mm: Select victim memcg using bpf prog
->>    libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
->>    bpf: Add a new bpf helper to get cgroup ino
->>    bpf: Sample BPF program to set oom policy
->>
->>   include/linux/bpf_oom.h        |  22 ++++
->>   include/linux/bpf_types.h      |   2 +
->>   include/linux/memcontrol.h     |   6 ++
->>   include/uapi/linux/bpf.h       |  21 ++++
->>   kernel/bpf/core.c              |   1 +
->>   kernel/bpf/helpers.c           |  17 +++
->>   kernel/bpf/syscall.c           |  10 ++
->>   mm/memcontrol.c                |  50 +++++++++
->>   mm/oom_kill.c                  | 185 +++++++++++++++++++++++++++++++++
->>   samples/bpf/Makefile           |   3 +
->>   samples/bpf/oom_kern.c         |  42 ++++++++
->>   samples/bpf/oom_user.c         | 128 +++++++++++++++++++++++
->>   tools/bpf/bpftool/common.c     |   1 +
->>   tools/include/uapi/linux/bpf.h |  21 ++++
->>   tools/lib/bpf/libbpf.c         |   3 +
->>   tools/lib/bpf/libbpf_probes.c  |   2 +
->>   16 files changed, 514 insertions(+)
->>   create mode 100644 include/linux/bpf_oom.h
->>   create mode 100644 samples/bpf/oom_kern.c
->>   create mode 100644 samples/bpf/oom_user.c
->>
+>
+>
+> > +                       goto out_of_window;
+>
+> Why forcing quickack mode ? Please leave the "goto drop;"
+>
+
+Hmm...because I want to make it send an immediate
+ACK. Obviously, a ICSK_ACK_NOW flag should be
+the better choice here.
+
+> >                 }
+> >
+> >                 eaten =3D tcp_queue_rcv(sk, skb, &fragstolen);
+> > @@ -5102,7 +5103,6 @@ static void tcp_data_queue(struct sock *sk, struc=
+t sk_buff *skb)
+> >  out_of_window:
+> >                 tcp_enter_quickack_mode(sk, TCP_MAX_QUICKACKS);
+> >                 inet_csk_schedule_ack(sk);
+> > -drop:
+> >                 tcp_drop_reason(sk, skb, reason);
+> >                 return;
+> >         }
+> >
