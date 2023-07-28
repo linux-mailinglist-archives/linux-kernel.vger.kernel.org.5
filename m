@@ -2,177 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 445CF766D8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A560766D92
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbjG1Mpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:45:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
+        id S234577AbjG1MrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234614AbjG1Mpl (ORCPT
+        with ESMTP id S232693AbjG1MrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:45:41 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB918187
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a426e70575so1383180b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
+        Fri, 28 Jul 2023 08:47:17 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46EB3135
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:47:16 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so4335510a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690548313; x=1691153113;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=dZhd6Z+1TRytPTwd9c5Pl7JGaMAas8iSnbHYztoIY+I=;
-        b=TgN5QPu9YYBwRx1weOr/WieWPm5UErXX8Yl2ZnYRnuydyDECUF4gTKm/YstmY5l56B
-         +wnzxryDqAXht0H4tNvFivjOPlHsYMJXJT16Ya4FZKhXjvLU+tu2ANlM2Hnggey8OizN
-         kDKwNfr3/H1DGnnb8CFZ3Da0gxp96slSEQTjWN+YY002DAwTEY+vBkU5qAN2XCWJu/gT
-         esYhuHCDSJ7t6D7godXKexmEfaiKr8p6lUWl2qVGZEu58BKWOAgb1Dxwj7NUCNOh0esu
-         0woAXuC1jDCs0SqpMA1m8vH5WR568aWfDh6ShMuQiWhHo8Rn/ZYpvSR8Y3tRNJRX9GW7
-         st9A==
+        d=linaro.org; s=google; t=1690548435; x=1691153235;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WUO+6VZwES9/POG88NUlgN3zynLJKqqzv5z4KtU3TU4=;
+        b=NB7orXiQYYfBxznMaptJprRK7gCr43iDAtDBPj4GZQvWQBfpr/KuQ4hhMRaPUP+afZ
+         Y84zxSBcgtmZ3Pou8qfXLalxVdK4tVojcnt1MHRM88IznnTPkWFERsrJrgRqlycGcCPI
+         XMhfVQ48AWRIoSzP2EuIt4Qot50V+zwIL/yWKroXEEP5U7nJK46gQ3HiEV4j2wWK5H/f
+         wJQqO+rvV7ifuM2vhbjfAVGwKZ6BFAmtBtzCOb83SSNmpfL9RpMjax3IVXH5HISi0PCD
+         EF+o5p41/uNnCNPYolT45Fm5zzczES0rvZvuJuAted7j7SkDoLuVj4vCaDv0mYvDtbwi
+         xw3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690548313; x=1691153113;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690548435; x=1691153235;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dZhd6Z+1TRytPTwd9c5Pl7JGaMAas8iSnbHYztoIY+I=;
-        b=DHz379miYt4xsN5Ookm7DMWV6Ki99dKEfRvtG5IttiXQxVXiCi1684FAELvzROUyRs
-         7D5B8j+HFjN6onEAPofaibMzUV1z2HZ3R1UCYP6lcW2CG/V5EAtBDwFsBZmxGzstTUhZ
-         hjdx3qEG6/Yu9gocqQjl9gxhXM7QkMBdH/gMRkpBLmwNoZT4iJAw8xX66baQLL7gh8A7
-         vGq0w0n0bpSlTIsJOlYTU7Oz/SDe8+EXmZAORuuk4agtGPqvjEVJ7/PgwRRpJPzTq40t
-         o7tcU+3ssmozladjtvSJVEG30HWBAcNiGKigM4Z4P8t42VdSveRiQqrGdRAZB2i179uI
-         FWwQ==
-X-Gm-Message-State: ABy/qLY1kX2PJYM2HcjBv0WlQMproEdtPILc17x4TKxI6egkalgx8yhE
-        vml6k/qUxlm5BWbbJhr0HrImBg==
-X-Google-Smtp-Source: APBJJlF4g9xuHBTxSNvuB+rX75MGVV2iZ9M7FOEM/W01jL7dos+/qDXYGULWfOSaRyQ0x7r2zW5CBw==
-X-Received: by 2002:a05:6808:e82:b0:3a4:6b13:b721 with SMTP id k2-20020a0568080e8200b003a46b13b721mr2742390oil.46.1690548313043;
-        Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
-Received: from [10.254.173.0] ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00262eccfa29fsm4145574pjb.33.2023.07.28.05.45.03
+        bh=WUO+6VZwES9/POG88NUlgN3zynLJKqqzv5z4KtU3TU4=;
+        b=GQ6+OXIZb4gIJN6FEd4MXkI/1uy8p83+n4L/Tc9jMI+ks+P33wuvBZolQeojPnbHZU
+         rxFvXGPN4s/UJVxhex7YFYn2tJpH6qlKKow3DHbRpTHMDWAUVrnqhzEtzTF4z3dQAXdr
+         tv94p2SuomGfqdyNTsSkCuDut2/vbB3Ce5zfWX2kBcoAj+TQ3oOZzR+1A3kgNZRZ/Cnb
+         T4mLjb1jCB8u86sTTQtXk0m3SvqQ0c6oQMOXed7iR8BneIvT8hjJ/9eeAbQMBephQJMG
+         eHLxutiXeSUMfVynOF9mFp1leFIhNg7p8VqNiMO4Hw9MmWhtM6kccDH+hFBpV9HC3wNx
+         06Gw==
+X-Gm-Message-State: ABy/qLbYPNkMIeRUYqkWt1piaihenWkB+mfWSHqalafrs2PPBnYqBgz0
+        9BW/pG/F4ybBXdFqKodF+RlvlA==
+X-Google-Smtp-Source: APBJJlH5hsT80MkBM4VoKo5ggijfd4TH1+fPnA6VLusFaC0nrirMDJL3U1CR72Ew1STRWSQ8LiLbeg==
+X-Received: by 2002:a05:6402:35cd:b0:522:4e49:4e45 with SMTP id z13-20020a05640235cd00b005224e494e45mr6056018edc.0.1690548434835;
+        Fri, 28 Jul 2023 05:47:14 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id f25-20020a056402151900b005224ec27dd7sm1775178edw.66.2023.07.28.05.47.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 05:45:12 -0700 (PDT)
-Message-ID: <e2929fb0-35e6-b213-0ba1-15fa7282e3f4@bytedance.com>
-Date:   Fri, 28 Jul 2023 20:45:00 +0800
+        Fri, 28 Jul 2023 05:47:14 -0700 (PDT)
+Message-ID: <a8964e5a-7b86-6f49-13e0-dfcff605fcc5@linaro.org>
+Date:   Fri, 28 Jul 2023 14:47:12 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-From:   Abel Wu <wuyun.abel@bytedance.com>
-Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
- sockmem pressure
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Breno Leitao <leitao@debian.org>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
- <ZLsg1wklldKkVI2Z@P9FQF9L96D.corp.robot.car>
- <58e75f44-16e3-a40a-4c8a-0f61bbf393f9@bytedance.com>
- <ZMCLTQgVT68jwbVh@P9FQF9L96D>
- <29de901f-ae4c-a900-a553-17ec4f096f0e@bytedance.com>
- <ZMG39B6B41yLAu9r@P9FQF9L96D>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 01/50] dt-bindings: microchip: atmel,at91rm9200-tcb:
+ add sam9x60, sam9x7 compatible
 Content-Language: en-US
-In-Reply-To: <ZMG39B6B41yLAu9r@P9FQF9L96D>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        linux@roeck-us.net, sebastian.reichel@collabora.com,
+        gregkh@linuxfoundation.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230728102256.265291-1-varshini.rajendran@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728102256.265291-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 8:19 AM, Roman Gushchin wrote:
-> On Wed, Jul 26, 2023 at 04:44:24PM +0800, Abel Wu wrote:
->> On 7/26/23 10:56 AM, Roman Gushchin wrote:
->>> On Mon, Jul 24, 2023 at 11:47:02AM +0800, Abel Wu wrote:
->>>> Hi Roman, thanks for taking time to have a look!
->>>>>
->>>>> Overall I think it's a good idea to clean these things up and thank you
->>>>> for working on this. But I wonder if we can make the next step and leave only
->>>>> one mechanism for both cgroup v1 and v2 instead of having this weird setup
->>>>> where memcg->socket_pressure is set differently from different paths on cgroup
->>>>> v1 and v2.
->>>>
->>>> There is some difficulty in unifying the mechanism for both cgroup
->>>> designs. Throttling socket memory allocation when memcg is under
->>>> pressure only makes sense when socket memory and other usages are
->>>> sharing the same limit, which is not true for cgroupv1. Thoughts?
->>>
->>> I see... Generally speaking cgroup v1 is considered frozen, so we can leave it
->>> as it is, except when it creates an unnecessary complexity in the code.
->>
->> Are you suggesting that the 2nd patch can be ignored and keep
->> ->tcpmem_pressure as it is? Or keep the 2nd patch and add some
->> explanation around as you suggested in last reply?
+On 28/07/2023 12:22, Varshini Rajendran wrote:
+> Add sam9x60, sam9x7 compatible string support in the schema file.
 > 
-> I suggest to split a code refactoring (which is not expected to bring any
-> functional changes) and an actual change of the behavior on cgroup v1.
-> Re the refactoring: I see a lot of value in adding comments and make the
-> code more readable, I don't see that much value in merging two variables.
-> But if it comes organically with the code simplification - nice.
-
-I see, thanks for the clarification!
-
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> ---
+>  .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 21 ++++++++++++-------
+>  1 file changed, 14 insertions(+), 7 deletions(-)
 > 
->>> I'm curious, was your work driven by some real-world problem or a desire to clean
->>> up the code? Both are valid reasons of course.
->>
->> We (a cloud service provider) are migrating users to cgroupv2,
->> but encountered some problems among which the socket memory
->> really puts us in a difficult situation. There is no specific
->> threshold for socket memory in cgroupv2 and relies largely on
->> workloads doing traffic control themselves.
->>
->> Say one workload behaves fine in cgroupv1 with 10G of ->memory
->> and 1G of ->tcpmem, but will suck (or even be OOMed) in cgroupv2
->> with 11G of ->memory due to burst memory usage on socket.
->>
->> It's rational for the workloads to build some traffic control
->> to better utilize the resources they bought, but from kernel's
->> point of view it's also reasonable to suppress the allocation
->> of socket memory once there is a shortage of free memory, given
->> that performance degradation is better than failure.
-> 
-> Yeah, I can see it. But Idk if it's too workload-specific to have
-> a single-policy-fits-all-cases approach.
-> E.g. some workloads might prefer to have a portion of pagecache
-> being reclaimed.
-> What do you think?
+> diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> index a46411149571..912aea5abcf0 100644
+> --- a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> +++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+> @@ -15,13 +15,20 @@ description: |
+>  
+>  properties:
+>    compatible:
+> -    items:
+> -      - enum:
+> -          - atmel,at91rm9200-tcb
+> -          - atmel,at91sam9x5-tcb
+> -          - atmel,sama5d2-tcb
+> -      - const: simple-mfd
+> -      - const: syscon
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - atmel,at91rm9200-tcb
+> +              - atmel,at91sam9x5-tcb
+> +              - atmel,sama5d2-tcb
+> +              - microchip,sam9x60-tcb
 
-Now the memcg is considered to be under pressure if the number of
-pages reclaimed is much less than desired. I doubt it could be a
-win in such case to spend more time on reclaiming while letting
-socket continue to allocate memory (which could make things worse),
-compared to relieving reclaim pressure and putting time on its real
-work.
+That's not matching existing DTS.
 
-Best,
-	Abel
+Best regards,
+Krzysztof
+
