@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D22E8766686
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9846B766688
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbjG1ILt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S234713AbjG1IL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234789AbjG1ILY (ORCPT
+        with ESMTP id S234709AbjG1ILb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:11:24 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1DD35A8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:11:11 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Fri, 28 Jul 2023 04:11:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6133AAA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:11:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3EA5E660716B;
-        Fri, 28 Jul 2023 09:11:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690531870;
-        bh=EkunT6qAlkxVx2kwaXu/dTKwauLQQrcXBadtGCTRZEs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PQUfV85PpvBErXe+c+hvH0w/WQAUI3Dle9FXOpG/oVyKN5g2n6zRN9h4EVvvklnTM
-         TWcthWyAutv6fk5UD2vuqcYaNCVr7U+NBZpbTW3Z3imE/MRuhQc+WxD2jY+GgiDjZi
-         rb8BZma2PX3hsOuPOachVx4Iv0sg6l6WjEHariGaYdfFUQNh3ur6Zan0uIqLVmDR30
-         T3FjM5lQsoRKa7t58PKFUeQQUn9RmRm4WNQCKPvkdC8STgE700ZwcpI+Og41YWRxoF
-         s9a0Du+eFVFkffjigHItMUvWDEmzUaJ7rS52WauB3+WiPBJ6F4J0/NciA7Z2hub5ku
-         hNtpK7W42hI3g==
-Message-ID: <7ba4f465-6910-8b23-e950-98598547e8d9@collabora.com>
-Date:   Fri, 28 Jul 2023 10:11:07 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 3/4] drm/mediatek: Add ability to support dynamic
- connector selection
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Nathan Lu <nathan.lu@mediatek.com>
-References: <20230727164114.20638-1-jason-jh.lin@mediatek.com>
- <20230727164114.20638-4-jason-jh.lin@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230727164114.20638-4-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFA1B6202F
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:11:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63C87C433C8;
+        Fri, 28 Jul 2023 08:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690531882;
+        bh=doFW1+C/8GMIgXMiabeS/f7ocbVsueJcERbaBXOV3hY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Oe3m3yE3SjTIG0W29iXhBxjiSWkrZ/di8Sloax8Ufbpg+5dCap2ob8B1O5GkeaZxs
+         DWmOV43IYHTcTvAeEvPH46xnb2pBtGhZQHoc93wjMTTKEBcKl2aKSZ1SllavdmrUgY
+         xVPY1Noa1Ofjh3TsJ2xIDZ2AD9b3qB/C8a/ceDaY9mu6giNGM65dWxWlQyyhAJrEen
+         uEhOS8LPHKZHQ20G8SNFpzxl7hmCkaJpXfl1hrBBPFlECdDMjsN/VSGySUDTHzObjK
+         W/wtWLAeS3Xiz0g0yINBkiu/SskU3neM6S2DfZd1sXlU9xiAgqr+/LoWv6fTLy8H33
+         SxzM5lcv3IgwA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qPIZD-00Haw9-Vc;
+        Fri, 28 Jul 2023 09:11:20 +0100
+Date:   Fri, 28 Jul 2023 09:11:19 +0100
+Message-ID: <87ila4qwuw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Peter Hilber <peter.hilber@opensynergy.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [RFC PATCH 4/7] clocksource: arm_arch_timer: Export counter type, clocksource
+In-Reply-To: <0290012c-a419-40ac-ed8c-7708fc5a5dd0@opensynergy.com>
+References: <20230630171052.985577-1-peter.hilber@opensynergy.com>
+        <20230630171052.985577-5-peter.hilber@opensynergy.com>
+        <874jmlza3v.wl-maz@kernel.org>
+        <0290012c-a419-40ac-ed8c-7708fc5a5dd0@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: peter.hilber@opensynergy.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,97 +72,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 27/07/23 18:41, Jason-JH.Lin ha scritto:
-> 1. Move output drm connector from each ddp_path array to connector array.
-> 2. Add dynamic select available connector flow in crtc create and enable.
+On Thu, 27 Jul 2023 11:22:11 +0100,
+Peter Hilber <peter.hilber@opensynergy.com> wrote:
 > 
-> Signed-off-by: Nancy Lin <nancy.lin@mediatek.com>
-> Signed-off-by: Nathan Lu <nathan.lu@mediatek.com>
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->   drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  1 +
->   drivers/gpu/drm/mediatek/mtk_dpi.c          |  9 +++
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 75 ++++++++++++++++++++-
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  5 +-
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 26 +++++++
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  8 +++
->   drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 20 ++++--
->   drivers/gpu/drm/mediatek/mtk_drm_drv.h      |  7 ++
->   8 files changed, 145 insertions(+), 6 deletions(-)
+> On 03.07.23 10:13, Marc Zyngier wrote:
+> > On Fri, 30 Jun 2023 18:10:47 +0100,
+> > Peter Hilber <peter.hilber@opensynergy.com> wrote:
+> >>
+> >> Export helper functions to allow other code to
+> >>
+> >> - determine the counter type in use (virtual or physical, CP15 or memory),
+> >>
+> >> - get a pointer to the arm_arch_timer clocksource, which can be compared
+> >>   with the current clocksource.
+> >>
+> >> The virtio_rtc driver will require the clocksource pointer when using
+> >> get_device_system_crosststamp(), and should communicate the actual Arm
+> >> counter type to the Virtio RTC device (cf. spec draft [1]).
+> > 
+> > I really don't see why you should poke at the clocksource backend:
+> > 
+> > - the MMIO clocksource is only used in PM situations, which a virtio
+> >   driver has no business being involved with
+> > 
+> > - only the virtual counter is relevant -- it is always at a 0-offset
+> >   from the physical one when userspace has an opportunity to run
+> > 
+> > So it really looks that out of the four combinations, only one is
+> > relevant.
 > 
+> Thanks for the explanation. Dropping arch_timer_counter_get_type() and
+> assuming that the CP15 virtual counter is in use should also work for
+> now. With the physical/virtual counter distinction, I tried to be
+> future-proof, as per the following considerations:
+> 
+> The intended consumer of arch_timer_counter_get_type() is the Virtio RTC
+> device (draft spec [2], patch series [1]). If the Virtio device has
+> optional cross-timestamp support, it must know the current Linux kernel
+> view of the current clocksource counter. The Virtio driver tells the
+> Virtio device the current counter type (in the Arm case, CNTVCT_EL0 or
+> CNTPCT_EL0). It is intentionally left unspecified how the Virtio device
+> would know the counter value. AFAIU, if the Linux kernel were a
+> virtualization host itself, it would be better for the Virtio device to
+> look at the physical counter, since the virtual counter could be set for
+> a guest. And in other cases, the guest OSes use a virtual counter with
+> an offset.
 
-..snip..
+The physical counter can equally be offset (and KVM does offset it),
+just like the virtual counter. With NV, the offsets themselves are
+partially under control of the guest itself.
 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> index f114da4d36a9..bc7b0a0c20db 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -304,6 +304,7 @@ static const struct mtk_ddp_comp_funcs ddp_dither = {
->   static const struct mtk_ddp_comp_funcs ddp_dpi = {
->   	.start = mtk_dpi_start,
->   	.stop = mtk_dpi_stop,
-> +	.encoder_index = mtk_dpi_encoder_index,
->   };
->   
->   static const struct mtk_ddp_comp_funcs ddp_dsc = {
-> @@ -507,6 +508,25 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
->   	return false;
->   }
->   
-> +static int mtk_drm_find_comp_in_ddp_conn_path(struct device *dev,
-> +					      const struct mtk_drm_route *routes,
-> +					      unsigned int routes_num,
+So either counters *as seen from the guest* are absolutely pointless
+to an observer on the host. That observer sees a virtual counter that
+is strictly equal to the physical counter.
 
-`num_routes` would be more readable.
+> This was the rationale to come up with the physical/virtual counter
+> distinction for the Virtio RTC device. Looking at extensions such as
+> FEAT_ECV, where the CNTPCT_EL0 value can depend on the EL, or FEAT_NV*,
+> it might be a bit simplistic.
 
-> +					      struct mtk_ddp_comp *ddp_comp)
-> +{
-> +	unsigned int i;
-> +
-> +	if (!routes)
-> +		return 0;
+Not just simplistic. It doesn't make sense. For this to work, you'd
+need to know the global offset that KVM applies to the global counter,
+plus the *virtualised* CNTPOFF/CNTVOFF values that the guest can
+change at any time on a *per-CPU* basis. None of that is available
+outside of KVM, nor would it make any sense anyway.
 
-if (!routes)
-	return -EINVAL;
+> Does this physical/virtual counter distinction sound like a good idea?
+> Otherwise I would drop the arch_timer_counter_get_type() in the next
+> iteration.
 
-> +
-> +	for (i = 0; i < routes_num; i++)
-> +		if (dev == ddp_comp[routes[i].route_ddp].dev)
-> +			return BIT(routes[i].crtc_id);
-> +
-> +	DRM_INFO("Failed to find comp in ddp connector table\n");
+My take on this is that only the global counter value makes any sense.
+That value is already available from the host as the virtual counter,
+because we guarantee that CNTVOFF is 0 when outside of the guest
+(well, technically, outside of the vcpu_load/vcpu_put section).
 
-This print is redundant.
+> 
+> > 
+> > I'm not Cc'd on the rest of the series, so I can't even see in which
+> > context this is used. But as it is, the approach looks wrong.
+> > 
+> 
+> Sorry, I will Cc you on all relevant patches in the next iteration,
+> which I will send out soon.
+> 
+> The first patch series can be found at [1]. I think the second helper
+> function in this patch, arch_timer_get_cs(), would still be needed, in
+> order to supply the clocksource to get_device_system_crosststamp().
 
-> +
-> +	return 0;
+We already have to deal with the kvm_arch_ptp_get_crosststamp()
+monstrosity (which I will forever regret having merged). Surely you
+can reuse some of that?
 
-return -ENODEV;
+Thanks,
 
-> +}
-> +
->   int mtk_ddp_comp_get_id(struct device_node *node,
->   			enum mtk_ddp_comp_type comp_type)
->   {
-> @@ -538,6 +558,12 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
->   					  private->data->third_len, private->ddp_comp))
->   		ret = BIT(2);
->   	else
-> +		ret = mtk_drm_find_comp_in_ddp_conn_path(dev,
-> +							 private->data->conn_routes,
-> +							 private->data->num_conn_routes,
-> +							 private->ddp_comp);
-> +
-> +	if (ret == 0)
+	M.
 
-if (ret < 0)
-
->   		DRM_INFO("Failed to find comp in ddp table\n");
->   
->   	return ret;
-
-Regards,
-Angelo
-
-
-
+-- 
+Without deviation from the norm, progress is not possible.
