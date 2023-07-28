@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000ED766BDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E93766BDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbjG1Le3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39530 "EHLO
+        id S234701AbjG1Lef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbjG1Le0 (ORCPT
+        with ESMTP id S234904AbjG1Le3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:34:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBCE19A1;
-        Fri, 28 Jul 2023 04:34:25 -0700 (PDT)
+        Fri, 28 Jul 2023 07:34:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BE42D5B;
+        Fri, 28 Jul 2023 04:34:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE78D6210D;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36184620FF;
+        Fri, 28 Jul 2023 11:34:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3F31C433C8;
         Fri, 28 Jul 2023 11:34:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73CDBC433CD;
-        Fri, 28 Jul 2023 11:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690544064;
-        bh=11Y/2vUczXq1zex6nKxwrM3jqc49ICOzRUdx4wC2BY0=;
+        s=k20201202; t=1690544066;
+        bh=q08Zp/HrT7heTstkuwX+BMifLSLWW6msQ6kNbV77Ua0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O9WHnz15nlN8jrFYE+P5sHthvGhkzs5ETS0KFCk3serXXVpDV5I76lP4MNBw37yQ/
-         17Hg0dBVemJ86i90tY0habw2oMXp/GhsH+NSXWik9eBjZYFMfbrVKLk3A6+X5nf97L
-         9glyR9vZzJ8R9zqkUHuqMU8rL2LQQaZ5TtbMn2QB+dz0vDM3jBNegR8jxlgUwKRrdR
-         N3FpVx77t92pnHL5GnQg7TpKup2ZFANeiEgcl5KsoCQKH1O1srMvQoOOegosIs0qWa
-         0Zu5L1uFSu3Q297Hh9JOpqHTTyM/MI4P00aJUbsUaI7qOpUvHKAZ5lLLZ0h5P8sLSr
-         g64rp59Zof+gg==
+        b=HQdHV/wp9RlqPD9y7oURfC5NiYE9B94pfY5qWKb1wh+dIya3UQtjS0OGzihi4wXS7
+         Ujw7ZskQgxU7XcGchqZbNK/U8wEM/V+3VEXF06kiOF3ERQVoFY32muocpULA0KkZC7
+         mOBtXc7YWbTknfzrg9H8oS8V2rM4deH2nrtmrsHwgBDj9OmEEv1dolhbZZfuG7qrFb
+         KI3MOonCq09uBmLerRZjzWpxmKg5TO1GfNWe5MGDYH8nzTFHqiE6w4EbE3WRZsW31X
+         oYmQs6BMM1LSGhJHsd8zFba47LYa7n7CbCTb8sMJP7C7U5ndcCflqoIk0LcXMbZiIN
+         JH/ZJ8URUZCxw==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
@@ -42,16 +42,16 @@ Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
         Nicolas Schier <nicolas@fjasle.eu>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
         John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: [PATCH v3 1/4] scripts/faddr2line: Use LLVM addr2line and readelf if LLVM=1
-Date:   Fri, 28 Jul 2023 12:34:12 +0100
-Message-Id: <20230728113415.21067-2-will@kernel.org>
+Subject: [PATCH v3 2/4] scripts/mksysmap: Factor out sed ignored symbols expression into script
+Date:   Fri, 28 Jul 2023 12:34:13 +0100
+Message-Id: <20230728113415.21067-3-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230728113415.21067-1-will@kernel.org>
 References: <20230728113415.21067-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,49 +60,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GNU utilities cannot necessarily parse objects built by LLVM, which can
-result in confusing errors when using 'faddr2line':
+To prepare for 'faddr2line' reusing the same ignored symbols list as
+'mksysmap', factor out the relevant sed expression into its own script,
+removing the double-escapes for '$' symbols as they are no longer
+required.
 
-$ CROSS_COMPILE=aarch64-linux-gnu- ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-do_one_initcall+0xf4/0x260:
-aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
-aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
-$x.73 at main.c:?
-
-Although this can be worked around by setting CROSS_COMPILE to "llvm=-",
-it's cleaner to follow the same syntax as the top-level Makefile and
-accept LLVM=1 as an indication to use the llvm- tools.
-
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
 Cc: Josh Poimboeuf <jpoimboe@kernel.org>
 Cc: John Stultz <jstultz@google.com>
+Cc: linux-kbuild@vger.kernel.org
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- scripts/faddr2line | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ scripts/mksysmap                | 77 +--------------------------------
+ scripts/sysmap-ignored-syms.sed | 74 +++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+), 76 deletions(-)
+ create mode 100644 scripts/sysmap-ignored-syms.sed
 
-diff --git a/scripts/faddr2line b/scripts/faddr2line
-index 0e73aca4f908..62a3fa6f6f59 100755
---- a/scripts/faddr2line
-+++ b/scripts/faddr2line
-@@ -58,8 +58,14 @@ die() {
- 	exit 1
- }
+diff --git a/scripts/mksysmap b/scripts/mksysmap
+index 9ba1c9da0a40..a98b34363258 100755
+--- a/scripts/mksysmap
++++ b/scripts/mksysmap
+@@ -16,7 +16,7 @@
+ # 'W' or 'w'.
+ #
  
--READELF="${CROSS_COMPILE:-}readelf"
--ADDR2LINE="${CROSS_COMPILE:-}addr2line"
-+if [ "${LLVM:-}" == "1" ]; then
-+	UTIL_PREFIX=llvm-
-+else
-+	UTIL_PREFIX=${CROSS_COMPILE:-}
-+fi
+-${NM} -n ${1} | sed >${2} -e "
++${NM} -n ${1} | sed >${2} -f $(dirname $0)/sysmap-ignored-syms.sed -e "
+ # ---------------------------------------------------------------------------
+ # Ignored symbol types
+ #
+@@ -27,81 +27,6 @@ ${NM} -n ${1} | sed >${2} -e "
+ # w: local weak symbols
+ / [aNUw] /d
+ 
+-# ---------------------------------------------------------------------------
+-# Ignored prefixes
+-#  (do not forget a space before each pattern)
+-
+-# local symbols for ARM, MIPS, etc.
+-/ \\$/d
+-
+-# local labels, .LBB, .Ltmpxxx, .L__unnamed_xx, .LASANPC, etc.
+-/ \.L/d
+-
+-# arm64 EFI stub namespace
+-/ __efistub_/d
+-
+-# arm64 local symbols in PIE namespace
+-/ __pi_\\$/d
+-/ __pi_\.L/d
+-
+-# arm64 local symbols in non-VHE KVM namespace
+-/ __kvm_nvhe_\\$/d
+-/ __kvm_nvhe_\.L/d
+-
+-# arm64 lld
+-/ __AArch64ADRPThunk_/d
+-
+-# arm lld
+-/ __ARMV5PILongThunk_/d
+-/ __ARMV7PILongThunk_/d
+-/ __ThumbV7PILongThunk_/d
+-
+-# mips lld
+-/ __LA25Thunk_/d
+-/ __microLA25Thunk_/d
+-
+-# CFI type identifiers
+-/ __kcfi_typeid_/d
+-/ __kvm_nvhe___kcfi_typeid_/d
+-/ __pi___kcfi_typeid_/d
+-
+-# CRC from modversions
+-/ __crc_/d
+-
+-# EXPORT_SYMBOL (symbol name)
+-/ __kstrtab_/d
+-
+-# EXPORT_SYMBOL (namespace)
+-/ __kstrtabns_/d
+-
+-# ---------------------------------------------------------------------------
+-# Ignored suffixes
+-#  (do not forget '$' after each pattern)
+-
+-# arm
+-/_from_arm$/d
+-/_from_thumb$/d
+-/_veneer$/d
+-
+-# ---------------------------------------------------------------------------
+-# Ignored symbols (exact match)
+-#  (do not forget a space before and '$' after each pattern)
+-
+-# for LoongArch?
+-/ L0$/d
+-
+-# ppc
+-/ _SDA_BASE_$/d
+-/ _SDA2_BASE_$/d
+-
+-# ---------------------------------------------------------------------------
+-# Ignored patterns
+-#  (symbols that contain the pattern are ignored)
+-
+-# ppc stub
+-/\.long_branch\./d
+-/\.plt_branch\./d
+-
+ # ---------------------------------------------------------------------------
+ # Ignored kallsyms symbols
+ #
+diff --git a/scripts/sysmap-ignored-syms.sed b/scripts/sysmap-ignored-syms.sed
+new file mode 100644
+index 000000000000..14b9eb2c9ed9
+--- /dev/null
++++ b/scripts/sysmap-ignored-syms.sed
+@@ -0,0 +1,74 @@
++# ---------------------------------------------------------------------------
++# Ignored prefixes
++#  (do not forget a space before each pattern)
 +
-+READELF="${UTIL_PREFIX}readelf"
-+ADDR2LINE="${UTIL_PREFIX}addr2line"
- AWK="awk"
- GREP="grep"
- 
++# local symbols for ARM, MIPS, etc.
++/ \$/d
++
++# local labels, .LBB, .Ltmpxxx, .L__unnamed_xx, .LASANPC, etc.
++/ \.L/d
++
++# arm64 EFI stub namespace
++/ __efistub_/d
++
++# arm64 local symbols in PIE namespace
++/ __pi_\$/d
++/ __pi_\.L/d
++
++# arm64 local symbols in non-VHE KVM namespace
++/ __kvm_nvhe_\$/d
++/ __kvm_nvhe_\.L/d
++
++# arm64 lld
++/ __AArch64ADRPThunk_/d
++
++# arm lld
++/ __ARMV5PILongThunk_/d
++/ __ARMV7PILongThunk_/d
++/ __ThumbV7PILongThunk_/d
++
++# mips lld
++/ __LA25Thunk_/d
++/ __microLA25Thunk_/d
++
++# CFI type identifiers
++/ __kcfi_typeid_/d
++/ __kvm_nvhe___kcfi_typeid_/d
++/ __pi___kcfi_typeid_/d
++
++# CRC from modversions
++/ __crc_/d
++
++# EXPORT_SYMBOL (symbol name)
++/ __kstrtab_/d
++
++# EXPORT_SYMBOL (namespace)
++/ __kstrtabns_/d
++
++# ---------------------------------------------------------------------------
++# Ignored suffixes
++#  (do not forget '$' after each pattern)
++
++# arm
++/_from_arm$/d
++/_from_thumb$/d
++/_veneer$/d
++
++# ---------------------------------------------------------------------------
++# Ignored symbols (exact match)
++#  (do not forget a space before and '$' after each pattern)
++
++# for LoongArch?
++/ L0$/d
++
++# ppc
++/ _SDA_BASE_$/d
++/ _SDA2_BASE_$/d
++
++# ---------------------------------------------------------------------------
++# Ignored patterns
++#  (symbols that contain the pattern are ignored)
++
++# ppc stub
++/\.long_branch\./d
++/\.plt_branch\./d
 -- 
 2.41.0.487.g6d72f3e995-goog
 
