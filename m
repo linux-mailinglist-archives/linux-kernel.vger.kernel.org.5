@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0E0766AEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB73766AED
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbjG1Km1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
+        id S235999AbjG1KnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjG1KmZ (ORCPT
+        with ESMTP id S234418AbjG1KnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:42:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091DD3A81
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690540868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s4AYZ2Z4BzAcpH/nTmeh8PGBERH7SBsG0XRZTiA9nSk=;
-        b=ITg7mNPftB102j49Z9BZZmh11iPZcXDTmGOKp1ZlSYMav6RQGT3ymUu9WEIRU4wZ0CTrXg
-        mZKWBnqk1dPs0k61KmCL5DAfhLeHV9lJMGQ10ZpFDzgG5z10xwG4is3czTFDbL7xaFbtnG
-        BhmBj64HMiuPceffROFg/W2ElmKfX1E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-91-SGQRiFsKNXWq__kbmfP_Sg-1; Fri, 28 Jul 2023 06:41:07 -0400
-X-MC-Unique: SGQRiFsKNXWq__kbmfP_Sg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-317421b94a4so985495f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:41:06 -0700 (PDT)
+        Fri, 28 Jul 2023 06:43:14 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7DEE2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:43:13 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc1218262so21019245e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:43:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690540991; x=1691145791;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0qcpfuVCMGDrdLqRszLnxUe+cmtYNnFPz1CO5kAvPCs=;
+        b=Kn6Eyadxs5TmmhGXwtb2w2a2hKu6nRGDFNi6ofLv7Xgs8evLF31c91xaW7GyFKUX7s
+         jKu2Yyo5YVqCloaGb9MCzYdczP5wdQZCSkuGie0dZfEMrsyenb9T5+cxj6HhyQaoKyDX
+         rEY4no0pvlXHpqS2QP1aKXenrorcxiyH805yfNxJj3h9k4IGxX9hcE5eOYzzesZ50e24
+         VjLKT7Ae8gptBbuOzclb2NWFgYiLsWl0GEDPvpo7mZ7ujBDtU2Y35RtFTccvGvCJZgW2
+         74uB+wM8alrGnGQdE0vEIWgIOACpboQ2q4S/qWPAzNgVRlqq+V4WLP6GWTjrwBgkA32r
+         Q7Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690540866; x=1691145666;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690540991; x=1691145791;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s4AYZ2Z4BzAcpH/nTmeh8PGBERH7SBsG0XRZTiA9nSk=;
-        b=YyT9ilyQZ5muM9XXkPDkIaxUSYPv8OGvy7uDkKofJKRJ8knXTqgL/4mcShV84wcync
-         fEmS4NTCkUEmkhuX6WW3kuNBrZ+anSZOiB1NJaAhTtTHn/LumsH4hYWtAaz/JIiX9YEj
-         cwb8gNReBWSAqshfZ9X774boVadii4QNB26nNJ8S90PBUhRGukSeJMPHXUFMju2Wc2da
-         oepuE6ux+/upLfPLmT7UZrYW+xfd04e2nnlBt0uXyZNItxvP4uCYeFw9YWdNpcrdzh12
-         dzxCAsOZAw0f4AQZuhpdVAKpNJ0c6ZA2oBOIJWuO2yMDM6MpKjPAzLCVWfib8QWVR+Y7
-         KTqg==
-X-Gm-Message-State: ABy/qLYvGd+6Tt+raYIiAmgEMIRuRMFrjl/JzGHZEhezPB6RwUknB117
-        7Jpr9/3wY/h0p6ur5V+27t0vsVQNXpV9TSf04u2qSbmHCiisib2MgQC4Zw9Vk0mpVdgY2fi0feO
-        +9pCgIEwewFf7WhC8HpSg5OON
-X-Received: by 2002:adf:f70c:0:b0:313:f61c:42b2 with SMTP id r12-20020adff70c000000b00313f61c42b2mr1567505wrp.69.1690540865872;
-        Fri, 28 Jul 2023 03:41:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHQWvM3h+hJVZLsDx7/1wU8fv6JvGPKDkGJVGBaVORUobH6t8FOhhOZGqV81t+c1UaqmJeN2Q==
-X-Received: by 2002:adf:f70c:0:b0:313:f61c:42b2 with SMTP id r12-20020adff70c000000b00313f61c42b2mr1567489wrp.69.1690540865461;
-        Fri, 28 Jul 2023 03:41:05 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id i8-20020adfefc8000000b0030ada01ca78sm4495010wrp.10.2023.07.28.03.41.04
+        bh=0qcpfuVCMGDrdLqRszLnxUe+cmtYNnFPz1CO5kAvPCs=;
+        b=TT+ofDdOyD4eDsTHtGKh3lxaR1SuoxZ+cH8VDjnvtCaP7+At2+sx7eR/e4ndMELCpZ
+         0L6PCSp6NRsNlJtZfy91zrzyxMg6usQeYO76/fFBOk/0f22LPXEubqe/S6mD0FkVXg+/
+         QBq7CME16VUJ2dnCgMri8sxZS7mK74bOQtWzSgNcXXrsoOtLN5XOGZfOvne9SoKKigig
+         EzNtZqm2m9h8IgCLCAEQe2ChJjmloZtFvdIzL7YQIhcS28aIK6NGKXJyoczkiaRyLscY
+         /97lJe5QA4XQE2uAHdrr1ruLvzRItZkToiPap6Sa5VACgRDkRk3kydCyOEdTcMYtKl5t
+         WprA==
+X-Gm-Message-State: ABy/qLYOGRr66eYSHvxAzOA7Cqqrkn5zIdlfB3uly4ts2uAKK7QG++PN
+        mTpxVsnGwBWRpSqQCUwcuKjmTg==
+X-Google-Smtp-Source: APBJJlEJ4WGtWvMTHhF0N6xAI1lu6JltQyIEQMdnAl9JSRk+TAhydjZrfGGMjQeFXtiuF+iigEWRLQ==
+X-Received: by 2002:a7b:ce07:0:b0:3fe:e1e:5041 with SMTP id m7-20020a7bce07000000b003fe0e1e5041mr889214wmc.32.1690540991684;
+        Fri, 28 Jul 2023 03:43:11 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id l14-20020a1c790e000000b003fbc9371193sm3897602wme.13.2023.07.28.03.43.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:41:05 -0700 (PDT)
-Message-ID: <8d3f4a1d-b624-3e2f-653c-032833646dea@redhat.com>
-Date:   Fri, 28 Jul 2023 12:41:04 +0200
+        Fri, 28 Jul 2023 03:43:11 -0700 (PDT)
+Message-ID: <6a9cc326-06ea-dfce-6a48-043fd7ba0d50@linaro.org>
+Date:   Fri, 28 Jul 2023 11:43:10 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 1/8] mm/compaction: avoid missing last page block in
- section after skip offline sections
+Subject: Re: [PATCH v1] misc: fastrpc: Fix DSP capabilities request
 Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
-        willy@infradead.org
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-2-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230728171037.2219226-2-shikemeng@huaweicloud.com>
+To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        linux-arm-msm@vger.kernel.org
+Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
+        stable <stable@kernel.org>
+References: <1687328900-3039-1-git-send-email-quic_ekangupt@quicinc.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <1687328900-3039-1-git-send-email-quic_ekangupt@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 19:10, Kemeng Shi wrote:
-> skip_offline_sections_reverse will return the last pfn in found online
-> section. Then we set block_start_pfn to start of page block which
-> contains the last pfn in section. Then we continue, move one page
-> block forward and ignore the last page block in the online section.
-> Make block_start_pfn point to first page block after online section to fix
-> this:
-> 1. make skip_offline_sections_reverse return end pfn of online section,
-> i.e. pfn of page block after online section.
-> 2. assign block_start_pfn with next_pfn.
+
+
+On 21/06/2023 07:28, Ekansh Gupta wrote:
+> Incorrect remote arguments are getting passed when requesting for
+> capabilities from DSP. Also there is no requirement to update the
+> PD type as it might cause problems for any PD other than user PD.
+> In addition to this, the collected capability information is not
+> getting copied properly to user. Add changes to address these
+> problems and get correct DSP capabilities.
 > 
-> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Fixes: 6c16fd8bdd40 ("misc: fastrpc: Add support to get DSP capabilities")
+> Cc: stable <stable@kernel.org>
+> Tested-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 > ---
->   mm/compaction.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>   drivers/misc/fastrpc.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 9b7a0a69e19f..ce7841363b12 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
+> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> index 30d4d04..776c596 100644
+> --- a/drivers/misc/fastrpc.c
+> +++ b/drivers/misc/fastrpc.c
+> @@ -1693,9 +1693,8 @@ static int fastrpc_get_info_from_dsp(struct fastrpc_user *fl, uint32_t *dsp_attr
+>   	args[0].length = sizeof(dsp_attr_buf_len);
+>   	args[0].fd = -1;
+>   	args[1].ptr = (u64)(uintptr_t)&dsp_attr_buf[1];
 
-Can we add a short comment which kind of PFN we return (first pfn of 
-first offline section after an online section)?
+<--snip
+> -	args[1].length = dsp_attr_buf_len;
+> +	args[1].length = dsp_attr_buf_len * sizeof(uint32_t);
+-->
+>   	args[1].fd = -1;
+> -	fl->pd = USER_PD;
 
-> @@ -259,7 +259,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
+this looks fine.
 >   
->   	while (start_nr-- > 0) {
->   		if (online_section_nr(start_nr))
-> -			return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
-> +			return section_nr_to_pfn(start_nr + 1);
->   	}
+>   	return fastrpc_internal_invoke(fl, true, FASTRPC_DSP_UTILITIES_HANDLE,
+>   				       FASTRPC_SCALARS(0, 1, 1), args);
+> @@ -1723,7 +1722,7 @@ static int fastrpc_get_info_from_kernel(struct fastrpc_ioctl_capability *cap,
+>   	if (!dsp_attributes)
+>   		return -ENOMEM;
+>   
+
+<-- snip
+> -	err = fastrpc_get_info_from_dsp(fl, dsp_attributes, FASTRPC_MAX_DSP_ATTRIBUTES_LEN);
+> +	err = fastrpc_get_info_from_dsp(fl, dsp_attributes, FASTRPC_MAX_DSP_ATTRIBUTES);
+
+-->
+Before this change we passed a value which is already multipled now we 
+pass a value that will be mulitplied inside fastrpc_get_info_from_dsp, 
+both will work, but I dont see any value in doing this change.
+
+
+>   	if (err == DSP_UNSUPPORTED_API) {
+>   		dev_info(&cctx->rpdev->dev,
+>   			 "Warning: DSP capabilities not supported on domain: %d\n", domain);
+> @@ -1776,7 +1775,7 @@ static int fastrpc_get_dsp_info(struct fastrpc_user *fl, char __user *argp)
+>   	if (err)
+>   		return err;
+>   
+> -	if (copy_to_user(argp, &cap.capability, sizeof(cap.capability)))
+> +	if (copy_to_user(argp, &cap, sizeof(cap)))
+
+Can you explain this change, and what is it fixing exactly?
+
+--srini
+>   		return -EFAULT;
 >   
 >   	return 0;
-> @@ -1670,8 +1670,7 @@ static void isolate_freepages(struct compact_control *cc)
->   
->   			next_pfn = skip_offline_sections_reverse(block_start_pfn);
->   			if (next_pfn)
-> -				block_start_pfn = max(pageblock_start_pfn(next_pfn),
-> -						      low_pfn);
-> +				block_start_pfn = max(next_pfn, low_pfn);
-
-
-So block_start_pfn() will now point at the first PFN of the offline section.
-
-Confusing stuff, but I get the idea and I think it makes sense to me :)
-
--- 
-Cheers,
-
-David / dhildenb
-
