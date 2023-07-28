@@ -2,130 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AB9766EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1251F766EFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbjG1N7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
+        id S236230AbjG1OBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235782AbjG1N7w (ORCPT
+        with ESMTP id S235119AbjG1OBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:59:52 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B5CF2D76;
-        Fri, 28 Jul 2023 06:59:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AAE662F4;
-        Fri, 28 Jul 2023 07:00:33 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C02233F67D;
-        Fri, 28 Jul 2023 06:59:48 -0700 (PDT)
-Message-ID: <81179172-cf6f-f5b9-c017-74aa6c95132a@arm.com>
-Date:   Fri, 28 Jul 2023 14:59:43 +0100
+        Fri, 28 Jul 2023 10:01:34 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4F92D75
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:01:31 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo432572e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690552889; x=1691157689;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x9hixi/gQwv5YJ/YHf3v4luoCqI1hnLSa6nP6Mhei18=;
+        b=UC2dej78mnQEdviDpeT7W2JGYxNeSuOFF4S+znTixasREcYc9luKlkkqMRjKoDYYEY
+         lyh5p9lxfdAaslckZO1IhZ3xAo6ZCHD7n1aHrfkLpdfvQ05sAoMlMQFouSEsKvlWH/qk
+         vCxDpmwBhmrrhkPbwF6q0KedRV+iimdYyC5/c9BXVzzHpRb/VdbqtW1w5s3+XewLxhsP
+         mRwblsxZmri74aiQDjJb79BLtP5QzTxsE6GEvElHxT1W/q2IGQwGGfMWebZe8aREU3zq
+         u2sRmXduosCk9EVmZh4tCcQAUIWgo74KtWgjpgtkwHgHVxk68oPs7T3FQYAz+rw/P562
+         U7bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690552889; x=1691157689;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x9hixi/gQwv5YJ/YHf3v4luoCqI1hnLSa6nP6Mhei18=;
+        b=aecHmBwEk2wcpwk8v+9HIopRGlSe4S8Ey1nYGocCjMb2fLC9Cfb8eNSAbw/Lj23GZQ
+         XJp975LT3XeC8FnRmmPQMc8rYlq4y/GBCgCJwxtjBBtw7ZM5tN99b+VbceXelJcZ0dfN
+         Y4azCNXkZlciqe2GQttKu7KGmessf0ldZkIytaF1dpTSpuk+gk6VPCtsVcUB3fQbRCkv
+         24JaS+WlPcovbJNSJa1bdqWiK72Vb4l6GEPU2JlJmNdC1+8ebPMH11ocl0+aDN61K4BW
+         HGGup+Q1RhFVoFpMhXBaLXfqp8UxhP8xAYmJphjiyOvj8EsM2mB1TAJEnFo7j8dtDBKd
+         GeMQ==
+X-Gm-Message-State: ABy/qLYyRSOJjuhjN+8SgkTsQ/rWaUNrLYku7a763QZ6i2T0zNZbOXi0
+        I87sgVAEu8bmbIsQaven13Umgw==
+X-Google-Smtp-Source: APBJJlHwHb+q7A/f5L6SYCXz7IjgUhy7L+2ZIBRJwYoOKtXmQIoGYNh2HOtKmvIzzKfPFTPrR1LYQA==
+X-Received: by 2002:a19:5015:0:b0:4fb:f2d5:467f with SMTP id e21-20020a195015000000b004fbf2d5467fmr1676708lfb.13.1690552888806;
+        Fri, 28 Jul 2023 07:01:28 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id l14-20020ac2430e000000b004fdfd79e732sm829593lfh.289.2023.07.28.07.01.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 07:01:28 -0700 (PDT)
+Message-ID: <e18b951e-7f15-2c67-9099-c45ea7f67daa@linaro.org>
+Date:   Fri, 28 Jul 2023 17:01:27 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1 0/1] perf tools: Add a place to put kernel config
- fragments for test runs
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, masahiroy@kernel.org,
-        leo.yan@linaro.org, broonie@kernel.org, Aishwarya.TCV@arm.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20230628105303.4053478-1-james.clark@arm.com>
- <CAM9d7cgo97jJTTTV7F2kJ=sF9MBoRwegN4r0dWotbUD=Nr1_cQ@mail.gmail.com>
- <36767548-fbc3-9c4b-848c-d1d3102e442a@arm.com>
- <85fad198-278a-aea2-3ada-f4f6a31f02ef@arm.com> <ZMPCsEeO1Xad/pR6@kernel.org>
-Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <ZMPCsEeO1Xad/pR6@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/33] Qualcomm video decoder/encoder driver
+Content-Language: en-GB
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Cc:     quic_dikshita@quicinc.com
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 28/07/2023 16:23, Vikash Garodia wrote:
+> This patch series introduces support for Qualcomm new video acceleration
+> hardware architecture, used for video stream decoding/encoding. This driver
+> is based on new communication protocol between video hardware and application
+> processor.
+> 
+> This driver comes with below capabilities:
+> - V4L2 complaint video driver with M2M and STREAMING capability.
+> - Supports H264, H265, VP9 decoders.
+> - Supports H264, H265 encoders.
 
+Please describe, why is it impossible to support this hardware in the 
+venus driver. We do not usually add new drivers for the new generations 
+of the hardware, unless it is fully incompatible with the previous 
+generations. Let me point you to camss or drm/msm drivers. They have 
+successfully solved the issue of supporting multiple generations of the 
+hardware in the same driver.
 
-On 28/07/2023 14:29, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Jul 28, 2023 at 11:48:34AM +0100, James Clark escreveu:
->>
->>
->> On 30/06/2023 09:04, James Clark wrote:
->>>
->>>
->>> On 29/06/2023 23:03, Namhyung Kim wrote:
->>>> Hi James,
->>>>
->>>> On Wed, Jun 28, 2023 at 3:53 AM James Clark <james.clark@arm.com> wrote:
->>>>>
->>>>> Changes since RFC:
->>>>>
->>>>>  * Changed arch filename convention to use the ARCH= build time values
->>>>>    instead of uname
->>>>>
->>>>> It seems like there were no objections on the RFC, apart from maybe
->>>>> changing the perf tests to run as a kself test. But that's probably not
->>>>> going to happen for a while, if ever, and these fragments can always
->>>>> be moved in that case.
->>>>
->>>> I missed the RFC, sorry.  Could you please add a link for that?
->>>>
->>>> Thanks,
->>>> Namhyung
->>>
->>> Yep, it's here:
->>> https://lore.kernel.org/lkml/d02cce4a-47b1-a776-0d3a-a6a7c9a4d8fd@arm.com/T/
->>>
->>
->> Hi Arnaldo,
->>
->> Any interest in taking this one?
-> 
-> Yeah, looks useful, we can go on from this starting point and improve
-> it.
-> 
-> I merged it into perf-tools-next.
-> 
-> Thanks,
-> 
-> - Arnaldo
->  
+Unless the "iris3" is completely different from all the previous 
+generations, I strongly suggest spending time on restructuring existing 
+venus driver and then adding support for the new hardware there instead 
+of dumping out something completely new.
 
-Thanks Arnaldo!
-
->> Thanks
->> James
->>
->>>>
->>>>
->>>>>
->>>>> James Clark (1):
->>>>>   perf tools: Add a place to put kernel config fragments for test runs
->>>>>
->>>>>  tools/perf/tests/config-fragments/README |  7 +++++++
->>>>>  tools/perf/tests/config-fragments/arm64  |  1 +
->>>>>  tools/perf/tests/config-fragments/config | 11 +++++++++++
->>>>>  3 files changed, 19 insertions(+)
->>>>>  create mode 100644 tools/perf/tests/config-fragments/README
->>>>>  create mode 100644 tools/perf/tests/config-fragments/arm64
->>>>>  create mode 100644 tools/perf/tests/config-fragments/config
->>>>>
->>>>>
->>>>> base-commit: ad5f604e186ac08d12c401e34ea96c09c38ddbc5
->>>>> --
->>>>> 2.34.1
->>>>>
 > 
+> This driver comes with below features:
+> - Centralized resource and memory management.
+> - Centralized management of core and instance states.
+> - Defines platform specific capabilities and features. As a results, it provides
+>    a single point of control to enable/disable a given feature depending on
+>    specific platform capabilities.
+> - Handles hardware interdependent configurations. For a given configuration from
+>    client, the driver checks for hardware dependent configuration/s and updates
+>    the same.
+> - Handles multiple complex video scenarios involving state transitions - DRC,
+>    Drain, Seek, back to back DRC, DRC during Drain sequence, DRC during Seek
+>    sequence.
+> - Introduces a flexible way for driver to subscribe for any property with
+>    hardware. Hardware would inform driver with those subscribed property with any
+>    change in value.
+> - Introduces performance (clock and bus) model based on new hardware
+>    architecture.
+> - Introduces multi thread safe design to handle communication between client and
+>    hardware.
+> - Adapts encoder quality improvements available in new hardware architecture.
+> - Implements asynchronous communication with hardware to achieve better
+>    experience in low latency usecases.
+> - Supports multi stage hardware architecture for encode/decode.
+> - Output and capture planes are controlled independently. Thereby providing a
+>    way to reconfigure individual plane.
+> - Hardware packetization layer supports synchronization between configuration
+>    packet and data packet.
+> - Introduces a flexibility to receive a hardware response for a given command
+>    packet.
+> - Native hardware support of LAST flag which is mandatory to align with port
+>    reconfiguration and DRAIN sequence as per V4L guidelines.
+> - Native hardware support for drain sequence.
+> 
+> I think that the driver is in good shape for mainline kernel, and I hope the
+> review comments will help to improve it, so please do review, and make comments.
+> 
+> Dikshita Agarwal (17):
+>    iris: vidc: add core functions
+>    iris: add vidc wrapper file
+>    iris: vidc: add vb2 ops
+>    iris: vidc: add helpers for memory management
+>    iris: vidc: add helper functions for resource management
+>    iris: vidc: add helper functions for power management
+>    iris: add helpers for media format
+>    iris: vidc: add PIL functionality for video firmware
+>    iris: platform: add platform files
+>    iris: platform: sm8550: add capability file for sm8550
+>    iris: variant: add helper functions for register handling
+>    iris: variant: iris3: add iris3 specific ops
+>    iris: variant: iris3: add helpers for buffer size calculations
+>    iris: variant: iris3: add helper for bus and clock calculation
+>    iris: variant: iris: implement the logic to compute bus bandwidth
+>    iris: variant: iris3: implement logic to compute clock frequency
+>    iris: enable building of iris video driver
+> 
+> Vikash Garodia (16):
+>    MAINTAINERS: Add Qualcomm Iris video accelerator driver
+>    iris: vidc: add v4l2 wrapper file
+>    iris: vidc: define video core and instance context
+>    iris: iris: add video encoder files
+>    iris: vidc: add video decoder files
+>    iris: vidc: add control files
+>    iris: vidc: add helper functions
+>    iris: vidc: add helpers for state management
+>    iris: add vidc buffer files
+>    iris: vidc: define various structures and enum
+>    iris: vidc: hfi: add Host Firmware Interface (HFI)
+>    iris: vidc: hfi: add Host Firmware Interface (HFI) response handling
+>    iris: vidc: hfi: add helpers for handling shared queues
+>    iris: vidc: hfi: Add packetization layer
+>    iris: vidc: hfi: defines HFI properties and enums
+>    iris: vidc: add debug files
+> 
+>   MAINTAINERS                                        |   10 +
+>   drivers/media/platform/qcom/Kconfig                |    1 +
+>   drivers/media/platform/qcom/Makefile               |    1 +
+>   drivers/media/platform/qcom/iris/Kconfig           |   15 +
+>   drivers/media/platform/qcom/iris/Makefile          |   46 +
+>   .../iris/platform/common/inc/msm_vidc_platform.h   |  305 ++
+>   .../iris/platform/common/src/msm_vidc_platform.c   | 2499 ++++++++++++
+>   .../iris/platform/sm8550/inc/msm_vidc_sm8550.h     |   14 +
+>   .../iris/platform/sm8550/src/msm_vidc_sm8550.c     | 1727 ++++++++
+>   .../iris/variant/common/inc/msm_vidc_variant.h     |   22 +
+>   .../iris/variant/common/src/msm_vidc_variant.c     |  163 +
+>   .../qcom/iris/variant/iris3/inc/hfi_buffer_iris3.h | 1481 +++++++
+>   .../iris/variant/iris3/inc/msm_vidc_buffer_iris3.h |   19 +
+>   .../qcom/iris/variant/iris3/inc/msm_vidc_iris3.h   |   15 +
+>   .../iris/variant/iris3/inc/msm_vidc_power_iris3.h  |   17 +
+>   .../iris/variant/iris3/inc/perf_static_model.h     |  229 ++
+>   .../iris/variant/iris3/src/msm_vidc_buffer_iris3.c |  595 +++
+>   .../iris/variant/iris3/src/msm_vidc_bus_iris3.c    |  884 ++++
+>   .../iris/variant/iris3/src/msm_vidc_clock_iris3.c  |  627 +++
+>   .../qcom/iris/variant/iris3/src/msm_vidc_iris3.c   |  954 +++++
+>   .../iris/variant/iris3/src/msm_vidc_power_iris3.c  |  345 ++
+>   .../media/platform/qcom/iris/vidc/inc/firmware.h   |   18 +
+>   .../platform/qcom/iris/vidc/inc/hfi_command.h      |  190 +
+>   .../media/platform/qcom/iris/vidc/inc/hfi_packet.h |   52 +
+>   .../platform/qcom/iris/vidc/inc/hfi_property.h     |  666 +++
+>   .../platform/qcom/iris/vidc/inc/msm_media_info.h   |  599 +++
+>   .../media/platform/qcom/iris/vidc/inc/msm_vdec.h   |   40 +
+>   .../media/platform/qcom/iris/vidc/inc/msm_venc.h   |   34 +
+>   .../media/platform/qcom/iris/vidc/inc/msm_vidc.h   |   60 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_buffer.h  |   32 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_control.h |   26 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_core.h    |  165 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_debug.h   |  186 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_driver.h  |  352 ++
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_inst.h    |  207 +
+>   .../qcom/iris/vidc/inc/msm_vidc_internal.h         |  787 ++++
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_memory.h  |   83 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_power.h   |   94 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_state.h   |  102 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h    |   77 +
+>   .../platform/qcom/iris/vidc/inc/msm_vidc_vb2.h     |   39 +
+>   .../media/platform/qcom/iris/vidc/inc/resources.h  |  259 ++
+>   .../media/platform/qcom/iris/vidc/inc/venus_hfi.h  |   66 +
+>   .../platform/qcom/iris/vidc/inc/venus_hfi_queue.h  |   89 +
+>   .../qcom/iris/vidc/inc/venus_hfi_response.h        |   26 +
+>   .../media/platform/qcom/iris/vidc/src/firmware.c   |  294 ++
+>   .../media/platform/qcom/iris/vidc/src/hfi_packet.c |  657 +++
+>   .../media/platform/qcom/iris/vidc/src/msm_vdec.c   | 2091 ++++++++++
+>   .../media/platform/qcom/iris/vidc/src/msm_venc.c   | 1484 +++++++
+>   .../media/platform/qcom/iris/vidc/src/msm_vidc.c   |  841 ++++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_buffer.c  |  290 ++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_control.c |  824 ++++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_debug.c   |  581 +++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_driver.c  | 4276 ++++++++++++++++++++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_memory.c  |  448 ++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_power.c   |  560 +++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_probe.c   |  660 +++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_state.c   | 1607 ++++++++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_v4l2.c    |  953 +++++
+>   .../platform/qcom/iris/vidc/src/msm_vidc_vb2.c     |  605 +++
+>   .../media/platform/qcom/iris/vidc/src/resources.c  | 1321 ++++++
+>   .../media/platform/qcom/iris/vidc/src/venus_hfi.c  | 1503 +++++++
+>   .../platform/qcom/iris/vidc/src/venus_hfi_queue.c  |  537 +++
+>   .../qcom/iris/vidc/src/venus_hfi_response.c        | 1607 ++++++++
+>   64 files changed, 35357 insertions(+)
+>   create mode 100644 drivers/media/platform/qcom/iris/Kconfig
+>   create mode 100644 drivers/media/platform/qcom/iris/Makefile
+>   create mode 100644 drivers/media/platform/qcom/iris/platform/common/inc/msm_vidc_platform.h
+>   create mode 100644 drivers/media/platform/qcom/iris/platform/common/src/msm_vidc_platform.c
+>   create mode 100644 drivers/media/platform/qcom/iris/platform/sm8550/inc/msm_vidc_sm8550.h
+>   create mode 100644 drivers/media/platform/qcom/iris/platform/sm8550/src/msm_vidc_sm8550.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/common/inc/msm_vidc_variant.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/common/src/msm_vidc_variant.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/inc/hfi_buffer_iris3.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/inc/msm_vidc_buffer_iris3.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/inc/msm_vidc_iris3.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/inc/msm_vidc_power_iris3.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/inc/perf_static_model.h
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/src/msm_vidc_buffer_iris3.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/src/msm_vidc_bus_iris3.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/src/msm_vidc_clock_iris3.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/src/msm_vidc_iris3.c
+>   create mode 100644 drivers/media/platform/qcom/iris/variant/iris3/src/msm_vidc_power_iris3.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/firmware.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/hfi_command.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/hfi_packet.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/hfi_property.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_media_info.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vdec.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_venc.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_buffer.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_control.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_core.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_debug.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_driver.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_inst.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_internal.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_memory.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_power.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_state.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_vb2.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/resources.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/venus_hfi.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_queue.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_response.h
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/firmware.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/hfi_packet.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vdec.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_venc.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_buffer.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_control.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_debug.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_driver.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_memory.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_power.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_state.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_vb2.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/resources.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/venus_hfi_queue.c
+>   create mode 100644 drivers/media/platform/qcom/iris/vidc/src/venus_hfi_response.c
+> 
+
+-- 
+With best wishes
+Dmitry
+
