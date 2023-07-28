@@ -2,180 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BE37670C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26EF7670C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237395AbjG1Pio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
+        id S237409AbjG1Pkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235105AbjG1Pik (ORCPT
+        with ESMTP id S237405AbjG1Pkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:38:40 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 744E5421B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:38:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 345E62F4;
-        Fri, 28 Jul 2023 08:39:13 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.89.82])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A79A3F67D;
-        Fri, 28 Jul 2023 08:38:28 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 16:38:25 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Gowthami Thiagarajan <gthiagarajan@marvell.com>
-Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
-        bbhushan2@marvell.com, gcherian@marvell.com, lcherian@marvell.com
-Subject: Re: [PATCH 3/6] perf/marvell : Odyssey LLC-TAD performance monitor
- support
-Message-ID: <ZMPg8RNxEeHQNdqb@FVFF77S0Q05N>
-References: <20230630120351.1143773-1-gthiagarajan@marvell.com>
- <20230630120351.1143773-4-gthiagarajan@marvell.com>
+        Fri, 28 Jul 2023 11:40:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59521BD1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:40:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 63F0A62181
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D6D5C433C7;
+        Fri, 28 Jul 2023 15:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690558847;
+        bh=PXHcT/NQwG7GVZErcgvIAilJ/Q5hOPzcNFZV9tnPlwk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HEUiSbPyn9oQWhB3NMrXKVa7s/kebesxpcvxqqLM+QDNxwCKSWea0DwZEeZR55m/e
+         8x/E/qHkiGnatWxGwM34bRgOjt0BafB5PV/De5e6fKB8Z/xp/kVFr8+xOFIFF4HXgz
+         ZzRWN4gDcHOqXtlWvG5WilbdQKuhjFfGXkhP+HwGXf4aDJtKTO/3g881TLG4wpRpPL
+         rqQj1MLnCK3VNBigtqDwfinGPPe4xT35ghn9cZPDSTxzv7X3VTsKule1f8tLEYXL4z
+         /j1a1w9n2J9Q2TarwfAShm2Aj2cNhL8EKXfQGl2QLFNdiAWOMKIquoFVpKHnX6UnHt
+         qAOHL7Kb+1MxA==
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, blakgeof@amazon.com,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, ilkka@os.amperecomputing.com
+Subject: Re: [PATCH 0/3] perf: Arm CMN updates
+Date:   Fri, 28 Jul 2023 16:40:42 +0100
+Message-Id: <169055106672.1935989.16792278281794617341.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1688746690.git.robin.murphy@arm.com>
+References: <cover.1688746690.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230630120351.1143773-4-gthiagarajan@marvell.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 05:33:48PM +0530, Gowthami Thiagarajan wrote:
-> Each TAD provides eight 64-bit counters for monitoring
-> cache behavior.The driver always configures the same counter for
-> all the TADs. The user would end up effectively reserving one of
-> eight counters in every TAD to look across all TADs.
-> The occurrences of events are aggregated and presented to the user
-> at the end of running the workload. The driver does not provide a
-> way for the user to partition TADs so that different TADs are used for
-> different applications.
+On Fri, 7 Jul 2023 17:38:10 +0100, Robin Murphy wrote:
+> Here's another CMN update which unfortunately due to circumstances
+> didn't manage to be ready in time for 6.5. I realise it's a bit early
+> now, but I'm about to be offline for 4 weeks so hey. For anyone playing
+> along at home, the HN-S is not documented not in the CMN-700 TRM, but
+> in its own special supplement[1].
 > 
-> The performance events reflect various internal or interface activities.
-> By combining the values from multiple performance counters, cache
-> performance can be measured in terms such as: cache miss rate, cache
-> allocations, interface retry rate, internal resource occupancy, etc.
+> Thanks,
+> Robin.
 > 
-> Each supported counter's event and formatting information is exposed
-> to sysfs at /sys/devices/tad/. Use perf tool stat command to measure
-> the pmu events. For instance:
-> 
-> perf stat -e tad_hit_ltg,tad_hit_dtg <workload>
-> 
-> Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+> [...]
 
-This generally looks ok; I have a few comments below.
+Applied to will (for-next/perf), thanks!
 
-[...]
+[1/3] perf/arm-cmn: Remove spurious event aliases
+      https://git.kernel.org/will/c/00df90934c9e
+[2/3] perf/arm-cmn: Refactor HN-F event selector macros
+      https://git.kernel.org/will/c/b1b7dc38e482
+[3/3] perf/arm-cmn: Add CMN-700 r3 support
+      https://git.kernel.org/will/c/ac18ea1a8935
 
-> +static void tad_pmu_event_counter_stop(struct perf_event *event, int flags)
-> +{
-> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u32 counter_idx = hwc->idx;
-> +	int tad_region;
-> +
-> +	/* TAD()_PFC() stop counting on the write
-> +	 * which sets TAD()_PRF()[CNTSEL] == 0
-> +	 */
+Cheers,
+-- 
+Will
 
-Please fix the comment style.
-
-Likewise for all other instances within this file.
-
-[...]
-
-> +static int tad_pmu_event_counter_add(struct perf_event *event, int flags)
-> +{
-> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int idx;
-> +
-> +	/* Get a free counter for this event */
-> +	idx = find_first_zero_bit(tad_pmu->counters_map, TAD_MAX_COUNTERS);
-> +	if (idx == TAD_MAX_COUNTERS)
-> +		return -EAGAIN;
-> +
-> +	set_bit(idx, tad_pmu->counters_map);
-> +
-> +	hwc->idx = idx;
-> +	hwc->state = PERF_HES_STOPPED;
-> +	tad_pmu->events[idx] = event;
-> +
-> +	if (flags & PERF_EF_START)
-> +		tad_pmu_event_counter_start(event, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tad_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct tad_pmu *tad_pmu = to_tad_pmu(event->pmu);
-> +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
-
-Why is this not rejecting smapling events, as patch 1 does?
-
-> +
-> +	if (!event->attr.disabled)
-> +		return -EINVAL;
-
-Why?
-
-> +
-> +	if (event->state != PERF_EVENT_STATE_OFF)
-> +		return -EINVAL;
-
-Event groups need to be verified here too.
-
-[...]
-
-> +static int tad_pmu_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct tad_region *regions;
-> +	struct tad_pmu *tad_pmu;
-> +	struct resource *res;
-> +	u32 tad_pmu_page_size;
-> +	u32 tad_page_size;
-> +	u32 tad_cnt;
-> +	int i, ret;
-> +	char *name;
-> +
-> +	tad_pmu = devm_kzalloc(&pdev->dev, sizeof(*tad_pmu), GFP_KERNEL);
-> +	if (!tad_pmu)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, tad_pmu);
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Mem resource not found\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = device_property_read_u32(dev, "marvell,tad-page-size", &tad_page_size);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Can't find tad-page-size property\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = device_property_read_u32(dev, "marvell,tad-pmu-page-size",
-> +				       &tad_pmu_page_size);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Can't find tad-pmu-page-size property\n");
-> +		return ret;
-> +	}
-
-Why do you think these properties are necessary?
-
-These should almost certainly be provided by IO resources, and shouldn't need a
-custom property.
-
-Thanks,
-Mark.
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
