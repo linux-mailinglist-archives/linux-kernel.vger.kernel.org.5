@@ -2,326 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F62766C43
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE686766C40
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbjG1L7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
+        id S234901AbjG1L6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235196AbjG1L6z (ORCPT
+        with ESMTP id S233986AbjG1L6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:58:55 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA501B8;
-        Fri, 28 Jul 2023 04:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xFu7mnlDXbmlXbWasCgI2PC9m5jQyD3JuPUGhFojfqI=; b=dZAFz116nQgxUH6DhndYf36rcP
-        zgt6ImWhZZKDbWXV//Pc9c8kwS9LGj8/h6IPx6HH5L9STwfXMXYyrwliPZXGltlxIt/r81cQikA2+
-        suvSboKEeiHfL4PVA/EZLeDI9HA+cuu9dj4U5hlnHYcrF3PNvIZdgQeweZO8pjGgjVggp4uCW7Ryv
-        HmjaMVzKU4VWD/P4KAElt4AXkx+tSlck/tUS6Wtzolmmtp+C6I/p+rF0hSrxWxAuuZlTMG1WqTB4H
-        Xwq7TN8M2Cu6K+wkPQvjbgAdwOratZawi/KdobO9IkHWoWEpLl+wTD/7Q3DE6PaFbNu1jzgbviQib
-        +cZOJRjA==;
-Received: from [187.36.235.191] (helo=[192.168.1.212])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qPM7J-0059q5-GQ; Fri, 28 Jul 2023 13:58:46 +0200
-Message-ID: <a92b05d0-65d4-c37d-c1d0-72366754e6a4@igalia.com>
-Date:   Fri, 28 Jul 2023 08:58:34 -0300
+        Fri, 28 Jul 2023 07:58:46 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF641EC
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:58:44 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe0bd28090so4598865e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690545523; x=1691150323;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3Cfxs3q4Jsb2k+V2yEhb2RPY8PN/EYtMoa8StDuPXsY=;
+        b=oEb9hoG6YlRX0+AEgL9LG8ZsDo4ATPzKZCmmjll4m/ynaUvp0dmxoYrD4tFWln3xV6
+         w718NbPkrAmqRlHe2Iy1nDMZwm6shmZrJtBDbu9Z4Mbqi/GKtkdbmepBOC5OxFASKfdf
+         esoLo97NoNWOQsszmQXfQcLRQEoZFxSuWq3/F6kFDWtxbH90LLgR+3xqrRi6zw7s7FzE
+         Vyi11Z4jcnJN1VV6IMpW+3YugYgDkO7YvRSe2h3fZBdmG742OAc/3n8TGiElTj5GQDaT
+         1pbZ0AIfPPAUyqgW/zBIbxy0hnrLtbPjoU8ekddY/Fz1BC+iLE8uU9qr8dT1tRS8zhr/
+         aQ7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690545523; x=1691150323;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Cfxs3q4Jsb2k+V2yEhb2RPY8PN/EYtMoa8StDuPXsY=;
+        b=L+BOmqjbFtrkzGSOraSYQznOGtWrCwssz75y0LNQjnY7Hr1uzhf6YIXF0kDjovAn6y
+         o4oyaGzfNWkgAROGEyY5A9wOoJkLA1bqW+7HotRlIYwXzZZJM1ySk6KtboxkUmEzNoL9
+         HQ8kZ6lU8Zf+/g9X6gef4BPBONKLH6IYxIi3TfLqSZeC/hZt5H/JpMfosavzc8YqKU7d
+         +iDDq6YYOD2uUFMS2XKJgIyX9tUghB8wKPRz4xznCYPqg8MHHNMgh9rmQNmakRnkAt10
+         PMawQo+tblMUhk6YTmBVTl5yOXupGYYQ6+L25fiKEKBuAinvdFW+nb2MovURtTByErU9
+         MjWw==
+X-Gm-Message-State: ABy/qLYUAK3McVUAJzho/d9OZshDRD7N3M49ZQZYdy/5OCMH4V02e4m5
+        3/qJ81U3Ge1sAYwhAiM7aZY4AQ==
+X-Google-Smtp-Source: APBJJlH1YlQetl0fvclMMTFBCnaKl5V9RNnW0klov9R3IGbcYHc4yu+VblonwfVcKn/jMDBneyz+3g==
+X-Received: by 2002:a05:600c:229a:b0:3fa:e92e:7a8b with SMTP id 26-20020a05600c229a00b003fae92e7a8bmr1490371wmf.13.1690545523264;
+        Fri, 28 Jul 2023 04:58:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c240900b003fa98908014sm6850010wmp.8.2023.07.28.04.58.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 04:58:42 -0700 (PDT)
+Message-ID: <c153c97c-b51f-3090-6746-e5db662625ea@linaro.org>
+Date:   Fri, 28 Jul 2023 13:58:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 50/50] ARM: dts: at91: sam9x75_curiosity: add sam9x75
+ curiosity board
 Content-Language: en-US
-To:     Helen Koike <helen.koike@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
-        david.heidelberg@collabora.com, linux-amlogic@lists.infradead.org,
-        jbrunet@baylibre.com, robdclark@google.com, corbet@lwn.net,
-        khilman@baylibre.com, sergi.blanch.torne@collabora.com,
-        gustavo.padovan@collabora.com, linux-rockchip@lists.infradead.org,
-        daniels@collabora.com, martin.blumenstingl@googlemail.com,
-        robclark@freedesktop.org, anholt@google.com,
-        linux-mediatek@lists.infradead.org, mripard@kernel.org,
-        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-References: <20230720152737.102382-1-helen.koike@collabora.com>
-From:   Maira Canal <mcanal@igalia.com>
-In-Reply-To: <20230720152737.102382-1-helen.koike@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        andre.przywara@arm.com, f.fainelli@gmail.com,
+        romain.perier@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230728103114.267845-1-varshini.rajendran@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728103114.267845-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Helen,
-
-Great to see this coming to the DRM!
-
-Just wondering, any chance we could add a stage to perform tests on
-VKMS? The main way of validating VKMS is through IGT tests, so I feel
-it would be a perfect match to have VKMS as a stage on the CI. As a
-generic KMS driver, VKMS is also great to validate changes on DRM core.
-
-Another question, could we add V3D to the default arm and arm64 config?
-
-Best Regards,
-- Maíra
-
-On 7/20/23 12:27, Helen Koike wrote:
-> From: Tomeu Vizoso <tomeu.vizoso@collabora.com>
+On 28/07/2023 12:31, Varshini Rajendran wrote:
+> Add device tree file for sam9x75 curiosity board.
 > 
-> Developers can easily execute several tests on different devices
-> by just pushing their branch to their fork in a repository hosted
-> on gitlab.freedesktop.org which has an infrastructure to run jobs
-> in several runners and farms with different devices.
-> 
-> There are also other automated tools that uprev dependencies,
-> monitor the infra, and so on that are already used by the Mesa
-> project, and we can reuse them too.
-> 
-> Also, store expectations about what the DRM drivers are supposed
-> to pass in the IGT test suite. By storing the test expectations
-> along with the code, we can make sure both stay in sync with each
-> other so we can know when a code change breaks those expectations.
-> 
-> Also, include a configuration file that points to the out-of-tree
-> CI scripts.
-> 
-> This will allow all contributors to drm to reuse the infrastructure
-> already in gitlab.freedesktop.org to test the driver on several
-> generations of the hardware.
-> 
-> Signed-off-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> 
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
+>  arch/arm/boot/dts/microchip/Makefile          |   5 +
+>  .../dts/microchip/at91-sam9x75_curiosity.dts  | 311 ++++++++++++++++++
+>  2 files changed, 316 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
 > 
-> Hello,
-> 
-> I'm re-spining this patch sent originally by Tomeu.
-> 
-> This is meant to be an auxiliary tool where developers and
-> maintainers can just submit their code to fdo and see if
-> tests passes, than they can decide if it is worthy merging
-> it or not.
-> 
-> This tool has proven its value on the Mesa community
-> and it can bring a lot of value here too.
-> 
-> Please review and let me know your thoughts.
-> 
-> You can also see this patch on
-> https://gitlab.freedesktop.org/helen.fornazier/linux/-/tree/drm-ci-tests
-> 
-> Thanks!
-> 
-> v2:
->    - Fix names of result expectation files to match SoC
->    - Don't execute tests that are going to skip on all boards
-> 
-> v3:
->    - Remove tracking of dmesg output during test execution
-> 
-> v4:
->    - Move up to drivers/gpu/drm
->    - Add support for a bunch of other drivers
->    - Explain how to incorporate fixes for CI from a
->      ${TARGET_BRANCH}-external-fixes branch
->    - Remove tests that pass from expected results file, to reduce the
->      size of in-tree files
->    - Add docs about how to deal with outages in automated testing labs
->    - Specify the exact SHA of the CI scripts to be used
-> 
-> v5:
->    - Remove unneeded skips from Meson expectations file
->    - Use a more advanced runner that detects flakes automatically
->    - Use a more succint format for the expectations
->    - Run many more tests (and use sharding to finish in time)
->    - Use skip lists to avoid hanging machines
->    - Add some build testing
->    - Build IGT in each pipeline for faster uprevs
->    - List failures in the GitLab UI
-> 
-> v6:
->    - Rebase on top of latest drm-next
->    - Lower priority of LAVA jobs to not impact Mesa CI as much
->    - Update docs
-> 
-> v7:
->    - Rebase on top of latest drm-next
-> 
-> v8:
->    - Move all files specific to testing the kernel into the kernel tree
->      (thus I have dropped the r-bs I had collected so far)
->    - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
->    - Add MAINTAINERS entry
->    - Fix boot on MT8173 by adding some Kconfigs that are now needed
->    - Link to the docs from index.rst and hard-wrap the file
-> 
-> v9:
->    - Only automatically run the pipelines for merge requests
->    - Switch to zstd for the build artifacts to align with Mesa
->    - Add Qcom USB PHYs to config as they are now =m in the defconfig
-> 
-> v10:
->    - Include ci yml files from mesa/mesa (where the development is
->      current active) instead of a spin off project.
->    - Uprev Gitlab CI infrastructure scripts to the latest from Mesa
->    - Update MAINTAINERS entry
->    - Uprev igt tool
->    - add LAVA_JOB_PRIORITY: 30
->    - pipeline example:
->    https://gitlab.freedesktop.org/helen.fornazier/linux/-/pipelines/940506
-> ---
->   Documentation/gpu/automated_testing.rst       |  144 +
->   Documentation/gpu/index.rst                   |    1 +
->   MAINTAINERS                                   |    8 +
->   drivers/gpu/drm/ci/arm.config                 |   69 +
->   drivers/gpu/drm/ci/arm64.config               |  199 ++
->   drivers/gpu/drm/ci/build-igt.sh               |   35 +
->   drivers/gpu/drm/ci/build.sh                   |  157 +
->   drivers/gpu/drm/ci/build.yml                  |  110 +
->   drivers/gpu/drm/ci/check-patch.py             |   57 +
->   drivers/gpu/drm/ci/container.yml              |   61 +
->   drivers/gpu/drm/ci/gitlab-ci.yml              |  252 ++
->   drivers/gpu/drm/ci/igt_runner.sh              |   77 +
->   drivers/gpu/drm/ci/image-tags.yml             |   15 +
->   drivers/gpu/drm/ci/lava-submit.sh             |   57 +
->   drivers/gpu/drm/ci/static-checks.yml          |   12 +
->   drivers/gpu/drm/ci/test.yml                   |  335 ++
->   drivers/gpu/drm/ci/testlist.txt               | 2912 +++++++++++++++++
->   drivers/gpu/drm/ci/x86_64.config              |  111 +
->   .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |   22 +
->   .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |   19 +
->   .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |    2 +
->   drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   17 +
->   .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |   32 +
->   drivers/gpu/drm/ci/xfails/i915-amly-skips.txt |    4 +
->   drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |   57 +
->   drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |    1 +
->   drivers/gpu/drm/ci/xfails/i915-apl-skips.txt  |    4 +
->   drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |   18 +
->   drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |   37 +
->   drivers/gpu/drm/ci/xfails/i915-cml-skips.txt  |    2 +
->   drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |   18 +
->   drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |   41 +
->   drivers/gpu/drm/ci/xfails/i915-glk-skips.txt  |    5 +
->   drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   26 +
->   drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |   25 +
->   drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt  |    5 +
->   drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   37 +
->   drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt |    5 +
->   drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt  |   11 +
->   drivers/gpu/drm/ci/xfails/i915-whl-fails.txt  |   47 +
->   drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt |    1 +
->   drivers/gpu/drm/ci/xfails/i915-whl-skips.txt  |    2 +
->   .../drm/ci/xfails/mediatek-mt8173-fails.txt   |   29 +
->   .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |    0
->   .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   10 +
->   .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |   14 +
->   .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |   12 +
->   .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |    4 +
->   .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |   15 +
->   .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |    4 +
->   .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |    2 +
->   .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |    4 +
->   .../gpu/drm/ci/xfails/msm-apq8096-skips.txt   |    2 +
->   .../gpu/drm/ci/xfails/msm-sc7180-fails.txt    |   25 +
->   .../gpu/drm/ci/xfails/msm-sc7180-flakes.txt   |    7 +
->   .../gpu/drm/ci/xfails/msm-sc7180-skips.txt    |   23 +
->   .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   68 +
->   .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |   11 +
->   .../gpu/drm/ci/xfails/msm-sdm845-skips.txt    |    2 +
->   .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   49 +
->   .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |    8 +
->   .../drm/ci/xfails/rockchip-rk3288-skips.txt   |   52 +
->   .../drm/ci/xfails/rockchip-rk3399-fails.txt   |   39 +
->   .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |   23 +
->   .../drm/ci/xfails/rockchip-rk3399-skips.txt   |    5 +
->   .../drm/ci/xfails/virtio_gpu-none-fails.txt   |   38 +
->   .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |    0
->   .../drm/ci/xfails/virtio_gpu-none-skips.txt   |    6 +
->   test                                          |    0
->   69 files changed, 5502 insertions(+)
->   create mode 100644 Documentation/gpu/automated_testing.rst
->   create mode 100644 drivers/gpu/drm/ci/arm.config
->   create mode 100644 drivers/gpu/drm/ci/arm64.config
->   create mode 100644 drivers/gpu/drm/ci/build-igt.sh
->   create mode 100644 drivers/gpu/drm/ci/build.sh
->   create mode 100644 drivers/gpu/drm/ci/build.yml
->   create mode 100755 drivers/gpu/drm/ci/check-patch.py
->   create mode 100644 drivers/gpu/drm/ci/container.yml
->   create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
->   create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
->   create mode 100644 drivers/gpu/drm/ci/image-tags.yml
->   create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
->   create mode 100644 drivers/gpu/drm/ci/static-checks.yml
->   create mode 100644 drivers/gpu/drm/ci/test.yml
->   create mode 100644 drivers/gpu/drm/ci/testlist.txt
->   create mode 100644 drivers/gpu/drm/ci/x86_64.config
->   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
->   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->   create mode 100644 test
->
+> diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
+> index 0f5193d05a31..f3d604c30325 100644
+> --- a/arch/arm/boot/dts/microchip/Makefile
+> +++ b/arch/arm/boot/dts/microchip/Makefile
+> @@ -10,6 +10,7 @@ DTC_FLAGS_at91-sama5d3_eds := -@
+>  DTC_FLAGS_at91-sama5d3_xplained := -@
+>  DTC_FLAGS_at91-sama5d4_xplained := -@
+>  DTC_FLAGS_at91-sama7g5ek := -@
+> +DTC_FLAGS_at91-sam9x75_curiosity := -@
+>  dtb-$(CONFIG_SOC_AT91RM9200) += \
+>  	at91rm9200ek.dtb \
+>  	mpa1600.dtb
+> @@ -61,6 +62,10 @@ dtb-$(CONFIG_SOC_SAM9X60) += \
+>  	at91-sam9x60_curiosity.dtb \
+>  	at91-sam9x60ek.dtb
+>  # Enables support for device-tree overlays
+> +DTC_FLAGS_at91-sam9x75_curiosity := -@
+> +dtb-$(CONFIG_SOC_SAM9X7) += \
+> +	at91-sam9x75_curiosity.dtb
+> +# Enables support for device-tree overlays
+>  DTC_FLAGS_at91-sama5d27_som1_ek := -@
+>  DTC_FLAGS_at91-sama5d27_wlsom1_ek := -@
+>  DTC_FLAGS_at91-sama5d2_icp := -@
+> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
+> new file mode 100644
+> index 000000000000..a9ecb02a9f3c
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
+> @@ -0,0 +1,311 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * at91-sam9x75_curiosity.dts - Device Tree file for Microchip SAM9X75 Curiosity board
+> + *
+> + * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
+> + *
+> + * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
+> + */
+> +/dts-v1/;
+> +#include "sam9x7.dtsi"
+> +#include <dt-bindings/input/input.h>
+> +
+> +/ {
+> +	model = "Microchip SAM9X75 Curiosity";
+> +	compatible = "microchip,sam9x75-curiosity", "microchip,sam9x7", "atmel,at91sam9";
+> +
+> +	aliases {
+> +		i2c0 = &i2c6;
+> +		i2c1 = &i2c7;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	clocks {
+> +		clock-slowxtal {
+
+You should override/extend nodes by label/phandle. Doing by full node
+path is error prone and make it more difficult to make changes to DTSI
+later.
+
+> +			clock-frequency = <32768>;
+> +		};
+> +
+> +		clock-mainxtal {
+> +			clock-frequency = <24000000>;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_key_gpio_default>;
+> +
+> +		button-user {
+> +			label = "USER";
+> +			gpios = <&pioC 9 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_PROG1>;
+> +			wakeup-source;
+> +		};
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_led_gpio_default>;
+> +
+> +		led-0 {
+> +			label = "red";
+
+Use function and color instead.
+
+> +			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
+> +		};
+> +
+> +		led-1 {
+> +			label = "green";
+
+Use function and color instead.
+
+> +			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
+> +		};
+> +
+> +		led-2 {
+> +			label = "blue";
+
+Use function and color instead.
+
+> +			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +
+> +	memory@20000000 {
+> +		device_type = "memory";
+> +		reg = <0x20000000 0x10000000>;
+> +	};
+> +};
+> +
+> +&dbgu {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_dbgu>;
+> +	status = "okay";
+> +};
+> +
+> +&dma0 {
+> +	status = "okay";
+> +};
+> +
+> +&ehci0 {
+> +	status = "okay";
+> +};
+> +
+> +&flx6 {
+> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+> +	status = "okay";
+> +
+> +	i2c6 {
+
+This is just broken. Not tested, either.
+
+
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_flx6_default>;
+> +		i2c-analog-filter;
+> +		i2c-digital-filter;
+> +		i2c-digital-filter-width-ns = <35>;
+> +		status = "okay";
+> +
+
+Best regards,
+Krzysztof
+
