@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D664C76723C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1076726B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbjG1QoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46006 "EHLO
+        id S233372AbjG1Qw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbjG1QnM (ORCPT
+        with ESMTP id S234045AbjG1QwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:43:12 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C2D4691
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:58 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so2970727a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690562576; x=1691167376;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q3+wuhVg/p8H9ClZOmeQcBUOyAzdHoE0pZfkw6+aEgE=;
-        b=f4rWmLbH6MxCsyYr37tBB/9EqqbZJuHRl8dlSWCSmANEHsTqQ31ZVBocBl1X24/rR9
-         Xvyh6Bb+HAh5im1Vz0JV7c+gYlyYCnsPDDDyXoFgnJJjMyJwEqqCf2gybkFnDTGKf2nd
-         QzeFOLP9ZI6CIQuRVTXp13T0NEHNrkCmCXBoQt3LjiUEiJ2qPFnLeTSZIaSGH+Nh7HcV
-         nYGBKahXXFafGQAoio7PdhVNcfGv2k9v+95YGcvDT8WGgBE/wK7lmqIQpX3qVPtcfH+X
-         EsIc6vi41fMzS1gkpAyc9yIAVoOwPjWFfp0ANdQyieeHA5f1nOZdlqjbG7RTEuzUV4GB
-         qbjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562576; x=1691167376;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q3+wuhVg/p8H9ClZOmeQcBUOyAzdHoE0pZfkw6+aEgE=;
-        b=JyvE3+IF8YEkoLXHXSuvUrPidOHn3Pm6Xaii1xUYug+h8TexrPqpWnuJblbCAVvBg3
-         0aHwXoyToT2F0eX7eqHnVFXJmaFOrd1vUF7qf+gPPkd2pDGfdunPVQZoO3ArCbfDZZqI
-         LXAPdZV98f2UUHNSXZewKH01C0pQ7O68ha8IwiLItl3Hg42VuKsF4hEyCUoktUVB3pIo
-         94QYNaiwJg2D0yyxySgTdY1xYlB2WRYoAtg26xpSAWohm3T7OlPFGdjxqLWLQxbE2FeY
-         vy84yUHEl23J2WP5X82p5NsQGB5yohAki+lx1c811i19t0Qy9J4Z5SgiBv6oessnzYxC
-         K2+Q==
-X-Gm-Message-State: ABy/qLZzr6iR9zt+3U4ui2F6ivtEc7fszthCwxiNBhBr8VA2rmuOeTb1
-        4LqEyvuHEbKQ1z8rhxtYp1HdxQ==
-X-Google-Smtp-Source: APBJJlH5bYOR2n9oNfZEBMlqmDVCuTpOl4ID0OVQNdhlRA4qkuu66jlfbD+Oepe/HalkiwyCrR+NKA==
-X-Received: by 2002:aa7:d145:0:b0:522:203d:c9b1 with SMTP id r5-20020aa7d145000000b00522203dc9b1mr2368024edo.11.1690562576039;
-        Fri, 28 Jul 2023 09:42:56 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w10-20020aa7da4a000000b0051a53d7b160sm1968420eds.80.2023.07.28.09.42.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 09:42:55 -0700 (PDT)
-Message-ID: <f042b194-659a-b128-7f5a-572150bf532f@linaro.org>
-Date:   Fri, 28 Jul 2023 18:42:53 +0200
+        Fri, 28 Jul 2023 12:52:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A297527A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:50:33 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EBBFD1691;
+        Fri, 28 Jul 2023 09:45:08 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30E153F67D;
+        Fri, 28 Jul 2023 09:44:23 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+Subject: [PATCH v5 23/24] x86/resctrl: Move domain helper migration into resctrl_offline_cpu()
+Date:   Fri, 28 Jul 2023 16:42:53 +0000
+Message-Id: <20230728164254.27562-24-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
+References: <20230728164254.27562-1-james.morse@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 27/50] dt-bindings: usb: atmel: add sam9x7
-Content-Language: en-US
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230728102753.266660-1-varshini.rajendran@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728102753.266660-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 12:27, Varshini Rajendran wrote:
-> Add sam9x7 bindings.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  Documentation/devicetree/bindings/usb/atmel-usb.txt | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/atmel-usb.txt b/Documentation/devicetree/bindings/usb/atmel-usb.txt
-> index 12183ef47ee4..82bd0dbc2a48 100644
-> --- a/Documentation/devicetree/bindings/usb/atmel-usb.txt
-> +++ b/Documentation/devicetree/bindings/usb/atmel-usb.txt
-> @@ -3,8 +3,9 @@ Atmel SOC USB controllers
->  OHCI
->  
->  Required properties:
-> - - compatible: Should be "atmel,at91rm9200-ohci" for USB controllers
-> -   used in host mode.
-> + - compatible: Should be "atmel,at91rm9200-ohci" or
-> +   "microchip,sam9x7-ohci", "atmel,at91rm9200-ohci"
-> +   for USB controllers used in host mode.
->   - reg: Address and length of the register set for the device
->   - interrupts: Should contain ohci interrupt
->   - clocks: Should reference the peripheral, host and system clocks
-> @@ -30,8 +31,9 @@ usb0: ohci@500000 {
->  EHCI
->  
->  Required properties:
-> - - compatible: Should be "atmel,at91sam9g45-ehci" for USB controllers
-> -   used in host mode.
-> + - compatible: Should be "atmel,at91sam9g45-ehci" or
-> +   "microchip,sam9x7-ehci", "atmel,at91sam9g45-ehci"
+When a CPU is taken offline the resctrl filesystem code needs to check
+if it was the CPU nominated to perform the periodic overflow and limbo
+work. If so, another CPU needs to be chosen to do this work.
 
-This confuses me. Isn't microchip,sam9x7-ehci already described in EHCI
-bindings?
+This is currently done in core.c, mixed in with the code that removes
+the CPU from the domain's mask, and potentially free()s the domain.
 
-Best regards,
-Krzysztof
+Move the migration of the overflow and limbo helpers into the filesystem
+code, into resctrl_offline_cpu(). As resctrl_offline_cpu() runs before
+the architecture code has removed the CPU from the domain mask, the
+callers need to be told which CPU is being removed, to avoid picking
+it as the new CPU. This uses the exclude_cpu feature previously
+added.
+
+Signed-off-by: James Morse <james.morse@arm.com>
+---
+ arch/x86/kernel/cpu/resctrl/core.c     | 16 ----------------
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 15 +++++++++++++++
+ 2 files changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 6eb9408a942a..edc0dd123317 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -578,22 +578,6 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+ 
+ 		return;
+ 	}
+-
+-	if (r == &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl) {
+-		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
+-			cancel_delayed_work(&d->mbm_over);
+-			/*
+-			 * temporary: exclude_cpu=-1 as this CPU has already
+-			 * been removed by cpumask_clear_cpu()d
+-			 */
+-			mbm_setup_overflow_handler(d, 0, RESCTRL_PICK_ANY_CPU);
+-		}
+-		if (is_llc_occupancy_enabled() && cpu == d->cqm_work_cpu &&
+-		    has_busy_rmid(d)) {
+-			cancel_delayed_work(&d->cqm_limbo);
+-			cqm_setup_limbo_handler(d, 0, RESCTRL_PICK_ANY_CPU);
+-		}
+-	}
+ }
+ 
+ static void clear_closid_rmid(int cpu)
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 12a628b5d476..a256a96df487 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -3892,7 +3892,9 @@ static void clear_childcpus(struct rdtgroup *r, unsigned int cpu)
+ 
+ void resctrl_offline_cpu(unsigned int cpu)
+ {
++	struct rdt_domain *d;
+ 	struct rdtgroup *rdtgrp;
++	struct rdt_resource *l3 = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+ 
+ 	lockdep_assert_held(&rdtgroup_mutex);
+ 
+@@ -3902,6 +3904,19 @@ void resctrl_offline_cpu(unsigned int cpu)
+ 			break;
+ 		}
+ 	}
++
++	d = get_domain_from_cpu(cpu, l3);
++	if (d) {
++		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
++			cancel_delayed_work(&d->mbm_over);
++			mbm_setup_overflow_handler(d, 0, cpu);
++		}
++		if (is_llc_occupancy_enabled() && cpu == d->cqm_work_cpu &&
++		    has_busy_rmid(d)) {
++			cancel_delayed_work(&d->cqm_limbo);
++			cqm_setup_limbo_handler(d, 0, cpu);
++		}
++	}
+ }
+ 
+ /*
+-- 
+2.39.2
 
