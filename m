@@ -2,252 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8266D7675AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A167675AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbjG1SlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S230414AbjG1Sm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjG1SlA (ORCPT
+        with ESMTP id S231807AbjG1SmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:41:00 -0400
-Received: from kozue.soulik.info (kozue.soulik.info [IPv6:2001:19f0:7000:8404:5400:ff:fe00:d7d6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D99649EB;
-        Fri, 28 Jul 2023 11:40:32 -0700 (PDT)
-Received: from [192.168.10.7] (unknown [10.0.12.132])
-        by kozue.soulik.info (Postfix) with ESMTPSA id 0D21A300F2B;
-        Sat, 29 Jul 2023 03:39:54 +0900 (JST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info 0D21A300F2B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
-        t=1690569600; bh=QEElF6mACLvmrZMLZzPmyID0hHQhIMgI9+CjeYDQ86c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=rp8mROI7RfAp4AoFfb06h8q3qJg0KW9F5F6Q6OVMyFs/7JhUNUJ85Ju5FE1um+XnD
-         N2KzBMvZZ2SxbQ4AstUvjTK5IhOAnKKoMef6RuSCGdFSOGZBoahOn84Xtr+e8KYG6x
-         a3jor715vX/5nE8Pyr40Zo1TNCFGY7jIBPOMF1VA=
-Message-ID: <ca0d1868-feec-75bf-69b2-4b105ca1bf77@soulik.info>
-Date:   Sat, 29 Jul 2023 02:40:11 +0800
+        Fri, 28 Jul 2023 14:42:22 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2045.outbound.protection.outlook.com [40.107.102.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36324494
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:42:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VUWZRPjRvlcfc5BJ960dHNSNE9ZHd+S9Tscmjw9GoXeydgpspKqUphkpbwe4O4m37AWtAOy+C5K4xM1uTUiYVJY1AagnrZqJHk/C4D6YVfesHy3y2JSHoDJOyozcFvBH/rwLHjf5EqykkURQ5N/U401F7LXXdVEbvK+I2whz8MfNK+2m5dY3FFLYRneC//R78j99umo55jShSIf4P3irE1LVumTiaLtWPZC++8CLL8R6zdavp1gruPjfQiLUhebyjETF8OqnrsaX1D36fb7AOr4jKPhsO89Ad+TrviTUyHhMJoFGeLuJRpGHANqLwrys2w9etXFPAr2D5bXNFvqnaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4FLmy2XHuvSFiMWYJfHfWuBDA1n1wWOznY0unL+3Mlg=;
+ b=C2WudQuleChiWgxlj31sZRxwM02XyCFjbQb4TscpY0ya+8hSpy1e7dhsMEaREt9nhcYSJdZOF7IWih1cnAYjBrefPZ2or0X09b/Z6kVCp1i9ghhaopTeAjVoly6+RGhXTcu/p08ZAdX3VN0t/Xho1CcedcqM7mNuvLrgO4mAnnrjukdbNxxSX4gTMb212DCPmbsS9ZfhxHME/bHs1dFTDj7qHhgGqsJSo8GXI+vw1YhqIsqyGuRH5qoAmOyZmYrDYPR3q8abINT/SKF6n17C9Bcry5SRSwr3i1/PyfwmxEIGHcsrFKJGhYSPEpFWh9NPsxaab8RyUHdUhdfNMajYiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4FLmy2XHuvSFiMWYJfHfWuBDA1n1wWOznY0unL+3Mlg=;
+ b=sdbfhLEd3k/toWkZZqihuinWxbnNfR4FzT4EGHYQJKiXfTlCQIO6NnjgTpFFA466m1igrVLusz2QBvUvfkM1G2y542KGj/Eg4AXPbc5xGAf1t13DgG3ccw+YiO26YKff0MeipL+4HxPPjCaEpNqvukB7dAr4rvLd2hBzlksEW+arV/zKG1sOMdnVVylyyYxt5LljyUyMhUphmoKJMmABOZvUBtzq7ub2yTRHcyQCquI/iSFdbnm7txbqdFaW+j2JYAJDmzNl1RToqFfEeFB50WG4o8ZKt24CrnE0d9gqo5bBFO49UNnaVXE9YUXb8OTqNrkcvj29K96mIAtRbOXiHg==
+Received: from BN8PR04CA0013.namprd04.prod.outlook.com (2603:10b6:408:70::26)
+ by DM6PR12MB4170.namprd12.prod.outlook.com (2603:10b6:5:219::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 18:41:43 +0000
+Received: from BN8NAM11FT106.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:70:cafe::87) by BN8PR04CA0013.outlook.office365.com
+ (2603:10b6:408:70::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Fri, 28 Jul 2023 18:41:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BN8NAM11FT106.mail.protection.outlook.com (10.13.177.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29 via Frontend Transport; Fri, 28 Jul 2023 18:41:43 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 28 Jul 2023
+ 11:41:29 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 28 Jul
+ 2023 11:41:28 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Fri, 28 Jul 2023 11:41:28 -0700
+Date:   Fri, 28 Jul 2023 11:41:26 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Michael Shavit <mshavit@google.com>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <baolu.lu@linux.intel.com>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/7] iommu/arm-smmu-v3: Replace s1_cfg with
+ ctx_desc_cfg
+Message-ID: <ZMQL1qjHT3NE9FR2@Asurada-Nvidia>
+References: <20230727182647.4106140-1-mshavit@google.com>
+ <20230727182647.4106140-3-mshavit@google.com>
+ <ZMLaM9QjHDu11iKf@Asurada-Nvidia>
+ <CAKHBV252e5Cx1nssFTPVBmr_iGqLhvp1jjBfR5euRynAzHC12w@mail.gmail.com>
+ <ZMOzHJO23ZakRs8b@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 2/9] media: vivid: Convert to v4l2_ext_pix_format
-Content-Language: en-US
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     linux-media@vger.kernel.org,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        randy.li@synaptics.com, Brian.Starkey@arm.com,
-        boris.brezillon@collabora.com, frkoenig@chromium.org,
-        hans.verkuil@cisco.com, hiroh@chromium.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        narmstrong@baylibre.com, sakari.ailus@iki.fi,
-        stanimir.varbanov@linaro.org,
-        Helen Koike <helen.koike@collabora.com>
-References: <20230206043308.28365-1-ayaka@soulik.info>
- <20230206043308.28365-3-ayaka@soulik.info>
- <20230713103912.favcnhqwjkzvsa6b@chromium.org>
- <46d15120-6e19-e224-47f3-e0dcbf0aeda5@soulik.info>
- <bbb6660439bb66bd9d81bb8031d9062d3c03fdf0.camel@ndufresne.ca>
- <CAAFQd5Dn97Q-tSUvT5HncV0GTQQYrBYjF-1vsmB6VPv=zrkRkw@mail.gmail.com>
-From:   Randy Li <ayaka@soulik.info>
-In-Reply-To: <CAAFQd5Dn97Q-tSUvT5HncV0GTQQYrBYjF-1vsmB6VPv=zrkRkw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZMOzHJO23ZakRs8b@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT106:EE_|DM6PR12MB4170:EE_
+X-MS-Office365-Filtering-Correlation-Id: 127d83b5-f094-4f62-d9d9-08db8f9a4a23
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AUlSMMIeRqnC8jVUCDdZkMovp+FvHbzqRXkUj8wYhJf4c5fyw26Ock6i8fRaPoSa5Eiw0YQQULkggQAf54dMTaDrrEudw3P1+nueb4I2/Jkw6PRzXdTpchZW8Fh7s2OB8AsxyKmNZIcegyGhBp2e5hTcTRPCs+PHmpBYOGslh5Z5+PM2Al9gXeoLXdQIOF/7zwj5ycm6u4hFPQh/I3Q5YZzHoUU3JOY/hX74P3WoZds+HWw478CqcMmBPaAhLn3pEjEFEEdnlgWiAR3p/2wr84UQ4KVVnTZj0jGcyZaH07ETWW5QyGuBz5nIE/5bfwH2cM90bwKebhTt3MxtI23Qe2O0z8NccDe4dehPGaP7aNWi1U7xIbkiiSBCCk98Ob5Ye13tNMYCTGo5GJgbvZnEU6ZnhTaZMm09ew6YZBmRo+XkxCsRcMF1HZKYTPIyF46nStZH/1udFaqW5T+at9CZ41866uvQB2UV1uG8wu0Q1UiKQepW8PiwQktkYvltfvP8fSkBR4us6rGUH+3F7nUMZFGP5kmpaStEq3CnjVMa+S9ftVmTJa/pIMPOxXB/R2H2XA0pE7V+lBV9EBFkmWgEmeyFMfdHpdW7G3wyP6JhvBbPtGW1eFvUQtA6bkmf24MQA0OxGlXLKc0ablu0iGsGdWUjZUM1Twe0fD1E/Ax7liTLXm5/ixvyalLKNlHgliQOHKhwPmghvR/JimJZqgimjus8AOSo6HHaTJkWsXQPoqE=
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(376002)(396003)(451199021)(82310400008)(46966006)(40470700004)(36840700001)(36860700001)(54906003)(9686003)(478600001)(336012)(47076005)(26005)(186003)(6636002)(53546011)(70586007)(6862004)(2906002)(426003)(316002)(8936002)(5660300002)(4326008)(8676002)(41300700001)(82740400003)(70206006)(7636003)(40460700003)(356005)(86362001)(55016003)(40480700001)(33716001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 18:41:43.2781
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 127d83b5-f094-4f62-d9d9-08db8f9a4a23
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT106.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4170
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 28, 2023 at 09:22:52AM -0300, Jason Gunthorpe wrote:
+> On Fri, Jul 28, 2023 at 03:47:45PM +0800, Michael Shavit wrote:
+> > On Fri, Jul 28, 2023 at 4:57 AM Nicolin Chen <nicolinc@nvidia.com> wrote:
+> > 
+> > > It'd be nicer to align all the variables to "cd_table" like the
+> > > 2nd piece here. And if we rename the struct name too:
+> > >
+> > >         struct arm_smmu_cdtab_cfg *cd_table = xxxx;
+> > 
+> > I agree that renaming these would be nice. There's 36 usages of cdcfg
+> > in arm-smmu-v3.c, and 6 usages of  arm_smmu_ctx_desc_cfg.
+> > I can rename the struct since we'll be touching many of those in this
+> > patch anyways, but I'm a bit concerned of the churn from updating all
+> > the cdcfg usages.
+> 
+> Will was not keen on churn for clarity so it seem better to be
+> thoughtful about what is touched to get this merged.
 
-On 2023/7/28 15:22, Tomasz Figa wrote:
-> On Fri, Jul 21, 2023 at 5:10 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
->> Le mardi 18 juillet 2023 à 00:00 +0800, Randy Li a écrit :
->>> On 2023/7/13 18:39, Tomasz Figa wrote:
->>>> On Mon, Feb 06, 2023 at 12:33:01PM +0800, ayaka wrote:
->>>>> From: Helen Koike <helen.koike@collabora.com>
->>>>>
->>>>> Simplify Multi/Single planer API handling by converting to v4l2_ext_pix_format.
->>>>>
->>>>> Duplicate v4l2_ioctl_ops for touch devices. This is done to force the
->>>>> framework to use the ext hooks when the classic Api is used from
->>>>> userspace in Vid devices, and to keep touch devices with classic hook.
->>>>>
->>>>> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
->>>>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->>>>> ---
->>>>> Changes in v7:
->>>>> - Force the userspace using the new APIs to operate non-touch drivers.
->>>> The primary objective of Linux development is not to break the
->>>> userspace. We can't just remove the old API, especially not from
->>>> existing drivers.
->>> Maybe I should create a new virtual driver here? It is impossible to
->>> support the new fourcc modifier with the old APIs.
->> For MPLANE, where backward compatibility was built into libv4l2 LD_PRELOAD
->> wrapper,
-> Could you refresh my memory on what kind of backwards compatibility we
-> had in libv4l2? Was that to make it possible to use new MPLANE-only
-> drivers with old applications?
+Still, it would be odd to have "cdcfg" and "cd_table" at the same
+time. If we have to be conservative, perhaps we should just align
+with the old naming: "struct arm_smmu_ctx_desc_cfg *cdcfg;"...
 
-lib/libv4l-mplane/libv4l-mplane.c
-
-I think application don't need to know the new MPLANE variant of pixel 
-formats or queue type.
-
->> it simply failed the cases that could not be supported (non contiguous
->> planes).
->>
->> regards,
->> Nicolas
->>
->>>> [snip]
->>>>>    int vivid_try_fmt_vid_cap(struct file *file, void *priv,
->>>>> -                 struct v4l2_format *f)
->>>>> +                   struct v4l2_ext_pix_format *f)
->>>>>    {
->>>>> - struct v4l2_pix_format_mplane *mp = &f->fmt.pix_mp;
->>>>> - struct v4l2_plane_pix_format *pfmt = mp->plane_fmt;
->>>>>            struct vivid_dev *dev = video_drvdata(file);
->>>>> + struct v4l2_plane_pix_format *pfmt = f->plane_fmt;
->>>>>            const struct vivid_fmt *fmt;
->>>>>            unsigned bytesperline, max_bpl;
->>>>>            unsigned factor = 1;
->>>>>            unsigned w, h;
->>>>>            unsigned p;
->>>>> - bool user_set_csc = !!(mp->flags & V4L2_PIX_FMT_FLAG_SET_CSC);
->>>> Why is this condition being removed?
->>> Because the v4l2_ext_pix has a struct for the colorspace?
->>>
->>> Would you like the idea that driver exports a buffer contains all the
->>> info for an enumeration ?
->>>
->>>> Best regards,
->>>> Tomasz
->>>>
->>>>> - fmt = vivid_get_format(dev, mp->pixelformat);
->>>>> + fmt = vivid_get_format(dev, f->pixelformat);
->>>>>            if (!fmt) {
->>>>>                    dprintk(dev, 1, "Fourcc format (0x%08x) unknown.\n",
->>>>> -                 mp->pixelformat);
->>>>> -         mp->pixelformat = V4L2_PIX_FMT_YUYV;
->>>>> -         fmt = vivid_get_format(dev, mp->pixelformat);
->>>>> +                 f->pixelformat);
->>>>> +         f->pixelformat = V4L2_PIX_FMT_YUYV;
->>>>> +         fmt = vivid_get_format(dev, f->pixelformat);
->>>>>            }
->>>>>
->>>>> - mp->field = vivid_field_cap(dev, mp->field);
->>>>> + f->field = vivid_field_cap(dev, f->field);
->>>>>            if (vivid_is_webcam(dev)) {
->>>>>                    const struct v4l2_frmsize_discrete *sz =
->>>>>                            v4l2_find_nearest_size(webcam_sizes,
->>>>>                                                   VIVID_WEBCAM_SIZES, width,
->>>>> -                                        height, mp->width, mp->height);
->>>>> +                                        height, f->width, f->height);
->>>>>
->>>>>                    w = sz->width;
->>>>>                    h = sz->height;
->>>>> @@ -604,14 +603,14 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
->>>>>                    w = dev->src_rect.width;
->>>>>                    h = dev->src_rect.height;
->>>>>            }
->>>>> - if (V4L2_FIELD_HAS_T_OR_B(mp->field))
->>>>> + if (V4L2_FIELD_HAS_T_OR_B(f->field))
->>>>>                    factor = 2;
->>>>>            if (vivid_is_webcam(dev) ||
->>>>>                (!dev->has_scaler_cap && !dev->has_crop_cap && !dev->has_compose_cap)) {
->>>>> -         mp->width = w;
->>>>> -         mp->height = h / factor;
->>>>> +         f->width = w;
->>>>> +         f->height = h / factor;
->>>>>            } else {
->>>>> -         struct v4l2_rect r = { 0, 0, mp->width, mp->height * factor };
->>>>> +         struct v4l2_rect r = { 0, 0, f->width, f->height * factor };
->>>>>
->>>>>                    v4l2_rect_set_min_size(&r, &vivid_min_rect);
->>>>>                    v4l2_rect_set_max_size(&r, &vivid_max_rect);
->>>>> @@ -624,16 +623,15 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
->>>>>                    } else if (!dev->has_scaler_cap && !dev->has_crop_cap) {
->>>>>                            v4l2_rect_set_min_size(&r, &dev->src_rect);
->>>>>                    }
->>>>> -         mp->width = r.width;
->>>>> -         mp->height = r.height / factor;
->>>>> +         f->width = r.width;
->>>>> +         f->height = r.height / factor;
->>>>>            }
->>>>>
->>>>>            /* This driver supports custom bytesperline values */
->>>>>
->>>>> - mp->num_planes = fmt->buffers;
->>>>>            for (p = 0; p < fmt->buffers; p++) {
->>>>>                    /* Calculate the minimum supported bytesperline value */
->>>>> -         bytesperline = (mp->width * fmt->bit_depth[p]) >> 3;
->>>>> +         bytesperline = (f->width * fmt->bit_depth[p]) >> 3;
->>>>>                    /* Calculate the maximum supported bytesperline value */
->>>>>                    max_bpl = (MAX_ZOOM * MAX_WIDTH * fmt->bit_depth[p]) >> 3;
->>>>>
->>>>> @@ -642,48 +640,49 @@ int vivid_try_fmt_vid_cap(struct file *file, void *priv,
->>>>>                    if (pfmt[p].bytesperline < bytesperline)
->>>>>                            pfmt[p].bytesperline = bytesperline;
->>>>>
->>>>> -         pfmt[p].sizeimage = (pfmt[p].bytesperline * mp->height) /
->>>>> +         pfmt[p].sizeimage = (pfmt[p].bytesperline * f->height) /
->>>>>                                    fmt->vdownsampling[p] + fmt->data_offset[p];
->>>>> -
->>>>> -         memset(pfmt[p].reserved, 0, sizeof(pfmt[p].reserved));
->>>>>            }
->>>>> +
->>>>> + if (p < VIDEO_MAX_PLANES)
->>>>> +         pfmt[p].sizeimage = 0;
->>>>> +
->>>>>            for (p = fmt->buffers; p < fmt->planes; p++)
->>>>> -         pfmt[0].sizeimage += (pfmt[0].bytesperline * mp->height *
->>>>> +         pfmt[0].sizeimage += (pfmt[0].bytesperline * f->height *
->>>>>                            (fmt->bit_depth[p] / fmt->vdownsampling[p])) /
->>>>>                            (fmt->bit_depth[0] / fmt->vdownsampling[0]);
->>>>>
->>>>> - if (!user_set_csc || !v4l2_is_colorspace_valid(mp->colorspace))
->>>>> -         mp->colorspace = vivid_colorspace_cap(dev);
->>>>> + if (!v4l2_is_colorspace_valid(f->colorspace))
->>>>> +         f->colorspace = vivid_colorspace_cap(dev);
->>>>>
->>>>> - if (!user_set_csc || !v4l2_is_xfer_func_valid(mp->xfer_func))
->>>>> -         mp->xfer_func = vivid_xfer_func_cap(dev);
->>>>> + if (!v4l2_is_xfer_func_valid(f->xfer_func))
->>>>> +         f->xfer_func = vivid_xfer_func_cap(dev);
->>>>>
->>>>>            if (fmt->color_enc == TGP_COLOR_ENC_HSV) {
->>>>> -         if (!user_set_csc || !v4l2_is_hsv_enc_valid(mp->hsv_enc))
->>>>> -                 mp->hsv_enc = vivid_hsv_enc_cap(dev);
->>>>> +         if (!v4l2_is_hsv_enc_valid(f->hsv_enc))
->>>>> +                 f->hsv_enc = vivid_hsv_enc_cap(dev);
->>>>>            } else if (fmt->color_enc == TGP_COLOR_ENC_YCBCR) {
->>>>> -         if (!user_set_csc || !v4l2_is_ycbcr_enc_valid(mp->ycbcr_enc))
->>>>> -                 mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
->>>>> +         if (!v4l2_is_ycbcr_enc_valid(f->ycbcr_enc))
->>>>> +                 f->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
->>>>>            } else {
->>>>> -         mp->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
->>>>> +         f->ycbcr_enc = vivid_ycbcr_enc_cap(dev);
->>>>>            }
->>>>>
->>>>>            if (fmt->color_enc == TGP_COLOR_ENC_YCBCR ||
->>>>>                fmt->color_enc == TGP_COLOR_ENC_RGB) {
->>>>> -         if (!user_set_csc || !v4l2_is_quant_valid(mp->quantization))
->>>>> -                 mp->quantization = vivid_quantization_cap(dev);
->>>>> +         if (!v4l2_is_quant_valid(f->quantization))
->>>>> +                 f->quantization = vivid_quantization_cap(dev);
->>>>>            } else {
->>>>> -         mp->quantization = vivid_quantization_cap(dev);
->>>>> +         f->quantization = vivid_quantization_cap(dev);
->>>>>            }
->>>>>
->>>>> - memset(mp->reserved, 0, sizeof(mp->reserved));
->>>>> + memset(f->reserved, 0, sizeof(f->reserved));
->>>>>            return 0;
->>>>>    }
->>>> [snip]
+Nicolin
