@@ -2,55 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF347669B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF57669BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235677AbjG1KDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        id S234996AbjG1KDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjG1KC3 (ORCPT
+        with ESMTP id S235613AbjG1KCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:02:29 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2924049C4;
-        Fri, 28 Jul 2023 03:01:58 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 392725c6ea6dcf7f; Fri, 28 Jul 2023 12:01:56 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 29317661E37;
-        Fri, 28 Jul 2023 12:01:56 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Subject: [PATCH v2 3/3] cpuidle: teo: Drop utilized from struct teo_cpu
-Date:   Fri, 28 Jul 2023 12:01:49 +0200
-Message-ID: <8262074.T7Z3S40VBb@kreacher>
-In-Reply-To: <5707588.DvuYhMxLoT@kreacher>
-References: <5707588.DvuYhMxLoT@kreacher>
+        Fri, 28 Jul 2023 06:02:48 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70F93C07;
+        Fri, 28 Jul 2023 03:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690538559; x=1722074559;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=YzZuAZZZIjFoo83EUPCtvSsd8Mis2DtPCekd+t0N+Oo=;
+  b=J4C+AwqwgHnYBbxhDQoIc8ZecKWvlkxBLlF1VJ785i851+VVuXmb+O2D
+   ee0Fk/RxNHVmPgcRi2zVEWKkf+OTaAoOJr+OwJm7YjwLNwYPdi7WTG1pT
+   g+Eu9oqq1TKFMJB2wFLPL3Hce2vWfhdCiTZ3MQCIoslayge9+IwLWIIPG
+   fgtz0OlroZD1g0tVTx8N+11Mb8a67gfxSy7mk70MnBdHM+LCXQ+TtKR3S
+   vyLvNCOCFzce0hcIoTTjTfHf4JaP5APHHhtdsHkXbdVLVI14TQ36lZdRC
+   l+2rhjMj/26SWhlafliKDaeHzf0wH4k0h/9ieGmWQakkPfcbXKKss9aBF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="371257124"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="371257124"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 03:02:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="762571977"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="762571977"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2023 03:02:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qPKIt-00CcyQ-22;
+        Fri, 28 Jul 2023 13:02:35 +0300
+Date:   Fri, 28 Jul 2023 13:02:35 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>, Armin Wolf <W_Armin@gmx.de>
+Subject: Re: [RFC PATCH v1] platform/x86: wmi: Do not register driver with
+ invalid GUID
+Message-ID: <ZMOSO5HgpurayDsN@smile.fi.intel.com>
+References: <20230715211604.1272227-1-pobrn@protonmail.com>
+ <efe4b91f-2602-2115-738e-bb99b42ec5b6@redhat.com>
+ <pjVZC4te3dWaMwoS7jB1-n4z390Ohz0mvuCCUZHwiXlZVMjzwySf_DMa49RDmbhzfvkzRY3FI8zQ0xltNimu-GpBAqJ2Kc3SENu_fwJDJ7E=@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrieeigddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohepfhhrvggu
- vghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <pjVZC4te3dWaMwoS7jB1-n4z390Ohz0mvuCCUZHwiXlZVMjzwySf_DMa49RDmbhzfvkzRY3FI8zQ0xltNimu-GpBAqJ2Kc3SENu_fwJDJ7E=@protonmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,71 +72,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Jul 27, 2023 at 10:54:26PM +0000, Barnabás Pőcze wrote:
+> 2023. július 26., szerda 10:45 keltezéssel, Hans de Goede <hdegoede@redhat.com> írta:
+> > On 7/15/23 23:24, Barnabás Pőcze wrote:
 
-Because the utilized field in struct teo_cpu is only used locally in
-teo_select(), replace it with a local variable in that function.
+...
 
-No intentional functional impact.
+> > I think that having an additional check like the one which you
+> > propose has some value too, even if it is just to cover drivers
+> > which for some reason don't use `MODULE_DEVICE_TABLE()`, but IMHO
+> > the most important check to have is a check in file2alias.c .
+> 
+> Okay... any tips on how to avoid copying `uuid_is_valid()`?
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+I think I already told the rough design: we need to split uuid.c to three
+files: libuuid.h, libuuid.c uuid.c and libuuid.c should be built twice:
+once for uuid.c and once for file2alias.c. libuuid.h should contain the
+definitions file2alias.c is using.  Something like that.
 
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -187,7 +187,6 @@ struct teo_bin {
-  * @next_recent_idx: Index of the next @recent_idx entry to update.
-  * @recent_idx: Indices of bins corresponding to recent "intercepts".
-  * @util_threshold: Threshold above which the CPU is considered utilized
-- * @utilized: Whether the last sleep on the CPU happened while utilized
-  */
- struct teo_cpu {
- 	s64 time_span_ns;
-@@ -197,7 +196,6 @@ struct teo_cpu {
- 	int next_recent_idx;
- 	int recent_idx[NR_RECENT];
- 	unsigned long util_threshold;
--	bool utilized;
- };
- 
- static DEFINE_PER_CPU(struct teo_cpu, teo_cpus);
-@@ -366,6 +364,7 @@ static int teo_select(struct cpuidle_dri
- 	int idx0 = 0, idx = -1;
- 	bool alt_intercepts, alt_recent;
- 	ktime_t delta_tick;
-+	bool cpu_utilized;
- 	s64 duration_ns;
- 	int i;
- 
-@@ -390,13 +389,13 @@ static int teo_select(struct cpuidle_dri
- 			goto end;
- 	}
- 
--	cpu_data->utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
-+	cpu_utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
- 	/*
- 	 * If the CPU is being utilized over the threshold and there are only 2
- 	 * states to choose from, the metrics need not be considered, so choose
- 	 * the shallowest non-polling state and exit.
- 	 */
--	if (drv->state_count < 3 && cpu_data->utilized) {
-+	if (drv->state_count < 3 && cpu_utilized) {
- 		/* The CPU is utilized, so assume a short idle duration. */
- 		duration_ns = teo_middle_of_bin(0, drv);
- 		/*
-@@ -558,7 +557,7 @@ static int teo_select(struct cpuidle_dri
- 	 * been stopped already and the shallower state's target residency is
- 	 * not sufficiently large.
- 	 */
--	if (cpu_data->utilized) {
-+	if (cpu_utilized) {
- 		s64 span_ns;
- 
- 		i = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> Another idea I had was that maybe `struct wmi_device_id::guid_string` needs to be
+> changed to be `guid_t` and then `GUID_INIT()` or something similar could be used
+> to initialize it. That way it is impossible to mess up the format. The only downside
+> I can see is that guid is no longer "grep-able".
 
+Strictly speaking you may not do that because it's a (semi-)ABI.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
