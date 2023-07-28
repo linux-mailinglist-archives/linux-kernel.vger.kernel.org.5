@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C224776714F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1537676714B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbjG1P7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S235970AbjG1P7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234529AbjG1P7u (ORCPT
+        with ESMTP id S233183AbjG1P7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:59:50 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD9E110;
-        Fri, 28 Jul 2023 08:59:48 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 42D155C00BE;
-        Fri, 28 Jul 2023 11:59:45 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 28 Jul 2023 11:59:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690559985; x=1690646385; bh=qe
-        prRb5ewEtA801/sByp5QkC5fP6Mty2WClCI4vUDyY=; b=GQgIcy4Pj5IML3N/U+
-        muKPT/yi2mD0T9FSsMKqUPLjbTKA/2rj9ALRX8jCqneWSJM36GXeopCXKNSVXBzq
-        Nu2zUEJCHDPQ2O2/yx0yWPHy4ikGSfMT3VXOZSCwEY46P/UNAjDSsac4bXlkHvNE
-        MNXQ9hwmYVAHtkRmF7MiHR/rXa3HiG/KdOSusFIMeTClTXrrgaayaL4L0DO9izQm
-        vJA7XKrN74xm4y2qXGDjrq06Rn7+OfRPYXIYyyk6eQxrhv9669kTMu0q74z37Pzf
-        n6dVzAyANj4suvYmcNIys2HmTUeNl7EeZ4sI3JcxCnY3ZsP85mBEnWmSYaRNxIOI
-        mGYg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690559985; x=1690646385; bh=qeprRb5ewEtA8
-        01/sByp5QkC5fP6Mty2WClCI4vUDyY=; b=fqd+s0ENlYsKTRcjseNDnt5Za3Fxp
-        r+wf+9KV/9zCpAPXpDD0r9bKp2LsJY8PGLgeHZ1crURsURghk4PFGfioDGq14SRX
-        q0fcHkLQaHjvMqYpddp+xdbJlN7i1uUyC8FzigDrWahYAqVUD/b3Ej2aDDbPgfmz
-        1eYOfhZuRucmnbgNsReFyniIlwwvsBykugsbWzjeC+FO3bReIvZGR6Ypj/yLXUVa
-        UHvyB4ebn5p5j8xRpUiKJ6EVEjZ31qNWW2Vu1skcH0eiqkhlNAx7clHh2bo+INlp
-        +ZyP/PO+eRjJ1qUD1BPlpy91/kEYFfUUNPZcb45JcKe9Pey6v2ckoaTZA==
-X-ME-Sender: <xms:8OXDZAWfjZKaeFGK9DxQo2r5IelHq7-EXGnliym7ZC1j0MlCEdYLaQ>
-    <xme:8OXDZElPvdmk2uyEBiHAEMKvcC5N9mgZk-OMx4OEM4yXiaRVf2WR-SKuH87Ejcu92
-    ROd7yiIKJGLnZONJ5g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeigdelvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:8OXDZEawgidolfxWA1zuJA-NjZvZ9DTXiwcUqy3Y-b0GAasNoQR5bQ>
-    <xmx:8OXDZPVdb7bc06N5Jc4FRQ6c2jY8Jeh_G3C0My5ieDI_mVqo3YQAmQ>
-    <xmx:8OXDZKnj9Auv7CKFQuB0xS406pKEqQj2t1HnjDKNJ6hPOT204DObKA>
-    <xmx:8eXDZNGgebKPDnDW7VjiBpIHriNK8L5WWfqVUbRBa6skv3tyx9m_-Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id F3CC1B60089; Fri, 28 Jul 2023 11:59:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <0808604b-a26e-43b8-83da-2c3dc12446d2@app.fastmail.com>
-In-Reply-To: <20230517154525.ljoamjlfhpejtizm@viti.kaiser.cx>
-References: <20230516153109.514251-1-arnd@kernel.org>
- <20230516153109.514251-6-arnd@kernel.org>
- <CAOMZO5B0stW2X6YqPTTKDpCOAzPDvm=4HT8jfBAgbTy11gnKgg@mail.gmail.com>
- <4e026f08-d733-4b01-ab47-e921d041e74e@app.fastmail.com>
- <20230517154525.ljoamjlfhpejtizm@viti.kaiser.cx>
-Date:   Fri, 28 Jul 2023 17:59:20 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Martin Kaiser" <martin@kaiser.cx>
-Cc:     "Fabio Estevam" <festevam@gmail.com>,
-        "Arnd Bergmann" <arnd@kernel.org>, soc@kernel.org,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Bartosz Golaszewski" <brgl@bgdev.pl>,
-        "Hartley Sweeten" <hsweeten@visionengravers.com>,
-        "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
-        "Andre Przywara" <andre.przywara@arm.com>,
-        "Shawn Guo" <shawnguo@kernel.org>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        "Vladimir Zapolskiy" <vz@mleia.com>,
-        "Aaro Koskinen" <aaro.koskinen@iki.fi>,
-        "Janusz Krzysztofik" <jmkrzyszt@gmail.com>,
-        "Tony Lindgren" <tony@atomide.com>, "Andrew Lunn" <andrew@lunn.ch>,
-        "Sebastian Hesselbarth" <sebastian.hesselbarth@gmail.com>,
-        "Gregory Clement" <gregory.clement@bootlin.com>,
-        "Daniel Mack" <daniel@zonque.org>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        "Robert Jarzmik" <robert.jarzmik@free.fr>,
-        "Viresh Kumar" <vireshk@kernel.org>,
-        "Shiraz Hashim" <shiraz.linux.kernel@gmail.com>,
-        "Sudeep Holla" <sudeep.holla@arm.com>,
-        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Alan Stern" <stern@rowland.harvard.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        linux-clk@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 05/13] ARM: imx: remove unused mx25_revision()
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 28 Jul 2023 11:59:43 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5236D30C5;
+        Fri, 28 Jul 2023 08:59:42 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9cdbf682eso15545331fa.2;
+        Fri, 28 Jul 2023 08:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20221208; t=1690559980; x=1691164780;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZCo106lcr9OqOXKGEBc+DWq16XxEQ27Fez5FxReeABs=;
+        b=KYAbHJ5LH+6aRGAn/7WkpYeyXXARCEkOEG+I8VHav2Bv9WJffcJ5uztxifyhpuTPjs
+         nzZoDWg4Zj0pxIG10JMgsZLYFU7wmRpLHgd94u8c/fS9wVf5SKy1NYbyqx0ML9OHmNxs
+         0tFWzO8QaS/s8kkjyx9TcvvZ4zkF9sE8Gmqk3pdGZ+ft1IhK46tFu3tl8bwk9yHs+B3C
+         3oTTxD8Yrl3xKRqnNxuZiASXdockAuWDljHS3gjeqGAQ4GqhlSlnO74CCq+NvbuLE9Ug
+         a/CAIPmyOKTqhDUyyMI7CnCVx5m40153Zw0dtvq497zHZNvi0hQiol0DTWLGqeiIM56R
+         5U7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690559980; x=1691164780;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZCo106lcr9OqOXKGEBc+DWq16XxEQ27Fez5FxReeABs=;
+        b=Mi7Yewi8DCq+O0YG5MEVsgM+mLvBXA9UFk+gSgzZVL46QggdkCRJUFmthRrnnUG10w
+         49g/AxBgFoQBqr9tISZN1Wt/Zak1dNzEABjy/sgDmtMbvD7/Sp+y1sDxl+UnGe1sTcIB
+         iB0hV6/hbNyOsPcElU7t40O3ZTA8n5NeXqRtuUJifmFxBwvaXABwDjUYEscQrH2QCTbK
+         GoWyqxcqlr5OlXGYbF8jx0J5VdY9MjcEM0iScrHuAbNbPDogfRi2t3Ep2WTg0uSyDk8Y
+         bdJgFiGemyCtgdFG8A7/5lae/eiLL2S0azUDuqjyKIiuh+V1Pytdqt0e4p6TtX2m3+yk
+         K7qg==
+X-Gm-Message-State: ABy/qLY+mjfZhZiq082lERLaGFJ8dnEC2pCCFc+xsz0B17tyfGinfAUc
+        27nHBUncAlDiNPd0rgQaBhB3ehldEe5VRLDh
+X-Google-Smtp-Source: APBJJlFngmMeT1B/NQJD0a55UKx2ii0K3srqbk3P4CC5ivKeUAKqKFzB0MR6HKuhwkNamexMh8lEcw==
+X-Received: by 2002:a05:651c:156:b0:2b9:c644:415d with SMTP id c22-20020a05651c015600b002b9c644415dmr1981105ljd.46.1690559980215;
+        Fri, 28 Jul 2023 08:59:40 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-077-000-157-016.77.0.pool.telefonica.de. [77.0.157.16])
+        by smtp.gmail.com with ESMTPSA id lu44-20020a170906faec00b00992f309cfe8sm2215810ejb.178.2023.07.28.08.59.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 08:59:39 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] selinux: optimize ebitmap_and()
+Date:   Fri, 28 Jul 2023 17:59:36 +0200
+Message-Id: <20230728155937.41580-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 17, 2023, at 17:45, Martin Kaiser wrote:
-> Thus wrote Arnd Bergmann (arnd@arndb.de):
->
->> I think either way is ok to address the warning. If we wanted to do this
->> properly, the mx{25,27,31,35,5}_revision functions could all be removed
->> and the logic hooked up to imx_set_soc_revision() in the same way that
->> they already use mxc_set_cpu_type() for drivers/soc/imx/soc-imx.c.
->
->> I'll leave it up to you, if you want to merge Martin's patches or
->> a replacement for the soc-imx driver through the imx tree for 6.5,
->> I'll drop my patch from this series, otherwise I'll keep it for now
->> and we can still do it better at later point.
->
-> I suggest we merge my patches for imx25 first and then clean up all the
-> older imx families to use the common functions.
->
-> I've just rebased the patches against today's linux-next. My understanding
-> is that they have to go through the clk tree.
+Iterate on nodes instead of single bits to save node resolution for each
+single bit.
 
-This never happened, right? I see that mx25_revision() is still in the
-tree without any users, so I can't easily turn on the warning by default
-yet. Should I just go ahead and remove it for 5.6, or do you expect to
-have your patch ready in time for the merge window?
+Similar to userspace patch efcd00814879 ("libsepol: optimize
+ebitmap_and").
 
-       Arnd
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+ security/selinux/ss/ebitmap.c | 48 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 41 insertions(+), 7 deletions(-)
+
+diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
+index 77875ad355f7..5ac8acacf873 100644
+--- a/security/selinux/ss/ebitmap.c
++++ b/security/selinux/ss/ebitmap.c
+@@ -81,18 +81,52 @@ int ebitmap_cpy(struct ebitmap *dst, const struct ebitmap *src)
+ 
+ int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1, const struct ebitmap *e2)
+ {
+-	struct ebitmap_node *n;
+-	int bit, rc;
++	const struct ebitmap_node *n1, *n2;
++	struct ebitmap_node *new = NULL, **prev;
+ 
+ 	ebitmap_init(dst);
+ 
+-	ebitmap_for_each_positive_bit(e1, n, bit) {
+-		if (ebitmap_get_bit(e2, bit)) {
+-			rc = ebitmap_set_bit(dst, bit, 1);
+-			if (rc < 0)
+-				return rc;
++	prev = &dst->node;
++	n1 = e1->node;
++	n2 = e2->node;
++	while (n1 && n2) {
++		if (n1->startbit == n2->startbit) {
++			unsigned long testmap[EBITMAP_UNIT_NUMS];
++			unsigned int i;
++			bool match = false;
++
++			for (i = 0; i < sizeof(testmap); i++) {
++				testmap[i] = n1->maps[i] & n2->maps[i];
++				if (testmap[i] != 0)
++					match = true;
++			}
++
++			if (match) {
++				new = kmem_cache_zalloc(ebitmap_node_cachep, GFP_ATOMIC);
++				if (!new) {
++					ebitmap_destroy(dst);
++					return -ENOMEM;
++				}
++				new->startbit = n1->startbit;
++				memcpy(new->maps, testmap, EBITMAP_SIZE / 8);
++				new->next = NULL;
++
++				*prev = new;
++				prev = &(new->next);
++			}
++
++			n1 = n1->next;
++			n2 = n2->next;
++		} else if (n1->startbit > n2->startbit) {
++			n2 = n2->next;
++		} else {
++			n1 = n1->next;
+ 		}
+ 	}
++
++	if (new)
++		dst->highbit = new->startbit + EBITMAP_SIZE;
++
+ 	return 0;
+ }
+ 
+-- 
+2.40.1
+
