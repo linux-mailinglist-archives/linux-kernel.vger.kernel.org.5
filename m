@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7C8766C25
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F82766C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjG1Ly6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S236336AbjG1LzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233993AbjG1Lyz (ORCPT
+        with ESMTP id S235510AbjG1Ly6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:54:55 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C4FC3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:54:54 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-991da766865so288205566b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690545293; x=1691150093;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NVf6A5Nx/q2EKildiIxmLxp4cNtMGz7mdoFctSivjyI=;
-        b=LR31EufuoXoa7rKRSNSLbrJqbocfirFDNEtrn/c0yCJgcSRTuSTd/Jf9rWoxoHXg7w
-         jm3S5Bq8x5XDvAiKJM0j5lX+Bubbf5vs5E+tgGYPyJFkcAw6VJx1LCRWTlaP7gTTgUGI
-         ygex/DHLX3aPhna09kJ3YogvasS9Y70LHA4hVPwThSI5GhIoFgz1Z9KWnAoynFJotCvr
-         EZekZIAI+w7a55VQLw+CvOgK1lDCMsWdqxR47Zs7UpMpWmzUu4leOeB5NhalpJmpfk8B
-         sXj2sdFih0OLDjwUXjOEbUzQ3uSmhitGN0b3xZfvOUkEIVchnRdS713eIjlWQAJg+Sle
-         vD+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690545293; x=1691150093;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NVf6A5Nx/q2EKildiIxmLxp4cNtMGz7mdoFctSivjyI=;
-        b=c7wKmQ7OoM4glgn0TcMmRYmrlBzRVTc5j9sEudQ/7Nxl6Qr4Z+pPvJC97Zg8oO1H6E
-         fK9u+aNGC8QD96ZilPF0LmDjZoQe9xi+NMXYzmUIlKZzMIz/Jva4mxBpGziEMveYlTD7
-         m99MGI6rkBAQwiSRYkzTkZbKxJBsW1MgpBxwjPX8fQ1yHiuvVpCtgX9BI+D22k2E8jcD
-         VcuhVZsD8s/rveSrj+2OugJyM/enDq7FbBDYvyDcNsHjNkBXqbaJTMwxH6wkIS07odPL
-         zxS19Ie7jr8+YPLbvc831f0z6SVjUFKzALFdbl7jlvyZpnNPPFJ6jA/f8m+/1JmyxcKg
-         H5BQ==
-X-Gm-Message-State: ABy/qLbntQzxABHLlMXQcRH5WMt6nhTwIHPa18kGuVPZF8cbnP+JDUPx
-        ujfI3OHXZ0g8+F7pw2yEij94uQ==
-X-Google-Smtp-Source: APBJJlF+TDV989GeRya5ntP90XQlmOC2pH2oR2BwNAwssUBTcz0yINP/cvwEbcwWvUbd+oceXt1npg==
-X-Received: by 2002:a17:906:7a4e:b0:99b:ca24:ce42 with SMTP id i14-20020a1709067a4e00b0099bca24ce42mr1688763ejo.44.1690545292912;
-        Fri, 28 Jul 2023 04:54:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id u27-20020a1709063b9b00b0098e42bef732sm1932762ejf.183.2023.07.28.04.54.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 04:54:52 -0700 (PDT)
-Message-ID: <db2703c0-b7f0-bc73-aa08-bfe4489bd999@linaro.org>
-Date:   Fri, 28 Jul 2023 13:54:51 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 20/50] dt-bindings: atmel-nand: add
- microchip,sam9x7-pmecc
-Content-Language: en-US
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Varshini Rajendran <varshini.rajendran@microchip.com>,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Fri, 28 Jul 2023 07:54:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF64B5
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:54:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 20A0562118
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:54:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D878AC433C8;
+        Fri, 28 Jul 2023 11:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690545296;
+        bh=jBL+22K8k3oi8qSB5q1EObGCgE5WtiNomO2kIvDm49Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D6x1IjIDpOfgOgMJEPZQtN7MmxQMqh+KZpdmnPdt6Bq1GKkXKEOSX8QvUcloigyfh
+         OHai6OzJatsoTt5xn7AHq8cvrSiKs1TMALD1+Q+gGWYgFXP6QoeZsz/BCnF7LzhKVz
+         eJi9ee1WFPjoMmTKW8nkYjqsP8gkGZ5KGL7OdaN0alhZmKeFehltuDPdjKRbC2t7n8
+         Vq509Ofz63bjs3OO9CM2xKXQGgBcHqm2cEAEIBgU508Ve7JmWumwRv8smjokNO93vH
+         3LseZwd5930UUg2JhNXRzppb6sddDX5UIGJrTQb8LJTua9ssQiaxn5b9v7607eOPYS
+         aMwikQeug4bDg==
+Date:   Fri, 28 Jul 2023 12:54:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230728102636.266309-1-varshini.rajendran@microchip.com>
- <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] arm64/fpsimd: Only provide the length to cpufeature for
+ xCR registers
+Message-ID: <89a8e191-63e0-4237-879e-03130fb07f88@sirena.org.uk>
+References: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
+ <20230728112720.00005ee6@Huawei.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FQX97XPkgudQ/lMU"
+Content-Disposition: inline
+In-Reply-To: <20230728112720.00005ee6@Huawei.com>
+X-Cookie: Ontogeny recapitulates phylogeny.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 13:06, Tudor Ambarus wrote:
-> 
-> 
-> On 7/28/23 11:26, Varshini Rajendran wrote:
->> Add microchip,sam9x7-pmecc to DT bindings documentation.
->>
-> 
-> Why? What's the underlying problem that motivated you do this patch?
 
-Isn't the problem already described in commit msg, although shortly:
-There is a new SoC sam9x7, where the model name is sam9x7 and it is not
-a wild-card nor family name of SoCs, and we add compatible for it, as
-expected by writing-bindings guideline.
+--FQX97XPkgudQ/lMU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
-Krzysztof
+On Fri, Jul 28, 2023 at 11:27:20AM +0100, Jonathan Cameron wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
+> >  	zcr = read_sysreg_s(SYS_ZCR_EL1);
+> > -	zcr &= ~(u64)ZCR_ELx_LEN_MASK; /* find sticky 1s outside LEN field */
+> > +	zcr &= ~(u64)ZCR_ELx_LEN_MASK;
+> >  	vq_max = sve_vq_from_vl(sve_get_vl());
+> >  	zcr |= vq_max - 1; /* set LEN field to maximum effective value */
+
+> > -	return zcr;
+> > +	return SYS_FIELD_GET(ZCR_ELx, LEN, zcr);
+
+> Isn't that overly complex if we only end up with the length? (if I'm reading this right)
+> Perhaps it is more logical to build the register then pull the
+> field out of it, but it would be simpler as something like...
+
+> 	return sve_vq_from_vl(sve_get_vl()) - 1;
+
+We could, yes - I did prefer to keep it clear that this is an actual
+if modified register value we're returning, though that could've been a
+comment.
+
+--FQX97XPkgudQ/lMU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTDrIgACgkQJNaLcl1U
+h9BWXQf/dqqsPLMv2CB4YNk84bBsQLmXfts/KM6OGsYoZPcX6miJjVL/5LbbUWgb
+FT2OwHWdJ3dOiQyAx1bI/9XH3W+/KYHxdY3sFUcl+AUDUN8c7EG+NqNnAUoNaNeY
+nLUaWTU465jrgA6n9Sjr2mBGDyE6SCWa8wrn7D+xRKFj6JT79n8pcQykYx790l+g
+9x78SYAy63VFXsU+v0lam0q/HvVKGwaX5CFNm/+RYvKz6ztFnTHpve8oDwTpibZZ
+0B+TUcSlVHzlt0Xana0HYjRTuRw8sIeJHVK4tMl+27OzmB9xhZea7Zn+3QcEGPTW
+WHZz4UvExk/+CEEu4e86zTJH6W0WeQ==
+=Z5gV
+-----END PGP SIGNATURE-----
+
+--FQX97XPkgudQ/lMU--
