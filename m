@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490CC766AFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDC8766B03
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbjG1Ksy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
+        id S235830AbjG1Ktw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbjG1Ksj (ORCPT
+        with ESMTP id S229682AbjG1Ktu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:48:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E0451BC6;
-        Fri, 28 Jul 2023 03:48:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 048B92F4;
-        Fri, 28 Jul 2023 03:49:21 -0700 (PDT)
-Received: from [10.57.0.116] (unknown [10.57.0.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1D293F6C4;
-        Fri, 28 Jul 2023 03:48:35 -0700 (PDT)
-Message-ID: <85fad198-278a-aea2-3ada-f4f6a31f02ef@arm.com>
-Date:   Fri, 28 Jul 2023 11:48:34 +0100
+        Fri, 28 Jul 2023 06:49:50 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0ED1BC3;
+        Fri, 28 Jul 2023 03:49:49 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5227e5d9d96so2536349a12.2;
+        Fri, 28 Jul 2023 03:49:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690541387; x=1691146187;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LVIaQsb7ph4vtvvBb5aH72jSkwPqs8dOlQZNLadpB5k=;
+        b=UIa+dmT13DH5sXYhbYjswUqU4RrToNk3RD0kGRxfBF2rVCWZ9crS61BSgWwBeBXeGY
+         AQ1NDLvx2XmCcXB5u6660oQ82TDMFSf0L6aUec6RhR1MJ+QM0ER7qWvUueDnML8D3L+Y
+         W9kV79IW8NVGuGnWyAFaaD989n1BPIzov4AKrXklb6AkXkA+pW6KYw31YiovuRPfDLNB
+         +1/4DNgXgkYGPXUDid8H+gDsgdPA4lpT71CMxOXGhZJZ/suyAl4G5Bc/zlBWmiaiTCy9
+         9ycUayC0tcQiPr8o66hBVg+4VTOU9SkLrhnfd+UNR+hwdLzcqysmOyaYY62qzcEKvCbB
+         8mVQ==
+X-Gm-Message-State: ABy/qLb4oUggvCZJQDnzGizpcGsP0dEeaO4vUT5YG7n+ApG0NZ5WimYc
+        rcuQuKFNUG9h6rj8NAfqhg5pR1cV99o=
+X-Google-Smtp-Source: APBJJlEHg8wyu5OL71CwwagmkKaWAJNuCisSJNkKBGipgS0ZmA7Ast3YVc/K2CygC9OkucGB2g7FSg==
+X-Received: by 2002:a50:fa8d:0:b0:522:38cb:d8cb with SMTP id w13-20020a50fa8d000000b0052238cbd8cbmr1282442edr.20.1690541387204;
+        Fri, 28 Jul 2023 03:49:47 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-005.fbsv.net. [2a03:2880:31ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i23-20020aa7c717000000b0051bed21a635sm1663576edq.74.2023.07.28.03.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 03:49:46 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 03:49:45 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, leit@meta.com,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] netconsole: Enable compile time configuration
+Message-ID: <ZMOdSYry77qsRylG@gmail.com>
+References: <20230727163132.745099-1-leitao@debian.org>
+ <ZMK70fqdnfMPpc1x@d3>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1 0/1] perf tools: Add a place to put kernel config
- fragments for test runs
-Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org, masahiroy@kernel.org,
-        leo.yan@linaro.org, broonie@kernel.org, Aishwarya.TCV@arm.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org
-References: <20230628105303.4053478-1-james.clark@arm.com>
- <CAM9d7cgo97jJTTTV7F2kJ=sF9MBoRwegN4r0dWotbUD=Nr1_cQ@mail.gmail.com>
- <36767548-fbc3-9c4b-848c-d1d3102e442a@arm.com>
-In-Reply-To: <36767548-fbc3-9c4b-848c-d1d3102e442a@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMK70fqdnfMPpc1x@d3>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 30/06/2023 09:04, James Clark wrote:
+On Thu, Jul 27, 2023 at 02:47:45PM -0400, Benjamin Poirier wrote:
+> On 2023-07-27 09:31 -0700, Breno Leitao wrote:
+> > Enable netconsole features to be set at compilation time. Create two
+> > Kconfig options that allow users to set extended logs and release
+> > prepending features enabled at compilation time.
+> > 
+> > Right now, the user needs to pass command line parameters to netconsole,
+> > such as "+"/"r" to enable extended logs and version prepending features.
+> > 
+> > With these two options, the user could set the default values for the
+> > features at compile time, and don't need to pass it in the command line
+> > to get them enabled.
+> > 
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+> > index 368c6f5b327e..4d0c3c532e72 100644
+> > --- a/drivers/net/Kconfig
+> > +++ b/drivers/net/Kconfig
+> > @@ -332,6 +332,26 @@ config NETCONSOLE_DYNAMIC
+> >  	  at runtime through a userspace interface exported using configfs.
+> >  	  See <file:Documentation/networking/netconsole.rst> for details.
+> > 
+> > +config NETCONSOLE_EXTENDED_LOG
+> > +	bool "Enable kernel extended message"
+> > +	depends on NETCONSOLE
+> > +	default n
+> > +	help
+> > +	  Enable extended log support for netconsole. Log messages are
+> > +	  transmitted with extended metadata header in the following format
+> > +	  which is the same as /dev/kmsg.
+> > +	  See <file:Documentation/networking/netconsole.rst> for details.
+> > +
+> > +config NETCONSOLE_APPEND_RELEASE
+>                      ^ PREPEND
 > 
+> > +	bool "Enable kernel release version in the message"
+> > +	depends on NETCONSOLE_EXTENDED_LOG
+> > +	default n
+> > +	help
+> > +	  Enable kernel release to be prepended to each netcons message. The
+> > +	  kernel version is prepended to the first message, so, the peer knows what
+>                                          ^ each
 > 
-> On 29/06/2023 23:03, Namhyung Kim wrote:
->> Hi James,
->>
->> On Wed, Jun 28, 2023 at 3:53 AM James Clark <james.clark@arm.com> wrote:
->>>
->>> Changes since RFC:
->>>
->>>  * Changed arch filename convention to use the ARCH= build time values
->>>    instead of uname
->>>
->>> It seems like there were no objections on the RFC, apart from maybe
->>> changing the perf tests to run as a kself test. But that's probably not
->>> going to happen for a while, if ever, and these fragments can always
->>> be moved in that case.
->>
->> I missed the RFC, sorry.  Could you please add a link for that?
->>
->> Thanks,
->> Namhyung
+> > +	  kernel version is send the messages.
 > 
-> Yep, it's here:
-> https://lore.kernel.org/lkml/d02cce4a-47b1-a776-0d3a-a6a7c9a4d8fd@arm.com/T/
+> "kernel release" is one thing and "kernel version" is another:
+> root@vsid:~# uname --kernel-release
+> 6.5.0-rc2+
+> root@vsid:~# uname --kernel-version
+> #37 SMP PREEMPT_DYNAMIC Thu Jul 27 14:20:44 EDT 2023
 > 
+> This option relates to the kernel release so please use the correct
+> name consistently in the help text.
 
-Hi Arnaldo,
+Good point. I will fix it in v2.
 
-Any interest in taking this one?
+> > +	  See <file:Documentation/networking/netconsole.rst> for details.
+> > +
+> >  config NETPOLL
+> >  	def_bool NETCONSOLE
+> > 
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index 87f18aedd3bd..3a74f8c9cfdb 100644
+> 
+> [...]
+> 
+> Why is it needed to change the default for these parameters? Is there a
+> case where it's not possible to specify those values in the netconsole=
+> parameter?
+> 
+> If the default is set to on, there is no way to disable it via the
+> command line or module parameter, right?
 
-Thanks
-James
+This patch shouldn't be chagning the default value at all. The default
+value should be =n, as it is today. Where do you see the default being
+changed?
 
->>
->>
->>>
->>> James Clark (1):
->>>   perf tools: Add a place to put kernel config fragments for test runs
->>>
->>>  tools/perf/tests/config-fragments/README |  7 +++++++
->>>  tools/perf/tests/config-fragments/arm64  |  1 +
->>>  tools/perf/tests/config-fragments/config | 11 +++++++++++
->>>  3 files changed, 19 insertions(+)
->>>  create mode 100644 tools/perf/tests/config-fragments/README
->>>  create mode 100644 tools/perf/tests/config-fragments/arm64
->>>  create mode 100644 tools/perf/tests/config-fragments/config
->>>
->>>
->>> base-commit: ad5f604e186ac08d12c401e34ea96c09c38ddbc5
->>> --
->>> 2.34.1
->>>
+This is what the patch does, setting "default n".
+
+    +config NETCONSOLE_EXTENDED_LOG
+    +       bool "Enable kernel extended message"
+    +       depends on NETCONSOLE
+    +       default n
+
+and
+
+    +config NETCONSOLE_APPEND_RELEASE
+    +       bool "Enable kernel release version in the message"
+    +       depends on NETCONSOLE_EXTENDED_LOG
+    +       default n
+
+
+Thanks for the review.
