@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C98766AC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA06766AC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235933AbjG1Kev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
+        id S235850AbjG1KeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbjG1KeY (ORCPT
+        with ESMTP id S236082AbjG1KdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:34:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792A1717
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690540244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AeRW9S4IraEiSRP3XajTqTj5LA28qNkl4E7pfpLeXl0=;
-        b=A9KWY2BkG73+EJdQju5kWrKxJv/dhFMseBlXdzjsvsmSzilYS9ry+MooLqX1eJVIj6MQ7V
-        NiplxJz3cxfhermXEp6j66U0aHhi3Z6IZLiH12aVxv1zA0G/g/YkI4IC4HhcaRR0FNB6p9
-        f7JEaOrI/rTvXoqPBKHNdEyXyymPaMk=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-166-_0IuFokUPVeYTIsrMqApng-1; Fri, 28 Jul 2023 06:30:43 -0400
-X-MC-Unique: _0IuFokUPVeYTIsrMqApng-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fd2dec82a6so11475505e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:30:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690540242; x=1691145042;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AeRW9S4IraEiSRP3XajTqTj5LA28qNkl4E7pfpLeXl0=;
-        b=hLRAW2owEDVl9BVjl81zRiLTarM6Ou5hQbBYOl5HJO8N8/H1hZyQChMzeuEA5ht7aX
-         4oVQl3whtARq6WSUvQKKob2uM1/gim8+Vrw9EMaC78SPOcJqxrx3vbEE0MLt0pkjFnYi
-         lu8OPNYjbv+30kRDOJUYR8dTiS4ZJvHhusw44IVKnriUHYrKJ9WX9QIghA4iXGpF732a
-         zNwPJETRPga5M0Tbu/2wMI70xt/1hUED4o1c2dWHjMn0bhwYUb6bjzvrdlPEcD1InsWy
-         B0w15887qRQZOsq0ozKpzN62vi8Zz0Nqqg1AU+pbCLe6oEyaZuykC0cBxLY8U+5rGJHc
-         gfig==
-X-Gm-Message-State: ABy/qLYuDKV78M/QMMDy4pBA5rM486UKa1+ZNwF+pfJtVF+C3FWXYpSE
-        Jhiry6EHQ6590Hh2cD98ha4rwLsOOnh1FPerZPhkouuH1LeVZ+sVX86Yf/8Eq8jgOZ70wdY3Ukp
-        mDCttrIDj+uTG3ahFVwLXUo3T
-X-Received: by 2002:a7b:cb8d:0:b0:3fb:b832:d79a with SMTP id m13-20020a7bcb8d000000b003fbb832d79amr1378733wmi.38.1690540242292;
-        Fri, 28 Jul 2023 03:30:42 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEoXD6cie/e0g+FZfl/wau6ivG28fFLQHzaxWPXoeYCcCxN2yY836fF7KtjbhYj0CWvH+LoLg==
-X-Received: by 2002:a7b:cb8d:0:b0:3fb:b832:d79a with SMTP id m13-20020a7bcb8d000000b003fbb832d79amr1378719wmi.38.1690540241930;
-        Fri, 28 Jul 2023 03:30:41 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id y17-20020a05600c20d100b003fba6709c68sm3816733wmm.47.2023.07.28.03.30.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:30:41 -0700 (PDT)
-Message-ID: <8c9977ea-a6d5-893b-cb00-66e6007d0935@redhat.com>
-Date:   Fri, 28 Jul 2023 12:30:40 +0200
+        Fri, 28 Jul 2023 06:33:10 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E404EE1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690540277; x=1722076277;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jCHL+Jd5EMSndMzWvV72eKzuixuestkfs6Y4izjdGGM=;
+  b=R0kdEcDY1HTalcwk3xxdqsh/VZMOiNbKqtpyVgJobL4nRXMoR2vm1ALm
+   yBx8vWalcjLZuWJhThx44xWHMi7g9d7IB9ztxYH1Of/dPQ5KV7mtsddyV
+   6rl171E05aEjhtjFD/y7RnyZiFujGo6e1nE01NGgsAAOcatI4/PSnR0y3
+   DTJtvtmPn/rdRNt0xklniq4tdrKCeE6UaDurnyxzdsNvPYD4FzZqbZ9+G
+   aQeGNnJpsmz5G3P/ynWxN2LlCOW7F0F2zDL6CWExkCfSKxTOuap/SIb3U
+   vsI9bCLUg5MkicJzprEu2bF2ZFRXRbMvwpzW9+9hZnx8vRYseXSXAc40q
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="225813947"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:30:50 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 28 Jul 2023 03:30:50 -0700
+Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:30:47 -0700
+From:   Varshini Rajendran <varshini.rajendran@microchip.com>
+To:     <linux@armlinux.org.uk>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <varshini.rajendran@microchip.com>
+Subject: [PATCH v3 46/50] ARM: at91: Kconfig: add config flag for SAM9X7 SoC
+Date:   Fri, 28 Jul 2023 16:00:42 +0530
+Message-ID: <20230728103042.267646-1-varshini.rajendran@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 7/8] mm/compaction: remove unnecessary return for void
- function
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
-        willy@infradead.org
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-8-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230728171037.2219226-8-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,41 +64,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 19:10, Kemeng Shi wrote:
-> Remove unnecessary return for void function
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 6052cb519de1..188d610eb3b6 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1420,8 +1420,6 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->   	/* Skip this pageblock in the future as it's full or nearly full */
->   	if (start_pfn == end_pfn)
->   		set_pageblock_skip(page);
-> -
-> -	return;
->   }
->   
->   /* Search orders in round-robin fashion */
-> @@ -2863,7 +2861,7 @@ int compaction_register_node(struct node *node)
->   
->   void compaction_unregister_node(struct node *node)
->   {
-> -	return device_remove_file(&node->dev, &dev_attr_compact);
-> +	device_remove_file(&node->dev, &dev_attr_compact);
->   }
->   #endif /* CONFIG_SYSFS && CONFIG_NUMA */
->   
+Add config flag for sam9x7 SoC.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+---
+ arch/arm/mach-at91/Kconfig | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index a8c022b4c053..49d38a3a47de 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -141,11 +141,28 @@ config SOC_SAM9X60
+ 	help
+ 	  Select this if you are using Microchip's SAM9X60 SoC
+ 
++config SOC_SAM9X7
++	bool "SAM9X7"
++	depends on ARCH_MULTI_V5
++	select ATMEL_AIC5_IRQ
++	select ATMEL_PM if PM
++	select ATMEL_SDRAMC
++	select CPU_ARM926T
++	select HAVE_AT91_USB_CLK
++	select HAVE_AT91_GENERATED_CLK
++	select HAVE_AT91_SAM9X60_PLL
++	select MEMORY
++	select PINCTRL_AT91
++	select SOC_SAM_V4_V5
++	select SRAM if PM
++	help
++	  Select this if you are using Microchip's SAM9X7 SoC
++
+ comment "Clocksource driver selection"
+ 
+ config ATMEL_CLOCKSOURCE_PIT
+ 	bool "Periodic Interval Timer (PIT) support"
+-	depends on SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAMA5
++	depends on SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAM9X7 || SOC_SAMA5
+ 	default SOC_AT91SAM9 || SOC_SAMA5
+ 	select ATMEL_PIT
+ 	help
+@@ -155,7 +172,7 @@ config ATMEL_CLOCKSOURCE_PIT
+ 
+ config ATMEL_CLOCKSOURCE_TCB
+ 	bool "Timer Counter Blocks (TCB) support"
+-	default SOC_AT91RM9200 || SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAMA5
++	default SOC_AT91RM9200 || SOC_AT91SAM9 || SOC_SAM9X60 || SOC_SAM9X7 || SOC_SAMA5
+ 	select ATMEL_TCB_CLKSRC
+ 	help
+ 	  Select this to get a high precision clocksource based on a
+@@ -166,7 +183,7 @@ config ATMEL_CLOCKSOURCE_TCB
+ 
+ config MICROCHIP_CLOCKSOURCE_PIT64B
+ 	bool "64-bit Periodic Interval Timer (PIT64B) support"
+-	default SOC_SAM9X60 || SOC_SAMA7
++	default SOC_SAM9X60 || SOC_SAM9X7 || SOC_SAMA7
+ 	select MICROCHIP_PIT64B
+ 	help
+ 	  Select this to get a high resolution clockevent (SAM9X60) or
 -- 
-Cheers,
-
-David / dhildenb
+2.25.1
 
