@@ -2,123 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFF6766AE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34E7766AE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbjG1KkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
+        id S236046AbjG1KkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235807AbjG1Kj7 (ORCPT
+        with ESMTP id S236033AbjG1KkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:39:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC8830C2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:37:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 940E8620DD
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:37:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB14BC433CC;
-        Fri, 28 Jul 2023 10:37:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690540671;
-        bh=ONObWE6ZhfDnATcaTcPlY8CoLD+81fZVEWLGKUEkp94=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qv6/cG2nGfQHwUQNpVT3rvmYUoTXiiuA0eAvXaYtS6Q44y8gLerW54dJZMLeFZZgN
-         pndTqVw5Wvyqi9XxPyHcOKVEXrUD5HW3qRpMicZlP9XDZwfADMUjvuJJCrOg058YRs
-         zjVGhxgJK2/nQC5tWwqmkiIu+wciQOpKTAa4hz9LhW8IJexxtU1UoUGGgYElKQYIaF
-         LzVvLphH7r0IRDnPZAb6MeC+oTJ2k+woTV+7L1E0N3mKj7W+rexcKR5Ba8WcPvAI3Q
-         WmhSuC9JdzpsA8IpK5xWOzZVtl59diAErplaoWn/XGGJ7+dDnx+Aj5wHqxDqpvYM4z
-         kJUkxm1hwZG0A==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qPKqy-0002xP-NI;
-        Fri, 28 Jul 2023 11:37:48 +0100
+        Fri, 28 Jul 2023 06:40:03 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FA744B0;
+        Fri, 28 Jul 2023 03:38:12 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bbd2761f1bso15495975ad.2;
+        Fri, 28 Jul 2023 03:38:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690540692; x=1691145492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hjdkmAB6b44rcAISRtqp3WiFnsO1zZS32bCrIGKi8kI=;
+        b=sLutBpgqb13P2OpL8NpxevoNZm7/vZglywJ50TImuLPW0CHCK/qYvNjStvfzWqQlYM
+         ZH4Z7MhWUIktdBee01sc77PFDV05vYrsc4Yoqdh8QMuWCxXGfKSq+ceTMwvaIo4qBRP0
+         qgDy4zFU9WS0v4YKo2QmlMZlQ817ugFBY9OiDW+jJSafzq+bKAu6VLfSh/6AMELTM/Yq
+         TrpjtH/lhfpuvCkFS4R2ZVtvGxyzDWZdcLkuhEvSc0R+CR3IRSBLR6phvDXO4DMgj7It
+         FdgACdWZOORd6dE1ar+VFZkr618dECiySx0qFQAZZD1bIRF5alxm5M+x5CqCkJ2jaoFk
+         lvCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690540692; x=1691145492;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hjdkmAB6b44rcAISRtqp3WiFnsO1zZS32bCrIGKi8kI=;
+        b=FEW/41ulpMHSOQGaEvw5JqmJ9frHhnAsSrYvg+/89ubVdRzfC3o5UsiPdB64RbwDH0
+         bIxIAscL4B+9888pwvSrBwEJ5AyTenz1f97Xtz9xliQH4ZkE6Xl7CAcXZlM9giJXrE9s
+         aAbV0oqFERBdTMDvDCSKK8GLn+iCPzCRE+G2mvCkK2/GojHD92C/WVJglxXQhVUQEiDq
+         urjBdP4eyk4MiXwQkoHHABZbcxmASiqy54uBy8rTqx1BFpPJ0W9q8tSHrjzzoj/c/M+/
+         CtVpM+jM4dONBJaOWYt766SGHKM5kj0Z7lG1L423OSGkS2yUK7eux0MQW1sivkGcatXe
+         AICg==
+X-Gm-Message-State: ABy/qLZanzbGRLIBaf3EpE7H6Hv5sMBfoGZGCj51wdjafjrytv7VkNmj
+        aC93+TET5mqvA6ecdQy2hgs=
+X-Google-Smtp-Source: APBJJlGnRgVp+lpVXVYVBNXG47DEcvDlrcQ1s5eKZjviY/ycCTlCRMzMEcXI2WH17gtvYpjVlpfn3g==
+X-Received: by 2002:a17:902:7b85:b0:1b8:33d4:77f8 with SMTP id w5-20020a1709027b8500b001b833d477f8mr1323162pll.23.1690540691923;
+        Fri, 28 Jul 2023 03:38:11 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b21-20020a170902d31500b001b552309aedsm3233065plc.192.2023.07.28.03.38.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 03:38:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 28 Jul 2023 03:38:10 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rae Moar <rmoar@google.com>
+Cc:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        keescook@chromium.org, linux-hardening@vger.kernel.org,
+        jstultz@google.com, tglx@linutronix.de, sboyd@kernel.org
+Subject: Re: [PATCH v3 0/9] kunit: Add test attributes API
+Message-ID: <59dc28b1-298c-4e7b-b35f-0b94071f4cb5@roeck-us.net>
+References: <20230725212522.1622716-1-rmoar@google.com>
 MIME-Version: 1.0
-Date:   Fri, 28 Jul 2023 11:37:48 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc:     tglx@linutronix.de, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Hari Prasath <Hari.PrasathGE@microchip.com>
-Subject: Re: [PATCH v3 42/50] irqchip/atmel-aic5: Add support for sam9x7 aic
-In-Reply-To: <20230728103002.267440-1-varshini.rajendran@microchip.com>
-References: <20230728103002.267440-1-varshini.rajendran@microchip.com>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <87ee1e3c365686bc60e92ba3972dc1a5@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: varshini.rajendran@microchip.com, tglx@linutronix.de, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Hari.PrasathGE@microchip.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725212522.1622716-1-rmoar@google.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-28 11:30, Varshini Rajendran wrote:
-> From: Hari Prasath <Hari.PrasathGE@microchip.com>
+On Tue, Jul 25, 2023 at 09:25:11PM +0000, Rae Moar wrote:
+> Hello everyone,
 > 
-> Add support for the Advanced interrupt controller(AIC) chip in the 
-> sam9x7.
+> This patch series adds a test attributes framework to KUnit.
 > 
-> Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  drivers/irqchip/irq-atmel-aic5.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/irqchip/irq-atmel-aic5.c 
-> b/drivers/irqchip/irq-atmel-aic5.c
-> index 145535bd7560..bab11900f3ef 100644
-> --- a/drivers/irqchip/irq-atmel-aic5.c
-> +++ b/drivers/irqchip/irq-atmel-aic5.c
-> @@ -320,6 +320,7 @@ static const struct of_device_id aic5_irq_fixups[]
-> __initconst = {
->  	{ .compatible = "atmel,sama5d3", .data = sama5d3_aic_irq_fixup },
->  	{ .compatible = "atmel,sama5d4", .data = sama5d3_aic_irq_fixup },
->  	{ .compatible = "microchip,sam9x60", .data = sam9x60_aic_irq_fixup },
-> +	{ .compatible = "microchip,sam9x7", .data = sam9x60_aic_irq_fixup },
->  	{ /* sentinel */ },
->  };
-> 
-> @@ -406,3 +407,12 @@ static int __init sam9x60_aic5_of_init(struct
-> device_node *node,
->  	return aic5_of_init(node, parent, NR_SAM9X60_IRQS);
->  }
->  IRQCHIP_DECLARE(sam9x60_aic5, "microchip,sam9x60-aic", 
-> sam9x60_aic5_of_init);
-> +
-> +#define NR_SAM9X7_IRQS		70
 
-One can only wonder why this stuff doesn't come from the device tree,
-given that there is no other meaningful difference between this
-version of the IP and the previous ones...
+With this series in linux-next, almost 50% of my boot tests crash,
+and many others show warnings tracebacks.
 
-         M.
+Example crash from x86_64 boot attempt attached.
 
-> +
-> +static int __init sam9x7_aic5_of_init(struct device_node *node,
-> +				      struct device_node *parent)
-> +{
-> +	return aic5_of_init(node, parent, NR_SAM9X7_IRQS);
-> +}
-> +IRQCHIP_DECLARE(sam9x7_aic5, "microchip,sam9x7-aic", 
-> sam9x7_aic5_of_init);
+Guenter
 
--- 
-Jazz is not dead. It just smells funny...
+---
+[    6.165419] ok 6 lib_sort
+[    6.166044]     KTAP version 1
+[    6.166139]     # Subtest: kunit_executor_test
+[    6.166247]     # module: kunit
+[    6.166261]     1..8
+[    6.168252]     ok 1 parse_filter_test
+[    6.169579] BUG: unable to handle page fault for address: ffffd757e80004c8
+[    6.169872] #PF: supervisor read access in kernel mode
+[    6.169990] #PF: error_code(0x0000) - not-present page
+[    6.170142] PGD ffd4067 P4D ffd4067 PUD 0
+[    6.170346] Oops: 0000 [#1] PREEMPT SMP PTI
+[    6.170521] CPU: 0 PID: 182 Comm: kunit_try_catch Tainted: G                 N 6.5.0-rc3-next-20230728 #1
+[    6.170735] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+[    6.171024] RIP: 0010:kfree+0x61/0x140
+[    6.171313] Code: 80 48 01 e8 0f 82 ec 00 00 00 48 c7 c2 00 00 00 80 48 2b 15 29 bf aa 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 07 bf aa 01 <48> 8b 50 08 48 89 c7 f6 c2 01 0f 85 b3 00 00 00 66 90 48 8b 07 f6
+[    6.171715] RSP: 0000:ffffb48f80267dc8 EFLAGS: 00000286
+[    6.171847] RAX: ffffd757e80004c0 RBX: ffffa34583aef5d0 RCX: 0000000000000000
+[    6.171998] RDX: 00005cba00000000 RSI: ffffffff95cb1ad5 RDI: ffffb48f80013cd0
+[    6.172146] RBP: ffffb48f80013cd0 R08: 0000000000000001 R09: 0000000000000001
+[    6.172293] R10: 0000000000000001 R11: 0000000000000001 R12: ffffb48f80267e74
+[    6.172445] R13: 0000000000000000 R14: ffffa34583bf4000 R15: 0000000000000002
+[    6.172620] FS:  0000000000000000(0000) GS:ffffa3458f800000(0000) knlGS:0000000000000000
+[    6.172793] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    6.172917] CR2: ffffd757e80004c8 CR3: 0000000009048000 CR4: 00000000007506f0
+[    6.173089] PKRU: 55555554
+[    6.173177] Call Trace:
+[    6.173313]  <TASK>
+[    6.173494]  ? __die+0x1f/0x70
+[    6.173600]  ? page_fault_oops+0x14a/0x460
+[    6.173693]  ? search_exception_tables+0x37/0x50
+[    6.173793]  ? fixup_exception+0x21/0x310
+[    6.173887]  ? exc_page_fault+0xee/0x1c0
+[    6.173977]  ? asm_exc_page_fault+0x26/0x30
+[    6.174076]  ? kunit_filter_suites+0x3a5/0x460
+[    6.174192]  ? kfree+0x61/0x140
+[    6.174271]  ? kfree+0x106/0x140
+[    6.174353]  kunit_filter_suites+0x3a5/0x460
+[    6.174473]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
+[    6.174604]  filter_suites_test+0xea/0x2c0
+[    6.174702]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
+[    6.174828]  kunit_generic_run_threadfn_adapter+0x15/0x20
+[    6.174941]  kthread+0xef/0x120
+[    6.175012]  ? __pfx_kthread+0x10/0x10
+[    6.175098]  ret_from_fork+0x2f/0x50
+[    6.175177]  ? __pfx_kthread+0x10/0x10
+[    6.175260]  ret_from_fork_asm+0x1b/0x30
+[    6.175387]  </TASK>
+[    6.175466] Modules linked in:
+[    6.175640] CR2: ffffd757e80004c8
+[    6.175887] ---[ end trace 0000000000000000 ]---
+[    6.176029] RIP: 0010:kfree+0x61/0x140
+[    6.176119] Code: 80 48 01 e8 0f 82 ec 00 00 00 48 c7 c2 00 00 00 80 48 2b 15 29 bf aa 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 07 bf aa 01 <48> 8b 50 08 48 89 c7 f6 c2 01 0f 85 b3 00 00 00 66 90 48 8b 07 f6
+[    6.176478] RSP: 0000:ffffb48f80267dc8 EFLAGS: 00000286
+[    6.176589] RAX: ffffd757e80004c0 RBX: ffffa34583aef5d0 RCX: 0000000000000000
+[    6.176729] RDX: 00005cba00000000 RSI: ffffffff95cb1ad5 RDI: ffffb48f80013cd0
+[    6.176869] RBP: ffffb48f80013cd0 R08: 0000000000000001 R09: 0000000000000001
+[    6.177008] R10: 0000000000000001 R11: 0000000000000001 R12: ffffb48f80267e74
+[    6.177150] R13: 0000000000000000 R14: ffffa34583bf4000 R15: 0000000000000002
+[    6.177290] FS:  0000000000000000(0000) GS:ffffa3458f800000(0000) knlGS:0000000000000000
+[    6.177448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    6.177564] CR2: ffffd757e80004c8 CR3: 0000000009048000 CR4: 00000000007506f0
+[    6.177704] PKRU: 55555554
+[    6.177807] note: kunit_try_catch[182] exited with irqs disabled
+
