@@ -2,187 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5E07673F3
+	by mail.lfdr.de (Postfix) with ESMTP id CEFCA7673F4
 	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbjG1RxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
+        id S233349AbjG1RxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234744AbjG1RxG (ORCPT
+        with ESMTP id S233550AbjG1RxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:53:06 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CAF10CB;
-        Fri, 28 Jul 2023 10:53:04 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso1905775fac.3;
-        Fri, 28 Jul 2023 10:53:04 -0700 (PDT)
+        Fri, 28 Jul 2023 13:53:13 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C41435BF
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:53:12 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3460770afe2so7175ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690566784; x=1691171584;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KPNS8nAOP/RrJU4iRZ8nyG6vRXAppFpu9cvYXhZaAxc=;
-        b=nQ6vN8NS6m7Tan+my3bjZ8J88psSiUXdIDGTCFbkm3XGBoyu9KtsoU7ip+ICqFCkEe
-         Yo3JuqUTUU6hhqZ+hykzQjoQJ2AANRvUdC1Z3un3XG/Iprm6mW6vrszW052D0i9U1D5T
-         fmU9YHgNUw5ztoJ5/671ZUR6W4255E6/LCq64/j/+F0MoBBHJLONQCeeXT6MumA3SZuO
-         EQw8xem00AlGM0GwCvCk7FINT9GyLtgm1/DnlrA27m22j4ulSlUzJnTuqKPA/SneY6nR
-         UwrbGXmGj7LeT4Orh/Hv9nrPwNYEWccCxo+ne2u0ATeOs3SbbAzvOIzPeq35i/TAq7xj
-         B+kg==
+        d=google.com; s=20221208; t=1690566791; x=1691171591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zsIHLPb5okBWXJf2DtS76Y92BZwwFSzgLVO6RcujWsQ=;
+        b=dtdPiasbgn7CaqvxkgS3cosIxhKaD7PdNI4nHup/Mt+FArUPs4kuQQNpIZHJItnBiy
+         yOqBDtVdIN0uZpwAh+C6NKhqrAH7nxnm+Bl22M2vUM/p1ubXV4AiSDC9dnIr5AxdTou0
+         kzxM5iVxPfYWqxeR1ivufNCcn/nkNGQ0s11RRlmZiqVs53VN9Xrqn1iqGw1eWvrnWycS
+         sJgAwtpJ/yhA+254E2CbjGcn4IXCSCg/D72dF4TwHsgnMJxz7kpPK1zeOsFr/vkqkXJo
+         ga4i1v6ZpMGL4ECLEcii9uTg2DGiR7/QEA5eLmKR10HGjXkndlW04IAEC8cZyEB0oTbc
+         0THw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690566784; x=1691171584;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KPNS8nAOP/RrJU4iRZ8nyG6vRXAppFpu9cvYXhZaAxc=;
-        b=V0+xOCoxJDDBhU8coXYxNf2ZjP4CEDPBaKZppifMetjd4QYqJPZjWywPsGR0X1HaV/
-         vUZAS/cqyXjJ0Ec92VkdA1P6uCyXI1aGv5UJyMw7p4ahwnprHgNjhYgPcp49GlgMz+pe
-         838jrDyt5iAiaaJBKmiuYvoW31njBe+IlnduopsKqbBZVDC3N4pYXFVJN6Vcu7x5rBYt
-         F16BTKw+bzN8OmJy0TyufW5um+HqUJk1l8ZpQekgQv+xCrhbC3z22bQPvBzuYH1HCeWk
-         iygFop4VIJ41NYDIjKlvMJR7p1UWzt6hQdYAtuxbswuBXj8xBAGqCUbmQWqIn8s8ws2T
-         iPrQ==
-X-Gm-Message-State: ABy/qLaB2HQEvmCPUppO00S27cs9h8ulCWb1yQXBY8nEpX2X+eM7TG6Q
-        jA9qdP7vzz5tZYYpunrq26A=
-X-Google-Smtp-Source: APBJJlFWUlb2Ly6uOXXtBjf7T2juDs1nvjcT+1uhjAxlFk76hRAEcAa1Pn2egCbqR+btETo0eD44KA==
-X-Received: by 2002:a05:6870:f70b:b0:1b7:609f:e0d4 with SMTP id ej11-20020a056870f70b00b001b7609fe0d4mr3676457oab.15.1690566781962;
-        Fri, 28 Jul 2023 10:53:01 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k9-20020a02c649000000b0042b265bf3besm1207040jan.115.2023.07.28.10.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:53:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f400750d-e53c-65f8-210f-aa127d8f6beb@roeck-us.net>
-Date:   Fri, 28 Jul 2023 10:52:59 -0700
+        d=1e100.net; s=20221208; t=1690566791; x=1691171591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zsIHLPb5okBWXJf2DtS76Y92BZwwFSzgLVO6RcujWsQ=;
+        b=lXCbaK6kj1pq5HT67qdo5DTXm/pIjAWvqDZEkatLA/Uxq9zjc0eO0gDWkqwWszKh8W
+         75e9m7wnLoGnDvR+fqtZVvgziNG7YvCIjdQZbVetZFYZuo+LXzCywiemFp6IRI4IK7cp
+         X9mDscjoFwpr51Uqj9B8aOtHZLXn3jtxZivEolvRtZmFW8JhtzEiVOqizRkBqvOUYlzY
+         e5k2lzFuNAKDKxWPnh81fcITESVWjd+eu3+FuiPYqC0qpicUxKXHoNSvjgNtWYfXAzUY
+         +3fkEugPzKuAJkzjVqZGWXTgv7AGlsXhy8hXC7B4WvldALhaiMCFHiFGoPIOKyR2YNjc
+         S+Tw==
+X-Gm-Message-State: ABy/qLZAEPcaQY8uub/rxbinzz4sC+ewBKM9R7YTx+qjMgdaKkD/mv9+
+        pKwY+zubE0UV5V8hNZk1w0iTQq56Mr2ucLVmx+ghng==
+X-Google-Smtp-Source: APBJJlEDh03sKgpDB0dKs6Z85qIKrMbTr+Ye9aruBFA5yuWJzcNZnvHEOZQeaHI6jnTYkiNFcm6HvFJcJmmT2PwfIAQ=
+X-Received: by 2002:a05:6e02:b48:b0:33d:8e80:4c2f with SMTP id
+ f8-20020a056e020b4800b0033d8e804c2fmr16633ilu.20.1690566791205; Fri, 28 Jul
+ 2023 10:53:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Add Silicom Platform Driver
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Huibin Shi <henrys@silicom-usa.com>,
-        Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Cc:     "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-References: <20230718160104.2716-1-henryshi2018@gmail.com>
- <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
- <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
- <08469a96-24f2-2099-0a0a-019cb81f976b@wanadoo.fr>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <08469a96-24f2-2099-0a0a-019cb81f976b@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230727141428.962286-1-alexghiti@rivosinc.com> <20230727141428.962286-10-alexghiti@rivosinc.com>
+In-Reply-To: <20230727141428.962286-10-alexghiti@rivosinc.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 28 Jul 2023 10:52:59 -0700
+Message-ID: <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
+Subject: Re: [PATCH v4 09/10] tools: lib: perf: Implement riscv mmap support
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 09:47, Christophe JAILLET wrote:
-> Le 28/07/2023 à 14:59, Huibin Shi a écrit :
->> Christophe,
->>
->> Thanks for the comments. See my comments below.
->>
->> Updated patch will be sent out later after review comments from other reviewers are addressed.
->>
->> Henry
->> -----Original Message-----
->> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> Sent: Tuesday, July 25, 2023 5:03 PM
->> To: Henry Shi <henryshi2018@gmail.com>; hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux@roeck-us.net; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org
->> Cc: hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
->> Subject: Re: [PATCH] Add Silicom Platform Driver
->>
->> Caution: This is an external email. Please take care when clicking links or opening attachments.
->>
->>
->> Le 18/07/2023 à 18:01, Henry Shi a écrit :
->>> The Silicom platform (silicom-platform) Linux driver for Swisscom
->>> Business Box (Swisscom BB) as well as Cordoba family products is a
->>> software solution designed to facilitate the efficient management and
->>> control of devices through the integration of various Linux
->>> frameworks. This platform driver provides seamless support for device
->>> management via the Linux LED framework, GPIO framework, Hardware
->>> Monitoring (HWMON), and device attributes. The Silicom platform
->>> driver's compatibility with these Linux frameworks allows applications
->>> to access and control Cordoba family devices using existing software
->>> that is compatible with these frameworks. This compatibility
->>> simplifies the development process, reduces dependencies on
->>> proprietary solutions, and promotes interoperability with other
->>> Linux-based systems and software.
->>>
->>> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
->>> ---
->>
->> [...]
->>
->>> +static int __init silicom_mc_leds_register(struct device *dev,
->>> +                                        const struct led_classdev_mc
->>> +*mc_leds) {
->>> +     struct led_classdev_mc *led;
->>> +     int i, err;
->>> +
->>> +     for (i = 0; mc_leds[i].led_cdev.name; i++) {
->>> +             /* allocate and copy data from the init constansts */
->>> +             led = devm_kzalloc(dev, sizeof(struct led_classdev_mc),
->>> + GFP_KERNEL);
->>
->> sizeof(*led) is shorter.
->> Mostly a matter of taste.
->>
->> Maybe even devm_kmemdup()?
->>
->> Henry: thanks. Devm_kmemdup() API requires additional argument that is not necessary of this driver. I prefer devm_kzalloc for now.
-> 
-> CJ: The only additionnal parameter I can think of are the one of memcpy() ...
-> 
->>
->>> +             if (IS_ERR_OR_NULL(led)) {
->>
->> if (!led)
->> is enough.
->>
->> Henry: OK, changed
->>
->>> +                     dev_err(dev, "Failed to alloc
->>> + led_classdev_mc[%d]: %ld\n", i, PTR_ERR(led));
->>
->> This kind of message is useless and should be removed (checkpatch should warn about it)
->>
->> Henry: OK, removed.
->>
->>> +                     return -ENOMEM;
->>> +             }
->>> +             memcpy(led, &mc_leds[i], sizeof(*led));
-> 
-> ... here.
-> 
-> devm_kzalloc() + this memcpy() could be done with only devm_kmemdup().
-> 
-> This is mostly a matter of taste.
-> 
+On Thu, Jul 27, 2023 at 7:28=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
+.com> wrote:
+>
+> riscv now supports mmaping hardware counters so add what's needed to
+> take advantage of that in libperf.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  tools/lib/perf/mmap.c | 65 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>
+> diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> index 0d1634cedf44..378a163f0554 100644
+> --- a/tools/lib/perf/mmap.c
+> +++ b/tools/lib/perf/mmap.c
+> @@ -392,6 +392,71 @@ static u64 read_perf_counter(unsigned int counter)
+>
+>  static u64 read_timestamp(void) { return read_sysreg(cntvct_el0); }
+>
+> +#elif __riscv_xlen =3D=3D 64
 
-I don't think that using (or not using) available API functions should
-be a matter of taste, or the next step might be to re-implement memcpy().
+This is something of an odd guard, perhaps:
+#elif defined(__riscv) && __riscv_xlen =3D=3D 64
 
-Guenter
+That way it is more intention revealing that this is riscv code. Could
+you add a comment relating to the __riscv_xlen ?
 
+> +
+> +/* TODO: implement rv32 support */
+> +
+> +#define CSR_CYCLE      0xc00
+> +#define CSR_TIME       0xc01
+> +
+> +#define csr_read(csr)                                          \
+> +({                                                             \
+> +       register unsigned long __v;                             \
+> +               __asm__ __volatile__ ("csrr %0, " #csr          \
+> +                : "=3Dr" (__v) :                                 \
+> +                : "memory");                                   \
+
+To avoid the macro pasting that could potentially go weird, could this be:
+
+__asm__ __volatile__ ("csrr %0, %1",
+  : "=3Dr"(__v) /* outputs */
+  : "i"(csr) /* inputs */
+  : "memory" /* clobbers */)
+
+Also, why is this clobbering memory? Worth adding a comment.
+
+Thanks,
+Ian
+
+> +                __v;                                           \
+> +})
+> +
+> +static unsigned long csr_read_num(int csr_num)
+> +{
+> +#define switchcase_csr_read(__csr_num, __val)           {\
+> +       case __csr_num:                                 \
+> +               __val =3D csr_read(__csr_num);            \
+> +               break; }
+> +#define switchcase_csr_read_2(__csr_num, __val)         {\
+> +       switchcase_csr_read(__csr_num + 0, __val)        \
+> +       switchcase_csr_read(__csr_num + 1, __val)}
+> +#define switchcase_csr_read_4(__csr_num, __val)         {\
+> +       switchcase_csr_read_2(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_2(__csr_num + 2, __val)}
+> +#define switchcase_csr_read_8(__csr_num, __val)         {\
+> +       switchcase_csr_read_4(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_4(__csr_num + 4, __val)}
+> +#define switchcase_csr_read_16(__csr_num, __val)        {\
+> +       switchcase_csr_read_8(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_8(__csr_num + 8, __val)}
+> +#define switchcase_csr_read_32(__csr_num, __val)        {\
+> +       switchcase_csr_read_16(__csr_num + 0, __val)     \
+> +       switchcase_csr_read_16(__csr_num + 16, __val)}
+> +
+> +       unsigned long ret =3D 0;
+> +
+> +       switch (csr_num) {
+> +       switchcase_csr_read_32(CSR_CYCLE, ret)
+> +       default:
+> +               break;
+> +       }
+> +
+> +       return ret;
+> +#undef switchcase_csr_read_32
+> +#undef switchcase_csr_read_16
+> +#undef switchcase_csr_read_8
+> +#undef switchcase_csr_read_4
+> +#undef switchcase_csr_read_2
+> +#undef switchcase_csr_read
+> +}
+> +
+> +static u64 read_perf_counter(unsigned int counter)
+> +{
+> +       return csr_read_num(CSR_CYCLE + counter);
+> +}
+> +
+> +static u64 read_timestamp(void)
+> +{
+> +       return csr_read_num(CSR_TIME);
+> +}
+> +
+>  #else
+>  static u64 read_perf_counter(unsigned int counter __maybe_unused) { retu=
+rn 0; }
+>  static u64 read_timestamp(void) { return 0; }
+> --
+> 2.39.2
+>
