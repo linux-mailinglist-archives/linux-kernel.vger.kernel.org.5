@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE207672A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48247672D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbjG1RC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
+        id S235869AbjG1RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjG1RCz (ORCPT
+        with ESMTP id S235717AbjG1REM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:02:55 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6602FA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:02:54 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso3889304e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:02:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690563772; x=1691168572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HAf0f1T2SfrQfohRytga1xgLxnQTJqNRQWwR6CnDUiU=;
-        b=TVl+WJYrvGsGpB323l5pe+F90lKlzEGgHxpHO9BPsNpTu4wYnwMTzhvrVjrbShLnkU
-         D13XZ1N2Cy0z+NkKLQJvegXFJDoESEQ4WU40pFB6h713fJn3lVTbnFyw4aPTNxlvcRg2
-         0e3cJ7278hBNIihwzHnZkhoVv3eKz2B/RXKug=
+        Fri, 28 Jul 2023 13:04:12 -0400
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAAF49D7;
+        Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso323879366b.3;
+        Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690563772; x=1691168572;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HAf0f1T2SfrQfohRytga1xgLxnQTJqNRQWwR6CnDUiU=;
-        b=Dq2bbfo8HwrMXC7JALwKy43IiONAClYCBTvLIQf61DGWHJwyTkhhkWuuwx1M8nLWpI
-         1jWGaBBy+XVNGhupc5ZaBj9t7yCXuSdfHLSgcKoeMisjxeDZvwKLuqgrx55wytGLTEap
-         tAyXezJV0hZfi+XezE5/GtXj1CtIvtrKtYAqiJvnFMgA7cc+mXYvk462AUpSDmzXTwNy
-         OQlXIZixzGgAUnlh28jxQcCaTMbj1lOvtjRXbr2JdL1DP6yV+BT5xy8eA3veyTXSVaa9
-         PyJsjOaGPXAO+HuJcgMw94BBVYQ9Y492z5JHtHEQZv+9F4rWDPeCNFAxcwWDLqmERstZ
-         S0pQ==
-X-Gm-Message-State: ABy/qLa6MmqZ372iBQ2Glj3qCV9r9omfMUj9ZHvr/6OnNkbpT268rI6y
-        pBRi2ExGKFATRp0IzmGsLNVN1aJ54+n8hNa5wZ+tkJip
-X-Google-Smtp-Source: APBJJlGSplOnR0k/wlPJI2a683CmjGDyv/+40rchn/ePBIu2QwAYWFfwueEgcvw8IGL3O//NQTYLng==
-X-Received: by 2002:a19:560a:0:b0:4f3:93d6:f969 with SMTP id k10-20020a19560a000000b004f393d6f969mr1834819lfb.59.1690563772634;
-        Fri, 28 Jul 2023 10:02:52 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id c26-20020a19761a000000b004f8592a5180sm895694lff.17.2023.07.28.10.02.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:02:52 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso3928552e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:02:52 -0700 (PDT)
-X-Received: by 2002:ac2:5df3:0:b0:4fb:89b3:3373 with SMTP id
- z19-20020ac25df3000000b004fb89b33373mr2187854lfq.43.1690563771697; Fri, 28
- Jul 2023 10:02:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690563825; x=1691168625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tzbpmy5CCesVeQWGWqphI5Ah11VcG7gal7MV1usl0UM=;
+        b=CU+NOYFryuYxCKuQcP6HgylayRgiNsGKJE1HPz92I3v4wllzqoo5Ob8lLGz3MH5PHH
+         hqi8iibkJVfrZaeT4DsCvAO+c4kO+HTPmGApD/+at9U2Bi9MdXpxhg094PJsZn+nBi8K
+         ReMwjFSFOwwQrLGKUAO+qJrqs7ZnbC3ZSXYN2EbWvH+m2OI5zSPvMnZDlL9LCnsqL8yU
+         J1aojVrGwWIRyBzd7rJ12wd+4Ns3cXQqe4aqrp7eWwJCJRb+ODnx9nheK3kZRTqNSzLO
+         M60SabbEvtmaDnxLxeZXMqFHd59CmYIKHAd9krk0K8OlZe6jQl/DxFMwNHV1e1lvnnU3
+         5UkA==
+X-Gm-Message-State: ABy/qLagh3AnId8zMZWYgLFSY800oFd1g2s7Z2WZ3sSX2ncmIklRa7Yr
+        SXn5R5TyvbP8GjaErlRz69Y=
+X-Google-Smtp-Source: APBJJlFkFo8sLIpwvsf/6r+8p9st0JibovN+mnUD9/Akswil8Kxf7K9RUBjI3zU0vCR+30lPCARKQQ==
+X-Received: by 2002:a17:906:6494:b0:994:9ed:300b with SMTP id e20-20020a170906649400b0099409ed300bmr2362960ejm.16.1690563825459;
+        Fri, 28 Jul 2023 10:03:45 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id y10-20020a17090668ca00b009934b1eb577sm2277769ejr.77.2023.07.28.10.03.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 10:03:44 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 10:03:40 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZMP07KtOeJ09ejAd@gmail.com>
+References: <20230724142237.358769-1-leitao@debian.org>
+ <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com>
+ <ZL+VfRiJQqrrLe/9@gmail.com>
+ <ZMAAMKTaKSIKi1RW@google.com>
 MIME-Version: 1.0
-References: <CAPM=9twwk0C6kGQXFZdvEhxnLe7DhnwN8doj_yA3a9S3hs7c1w@mail.gmail.com>
-In-Reply-To: <CAPM=9twwk0C6kGQXFZdvEhxnLe7DhnwN8doj_yA3a9S3hs7c1w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 Jul 2023 10:02:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj2A91gCW8U_4zxe7=HY=zKL1EC7_4Z19AhM7sTsj5hfw@mail.gmail.com>
-Message-ID: <CAHk-=wj2A91gCW8U_4zxe7=HY=zKL1EC7_4Z19AhM7sTsj5hfw@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 6.5-rc4
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMAAMKTaKSIKi1RW@google.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 19:20, Dave Airlie <airlied@gmail.com> wrote:
->
-> Regular scheduled fixes, msm and amdgpu leading the way, with some
-> i915 and a single misc fbdev, all seems fine.
+Hello Stanislav,
 
-Pulled.
+On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
+> On 07/25, Breno Leitao wrote:
+> > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > > On 07/24, Breno Leitao wrote:
+> > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > > such.
+> > > > 
+> > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+> > > 
+> > > We probably need to also have bpf bits in the new
+> > > io_uring_cmd_getsockopt?
+> > 
+> > It might be interesting to have the BPF hook for this function as
+> > well, but I would like to do it in a following patch, so, I can
+> > experiment with it better, if that is OK.
 
-Tangentially related: where do you keep your pgp key? The one I have
-is long expired, and doing a refresh doesn't get any updates...
+I spent smoe time looking at the problem, and I understand we want to
+call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
+io_uring_cmd_{g,s}etsockopt().
 
-                Linus
+Per the previous conversation with Williem,
+io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void __user
+*optval), and optlen as a kernel integer (it comes as from the io_uring
+SQE), such as:
+
+	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+	int optlen = READ_ONCE(cmd->sqe->optlen);
+
+Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
+__cgroup_bpf_run_filter_getsockopt() which expects userpointer for
+optlen and optval.
+
+At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
+pointers for both optlen and optval.
+
+In this current patchset, it has user pointer for optval and kernel value
+for optlen. I.e., a third combination.  So, none of the functions would
+work properly, and we probably do not want to create another function.
+
+I am wondering if it is a good idea to move
+__cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
+able to adapt to any combination.
+
+Any feedback is appreciate.
+Thanks!
