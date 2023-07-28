@@ -2,143 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728A176736C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D328576736D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjG1Rbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        id S233956AbjG1Rbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjG1Rbd (ORCPT
+        with ESMTP id S233412AbjG1Rbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:31:33 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CB04682
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:05 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so38469891fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690565459; x=1691170259;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0KWziT1mxdmTj7u48lfqOSCiVjBr+WD1yIdlFS/Mwc=;
-        b=x8guTRcRIw9KKkzFxIpzfV3dkfInedxmUv4ClFVbFFf/94ioI7vTIcMLq/aplaaEF4
-         z2JXqZerlGswc3R/Ms3G6VCOi4aRYmOgryymZ6BJ0TGxzDgLkHcbJH83jgdE/H08XcgW
-         +Rn8KhsBvTz8pbvjCEfvDcJRZNBYCnlXca5HACQnUTXzDdS6Mhm7qWmP4o3pF86wx8iw
-         RFJX4vzHKtL99Y/A2u9Uoy4OCelU+OOOD4kFZqsb2Ik8zKx4ATIOrI409U06GtLTrvk/
-         ohiTwBfuQhxgEiZ6UzBrHXjOV3SlCa1vD/Mh6eND/LvN/rA+cel78qXMXzL3AHDIhsxe
-         Bh3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565459; x=1691170259;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0KWziT1mxdmTj7u48lfqOSCiVjBr+WD1yIdlFS/Mwc=;
-        b=MucvdRRKWPlkYeT6UEqD0MS/FGHqx4F1jEz7CSMNdanu++J1xPABz4eN0AYfs2lCTm
-         SO8s1rWjFarRLqGHIHq1Z2hrxHaIHZceC3ja1Y9tUbEU2gr1wLD0GijqLii+ZZYbONJL
-         CXcHSv/nlW0vvOyb9NrvhE4wPOGFFU6uZcmi3E2IUhOHBrbflujr6D85IlmWUX9yw2JM
-         rF6uQkLRVrTyYmYar05ErWlzH871aamvMoLyeB8neTybzUM+vp2MLohmcEdG3UiJ6uSG
-         WGBGBF0YikNdTWKyxJ2q6sBv665OAnhAt8jfg6IDIVZouQd8/QwyqBh1LA40GgA5s3iT
-         guOg==
-X-Gm-Message-State: ABy/qLbrHuRyz5BvE+1iNbmhIvF26+w6WrwspTo0219MdzQupsq87lUz
-        JTbTuwaxkdCSyRhz5ZDcZEJHtw==
-X-Google-Smtp-Source: APBJJlG3TGvZ06ORf17+8RqZPHRtc8pJ+i+eQUUDvWXAGMRdy4DHCDBVcrup1yk0V0K2JXwvktHnHg==
-X-Received: by 2002:a2e:9e89:0:b0:2b6:d5af:1160 with SMTP id f9-20020a2e9e89000000b002b6d5af1160mr2249527ljk.28.1690565459316;
-        Fri, 28 Jul 2023 10:30:59 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id u22-20020a2ea176000000b002b6efce3f54sm1051032ljl.123.2023.07.28.10.30.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:30:58 -0700 (PDT)
-Message-ID: <f95fa8c8-1794-fcbc-809d-62bfcc667822@linaro.org>
-Date:   Fri, 28 Jul 2023 19:30:57 +0200
+        Fri, 28 Jul 2023 13:31:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F2F3A99;
+        Fri, 28 Jul 2023 10:31:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E5335621B1;
+        Fri, 28 Jul 2023 17:31:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F788C433C8;
+        Fri, 28 Jul 2023 17:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690565466;
+        bh=NXz5tKNsoYH5b9t6PkGaSvdNnq8EVbDx7LLDtyBWDIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kEKS+ghKaHqzJ/CeAVUmffgp1syROs6M7poM0tlpzGzihFWzpmfvi2K85PgFarbuo
+         RkBcIe75tLMn7XoYUUPhEjXBxGbvzFW6xn32Qzg/SEPgRlqNJ7ZV00NbZfU5yRRyZa
+         jn3bpdlEYETGcDum4z742lJd6KwcgDw+lIfr6otYHl7RO8ePAuI1taZ3cPwmxE/PwJ
+         wKJJvTonQcslSnqjiqKIy+MtAH0nqvGjUK5Hyzlni78cWnO89ixENQFj5Bae9AcGEH
+         K6Fi4h9QSZCy9nrcmCfp6Y1ClZF8Pg2Q4KYKwIAlrtDzm85paoRya48V4qF09hybvv
+         7Sg5khTe78XFA==
+Date:   Fri, 28 Jul 2023 10:31:03 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+        Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
+ riscv and loongarch
+Message-ID: <20230728173103.GA1299743@dev-arch.thelio-3990X>
+References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
+ <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
+ <20230727213648.GA354736@dev-arch.thelio-3990X>
+ <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/33] iris: vidc: add helper functions for resource
- management
-Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-13-git-send-email-quic_vgarodia@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690550624-14642-13-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.2023 15:23, Vikash Garodia wrote:
-> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
+> On Thu, Jul 27, 2023, at 23:36, Nathan Chancellor wrote:
+> > Hi Tiezhu and Arnd,
+> >
+> > On Thu, Jun 22, 2023 at 10:13:38PM +0800, Tiezhu Yang wrote:
+> >> Now we specify the minimal version of GCC as 5.1 and Clang/LLVM as 11.0.0
+> >> in Documentation/process/changes.rst, __CHAR_BIT__ and __SIZEOF_LONG__ are
+> >> usable, it is probably fine to unify the definition of __BITS_PER_LONG as
+> >> (__CHAR_BIT__ * __SIZEOF_LONG__) in asm-generic uapi bitsperlong.h.
+> >> 
+> >> In order to keep safe and avoid regression, only unify uapi bitsperlong.h
+> >> for some archs such as arm64, riscv and loongarch which are using newer
+> >> toolchains that have the definitions of __CHAR_BIT__ and __SIZEOF_LONG__.
+> >> 
+> >> Suggested-by: Xi Ruoyao <xry111@xry111.site>
+> >> Link: https://lore.kernel.org/all/d3e255e4746de44c9903c4433616d44ffcf18d1b.camel@xry111.site/
+> >> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> >> Link: https://lore.kernel.org/linux-arch/a3a4f48a-07d4-4ed9-bc53-5d383428bdd2@app.fastmail.com/
+> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> >> ---
 > 
-> This implements ops to initialize, enable and disable extrenal
-> resources needed by video driver like power domains, clocks etc.
+> >
+> > I think this change has backwards compatibility concerns, as it breaks
+> > building certain host tools on the stable releases (at least 6.4 and
+> > 6.1, as that is where I noticed this). I see the following error on my
+> > aarch64 system:
+> >
+> >   $ make -skj"$(nproc)" ARCH=x86_64 CROSS_COMPILE=x86_64-linux- 
+> > mrproper defconfig prepare
+> >   In file included from /usr/include/asm/bitsperlong.h:1,
+> >                    from /usr/include/asm-generic/int-ll64.h:12,
+> >                    from /usr/include/asm-generic/types.h:7,
+> >                    from /usr/include/asm/types.h:1,
+> >                    from tools/include/linux/types.h:13,
+> >                    from tools/arch/x86/include/asm/orc_types.h:9,
+> >                    from scripts/sorttable.h:96,
+> >                    from scripts/sorttable.c:201:
+> >   tools/include/asm-generic/bitsperlong.h:14:2: error: #error 
+> > Inconsistent word size. Check asm/bitsperlong.h
+> >      14 | #error Inconsistent word size. Check asm/bitsperlong.h
+> >         |  ^~~~~
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
-There's a whole bunch of kerneldoc abuses (comments should start with
-/* and not /**). Make sure you have proper spaces between single-line
-C-style comments (e.g. /*Get should be /* Get etc.)
+> Thanks for the report. I'm still struggling to figure out what
+> exactly is going wrong here, and if this is a bug in the patch
+> I merged, or an existing bug that now causes a build failure instead
+> of some other problem.
 
-Capitalizing the first word within the comment would be nice too.
+Totally understandable, I was really confused at first too.
 
+> > A reverse bisect of 6.4 to 6.5-rc1 points to this patch. This Fedora
+> > rawhide container has kernel-headers 6.5.0-0.rc2.git0.1.fc39 and the
+> > error disappears when I downgrade to 6.4.0-0.rc7.git0.1.fc39. I have not
+> > done a ton of triage/debugging so far, as I am currently hunting down
+> > other regressions, but I figured I would get an initial report out,
+> > since I noticed it when validating LLVM from the new release/17.x
+> > branch. If there is any additional information I can provide or patches
+> > I can test, I am more than happy to do so.
+> 
+> One thing I think is going wrong here is that scripts/sorttable.c is
+> meant to run on the host (arm64) but includes the target (x86)
+> orc_Types.h header and the kernel-internal asm/bitsperlong.h instead
 
-Do we need a separate bus table? i.e. does it make sense to adjust the
-bandwidth values separately from the clock rates?
+Right. I will note sorttable is not the only utility that has this
+issue, I see the same problem coming from several files in
+tools/lib/subcmd when building several different architectures and
+arch/x86/entry/vdso/vdso2c.c at the very least.
 
-Do you think there will be more than one set of msm_vidc_resources_ops?
-Perhaps it'd make sense to drop that layer of abstraction if not. Many
-function names could drop the __ prefix.
+> of the uapi version. The sanity check in the kernel-side header
+> is intended to cross-check the CONFIG_64BIT value against the
+> __BITS_PER_LONG constant from the header.
+> 
+> My first guess would be that this only worked by accident if the headers
+> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
+> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
+> is actually correct.
 
-A whole bunch of d_vpr_h seem almost excessive.
+That seems like a reasonable theory. I am still busy looking into other
+things today but I can try to double back to this on Monday if you don't
+make any progress.
 
-MSM_VIDC_CLKFLAG_* are unused.
-
-Konrad
+Cheers,
+Nathan
