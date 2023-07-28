@@ -2,162 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 428CD7678C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186C27678C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbjG1W7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S235423AbjG1XAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbjG1W7x (ORCPT
+        with ESMTP id S231248AbjG1XAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:59:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B855C10E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690585144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1z4CG4XPVPLqBvlOoBnJ7hAp50An6oynW+ge2nUWWpM=;
-        b=Ju7/ZBcYuq6LQMhhbpoC6ACIcYnx5TyoxnDDAXU0ZCxMlLzjaaZrEFSPXkZ8qRo83zKkZ0
-        uVKawTCOh9AwYqFrFnzUD0PnvcvhRmdslyG/MBJ90SSGDbESikHAu7qyknJLdoHTjCUITa
-        NCvGkoE0Qt7HMFIpF0nsfDbkUM9K0Os=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-526-UqOiqX9RNoyrlAbE-XyiPA-1; Fri, 28 Jul 2023 18:59:01 -0400
-X-MC-Unique: UqOiqX9RNoyrlAbE-XyiPA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8F011006E31;
-        Fri, 28 Jul 2023 22:59:00 +0000 (UTC)
-Received: from emerald.redhat.com (unknown [10.22.16.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 86FB54A9004;
-        Fri, 28 Jul 2023 22:58:59 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau-devel@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] drm/nouveau/nvkm/dp: Add workaround to fix DP 1.3+ DPCD issues
-Date:   Fri, 28 Jul 2023 18:58:57 -0400
-Message-Id: <20230728225858.350581-1-lyude@redhat.com>
+        Fri, 28 Jul 2023 19:00:13 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E8544BD
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:00:07 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-760dff4b701so33306239f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1690585206; x=1691190006;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MwUGAXlWTnPRJAd9ATS5GD+jmGk/Py4JKBUesXwXH2A=;
+        b=d98DSZkdO+2JdfHRp58xcUD6LnqaYwJDvDZpaJyN70zZT2JY8lfcHfRFsUeJzKeUTr
+         0HwHHXR9frV3x3oDKHSvV0B3QxqOhanpLkl2q/ayOWCyt7ZeGYK0+RdS7LzDsZzISPDP
+         BYu408eZ0VFLR+YSbXX8T/q0e3f+Kf4iKmGcQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690585206; x=1691190006;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MwUGAXlWTnPRJAd9ATS5GD+jmGk/Py4JKBUesXwXH2A=;
+        b=BrLPjWcB5+CKuIkqQPGebs7/d40enz1p6u1qzJboyB6pstCb1NBW5oIWeSCn4/SvWB
+         v4YAKIN+UEcEJUIA60FTGZOcB/Uk/l+OPk36hCUzWynusm8sToFnsBmxQ3LsecVtJX8k
+         ddb7CzrhCb1BYK1Jpyw3n4MB3XpwKhLfJtMKzLj9a/pN/V7H6P0Bj7H4GrZSPr2pVBxu
+         AIJy3qrzBQQTxUlr2wlP3LvMGfNS1nqwNvpW+0Uh6lvEG1rJ5K8KJaq+c3G2053C4/LV
+         NfiFL3nXSuk19TihIriKffNdX4BCSlRbt+yHZ1IE3p9TipRm+jkTBg2ES+SOANCDdOdr
+         dVvw==
+X-Gm-Message-State: ABy/qLZNgBXI+YH8WjZ5KntnffBmmgpeRJDuL4fchP4DMYNhvpjOIrXj
+        Kjpt3Z4xX8xUHH6Es7unk4JEFQ==
+X-Google-Smtp-Source: APBJJlEl3f9B0LRCAMAtZeUVRE9TycWryhTlDQ4lnn7NVwAHszrL7FHn1XB9SyLXuWu1rJBJoOPqbA==
+X-Received: by 2002:a92:cd05:0:b0:345:e438:7381 with SMTP id z5-20020a92cd05000000b00345e4387381mr785191iln.2.1690585206252;
+        Fri, 28 Jul 2023 16:00:06 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id w12-20020a02cf8c000000b0042acf934cbasm1346038jar.72.2023.07.28.16.00.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 16:00:05 -0700 (PDT)
+Message-ID: <8c92599f-fcb4-3aba-f367-17abd9b52451@linuxfoundation.org>
+Date:   Fri, 28 Jul 2023 17:00:05 -0600
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
+ error paths to skip
+Content-Language: en-US
+To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1690564372.git.skhan@linuxfoundation.org>
+ <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
+ <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
+ <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
+ <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
+ <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
+ <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
+ <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
+ <84048d13-9311-36f6-9eb4-8169952580d7@linuxfoundation.org>
+ <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we use the drm_dp_dpcd_read_caps() helper in the DRM side of
-nouveau in order to read the DPCD of a DP connector, which makes sure we do
-the right thing and also check for extended DPCD caps. However, it turns
-out we're not currently doing this on the nvkm side since we don't have
-access to the drm_dp_aux structure there - which means that the DRM side of
-the driver and the NVKM side can end up with different DPCD capabilities
-for the same connector.
+On 7/28/23 16:40, Anjali Kulkarni wrote:
+> 
+> 
+>> On Jul 28, 2023, at 3:25 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 7/28/23 15:59, Anjali Kulkarni wrote:
+>>>> On Jul 28, 2023, at 2:41 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 7/28/23 15:21, Anjali Kulkarni wrote:
+>>>>>> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>
+>>>>>> On 7/28/23 13:06, Shuah Khan wrote:
+>>>>>>> On 7/28/23 12:10, Anjali Kulkarni wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>>>>
+>>>>>>>>> proc_filter test requires root privileges. Add root privilege check
+>>>>>>>>> and skip the test. Also fix argument parsing paths to skip in their
+>>>>>>>>> error legs.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>>>>>> ---
+>>>>>>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
+>>>>>>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
+>>>>>>>>> --- a/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
+>>>>>>>>>
+>>>>>>>>> if (argc > 2) {
+>>>>>>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
+>>>>>>>>> - exit(1);
+>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>> }
+>>>>>>>>>
+>>>>>>>>> if (argc == 2) {
+>>>>>>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
+>>>>>>>>> filter = 1;
+>>>>>>>>> } else {
+>>>>>>>>> printf("Valid option : -f (for filter feature)\n");
+>>>>>>>>> - exit(1);
+>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>> }
+>>>>>>>>> }
+>>>>>>>>>
+>>>>>>>>> + if (geteuid()) {
+>>>>>>>>> + printf("Connector test requires root privileges.\n");
+>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>> + }
+>>>>>>>>> +
+>>>>>>>>
+>>>>>>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
+>>>>>>>>
+>>>>>>> It failed for me when I ran it saying it requires root privileges.
+>>>>>>> I had to run it as root.
+>>>>>>
+>>>>>> The following is what I see when I run the test as non-root
+>>>>>> user:
+>>>>>>
+>>>>>> bind failed: Operation not permitted
+>>>>>>
+>>>>> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
+>>>>> So this check for root needs to be removed.
+>>>>
+>>>> I will send v2 for this patch without root check. I should have
+>>>> split the argument error paths and root check anyway.
+>>>>
+>>>> However, what is strange is if the test run by root, bind() doesn't fail.
+>>>> This doesn't make sense to me based on what you said about bind() fails
+>>>> if kernel doesn't support the new feature.
+>>>>
+>>> I didn’t say that - part of the changes introduced by the patches is to remove the root check and add some features on top of existing code.
+>>
+>> Okay. So what should happen if a root user runs this test on a kernel
+>> that doesn't have the kernel patches submitted with this selftest
+>> installed on it?
+>>
+> 
+> It will default to the behavior previous to my changes - that is it will report all events as opposed to a subset of events (which is the new feature added by my change)
+> 
 
-Ideally in order to fix this, we just want to use the
-drm_dp_read_dpcd_caps() helper in nouveau. That's not currently possible
-though, and is going to depend on having a bunch of the DP code moved out
-of nvkm and into the DRM side of things as part of the GSP enablement work.
+Okay. Sorry I am unable to follow this explanation. This test has just
+been added in commit 73a29531f45fed6423144057d7a844aae46dad9d
 
-Until then however, let's workaround this problem by porting a copy of
-drm_dp_read_dpcd_caps() into NVKM - which should fix this issue.
+Can you please look at the usage for this test:
 
-Issue: https://gitlab.freedesktop.org/drm/nouveau/-/issues/211
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c | 48 ++++++++++++++++++-
- 1 file changed, 47 insertions(+), 1 deletion(-)
+- What should happen when kernel without filtering is run as
+   root or non-root
+- What should happen when kernel with filtering is run as
+   root or non-root
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-index 40c8ea43c42f2..b8ac66b4a2c4b 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
-@@ -26,6 +26,8 @@
- #include "head.h"
- #include "ior.h"
- 
-+#include <drm/display/drm_dp.h>
-+
- #include <subdev/bios.h>
- #include <subdev/bios/init.h>
- #include <subdev/gpio.h>
-@@ -634,6 +636,50 @@ nvkm_dp_enable_supported_link_rates(struct nvkm_outp *outp)
- 	return outp->dp.rates != 0;
- }
- 
-+/* XXX: This is a big fat hack, and this is just drm_dp_read_dpcd_caps()
-+ * converted to work inside nvkm. This is a temporary holdover until we start
-+ * passing the drm_dp_aux device through NVKM
-+ */
-+static int
-+nvkm_dp_read_dpcd_caps(struct nvkm_outp *outp)
-+{
-+	struct nvkm_i2c_aux *aux = outp->dp.aux;
-+	u8 dpcd_ext[DP_RECEIVER_CAP_SIZE];
-+	int ret;
-+
-+	ret = nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd, DP_RECEIVER_CAP_SIZE);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * Prior to DP1.3 the bit represented by
-+	 * DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT was reserved.
-+	 * If it is set DP_DPCD_REV at 0000h could be at a value less than
-+	 * the true capability of the panel. The only way to check is to
-+	 * then compare 0000h and 2200h.
-+	 */
-+	if (!(outp->dp.dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
-+	      DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT))
-+		return 0;
-+
-+	ret = nvkm_rdaux(aux, DP_DP13_DPCD_REV, dpcd_ext, sizeof(dpcd_ext));
-+	if (ret < 0)
-+		return ret;
-+
-+	if (outp->dp.dpcd[DP_DPCD_REV] > dpcd_ext[DP_DPCD_REV]) {
-+		OUTP_DBG(outp, "Extended DPCD rev less than base DPCD rev (%d > %d)\n",
-+			 outp->dp.dpcd[DP_DPCD_REV], dpcd_ext[DP_DPCD_REV]);
-+		return 0;
-+	}
-+
-+	if (!memcmp(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext)))
-+		return 0;
-+
-+	memcpy(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext));
-+
-+	return 0;
-+}
-+
- void
- nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
- {
-@@ -689,7 +735,7 @@ nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
- 			memset(outp->dp.lttpr, 0x00, sizeof(outp->dp.lttpr));
- 		}
- 
--		if (!nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd, sizeof(outp->dp.dpcd))) {
-+		if (!nvkm_dp_read_dpcd_caps(outp)) {
- 			const u8 rates[] = { 0x1e, 0x14, 0x0a, 0x06, 0 };
- 			const u8 *rate;
- 			int rate_max;
--- 
-2.40.1
+There seems to be difference in behavior of this test depending
+on user privileges. This should reflect in the message the user
+sees.
+
+This message "bind failed: Operation not permitted" doesn't tell
+user anything - add a better message. Also this needs to be a skip
+and not fail.
+
+I just sent v2 without the root check.
+
+thanks,
+-- Shuah
+
+
 
