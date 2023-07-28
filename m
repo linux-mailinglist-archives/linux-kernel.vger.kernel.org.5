@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BAC766DF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE78766DFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbjG1NSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S235863AbjG1NVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbjG1NSH (ORCPT
+        with ESMTP id S234299AbjG1NVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:18:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54368FA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:18:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EC5C01F8AF;
-        Fri, 28 Jul 2023 13:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690550284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=w6/qEz7nuZR61tfXugJCI1zoAyn3+vTp7j7ZdW0CUF0=;
-        b=Zrb8k/4MLbqbE61aIzBIkf0QXmDe5FlHONb0N7cc2QX6LSVpiA0g6iXSnfUTiEdRpDqsgP
-        qGenDFA1Y41Wstyjx+1K8HPKcBxM1k8kdUfFVcV+OM0zq5ET+4vGomwCxGWGTVV3sW8Ivo
-        ZnHJUjzqzgagGgWu/w7VTSeLXbUgqmk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C29E1133F7;
-        Fri, 28 Jul 2023 13:18:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iAEHLgzAw2RwBAAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 28 Jul 2023 13:18:04 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        sstabellini@kernel.org
-Subject: [GIT PULL] xen: branch for v6.5-rc4
-Date:   Fri, 28 Jul 2023 15:18:04 +0200
-Message-Id: <20230728131804.10538-1-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
+        Fri, 28 Jul 2023 09:21:36 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DEB1BC6;
+        Fri, 28 Jul 2023 06:21:34 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RC7XW3XT3zVjt1;
+        Fri, 28 Jul 2023 21:19:55 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 21:21:32 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yue Haibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] devlink: Remove unused extern declaration devlink_port_region_destroy()
+Date:   Fri, 28 Jul 2023 21:21:13 +0800
+Message-ID: <20230728132113.32888-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+devlink_port_region_destroy() is never implemented since
+commit 544e7c33ec2f ("net: devlink: Add support for port regions").
 
-Please git pull the following tag:
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ include/net/devlink.h | 2 --
+ 1 file changed, 2 deletions(-)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.5a-rc4-tag
+diff --git a/include/net/devlink.h b/include/net/devlink.h
+index 0cdb4b16e5b5..a1a8e1b6e7df 100644
+--- a/include/net/devlink.h
++++ b/include/net/devlink.h
+@@ -1790,8 +1790,6 @@ devlink_port_region_create(struct devlink_port *port,
+ 			   u32 region_max_snapshots, u64 region_size);
+ void devl_region_destroy(struct devlink_region *region);
+ void devlink_region_destroy(struct devlink_region *region);
+-void devlink_port_region_destroy(struct devlink_region *region);
+-
+ int devlink_region_snapshot_id_get(struct devlink *devlink, u32 *id);
+ void devlink_region_snapshot_id_put(struct devlink *devlink, u32 id);
+ int devlink_region_snapshot_create(struct devlink_region *region,
+-- 
+2.34.1
 
-xen: branch for v6.5-rc4
-
-It contains the following patches:
-
-- A fix for a performance problem in QubesOS, adding a way to drain
-  the queue of grants experiencing delayed unmaps faster.
-
-- A patch enabling the use of static event channels from user mode,
-  which was omitted when introducing supporting static event channels.
-
-- A fix for a problem where Xen related code didn't check properly for
-  running in a Xen environment, resulting in a WARN splat.
-
-
-Thanks.
-
-Juergen
-
- Documentation/ABI/testing/sysfs-module | 11 ++++++++++
- drivers/xen/events/events_base.c       | 16 +++++---------
- drivers/xen/evtchn.c                   | 35 +++++++++++++++++++++--------
- drivers/xen/grant-table.c              | 40 ++++++++++++++++++++++++----------
- drivers/xen/xenbus/xenbus_probe.c      |  3 +++
- include/uapi/xen/evtchn.h              |  9 ++++++++
- include/xen/events.h                   | 11 +++++++++-
- 7 files changed, 93 insertions(+), 32 deletions(-)
-
-Demi Marie Obenour (1):
-      xen: speed up grant-table reclaim
-
-Rahul Singh (1):
-      xen/evtchn: Introduce new IOCTL to bind static evtchn
-
-Stefano Stabellini (1):
-      xenbus: check xen_domain in xenbus_probe_initcall
