@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A817766554
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02345766557
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbjG1H22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        id S234245AbjG1H3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbjG1H2L (ORCPT
+        with ESMTP id S232323AbjG1H3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:28:11 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E5D3C15
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:27:52 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b962535808so29390411fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690529270; x=1691134070;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YNafLEWKCWHk1Q/GCD8fpQN53csIuJxGCApzHzUl+J4=;
-        b=cvbyYal9w/8O6TpbNSfZiSB3NPbKpNrbwA0Pl8KoO5akeSN1cstQQ/3b0Fwq5nboJa
-         W08NUyupLmp7hVAHqGvmTwGWEGWFcoJkFHiRpf3aSGISo6EOlUr58+O1Pq8nh6qD8Vel
-         F5lc7uKMMCdsGa/lT6eEXEp2HB5NxHnf/6OgoZ3Rv+76Beok3p2FReGLgoN66L48ODYs
-         hZjqrlnys23DUbaZ/bMns+GJOosP8dE4lok2/iWDK2md5NnzBPteZaFOcZ8Gb4AdoOss
-         FmoH0YZQnBM8pZ2bpljO4kMA0tkUFV0HwoBUIlVCPZtQCZFk4ZEfRJ3gOOAFZGiRntch
-         9/mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690529270; x=1691134070;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YNafLEWKCWHk1Q/GCD8fpQN53csIuJxGCApzHzUl+J4=;
-        b=Pj9VqBxHokC3MYceGfQAvY6Tc9U7GCY8zJz0DE7wopLhhXebTTcvbwey4RTwGbLhHR
-         tkmi/DFIXaSsDL/yALRSaAHeuqJ3Zqs08TJ8SCtU98bAiwjZPffjgJWVQKRyP1jdyv5r
-         RbiGtwaydVumUMspG5Yf5J+dbPz5Z3zpkcmBwvwGDJZYBQ0AywziVesjhx7cQE2DK5Uf
-         VOt1V2tEIarXT7zawyW1JGl6cyCTGQCfGxwuBR2+zQG0e8wIznnsZroSIrpuxtLTnUSp
-         YbfTr7P4oFt3uVW6IOFfRuZBG++5cxir27NlHvl/DayyPl8xExbvv/i6t3ZRVc9XPz3x
-         iWKw==
-X-Gm-Message-State: ABy/qLYvppUmtgWhgr70zTO0ayj6BgKkPXajlRV11ds82XG/D/qbq93X
-        sAcNu7gNmt7CPFuLZCFqR/lRxA==
-X-Google-Smtp-Source: APBJJlHbQY+iRJVVhNPkSxL+x0Z0ZzSaBO/HRp6/q5HSe9MRZCYGRTErk6fUi0vWZuvnX7tYEjn/Ew==
-X-Received: by 2002:a2e:2e17:0:b0:2b9:6d6e:df5c with SMTP id u23-20020a2e2e17000000b002b96d6edf5cmr1067297lju.5.1690529270007;
-        Fri, 28 Jul 2023 00:27:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id n5-20020a7bc5c5000000b003fbe4cecc3bsm6430037wmk.16.2023.07.28.00.27.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 00:27:49 -0700 (PDT)
-Message-ID: <08cd9bb5-678f-e03e-4598-dd1785f0d7a7@linaro.org>
-Date:   Fri, 28 Jul 2023 09:27:47 +0200
+        Fri, 28 Jul 2023 03:29:05 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1CFF7;
+        Fri, 28 Jul 2023 00:29:04 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S78hMZ012830;
+        Fri, 28 Jul 2023 07:29:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=KD/IaudLrc/SdyptorgWHKK1OUhVZbXzclV+/0kR1Iw=;
+ b=jTQbtHsFnQTlAcI1fT0AEOhIY14Mv+cdPZViticwJVgeKaoNoG723ncnPrra2WkYIsBD
+ 0NBtcbX7FC/9AG9G/fLOT3lnOk4mcWP97jOk0Lq8txLikN0kDqtznbECTY0LxG0zKtQ1
+ s8mlD1aN5TUh6u8Ta5QJtoQ/ARs+mlNbTkkcnT4jWGjuentYCQzoJG7f/7BU2fcQcwJb
+ Z6GEvlLMe84MZADq4pJenSNjTV/zcXv9DfdpAgEHIa4WtFvepec1e29k3qh6zVYDDHIh
+ 8TazdFEiXyCbQyyoP3sJuxtzNxa9BkNV844/gdfkguFrOFAlIJAG6zG0UZq93gWp7g/e 4g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s47ew2m5t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 07:29:03 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36S7SncM004463;
+        Fri, 28 Jul 2023 07:29:02 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s47ew2m5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 07:29:02 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36S605B0016574;
+        Fri, 28 Jul 2023 07:29:02 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0v51ukby-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 07:29:02 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36S7SxU352363546
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jul 2023 07:28:59 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F1EA20043;
+        Fri, 28 Jul 2023 07:28:59 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BD76820040;
+        Fri, 28 Jul 2023 07:28:58 +0000 (GMT)
+Received: from [9.152.224.114] (unknown [9.152.224.114])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 28 Jul 2023 07:28:58 +0000 (GMT)
+Message-ID: <7fadab86-2b7c-b934-fcfa-61046c0778b6@linux.ibm.com>
+Date:   Fri, 28 Jul 2023 09:28:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 12/13] dt-bindings: drm/msm/gpu: Extend bindings for
- chip-id
+Subject: Re: [PATCH] KVM: s390: fix sthyi error handling
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mete Durlu <meted@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230727182939.2050744-1-hca@linux.ibm.com>
 Content-Language: en-US
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230727212208.102501-1-robdclark@gmail.com>
- <20230727212208.102501-13-robdclark@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230727212208.102501-13-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <20230727182939.2050744-1-hca@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aisIPqm_0FrR8F7lvHu63PYejsrYVLsh
+X-Proofpoint-ORIG-GUID: CF5JzXhY-R8Kch-pXJH1ziWNbjIb2ns2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 adultscore=0 spamscore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2307280063
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,40 +98,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 23:20, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+Am 27.07.23 um 20:29 schrieb Heiko Carstens:
+> Commit 9fb6c9b3fea1 ("s390/sthyi: add cache to store hypervisor info")
+> added cache handling for store hypervisor info. This also changed the
+> possible return code for sthyi_fill().
 > 
-> Upcoming GPUs use an opaque chip-id for identifying the GPU.
+> Instead of only returning a condition code like the sthyi instruction would
+> do, it can now also return a negative error value (-ENOMEM). handle_styhi()
+> was not changed accordingly. In case of an error, the negative error value
+> would incorrectly injected into the guest PSW.
+> 
+> Add proper error handling to prevent this, and update the comment which
+> describes the possible return values of sthyi_fill().
 
-Examples?
+To me it looks like this can only happen if page allocation fails? This should
+not happen in normal cases (and return -ENOMEM would likely kill the guest as
+QEMU would stop).
+But if it happens we better stop.
 
-Anyway, I think we should insist here of using something human-readable,
-even if Qualcomm/Adreno internally use some weird numbers.
+
+Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+
 
 > 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Fixes: 9fb6c9b3fea1 ("s390/sthyi: add cache to store hypervisor info")
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 > ---
->  Documentation/devicetree/bindings/display/msm/gpu.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>   arch/s390/kernel/sthyi.c  | 6 +++---
+>   arch/s390/kvm/intercept.c | 9 ++++++---
+>   2 files changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/msm/gpu.yaml b/Documentation/devicetree/bindings/display/msm/gpu.yaml
-> index 58ca8912a8c3..56b9b247e8c2 100644
-> --- a/Documentation/devicetree/bindings/display/msm/gpu.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/gpu.yaml
-> @@ -13,6 +13,12 @@ maintainers:
->  properties:
->    compatible:
->      oneOf:
-> +      - description: |
-> +          The driver is parsing the compat string for Adreno to
-> +          figure out the chip-id.
-> +        items:
-> +          - pattern: '^qcom,adreno-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$'
-
-{8} should work?
-
-
-
-Best regards,
-Krzysztof
-
+> diff --git a/arch/s390/kernel/sthyi.c b/arch/s390/kernel/sthyi.c
+> index 4d141e2c132e..2ea7f208f0e7 100644
+> --- a/arch/s390/kernel/sthyi.c
+> +++ b/arch/s390/kernel/sthyi.c
+> @@ -459,9 +459,9 @@ static int sthyi_update_cache(u64 *rc)
+>    *
+>    * Fills the destination with system information returned by the STHYI
+>    * instruction. The data is generated by emulation or execution of STHYI,
+> - * if available. The return value is the condition code that would be
+> - * returned, the rc parameter is the return code which is passed in
+> - * register R2 + 1.
+> + * if available. The return value is either a negative error value or
+> + * the condition code that would be returned, the rc parameter is the
+> + * return code which is passed in register R2 + 1.
+>    */
+>   int sthyi_fill(void *dst, u64 *rc)
+>   {
+> diff --git a/arch/s390/kvm/intercept.c b/arch/s390/kvm/intercept.c
+> index 954d39adf85c..341abafb96e4 100644
+> --- a/arch/s390/kvm/intercept.c
+> +++ b/arch/s390/kvm/intercept.c
+> @@ -389,8 +389,8 @@ static int handle_partial_execution(struct kvm_vcpu *vcpu)
+>    */
+>   int handle_sthyi(struct kvm_vcpu *vcpu)
+>   {
+> -	int reg1, reg2, r = 0;
+> -	u64 code, addr, cc = 0, rc = 0;
+> +	int reg1, reg2, cc = 0, r = 0;
+> +	u64 code, addr, rc = 0;
+>   	struct sthyi_sctns *sctns = NULL;
+>   
+>   	if (!test_kvm_facility(vcpu->kvm, 74))
+> @@ -421,7 +421,10 @@ int handle_sthyi(struct kvm_vcpu *vcpu)
+>   		return -ENOMEM;
+>   
+>   	cc = sthyi_fill(sctns, &rc);
+> -
+> +	if (cc < 0) {
+> +		free_page((unsigned long)sctns);
+> +		return cc;
+> +	}
+>   out:
+>   	if (!cc) {
+>   		if (kvm_s390_pv_cpu_is_protected(vcpu)) {
