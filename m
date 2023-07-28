@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7647675EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8677675F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbjG1S6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S233111AbjG1TAH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 15:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjG1S6R (ORCPT
+        with ESMTP id S229572AbjG1TAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:58:17 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E6730FC
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:58:17 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bbc2e1c6b2so16488345ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690570696; x=1691175496;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MRu9xgGnnKvTga8mQ0gCn0FsFMxzoget4tYnN1J1xew=;
-        b=Z91cglUfIrf8ob9zCEdA7W8HRPubyzVXm9Ewl5MgC6pR010pqkMIJ4656mQ7TtGXhu
-         5oHq/ZYX2Nl7Sh30OhV+skJjCSEvUqdKqFoGBItsgwZVP04lT6XGuCfjzmshNI0aYiZN
-         QRn31HXO75Sl1MdBUpGXcFl158iQzY4zmjudo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690570696; x=1691175496;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MRu9xgGnnKvTga8mQ0gCn0FsFMxzoget4tYnN1J1xew=;
-        b=WVH87nEk/4EcFmmfiNBkiYLcQbtZGjWc/onCeMZuIS52+KdfgfrtiblpSQ1syR3H+y
-         fuYctesgjcO5ynkNSXIrsmeLktVrYKIXJdzmEDhORgk2zP/Ep6cmmOOvfp6Ph5nki/NK
-         us+iWeqEeNqfDj4w4PBMSXT2LYxgk3GVjV1xv+bToLrEBJQ2quUz8pC/kNx3vATDm63L
-         5dZirD/AYSt9ESPJk/r5Y6eBKo70rWA3iJktEliah44m7HTH2vmf9P+DCNwv1sCB5r5k
-         w0GJbmo+lSi86MKM9TmD+vRB6xR/egm+rNbHItaBnsQI24Cv163U5yvbcIR96GTG0COy
-         mUAg==
-X-Gm-Message-State: ABy/qLZrvxhL/2pieQJqiXw0SFDXEFqT+q1e6sgvuaL6Ae+8zYkpcoZo
-        LcGV+LmCkuesCqqQkqdeKy2Xow==
-X-Google-Smtp-Source: APBJJlG900h32fIeodQCrN6pUaNehSSwvUfQMQ6ivtLVjRwRom8xzOk8E8avzyyed+zEa3U4TTtQVg==
-X-Received: by 2002:a17:903:44e:b0:1b9:d362:426f with SMTP id iw14-20020a170903044e00b001b9d362426fmr1805280plb.3.1690570696561;
-        Fri, 28 Jul 2023 11:58:16 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l4-20020a63be04000000b0055386b1415dsm3556156pgf.51.2023.07.28.11.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 11:58:16 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 11:58:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ASoC: Intel: Skylake: replace deprecated strncpy with
- strscpy
-Message-ID: <202307281156.59CC304@keescook>
-References: <20230726-asoc-intel-skylake-remove-deprecated-strncpy-v1-1-020e04184c7d@google.com>
- <20230727-asoc-intel-skylake-remove-deprecated-strncpy-v2-1-152830093921@google.com>
+        Fri, 28 Jul 2023 15:00:03 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E9F30F7;
+        Fri, 28 Jul 2023 12:00:00 -0700 (PDT)
+Received: from [185.230.175.137] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qPSgp-0000vt-Fe; Fri, 28 Jul 2023 20:59:51 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Peter Geis <pgwipeout@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Caleb Connolly <kc@postmarketos.org>,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Martijn Braam <martijn@brixit.nl>, Ondrej Jirman <megi@xff.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Change serial baud rate for Pinephone Pro
+ to 1.5 MB
+Date:   Fri, 28 Jul 2023 20:59:50 +0200
+Message-ID: <4495367.TLkxdtWsSY@phil>
+In-Reply-To: <87pm4kuanl.fsf@minerva.mail-host-address-is-not-set>
+References: <20230403175937.2842085-1-javierm@redhat.com> <3797122.KgjxqYA5nG@diego>
+ <87pm4kuanl.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727-asoc-intel-skylake-remove-deprecated-strncpy-v2-1-152830093921@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:30:18PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ the case for `strncpy`!
-> 
-> It was pretty difficult, in this case, to try and figure out whether or
-> not the destination buffer was zero-initialized. If it is and this
-> behavior is relied on then perhaps `strscpy_pad` is the preferred
-> option here.
-> 
-> Kees was able to help me out and identify the following code snippet
-> which seems to show that the destination buffer is zero-initialized.
-> 
-> |       skl = devm_kzalloc(&pci->dev, sizeof(*skl), GFP_KERNEL);
-> 
-> With this information, I opted for `strscpy` since padding is seemingly
-> not required.
-> 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Hi Javier,
 
-Thanks for the updates! And based on the details from Amadeusz, it
-looks safe.
+Am Samstag, 22. Juli 2023, 01:06:54 CEST schrieb Javier Martinez Canillas:
+> Heiko Stübner <heiko@sntech.de> writes:
+> > Am Dienstag, 18. April 2023, 14:11:53 CEST schrieb Javier Martinez Canillas:
+> >> Heiko Stübner <heiko@sntech.de> writes:
+> >> > Am Dienstag, 4. April 2023, 14:52:02 CEST schrieb Peter Geis:
+> >> >> On Tue, Apr 4, 2023 at 3:55 AM Heiko Stübner <heiko@sntech.de> wrote:
+> >> >> > Am Montag, 3. April 2023, 19:59:37 CEST schrieb Javier Martinez Canillas:
+> >> >> > > This baud rate is set for the device by mainline u-boot and is also what
+> >> >> > > is set in the Pinebook Pro Device Tree, which is a device similar to the
+> >> >> > > PinePhone Pro but with a different form factor.
+> >> >> > >
+> >> >> > > Otherwise, the baud rate of the firmware and Linux don't match by default
+> >> >> > > and a 'console=ttyS2,1500000n8' kernel command line parameter is required
+> >> >> > > to have proper output for both.
+> >> >> >
+> >> >> > The interesting question is always if this will break someone else's setup.
+> >> >> > I've never really understood the strange setting of 1.5MBps, but on the
+> >> >> > other hand it _is_ a reality on most boards.
+> >> >
+> >> >> The 1.5M baud is default because the clock structure on rockchip
+> >> >> devices does not allow a clean 115200 baud. By attempting to force
+> >> >> 115200, it will always be slightly off (either low or high depending
+> >> >> on how the driver decided to round). If this actually causes any
+> >> >> problems is the subject of much debate.
+> >> >
+> >> > thanks so much for this piece of clock-detail. As I wrote, I never really
+> >> > understood the why _before_ but also never cared that much to dive
+> >> > into it and find out.
+> >> >
+> >> > So your explanation closes one knowledge gap in my head.
+> >> >
+> >> > Thanks a lot :-)
+> >> 
+> >> Did you make a decision about this? I guess the clock explanation is yet
+> >> another argument in favour of switching the PPP to a 1.5 Mbps baud rate ?
+> >
+> > Sorry, but no decision made here. Either way it's breaking for someone,
+> > which makes this quite hard.
+> >
+> 
+> Another ping on this patch.
+> 
+> > The rate accuracy is the one side, the two-boot issue is the other side.
+> > And mainline u-boot (and levinboot - whatever that is) provides a 3rd side.
+> >
+> > People starting with the phone probably won't replace the bootloader
+> > in a first step but instead might play with a system image or newer kernel.
+> > So if the uart will break for everyone using the default bootloader from
+> > the factory that is somewhat bad.
+> >
+> 
+> Probably won't replace the DTB shipped with the firmware either? If one is
+> replacing the firmware provided DTB witch the one in the mainline kernel,
+> probably such person is also using mainline u-boot?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Not necessarily.
 
--- 
-Kees Cook
+I.e. putting an extlinux.conf on an sd-card with a kernel-image and dtb
+is not rocket science ;-)
+
+
+> > I don't have a Pinephone Pro myself, so I really hoped for some Acks
+> > or similar to appear in the meantime.
+> >
+> 
+> For someone like me who is only using mainline u-boot, linux, etc then
+> having a consistent uart baud rate across all components is really useful.
+> 
+> Otherwise I either have serial console for u-boot or the kernel, but can't
+> have both working so is annoying.
+> 
+> It would be good to have a definite answer on this. Since every time that
+> I try to hack on my PPP, I end changing my DTS and remember this patch :)
+
+So far people only reported "breaks my setup". I'm in a pickle here ;-) .
+Without anybody saying "I want to also move into this direction" I really
+feel I should not merge a patch that breaks other peoples setups.
+
+
+Heiko
+
+
