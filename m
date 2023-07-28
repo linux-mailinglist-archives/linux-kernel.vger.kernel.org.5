@@ -2,288 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 387DE7661AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC217661B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjG1CLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        id S230521AbjG1CU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjG1CLQ (ORCPT
+        with ESMTP id S229479AbjG1CUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:11:16 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFFF210B;
-        Thu, 27 Jul 2023 19:11:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1690510268;
-        bh=9p0179wlkzJ3Z8MDRAzQjbNImoc/8M+M08HWVsiX+dI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=o22dWJ2D+dUGOeZbvuYtw0blCLH3FsUgRK7V+7RsxS34b3h/MMUH7n6KolqSFlwDW
-         AzJMg1LeppmkhzqiNBGoiA+YuSmraAbB/X2Xnsb8Auliw3fZA+4HI9uNYaFSwqwHV0
-         J8haxmDaGSDKu4YruSoWdkjBNoDo89H8ON7tE6mfE0qbVvlLiLFG7OosFfMvu/RB5H
-         CGueWFMB4UJdKx09+Tdk6TIWCwO83yXLVnEPERoV3yFADFW+e0Fj0TcGOQBB6mAsQg
-         nYptlPX3uA38dfC22sPot0NSKGE6kUkVbCsK0rO+r8RCM4IPLY87zBA12UDBQx2Uy0
-         1bp4ksVg31DrQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBrhr3RqMz4wqW;
-        Fri, 28 Jul 2023 12:11:08 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     selinux@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-next@vger.kernel.org
-Subject: Login broken with old userspace (was Re: [PATCH v2] selinux:
- introduce an initial SID for early boot processes)
-In-Reply-To: <20230620131223.431281-1-omosnace@redhat.com>
-References: <20230620131223.431281-1-omosnace@redhat.com>
-Date:   Fri, 28 Jul 2023 12:11:07 +1000
-Message-ID: <87edkseqf8.fsf@mail.lhotse>
+        Thu, 27 Jul 2023 22:20:25 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA261BC6
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:20:23 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5221c6a2d3dso2029425a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690510822; x=1691115622;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=V3ZX1G5+Z7CXFY1StDVJe9nt1PcDpWLc8HkPmuCET2w=;
+        b=Y7x2Z6rRVKPOiv1VBNTiiMlax/MxSWAngTJg80U3JHaMzPdoy0oZRJzIBCEkj4iWTc
+         BXRE3yLqByGCwFs70eUlJsjWfM2HBWjD7gbaQtKXZhaYrr2Qfb6ze4w3TWJOX5MSGZtl
+         BjZ1j9zQUUE2vm2zxJnTXfQFPy/VK6LizJ10+slnm2yb2eR3VF+6+A8PuludYyNLG8h/
+         Xqyhj3FXdofOArK9eebSMQ/Klq4jmckA9U4B7sbI7iOYLE5NlbzCMmW8UcH406WEifsi
+         7bloXtnFavJzgSmUMeeuG/OdrHhLEDsHzC1Wv7UnmvhBlpjwjxneYSIaGFWKkMZqStvQ
+         TEdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690510822; x=1691115622;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V3ZX1G5+Z7CXFY1StDVJe9nt1PcDpWLc8HkPmuCET2w=;
+        b=RYvA45dhLC2OVSDJfsLB4+jCK/5w8sr8mJBr7fFlbwjIcevl6/ldhiUWlm8T5gBUyE
+         lyd7836qnw70CeRSO9UgZ2d/koUCxyexhLJLfDo6iX7DN3TqmQXh3VXDkhIJj8DqPIxx
+         jhv3gThGfSjWED1jezZj7zHsQHrEdeest4WPogjBX8f6yIlkYR/3vMNHagBDLuR+SUCI
+         anjWK7YnxZ6ehp4EjA/5Zrh79SsrGnb/7nUWwdoylu2ZslNeT3oSs/WY6NeDevNcTNM7
+         BNz2NteH1T76E5cHu/AihbRCgzOj7yxGgJLhsTSgbwDC6ti9QlUMVQ/c5dwzcSNLgmY3
+         kq7g==
+X-Gm-Message-State: ABy/qLbdzGP84SVgOfPduoJ0PM1LfnHYP6YRiDYitQ/pvU5ipNSaI4bA
+        5CTEmupUJH10+51dpc6MWqjmnAJ8+UwCYRD9kxqYRmtFqnw=
+X-Google-Smtp-Source: APBJJlH/8ejfgkLsqH+y3yALiYusBMNm3B4+y8T4pIIqznLo/1+FMeURBWWA7i+Lo7WvhuFINP+0tSe5jVkw3Mu5psw=
+X-Received: by 2002:a17:906:1d0:b0:992:4e20:bca4 with SMTP id
+ 16-20020a17090601d000b009924e20bca4mr786311ejj.42.1690510822077; Thu, 27 Jul
+ 2023 19:20:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 28 Jul 2023 12:20:10 +1000
+Message-ID: <CAPM=9twwk0C6kGQXFZdvEhxnLe7DhnwN8doj_yA3a9S3hs7c1w@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.5-rc4
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ondrej Mosnacek <omosnace@redhat.com> writes:
-> Currently, SELinux doesn't allow distinguishing between kernel threads
-> and userspace processes that are started before the policy is first
-> loaded - both get the label corresponding to the kernel SID. The only
-> way a process that persists from early boot can get a meaningful label
-> is by doing a voluntary dyntransition or re-executing itself.
+Hi Linus,
 
-Hi,
+Regular scheduled fixes, msm and amdgpu leading the way, with some
+i915 and a single misc fbdev, all seems fine.
 
-This commit breaks login for me when booting linux-next kernels with old
-userspace, specifically Ubuntu 16.04 on ppc64le. 18.04 is OK.
+Dave.
 
-The symptom is that login never accepts the root password, it just
-always says "Login incorrect".
+drm-fixes-2023-07-28:
+drm fixes for 6.5-rc4
 
-Bisect points to this commit.
+fbdev:
+- remove unused function
 
-Reverting this commit on top of next-20230726, fixes the problem
-(ie. login works again).
+amdgpu:
+- gfxhub partition fix
+- Fix error handling in psp_sw_init()
+- SMU13 fix
+- DCN 3.1 fix
+- DCN 3.2 fix
+- Fix for display PHY programming sequence
+- DP MST error handling fix
+- GFX 9.4.3 fix
 
-Booting with selinux=0 also fixes the problem.
+amdkfd:
+- GFX11 trap handling fix
 
-Is this expected? The change log below suggests backward compatibility
-was considered, is 16.04 just too old?
+i915:
+- Use shmem for dpt objects
+- Fix an error handling path in igt_write_huge()
 
-cheers
+msm:
+- display:
+- Fix to correct the UBWC programming for decoder version 4.3 seen
+  on SM8550
+- Add the missing flush and fetch bits for DMA4 and DMA5 SSPPs.
+- Fix to drop the unused dpu_core_perf_data_bus_id enum from the code
+- Drop the unused dsi_phy_14nm_17mA_regulators from QCM 2290 DSI cfg.
+- gpu:
+- Fix warn splat for newer devices without revn
+- Remove name/revn for a690.. we shouldn't be populating these for
+  newer devices, for consistency, but it slipped through review
+- Fix a6xx gpu snapshot BINDLESS_DATA size (was listed in bytes
+  instead of dwords, causing AHB faults on a6xx gen4/a660-family)
+- Disallow submit with fence id 0
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
-> Reusing the kernel label for userspace processes is problematic for
-> several reasons:
-> 1. The kernel is considered to be a privileged domain and generally
->    needs to have a wide range of permissions allowed to work correctly,
->    which prevents the policy writer from effectively hardening against
->    early boot processes that might remain running unintentionally after
->    the policy is loaded (they represent a potential extra attack surface
->    that should be mitigated).
-> 2. Despite the kernel being treated as a privileged domain, the policy
->    writer may want to impose certain special limitations on kernel
->    threads that may conflict with the requirements of intentional early
->    boot processes. For example, it is a good hardening practice to limit
->    what executables the kernel can execute as usermode helpers and to
->    confine the resulting usermode helper processes. However, a
->    (legitimate) process surviving from early boot may need to execute a
->    different set of executables.
-> 3. As currently implemented, overlayfs remembers the security context of
->    the process that created an overlayfs mount and uses it to bound
->    subsequent operations on files using this context. If an overlayfs
->    mount is created before the SELinux policy is loaded, these "mounter"
->    checks are made against the kernel context, which may clash with
->    restrictions on the kernel domain (see 2.).
->
-> To resolve this, introduce a new initial SID (reusing the slot of the
-> former "init" initial SID) that will be assigned to any userspace
-> process started before the policy is first loaded. This is easy to do,
-> as we can simply label any process that goes through the
-> bprm_creds_for_exec LSM hook with the new init-SID instead of
-> propagating the kernel SID from the parent.
->
-> To provide backwards compatibility for existing policies that are
-> unaware of this new semantic of the "init" initial SID, introduce a new
-> policy capability "userspace_initial_context" and set the "init" SID to
-> the same context as the "kernel" SID unless this capability is set by
-> the policy.
->
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->
-> v2: apply Paul's style suggestions
->
->  security/selinux/hooks.c                      | 28 +++++++++++++++++++
->  .../selinux/include/initial_sid_to_string.h   |  2 +-
->  security/selinux/include/policycap.h          |  1 +
->  security/selinux/include/policycap_names.h    |  3 +-
->  security/selinux/include/security.h           |  6 ++++
->  security/selinux/ss/policydb.c                | 27 ++++++++++++++++++
->  6 files changed, 65 insertions(+), 2 deletions(-)
->
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index 99ded60a6b911..83d71433e23e9 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -2264,6 +2264,19 @@ static int selinux_bprm_creds_for_exec(struct linux_binprm *bprm)
->  	new_tsec->keycreate_sid = 0;
->  	new_tsec->sockcreate_sid = 0;
->
-> +	/*
-> +	 * Before policy is loaded, label any task outside kernel space
-> +	 * as SECINITSID_INIT, so that any userspace tasks surviving from
-> +	 * early boot end up with a label different from SECINITSID_KERNEL
-> +	 * (if the policy chooses to set SECINITSID_INIT != SECINITSID_KERNEL).
-> +	 */
-> +	if (!selinux_initialized()) {
-> +		new_tsec->sid = SECINITSID_INIT;
-> +		/* also clear the exec_sid just in case */
-> +		new_tsec->exec_sid = 0;
-> +		return 0;
-> +	}
-> +
->  	if (old_tsec->exec_sid) {
->  		new_tsec->sid = old_tsec->exec_sid;
->  		/* Reset exec SID on execve. */
-> @@ -4480,6 +4493,21 @@ static int sock_has_perm(struct sock *sk, u32 perms)
->  	if (sksec->sid == SECINITSID_KERNEL)
->  		return 0;
->
-> +	/*
-> +	 * Before POLICYDB_CAP_USERSPACE_INITIAL_CONTEXT, sockets that
-> +	 * inherited the kernel context from early boot used to be skipped
-> +	 * here, so preserve that behavior unless the capability is set.
-> +	 *
-> +	 * By setting the capability the policy signals that it is ready
-> +	 * for this quirk to be fixed. Note that sockets created by a kernel
-> +	 * thread or a usermode helper executed without a transition will
-> +	 * still be skipped in this check regardless of the policycap
-> +	 * setting.
-> +	 */
-> +	if (!selinux_policycap_userspace_initial_context() &&
-> +	    sksec->sid == SECINITSID_INIT)
-> +		return 0;
-> +
->  	ad.type = LSM_AUDIT_DATA_NET;
->  	ad.u.net = &net;
->  	ad.u.net->sk = sk;
-> diff --git a/security/selinux/include/initial_sid_to_string.h b/security/selinux/include/initial_sid_to_string.h
-> index 60820517aa438..6d450669e9c68 100644
-> --- a/security/selinux/include/initial_sid_to_string.h
-> +++ b/security/selinux/include/initial_sid_to_string.h
-> @@ -7,7 +7,7 @@ static const char *const initial_sid_to_string[] = {
->  	NULL,
->  	"file",
->  	NULL,
-> -	NULL,
-> +	"init",
->  	"any_socket",
->  	"port",
->  	"netif",
-> diff --git a/security/selinux/include/policycap.h b/security/selinux/include/policycap.h
-> index f35d3458e71de..c7373e6effe5d 100644
-> --- a/security/selinux/include/policycap.h
-> +++ b/security/selinux/include/policycap.h
-> @@ -12,6 +12,7 @@ enum {
->  	POLICYDB_CAP_NNP_NOSUID_TRANSITION,
->  	POLICYDB_CAP_GENFS_SECLABEL_SYMLINKS,
->  	POLICYDB_CAP_IOCTL_SKIP_CLOEXEC,
-> +	POLICYDB_CAP_USERSPACE_INITIAL_CONTEXT,
->  	__POLICYDB_CAP_MAX
->  };
->  #define POLICYDB_CAP_MAX (__POLICYDB_CAP_MAX - 1)
-> diff --git a/security/selinux/include/policycap_names.h b/security/selinux/include/policycap_names.h
-> index 2a87fc3702b81..28e4c9ee23997 100644
-> --- a/security/selinux/include/policycap_names.h
-> +++ b/security/selinux/include/policycap_names.h
-> @@ -13,7 +13,8 @@ const char *const selinux_policycap_names[__POLICYDB_CAP_MAX] = {
->  	"cgroup_seclabel",
->  	"nnp_nosuid_transition",
->  	"genfs_seclabel_symlinks",
-> -	"ioctl_skip_cloexec"
-> +	"ioctl_skip_cloexec",
-> +	"userspace_initial_context",
->  };
->
->  #endif /* _SELINUX_POLICYCAP_NAMES_H_ */
-> diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-> index 8746fafeb7789..c08b8b58439c9 100644
-> --- a/security/selinux/include/security.h
-> +++ b/security/selinux/include/security.h
-> @@ -201,6 +201,12 @@ static inline bool selinux_policycap_ioctl_skip_cloexec(void)
->  	return READ_ONCE(state->policycap[POLICYDB_CAP_IOCTL_SKIP_CLOEXEC]);
->  }
->
-> +static inline bool selinux_policycap_userspace_initial_context(void)
-> +{
-> +	return READ_ONCE(
-> +		selinux_state.policycap[POLICYDB_CAP_USERSPACE_INITIAL_CONTEXT]);
-> +}
-> +
->  struct selinux_policy_convert_data;
->
->  struct selinux_load_state {
-> diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-> index 97c0074f9312a..c5465a0b8055a 100644
-> --- a/security/selinux/ss/policydb.c
-> +++ b/security/selinux/ss/policydb.c
-> @@ -863,6 +863,8 @@ void policydb_destroy(struct policydb *p)
->  int policydb_load_isids(struct policydb *p, struct sidtab *s)
->  {
->  	struct ocontext *head, *c;
-> +	bool isid_init_supported = ebitmap_get_bit(&p->policycaps,
-> +						   POLICYDB_CAP_USERSPACE_INITIAL_CONTEXT);
->  	int rc;
->
->  	rc = sidtab_init(s);
-> @@ -886,6 +888,13 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
->  		if (!name)
->  			continue;
->
-> +		/*
-> +		 * Also ignore SECINITSID_INIT if the policy doesn't declare
-> +		 * support for it
-> +		 */
-> +		if (sid == SECINITSID_INIT && !isid_init_supported)
-> +			continue;
-> +
->  		rc = sidtab_set_initial(s, sid, &c->context[0]);
->  		if (rc) {
->  			pr_err("SELinux:  unable to load initial SID %s.\n",
-> @@ -893,6 +902,24 @@ int policydb_load_isids(struct policydb *p, struct sidtab *s)
->  			sidtab_destroy(s);
->  			return rc;
->  		}
-> +
-> +		/*
-> +		 * If the policy doesn't support the "userspace_initial_context"
-> +		 * capability, set SECINITSID_INIT to the same context as
-> +		 * SECINITSID_KERNEL. This ensures the same behavior as before
-> +		 * the reintroduction of SECINITSID_INIT, where all tasks
-> +		 * started before policy load would initially get the context
-> +		 * corresponding to SECINITSID_KERNEL.
-> +		 */
-> +		if (sid == SECINITSID_KERNEL && !isid_init_supported) {
-> +			rc = sidtab_set_initial(s, SECINITSID_INIT, &c->context[0]);
-> +			if (rc) {
-> +				pr_err("SELinux:  unable to load initial SID %s.\n",
-> +				       name);
-> +				sidtab_destroy(s);
-> +				return rc;
-> +			}
-> +		}
->  	}
->  	return 0;
->  }
-> --
-> 2.41.0
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-07-28
+
+for you to fetch changes up to 9a767faa9477ef2a5fee6a0c9d69587b95a885df:
+
+  Merge tag 'drm-msm-fixes-2023-07-27' of
+https://gitlab.freedesktop.org/drm/msm into drm-fixes (2023-07-28
+11:59:14 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.5-rc4
+
+fbdev:
+- remove unused function
+
+amdgpu:
+- gfxhub partition fix
+- Fix error handling in psp_sw_init()
+- SMU13 fix
+- DCN 3.1 fix
+- DCN 3.2 fix
+- Fix for display PHY programming sequence
+- DP MST error handling fix
+- GFX 9.4.3 fix
+
+amdkfd:
+- GFX11 trap handling fix
+
+i915:
+- Use shmem for dpt objects
+- Fix an error handling path in igt_write_huge()
+
+msm:
+- display:
+- Fix to correct the UBWC programming for decoder version 4.3 seen
+  on SM8550
+- Add the missing flush and fetch bits for DMA4 and DMA5 SSPPs.
+- Fix to drop the unused dpu_core_perf_data_bus_id enum from the code
+- Drop the unused dsi_phy_14nm_17mA_regulators from QCM 2290 DSI cfg.
+- gpu:
+- Fix warn splat for newer devices without revn
+- Remove name/revn for a690.. we shouldn't be populating these for
+  newer devices, for consistency, but it slipped through review
+- Fix a6xx gpu snapshot BINDLESS_DATA size (was listed in bytes
+  instead of dwords, causing AHB faults on a6xx gen4/a660-family)
+- Disallow submit with fence id 0
+
+----------------------------------------------------------------
+Alvin Lee (1):
+      drm/amd/display: Don't apply FIFO resync W/A if rdivider = 0
+
+Christophe JAILLET (1):
+      drm/i915: Fix an error handling path in igt_write_huge()
+
+Dan Carpenter (1):
+      drm/amd/display: Unlock on error path in
+dm_handle_mst_sideband_msg_ready_event()
+
+Dave Airlie (4):
+      Merge tag 'drm-misc-fixes-2023-07-27' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2023-07-27' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-6.5-2023-07-26' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+      Merge tag 'drm-msm-fixes-2023-07-27' of
+https://gitlab.freedesktop.org/drm/msm into drm-fixes
+
+Dmitry Baryshkov (2):
+      drm/msm/mdss: correct UBWC programming for SM8550
+      drm/msm/dpu: drop enum dpu_core_perf_data_bus_id
+
+Gaosheng Cui (1):
+      drm/msm: Fix IS_ERR_OR_NULL() vs NULL check in a5xx_submit_in_rb()
+
+George Shen (1):
+      drm/amd/display: Guard DCN31 PHYD32CLK logic against chip family
+
+Jane Jian (1):
+      drm/amd/smu: use AverageGfxclkFrequency* to replace previous GFX
+Curr Clock
+
+Jonathan Kim (1):
+      drm/amdkfd: fix trap handling work around for debugging
+
+Jonathan Marek (1):
+      drm/msm/dpu: add missing flush and fetch bits for DMA4/DMA5 planes
+
+Leo Chen (1):
+      drm/amd/display: Exit idle optimizations before attempt to access PHY
+
+Lijo Lazar (1):
+      drm/amdgpu: Restore HQD persistent state register
+
+Marijn Suijten (1):
+      drm/msm/dsi: Drop unused regulators from QCM2290 14nm DSI PHY config
+
+Mario Limonciello (1):
+      drm/amd: Fix an error handling mistake in psp_sw_init()
+
+Radhakrishna Sripada (1):
+      drm/i915/dpt: Use shmem for dpt objects
+
+Rob Clark (5):
+      drm/msm/adreno: Fix warn splat for devices without revn
+      drm/msm/a690: Remove revn and name
+      drm/msm/adreno: Fix snapshot BINDLESS_DATA size
+      drm/msm: Fix hw_fence error path cleanup
+      drm/msm: Disallow submit with fence id 0
+
+Victor Lu (1):
+      drm/amdgpu: Fix infinite loop in gfxhub_v1_2_xcc_gart_enable (v2)
+
+YueHaibing (1):
+      drm/fb-helper: Remove unused inline function drm_fb_helper_defio_init()
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c               |  6 +++---
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_4_3.c               |  3 ++-
+ drivers/gpu/drm/amd/amdgpu/gfxhub_v1_2.c              |  5 +----
+ drivers/gpu/drm/amd/amdkfd/kfd_debug.c                |  5 ++---
+ drivers/gpu/drm/amd/amdkfd/kfd_debug.h                |  6 ++++++
+ drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c |  6 ++----
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c   |  2 +-
+ .../drm/amd/display/dc/dce110/dce110_hw_sequencer.c   |  3 +++
+ drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c     |  3 ++-
+ drivers/gpu/drm/amd/display/dc/dcn32/dcn32_dccg.c     |  5 ++++-
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  2 +-
+ drivers/gpu/drm/i915/display/intel_dpt.c              |  4 +++-
+ drivers/gpu/drm/i915/gem/selftests/huge_pages.c       |  6 ++++--
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c                 |  2 +-
+ drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h           |  2 +-
+ drivers/gpu/drm/msm/adreno/adreno_device.c            |  2 --
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h               | 12 ++++++++----
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_perf.h         | 13 -------------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c            |  8 +++++++-
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c            |  2 --
+ drivers/gpu/drm/msm/msm_fence.c                       |  6 ++++++
+ drivers/gpu/drm/msm/msm_gem_submit.c                  | 16 ++++++++++++++--
+ drivers/gpu/drm/msm/msm_mdss.c                        | 19 +++++++++++++++++--
+ include/drm/drm_fb_helper.h                           |  5 -----
+ 24 files changed, 88 insertions(+), 55 deletions(-)
