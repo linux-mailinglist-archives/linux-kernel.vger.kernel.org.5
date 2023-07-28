@@ -2,121 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB2576707D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AC376707F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237161AbjG1P0S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        id S236941AbjG1P1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236138AbjG1P0R (ORCPT
+        with ESMTP id S234457AbjG1P1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:26:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D7A1717
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:26:15 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-217-YVmH9eBiMmG5VIsPrBuaNQ-1; Fri, 28 Jul 2023 16:26:12 +0100
-X-MC-Unique: YVmH9eBiMmG5VIsPrBuaNQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
- 2023 16:26:11 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 28 Jul 2023 16:26:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Oleksandr Natalenko' <oleksandr@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "GR-QLogic-Storage-Upstream@marvell.com" 
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        "Rob Evers" <revers@redhat.com>
-Subject: RE: [PATCH 2/3] scsi: qedf: do not touch __user pointer in
- qedf_dbg_debug_cmd_read() directly
-Thread-Topic: [PATCH 2/3] scsi: qedf: do not touch __user pointer in
- qedf_dbg_debug_cmd_read() directly
-Thread-Index: AQHZwSEN9Ls1iMTEjEyz1kbENNwADa/PTLUA
-Date:   Fri, 28 Jul 2023 15:26:11 +0000
-Message-ID: <2938f701ba56419e861f1bb410831862@AcuMS.aculab.com>
-References: <20230728065819.139694-1-oleksandr@redhat.com>
- <20230728065819.139694-3-oleksandr@redhat.com>
-In-Reply-To: <20230728065819.139694-3-oleksandr@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 28 Jul 2023 11:27:08 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C5EE73
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40631c5b9e9so288291cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690558026; x=1691162826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
+        b=e6XRIlLbdnBV3L+drIGrJ9hpPuszKL9KcdkNU3ekaiyj9oPIi424yCtahEr5IejeLS
+         DVaJsKY6P2gQinDqRDKpkG2Cqzp2iZRE+SuDVrql/sUVH/V6fLH1tcS6jVzZSIYiUExw
+         4mjNGLaKuaNSZpM9kj6StV2PQjstWNDxKKSjF++SSDOHr9RgtdhJON6K/z0E0sdf+HIw
+         GcV0Zs60/0lvk9ceXcscQ7QwYgzn3piuNUGWX3RqXqTt0Bx+NowyQrbj+pniVwxrEnPB
+         eG6jturlsiIsowf+LA6PWNH3FuS9c7Kix3RXflkIjjNKYHtE+5Jk+A2pw/05jXC99LK1
+         QPCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690558026; x=1691162826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
+        b=FC+kOy7AOljX1lux6PJD77OQeECf2ZpVwqwsHbJJBn1aQSQBd7jOBE5FXSQg+ch2p1
+         jKKaPVthHRcA4JqYzp8d7xOq5305GIxD2bufq4oaSGgeRFMqxxyu1fhjpAZIKjYoPAUL
+         QXlcUqaKEJOOue1NwOUVidLzM0hvA5XSHuQCrEBb8a0wmP4FQegHJL/zaNpoLeJQBSVe
+         QZpxs3KgxSkELxI4uOQsxIabUlnWBlc9sF/H8ij7nFxhBQ0OwClvZTQPlNs+h5QVlR/V
+         OP1V4p/cOKJhZ0UrkpxrQkMlY3kdMfdinnoohQO41OZnlDPAPQuUHVXuI85RGhg5ZiAY
+         ZUrA==
+X-Gm-Message-State: ABy/qLat04iw06kBjAaCzNKfE38hMI5iLM5JT9xvtNL7CnxmubNnH8Q+
+        Yd80g5LYJr3IElGRFRkLgiu2rmtC38Klq8dxzJ1qhg==
+X-Google-Smtp-Source: APBJJlHIpT7XpTvB/yptY7dE3r/zPa8AQ/d9BXKIIJ1YOjIrDkWpf9UIHP7aBlLDk/kRbpYfjgdYrYdtNRjivLcW300=
+X-Received: by 2002:a05:622a:448:b0:3f8:5b2:aef0 with SMTP id
+ o8-20020a05622a044800b003f805b2aef0mr297197qtx.24.1690558026249; Fri, 28 Jul
+ 2023 08:27:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230728064917.767761-1-irogers@google.com> <20230728064917.767761-5-irogers@google.com>
+ <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com> <ZMPJym7DnCkFH7aA@kernel.org> <ZMPKekDl+g5PeiH8@kernel.org>
+In-Reply-To: <ZMPKekDl+g5PeiH8@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 28 Jul 2023 08:26:54 -0700
+Message-ID: <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Natalenko
-> Sent: 28 July 2023 07:58
-> 
-> The qedf_dbg_debug_cmd_read() function invokes sprintf()
-> directly on a __user pointer, which may crash the kernel.
-                                      ^^^ will
+On Fri, Jul 28, 2023 at 7:02=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
+> > >
+> > >
+> > > On 28/07/2023 07:49, Ian Rogers wrote:
+> > > > If flex is version 2.6.4, reduce the number of flex C warnings
+> > > > disabled. Earlier flex versions have all C warnings disabled.
+> > >
+> > > Hi Ian,
+> > >
+> > > I get a build error with either this one or the bison warning change:
+> > >
+> > >   $ make LLVM=3D1 -C tools/perf NO_BPF_SKEL=3D1 DEBUG=3D1
+> > >
+> > >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but no=
+t
+> > > used [-Werror,-Wunused-but-set-variable]
+> > >     int yynerrs =3D 0;
+> > >
+> > > I tried a clean build which normally fixes these kind of bison errors=
+.
+> > > Let me know if you need any version info.
+> >
+> > Trying to build it with the command line above I get:
+> >
+> >   CC      util/expr.o
+> >   CC      util/parse-events.o
+> >   CC      util/parse-events-flex.o
+> > util/parse-events-flex.c:7503:13: error: misleading indentation; statem=
+ent is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
+> >             if ( ! yyg->yy_state_buf )
+> >             ^
+> > util/parse-events-flex.c:7501:9: note: previous statement is here
+> >         if ( ! yyg->yy_state_buf )
+> >         ^
+>
+> I added this to the patch to get it moving:
+>
+> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git diff
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 32239c4b0393c319..afa93eff495811cf 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-fi=
+lter-bison.h: util/bpf-filt
+>
+>  FLEX_GE_264 :=3D $(shell expr $(shell $(FLEX) --version | sed -e  's/fle=
+x \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\=3D 264)
+>  ifeq ($(FLEX_GE_264),1)
+> -  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
+unction
+> +  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
+unction -Wno-misleading-indentation
+>  else
+>    flex_flags :=3D -w
+>  endif
+> =E2=AC=A2[acme@toolbox perf-tools-next]$
+>
+>
+> > 1 error generated.
+> > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
+uild:97: util/parse-events-flex.o] Error 1
+> > make[4]: *** Waiting for unfinished jobs....
+> >   LD      util/scripting-engines/perf-in.o
+> > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
+uild:140: util] Error 2
+> > make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
+> > make[2]: *** Waiting for unfinished jobs....
+> >   CC      pmu-events/pmu-events.o
+> >   LD      pmu-events/pmu-events-in.o
+> > make[1]: *** [Makefile.perf:242: sub-make] Error 2
+> > make: *** [Makefile:70: all] Error 2
+> >
+> > =E2=AC=A2[acme@toolbox perf-tools-next]$ clang --version
+> > clang version 14.0.5 (Fedora 14.0.5-2.fc36)
+> > Target: x86_64-redhat-linux-gnu
+> > Thread model: posix
+> > InstalledDir: /usr/bin
+> > =E2=AC=A2[acme@toolbox perf-tools-next]$
 
-> 
-> Avoid doing that by using a small on-stack buffer for sprintf()
-> and then calling simple_read_from_buffer() which does a proper
-> copy_to_user() call.
-...
-> diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
-> index 4d1b99569d490..f910af0029a2c 100644
-> --- a/drivers/scsi/qedf/qedf_debugfs.c
-> +++ b/drivers/scsi/qedf/qedf_debugfs.c
-> @@ -138,15 +138,14 @@ qedf_dbg_debug_cmd_read(struct file *filp, char __user *buffer, size_t count,
->  			loff_t *ppos)
->  {
->  	int cnt;
-> +	char cbuf[35];
+Thanks James/Arnaldo, I was trying to be aggressive in having more
+flags, but it seems too aggressive. We should probably bring back the
+logic to make this flag only added if it is supported:
+  CC_HASNT_MISLEADING_INDENTATION :=3D $(shell echo "int main(void) {
+return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null
+-xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
+  ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
+    flex_flags +=3D -Wno-misleading-indentation
+  endif
+Arnaldo, is the misleading indentation in the bison generated code or
+something copy-pasted from the parse-events.l ? If the latter we may
+be able to fix the .l file to keep the warning.
 
-Why 35?
-I pick a multiple of 8 that if 'enough.
+Thanks,
+Ian
 
->  	struct qedf_dbg_ctx *qedf_dbg =
->  				(struct qedf_dbg_ctx *)filp->private_data;
-> 
->  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "debug mask=0x%x\n", qedf_debug);
-> -	cnt = sprintf(buffer, "debug mask = 0x%x\n", qedf_debug);
-> +	cnt = sprintf(cbuf, "debug mask = 0x%x\n", qedf_debug);
-
-Use scnprintf() to be sure it doesn't overflow.
-Much safer if someone does a quick update or copies the code.
-
-	David
-
-> 
-> -	cnt = min_t(int, count, cnt - *ppos);
-> -	*ppos += cnt;
-> -	return cnt;
-> +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
->  }
-> 
->  static ssize_t
 > --
-> 2.41.0
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+>
+> - Arnaldo
