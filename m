@@ -2,77 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E09767446
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15871767448
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235747AbjG1SKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S235642AbjG1SKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235594AbjG1SK0 (ORCPT
+        with ESMTP id S235782AbjG1SKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:10:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229D244B3;
-        Fri, 28 Jul 2023 11:10:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E83A621D9;
-        Fri, 28 Jul 2023 18:10:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98FD6C433C8;
-        Fri, 28 Jul 2023 18:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690567808;
-        bh=3LeMZELp4m+1YYGFtSrMAlQqThQJj6GMObRyyGm7lGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RzYn+nxk5BM8Wz7vV7nTjftpnfIwmtyxP6J4GzJeLEQhZr2RLcF+z0Ds8EbGpPAHQ
-         h2L2cjymJ524g3DzF/y8/NXSiwhm7AJ2zt6ITJwRY6i5O0O8DX5VOBB3SJa9cIuk4m
-         4tHzJX2ywbDPnRr4ZPoy/jHG39RxguJ1AdH4+ODNzIBeh0zXQQv79N3z8owiGz61Zh
-         yNJB4uj0PS3/2i5/+BygJi3E6gvFAuUo/ZdhyCKzaRY82vXVf+4hLZTrrYzL1/cmBk
-         9YBIuVdMjoNIA+7q6HZ63s8+6iW6NAnaSVEUBGB9tueXB7k7kYAgqA5t7XDZ1kf4Df
-         ZTClkQFSrd/cQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 08C7740096; Fri, 28 Jul 2023 15:10:05 -0300 (-03)
-Date:   Fri, 28 Jul 2023 15:10:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
-Message-ID: <ZMQEfIi/BYwpDIEB@kernel.org>
-References: <20230728064917.767761-1-irogers@google.com>
- <20230728064917.767761-5-irogers@google.com>
- <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
- <ZMPJym7DnCkFH7aA@kernel.org>
- <ZMPKekDl+g5PeiH8@kernel.org>
- <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
+        Fri, 28 Jul 2023 14:10:37 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F06A4233
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:10:30 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-113-23.bstnma.fios.verizon.net [173.48.113.23])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36SIAFvh031473
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 14:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1690567816; bh=g+d4IjMFNjcS40MnJm7H5xhWANs4yJAkAPApqj2itHE=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=o4XMVyFRMZKghotFWRYuoXaPBpEjZKki+gaqxFDNBQ+Y2cLHHAKnTOArqqNuxaMOa
+         8eMxrb8Gkg9K9Grg91aL4LIiKGEIEJoQCfLy7xityXWniwfStmDwsWEkPCuY1QapqW
+         EFkH/4x48M2bohiSOS5b5of9dORjBCHzizcnwchVU1/VGw26Vgujqc4MFBAcJuuEVN
+         /v+6Ne5leSz16oOIRwbOf7I2iHcyh2Xxb0yq+mRYYXb33/rpCDvSQ7EGHNL67M+bq6
+         TR5LVXmyc27zDSZkjS4I7ywVr7NYAuIjdcnHMkyQG/YhBiE28ypYc2FGljLITVf1so
+         cNOIfOj/Ej/6Q==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id F315615C04EF; Fri, 28 Jul 2023 14:10:14 -0400 (EDT)
+Date:   Fri, 28 Jul 2023 14:10:14 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Oscar Megia =?iso-8859-1?Q?L=F3pez?= <megia.oscar@gmail.com>
+Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-ext4@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Contributing subsequent patch versions
+Message-ID: <20230728181014.GA607743@mit.edu>
+References: <877cqlmdpg.fsf@gmail.com>
+ <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
+ <877cqk5zdt.fsf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <877cqk5zdt.fsf@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,95 +57,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 28, 2023 at 08:26:54AM -0700, Ian Rogers escreveu:
-> On Fri, Jul 28, 2023 at 7:02 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
-> > > >
-> > > >
-> > > > On 28/07/2023 07:49, Ian Rogers wrote:
-> > > > > If flex is version 2.6.4, reduce the number of flex C warnings
-> > > > > disabled. Earlier flex versions have all C warnings disabled.
-> > > >
-> > > > Hi Ian,
-> > > >
-> > > > I get a build error with either this one or the bison warning change:
-> > > >
-> > > >   $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
-> > > >
-> > > >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but not
-> > > > used [-Werror,-Wunused-but-set-variable]
-> > > >     int yynerrs = 0;
-> > > >
-> > > > I tried a clean build which normally fixes these kind of bison errors.
-> > > > Let me know if you need any version info.
-> > >
-> > > Trying to build it with the command line above I get:
-> > >
-> > >   CC      util/expr.o
-> > >   CC      util/parse-events.o
-> > >   CC      util/parse-events-flex.o
-> > > util/parse-events-flex.c:7503:13: error: misleading indentation; statement is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
-> > >             if ( ! yyg->yy_state_buf )
-> > >             ^
-> > > util/parse-events-flex.c:7501:9: note: previous statement is here
-> > >         if ( ! yyg->yy_state_buf )
-> > >         ^
-> >
-> > I added this to the patch to get it moving:
-> >
-> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
-> > ⬢[acme@toolbox perf-tools-next]$ git diff
-> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> > index 32239c4b0393c319..afa93eff495811cf 100644
-> > --- a/tools/perf/util/Build
-> > +++ b/tools/perf/util/Build
-> > @@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-filter-bison.h: util/bpf-filt
-> >
-> >  FLEX_GE_264 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 264)
-> >  ifeq ($(FLEX_GE_264),1)
-> > -  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function
-> > +  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function -Wno-misleading-indentation
-> >  else
-> >    flex_flags := -w
-> >  endif
-> > ⬢[acme@toolbox perf-tools-next]$
-> >
-> >
-> > > 1 error generated.
-> > > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: util/parse-events-flex.o] Error 1
-> > > make[4]: *** Waiting for unfinished jobs....
-> > >   LD      util/scripting-engines/perf-in.o
-> > > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:140: util] Error 2
-> > > make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
-> > > make[2]: *** Waiting for unfinished jobs....
-> > >   CC      pmu-events/pmu-events.o
-> > >   LD      pmu-events/pmu-events-in.o
-> > > make[1]: *** [Makefile.perf:242: sub-make] Error 2
-> > > make: *** [Makefile:70: all] Error 2
-> > >
-> > > ⬢[acme@toolbox perf-tools-next]$ clang --version
-> > > clang version 14.0.5 (Fedora 14.0.5-2.fc36)
-> > > Target: x86_64-redhat-linux-gnu
-> > > Thread model: posix
-> > > InstalledDir: /usr/bin
-> > > ⬢[acme@toolbox perf-tools-next]$
+On Fri, Jul 28, 2023 at 08:22:22AM +0200, Oscar Megia L�pez wrote:
+> Yes, I read
+> https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+> yesterday and more online documentation and I didn't find any describing the
+> correct way to send next patch version.
 > 
-> Thanks James/Arnaldo, I was trying to be aggressive in having more
-> flags, but it seems too aggressive. We should probably bring back the
-> logic to make this flag only added if it is supported:
->   CC_HASNT_MISLEADING_INDENTATION := $(shell echo "int main(void) {
-> return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null
-> -xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
->   ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
->     flex_flags += -Wno-misleading-indentation
->   endif
-> Arnaldo, is the misleading indentation in the bison generated code or
-> something copy-pasted from the parse-events.l ? If the latter we may
-> be able to fix the .l file to keep the warning.
+> Today I found this
+> https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+> but I still have some doubts.
 
-I haven't checked, lemme do it now.
+What you're running into is the fact that there are multiple ways that
+people will prepare patch versions, and so the process documentation
+merely specify what the patch series should look like.
 
-- Arnaldo
+> Yes, I know, but I want to know how an expert programmer send
+> next version (create new branch for each patch's version?, create new
+> directory outgoing for each patch's version?, run git pull on patch's
+> branch?, add --in-reply-to= to previous patch's version email?
+> �cover letter or 1/1?, etc.).
+
+Not only do many experienced programmers might have different
+perferred workflows, they might use different procedures depending on
+how complex the patch series would be.  For example, for the case for
+a single patch, I'd probably just use "git format-patch -1 ...",
+meaning "just format the top-most patch on the current branch".
+
+For a really simple patch, I might just use "git commit --amend" to
+make changes, and I might not bother rebasing unless it was necessary
+to make sure it would apply on the top of the development branch.  If
+it was necessary to rebase, assuming that you have the local branch
+"origin_<topic>" which points as the base to your patch or patch
+series, then what *I* typically do is just do:
+
+git branch -f orgin_<topic> origin/master
+git rebase origin_<topic>
+
+Now the topic branch is rebased on the tip of the upstream development
+branch, and now I might just do:
+
+git format-patch -o /tmp/p origin_<topic>..
+
+For a single patch, I might not bother with cover letter, and most of
+the time, I'll just manually copy the cover letter from the previous
+version into the current cover letter, append the description of what
+changed from the last version, and then I'll send it out.
+
+This just uses all basic git commands.  There *are* more sophisticated
+systems that will automate things, and it's completely up to you
+whether or not you want to use them.  Sometimes, the simpler methods
+are best and systems which try to "automate" things can just confuse
+you.
+
+If you want to see an example of a much more sophistcated system, take
+a look at the b4's "prep" command[1].  I don't use it, my self,
+although I do use "b4 am" and "b4 ty" for my maintenance work.  So
+don't feel like you have to use "b4 prep"; try it out, and see if it
+makes your life easier.  If so, use it!  If not, just let it go, and
+try something else.
+
+[1] https://b4.docs.kernel.org/en/latest/contributor/prep.html
+
+Finally, with respect to your original patch.  My apologies for not
+looking at it eariler.  I'm pretty swamped these days, which means
+that I'm prioritizing which patches get my attention.  As far as this
+particular patch, I don't think it's actively harmful, but I also
+don't quite see the point.  If you want to see how full a file system
+might be, and it's disappearing too quickly because shortly after fsck
+finishes, the graphical login has come up, you can always use the "df"
+command, right?
+
+						- Ted
