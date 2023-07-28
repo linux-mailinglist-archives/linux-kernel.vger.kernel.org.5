@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9D7766B1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964D6766B21
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbjG1K4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S236073AbjG1K4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbjG1Kz7 (ORCPT
+        with ESMTP id S235842AbjG1K4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:55:59 -0400
+        Fri, 28 Jul 2023 06:56:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6091BC6;
-        Fri, 28 Jul 2023 03:55:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4989A2682;
+        Fri, 28 Jul 2023 03:56:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6887962089;
-        Fri, 28 Jul 2023 10:55:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1CD6C433C9;
-        Fri, 28 Jul 2023 10:55:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 94EB262089;
+        Fri, 28 Jul 2023 10:56:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671D3C433C8;
+        Fri, 28 Jul 2023 10:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690541757;
-        bh=3R+8/wM2ulYNk2MtuXco2c6ZZXo31f3fGi0FFQXQTvY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=dcYOzYyoMAAiKlRjm3cmcAL4eOHG1MX606CuHCNP5O4pyrhXyPTa+4FoqaPYE9tVH
-         v/I7jSCxvTHUDABfYc45rN1O71o/GfO58kHddVZaBHi69OREa7yI2bCYWDeGBRykbF
-         4Ook/UhMYwenYi6lGSD5Oul/d9e43wiPA5EAiIKYsp2SYVlqqAjZTcPgjaDUnytifk
-         ieqrpYlYoEJg9O8J4OGI46iHpme2+L1tJ2YbFQk4DBxX2VWEyD2ht1QmlrBcJLTTsV
-         n25Dks2wbKlp9eqh30crYW3ZxFtVMFmjUUHclWIW3SE7BUlYqpt0iqWIr1lXw3IWK6
-         tjr++A2bEjzMw==
-From:   Lee Jones <lee@kernel.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lee@kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Cc:     sboyd@codeaurora.org, srinivas.kandagatla@linaro.org,
-        quic_bjorande@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230720071330.50382-1-dg573847474@gmail.com>
-References: <20230720071330.50382-1-dg573847474@gmail.com>
-Subject: Re: (subset) [PATCH v2] mfd: qcom-pm8xxx: Fix potential deadlock
- on &chip->pm_irq_lock
-Message-Id: <169054175537.336560.5220328545584873141.b4-ty@kernel.org>
-Date:   Fri, 28 Jul 2023 11:55:55 +0100
+        s=k20201202; t=1690541801;
+        bh=/nWjw3Rqh2Q1Nlskkcd3rRe8h6y+YfC7niET4DyAxls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XS6RB/nBpd5uAUwSBDW6J5mGOPm75YnDf7w9iAynklPCUEscE7YkCyEJi7iwG0Jvk
+         0TJDjq6xVATLpe2VqhjwD+V3GhBDOEGdE7LvyDeu8r5KFiIriCDRdmsXyX9tKOJ5vG
+         nTEvVC2gG9Y75IgGLryyBI/5OLFXLmXe3iHtvJ1q2tFBTd57PxYAvMe4XM4Cf99mxX
+         PkmtS2Y4FIuGAkZqZCP84XBf2Y7R5Iv+/UL+kN4LVQbgXGn/Byykm5mftPONAOI0G9
+         DDfQJ4diVPibEKBIXaDz8IRCu867boKiS3wIflbOS82D6Z+FTgRCC+TJxFKr+/NqKI
+         tz7zpi6x5vGSA==
+Date:   Fri, 28 Jul 2023 12:56:36 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, willy@infradead.org,
+        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 07/14] sysctl: Add size arg to __register_sysctl_init
+Message-ID: <ZMOe5FE3VETYsmdX@kernel.org>
+References: <20230726140635.2059334-1-j.granados@samsung.com>
+ <CGME20230726140700eucas1p1e6b16e884362ebec50f6712b3f11a533@eucas1p1.samsung.com>
+ <20230726140635.2059334-8-j.granados@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726140635.2059334-8-j.granados@samsung.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,22 +59,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023 07:13:30 +0000, Chengfeng Ye wrote:
-> As &chip->pm_irq_lock is acquired by pm8xxx_irq_handler() under irq
-> context, other process context code should disable irq before acquiring
-> the lock.
+On Wed, Jul 26, 2023 at 04:06:27PM +0200, Joel Granados wrote:
+> This is part of the effort to remove the sentinel element from the
+> ctl_table array at register time. We add a size argument to
+> __register_sysctl_init and modify the register_sysctl_init macro to
+> calculate the array size with ARRAY_SIZE. The original callers do not
+> need to be updated as they will go through the new macro.
 > 
-> Since .irq_set_type and .irq_get_irqchip_state callbacks are generally
-> executed from process context without irq disabled by default, the same
-> lock acquision should disable irq.
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  fs/proc/proc_sysctl.c  | 11 ++---------
+>  include/linux/sysctl.h |  5 +++--
+>  2 files changed, 5 insertions(+), 11 deletions(-)
 > 
-> [...]
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index c04293911e7e..6c0721cd35f3 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -1444,16 +1444,9 @@ EXPORT_SYMBOL(register_sysctl_sz);
+>   * Context: if your base directory does not exist it will be created for you.
+>   */
+>  void __init __register_sysctl_init(const char *path, struct ctl_table *table,
+> -				 const char *table_name)
+> +				 const char *table_name, size_t table_size)
 
-Applied, thanks!
+Hi Joel,
 
-[1/1] mfd: qcom-pm8xxx: Fix potential deadlock on &chip->pm_irq_lock
-      commit: 213f9a4eb2f712866d471d18ab1bf664c71183e6
-
---
-Lee Jones [李琼斯]
-
+in the same vein as my comment on another patch.
+Please add table_size to the kernel doc for this function.
