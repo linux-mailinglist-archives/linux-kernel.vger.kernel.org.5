@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E60177672EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B777672EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236209AbjG1RHh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 13:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
+        id S234404AbjG1RIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbjG1RHR (ORCPT
+        with ESMTP id S234687AbjG1RIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:07:17 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2143ABF;
-        Fri, 28 Jul 2023 10:07:14 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-565ac1880a2so283032eaf.0;
-        Fri, 28 Jul 2023 10:07:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690564034; x=1691168834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+x2DK32HW6E78QP/OGgMb05vDkdF/n1clsh4+A/MUYQ=;
-        b=BsICRcEqauxrBiUtM6cT5QSSdFO9GObdAor5JdHezFQ2tbRmm+voNBzuR9cMssl4Wr
-         TgUpDo3Tl+eDfjvI1vQZBhLG23No8XiVmAdQYXYmA4vh5xfEx8S+M7/t1wx1/jfnDRjZ
-         ozh8dbX5QXpzjmMtPjYpfVmb8SteuCj72gAlf+ES5uq+b3yDHo+uWGe9ZHTXNlPZlu35
-         UWFCwLIniW3aIl9IdUmhFwTMewNwfY+rhiAHsOrVPO55Nw7gD9a3gu8y8AFIXmEEzhcf
-         OKCl+PtHh2+ng0beqooBexDVTkQc06PfBdHHR4gmKnon2lCzEd/e0EQxSRLsWQbqYiBg
-         OdTw==
-X-Gm-Message-State: ABy/qLYq1TuKVj9gbKchMtMAV9H0sZKa013WQP6lUb6pBpbla8QYUQpP
-        d5gIYV94waGypLg7qHY6bcthinDIllcT/ozlAOc=
-X-Google-Smtp-Source: APBJJlGqc/7VLwisSIzvHmUguYHl3r+WBYBjqzWU4KCLoJ6gkMeM7RwHVt8L5g6jfZKI7Jhe6VVHtDZ9VdEwXr6as3w=
-X-Received: by 2002:a4a:dec7:0:b0:565:a7bd:3927 with SMTP id
- w7-20020a4adec7000000b00565a7bd3927mr2649031oou.0.1690564034157; Fri, 28 Jul
- 2023 10:07:14 -0700 (PDT)
+        Fri, 28 Jul 2023 13:08:40 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7804208;
+        Fri, 28 Jul 2023 10:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=qSUnnCZQMRkMrm5j848oE/p8R8PLMnPTw/F+iTVJ2Gc=; b=l1IdxACZogE3IHjDAXh2Q6RSi8
+        0UZlCAHyzL6VuBAIFg6RwshYfN/7oR1JkKrg5m1hpJ6KaHFR0PEaX7m9yw+Li6qYqU++slgxErj1U
+        fWfAmbUNmnyLlxny38j68C51wgD8kOFjQietbGMu+FQfE6OJlt3FvJ9Sl0wNmmuncpYQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qPQwC-002Y4t-Lg; Fri, 28 Jul 2023 19:07:36 +0200
+Date:   Fri, 28 Jul 2023 19:07:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
+Message-ID: <7f21c1d3-331d-4bff-8a4c-f6e235a3dd6a@lunn.ch>
+References: <20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org>
+ <CAMj1kXH_4OEY58Nb9yGHTDvjfouJHKNVhReo0mMdD_aGWW_WGQ@mail.gmail.com>
+ <6766e852-dfb9-4057-b578-33e7d6b9e08e@lunn.ch>
+ <46853c47-b698-4d96-ba32-5b2802f2220a@sirena.org.uk>
+ <CADQ0-X_pXKvUxLW23vEyH=9aZ6iLA2jOKz8QX6aqwQmxFcPY8Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230728145515.990749537@infradead.org> <20230728145808.970594909@infradead.org>
-In-Reply-To: <20230728145808.970594909@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 28 Jul 2023 19:07:02 +0200
-Message-ID: <CAJZ5v0jk9DApNSo7Nq3ZMJh93NT89u310eHtkDwoS2mRj5N+=Q@mail.gmail.com>
-Subject: Re: [RFC][PATCH 3/3] cpuidle,teo: Improve state selection
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     anna-maria@linutronix.de, rafael@kernel.org, tglx@linutronix.de,
-        frederic@kernel.org, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADQ0-X_pXKvUxLW23vEyH=9aZ6iLA2jOKz8QX6aqwQmxFcPY8Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 5:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> When selecting a state, stop when history tells us 66% of recent idles
-> were at or below our current state.
+On Fri, Jul 28, 2023 at 09:35:00PM +0900, Masahisa Kojima wrote:
+> On Fri, 28 Jul 2023 at 20:43, Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Fri, Jul 28, 2023 at 10:41:40AM +0200, Andrew Lunn wrote:
+> > > > Wouldn't this break SynQuacers booting with firmware that lacks a
+> > > > network driver? (I.e., u-boot?)
+> >
+> > > > I am not sure why, but quite some effort has gone into porting u-boot
+> > > > to this SoC as well.
+> >
+> > > Agreed, Rather than PHY_INTERFACE_MODE_NA, please use the correct
+> > > value.
+> >
+> > Does anyone know off hand what the correct value is?  I only have access
+> > to one of these in a remote test lab which makes everything more
+> > painful.
+> 
+> "rgmii-id" is correct, configured by board level.
+> The latest EDK2 firmware was already modified to use the correct value
+> for DT(Thank you, Ard).
+> http://snapshots.linaro.org/components/kernel/leg-96boards-developerbox-edk2/100/
 
-This is not really about "recent idles" AFAICS.  It stops the
-selection when 66% of the total sum of the "hits" and "intercepts"
-signals comes from the current state and the states below it.  This
-covers the entire history, while the "recent" ones are counted
-separately.
+Yes, anything other than rgmii-id is generally wrong. That maps to
+PHY_INTERFACE_MODE_RGMII_ID.
 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  drivers/cpuidle/governors/teo.c |    6 ++++++
->  1 file changed, 6 insertions(+)
->
-> --- a/drivers/cpuidle/governors/teo.c
-> +++ b/drivers/cpuidle/governors/teo.c
-> @@ -363,6 +363,7 @@ static int teo_select(struct cpuidle_dri
->         unsigned int idx_hit_sum = 0;
->         unsigned int hit_sum = 0;
->         unsigned int tick_sum = 0;
-> +       unsigned int thresh_sum = 0;
->         int constraint_idx = 0;
->         int idx0 = 0, idx = -1;
->         bool alt_intercepts, alt_recent;
-> @@ -397,6 +398,8 @@ static int teo_select(struct cpuidle_dri
->                 duration_ns = tick_nohz_get_sleep_length(&delta_tick);
->         cpu_data->sleep_length_ns = duration_ns;
->
-> +       thresh_sum = 2 * cpu_data->total / 3; /* 66% */
-> +
->         /*
->          * Find the deepest idle state whose target residency does not exceed
->          * the current sleep length and the deepest idle state not deeper than
-> @@ -427,6 +430,9 @@ static int teo_select(struct cpuidle_dri
->                 if (s->target_residency_ns > duration_ns)
->                         break;
->
-> +               if (intercept_sum + hit_sum > thresh_sum)
-> +                       break;
-> +
->                 idx = i;
->
->                 if (s->exit_latency_ns <= latency_req)
->
->
+If the firmware has been fixed, i would actually do something like:
+
+	err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
+	if (err)
+		return err;
+
+	if (of_machine_is_compatible("socionext,developer-box") &&
+	    priv->phy_interface != PHY_INTERFACE_MODE_RGMII_ID) {
+	    	pr_warn(FW_WARN, "Working around broken firmware. Please upgrade your firmware");
+		priv->phy_interface = PHY_INTERFACE_MODE_RGMII_ID;
+	}
+
+	Andrew
