@@ -2,216 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752FA76740D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881F3767410
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjG1R4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        id S233570AbjG1R5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbjG1R4F (ORCPT
+        with ESMTP id S231409AbjG1R5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:56:05 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B9B4205;
-        Fri, 28 Jul 2023 10:56:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jhIxpmdoC5XMqTrAVOTob9IC5uAqc399Xgmbwksitl0EORBZ0WRuTZ0ryEJKki4pWEWQS+cptCwME71dnurSRxu4R8XvRnvs0hEMPImr8nZNxj5FawrwQTSYp+uixNhuWnbioGYMBJvlRNAeQFT4cltjuNvWisMsE0Rd7rpf+pj7FhJLBYESg0xkWyi4RCKxpKv/MQdABqZszJCj92LLx40rYTm/8xYBenLhB4Bvds/uF2ui/H8vIstDWJS9euKdbmkhYMJ/JD+vKi1k25DSO4Yy71iqmIErpO3QCu+oHQNgp7gTbqzilYNIzBUy8oq8Viki84b3b38xz5JEfWs97A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wcuW2MghGpMTVkzvR4Zgk5HLNpEnjEwathmDj3laAdo=;
- b=d/hspTclx3ZUXegOamKlDzXKDP8B4zHHmoT6ZtNTUjqSn1eF6hQmvppYr+3sv6vjDiYhDgVi0zrC1luOr7p5YKaT853qW88+GS/zWOQJKQ9L8en2x6s4hntEGNhGhAajhmvekHxPZqZqFMOGlqGeI/gHW6lkETe+IcCvMPBaD7Oo4NblpKb05+voYFN7/K7Vkb2QLJ7l7aZhHDkQ7KtaY/+iRmQ6PiW+ZuZphtndEtQcpQg6RSBfgiKPO9ZWTwC68W13EkrLGJNs4WPFl1pMK4sb48ftDEzDXqgSBYgyorbdRfrnc0zHpvkScJsu3lwpdei5TpklwRozd2ffNE5G4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcuW2MghGpMTVkzvR4Zgk5HLNpEnjEwathmDj3laAdo=;
- b=G8v2gCP0h4mb9ZbkY+r1YLG7fBhD020ktiBV9fX5PlEb36jcq9xz0qUzHa5H9DgSysksRlEHZHA6Sxan7SU6NhRGgLthB1r8hRqwA9oHcfe11288G6VphWWE+iJGYgtSnkMYjRi/EabMrPvwgwsZTfULbaKDRo79HVeoCvTuq9dKyCYmfNDZXXMBF8CrjHph+Uc6SGHP4/pcD1QG3kjkQNhNzMXGIhCmP0nMoMCls1Y5e7gRnKZP771Ef7jv7Z8OrE8Yd4uOK9VXm8UPRwvNnLe+mzDhSwCw0tibkWnaxVwA9ftuvGvNgFtZBJ/bqfDmf1uDuZi29JTfZBI1JuOxhQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB6590.namprd12.prod.outlook.com (2603:10b6:8:8f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 17:55:59 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.034; Fri, 28 Jul 2023
- 17:55:59 +0000
-Date:   Fri, 28 Jul 2023 14:55:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com
-Subject: Re: [PATCH v3 08/17] iommufd: IOMMU_HWPT_ALLOC allocation with user
- data
-Message-ID: <ZMQBLTm+U+5bgC/Z@nvidia.com>
-References: <20230724110406.107212-1-yi.l.liu@intel.com>
- <20230724110406.107212-9-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724110406.107212-9-yi.l.liu@intel.com>
-X-ClientProxiedBy: YT4PR01CA0170.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:110::10) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Fri, 28 Jul 2023 13:57:22 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA66612C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:57:20 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-794cddcab71so996644241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690567040; x=1691171840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gjwyxWFDME+rX0obgtV5/nSSXhzmrLOPNjo6saBh8f4=;
+        b=MdUOTvvhZcMf/WUYAwh4fLVzEuZjbL5JH4ZipqIptm8/3uPce7lXR7sBJRJbArgjG+
+         nWKeWA+OYAJPtp0D/0g5PZgzWh2MDj+2SR6X5UUSY5Q3x2ZtFvMAGRVAL7G7S6/ADSGR
+         QKFStz2IEYhLe9ZXNVN7rmmXSmU8MHGBJH1nQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690567040; x=1691171840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gjwyxWFDME+rX0obgtV5/nSSXhzmrLOPNjo6saBh8f4=;
+        b=IpSyIs4yOHVXHOlC7SjBzMvxguIOQLkPmhRy50ZixW88aXWQGsK6FfG9CaJPAl41yO
+         xf+k4WwdcnhT0S8n4kpd48BLFIHTPBJQU9xoXFM4sMOW2+sEoTm+/023LY92dmv517U2
+         LX7I0v2vDrqeZaYbYx4d5KMN/VPR9Fdio1YZF9POQf0su5lMA3HD25gxmRvD/+YlDgCe
+         V1J/GfR2JXCgpI4j/JJZyeeu7DAXQtzX95pamjTi3v9Z+oNJFmiD1YLEyWF8TY3UjAIJ
+         q+XdzAc+/AUoH0UNXAuk2uGuAdpV36pMTuCF6+89ZGvVCSruhcRgMg1hJL3ucPnonUWw
+         fBkg==
+X-Gm-Message-State: ABy/qLakfGyDX8gQau6A/Rb+afCPK2h8QzHZeEFxuB84IOJXqCenPki8
+        LOKse0oOt2D8r1x14+y4aQYyEkpb0+WQZXU7XHY=
+X-Google-Smtp-Source: APBJJlG7JhmxFPbv0DNBolcMgyY7ieJ4wDD+3Gw6SwQK1+p3/4EtEpAn8Xeqnj1VJ+3l9p+K7mEOKw==
+X-Received: by 2002:a05:6102:2f5:b0:443:7787:8333 with SMTP id j21-20020a05610202f500b0044377878333mr2583611vsj.8.1690567039833;
+        Fri, 28 Jul 2023 10:57:19 -0700 (PDT)
+Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
+        by smtp.gmail.com with ESMTPSA id s4-20020a67c384000000b00447765805a5sm129596vsj.29.2023.07.28.10.57.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 10:57:19 -0700 (PDT)
+Received: by mail-ua1-f51.google.com with SMTP id a1e0cc1a2514c-794cddcab71so996634241.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:57:19 -0700 (PDT)
+X-Received: by 2002:a05:6102:44b:b0:445:23e7:767f with SMTP id
+ e11-20020a056102044b00b0044523e7767fmr2175806vsq.28.1690567038783; Fri, 28
+ Jul 2023 10:57:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6590:EE_
-X-MS-Office365-Filtering-Correlation-Id: b44abea2-e965-4769-636c-08db8f93e69a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t3AQ5EtFV/YZT61FBmNMcaa5f3b9VtnE1so8htlauMUNFZ1W+D6uf/VBed8QTHWj80jA49Fbp7xGd4YXo3ma8QaFAYIDYcYIWeoeqsy2RA/B6e7owbUqrVcoa1dxb8BZURScmHAmELdJIsO8fL1fwWSqCaLdUOQ/R+M/mPuIFfIXUYG81duBZLPS5eEevAzw0JnChMZxS6iYAw9lk2uSaIhZtdZJpPBnvALhNxlyGMfi4mf9iWLb55Mg5VI4fD81VPB1yakaVHlmtl/dnsZmFxtP5lBdnDJJcMNqddFrdR1eRkFNxTrtqFKjUIf0Lmy1v4i7UttxC2mVzieoAWc8CxLGeC+0xRLxlq0Mu4qlcft4UmrYHeFPcbhi5oapQVuZ8MiZKqzt/tjvIGEH0QjYAPY//QevpzZQymnYS+DqPvbCYqDr/wi5Ta2xQRAXhZOS4myBqMVlNFEKnwsW7sKODuMi9AT90Qs3lKKeaY4QAv4bG2p4wqW9nTWlSPVAhYOIW5Nq9E0v36kB/ist9IIqLWnrF8sLD1D7TaSTVEFWCbPfmjMgOVsv6jJz2l1HhSjN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(346002)(136003)(396003)(376002)(451199021)(86362001)(6512007)(6486002)(36756003)(186003)(38100700002)(2616005)(6506007)(26005)(66556008)(4326008)(6916009)(66476007)(66946007)(316002)(2906002)(5660300002)(7416002)(41300700001)(8676002)(8936002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z40oc5ewkQmKYph3UWJj1EtIdef73HFKU2CQ4nQ92EkjwG0D/bgXwXOhCjet?=
- =?us-ascii?Q?dPI+B49mwhQeKdGgJNsljKrdQGs1r3MChhRHwxWuuoyQo5k8Ou8kjPk48Ohu?=
- =?us-ascii?Q?VIZuABZ1rTOV0jdJ6U5bI2zAssqnPN1F4E0LfBCXORiEvizWRDtxXsKigz6C?=
- =?us-ascii?Q?JJsJ/jo49A5+Ox4aOWKrb22ZwyLQF68+URaCA20GfyWZ1CO8D0/+fWewXRXp?=
- =?us-ascii?Q?J+Q0SdXM02LC6EGsxWVUhQGJe0OLGOzsLVjAbvdcPS3mFpwVU7VGeS7PKsPZ?=
- =?us-ascii?Q?Oyo8XoCs9kLzwkpdvPA/4TORo5FceaTtD0BZYxcjfxXcc8Ct42BlEbu42o7O?=
- =?us-ascii?Q?3mFNpOVF6Tj4FZaeFWMjiwFVckDyh6JchqwbMxq97EA4+ju6dThmbIhy0AaL?=
- =?us-ascii?Q?kim4/bf0AQ7X2iRLz1tHJAThHqcxKkJ5oRX0bsCn/TquDQsb5qwxWjKEiOZs?=
- =?us-ascii?Q?q8OlHZ9H6P9XWSFB8AlJ/fsewsyx27DTpHaUy4mhsxI6uORSZTdeE28nrf25?=
- =?us-ascii?Q?qzGJ3WGKh8jdPl35aV0mLkUrJ6n0aUnmmS6hXUZdVG5u55qXImsEGsQ2iKcb?=
- =?us-ascii?Q?/qQFzydDUo/v77QqqZwxNYMmJB4u38Qb8Fz0k1LfneY5hr+kkNIOMwwE7yIP?=
- =?us-ascii?Q?JYL+gVwsgxUUOOTLd72cgP1JHYDXI47lACHO7sDsu2ndn2/Z7lHmrSfTRPMA?=
- =?us-ascii?Q?21f7t0sBrOR1ydHJwhOmMTTs4mieKtcRtXhEyM4gTA+/kv6GSbXD97Uqcd+P?=
- =?us-ascii?Q?rx+GmDnzCTmA2dYqp/+KAYARzQl+S7vytMsEkzc3fqWMEJ4zCs6oJq0TwRAh?=
- =?us-ascii?Q?GUC1SGn7M/cD3iXwDgH3AwAqLu4wSpX2ADI+1LxMWy4T5uPUZESFrkRzS3bS?=
- =?us-ascii?Q?jxwMEXso/RIkjJsACTUeMWwhIN3pfc9nzPad9VIzv3YQBO5bx2n1bBjhQplu?=
- =?us-ascii?Q?ffkAQlFL4XcafH8mSkHWBsrwcpNyjBvR6gVKEWxV099BQVTAPM7obHkOBLfb?=
- =?us-ascii?Q?zsahY/VQ9LKgrkfKnyNsFpfqIUX4ViunoKUfo6u9rwc/WpEATL7OBMliIeNT?=
- =?us-ascii?Q?CwSu1aHY2odHEu/aRnyOf5CI8FkS7IKsFtQsWI2IwmZuw5Zb+jvJDWnIFi+H?=
- =?us-ascii?Q?HOdqMau1u8ImPwXCSMlqFiN5ALIpgYUrR4MApK5IOdsFLtBoPnpcC2b2SL5r?=
- =?us-ascii?Q?gv/+kcxbc7GWlc20BGZb+q7mCbfCAnyv+Zw+iEm+5gtBQaBylGyIDdIqxIel?=
- =?us-ascii?Q?52sXFaSpuFVgFO0zTg+WIA8XPXP5HDOjRDYYAXtkL7GsRX4oAzTGSC/F9opj?=
- =?us-ascii?Q?sG2eviN8QOGYYfbwBz34Q+8Pm8fQMdvOxS3UVQtgSwYEZeoxsEfj4JRftn5A?=
- =?us-ascii?Q?lgL1sZzavHLT3Mq/KxbQBhviiZsfeLAmBYby1nKV/oTHZvz3T4CSfe44QFny?=
- =?us-ascii?Q?kAMAoe8l7aA0t8Rh9Hw8N4NUPbrw6I/G9pG/uLZdS75C4hLrBmFHROSrfbGB?=
- =?us-ascii?Q?p0eFusbxQo3AlUmTly/msH4YEsDe3xeXRp16BLf5VWCs4ubj+5cN5rRYcOFx?=
- =?us-ascii?Q?/kdDPE6HEO8ykKeGBZ1UMs4JaIL6qwdmTUdZ5spV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b44abea2-e965-4769-636c-08db8f93e69a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:55:59.7478
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Eobb3c3ThPk96H1/EXsPAg3aAZ2pFhsYMnLxTTq2HgK+LlGccpSytn78k3WwC8BA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6590
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230707191721.1.Id08823b2f848237ae90ce5c5fa7e027e97c33ad3@changeid>
+ <b32ae8af-7950-c725-5632-6ec13420bf77@infradead.org> <6101a3bb-30eb-97fc-3a8e-6d15afc4efb5@amd.com>
+ <3de1ff24-3970-6e22-a73c-70446b8de4bd@infradead.org> <CAHQZ30BLb13Mz5+3MCgV30eG-LiU-6-4F7AEinGQmsgiyzD-yA@mail.gmail.com>
+ <ZLF5_dJyQgzNnrnO@alley> <CAHQZ30DjZE6Mg-KUrLQOLHh+OxNHZXRDkuZopxJb3F7G29TsXA@mail.gmail.com>
+ <ZLGVYg1FAZN7VFxB@alley> <CAHQZ30Abpvm+__VK9oaU9eWwLKpiND+rmfjrPvF_R_09d2JqGQ@mail.gmail.com>
+ <ZLZgZvE35fYCkgOq@alley>
+In-Reply-To: <ZLZgZvE35fYCkgOq@alley>
+From:   Raul Rangel <rrangel@chromium.org>
+Date:   Fri, 28 Jul 2023 11:57:07 -0600
+X-Gmail-Original-Message-ID: <CAHQZ30DQw9n=uiuz3-nqnOKVbZdp-=DfeSn2feoPL08RjYzT=A@mail.gmail.com>
+Message-ID: <CAHQZ30DQw9n=uiuz3-nqnOKVbZdp-=DfeSn2feoPL08RjYzT=A@mail.gmail.com>
+Subject: Re: [PATCH] init: Don't proxy console= to earlycon
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kramasub@chromium.org, Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Li Zhe <lizhe.67@bytedance.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Zhou jie <zhoujie@nfschina.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 04:03:57AM -0700, Yi Liu wrote:
+Sorry, sending again since my original reply wasn't in plain text mode
+and got bounced from the mailing list.
 
-> +	switch (pt_obj->type) {
-> +	case IOMMUFD_OBJ_IOAS:
-> +		ioas = container_of(pt_obj, struct iommufd_ioas, obj);
-> +		break;
-> +	case IOMMUFD_OBJ_HW_PAGETABLE:
-> +		/* pt_id points HWPT only when hwpt_type is !IOMMU_HWPT_TYPE_DEFAULT */
-> +		if (cmd->hwpt_type == IOMMU_HWPT_TYPE_DEFAULT) {
-> +			rc = -EINVAL;
-> +			goto out_put_pt;
-> +		}
+On Tue, Jul 18, 2023 at 3:50=E2=80=AFAM Petr Mladek <pmladek@suse.com> wrot=
+e:
+>
+> On Fri 2023-07-14 15:42:36, Raul Rangel wrote:
+> > On Fri, Jul 14, 2023 at 12:35=E2=80=AFPM Petr Mladek <pmladek@suse.com>=
+ wrote:
+> > > On Fri 2023-07-14 11:21:09, Raul Rangel wrote:
+> > > > On Fri, Jul 14, 2023 at 10:38=E2=80=AFAM Petr Mladek <pmladek@suse.=
+com> wrote:
+> > > > > On Mon 2023-07-10 09:30:19, Raul Rangel wrote:
+> > > > > > On Sun, Jul 9, 2023 at 8:43=E2=80=AFPM Randy Dunlap <rdunlap@in=
+fradead.org> wrote:
+> > > > > > > On 7/9/23 18:15, Mario Limonciello wrote:
+> > > > > > > > On 7/9/23 18:46, Randy Dunlap wrote:
+> > > > > > > >> On 7/7/23 18:17, Raul E Rangel wrote:
+> > > > > > > >>> Right now we are proxying the `console=3DXXX` command lin=
+e args to the
+> > > > > > > >>> param_setup_earlycon. This is done because the following =
+are
+> > > > > > > >>> equivalent:
+> > > > > > > >>>
+> > > > > > > >>>      console=3Duart[8250],mmio,<addr>[,options]
+> > > > > > > >>>      earlycon=3Duart[8250],mmio,<addr>[,options]
+>
+> I have finally got the meaning of the above paragraph. I thought that
+> it was talking about that the format was equivalent. But it was about
+> that also the effect was equivalent.
+>
+> > > > > > > >>> In addition, when `earlycon=3D` or just `earlycon` is spe=
+cified on the
+> > > > > > > >>> command line, we look at the SPCR table or the DT to extr=
+act the device
+> > > > > > > >>> options.
+> > > > > > > >>>
+> > > > > > > >>> When `console=3D` is specified on the command line, it's =
+intention is to
+> > > > > > > >>> disable the console. Right now since we are proxying the =
+`console=3D`
+> > > > > > > >>
+> > > > > > > >> How do you figure this (its intention is to disable the co=
+nsole)?
+> > > > > > > >
+> > > > > >
+> > > > > > https://www.kernel.org/doc/html/v6.1/admin-guide/kernel-paramet=
+ers.html
+> > > > > > says the following:
+> > > > > > console=3D
+> > > > > >     { null | "" }
+> > > > > >             Use to disable console output, i.e., to have kernel
+> > > > > >             console messages discarded.
+> > > > > >             This must be the only console=3D parameter used on =
+the
+> > > > > >             kernel command line.
+> > > > > >
+> > > > > >         earlycon=3D       [KNL] Output early console device and=
+ options.
+> > > > > >
+> > > > > >             When used with no options, the early console is
+> > > > > >             determined by stdout-path property in device tree's
+> > > > > >             chosen node or the ACPI SPCR table if supported by
+> > > > > >             the platform.
+> > > > >
+> > > > > Sigh, I wasn't aware of this when we discussed the console=3D han=
+dling.
+> > > >
+> > > > It took a bit of digging to figure out what the actual intention wa=
+s :)
+> > > >
+> > > > >
+> > > > > > The reason this bug showed up is that ChromeOS has set `console=
+=3D` for a
+> > > > > > very long time:
+> > > > > > https://chromium.googlesource.com/chromiumos/platform/crosutils=
+/+/main/build_kernel_image.sh#282
+> > > > > > I'm not sure on the exact history, but AFAIK, we don't have the=
+ ttyX devices.
+> > > > > >
+> > > > > > Coreboot recently added support for the ACPI SPCR table which i=
+n
+> > > > > > combination with the
+> > > > > > `console=3D` arg, we are now seeing earlycon enabled when it sh=
+ouldn't be.
+> > > > >
+> > > > > But this happens only when both "earlycon" and "console=3D" param=
+eters
+> > > > > are used together. Do I get it correctly?
+> > > >
+> > > > The bug shows up when an SPCR table is present and the `console=3D`
+> > > > parameter is set. No need to specify `earlycon` on the command line=
+.
+> > >
+> > > Strange, see below.
+> > >
+> > > > > This combination is ambiguous on its own. Why would anyone add
+> > > > > "earlycon" parameter and wanted to keep it disabled?
+> > > >
+> > > > This is not the case I'm hitting. I'm honestly not sure what the
+> > > > behavior should be in the `earlycon console=3D` case?
+> > > >
+> > > > >
+> > > > > > > >>> diff --git a/init/main.c b/init/main.c
+> > > > > > > >>> index aa21add5f7c54..f72bf644910c1 100644
+> > > > > > > >>> --- a/init/main.c
+> > > > > > > >>> +++ b/init/main.c
+> > > > > > > >>> @@ -738,8 +738,7 @@ static int __init do_early_param(char=
+ *param, char *val,
+> > > > > > > >>>       for (p =3D __setup_start; p < __setup_end; p++) {
+> > > > > > > >>>           if ((p->early && parameq(param, p->str)) ||
+> > > > > > > >>>               (strcmp(param, "console") =3D=3D 0 &&
+> > > > > > > >>> -             strcmp(p->str, "earlycon") =3D=3D 0)
+> > > > > > > >>> -        ) {
+> > > > > > > >>> +             strcmp(p->str, "earlycon") =3D=3D 0 && val =
+&& val[0])) {
+> > > > > > > >>>               if (p->setup_func(val) !=3D 0)
+> > > > > > > >>>                   pr_warn("Malformed early option '%s'\n"=
+, param);
+> > > > > > > >>>           }
+> > >
+> > This contradicts your first point. We need to call
+> > `param_setup_earlycon` so it can handle `console=3Duart,mmio,XXXX`.
+> > That's why this block of code is here. IMO it's very confusing
+> > behavior that `earlycon=3Duart,mmio,XXXX` and `console=3Duart,mmio,XXXX=
+`
+> > are the same thing.
+>
+> Urgh, I didn't know that "console=3Duart*" started early console.
+> I always thought that it was just another way how to define
+> the normal console.
+
+Yeah, it's all very confusing. We should probably remove the
+`console=3Duart*` from the kernel documentation so people use
+`earlycon=3Duart*` instead.
+
+>
+> (I feel shame as a printk maintainer. But I have never used it.
+> And this has been the first patch in the related code since
+> I started watching printk 10 years ago.)
+
+lol, please don't shame yourself. There are plenty of odd quirks to be
+found in maintaining such a large project.
+
+>
+> Looking into the history, "earlycon" parameter was added by
+> the commit 18a8bd949d6adb311 ("serial: convert early_uart to
+> earlycon for 8250") in 2007. The parameter "console=3Duart,mmio,XXX"
+> started the console earlier even before.
+>
+> The "earlycon" parameter allowed to define the early console
+> an explicit way on the command line. But it was not strictly
+> necessary. The same effect could have been achieved by:
+>
+> static int __init do_early_param(char *param, char *val,
+>                                  const char *unused, void *arg)
+> {
+>         struct obs_kernel_param *p;
+>
+>         for (p =3D __setup_start; p < __setup_end; p++) {
+>                 if (p->early && strcmp(param, p->str) =3D=3D 0) {
+>                         if (p->setup_func(val) !=3D 0)
+>                                 printk(KERN_WARNING
+>                                        "Malformed early option '%s'\n", p=
+aram);
+>                 }
+>
+>                 if (strcmp(param, "console") =3D=3D 0) {
+>                         if (setup_early_serial8250_console(val) !=3D 0)
+>                                 printk(KERN_WARNING, "Failed to setup ear=
+ly console");
+>         }
+> }
+>
+> > The reason my patch checks for a NULL or empty val is because
+> > `param_setup_earlycon` has a special case to handle the
+> > `earlycon`/`earlycon=3D` case:
+> > https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/=
+heads/chromeos-6.1/drivers/tty/serial/earlycon.c#223
+> >
+> > ```
+> > /* Just 'earlycon' is a valid param for devicetree and ACPI SPCR. */
+> > if (!buf || !buf[0]) {
+> >   if (IS_ENABLED(CONFIG_ACPI_SPCR_TABLE)) {
+> >     earlycon_acpi_spcr_enable =3D true;
+> >     return 0;
+> >   } else if (!buf) {
+> >     return early_init_dt_scan_chosen_stdout();
+> >   }
+> > }
+> > ```
+>
+> I see. It all makes sense now.
+
+Great :)
+
+>
+> Your patch is good then. Well, would you mind to add a comment into
+> the code and make the commit message more clear even for dummies like
+> me?
+>
+> Something like the patch below. It would be better to split it into
+> two:
+>
+>    + 1st shuffling the check and adding the first part of the comment
+>    + 2nd fixing the case with empty console=3D options.
+>
+> I could prepare the patchset. I would keep your SOB for the 2nd patch
+> if you agreed.
+
+Yes, feel free. Thanks!
+
+>
+> Here is the proposal:
+>
+> From d2fb7c54bed4c67df229c56fcc1b0af83ada5227 Mon Sep 17 00:00:00 2001
+> From: Raul E Rangel <rrangel@chromium.org>
+> Date: Fri, 7 Jul 2023 19:17:25 -0600
+> Subject: [PATCH] init: Don't proxy the empty console=3D options to earlyc=
+on
+>
+> Right now we are proxying the `console=3DXXX` command line args to the
+> param_setup_earlycon. This is done because the early consoles used to
+> be enabled via the `console` parameter.
+>
+> The `earlycon` parameter was added later by the commit 18a8bd949d6adb311
+> ("serial: convert early_uart to earlycon for 8250"). It allowed to
+> setup the early consoles using another callback. And it was indeed
+> more self-explanatory and cleaner approach.
+>
+> As a result, for example, the following parameters have the same effect:
+>
+>     console=3Duart[8250],mmio,<addr>[,options]
+>     earlycon=3Duart[8250],mmio,<addr>[,options]
+>
+> Nevertheless, `console` and `earlycon` parameters behave different when
+> the options do not match an early console. setup_earlycon() accepts only
+> console names in __earlycon_table. Also the empty options are handled
+> differently:
+>
+>   + When `earlycon=3D` or just `earlycon` is specified on the command lin=
+e,
+>     param_setup_earlycon() tries to enable an early console via the SPCR
+>     table or the device tree.
+>
+>   + When `console=3D` is specified on the command line, it's intention is=
+ to
+>     disable the console.
+>
+> Here comes the problem. The current code calls param_setup_earlycon()
+> even when `console=3D` is used with no options. As a result, it might
+> enable the early console when it is defined in the SPCR table or
+> a device tree. This is obviously not what users want.
+>
+> The early console should be enabled via SPCR or DT only when `earlycon`
+> is used explicitly with no options.
+>
+> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+> [pmladek@suse.com: Add comments and more details into the commit message]
+> ---
+>  init/main.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/init/main.c b/init/main.c
+> index ad920fac325c..3b059e316e62 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -733,13 +733,25 @@ static int __init do_early_param(char *param, char =
+*val,
+>         const struct obs_kernel_param *p;
+>
+>         for (p =3D __setup_start; p < __setup_end; p++) {
+> -               if ((p->early && parameq(param, p->str)) ||
+> -                   (strcmp(param, "console") =3D=3D 0 &&
+> -                    strcmp(p->str, "earlycon") =3D=3D 0)
+> -               ) {
+> +               if (p->early && parameq(param, p->str)) {
+>                         if (p->setup_func(val) !=3D 0)
+>                                 pr_warn("Malformed early option '%s'\n", =
+param);
+>                 }
 > +
-> +		parent = container_of(pt_obj, struct iommufd_hw_pagetable, obj);
-> +		/*
-> +		 * Cannot allocate user-managed hwpt linking to auto_created
-> +		 * hwpt. If the parent hwpt is already a user-managed hwpt,
-> +		 * don't allocate another user-managed hwpt linking to it.
-> +		 */
-> +		if (parent->auto_domain || parent->parent) {
-> +			rc = -EINVAL;
-> +			goto out_put_pt;
-> +		}
-> +		ioas = parent->ioas;
+> +               /*
+> +                * Early consoles can be historically enabled also when e=
+arlycon
+> +                * specific options are passed via console=3D[earlycon op=
+tions]
+> +                * parameter.
+> +                *
+> +                * Do not try it with an empty value. "console=3D" is use=
+d to
+> +                * disable real normal consoles. While "earlycon" is used=
+ to
+> +                * enable an early console via SPCR or DT.
+> +                */
+> +               if (strcmp(param, "console") =3D=3D 0 && val && val[0] &&
+> +                   strcmp(p->str, "earlycon") =3D=3D 0) {
+> +                       if (p->setup_func(val) !=3D 0)
+> +                               pr_warn("Failed to setup earlycon via con=
+sole=3D%s\n", val);
+> +               }
+>         }
+>         /* We accept everything at this stage. */
+>         return 0;
+> --
+> 2.35.3
+>
 
-Why do we set ioas here? I would think it should be NULL.
-
-I think it is looking like a mistake to try and re-use
-iommufd_hw_pagetable_alloc() directly for the nested case. It should
-not have a IOAS argument, it should not do enforce_cc, or iopt_*
-functions
-
-So must of the function is removed. Probably better to make a new
-ioas-less function for the nesting case.
-
-> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-> index 510db114fc61..5f4420626421 100644
-> --- a/drivers/iommu/iommufd/main.c
-> +++ b/drivers/iommu/iommufd/main.c
-> @@ -426,7 +426,7 @@ static const struct iommufd_ioctl_op iommufd_ioctl_ops[] = {
->  	IOCTL_OP(IOMMU_GET_HW_INFO, iommufd_get_hw_info, struct iommu_hw_info,
->  		 __reserved),
->  	IOCTL_OP(IOMMU_HWPT_ALLOC, iommufd_hwpt_alloc, struct iommu_hwpt_alloc,
-> -		 __reserved),
-> +		 data_uptr),
-
-Nono, these can never change once we put them it. It specifies the
-hard minimum size that userspace must provide. If userspace gives less
-than this then the ioctl always fails. Changing it breaks all the
-existing software.
-
-The core code ensures that the trailing part of the cmd struct is
-zero'd the extended implementation must cope with Zero'd values, which
-this does.
-
-> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
-> index f2026cde2d64..73bf9af91e99 100644
-> --- a/include/uapi/linux/iommufd.h
-> +++ b/include/uapi/linux/iommufd.h
-> @@ -364,12 +364,27 @@ enum iommu_hwpt_type {
->   * @pt_id: The IOAS to connect this HWPT to
->   * @out_hwpt_id: The ID of the new HWPT
->   * @__reserved: Must be 0
-> + * @hwpt_type: One of enum iommu_hwpt_type
-> + * @data_len: Length of the type specific data
-> + * @data_uptr: User pointer to the type specific data
->   *
->   * Explicitly allocate a hardware page table object. This is the same object
->   * type that is returned by iommufd_device_attach() and represents the
->   * underlying iommu driver's iommu_domain kernel object.
->   *
-> - * A HWPT will be created with the IOVA mappings from the given IOAS.
-> + * A kernel-managed HWPT will be created with the mappings from the given
-> + * IOAS via the @pt_id. The @hwpt_type for this allocation can be set to
-> + * either IOMMU_HWPT_TYPE_DEFAULT or a pre-defined type corresponding to
-> + * an I/O page table type supported by the underlying IOMMU hardware.
-
-
-> + * A user-managed HWPT will be created from a given parent HWPT via the
-> + * @pt_id, in which the parent HWPT must be allocated previously via the
-> + * same ioctl from a given IOAS (@pt_id). In this case, the @hwpt_type
-> + * must be set to a pre-defined type corresponding to an I/O page table
-> + * type supported by the underlying IOMMU hardware.
-> + *
-> + * If the @hwpt_type is set to IOMMU_HWPT_TYPE_DEFAULT, both the @data_len
-> + * and the @data_uptr will be ignored. Otherwise, both must be
-> given.
-
- If the @hwpt_type is set to IOMMU_HWPT_TYPE_DEFAULT then @data_len
- must be zero.
-
-Jason
+Signed-off-by: Raul E Rangel <rrangel@chromium.org>
