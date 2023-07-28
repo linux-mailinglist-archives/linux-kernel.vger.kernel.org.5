@@ -2,116 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FE4767867
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681D3767873
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjG1WOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
+        id S230449AbjG1W0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 18:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjG1WOb (ORCPT
+        with ESMTP id S229605AbjG1W0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:14:31 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2AC448D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:14:30 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-687087d8ddaso1574760b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:14:30 -0700 (PDT)
+        Fri, 28 Jul 2023 18:26:02 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61D74492
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:25:57 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-78706966220so26050939f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:25:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1690582469; x=1691187269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j23ImFvrdRCadrPSwwknJnJ5y4yBBTyt7l0nVVVM2Yc=;
-        b=ZtiNC4ej7OZeywn8wHEAqgDTQCL96l3JSg/+ffzCXaHNuNTx//E5tRxv+/5LyUCmzy
-         wJU7VJ1iIxDjSGiYmpFU6nsZJLAX9pZspnX9lclWTUB+5LrMVyrOHTTcH7n9g0ri1s6/
-         jxQOuM+oNZ2mdhzAwawrFQ9KDOH6pNdZsBMXiJbfKH2lCh7pATaIgYWj96/7at6d67Va
-         mRmHHE1OyMNNCbopzrhaqGthSM5xveatfXj9L6soKQqTrUS+/DH4oq1w4/EnW2qpPV1M
-         Jdy66HRsCu5/ykHeyesJo9rLKHxuC2ZI1slvAXgyW67g1fPexWbnVuxbXMH7GbD4QMwG
-         mmUQ==
+        d=linuxfoundation.org; s=google; t=1690583157; x=1691187957;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UmACLtdARspP7MJKZd6aMsG85CKK9xJmn5L5QcuBx+U=;
+        b=WYLssCZX6uhtEh3N6C3UWc1kqND5zaDW5XK1r5RA6dl0QNkXJq3yrhDwcGJGhuqEmX
+         avddUPSObDcZ36w6oLWTVf5OM9F4rIEBq8JFEhuPV8fdMetsxA3IBawdGH4jCyiWBgdL
+         tegCPsL+A8mwfgG3lzNPoLsFd1jOKSbVTT+dM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690582469; x=1691187269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j23ImFvrdRCadrPSwwknJnJ5y4yBBTyt7l0nVVVM2Yc=;
-        b=eKyCaDmsyce0qkVjj/DeYEsLIVjAbJFxs8923SkgO54I02Wpe9Trm0MF+szbmlCLTL
-         aggPtDx/EFh4XncDVTu6qvdzWiKoTuMEFiQUmpETB5Bb+xsW4qrWt8Nv42pS1F5sWQN6
-         4Gm6pWpFrsusNC7FOZ8shxNaBZ8LaM7xLfnoZn0O4DUEgsuNLGZ0RxnGtD2NFSILmwvC
-         CEJOwHtVp34O2OP/L7D9XjT4Rdw3ZUHU9jBWauZfKbC6muzxQfp0nnBmRz7QfX48dFSV
-         E9nQbHavCiw2NRyvipYUlhsD4lzLXW9EtAPmbSPNNkvMvVP3J+opfvOwvr3Cgus3CRIc
-         r97A==
-X-Gm-Message-State: ABy/qLYZ4ijuzUra0vmsMXdh4upH6HxJp+vFy5HYhCPdhMRfBK2VN0XM
-        gzZGB6IZIPBiEvC4IJrOoL/1IA==
-X-Google-Smtp-Source: APBJJlF0fafCFeexldp3nrIcTl/TKK4y9sr2ROkSLVlVpnM5bPmorNZnR4SuXn5KRsO7VBS9InuRKQ==
-X-Received: by 2002:a17:902:988e:b0:1b2:1a79:147d with SMTP id s14-20020a170902988e00b001b21a79147dmr3058566plp.2.1690582469499;
-        Fri, 28 Jul 2023 15:14:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id jl21-20020a170903135500b001b531e8a000sm4056368plb.157.2023.07.28.15.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 15:14:28 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qPVj8-001vv5-5d;
-        Fri, 28 Jul 2023 19:14:26 -0300
-Date:   Fri, 28 Jul 2023 19:14:26 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Message-ID: <ZMQ9wuSa3Sp3sVvE@ziepe.ca>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <ZMQZfn/hUURmfqWN@x1n>
- <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
- <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
- <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
- <69a5f457-63b6-2d4f-e5c0-4b3de1e6c9f1@redhat.com>
- <ZMQxNzDcYTQRjWNh@x1n>
- <22262495-c92c-20fa-dddf-eee4ce635b12@redhat.com>
+        d=1e100.net; s=20221208; t=1690583157; x=1691187957;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UmACLtdARspP7MJKZd6aMsG85CKK9xJmn5L5QcuBx+U=;
+        b=YqS3TGE3AaXmWTtebYk01CZgq+x6DL690K01bMb2ikCW/8kbzdD6clxMmmFoI0aRw7
+         tV3MKdc9Uwixo+r688ewUynYIpeEXrIkZtSSnhLEhUyBezrvMyUnJyES3Gg+jCQGm9+E
+         TLVmJ0Ht38yBzTchACHiRAwUKlreY51x7D6YW1W+PYsQ7vzBcr7k4IKPX9gKnmOVQ2vY
+         1hIhiSGVlabOoM55f5ZdbpZSnIJMv2L2CnCNzZGZ20nAngttIsJZ5kiZaHbIUvYHwJzw
+         aczLlEdVQA0D6uGBTUr/puIwQFKXo7LpUbOEjC4cNW6z21J4y5k1luLIk6ySeLu5IPay
+         ZFFQ==
+X-Gm-Message-State: ABy/qLaBkz6OKynamsd+9Xi/VDk5EnF5fzN+29fCwpjqx5xnSLp6QDt2
+        +aEypu8rQvkRqRg0VozYXj4J1yf7GS1bSehCccPVew==
+X-Google-Smtp-Source: APBJJlFbqOzp1fj0xkm1w+yqNVi10QgNZfwTAtAr10/OoCAxNnYWdKplxVCZd0bOBRPCer/8s50oLQ==
+X-Received: by 2002:a05:6602:2b91:b0:77a:ee79:652 with SMTP id r17-20020a0566022b9100b0077aee790652mr1384991iov.1.1690583157058;
+        Fri, 28 Jul 2023 15:25:57 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id l8-20020a02a888000000b0042b28813816sm1394681jam.14.2023.07.28.15.25.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 15:25:56 -0700 (PDT)
+Message-ID: <84048d13-9311-36f6-9eb4-8169952580d7@linuxfoundation.org>
+Date:   Fri, 28 Jul 2023 16:25:55 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22262495-c92c-20fa-dddf-eee4ce635b12@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
+ error paths to skip
+Content-Language: en-US
+To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1690564372.git.skhan@linuxfoundation.org>
+ <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
+ <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
+ <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
+ <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
+ <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
+ <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
+ <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 11:31:49PM +0200, David Hildenbrand wrote:
-> * vfio triggers FOLL_PIN|FOLL_LONGTERM from a random QEMU thread.
->   Where should we migrate that page to? Would it actually be counter-
->   productive to migrate it to the NUMA node of the setup thread? The
->   longterm pin will turn the page unmovable, yes, but where to migrate
->   it to?
+On 7/28/23 15:59, Anjali Kulkarni wrote:
+> 
+> 
+>> On Jul 28, 2023, at 2:41 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 7/28/23 15:21, Anjali Kulkarni wrote:
+>>>> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 7/28/23 13:06, Shuah Khan wrote:
+>>>>> On 7/28/23 12:10, Anjali Kulkarni wrote:
+>>>>>>
+>>>>>>
+>>>>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>>
+>>>>>>> proc_filter test requires root privileges. Add root privilege check
+>>>>>>> and skip the test. Also fix argument parsing paths to skip in their
+>>>>>>> error legs.
+>>>>>>>
+>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>>>> ---
+>>>>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
+>>>>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
+>>>>>>> --- a/tools/testing/selftests/connector/proc_filter.c
+>>>>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
+>>>>>>>
+>>>>>>> if (argc > 2) {
+>>>>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
+>>>>>>> - exit(1);
+>>>>>>> + exit(KSFT_SKIP);
+>>>>>>> }
+>>>>>>>
+>>>>>>> if (argc == 2) {
+>>>>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
+>>>>>>> filter = 1;
+>>>>>>> } else {
+>>>>>>> printf("Valid option : -f (for filter feature)\n");
+>>>>>>> - exit(1);
+>>>>>>> + exit(KSFT_SKIP);
+>>>>>>> }
+>>>>>>> }
+>>>>>>>
+>>>>>>> + if (geteuid()) {
+>>>>>>> + printf("Connector test requires root privileges.\n");
+>>>>>>> + exit(KSFT_SKIP);
+>>>>>>> + }
+>>>>>>> +
+>>>>>>
+>>>>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
+>>>>>>
+>>>>> It failed for me when I ran it saying it requires root privileges.
+>>>>> I had to run it as root.
+>>>>
+>>>> The following is what I see when I run the test as non-root
+>>>> user:
+>>>>
+>>>> bind failed: Operation not permitted
+>>>>
+>>> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
+>>> So this check for root needs to be removed.
+>>
+>> I will send v2 for this patch without root check. I should have
+>> split the argument error paths and root check anyway.
+>>
+>> However, what is strange is if the test run by root, bind() doesn't fail.
+>> This doesn't make sense to me based on what you said about bind() fails
+>> if kernel doesn't support the new feature.
+>>
+> 
+> I didn’t say that - part of the changes introduced by the patches is to remove the root check and add some features on top of existing code.
+> 
 
-For VFIO & KVM you actively don't get any kind of numa balancing or
-awareness. In this case qemu should probably strive to put the memory
-on the numa node of the majorty of CPUs early on because it doesn't
-get another shot at it.
+Okay. So what should happen if a root user runs this test on a kernel
+that doesn't have the kernel patches submitted with this selftest
+installed on it?
 
-In other cases it depends quite alot. Eg DPDK might want its VFIO
-buffers to NUMA'd to the node that is close to the device, not the
-CPU. Or vice versa. There is alot of micro sensitivity here at high
-data rates. I think people today manually tune this by deliberately
-allocating the memory to specific numas and then GUP should just leave
-it alone.
-
-FWIW, I'm reading this thread and I have no idea what the special
-semantic is KVM needs from GUP, so I'm all for better documentation on
-the GUP flag :)
-
-Jason
+thanks,
+-- Shuah
