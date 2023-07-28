@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690C3766379
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E757663A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjG1FBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 01:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
+        id S233160AbjG1F3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 01:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232860AbjG1FBq (ORCPT
+        with ESMTP id S229946AbjG1F3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 01:01:46 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E762736
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:01:44 -0700 (PDT)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230728050142epoutp03e7213e664c03375ca69bbb20889ef0a2~173C1AH-p1831018310epoutp03c
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:01:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230728050142epoutp03e7213e664c03375ca69bbb20889ef0a2~173C1AH-p1831018310epoutp03c
+        Fri, 28 Jul 2023 01:29:04 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8894A30FF
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:28:59 -0700 (PDT)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230728052855epoutp01a2a1e2d5fc97fc7a385de667680161d6~18OzsSj-V2191521915epoutp01r
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:28:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230728052855epoutp01a2a1e2d5fc97fc7a385de667680161d6~18OzsSj-V2191521915epoutp01r
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690520502;
-        bh=SGKbvDGq5dDm+i7ooAM8tY7QMRPgqssebHTyJCoPuA0=;
+        s=mail20170921; t=1690522135;
+        bh=vGRRultiFfnmCKJ6+H+vx2w/kEBScSd8rkAGbBRfaYk=;
         h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=FWCqnwkgA5obDT276RyyLtYR1F1IutnuFczmfhiunD+5RmMYaLhNXhHPIzdEQt+Q4
-         TKWIX/iMnetwrG64GneNlSaNLPvs59temwlO6bLTMTlXLQj7VDzOzeihpIYBPO1eYD
-         E3LWVvfmkvWbaARe34yU1/MN5heEjYbscXnHq2HA=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230728050142epcas5p1753701771d31e2ee8ff23b2bca2279fd~173Ce3nuW2210722107epcas5p1v;
-        Fri, 28 Jul 2023 05:01:42 +0000 (GMT)
-X-AuditID: b6c32a4b-cafff700000017d3-88-64c34bb5d8ed
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F2.52.06099.5BB43C46; Fri, 28 Jul 2023 14:01:42 +0900 (KST)
+        b=Pi6NjrgTw+p5YAuBKak8JMKK8JgWO0l/iGf82nn6FIzVp8FbP26wHYBUv05qbk8o5
+         rRZwqHn+eMlfcGqC0UP9XQVD8LkFoaGM86bP1qw+so2OcRG8Tdhzr1BSzR2dg93LZa
+         879ovnjy+xdOCzT8eUVzn1dUP7gA+Zejn80176YA=
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.42.80]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20230728052854epcas5p4596c08e6a1c73eb517651bfd5e912a9f~18Oy4scK31507015070epcas5p49;
+        Fri, 28 Jul 2023 05:28:54 +0000 (GMT)
+X-AuditID: b6c32a50-e61c07000001d785-63-64c35216a25d
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E4.1D.55173.61253C46; Fri, 28 Jul 2023 14:28:54 +0900 (KST)
 Mime-Version: 1.0
 Subject: RE: Re: [PATCH] USB: Fix race condition during UVC webcam
  disconnect
 Reply-To: aman.deep@samsung.com
 Sender: AMAN DEEP <aman.deep@samsung.com>
 From:   AMAN DEEP <aman.deep@samsung.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+To:     Dan Carpenter <dan.carpenter@linaro.org>,
+        "oe-kbuild@lists.linux.dev" <oe-kbuild@lists.linux.dev>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
         "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
+        <laurent.pinchart@ideasonboard.com>
+CC:     "lkp@intel.com" <lkp@intel.com>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
         "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Anuj Gupta <anuj01.gupta@samsung.com>
@@ -53,36 +57,36 @@ X-Drm-Type: N,general
 X-Msg-Generator: Mail
 X-Msg-Type: PERSONAL
 X-Reply-Demand: N
-Message-ID: <20230728050117epcms5p10334ca8d1c6d498d90b6027e95856b1c@epcms5p1>
-Date:   Fri, 28 Jul 2023 10:31:17 +0530
-X-CMS-MailID: 20230728050117epcms5p10334ca8d1c6d498d90b6027e95856b1c
+Message-ID: <20230728050206epcms5p80a1e40db7bec854cb6ac6676f28c6c3b@epcms5p8>
+Date:   Fri, 28 Jul 2023 10:32:06 +0530
+X-CMS-MailID: 20230728050206epcms5p80a1e40db7bec854cb6ac6676f28c6c3b
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsWy7bCmlu4278MpBh+fM1tcuelj0bx4PZtF
-        58Ql7BaXd81hs1i0rJXZYsLvC2wObB6zO2ayeuyfu4bdY/bdH4wefVtWMXp83iQXwBrFZZOS
-        mpNZllqkb5fAlTHxzTyWgmU3GSsurRZtYLx0mbGLkZNDQsBE4mfXfeYuRi4OIYHdjBKP9/QD
-        JTg4eAUEJf7uEAapERbwl3i07S87iC0kIC+x+tEmRoi4psS5Sd/A4mwC6hKn/nwEs0UEtCQ2
-        N70Em8kssJZJ4tbb2UwQy3glZrQ/ZYGwpSW2L98KdYSoxM3Vb9lh7PfH5kPFRSRa751lhrAF
-        JR783A0Vl5HomLQDak61xITm60wgyyQEWhgl7lyYCFVkLrHr52owm1fAV+LKppdsII+xCKhK
-        XLohA1HiIrHx61mw25gFtCWWLXzNDFLCDPTY+l36ECWyElNPrYMq4ZPo/f0E7pUd82BsZYn3
-        Nz9AnS8pcfBSD9TJHhKdd2+xQsItUGL+rmbGCYzysxChOwvJ4lkIixcwMq9ilEwtKM5NTy02
-        LTDOSy3XK07MLS7NS9dLzs/dxAhOIlreOxgfPfigd4iRiYPxEKMEB7OSCO+pgEMpQrwpiZVV
-        qUX58UWlOanFhxilOViUxHlft85NERJITyxJzU5NLUgtgskycXBKNTDFZHct2xbeOKFD08ql
-        5rPGvcgvz8P/HypZOf/70hdXjKZzRq99VKLA9CphpcYJ5cfVItOX5Uz55fxXwPOVlppF4je1
-        8H2iefemcaeXf/jlJt1vbFP18fRO3Qtvj16YKmgsOq9QrPuCk8iHgMOLPCVMTnyrlDDMtPyh
-        1dHRVbn+d9gvtdOvWmZczT3OViq4u/fREcEzGjetLnJPcmJt495796TpY9klttP9bBOa7Qu2
-        MMy7dy5xT4KytoeN6Eaj6tDXazv8XHy2Tyv6x8bQc60zVmnS0c1Hyxy+TO3j+7xAvPl3wuTa
-        L64293N2BYc9/nha+P3syemhSq0y6osDVR7cynBWELDyrPD6evD7n3NKLMUZiYZazEXFiQDN
-        tiJKkQMAAA==
-X-CMS-RootMailID: 20230720113203epcas5p1eb52bec9c076d1a2f3dac5e317d0361b
-References: <CGME20230720113203epcas5p1eb52bec9c076d1a2f3dac5e317d0361b@epcms5p1>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7bCmpq5Y0OEUg5lP5Syu3PSx+DCvld2i
+        efF6NovOiUvYLS7vmsNmsWhZK7PFq+ZHbBaHVl5hsmhYd5bdYsLvC2wOXB6zO2ayeize85LJ
+        4861PWwe++euYfd4sXkmo8fsuz8YPfq2rGL0+LxJLoAjissmJTUnsyy1SN8ugStj8e2ljAW7
+        jjJWfP5/nbGBcc4Bxi5GTg4JAROJ0+8OM3UxcnEICexhlLh+eTFzFyMHB6+AoMTfHcIgNcIC
+        /hKPtv1lB7GFBOQlVj/axAgR15Q4N+kbWJxNQF3i1J+P7CBzRARWMUks2N7IBuIwC3QySRy8
+        sJ0dYhuvxIz2pywQtrTE9uVboa4Qlbi5+i07jP3+2HyouIhE672zzBC2oMSDn7uh4jISHZN2
+        QM2plpjQfB3sAwmBFkaJOxcmQhWZS+z6uRrM5hXwlTh18A9YA4uAqsTnm5uYQL6UEHCRuLnV
+        HiTMLKAtsWzha7DnmYE+W79LH2KKrMTUU+uYIEr4JHp/P2GCeWXHPBhbWeL9zQ9Q50tKHLzU
+        A3Wyh8SFH1NZIQEXKNHx4TDbBEb5WYjgnYVk8SyExQsYmVcxSqUWFOempyabFhjq5qWW6xUn
+        5haX5qXrJefnbmIEJyStgB2Mqzf81TvEyMTBeIhRgoNZSYT3VMChFCHelMTKqtSi/Pii0pzU
+        4kOM0hwsSuK8r1vnpggJpCeWpGanphakFsFkmTg4pRqYtkdxzveu/7BHJkr7ifP7Rzmb2HJe
+        Nmw6esAlzMQt3OdG4McLWZqfQ+wT36+5eem2grp3R0f0f5HGsG86vUqpi36tzt190Yu/53p8
+        r/Ilr+3arpKaR7NPXlisecfh0YwNxjUT22/88+mUMubnUJave6pwrP3yu5+z71au/9u/zefi
+        vv292jtX8MnPez617RxLxPXm4geKxf+qNfz9uOO2J/6OkPZpX73C5aG0VtZ3xx9Rhd9rvT+/
+        YFuRcqxgg5J1W6Xy1YNid++8UL6Qr1tb94cjMNb38HmpXQrqJ+X/VSSaiCR8z7Futzy2o6JQ
+        OMvB9pktV/m6qxdfb6ypfmmWb3kx/YYFz/O0z1u1z09TYinOSDTUYi4qTgQA6ajSlLcDAAA=
+X-CMS-RootMailID: 20230727051400epcas5p37b126b7496a916be24632d805ec8a47b
+References: <CGME20230727051400epcas5p37b126b7496a916be24632d805ec8a47b@epcms5p8>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,363 +95,331 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Thanks for your detailed analysis.=C2=A0=0D=0ASorry=20for=20late=20reply=20=
-and=20my=20answers=20are=20inline.=0D=0A=C2=A0=0D=0A>On=20Thu,=20Jul=2020,=
-=202023=20at=2005:01:42PM=20+0530,=20Aman=20Deep=20wrote:=0D=0A>>=20In=20th=
-e=20bug=20happened=20during=20uvc=20webcam=20disconect,there=20is=20race=0D=
-=0A>>=20between=20stopping=20a=20video=20transfer=20and=20usb=20disconnect.=
-=20This=20issue=20is=0D=0A>>=20reproduced=20in=20my=20system=20running=20Li=
-nux=20kernel=20when=20UVC=20webcam=20play=20is=0D=0A>>=20stopped=20and=20UV=
-C=20webcam=20is=20disconnected=20at=20the=20same=20time.=20This=20causes=20=
-the=0D=0A>>=20below=20backtrace:=0D=0A>>=20=0D=0A>>=20=5B2-3496.7275=5D=C2=
-=A0=20PC=20is=20at=200xbf418000+0x2d8=20=5Busbcore=5D=0D=0A>>=20=5B2-3496.7=
-275=5D=C2=A0=20LR=20is=20at=200x00000005=0D=0A>>=20=5B2-3496.7275=5D=20pc=
-=20:=20=5B<bf4182d8>=5D((usb_ifnum_to_if=0D=0A>>=20</drivers/usb/core/usb.c=
-:283=0D=0A>>=20=5Busbcore.ko=5D>))=20lr=20:=20=5B<00000005>=5D()=20psr:=202=
-0000013=0D=0A>>=20=5B2-3496.7275=5D=20Function=20entered=20at=20=5B<bf4182a=
-4>=5D((usb_ifnum_to_if=0D=0A>>=20</drivers/usb/core/usb.c:275=0D=0A>>=20=5B=
-usbcore.ko=5D>))=20(0xbf418000+0x2a4=20=5Busbcore=5D)=20from=0D=0A>>=20=5B<=
-bf423974>=5D((usb_hcd_alloc_bandwidth=0D=0A>>=20</drivers/usb/core/hcd.c:19=
-47=0D=0A>>=20=5Busbcore.ko=5D>))=20(0xbf418000+0xb974=20=5Busbcore=5D)=0D=
-=0A>>=20=5B2-3496.7275=5D=20Function=20entered=20at=20=5B<bf423738>=5D((usb=
-_hcd_alloc_bandwidth=0D=0A>>=20</drivers/usb/core/hcd.c:1876=0D=0A>>=20=5Bu=
-sbcore.ko=5D>))=20(0xbf418000+0xb738=20=5Busbcore=5D)=20from=0D=0A>>=20=5B<=
-bf426ca0>=5D((usb_set_interface=0D=0A>>=20</drivers/usb/core/message.c:1461=
-=0D=0A>>=20=5Busbcore.ko=5D>))=20(0xbf418000+0xeca0=20=5Busbcore=5D)=0D=0A>=
->=20=5B2-3496.7275=5D=20Function=20entered=20at=20=5B<bf426b9c>=5D((usb_set=
-_interface=0D=0A>>=20</drivers/usb/core/message.c:1385=0D=0A>>=20=5Busbcore=
-.ko=5D>))=20(0xbf418000+0xeb9c=20=5Busbcore=5D)=20from=0D=0A>>=20=5B<bf9c4d=
-d4>=5D((uvc_video_clock_cleanup=0D=0A>>=20</drivers/media/usb/uvc/uvc_video=
-.c:598=0D=0A>>=20uvc_video_stop_streaming=0D=0A>>=20</drivers/media/usb/uvc=
-/uvc_video.c:2221=0D=0A>>=20=5Buvcvideo.ko=5D>))=20(0xbf9bd000+0x7dd4=20=5B=
-uvcvideo=5D)=0D=0A>>=20=5B2-3496.7275=5D=20Function=20entered=20at=20=5B<bf=
-9c4d98>=5D((uvc_video_stop_streaming=0D=0A>>=20</drivers/media/usb/uvc/uvc_=
-video.c:2200=0D=0A>>=20=5Buvcvideo.ko=5D>))=20(0xbf9bd000+0x7d98=20=5Buvcvi=
-deo=5D)=20from=0D=0A>>=20=5B<bf9bfab8>=5D((spin_lock_irq=0D=0A>>=20</includ=
-e/linux/spinlock.h:363=0D=0A>>=20uvc_stop_streaming=0D=0A>>=20</drivers/med=
-ia/usb/uvc/uvc_queue.c:194=0D=0A>>=20=5Buvcvideo.ko=5D>))=20(0xbf9bd000+0x2=
-ab8=20=5Buvcvideo=5D)=0D=0A>>=20=5B2-3496.7276=5D=20Function=20entered=20at=
-=20=5B<bf9bfa94>=5D((uvc_stop_streaming=0D=0A>>=20</drivers/media/usb/uvc/u=
-vc_queue.c:186=0D=0A>>=20=5Buvcvideo.ko=5D>))=20(0xbf9bd000+0x2a94=20=5Buvc=
-video=5D)=20from=0D=0A>>=20=5B<be307150>=5D((__read_once_size=0D=0A>>=20</i=
-nclude/linux/compiler.h:290=0D=0A>>=20(discriminator=201)=20__vb2_queue_can=
-cel=0D=0A>>=20</drivers/media/common/videobuf2/videobuf2-core.c:1893=0D=0A>=
->=20(discriminator=201)=20=5Bvideobuf2_common.ko=5D>))=20(0xbe306000+0x1150=
-=0D=0A>>=20=5Bvideobuf2_common=5D)=0D=0A>>=20=5B2-3496.7276=5D=20Function=
-=20entered=20at=20=5B<be307120>=5D((__vb2_queue_cancel=0D=0A>>=20</drivers/=
-media/common/videobuf2/videobuf2-core.c:1877=0D=0A>>=20=5Bvideobuf2_common.=
-ko=5D>))=20(0xbe306000+0x1120=20=5Bvideobuf2_common=5D)=20from=0D=0A>>=20=
-=5B<be308894>=5D((vb2_core_streamoff=0D=0A>>=20</drivers/media/common/video=
-buf2/videobuf2-core.c:2053=0D=0A>=0D=0A>This=20backtrace=20doesn't=20show=
-=20what=20actually=20caused=20the=20bug.=C2=A0=20You=20should=20=0D=0A>have=
-=20included=20several=20lines=20from=20the=20system=20log=20_preceding_=20t=
-he=20=0D=0A>backtrace.=C2=A0=20Without=20those=20lines,=20we=20can=20only=
-=20guess=20at=20what=20the=20problem=20=0D=0A>was.=0D=0A=0D=0A=0D=0AThis=20=
-is=20below=20complete=20backtrace=20for=20crash=20problem:=0D=0A=0D=0A=0D=
-=0A=5B1-221.1821=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0Unable=
-=C2=A0to=C2=A0handle=C2=A0kernel=C2=A0NULL=C2=A0pointer=C2=A0dereference=C2=
-=A0at=C2=A0virtual=C2=A0address=C2=A000000000=0D=0A=5B1-221.1821=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0pgd=C2=A0=3D=C2=A0e136ded4=0D=
-=0A=5B1-221.1821=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B000=
-00000=5D=C2=A0*pgd=3D26210003,=C2=A0*pmd=3D00000000=0D=0A=5B1-221.1821=5D=
-=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=0D=0A=5B1-221.1821=5D=C2=
-=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0Die=C2=A0cpu=C2=A0info=C2=A0=
-:=0D=0A=5B1-221.1821=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0In=
-ternal=C2=A0error:=C2=A0Oops:=C2=A0206=C2=A0=5B=231=5D=C2=A0PREEMPT=C2=A0SM=
-P=C2=A0ARM=0D=0A=5B1-221.1821=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=
-=5D=C2=A0CPU:=C2=A01=C2=A0PID:=C2=A04788=C2=A0Comm:=C2=A0msg(muse-server)=
-=C2=A0Kdump:=C2=A0loaded=C2=A0Tainted:=C2=A0PO=C2=A05.4.77=C2=A0=231=C2=A0P=
-PID:=C2=A01=C2=A0PComm:=C2=A0systemd=C2=A0preempt_count:=C2=A00x0=0D=0A=5B1=
--221.1821=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0Hardware=C2=
-=A0name:=C2=A0Novatek=C2=A0Cortex-A53=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=
-=20=C2=A0=20msg:=C2=A04788=5D=C2=A0PC=C2=A0is=C2=A0at=C2=A0usb_ifnum_to_if+=
-0x30/0x74=C2=A0=5Busbcore=5D=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=
-=20msg:=C2=A04788=5D=C2=A0LR=C2=A0is=C2=A0at=C2=A00x5=0D=0A=5B1-221.1822=5D=
-=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0pc=C2=A0:=C2=A0=5B<bede13=
-00>=5D=C2=A0=20=C2=A0=20lr=C2=A0:=C2=A0=5B<00000005>=5D=C2=A0=20=C2=A0=20ps=
-r:=C2=A020000113=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A0=
-4788=5D=C2=A0sp=C2=A0:=C2=A0ca443c18=C2=A0=20ip=C2=A0:=C2=A0ca443c28=C2=A0=
-=20fp=C2=A0:=C2=A0ca443c24=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20=
-msg:=C2=A04788=5D=C2=A0r10:=C2=A0e668b6c8=C2=A0=20r9=C2=A0:=C2=A000000000=
-=C2=A0=20r8=C2=A0:=C2=A0e668b7e0=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=
-=A0=20msg:=C2=A04788=5D=C2=A0r7=C2=A0:=C2=A0e7b78880=C2=A0=20r6=C2=A0:=C2=
-=A0bf1d9db0=C2=A0=20r5=C2=A0:=C2=A0e668b6c8=C2=A0=20r4=C2=A0:=C2=A0e690c000=
-=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0r3=
-=C2=A0:=C2=A000002000=C2=A0=20r2=C2=A0:=C2=A0e696ac40=C2=A0=20r1=C2=A0:=C2=
-=A000000001=C2=A0=20r0=C2=A0:=C2=A000000000=0D=0A=5B1-221.1822=5D=C2=A0=5B=
-=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0Flags:=C2=A0nzCv=C2=A0=20IRQs=C2=
-=A0on=C2=A0=20FIQs=C2=A0on=C2=A0=20Mode=C2=A0SVC_32=C2=A0=20ISA=C2=A0ARM=C2=
-=A0=20Segment=C2=A0user=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg=
-:=C2=A04788=5D=C2=A0Control:=C2=A030c5383d=C2=A0=20Table:=C2=A0261f8a80=C2=
-=A0=20DAC:=C2=A0e45d65d5=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20ms=
-g:=C2=A04788=5D=C2=A0Process=C2=A0msg=C2=A0(pid:=C2=A04788,=C2=A0stack=C2=
-=A0limit=C2=A0=3D=C2=A00xa0153238)=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=
-=C2=A0=20msg:=C2=A04788=5D=C2=A0Stack:=C2=A0(0xca443c18=C2=A0to=C2=A00xca44=
-4000)=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A03c00:=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+Thanks Den Carpenter for information.
+yes, i will modify new patch version accordingly to add for=C2=A0mutex_unlo=
+ck(hcd->bandwidth_mutex);=20before=20returning.=0D=0A=C2=A0=C2=A0=0D=0A>Hi=
+=20Aman,=0D=0A>=0D=0A>kernel=20test=20robot=20noticed=20the=20following=20b=
+uild=20warnings:=0D=0A>=0D=0A>https://git-scm.com/docs/git-format-patch=23_=
+base_tree_information=5D=0D=0A>=0D=0A>url:=C2=A0=20=C2=A0=20https://protect=
+2.fireeye.com/v1/url?k=3Dc33c7aba-a2b76f89-c33df1f5-000babff9bb7-672d2cfefe=
+2327a5&q=3D1&e=3D0dbea670-3cf3-4a45-a999->157e4e0dcad9&u=3Dhttps%3A%2F%2Fgi=
+thub.com%2Fintel-lab-lkp%2Flinux%2Fcommits%2FAman-Deep%2FUSB-Fix-race-condi=
+tion-during-UVC-webcam-disconnect%2F20230720->202046=0D=0A>base:=C2=A0=20=
+=20https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git=20usb-tes=
+ting=0D=0A>patch=20link:=C2=A0=20=C2=A0=20https://lore.kernel.org/r/2023072=
+0113142.3070583-1-aman.deep%40samsung.com=0D=0A>patch=20subject:=20=5BPATCH=
+=5D=20USB:=20Fix=20race=20condition=20during=20UVC=20webcam=20disconnect=0D=
+=0A>config:=20parisc-randconfig-m041-20230726=20(https://download.01.org/0d=
+ay-ci/archive/20230727/202307270834.rpaexQSs-lkp=40intel.com/config)=0D=0A>=
+compiler:=20hppa-linux-gcc=20(GCC)=2012.3.0=0D=0A>reproduce:=20(https://dow=
+nload.01.org/0day-ci/archive/20230727/202307270834.rpaexQSs-lkp=40intel.com=
+/reproduce)=0D=0A>=0D=0A>If=20you=20fix=20the=20issue=20in=20a=20separate=
+=20patch/commit=20(i.e.=20not=20just=20a=20new=20version=20of=0D=0A>the=20s=
+ame=20patch/commit),=20kindly=20add=20following=20tags=0D=0A>=7C=20Reported=
+-by:=20kernel=20test=20robot=20<lkp=40intel.com>=0D=0A>=7C=20Reported-by:=
+=20Dan=20Carpenter=20<dan.carpenter=40linaro.org>=0D=0A>=7C=20Closes:=20htt=
+ps://lore.kernel.org/r/202307270834.rpaexQSs-lkp=40intel.com/=0D=0A=0D=0A=
+=0D=0Awe=20will=20add=20it=20when=20creating=20new=20patch=20version.=0D=0A=
+=0D=0A=0D=0A>=0D=0A>smatch=20warnings:=0D=0A>drivers/usb/core/message.c:166=
+8=20usb_set_interface()=20warn:=20inconsistent=20returns=20'hcd->bandwidth_=
+mutex'.=0D=0A>=0D=0A>vim=20+1668=20drivers/usb/core/message.c=0D=0A>=0D=0A>=
+=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201528=C2=A0=20int=20usb_=
+set_interface(struct=20usb_device=20*dev,=20int=20interface,=20int=20altern=
+ate)=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201529=C2=A0=
+=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201530=C2=A0=
+=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_interface=20*iface;=0D=
+=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201531=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_host_interface=20*alt;=0D=0A>3f0=
+479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201532=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0struct=20usb_hcd=20*hcd=20=3D=20bus_to_hcd(de=
+v->bus);=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=201533=
+=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0int=20i,=20ret,=20manual=20=3D=
+=200;=0D=0A>3e35bf39e0b909=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=202008-01-30=C2=A0=201534=C2=A0=20=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0unsigned=20int=20epaddr;=0D=0A>3e35bf39e0b909=20Gre=
+g=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008=
+-01-30=C2=A0=201535=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0unsigned=20=
+int=20pipe;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201536=
+=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201537=C2=
+=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(dev->state=20=3D=3D=20USB_S=
+TATE_SUSPENDED)=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
+38=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0return=20-EHOSTUNREACH;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20200=
+5-04-16=C2=A0=201539=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
+4-16=C2=A0=201540=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface=20=3D=
+=20usb_ifnum_to_if(dev,=20interface);=0D=0A>=5E1da177e4c3f41=20Linus=20Torv=
+alds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=202005-04-16=C2=A0=201541=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=
+=20(=21iface)=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=
+=A0=201542=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0dev_dbg(&dev->dev,=20=22selecting=20invalid=20interface=
+=20%d=5Cn=22,=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
+43=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0interface);=0D=0A>=5E1da177e4c=
+3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201544=C2=A0=20=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20-EINVAL;=0D=0A>=
+=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201545=C2=A0=20=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>e534c5b831c8b8=20Alan=20Stern=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=202011-07-01=C2=A0=201546=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0i=
+f=20(iface->unregistering)=0D=0A>e534c5b831c8b8=20Alan=20Stern=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=202011-07-01=C2=A0=201547=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20-ENODEV;=0D=0A>=5E1da177e4c3f41=
+=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=202005-04-16=C2=A0=201548=C2=A0=20=0D=0A>=5E1da177e4c3f41=
+=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=202005-04-16=C2=A0=201549=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0alt=20=3D=20usb_altnum_to_altsetting(iface,=20alternate);=0D=0A=
+>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201550=C2=A0=20=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0if=20(=21alt)=20=7B=0D=0A>385f690bc058ba=20Thade=
+u=20Lima=20de=20Souza=20Cascardo=202010-01-17=C2=A0=201551=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0dev_warn(=
+&dev->dev,=20=22selecting=20invalid=20altsetting=20%d=5Cn=22,=0D=0A>3b6004f=
+3b5a8b4=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=202008-08-14=C2=A0=201552=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20alternate);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=2015=
+53=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0return=20-EINVAL;=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-1=
+6=C2=A0=201554=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>f9a5b4=
+f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=201555=C2=A0=20=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0/*=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=
+=C2=A0=201556=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20usb3=20hos=
+ts=20configure=20the=20interface=20in=20usb_hcd_alloc_bandwidth,=0D=0A>f9a5=
+b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=201557=C2=A0=20=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20*=20including=20freeing=20dropped=20endpoint=20r=
+ing=20buffers.=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=2015=
+58=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20Make=20sure=20the=20i=
+nterface=20endpoints=20are=20flushed=20before=20that=0D=0A>f9a5b4f58b280c=
+=20Mathias=20Nyman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=202018-09-03=C2=A0=201559=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20*/=0D=0A>f9a5b4f58b280c=20Mathias=20Nyman=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202018-09-03=C2=A0=
+=201560=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0usb_disable_interface(d=
+ev,=20iface,=20false);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=
+=C2=A0=201561=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-1=
+2-03=C2=A0=201562=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Make=20s=
+ure=20we=20have=20enough=20bandwidth=20for=20this=20alternate=20interface.=
+=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201563=C2=
+=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20Remove=20the=20current=20a=
+lt=20setting=20and=20add=20the=20new=20alt=20setting.=0D=0A>3f0479e00a3fca=
+=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201564=C2=A0=20=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20*/=0D=0A>d673bfcbfffdeb=20Sarah=20Sharp=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
+0-10-15=C2=A0=201565=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_lock=
+(hcd->bandwidth_mutex);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-0=
+5-02=C2=A0=201566=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Disable=
+=20LPM,=20and=20re-enable=20it=20once=20the=20new=20alt=20setting=20is=20in=
+stalled,=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=2015=
+67=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20so=20that=20the=20xHC=
+I=20driver=20can=20recalculate=20the=20U1/U2=20timeouts.=0D=0A>8306095fd2c1=
+10=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=201568=C2=A0=20=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20*/=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
+2-05-02=C2=A0=201569=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(usb_=
+disable_lpm(dev))=20=7B=0D=0A>1ccc417e6c3201=20Joe=20Perches=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202017-1=
+2-05=C2=A0=201570=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0dev_err(&iface->dev,=20=22%s=20Failed=20to=20disabl=
+e=20LPM=5Cn=22,=20__func__);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
+2012-05-02=C2=A0=201571=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex);=0D=0A>830=
+6095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=201572=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20=
+-ENOMEM;=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=C2=A0=2015=
+73=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>7a7b562d08ad6d=20H=
+ans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=202013-11-08=C2=A0=201574=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0/*=20Changing=20alt-setting=20also=20frees=20any=20allocated=20=
+streams=20*/=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=2015=
+75=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=
+=20iface->cur_altsetting->desc.bNumEndpoints;=20i++)=0D=0A>7a7b562d08ad6d=
+=20Hans=20de=20Goede=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=202013-11-08=C2=A0=201576=C2=A0=20=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface->cur_altsetting->e=
+ndpoint=5Bi=5D.streams=20=3D=200;=0D=0A>7a7b562d08ad6d=20Hans=20de=20Goede=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
+2013-11-08=C2=A0=201577=C2=A0=20=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=202023-07-20=C2=A0=201578=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0if=20(dev->state=20=3D=3D=20USB_STATE_NOTATTACHED)=0D=0A>4682bbb9e2f1=
+96=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202023-07-20=C2=A0=201579=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20=
+-ENODEV;=0D=0A>=0D=0A>=0D=0A>mutex_unlock(hcd->bandwidth_mutex);=20before=
+=20returning=0D=0A>=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20202=
+3-07-20=C2=A0=201580=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20=
+2009-12-03=C2=A0=201581=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=
+=3D=20usb_hcd_alloc_bandwidth(dev,=20NULL,=20iface->cur_altsetting,=20alt);=
+=0D=0A>4682bbb9e2f196=20Aman=20Deep=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202023-07-20=C2=A0=2015=
+82=C2=A0=20=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=
+=201583=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(ret=20<=200)=20=
+=7B=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201584=
+=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0dev_info(&dev->dev,=20=22Not=20enough=20bandwidth=20for=20altsetting=
+=20%d=5Cn=22,=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=
+=A0=201585=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0alternate);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=20201=
+2-05-02=C2=A0=201586=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0usb_enable_lpm(dev);=0D=0A>d673bfcbfffdeb=20Sara=
+h=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=202010-10-15=C2=A0=201587=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth=
+_mutex);=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=2015=
+88=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0return=20ret;=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-1=
+2-03=C2=A0=201589=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>3f0=
+479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=201590=C2=A0=20=0D=0A>=
+392e1d9817d002=20Alan=20Stern=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008-03-11=C2=A0=201591=C2=A0=
+=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(dev->quirks=20&=20USB_QUIRK_NO=
+_SET_INTF)=0D=0A>392e1d9817d002=20Alan=20Stern=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202008-03-11=
+=C2=A0=201592=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0ret=20=3D=20-EPIPE;=0D=0A>392e1d9817d002=20Alan=20Ster=
+n=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=202008-03-11=C2=A0=201593=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0else=0D=0A>297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=201594=C2=A0=20=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=
+=3D=20usb_control_msg_send(dev,=200,=0D=0A>297e84c04d76b9=20Greg=20Kroah-Ha=
+rtman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=
+=201595=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=C2=A0=20=20USB_REQ_SET_INT=
+ERFACE,=0D=0A>297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=202020-09-14=C2=A0=201596=C2=A0=20=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=C2=A0=20=20USB_RECIP_INTERFACE,=20alternate,=0D=0A>ddd11=
+98e3e0935=20Oliver=20Neukum=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=202020-09-23=C2=A0=201597=C2=A0=20=20=C2=A0=20=C2=
 =A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
 =20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ca443c64=C2=A0ca443c28=0D=0A=5B1-221.1822=
-=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03c20:=C2=A0bedee6e4=C2=
-=A0bede12dc=C2=A000000000=C2=A0bee0ae78=C2=A0ca443c54=C2=A0ca443c40=C2=A0c0=
-83c894=C2=A0e7b78880=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=
-=C2=A04788=5D=C2=A03c40:=C2=A0e6b88340=C2=A000000000=C2=A0bee0ae78=C2=A0000=
-00001=C2=A0e690c000=C2=A0e668b6c8=C2=A0ca443cb4=C2=A0ca443c68=0D=0A=5B1-221=
-.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03c60:=C2=A0bedf22=
-ac=C2=A0bedee64c=C2=A0e5cf1508=C2=A0e5cf1508=C2=A0e5cf0000=C2=A0e5cf0330=C2=
-=A000000001=C2=A0e5cf0330=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20m=
-sg:=C2=A04788=5D=C2=A03c80:=C2=A0ca443ca4=C2=A0ca443c90=C2=A0c083c894=C2=A0=
-e5cf0000=C2=A0e5cf0330=C2=A000000001=C2=A0e5cf0330=C2=A000000000=0D=0A=5B1-=
-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03ca0:=C2=A0000=
-00001=C2=A0c08d1b3c=C2=A0ca443ccc=C2=A0ca443cb8=C2=A0bfb3f958=C2=A0bedf1ff4=
-=C2=A0e5cf0330=C2=A0e5cf0330=0D=0A=5B1-221.1822=5D=C2=A0=5B=C2=A0=20=C2=A0=
-=20msg:=C2=A04788=5D=C2=A03cc0:=C2=A0ca443ce4=C2=A0ca443cd0=C2=A0bfb3a024=
-=C2=A0bfb3f8a8=C2=A0e5cf0330=C2=A0e5cf0330=C2=A0ca443d14=C2=A0ca443ce8=0D=
-=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03ce0:=
-=C2=A0be3661e0=C2=A0bfb3a004=C2=A000000001=C2=A0e5cf0330=C2=A0e5cf0330=C2=
-=A000000001=C2=A0c05d6260=C2=A000000000=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=
-=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03d00:=C2=A000000001=C2=A0c08d1b3c=C2=
-=A0ca443d2c=C2=A0ca443d18=C2=A0be367994=C2=A0be3661b4=C2=A0e5cf0484=C2=A0e5=
-cf0330=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A03d20:=C2=A0ca443d3c=C2=A0ca443d30=C2=A0be37e3e4=C2=A0be367978=C2=A0ca443=
-d5c=C2=A0ca443d40=C2=A0bfb3a518=C2=A0be37e3cc=0D=0A=5B1-221.1823=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03d40:=C2=A0e5cf030c=C2=A0e5cf00=
-00=C2=A000000001=C2=A0c05d6260=C2=A0ca443d7c=C2=A0ca443d60=C2=A0bfb3b628=C2=
-=A0bfb3a4f0=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=
-=5D=C2=A03d60:=C2=A0bfb3b5e8=C2=A040045613=C2=A000000000=C2=A0c05d6260=C2=
-=A0ca443d94=C2=A0ca443d80=C2=A0c05d6288=C2=A0bfb3b5f4=0D=0A=5B1-221.1823=5D=
-=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03d80:=C2=A0e5cf0010=C2=A0=
-40045613=C2=A0ca443dfc=C2=A0ca443d98=C2=A0c05d9b84=C2=A0c05d626c=C2=A000000=
-068=C2=A0ca443deb=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=
-=A04788=5D=C2=A03da0:=C2=A0c08d1b3c=C2=A000000001=C2=A0ca443e24=C2=A0bfb446=
-80=C2=A000000000=C2=A0e2fa3780=C2=A0c01a926c=C2=A0031e1090=0D=0A=5B1-221.18=
-23=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03dc0:=C2=A0ca443df4=
-=C2=A0ffffffff=C2=A0c01e0048=C2=A00000072c=C2=A0000012b4=C2=A000000000=C2=
-=A040045613=C2=A000000000=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20m=
-sg:=C2=A04788=5D=C2=A03de0:=C2=A000000000=C2=A000000001=C2=A000000004=C2=A0=
-ca443e24=C2=A0ca443ed4=C2=A0ca443e00=C2=A0c05db320=C2=A0c05d9a04=0D=0A=5B1-=
-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03e00:=C2=A0000=
-00000=C2=A000000000=C2=A0c05d99f8=C2=A0e77a6700=C2=A0ab8fd26c=C2=A000000000=
-=C2=A000000000=C2=A000000000=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=
-=20msg:=C2=A04788=5D=C2=A03e20:=C2=A0ca443f60=C2=A000000001=C2=A0ca443ee0=
-=C2=A000000000=C2=A0ca443e9c=C2=A0ca443e40=C2=A0c02390a8=C2=A0be211e84=0D=
-=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03e40:=
-=C2=A000000000=C2=A000000001=C2=A0e2861600=C2=A000000000=C2=A000000000=C2=
-=A000000000=C2=A000000000=C2=A000000000=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=
-=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03e60:=C2=A000000000=C2=A000000000=C2=
-=A000000000=C2=A0c03681bc=C2=A000000008=C2=A000000000=C2=A0ca443ee0=C2=A0c0=
-bbd748=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A03e80:=C2=A000000000=C2=A0c0be9a14=C2=A0ca443ef4=C2=A000000002=C2=A0ca443=
-ed4=C2=A0ca443ea0=C2=A0c03681bc=C2=A0c036790c=0D=0A=5B1-221.1823=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03ea0:=C2=A0ca443ef4=C2=A0c0bbd7=
-48=C2=A0e2861600=C2=A0c05db7dc=C2=A0e6695448=C2=A040045613=C2=A0ab8fd26c=C2=
-=A0e77a6700=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=
-=5D=C2=A03ec0:=C2=A000000021=C2=A000000036=C2=A0ca443ee4=C2=A0ca443ed8=C2=
-=A0c05db7fc=C2=A0c05db0f8=C2=A0ca443efc=C2=A0ca443ee8=0D=0A=5B1-221.1823=5D=
-=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03ee0:=C2=A0c05d4728=C2=A0=
-c05db7e8=C2=A0ab8fd26c=C2=A0e6695448=C2=A0ca443f6c=C2=A0ca443f00=C2=A0c0250=
-6a0=C2=A0c05d46e8=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=
-=A04788=5D=C2=A03f00:=C2=A0ca443f04=C2=A0c08a7a00=C2=A000000000=C2=A0000000=
-00=C2=A000000000=C2=A000000000=C2=A000000000=C2=A000000000=0D=0A=5B1-221.18=
-23=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03f20:=C2=A000000000=
-=C2=A000000000=C2=A000000000=C2=A000000000=C2=A0ab8fd26c=C2=A0c0abb6ec=C2=
-=A0ab8fd26c=C2=A0e77a6700=0D=0A=5B1-221.1823=5D=C2=A0=5B=C2=A0=20=C2=A0=20m=
-sg:=C2=A04788=5D=C2=A03f40:=C2=A0ca443f6c=C2=A0e77a6701=C2=A000000000=C2=A0=
-40045613=C2=A0ab8fd26c=C2=A0e77a6700=C2=A000000021=C2=A000000036=0D=0A=5B1-=
-221.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03f60:=C2=A0ca4=
-43f94=C2=A0ca443f70=C2=A0c0250b3c=C2=A0c02502fc=C2=A000000000=C2=A0000006f7=
-=C2=A000000000=C2=A000000036=0D=0A=5B1-221.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=
-=20msg:=C2=A04788=5D=C2=A03f80:=C2=A0c000924c=C2=A0ca442000=C2=A0ca443fa4=
-=C2=A0ca443f98=C2=A0c0250b78=C2=A0c0250adc=C2=A000000000=C2=A0ca443fa8=0D=
-=0A=5B1-221.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03fa0:=
-=C2=A0c0009230=C2=A0c0250b6c=C2=A000000000=C2=A0000006f7=C2=A000000021=C2=
-=A040045613=C2=A0ab8fd26c=C2=A000000021=0D=0A=5B1-221.1824=5D=C2=A0=5B=C2=
-=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A03fc0:=C2=A000000000=C2=A0000006f7=C2=
-=A000000000=C2=A000000036=C2=A0abb79e30=C2=A000000000=C2=A000000001=C2=A0ab=
-b79e28=0D=0A=5B1-221.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A03fe0:=C2=A0aeca607c=C2=A0ab8fd24c=C2=A0aec8e749=C2=A0b5f1ed1c=C2=A020000=
-010=C2=A000000021=C2=A000000000=C2=A000000000=0D=0A=5B1-221.1824=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0Backtrace:=C2=A0=0D=0A=5B1-221.=
-1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<bede12d0>=5D=
-=C2=A0(usb_ifnum_to_if=C2=A0=5Busbcore=5D)=C2=A0from=C2=A0=5B<bedee6e4>=5D=
-=C2=A0(usb_hcd_alloc_bandwidth+0xa4/0x564=C2=A0=5Busbcore=5D)=0D=0A=5B1-221=
-.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<bedee640>=5D=
-=C2=A0(usb_hcd_alloc_bandwidth=C2=A0=5Busbcore=5D)=C2=A0from=C2=A0=5B<bedf2=
-2ac>=5D=C2=A0(usb_set_interface+0x2c4/0x61c=C2=A0=5Busbcore=5D)=0D=0A=5B1-2=
-21.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r10:e668b6c8=
-=C2=A0r9:e690c000=C2=A0r8:00000001=C2=A0r7:bee0ae78=C2=A0r6:00000000=C2=A0r=
-5:e6b88340=0D=0A=5B1-221.1824=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=
-=5D=C2=A0=20r4:e7b78880=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg=
-:=C2=A04788=5D=C2=A0=5B<bedf1fe8>=5D=C2=A0(usb_set_interface=C2=A0=5Busbcor=
-e=5D)=C2=A0from=C2=A0=5B<bfb3f958>=5D=C2=A0(uvc_video_stop_streaming+0xbc/0=
-xc4=C2=A0=5Buvcvideo=5D)=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20ms=
-g:=C2=A04788=5D=C2=A0=20r10:c08d1b3c=C2=A0r9:00000001=C2=A0r8:00000000=C2=
-=A0r7:e5cf0330=C2=A0r6:00000001=C2=A0r5:e5cf0330=0D=0A=5B1-221.1825=5D=C2=
-=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r4:e5cf0000=0D=0A=5B1-221=
-.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<bfb3f89c>=5D=
-=C2=A0(uvc_video_stop_streaming=C2=A0=5Buvcvideo=5D)=C2=A0from=C2=A0=5B<bfb=
-3a024>=5D=C2=A0(uvc_stop_streaming+0x2c/0x50=C2=A0=5Buvcvideo=5D)=0D=0A=5B1=
--221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r5:e5cf033=
-0=C2=A0r4:e5cf0330=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=
-=A04788=5D=C2=A0=5B<bfb39ff8>=5D=C2=A0(uvc_stop_streaming=C2=A0=5Buvcvideo=
-=5D)=C2=A0from=C2=A0=5B<be3661e0>=5D=C2=A0(__vb2_queue_cancel+0x38/0x290=C2=
-=A0=5Bvideobuf2_common=5D)=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20=
-msg:=C2=A04788=5D=C2=A0=20r5:e5cf0330=C2=A0r4:e5cf0330=0D=0A=5B1-221.1825=
-=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<be3661a8>=5D=C2=A0=
-(__vb2_queue_cancel=C2=A0=5Bvideobuf2_common=5D)=C2=A0from=C2=A0=5B<be36799=
-4>=5D=C2=A0(vb2_core_streamoff+0x28/0xb4=C2=A0=5Bvideobuf2_common=5D)=0D=0A=
-=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r10:c0=
-8d1b3c=C2=A0r9:00000001=C2=A0r8:00000000=C2=A0r7:c05d6260=C2=A0r6:00000001=
-=C2=A0r5:e5cf0330=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=
-=A04788=5D=C2=A0=20r4:e5cf0330=C2=A0r3:00000001=0D=0A=5B1-221.1825=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<be36796c>=5D=C2=A0(vb2_core=
-_streamoff=C2=A0=5Bvideobuf2_common=5D)=C2=A0from=C2=A0=5B<be37e3e4>=5D=C2=
-=A0(vb2_streamoff+0x24/0x60=C2=A0=5Bvideobuf2_v4l2=5D)=0D=0A=5B1-221.1825=
-=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r5:e5cf0330=C2=A0r4=
-:e5cf0484=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=
-=C2=A0=5B<be37e3c0>=5D=C2=A0(vb2_streamoff=C2=A0=5Bvideobuf2_v4l2=5D)=C2=A0=
-from=C2=A0=5B<bfb3a518>=5D=C2=A0(uvc_queue_streamoff+0x34/0x48=C2=A0=5Buvcv=
-ideo=5D)=0D=0A=5B1-221.1825=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=
-=C2=A0=5B<bfb3a4e4>=5D=C2=A0(uvc_queue_streamoff=C2=A0=5Buvcvideo=5D)=C2=A0=
-from=C2=A0=5B<bfb3b628>=5D=C2=A0(uvc_ioctl_streamoff+0x40/0x58=C2=A0=5Buvcv=
-ideo=5D)=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=
-=C2=A0=20r7:c05d6260=C2=A0r6:00000001=C2=A0r5:e5cf0000=C2=A0r4:e5cf030c=0D=
-=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<bf=
-b3b5e8>=5D=C2=A0(uvc_ioctl_streamoff=C2=A0=5Buvcvideo=5D)=C2=A0from=C2=A0=
-=5B<c05d6288>=5D=C2=A0(v4l_streamoff+0x28/0x2c)=0D=0A=5B1-221.1826=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r7:c05d6260=C2=A0r6:00000000=
-=C2=A0r5:40045613=C2=A0r4:bfb3b5e8=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=
-=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<c05d6260>=5D=C2=A0(v4l_streamoff)=C2=A0=
-from=C2=A0=5B<c05d9b84>=5D=C2=A0(__video_do_ioctl+0x18c/0x400)=0D=0A=5B1-22=
-1.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r5:40045613=
-=C2=A0r4:e5cf0010=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=
-=A04788=5D=C2=A0=5B<c05d99f8>=5D=C2=A0(__video_do_ioctl)=C2=A0from=C2=A0=5B=
-<c05db320>=5D=C2=A0(video_usercopy+0x234/0x6f0)=0D=0A=5B1-221.1826=5D=C2=A0=
-=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r10:ca443e24=C2=A0r9:0000000=
-4=C2=A0r8:00000001=C2=A0r7:00000000=C2=A0r6:00000000=C2=A0r5:40045613=0D=0A=
-=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r4:000=
-00000=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A0=5B<c05db0ec>=5D=C2=A0(video_usercopy)=C2=A0from=C2=A0=5B<c05db7fc>=5D=
-=C2=A0(video_ioctl2+0x20/0x24)=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=
-=A0=20msg:=C2=A04788=5D=C2=A0=20r10:00000036=C2=A0r9:00000021=C2=A0r8:e77a6=
-700=C2=A0r7:ab8fd26c=C2=A0r6:40045613=C2=A0r5:e6695448=0D=0A=5B1-221.1826=
-=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r4:c05db7dc=0D=0A=
-=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<c05db=
-7dc>=5D=C2=A0(video_ioctl2)=C2=A0from=C2=A0=5B<c05d4728>=5D=C2=A0(v4l2_ioct=
-l+0x4c/0x60)=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=
-=5D=C2=A0=5B<c05d46dc>=5D=C2=A0(v4l2_ioctl)=C2=A0from=C2=A0=5B<c02506a0>=5D=
-=C2=A0(do_vfs_ioctl+0x3b0/0x7e0)=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=
-=A0=20msg:=C2=A04788=5D=C2=A0=20r5:e6695448=C2=A0r4:ab8fd26c=0D=0A=5B1-221.=
-1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<c02502f0>=5D=
-=C2=A0(do_vfs_ioctl)=C2=A0from=C2=A0=5B<c0250b3c>=5D=C2=A0(ksys_ioctl+0x6c/=
-0x90)=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=
-=A0=20r10:00000036=C2=A0r9:00000021=C2=A0r8:e77a6700=C2=A0r7:ab8fd26c=C2=A0=
-r6:40045613=C2=A0r5:00000000=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=A0=20=C2=A0=
-=20msg:=C2=A04788=5D=C2=A0=20r4:e77a6701=0D=0A=5B1-221.1826=5D=C2=A0=5B=C2=
-=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=5B<c0250ad0>=5D=C2=A0(ksys_ioctl)=C2=
-=A0from=C2=A0=5B<c0250b78>=5D=C2=A0(sys_ioctl+0x18/0x1c)=0D=0A=5B1-221.1826=
-=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=20r9:ca442000=C2=A0r8=
-:c000924c=C2=A0r7:00000036=C2=A0r6:00000000=C2=A0r5:000006f7=C2=A0r4:000000=
-00=0D=0A=5B1-221.1827=5D=C2=A0=5B=C2=A0=20=C2=A0=20msg:=C2=A04788=5D=C2=A0=
-=5B<c0250b60>=5D=C2=A0(sys_ioctl)=C2=A0from=C2=A0=5B<c0009230>=5D=C2=A0(__s=
-ys_trace_return+0x0/0x10)=0D=0A=0D=0A=0D=0A>>=20This=20below=20solution=20p=
-atch=20fixes=20this=20race=20condition=20at=20USB=20core=20level=0D=0A>>=20=
-occurring=20during=20UVC=20webcam=20device=20disconnect.=0D=0A>=0D=0A>How=
-=20can=20a=20race=20in=20the=20UVC=20driver=20be=20fixed=20by=20changing=20=
-the=20USB=20core?=C2=A0=20It=20=0D=0A>seems=20obvious=20that=20the=20only=
-=20way=20to=20fix=20such=20a=20race=20is=20by=20changing=20the=20=0D=0A>UVC=
-=20driver.=0D=0A=0D=0A=0D=0AI=20think=20solution=20fixed=20at=20USB=20core=
-=20level=20avoids=20race=20condition=20for=20all=20kind=20of=20devices=20an=
-d=20drivers.=0D=0A=0D=0A=0D=0A>>=20Signed-off-by:=20Anuj=20Gupta=20<anuj01.=
-gupta=40samsung.com>=0D=0A>>=20Signed-off-by:=20Aman=20Deep=20<aman.deep=40=
-samsung.com>=0D=0A>>=20---=0D=0A>>=C2=A0=20drivers/usb/core/hcd.c=C2=A0=20=
-=C2=A0=20=20=7C=207=20++++++-=0D=0A>>=C2=A0=20drivers/usb/core/message.c=20=
-=7C=204=20++++=0D=0A>>=C2=A0=20drivers/usb/core/usb.c=C2=A0=20=C2=A0=20=20=
-=7C=209=20++++++---=0D=0A>>=C2=A0=203=20files=20changed,=2016=20insertions(=
-+),=204=20deletions(-)=0D=0A>>=20=0D=0A>>=20diff=20--git=20a/drivers/usb/co=
-re/hcd.c=20b/drivers/usb/core/hcd.c=0D=0A>>=20index=208300baedafd2..=20a064=
-52cbbaa4=20100644=0D=0A>>=20---=20a/drivers/usb/core/hcd.c=0D=0A>>=20+++=20=
-b/drivers/usb/core/hcd.c=0D=0A>>=20=40=40=20-1931,7=20+1931,12=20=40=40=20i=
-nt=20usb_hcd_alloc_bandwidth(struct=20usb_device=20*udev,=0D=0A>>=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=
-=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>>=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(cur_alt=20&&=20new_alt)=20=7B=0D=
-=0A>>=20-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0struct=20usb_interface=20*iface=20=3D=20usb_ifnum_to_if(udev,=0D=0A>>=
-=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0struct=20usb_interface=20*iface;=0D=0A>>=20+=0D=0A>>=20+=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(udev->state=
-=20=3D=3D=20USB_STATE_NOTATTACHED)=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=
+=C2=A0=20=C2=A0=C2=A0=20=20interface,=20NULL,=200,=205000,=0D=0A>ddd1198e3e=
+0935=20Oliver=20Neukum=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=202020-09-23=C2=A0=201598=C2=A0=20=20=C2=A0=20=C2=A0=
 =20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0return=20-ENODEV;=0D=0A>=0D=0A>What=20will=20happen=20if=20the=20stat=
-e=20changes=20to=20USB_STATE_NOTATTACHED=20at=20this=20=0D=0A>point,=20afte=
-r=20that=20test=20was=20made?=0D=0A=0D=0A=0D=0APlease=20suggest=20if=20i=20=
-should=20add=20some=20propr=20locking=20mechanism=20to=20avoid=20this.=0D=
-=0AI=20will=20add=20accordingly.=0D=0A=0D=0A=0D=0A>>=20+=0D=0A>>=20+=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface=20=
-=3D=20usb_ifnum_to_if(udev,=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
 =C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0cur_alt->desc.bInterfaceNumber);=0D=
-=0A>>=C2=A0=20=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(=21iface)=0D=0A>>=20diff=20--git=20a/dr=
-ivers/usb/core/message.c=20b/drivers/usb/core/message.c=0D=0A>>=20index=20b=
-5811620f1de..=20f31c7287dc01=20100644=0D=0A>>=20---=20a/drivers/usb/core/me=
-ssage.c=0D=0A>>=20+++=20b/drivers/usb/core/message.c=0D=0A>>=20=40=40=20-15=
-75,7=20+1575,11=20=40=40=20int=20usb_set_interface(struct=20usb_device=20*d=
-ev,=20int=20interface,=20int=20alternate)=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=20iface->cur_altsetting->d=
-esc.bNumEndpoints;=20i++)=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0iface->cur_altsetting->endpoint=5Bi=
-=5D.streams=20=3D=200;=0D=0A>>=C2=A0=20=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0if=20(dev->state=20=3D=3D=20USB_STATE_NOTATTACHED)=0D=0A>>=20+=
+=A0=20=C2=A0=C2=A0=20=20GFP_NOIO);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvald=
+s=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=2020=
+05-04-16=C2=A0=201599=C2=A0=20=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
+4-16=C2=A0=201600=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=209.4.10=
+=20says=20devices=20don't=20need=20this=20and=20are=20free=20to=20STALL=20t=
+he=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201601=C2=A0=20=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20request=20if=20the=20interface=
+=20only=20has=20one=20alternate=20setting.=0D=0A>=5E1da177e4c3f41=20Linus=
+=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=202005-04-16=C2=A0=201602=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20*/=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201603=C2=
+=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(ret=20=3D=3D=20-EPIPE=20&&=
+=20iface->num_altsetting=20=3D=3D=201)=20=7B=0D=0A>=5E1da177e4c3f41=20Linus=
+=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=202005-04-16=C2=A0=201604=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0dev_dbg(&dev->dev,=0D=0A>=5E1da177e4=
+c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201605=C2=A0=20=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=22manual=20set_interface=20for=20iface=20%d,=20alt=20%d=5Cn=22=
+,=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201606=C2=A0=20=
+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0interface,=20alternate);=0D=0A>=5E1da177e4=
+c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201607=C2=A0=20=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0manual=20=3D=201;=0D=0A>=
+297e84c04d76b9=20Greg=20Kroah-Hartman=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=202020-09-14=C2=A0=201608=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=7D=20else=20if=20(ret)=20=7B=0D=0A>3f0479e00a3fca=20Sarah=20Sh=
+arp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=202009-12-03=C2=A0=201609=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0/*=20Re-instate=20the=20old=20alt=
+=20setting=20*/=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=
+=C2=A0=201610=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0usb_hcd_alloc_bandwidth(dev,=20NULL,=20alt,=20iface->c=
+ur_altsetting);=0D=0A>8306095fd2c110=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202012-05-02=
+=C2=A0=201611=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0usb_enable_lpm(dev);=0D=0A>d673bfcbfffdeb=20Sarah=20Sh=
+arp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=202010-10-15=C2=A0=201612=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex=
+);=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201613=C2=A0=20=
 =20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=
-urn=20-ENODEV;=0D=0A>=0D=0A>Same=20question:=20What=20happens=20if=20the=20=
-state=20changes=20right=20here?=0D=0A=0D=0A=0D=0Ayes,=20please=20suggest=20=
-more=20required=20changes=20for=20it.=0D=0A=0D=0A=0D=0A>>=20+=0D=0A>>=C2=A0=
-=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0ret=20=3D=20usb_hcd_alloc_bandwidth(=
-dev,=20NULL,=20iface->cur_altsetting,=20alt);=0D=0A>>=20+=0D=0A>>=C2=A0=20=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20(ret=20<=200)=20=7B=0D=0A>>=C2=A0=
-=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-dev_info(&dev->dev,=20=22Not=20enough=20bandwidth=20for=20altsetting=20%d=
-=5Cn=22,=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0alternate);=0D=0A>>=20diff=20--git=20a/drivers/usb/cor=
-e/usb.c=20b/drivers/usb/core/usb.c=0D=0A>>=20index=20901ec732321c..=206fb8b=
-14469ae=20100644=0D=0A>>=20---=20a/drivers/usb/core/usb.c=0D=0A>>=20+++=20b=
-/drivers/usb/core/usb.c=0D=0A>>=20=40=40=20-352,10=20+352,13=20=40=40=20str=
-uct=20usb_interface=20*usb_ifnum_to_if(const=20struct=20usb_device=20*dev,=
-=0D=0A>>=C2=A0=20=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0if=20=
-(=21config)=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0return=20NULL;=0D=0A>>=20-=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=20config->desc.bNumInterfaces;=
-=20i++)=0D=0A>>=20-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0if=20(config->interface=5Bi=5D->altsetting=5B0=5D=0D=0A>>=
-=20-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-.desc.bInterfaceNumber=20=3D=3D=20ifnum)=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0for=20(i=20=3D=200;=20i=20<=20config->desc.bNumInterfaces;=
-=20i++)=20=7B=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0if=20(config->interface=5Bi=5D=20&&=0D=0A>=0D=0A>Th=
-is=20new=20test=20can=20fail=20only=20if=20the=20routine=20is=20called=20af=
-ter=20(or=20while)=20=0D=0A>the=20device=20is=20unconfigured=20or=20removed=
-.=C2=A0=20But=20if=20a=20driver=20makes=20such=20a=20=0D=0A>call=20then=20t=
-he=20driver=20is=20buggy.=C2=A0=20The=20proper=20solution=20is=20to=20fix=
-=20the=20=0D=0A>driver,=20not=20add=20this=20test=20here.=0D=0A>=0D=0A>Besi=
-des,=20this=20test=20has=20the=20same=20problem=20as=20the=20others=20you=
-=20added=20above.=C2=A0=20=0D=0A>What=20happens=20if=20config->interface=5B=
-i=5D=20gets=20set=20to=20NULL=20right=20here?=0D=0A>=0D=0A>Alan=20Stern=0D=
-=0A>=0D=0A=0D=0AAll=20above=20changes=20resolve=20existing=20issue=20and=20=
-at=20USB=20core=20level,=20it=20will=20avoid=20simillar=20race=20conditions=
-=20for=20all=20others.=0D=0A=0D=0A=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
-=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0config->interface=5Bi=5D->altsett=
-ing=5B0=5D=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=20=C2=A0.desc.bInterfaceNumber=20=3D=3D=20ifnum)=20=7B=0D=0A>>=C2=
-=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
-=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20config->interface=5Bi=5D;=
-=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
-=20=C2=A0=7D=0D=0A>>=20+=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>>=C2=
-=A0=20=0D=0A>>=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0return=20NULL;=
-=0D=0A>>=C2=A0=20=7D=0D=0A>>=20--=20=0D=0A>>=202.34.1=0D=0A>>=20=0D=0A=0D=
-=0A=0D=0A=C2=A0=0D=0A=0D=0A
+urn=20ret;=0D=0A>3f0479e00a3fca=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=202009-12-03=C2=A0=
+=201614=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=7D=0D=0A>d673bfcbfffde=
+b=20Sarah=20Sharp=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=202010-10-15=C2=A0=201615=C2=A0=20=20=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0mutex_unlock(hcd->bandwidth_mutex);=0D=0A>=5E1da177e4c=
+3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=
+=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201616=C2=A0=20=0D=0A>=5E1da177e4c3f4=
+1=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=202005-04-16=C2=A0=201617=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=
+=A0=20=C2=A0/*=20FIXME=20drivers=20shouldn't=20need=20to=20replicate/bugfix=
+=20the=20logic=20here=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=
+=A0=201618=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20when=20they=
+=20implement=20async=20or=20easily-killable=20versions=20of=20this=20or=0D=
+=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=
+=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-04-16=C2=A0=201619=C2=A0=20=20=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20other=20=22should-be-internal=22=20fun=
+ctions=20(like=20clear_halt).=0D=0A>=5E1da177e4c3f41=20Linus=20Torvalds=C2=
+=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=202005-0=
+4-16=C2=A0=201620=C2=A0=20=20=C2=A0=20=C2=A0=20=C2=A0=20=C2=A0=20*=20should=
+=20hcd+usbcore=20postprocess=20control=20requests?=0D=0A>=0D=0A>--=20=0D=0A=
+>0-DAY=20CI=20Kernel=20Test=20Service=0D=0A>https://protect2.fireeye.com/v1=
+/url?k=3Df58bda35-9400cf06-f58a517a-000babff9bb7-d72ab9bab3df6b4a&q=3D1&e=
+=3D0dbea670-3cf3-4a45-a999->157e4e0dcad9&u=3Dhttps%3A%2F%2Fgithub.com%2Fint=
+el%2Flkp-tests%2Fwiki=0D=0A>=0D=0A>=0D=0A=0D=0A=0D=0AThanks,=0D=0AAman=0D=
+=0A=C2=A0=0D=0A=0D=0A
