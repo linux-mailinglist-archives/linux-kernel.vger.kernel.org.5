@@ -2,218 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C1F7660DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339A17660E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232498AbjG1AoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 20:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        id S231154AbjG1AtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 20:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjG1AoB (ORCPT
+        with ESMTP id S229515AbjG1AtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 20:44:01 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5B035AB
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:43:53 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-348de7bc865so963225ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690505032; x=1691109832;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s/aJ9ksmeVttXwGKwUVAJi8p79DGJB0zVa/mu7nUe/g=;
-        b=arbI1nple3pEZAfWdlLMRZfRSr+OZ67LXd6z/b2gt4LbN37fvQgaP9XQwqxKJBSgE3
-         hzhmxZkSnXVRLJHfKccq3tDsK03dmoanQxj8VlhBZneW6edBniqML4RUffXiwCxOQCWv
-         HYKAv3b9AUgVD9Gh7ex2kWFPd43Y6a+PRp6AU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690505032; x=1691109832;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/aJ9ksmeVttXwGKwUVAJi8p79DGJB0zVa/mu7nUe/g=;
-        b=ZCWoDXG2czcE/OgC1TmK5r19pvnNJiXFiEqjvVvaUZUpfBMPPQ3zoRG0oQT8Lg0fFJ
-         xJOtXjB5pph+DNIYgVKO9VINCBSoo8/v1ia5cQY4gEknjqhc7GAPoAJZ48oLxBRrs3/p
-         q7nPvpFULT043QKYTRFwelXHC8cG25MIWVc2GonB9bQCv6/jtDoC7d0LBBDEruAOqAxo
-         f9t2HRwH10D17eqKJCo05/9+0VM76zMjYZxi8VZV4SUj9MWxxGstJf9qBxdTM4WfvSuo
-         7XNLROvvjapFQABeT2NrK/HT5lzxUdbRrGeq0GY9hQ30bdJYPvAfo0md7eXDevL67xp2
-         IweA==
-X-Gm-Message-State: ABy/qLa5Zdn5HHmWcsNSwSD23/8RXPGnJZ9qiPrBkVd2KCSAQZEtR0+a
-        X5qO6kyOUlne316aqghmCm05ig==
-X-Google-Smtp-Source: APBJJlHMMHqQCxm2X2zkZFYxUgIYIuXPx75dCbAYes3sMd2B8DNQk7mPNm5UaVFKmII9KL1Dl1Wq6w==
-X-Received: by 2002:a05:6602:1694:b0:780:cb36:6f24 with SMTP id s20-20020a056602169400b00780cb366f24mr1268855iow.2.1690505032517;
-        Thu, 27 Jul 2023 17:43:52 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id g22-20020a056602249600b0077e3acd5ea1sm762425ioe.53.2023.07.27.17.43.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 17:43:52 -0700 (PDT)
-Message-ID: <799d6088-e28f-f386-6a00-2291304171a2@linuxfoundation.org>
-Date:   Thu, 27 Jul 2023 18:43:51 -0600
+        Thu, 27 Jul 2023 20:49:21 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B4D2D5E;
+        Thu, 27 Jul 2023 17:49:20 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S0Ul55009544;
+        Fri, 28 Jul 2023 00:49:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yhesW81fAat0xgAurgLwRlmbZVyhL1Btu2fPBQrGZFE=;
+ b=XxGJHYkEk2CWyhfmJt2gX1XjivtqTkNvYmQWnTlRGZvJEbi5ee4C4u9mg7sN+9jiD2px
+ 9ekmnWwuIKb0MxzLpixaZK4AmJaMyUeKo+ITkvNomezukpZkOP8qjKpUZbyUHOhADRwu
+ hAjyinQvYKzmvHQU/0cJrBLl0zLjpatPkcRrB2zXdD3UxOZI+T0nNkrsqDqMujTMf6Ui
+ SZ4nHQ6qlAAqXzzmLsTmEqqdxV79i2+UhQ20pjLxkHMpipbvMVv/sGnwQnWVCMzbGi3M
+ vU8DxGx4KhhoDYlsJKPdDeOMyTF1HkvFcX5fLTV7vDTEjXBhqcKN+bAGV2tPFoKxameD dg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3krna91f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 00:49:14 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S0n7fH023348
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 00:49:07 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
+ 2023 17:49:03 -0700
+Message-ID: <50e73c8b-97d3-9db9-a2ab-2f9e0deee8e5@quicinc.com>
+Date:   Fri, 28 Jul 2023 08:49:01 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: selftests: connector: proc_filter.c:48:20: error: invalid
- application of 'sizeof' to an incomplete type 'struct proc_input'
-To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        Netdev <netdev@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <CA+G9fYt=6ysz636XcQ=-KJp7vJcMZ=NjbQBrn77v7vnTcfP2cA@mail.gmail.com>
- <E8C72537-4280-401A-B25D-9734D2756A6A@oracle.com>
- <BB43F17E-EC00-4E72-BB3D-F4E6FA65F954@oracle.com>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <BB43F17E-EC00-4E72-BB3D-F4E6FA65F954@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/6] arm64: dts: qcom: Add base SM4450 QRD DTS
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
+        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230727023508.18002-1-quic_tengfan@quicinc.com>
+ <20230727023508.18002-5-quic_tengfan@quicinc.com>
+ <f974f48a-05b0-530d-25a0-7ccf1b1ad113@linaro.org>
+ <518770c2-05ad-a2a2-4e73-7ceb30687614@linaro.org>
+ <ba733dbe-c44e-2199-e7f4-7152a9be065b@quicinc.com>
+ <3ba67502-1781-2abf-32dc-254796ce7621@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <3ba67502-1781-2abf-32dc-254796ce7621@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _66CA6ost_kAFKz2S3Zyi7FdorWhmHoZ
+X-Proofpoint-GUID: _66CA6ost_kAFKz2S3Zyi7FdorWhmHoZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ adultscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307280006
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 11:34, Anjali Kulkarni wrote:
+
+
+在 7/27/2023 9:08 PM, Konrad Dybcio 写道:
+> On 27.07.2023 10:49, Tengfei Fan wrote:
+>>
+>>
+>> 在 7/27/2023 3:59 PM, Konrad Dybcio 写道:
+>>> On 27.07.2023 08:56, Krzysztof Kozlowski wrote:
+>>>> On 27/07/2023 04:35, Tengfei Fan wrote:
+>>>>> Add DTS for Qualcomm QRD platform which uses SM4450 SoC.
+>>>>>
+>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>>> ---
+>>>>>    arch/arm64/boot/dts/qcom/Makefile       |  1 +
+>>>>>    arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 18 ++++++++++++++++++
+>>>>>    2 files changed, 19 insertions(+)
+>>>>>    create mode 100644 arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+>>>>> index 337abc4ceb17..db805d0929c8 100644
+>>>>> --- a/arch/arm64/boot/dts/qcom/Makefile
+>>>>> +++ b/arch/arm64/boot/dts/qcom/Makefile
+>>>>> @@ -186,6 +186,7 @@ dtb-$(CONFIG_ARCH_QCOM)    += sdm850-lenovo-yoga-c630.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sdm850-samsung-w737.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sdx75-idp.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sm4250-oneplus-billie2.dtb
+>>>>> +dtb-$(CONFIG_ARCH_QCOM)    += sm4450-qrd.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sm6115-fxtec-pro1x.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sm6115p-lenovo-j606f.dtb
+>>>>>    dtb-$(CONFIG_ARCH_QCOM)    += sm6125-sony-xperia-seine-pdx201.dtb
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>>> new file mode 100644
+>>>>> index 000000000000..04ad1dd4285a
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+>>>>> @@ -0,0 +1,18 @@
+>>>>> +// SPDX-License-Identifier: BSD-3-Clause
+>>>>> +/*
+>>>>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>>>> + */
+>>>>> +
+>>>>> +/dts-v1/;
+>>>>> +
+>>>>> +#include "sm4450.dtsi"
+>>>>> +/ {
+>>>>> +    model = "Qualcomm Technologies, Inc. SM4450 QRD";
+>>>>> +    compatible = "qcom,sm4450-qrd", "qcom,sm4450";
+>>>>> +
+>>>>> +    aliases { };
+>>>>> +
+>>>>> +    chosen {
+>>>>> +        bootargs = "console=hvc0 earlycon=hvc0 hvc_dcc.enable=1 cpuidle.off=1";
+>>>>
+>>>> No earlycon, no hvc.enable (there is no such parameter), no cpuidle.off
+>>>> (again don't add fake stuff). So the only suitable argument is console,
+>>>> but this should be actually used via stdout path, although it seems
+>>>> there is no device node for such usage?
+>>> hvc totally comes from Qualcomm downstream and all the Gunyah
+>>> shenanigans..
+>>>
+>>> Tengfei, please ensure the patches are tested against linux-next
+>>> with no additional changes or modules, with a clean Linux userspace
+>>> (or at least a ramdisk).
+>>>
+>>> Konrad
+>> Hi Konrad,
+>> All these patches are tesed on linux-next, and get DCC console.
+>> For support this test, I did a temporal for enable CONFIG_HVC_DCC(this change haven't push to upstream).
+> So what you've said is that you've not tested against linux-next + this patchset.
 > 
+> You're supposed to `git checkout linux-next/master && (pick the series
+> you're sending)` and test just that. No less, no more. Preferably with
+> the upstream arm64 defconfig.
 > 
->> On Jul 25, 2023, at 9:48 AM, Anjali Kulkarni <Anjali.K.Kulkarni@oracle.com> wrote:
->>
->>
->>
->>> On Jul 25, 2023, at 6:05 AM, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->>>
->>> selftests: connector: proc_filter build failed with clang-16 due to below
->>> warnings / errors on Linux next-20230725.
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>> clang --target=aarch64-linux-gnu -fintegrated-as
->>> -Werror=unknown-warning-option -Werror=ignored-optimization-argument
->>> -Werror=option-ignored -Werror=unused-command-line-argument
->>> --target=aarch64-linux-gnu -fintegrated-as -Wall proc_filter.c -o
->>> /home/tuxbuild/.cache/tuxmake/builds/1/build/kselftest/connector/proc_filter
->>> proc_filter.c:42:12: error: invalid application of 'sizeof' to an
->>> incomplete type 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^~~~~~~~~~~~~~~
->>> proc_filter.c:22:5: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^ ~~~~~~~~~~~~~~~~~~~
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:48:20: error: invalid application of 'sizeof' to an
->>> incomplete type 'struct proc_input'
->>> hdr->nlmsg_len = NL_MESSAGE_SIZE;
->>> ^~~~~~~~~~~~~~~
->>> proc_filter.c:22:5: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^ ~~~~~~~~~~~~~~~~~~~
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:64:14: error: invalid application of 'sizeof' to an
->>> incomplete type 'struct proc_input'
->>> msg->len = sizeof(struct proc_input);
->>> ^ ~~~~~~~~~~~~~~~~~~~
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:65:35: error: incomplete definition of type 'struct proc_input'
->>> ((struct proc_input *)msg->data)->mcast_op =
->>> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:66:31: error: incomplete definition of type 'struct proc_input'
->>> ((struct proc_input *)pinp)->mcast_op;
->>> ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:67:35: error: incomplete definition of type 'struct proc_input'
->>> ((struct proc_input *)msg->data)->event_type =
->>> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:68:31: error: incomplete definition of type 'struct proc_input'
->>> ((struct proc_input *)pinp)->event_type;
->>> ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
->>> proc_filter.c:42:12: note: forward declaration of 'struct proc_input'
->>> char buff[NL_MESSAGE_SIZE];
->>> ^
->>> proc_filter.c:22:19: note: expanded from macro 'NL_MESSAGE_SIZE'
->>> sizeof(struct proc_input))
->>> ^
->>> proc_filter.c:245:20: error: variable has incomplete type 'struct proc_input'
->>> struct proc_input input;
->>> ^
->>> proc_filter.c:245:9: note: forward declaration of 'struct proc_input'
->>> struct proc_input input;
->>> ^
->>> proc_filter.c:264:22: error: use of undeclared identifier
->>> 'PROC_EVENT_NONZERO_EXIT'
->>> input.event_type = PROC_EVENT_NONZERO_EXIT;
->>> ^
->>> 9 errors generated.
->>> make[4]: Leaving directory '/builds/linux/tools/testing/selftests/connector’
->>>
->>>
->> These are expected since you need to have the changes in kernel that were committed with this patch to be installed on the kernel on which this is being compiled/run on. That is what the test is for, and the check to make it run on previous kernels as well was made a runtime check. Do you expect this to compile on a kernel without the corresponding kernel changes that were committed with this patch?
->>
->> Anjali
-> 
-> Gentle ping -  could you answer above questions?
->>
+> Konrad
+Hi Konrad,
+Sorry, my explain isn't enough before.
 
-I am seeing the same on linux-next next-20230727
+My tested against linux-next + this patchset, all my test code from 
+upstream linux-next, haven't downstream code related.
 
-PROC_EVENT_NONZERO_EXIT is defined and NL_MESSAGE_SIZE
+About the temporal patch which enable CONFIG_HVC_DCC, because we haven't 
+enable uart, so I enable CONFIG_HVC_DCC for verify if we can get DCC 
+console through "make ARCH=arm64 menuconfig" on linux-next/master, but 
+this patchset haven't contain this enable CONFIG_HVC_DCC patch, because 
+upstream seems don't want to enable CONFIG_HVC_DCC defaultly.
 
-Anjali,
+Besides these, I all do dtbs_check and checkpatch.pl check, all these 
+check passed.
 
-What are the dependent commits and should they be in next?
-Shouldn't this test patch go with the kernel patches it depends
-on? Can you do some testing on next and let me know why this
-test is failing to build?
 
-It is failing for me for sure.
-
-There could be problem in the test Makefile that it isn't including
-the right headers.
-
-thanks,
--- Shuah
-
-thanks,
--- Shuah
-
+-- 
+Thx and BRs,
+Tengfei Fan
