@@ -2,252 +2,482 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662DD7669FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC0B7669F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbjG1KOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
+        id S235763AbjG1KNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235765AbjG1KNx (ORCPT
+        with ESMTP id S235690AbjG1KN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:13:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B42A35A2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690539182;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FBSITkR13Me7nA0UvBku+KqeFgHRRHFCLDJ6AjKdk9M=;
-        b=jFnf9neNBpjpv18J8HRR/RFkfea9B2RRvj3NPREFacHhlxGzuKPvkM6B9Fr4dQKvkMdOfd
-        TZF5iU9MSiqMyexc7dARDEqlEs00O1u3Z/VX0DDAk+rlCE/7e6lP/yojTfh/CEOitcdH9S
-        5sbHd856yNCWhUMnzPT6qnAylDU3UYY=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-103-5goB42FJOgOYaKp9uWWfLw-1; Fri, 28 Jul 2023 06:13:01 -0400
-X-MC-Unique: 5goB42FJOgOYaKp9uWWfLw-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b9cd6a555aso5226751fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:13:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690539180; x=1691143980;
-        h=content-transfer-encoding:in-reply-to:subject:organization
-         :references:cc:to:from:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FBSITkR13Me7nA0UvBku+KqeFgHRRHFCLDJ6AjKdk9M=;
-        b=OrZXM16ioisPNA5n36dbzMCAsep/KI2B8ri6xi1Q2mHxukZjhILK52d09W9HvXZSir
-         EraaXtYI1q71p38MHAMjx1q+K3Zr7LDt/ZWd8kv1IyqIhMcLEA78l3neDhEEu6D+Tlph
-         ThdEgasCLdB8NGn076Tt3NrdujOuH9tToAb5FwLYd0L2Hbit5D0VNW/4mNAu/uL50rJe
-         3YGD9MHOYZRgTgsYydP2TfA3dlsKaep76krVaJQSMszO1njIEmWkZT0aF3AmBGwX0Rvi
-         YJYC8UxNaLXlyZWVCp+XuzQR+Q69fSjnKAy5xg0ezFTE8vLVZWPQ00X+nVZTSfNdCxLD
-         Z4pA==
-X-Gm-Message-State: ABy/qLYjPSymN8uv/ZcAEQAdabmrQ9DO/OVCqms6BZ+WsZdFJwVWkZZU
-        9ChLhL7hzvNx/2yzzVCOrMeFMWXYv+Cip9BmPe5WWSciKUyTKWOdWhaUwV7PHTJyULUSWuZVJ6u
-        6j6Ro5xQdo76IoL5s2ektjl5s
-X-Received: by 2002:a2e:9d84:0:b0:2b9:d07f:ee50 with SMTP id c4-20020a2e9d84000000b002b9d07fee50mr1233694ljj.30.1690539179753;
-        Fri, 28 Jul 2023 03:12:59 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGkAr1jxNT4mmSwfn2e2XtO3UnoTO1B9ASM5Fa1JtMt3k6efdjWl5GqbHAD0g1vAdfROlzYmg==
-X-Received: by 2002:a2e:9d84:0:b0:2b9:d07f:ee50 with SMTP id c4-20020a2e9d84000000b002b9d07fee50mr1233664ljj.30.1690539179271;
-        Fri, 28 Jul 2023 03:12:59 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id t25-20020a7bc3d9000000b003fc01495383sm6592524wmj.6.2023.07.28.03.12.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:12:58 -0700 (PDT)
-Message-ID: <13b14aa6-302e-63cc-2a99-f5c22b9931fc@redhat.com>
-Date:   Fri, 28 Jul 2023 12:12:57 +0200
+        Fri, 28 Jul 2023 06:13:28 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B66035A3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:13:25 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F2FC2F4;
+        Fri, 28 Jul 2023 03:14:08 -0700 (PDT)
+Received: from [10.57.77.173] (unknown [10.57.77.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 669EB3F67D;
+        Fri, 28 Jul 2023 03:13:22 -0700 (PDT)
+Message-ID: <8c0710e0-a75a-b315-dae1-dd93092e4bd6@arm.com>
+Date:   Fri, 28 Jul 2023 11:13:19 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, stable@vger.kernel.org
-References: <20230727212845.135673-1-david@redhat.com>
- <20230727212845.135673-3-david@redhat.com>
- <55c92738-e402-4657-3d46-162ad2c09d68@nvidia.com>
- <9de80e22-e89f-2760-34f4-61be5f8fd39c@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 2/4] mm/gup: Make follow_page() succeed again on
- PROT_NONE PTEs/PMDs
-In-Reply-To: <9de80e22-e89f-2760-34f4-61be5f8fd39c@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230726095146.2826796-1-ryan.roberts@arm.com>
+ <20230726095146.2826796-3-ryan.roberts@arm.com>
+ <CAOUHufackQzy+yXOzaej+G6DNYK-k9GAUHAK6Vq79BFHr7KwAQ@mail.gmail.com>
+ <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 11:08, David Hildenbrand wrote:
-> On 28.07.23 04:30, John Hubbard wrote:
->> On 7/27/23 14:28, David Hildenbrand wrote:
->>> We accidentally enforced PROT_NONE PTE/PMD permission checks for
->>> follow_page() like we do for get_user_pages() and friends. That was
->>> undesired, because follow_page() is usually only used to lookup a currently
->>> mapped page, not to actually access it. Further, follow_page() does not
->>> actually trigger fault handling, but instead simply fails.
+On 27/07/2023 05:31, Yu Zhao wrote:
+> On Wed, Jul 26, 2023 at 10:41 AM Yu Zhao <yuzhao@google.com> wrote:
 >>
->> I see that follow_page() is also completely undocumented. And that
->> reduces us to deducing how it should be used...these things that
->> change follow_page()'s behavior maybe should have a go at documenting
->> it too, perhaps.
-> 
-> I can certainly be motivated to do that. :)
-> 
->>
+>> On Wed, Jul 26, 2023 at 3:52 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
 >>>
->>> Let's restore that behavior by conditionally setting FOLL_FORCE if
->>> FOLL_WRITE is not set. This way, for example KSM and migration code will
->>> no longer fail on PROT_NONE mapped PTEs/PMDS.
+>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
+>>> allocated in large folios of a determined order. All pages of the large
+>>> folio are pte-mapped during the same page fault, significantly reducing
+>>> the number of page faults. The number of per-page operations (e.g. ref
+>>> counting, rmap management lru list management) are also significantly
+>>> reduced since those ops now become per-folio.
 >>>
->>> Handling this internally doesn't require us to add any new FOLL_FORCE
->>> usage outside of GUP code.
+>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
+>>> which defaults to disabled for now; The long term aim is for this to
+>>> defaut to enabled, but there are some risks around internal
+>>> fragmentation that need to be better understood first.
 >>>
->>> While at it, refuse to accept FOLL_FORCE: we don't even perform VMA
->>> permission checks like in check_vma_flags(), so especially
->>> FOLL_FORCE|FOLL_WRITE would be dodgy.
+>>> When enabled, the folio order is determined as such: For a vma, process
+>>> or system that has explicitly disabled THP, we continue to allocate
+>>> order-0. THP is most likely disabled to avoid any possible internal
+>>> fragmentation so we honour that request.
 >>>
->>> This issue was identified by code inspection. We'll add some
->>> documentation regarding FOLL_FORCE next.
+>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
+>>> bigger). This allows for a performance boost without requiring any
+>>> explicit opt-in from the workload while limitting internal
+>>> fragmentation.
 >>>
->>> Reported-by: Peter Xu <peterx@redhat.com>
->>> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
->>> Cc: <stable@vger.kernel.org>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> If the preferred order can't be used (e.g. because the folio would
+>>> breach the bounds of the vma, or because ptes in the region are already
+>>> mapped) then we fall back to a suitable lower order; first
+>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>>
+>>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>>> set of ptes map physically contigious, naturally aligned memory, so this
+>>> mechanism allows the architecture to optimize as required.
+>>>
+>>> Here we add the default implementation of arch_wants_pte_order(), used
+>>> when the architecture does not define it, which returns -1, implying
+>>> that the HW has no preference. In this case, mm will choose it's own
+>>> default order.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 >>> ---
->>>     mm/gup.c | 10 +++++++++-
->>>     1 file changed, 9 insertions(+), 1 deletion(-)
+>>>  include/linux/pgtable.h |  13 ++++
+>>>  mm/Kconfig              |  10 +++
+>>>  mm/memory.c             | 166 ++++++++++++++++++++++++++++++++++++----
+>>>  3 files changed, 172 insertions(+), 17 deletions(-)
 >>>
->>> diff --git a/mm/gup.c b/mm/gup.c
->>> index 2493ffa10f4b..da9a5cc096ac 100644
->>> --- a/mm/gup.c
->>> +++ b/mm/gup.c
->>> @@ -841,9 +841,17 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
->>>     	if (vma_is_secretmem(vma))
->>>     		return NULL;
->>>     
->>> -	if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
->>> +	if (WARN_ON_ONCE(foll_flags & (FOLL_PIN | FOLL_FORCE)))
->>>     		return NULL;
->>
->> This is not a super happy situation: follow_page() is now prohibited
->> (see above: we should document that interface) from passing in
->> FOLL_FORCE...
-> 
-> I guess you saw my patch #4.
-> 
-> If you take a look at the existing callers (that are fortunately very
-> limited), you'll see that nobody cares.
-> 
-> Most of the FOLL flags don't make any sense for follow_page(), and
-> limiting further (ab)use is at least to me very appealing.
-> 
->>
->>>     
->>> +	/*
->>> +	 * Traditionally, follow_page() succeeded on PROT_NONE-mapped pages
->>> +	 * but failed follow_page(FOLL_WRITE) on R/O-mapped pages. Let's
->>> +	 * keep these semantics by setting FOLL_FORCE if FOLL_WRITE is not set.
->>> +	 */
->>> +	if (!(foll_flags & FOLL_WRITE))
->>> +		foll_flags |= FOLL_FORCE;
+>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>> index 5063b482e34f..2a1d83775837 100644
+>>> --- a/include/linux/pgtable.h
+>>> +++ b/include/linux/pgtable.h
+>>> @@ -313,6 +313,19 @@ static inline bool arch_has_hw_pte_young(void)
+>>>  }
+>>>  #endif
+>>>
+>>> +#ifndef arch_wants_pte_order
+>>> +/*
+>>> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
+>>> + * PMD_SHIFT-PAGE_SHIFT) and must not be order-1 since THP requires large folios
+>>> + * to be at least order-2. Negative value implies that the HW has no preference
+>>> + * and mm will choose it's own default order.
+>>> + */
+>>> +static inline int arch_wants_pte_order(void)
+>>> +{
+>>> +       return -1;
+>>> +}
+>>> +#endif
 >>> +
+>>>  #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>>>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>>>                                        unsigned long address,
+>>> diff --git a/mm/Kconfig b/mm/Kconfig
+>>> index 09130434e30d..fa61ea160447 100644
+>>> --- a/mm/Kconfig
+>>> +++ b/mm/Kconfig
+>>> @@ -1238,4 +1238,14 @@ config LOCK_MM_AND_FIND_VMA
+>>>
+>>>  source "mm/damon/Kconfig"
+>>>
+>>> +config LARGE_ANON_FOLIO
+>>> +       bool "Allocate large folios for anonymous memory"
+>>> +       depends on TRANSPARENT_HUGEPAGE
+>>> +       default n
+>>> +       help
+>>> +         Use large (bigger than order-0) folios to back anonymous memory where
+>>> +         possible, even for pte-mapped memory. This reduces the number of page
+>>> +         faults, as well as other per-page overheads to improve performance for
+>>> +         many workloads.
+>>> +
+>>>  endmenu
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index 01f39e8144ef..64c3f242c49a 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -4050,6 +4050,127 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>         return ret;
+>>>  }
+>>>
+>>> +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
+>>> +{
+>>> +       int i;
+>>> +
+>>> +       if (nr_pages == 1)
+>>> +               return vmf_pte_changed(vmf);
+>>> +
+>>> +       for (i = 0; i < nr_pages; i++) {
+>>> +               if (!pte_none(ptep_get_lockless(vmf->pte + i)))
+>>> +                       return true;
+>>> +       }
+>>> +
+>>> +       return false;
+>>> +}
+>>> +
+>>> +#ifdef CONFIG_LARGE_ANON_FOLIO
+>>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
+>>> +               (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
+>>> +
+>>> +static int anon_folio_order(struct vm_area_struct *vma)
+>>> +{
+>>> +       int order;
+>>> +
+>>> +       /*
+>>> +        * If THP is explicitly disabled for either the vma, the process or the
+>>> +        * system, then this is very likely intended to limit internal
+>>> +        * fragmentation; in this case, don't attempt to allocate a large
+>>> +        * anonymous folio.
+>>> +        *
+>>> +        * Else, if the vma is eligible for thp, allocate a large folio of the
+>>> +        * size preferred by the arch. Or if the arch requested a very small
+>>> +        * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
+>>> +        * which still meets the arch's requirements but means we still take
+>>> +        * advantage of SW optimizations (e.g. fewer page faults).
+>>> +        *
+>>> +        * Finally if thp is enabled but the vma isn't eligible, take the
+>>> +        * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
+>>> +        * This ensures workloads that have not explicitly opted-in take benefit
+>>> +        * while capping the potential for internal fragmentation.
+>>> +        */
 >>
->> ...but then we set it anyway, for special cases. It's awkward because
->> FOLL_FORCE is not an "internal to gup" flag (yet?).
+>> What empirical evidence is SZ_64K based on?
+>> What workloads would benefit from it?
+>> How much would they benefit from it?
+>> Would they benefit more or less from different values?
+>> How much internal fragmentation would it cause?
+>> What cost function was used to arrive at the conclusion that its
+>> benefits outweigh its costs?
+
+Sorry this has taken a little while to reply to; I've been re-running my perf
+tests with the modern patches to recomfirm old data.
+
+In terms of empirical evidence, I've run the kernel compilation benchmark (yes I
+know its a narrow use case, but I figure some data is better than no data), for
+all values of ANON_FOLIO_MAX_ORDER_UNHINTED {4k, 16k, 32k, 64k, 128k, 256k}.
+
+I've run each test 15 times across 5 system reboots on Ampere Altra (arm64),
+with the kernel configured for 4K base pages - I could rerun for other base page
+sizes if we want to go further down this route.
+
+I've captured run time and peak memory usage, and taken the mean. The stdev for
+the peak memory usage is big-ish, but I'm confident this still captures the
+central tendancy well:
+
+| MAX_ORDER_UNHINTED |   real-time |   kern-time |   user-time | peak memory |
+|:-------------------|------------:|------------:|------------:|:------------|
+| 4k                 |        0.0% |        0.0% |        0.0% |        0.0% |
+| 16k                |       -3.6% |      -26.5% |       -0.5% |       -0.1% |
+| 32k                |       -4.8% |      -37.4% |       -0.6% |       -0.1% |
+| 64k                |       -5.7% |      -42.0% |       -0.6% |       -1.1% |
+| 128k               |       -5.6% |      -42.1% |       -0.7% |        1.4% |
+| 256k               |       -4.9% |      -41.9% |       -0.4% |        1.9% |
+
+64K looks like the clear sweet spot to me.
+
+I know you have argued for using a page order in the past, rather than a size in
+bytes. But my argument is that user space is mostly doing mmaps based on sizes
+independent of the base page size (an assumption!) and a system's memory is
+obviously a fixed quantity that doesn't it doesn't change with base page size.
+So it feels more natural to limit internal fragmentation based on an absolute
+size rather than a quantity of pages. Kyril have also suggested using absolute
+sizes in the past [1].
+
+It's also worth mentioning that the file-backed memory "fault_around" mechanism
+chooses 64K.
+
+If this approach really looks unacceptable, I have a couple of other ideas. But
+I personally favour the approach that is already in the patch.
+
+1) Add a large/small flag to arch_wants_pte_order(). arm64, at least, actually
+has 2 mechanisms, HPA and contpte. Currently arm64 is always returning the
+contpte order, but with a flag, it could return contpte order for large, and HPA
+order for small. (I know we previously passed the vma and we didn't like that,
+and this is pretty similar). I still think the SW (core-mm) needs a way to
+sensibly limit internal fragmentation though, so personally I still think having
+an upper limit in this case is useful.
+
+2) More radical: move to a per-vma auto-tuning solution, which looks at the
+fault pattern and maintains an allocation order in the VMA, which is modified
+based on fault pattern. e.g. When we get faults that occur immediately adjacent
+to the allocated range, we increase; when we get faults not connected to
+previously allocated pages we decrease. I think it's an interesting thing to
+look at, but certainly prefer that it's not part of an MVP implementation.
+
+[1]
+https://lore.kernel.org/linux-mm/20230414140948.7pcaz6niyr2tpa7s@box.shutemov.name/
+
+
 >>
->> I don't yet have suggestions, other than:
+>>> +       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+>>> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
+>>> +           !hugepage_flags_enabled())
+>>> +               order = 0;
+>>> +       else {
+>>> +               order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>>> +
+>>> +               if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
+>>> +                       order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
+>>> +       }
+> 
+> I'm a bit surprised to see the above: why can we overload existing
+> ABIs? I don't think we can. 
+
+I think this is all covered by the conversation with David against v2; see [2]
+and proceeding replies. Argument is that VM_NOHUGEPAGE (and friends) is really a
+request from user space to optimize for the least memory wastage possible and
+avoid populating ptes that have not been expressly requested.
+
+[2]
+https://lore.kernel.org/linux-mm/524bacd2-4a47-2b8b-6685-c46e31a01631@redhat.com/
+
+Assuming we could, you would have to
+> update Documentation/admin-guide/mm/transhuge.rst in the same
+> patchset, and the man page for madvise() in a separate patch.
+
+Yes, that's a fair point. Although transhuge.rst doesn't even mention
+MADV_NOHUGEPAGE today.
+
+> 
+> Most importantly, existing userspace programs that don't work well
+> with THPs won't be able to use (try) large folios either -- this is a
+> big no no.
+
+I think we need some comments from David here. As mentioned I've added this
+tie-in based on his (strong) recommendation.
+
+> 
+> 
+> 
+>>> +
+>>> +       return order;
+>>> +}
+>>> +
+>>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
 >>
->> 1) Yes, the FOLL_NUMA made things bad.
+>> static struct folio *alloc_anon_folio(struct vm_fault *vmf)
 >>
->> 2) And they are still very confusing, especially the new use of
->>       FOLL_FORCE.
+>> and use ERR_PTR() and its friends.
+
+Yes, agreed. I'll change this for the next version.
+
 >>
->> ...I'll try to let this soak in and maybe recommend something
->> in a more productive way. :)
-> 
-> What I can offer that might be very appealing is the following:
-> 
-> Get rid of the flags parameter for follow_page() *completely*. Yes, then
-> we can even rename FOLL_ to something reasonable in the context where it
-> is nowadays used ;)
-> 
-> 
-> Internally, we'll then set
-> 
-> FOLL_GET | FOLL_DUMP | FOLL_FORCE
-> 
-> and document exactly what this functions does. Any user that needs
-> something different should just look into using get_user_pages() instead.
-> 
-> I can prototype that on top of this work easily.
+>>> +{
+>>> +       int i;
+>>> +       gfp_t gfp;
+>>> +       pte_t *pte;
+>>> +       unsigned long addr;
+>>> +       struct vm_area_struct *vma = vmf->vma;
+>>> +       int prefer = anon_folio_order(vma);
+>>> +       int orders[] = {
+>>> +               prefer,
+>>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
+>>> +               0,
+>>> +       };
+>>> +
+>>> +       *folio = NULL;
+>>> +
+>>> +       if (vmf_orig_pte_uffd_wp(vmf))
+>>> +               goto fallback;
+>>> +
+>>> +       for (i = 0; orders[i]; i++) {
+>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>>> +               if (addr >= vma->vm_start &&
+>>> +                   addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
+>>> +                       break;
+>>> +       }
+>>> +
+>>> +       if (!orders[i])
+>>> +               goto fallback;
+>>> +
+>>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>>> +       if (!pte)
+>>> +               return -EAGAIN;
+>>> +
+>>> +       for (; orders[i]; i++) {
+>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>>> +               vmf->pte = pte + pte_index(addr);
+>>> +               if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
+>>> +                       break;
+>>> +       }
+>>> +
+>>> +       vmf->pte = NULL;
+>>> +       pte_unmap(pte);
+>>> +
+>>> +       gfp = vma_thp_gfp_mask(vma);
+>>> +
+>>> +       for (; orders[i]; i++) {
+>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>>> +               *folio = vma_alloc_folio(gfp, orders[i], vma, addr, true);
+>>> +               if (*folio) {
+>>> +                       clear_huge_page(&(*folio)->page, addr, 1 << orders[i]);
+>>> +                       return 0;
+>>> +               }
+>>> +       }
+>>> +
+>>> +fallback:
+>>> +       *folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
+>>> +       return *folio ? 0 : -ENOMEM;
+>>> +}
+>>> +#else
+>>> +static inline int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
+>>> +{
+>>> +       *folio = vma_alloc_zeroed_movable_folio(vmf->vma, vmf->address);
+>>> +       return *folio ? 0 : -ENOMEM;
+>>> +}
+>>> +#endif
+>>> +
+>>>  /*
+>>>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
+>>>   * but allow concurrent faults), and pte mapped but not yet locked.
+>>> @@ -4057,6 +4178,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>   */
+>>>  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>>  {
+>>> +       int i = 0;
+>>> +       int nr_pages = 1;
+>>> +       unsigned long addr = vmf->address;
+>>>         bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
+>>>         struct vm_area_struct *vma = vmf->vma;
+>>>         struct folio *folio;
+>>> @@ -4101,10 +4225,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>>         /* Allocate our own private page. */
+>>>         if (unlikely(anon_vma_prepare(vma)))
+>>>                 goto oom;
+>>> -       folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
+>>> +       ret = alloc_anon_folio(vmf, &folio);
+>>> +       if (unlikely(ret == -EAGAIN))
+>>> +               return 0;
+>>>         if (!folio)
+>>>                 goto oom;
+>>>
+>>> +       nr_pages = folio_nr_pages(folio);
+>>> +       addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+>>> +
+>>>         if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
+>>>                 goto oom_free_page;
+>>>         folio_throttle_swaprate(folio, GFP_KERNEL);
+>>> @@ -4116,17 +4245,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>>          */
+>>>         __folio_mark_uptodate(folio);
+>>>
+>>> -       entry = mk_pte(&folio->page, vma->vm_page_prot);
+>>> -       entry = pte_sw_mkyoung(entry);
+>>> -       if (vma->vm_flags & VM_WRITE)
+>>> -               entry = pte_mkwrite(pte_mkdirty(entry));
+>>> -
+>>> -       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>>> -                       &vmf->ptl);
+>>> +       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
+>>>         if (!vmf->pte)
+>>>                 goto release;
+>>> -       if (vmf_pte_changed(vmf)) {
+>>> -               update_mmu_tlb(vma, vmf->address, vmf->pte);
+>>> +       if (vmf_pte_range_changed(vmf, nr_pages)) {
+>>> +               for (i = 0; i < nr_pages; i++)
+>>> +                       update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
+>>>                 goto release;
+>>>         }
+>>>
+>>> @@ -4141,16 +4265,24 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>>>                 return handle_userfault(vmf, VM_UFFD_MISSING);
+>>>         }
+>>>
+>>> -       inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+>>> -       folio_add_new_anon_rmap(folio, vma, vmf->address);
+>>> +       folio_ref_add(folio, nr_pages - 1);
+>>> +       add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+>>> +       folio_add_new_anon_rmap(folio, vma, addr);
+>>>         folio_add_lru_vma(folio, vma);
+>>> +
+>>> +       for (i = 0; i < nr_pages; i++) {
+>>> +               entry = mk_pte(folio_page(folio, i), vma->vm_page_prot);
+>>> +               entry = pte_sw_mkyoung(entry);
+>>> +               if (vma->vm_flags & VM_WRITE)
+>>> +                       entry = pte_mkwrite(pte_mkdirty(entry));
+>>>  setpte:
+>>> -       if (uffd_wp)
+>>> -               entry = pte_mkuffd_wp(entry);
+>>> -       set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
+>>> +               if (uffd_wp)
+>>> +                       entry = pte_mkuffd_wp(entry);
+>>> +               set_pte_at(vma->vm_mm, addr + PAGE_SIZE * i, vmf->pte + i, entry);
+>>>
+>>> -       /* No need to invalidate - it was non-present before */
+>>> -       update_mmu_cache(vma, vmf->address, vmf->pte);
+>>> +               /* No need to invalidate - it was non-present before */
+>>> +               update_mmu_cache(vma, addr + PAGE_SIZE * i, vmf->pte + i);
+>>> +       }
+>>>  unlock:
+>>>         if (vmf->pte)
+>>>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>
+>> The rest looks good to me.
 
-The end result looks something like:
+Thanks, as always, for the detailed review and feedback!
 
-/**
-  * follow_page - look up and reference a page descriptor from a user-virtual
-  * 		 address
-  * @vma: vm_area_struct mapping @address
-  * @address: virtual address to look up
-  *
-  * follow_page() will look up the page mapped at the given address and
-  * take a reference on the page. The returned page has to be released using
-  * put_page().
-  *
-  * follow_page() will not return special (like zero) pages and does not check
-  * PTE protection: the returned page might be mapped PROT_NONE, R/O or R/W.
-  * Consequently, follow_page() will not trigger NUMA hinting faults.
-  *
-  * follow_page() does not trigger page faults. If no page is mapped, or
-  * a special (like zero) page is mapped, it returns %NULL or an error pointer.
-  *
-  * Note: new users with different requirements are probably better off using
-  *       one of the get_user_pages() variants or one of the walk_page_range()
-  *       variants.
-  *
-  * Return: the mapped (struct page *), %NULL if no mapping exists, or
-  * an error pointer if there is a mapping to something not represented
-  * by a page descriptor (see also vm_normal_page()) or the zero page.
-  */
-struct page *follow_page(struct vm_area_struct *vma, unsigned long address)
-{
-	struct follow_page_context ctx = { NULL };
-	unsigned long gup_flags;
-	struct page *page;
+Thanks,
+Ryan
 
-	if (vma_is_secretmem(vma))
-		return NULL;
 
-	/*
-	 * FOLL_GET: We always want a reference on the returned page.
-	 * FOL_DUMP: Ignore special (like zero) pages.
-	 * FOLL_FORCE: Succeeded on PROT_NONE-mapped pages.
-	 */
-	gup_flags = FOLL_GET | FOLL_DUMP | FOLL_FORCE;
-
-	page = follow_page_mask(vma, address, gup_flags, &ctx);
-	if (ctx.pgmap)
-		put_dev_pagemap(ctx.pgmap);
-	return page;
-}
-
--- 
-Cheers,
-
-David / dhildenb
 
