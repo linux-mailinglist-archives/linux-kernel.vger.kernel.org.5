@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A167675AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277C37675BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjG1Sm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        id S231709AbjG1Smq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:42:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbjG1SmW (ORCPT
+        with ESMTP id S231368AbjG1Smi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:42:22 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2045.outbound.protection.outlook.com [40.107.102.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36324494
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:42:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VUWZRPjRvlcfc5BJ960dHNSNE9ZHd+S9Tscmjw9GoXeydgpspKqUphkpbwe4O4m37AWtAOy+C5K4xM1uTUiYVJY1AagnrZqJHk/C4D6YVfesHy3y2JSHoDJOyozcFvBH/rwLHjf5EqykkURQ5N/U401F7LXXdVEbvK+I2whz8MfNK+2m5dY3FFLYRneC//R78j99umo55jShSIf4P3irE1LVumTiaLtWPZC++8CLL8R6zdavp1gruPjfQiLUhebyjETF8OqnrsaX1D36fb7AOr4jKPhsO89Ad+TrviTUyHhMJoFGeLuJRpGHANqLwrys2w9etXFPAr2D5bXNFvqnaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4FLmy2XHuvSFiMWYJfHfWuBDA1n1wWOznY0unL+3Mlg=;
- b=C2WudQuleChiWgxlj31sZRxwM02XyCFjbQb4TscpY0ya+8hSpy1e7dhsMEaREt9nhcYSJdZOF7IWih1cnAYjBrefPZ2or0X09b/Z6kVCp1i9ghhaopTeAjVoly6+RGhXTcu/p08ZAdX3VN0t/Xho1CcedcqM7mNuvLrgO4mAnnrjukdbNxxSX4gTMb212DCPmbsS9ZfhxHME/bHs1dFTDj7qHhgGqsJSo8GXI+vw1YhqIsqyGuRH5qoAmOyZmYrDYPR3q8abINT/SKF6n17C9Bcry5SRSwr3i1/PyfwmxEIGHcsrFKJGhYSPEpFWh9NPsxaab8RyUHdUhdfNMajYiQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4FLmy2XHuvSFiMWYJfHfWuBDA1n1wWOznY0unL+3Mlg=;
- b=sdbfhLEd3k/toWkZZqihuinWxbnNfR4FzT4EGHYQJKiXfTlCQIO6NnjgTpFFA466m1igrVLusz2QBvUvfkM1G2y542KGj/Eg4AXPbc5xGAf1t13DgG3ccw+YiO26YKff0MeipL+4HxPPjCaEpNqvukB7dAr4rvLd2hBzlksEW+arV/zKG1sOMdnVVylyyYxt5LljyUyMhUphmoKJMmABOZvUBtzq7ub2yTRHcyQCquI/iSFdbnm7txbqdFaW+j2JYAJDmzNl1RToqFfEeFB50WG4o8ZKt24CrnE0d9gqo5bBFO49UNnaVXE9YUXb8OTqNrkcvj29K96mIAtRbOXiHg==
-Received: from BN8PR04CA0013.namprd04.prod.outlook.com (2603:10b6:408:70::26)
- by DM6PR12MB4170.namprd12.prod.outlook.com (2603:10b6:5:219::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 18:41:43 +0000
-Received: from BN8NAM11FT106.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:70:cafe::87) by BN8PR04CA0013.outlook.office365.com
- (2603:10b6:408:70::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Fri, 28 Jul 2023 18:41:43 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN8NAM11FT106.mail.protection.outlook.com (10.13.177.7) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29 via Frontend Transport; Fri, 28 Jul 2023 18:41:43 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 28 Jul 2023
- 11:41:29 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 28 Jul
- 2023 11:41:28 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Fri, 28 Jul 2023 11:41:28 -0700
-Date:   Fri, 28 Jul 2023 11:41:26 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Michael Shavit <mshavit@google.com>, Will Deacon <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <baolu.lu@linux.intel.com>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/7] iommu/arm-smmu-v3: Replace s1_cfg with
- ctx_desc_cfg
-Message-ID: <ZMQL1qjHT3NE9FR2@Asurada-Nvidia>
-References: <20230727182647.4106140-1-mshavit@google.com>
- <20230727182647.4106140-3-mshavit@google.com>
- <ZMLaM9QjHDu11iKf@Asurada-Nvidia>
- <CAKHBV252e5Cx1nssFTPVBmr_iGqLhvp1jjBfR5euRynAzHC12w@mail.gmail.com>
- <ZMOzHJO23ZakRs8b@nvidia.com>
+        Fri, 28 Jul 2023 14:42:38 -0400
+Received: from brightrain.aerifal.cx (brightrain.aerifal.cx [216.12.86.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A7B46B4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:42:22 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 14:42:12 -0400
+From:   "dalias@libc.org" <dalias@libc.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Aleksa Sarai' <cyphar@cyphar.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@hansenpartnership.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "christian@brauner.io" <christian@brauner.io>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "deepa.kernel@gmail.com" <deepa.kernel@gmail.com>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "glebfm@altlinux.org" <glebfm@altlinux.org>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hare@suse.com" <hare@suse.com>, "hpa@zytor.com" <hpa@zytor.com>,
+        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
+        "jhogan@kernel.org" <jhogan@kernel.org>,
+        "kim.phillips@arm.com" <kim.phillips@arm.com>,
+        "ldv@altlinux.org" <ldv@altlinux.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "monstr@monstr.eu" <monstr@monstr.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ralf@linux-mips.org" <ralf@linux-mips.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "tycho@tycho.ws" <tycho@tycho.ws>,
+        "will@kernel.org" <will@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
+        Palmer Dabbelt <palmer@sifive.com>
+Subject: Re: [PATCH v4 2/5] fs: Add fchmodat2()
+Message-ID: <20230728184212.GD20050@brightrain.aerifal.cx>
+References: <cover.1689074739.git.legion@kernel.org>
+ <cover.1689092120.git.legion@kernel.org>
+ <f2a846ef495943c5d101011eebcf01179d0c7b61.1689092120.git.legion@kernel.org>
+ <njnhwhgmsk64e6vf3ur7fifmxlipmzez3r5g7ejozsrkbwvq7w@tu7w3ieystcq>
+ <ZMEjlDNJkFpYERr1@example.org>
+ <20230727.041348-imposing.uptake.velvet.nylon-712tDwzCAbCCoSGx@cyphar.com>
+ <20230727.173441-loving.habit.lame.acrobat-V6VTPe8G4FRI@cyphar.com>
+ <dc48b40748e24d3799e7ee66fa7e8cb4@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMOzHJO23ZakRs8b@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT106:EE_|DM6PR12MB4170:EE_
-X-MS-Office365-Filtering-Correlation-Id: 127d83b5-f094-4f62-d9d9-08db8f9a4a23
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AUlSMMIeRqnC8jVUCDdZkMovp+FvHbzqRXkUj8wYhJf4c5fyw26Ock6i8fRaPoSa5Eiw0YQQULkggQAf54dMTaDrrEudw3P1+nueb4I2/Jkw6PRzXdTpchZW8Fh7s2OB8AsxyKmNZIcegyGhBp2e5hTcTRPCs+PHmpBYOGslh5Z5+PM2Al9gXeoLXdQIOF/7zwj5ycm6u4hFPQh/I3Q5YZzHoUU3JOY/hX74P3WoZds+HWw478CqcMmBPaAhLn3pEjEFEEdnlgWiAR3p/2wr84UQ4KVVnTZj0jGcyZaH07ETWW5QyGuBz5nIE/5bfwH2cM90bwKebhTt3MxtI23Qe2O0z8NccDe4dehPGaP7aNWi1U7xIbkiiSBCCk98Ob5Ye13tNMYCTGo5GJgbvZnEU6ZnhTaZMm09ew6YZBmRo+XkxCsRcMF1HZKYTPIyF46nStZH/1udFaqW5T+at9CZ41866uvQB2UV1uG8wu0Q1UiKQepW8PiwQktkYvltfvP8fSkBR4us6rGUH+3F7nUMZFGP5kmpaStEq3CnjVMa+S9ftVmTJa/pIMPOxXB/R2H2XA0pE7V+lBV9EBFkmWgEmeyFMfdHpdW7G3wyP6JhvBbPtGW1eFvUQtA6bkmf24MQA0OxGlXLKc0ablu0iGsGdWUjZUM1Twe0fD1E/Ax7liTLXm5/ixvyalLKNlHgliQOHKhwPmghvR/JimJZqgimjus8AOSo6HHaTJkWsXQPoqE=
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(376002)(396003)(451199021)(82310400008)(46966006)(40470700004)(36840700001)(36860700001)(54906003)(9686003)(478600001)(336012)(47076005)(26005)(186003)(6636002)(53546011)(70586007)(6862004)(2906002)(426003)(316002)(8936002)(5660300002)(4326008)(8676002)(41300700001)(82740400003)(70206006)(7636003)(40460700003)(356005)(86362001)(55016003)(40480700001)(33716001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 18:41:43.2781
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 127d83b5-f094-4f62-d9d9-08db8f9a4a23
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT106.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4170
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+In-Reply-To: <dc48b40748e24d3799e7ee66fa7e8cb4@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,26 +102,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 09:22:52AM -0300, Jason Gunthorpe wrote:
-> On Fri, Jul 28, 2023 at 03:47:45PM +0800, Michael Shavit wrote:
-> > On Fri, Jul 28, 2023 at 4:57 AM Nicolin Chen <nicolinc@nvidia.com> wrote:
-> > 
-> > > It'd be nicer to align all the variables to "cd_table" like the
-> > > 2nd piece here. And if we rename the struct name too:
-> > >
-> > >         struct arm_smmu_cdtab_cfg *cd_table = xxxx;
-> > 
-> > I agree that renaming these would be nice. There's 36 usages of cdcfg
-> > in arm-smmu-v3.c, and 6 usages of  arm_smmu_ctx_desc_cfg.
-> > I can rename the struct since we'll be touching many of those in this
-> > patch anyways, but I'm a bit concerned of the churn from updating all
-> > the cdcfg usages.
+On Fri, Jul 28, 2023 at 08:43:58AM +0000, David Laight wrote:
+> ....
+> > FWIW, I agree with Christian that these behaviours are not ideal (and
+> > I'm working on a series that might allow for these things to be properly
+> > blocked in the future) but there's also the consistency argument -- I
+> > don't think fchownat() is much safer to allow in this way than
+> > fchmodat() and (again) this behaviour is already possible through
+> > procfs.
 > 
-> Will was not keen on churn for clarity so it seem better to be
-> thoughtful about what is touched to get this merged.
+> If the 'through procfs' involves readlink("/proc/self/fd/n") and
+> accessing through the returned path then the permission checks
+> are different.
+> Using the returned path requires search permissions on all the
+> directories.
 
-Still, it would be odd to have "cdcfg" and "cd_table" at the same
-time. If we have to be conservative, perhaps we should just align
-with the old naming: "struct arm_smmu_ctx_desc_cfg *cdcfg;"...
+That's *not* how "through procfs" works. The "magic symlinks" in
+/proc/*/fd are not actual symlinks that get dereferenced to the
+contents they readlink() to, but special-type objects that dereference
+directly to the underlying file associated with the open file
+description.
 
-Nicolin
+Rich
