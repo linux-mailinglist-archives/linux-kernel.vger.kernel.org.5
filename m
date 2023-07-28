@@ -2,228 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E864776736E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728A176736C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbjG1Rc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S231667AbjG1Rbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234338AbjG1RcS (ORCPT
+        with ESMTP id S229720AbjG1Rbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:32:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884363A8C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690565438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cl36FnvktkYbvD1zJaMZyNiWy19DEs6ZP3kw5lklrZI=;
-        b=OXnLYqwZbmIwRRRZs+NeDMXHHAXI1va+uLc3oXMmAWY8QK+/ya61xoyuivGk1Yi6dvuuMQ
-        PDZ8/S+EKYub3rnv1lZlrgDUBmx0UNY8Xj2OY/+NWq2VR5exK91EdKDeA2KCYpWKnMlL+Z
-        9ZSqDX3ZTtsqe1+BeayUGCJvW+4nXUE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-wHE345tSMfSaWIDj6MdrPQ-1; Fri, 28 Jul 2023 13:30:37 -0400
-X-MC-Unique: wHE345tSMfSaWIDj6MdrPQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbcae05906so16242285e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:30:37 -0700 (PDT)
+        Fri, 28 Jul 2023 13:31:33 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CB04682
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:05 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b6f97c7115so38469891fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690565459; x=1691170259;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0KWziT1mxdmTj7u48lfqOSCiVjBr+WD1yIdlFS/Mwc=;
+        b=x8guTRcRIw9KKkzFxIpzfV3dkfInedxmUv4ClFVbFFf/94ioI7vTIcMLq/aplaaEF4
+         z2JXqZerlGswc3R/Ms3G6VCOi4aRYmOgryymZ6BJ0TGxzDgLkHcbJH83jgdE/H08XcgW
+         +Rn8KhsBvTz8pbvjCEfvDcJRZNBYCnlXca5HACQnUTXzDdS6Mhm7qWmP4o3pF86wx8iw
+         RFJX4vzHKtL99Y/A2u9Uoy4OCelU+OOOD4kFZqsb2Ik8zKx4ATIOrI409U06GtLTrvk/
+         ohiTwBfuQhxgEiZ6UzBrHXjOV3SlCa1vD/Mh6eND/LvN/rA+cel78qXMXzL3AHDIhsxe
+         Bh3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690565436; x=1691170236;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cl36FnvktkYbvD1zJaMZyNiWy19DEs6ZP3kw5lklrZI=;
-        b=EgSswBkuFWfGOjT1VffgPzh28bynspmiSyLw30TCuG2w+ZKU0tWzX3bQACdajwIWdj
-         gxYR6XVkCI0dR7b8q2vpbW3EvdSC+Jw+nRfgObNuANoqWAIPwLe6MqMtb65Zjxc0R2O9
-         q5aRNfHXGmErXioU1gDZ/nefMNjwL6NDtDPFu7e4hwax4nzFN1mVm1ZmnvXnxbZU6CYB
-         hJZ0mLTvVGrCL70yeTC7RN1n7mnV4cekkgMW9fnxWImNRQ1ooiZuu9yj1q6ebcg/6sJ+
-         6LqKNTE2+9kZOAflwkqNlOqPp0UXvFYfvMVe3dRqg47MfdCcpUiFZb+PD9t1DiYjeA2N
-         mkXQ==
-X-Gm-Message-State: ABy/qLas1o8xYGTUWHJQ4SKPGak4khEvqAgpNW3FkRAgcIdiYbSP2GVq
-        XjUTzXRvQZwzLFQPidBXkVvMuxSSa1JLsOcNmc5yJB+dn+9qwVT8pqj9pZdSwAh9rFf6qvDhWl9
-        Ojzx2n6CCWu2hYBhGKidNNlpF
-X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr2509507wmm.13.1690565436052;
-        Fri, 28 Jul 2023 10:30:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGYuCUIu0HPfQ49F3gjLsVAJ43VYP/e6HVfw6FA/RBySDmmJqoUBeIQbEqCC2TFy39iizz9aA==
-X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr2509491wmm.13.1690565435629;
-        Fri, 28 Jul 2023 10:30:35 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b003fbc0a49b57sm4712526wml.6.2023.07.28.10.30.34
+        d=1e100.net; s=20221208; t=1690565459; x=1691170259;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y0KWziT1mxdmTj7u48lfqOSCiVjBr+WD1yIdlFS/Mwc=;
+        b=MucvdRRKWPlkYeT6UEqD0MS/FGHqx4F1jEz7CSMNdanu++J1xPABz4eN0AYfs2lCTm
+         SO8s1rWjFarRLqGHIHq1Z2hrxHaIHZceC3ja1Y9tUbEU2gr1wLD0GijqLii+ZZYbONJL
+         CXcHSv/nlW0vvOyb9NrvhE4wPOGFFU6uZcmi3E2IUhOHBrbflujr6D85IlmWUX9yw2JM
+         rF6uQkLRVrTyYmYar05ErWlzH871aamvMoLyeB8neTybzUM+vp2MLohmcEdG3UiJ6uSG
+         WGBGBF0YikNdTWKyxJ2q6sBv665OAnhAt8jfg6IDIVZouQd8/QwyqBh1LA40GgA5s3iT
+         guOg==
+X-Gm-Message-State: ABy/qLbrHuRyz5BvE+1iNbmhIvF26+w6WrwspTo0219MdzQupsq87lUz
+        JTbTuwaxkdCSyRhz5ZDcZEJHtw==
+X-Google-Smtp-Source: APBJJlG3TGvZ06ORf17+8RqZPHRtc8pJ+i+eQUUDvWXAGMRdy4DHCDBVcrup1yk0V0K2JXwvktHnHg==
+X-Received: by 2002:a2e:9e89:0:b0:2b6:d5af:1160 with SMTP id f9-20020a2e9e89000000b002b6d5af1160mr2249527ljk.28.1690565459316;
+        Fri, 28 Jul 2023 10:30:59 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id u22-20020a2ea176000000b002b6efce3f54sm1051032ljl.123.2023.07.28.10.30.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:30:35 -0700 (PDT)
-Message-ID: <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
-Date:   Fri, 28 Jul 2023 19:30:33 +0200
+        Fri, 28 Jul 2023 10:30:58 -0700 (PDT)
+Message-ID: <f95fa8c8-1794-fcbc-809d-62bfcc667822@linaro.org>
+Date:   Fri, 28 Jul 2023 19:30:57 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/33] iris: vidc: add helper functions for resource
+ management
 Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-In-Reply-To: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     quic_dikshita@quicinc.com
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-13-git-send-email-quic_vgarodia@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <1690550624-14642-13-git-send-email-quic_vgarodia@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 18:18, Linus Torvalds wrote:
-> On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
->>
->> This is my proposal on how to handle the fallout of 474098edac26
->> ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
->> accidentially missed that follow_page() and smaps implicitly kept the
->> FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
->> not trigger faults on PROT_NONE-mapped PTEs.
+On 28.07.2023 15:23, Vikash Garodia wrote:
+> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
 > 
-> Ugh.
-
-I was hoping for that reaction, with the assumption that we would get
-something cleaner :)
-
+> This implements ops to initialize, enable and disable extrenal
+> resources needed by video driver like power domains, clocks etc.
 > 
-> I hate how it uses FOLL_FORCE that is inherently scary.
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> ---
+There's a whole bunch of kerneldoc abuses (comments should start with
+/* and not /**). Make sure you have proper spaces between single-line
+C-style comments (e.g. /*Get should be /* Get etc.)
 
-I hate FOLL_FORCE, but I hate FOLL_NUMA even more, because to me it
-is FOLL_FORCE in disguise (currently and before 474098edac26, if
-FOLL_FORCE is set, FOLL_NUMA won't be set and the other way around).
-
-> 
-> Why do we have that "gup_can_follow_protnone()" logic AT ALL?
-
-That's what I was hoping for.
-
-> 
-> Couldn't we just get rid of that disgusting thing, and just say that
-> GUP (and follow_page()) always just ignores NUMA hinting, and always
-> just follows protnone?
-> 
-> We literally used to have this:
-> 
->          if (!(gup_flags & FOLL_FORCE))
->                  gup_flags |= FOLL_NUMA;
-> 
-> ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
-> be the rare crazy case.
-
-Yes, but my point would be that we now spell that "rare crazy case"
-out for follow_page().
-
-If you're talking about patch #1, I agree, therefore patch #3 to
-avoid all that nasty FOLL_FORCE handling in GUP callers.
-
-But yeah, if we can avoid all that, great.
-
-> 
-> The original reason for not setting FOLL_NUMA all the time is
-> documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
-> page faults from gup/gup_fast") from way back in 2012:
-> 
->           * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
->           * would be called on PROT_NONE ranges. We must never invoke
->           * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
->           * page faults would unprotect the PROT_NONE ranges if
->           * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
->           * bitflag. So to avoid that, don't set FOLL_NUMA if
->           * FOLL_FORCE is set.
+Capitalizing the first word within the comment would be nice too.
 
 
-In handle_mm_fault(), we never call do_numa_page() if
-!vma_is_accessible(). Same for do_huge_pmd_numa_page().
+Do we need a separate bus table? i.e. does it make sense to adjust the
+bandwidth values separately from the clock rates?
 
-So, if we would ever end up triggering a page fault on
-mprotect(PROT_NONE) ranges (i.e., via FOLL_FORCE), we
-would simply do nothing.
+Do you think there will be more than one set of msm_vidc_resources_ops?
+Perhaps it'd make sense to drop that layer of abstraction if not. Many
+function names could drop the __ prefix.
 
-At least that's the hope, I'll take a closer look just to make
-sure we're good on all call paths.
+A whole bunch of d_vpr_h seem almost excessive.
 
-> 
-> but I don't think the original reason for this is *true* any more.
-> 
-> Because then two years later in 2014, in commit c46a7c817e66 ("x86:
-> define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
-> Mel made the code able to distinguish between PROT_NONE and NUMA
-> pages, and he changed the comment above too.
+MSM_VIDC_CLKFLAG_* are unused.
 
-CCing Mel.
-
-I remember that pte_protnone() can only distinguished between
-NUMA vs. actual mprotect(PROT_NONE) by looking at the VMA -- vma_is_accessible().
-
-Indeed, include/linux/pgtable.h:
-
-/*
-  * Technically a PTE can be PROTNONE even when not doing NUMA balancing but
-  * the only case the kernel cares is for NUMA balancing and is only ever set
-  * when the VMA is accessible. For PROT_NONE VMAs, the PTEs are not marked
-  * _PAGE_PROTNONE so by default, implement the helper as "always no". It
-  * is the responsibility of the caller to distinguish between PROT_NONE
-  * protections and NUMA hinting fault protections.
-  */
-
-> 
-> But I get the very very strong feeling that instead of changing the
-> comment, he should have actually removed the comment and the code.
-> 
-> So I get the strong feeling that all these FOLL_NUMA games should just
-> go away. You removed the FOLL_NUMA bit, but you replaced it with using
-> FOLL_FORCE.
-> 
-> So rather than make this all even more opaque and make it even harder
-> to figure out why we have that code in the first place, I think it
-> should all just be removed.
-
-At least to me, spelling FOLL_FORCE in follow_page() now out is much
-less opaque then getting that implied by lack of FOLL_NUMA.
-
-> 
-> The original reason for FOLL_NUMA simply does not exist any more. We
-> know exactly when a page is marked for NUMA faulting, and we should
-> simply *ignore* it for GUP and follow_page().
-> 
-> I think we should treat a NUMA-faulting page as just being present
-> (and not NUMA-fault it).
-> 
-> Am I missing something?
-
-There was the case for "FOLL_PIN represents application behavior and
-should trigger NUMA faults", but I guess that can be ignored.
-
-But it would be much better to just remove all that if we can.
-
-Let me look into some details.
-
-Thanks Linus!
-
--- 
-Cheers,
-
-David / dhildenb
-
+Konrad
