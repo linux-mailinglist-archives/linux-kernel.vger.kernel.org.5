@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4896B7669B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E977669A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbjG1KCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        id S235673AbjG1KCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235349AbjG1KC3 (ORCPT
+        with ESMTP id S235462AbjG1KBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:02:29 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE0149CA;
-        Fri, 28 Jul 2023 03:01:59 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id da2d6a680178221d; Fri, 28 Jul 2023 12:01:57 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 0B801661E3D;
-        Fri, 28 Jul 2023 12:01:57 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Subject: [PATCH v2 2/3] cpuidle: teo: Avoid stopping the tick unnecessarily when bailing out
-Date:   Fri, 28 Jul 2023 12:00:46 +0200
-Message-ID: <3254124.aeNJFYEL58@kreacher>
-In-Reply-To: <5707588.DvuYhMxLoT@kreacher>
-References: <5707588.DvuYhMxLoT@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        Fri, 28 Jul 2023 06:01:37 -0400
+Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90ACF3AB3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:01:15 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:2087:0:640:7bf5:0])
+        by forward502c.mail.yandex.net (Yandex) with ESMTP id 283B75EE4B;
+        Fri, 28 Jul 2023 13:01:13 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id B1KbDDADTiE0-I1EYIKQu;
+        Fri, 28 Jul 2023 13:01:12 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1690538472;
+        bh=ESZY1sGhR3Y+dvnLoW0+tPGYGkgt+oQmDxblpO85+qU=;
+        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+        b=BFcJyDOE6LowbyQxaLJEg/JbE3I+Z3KY1eTcSk/GId2dfLBRQmUa9ueSoWGewLEr4
+         jkDoRfTFD+blSe2X2nsFWrUxvMQkFhoGU1+LW1HW1n9JN66TIbnG/I/yo81wCEfuqa
+         YH9gZfQd5p3pxd+uRA5gqYaQLuKNrAGk+eO0siTc=
+Authentication-Results: mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <cbc0c2d68b950bf984b5cb16ce7fa6d2348940ad.camel@maquefel.me>
+Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 28 Jul 2023 13:01:11 +0300
+In-Reply-To: <CAHp75VdSaxzU_7A7b=Htph29XA=ZbqUPJ6RJu+HtrSA2EbcXig@mail.gmail.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+         <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
+         <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
+         <79619e92b70fdb4b324758ddb34f84b3b8963256.camel@maquefel.me>
+         <CAHp75VdSaxzU_7A7b=Htph29XA=ZbqUPJ6RJu+HtrSA2EbcXig@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrieeigddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohepfhhrvggu
- vghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,95 +58,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, 2023-07-28 at 12:46 +0300, Andy Shevchenko wrote:
+> On Fri, Jul 28, 2023 at 12:28=E2=80=AFPM Nikita Shubin
+> <nikita.shubin@maquefel.me> wrote:
+> >=20
+> > Hello Andy!
+> >=20
+> > On Fri, 2023-07-21 at 17:13 +0300, Andy Shevchenko wrote:
+> > > On Thu, Jul 20, 2023 at 02:29:07PM +0300, Nikita Shubin via B4
+> > > Relay
+> > > wrote:
+> > > > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock_irqsave(&ep93xx_swl=
+ock, flags);
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regmap_read(map, EP93XX_SYSCO=
+N_DEVCFG, &val);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val &=3D ~clear_bits;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val |=3D set_bits;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regmap_write(map, EP93XX_SYSC=
+ON_SWLOCK,
+> > > > EP93XX_SWLOCK_MAGICK);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 regmap_write(map, EP93XX_SYSC=
+ON_DEVCFG, val);
+> > >=20
+> > > Is this sequence a must?
+> > > I.o.w. can you first supply magic and then update devcfg?
+> > >=20
+> >=20
+> > Unfortunately it is a must to write EP93XX_SYSCON_SWLOCK and only
+> > then
+> > the next write to swlocked registers will succeed.
+>=20
+> This doesn't answer my question. Can you first write a magic and then
+> _update_ the other register (update means RMW op)?
+>=20
 
-When teo_select() is going to return early in some special cases, make
-it avoid stopping the tick if the idle state to be returned is shallow.
+I see your point now - citing docs:
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |   50 +++++++++++++++++++++++++---------------
- 1 file changed, 32 insertions(+), 18 deletions(-)
+"Logic safeguards are included to condition the control signals for
+power connection to the matrix to prevent part damage. In addition, a
+software lock register is included that must be written with 0xAA
+before each register write to change the values of the four switch
+matrix control registers."
 
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -462,9 +462,9 @@ static int teo_select(struct cpuidle_dri
- 	/* Avoid unnecessary overhead. */
- 	if (idx < 0) {
- 		idx = 0; /* No states enabled, must use 0. */
--		goto end;
-+		goto bail_out;
- 	} else if (idx == idx0) {
--		goto end;
-+		goto bail_out;
- 	}
- 
- 	/*
-@@ -547,8 +547,10 @@ static int teo_select(struct cpuidle_dri
- 	 * If there is a latency constraint, it may be necessary to select an
- 	 * idle state shallower than the current candidate one.
- 	 */
--	if (idx > constraint_idx)
-+	if (idx > constraint_idx) {
- 		idx = constraint_idx;
-+		goto bail_out;
-+	}
- 
- 	/*
- 	 * If the CPU is being utilized over the threshold, choose a shallower
-@@ -569,23 +571,35 @@ static int teo_select(struct cpuidle_dri
- 
- end:
- 	/*
--	 * Don't stop the tick if the selected state is a polling one or if the
--	 * expected idle duration is shorter than the tick period length.
-+	 * Allow the tick to be stopped unless the selected state is a polling
-+	 * one or the expected idle duration is shorter than the tick period
-+	 * length.
- 	 */
--	if (((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) ||
--	    duration_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
--		*stop_tick = false;
-+	if ((!(drv->states[idx].flags & CPUIDLE_FLAG_POLLING) &&
-+	    duration_ns >= TICK_NSEC) || tick_nohz_tick_stopped())
-+		return idx;
- 
--		/*
--		 * The tick is not going to be stopped, so if the target
--		 * residency of the state to be returned is not within the time
--		 * till the closest timer including the tick, try to correct
--		 * that.
--		 */
--		if (idx > idx0 &&
--		    drv->states[idx].target_residency_ns > delta_tick)
--			idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
--	}
-+retain_tick:
-+	*stop_tick = false;
-+
-+	/*
-+	 * The tick is not going to be stopped, so if the target residency of
-+	 * the state to be returned is not within the time till the closest
-+	 * timer including the tick, try to correct that.
-+	 */
-+	if (idx > idx0 &&
-+	    drv->states[idx].target_residency_ns > delta_tick)
-+		idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
-+
-+	return idx;
-+
-+bail_out:
-+	/*
-+	 * Do not allow the tick to be stopped if the selected state is shallow
-+	 * enough.
-+	 */
-+	if (drv->states[idx].target_residency_ns < TICK_NSEC)
-+		goto retain_tick;
- 
- 	return idx;
- }
+So reading SHOULDN'T affect the lock.
 
-
+But as we checked reading also breaks the lock, that's why this looks
+so odd, it was done for purpose - i'll check it once again anyway.
 
