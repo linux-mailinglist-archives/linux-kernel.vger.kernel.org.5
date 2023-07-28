@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FD7766C23
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64159766C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235812AbjG1LxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
+        id S235790AbjG1LzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234473AbjG1LxM (ORCPT
+        with ESMTP id S236344AbjG1LzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:53:12 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EC5B5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:53:11 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso285746966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690545190; x=1691149990;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ien+0dckqnLWwB5xIKB8g7x05aKwPMmWHImINEJsbdc=;
-        b=qlO3CvyAFVUubKJ273SIs36eLN0cGKAdgV5du0jO1Ksgafk5MT2icPVPfPmAXnREpC
-         EdaVp2eaNEA5u/wPSCYTondDCXd/Ru+VWAB7zbkVRdl4C88RNZnz/PFyi1ll+v3rVni4
-         45QtvB5XJfgL2RbWAfLdiqhGYisRs0AL3ppC48ppSuu6IDuSZHvXy47tiW0mrp7FhMnV
-         nvvs2QEr99t5rXxv1MJeo/cysanNbqmnvmea7u7vUeVEjQC6hoYI2Dv2f16GJYwqcEVg
-         tIYuXyMwOtZMWLcTnc3M0G5fKnsviPKnAWcOZ2BFPlcFvELDCKRdn5/kTub9sMQkU4rp
-         L+ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690545190; x=1691149990;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ien+0dckqnLWwB5xIKB8g7x05aKwPMmWHImINEJsbdc=;
-        b=I0pXoVPaIOry3itpvUIemPK25zdZry/FovpVwcEcghb0aYOMajheiLWfbFOT+2umRv
-         hoqyz/t4p2swoKp9SQLlJ2ccBcJLMgAWIVITND6YkHfi5DsUzP7lf/Q2CkDl2fhinZko
-         I9e9b3ArsN3R5JCaRLZ9y036sJRYaRWVu+dl5uVRgd2cKKyMCXmyTelZcDPfX3hXZLiI
-         6jN1GkJErSjYz1XGsmSP1Lgs5YnHC9Z5Fdu5rxNgexjV0dj77R3IPTNwy1TpR/0v04zz
-         HE+3bJ+aVNEY8PT/IY2Zj+CzQhS/JAn3YGdFfLbJyVJEbO8AovXQmwyg1zv4vRrNFawR
-         quqA==
-X-Gm-Message-State: ABy/qLby8fRH2soo/JOv06NxUh4XTLyQxaqdVgRIKyqnPbOLIvmG3YQZ
-        Xmkbkvt+NKzpoTsFELARfotUGw==
-X-Google-Smtp-Source: APBJJlGnJFzK6I9oZtM+FA98OxfbMp4/Vs1wJq6IJhx1KqJ7hWxJFzKLr/x0xR0rEMS/u5T/Doz4bQ==
-X-Received: by 2002:a17:906:2207:b0:988:9b29:5653 with SMTP id s7-20020a170906220700b009889b295653mr1627910ejs.77.1690545189938;
-        Fri, 28 Jul 2023 04:53:09 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id kk9-20020a170907766900b00982cfe1fe5dsm1981569ejc.65.2023.07.28.04.53.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 04:53:09 -0700 (PDT)
-Message-ID: <02c907b9-9c86-9f97-35c1-70e9ed041cdb@linaro.org>
-Date:   Fri, 28 Jul 2023 13:53:07 +0200
+        Fri, 28 Jul 2023 07:55:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CD14204
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:55:06 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qPM3Y-0002Lt-RH; Fri, 28 Jul 2023 13:54:52 +0200
+Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qPM3X-002hCs-Gs; Fri, 28 Jul 2023 13:54:51 +0200
+Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
+        by dude03.red.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qPM3W-008twe-BD; Fri, 28 Jul 2023 13:54:50 +0200
+From:   Johannes Zink <j.zink@pengutronix.de>
+Subject: [PATCH v3 0/3] Support non-default LVDS data mapping for simple
+ panel
+Date:   Fri, 28 Jul 2023 13:54:37 +0200
+Message-Id: <20230523-simplepanel_support_nondefault_datamapping-v3-0-78ede374d3d9@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 13/50] dt-bindings: i2c: at91: Add sam9x7 compatible
- string
-Content-Language: en-US
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
-        andi.shyti@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230728102506.265917-1-varshini.rajendran@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728102506.265917-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAH2sw2QC/52OQW6DMBBFrxJ5HSeOnRLaVe9RRWjAYxgJxiPbo
+ FQRdy9klXWX70v/6T1VxkSY1dfhqRIulCnyBu54UN0A3KMmv7GyxjrzYZ3ONMmIAoxjk2eRmEr
+ DkT0GmMfSeCgwgQhxry+uc8Ei2DrUahO2kFG3CbgbduVSndy5RKHu/CbV7Zx1iGmCsn8kYaDHK
+ /DnvvFAucT0++pd7L7+K22x2uj6dvmsgvGmra7fgtzPJUWmx8mjuq/r+geFgOAaHQEAAA==
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        patchwork-jzi@pengutronix.de, kernel@pengutronix.de,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johannes Zink <j.zink@pengutronix.de>
+X-Mailer: b4 0.12.2
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 12:25, Varshini Rajendran wrote:
-> Add compatible string for sam9x7.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-> index 6adedd3ec399..6f3158604d02 100644
-> --- a/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/atmel,at91sam-i2c.yaml
-> @@ -27,6 +27,9 @@ properties:
->        - items:
->            - const: microchip,sama7g5-i2c
->            - const: microchip,sam9x60-i2c
-> +      - items:
-> +          - const: microchip,sam9x7-i2c
+Some LVDS panels, such as the innolux,g101ice-l01 support multiple LVDS
+data mapping modes, which can be configured by strapping a dataformat
+pin on the display to a specific voltage.
 
-Make it an enum with sama7g5.
+This can be particularly useful for using the jeida-18 format, which
+requires only 3 instead of 4 LVDS lanes.
 
-> +          - const: microchip,sam9x60-i2c
->  
->    reg:
->      maxItems: 1
-> @@ -84,6 +87,7 @@ allOf:
->                - atmel,sama5d4-i2c
->                - atmel,sama5d2-i2c
->                - microchip,sam9x60-i2c
-> +              - microchip,sam9x7-i2c
+This series moves the data-mapping property for LVDS panels in a
+separate file and optionally adds it to simple-panel when matching to
+the innolux,g101ice-l01 compatible. This property allows to override
+the default data mapping set in the panel description in simple-panel.
 
-This shouldn't be needed.
+The last patch in this series actually adds the driver support for
+parsing the data format override device tree property and modifying the
+corresponding values for bit per color and media bus format in the panel
+descriptor.
 
->                - microchip,sama7g5-i2c
->      then:
->        properties:
+Best regards
+Johannes
+
+---
+
+Changelog:
+
+v2 -> v3:  - dt bindings: Worked in Conor's and Laurent's Feedback
+	     (thanks for your review): Drop the chomping indicator
+	   - dt bindings: Worked in Laurent's Feedback: fix typos
+	   - driver: worked in Laurent's review findings:
+	     - extract function for fixing up the bus format
+	     - only call this function on LVDS panels
+	     - fix typo
+           - Link to v2: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v2-0-87196f0d0b64@pengutronix.de
+
+v1 -> v2:  - dt bindings: Worked in Rob's review findings (thanks for your
+             review), refactored to use common include instead of duplication
+           - driver: added missing error unwinding goto, as found by Dan
+             Carpenter's test robot:
+             Reported-by: kernel test robot <lkp@intel.com>
+             Reported-by: Dan Carpenter <error27@gmail.com>
+             Link: https://lore.kernel.org/r/202304160359.4LHmFOlU-lkp@intel.com/
+
+To: David Airlie <airlied@gmail.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Thierry Reding <thierry.reding@gmail.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: patchwork-jzi@pengutronix.de
+Cc: kernel@pengutronix.de
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+
+---
+Johannes Zink (3):
+      dt-bindings: display: move LVDS data-mapping definition to separate file
+      dt-bindings: display: simple: support non-default data-mapping
+      drm/panel-simple: allow LVDS format override
+
+ .../bindings/display/lvds-data-mapping.yaml        | 84 ++++++++++++++++++++++
+ .../devicetree/bindings/display/lvds.yaml          | 77 +++-----------------
+ .../bindings/display/panel/panel-simple.yaml       | 26 ++++++-
+ drivers/gpu/drm/panel/panel-simple.c               | 55 +++++++++++++-
+ 4 files changed, 172 insertions(+), 70 deletions(-)
+---
+base-commit: 52920704df878050123dfeb469aa6ab8022547c1
+change-id: 20230523-simplepanel_support_nondefault_datamapping-13c3f2ea28f8
 
 Best regards,
-Krzysztof
+-- 
+Johannes Zink <j.zink@pengutronix.de>
 
