@@ -2,204 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84416766526
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAA2766528
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbjG1HUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        id S233911AbjG1HUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbjG1HU3 (ORCPT
+        with ESMTP id S234082AbjG1HUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:20:29 -0400
-Received: from smtp.outgoing.loopia.se (smtp.outgoing.loopia.se [93.188.3.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316A01BE8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:20:25 -0700 (PDT)
-Received: from s807.loopia.se (localhost [127.0.0.1])
-        by s807.loopia.se (Postfix) with ESMTP id CBF422F980E1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:20:22 +0200 (CEST)
-Received: from s981.loopia.se (unknown [172.22.191.5])
-        by s807.loopia.se (Postfix) with ESMTP id BBCD92E2807C;
-        Fri, 28 Jul 2023 09:20:22 +0200 (CEST)
-Received: from s476.loopia.se (unknown [172.22.191.5])
-        by s981.loopia.se (Postfix) with ESMTP id B947A22B1771;
-        Fri, 28 Jul 2023 09:20:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Score: -1
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
-Received: from s899.loopia.se ([172.22.191.6])
-        by s476.loopia.se (s476.loopia.se [172.22.190.16]) (amavisd-new, port 10024)
-        with LMTP id eVhKdy9orxLa; Fri, 28 Jul 2023 09:20:22 +0200 (CEST)
-X-Loopia-Auth: webmail
-X-Loopia-User: richard@bit42.se
-Received: from webmail.loopia.se (unknown [172.22.212.7])
-        (Authenticated sender: richard@bit42.se)
-        by s899.loopia.se (Postfix) with ESMTPA id 18D582C8BA41;
-        Fri, 28 Jul 2023 09:20:22 +0200 (CEST)
+        Fri, 28 Jul 2023 03:20:48 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4486A268B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:20:45 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9bd59d465so26657231fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1690528843; x=1691133643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LkEJgaTxs/ddkAEFRCk2052gAcbygjssKU7AjsGzwec=;
+        b=PKQK3qh1VT8jWnxGjPqzEVsJuktxUM1+9+LsRoGobu0ema7mHkV2H7s6B44fGP6u0y
+         vYu6LWth0HrM+LQQpLoXSUx5GaLx8NtfKPAWlWnIYc0/RLtOewMQhwXBz2FShmr9NO02
+         MYxGpnAgxWm1C1bmbIs+P8NwK/IwN99YZkfj/PnK7QNXzBTEWJyq3RY55mpICMpteKf7
+         IcztGUSxxtggRc0qNgriTRKa9zOJmvGxUIbPZ16XNNAeAB0vyYPHFgKFibRMZPxwaNOu
+         MiSVRpatWcyzTLZjpEQyCYAX6xzBAw4hIaD9CbgmNd1rOnYRTeSrtCIzXGsUOXLf0vta
+         kmng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690528843; x=1691133643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LkEJgaTxs/ddkAEFRCk2052gAcbygjssKU7AjsGzwec=;
+        b=f/F+opCde4iqJW0+pOm5llNuPJKWmHUwzLKnLbiokLFfViq+XbuFzTrct6wgn+9fKe
+         wRbwNH7gGFYPkbF3Ov8Gu6AT8+S4NSD516XYpbM8jq3Aa5kFXnHqjZlNkmraOt5rIhCE
+         qX9e7EQ8LQ3XL5tXOuC0WM1soVXwYLeDMPq7nvwYbHkwi6SmTd+Jg2uKgsMvL6yezWnf
+         +TSPmHP8tqk/orPGbVbUFLCa1mBwERAqHjByxxImu+qHLfbGUHGZfmQa1C9QTeh3VmkS
+         bOA692ehr33Ygbox1zSp1VuASyMbRqtFQHX0nQkctAOn6FgPUEt4PIhux0jn3e283RwF
+         bdLQ==
+X-Gm-Message-State: ABy/qLaqHvIU7BCDtWLSrS/4yvNzh1FFGxcRnK1P9crQlCfvDUsE4Cji
+        NWhyH1G/RmT4gPbVeczoOusOvk13CeCQ1BBqWEvMzA==
+X-Google-Smtp-Source: APBJJlEYv4VXz8ssay967YiIFAwaE1Bq5ymyjMJx4WO3gnt0z/waK2x38yUfDHp5coKHkN/e3yk5XwZu3CgAkivseE8=
+X-Received: by 2002:a2e:84c6:0:b0:2b9:ac48:d804 with SMTP id
+ q6-20020a2e84c6000000b002b9ac48d804mr1129754ljh.38.1690528843528; Fri, 28 Jul
+ 2023 00:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 28 Jul 2023 09:20:22 +0200
-From:   richard@bit42.se
-To:     srinivas.kandagatla@linaro.org
-Cc:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        niklas.soderlund+renesas@ragnatech.se, robh+dt@kernel.org
-Subject: Re: [PATCH v5 2/2] nvmem: add new NXP QorIQ eFuse driver
-In-Reply-To: <20230410082051.2948510-2-richard@bit42.se>
-References: <20230410082051.2948510-1-richard@bit42.se>
- <20230410082051.2948510-2-richard@bit42.se>
-User-Agent: Loopia Webmail/1.6.1
-Message-ID: <61b5cf968aebc12f392c18b1817ec4c0@bit42.se>
-X-Sender: richard@bit42.se
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
+ <cbf0a8fd-3479-1684-fe90-81f2159804ef@linaro.org> <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
+ <20230728-penpal-prelude-29a952c03827@wendy>
+In-Reply-To: <20230728-penpal-prelude-29a952c03827@wendy>
+From:   Eric Lin <eric.lin@sifive.com>
+Date:   Fri, 28 Jul 2023 15:20:32 +0800
+Message-ID: <CAPqJEFo3LPuwm6dtgdMP243jYtT23LjaFvXDVQiF876WmOw1bQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
+ cache controller
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com, greentime.hu@sifive.com,
+        vincent.chen@sifive.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-04-10 10:20, Richard Alpe wrote:
-> Add SFP (Security Fuse Processor) read support for NXP (Freescale)
-> QorIQ series SOC's.
-> 
-> This patch adds support for the T1023 SOC using the SFP offset from
-> the existing T1023 device tree. In theory this should also work for
-> T1024, T1014 and T1013 which uses the same SFP base offset.
-> 
-> Signed-off-by: Richard Alpe <richard@bit42.se>
-> ---
-> v2: Rebase.
-> v3: Updates according to feedback from Srinivas.
-> v4,v5: No changes to this patch.
-> 
->  drivers/nvmem/Kconfig       | 12 ++++++
->  drivers/nvmem/Makefile      |  2 +
->  drivers/nvmem/qoriq-efuse.c | 78 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 92 insertions(+)
->  create mode 100644 drivers/nvmem/qoriq-efuse.c
-> 
-> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-> index 6dec38805041..43446e5f7d9b 100644
-> --- a/drivers/nvmem/Kconfig
-> +++ b/drivers/nvmem/Kconfig
-> @@ -377,4 +377,16 @@ config NVMEM_ZYNQMP
-> 
->  	  If sure, say yes. If unsure, say no.
-> 
-> +config NVMEM_QORIQ_EFUSE
-> +	tristate "NXP QorIQ eFuse support"
-> +	depends on PPC_85xx || COMPILE_TEST
-> +	depends on HAS_IOMEM
-> +	help
-> +	  This driver provides read support for the eFuses (SFP) on NXP QorIQ
-> +	  series SoC's. This includes secure boot settings, the globally 
-> unique
-> +	  NXP ID 'FUIDR' and the OEM unique ID 'OUIDR'.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called nvmem_qoriq_efuse.
-> +
->  endif
-> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-> index 6a1efffa88f0..b8fdf9b51953 100644
-> --- a/drivers/nvmem/Makefile
-> +++ b/drivers/nvmem/Makefile
-> @@ -74,3 +74,5 @@ obj-$(CONFIG_NVMEM_VF610_OCOTP)		+= 
-> nvmem-vf610-ocotp.o
->  nvmem-vf610-ocotp-y			:= vf610-ocotp.o
->  obj-$(CONFIG_NVMEM_ZYNQMP)		+= nvmem_zynqmp_nvmem.o
->  nvmem_zynqmp_nvmem-y			:= zynqmp_nvmem.o
-> +obj-$(CONFIG_NVMEM_QORIQ_EFUSE)		+= nvmem-qoriq-efuse.o
-> +nvmem-qoriq-efuse-y			:= qoriq-efuse.o
-> diff --git a/drivers/nvmem/qoriq-efuse.c b/drivers/nvmem/qoriq-efuse.c
-> new file mode 100644
-> index 000000000000..e7fd04d6dd94
-> --- /dev/null
-> +++ b/drivers/nvmem/qoriq-efuse.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + *  Copyright (C) 2023  Westermo Network Technologies AB
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/nvmem-provider.h>
-> +#include <linux/platform_device.h>
-> +
-> +struct qoriq_efuse_priv {
-> +	void __iomem *base;
-> +};
-> +
-> +static int qoriq_efuse_read(void *context, unsigned int offset, void 
-> *val,
-> +			    size_t bytes)
-> +{
-> +	struct qoriq_efuse_priv *priv = context;
-> +
-> +	/* .stride = 4 so offset is guaranteed to be aligned */
-> +	__ioread32_copy(val, priv->base + offset, bytes / 4);
-> +
-> +	/* Ignore trailing bytes (there shouldn't be any) */
-> +
-> +	return 0;
-> +}
-> +
-> +static int qoriq_efuse_probe(struct platform_device *pdev)
-> +{
-> +	struct nvmem_config config = {
-> +		.dev = &pdev->dev,
-> +		.read_only = true,
-> +		.reg_read = qoriq_efuse_read,
-> +		.stride = sizeof(u32),
-> +		.word_size = sizeof(u32),
-> +		.name = "qoriq_efuse_read",
-> +		.id = NVMEM_DEVID_AUTO,
-> +		.root_only = true,
-> +	};
-> +	struct qoriq_efuse_priv *priv;
-> +	struct nvmem_device *nvmem;
-> +	struct resource *res;
-> +
-> +	priv = devm_kzalloc(config.dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> +	if (IS_ERR(priv->base))
-> +		return PTR_ERR(priv->base);
-> +
-> +	config.size = resource_size(res);
-> +	config.priv = priv;
-> +	nvmem = devm_nvmem_register(config.dev, &config);
-> +
-> +	return PTR_ERR_OR_ZERO(nvmem);
-> +}
-> +
-> +static const struct of_device_id qoriq_efuse_of_match[] = {
-> +	{ .compatible = "fsl,t1023-sfp", },
-> +	{/* sentinel */},
-> +};
-> +MODULE_DEVICE_TABLE(of, qoriq_efuse_of_match);
-> +
-> +static struct platform_driver qoriq_efuse_driver = {
-> +	.probe = qoriq_efuse_probe,
-> +	.driver = {
-> +		.name = "qoriq-efuse",
-> +		.of_match_table = qoriq_efuse_of_match,
-> +	},
-> +};
-> +module_platform_driver(qoriq_efuse_driver);
-> +
-> +MODULE_AUTHOR("Richard Alpe <richard.alpe@bit42.se>");
-> +MODULE_DESCRIPTION("NXP QorIQ Security Fuse Processor (SFP) Reader");
-> +MODULE_LICENSE("GPL");
+On Fri, Jul 28, 2023 at 2:47=E2=80=AFPM Conor Dooley <conor.dooley@microchi=
+p.com> wrote:
+>
+> On Fri, Jul 28, 2023 at 02:01:28PM +0800, Eric Lin wrote:
+> > Hi Krzysztof,
+> >
+> > On Fri, Jul 21, 2023 at 4:35=E2=80=AFPM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> > >
+> > > On 20/07/2023 15:51, Eric Lin wrote:
+> > > > This add YAML DT binding documentation for SiFive Private L2
+> > > > cache controller
+> > > >
+> > > > Signed-off-by: Eric Lin <eric.lin@sifive.com>
+> > > > Reviewed-by: Zong Li <zong.li@sifive.com>
+> > > > Reviewed-by: Nick Hu <nick.hu@sifive.com>
+> > >
+> > >
+> > > ...
+> > >
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    items:
+> > > > +      - const: sifive,pl2cache1
+> > >
+> > > I still have doubts that it is not used in any SoC. This is what you
+> > > said last time: "is not part of any SoC."
+> > > If not part of any SoC, then where is it? Why are you adding it to th=
+e
+> > > kernel?
+> > >
+> >
+> > Sorry for the late reply. I didn't describe it clearly last time.
+> > Currently, we have two hardware versions of pl2cache: pl2cache0 and pl2=
+cache1.
+> > The pl2cache0 is used in unmatched board SoC.
+>
+> Wait a second, does the fu740 on the unmatched not have a ccache as
+> it's L2 cache?
+>
 
-Gentle ping on this Srinivas
+Hi Conor,
+Sorry, I misremember the L2 cache on the unmatched board.
+I just check again. The unmatched board L2 cache is ccache not
+pl2cache0. You are right. Thanks.
+
+Best regards,
+Eric Lin
+
+> > The pl2cache1 is
+> > utilized in our internal FPGA platform for evaluation; it's our core
+> > IP.
