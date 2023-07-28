@@ -2,185 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D727670B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B917670BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237380AbjG1PhM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S233488AbjG1Pht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235293AbjG1PhK (ORCPT
+        with ESMTP id S233787AbjG1Phq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:37:10 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B24B5;
-        Fri, 28 Jul 2023 08:37:07 -0700 (PDT)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6bb086bd510so181552a34.1;
-        Fri, 28 Jul 2023 08:37:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690558627; x=1691163427;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dZ0Z9ESIsyUW9gVEIrTvSkIVgy0wAqNp4Ppv7aOMRhQ=;
-        b=jB0+ZishA92/tK601hLFuXIxRGoRurL7p/kCPbyTHKs86w//RgXHdciI7gUhNCa0w6
-         Mmnrhr9FgCyBl7sp7UxhZ91H+tMdOC7y7/qZktceM3gnIzdskTPFlG8DfuSlyT1BjM/1
-         Pz3lo/EnVh16Gc0IUgM32ozE62N9ERn16wJjR4rZtANTxKDPkXlw6SF89zTqeAW6c1B2
-         65t+L9fKa0c4MespOhZGD1mRfDrgunLHwjb55cv5bW+9hcbxmlTpw3DmCd0K8od9HXmX
-         WKxMMO5xk/T3TM9d57QPKp+nqUkU3u/Wvhi52ujhDshRpKbAdL5GX+19gry+X+1kRlYm
-         h00g==
-X-Gm-Message-State: ABy/qLbo6ASC59jUs0ns655t2pDuKykUtte1U5Q5MLAMEEoRBKLuNofB
-        xQ39r8TFdQ+A/UgDJftqPSEPakpTYWCcSgoSILShC3tM
-X-Google-Smtp-Source: APBJJlFqjThyaz3tDJsCKI5rmy5O1v05lXluOQPh8HdSG0FSrGSUD9hwajfY7LFHI9Nbk+NavHB0ij0G7Rs38FV/4Xc=
-X-Received: by 2002:a05:6870:f682:b0:1b7:5e47:5b75 with SMTP id
- el2-20020a056870f68200b001b75e475b75mr3070027oab.4.1690558626842; Fri, 28 Jul
- 2023 08:37:06 -0700 (PDT)
+        Fri, 28 Jul 2023 11:37:46 -0400
+Received: from 8.mo562.mail-out.ovh.net (8.mo562.mail-out.ovh.net [46.105.60.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B943F10FA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:37:44 -0700 (PDT)
+Received: from director3.derp.mail-out.ovh.net (director3.derp.mail-out.ovh.net [152.228.215.222])
+        by mo562.mail-out.ovh.net (Postfix) with ESMTPS id A72BF22DA6;
+        Fri, 28 Jul 2023 15:37:42 +0000 (UTC)
+Received: from director3.derp.mail-out.ovh.net (director3.derp.mail-out.ovh.net. [127.0.0.1])
+        by director3.derp.mail-out.ovh.net (inspect_sender_mail_agent) with SMTP
+        for <conor+dt@kernel.org>; Fri, 28 Jul 2023 15:37:42 +0000 (UTC)
+Received: from pro2.mail.ovh.net (unknown [10.108.20.117])
+        by director3.derp.mail-out.ovh.net (Postfix) with ESMTPS id 72BB2101836;
+        Fri, 28 Jul 2023 15:37:42 +0000 (UTC)
+Received: from traphandler.com (88.161.25.233) by DAG1EX1.emp2.local
+ (172.16.2.1) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 17:37:41 +0200
+From:   Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Subject: [RESEND] [PATCH v11 0/4] Add a multicolor LED driver for groups of monochromatic LEDs
+Date:   Fri, 28 Jul 2023 17:37:27 +0200
+Message-ID: <20230728153731.3742339-1-jjhiblot@traphandler.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230728145515.990749537@infradead.org> <20230728145808.835742568@infradead.org>
-In-Reply-To: <20230728145808.835742568@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 28 Jul 2023 17:36:55 +0200
-Message-ID: <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     anna-maria@linutronix.de, rafael@kernel.org, tglx@linutronix.de,
-        frederic@kernel.org, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [88.161.25.233]
+X-ClientProxiedBy: CAS4.emp2.local (172.16.1.4) To DAG1EX1.emp2.local
+ (172.16.2.1)
+X-Ovh-Tracer-Id: 16196633111400692187
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrieeigdekkecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofgggfgtihesthekredtredttdenucfhrhhomheplfgvrghnqdflrggtqhhuvghsucfjihgslhhothcuoehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomheqnecuggftrfgrthhtvghrnhepjeeuhfeklefghfelhfethfegkedtvedvgfekledtheegueejuedtheekuefhffdtnecukfhppedtrddtrddtrddtpdekkedrudeiuddrvdehrddvfeefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpohhuthdphhgvlhhopeguihhrvggtthhorhefrdguvghrphdrmhgrihhlqdhouhhtrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomhdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhlvggushesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheeivd
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 5:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> In order to facilitate governors that track history in idle-state
-> buckets (TEO) making a useful decision about NOHZ, make sure we have a
-> bucket that counts tick-and-longer.
->
-> In order to be inclusive of the tick itself -- after all, if we do not
-> disable NOHZ we'll sleep for a full tick, the actual boundary should
-> be just short of a full tick.
->
-> IOW, when registering the idle-states, add one that is always
-> disabled, just to have a bucket.
+Resending this series as the v11 didn't apply cleanly.
+The patch adding devm_krealloc_array() has been dropped because this function is now available.
 
-This extra bucket can be created in the governor itself, can't it?
+Below is the original cover-letter.
 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  drivers/cpuidle/cpuidle.h |    2 +
->  drivers/cpuidle/driver.c  |   48 +++++++++++++++++++++++++++++++++++++++++++++-
->  include/linux/cpuidle.h   |    2 -
->  3 files changed, 50 insertions(+), 2 deletions(-)
->
-> --- a/drivers/cpuidle/cpuidle.h
-> +++ b/drivers/cpuidle/cpuidle.h
-> @@ -72,4 +72,6 @@ static inline void cpuidle_coupled_unreg
->  }
->  #endif
->
-> +#define SHORT_TICK_NSEC (TICK_NSEC - TICK_NSEC/32)
-> +
->  #endif /* __DRIVER_CPUIDLE_H */
-> --- a/drivers/cpuidle/driver.c
-> +++ b/drivers/cpuidle/driver.c
-> @@ -147,13 +147,37 @@ static void cpuidle_setup_broadcast_time
->                 tick_broadcast_disable();
->  }
->
-> +static int tick_enter(struct cpuidle_device *dev,
-> +                     struct cpuidle_driver *drv,
-> +                     int index)
-> +{
-> +       return -ENODEV;
-> +}
-> +
-> +static void __cpuidle_state_init_tick(struct cpuidle_state *s)
-> +{
-> +       strcpy(s->name, "TICK");
-> +       strcpy(s->desc, "(no-op)");
-> +
-> +       s->target_residency_ns = SHORT_TICK_NSEC;
-> +       s->target_residency = div_u64(SHORT_TICK_NSEC, NSEC_PER_USEC);
-> +
-> +       s->exit_latency_ns = 0;
-> +       s->exit_latency = 0;
-> +
-> +       s->flags |= CPUIDLE_FLAG_UNUSABLE;
-> +
-> +       s->enter = tick_enter;
-> +       s->enter_s2idle = tick_enter;
-> +}
-> +
->  /**
->   * __cpuidle_driver_init - initialize the driver's internal data
->   * @drv: a valid pointer to a struct cpuidle_driver
->   */
->  static void __cpuidle_driver_init(struct cpuidle_driver *drv)
->  {
-> -       int i;
-> +       int tick = 0, i;
->
->         /*
->          * Use all possible CPUs as the default, because if the kernel boots
-> @@ -163,6 +187,9 @@ static void __cpuidle_driver_init(struct
->         if (!drv->cpumask)
->                 drv->cpumask = (struct cpumask *)cpu_possible_mask;
->
-> +       if (WARN_ON_ONCE(drv->state_count >= CPUIDLE_STATE_MAX-2))
-> +               tick = 1;
-> +
->         for (i = 0; i < drv->state_count; i++) {
->                 struct cpuidle_state *s = &drv->states[i];
->
-> @@ -192,6 +219,25 @@ static void __cpuidle_driver_init(struct
->                         s->exit_latency_ns =  0;
->                 else
->                         s->exit_latency = div_u64(s->exit_latency_ns, NSEC_PER_USEC);
-> +
-> +               if (!tick && s->target_residency_ns >= SHORT_TICK_NSEC) {
-> +                       tick = 1;
-> +
-> +                       if (s->target_residency_ns == SHORT_TICK_NSEC)
-> +                               continue;
-> +
-> +                       memmove(&drv->states[i+1], &drv->states[i],
-> +                               sizeof(struct cpuidle_state) * (CPUIDLE_STATE_MAX - i - 1));
-> +                       __cpuidle_state_init_tick(s);
-> +                       drv->state_count++;
-> +                       i++;
-> +               }
-> +       }
-> +
-> +       if (!tick) {
-> +               struct cpuidle_state *s = &drv->states[i];
-> +               __cpuidle_state_init_tick(s);
-> +               drv->state_count++;
->         }
->  }
->
-> --- a/include/linux/cpuidle.h
-> +++ b/include/linux/cpuidle.h
-> @@ -16,7 +16,7 @@
->  #include <linux/hrtimer.h>
->  #include <linux/context_tracking.h>
->
-> -#define CPUIDLE_STATE_MAX      10
-> +#define CPUIDLE_STATE_MAX      16
->  #define CPUIDLE_NAME_LEN       16
->  #define CPUIDLE_DESC_LEN       32
->
->
->
+
+
+Some HW design implement multicolor LEDs with several monochromatic LEDs.
+Grouping the monochromatic LEDs allows to configure them in sync and use
+the triggers.
+The PWM multicolor LED driver implements such grouping but only for
+PWM-based LEDs. As this feature is also desirable for the other types of
+LEDs, this series implements it for any kind of LED device.
+
+changes v10->v11:
+  - updated commit logs of patch 2 and 3
+  - Improved comments
+
+changes v9->v10:
+  - updated comments and kconfig description
+  - renamed all 'led_mcg_xxx' into 'leds_gmc_xxx'
+
+changes v8->v9:
+  - rebased on top of lee-leds/for-leds-next
+  - updated kernel version and date for /sys/class/leds/<led>/color in
+    Documentation/ABI/testing/sysfs-class-led
+  - dropped patch "leds: class: simplify the implementation of
+    devm_of_led_get()" because __devm_led_get() is now used by
+    devm_led_get()
+
+changes v7->v8:
+ - consistently use "LEDs group multicolor" throughout the code.
+ - rename some variables with more explicit names.
+ - improve comments.
+ - use the 100-characters per line limit.
+
+changes v6->v7:
+ - in led_mcg_probe() increment the counter at the end of the loop for
+   clarity.
+
+changes v5->v6:
+ - restore sysfs access to the leds when the device is removed
+
+changes v4->v5:
+ - Use "depends on COMPILE_TEST || OF" in Kconfig to indicate that OF
+   is a functional requirement, not just a requirement for the
+   compilation.
+ - in led_mcg_probe() check if devm_of_led_get_optional() returns an
+   error before testing for the end of the list.
+ - use sysfs_emit() instead of sprintf() in color_show().
+ - some grammar fixes in the comments and the commit logs.
+
+changes v2->v3, only minor changes:
+ - rephrased the Kconfig descritpion
+ - make the sysfs interface of underlying LEDs read-only only if the probe
+   is successful.
+ - sanitize the header files
+ - removed the useless call to dev_set_drvdata()
+ - use dev_fwnode() to get the fwnode to the device.
+
+changes v1->v2:
+ - Followed Rob Herrings's suggestion to make the dt binding much simpler.
+ - Added a patch to store the color property of a LED in its class
+   structure (struct led_classdev).
+Jean-Jacques Hiblot (4):
+  leds: provide devm_of_led_get_optional()
+  leds: class: store the color index in struct led_classdev
+  dt-bindings: leds: Add binding for a multicolor group of LEDs
+  leds: Add a multicolor LED driver to group monochromatic LEDs
+
+ Documentation/ABI/testing/sysfs-class-led     |   9 +
+ .../bindings/leds/leds-group-multicolor.yaml  |  64 +++++++
+ drivers/leds/led-class.c                      |  46 +++++
+ drivers/leds/rgb/Kconfig                      |  12 ++
+ drivers/leds/rgb/Makefile                     |   1 +
+ drivers/leds/rgb/leds-group-multicolor.c      | 169 ++++++++++++++++++
+ include/linux/leds.h                          |   3 +
+ 7 files changed, 304 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-group-multicolor.yaml
+ create mode 100644 drivers/leds/rgb/leds-group-multicolor.c
+
+-- 
+2.34.1
+
