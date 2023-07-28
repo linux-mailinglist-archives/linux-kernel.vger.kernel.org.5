@@ -2,157 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C35A7671F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401A4767208
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbjG1QhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S230049AbjG1Qk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbjG1QhA (ORCPT
+        with ESMTP id S229685AbjG1QkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:37:00 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5A54489
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:36:56 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-317715ec496so2401609f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690562215; x=1691167015;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kv1vn8i10uKiVGMZqWV0hp2dp0U/OH8nWn1xPOKpe2E=;
-        b=WXsUGfp3JibzzSWaJLOYRCf5x8xXWgYZKzFIf69dgVy9YK8C4NDwHyEDFZXz5w3U4v
-         QQOs8VR3xBCFtRC9Uc3C7jDtHbHf/TVcDQbt3KNBbvC3KguUj++OBRSmosar1TXhCfCO
-         cgVRNgC2CqwGVozxV9BCvuohUn46t+dccFpMTd9ejv8OKqQcVDJDj14Xf7r2EkIsfxZ5
-         ogiBvgZjEDgqBJiNCt+R3MZB3dOH5vA6Wa4t08ltVHwtTVkpajcfwR8vctgSe4BB19fI
-         6WAvtCklIkG3U/TnlOkzeYCurxGOclz0CiZwVtqU4t3uUZ/xLeZzpgcwN0UIfUeqn7Sx
-         T+Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562215; x=1691167015;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kv1vn8i10uKiVGMZqWV0hp2dp0U/OH8nWn1xPOKpe2E=;
-        b=T7RPmEKgPTMakrmk2LVXG9g0TYz7+NM3O8YL5/bLW2EE97/tbnDnviPkAc8+HS5Bjj
-         LmwZZe+lq1IJP0QCTeaHZP01gP3ueKHdueh5plP8f25tFP+6Ar3k2eAIfA+m9TjQIaBV
-         VynwFFpMew6vBJzhipsxI7u2GaoN0GWiJJLY/XxWJBzzTEDialQmEsJf4qslN9UnvKyq
-         gnD8q+xqyzGvngDeN+o8jI2fPw8b9XkictXiy45tRzBMRrgA/3F/gNH6u6MfAOPCtpKx
-         X4EIC9kYkLQBeoD4iKh8MltIGZLilAgmibyuG+9DalvkCeiATHrp7kN7WwwwA3F/L544
-         DdGQ==
-X-Gm-Message-State: ABy/qLbpwwrCiLI3smBpns6411JYMlhmTX2SXkP5j8Kk5AlqwUNB2WGO
-        C3E3pmK208kn4mX3zpsBbyOidg==
-X-Google-Smtp-Source: APBJJlFtwmVxo8pxiclcUgLI8fwOIzC/1t6avYTLDMrZvATE9p+eFs+1MvU7kydx7xR6YX3cFZ69Tg==
-X-Received: by 2002:a05:6000:11:b0:317:5de3:86fb with SMTP id h17-20020a056000001100b003175de386fbmr2171475wrx.10.1690562214762;
-        Fri, 28 Jul 2023 09:36:54 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id p9-20020a5d48c9000000b0031433443265sm5235215wrs.53.2023.07.28.09.36.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 09:36:54 -0700 (PDT)
-Message-ID: <30943376-f895-2eb9-1b00-55ce56f51742@linaro.org>
-Date:   Fri, 28 Jul 2023 18:36:47 +0200
+        Fri, 28 Jul 2023 12:40:24 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2081.outbound.protection.outlook.com [40.107.237.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94299E;
+        Fri, 28 Jul 2023 09:40:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DQK1e4ej3rSo1w4parAFOeIRMOsg9/DXxU0A2EVPc6R6pXRlywGou6bRruC1Ec0PQSj8cAczKTVU2G3esjwsoNk6CpmgNkTSr2tUfGAUQeNCiB1u+3xq7+qetPzDj7LZ5XqZghOIu9t2p5xJM1gDQM9cs1p7vyXISCMf1Web23285dJrNksLuqJC9oD3/BOrnS2b9AGs9IYqpiZ6RODIPMITD+l08C0lt5UyWl3bEs5ARZSIVscJymGuTvhuw7pIy7X3ukctUTrCcSv3yMWHEnc0NVTQtlKRYLjk/o0mSpElHx6q8/sGPMiFnfTDzSvHTzjFrx8m/JVGBudJl9pkbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yfagcM595CBddVOpZ8s2WHITdqCWuHqZNcCEFdTwj50=;
+ b=MR412B+AS5yOxjeoIIuIWV9SyzLPFN+eN0kOh9q92BXoBXLqxlAcrUpbcQoDfMpmgYCiRrLZq8KqZy7Ka3cHif753Wdm5vpVbgIecjWdRif28KexwsSuqC8/Bbfomk9JGZeq4FUipucGdtpqr9xKyVD9h5Fb8Hsdsf8dteqlacx70nIYO0tg0cGlQana0uNAYb1LMysvYiFSoviusZnEfwIzetQpXNcTEsor9+Ur+IhZOEvz38OHJW21oIUFDEioNMkTqA3uoTERdiZWugC5PFX8Bdk9fP18pgHqDuREnZGWLvRXoY32i29RChmWg4eXshU/l8jHM5BCKmNLxFx/zg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yfagcM595CBddVOpZ8s2WHITdqCWuHqZNcCEFdTwj50=;
+ b=GNfC/rMs0HiZhy1Vg6v2KGbYncyVIZWLvYe2ImxrL+G1RDPnB34lTnLGZeFuKNlOBaHPrruJsDU/D/V76SkDY0QPeuF2AOrazqfsKHWdzrVw8LyXaoktndrwuGxTL4fHPaO5XFLw/CbV4r9r2OM3lJdlUCFyY5DOVemw63l04X4=
+Received: from DM6PR02CA0050.namprd02.prod.outlook.com (2603:10b6:5:177::27)
+ by SJ1PR12MB6314.namprd12.prod.outlook.com (2603:10b6:a03:457::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 16:40:14 +0000
+Received: from DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:177:cafe::ec) by DM6PR02CA0050.outlook.office365.com
+ (2603:10b6:5:177::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Fri, 28 Jul 2023 16:40:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT004.mail.protection.outlook.com (10.13.172.217) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6631.29 via Frontend Transport; Fri, 28 Jul 2023 16:40:13 +0000
+Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 11:40:08 -0500
+From:   Ayush Jain <ayush.jain3@amd.com>
+To:     <akpm@linux-foundation.org>, <shuah@kernel.org>,
+        <pasha.tatashin@soleen.com>, <zhansayabagdaulet@gmail.com>,
+        <tyhicks@linux.microsoft.com>, <shr@devkernel.io>,
+        <raghavendra.kt@amd.com>
+CC:     <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Narasimhan.V@amd.com>,
+        <Santosh.Shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v2 1/2] selftests: mm: ksm: Fix incorrect evaluation of parameter
+Date:   Fri, 28 Jul 2023 22:09:51 +0530
+Message-ID: <20230728163952.4634-1-ayush.jain3@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 00/50] Add support for sam9x7 SoC family
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Varshini Rajendran <varshini.rajendran@microchip.com>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
-        andi.shyti@kernel.org, tglx@linutronix.de, maz@kernel.org,
-        lee@kernel.org, ulf.hansson@linaro.org, tudor.ambarus@linaro.org,
-        richard@nod.at, vigneshr@ti.com, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, linus.walleij@linaro.org,
-        sre@kernel.org, p.zabel@pengutronix.de, olivia@selenic.com,
-        a.zummo@towertech.it, radu_nicolae.pirea@upb.ro,
-        richard.genoud@gmail.com, gregkh@linuxfoundation.org,
-        lgirdwood@gmail.com, broonie@kernel.org, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux@armlinux.org.uk,
-        durai.manickamkr@microchip.com, andrew@lunn.ch,
-        jerry.ray@microchip.com, andre.przywara@arm.com, mani@kernel.org,
-        alexandre.torgue@st.com, gregory.clement@bootlin.com,
-        arnd@arndb.de, rientjes@google.com, deller@gmx.de,
-        42.hyeyoo@gmail.com, vbabka@suse.cz, mripard@kernel.org,
-        mihai.sain@microchip.com, codrin.ciubotariu@microchip.com,
-        eugen.hristev@collabora.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-References: <20230728102223.265216-1-varshini.rajendran@microchip.com>
- <c0792cfd-db4f-7153-0775-824912277908@linaro.org>
- <20230728-floss-stark-889158f968ea@spud> <20230728180443.55363550@xps-13>
- <20230728-perfectly-online-499ba99ce421@spud>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728-perfectly-online-499ba99ce421@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT004:EE_|SJ1PR12MB6314:EE_
+X-MS-Office365-Filtering-Correlation-Id: ab2184fb-2c21-462b-374c-08db8f895152
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7CkK629iEgji1PAgg3dop7x2E16PJA6R0vXzZu37IxxHAKtYFo710IcNWHX22gxk89pbjmQMJfK9x/llscITu/lexs8nd0Oa8xO72XeuywPjW1FegLYy84x57LU0bJUBb1hJYcOyOFB1zSBe5QT2JBI/RngZgO4+C6/kRF4k269uyeB4/obMmwkV8m3cNIs2ey5I9xHK+GTY2x/gTpkX1pDsQAqN93ehV1Lj0eVFabnaiyWKF4wK8XkFAC1PfHEKllnXphEDs49/33BNzxONSn1HBR0ZpO4+Xl9Hv3M0vZHvrfLYW+eMllCrnLN5Ycprd6db4iAsR6iD+mxCWIzq+xAKrkNA0rOMz6tRdweBNqD5kj5M/NmBcF6VeqIRGTQ5k3vBaHS9oeYxfr0iMQI8J1vP5AyzXusx5XwxXJj7VkWrTNzOtk3uPSLajaVIFpVPzQMVZrDti2XP03WOcLUDj2YpBrytrfXD6gKF2VOCflD219beIagwzoSCLIQAGHYhcxai7olWHttG8Gnq9SxjvmgjGvFu4VAM6sS+8YqC5wBggx/jMgubdgP6xRrzGHha5MW2YCsS4wD7VRgwE/pDTKVUNkS78hStPg7azAbTiyUPkgyOcUOgYR7IOIJzejTZdaToZkqCZNm4tiS9omUM3XiKFEyXwqDc7cIUG7cy7dEmnIVu+l7kUE7xItn+vCisTtyZR0OH+m8r9MjUWjrAiTws8PaRXBYbxV91Hrsu4zM26g2o5RYdUC2WAa+rKrfFH5h6cy0jORPuXtO9Z9H/4A==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(346002)(396003)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(6636002)(4326008)(70206006)(6666004)(70586007)(40480700001)(5660300002)(478600001)(82740400003)(7696005)(316002)(356005)(110136005)(54906003)(81166007)(40460700003)(86362001)(41300700001)(8936002)(8676002)(26005)(1076003)(186003)(7416002)(16526019)(336012)(83380400001)(426003)(47076005)(2616005)(36860700001)(2906002)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:40:13.9910
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab2184fb-2c21-462b-374c-08db8f895152
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6314
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 18:10, Conor Dooley wrote:
-> On Fri, Jul 28, 2023 at 06:04:43PM +0200, Miquel Raynal wrote:
->> Hi Conor,
->>
->> conor@kernel.org wrote on Fri, 28 Jul 2023 16:50:24 +0100:
->>
->>> On Fri, Jul 28, 2023 at 01:32:12PM +0200, Krzysztof Kozlowski wrote:
->>>> On 28/07/2023 12:22, Varshini Rajendran wrote:  
->>>>> This patch series adds support for the new SoC family - sam9x7.
->>>>>  - The device tree, configs and drivers are added
->>>>>  - Clock driver for sam9x7 is added
->>>>>  - Support for basic peripherals is added
->>>>>  - Target board SAM9X75 Curiosity is added
->>>>>   
->>>>
->>>> Your threading is absolutely broken making it difficult to review and apply.  
->>>
->>> I had a chat with Varshini today, they were trying to avoid sending the
->>> patches to a massive CC list, but didn't set any in-reply-to header.
->>> For the next submission whole series could be sent to the binding &
->>> platform maintainers and the individual patches additionally to their
->>> respective lists/maintainers. Does that sound okay to you, or do you
->>> think it should be broken up?
->>
->> I usually prefer receiving the dt-bindings *and* the driver changes, so
->> I can give my feedback on the description side, as well as looking at
->> the implementation and see if that really matches what was discussed
->> with you :)
-> 
-> Right, that is what I was suggesting. Respective maintainers would get
-> the drivers *and* bindings for their subsystems - IOW, each patch is
-> sent to what get_maintainer.pl outputs for it.
+A missing break in kms_tests leads to kselftest hang when the
+parameter -s is used.
+In current code flow because of missing break in -s, -t parses
+args spilled from -s and as -t accepts only valid values as 0,1
+so any arg in -s >1 or <0, gets in ksm_test failure
 
-For reviewers I find the easiest if this is mostly split per subsystem.
-There were here few patches for USB, few clk etc, so these easily can be
-separate patchsets. All the rest one-liners or one-patch-per-subsystem
-could be grouped and set in one patchset, after fixing the threading.
+This went undetected since, before the addition of option -t,
+the next case -M would immediately break out of the switch
+statement but that is no longer the case
 
-But the moment the patchset grows to 50 it's time to re-think it whether
-this grouping is necessary or even beneficial.
+Add the missing break statement.
 
-This is not a conversion of mach to DT (like ep93xx) which benefits of
-doing everything in one step. Therefore my recommendation for this work
-is to split it entirely per each subsystem.
+----Before----
+./ksm_tests -H -s 100
+Invalid merge type
 
-Best regards,
-Krzysztof
+----After----
+./ksm_tests -H -s 100
+Number of normal pages:    0
+Number of huge pages:    50
+Total size:    100 MiB
+Total time:    0.401732682 s
+Average speed:  248.922 MiB/s
+
+Fixes: 07115fcc15b4 ("selftests/mm: add new selftests for KSM")
+
+Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+v1 -> v2
+collect Reviewed-by from David
+Updated Fixes tag from commit 9e7cb94ca218 to 07115fcc15b4
+
+ tools/testing/selftests/mm/ksm_tests.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/mm/ksm_tests.c b/tools/testing/selftests/mm/ksm_tests.c
+index 435acebdc325..380b691d3eb9 100644
+--- a/tools/testing/selftests/mm/ksm_tests.c
++++ b/tools/testing/selftests/mm/ksm_tests.c
+@@ -831,6 +831,7 @@ int main(int argc, char *argv[])
+ 				printf("Size must be greater than 0\n");
+ 				return KSFT_FAIL;
+ 			}
++			break;
+ 		case 't':
+ 			{
+ 				int tmp = atoi(optarg);
+-- 
+2.34.1
 
