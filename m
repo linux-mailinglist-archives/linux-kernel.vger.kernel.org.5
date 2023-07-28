@@ -2,51 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4C3767900
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7B676791C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbjG1XbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 19:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
+        id S235027AbjG1Xoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbjG1XbF (ORCPT
+        with ESMTP id S229729AbjG1Xog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:31:05 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F237D3ABA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:31:02 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a5aca1f256so4951045b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:31:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690587062; x=1691191862;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9XK5R4vj6jmlyUaEy1WvV9F1ok9mBsn5rQtLTiJ9nzc=;
-        b=T8yZHeWjprdcYKNsqiMUeVPN6FlbiBNOUgJC7FN55zBoF9cHY/rYY9KOQ5oyIq8eUE
-         ArxdmEz9EKI8sCH1pTVR30kaqeMBp37lo4unDJnnTp+WkFKUmjkw7fU/o7ySO59+PrHw
-         x+G2CD81vJUdlTS416wXfra7yU/L1fDSWLKgnuMD6RGfMYkvonbv9m3BH21KU04EBeik
-         ukU9qtApv5riX4ijAMuAVzKHhP9Xzs6/6Ehf+6BhK5fab49vE4IZ5+P75EU182TErdi4
-         U3vCxr2pFxZ6H/1pWAfrLheYMJ3XGosQrfEoS3Z2vddutestB8AhPWw2qzBf3BPWYK0f
-         TicA==
-X-Gm-Message-State: ABy/qLYbC3VQKP9+0V+aCc4luWQM9fle6q/ICqhnGQmdazn8wCD+V9bK
-        e8UvVEqpgDCh2aT3NcLcu3S4MP9yXHV+GOQi6+ZlZVDTccEN
-X-Google-Smtp-Source: APBJJlHKxP78PF7u5hDtH4SDpf5HHDu6MWTEs30FNciSsMcqGWN5YbKWL39rSB1Ag51R95tIb2DbTYNELYkSgd+HfJ54azyBLGKD
+        Fri, 28 Jul 2023 19:44:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDDB4231;
+        Fri, 28 Jul 2023 16:44:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C236D62208;
+        Fri, 28 Jul 2023 23:44:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A074C433C8;
+        Fri, 28 Jul 2023 23:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690587872;
+        bh=cWmX8dje9L/t2n0sGzkMqdIweI7HyRrXvW9fatE/XmQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sEVL1iBujhtX6KL8vieDNOZRit8WKLYgDPzlWjysDVvATw3dW3wMmAmqcv34C7gRX
+         ixTPaqduG6ZU+yDJxPY0C3oJHXRYtTeQkkOUf9/047ZjrYURNDRWQxHlx+8tFetvl2
+         gs+UByaUwQOUX/PxL/HkxJI+P/D5LLLhEY4Z47Iw2CkDYTcr+cSKgchC9Dlz7hUZsj
+         QKcn/9LAtdOSVe1jtA2tZfPMnMi/QT++V+KxpJ0wvSvygmtVpqvsfWgZUqK1Vq7pfT
+         lrP2XQW+jWAq9IE9uEO62ZFYFgeVg9jPpJiFVb0TnAFo2Jznnfl5w2gzg6V/begJs8
+         lhnvdL500Uy1A==
+Date:   Fri, 28 Jul 2023 16:44:29 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+        Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
+ riscv and loongarch
+Message-ID: <20230728234429.GA611252@dev-arch.thelio-3990X>
+References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
+ <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
+ <20230727213648.GA354736@dev-arch.thelio-3990X>
+ <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
+ <20230728173103.GA1299743@dev-arch.thelio-3990X>
+ <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1511:b0:3a3:8466:ee55 with SMTP id
- u17-20020a056808151100b003a38466ee55mr7166601oiw.8.1690587062239; Fri, 28 Jul
- 2023 16:31:02 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 16:31:02 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004e88ee0601947922@google.com>
-Subject: [syzbot] [reiserfs?] kernel BUG in reiserfs_rename
-From:   syzbot <syzbot+d843d85655e23f0f643b@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,94 +65,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jul 28, 2023 at 10:56:38PM +0200, Arnd Bergmann wrote:
+> On Fri, Jul 28, 2023, at 19:31, Nathan Chancellor wrote:
+> > On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
+> >>
+> >> of the uapi version. The sanity check in the kernel-side header
+> >> is intended to cross-check the CONFIG_64BIT value against the
+> >> __BITS_PER_LONG constant from the header.
+> >> 
+> >> My first guess would be that this only worked by accident if the headers
+> >> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
+> >> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
+> >> is actually correct.
+> >
+> > That seems like a reasonable theory. I am still busy looking into other
+> > things today but I can try to double back to this on Monday if you don't
+> > make any progress.
+> 
+> I tried reproducing this today on arm64 Debian with linux-6.5-rc3
+> and clang-14.0.6 but I don't see the problem here. With 'make V=1'
+> I see command for building scripts/sorttable is
+> 
+> clang -Wp,-MMD,scripts/.sorttable.d -Wall -Wmissing-prototypes \
+>  -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11   \
+>  -I./tools/include -I./tools/arch/x86/include -DUNWINDER_ORC_ENABLED \
+>  -o scripts/sorttable scripts/sorttable.c   -lpthread
+> 
+> which does create an arm64 executable but includes the x86 headers,
+> which is clearly a bug by itself, it just doesn't trigger the problem
+> for me.
 
-syzbot found the following issue on:
+I could not initially reproduce this on Debian either but I figured out
+why that might be: the default include paths on Debian look different
+from Fedora so just doing 'headers_install' into /usr will not reproduce
+this. If I add '-H' to that GCC command, Debian shows (I highlighted the
+key difference):
 
-HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16c6c14ea80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c4a2640e4213bc2f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d843d85655e23f0f643b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c0600ca80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=122e48a1a80000
+  . /linux-stable/scripts/sorttable.h
+  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
+  ... /linux-stable/tools/include/linux/types.h
+  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stdbool.h
+  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stddef.h
+  .... /usr/include/aarch64-linux-gnu/asm/types.h
+  ..... /usr/include/asm-generic/types.h
+  ...... /usr/include/asm-generic/int-ll64.h
+  ....... /usr/include/aarch64-linux-gnu/asm/bitsperlong.h <-
+  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
+  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9d87aa312c0e/disk-e40939bb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/22a11d32a8b2/vmlinux-e40939bb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0978b5788b52/Image-e40939bb.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b8490ef2d44b/mount_0.gz
+Whereas Fedora shows:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d843d85655e23f0f643b@syzkaller.appspotmail.com
+  . /linux-stable/scripts/sorttable.h
+  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
+  ... /linux-stable/tools/include/linux/types.h
+  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stdbool.h
+  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stddef.h
+  .... /usr/include/asm/types.h
+  ..... /usr/include/asm-generic/types.h
+  ...... /usr/include/asm-generic/int-ll64.h
+  ....... /usr/include/asm/bitsperlong.h <-
+  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
+  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
 
-------------[ cut here ]------------
-kernel BUG at fs/reiserfs/prints.c:390!
-Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 6505 Comm: syz-executor261 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __reiserfs_panic+0x150/0x154 fs/reiserfs/prints.c:384
-lr : __reiserfs_panic+0x150/0x154 fs/reiserfs/prints.c:384
-sp : ffff800099bf7140
-x29: ffff800099bf7200 x28: ffff800099bf74c0
- x27: ffff800099bf77d0
-x26: ffff0000e03be518 x25: ffff0000e03be4f0 x24: ffff800099bf71c0
-x23: ffff800099bf7180 x22: ffff80008a6b48e0 x21: ffff0000cb16e000
-x20: ffff80008a6b48c0 x19: ffff80008d5ddc15 x18: 1fffe00036846fc6
-x17: ffff80008deed000 x16: ffff80008a4483a0 x15: 0000000000000002
-x14: 1ffff00011bde0ac x13: dfff800000000000 x12: 0000000000000001
-x11: 0000000000000000
- x10: 0000000000000000 x9 : 2ea19fe2f27a9800
-x8 : 2ea19fe2f27a9800 x7 : ffff80008028cc04
- x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001
- x3 : ffff800082a98004
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 000000000000005a
+Running 'gcc -fsyntax-only -v -x c /dev/null' shows:
 
-Call trace:
- __reiserfs_panic+0x150/0x154 fs/reiserfs/prints.c:384
- reiserfs_rename+0x19d8/0x1c88 fs/reiserfs/namei.c:1425
- vfs_rename+0x908/0xcd4 fs/namei.c:4849
- do_renameat2+0x9f4/0x10b0 fs/namei.c:5002
- __do_sys_renameat fs/namei.c:5042 [inline]
- __se_sys_renameat fs/namei.c:5039 [inline]
- __arm64_sys_renameat+0xc8/0xe4 fs/namei.c:5039
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-Code: 9008b365 910000a5 aa1303e4 95c56f57 (d4210000) 
----[ end trace 0000000000000000 ]---
+Debian:
 
+  #include <...> search starts here:
+   /usr/lib/gcc/aarch64-linux-gnu/12/include
+   /usr/local/include
+   /usr/include/aarch64-linux-gnu
+   /usr/include
+  End of search list.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Fedora:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+  #include <...> search starts here:
+   /usr/lib/gcc/aarch64-redhat-linux/13/include
+   /usr/local/include
+   /usr/include
+  End of search list.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+It looks like Debian installs the architecture asm files into an
+architecture specific subdirectory, which headers_install does not know
+about, so the new "problematic" bitsperlong.h file gets installed to the
+default location but the older one actually gets used because it has
+higher priority in the include search path.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+https://salsa.debian.org/kernel-team/linux/-/blob/36b9562acea404ecdc2911aeb2c4539402f441a3/debian/rules.real#L334-336
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+If I install/manipulate the headers as Debian does, I can reproduce this
+issue in a fresh Debian container.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+  # make -C /linux -j$(nproc) INSTALL_HDR_PATH=/usr O=/build headers_install
+  # rm -fr /usr/include/aarch64-linux-gnu/asm
+  # mv -v /usr/include/asm /usr/include/aarch64-linux-gnu
+  # make -C /linux-stable -j$(nproc) ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- O=/build mrproper defconfig prepare
+  ...
+    DESCEND objtool
+  In file included from /usr/include/aarch64-linux-gnu/asm/bitsperlong.h:1,
+                   from /usr/include/asm-generic/int-ll64.h:12,
+                   from /usr/include/asm-generic/types.h:7,
+                   from /usr/include/aarch64-linux-gnu/asm/types.h:1,
+                   from /linux-stable/tools/include/linux/types.h:13,
+                   from /linux-stable/tools/arch/x86/include/asm/orc_types.h:9,
+                   from /linux-stable/scripts/sorttable.h:96,
+                   from /linux-stable/scripts/sorttable.c:201:
+  /linux-stable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
+     14 | #error Inconsistent word size. Check asm/bitsperlong.h
+        |  ^~~~~
+  make[3]: *** [/linux-stable/scripts/Makefile.host:114: scripts/sorttable] Error 1
+  ...
 
-If you want to undo deduplication, reply with:
-#syz undup
+> I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
+> rather than CROSS_COMPILE=x86_64-linux-gnu-
+
+Right, as I was reproducing this with your kernel.org GCC for
+CROSS_COMPILE and Fedora's GCC for HOSTCC, since I wanted to make sure
+this was not some issue with clang (which it does not appear to be).
+
+Cheers,
+Nathan
