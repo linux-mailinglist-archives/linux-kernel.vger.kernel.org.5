@@ -2,173 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84B37663EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D871D7663F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbjG1GNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41886 "EHLO
+        id S233330AbjG1GQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbjG1GM7 (ORCPT
+        with ESMTP id S232575AbjG1GQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:12:59 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50382733
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:12:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690524777; x=1722060777;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=FASiIlfZ2VlBzTuqJ7+tXH/Y8FRYKJVI94fTRh8DmP0=;
-  b=YYMNIfHec8hB/tx8oDI9Rzebwgsdx4TyQCaFt6cEMVsxjOsUUxVNYP21
-   ruGYUD9QEmPMiwPeaiX5VTpnmyOg3F1azX1dHK2PazWT4qqV90nX8x+me
-   GUxpaRp/zNovXPyFa9mT0prS9eE5KCwmaRUZCXdaAUjwO6H48ryisMO92
-   oKyQIOKFkS0acGZs3pxy1yaeRR0nnnZ4fmT9fPjXykkmP81BndMxIaWdY
-   ad+CVKeGUQmUqk5o1FJC2MpZ6QdtyYqsJ0TQXeGLYXvuLdczm2Htd2rYU
-   ESMbJ9FC2VYivOAjZBJliAdG0zOUEtvhp4BbMIRfqHLUre09hSty5RiS8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348120008"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="348120008"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 23:12:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="797317294"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="797317294"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Jul 2023 23:12:51 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 23:12:50 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 27 Jul 2023 23:12:50 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.170)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 27 Jul 2023 23:12:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RxnDefHH+VZOgXFR4bKPXDelGPpxehWPT4cW8U6Pq9kE4tVw6hSp2RnU23ZrQEnW0kqpccUaJKGT9slUH5yDPEG/yO9yFWzxR1fO6ywSh3yyOzqDsZPZnCd0/VvuT8KHveQYo1Gez+7xV+/uPIveGqygTk7NJDwVXuBTQ+W365Q73AIGLl9ggj5QZ0+f9P+QUXWiyxz3SlFiyLZl5wcc+sKK3Hfls4sM8TonOUiMSNOiGrTm5NAWjz4EvrxXtUHrEXeY8QpP2Gpc5JmKYYPVHSUXH8XM9uQNoV2TiQvDUwOpL8WGwFNPr+TW3V5JZR2QsoPEKZltlEtY5hrd40YXQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FASiIlfZ2VlBzTuqJ7+tXH/Y8FRYKJVI94fTRh8DmP0=;
- b=F0wM/bsm/KtZZw4CphYaMmh4vCayA9OaX2eVvnhgocx+fR1kf3dVTt8XRHu5QzFk8XLz1kCN4fPn5/qv4Q+4AjQZXdzs4B5Oi2/df7tEb/Uxt0BKhmB2q7Nep8aSwX+bxHZyfNNUAgGzZ/WlHdIgfBR9Zhc4yZwI8w+GrvMGMPizB2rrWGTIgABU/uKCw7ss8Ly1g1pyuxpghz5aY4GPFySXt88K5f43W3THwPxS1RGRaWtv18YH7Xa5+28IZt3Y107hDE5Mz1hc5nakR2XZr++FUdM+fFzftTNxs7Roj2whKM/ds2yk+SHP8bp3We+t3ugRRUd4NgRwkvNW12qygw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY5PR11MB6257.namprd11.prod.outlook.com (2603:10b6:930:26::22)
- by CH3PR11MB8705.namprd11.prod.outlook.com (2603:10b6:610:1cc::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 06:12:49 +0000
-Received: from CY5PR11MB6257.namprd11.prod.outlook.com
- ([fe80::12c9:6f97:4016:eabb]) by CY5PR11MB6257.namprd11.prod.outlook.com
- ([fe80::12c9:6f97:4016:eabb%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 06:12:48 +0000
-From:   "Lu, Brent" <brent.lu@intel.com>
-To:     "Liao, Bard" <yung-chuan.liao@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhi, Yong" <yong.zhi@intel.com>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        "Bhat, Uday M" <uday.m.bhat@intel.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        "Chiang, Mac" <mac.chiang@intel.com>,
-        "R, Dharageswari" <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: RE: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from ACPI
-Thread-Topic: [PATCH 1/2] ASoC: Intel: maxim-common: get codec number from
- ACPI
-Thread-Index: AQHZuqoaXCiyShA7oEmUALJNRLZwbK/LxlqAgAEjn+CAABOWAIABwepQ
-Date:   Fri, 28 Jul 2023 06:12:48 +0000
-Message-ID: <CY5PR11MB6257C8293A394FFBDC338F219706A@CY5PR11MB6257.namprd11.prod.outlook.com>
-References: <20230720092628.758834-1-brent.lu@intel.com>
- <20230720092628.758834-2-brent.lu@intel.com>
- <ff55e63f-1c17-12ef-57e6-144a5bea4480@linux.intel.com>
- <CY5PR11MB6257FF6D92D524D389B734C19701A@CY5PR11MB6257.namprd11.prod.outlook.com>
- <c1aadbcf-78ab-0566-84e5-8eaa7b418d50@linux.intel.com>
-In-Reply-To: <c1aadbcf-78ab-0566-84e5-8eaa7b418d50@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR11MB6257:EE_|CH3PR11MB8705:EE_
-x-ms-office365-filtering-correlation-id: fc2f7457-4b7b-41b3-8a44-08db8f31ab06
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EZIgWrl2HLGGL5eg7DTTYqEyYfs2X7NWON8V1XpOE7csWkRGP5VVFj7eJrDdNcqeKmfZJ2ELhQK+ri7dz6t3HT1lJlT9YHFiRwP9v5UBXkL76nQXE2EjHXeZEjFLD+LBscCzoevrNRAMdyW8Z8bB9DObDzL1OGlABPQZPuK3LdC6wsQChSH/3lUC+d7MAZBzMI8DP0FQvM/m08nOzIMHAzWWu+GvworXagSroDzWK9LGMr4WvEiAmNAhKEycdSLCUCf935D0RBuIJAliEjY6k65Td9uakphFuVXJxyWPuHPAFLYUikRTlwpWPOJUAqds0xu3aI5Jyf6rJmNqEonZerx/ErDfaHqZWoVKtKed+7+Hasyw78673a5IJTvtoYFC7Kx79i7nOLatP7kD5uTKyW++AzPVjjvL7M0AMFcK7TU+a33C0Xq1LLw5TPmmY2sNXDzQHxaT5H2HkCuuweRUL6lRLpYBjUQHe5GZxXZRN7BGfBljbaRgHXH46Qfy0S6Bb0epS7l+eFeqLqpmYJwwb5UCeMVtXzDs2YKupYIL94vlv9YD95SIYk6Pu+NkHuIOErS3g0B97Uqiopy8NFqw9BjResdfIDaEIjm8mCRHXi7jE+baeMqJ6ktvdBkYPddmJWKCZuvTsIVw2fzIyxJ58w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(376002)(346002)(396003)(136003)(39860400002)(451199021)(110136005)(7696005)(54906003)(9686003)(26005)(478600001)(55016003)(558084003)(38070700005)(86362001)(33656002)(2906002)(66476007)(66556008)(66446008)(186003)(6506007)(8936002)(71200400001)(64756008)(122000001)(82960400001)(38100700002)(4326008)(76116006)(8676002)(52536014)(66946007)(41300700001)(316002)(5660300002)(7416002)(11716005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K09vRE5pSm1qV3VSMmdveEpLZUJnUXJJdlBLYklhVkJnWEdEK1VpYVloZ2Vz?=
- =?utf-8?B?c1FjNXBHT2hhN1lrdHVpMWJLTE52OGtRN3p0aFJKUlJTSHZyZU9oeG1Cbnhm?=
- =?utf-8?B?OUFVSVdQdVl1Y3pLUFlTRitSQ05YZk9vc3NYZElFQlZYSjJzMS91Z3RoZklq?=
- =?utf-8?B?ZlNjeXpCWGxxWklWMG8zL1lYUVVqZElmdFlLWkxJL0sxSXo0OWw1NjcwcWNE?=
- =?utf-8?B?VEZXT1hGVEdsSEZmTzBKUlRNMWpPelJQa0k2cVZheUhIVmIrb0R1cDhrTWRk?=
- =?utf-8?B?Zzc1MS9aQVFWRTNvbi9xT0VLQU9TMUppTFJkVFQ5bDliejRqWmdWWFNJSitU?=
- =?utf-8?B?dUpDOW9sVTh1R0grY3ZDUWE2bEpSWjJiSjdlZEgxWGpqcHFQcTVrYVR3dHVB?=
- =?utf-8?B?Qnh4Z3I2Q1MybmluTlBVemxOWDlmTmZGV1p1NXQzSmJxSU41bllzZmN0UVRy?=
- =?utf-8?B?YjlXMXd4RXhuRzdKeFJTTmtBOWlVRjViNDcwT2pxWGMvUXVsOEcyOEs1SmYx?=
- =?utf-8?B?akcxYTZPbDAvZE1HWnpHcHBnbi9iV0hrNUxyR0ZGN01tQTk4R2w5djZJUlJp?=
- =?utf-8?B?aVF1TE42SG5hY0tKL0NhOXpaWWNWc0ovTzd5TjRFNDVoM0FJTDB0ajRNMlZv?=
- =?utf-8?B?WnprT2VHWVBkeVVjbFFqVHFaR3dUZDhzNmY3aXYvWDNMTnZiNUZadDZ3c21p?=
- =?utf-8?B?Z1laYjhnOXVxOUpJUGN0aVBUYlBFYlMvYjVkRzlnWGY4WnNZM3JXY1E3ZVNQ?=
- =?utf-8?B?QW5LYlhRVVE0RkJwQitKdU9CQVQ5RnkvM1IwT0tYamJIU1FneS9zOTJ2RytC?=
- =?utf-8?B?cWNJTytkbmVtOGYyK2poS1JTWC9qT0s3eEwzMnV5eGdwTURMbTI3d2ZlYTVu?=
- =?utf-8?B?bVV1SnlER09ielAyalZMY1FYTUhqY245am5MT1FRN2NGUXRSR1FQRTdxaE5F?=
- =?utf-8?B?SytFUzd2NklmQ1NTSkVzODIzSzNzazVma1RFaG84N2ZwblBVOTBrbWdPU3Jy?=
- =?utf-8?B?d2NyV2lKQUk1dEhLd1VnL2pBaGVFKzA1Sy8rOUdjMTdmRWorWU5tWXNqTGdE?=
- =?utf-8?B?TkhLZnQ4aFZQQmF2eFZ3Q2pJVHcrVk04K1c2Q0tVU09DTlJNNU03N3UvS3M5?=
- =?utf-8?B?RWpxaTFhSTU0Z2QrSVpJMXhDM1VGV3o2ZlhackoxTWVLeHpQWnV5MThwNWZM?=
- =?utf-8?B?WFkxYVRZOW92Q3VXdDZMNVF3RUtNZUVpaUJLSHJoc3VyUkVBMGdUMG96bUFZ?=
- =?utf-8?B?NFhKWkpCcGIwaXNXYkRmOXBlK3JNQ01kZjJxN25uWVE0RzFtamJZakxCblNk?=
- =?utf-8?B?RVVxM0F2ZGxIQ1VtVTN2RWErSW4zRDZqVkp3ZjBZd3QvM2Y4SmdobnhYSU9t?=
- =?utf-8?B?bTZCMUFzN0tkVitMRHRMNjFrWFdpUjhuWlFoaVhNby92WEJEaHhMRVo4NWUy?=
- =?utf-8?B?YUZnaGpmT2x3TERVbVcxdTRkNWhjeEpCTkprUWU2R0xFMGMxMnMyNXdyVjJh?=
- =?utf-8?B?QTU3TGxMZktEdys4OXVOTVRBeVJXaGFLTm5IalR1eGlQMmZWMGQ5VTdnV1VL?=
- =?utf-8?B?N002dGxyUVZNTmdKcXEzczRmdlFzV3BkcmRiak9MS1d3bTVaTW0veFBSTXUr?=
- =?utf-8?B?R0p6ODRnbGlsWUx6dlJQdHJWWHNIVHc4ZjRMR1pOdGgyb2ovYk5NMzVDbTZv?=
- =?utf-8?B?Z2NoWHB2WXlrcVV0TlNwREdIVTFoUDNLZ0FaQTdsQjFuSS9nSnQ0YThTK0lG?=
- =?utf-8?B?SzVoSW9aZ2hadFNRTEIzYW9XTXVTNTliL0lENU94eC85anpMaUVrV1kxY1U3?=
- =?utf-8?B?Yk8yejRsQzlCQlN6SHNGYnQvaVF0MFhwT2tZTjZTKzJTU0NKR2I0YnY5Q2Vk?=
- =?utf-8?B?QVF5UW9zTm9HblZZSlRvQzhKZDFHZDdQWkFDZkZFR0k5STFoeWJsSmx0NkFh?=
- =?utf-8?B?cFBtSU8zY09YeGM2Zkw1Y3BZSEJXZnNldFJjQUMwbEt4akcxWlF5NWRGNjg0?=
- =?utf-8?B?NW9hV1RORkJtRTRjamJETEJzZHJBYSs1Wlk0TWVuWXJJQ05CM2t1MjhiZUxk?=
- =?utf-8?B?dm1jMGZoQ29udXNYUGFUbFRtTWIzWURrdGdCdzJLaGJTbE1yc1JxenJWdG8r?=
- =?utf-8?Q?0o64=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 28 Jul 2023 02:16:08 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF851FF5
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:16:06 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98273ae42d0so47267966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690524965; x=1691129765;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ulD+jGAERfOBD4mt/Di4lPdx1Csw98WhuKZo73fBdX8=;
+        b=qJlp/+OIBvM8DpMP7qbgBsja1aFwxPLSMRVPLB34OJOf6sMHBpEqLl8mS1KgbdOkMz
+         1H8jKiMJ3yeUt7EbYPcJo293wZofNByvPYpDTQc13fLA2/AWFR33opRGPxCGe7nWDvlI
+         W18+nFdg2Bc2ersWy91UKtlm2XT7a3bthNQYnxad90T0yc7T7ZRo7bmg/idWwqQpeZRE
+         4pTMoMQnoI+E6Kf6vxI+LOJ7N94IWe8kTTebMMdAAYoXhbvyPLvv3XmLAQhxR5ftvkH4
+         q/b906KvatDToadFNrXBYaau1pRADrjzd8RbutAKzeU3sWlSpfrwF8VmBC9aLa4dajtD
+         gxZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690524965; x=1691129765;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ulD+jGAERfOBD4mt/Di4lPdx1Csw98WhuKZo73fBdX8=;
+        b=Wpk1sRHW4+M4FoRVvurmU0R0CoOgNyWtJAyFU1YaRRkMYcMwMev2YlybpKzVmOH9oW
+         IaVb3rSwRdPH3fFOqOnkIF555ukIU5Yqo7lfr5icOdr1UM2xiYg0vde0RTaCCpGvNvcd
+         Rm7gYj8xAM8KY/B0/CeZDP3lzHuPPDO9Mm1nB8IkXqRySKBgwpyXZ8bzuTMDC1khzIQ0
+         BYCYujH3LyixP9gfpjP519ws+arH6QO1rJUSTAL6QVbnSugh6CR8eNn81ewRhxnPscNq
+         O+VvU79fYb+sqT8dBqRCzMC5/rD7HqJ7cAs0fadFDVeuXydruFW7nsOSd6B0dub/0bm7
+         eSKQ==
+X-Gm-Message-State: ABy/qLbh4pVgkDSeKdTg4c8DKnsYi1Qkz8w1t8MOWIDgEpbzUyLTd16M
+        Fy28X2Ogt1CYlYT4EiT6Vuv+cbU3/9g=
+X-Google-Smtp-Source: APBJJlFHa1n5RUu6Fkxms5HcSulXc3nohRDrQPmwIIBghyF0PnEOvLUeKqc89gxjeZp3otiaOkHq/g==
+X-Received: by 2002:a17:906:51dd:b0:993:eed1:8f7 with SMTP id v29-20020a17090651dd00b00993eed108f7mr1150254ejk.3.1690524964961;
+        Thu, 27 Jul 2023 23:16:04 -0700 (PDT)
+Received: from [192.168.0.103] (p57ba2e0b.dip0.t-ipconnect.de. [87.186.46.11])
+        by smtp.gmail.com with ESMTPSA id t7-20020a1709063e4700b0098d15d170a0sm1633773eji.202.2023.07.27.23.16.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 23:16:04 -0700 (PDT)
+Message-ID: <f4aaf5f5-a6b0-ef10-0d9b-fc52035ca309@gmail.com>
+Date:   Fri, 28 Jul 2023 08:16:03 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6257.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc2f7457-4b7b-41b3-8a44-08db8f31ab06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 06:12:48.8311
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L7zJeUDYs1JbQYrDdDbKBkHvo2NSo1kwJpi6VQ8uddVEQjw3tK9Z7aeGtY7q++U/vIadqOE+QJpEwVzleKo/gg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8705
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 0/5] Staging: rtl8192e: Function name cleanup series 1
+To:     Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+        anjan@momi.ca, error27@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230728054742.622297-1-tdavies@darkphysics.net>
+Content-Language: en-US
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20230728054742.622297-1-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,9 +75,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IA0KPiBUaGUgcG9pbnQgaXMgdGhhdCBpZiB5b3UgcmVtb3ZlIHRoZW0gYW5kIHRoZXkgYXJl
-IHN0aWxsIHVzZWQgc29tZXdoZXJlLA0KPiANCj4geW91IHdpbGwgYnJlYWsgdGhlIGJ1aWxkLiBp
-LmUuIEtlcm5lbCB3aWxsIG5vdCBjb21waWxlIGlmIHdlIGFwcGx5IHRoZQ0KPiANCj4gZmlyc3Qg
-cGF0Y2ggb25seS4NCj4gDQo+IA0KDQpUaGFua3MgZm9yIHBvaW50aW5nIHRoaXMgb3V0LiBJIHdp
-bGwgbWVyZ2UgdGhlc2UgdHdvIHBhdGNoZXMgdG8gYXZvaWQgYnVpbGQNCmJyZWFrIGluIHY0IHBh
-dGNoLg0KDQoNClJlZ2FyZHMsDQpCcmVudA0KDQo=
+On 7/28/23 07:47, Tree Davies wrote:
+> Rename functions to fix checkpatch warning: Avoid CamelCase
+> 
+> 
+> Changelist:
+> v3: Changed patch #5, Rename global function ResetBaEntry to rtllib_reset_ba_entry
+> v2: Sent to mailing list via git send-email, patches are the same.
+> 
+> Tree Davies (5):
+>    Staging: rtl8192e: Rename function ActivateBAEntry
+>    Staging: rtl8192e: Rename function DeActivateBAEntry
+>    Staging: rtl8192e: Rename function TxTsDeleteBA
+>    Staging: rtl8192e: Rename function RxTsDeleteBA
+>    Staging: rtl8192e: Rename function ResetBaEntry
+> 
+>   drivers/staging/rtl8192e/rtl819x_BAProc.c | 44 +++++++++++------------
+>   drivers/staging/rtl8192e/rtl819x_TSProc.c |  6 ++--
+>   drivers/staging/rtl8192e/rtllib.h         |  2 +-
+>   3 files changed, 26 insertions(+), 26 deletions(-)
+> 
+Hi Tree,
+
+those patches have been accepted and cannot be applied again.
+
+commit c928e84ce577262da288c0178c8c77620ba8b430 (HEAD -> 
+staging-testing, origin/staging-testing)
+Author: Tree Davies <tdavies@darkphysics.net>
+Date:   Wed Jul 26 23:19:47 2023 -0700
+
+     Staging: rtl8192e: Rename function RxTsDeleteBA
+
+     Rename function RxTsDeleteBA to rx_ts_delete_ba in order to Fix 
+checkpatch
+     warning: Avoid CamelCase
+
+     Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+     Link: 
+https://lore.kernel.org/r/20230727061948.579480-5-tdavies@darkphysics.net
+     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+commit 7b31905582358d566332182653a4e5552dba1574
+Author: Tree Davies <tdavies@darkphysics.net>
+Date:   Wed Jul 26 23:19:46 2023 -0700
+
+     Staging: rtl8192e: Rename function TxTsDeleteBA
+
+     Rename function TxTsDeleteBA to tx_ts_delete_ba in order to Fix 
+checkpatch
+     warning: Avoid CamelCase
+
+     Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+     Link: 
+https://lore.kernel.org/r/20230727061948.579480-4-tdavies@darkphysics.net
+     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+commit 8dd56eaa9450fb19f6bcc73956b3b1477331d28b
+Author: Tree Davies <tdavies@darkphysics.net>
+Date:   Wed Jul 26 23:19:45 2023 -0700
+
+     Staging: rtl8192e: Rename function DeActivateBAEntry
+
+     Rename function DeActivateBAEntry to deactivate_ba_entry in order 
+to Fix
+     checkpatch warning: Avoid CamelCase
+
+     Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+     Link: 
+https://lore.kernel.org/r/20230727061948.579480-3-tdavies@darkphysics.net
+     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+commit ca77687ae3f6d65fb26a0e1f93b54753af3581fc
+Author: Tree Davies <tdavies@darkphysics.net>
+Date:   Wed Jul 26 23:19:44 2023 -0700
+
+     Staging: rtl8192e: Rename function ActivateBAEntry
+
+     Rename function ActivateBAEntry to activate_ba_entry in order to Fix
+     checkpatch warning: Avoid CamelCase
+
+     Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+     Link: 
+https://lore.kernel.org/r/20230727061948.579480-2-tdavies@darkphysics.net
+     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
+Bye Philipp
