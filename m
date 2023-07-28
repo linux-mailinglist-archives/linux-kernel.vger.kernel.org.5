@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C90F7664C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8967664CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbjG1HFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
+        id S233814AbjG1HGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbjG1HFS (ORCPT
+        with ESMTP id S233801AbjG1HG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:05:18 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA954268B;
-        Fri, 28 Jul 2023 00:05:16 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fd190065a8so20120125e9.3;
-        Fri, 28 Jul 2023 00:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690527915; x=1691132715;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CJ/kGhTa7GdVn/+TUEMQPQY9NaN5oB4Dlu8HWJz0ekw=;
-        b=O1mJEs0hZ4Ewn5DeZ4X4JWqe/XodR6yAdfgccTgUCwwo9ynpuYnYPwF4CKkK1YX5P6
-         xqD+cBN9dHZK6aoQATnR+U7kihDe9ruZmn6JdK7vVhiLO07gcsMzKTZ9m4h7keH2q1au
-         mgo2IeAptYC27Xi53E/+tPEi4/cjvj2BwFgBrjWdcZj21sVASDtddxc0NJu/GObUAYh0
-         xnf169XTlvNyj46Z0Q684TyavFvmeTgjJd7xD1LlE2enVVscGAXlesm7dVkk/Vl1qHLp
-         BZfsrtVtksOVbtSP/QsPiqIWd8cqsccSuf+ub++HyFiJOMLqX5QoUDPBfwwOcJpRV5gw
-         n90g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690527915; x=1691132715;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ/kGhTa7GdVn/+TUEMQPQY9NaN5oB4Dlu8HWJz0ekw=;
-        b=fk/s9hH3a/Pbx8Y4Cc/Zbs6JXOKgInUiC8t7zSDzXKgKGVUVXkbZ4AVumwWhmJtX/P
-         61+XKnJE5cqYYVsl4OkgIpgP3LnGbbWnAlzzMAtWaa8effe8iHiS14AjiQR15a5X+QOa
-         i47GRyp+128IAhdBX8l4E/lctWNdS+dxtx6Rra9M4dT2yVLwlw8peMNaGf2xvuIwClDz
-         DbnwnYmBgCFakju1/enEj0nG6NCziW0/HIKdquthw++Glbasvh/9pgTbZMHf8NVw5BLn
-         tmFqhxHdu3OBWEZf4UqMDVybOC2+Ec50Yvxj3c+vHuoV4QuostBGRYQ9329GqrPgp6lc
-         cCTA==
-X-Gm-Message-State: ABy/qLY2susVFj+tZtlPnXfbSwNILQLlpeSlN4Z7tSf9iUeL+c204xtM
-        A2NKlLIHIos7BG5dXTmOpeXLPLuEAgGHFm2X
-X-Google-Smtp-Source: APBJJlFhcOJASLtfYopTTkLRqybbchMdv4Blcym0+gkcUHOXj+dgMTvRRKFwCpYLOQjvWzSluFgNBQ==
-X-Received: by 2002:a1c:f309:0:b0:3fc:182:7eac with SMTP id q9-20020a1cf309000000b003fc01827eacmr1197772wmq.33.1690527914848;
-        Fri, 28 Jul 2023 00:05:14 -0700 (PDT)
-Received: from torreasustufgamingpro (209.pool90-77-130.dynamic.orange.es. [90.77.130.209])
-        by smtp.gmail.com with ESMTPSA id 8-20020a05600c028800b003fb225d414fsm6228854wmk.21.2023.07.28.00.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 00:05:14 -0700 (PDT)
-From:   =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH] e2fsck: Add percent to files and blocks feature
-References: <20230423082349.53474-2-megia.oscar@gmail.com>
-        <73bfa972-1f3a-3a74-c511-4255eae91806@web.de>
-Date:   Fri, 28 Jul 2023 09:05:13 +0200
-In-Reply-To: <73bfa972-1f3a-3a74-c511-4255eae91806@web.de> (Markus Elfring's
-        message of "Thu, 27 Jul 2023 22:23:56 +0200")
-Message-ID: <87wmyk4ity.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Fri, 28 Jul 2023 03:06:29 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37729268B;
+        Fri, 28 Jul 2023 00:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690527985; x=1722063985;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YV/HherCTDGw+ls4/jLdsAyaf6VBOQkF2Uf7NZiBfII=;
+  b=WQP/BC+00hmQAj2QkA+0SPtlcQzErmCG+jmPXpM85yNL+EV2X5HCfxj5
+   /8a5pUG+ptFu1wjDXUDaHX8L7GnIIV+AaXtjrRAszlhLGB9JuE5MgSpko
+   KczGV19hrJw8S4lWB2Qgy31qRuRwxB/9HcFa/Ipq1XZmzmJtMSaCFXYS3
+   Ic8fSTipn3JkMqS+lYXTl6DxA7iGglZvDroDGUjZBaBMd0bGEVuz06mPp
+   gcZ8QliWvrJcn5hDhR161SX1GHL6eigx4IRCv7RZ2lJdEX9y2nWyOsHb1
+   BGXEzFZDr3rpTE1nP63G0qGMrAp5pmK/QvujsLc/j/Y8pcgWfGMN6DGhB
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
+   d="asc'?scan'208";a="227027311"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 00:06:24 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 28 Jul 2023 00:06:23 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Fri, 28 Jul 2023 00:06:20 -0700
+Date:   Fri, 28 Jul 2023 08:05:46 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Eric Lin <eric.lin@sifive.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>, <tglx@linutronix.de>,
+        <peterz@infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <zong.li@sifive.com>, <greentime.hu@sifive.com>,
+        <vincent.chen@sifive.com>, Nick Hu <nick.hu@sifive.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
+ cache controller
+Message-ID: <20230728-facedown-husked-9813fa79d9a0@wendy>
+References: <20230720135125.21240-1-eric.lin@sifive.com>
+ <20230720135125.21240-2-eric.lin@sifive.com>
+ <20230720-slept-guru-216e2803061e@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="CLBf1mcbqLUt7ULL"
+Content-Disposition: inline
+In-Reply-To: <20230720-slept-guru-216e2803061e@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,76 +75,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Markus Elfring <Markus.Elfring@web.de> writes:
+--CLBf1mcbqLUt7ULL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> You should put also the address "linux-kernel@vger.kernel.org" into
-> the message header field "Cc" (or "To").
->
-> See also:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/submitting-patches.rst?h=3Dv6.5-rc3#n231
->
+On Thu, Jul 20, 2023 at 06:10:51PM +0100, Conor Dooley wrote:
+> Hey Eric,
+>=20
+> On Thu, Jul 20, 2023 at 09:51:19PM +0800, Eric Lin wrote:
+> > This add YAML DT binding documentation for SiFive Private L2
+> > cache controller
+> >=20
+> > Signed-off-by: Eric Lin <eric.lin@sifive.com>
+> > Reviewed-by: Zong Li <zong.li@sifive.com>
+> > Reviewed-by: Nick Hu <nick.hu@sifive.com>
+> > ---
+> >  .../bindings/cache/sifive,pl2cache.yaml       | 62 +++++++++++++++++++
+>=20
+> btw, your $subject should be "dt-bindings: cache: ...." rather than
+> "riscv: sifive".
+>=20
+> >  1 file changed, 62 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/cache/sifive,pl2c=
+ache.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/cache/sifive,pl2cache.ya=
+ml b/Documentation/devicetree/bindings/cache/sifive,pl2cache.yaml
+> > new file mode 100644
+> > index 000000000000..ee8356c5eeee
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/cache/sifive,pl2cache.yaml
+> > @@ -0,0 +1,62 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +# Copyright (C) 2023 SiFive, Inc.
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/cache/sifive,pl2cache.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: SiFive Private L2 Cache Controller
+> > +
+> > +maintainers:
+> > +  - Greentime Hu  <greentime.hu@sifive.com>
+> > +  - Eric Lin  <eric.lin@sifive.com>
+>=20
+> There's extra spaces in these lines for some reason.
+>=20
+> > +
+> > +description:
+> > +  The SiFive Private L2 Cache Controller is per core and
+> > +  communicates with both the upstream L1 caches and
+> > +  downstream L3 cache or memory, enabling a high-performance
+> > +  cache subsystem.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/cache-controller.yaml#
+> > +
+>=20
+> I'm pretty sure that I pointed out last time around that you need to add
+> something like in the ccache driver:
+>=20
+> select:
+>   properties:
+>     compatible:
+>       contains:
+>         enum:
+>           - sifive,ccache0
+>           - sifive,fu540-c000-ccache
+>           - sifive,fu740-c000-ccache
+>=20
+> otherwise this binding will be used for anything containing "cache" in
+> the dt-binding.
+> For this binding, I think that the following is sufficient:
+>=20
+> select:
+>   properties:
+>     compatible:
+>       contains:
+>           const: sifive,pl2cache1
+>=20
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: sifive,pl2cache1
+> > +      - const: cache
+>=20
+> You omitted the pl2cache0 from here, that needs to come back! You'll end
+> up with 2 items entries.
+> Either way, I can't take this binding without a soc-specific compatible,
+> per sifive-blocks-ip-versioning.txt..
 
-Sorry, I though that were different proyects.
+Further, "sifive,perfmon-counters" is an undocumented property.
 
->
->> I need percentages to see how disk is occupied.
->
-> At which occasions do you tend to care for such numbers?
->
+Thanks,
+Conor.
 
-For example, when the root disk is almost full, I'd rather know than get
-system/application errors. It has happened to me and I think it is
-necessary information.
+--CLBf1mcbqLUt7ULL
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
->> If also I would see percentages for me would be perfect.
->
-> Where would you find such information more helpful?
->
+-----BEGIN PGP SIGNATURE-----
 
-Because on my computer it shows busy/full for one or two seconds and
-I don't have time to remember them, much less to calculate the occupancy
-percentage. Humans handle percentages much better than many numbers in a
-row (at least I do). Also when running e2fsck it is useful to see
-percentages.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMNoygAKCRB4tDGHoIJi
+0t7lAP4l8gcLhmzGLDZoKSuera2y1ijqtLLcIiiMvpnoAU9Z6gEA3sHmaOCWY5wC
+Dp6THGXUlDytdskVE4dXvgAel5laawk=
+=Bv67
+-----END PGP SIGNATURE-----
 
-This is e2fsck with my patch:
-
-$ sudo e2fsck/e2fsck /dev/sdc5
-e2fsck 1.47.0 (5-Feb-2023)
-label: clean, 405784/2449408 (16%) files, 6651303/9765625 (68%) blocks
-$=20
-
-I think it is helpful to show the percentage. Only number of
-files/blocks and totals is not enought.
-
->
->> I think that this feature is going to be good for everyone.
->
-> Will persuasion efforts grow accordingly?
->
-
-Sorry, I don't understand what you mean.
-
->
-> How do you think about to choose a corresponding imperative change sugges=
-tion?
->
-
-Sorry I do not understand what you mean. If you want to say that my
-sentence "I think that this feature is going to be good for everyone."
-is to force the change, I'm sorry. It was just a comment to
-explain why I submitted the patch. If it was only useful to me, I would
-not have sent it.
-
-> See also:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/submitting-patches.rst?h=3Dv6.5-rc3#n94
->
-> Regards,
-> Markus
-
---=20
-Regards
-Oscar Megia L=C3=B3pez
+--CLBf1mcbqLUt7ULL--
