@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AC376707F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2774A767086
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbjG1P1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
+        id S234985AbjG1P3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234457AbjG1P1I (ORCPT
+        with ESMTP id S229734AbjG1P3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:27:08 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C5EE73
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40631c5b9e9so288291cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:27:07 -0700 (PDT)
+        Fri, 28 Jul 2023 11:29:35 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9367735A8;
+        Fri, 28 Jul 2023 08:29:33 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe1c285690so2632369e87.3;
+        Fri, 28 Jul 2023 08:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690558026; x=1691162826;
+        d=gmail.com; s=20221208; t=1690558172; x=1691162972;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
-        b=e6XRIlLbdnBV3L+drIGrJ9hpPuszKL9KcdkNU3ekaiyj9oPIi424yCtahEr5IejeLS
-         DVaJsKY6P2gQinDqRDKpkG2Cqzp2iZRE+SuDVrql/sUVH/V6fLH1tcS6jVzZSIYiUExw
-         4mjNGLaKuaNSZpM9kj6StV2PQjstWNDxKKSjF++SSDOHr9RgtdhJON6K/z0E0sdf+HIw
-         GcV0Zs60/0lvk9ceXcscQ7QwYgzn3piuNUGWX3RqXqTt0Bx+NowyQrbj+pniVwxrEnPB
-         eG6jturlsiIsowf+LA6PWNH3FuS9c7Kix3RXflkIjjNKYHtE+5Jk+A2pw/05jXC99LK1
-         QPCw==
+        bh=sWY5MitYzqJ4d1bWl5n1gXmIbqPwv+V3mvdT6pw4Joo=;
+        b=spL3/dRcoa3f8wiIiP4KqpRnJi5z+v7W8ANf+zhQjBOBZZo931y9+BgkQkiNBesEtg
+         atYPhabihDsA3VLHbn7Dz08mDbJGqwdJPsliHSHanX0fVDB6WEFf1WnCiJjkrk195LtG
+         WimZisfkapB/STS57H7637OhqQ5SuV1fA3uiQCk5QwCD5Lc/bSizj6/trIl/g6AxU2H2
+         FiUnXlPE6e9l1sKVkqU0w9etFNmp1tDgw/etFEND+xo7SPaVF0cHQe0smbkpyBNQMLHS
+         quujH7k9Vk0rZwusd+jLvaKgIonLmUT/JCeO+57s/O/3oTEGSuPTvF3Khbc8HTkvrCxO
+         gBfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690558026; x=1691162826;
+        d=1e100.net; s=20221208; t=1690558172; x=1691162972;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w2cHEglOBw7vOs0ctBUQxyK7WvVIZxui8AGCj214fFw=;
-        b=FC+kOy7AOljX1lux6PJD77OQeECf2ZpVwqwsHbJJBn1aQSQBd7jOBE5FXSQg+ch2p1
-         jKKaPVthHRcA4JqYzp8d7xOq5305GIxD2bufq4oaSGgeRFMqxxyu1fhjpAZIKjYoPAUL
-         QXlcUqaKEJOOue1NwOUVidLzM0hvA5XSHuQCrEBb8a0wmP4FQegHJL/zaNpoLeJQBSVe
-         QZpxs3KgxSkELxI4uOQsxIabUlnWBlc9sF/H8ij7nFxhBQ0OwClvZTQPlNs+h5QVlR/V
-         OP1V4p/cOKJhZ0UrkpxrQkMlY3kdMfdinnoohQO41OZnlDPAPQuUHVXuI85RGhg5ZiAY
-         ZUrA==
-X-Gm-Message-State: ABy/qLat04iw06kBjAaCzNKfE38hMI5iLM5JT9xvtNL7CnxmubNnH8Q+
-        Yd80g5LYJr3IElGRFRkLgiu2rmtC38Klq8dxzJ1qhg==
-X-Google-Smtp-Source: APBJJlHIpT7XpTvB/yptY7dE3r/zPa8AQ/d9BXKIIJ1YOjIrDkWpf9UIHP7aBlLDk/kRbpYfjgdYrYdtNRjivLcW300=
-X-Received: by 2002:a05:622a:448:b0:3f8:5b2:aef0 with SMTP id
- o8-20020a05622a044800b003f805b2aef0mr297197qtx.24.1690558026249; Fri, 28 Jul
- 2023 08:27:06 -0700 (PDT)
+        bh=sWY5MitYzqJ4d1bWl5n1gXmIbqPwv+V3mvdT6pw4Joo=;
+        b=DdDZtkZQ2Rd5jZOpxE08fITE7wLVniAe7DsM5a2nm84nR+T0QqfY42MHyhdVGuYA3d
+         R94nX+3CIG+gL3xPgXPBXebQ1bkE3DimpTBS6GD9d3IR3/1UvEdKCc6RDwgOIojtitkO
+         h4b4hQ1n0MOU+Vd901VGAUH0OImVNEqd/0PBgy+IPPiRu360qkgE5Es8oT7k1RStcDGV
+         SHKZUUhMn1TBfhkJSr/DFHaMz6N4iJkXnKNfdNWT5PKSsehoPtk46tEOJPPO21rwAqjO
+         wPEFHUWaJmvDMpsL8bA1jpxUjRKEohDLKzeFFlq28Uie3MzHUKxK9QmYP57Eyv+BECus
+         m0gw==
+X-Gm-Message-State: ABy/qLYZwnwn46A8J3BuVxssVgY6i+98pS4ePF1+WeJW0/0sKKt8rmvK
+        aTDi8X0fI9emkmuWCTp7K6/ziAowT87ue/VgTsrmb2C13LtcTg==
+X-Google-Smtp-Source: APBJJlG9HA1renQSWWmK4jFIFA634+RbkACkuwQYa0S4sEwxKAw6D1WHjQhQGkb90LkAwDcSFZFj21mMVuuM+mbHCA4=
+X-Received: by 2002:a05:6512:2253:b0:4fd:faa5:64ed with SMTP id
+ i19-20020a056512225300b004fdfaa564edmr2283534lfu.11.1690558171553; Fri, 28
+ Jul 2023 08:29:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230728064917.767761-1-irogers@google.com> <20230728064917.767761-5-irogers@google.com>
- <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com> <ZMPJym7DnCkFH7aA@kernel.org> <ZMPKekDl+g5PeiH8@kernel.org>
-In-Reply-To: <ZMPKekDl+g5PeiH8@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 28 Jul 2023 08:26:54 -0700
-Message-ID: <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
-Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20230727212208.102501-1-robdclark@gmail.com> <20230727212208.102501-13-robdclark@gmail.com>
+ <08cd9bb5-678f-e03e-4598-dd1785f0d7a7@linaro.org>
+In-Reply-To: <08cd9bb5-678f-e03e-4598-dd1785f0d7a7@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 28 Jul 2023 08:29:19 -0700
+Message-ID: <CAF6AEGu-aRzi6ADqCnLU46DC0ZoWmSmhYU2sZj83wTyTbazbxg@mail.gmail.com>
+Subject: Re: [PATCH v2 12/13] dt-bindings: drm/msm/gpu: Extend bindings for chip-id
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,107 +85,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 7:02=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Fri, Jul 28, 2023 at 12:27=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
-> > >
-> > >
-> > > On 28/07/2023 07:49, Ian Rogers wrote:
-> > > > If flex is version 2.6.4, reduce the number of flex C warnings
-> > > > disabled. Earlier flex versions have all C warnings disabled.
-> > >
-> > > Hi Ian,
-> > >
-> > > I get a build error with either this one or the bison warning change:
-> > >
-> > >   $ make LLVM=3D1 -C tools/perf NO_BPF_SKEL=3D1 DEBUG=3D1
-> > >
-> > >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but no=
-t
-> > > used [-Werror,-Wunused-but-set-variable]
-> > >     int yynerrs =3D 0;
-> > >
-> > > I tried a clean build which normally fixes these kind of bison errors=
-.
-> > > Let me know if you need any version info.
+> On 27/07/2023 23:20, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
 > >
-> > Trying to build it with the command line above I get:
+> > Upcoming GPUs use an opaque chip-id for identifying the GPU.
+>
+> Examples?
+
+We'll know when we bring up the hw.  But the main point is that we
+shouldn't expect, for example, the high 8 bits to tell us the
+generation, any more than we could if it was a pci id.
+
+We may not end up needing to use this new binding much, I _think_ we
+should be able to read it from the fw in most cases, at least for
+android devices.  I'm unsure at this point about windows/chromebooks.
+
+> Anyway, I think we should insist here of using something human-readable,
+> even if Qualcomm/Adreno internally use some weird numbers.
+
+I mean qcom,sc8280cx-adreno is human readable but not really very
+informative.  Encoding the chip-id is just a way to avoid the
+qcom,chipid field in the bindings, which qcom used downstream.  The
+new pattern accomplishes the same thing as the existing one, but
+without trying to imply some meaning that becomes increasingly
+non-existent as qc moves to decouple the id from marketing names.
+
 > >
-> >   CC      util/expr.o
-> >   CC      util/parse-events.o
-> >   CC      util/parse-events-flex.o
-> > util/parse-events-flex.c:7503:13: error: misleading indentation; statem=
-ent is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
-> >             if ( ! yyg->yy_state_buf )
-> >             ^
-> > util/parse-events-flex.c:7501:9: note: previous statement is here
-> >         if ( ! yyg->yy_state_buf )
-> >         ^
->
-> I added this to the patch to get it moving:
->
-> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
-> =E2=AC=A2[acme@toolbox perf-tools-next]$ git diff
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 32239c4b0393c319..afa93eff495811cf 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-fi=
-lter-bison.h: util/bpf-filt
->
->  FLEX_GE_264 :=3D $(shell expr $(shell $(FLEX) --version | sed -e  's/fle=
-x \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\=3D 264)
->  ifeq ($(FLEX_GE_264),1)
-> -  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
-unction
-> +  flex_flags :=3D -Wno-redundant-decls -Wno-switch-default -Wno-unused-f=
-unction -Wno-misleading-indentation
->  else
->    flex_flags :=3D -w
->  endif
-> =E2=AC=A2[acme@toolbox perf-tools-next]$
->
->
-> > 1 error generated.
-> > make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
-uild:97: util/parse-events-flex.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> >   LD      util/scripting-engines/perf-in.o
-> > make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.b=
-uild:140: util] Error 2
-> > make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
-> > make[2]: *** Waiting for unfinished jobs....
-> >   CC      pmu-events/pmu-events.o
-> >   LD      pmu-events/pmu-events-in.o
-> > make[1]: *** [Makefile.perf:242: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >  Documentation/devicetree/bindings/display/msm/gpu.yaml | 6 ++++++
+> >  1 file changed, 6 insertions(+)
 > >
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$ clang --version
-> > clang version 14.0.5 (Fedora 14.0.5-2.fc36)
-> > Target: x86_64-redhat-linux-gnu
-> > Thread model: posix
-> > InstalledDir: /usr/bin
-> > =E2=AC=A2[acme@toolbox perf-tools-next]$
-
-Thanks James/Arnaldo, I was trying to be aggressive in having more
-flags, but it seems too aggressive. We should probably bring back the
-logic to make this flag only added if it is supported:
-  CC_HASNT_MISLEADING_INDENTATION :=3D $(shell echo "int main(void) {
-return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null
--xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
-  ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
-    flex_flags +=3D -Wno-misleading-indentation
-  endif
-Arnaldo, is the misleading indentation in the bison generated code or
-something copy-pasted from the parse-events.l ? If the latter we may
-be able to fix the .l file to keep the warning.
-
-Thanks,
-Ian
-
-> --
+> > diff --git a/Documentation/devicetree/bindings/display/msm/gpu.yaml b/D=
+ocumentation/devicetree/bindings/display/msm/gpu.yaml
+> > index 58ca8912a8c3..56b9b247e8c2 100644
+> > --- a/Documentation/devicetree/bindings/display/msm/gpu.yaml
+> > +++ b/Documentation/devicetree/bindings/display/msm/gpu.yaml
+> > @@ -13,6 +13,12 @@ maintainers:
+> >  properties:
+> >    compatible:
+> >      oneOf:
+> > +      - description: |
+> > +          The driver is parsing the compat string for Adreno to
+> > +          figure out the chip-id.
+> > +        items:
+> > +          - pattern: '^qcom,adreno-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-=
+9a-f][0-9a-f][0-9a-f][0-9a-f]$'
 >
-> - Arnaldo
+> {8} should work?
+>
+
+so '^qcom,adreno-[0-9a-f]{8}$'
+
+BR,
+-R
+
+>
+>
+> Best regards,
+> Krzysztof
+>
