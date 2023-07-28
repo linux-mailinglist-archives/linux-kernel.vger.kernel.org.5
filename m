@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7142876645F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C13766465
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232135AbjG1GkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S232868AbjG1Gph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjG1GkQ (ORCPT
+        with ESMTP id S229568AbjG1Gpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:40:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C28C1710;
-        Thu, 27 Jul 2023 23:40:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 28 Jul 2023 02:45:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4093584
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690526687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yJG1UPV+W/0UsK41TGpTUiZabcu5LPZJZEcbS3oTozs=;
+        b=f7y7QBChxzHwZ8FoyFfg07D965W9R2qwlc4Do/xD1UqUZDBO4b2dE2rD2h95FI64QTtS6g
+        Rxu0wg102e6eDF2MqXrGwGAGX71dYApBnrYMbPi7C9VX9Yt5hKkHBS/91jD/gnG9kS2iL9
+        YX+g335zsHbb/Uvlim10uqvH4Vcbmwk=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-314-djpkjzf0OwygasUunYp_lw-1; Fri, 28 Jul 2023 02:44:41 -0400
+X-MC-Unique: djpkjzf0OwygasUunYp_lw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EB07721A20;
-        Fri, 28 Jul 2023 06:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690526413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XlKgVuBwxhBrU+hJz3skBfkXqX/gjlpigbuPenxR+bc=;
-        b=eBpRklMf4kgW3llIiRyhrQExSIw1EJ8BDlWkHRseOATFi/5nhpNeNB2sNrMaZ3Zo1WtwKt
-        gtfN8bEJUHdri7VSAX9P7vkEcxfcTbInPnzfrz7B0D97SMZ3TuuKvn32u5HWUqPRJd+J5D
-        PlMx4gEuNmSj2wvrx1u/QMknhzhZGnU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690526413;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XlKgVuBwxhBrU+hJz3skBfkXqX/gjlpigbuPenxR+bc=;
-        b=R1b0Ocgu31yF3wBLbFHlfoCbniug7+w05J6NxZE3jfL/mRtBH2LyQOXVz/FLfS+J5dZrgC
-        3CC9RIYLgyf1icAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A7EA133F7;
-        Fri, 28 Jul 2023 06:40:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id n5WvJM1iw2RzMgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Fri, 28 Jul 2023 06:40:13 +0000
-Date:   Fri, 28 Jul 2023 08:40:13 +0200
-Message-ID: <871qgs4jzm.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3] um/drivers: fix hostaudio build errors
-In-Reply-To: <20230728043013.27776-1-rdunlap@infradead.org>
-References: <20230728043013.27776-1-rdunlap@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E74E129AA3A5;
+        Fri, 28 Jul 2023 06:44:39 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.224.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75530F6CDE;
+        Fri, 28 Jul 2023 06:44:37 +0000 (UTC)
+From:   tglozar@redhat.com
+To:     linux-kernel@vger.kernel.org
+Cc:     john.fastabend@gmail.com, jakub@cloudflare.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Tomas Glozar <tglozar@redhat.com>
+Subject: [PATCH net] bpf: sockmap: Remove preempt_disable in sock_map_sk_acquire
+Date:   Fri, 28 Jul 2023 08:44:11 +0200
+Message-ID: <20230728064411.305576-1-tglozar@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 06:30:13 +0200,
-Randy Dunlap wrote:
-> 
-> Use "select"s to ensure that the required kconfig symbols are set
-> as expected.
-> Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
-> 
-> Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-> kconfig warning for unmet dependencies. (This was not an issue when
-> SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-> builds and didn't find any issues.)
-> 
-> This fixes build errors when CONFIG_SOUND is not set:
-> 
-> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
-> 
-> and this kconfig warning:
-> WARNING: unmet direct dependencies detected for SOUND
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: linux-um@lists.infradead.org
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nicolas Schier <nicolas@fjasle.eu>
-> Cc: linux-kbuild@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
+From: Tomas Glozar <tglozar@redhat.com>
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+patchset notes for details).
 
+This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+BUG (sleeping function called from invalid context) on RT kernels.
 
-I'm not sure who should take it.  If it's preferred through sound.git
-tree, let me know.
+preempt_disable was introduced together with lock_sk and rcu_read_lock
+in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+in parallel"), probably to match disabled migration of BPF programs, and
+is no longer necessary.
 
+Remove preempt_disable to fix BUG in sock_map_update_common on RT.
 
-thanks,
+Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+---
+ net/core/sock_map.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Takashi
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 19538d628714..08ab108206bf 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
+ 	__acquires(&sk->sk_lock.slock)
+ {
+ 	lock_sock(sk);
+-	preempt_disable();
+ 	rcu_read_lock();
+ }
+ 
+@@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
+ 	__releases(&sk->sk_lock.slock)
+ {
+ 	rcu_read_unlock();
+-	preempt_enable();
+ 	release_sock(sk);
+ }
+ 
+-- 
+2.39.3
+
