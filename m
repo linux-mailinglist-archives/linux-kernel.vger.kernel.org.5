@@ -2,168 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D674B76678A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A60766798
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbjG1Ion (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
+        id S234106AbjG1IrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233958AbjG1IoW (ORCPT
+        with ESMTP id S229601AbjG1Iql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:44:22 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB442735
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:44:21 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31757edd9edso1891776f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690533859; x=1691138659;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vB7Of/BuFi9+aALG5cWGsKnoprs7rEvHZgFmRNt4IE8=;
-        b=WquZjCfqA38ipQpLTa2wbLyI/Vc9NPdHX3NpU5TQu1cVaCW2Xmt+DKCWFXjbKB5l8K
-         9kRhjxZjFodJrNu00zBTWkqQNgwf7QmoSc/XphhGNKUHGsTnOoequLu+r5fwb8DcFqcf
-         V429agEzh6DlS2FiMWt4TfMs0kBkSnLNQfI7Xt2V9zmLruXgxB5XPx2aXriJq4g1Z9vz
-         61dDxNX95+VJiiW0o8UegOKLiRA27eAyzH3I8RPJzo2XtuPPRfae3xzEoQgRnOpiRfsl
-         b90XIUjZK0vx6zq1tGQiVUR2DqO1kqPsa8ERcDgXz5pOlEgqsXocqjK4d3LriNcpVuZ2
-         QbRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690533859; x=1691138659;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vB7Of/BuFi9+aALG5cWGsKnoprs7rEvHZgFmRNt4IE8=;
-        b=XePB8aYN0ukkVbBoodJoSIXBNS0+bmtL2HvEYz1fSGTWwGIK0A4XL64m7oPY+Zyaxl
-         PDFvu+hMuNGxBi6un93+5QaIJqvXkSIw3ITvTkPgrmMGR8ykBdj+puvJvLSWK1/bwjFg
-         sEYTVRj5ZNr7Ar7tyTjTNBz+fZGUdMLMsdX2pyi7QVagmaRQxLATwXLGHpmuwtaZ9tMW
-         uK1j564rd2Crjc8SMzZMKCpahag/ZynRUT8Z7NFWQQAoXXRkzfu/QMzyLHazXxpaRPEd
-         j/ABxNkdSfgWUJ6kneAoe+9npM2TiMIu19rW9bgtJ3j8H6LyDv5ZImNnMKEMGWOn9FXa
-         oUgA==
-X-Gm-Message-State: ABy/qLYsRrzlXZwtRHv+S97w5s05Mc013K2/Eb1YlEuB/UxD6lj/5gLd
-        6z2Yy4wQUiod4rc4uurhbcmiLA==
-X-Google-Smtp-Source: APBJJlH7pxfaml/ym7Fpd5Omt4CBBAfTo+yLhntYYDm4t5UKAIZolUwQGhIWA/FoYabu43jWNcAdOg==
-X-Received: by 2002:a5d:668c:0:b0:317:1b01:857e with SMTP id l12-20020a5d668c000000b003171b01857emr1287224wru.41.1690533859505;
-        Fri, 28 Jul 2023 01:44:19 -0700 (PDT)
-Received: from hades (ppp089210088142.access.hol.gr. [89.210.88.142])
-        by smtp.gmail.com with ESMTPSA id cs5-20020a056000088500b0031435731dfasm4270788wrb.35.2023.07.28.01.44.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 01:44:19 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 11:44:16 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
-Message-ID: <ZMN/4F4TZZtt8B/b@hades>
-References: <20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org>
- <CAMj1kXH_4OEY58Nb9yGHTDvjfouJHKNVhReo0mMdD_aGWW_WGQ@mail.gmail.com>
+        Fri, 28 Jul 2023 04:46:41 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFCB4208
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:46:02 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S8jDcv004062;
+        Fri, 28 Jul 2023 08:45:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=g/WTtRdr0WgLR2CAnyveRUJpX8y58Wg0Rq3WiXJcs2M=;
+ b=Arx+CXTuXRQQ2Jv9ddD4+HFHo9KN+9lwoLMwqhZjfnBFY9B9vo4HB9ovKOtjJQ40eGI8
+ 3uCM3Ay6YLbPtSGfNjYQ7k8AAQsgTjt8wxdw7G079X5h0Ok6hDyPPpfUk949IEubZDZV
+ A9UVY6O1L/iPFVwqecP+M/DeKVM4hzKX6yOJJah0Azd+10sIqT/JbX4cghbe4hfXo/9S
+ 2mrkrI++7Pg5kEu/U88RKvwQ7CpMObU6o6xJvCocJLakTRYcMnkpFMibUy9q4cdJfZez
+ jYRLB+KfBYmRThpWpN9xmyB16TJDn5RmPHR0HBZBzbOy8V3bvcvZoWyL/CmBOCBqgEnp hw== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s497p20pb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 08:45:48 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36S7c8R4002079;
+        Fri, 28 Jul 2023 08:45:47 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0tenmkcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 08:45:46 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36S8jj8318219598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jul 2023 08:45:45 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E920320043;
+        Fri, 28 Jul 2023 08:45:44 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CEDE920040;
+        Fri, 28 Jul 2023 08:45:44 +0000 (GMT)
+Received: from [9.171.162.186] (unknown [9.171.162.186])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 28 Jul 2023 08:45:44 +0000 (GMT)
+Message-ID: <4d9a0771-6331-c25b-333e-320879a826ea@linux.ibm.com>
+Date:   Fri, 28 Jul 2023 10:45:44 +0200
+Subject: Re: [PATCH] [v2] gcov: shut up missing prototype warnings for
+ internal stubs
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+References: <20230725123042.2269077-1-arnd@kernel.org>
+Content-Language: en-US
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+In-Reply-To: <20230725123042.2269077-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: HzvQHj3GvcUXFw-GAUDAXcGHIwc_8YNX
+X-Proofpoint-GUID: HzvQHj3GvcUXFw-GAUDAXcGHIwc_8YNX
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXH_4OEY58Nb9yGHTDvjfouJHKNVhReo0mMdD_aGWW_WGQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 mlxscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 suspectscore=0 mlxlogscore=779 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280077
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard, Mark
-
-On Fri, Jul 28, 2023 at 07:45:44AM +0200, Ard Biesheuvel wrote:
-> (cc Masahisa)
+On 25.07.2023 14:23, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> On Thu, 27 Jul 2023 at 23:52, Mark Brown <broonie@kernel.org> wrote:
-> >
-> > As documented in acd7aaf51b20 ("netsec: ignore 'phy-mode' device
-> > property on ACPI systems") the SocioNext SynQuacer platform ships with
-> > firmware defining the PHY mode as RGMII even though the physical
-> > configuration of the PHY is for TX and RX commits.  Since
-> > bbc4d71d63549bc ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-> > this has caused misconfiguration of the PHY, rendering the network
-> > unusable.
-> >
-> > This was worked around for ACPI by ignoring the phy-mode property but
-> > the system is also used with DT.  Since the firmware used with DT is the
-> > same (the firmware interface is selectable in the firmware
-> > configuration) and the firmware configures the PHY prior to running the
-> > OS we can use the same workaround.
-> >
+> gcov uses global functions that are called from generated code,
+> but these have no prototype in a header, which causes a W=1
+> build warning:
 > 
-> Wouldn't this break SynQuacers booting with firmware that lacks a
-> network driver? (I.e., u-boot?)
+> kernel/gcov/gcc_base.c:12:6: error: no previous prototype for '__gcov_init' [-Werror=missing-prototypes]
+> kernel/gcov/gcc_base.c:40:6: error: no previous prototype for '__gcov_flush' [-Werror=missing-prototypes]
+> kernel/gcov/gcc_base.c:46:6: error: no previous prototype for '__gcov_merge_add' [-Werror=missing-prototypes]
+> kernel/gcov/gcc_base.c:52:6: error: no previous prototype for '__gcov_merge_single' [-Werror=missing-prototypes]
 > 
-
-U-Boot does support the network interface (sni-netsec.c) but I'll have to
-check what that code does wrt to the PHY config.  Since the interface works
-I am assuming some config is done properly. 
-
-> I am not sure why, but quite some effort has gone into porting u-boot
-> to this SoC as well.
-
-It was mostly an effort to prove the box is SystemReady-IR compliant.  On
-top of that it was (back then) one of the few available platforms with an
-RPMB interface and OP-TEE support, so it was used for demonstrating storing
-EFI variables there. 
-
-Regards
-/Ilias
+> Just turn off these warnings unconditionally for the two files
+> that contain them.
 > 
+> Link: https://lore.kernel.org/all/0820010f-e9dc-779d-7924-49c7df446bce@linux.ibm.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Tested successfully with GCC 13.1 and Clang 18. Thanks for the fix!
+
+Acked-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+
+Andrew, could you add this patch via your tree?
+
+> ---
+>  kernel/gcov/Makefile | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> > Limit this to the SynQuacer, though practically speaking this is the
-> > only currently known system using this device.
-> >
-> > Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
-> > Signed-off-by: Mark Brown <broonie@kernel.org>
-> > ---
-> >  drivers/net/ethernet/socionext/netsec.c | 18 ++++++++++++++----
-> >  1 file changed, 14 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-> > index 2d7347b71c41..ae4d336efaa4 100644
-> > --- a/drivers/net/ethernet/socionext/netsec.c
-> > +++ b/drivers/net/ethernet/socionext/netsec.c
-> > @@ -1845,10 +1845,20 @@ static int netsec_of_probe(struct platform_device *pdev,
-> >  {
-> >         int err;
-> >
-> > -       err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
-> > -       if (err) {
-> > -               dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
-> > -               return err;
-> > +       if (of_machine_is_compatible("socionext,developer-box")) {
-> > +               /*
-> > +                * SynQuacer reports RGMII but is physically
-> > +                * configured with TX and RX delays, since the
-> > +                * firwmare configures the PHY prior to boot just
-> > +                * ignore the configuration.
-> > +                */
-> > +               priv->phy_interface = PHY_INTERFACE_MODE_NA;
-> > +       } else {
-> > +               err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
-> > +               if (err) {
-> > +                       dev_err(&pdev->dev, "missing required property 'phy-mode'\n");
-> > +                       return err;
-> > +               }
-> >         }
-> >
-> >         priv->phy_np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
-> >
-> > ---
-> > base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
-> > change-id: 20230727-synquacer-net-e241f34baceb
-> >
-> > Best regards,
-> > --
-> > Mark Brown <broonie@kernel.org>
-> >
+> diff --git a/kernel/gcov/Makefile b/kernel/gcov/Makefile
+> index 16f8ecc7d8821..ccd02afaeffb4 100644
+> --- a/kernel/gcov/Makefile
+> +++ b/kernel/gcov/Makefile
+> @@ -3,4 +3,6 @@ ccflags-y := -DSRCTREE='"$(srctree)"' -DOBJTREE='"$(objtree)"'
+>  
+>  obj-y := base.o fs.o
+>  obj-$(CONFIG_CC_IS_GCC) += gcc_base.o gcc_4_7.o
+> +CFLAGS_gcc_base.o += -Wno-missing-prototypes -Wno-missing-declarations
+>  obj-$(CONFIG_CC_IS_CLANG) += clang.o
+> +CFLAGS_clang.o += -Wno-missing-prototypes -Wno-missing-declarations
+
+-- 
+Peter Oberparleiter
+Linux on IBM Z Development - IBM Germany R&D
+
