@@ -2,155 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401A4767208
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7979C76720A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjG1Qk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
+        id S230263AbjG1Qks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjG1QkY (ORCPT
+        with ESMTP id S230086AbjG1Qkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:40:24 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2081.outbound.protection.outlook.com [40.107.237.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94299E;
-        Fri, 28 Jul 2023 09:40:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQK1e4ej3rSo1w4parAFOeIRMOsg9/DXxU0A2EVPc6R6pXRlywGou6bRruC1Ec0PQSj8cAczKTVU2G3esjwsoNk6CpmgNkTSr2tUfGAUQeNCiB1u+3xq7+qetPzDj7LZ5XqZghOIu9t2p5xJM1gDQM9cs1p7vyXISCMf1Web23285dJrNksLuqJC9oD3/BOrnS2b9AGs9IYqpiZ6RODIPMITD+l08C0lt5UyWl3bEs5ARZSIVscJymGuTvhuw7pIy7X3ukctUTrCcSv3yMWHEnc0NVTQtlKRYLjk/o0mSpElHx6q8/sGPMiFnfTDzSvHTzjFrx8m/JVGBudJl9pkbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yfagcM595CBddVOpZ8s2WHITdqCWuHqZNcCEFdTwj50=;
- b=MR412B+AS5yOxjeoIIuIWV9SyzLPFN+eN0kOh9q92BXoBXLqxlAcrUpbcQoDfMpmgYCiRrLZq8KqZy7Ka3cHif753Wdm5vpVbgIecjWdRif28KexwsSuqC8/Bbfomk9JGZeq4FUipucGdtpqr9xKyVD9h5Fb8Hsdsf8dteqlacx70nIYO0tg0cGlQana0uNAYb1LMysvYiFSoviusZnEfwIzetQpXNcTEsor9+Ur+IhZOEvz38OHJW21oIUFDEioNMkTqA3uoTERdiZWugC5PFX8Bdk9fP18pgHqDuREnZGWLvRXoY32i29RChmWg4eXshU/l8jHM5BCKmNLxFx/zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yfagcM595CBddVOpZ8s2WHITdqCWuHqZNcCEFdTwj50=;
- b=GNfC/rMs0HiZhy1Vg6v2KGbYncyVIZWLvYe2ImxrL+G1RDPnB34lTnLGZeFuKNlOBaHPrruJsDU/D/V76SkDY0QPeuF2AOrazqfsKHWdzrVw8LyXaoktndrwuGxTL4fHPaO5XFLw/CbV4r9r2OM3lJdlUCFyY5DOVemw63l04X4=
-Received: from DM6PR02CA0050.namprd02.prod.outlook.com (2603:10b6:5:177::27)
- by SJ1PR12MB6314.namprd12.prod.outlook.com (2603:10b6:a03:457::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 16:40:14 +0000
-Received: from DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:177:cafe::ec) by DM6PR02CA0050.outlook.office365.com
- (2603:10b6:5:177::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Fri, 28 Jul 2023 16:40:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT004.mail.protection.outlook.com (10.13.172.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6631.29 via Frontend Transport; Fri, 28 Jul 2023 16:40:13 +0000
-Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 11:40:08 -0500
-From:   Ayush Jain <ayush.jain3@amd.com>
-To:     <akpm@linux-foundation.org>, <shuah@kernel.org>,
-        <pasha.tatashin@soleen.com>, <zhansayabagdaulet@gmail.com>,
-        <tyhicks@linux.microsoft.com>, <shr@devkernel.io>,
-        <raghavendra.kt@amd.com>
-CC:     <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Narasimhan.V@amd.com>,
-        <Santosh.Shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v2 1/2] selftests: mm: ksm: Fix incorrect evaluation of parameter
-Date:   Fri, 28 Jul 2023 22:09:51 +0530
-Message-ID: <20230728163952.4634-1-ayush.jain3@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 28 Jul 2023 12:40:43 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FD13C35
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:38 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40631c5b9e9so01cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690562437; x=1691167237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KCIwiRybbqPdL+GA2easp6/q5mEFWhkL8APip1GzAdM=;
+        b=iUphQGDCq/P5HhC+B4wUCuShqcKB/O4cys8ksGxGvtLePX7+FMDl4tNiIlgooGBJDx
+         U2WHRT0l4ZU8fSGyRypuXxpLDVMdNvQpm6CHSxbVorcJ8Sz3/CAKqRaSuavn0Z4VpxPR
+         1LiYZL8Aw29mGThNJlIHO9zgRQr0g7JLfedKs+YgrLYNF8ETIn52a6zgcmjoNTP87VkT
+         3kmTuM26TnV5neBSrxUqTCeVixR3g7N0svKUDbFNYKZHPJhYpbiYk3Q4ZvFYutNnkfo4
+         Bib3hPVKzfNdI2PjgaWPCFx0rQkZJ2mg4D+cOw+c2fXYcSczcH4YJCG9F0woHQWJWSOc
+         s6jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690562437; x=1691167237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KCIwiRybbqPdL+GA2easp6/q5mEFWhkL8APip1GzAdM=;
+        b=LDPuFrspml6kf5wurOrPuodFQ62joUo5DPsowmM5T9GHb38BKaHmANaokTy8dSKh8e
+         bm7bpX+mCWfPfHs7tkUqna4FxwyvxiLGLkklYRuK+qkipVzkqTwWV+R/HAD/3Y1afRtU
+         uFgYV07bRQX2+oHDIMKF4jtPW57EyGRjBXI77Ek7SdxyrpM9yzX6qqY2mlnyCvWgtsmu
+         G0x7O71K+3ZkAWav4O6peKjXw90L0AkmtDxoMQF4/KlfKJs9SfFlrBMlB6w/03EDNoN+
+         brkV/6Zh0VRfeFJPDJHNAoOer6TPBLZ0WoOqzz2I39XYlcU/C+eheZanmM0p7khMmJ8A
+         YSfA==
+X-Gm-Message-State: ABy/qLYGosdr3ZEbtdlQGmG6yBSbvCrWN1GQnqbeDKYECz9tISbtFks2
+        +vDxmOLwqZDMNRktgP2kdaJqy4r14ijiiRDDVCw8Sw==
+X-Google-Smtp-Source: APBJJlHgM67EtrkE4O/uKl+m1fTY3fGU+3E/kVtkUeSbuYgG0IcBcufA64tWxYrhYYykVVM758vi0LRGrXHA7crs93g=
+X-Received: by 2002:a05:622a:15d0:b0:3f8:5b2:aef4 with SMTP id
+ d16-20020a05622a15d000b003f805b2aef4mr7604qty.28.1690562437418; Fri, 28 Jul
+ 2023 09:40:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT004:EE_|SJ1PR12MB6314:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab2184fb-2c21-462b-374c-08db8f895152
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7CkK629iEgji1PAgg3dop7x2E16PJA6R0vXzZu37IxxHAKtYFo710IcNWHX22gxk89pbjmQMJfK9x/llscITu/lexs8nd0Oa8xO72XeuywPjW1FegLYy84x57LU0bJUBb1hJYcOyOFB1zSBe5QT2JBI/RngZgO4+C6/kRF4k269uyeB4/obMmwkV8m3cNIs2ey5I9xHK+GTY2x/gTpkX1pDsQAqN93ehV1Lj0eVFabnaiyWKF4wK8XkFAC1PfHEKllnXphEDs49/33BNzxONSn1HBR0ZpO4+Xl9Hv3M0vZHvrfLYW+eMllCrnLN5Ycprd6db4iAsR6iD+mxCWIzq+xAKrkNA0rOMz6tRdweBNqD5kj5M/NmBcF6VeqIRGTQ5k3vBaHS9oeYxfr0iMQI8J1vP5AyzXusx5XwxXJj7VkWrTNzOtk3uPSLajaVIFpVPzQMVZrDti2XP03WOcLUDj2YpBrytrfXD6gKF2VOCflD219beIagwzoSCLIQAGHYhcxai7olWHttG8Gnq9SxjvmgjGvFu4VAM6sS+8YqC5wBggx/jMgubdgP6xRrzGHha5MW2YCsS4wD7VRgwE/pDTKVUNkS78hStPg7azAbTiyUPkgyOcUOgYR7IOIJzejTZdaToZkqCZNm4tiS9omUM3XiKFEyXwqDc7cIUG7cy7dEmnIVu+l7kUE7xItn+vCisTtyZR0OH+m8r9MjUWjrAiTws8PaRXBYbxV91Hrsu4zM26g2o5RYdUC2WAa+rKrfFH5h6cy0jORPuXtO9Z9H/4A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(346002)(396003)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(6636002)(4326008)(70206006)(6666004)(70586007)(40480700001)(5660300002)(478600001)(82740400003)(7696005)(316002)(356005)(110136005)(54906003)(81166007)(40460700003)(86362001)(41300700001)(8936002)(8676002)(26005)(1076003)(186003)(7416002)(16526019)(336012)(83380400001)(426003)(47076005)(2616005)(36860700001)(2906002)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:40:13.9910
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab2184fb-2c21-462b-374c-08db8f895152
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6314
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230715032915.97146-1-yangjihong1@huawei.com>
+ <20230715032915.97146-3-yangjihong1@huawei.com> <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
+ <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
+In-Reply-To: <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 28 Jul 2023 09:40:25 -0700
+Message-ID: <CAP-5=fXmpaKrVLifHh5H7Lf_nhNLGWFS0=CLRT2yHK5guReNGA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A missing break in kms_tests leads to kselftest hang when the
-parameter -s is used.
-In current code flow because of missing break in -s, -t parses
-args spilled from -s and as -t accepts only valid values as 0,1
-so any arg in -s >1 or <0, gets in ksm_test failure
+On Thu, Jul 20, 2023 at 12:24=E2=80=AFAM Yang Jihong <yangjihong1@huawei.co=
+m> wrote:
+>
+> Hello,
+>
+> On 2023/7/20 0:44, Ian Rogers wrote:
+> > On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei=
+.com> wrote:
+> >>
+> >> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
+> >> tracking to the evlist. We may need to search for the dummy event for
+> >> some settings. Therefore, add evlist__findnew_tracking_event() helper.
+> >>
+> >> evlist__findnew_tracking_event() also deal with system_wide maps if
+> >> system_wide is true.
+> >
+> > I'm wondering if we can simplify the naming in the API, we have "dummy
+> > event" which makes sense as we literally call the event "dummy",
+> > "sideband" which refers to the kind of samples/events the dummy event
+> > will record but "tracking" I think tends to get used as a verb rather
+> > than a noun. So I think evlist__findnew_tracking_event should be
+> > evlist__findnew_dummy_event.
+> >
+> Uh, from the discussion that followed, it seems that there is no
+> consensus yet...
+> If there is a clear consensus on whether to use "dummy event" or
+> "tracking event", I will change the name of the API.
+>
+> I think sideband event is equivalent to tracking event (refer
+> evsel__config(), tracking events include task, mmap, mmap2, and comm
+> sideband events, which are all sideband).
+>
+> tracking event are instances of dummy event. For example, we create
+> another dummy event to record the text poke event of ksymbol (refer perf
+> record --kcore).
+>
+> An evlist contains only one tracking event, but can contain multiple
+> dummy events.
 
-This went undetected since, before the addition of option -t,
-the next case -M would immediately break out of the switch
-statement but that is no longer the case
+Thanks for the feedback. So the tracking event is by definition the
+first dummy event in the evlist? What is the purpose of the other
+dummy events in this case? Perhaps we can get to an intention
+revealing implementation something like:
 
-Add the missing break statement.
+/** The "tracking event" gathering sideband data is the first dummy
+event in the list. */
+struct evsel *evlist__findnew_tracking_event(struct evlist *evlist)
+{
+   struct evsel *dummy =3D evlist__find_first_dummy_event(evlist);
 
-----Before----
-./ksm_tests -H -s 100
-Invalid merge type
+   if (!dummy) {
+      dummy =3D evlist__add_dummy(evlist);
+   }
+   return dummy;
+}
 
-----After----
-./ksm_tests -H -s 100
-Number of normal pages:    0
-Number of huge pages:    50
-Total size:    100 MiB
-Total time:    0.401732682 s
-Average speed:  248.922 MiB/s
+But I think the key thing for me is I'm still not sure what is going
+on when there are multiple dummy events for you, what are the other
+dummy events for other than tracking sideband data?
 
-Fixes: 07115fcc15b4 ("selftests/mm: add new selftests for KSM")
+Thanks,
+Ian
 
-Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
-v1 -> v2
-collect Reviewed-by from David
-Updated Fixes tag from commit 9e7cb94ca218 to 07115fcc15b4
-
- tools/testing/selftests/mm/ksm_tests.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/mm/ksm_tests.c b/tools/testing/selftests/mm/ksm_tests.c
-index 435acebdc325..380b691d3eb9 100644
---- a/tools/testing/selftests/mm/ksm_tests.c
-+++ b/tools/testing/selftests/mm/ksm_tests.c
-@@ -831,6 +831,7 @@ int main(int argc, char *argv[])
- 				printf("Size must be greater than 0\n");
- 				return KSFT_FAIL;
- 			}
-+			break;
- 		case 't':
- 			{
- 				int tmp = atoi(optarg);
--- 
-2.34.1
-
+>
+> Thanks,
+> Yang
