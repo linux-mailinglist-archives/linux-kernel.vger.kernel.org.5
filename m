@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6A3766159
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854DC76615D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbjG1Bfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 21:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S232128AbjG1Bhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 21:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjG1Bfw (ORCPT
+        with ESMTP id S229479AbjG1Bhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 21:35:52 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159853584;
-        Thu, 27 Jul 2023 18:35:52 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S0Ax8X020676;
-        Fri, 28 Jul 2023 01:35:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Y/2Bw/kAq2TKluJ/8QoQW11LwTmBQFzoZPq4H3xFg3k=;
- b=CZuXxSF7/IGLf+C1NWwHwnFVlf10QGVv/gLFnYKfjsgABcnX776JjPpDzWq7ykaaqdZz
- 1ihjDF03QIQN8v0m2XfwVKlHeQaCzO8eeeAF0UTr4ss4/BrRyROKGhL07w1f8VEogb1x
- Ks7pJuzN+7XGyVedcTojeuPtbGRjJGi0XQ0+NY1w2MqOCmDaDPsdl3J9E8EqlLsHfpfq
- mOe4SzbOtBNc0/AT3Umz7IGjmTvVuvj7DxaZA+Uy0lenYTaZqYSevlT5WFO17+VRXZa9
- j/PfAoxIaIg+KDlS627sEfBWddVq6Jwu1zeJKGWBQqggBXwjM436OGMJucA7KqQ59Gqz +Q== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s416m8887-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 01:35:45 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S1ZLfL030189
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 01:35:21 GMT
-Received: from [10.110.109.223] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 27 Jul
- 2023 18:35:21 -0700
-Message-ID: <05c31202-6081-1a27-1c80-57c710afa1a5@quicinc.com>
-Date:   Thu, 27 Jul 2023 18:35:20 -0700
+        Thu, 27 Jul 2023 21:37:51 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3731D213F;
+        Thu, 27 Jul 2023 18:37:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9c66e2e36so13951681fa.1;
+        Thu, 27 Jul 2023 18:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690508268; x=1691113068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tmjTr+Ekzs2/OcMS11bK61qR3FE3+8TZNMuctMbi2xU=;
+        b=g3XKJEBsMYV3c0Kt8g5oFFYp9QszFI4Xi44G0Vw+EBF1HesmjK55TbMbLP9qV1nrWq
+         hqs3p0Uql3PmXLMlboft9T8dJATBm1bmt71uxJ0xe0ZpnzS65vPIrluuodviQhC7Vmbu
+         belTfY1/A6XVbJd1Ca21hzt5C97wjfwHGqAZtnw+H9aPkbpp1xBMDkOHH1NT2/aSp49o
+         QFEfxSo6zTyPkfaj3tIAOiCtWt11HHT6uZoGAqbc1b+HKjtfZdQ6vxa/h8pyedq5hiuf
+         PCjjB7IZkdYe4ZiTc6OYPdx4bzbysqSB+7Oq8uh2akBDNMVUs1LyTg5dz32Nba9MpHrA
+         SBuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690508268; x=1691113068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tmjTr+Ekzs2/OcMS11bK61qR3FE3+8TZNMuctMbi2xU=;
+        b=fJFZfgGeU5nlpUsySnjWmJIYBO2DHlb79MsXGYgo84SH/qkI5IlO/43o3Osu7tOfLy
+         LS0I+CqmDn0TxRylR6C9Et5YOrsmsAwDhHLutbFHL3NmEFQV8n5ZhQplRqqpTySsQron
+         xoaeTSWgCWtbl+Fx4ilf71WVduYv0Mp1USjsnf0oPh77yf2UlSEvPp50C1sKxSLtWISS
+         RCGjvm2bsvgQW/9sXeAaLsC15OsSZB/Wf6xDjvdxxxTVoi3Zqswh18nHZbm0tEOoY1zw
+         VKCjaDEzMD4sR7DCuLWLrRF0MOXUUBAFKH5SU9ghGyGM5YYhEsGYoE8AzTxVomlkevYF
+         94Gg==
+X-Gm-Message-State: ABy/qLZa4+OPY/jnbm1nz7QHnvllB8EAzlK0yMqk37zr95ymvBrIvyqf
+        OCvwZiqzzLHYeFR6qdTtoa+d5kMInMtU+lWcxG0=
+X-Google-Smtp-Source: APBJJlE7RBP0m6Cdxi2m2dGUmO1cYZcOkYxJP8XD/p6rsaSHOzDWb6nGGZU9uLRgMKl0lanZNx+EbxgKTJx1XXbcCh0=
+X-Received: by 2002:a2e:b4b1:0:b0:2b9:b1fb:5ff4 with SMTP id
+ q17-20020a2eb4b1000000b002b9b1fb5ff4mr1360093ljm.21.1690508268189; Thu, 27
+ Jul 2023 18:37:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH 2/2] firmware: qcom_scm: Add missing extern specifier
-Content-Language: en-US
-To:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Elliot Berman" <quic_eberman@quicinc.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-References: <19d9ac0bf79f957574ef9b3b73246ea0113cc0fd.1690503893.git.quic_gurus@quicinc.com>
- <bce25c8e215f7cfc7b0780d6965d09f5efe1cc5f.1690503893.git.quic_gurus@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <bce25c8e215f7cfc7b0780d6965d09f5efe1cc5f.1690503893.git.quic_gurus@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sVK9TCXILmKF46jm0_xiAF1uZbNBfIg-
-X-Proofpoint-ORIG-GUID: sVK9TCXILmKF46jm0_xiAF1uZbNBfIg-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 suspectscore=0 clxscore=1015 mlxlogscore=868
- impostorscore=0 spamscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307280013
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1690364259.git.haibo1.xu@intel.com> <ZMKI8RknjjZBOaxf@google.com>
+In-Reply-To: <ZMKI8RknjjZBOaxf@google.com>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Fri, 28 Jul 2023 09:37:36 +0800
+Message-ID: <CAJve8o=GZnLLedT7TvCLvgd5Z3ZxJNfM6gG03Eyc+7krtMY--g@mail.gmail.com>
+Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/2023 5:42 PM, Guru Das Srinagesh wrote:
-> Commit 3a99f121fe0b ("firmware: qcom: scm: Introduce pas_metadata
-> context") left out the `extern` specifier for the API it introduced, so
-> add it.
-> 
-> Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
-> ---
+On Thu, Jul 27, 2023 at 11:14=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+>
+> On Thu, Jul 27, 2023, Haibo Xu wrote:
+> > The sstc_timer selftest is used to validate Sstc timer functionality
+> > in a guest, which sets up periodic timer interrupts and check the
+> > basic interrupt status upon its receipt.
+> >
+> > This KVM selftest was ported from aarch64 arch_timer and tested
+> > with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+>
+> Would it be possible to extract the ARM bits from arch_timer and make the=
+ bulk of
+> the test common to ARM and RISC-V?  At a glance, there is quite a bit of =
+copy+paste.
 
-This patch doesn't depend on the EXPORT_SYMBOL_GPL patch right? It can 
-sent separately as well, but looks ok to me.
+Sure, I will have a try to consolidate the common code for ARM and RISC-V i=
+n v2.
 
--- 
----Trilok Soni
-
+Thanks,
+Haibo
