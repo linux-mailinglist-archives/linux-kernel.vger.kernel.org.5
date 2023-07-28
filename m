@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA0F766BA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5237D766BAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbjG1L2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
+        id S236253AbjG1L26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235218AbjG1L2t (ORCPT
+        with ESMTP id S232959AbjG1L2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:28:49 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3E43ABA;
-        Fri, 28 Jul 2023 04:28:45 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DDE43755;
-        Fri, 28 Jul 2023 13:27:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690543662;
-        bh=zlio+8q8WgE1cCASCSlihC71qwk96p4bbXHtv0glq0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iuWPhIO/YYEgbfTIXWn3aTKbMP5acyGC5ff9vDZeRXRQoQgQUa3qS8BRp/nClMsF6
-         uAm2wil99ELCQFUzuc11RFuItkW5saS3ItEaW3rywSFgJeW7Jg9TwVinicYnnSNvwy
-         DabGrmgnL5Lqnq3hy4clnPVNBvD1EKrI1kA4kDgY=
-Date:   Fri, 28 Jul 2023 14:28:47 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Umang Jain <umang.jain@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Lee Jackson <lee.jackson@arducam.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Mikhail Rudenko <mike.rudenko@gmail.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        jacopo.mondi@ideasonboard.com
-Subject: Re: [PATCH 0/2] media: i2c: imx519: Support for Sony IMX519 sensor
-Message-ID: <20230728112847.GA5094@pendragon.ideasonboard.com>
-References: <20230727154108.308320-1-umang.jain@ideasonboard.com>
- <169053432818.137962.5791887898514618663@Monstersaurus>
+        Fri, 28 Jul 2023 07:28:54 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0580D35AB
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:28:53 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso20192215e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690543731; x=1691148531;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BQ34vB3coODdnCqDRzNfJbwKt6237pIU9W1p9j3eoLQ=;
+        b=bOkI9D8dNzJpn9aOYEnooCIj1cr2YtJDjjbFmyJvdCWIILWwPhp3mgLj6I3/vayjFC
+         wm93ZBG78NEwwxCQWagNXxT98EUSP1Kmvy5PwxiJdEnbrPE4FGZBcFgXP0Yr7sOkbsnb
+         NsHP1lST+OyJwaINFmtQOPSJcjS3xHQgvfSeVcfwOCnke2d7tDVwoqTjEGxlCd8hh0+w
+         7sNLdIkAcxXjGUtlPX+twW7fjeEhGre1tWsekg9KAjwPfjFP8Kkp849K/We9epd30M4b
+         VN6K4Z99oOCGYx0jhqtjxrRwiv7sTEmRPuQTWKB+1Qj0bzWcL367ad9bgsczm97PCDuQ
+         y/+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690543731; x=1691148531;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BQ34vB3coODdnCqDRzNfJbwKt6237pIU9W1p9j3eoLQ=;
+        b=X0sXLuVgSBB5UKlg4MKhJo/XCJmBb9Sa1k2EeHHVXc/8NVObjRLuWNU5XDLVBdfoKP
+         7RJMaII9l0mH+qYhdwjkR1DtFAABxoWhAdM/Z4JgMVavbz+18A1zX8TQu5PBBZJm6jZK
+         P2GMJfwkJK3GExebZgVI1yPx1vwb6u1fMP1rkoKQqMGHqpGoDquXIM2W+pk3+EWFEgB1
+         JrXQ7q0hhriTYzYyJJtwohS1d+Oy4Y8OyfTTrmQ6l3R7gPl/8nEeHWtn/jf8WVBSOh0v
+         jw0dCVIz1GRk9IMb8c6fcQv9xXxorP5O2ibg+99lhX8sYTjbUxLcZ5Pmd29BM0H1KPXN
+         c2rQ==
+X-Gm-Message-State: ABy/qLblt8tTY5Fg9CK1Mh3rUfpRg79UYXM7ajU7fdmCfMfzxIehgmQJ
+        hVdJMsgcR9b0b+PMr3uuqyz7ww==
+X-Google-Smtp-Source: APBJJlHXUGNVhjNXkYvUnBfA5cPneRuKYRGzxZjx6jl9lNQLLXcdU37HddGAzCimNmmjr1yI9PQOkw==
+X-Received: by 2002:a05:600c:2208:b0:3fc:a49:4c05 with SMTP id z8-20020a05600c220800b003fc0a494c05mr1355381wml.40.1690543731305;
+        Fri, 28 Jul 2023 04:28:51 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id q10-20020a1cf30a000000b003fbb618f7adsm4011911wmq.15.2023.07.28.04.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 04:28:50 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/2] soundwire: qcom: use newer link status tregister on v2.0.0
+Date:   Fri, 28 Jul 2023 13:28:47 +0200
+Message-Id: <20230728112848.67092-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <169053432818.137962.5791887898514618663@Monstersaurus>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,62 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 09:52:08AM +0100, Kieran Bingham wrote:
-> Hi Umang,
-> 
-> Quoting Umang Jain (2023-07-27 16:41:06)
-> > Series adds driver support for Sony IMX519 sensor.
-> > 
-> > Lee, can do add S-o-B tags please to these patches
-> > since I've updated your email IDs at various places from
-> > info@ to lee.jackson@.
-> 
-> Can you dig and find out what your start point was here please?
-> 
-> This series should already be numbered at least v6, there are 5 previous
-> postings. The most recent of which was already Signed off by
-> 'lee.jackson@arducam.com' So that makes me weary that v5 was not used as
-> the start point for this refresh.
-> 
-> Previous versions are identifiable here:
-> 
-> - https://patchwork.linuxtv.org/project/linux-media/list/?series=&submitter=&state=*&q=imx519&archive=both&delegate=
-> 
-> Could you check through any previous review comments and make sure they
-> have all been addressed too please?
-> 
-> It would be useful if the cover letter or patch described a changelog
-> from the previous version too to identify what has been updated.
+Soundwire v2.0.0 comes with a new register LINK_STATUS for the
+FRAME_GEN_ENABLED field (bit indicating that an active frame is
+running).  The old register COMP_STATUS is still there and still works,
+although the new one is preferred in downstream sources.  Probably
+because it allows to choose Soundwire instance per CPU.  Most of the
+code allowing to use new register for Soundwire v2.0.0 was already there
+as part of commit 312355a6a9f6 ("soundwire: qcom: add support for v2.0.0
+controller"), so switch to it in swrm_wait_for_frame_gen_enabled()
+function.  This should not have functional impact, because the old
+register still behaves correctly.
 
-I second this. A summary of the major changes in the cover letter plus a
-detailed changelog in each patch is invaluable for review.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/soundwire/qcom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> I see the kernel test robot reported failures based on missing
-> dependencies.
-> 
-> It's helpful to list any dependency information here in the cover
-> letter too.
-
-You can use the --base argument to git-format-patch to record the base
-commit, and point in the cover letter to a public branch where the
-series can be found.
-
-> > Thanks!
-> > 
-> > Lee Jackson (2):
-> >   media: dt-bindings: imx519: Add IMX519 DT bindings
-> >   media: i2c: imx519: Support for the Sony IMX519 sensor
-> > 
-> >  .../bindings/media/i2c/sony,imx519.yaml       |  113 +
-> >  MAINTAINERS                                   |    8 +
-> >  drivers/media/i2c/Kconfig                     |   11 +
-> >  drivers/media/i2c/Makefile                    |    1 +
-> >  drivers/media/i2c/imx519.c                    | 2134 +++++++++++++++++
-> >  5 files changed, 2267 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
-> >  create mode 100644 drivers/media/i2c/imx519.c
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index f8fd2eb4a2bb..3ae3e5896308 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -817,8 +817,8 @@ static bool swrm_wait_for_frame_gen_enabled(struct qcom_swrm_ctrl *ctrl)
+ 	int comp_sts;
+ 
+ 	do {
+-		ctrl->reg_read(ctrl, SWRM_COMP_STATUS, &comp_sts);
+-
++		ctrl->reg_read(ctrl, ctrl->reg_layout[SWRM_REG_FRAME_GEN_ENABLED],
++			       &comp_sts);
+ 		if (comp_sts & SWRM_FRM_GEN_ENABLED)
+ 			return true;
+ 
 -- 
-Regards,
+2.34.1
 
-Laurent Pinchart
