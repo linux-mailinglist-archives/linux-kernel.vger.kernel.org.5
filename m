@@ -2,98 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4D0766965
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC09766966
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbjG1JxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        id S234191AbjG1JxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233335AbjG1Jww (ORCPT
+        with ESMTP id S234232AbjG1Jw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:52:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9173D1BE4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:52:48 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690537966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YghHFfYCYAWFBc0EraENKwpa3nnd0b9yhfSdQDigIOc=;
-        b=DcbySZW3Vr69tOr7+Gp9njYVr1ItPdQ18TmSmFsFyI1RVNkTCiVPMZg2EiXRNxSSSjV9eO
-        RmVmC9XE9agLZu4oDZ1Tg8XyOt5yWT1NLAS2Gt2dlXWANCt8xWI7jPN2at4eJscH9s+cFF
-        0ILklMb1TZYaULmAiC4Nu+EPp5tQxemim+LOfQdz43IT6ZQTmnHAQE/7Xs2NiY8Sm8XvnD
-        fICg3/we6Zp/BWmThyQENzpllnJ4eZarWMsyeKqPkSG1HCnEaGZNaFtLbjclpwXaiBVVrH
-        ueKMT9p7PNZe98UiUTpAXyLFlHVoHUa3zeDSB/qw5dPcTQsvw9dtTJvyN5g2Jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690537966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YghHFfYCYAWFBc0EraENKwpa3nnd0b9yhfSdQDigIOc=;
-        b=kHOUssCUiiT6+FRRE/GeKpH4iUf2qD4cvAoUMIpc6O1D1W131ogmqz7GG/CL9n1GQhN+b3
-        rrGHZ2nEitwCgpBw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 2/8] printk: Provide debug_store() for nbcon
- debugging
-In-Reply-To: <20230728000233.50887-3-john.ogness@linutronix.de>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
- <20230728000233.50887-3-john.ogness@linutronix.de>
-Date:   Fri, 28 Jul 2023 11:58:44 +0206
-Message-ID: <878rb01hxv.fsf@jogness.linutronix.de>
+        Fri, 28 Jul 2023 05:52:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C827E0;
+        Fri, 28 Jul 2023 02:52:54 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 421036607166;
+        Fri, 28 Jul 2023 10:52:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690537973;
+        bh=+XBxa+9FcyJ2jM0I6wKqzFSaDcQCR5nHUkhM8eip8/w=;
+        h=Date:Subject:From:To:References:In-Reply-To:From;
+        b=ThGvd03C5juP8jx41+NL7hYzuTN8M4pseH/LR1gqAQLMqortisFZ2HHTaD0hZxpkQ
+         VTIEjtF4KTBXi5BTUKnaGVcRW1B8PKNhFyl5L0kPO8fkrEw+rl5gG4T8pECkRujCfa
+         A6NSTH/7ISmWU2yiPUN6j+m1Knj64jUs7AfnlyXbnfLe0tu5dAw+3PO/WIazqmJk5a
+         +MnEvJqXte4rNLApmjqY0yBXBob7gNfHGftAng/+vno2nqtCGuubEGLLsp8k5OtBMD
+         mPaUxA/yr7gGTVknh8QL+ZN8bb/IJeoZ3bozhhzYrnkwzw+6MHIbRI/VvUqpYVWlKv
+         xa2BtpWo2Tv7Q==
+Message-ID: <3cd43731-a49e-e751-2839-84708333a0e2@collabora.com>
+Date:   Fri, 28 Jul 2023 11:52:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 4/6] ASoC: mediatek: mt7986: add machine driver with
+ wm8960
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     Maso Huang <maso.huang@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Trevor Wu <trevor.wu@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>,
+        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230728090819.18038-1-maso.huang@mediatek.com>
+ <20230728090819.18038-5-maso.huang@mediatek.com>
+ <bab11add-b56f-59d3-f4fc-ad248ebe9b99@collabora.com>
+In-Reply-To: <bab11add-b56f-59d3-f4fc-ad248ebe9b99@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-28, John Ogness <john.ogness@linutronix.de> wrote:
-> +/*
-> + * Define DEBUG_NBCON to allow for nbcon ownership transitions to be logged
-> + * to the ringbuffer. The debug_store() macro only logs to the lockless
-> + * ringbuffer and does not trigger any printing.
-> + */
-> +#undef DEBUG_NBCON
-> +
-> +#ifdef DEBUG_NBCON
-> +/* Only write to ringbuffer. */
-> +int __debug_store(const char *fmt, ...)
-> +{
-> +	va_list args;
-> +	int r;
-> +
-> +	va_start(args, fmt);
-> +	r = vprintk_store(2, 7, NULL, fmt, args);
-> +	va_end(args);
-> +
-> +	return r;
-> +}
-> +#define debug_store(cond, fmt, ...)						\
-> +	do {									\
-> +		if (cond)							\
-> +			__debug_store(pr_fmt("DEBUG: " fmt), ##__VA_ARGS__)	\
+Il 28/07/23 11:49, AngeloGioacchino Del Regno ha scritto:
+> Il 28/07/23 11:08, Maso Huang ha scritto:
+>> Add support for mt7986 board with wm8960.
+>>
+>> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+>> ---
+>>   sound/soc/mediatek/Kconfig                |  10 ++
+>>   sound/soc/mediatek/mt7986/Makefile        |   1 +
+>>   sound/soc/mediatek/mt7986/mt7986-wm8960.c | 184 ++++++++++++++++++++++
+>>   3 files changed, 195 insertions(+)
+>>   create mode 100644 sound/soc/mediatek/mt7986/mt7986-wm8960.c
+>>
+>> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+>> index 558827755a8d..8d1bc8814486 100644
+>> --- a/sound/soc/mediatek/Kconfig
+>> +++ b/sound/soc/mediatek/Kconfig
+>> @@ -64,6 +64,16 @@ config SND_SOC_MT7986
+>>         Select Y if you have such device.
+>>         If unsure select "N".
+>> +config SND_SOC_MT7986_WM8960
+>> +    tristate "ASoc Audio driver for MT7986 with WM8960 codec"
+>> +    depends on SND_SOC_MT7986 && I2C
+>> +    select SND_SOC_WM8960
+>> +    help
+>> +      This adds support for ASoC machine driver for MediaTek MT7986
+>> +      boards with the WM8960 codecs.
+>> +      Select Y if you have such device.
+>> +      If unsure select "N".
+>> +
+>>   config SND_SOC_MT8173
+>>       tristate "ASoC support for Mediatek MT8173 chip"
+>>       depends on ARCH_MEDIATEK
+>> diff --git a/sound/soc/mediatek/mt7986/Makefile b/sound/soc/mediatek/mt7986/Makefile
+>> index de0742a67cae..fc4c82559b29 100644
+>> --- a/sound/soc/mediatek/mt7986/Makefile
+>> +++ b/sound/soc/mediatek/mt7986/Makefile
+>> @@ -6,3 +6,4 @@ snd-soc-mt7986-afe-objs := \
+>>       mt7986-dai-etdm.o
+>>   obj-$(CONFIG_SND_SOC_MT7986) += snd-soc-mt7986-afe.o
+>> +obj-$(CONFIG_SND_SOC_MT7986_WM8960) += mt7986-wm8960.o
+>> diff --git a/sound/soc/mediatek/mt7986/mt7986-wm8960.c 
+>> b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+>> new file mode 100644
+>> index 000000000000..a880fcb8662e
+>> --- /dev/null
+>> +++ b/sound/soc/mediatek/mt7986/mt7986-wm8960.c
+> 
+> ..snip..
+> 
+>> +static int mt7986_wm8960_machine_probe(struct platform_device *pdev)
+>> +{
+>> +    struct snd_soc_card *card = &mt7986_wm8960_card;
+>> +    struct snd_soc_dai_link *dai_link;
+>> +    struct mt7986_wm8960_priv *priv;
+>> +    int ret, i;
+>> +
+>> +    priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>> +    if (!priv)
+>> +        return -ENOMEM;
+>> +
+>> +    priv->platform_node = of_parse_phandle(pdev->dev.of_node,
+>> +                           "mediatek,platform", 0);
+>> +    if (!priv->platform_node) {
+>> +        dev_err(&pdev->dev, "Property 'platform' missing or invalid\n");
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    for_each_card_prelinks(card, i, dai_link) {
+>> +        if (dai_link->platforms->name)
+>> +            continue;
+>> +        dai_link->platforms->of_node = priv->platform_node;
+>> +    }
+>> +
+>> +    card->dev = &pdev->dev;
+>> +
+>> +    priv->codec_node = of_parse_phandle(pdev->dev.of_node,
+>> +                        "mediatek,audio-codec", 0);
+>> +    if (!priv->codec_node) {
+>> +        dev_err(&pdev->dev,
+>> +            "Property 'audio-codec' missing or invalid\n");
+>> +        of_node_put(priv->platform_node);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    for_each_card_prelinks(card, i, dai_link) {
+>> +        if (dai_link->codecs->name)
+>> +            continue;
+>> +        dai_link->codecs->of_node = priv->codec_node;
+>> +    }
+>> +
+>> +    ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
+>> +    if (ret) {
+>> +        dev_err(&pdev->dev, "failed to parse audio-routing: %d\n", ret);
+>> +        goto err_of_node_put;
+>> +    }
+>> +
+>> +    ret = devm_snd_soc_register_card(&pdev->dev, card);
+>> +    if (ret) {
+>> +        dev_err(&pdev->dev, "%s snd_soc_register_card fail %d\n",
+>> +            __func__, ret);
+>> +        goto err_of_node_put;
+>> +    }
+>> +
+>> +err_of_node_put:
+>> +    of_node_put(priv->codec_node);
+>> +    of_node_put(priv->platform_node);
+>> +    return ret;
+>> +}
+>> +
+>> +static void mt7986_wm8960_machine_remove(struct platform_device *pdev)
+>> +{
+>> +    struct snd_soc_card *card = platform_get_drvdata(pdev);
+>> +    struct mt7986_wm8960_priv *priv = snd_soc_card_get_drvdata(card);
+>> +
+>> +    of_node_put(priv->codec_node);
+>> +    of_node_put(priv->platform_node);
+>> +}
+>> +
+>> +#ifdef CONFIG_OF
+> 
+> Your probe function *relies on* devicetree, and you're adding an ifdef for
+> CONFIG_OF? That wouldn't make sense, would it? ;-)
+> 
+>> +static const struct of_device_id mt7986_wm8960_machine_dt_match[] = {
+>> +    {.compatible = "mediatek,mt7986-wm8960-machine",},
+> 
+> please...
+> 
+> { .compatible = "mediatek,mt7986-wm8960-machine" },
 
-Missing a semi-colon here. Wrapping this with a do-while was a
-last-minute change requested by checkpatch.pl. Probably nobody would
-notice because you must manually define DEBUG_NBCON by changing the
-source code. Fixed for v3 (assuming Petr allows me to keep this
-debugging code in place).
+Actually, I noticed that just after sending the review.
 
-> +	} while (0)
-> +#else
-> +#define debug_store(cond, fmt, ...)
-> +#endif
+Can you also please change the compatible, as "machine" doesn't really
+mean "sound"? :-)
 
-John
+.compatible = "mediatek,mt7986-wm8960-sound"
+
+Thanks!
+
+> 
+>> +    { /* sentinel */ }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, mt7986_wm8960_machine_dt_match);
+>> +#endif
+>> +
+>> +static struct platform_driver mt7986_wm8960_machine = {
+>> +    .driver = {
+>> +        .name = "mt7986-wm8960",
+>> +#ifdef CONFIG_OF
+> 
+> Check `struct device_driver`: const struct of_device_id *of_match_table is
+> always present, there's no ifdef.... and that's done in order to avoid seeing
+> a bunch of ifdefs in drivers...
+> 
+> ...so, why is this callback enclosed in an ifdef?
+> 
+> Please drop all those ifdefs.
+> 
+> 
+> After addressing those last comments, you can get my
+> 
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
+> Regards,
+> Angelo
+
