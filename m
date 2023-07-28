@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C3B767300
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA8F767303
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbjG1RL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
+        id S233669AbjG1RMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbjG1RL4 (ORCPT
+        with ESMTP id S231792AbjG1RMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:11:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29ACEB5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:11:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B738621B1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:11:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B54DC433C7;
-        Fri, 28 Jul 2023 17:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690564308;
-        bh=AAaybvDEoIYa8SNwcf6zrgWekWtZs1E1cclOj0P0xGQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qRj94Pm6uKJdU81TDj0CI2H2F5aueaFXcQOpL2ab7dqaF0YKwUW/Eu6Me390hnDVd
-         qzm1D1+ausnsuksANnQ8IVrUjHo9n4CEPSNXp3003IWdC/eh7Ju6IMC8WHubGtylgr
-         h4cdhGVTqzCCqXsWDpH3SF5ctIWUMNVCIZybx0F4tqzza8YmiKX1HLYwNmvce8wY0I
-         qPPvekKRYgafITZ3msu86uLoujFMgH/lBXiRvOgSOqowlHR3Kn7mNUv3DWuhmzb1ee
-         /NqGU+5zFqgGblsEYaAKdgVzXpgB+butnhbKyRqZIG2DDTiiDJ1ERCTu7oW9xwQP/y
-         4Q1rZk1WIYSww==
-Date:   Fri, 28 Jul 2023 18:11:43 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
-Message-ID: <8ed87590-4f0e-423a-a326-c4f6bef24596@sirena.org.uk>
-References: <20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org>
- <CAMj1kXH_4OEY58Nb9yGHTDvjfouJHKNVhReo0mMdD_aGWW_WGQ@mail.gmail.com>
- <6766e852-dfb9-4057-b578-33e7d6b9e08e@lunn.ch>
- <46853c47-b698-4d96-ba32-5b2802f2220a@sirena.org.uk>
- <CADQ0-X_pXKvUxLW23vEyH=9aZ6iLA2jOKz8QX6aqwQmxFcPY8Q@mail.gmail.com>
- <7f21c1d3-331d-4bff-8a4c-f6e235a3dd6a@lunn.ch>
+        Fri, 28 Jul 2023 13:12:36 -0400
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C466035A9;
+        Fri, 28 Jul 2023 10:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
+        :From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date
+        :Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+        References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+        List-Owner:List-Archive; bh=iapXccHtapXvoYza5A60N8Syh4OAAzH77Y1/wEH0vXk=; b=I
+        0VWY96Jm2YDqvFYQSB7OI5DXRYWy7LOpq1Ke+wKgqqr+Y7tow0tB3yUWkuOLthqrsDaLWjJnZ1huM
+        xbXMA/qrT85Ez5dRVcrL1Xbl3lp/85pSVERXmZuVeGT5s0KZNqf8sJzNISb1zmxUz0AnmqRU8EH51
+        LjlOdGXfEKBPdEUU=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:53782 helo=localhost.localdomain)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1qPR0u-0003RD-Nz; Fri, 28 Jul 2023 13:12:29 -0400
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     hugo@hugovil.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 28 Jul 2023 13:12:12 -0400
+Message-Id: <20230728171211.3016019-1-hugo@hugovil.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lq4m8BNCVR9lFfHi"
-Content-Disposition: inline
-In-Reply-To: <7f21c1d3-331d-4bff-8a4c-f6e235a3dd6a@lunn.ch>
-X-Cookie: Ontogeny recapitulates phylogeny.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [RESEND PATCH v2] rtc: pcf2127: add error checking when disabling POR0
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
---lq4m8BNCVR9lFfHi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+If PCF2127 device is absent from the I2C bus, or if there is a
+communication problem, disabling POR0 may fail silently and we
+still continue with probing the device. In that case, abort probe
+operation.
 
-On Fri, Jul 28, 2023 at 07:07:36PM +0200, Andrew Lunn wrote:
-> On Fri, Jul 28, 2023 at 09:35:00PM +0900, Masahisa Kojima wrote:
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+---
+V1 -> V2: Removed error message
+---
+ drivers/rtc/rtc-pcf2127.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > "rgmii-id" is correct, configured by board level.
-> > The latest EDK2 firmware was already modified to use the correct value
-> > for DT(Thank you, Ard).
-> > http://snapshots.linaro.org/components/kernel/leg-96boards-developerbox-edk2/100/
+diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
+index 78141bb06ab0..3387afe93417 100644
+--- a/drivers/rtc/rtc-pcf2127.c
++++ b/drivers/rtc/rtc-pcf2127.c
+@@ -1192,8 +1192,10 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
+ 	 * The "Power-On Reset Override" facility prevents the RTC to do a reset
+ 	 * after power on. For normal operation the PORO must be disabled.
+ 	 */
+-	regmap_clear_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
++	ret = regmap_clear_bits(pcf2127->regmap, PCF2127_REG_CTRL1,
+ 				PCF2127_BIT_CTRL1_POR_OVRD);
++	if (ret < 0)
++		return ret;
+ 
+ 	ret = regmap_read(pcf2127->regmap, pcf2127->cfg->reg_clkout, &val);
+ 	if (ret < 0)
 
-Thanks, that does seem to be working.
+base-commit: 3c87b351809f220294aec3c0df7b078ff5c5b15b
+-- 
+2.30.2
 
-> If the firmware has been fixed, i would actually do something like:
-
-> 	err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
-> 	if (err)
-> 		return err;
-
-> 	if (of_machine_is_compatible("socionext,developer-box") &&
-> 	    priv->phy_interface != PHY_INTERFACE_MODE_RGMII_ID) {
-> 	    	pr_warn(FW_WARN, "Working around broken firmware. Please upgrade your firmware");
-> 		priv->phy_interface = PHY_INTERFACE_MODE_RGMII_ID;
-> 	}
-
-It is not clear to me that the release channels for this firmware are
-sufficiently clear to users for this to be constructive.
-
---lq4m8BNCVR9lFfHi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTD9soACgkQJNaLcl1U
-h9D4Sgf/UHOMDMFTFA+SW8Kb+pTyDRKEvHUDBcGyL2NKYKqFb1wFaFceH334F9QQ
-dO1YmxicEUWeQva2NfhfNVdSHu6mJzG5Hkvrlr65LAzzIG+AFtPgLZwZfWQpXfNs
-kPuLBMQQCSnV8XQhkFrgc4buO2hEjwEVukFzAi+sLUbY2UdTGgVjCjM2JrAYcEtQ
-Njv4bXo4I3wgEq6cOt8VUTqaMQiVxsdQVcz9s7w/kg6yLooJmq+4aZRDlGcfWXkj
-ly8kK7uBq4BAM8yEnhi/Gcb8rAQ0ac1ZHLzymAtSe/YdcMwrsFoDw6OD+OohP+6v
-QGrwZEUDeoZOzerlcdhg98wQxl9wUg==
-=LWJ8
------END PGP SIGNATURE-----
-
---lq4m8BNCVR9lFfHi--
