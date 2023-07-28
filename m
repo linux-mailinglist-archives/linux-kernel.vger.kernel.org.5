@@ -2,150 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733807664C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF327664C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbjG1HE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        id S233767AbjG1HFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbjG1HEx (ORCPT
+        with ESMTP id S233777AbjG1HFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:04:53 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BC6268B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:04:49 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53fa455cd94so1062153a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690527889; x=1691132689;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Wrwpb7rVTyYgrDu2LzfWhd5QBSrpJqCmxUGFCtGyRxE=;
-        b=HnNBF9FNxGUGcdq72feS4vzTAgz0S2xFrpjfptHFXDmIUUMf0+rsfFDBqC2ScjUbKz
-         umiiQMv2yfwN/+2EI2WvRogXyZJdWr6bLFFsUu3iSptlbMQawDUr7bHclNJPap/lp0kD
-         kGz6QmaoOBFvXiNpicfwfM93W5ym8He5JnV+XRbLknn+OJltHWHesQIhVqS7KUQ44fxC
-         up4WV6A7BcSSto/oqS+D1YE1nZ6jPVDvDx4cocNpgn0bAztE0SaLeo/DCjamR0zH4GvK
-         2zNMASq10UNnA4vVGokkrN8MvD2HG17cKKJphE9dD7L+MFm09drbK7kMQfIMVZiJPeop
-         X3mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690527889; x=1691132689;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wrwpb7rVTyYgrDu2LzfWhd5QBSrpJqCmxUGFCtGyRxE=;
-        b=hIqLDRSORMM9I6ewzvnaDC4M+p0IF+VWeLNEPdKGYE/Z4SBGnUz9XhhkFAlJF3Hckg
-         xpnbkPxdXa8GWYj7sVjArFTlr4C12zrOUYvZN7m4maJt9g6WEUvr09FYlylNJQUk+y9U
-         kc0uaDos9LJkghrJDZg9sN6SWHvbWYI5XT/uPfNz5GLE8MPYk95en3XGrgB1FtNoffJR
-         IMLKYr1efCv+pWBq4EjYuNpbBa5E8ckXiGd35IXeV4GTnKsTGfY/ST8SMq7tu8wPB9CO
-         pab+hHu0eEDjQxEhjzj6TuaDMAy7FJeRihzhj3OL1pe74LRKHOqih8d5B6gPiY6XJOL4
-         JjRw==
-X-Gm-Message-State: ABy/qLZNItoD3rlz2xfEnSzOV71mv6HUGd5tXTkC11rJGEYJ0awjHvpX
-        AkxAx0c00XKMz3QLzQizyNzaCA==
-X-Google-Smtp-Source: APBJJlE+60gGNtiTwkvVvvyxDJd0BPxR2w6cPhZ0ordld8aOmQaaiK95ErAlh1vP12HcALZGJ8odjQ==
-X-Received: by 2002:a05:6a20:968d:b0:12f:a373:ba95 with SMTP id hp13-20020a056a20968d00b0012fa373ba95mr611563pzc.19.1690527888967;
-        Fri, 28 Jul 2023 00:04:48 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:dacb:3a1a:fcaf:c0fc])
-        by smtp.gmail.com with ESMTPSA id o14-20020a170902d4ce00b001bb750189desm2778063plg.255.2023.07.28.00.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 00:04:48 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 00:04:46 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Xi Ruoyao <xry111@linuxfromscratch.org>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
-Message-ID: <ZMNojqwLxcG8FcHN@x1>
-References: <20230617161529.2092-1-jszhang@kernel.org>
- <c9a44f534071a6d67f1e21bafdb713793c559124.camel@linuxfromscratch.org>
- <20230725-unheard-dingy-42f0fafe7216@wendy>
- <ZL/jMYL3akl78ZZN@xhacker>
- <3e0994dab495920ac590dc28d6b9d9765abe0c7e.camel@linuxfromscratch.org>
- <ZME1J4mpVf5yth32@xhacker>
- <866eab3e30a18c50742a75d62aee223fdc7e3cee.camel@linuxfromscratch.org>
- <4986b92f1a5aa303a529c6004aaedd2184c3ccf7.camel@linuxfromscratch.org>
- <ZMKXQpreSr47MFj6@xhacker>
- <290101d386866f639a7c482527d7a78c5108d49b.camel@linuxfromscratch.org>
+        Fri, 28 Jul 2023 03:05:04 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E632688;
+        Fri, 28 Jul 2023 00:05:01 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230728070458euoutp022f15e56badf4165b98bf10ed163f85c3~19irGFNPg2448024480euoutp02O;
+        Fri, 28 Jul 2023 07:04:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230728070458euoutp022f15e56badf4165b98bf10ed163f85c3~19irGFNPg2448024480euoutp02O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1690527898;
+        bh=br9G7r4+wWkapIsRtHLfrIdX5fm3tF8e2xPu8oGSqtY=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=uLe/QZJmwzYlCsgebU5xg+cv1Milka3pnjtEiravXqPEwVPKIskZ1xm1M7EDMqlgf
+         qREl8PJdPDwP2JvfJN0AO05NsuSx55b+RtvEs3oTU/GYvY85Z+uEfwPkg/qZK4Z1RD
+         LENgMw/TW50s64xPFhpuACQKS/BfTPn0pOZ3j+A4=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230728070458eucas1p1b02fcc2dedf94d9f266c017dd17c370e~19iq8kmU-3067930679eucas1p16;
+        Fri, 28 Jul 2023 07:04:58 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 4F.1E.42423.A9863C46; Fri, 28
+        Jul 2023 08:04:58 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230728070458eucas1p297053e1ebb40da3524acb7f73fa72081~19iqmBx-n0463204632eucas1p2h;
+        Fri, 28 Jul 2023 07:04:58 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230728070458eusmtrp27a6d8a269fecfab6123bb80997a2d0ba~19iqlcqH12380823808eusmtrp21;
+        Fri, 28 Jul 2023 07:04:58 +0000 (GMT)
+X-AuditID: cbfec7f2-a51ff7000002a5b7-4f-64c3689a20fc
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 54.55.14344.A9863C46; Fri, 28
+        Jul 2023 08:04:58 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230728070457eusmtip2cae171e462fe20d725967fe6b7db42eb~19iqaA12w2281622816eusmtip2f;
+        Fri, 28 Jul 2023 07:04:57 +0000 (GMT)
+Received: from localhost (106.210.248.223) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Fri, 28 Jul 2023 08:04:57 +0100
+Date:   Fri, 28 Jul 2023 09:04:56 +0200
+From:   Joel Granados <j.granados@samsung.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, <willy@infradead.org>,
+        <josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH 00/14] sysctl: Add a size argument to register functions
+ in sysctl
+Message-ID: <20230728070456.zkzuh5caofkvvupj@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="aodohqg2l7fppyro"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <290101d386866f639a7c482527d7a78c5108d49b.camel@linuxfromscratch.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZMKPzzkVy45lSCJ7@bombadil.infradead.org>
+X-Originating-IP: [106.210.248.223]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7djP87qzMg6nGFx8KGPxf0G+xZnuXIs9
+        e0+yWFzeNYfN4saEp4wWxxaIWfz+AeQt2+nnwOExu+Eii8eCTaUem1doedx6beuxaVUnm8fn
+        TXIBbFFcNimpOZllqUX6dglcGf8OnmQsmMpfcW3fIqYGxrc8XYycHBICJhIXFk1n6mLk4hAS
+        WMEocffzYWYI5wujxOvTU9ggnM9AmStrgRwOsJZbN2Ig4ssZJY7Mns4CV7Tn0yZ2CGcro8Th
+        72uZQJawCKhKfPg1A8xmE9CROP/mDjOILSKgIbFvQi/YcmaBm4wSJ89sZwdJCAtESGzv2s0C
+        YvMKmEvs3HeYDcIWlDg58wlYnFmgQmL1mZnsICcxC0hLLP/HARLmFDCT2Hz2GxvEc8oSB5f8
+        ZoewayVObbkFtktCYD6nxPLPaxkhEi4Si9vOs0LYwhKvjm+BapCR+L9zPlTDZEaJ/f8+sEM4
+        qxklljV+ZYKospZoufIEqsNRYuWpY6yQQOKTuPFWEOJQPolJ26YzQ4R5JTrahCCq1SRW33vD
+        MoFReRaS12YheW0WwmsQYR2JBbs/sWEIa0ssW/iaGcK2lVi37j3LAkb2VYziqaXFuempxYZ5
+        qeV6xYm5xaV56XrJ+bmbGIFJ7fS/4592MM599VHvECMTB+MhRhWg5kcbVl9glGLJy89LVRLh
+        PRVwKEWINyWxsiq1KD++qDQntfgQozQHi5I4r7btyWQhgfTEktTs1NSC1CKYLBMHp1QDUy2T
+        o8/XtecfPFy5NmWbsu6j+b/VgsWs8zr8eJ66it1bPD3rhcPrYv2zl9gnzX1UcONF62rv+cUz
+        zi4PZXj2qOiGNVMsg86vqPrJRr4cCQav33L41v0py9nXcJDh83dRg/iLyRtNPsndCFOsuT+9
+        V1///IwnFxQOiS60KuhK5fV6Opld6ZVpgMj8LwHTXyt/edi8YXNKVcvU9EuijzX3+muW3/zE
+        oHyag+2ucOIp8/vztxan8CkUHNbatOaylNI9prlXzr9gUE3N/mhukrm889W3r78DNvusnH3+
+        7soD37ZsZ3+8OfBA1U937V8H/se2nbsq5FEcajBV+2zuob15U41E3pU/PP/mar+KcY35rXgl
+        luKMREMt5qLiRACTyzow5QMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xe7qzMg6nGHzZymrxf0G+xZnuXIs9
+        e0+yWFzeNYfN4saEp4wWxxaIWfz+AeQt2+nnwOExu+Eii8eCTaUem1doedx6beuxaVUnm8fn
+        TXIBbFF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6
+        Gb/3z2UrmMxf0Xb0D1MD42ueLkYODgkBE4lbN2K6GLk4hASWMkpc3tHC1sXICRSXkdj45Sor
+        hC0s8edaFxtE0UdGiSv3/zNBOFsZJV6feM4OUsUioCrx4dcMJhCbTUBH4vybO8wgtoiAhsS+
+        Cb1gDcwCNxklTp7ZDtYgLBAhsb1rNwuIzStgLrFz32GoFdOZJN5umgWVEJQ4OfMJmM0sUCZx
+        6d1NFpC7mQWkJZb/4wAJcwqYSWw++w3qbGWJg0t+s0PYtRKf/z5jnMAoPAvJpFlIJs1CmAQR
+        1pK48e8lE4awtsSyha+ZIWxbiXXr3rMsYGRfxSiSWlqcm55bbKRXnJhbXJqXrpecn7uJERjZ
+        24793LKDceWrj3qHGJk4GA8xqgB1Ptqw+gKjFEtefl6qkgjvqYBDKUK8KYmVValF+fFFpTmp
+        xYcYTYHBOJFZSjQ5H5hy8kriDc0MTA1NzCwNTC3NjJXEeT0LOhKFBNITS1KzU1MLUotg+pg4
+        OKUamBw3T5nIsnPuroINmbd5lig9Va2dsWm+mMzvp9e3Lqp6E9D+hF3mzULrhEkp0zxilr3O
+        Pftu6dPCYI+vb+7M7xTNk5XgWGe288SMbY3b15y5uX/J6x/hnBsl2hWSDgc+idBt6stOut7+
+        ZsKxSmMd+cc80pfCGTg0n08J8X0zgX/Zhu2pNZyfzkgfmLju2d4TB45x759+f+ueDw+FT9/+
+        /WNepvv+uCnNrzq7vJpL/spZVnc0liQ1r//u8+tU3HNm9uLZL220p/QwRN15teLsdN89W1Rc
+        ozfrWYVprAx+unWuFLf01A9Ta+x/up/n3CbsnBJ/d8FdxYbXqx5emHo+Nr7jNwub0MSrkezr
+        bjGpqPyJVmIpzkg01GIuKk4EAHRmUFaBAwAA
+X-CMS-MailID: 20230728070458eucas1p297053e1ebb40da3524acb7f73fa72081
+X-Msg-Generator: CA
+X-RootMTR: 20230726140648eucas1p29a92c80fb28550e2087cd0ae190d29bd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230726140648eucas1p29a92c80fb28550e2087cd0ae190d29bd
+References: <CGME20230726140648eucas1p29a92c80fb28550e2087cd0ae190d29bd@eucas1p2.samsung.com>
+        <20230726140635.2059334-1-j.granados@samsung.com>
+        <ZMFizKFkVxUFtSqa@bombadil.infradead.org>
+        <20230727114318.q5hxwwnjbwhm37wn@localhost>
+        <ZMKPzzkVy45lSCJ7@bombadil.infradead.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 12:29:44AM +0800, Xi Ruoyao wrote:
-> On Fri, 2023-07-28 at 00:11 +0800, Jisheng Zhang wrote:
-> > On Thu, Jul 27, 2023 at 08:54:59AM +0800, Xi Ruoyao wrote:
-> > > On Thu, 2023-07-27 at 08:14 +0800, Xi Ruoyao wrote:
-> > > > On Wed, 2023-07-26 at 23:00 +0800, Jisheng Zhang wrote:
-> > > > > which dts r u using? see below.
-> > > > > 
-> > > > > > 
-> > > > > > Or maybe my toolchain (GCC 13.1.0, Binutils-2.40, with no
-> > > > > > patches) can
-> > > > > > miscompile the kernel?
-> > > > 
-> > > > /* snip */
-> > > > 
-> > > > > > Boot HART ID              : 0
-> > > > > > Boot HART Domain          : root
-> > > > > > Boot HART Priv Version    : v1.11
-> > > > > > Boot HART Base ISA        : rv64imafdcvx
-> > > > > 
-> > > > > what? I don't think the mainline dts provide v and x. 
-> > > > 
-> > > > I copied the compiled arch/riscv/boot/dts/thead/th1520-lichee-pi-
-> > > > 4a.dtb
-> > > > into /boot and loaded it with u-boot "load" command onto
-> > > > 0x46000000, and
-> > > > passed this address to the booti command.
-> > > > 
-> > > > But maybe I've copied the wrong file or made some other mistake...
-> > > > I'll
-> > > > recheck.
-> > > 
-> > > Hmm, and if I read OpenSBI code correctly, this line reflects the
-> > > content of the misa CSR, not the DT riscv,isa value.
-> > > 
-> > 
-> > Aha indeed the "vx" isa extensions are not from the DT riscv,isa
-> > property. I will try your opensbi/linux/uboot combinations on my
-> > lpi4a board tomorrow.
-> 
-> My kernel config attached.  Maybe you can find some stupid mistake in
-> it, I'm not familiar with RISC-V, nor DT-based systems :(.
+--aodohqg2l7fppyro
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It seems like your kernel config is the problem. I used it and I saw
-the same result of a panic in riscv_intc_irq:
-https://gist.github.com/pdp7/1a26ebe20017a3b90c4e9c005f8178e1
+On Thu, Jul 27, 2023 at 08:39:59AM -0700, Luis Chamberlain wrote:
+> On Thu, Jul 27, 2023 at 01:43:18PM +0200, Joel Granados wrote:
+> > On Wed, Jul 26, 2023 at 11:15:40AM -0700, Luis Chamberlain wrote:
+> > > On Wed, Jul 26, 2023 at 04:06:20PM +0200, Joel Granados wrote:
+> > > > What?
+> > > > These commits set things up so we can start removing the sentinel e=
+lements.
+> > >=20
+> > > Yes but the why must explained right away.
+> > My intention of putting the "what" first was to explain the chunking and
+>=20
+> It may help also just to clarify:
+>=20
+>    sentinel, the extra empty struct ctl_table at the end of each
+>    sysctl array.
+This clarification is already there: "... sentinel element (the extra
+empty element in the ctl_table arrays ...".
 
-This is the config I have been using successfully:
-https://gist.github.com/pdp7/ecb34ba1e93fc6cfc4dce66d71e14f82
+>=20
+> > Thx for this.
+> > This is a more clear wording for the "Why". Do you mind if I copy/paste
+> > it (with some changes to make it flow) into my next cover letter?
+>=20
+> I don't mind at all.
+>=20
+>   Luis
 
-Could you try that config?
+--=20
 
-Linux 6.5-rc3 boots okay when built with it:
-https://gist.github.com/pdp7/580b072f9a5bf9be87cf88b5f81e50e3
+Joel Granados
 
-Thanks,
-Drew
+--aodohqg2l7fppyro
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTDaJYACgkQupfNUreW
+QU+vVAwAgQjVd6B4tr1mRhFBZ0k0OybQ2cBcaFiVHeSQv6xgqasDX9RQI60TfUhV
+fqkSg9vSHUvznOLzXRQO9tLPoADS8n7B4gpnJLCYeIEHO8vp9oZU/wlVTAbRRilL
+Wg+8UCDmztLIRyrGlVZIIVOeVHr4B4KZqu24fT5pFh3uMeAxLBGPFozcwzM4IGxB
+nUQb8nVvon6Pf0yVCIAT+Qq5xF9uOIbT0W0/Q89cjgygKlMDnPtNZjlMrRIvvvT1
+EtLovOeys9Vbzbm52IxNeI+F02d1RzwL1ZcNWxOS/W4St+8SsIhK57W3ZCsjaX0i
+PErXwQET17rgnOGzoKGOpwIhDLYoZtmwRtOhr3DNA+7Mpw7afFpDjkLLfBDOEQhj
+iIhX0o1qYmSlkx9UecmrVH9TU//ByGygBQA0nBkcYesWKvj9qRD0DuOe38w+IAud
+234k0oj286eq7WeTfW32plcVKlU9w6we1Rf7QQ1CkWoHVoyidn9sjuNhT6rNZWu9
+Uq8aVZoJ
+=iiSr
+-----END PGP SIGNATURE-----
+
+--aodohqg2l7fppyro--
