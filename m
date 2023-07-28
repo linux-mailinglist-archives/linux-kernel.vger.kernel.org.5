@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185BF76711E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8021767120
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjG1Pxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:53:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
+        id S234952AbjG1Px4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjG1Pxo (ORCPT
+        with ESMTP id S236616AbjG1Pxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:53:44 -0400
+        Fri, 28 Jul 2023 11:53:52 -0400
 Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF7830CA;
-        Fri, 28 Jul 2023 08:53:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937E430E3;
+        Fri, 28 Jul 2023 08:53:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690559621; x=1722095621;
+  t=1690559628; x=1722095628;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=K8hnEpSO4NEmhv2B91ygqqg0vtM8shWny295zPJqMBw=;
-  b=aA9ooUiRP66VvFVjvQV/CZBrHhVQ4EVSBIX9rKfMcsfsbBAHYWw6ccaH
-   qtSkdlSQdc0PPY1EfvA7aX8Or7/IDxJmsrxjyWdTOJFKQ5useboLMBEvV
-   UYiPgDEMgQDqoJ3La+zm0PqAr9ACV2fXWntFzMud6CDmOy0ypDLXYaOS+
-   t5KsRqCogFc2C2JhTclMNtymaQ+5ir1yM5C1g2qaK6d3UFOwcqSc3uwWC
-   rSIZRYjoBLe8+y9DCrFtsZh1Fzuu/xWYP2c4MUtKTHJ6/ta22lTg9V/XU
-   W+bv4RWYerALO1oT0Pr6s30ARsH2C+KgGrFgbuuMLvOxGQFsQ/5U52cwe
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="372246680"
+  bh=Sp90x8Aympfbhv6YX45jce6ztvd6ep9AwsU6mORg0Yo=;
+  b=IIcglDO8xE/sJv4JXEH9e1deDsCuLlqMrCASabe3pAVO8GQ7QGYX4aC6
+   jY51zotS2aF8w5xVUmsmUrf0Nufu4HuKDYcgmubZVKfg+DuF0wb2dGK/b
+   db841wP4PjZKmHTGSCRQILKXnc9WJuOiyVEhEqqwki3eiikSnH46ID/Xz
+   Sz/qqC0TTtixZbba+dxu/Bv7CRj9uy4aO8L7DNIPqCxN9mOYFUw3LPW1p
+   hg79gvEEF651YnEK5X4yS/9lN+5abYdS9hV38zYzYSIgFyZ/ozDMmQbfM
+   hfEIJkwYmOm9p5/DZM5qw4VVdsPSNAqjgjp/W6C8BoKJvWjxpY+POX4lt
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="372246706"
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="372246680"
+   d="scan'208";a="372246706"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 08:53:41 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 08:53:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727512169"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727512175"
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="727512169"
+   d="scan'208";a="727512175"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2023 08:53:38 -0700
+  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2023 08:53:41 -0700
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -51,9 +51,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
         linux-hardening@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/3] virtchnl: fix fake 1-elem arrays in structures allocated as `nents + 1`
-Date:   Fri, 28 Jul 2023 17:52:06 +0200
-Message-ID: <20230728155207.10042-3-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next 3/3] virtchnl: fix fake 1-elem arrays for structures allocated as `nents`
+Date:   Fri, 28 Jul 2023 17:52:07 +0200
+Message-ID: <20230728155207.10042-4-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230728155207.10042-1-aleksander.lobakin@intel.com>
 References: <20230728155207.10042-1-aleksander.lobakin@intel.com>
@@ -69,338 +69,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are five virtchnl structures, which are allocated and checked in
-the code as `nents + 1`, meaning that they always have memory for one
-excessive element regardless of their actual number. This comes from
-that their sizeof() includes space for 1 element and then they get
-allocated via struct_size() or its open-coded equivalents, passing
-the actual number of elements.
-Expand virtchnl_struct_size() to handle such structures and replace
-those 1-elem arrays with proper flex ones. Also fix several places
-which open-code %IAVF_VIRTCHNL_VF_RESOURCE_SIZE. Finally, let the
-virtchnl_ether_addr_list size be computed automatically when there's
-no enough space for the whole list, otherwise we have to open-code
-reverse struct_size() logics.
+Finally, fix 3 structures which are allocated technically correctly,
+i.e. the calculated size equals to the one that struct_size() would
+return, except for sizeof(). For &virtchnl_vlan_filter_list_v2, use
+the same approach when there are no enough space as taken previously
+for &virtchnl_vlan_filter_list, i.e. let the maximum size be calculated
+automatically instead of trying to guestimate it using maths.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  2 +-
- drivers/net/ethernet/intel/iavf/iavf.h        |  6 +-
- .../net/ethernet/intel/iavf/iavf_virtchnl.c   | 44 +++++++-------
- drivers/net/ethernet/intel/ice/ice_virtchnl.c |  2 +-
- include/linux/avf/virtchnl.h                  | 57 ++++++++++++-------
- 5 files changed, 59 insertions(+), 52 deletions(-)
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  7 ++--
+ drivers/net/ethernet/intel/iavf/iavf_client.c |  4 +-
+ drivers/net/ethernet/intel/iavf/iavf_client.h |  2 +-
+ .../net/ethernet/intel/iavf/iavf_virtchnl.c   | 25 +++++-------
+ include/linux/avf/virtchnl.h                  | 39 ++++++++++++-------
+ 5 files changed, 40 insertions(+), 37 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 398fb4854cbe..030738409f76 100644
+index 030738409f76..90a76e927fab 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
 +++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -2103,7 +2103,7 @@ static int i40e_vc_get_vf_resources_msg(struct i40e_vf *vf, u8 *msg)
- 		goto err;
+@@ -506,6 +506,7 @@ i40e_config_rdma_qvlist(struct i40e_vf *vf,
+ 	struct virtchnl_rdma_qv_info *qv_info;
+ 	u32 v_idx, i, reg_idx, reg;
+ 	u32 next_q_idx, next_q_type;
++	size_t size;
+ 	u32 msix_vf;
+ 	int ret = 0;
+ 
+@@ -521,9 +522,9 @@ i40e_config_rdma_qvlist(struct i40e_vf *vf,
  	}
  
--	len = struct_size(vfres, vsi_res, num_vsis);
-+	len = virtchnl_struct_size(vfres, vsi_res, num_vsis);
- 	vfres = kzalloc(len, GFP_KERNEL);
- 	if (!vfres) {
- 		aq_ret = I40E_ERR_NO_MEMORY;
-diff --git a/drivers/net/ethernet/intel/iavf/iavf.h b/drivers/net/ethernet/intel/iavf/iavf.h
-index 8cbdebc5b698..85fba85fbb23 100644
---- a/drivers/net/ethernet/intel/iavf/iavf.h
-+++ b/drivers/net/ethernet/intel/iavf/iavf.h
-@@ -92,9 +92,9 @@ struct iavf_vsi {
- #define IAVF_MBPS_DIVISOR	125000 /* divisor to convert to Mbps */
- #define IAVF_MBPS_QUANTA	50
+ 	kfree(vf->qvlist_info);
+-	vf->qvlist_info = kzalloc(struct_size(vf->qvlist_info, qv_info,
+-					      qvlist_info->num_vectors - 1),
+-				  GFP_KERNEL);
++	size = virtchnl_struct_size(vf->qvlist_info, qv_info,
++				    qvlist_info->num_vectors);
++	vf->qvlist_info = kzalloc(size, GFP_KERNEL);
+ 	if (!vf->qvlist_info) {
+ 		ret = -ENOMEM;
+ 		goto err_out;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_client.c b/drivers/net/ethernet/intel/iavf/iavf_client.c
+index 93c903c02c64..e6051b6355aa 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_client.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_client.c
+@@ -469,8 +469,8 @@ static int iavf_client_setup_qvlist(struct iavf_info *ldev,
+ 	}
  
--#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE (sizeof(struct virtchnl_vf_resource) + \
--					(IAVF_MAX_VF_VSI * \
--					 sizeof(struct virtchnl_vsi_resource)))
-+#define IAVF_VIRTCHNL_VF_RESOURCE_SIZE					\
-+	virtchnl_struct_size((struct virtchnl_vf_resource *)NULL,	\
-+			     vsi_res, IAVF_MAX_VF_VSI)
+ 	v_qvlist_info = (struct virtchnl_rdma_qvlist_info *)qvlist_info;
+-	msg_size = struct_size(v_qvlist_info, qv_info,
+-			       v_qvlist_info->num_vectors - 1);
++	msg_size = virtchnl_struct_size(v_qvlist_info, qv_info,
++					v_qvlist_info->num_vectors);
  
- /* MAX_MSIX_Q_VECTORS of these are allocated,
-  * but we only use one per queue-specific vector.
+ 	adapter->client_pending |= BIT(VIRTCHNL_OP_CONFIG_RDMA_IRQ_MAP);
+ 	err = iavf_aq_send_msg_to_pf(&adapter->hw,
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_client.h b/drivers/net/ethernet/intel/iavf/iavf_client.h
+index c5d51d7dc7cc..500269bc0f5b 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_client.h
++++ b/drivers/net/ethernet/intel/iavf/iavf_client.h
+@@ -53,7 +53,7 @@ struct iavf_qv_info {
+ 
+ struct iavf_qvlist_info {
+ 	u32 num_vectors;
+-	struct iavf_qv_info qv_info[1];
++	struct iavf_qv_info qv_info[];
+ };
+ 
+ #define IAVF_CLIENT_MSIX_ALL 0xFFFFFFFF
 diff --git a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-index 10f03054a603..4fdac698eb38 100644
+index 4fdac698eb38..f9727e9c3d63 100644
 --- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
 +++ b/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-@@ -215,8 +215,7 @@ int iavf_get_vf_config(struct iavf_adapter *adapter)
- 	u16 len;
- 	int err;
+@@ -727,15 +727,12 @@ void iavf_add_vlans(struct iavf_adapter *adapter)
+ 			more = true;
+ 		}
  
--	len = sizeof(struct virtchnl_vf_resource) +
--		IAVF_MAX_VF_VSI * sizeof(struct virtchnl_vsi_resource);
-+	len = IAVF_VIRTCHNL_VF_RESOURCE_SIZE;
- 	event.buf_len = len;
- 	event.msg_buf = kzalloc(len, GFP_KERNEL);
- 	if (!event.msg_buf)
-@@ -284,7 +283,7 @@ void iavf_configure_queues(struct iavf_adapter *adapter)
- 		return;
- 	}
- 	adapter->current_op = VIRTCHNL_OP_CONFIG_VSI_QUEUES;
--	len = struct_size(vqci, qpair, pairs);
-+	len = virtchnl_struct_size(vqci, qpair, pairs);
- 	vqci = kzalloc(len, GFP_KERNEL);
- 	if (!vqci)
- 		return;
-@@ -397,7 +396,7 @@ void iavf_map_queues(struct iavf_adapter *adapter)
- 
- 	q_vectors = adapter->num_msix_vectors - NONQ_VECS;
- 
--	len = struct_size(vimi, vecmap, adapter->num_msix_vectors);
-+	len = virtchnl_struct_size(vimi, vecmap, adapter->num_msix_vectors);
- 	vimi = kzalloc(len, GFP_KERNEL);
- 	if (!vimi)
- 		return;
-@@ -476,13 +475,11 @@ void iavf_add_ether_addrs(struct iavf_adapter *adapter)
- 	}
- 	adapter->current_op = VIRTCHNL_OP_ADD_ETH_ADDR;
- 
--	len = struct_size(veal, list, count);
-+	len = virtchnl_struct_size(veal, list, count);
- 	if (len > IAVF_MAX_AQ_BUF_SIZE) {
- 		dev_warn(&adapter->pdev->dev, "Too many add MAC changes in one request\n");
--		count = (IAVF_MAX_AQ_BUF_SIZE -
--			 sizeof(struct virtchnl_ether_addr_list)) /
--			sizeof(struct virtchnl_ether_addr);
--		len = struct_size(veal, list, count);
-+		while (len > IAVF_MAX_AQ_BUF_SIZE)
-+			len = virtchnl_struct_size(veal, list, --count);
- 		more = true;
- 	}
- 
-@@ -547,13 +544,11 @@ void iavf_del_ether_addrs(struct iavf_adapter *adapter)
- 	}
- 	adapter->current_op = VIRTCHNL_OP_DEL_ETH_ADDR;
- 
--	len = struct_size(veal, list, count);
-+	len = virtchnl_struct_size(veal, list, count);
- 	if (len > IAVF_MAX_AQ_BUF_SIZE) {
- 		dev_warn(&adapter->pdev->dev, "Too many delete MAC changes in one request\n");
--		count = (IAVF_MAX_AQ_BUF_SIZE -
--			 sizeof(struct virtchnl_ether_addr_list)) /
--			sizeof(struct virtchnl_ether_addr);
--		len = struct_size(veal, list, count);
-+		while (len > IAVF_MAX_AQ_BUF_SIZE)
-+			len = virtchnl_struct_size(veal, list, --count);
- 		more = true;
- 	}
- 	veal = kzalloc(len, GFP_ATOMIC);
-@@ -687,12 +682,12 @@ void iavf_add_vlans(struct iavf_adapter *adapter)
- 
- 		adapter->current_op = VIRTCHNL_OP_ADD_VLAN;
- 
--		len = sizeof(*vvfl) + (count * sizeof(u16));
-+		len = virtchnl_struct_size(vvfl, vlan_id, count);
+-		len = sizeof(*vvfl_v2) + ((count - 1) *
+-					  sizeof(struct virtchnl_vlan_filter));
++		len = virtchnl_struct_size(vvfl_v2, filters, count);
  		if (len > IAVF_MAX_AQ_BUF_SIZE) {
  			dev_warn(&adapter->pdev->dev, "Too many add VLAN changes in one request\n");
--			count = (IAVF_MAX_AQ_BUF_SIZE - sizeof(*vvfl)) /
--				sizeof(u16);
--			len = sizeof(*vvfl) + (count * sizeof(u16));
+-			count = (IAVF_MAX_AQ_BUF_SIZE - sizeof(*vvfl_v2)) /
+-				sizeof(struct virtchnl_vlan_filter);
+-			len = sizeof(*vvfl_v2) +
+-				((count - 1) *
+-				 sizeof(struct virtchnl_vlan_filter));
 +			while (len > IAVF_MAX_AQ_BUF_SIZE)
-+				len = virtchnl_struct_size(vvfl, vlan_id,
++				len = virtchnl_struct_size(vvfl_v2, filters,
 +							   --count);
  			more = true;
  		}
- 		vvfl = kzalloc(len, GFP_ATOMIC);
-@@ -838,12 +833,12 @@ void iavf_del_vlans(struct iavf_adapter *adapter)
  
- 		adapter->current_op = VIRTCHNL_OP_DEL_VLAN;
+@@ -879,16 +876,12 @@ void iavf_del_vlans(struct iavf_adapter *adapter)
  
--		len = sizeof(*vvfl) + (count * sizeof(u16));
-+		len = virtchnl_struct_size(vvfl, vlan_id, count);
+ 		adapter->current_op = VIRTCHNL_OP_DEL_VLAN_V2;
+ 
+-		len = sizeof(*vvfl_v2) +
+-			((count - 1) * sizeof(struct virtchnl_vlan_filter));
++		len = virtchnl_struct_size(vvfl_v2, filters, count);
  		if (len > IAVF_MAX_AQ_BUF_SIZE) {
- 			dev_warn(&adapter->pdev->dev, "Too many delete VLAN changes in one request\n");
--			count = (IAVF_MAX_AQ_BUF_SIZE - sizeof(*vvfl)) /
--				sizeof(u16);
--			len = sizeof(*vvfl) + (count * sizeof(u16));
+ 			dev_warn(&adapter->pdev->dev, "Too many add VLAN changes in one request\n");
+-			count = (IAVF_MAX_AQ_BUF_SIZE -
+-				 sizeof(*vvfl_v2)) /
+-				sizeof(struct virtchnl_vlan_filter);
+-			len = sizeof(*vvfl_v2) +
+-				((count - 1) *
+-				 sizeof(struct virtchnl_vlan_filter));
 +			while (len > IAVF_MAX_AQ_BUF_SIZE)
-+				len = virtchnl_struct_size(vvfl, vlan_id,
++				len = virtchnl_struct_size(vvfl_v2, filters,
 +							   --count);
  			more = true;
  		}
- 		vvfl = kzalloc(len, GFP_ATOMIC);
-@@ -2173,9 +2168,8 @@ void iavf_virtchnl_completion(struct iavf_adapter *adapter,
- 		}
- 		break;
- 	case VIRTCHNL_OP_GET_VF_RESOURCES: {
--		u16 len = sizeof(struct virtchnl_vf_resource) +
--			  IAVF_MAX_VF_VSI *
--			  sizeof(struct virtchnl_vsi_resource);
-+		u16 len = IAVF_VIRTCHNL_VF_RESOURCE_SIZE;
-+
- 		memcpy(adapter->vf_res, msg, min(msglen, len));
- 		iavf_validate_num_queues(adapter);
- 		iavf_vf_parse_hw_config(&adapter->hw, adapter->vf_res);
-diff --git a/drivers/net/ethernet/intel/ice/ice_virtchnl.c b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-index 625da88e7965..a5a82833cdc6 100644
---- a/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-+++ b/drivers/net/ethernet/intel/ice/ice_virtchnl.c
-@@ -428,7 +428,7 @@ static int ice_vc_get_vf_res_msg(struct ice_vf *vf, u8 *msg)
- 		goto err;
+ 
+@@ -1492,7 +1485,7 @@ void iavf_enable_channels(struct iavf_adapter *adapter)
+ 		return;
  	}
  
--	len = sizeof(struct virtchnl_vf_resource);
-+	len = virtchnl_struct_size(vfres, vsi_res, 0);
- 
- 	vfres = kzalloc(len, GFP_KERNEL);
- 	if (!vfres) {
+-	len = struct_size(vti, list, adapter->num_tc - 1);
++	len = virtchnl_struct_size(vti, list, adapter->num_tc);
+ 	vti = kzalloc(len, GFP_KERNEL);
+ 	if (!vti)
+ 		return;
 diff --git a/include/linux/avf/virtchnl.h b/include/linux/avf/virtchnl.h
-index 3ab207c14809..c1a20b533fc0 100644
+index c1a20b533fc0..d0807ad43f93 100644
 --- a/include/linux/avf/virtchnl.h
 +++ b/include/linux/avf/virtchnl.h
-@@ -268,10 +268,11 @@ struct virtchnl_vf_resource {
- 	u32 rss_key_size;
- 	u32 rss_lut_size;
- 
--	struct virtchnl_vsi_resource vsi_res[1];
-+	struct virtchnl_vsi_resource vsi_res[];
- };
- 
--VIRTCHNL_CHECK_STRUCT_LEN(36, virtchnl_vf_resource);
-+VIRTCHNL_CHECK_STRUCT_LEN(20, virtchnl_vf_resource);
-+#define virtchnl_vf_resource_LEGACY_SIZEOF	36
- 
- /* VIRTCHNL_OP_CONFIG_TX_QUEUE
-  * VF sends this message to set up parameters for one TX queue.
-@@ -340,10 +341,11 @@ struct virtchnl_vsi_queue_config_info {
- 	u16 vsi_id;
- 	u16 num_queue_pairs;
- 	u32 pad;
--	struct virtchnl_queue_pair_info qpair[1];
-+	struct virtchnl_queue_pair_info qpair[];
- };
- 
--VIRTCHNL_CHECK_STRUCT_LEN(72, virtchnl_vsi_queue_config_info);
-+VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vsi_queue_config_info);
-+#define virtchnl_vsi_queue_config_info_LEGACY_SIZEOF	72
- 
- /* VIRTCHNL_OP_REQUEST_QUEUES
-  * VF sends this message to request the PF to allocate additional queues to
-@@ -385,10 +387,11 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_vector_map);
- 
- struct virtchnl_irq_map_info {
- 	u16 num_vectors;
--	struct virtchnl_vector_map vecmap[1];
-+	struct virtchnl_vector_map vecmap[];
- };
- 
--VIRTCHNL_CHECK_STRUCT_LEN(14, virtchnl_irq_map_info);
-+VIRTCHNL_CHECK_STRUCT_LEN(2, virtchnl_irq_map_info);
-+#define virtchnl_irq_map_info_LEGACY_SIZEOF	14
- 
- /* VIRTCHNL_OP_ENABLE_QUEUES
-  * VIRTCHNL_OP_DISABLE_QUEUES
-@@ -459,10 +462,11 @@ VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_ether_addr);
- struct virtchnl_ether_addr_list {
- 	u16 vsi_id;
+@@ -716,10 +716,11 @@ struct virtchnl_vlan_filter_list_v2 {
+ 	u16 vport_id;
  	u16 num_elements;
--	struct virtchnl_ether_addr list[1];
-+	struct virtchnl_ether_addr list[];
+ 	u8 pad[4];
+-	struct virtchnl_vlan_filter filters[1];
++	struct virtchnl_vlan_filter filters[];
  };
  
--VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_ether_addr_list);
-+VIRTCHNL_CHECK_STRUCT_LEN(4, virtchnl_ether_addr_list);
-+#define virtchnl_ether_addr_list_LEGACY_SIZEOF	12
+-VIRTCHNL_CHECK_STRUCT_LEN(40, virtchnl_vlan_filter_list_v2);
++VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_vlan_filter_list_v2);
++#define virtchnl_vlan_filter_list_v2_LEGACY_SIZEOF	40
  
- /* VIRTCHNL_OP_ADD_VLAN
-  * VF sends this message to add one or more VLAN tag filters for receives.
-@@ -481,10 +485,11 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_ether_addr_list);
- struct virtchnl_vlan_filter_list {
- 	u16 vsi_id;
- 	u16 num_elements;
--	u16 vlan_id[1];
-+	u16 vlan_id[];
+ /* VIRTCHNL_OP_ENABLE_VLAN_STRIPPING_V2
+  * VIRTCHNL_OP_DISABLE_VLAN_STRIPPING_V2
+@@ -918,10 +919,11 @@ VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_channel_info);
+ struct virtchnl_tc_info {
+ 	u32	num_tc;
+ 	u32	pad;
+-	struct	virtchnl_channel_info list[1];
++	struct virtchnl_channel_info list[];
  };
  
--VIRTCHNL_CHECK_STRUCT_LEN(6, virtchnl_vlan_filter_list);
-+VIRTCHNL_CHECK_STRUCT_LEN(4, virtchnl_vlan_filter_list);
-+#define virtchnl_vlan_filter_list_LEGACY_SIZEOF	6
+-VIRTCHNL_CHECK_STRUCT_LEN(24, virtchnl_tc_info);
++VIRTCHNL_CHECK_STRUCT_LEN(8, virtchnl_tc_info);
++#define virtchnl_tc_info_LEGACY_SIZEOF	24
  
- /* This enum is used for all of the VIRTCHNL_VF_OFFLOAD_VLAN_V2_CAPS related
-  * structures and opcodes.
-@@ -1372,11 +1377,19 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_fdir_del);
+ /* VIRTCHNL_ADD_CLOUD_FILTER
+  * VIRTCHNL_DEL_CLOUD_FILTER
+@@ -1059,10 +1061,11 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_rdma_qv_info);
+ 
+ struct virtchnl_rdma_qvlist_info {
+ 	u32 num_vectors;
+-	struct virtchnl_rdma_qv_info qv_info[1];
++	struct virtchnl_rdma_qv_info qv_info[];
+ };
+ 
+-VIRTCHNL_CHECK_STRUCT_LEN(16, virtchnl_rdma_qvlist_info);
++VIRTCHNL_CHECK_STRUCT_LEN(4, virtchnl_rdma_qvlist_info);
++#define virtchnl_rdma_qvlist_info_LEGACY_SIZEOF	16
+ 
+ /* VF reset states - these are written into the RSTAT register:
+  * VFGEN_RSTAT on the VF
+@@ -1377,6 +1380,9 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_fdir_del);
  #define __vss_byone(p, member, count, old)				      \
  	(struct_size(p, member, count) + (old - 1 - struct_size(p, member, 0)))
  
-+#define __vss_full(p, member, count, old)				      \
-+	(struct_size(p, member, count) + (old - struct_size(p, member, 0)))
++#define __vss_byelem(p, member, count, old)				      \
++	(struct_size(p, member, count - 1) + (old - struct_size(p, member, 0)))
 +
- #define __vss(type, func, p, member, count)		\
- 	struct type: func(p, member, count, type##_LEGACY_SIZEOF)
+ #define __vss_full(p, member, count, old)				      \
+ 	(struct_size(p, member, count) + (old - struct_size(p, member, 0)))
  
- #define virtchnl_struct_size(p, m, c)					      \
- 	_Generic(*p,							      \
-+		 __vss(virtchnl_vf_resource, __vss_full, p, m, c),	      \
-+		 __vss(virtchnl_vsi_queue_config_info, __vss_full, p, m, c),  \
-+		 __vss(virtchnl_irq_map_info, __vss_full, p, m, c),	      \
-+		 __vss(virtchnl_ether_addr_list, __vss_full, p, m, c),	      \
-+		 __vss(virtchnl_vlan_filter_list, __vss_full, p, m, c),	      \
+@@ -1390,6 +1396,9 @@ VIRTCHNL_CHECK_STRUCT_LEN(12, virtchnl_fdir_del);
+ 		 __vss(virtchnl_irq_map_info, __vss_full, p, m, c),	      \
+ 		 __vss(virtchnl_ether_addr_list, __vss_full, p, m, c),	      \
+ 		 __vss(virtchnl_vlan_filter_list, __vss_full, p, m, c),	      \
++		 __vss(virtchnl_vlan_filter_list_v2, __vss_byelem, p, m, c),  \
++		 __vss(virtchnl_tc_info, __vss_byelem, p, m, c),	      \
++		 __vss(virtchnl_rdma_qvlist_info, __vss_byelem, p, m, c),     \
  		 __vss(virtchnl_rss_key, __vss_byone, p, m, c),		      \
  		 __vss(virtchnl_rss_lut, __vss_byone, p, m, c))
  
-@@ -1414,24 +1427,23 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
- 		valid_len = sizeof(struct virtchnl_rxq_info);
+@@ -1495,13 +1504,13 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 	case VIRTCHNL_OP_RELEASE_RDMA_IRQ_MAP:
  		break;
- 	case VIRTCHNL_OP_CONFIG_VSI_QUEUES:
--		valid_len = sizeof(struct virtchnl_vsi_queue_config_info);
-+		valid_len = virtchnl_vsi_queue_config_info_LEGACY_SIZEOF;
+ 	case VIRTCHNL_OP_CONFIG_RDMA_IRQ_MAP:
+-		valid_len = sizeof(struct virtchnl_rdma_qvlist_info);
++		valid_len = virtchnl_rdma_qvlist_info_LEGACY_SIZEOF;
  		if (msglen >= valid_len) {
- 			struct virtchnl_vsi_queue_config_info *vqc =
- 			    (struct virtchnl_vsi_queue_config_info *)msg;
--			valid_len += (vqc->num_queue_pairs *
--				      sizeof(struct
--					     virtchnl_queue_pair_info));
-+			valid_len = virtchnl_struct_size(vqc, qpair,
-+							 vqc->num_queue_pairs);
- 			if (vqc->num_queue_pairs == 0)
- 				err_msg_format = true;
+ 			struct virtchnl_rdma_qvlist_info *qv =
+ 				(struct virtchnl_rdma_qvlist_info *)msg;
+ 
+-			valid_len += ((qv->num_vectors - 1) *
+-				sizeof(struct virtchnl_rdma_qv_info));
++			valid_len = virtchnl_struct_size(qv, qv_info,
++							 qv->num_vectors);
  		}
  		break;
- 	case VIRTCHNL_OP_CONFIG_IRQ_MAP:
--		valid_len = sizeof(struct virtchnl_irq_map_info);
-+		valid_len = virtchnl_irq_map_info_LEGACY_SIZEOF;
+ 	case VIRTCHNL_OP_CONFIG_RSS_KEY:
+@@ -1534,12 +1543,12 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+ 		valid_len = sizeof(struct virtchnl_vf_res_request);
+ 		break;
+ 	case VIRTCHNL_OP_ENABLE_CHANNELS:
+-		valid_len = sizeof(struct virtchnl_tc_info);
++		valid_len = virtchnl_tc_info_LEGACY_SIZEOF;
  		if (msglen >= valid_len) {
- 			struct virtchnl_irq_map_info *vimi =
- 			    (struct virtchnl_irq_map_info *)msg;
--			valid_len += (vimi->num_vectors *
--				      sizeof(struct virtchnl_vector_map));
-+			valid_len = virtchnl_struct_size(vimi, vecmap,
-+							 vimi->num_vectors);
- 			if (vimi->num_vectors == 0)
+ 			struct virtchnl_tc_info *vti =
+ 				(struct virtchnl_tc_info *)msg;
+-			valid_len += (vti->num_tc - 1) *
+-				     sizeof(struct virtchnl_channel_info);
++			valid_len = virtchnl_struct_size(vti, list,
++							 vti->num_tc);
+ 			if (vti->num_tc == 0)
  				err_msg_format = true;
  		}
-@@ -1442,23 +1454,24 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
+@@ -1566,13 +1575,13 @@ virtchnl_vc_validate_vf_msg(struct virtchnl_version_info *ver, u32 v_opcode,
  		break;
- 	case VIRTCHNL_OP_ADD_ETH_ADDR:
- 	case VIRTCHNL_OP_DEL_ETH_ADDR:
--		valid_len = sizeof(struct virtchnl_ether_addr_list);
-+		valid_len = virtchnl_ether_addr_list_LEGACY_SIZEOF;
+ 	case VIRTCHNL_OP_ADD_VLAN_V2:
+ 	case VIRTCHNL_OP_DEL_VLAN_V2:
+-		valid_len = sizeof(struct virtchnl_vlan_filter_list_v2);
++		valid_len = virtchnl_vlan_filter_list_v2_LEGACY_SIZEOF;
  		if (msglen >= valid_len) {
- 			struct virtchnl_ether_addr_list *veal =
- 			    (struct virtchnl_ether_addr_list *)msg;
--			valid_len += veal->num_elements *
--			    sizeof(struct virtchnl_ether_addr);
-+			valid_len = virtchnl_struct_size(veal, list,
-+							 veal->num_elements);
- 			if (veal->num_elements == 0)
- 				err_msg_format = true;
- 		}
- 		break;
- 	case VIRTCHNL_OP_ADD_VLAN:
- 	case VIRTCHNL_OP_DEL_VLAN:
--		valid_len = sizeof(struct virtchnl_vlan_filter_list);
-+		valid_len = virtchnl_vlan_filter_list_LEGACY_SIZEOF;
- 		if (msglen >= valid_len) {
- 			struct virtchnl_vlan_filter_list *vfl =
- 			    (struct virtchnl_vlan_filter_list *)msg;
--			valid_len += vfl->num_elements * sizeof(u16);
-+			valid_len = virtchnl_struct_size(vfl, vlan_id,
+ 			struct virtchnl_vlan_filter_list_v2 *vfl =
+ 			    (struct virtchnl_vlan_filter_list_v2 *)msg;
+ 
+-			valid_len += (vfl->num_elements - 1) *
+-				sizeof(struct virtchnl_vlan_filter);
++			valid_len = virtchnl_struct_size(vfl, filters,
 +							 vfl->num_elements);
- 			if (vfl->num_elements == 0)
+ 
+ 			if (vfl->num_elements == 0) {
  				err_msg_format = true;
- 		}
 -- 
 2.41.0
 
