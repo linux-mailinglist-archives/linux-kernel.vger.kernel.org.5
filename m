@@ -2,134 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E06E7671A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0157671AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjG1QOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S232727AbjG1QPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjG1QOS (ORCPT
+        with ESMTP id S231642AbjG1QPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:14:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEFA3C31
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690560812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1Dyh7+qatvQDKM5qDRHq8YkO5TCQeLww3uN1vYmzEUU=;
-        b=EzFo3gQj5XQ/9hIaortrhTD4LYBvIArNQeuoEUMjFSmK9OVj9+r5R7l037EK/2lLnNq90Z
-        iCl5HGQAazJ5SxihMyCGgtE/1fNg8e8aP6nCISlzVK2BY7YZYcv/jQY5OtVem140TIuwGZ
-        xjSysc4LiYaO9KBdfIkJceHnTkWpOxw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-588-tzAWck8KP82uJsXsCItvpA-1; Fri, 28 Jul 2023 12:13:31 -0400
-X-MC-Unique: tzAWck8KP82uJsXsCItvpA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-94a355cf318so136858366b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:13:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690560809; x=1691165609;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Dyh7+qatvQDKM5qDRHq8YkO5TCQeLww3uN1vYmzEUU=;
-        b=d7aF48MGEZv7cLOlA72cmb9sT0Td/It4ECBPUb/+zps/ach76FcxjD/VOU4LnKvmQc
-         y9qSb/Xcdtg22g/ADGXgVZ/F2fwNvGUBUkclxnhEM9w7yg+ayUSX8m4X8VldL0nCw7yj
-         4UfOTrWKGEBOso88VGvqtIyisgyZ8zJfbNvfoS2V+wQHyOtRw1oOJhkaIFDcYDGokjEl
-         SnWQNbG4HMaWe6U6VEJ9eqCgNrax7sqvVHpS29bWeTa6Me6wg+nOvVpzty7qfh94ui/O
-         ExR+qq6K4ZhHE9h7R9epcUAELm2/pcbT9FGHIsOG10N+EvOhodWzRckkV2YL8+jG5mQf
-         CASg==
-X-Gm-Message-State: ABy/qLYD9sDOFsciJWjxLlkXSM/VvFOp/nJ3qgSPBUTVaWLcc5Jl/Xig
-        vXjtHmoRfoIj0C36DItgLsCmU2NZGeIoMwpwO7Zvn4IV34JFjE/cFlUmzd7A90TLySUveMnu2DS
-        ZWZ+HCl13PB86Q890SUBQVP54
-X-Received: by 2002:a17:906:5354:b0:99b:efd3:3dcc with SMTP id j20-20020a170906535400b0099befd33dccmr1357355ejo.62.1690560809631;
-        Fri, 28 Jul 2023 09:13:29 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHd2sX/AyGtIAscRR2p4pTksaGOsuCTBRQ37WpaEGChaEB1fcJtjozFJjrwhV4jFSHGD+pttg==
-X-Received: by 2002:a17:906:5354:b0:99b:efd3:3dcc with SMTP id j20-20020a170906535400b0099befd33dccmr1357325ejo.62.1690560809219;
-        Fri, 28 Jul 2023 09:13:29 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id gy26-20020a170906f25a00b00993470682e5sm2197928ejb.32.2023.07.28.09.13.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 09:13:28 -0700 (PDT)
-Message-ID: <6da710cf-2bc0-bb6e-26f1-fba14ca767db@redhat.com>
-Date:   Fri, 28 Jul 2023 18:13:26 +0200
+        Fri, 28 Jul 2023 12:15:31 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E396D4217;
+        Fri, 28 Jul 2023 09:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690560925; x=1722096925;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AKGrusEfmjGs5zEr3mhPbr/2FvOKxjtxXpulNBDQ1G0=;
+  b=Tlmw0NLp5OjFBW+kI6cKXzgiDRskSgEKT4WCrr9booZP6GVGYaC3mgrh
+   P2e87n9FxPSJOKIukvK/gQe60PV5Z+/zKSpypIfy41glXdZYBaUpix0Ps
+   DFjM4B0AUAQ0Td0nq8Cqjc52Q+bM8/wTYbraTU+gY/6H+SsNkH94c2jM1
+   pxNkFVwFlMhuIRgGvVxdS9ReLyro737ZCgauH6zOs5nsDa9vI8Q9k5cfj
+   +vI6z7+CPlnqGYCNNiiY5R51qLuRd3U1fIKUFiGw/ai+6eeeIqMrRmVJl
+   vqZC42s94uVmEj6zjJXLuc+qz0MAIPwokwu97Jz3Kbd/V1razSHlFxSn0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="366092840"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="366092840"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 09:15:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="721313805"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="721313805"
+Received: from fyin-dev.sh.intel.com ([10.239.159.32])
+  by orsmga007.jf.intel.com with ESMTP; 28 Jul 2023 09:15:21 -0700
+From:   Yin Fengwei <fengwei.yin@intel.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, vishal.moola@gmail.com,
+        wangkefeng.wang@huawei.com, minchan@kernel.org, yuzhao@google.com,
+        david@redhat.com, ryan.roberts@arm.com, shy828301@gmail.com
+Cc:     fengwei.yin@intel.com
+Subject: [PATCH 0/2] don't use mapcount() to check large folio sharing
+Date:   Sat, 29 Jul 2023 00:13:54 +0800
+Message-Id: <20230728161356.1784568-1-fengwei.yin@intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v11 10/29] mm: Add AS_UNMOVABLE to mark mapping as
- completely unmovable
-Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-11-seanjc@google.com>
- <20230725102403.xywjqlhyqkrzjok6@box.shutemov.name>
- <ZL/Fa4W2Ne9EVxoh@casper.infradead.org>
- <692b09f7-70d9-1119-7fe2-3e7396ec259d@suse.cz>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <692b09f7-70d9-1119-7fe2-3e7396ec259d@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 18:02, Vlastimil Babka wrote:
->> There's even a comment to that effect later on in the function:
-> Hmm, well spotted. But it wouldn't be so great if we now had to lock every
-> inspected page (and not just dirty pages), just to check the AS_ bit.
-> 
-> But I wonder if this is leftover from previous versions. Are the guest pages
-> even PageLRU currently? (and should they be, given how they can't be swapped
-> out or anything?) If not, isolate_migratepages_block will skip them anyway.
+In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
+folio_mapcount() is used to check whether the folio is shared. But it's
+not correct as folio_mapcount() returns total mapcount of large folio.
 
-No, they're not (migration or even swap-out is not excluded for the 
-future, but for now it's left for future work.
+Use folio_estimated_sharers() here as the estimated number is enough.
 
-Paolo
+Yin Fengwei (2):
+  madvise: don't use mapcount() against large folio for sharing check
+  madvise: don't use mapcount() against large folio for sharing check
+
+ mm/huge_memory.c | 2 +-
+ mm/madvise.c     | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.39.2
 
