@@ -2,164 +2,609 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C0C7677D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F8D7677DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbjG1Vlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 17:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S234811AbjG1Vnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 17:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbjG1Vls (ORCPT
+        with ESMTP id S231135AbjG1Vn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 17:41:48 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F94209
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:41:47 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-780c89d1998so35725139f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690580507; x=1691185307;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PUeGfALAME/y+62b/SXO+hiWPsPSwFR5PHWXvkAU+T8=;
-        b=Mw+UzKX+v2AR5xR6CrIngAYGwUYqbH+HJAyGE/yOu3fpBBRlrUWaQJ+7vWH45qAe+7
-         2d0oZycCE9+uPTmHpUPshSXv+vktEYQC7Zfy3+BW2aOuIEyvwuYBKQjoy0AngU6vBWZy
-         MY8MIQ3KF5JbE0gGT27G+628Jc8JCS7tAWGbk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690580507; x=1691185307;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PUeGfALAME/y+62b/SXO+hiWPsPSwFR5PHWXvkAU+T8=;
-        b=QyV5M/9VyEdCiO4vnwY2mCzSmBlCRoY4JDDETsB6OxWl2ProC+uOXCNIawHoBWpt0b
-         d26/LGZB0hnQ6IMEbWluLXoWAGYMICLlPeASeQI1WtG3j99RRFCzlK8rxLrgr7ogVbSu
-         1K+PX3vjI2QYyyUrcLy0qJ1rRufjKMkTqUDYJLyISebbNUQZcKzGp8b0Lopg9c8h9agd
-         sRM1C0hEu0/wTfLshLqPoUqfN2VDDO2BPu5D8fgZKXUmwUCa/VDdIr/BzpcaVGdw7Ep0
-         TBxb5dn3qUQ5lzX/jpVxAbDIAfpR0z6cGzjBXvoWvecUzQ1M0qNtKVG760DLZi06XPwj
-         AiNA==
-X-Gm-Message-State: ABy/qLaURM7l6c3T2CyJKM27m2W6Af+VUQaVvvkTjn7rJxQFNGD+fawE
-        JRYtqvcrYIKcfZ3FTUZFtEzMPg==
-X-Google-Smtp-Source: APBJJlFyBQa1mgyamrkCASTogeoUQVKr+RzrDBBpAvt2qCZaEbqOU6HCiCKufm+Pr1tdeGiROiuUEA==
-X-Received: by 2002:a05:6602:1543:b0:780:c6bb:ad8d with SMTP id h3-20020a056602154300b00780c6bbad8dmr1061026iow.0.1690580506837;
-        Fri, 28 Jul 2023 14:41:46 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id h3-20020a02c723000000b0041fb2506011sm1338239jao.172.2023.07.28.14.41.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 14:41:46 -0700 (PDT)
-Message-ID: <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
-Date:   Fri, 28 Jul 2023 15:41:45 -0600
+        Fri, 28 Jul 2023 17:43:29 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9E01724
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690580607; x=1722116607;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=l2SIOwdyJe7pKrIf+axHOJKpkjE1OPCRQYiSHCcJQaM=;
+  b=R5lpJpRk1Xkd/wj0Yk8mwJvHgBDU0VBZGzbFTR2XSgkjVGmmPN54A7Po
+   xg1DniQPD0juioVx+zdUdxtsWd502r2nLLgr0Qoy7Fb/v0/D00JGtKaKu
+   8JsYR/HJcfEZoyCeXdFyrT7Uk9pfJNLSzfoNks1PNBuL7Eqakh/twXUNd
+   C3F6S0vGtCydP1kO8iJXKM2QMG9t0P9IHeziL+iz8UI6M//gc+QK4JWKr
+   EIk70QtWt6Nz1F+9MstiZKwW1UtqYUFC3oAAFY83E0YHgS6+z2dwyTLbz
+   M2pl9mvDRsqHHAxnH7slWiI3f0OYy6Fn8TepjxkhEAVopIp6GKXRUsu8b
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="399631791"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="399631791"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 14:43:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="677642258"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="677642258"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2023 14:43:23 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPVF4-0003bD-2U;
+        Fri, 28 Jul 2023 21:43:22 +0000
+Date:   Sat, 29 Jul 2023 05:43:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Laight <David.Laight@aculab.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH next v2 5/5] minmax: Relax check to allow comparison
+ between int and small unsigned constants.
+Message-ID: <202307290538.EtRKfGgC-lkp@intel.com>
+References: <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
- error paths to skip
-To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1690564372.git.skhan@linuxfoundation.org>
- <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
- <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
- <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
- <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
- <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 15:21, Anjali Kulkarni wrote:
-> 
-> 
->> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 7/28/23 13:06, Shuah Khan wrote:
->>> On 7/28/23 12:10, Anjali Kulkarni wrote:
->>>>
->>>>
->>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>
->>>>> proc_filter test requires root privileges. Add root privilege check
->>>>> and skip the test. Also fix argument parsing paths to skip in their
->>>>> error legs.
->>>>>
->>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>> ---
->>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
->>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
->>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
->>>>> --- a/tools/testing/selftests/connector/proc_filter.c
->>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
->>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
->>>>>
->>>>> if (argc > 2) {
->>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
->>>>> -  exit(1);
->>>>> +  exit(KSFT_SKIP);
->>>>> }
->>>>>
->>>>> if (argc == 2) {
->>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
->>>>> filter = 1;
->>>>> } else {
->>>>> printf("Valid option : -f (for filter feature)\n");
->>>>> -  exit(1);
->>>>> +  exit(KSFT_SKIP);
->>>>> }
->>>>> }
->>>>>
->>>>> +  if (geteuid()) {
->>>>> +  printf("Connector test requires root privileges.\n");
->>>>> +  exit(KSFT_SKIP);
->>>>> +  }
->>>>> +
->>>>
->>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
->>>>
->>> It failed for me when I ran it saying it requires root privileges.
->>> I had to run it as root.
->>
->> The following is what I see when I run the test as non-root
->> user:
->>
->> bind failed: Operation not permitted
->>
-> 
-> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
-> So this check for root needs to be removed.
-> 
+Hi David,
 
-I will send v2 for this patch without root check. I should have
-split the argument error paths and root check anyway.
+kernel test robot noticed the following build warnings:
 
-However, what is strange is if the test run by root, bind() doesn't fail.
-This doesn't make sense to me based on what you said about bind() fails
-if kernel doesn't support the new feature.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master crng-random/master v6.5-rc3 next-20230728]
+[cannot apply to next-20230728]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-That sounds like a problem if the test can be run by non-root user and
-it should fail if kernel doesn't have the feature included. I would
-think the bind() should fail for root and non-root users.
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minmax-Add-min_unsigned-a-b-and-max_unsigned-a-b/20230728-225439
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/b4ce9dad748e489f9314a2dc95615033%40AcuMS.aculab.com
+patch subject: [PATCH next v2 5/5] minmax: Relax check to allow comparison between int and small unsigned constants.
+config: alpha-randconfig-r024-20230727 (https://download.01.org/0day-ci/archive/20230729/202307290538.EtRKfGgC-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290538.EtRKfGgC-lkp@intel.com/reproduce)
 
-The bind() failure should be skip if it is an indication of feature
-not being supported on the kernel.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307290538.EtRKfGgC-lkp@intel.com/
 
-thanks,
--- Shuah
+All warnings (new ones prefixed by >>):
 
+   In file included from include/linux/kernel.h:27,
+                    from include/linux/cpumask.h:10,
+                    from include/linux/mm_types_task.h:14,
+                    from include/linux/mm_types.h:5,
+                    from include/linux/buildid.h:5,
+                    from include/linux/module.h:14,
+                    from net/ceph/osdmap.c:5:
+   net/ceph/osdmap.c: In function 'osdmap_decode':
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:27: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                           ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:45: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                             ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:51: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                   ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:57: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                         ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:42:16: note: in expansion of macro '__int_const'
+      42 |         typeof(__int_const(x)) unique_x = (x);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:43:16: note: in expansion of macro '__int_const'
+      43 |         typeof(__int_const(y)) unique_y = (y);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+   In file included from include/linux/container_of.h:5,
+                    from include/linux/list.h:5,
+                    from include/linux/module.h:12:
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:17: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                 ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:38: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                                      ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:1773:54: note: in expansion of macro 'min'
+    1773 |         err = osdmap_set_crush(map, crush_decode(*p, min(*p + len, end)));
+         |                                                      ^~~
+   net/ceph/osdmap.c: In function 'osdmap_apply_incremental':
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:27: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                           ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:45: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                             ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:51: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                   ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:57: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                         ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:42:16: note: in expansion of macro '__int_const'
+      42 |         typeof(__int_const(x)) unique_x = (x);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:43:16: note: in expansion of macro '__int_const'
+      43 |         typeof(__int_const(y)) unique_y = (y);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:17: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                 ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:38: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                                      ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2000:46: note: in expansion of macro 'min'
+    2000 |                 return ceph_osdmap_decode(p, min(*p+len, end), msgr2);
+         |                                              ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:27: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                           ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:45: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                             ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:51: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                   ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:27: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+>> include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:39:57: note: in definition of macro '__cmp'
+      39 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
+         |                                                         ^
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:50:43: note: in expansion of macro '__int_const'
+      50 |                 __cmp(op, __int_const(x), __int_const(y)),      \
+         |                                           ^~~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+   include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:42:16: note: in expansion of macro '__int_const'
+      42 |         typeof(__int_const(x)) unique_x = (x);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+   include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/minmax.h:28:47: note: in expansion of macro '__is_noneg_int'
+      28 | #define __int_const(x)  __builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
+         |                                               ^~~~~~~~~~~~~~
+   include/linux/minmax.h:43:16: note: in expansion of macro '__int_const'
+      43 |         typeof(__int_const(y)) unique_y = (y);          \
+         |                ^~~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+   include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:17: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                 ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+         |                                                         ^~~
+   include/linux/minmax.h:26:22: warning: ordered comparison of pointer with null pointer [-Wextra]
+      26 |                 ((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+         |                      ^~
+   include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+      78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+         |                                                        ^~~~
+   include/linux/minmax.h:44:9: note: in expansion of macro 'static_assert'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |         ^~~~~~~~~~~~~
+   include/linux/minmax.h:34:38: note: in expansion of macro '__is_noneg_int'
+      34 |                 __is_noneg_int(x) || __is_noneg_int(y))
+         |                                      ^~~~~~~~~~~~~~
+   include/linux/minmax.h:44:23: note: in expansion of macro '__types_ok'
+      44 |         static_assert(__types_ok(x, y),                 \
+         |                       ^~~~~~~~~~
+   include/linux/minmax.h:51:17: note: in expansion of macro '__cmp_once'
+      51 |                 __cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
+         |                 ^~~~~~~~~~
+   include/linux/minmax.h:78:25: note: in expansion of macro '__careful_cmp'
+      78 | #define min(x, y)       __careful_cmp(min, x, y)
+         |                         ^~~~~~~~~~~~~
+   net/ceph/osdmap.c:2007:57: note: in expansion of macro 'min'
+    2007 |                                        crush_decode(*p, min(*p + len, end)));
+..
+
+
+vim +26 include/linux/minmax.h
+
+     7	
+     8	/*
+     9	 * min()/max()/clamp() macros must accomplish three things:
+    10	 *
+    11	 * - Avoid multiple evaluations of the arguments (so side-effects like
+    12	 *   "x++" happen only once) when non-constant.
+    13	 * - Perform signed v unsigned type-checking (to generate compile
+    14	 *   errors instead of nasty runtime surprises).
+    15	 *   Constants from 0 to INT_MAX are cast to (int) so can be used
+    16	 *   in comparisons with signed types.
+    17	 * - Retain result as a constant expressions when called with only
+    18	 *   constant expressions (to avoid tripping VLA warnings in stack
+    19	 *   allocation usage).
+    20	 */
+    21	#define __typecheck(x, y) \
+    22		(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+    23	
+    24	#define __is_noneg_int(x)					\
+    25		__builtin_choose_expr(!__is_constexpr(x), false, 	\
+  > 26			((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
+    27	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
