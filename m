@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF4E767340
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24D476733D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjG1RZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
+        id S232716AbjG1RZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233271AbjG1RZz (ORCPT
+        with ESMTP id S229978AbjG1RZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:25:55 -0400
+        Fri, 28 Jul 2023 13:25:31 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB323A9C;
-        Fri, 28 Jul 2023 10:25:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064A6E72
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690565152; x=1722101152;
+  t=1690565130; x=1722101130;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=mKRS6boUyUY8eyb/hoH/4uJAOZeecmb/FL8JIFuPo/w=;
-  b=cHnT1n7Z5oAnnGakpk4VzsVk0T9CJJBoZMXlpC0x6ltPZREPwQtx/dOv
-   PdswNw56QjQX9Dx1uXgTdJ6i2Pbio6qdyfUMnPzXzl1usYjKpxFHvkE7l
-   tv1pYfU2cXFEadWniP/eF87amwR/yRQsd3xkZFLEMxj8nul13riJ7Yja6
-   HkqtNb5JP3Tz1+KBfP1dALgGPMge8y8t/ctCCpyLBR2SFOp3FGUNdPhaQ
-   7QM/jAbWrPwpQXiZY9K42CcP1weVFt/6ZE84JMSIoGF8pW5oE6yIJ75Zp
-   8aWfGQqITInMKW60IFq3qTlkUk8fM9pzHTdNdZrioO+taT9vVuPHDFU3h
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="434931072"
+  bh=3OMEL78n+IiszhIQ/pV+083zZcBq7zO+EddRxlkRz3Q=;
+  b=YJc5deb5gCJfdsyyPCWOePghaWsyurSrjz4PTnddsF2kbdX2XVmBtsn3
+   KTtEACD0vuDF2M1Tv/S43ucVEkmQg0sy5TQtWJVMD31wkCtaEjykS0cus
+   +HZaAv7b3glAco2byp3cQ/QNHq4gZinQpnRbovWACwk3YxmuH2TWUdqtS
+   8VaS5MvszfIvGhhBNvKf0AGyq6g5I2N+MQyjOJtu/A6k+Fo0oZ5wFoHJf
+   nzLZoF7br8xNQbGByI5kgrlZ+uCrOGnKyMns8cTN2auvFOTIJNDWrQ0AO
+   9U3uhVj9z2nqjpjlwVtwm5fS1FcPWc/VgSTpkHQWCTzZjiPebB698R0Sz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="434930887"
 X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="434931072"
+   d="scan'208";a="434930887"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 10:25:51 -0700
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 10:25:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727556285"
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727556235"
 X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="727556285"
+   d="scan'208";a="727556235"
 Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2023 10:25:48 -0700
+  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2023 10:25:26 -0700
 Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qPRDh-0003Qb-2T;
-        Fri, 28 Jul 2023 17:25:43 +0000
-Date:   Sat, 29 Jul 2023 01:24:55 +0800
+        id 1qPRDG-0003QR-1z;
+        Fri, 28 Jul 2023 17:25:16 +0000
+Date:   Sat, 29 Jul 2023 01:25:04 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
+To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, rppt@kernel.org
 Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, igt-dev@lists.freedesktop.org,
-        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] kunit: Allow kunit test modules to use test filtering
-Message-ID: <202307290124.BnnhRy8b-lkp@intel.com>
-References: <20230728154419.1810177-8-janusz.krzysztofik@linux.intel.com>
+        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [v1 6/6] mm: hugetlb: Skip initialization of struct pages freed
+ later by HVO
+Message-ID: <202307290124.suQ4U8Y4-lkp@intel.com>
+References: <20230727204624.1942372-7-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230728154419.1810177-8-janusz.krzysztofik@linux.intel.com>
+In-Reply-To: <20230727204624.1942372-7-usama.arif@bytedance.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
@@ -71,113 +70,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janusz,
+Hi Usama,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on shuah-kselftest/kunit-fixes]
-[also build test WARNING on linus/master v6.5-rc3]
-[cannot apply to shuah-kselftest/kunit next-20230728]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[auto build test ERROR on akpm-mm/mm-everything]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Janusz-Krzysztofik/kunit-Report-the-count-of-test-suites-in-a-module/20230728-234736
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git kunit-fixes
-patch link:    https://lore.kernel.org/r/20230728154419.1810177-8-janusz.krzysztofik%40linux.intel.com
-patch subject: [PATCH 3/3] kunit: Allow kunit test modules to use test filtering
-config: hexagon-randconfig-r045-20230728 (https://download.01.org/0day-ci/archive/20230729/202307290124.BnnhRy8b-lkp@intel.com/config)
+url:    https://github.com/intel-lab-lkp/linux/commits/Usama-Arif/mm-hugetlb-Skip-prep-of-tail-pages-when-HVO-is-enabled/20230728-044839
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230727204624.1942372-7-usama.arif%40bytedance.com
+patch subject: [v1 6/6] mm: hugetlb: Skip initialization of struct pages freed later by HVO
+config: arm64-randconfig-r032-20230727 (https://download.01.org/0day-ci/archive/20230729/202307290124.suQ4U8Y4-lkp@intel.com/config)
 compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290124.BnnhRy8b-lkp@intel.com/reproduce)
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290124.suQ4U8Y4-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307290124.BnnhRy8b-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307290124.suQ4U8Y4-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
->> lib/kunit/executor.c:182:42: warning: declaration of 'struct suite_set' will not be visible outside of this function [-Wvisibility]
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
-   lib/kunit/executor.c:190:25: error: incomplete definition of type 'struct suite_set'
-     190 |         for (suites = suite_set->start; suites < suite_set->end; suites++)
-         |                       ~~~~~~~~~^
-   lib/kunit/executor.c:182:42: note: forward declaration of 'struct suite_set'
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
-   lib/kunit/executor.c:190:52: error: incomplete definition of type 'struct suite_set'
-     190 |         for (suites = suite_set->start; suites < suite_set->end; suites++)
-         |                                                  ~~~~~~~~~^
-   lib/kunit/executor.c:182:42: note: forward declaration of 'struct suite_set'
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
-   lib/kunit/executor.c:198:19: error: variable has incomplete type 'struct suite_set'
-     198 |         struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-         |                          ^
-   lib/kunit/executor.c:198:9: note: forward declaration of 'struct suite_set'
-     198 |         struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-         |                ^
-   In file included from lib/kunit/executor.c:230:
-   lib/kunit/executor_test.c:45:19: error: variable has incomplete type 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:45:9: note: forward declaration of 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:46:19: error: variable has incomplete type 'struct suite_set'
-      46 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:45:9: note: forward declaration of 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:69:19: error: variable has incomplete type 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:69:9: note: forward declaration of 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:70:19: error: variable has incomplete type 'struct suite_set'
-      70 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:69:9: note: forward declaration of 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:96:19: error: variable has incomplete type 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:96:9: note: forward declaration of 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:97:19: error: variable has incomplete type 'struct suite_set'
-      97 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:96:9: note: forward declaration of 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-     138 |                         (kunit_action_t *)kfree,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~
-   2 warnings and 9 errors generated.
+   In file included from mm/hugetlb.c:49:
+   mm/hugetlb_vmemmap.h:56:6: warning: no previous prototype for function 'vmemmap_should_optimize' [-Wmissing-prototypes]
+      56 | bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+         |      ^
+   mm/hugetlb_vmemmap.h:56:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      56 | bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+         | ^
+         | static 
+>> mm/hugetlb.c:3198:3: error: use of undeclared identifier 'HUGETLB_VMEMMAP_RESERVE_SIZE'
+    3198 |                 HUGETLB_VMEMMAP_RESERVE_SIZE * sizeof(struct page);
+         |                 ^
+   1 warning and 1 error generated.
 
 
-vim +182 lib/kunit/executor.c
+vim +/HUGETLB_VMEMMAP_RESERVE_SIZE +3198 mm/hugetlb.c
 
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  181  
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30 @182  static void kunit_exec_list_tests(struct suite_set *suite_set)
-aac35468ca20a3 Alan Maguire   2020-08-04  183  {
-e5857d396f35e5 Daniel Latypov 2022-07-09  184  	struct kunit_suite * const *suites;
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  185  	struct kunit_case *test_case;
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  186  
-6c738b52316c58 Rae Moar       2022-11-23  187  	/* Hack: print a ktap header so kunit.py can find the start of KUnit output. */
-6c738b52316c58 Rae Moar       2022-11-23  188  	pr_info("KTAP version 1\n");
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  189  
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  190  	for (suites = suite_set->start; suites < suite_set->end; suites++)
-e5857d396f35e5 Daniel Latypov 2022-07-09  191  		kunit_suite_for_each_test_case((*suites), test_case) {
-e5857d396f35e5 Daniel Latypov 2022-07-09  192  			pr_info("%s.%s\n", (*suites)->name, test_case->name);
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  193  		}
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  194  }
-9c6b0e1d8993e4 Daniel Latypov 2021-09-30  195  
+  3190	
+  3191	int alloc_bootmem_huge_page(struct hstate *h, int nid)
+  3192		__attribute__ ((weak, alias("__alloc_bootmem_huge_page")));
+  3193	int __alloc_bootmem_huge_page(struct hstate *h, int nid)
+  3194	{
+  3195		struct huge_bootmem_page *m = NULL; /* initialize for clang */
+  3196		int nr_nodes, node;
+  3197		phys_addr_t hugetlb_vmemmap_reserve_size =
+> 3198			HUGETLB_VMEMMAP_RESERVE_SIZE * sizeof(struct page);
+  3199		phys_addr_t noinit_base;
+  3200	
+  3201		/* do node specific alloc */
+  3202		if (nid != NUMA_NO_NODE) {
+  3203			m = memblock_alloc_try_nid_raw(huge_page_size(h), huge_page_size(h),
+  3204					0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+  3205			if (!m)
+  3206				return 0;
+  3207	
+  3208			if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
+  3209				noinit_base = virt_to_phys(
+  3210					(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+  3211				memblock_rsrv_mark_noinit(
+  3212					noinit_base,
+  3213					huge_page_size(h) - hugetlb_vmemmap_reserve_size);
+  3214			}
+  3215	
+  3216			goto found;
+  3217		}
+  3218		/* allocate from next node when distributing huge pages */
+  3219		for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
+  3220			m = memblock_alloc_try_nid_raw(
+  3221					huge_page_size(h), huge_page_size(h),
+  3222					0, MEMBLOCK_ALLOC_ACCESSIBLE, node);
+  3223			/*
+  3224			 * Use the beginning of the huge page to store the
+  3225			 * huge_bootmem_page struct (until gather_bootmem
+  3226			 * puts them into the mem_map).
+  3227			 */
+  3228			if (!m)
+  3229				return 0;
+  3230	
+  3231			if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
+  3232				noinit_base = virt_to_phys(
+  3233					(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
+  3234				memblock_rsrv_mark_noinit(
+  3235					noinit_base,
+  3236					huge_page_size(h) - hugetlb_vmemmap_reserve_size);
+  3237			}
+  3238	
+  3239			goto found;
+  3240		}
+  3241	
+  3242	found:
+  3243		/* Put them into a private list first because mem_map is not up yet */
+  3244		INIT_LIST_HEAD(&m->list);
+  3245		list_add(&m->list, &huge_boot_pages);
+  3246		m->hstate = h;
+  3247		return 1;
+  3248	}
+  3249	
 
 -- 
 0-DAY CI Kernel Test Service
