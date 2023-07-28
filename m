@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4634766B2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8A4766B31
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbjG1K7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
+        id S234972AbjG1LAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236087AbjG1K7e (ORCPT
+        with ESMTP id S236069AbjG1LAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:59:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA592701;
-        Fri, 28 Jul 2023 03:59:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CEB89620D2;
-        Fri, 28 Jul 2023 10:59:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D83DEC433C7;
-        Fri, 28 Jul 2023 10:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690541970;
-        bh=GaR8fM1qvnhj2/WSSv0B+sHOorbQm8I8+qLSHbOpqu4=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=sFNig5dUS4R8iWAyc4JmmdkV19ZKVuONYA//u4n6sx2nYxVGD7evahq+y9OQESrsd
-         CKHOYeBCRNc2GFXRgQwZdjqEv9tOwDvv2Z/4TDK2jJ9uKkeygcf176N8UEtxaswQ2I
-         k5xK4RqSURLjbnseR1x9OdTWLkh7wkKKVH3m2D/EqQ8wIQtYXEpy4HU1mp2vbWe8GB
-         VSFmhFCQwyVhwzo0v5jpNxJ08AmhoUj8pknopKYMv4e8+Wqum7NySUoWeOWlLbZE75
-         3YbpGEpsajbpFy20JsVrUmBrFR3kC5O9KWfqv0gv/+C9u78ygRp27Ls5F7g5h7M8SF
-         NJI4jeYoPCcpw==
-From:   Lee Jones <lee@kernel.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>, Lee Jones <lee@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230723142842.98204-1-krzysztof.kozlowski@linaro.org>
-References: <20230723142842.98204-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v2] dt-bindings: mfd: maxim,max77693: Add USB
- connector
-Message-Id: <169054196859.339271.10574297199743644900.b4-ty@kernel.org>
-Date:   Fri, 28 Jul 2023 11:59:28 +0100
+        Fri, 28 Jul 2023 07:00:32 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EE82701;
+        Fri, 28 Jul 2023 04:00:31 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5227e5d9d96so2549482a12.2;
+        Fri, 28 Jul 2023 04:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690542030; x=1691146830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2PDIAfFUsFD3vbVEGsI9j/0thKIcvauqk+miCMI9pQM=;
+        b=EyPBQM6RQ+S/JnVzhATw135UHbUhW8+sWivasIl3uNELayYfb/H4HnRU39ec857gzw
+         8A7rjGpjYCWQKiIx2Vg+q9vtj+kz9jskd2QF+yToV+zGB3t8+kJuPq4pSmChm3PGYPXl
+         V8HL1aB1yXPxOOLgnA1akWOvRDGg5VYNnTHL+e0he1bhaIfkvWG4mbhnxmJrvccjQchU
+         SEfgXTN6AwH3fH3Z2JtEAbJXfrEneognCK3lvrNMcy65uQXsyij04M5hs/d18x6EnT7I
+         x2oKDDypouEfGRjiNPevP2O4xDEaIypQDU/3yRECJMsejHoem4HiHGu27dtX9a54Nqah
+         N+dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690542030; x=1691146830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2PDIAfFUsFD3vbVEGsI9j/0thKIcvauqk+miCMI9pQM=;
+        b=B+QxWzeeUX0sBnjF++ZuLP2nlyZUFt5QiRVBpJjaK51yiI6s4Obd9jYTz59CEy3iaF
+         60aWvNlwbcz9v8/HyLhrueswgXXC/Yar3T+nSvPbRGQifQZNPm20dJnX/2tHsV9cXSw9
+         qaXFChEiAsAmM+bz2/bCGmYA0VQc5XcU9W+qfi8OUOXF6GcsSf4B2VVuZCu221y4ZBNs
+         XL/7Dw7XXonI6XzPbIVPXTXAtH1beGg7NxSMXfoUS5W39toB01ydcRrhLoBjNT+7NBzG
+         gEFbyMgorn5ZXqTH9z1JzMOJnxz97smsYru9DnbiJdCC9wZde9S/2foBDhbgl44LWw0X
+         QVFg==
+X-Gm-Message-State: ABy/qLYOuHp9vm4tbY5awHhzcE99SNbspzbMIHyMb/dMZJAc+9qRE86q
+        dcNqT4abprHivzr9yqu2YBqLkC4+MDrjyxVqLag=
+X-Google-Smtp-Source: APBJJlEghzB5bMgXT3leW5ZT0+gEjuoBiA4sez83WtaUcSOtr4hVGqaTHDCNdeMru3uWWlbEwaEeMFrzkTvqeODaISA=
+X-Received: by 2002:a17:906:2cd:b0:99b:c845:791d with SMTP id
+ 13-20020a17090602cd00b0099bc845791dmr1812151ejk.76.1690542029590; Fri, 28 Jul
+ 2023 04:00:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230728105723.251892-1-krzpaw@gmail.com>
+In-Reply-To: <20230728105723.251892-1-krzpaw@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 28 Jul 2023 13:00:18 +0200
+Message-ID: <CAKXUXMzYyX9rz-=K=1YRRbpOAechRG4U+i5BbX8qagH2epTgXw@mail.gmail.com>
+Subject: Re: [PATCH] docs: cgroup-v1: replace dead CONFIG_MEM_RES_CTRL_SWAP symbol
+To:     Krzysztof Pawlaczyk <krzpaw@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 Jul 2023 16:28:42 +0200, Krzysztof Kozlowski wrote:
-> Add micro-USB connector under "muic" node to properly represent the
-> hardware.  Deprecate also the old "max77693-muic" in favor of generic
-> "muic" (this is max77693, so there is no need to state it in its child
-> nodes).  This "muic" node is used only to instantiate MUIC driver by
-> compatible, thus actual Linux driver changes are needed.  Extend the
-> example with this new code.
-> 
-> [...]
+On Fri, Jul 28, 2023 at 12:59=E2=80=AFPM Krzysztof Pawlaczyk <krzpaw@gmail.=
+com> wrote:
+>
+> Commit e55b9f96860f ("mm: memcontrol: drop dead CONFIG_MEMCG_SWAP
+> config symbol") removed MEMCG_SWAP as it was just a shorthand for
+> CONFIG_MEMCG && CONFIG_SWAP.
+>
+> The commit also adjusted the documentation but missed reference to
+> CONFIG_MEM_RES_CTRL_SWAP, which was the previous name of
+> CONFIG_MEMCG_SWAP before renaming in commit c255a458055e ("memcg: rename
+> config variables").
+>
+> Update the reference to the current state.
+>
 
-Applied, thanks!
+Thanks for the cleanup.
 
-[1/1] dt-bindings: mfd: maxim,max77693: Add USB connector
-      commit: 0ddf8139e205a2adba575a552d7520f6e1849b7d
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
---
-Lee Jones [李琼斯]
+Lukas
 
+> Signed-off-by: Krzysztof Pawlaczyk <krzpaw@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memcg_test.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v1/memcg_test.rst b/Documen=
+tation/admin-guide/cgroup-v1/memcg_test.rst
+> index a402359abb99..1f128458ddea 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memcg_test.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
+> @@ -62,7 +62,7 @@ Please note that implementation details can be changed.
+>
+>         At cancel(), simply usage -=3D PAGE_SIZE.
+>
+> -Under below explanation, we assume CONFIG_MEM_RES_CTRL_SWAP=3Dy.
+> +Under below explanation, we assume CONFIG_SWAP=3Dy.
+>
+>  4. Anonymous
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --
+> 2.25.1
+>
