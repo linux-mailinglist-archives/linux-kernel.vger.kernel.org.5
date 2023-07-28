@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141A0766F9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D7F766F9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237125AbjG1Ohs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
+        id S237134AbjG1OiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbjG1Ohq (ORCPT
+        with ESMTP id S234699AbjG1OiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:37:46 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EEE3C24;
-        Fri, 28 Jul 2023 07:37:45 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe07f0636bso3848262e87.1;
-        Fri, 28 Jul 2023 07:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690555064; x=1691159864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OoBzPwja36fkGB2m2EIbRi55n5XYr4VNaYPCpY7zeKs=;
-        b=mH17P6vfTfQdoT14pC3A4FfDJ2VBrkghAG4nBuM7YP9r7FzJpwrAFXB5UMTvtqhF40
-         XHnTn9QeyjMKGzDXjQG0c4Tthbnl8t35Fbo4n0fUp5eVbJ8S11AC+mfrG/aPvVGubjpv
-         jcunb7H8In7x+NbtE3ATP0FXQh2giufFWcsNZQpuzRCASB4ZZzp/+9+VsRFyxq7TerlQ
-         B+DbL/+fE4gdv7uvDxokIcRTP7edsXWY1QHw87YUGF1qk1FfE0wcZmB6VBIGvlKbqDz5
-         HQ1cwr6QXDanyk/pTVPTws4QTPAuqgF5F7qbF5rszCMz9nMXITHPXWMZeujKdSciAojn
-         hIUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690555064; x=1691159864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OoBzPwja36fkGB2m2EIbRi55n5XYr4VNaYPCpY7zeKs=;
-        b=l9e5FwHvTOMXcKdiekO7vWTS3MvKOAJXB+CSd15W0VQ3DFIigq/4TSaUFLXmfrJdKz
-         LBNnHhXnolxI0JSfowCkvSFo/K3GvlTS7y3479V3Y884eHeuPgw0BtawIrfl/FD5xfYt
-         DAst7MJy+B9CfjNN8LQDiwbOmFcriMYUpUwdBMXiKCN6AXjulzCcHJ49dJUQmTygQVpK
-         1xN19LGiztr1aVKnK2ENvLnuT590EOdK4TonePvag3cI1CXLanimKv6oj9Hqo/URQ/cS
-         PfRhtoB5fSJ4mhCiO6Bf0qcmiSLInW7oOBIpezTJ8xvSi9UbrgYN0157+yGPwvyw7vg3
-         /GYw==
-X-Gm-Message-State: ABy/qLZ8F4r0/jQy5FD6qy0wphnZQMjtq92Yx64J0NmGt7Ca48ZAofQN
-        HAgNkD0XAh7XK7sNJExwgZ+iFUbUv75Y4+2gZrE=
-X-Google-Smtp-Source: APBJJlGUbR0qC9paIuIRHruH4iJ3Oi11S/UE+z1ge7FEfFZqlKQmVxkAQlUoMKoxelzsZCTu0j9nGxem/4l8cRw0JdU=
-X-Received: by 2002:a05:6512:2083:b0:4fd:f590:1ff7 with SMTP id
- t3-20020a056512208300b004fdf5901ff7mr1806954lfr.40.1690555063602; Fri, 28 Jul
- 2023 07:37:43 -0700 (PDT)
+        Fri, 28 Jul 2023 10:38:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC8E3C24;
+        Fri, 28 Jul 2023 07:38:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98A506216B;
+        Fri, 28 Jul 2023 14:38:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7BEFC433C7;
+        Fri, 28 Jul 2023 14:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690555094;
+        bh=wjwP4w8BS9th/B1i8S2XP4Q49a2HggcUKgJCWV6NSnY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fsRyWTTPKyVWiRdY9AHqj1FaDyEf4MZ5PJH6E/bKtl6NhpFj2PpGSuDWe4LN+HIf0
+         TxfygMz7KKizlaX/iIMtfG/NWrGLin1ZDUIisexCEQlVR3B44vMunEQtAYZ5e93vUc
+         Qty6vSkCUVg13t49PJmud32F6vvTV+rByQMom5SZECR82L2/aArG2naeuAw1BecSce
+         8KSJnVeI/mG/phKHy62vELq7mun/lwbWetVhwv0E4ZZq9K8LCPg3vq/iH6dD9bawfn
+         F+n+lCO+EBPpdFawB7M4l9BqHZOiLjzMQCKQ8qPcZY8ZtH9PSJmMYppqrPd66BOF+0
+         7BgeP5g1GNgPA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 67AB340096; Fri, 28 Jul 2023 11:38:11 -0300 (-03)
+Date:   Fri, 28 Jul 2023 11:38:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Ali Saidi <alisaidi@amazon.com>, catalin.marinas@arm.com,
+        will@kernel.org, john.g.garry@oracle.com, james.clark@arm.com,
+        mike.leach@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, scott@os.amperecomputing.com,
+        maz@kernel.org, anshuman.khandual@arm.com, german.gomez@arm.com,
+        renyu.zj@linux.alibaba.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        fissure2010@gmail.com
+Subject: Re: [PATCH v1 0/3] arm64: Support Cortex-X4 CPU for Perf Arm SPE
+Message-ID: <ZMPS04R7MpnxKwJ0@kernel.org>
+References: <20230717054327.79815-1-leo.yan@linaro.org>
+ <20230721181653.22398-1-alisaidi@amazon.com>
+ <20230724113013.GB76473@leoy-huanghe.lan>
 MIME-Version: 1.0
-References: <20230720152737.102382-1-helen.koike@collabora.com>
- <CAF6AEGtXL5vjp3Uup6Mk19MiY8E26-tpyXVmxXYhMd3fiadykQ@mail.gmail.com>
- <CAF6AEGsxLg4og1EkCdno6P8x31KK=rJfmerJa8uMeNR-n7RVRg@mail.gmail.com> <CAPj87rPNyJ=mX1Um6yaN_jTV2gH5MhMxr3mnSb7=nB7NEOf2Ag@mail.gmail.com>
-In-Reply-To: <CAPj87rPNyJ=mX1Um6yaN_jTV2gH5MhMxr3mnSb7=nB7NEOf2Ag@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 28 Jul 2023 07:37:31 -0700
-Message-ID: <CAF6AEGtan-bQ7syKAwOKDY=044aKu26SLPQ0j1ieLqXNyQQS3g@mail.gmail.com>
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
-To:     Daniel Stone <daniel@fooishbar.org>
-Cc:     Helen Koike <helen.koike@collabora.com>, emma@anholt.net,
-        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        jbrunet@baylibre.com, robdclark@google.com, corbet@lwn.net,
-        khilman@baylibre.com, sergi.blanch.torne@collabora.com,
-        gustavo.padovan@collabora.com, linux-rockchip@lists.infradead.org,
-        daniels@collabora.com, martin.blumenstingl@googlemail.com,
-        mripard@kernel.org, anholt@google.com,
-        linux-mediatek@lists.infradead.org, robclark@freedesktop.org,
-        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de, Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724113013.GB76473@leoy-huanghe.lan>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:26=E2=80=AFPM Daniel Stone <daniel@fooishbar.org=
-> wrote:
->
-> On Thu, 27 Jul 2023 at 22:47, Rob Clark <robdclark@gmail.com> wrote:
-> > > I did run into a bit of a chicken vs. egg problem with testing the "i=
-n
-> > > tree" version (compared to earlier versions which kept most of the ym=
-l
-> > > and scripts in a separate tree), is that it actually requires this
-> > > commit to exist in the branch you want to run CI on.  My earlier
-> > > workaround of pulling the drm/ci commit in via
-> > > ${branchname}-external-fixes no longer works.
-> >
-> > After unwinding some more gitlab repo settings that were for the
-> > previous out-of-tree yml setup, I have this working.
-> >
-> > Tested-by: Rob Clark <robdclark@gmail.com>
-> > Acked-by: Rob Clark <robdclark@gmail.com>
->
-> And it's also:
-> Acked-by: Daniel Stone <daniels@collabora.com>
->
-> It's been back and forth a few times by now and reviewed pretty
-> heavily by all the people who are across the CI details. I think the
-> next step is to answer all the workflow questions by actually getting
-> it into trees and using it in anger. There was some discussion about
-> whether this should come in from drm-misc, or the core DRM tree, or a
-> completely separate pull, but I'm not sure what the conclusion was ...
-> maintainers, thoughts?
+Em Mon, Jul 24, 2023 at 07:30:13PM +0800, Leo Yan escreveu:
+> Hi Ali,
+> 
+> On Fri, Jul 21, 2023 at 06:16:53PM +0000, Ali Saidi wrote:
+> 
+> > > This series support Cortex-X4 CPU in Perf Arm SPE.
+> 
+> [...]
+> 
+> > This looks good to me, but can we add the other cores that operate the
+> > same way now too? Flipping through the TRMs A78, X3, V2, X1, A715,
+> > A720, and A78C all have the same encodings. 
+> 
+> Thanks a lot for exploring more CPU variants which share the same data
+> source packet format.
+> 
+> The latest Linux kernel have defined the CPU part number and MIDR for
+> below CPU variants:
+> 
+> - A78
+> - X1
+> - A715
+> - A78C
+> 
+> I would like to use a patch to support these CPUs in perf tool.  Given
+> other CPU variants (X3/V2/A720) have not been supported in the kernel,
+> and so far no one requests them, I would like leave them out.
+> 
+> Please let me know if this okay for you or not.
+> 
+> 
+> > Reviewed-by: Ali Saidi <alisaidi@amazon.com>
+> 
+> Thanks for review, I will add your review tags in the new patch set.
 
-I'd prefer a separate pull, so that I could merge it into msm-next as
-well without having to pull in all of drm-misc
+Ok, waiting for the new patch set.
 
-Possibly some other driver trees would like to do similar?
-
-BR,
--R
+- Arnaldo
