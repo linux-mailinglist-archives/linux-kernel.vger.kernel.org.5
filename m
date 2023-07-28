@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC15766F57
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FC5766F58
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236640AbjG1OWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
+        id S236553AbjG1OWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbjG1OWb (ORCPT
+        with ESMTP id S235611AbjG1OWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 10:22:31 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C784422B;
-        Fri, 28 Jul 2023 07:22:08 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-56401f1da3dso1030262a12.0;
-        Fri, 28 Jul 2023 07:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690554128; x=1691158928;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yaHDfRPeOYEFoHO/IUNE0JLDV+4mnu7twVsVbad4hws=;
-        b=TCkoVpnoq7rWVgCt4u3ufL0iy8Y5iTREf6qhy36uqb4y2aJAyZXxCXigZh/xyysfpX
-         /3kqX8pP1ws104T9gEKexu+X0pg9Hxl7t0JP4HK4caRtY2h8o2TeCevpLQ3ruCQVF21n
-         Qr+stlczafmHz67i9bz5hWVkdDqxuczyZc/aj6yJQG2pNtGo1u6wr0m2mQkt+DOos1+s
-         5RFf+ScKzX3qIzano3KtS7q/43p68BLv3aDdYUp9Id6EvYTlVJk+oHmWZqA7vDxGf+gY
-         A1Hme/hP2kWPxbhOh8wWk2sxp59nEwzwiHK7dliE9CX2qTk3rj1SNQVnhsUJF7nKKM4s
-         XQ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690554128; x=1691158928;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yaHDfRPeOYEFoHO/IUNE0JLDV+4mnu7twVsVbad4hws=;
-        b=CMOLMhxsyp5ISccbDi6rM3c2Unw7X2D0ZgsY0zxR9kpp06PIHPdvxebWc0IqrGYTx6
-         0Nu+ukvaTvEeytUZJQHiZivycnVfRxbN12yIhlOZ8DgBBCPv55egM2C7WIKvu0l2fOoa
-         sLNFBC69Lyo6u19xN3YrEJe4EP/GZIENr6qfqKYY6y3HyjcfOCTOJ9Fie5bMsLyEZbr1
-         jU2Sax2H3y9UC/aFLDFe6JnlpOf5frI30SvrR5IZGpb2uJ4VTeajvzBqIL46YbWfbPVV
-         /VpEi61uyEXO1mKRXhPsW02ckUCs5Rf86Gm7QTKmxOlY7DJ5InDL03VWg3JFKXpIu/en
-         j/3Q==
-X-Gm-Message-State: ABy/qLZ1Szpw7rpjkKUmit0r8hZCP/MhfWCNYCB0pZhsaJf40pZAlm2O
-        q5Bwh2L7eAAE+5JM6ZQUBqQ=
-X-Google-Smtp-Source: APBJJlF89ELEa4ed3usCbf4UmNMKfQ5ivHg7Rz8sOUofytiRiDTG5MwXDPheALvyHG5drlWsb7u9qA==
-X-Received: by 2002:a17:90a:c205:b0:263:f776:8ba3 with SMTP id e5-20020a17090ac20500b00263f7768ba3mr1655996pjt.9.1690554127611;
-        Fri, 28 Jul 2023 07:22:07 -0700 (PDT)
-Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:18:efec::75b])
-        by smtp.gmail.com with ESMTPSA id ev16-20020a17090aead000b002684b837d88sm2690605pjb.14.2023.07.28.07.22.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 07:22:07 -0700 (PDT)
-Message-ID: <29fa53c5-7374-0b64-d135-54c968498685@gmail.com>
-Date:   Fri, 28 Jul 2023 22:21:59 +0800
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93063C0E;
+        Fri, 28 Jul 2023 07:22:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7878C62165;
+        Fri, 28 Jul 2023 14:22:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDEB6C433CA;
+        Fri, 28 Jul 2023 14:22:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690554132;
+        bh=rT/eYOtLbTs03n3CSJnusC5NVZmatwwQuZ8puahV/zA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bQBCeYpjqJoC+8dCdqVfDuw2kDRY999MaieN08n8ET27F03kpTfDupXf5CARbu63C
+         AYOllWRGGGnNivY6kqP2rNLon3At9e9IMfxVrtXTElHVngdTb1ZKXsH9Yd5e+kS3FQ
+         ln5e7k8vv8mjrVLLSu0GdyTRHbaVL7EvFdtoYN2D9C4oN3nmxxIGKz2Ymjw0y6sU6N
+         kzGlRk22ib0r5Tu05o/wGwZFvhJ8t7mVOi6DhyU7K4mD2txPI73NwePBbi2VTV5GXA
+         vP1JqACtyvFD1+EgbuIxO+p8wfHNmV/CTiRo1hPFpwzPEkOHap4BzeffdDXoY8pbck
+         Sv/IRwFProZug==
+Date:   Fri, 28 Jul 2023 15:22:05 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Marc Zyngier <maz@kernel.org>,
+        German Gomez <german.gomez@arm.com>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, fissure2010@gmail.com
+Subject: Re: [PATCH v1 3/3] perf arm-spe: Support data source for Cortex-X4
+ CPU
+Message-ID: <20230728142204.GB21718@willie-the-truck>
+References: <20230717054327.79815-1-leo.yan@linaro.org>
+ <20230717054327.79815-4-leo.yan@linaro.org>
+ <c784911e-72f4-8150-530b-234978546a45@arm.com>
+ <20230724110509.GA76473@leoy-huanghe.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH V2] x86/hyperv: Rename hv_isolation_type_snp/en_snp() to
- isol_type_snp_paravisor/enlightened()
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "arnd@arndb.de" <arnd@arndb.de>
-Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>
-References: <20230726124900.300258-1-ltykernel@gmail.com>
- <BYAPR21MB168896AAD24E773B92DD2B10D706A@BYAPR21MB1688.namprd21.prod.outlook.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <BYAPR21MB168896AAD24E773B92DD2B10D706A@BYAPR21MB1688.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724110509.GA76473@leoy-huanghe.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/2023 10:53 AM, Michael Kelley (LINUX) wrote:
->> @@ -268,7 +268,7 @@ static inline void hv_sev_init_mem_and_cpu(void) {}
->>   static int hv_snp_boot_ap(int cpu, unsigned long start_ip) {}
->>   #endif
->>
->> -extern bool hv_isolation_type_snp(void);
->> +extern bool hv_isol_type_snp_paravisor(void);
-> This declaration of hv_isolation_type_snp() also occurs twice
-> in include/asm-generic/mshyperv.h.  I think this one can be
-> dropped entirely rather than renamed since
-> include/asm-generic/mshyperv.h is #include'd at the bottom of
-> this file, and there is no user in between.
+On Mon, Jul 24, 2023 at 07:05:09PM +0800, Leo Yan wrote:
+> On Mon, Jul 24, 2023 at 12:27:31PM +0530, Anshuman Khandual wrote:
 > 
-> hv_isolation_type_snp() is used in several architecture
-> independent source code files, so having it declared in
-> include/asm-generic/mshyperv.h makes sense rather than
-> being in an architecture-specific version of mshyperv.h.
+> [...]
 > 
+> > > -static const struct midr_range neoverse_spe[] = {
+> > > +static const struct midr_range cpus_use_default_data_src[] = {
+> > 
+> > Is not 'cpus_use_default_data_src' too long ? 'use' could be dropped ?
+> 
+> Okay, I can drop 'use'.
+> 
+> > >  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N1),
+> > >  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_N2),
+> > >  	MIDR_ALL_VERSIONS(MIDR_NEOVERSE_V1),
+> > > +	MIDR_ALL_VERSIONS(MIDR_CORTEX_X4),
+> > >  	{},
+> > >  };
+> 
+> [...]
+> 
+> > >  static u64 arm_spe__synth_data_source(const struct arm_spe_record *record, u64 midr)
+> > >  {
+> > >  	union perf_mem_data_src	data_src = { .mem_op = PERF_MEM_OP_NA };
+> > > -	bool is_neoverse = is_midr_in_range_list(midr, neoverse_spe);
+> > > +	bool is_default_dc =
+> > 
+> > _dc stands for ?
+> 
+> Thanks for pointing out this; actually I mean '_ds' which stands for
+> data source.  Will spin a new patch for this.
 
-Agree. Will update in the next version.
+Thanks. Please can you put patch 2 (the one touching tools) at the end of
+the series, too? That way I can easily pick up the kernel changes.
+
+Will
