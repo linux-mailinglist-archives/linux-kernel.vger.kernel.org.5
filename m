@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB49B766279
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFFF76627F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbjG1Dg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S233235AbjG1DhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjG1Dgx (ORCPT
+        with ESMTP id S233167AbjG1DhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:36:53 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9141B271E;
-        Thu, 27 Jul 2023 20:36:51 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8Cx7+vQN8Nk6B8LAA--.26613S3;
-        Fri, 28 Jul 2023 11:36:48 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax8uTQN8NkcNM9AA--.33631S3;
-        Fri, 28 Jul 2023 11:36:48 +0800 (CST)
-Subject: Re: [PATCH v13 2/2] spi: loongson: add bus driver for the loongson
- spi controller
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        zhuyinbo@loongson.cn
-References: <20230613075834.5219-1-zhuyinbo@loongson.cn>
- <20230613075834.5219-3-zhuyinbo@loongson.cn>
- <3822f248-39dc-fb8d-321a-7b6c833cbb3e@loongson.cn>
- <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <8ad55123-fbf2-2b0f-faba-f71bb89c7fb1@loongson.cn>
-Date:   Fri, 28 Jul 2023 11:36:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 27 Jul 2023 23:37:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188EB2D57;
+        Thu, 27 Jul 2023 20:37:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 966B161FC1;
+        Fri, 28 Jul 2023 03:37:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBB5CC433C7;
+        Fri, 28 Jul 2023 03:37:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690515423;
+        bh=yYAHFQ8WQBrz/CC6Vkb/vHbspAQ4nefCpRwy7WR+Fw0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JO7VION8mjiQiuzspgR2aAxtRgPneF2pUuzlucgDDdgMgNTNY60HGw9UgmMY+Ma4K
+         EItDVSyZpezCA23hsB+r6p5+OuTSP58+ULr3fujQ4+rOoi0hBgow4WWTvxWJu2+GK5
+         CAlcxTw5/Ik+FcAer2aIulgAXikzhyKN93sMYCLczR6uHyIs6T76AYGlO3klq47sxe
+         JZFiFxhadg3FEf9RtwsGKhyWFHu9Cb9IHMyJko5+GfghZxy5JQvJyQXIEVLguMTn/J
+         csLRnMAeH50lYVyfzgZS+ARXRXOJQlshh7udKZNEbrr8yAoWvK4/jgxeVqYttZxpXs
+         YkHPuS1ZETErw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 883BECE0AD7; Thu, 27 Jul 2023 20:37:02 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     akpm@linux-foundation.org, adobriyan@gmail.com, mhiramat@kernel.org
+Cc:     arnd@kernel.org, ndesaulniers@google.com, paulmck@kernel.org,
+        sfr@canb.auug.org.au, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for boot loader arguments
+Date:   Thu, 27 Jul 2023 20:37:00 -0700
+Message-Id: <20230728033701.817094-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
 MIME-Version: 1.0
-In-Reply-To: <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax8uTQN8NkcNM9AA--.33631S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,41 +58,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+show all kernel boot parameters, both those supplied by the boot loader
+and those embedded in the kernel image.  This works well for those who
+just want to see all of the kernel boot parameters, but is not helpful to
+those who need to see only those parameters supplied by the boot loader.
+This is especially important when these parameters are presented to the
+boot loader by automation that might gather them from diverse sources.
 
+Therefore, provide a /proc/cmdline_load file that shows only those kernel
+boot parameters supplied by the boot loader.
 
-在 2023/7/27 下午7:37, Mark Brown 写道:
-> On Thu, Jul 27, 2023 at 11:09:16AM +0800, Yinbo Zhu wrote:
-> 
->> Friendly ping ?
-> 
-> Please don't send content free pings and please allow a reasonable time
-> for review.  People get busy, go on holiday, attend conferences and so
-> on so unless there is some reason for urgency (like critical bug fixes)
-> please allow at least a couple of weeks for review.  If there have been
-> review comments then people may be waiting for those to be addressed.
+Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
+it makes sense to put it in the same place that /proc/cmdline is located.
 
+[ sfr: Apply kernel test robot feedback. ]
 
-Sorry, my community experience is poor.  How many weeks does the
-community usually take to review ?  and this time that I waited for six
-weeks and then ping.
+Co-developed-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: <linux-fsdevel@vger.kernel.org>
+---
+ fs/proc/cmdline.c    | 13 +++++++++++++
+ include/linux/init.h |  3 ++-
+ init/main.c          |  2 +-
+ 3 files changed, 16 insertions(+), 2 deletions(-)
 
-> 
-> Sending content free pings adds to the mail volume (if they are seen at
-> all) which is often the problem and since they can't be reviewed
-> directly if something has gone wrong you'll have to resend the patches
-> anyway, so sending again is generally a better approach though there are
-> some other maintainers who like them - if in doubt look at how patches
-> for the subsystem are normally handled.
-
-
-Sorry, I don't got it, that free ping usually only needs to be sent to
-the subsystem maintainer?
-
-Not recommended to use free ping?  or resend the same patch.  If the
-patch does not need to be modified, does it require sending the same
-patch ?  And the version number remains the same?
-> 
-
-Thanks,
-Yinbo
+diff --git a/fs/proc/cmdline.c b/fs/proc/cmdline.c
+index a6f76121955f..1d0ef9d2949d 100644
+--- a/fs/proc/cmdline.c
++++ b/fs/proc/cmdline.c
+@@ -3,6 +3,7 @@
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
+ #include <linux/seq_file.h>
++#include <asm/setup.h>
+ #include "internal.h"
+ 
+ static int cmdline_proc_show(struct seq_file *m, void *v)
+@@ -12,6 +13,13 @@ static int cmdline_proc_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
++static int cmdline_load_proc_show(struct seq_file *m, void *v)
++{
++	seq_puts(m, boot_command_line);
++	seq_putc(m, '\n');
++	return 0;
++}
++
+ static int __init proc_cmdline_init(void)
+ {
+ 	struct proc_dir_entry *pde;
+@@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
+ 	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
+ 	pde_make_permanent(pde);
+ 	pde->size = saved_command_line_len + 1;
++	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
++		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
++		pde_make_permanent(pde);
++		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
++	}
+ 	return 0;
+ }
+ fs_initcall(proc_cmdline_init);
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 266c3e1640d4..29e75bbe7984 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -112,6 +112,7 @@
+ #define __REFCONST       .section       ".ref.rodata", "a"
+ 
+ #ifndef __ASSEMBLY__
++
+ /*
+  * Used for initialization calls..
+  */
+@@ -143,7 +144,7 @@ struct file_system_type;
+ 
+ /* Defined in init/main.c */
+ extern int do_one_initcall(initcall_t fn);
+-extern char __initdata boot_command_line[];
++extern char boot_command_line[];
+ extern char *saved_command_line;
+ extern unsigned int saved_command_line_len;
+ extern unsigned int reset_devices;
+diff --git a/init/main.c b/init/main.c
+index ad920fac325c..2121685c479a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
+ void (*__initdata late_time_init)(void);
+ 
+ /* Untouched command line saved by arch-specific code. */
+-char __initdata boot_command_line[COMMAND_LINE_SIZE];
++char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
+ /* Untouched saved command line (eg. for /proc) */
+ char *saved_command_line __ro_after_init;
+ unsigned int saved_command_line_len __ro_after_init;
+-- 
+2.40.1
 
