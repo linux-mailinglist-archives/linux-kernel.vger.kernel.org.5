@@ -2,173 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06437767310
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3977E767317
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbjG1RP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
+        id S231404AbjG1RQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjG1RPX (ORCPT
+        with ESMTP id S229588AbjG1RQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:15:23 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCE63A81
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:15:21 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4476a50c64bso625830137.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690564520; x=1691169320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LROTV5y5IdBJTsjpYwl/eIhz/Ub1IxtdypTbt/I1aSA=;
-        b=T/h+VFDtennYU7jNdQ2B6p2dhvppEuTLLFAp8Qh8aosb8BzxrSZZAt8MB5X+QvfUKa
-         b//lf0SfR7OwJ637yyR0pMnh3twOFbc7y421CW00PURa5JcT2nCnH0Wy+xn9y6XBGtx5
-         4I6J5ouwqYuvYAnofG2Rz6IINeRNlmwTaTwAhlCfe+dX3ImlmLhbROff+YuGiDZP6I3E
-         qKPb7mHVsUMdbkeEQMFRzdz9mYIkxnUfXU8NTM8R9sNIbj1tm37ks9IyyG1wpjRGRKya
-         RFkfON1/7J9HFiKnMKTeUGcw/P8Sozie4sH1Aq/jE3Qn6qT4yV16rcO1cGJu1v/4+Q5b
-         qNjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690564520; x=1691169320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LROTV5y5IdBJTsjpYwl/eIhz/Ub1IxtdypTbt/I1aSA=;
-        b=QIhJZe1+N5/nx/C6c8g1SmZDdd6e4K3UxNq4MujuE62n0LIDyiQ2kIeA+RcPyiQsS5
-         qA40bXZYsL78nZLRdwi9gaMu6U5QfuNARDucy7PmbbRKQOwGMBHcZ0YwwuSu+mz4sjE/
-         LcFml0QZp2ZXqr41BsL/QwV3RS3pN6gXag56QW8xWpicVxg0r9K0TWKIL1Z05nPLi18N
-         OItB8j2mzukINNGAGkVA1uWSuDclbeK2lkTMg9l3G3ndNMCGL1B57Z5+3E1mIgDBrY2X
-         u6zSKtVx/JGw2IbzsCTlu3BO4VEKynGn/uthCxqcgmPBTS06ucjPY3okyymcb8nmoK5m
-         r3GQ==
-X-Gm-Message-State: ABy/qLZYjuWSU/ciMoz42624F/EBqw+3OP5vIpxaXnnT3oZ28yxQDjNu
-        Hkjv5VW8cC/xXQ1iPRBDnqRkKSvdDJZwoU3vx+gcEg==
-X-Google-Smtp-Source: APBJJlFVdT0zaDWaI5U/9NiLV0sdX1+Ej6YT5qIxNRjvRnVfgRvHOQMDCbu+agBUeFPAwAwtj0Fc2+EV49TD/jaB8+g=
-X-Received: by 2002:a67:e207:0:b0:447:6ef1:c4e with SMTP id
- g7-20020a67e207000000b004476ef10c4emr2228898vsa.34.1690564520259; Fri, 28 Jul
- 2023 10:15:20 -0700 (PDT)
+        Fri, 28 Jul 2023 13:16:56 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2048.outbound.protection.outlook.com [40.107.237.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A870B5;
+        Fri, 28 Jul 2023 10:16:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bzwNQXy23fOw5ThNtRLTCQ3/l/rEhjcLEL6409nMbsWeY7iYUFIMkGMI9rjYEFo3YEIUomkoSgLiJ9zSPFu49ovH0ZLY7hR9mAdhj5k69OIWbRWdcDJ+PbdeHvW6BuAdX+WqBUcO5quUCiWDh9akSfcnQJmZhzXN9pU3TOZ3WpqvtslNsZVmUA0HALkg8tTJOF6sDLjQUnWmrRuRfed4vUzngCUQn7yvb7f/bGpZcFE9K2XS6+deolOv/4Y+7u0kThk0im1SFvFyvOoBBvy1r+F+I6K3YfLtoPy8f7mI59Au9yayIcG0tT9ByysScFAs5vVoGqb5LrZb/6sLecH3lQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xo+rL2FRDTJ6JU+Q+po61nE7D30fa0gmXmKP4dKN6Gs=;
+ b=YqeQPI5aMw5X+w/U2J5S6EOQQDKJKcEPUy1jnT25lDWaPiSAtxzKt++Jo6ds04wzOAFp4H6G53o2IXYRiw8dApQ0DXbXMET+bFuGcTPvdvaCAhulb9A31nGu2fKthBbMkZebqsJ+rh/i5dmXYoj9MxXywrvBlQDLctQxLNWzT9LwzFTkXnc7qZJcQ/odIgqtp+afntQO/SGao7dkO0R6rmz4MCpIUgkFKp/k5jllbidS0hfSMOzf27CxzemYDyb8Cp0EyR9UQM1zi5tKP6WtI3kQF9DBRJb6VENC49kAkH1LObU9HjMqecH/8UgHO8ZC6m2I+DsjDqXkcDpwKyLx4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xo+rL2FRDTJ6JU+Q+po61nE7D30fa0gmXmKP4dKN6Gs=;
+ b=fDlWd5LjgRzsZV8YgUN+mmjHDDBrQLK4+piJ+qvdVJGnL0BTizoU6aHVQMO3514nZhTgdFyCANnek7uQjEIv/mko+phFKD+Og3q0aTvjZ1FrqxH0VBW//bvq+GlP9lvcBDs0XD92EIUvkpgo1hmNUcpHClxLXIATK3m/OYX6PG/nsNWVM9/S3glG2Mq77SLcKqTskvPhEzxgfsmhhw+Nr7+EpFVeQSjQlI1pUIrEMKPifpnMqV7f9DE4z8h7JirYot0PFtJTni1AU1XjSLxDN4wyuu07UHjxgqkHcRCgoUYbP2XMkdexdhjJJMVBQsc8LIPWESq90BffSdM6CE44ig==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MW3PR12MB4539.namprd12.prod.outlook.com (2603:10b6:303:59::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 17:16:52 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.034; Fri, 28 Jul 2023
+ 17:16:52 +0000
+Date:   Fri, 28 Jul 2023 14:16:50 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v3 07/17] iommufd: Add IOMMU_RESV_IOVA_RANGES
+Message-ID: <ZMP4AhdE6RaXXgZH@nvidia.com>
+References: <20230724110406.107212-1-yi.l.liu@intel.com>
+ <20230724110406.107212-8-yi.l.liu@intel.com>
+ <BN9PR11MB5276AAD6B3785DC247E4F35F8C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276AAD6B3785DC247E4F35F8C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: CH2PR14CA0042.namprd14.prod.outlook.com
+ (2603:10b6:610:56::22) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20230727125125.1194376-1-imagedong@tencent.com>
- <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
- <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
- <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
- <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com>
- <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com> <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com>
-In-Reply-To: <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Fri, 28 Jul 2023 10:15:03 -0700
-Message-ID: <CADVnQynwrvdoEH2d7VVNSG6vHg8BC5ikz+PApOOMG4Eo3MqSww@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
- icsk->icsk_timeout in tcp_retransmit_timer()
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Menglong Dong <menglong8.dong@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW3PR12MB4539:EE_
+X-MS-Office365-Filtering-Correlation-Id: b38f3ec5-d54a-4480-2e11-08db8f8e6faa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LB35rtaFvGlc4dxvQ53xX8h2O2i80DJZd5mQ/Mx/PYPjkTPPZjVpHkNzTB6795y8vonoAU0wPlWmN1zmrm5oRTr1+5894oBMsYVOyzu+kK5bCEW1mGcbZqDmdjGV21V6RVQfv4L266kfcgn01UcsQDrn/9PP3q4YjjKcE+73cyq1E3ybshUZpnw5DWiqC+zCtwUohuwO7HvwCV72wIQJcFH/bBTovILOVEm+ckqnLwNLKsFN/GTr/vn/Ew4+2EHomiTUFtHpDT28HthoOFbVTXPRruG6Je5mWxJck1clzg3p13McLcxNCTBoTGIHXOJS5qS2k6OANQjBxMpq+l/jO7Fp2iVj2/nCMa1JZKoEg2j5rjk0sDt2POFm90Kkkxf+xGNcu0qQQDobzMj4VbqPIa+StFWiLnE4FAhTBAXf79uQ7/yVPANTTNenpBJlwku2qkvId8xyex+5jfPDvTFsb+lgmgqakS1bYkYEGWiRjEz5W6+hYN3b+04i6OaYwzI94ldpLHYDht9A2irw2SnPifdCSKmCAY3dlFlAvidZBPrULzScbBm6FK6MHzz9imLL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(39860400002)(136003)(346002)(396003)(451199021)(316002)(26005)(8936002)(6506007)(41300700001)(66556008)(54906003)(4326008)(66476007)(66946007)(6916009)(6512007)(478600001)(8676002)(6486002)(38100700002)(36756003)(2616005)(2906002)(86362001)(186003)(5660300002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZqqAeMdpB3hxnoSlVlejJ40ANiXyRXDxjpUMr21qN1jUkGZHQCGARqxec932?=
+ =?us-ascii?Q?4rUREIu+bdTW7eaTYf6K8FqtOBPWoD5w2hhbq0+pM2DvGFc/RGn0EOD3GZGz?=
+ =?us-ascii?Q?JBYMBiFjUotuqXlz4AQeceSGRiGnZ8hoT72QViDO2AwuuHtxmR8OS7LclNa+?=
+ =?us-ascii?Q?FH4JOqlvBitEN5EL6ZmITeGvYZSFub9p5yjdyVU7ClxqU3AAb4OScKElUah6?=
+ =?us-ascii?Q?an1zs1fwJ4oTA2cvUkgifcTlzKPMPFmjj6pn+sXAuGJpWZulGX8p86F7Xb0c?=
+ =?us-ascii?Q?oM4yerSUkYToW0rvmGltS5IE3mM+DJBA8uDqXHdkbVG5fsNSHppAYE5t3iqW?=
+ =?us-ascii?Q?DwivSroCm6X6QrWddmJyT/tmVY/T1Xq+FjN4tWlPoDMDzsV7fammwMfkLV47?=
+ =?us-ascii?Q?ydcFEvRE2+vVTImlpVcQUXs6aWcIZJ+k1wtUlxJKBHv0WrEUq3/eIAiEc/oy?=
+ =?us-ascii?Q?mgwO8d8b0+dQPRXpZmTQawCqK2VWoqx8QQS97eQ9hI58Gt4s33JGC+fUrefm?=
+ =?us-ascii?Q?V1tw3O+UKHLxVrmx2ab5xdI2KypfwK4JGOwwHkjYE5sAL+ZC/a+5pyj45BbQ?=
+ =?us-ascii?Q?65dX/I3fNhtEE0T42KpQP/OVXTGzC2zGBBRGXwXUe7iNT/w6Cm35OWTSoQqC?=
+ =?us-ascii?Q?ls+t5SA1RGzFM6ZmfrjGB0YskHOcuWelUKgdrIYlm/o9uDnI4WJUjw5CZOKy?=
+ =?us-ascii?Q?dCsULCvO+Vs0nlIvgnMbFixrWtKLT5kFnQlh/K20MJmPFcmZu+PneE9BkTkV?=
+ =?us-ascii?Q?3ZbrZSZmVKYp9VlZztFuCu2nl5oCnI60IDDR4E99uhEvbAuQxTZOVlQqT2d2?=
+ =?us-ascii?Q?BGxOSh0Mqof+v//K54+GEFJyEY7dPpwMdhu5ttB453fpJYQ4PutaUGUFjTxr?=
+ =?us-ascii?Q?EDcQ38xOqjVLUwxtdOkCWAMDS9fjWOs6JzPNspUtg8Usj7TQGZJWOQMjkPkH?=
+ =?us-ascii?Q?3eMMP5qf5PhsH+5Sz/oihBh+RFQQ1xRl+xjkxyHVjQlL1KjuqtZy393ld95e?=
+ =?us-ascii?Q?+8sVPwHIkE134r5KcyUe2dV1GZ+XJd1HxlCjmEZLUlw8Uall7CjuI7fqlD1I?=
+ =?us-ascii?Q?K7Zg75vww4gkuxhf7FV62+hKb9+cBbMZScI6lmnHCfCyncX86g7MRAHKNK6H?=
+ =?us-ascii?Q?dLeMiCmtWu//ikmpnAPluA2sEjl53DQ767juutmS0u6Dq5JrMpPlD/YiUc/0?=
+ =?us-ascii?Q?L4DvHg5BZf1Hu5C+3GnNhJJM5G0oWCnoCqDT8Udbje+9t2tMbvrCdPpAhCWT?=
+ =?us-ascii?Q?72zI3l3CtIGH3VmfiwCL3HQ79VfLzBEwdptf0ZhBqE5ju7ruhfnubSiJtc39?=
+ =?us-ascii?Q?oh4Vh873KZYyH8c2H8Os05DgbDheBQgCPSKkLwhUjR2Zfn6K59sqsM9qjgB1?=
+ =?us-ascii?Q?FtpKXNpoX2XfdF9GcSh/vrK76XYzbmDOW2awjjy19Qmqlv3+QVO7vyK05p1O?=
+ =?us-ascii?Q?g62F10dU8dLRiFZUEq1B3eFP6+QPG0N0AIw3135SqMcfQCHfauFN4znlgvFv?=
+ =?us-ascii?Q?vit1xq+oDABV9rSsJloGKeOC36B6TsWYiH+MoDs+OKd3QNV9ZHYnGBY7X3EH?=
+ =?us-ascii?Q?BgDnKhJRUyglS41aKQLw9VVg/CrGAdu0FX7iv0dP?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b38f3ec5-d54a-4480-2e11-08db8f8e6faa
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:16:52.7280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gql+hcNuQ1MElFkPsAYyrzhqGCw4NcGUBpOtLfRcc8snw3KcxN+fz5LEQEdhZK0u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4539
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 7:25=E2=80=AFAM Neal Cardwell <ncardwell@google.com=
-> wrote:
->
-> On Fri, Jul 28, 2023 at 1:50=E2=80=AFAM Eric Dumazet <edumazet@google.com=
-> wrote:
-> >
-> > On Fri, Jul 28, 2023 at 8:25=E2=80=AFAM Menglong Dong <menglong8.dong@g=
-mail.com> wrote:
-> > >
-> > > On Fri, Jul 28, 2023 at 12:44=E2=80=AFPM Neal Cardwell <ncardwell@goo=
-gle.com> wrote:
-> > > >
-> > > > On Thu, Jul 27, 2023 at 7:57=E2=80=AFPM Menglong Dong <menglong8.do=
-ng@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@go=
-ogle.com> wrote:
-> > > > > >
-> > > > > > On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail.c=
-om> wrote:
-> > > > > > >
-> > > > > > > From: Menglong Dong <imagedong@tencent.com>
-> > > > > > >
-> > > > > > > In tcp_retransmit_timer(), a window shrunk connection will be=
- regarded
-> > > > > > > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'.=
- This is not
-> > > > > > > right all the time.
-> > > > > > >
-> > > > > > > The retransmits will become zero-window probes in tcp_retrans=
-mit_timer()
-> > > > > > > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will c=
-ome up to
-> > > > > > > TCP_RTO_MAX sooner or later.
-> > > > > > >
-> > > > > > > However, the timer is not precise enough, as it base on timer=
- wheel.
-> > > > > > > Sorry that I am not good at timer, but I know the concept of =
-time-wheel.
-> > > > > > > The longer of the timer, the rougher it will be. So the timeo=
-ut is not
-> > > > > > > triggered after TCP_RTO_MAX, but 122877ms as I tested.
-> > > > > > >
-> > > > > > > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is =
-always true
-> > > > > > > once the RTO come up to TCP_RTO_MAX.
-> > > > > > >
-> > > > > > > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->ic=
-sk_timeout',
-> > > > > > > which is exact the timestamp of the timeout.
-> > > > > > >
-> > > > > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > > > > > > ---
-> > > > > > >  net/ipv4/tcp_timer.c | 6 +++++-
-> > > > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> > > > > > > index 470f581eedd4..3a20db15a186 100644
-> > > > > > > --- a/net/ipv4/tcp_timer.c
-> > > > > > > +++ b/net/ipv4/tcp_timer.c
-> > > > > > > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock *s=
-k)
-> > > > > > >                                             tp->snd_una, tp->=
-snd_nxt);
-> > > > > > >                 }
-> > > > > > >  #endif
-> > > > > > > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_=
-MAX) {
-> > > > > > > +               /* It's a little rough here, we regard any va=
-lid packet that
-> > > > > > > +                * update tp->rcv_tstamp as the reply of the =
-retransmitted
-> > > > > > > +                * packet.
-> > > > > > > +                */
-> > > > > > > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstamp =
-> TCP_RTO_MAX) {
-> > > > > > >                         tcp_write_err(sk);
-> > > > > > >                         goto out;
-> > > > > > >                 }
+On Fri, Jul 28, 2023 at 10:07:58AM +0000, Tian, Kevin wrote:
+> > From: Liu, Yi L <yi.l.liu@intel.com>
+> > Sent: Monday, July 24, 2023 7:04 PM
+> > 
+> > This reports device's reserved IOVA regions to userspace. This is needed
+> > in the nested translation as userspace owns stage-1 HWPT, and userspace
+> > needs to exclude the reserved IOVA regions in the stage-1 HWPT hence
+> > exclude
+> > them in the device's DMA address space.
+> > 
+> > This can also be used to figure out allowed IOVAs of an IOAS.
+> 
+> We may need a special type to mark SW_MSI since it requires identity
+> mapping in stage-1 instead of being reserved.
 
-One potential pre-existing issue with this logic: if the connection is
-restarting from idle, then tp->rcv_tstamp could already be a long time
-(minutes or hours) in the past even on the first RTO, in which case
-the very first RTO that found a zero tp->snd_wnd  would find this
-check returns true, and would destroy the connection immediately. This
-seems extremely brittle.
+Only the kernel can do this, so there is no action for user space to
+take beyond knowing that is is not mappable IOVA.
 
-AFAICT it would be safer to replace this logic with a call to the
-standard tcp_write_timeout() logic that has a more robust check to see
-if the connection should be destroyed.
+The merit for "SW_MSI" may be to inform the rest of the system about
+the IOVA of the ITS page, but with the current situation that isn't
+required since only the kernel needs that information.
 
-neal
+I think the long term way forward is to somehow arrange for the SW_MSI
+to not become mapped when creating the parent HWPT and instead cause
+the ITS page to be mapped through some explicit IOCTL.
+
+Jason
