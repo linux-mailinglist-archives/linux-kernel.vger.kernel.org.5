@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA02D7678C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428CD7678C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233196AbjG1W7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S232728AbjG1W7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 18:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232480AbjG1W7A (ORCPT
+        with ESMTP id S232343AbjG1W7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:59:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C170BF;
-        Fri, 28 Jul 2023 15:58:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 28 Jul 2023 18:59:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B855C10E
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690585144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1z4CG4XPVPLqBvlOoBnJ7hAp50An6oynW+ge2nUWWpM=;
+        b=Ju7/ZBcYuq6LQMhhbpoC6ACIcYnx5TyoxnDDAXU0ZCxMlLzjaaZrEFSPXkZ8qRo83zKkZ0
+        uVKawTCOh9AwYqFrFnzUD0PnvcvhRmdslyG/MBJ90SSGDbESikHAu7qyknJLdoHTjCUITa
+        NCvGkoE0Qt7HMFIpF0nsfDbkUM9K0Os=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-526-UqOiqX9RNoyrlAbE-XyiPA-1; Fri, 28 Jul 2023 18:59:01 -0400
+X-MC-Unique: UqOiqX9RNoyrlAbE-XyiPA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A65CD621FF;
-        Fri, 28 Jul 2023 22:58:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F24D7C433C7;
-        Fri, 28 Jul 2023 22:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690585137;
-        bh=RKOFHEukRXed9nKfvhFMXNLlxZWTGs+xAWMhRdXyYhQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Xn+rtLDZpbr4tjW7tkJx/dG919958uc93w84cX2kQP5bWEV7NFt6KO3nBuN9iITi+
-         35RqLujqbbnecrbjHq1RXlKZjRb7LjTWDO2nJVqNgOgbh0wFu3GEDWjYvXKAiMSkVG
-         24h7DNFpsMY3SHZdcgZMG5YSwfAYji5QTFHEQzcDcLwN0CjZU3Ex3oAa5t0xBJcrdP
-         DT7IGoCReQtYntfx344+0S9gfcK/0mjOYa7vZS3BDPIFi8jcJ2/5CkWl27LZg1sKmu
-         yEwV4Nnj3Fh+P0xDpXNwroWzQXA+P6WarS2HsqUchV0sS9AiwEYbJCw/MC2JBxz8pA
-         +ji13fRA+iqpQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 800C0CE093C; Fri, 28 Jul 2023 15:58:56 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 15:58:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-Message-ID: <a174c501-48df-404e-ae61-10ddaeb8e557@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
- <99B56FC7-9474-4968-B1DD-5862572FD0BA@joelfernandes.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8F011006E31;
+        Fri, 28 Jul 2023 22:59:00 +0000 (UTC)
+Received: from emerald.redhat.com (unknown [10.22.16.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86FB54A9004;
+        Fri, 28 Jul 2023 22:58:59 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau-devel@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, Karol Herbst <kherbst@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/nouveau/nvkm/dp: Add workaround to fix DP 1.3+ DPCD issues
+Date:   Fri, 28 Jul 2023 18:58:57 -0400
+Message-Id: <20230728225858.350581-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <99B56FC7-9474-4968-B1DD-5862572FD0BA@joelfernandes.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,WEIRD_PORT
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,645 +62,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Jul 28, 2023 at 05:17:59PM -0400, Joel Fernandes wrote:
->
->   On Jul 27, 2023, at 7:18 PM, Joel Fernandes <joel@joelfernandes.org>
->   wrote:
->
-> ﻿
->
->   On Jul 27, 2023, at 4:33 PM, Paul E. McKenney <paulmck@kernel.org>
->   wrote:
->
->   ﻿On Thu, Jul 27, 2023 at 10:39:17AM -0700, Guenter Roeck wrote:
->
->   On 7/27/23 09:07, Paul E. McKenney wrote:
->
->   ...]
->
->   No. However, (unrelated) in linux-next, rcu tests sometimes result
->   in apparent hangs
->
->   or long runtime.
->
->   [    0.778841] Mount-cache hash table entries: 512 (order: 0, 4096
->   bytes, linear)
->
->   [    0.779011] Mountpoint-cache hash table entries: 512 (order: 0,
->   4096 bytes, linear)
->
->   [    0.797998] Running RCU synchronous self tests
->
->   [    0.798209] Running RCU synchronous self tests
->
->   [    0.912368] smpboot: CPU0: AMD Opteron 63xx class CPU (family:
->   0x15, model: 0x2, stepping: 0x0)
->
->   [    0.923398] RCU Tasks: Setting shift to 2 and lim to 1
->   rcu_task_cb_adjust=1.
->
->   [    0.925419] Running RCU-tasks wait API self tests
->
->   (hangs until aborted). This is primarily with Opteron CPUs, but also
->   with others such as Haswell,
->
->   Icelake-Server, and pentium3. It is all but impossible to bisect
->   because it doesn't happen
->
->   all the time. All I was able to figure out was that it has to do
->   with rcu changes in linux-next.
->
->   I'd be much more concerned about that.
->
->   First I have heard of this, so thank you for letting me know.
->
->   About what fraction of the time does this happen?
->
->   Here is a sample test log from yesterday's -next. This is with
->   x86_64.
->
->   Today's -next always crashes, so no data.
->
->   Building
->   x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ...
->   running ....... passed
->
->   Building
->   x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd
->   ... running .................R....... passed
->
->   Building
->   x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:h
->   d ... running ......... passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd
->   ... running .................R.... passed
->
->   Building
->   x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem
->   4G:sdhci:mmc:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:
->   hd ... running ....... passed
->
->   Building
->   x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]
->   :hd ... running ....... passed
->
->   Building
->   x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC
->   395]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974
->   ]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53
->   C974]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem
->   1G:scsi[53C810]:cd ... running .................R........... passed
->
->   Building
->   x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:e
->   fi32:mem2G:scsi[53C895A]:hd ... running ............. passed
->
->   Building
->   x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSI
->   ON]:hd ... running ..................R.......... passed
->
->   Building
->   x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi
->   [MEGASAS]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[M
->   EGASAS2]:hd ... running ...... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS
->   2]:hd ... running .................R.............. failed (silent)
->
->   Building
->   x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2
->   ]:hd ... running .......... passed
->
->   Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd
->   ... running ........ passed
->
->   Building
->   x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ...
->   running ...... passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci]:hd ... running .................R................. passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci-old]:hd ... running ................... passed
->
->   Building
->   x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd
->   ... running ......... passed
->
->   Building
->   x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd
->   ... running .................R... passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:me
->   m2G:virtio:cd ... running ......... passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:n
->   vme:hd ... running ...... passed
->
->   Building
->   x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:ef
->   i32:mem1G:sdhci:mmc:hd ... running ...... passed
->
->   Building
->   x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:init
->   rd ... running ...... passed
->
->   Building
->   x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C
->   810]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd
->   ... running ......... passed
->
->   Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd
->   ... running ....................R................. failed (silent)
->
->   Building
->   x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd
->   ... running .....................R....... passed
->
->   Building
->   x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:
->   ata:hd ... running .................R.............. failed (silent)
->
->   An earlier test run:
->
->   Building
->   x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ...
->   running ....... passed
->
->   Building
->   x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd
->   ... running .................R....... passed
->
->   Building
->   x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd
->   ... running ........ passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:h
->   d ... running .......... passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd
->   ... running .................R.... passed
->
->   Building
->   x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem
->   4G:sdhci:mmc:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:
->   hd ... running ......... passed
->
->   Building
->   x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]
->   :hd ... running ....... passed
->
->   Building
->   x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC
->   395]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974
->   ]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53
->   C974]:hd ... running ........ passed
->
->   Building
->   x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem
->   1G:scsi[53C810]:cd ... running .......... passed
->
->   Building
->   x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:e
->   fi32:mem2G:scsi[53C895A]:hd ... running .................R.....
->   passed
->
->   Building
->   x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSI
->   ON]:hd ... running .................R.............. failed (silent)
->
->   Building
->   x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi
->   [MEGASAS]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[M
->   EGASAS2]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS
->   2]:hd ... running ....... passed
->
->   Building
->   x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2
->   ]:hd ... running .......... passed
->
->   Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd
->   ... running ........ passed
->
->   Building
->   x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ...
->   running ...... passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci]:hd ... running .......... passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci-old]:hd ... running .......... passed
->
->   Building
->   x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:me
->   m2G:virtio:cd ... running ......... passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:n
->   vme:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:ef
->   i32:mem1G:sdhci:mmc:hd ... running ....... passed
->
->   Building
->   x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:init
->   rd ... running ....... passed
->
->   Building
->   x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C
->   810]:hd ... running ........ passed
->
->   Building
->   x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd
->   ... running ......... passed
->
->   Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd
->   ... running ....................R................. failed (silent)
->
->   Building
->   x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:
->   ata:hd ... running ....... passed
->
->   "R" means retry, and the dots reflect time expired. It looks like it
->   happens most of the time,
->
->   but not always, on affected CPUs. I don't have specific data for
->   non-Intel CPUs. I don't think
->
->   I see the problem there, but there is too much interference from
->   other problems to be sure.
->
->   For comparison, here is the result from the latest mainline:
->
->   Building
->   x86_64:q35:Broadwell-noTSX:defconfig:smp:net,e1000:mem256:ata:hd ...
->   running ....... passed
->
->   Building
->   x86_64:q35:Cascadelake-Server:defconfig:smp:net,e1000e:mem256:ata:cd
->   ... running .......... passed
->
->   Building
->   x86_64:q35:IvyBridge:defconfig:smp2:net,i82801:efi:mem512:nvme:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp4:net,ne2k_pci:efi32:mem1G:usb:h
->   d ... running ......... passed
->
->   Building
->   x86_64:q35:SandyBridge:defconfig:smp8:net,ne2k_pci:mem1G:usb-hub:hd
->   ... running ........... passed
->
->   Building
->   x86_64:q35:Haswell:defconfig:smp:tpm-tis:net,pcnet:mem2G:usb-uas:hd
->   ... running ........ passed
->
->   Building
->   x86_64:q35:Skylake-Client:defconfig:smp2:tpm-tis:net,rtl8139:efi:mem
->   4G:sdhci:mmc:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Conroe:defconfig:smp4:net,tulip:efi32:mem256:scsi[DC395]:
->   hd ... running ....... passed
->
->   Building
->   x86_64:q35:Denverton:defconfig:smp2:net,tulip:efi:mem256:scsi[DC395]
->   :hd ... running ....... passed
->
->   Building
->   x86_64:q35:EPYC-Milan:defconfig:smp:tpm-crb:net,tulip:mem256:scsi[DC
->   395]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net:mem512:scsi[AM53C974
->   ]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp:net,virtio-net-old:mem512:scsi[AM53
->   C974]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Westmere-IBRS:defconfig:smp2:tpm-crb:net,usb-ohci:efi:mem
->   1G:scsi[53C810]:cd ... running .......... passed
->
->   Building
->   x86_64:q35:Skylake-Server:defconfig:smp4:tpm-tis:net,e1000-82544gc:e
->   fi32:mem2G:scsi[53C895A]:hd ... running ....... passed
->
->   Building
->   x86_64:pc:EPYC:defconfig:smp:pci-bridge:net,usb-uhci:mem4G:scsi[FUSI
->   ON]:hd ... running ............. passed
->
->   Building
->   x86_64:q35:EPYC-IBPB:defconfig:smp2:net,e1000-82545em:efi:mem8G:scsi
->   [MEGASAS]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:efi32:mem256:scsi[M
->   EGASAS2]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS
->   2]:hd ... running ...... passed
->
->   Building
->   x86_64:pc:Opteron_G5:defconfig:smp4:net,i82559c:mem256:scsi[MEGASAS2
->   ]:hd ... running ......... passed
->
->   Building x86_64:pc:phenom:defconfig:smp:net,i82559er:mem512:initrd
->   ... running ......... passed
->
->   Building
->   x86_64:q35:Opteron_G1:defconfig:smp2:net,i82562:efi:mem1G:initrd ...
->   running ......... passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci]:hd ... running ......... passed
->
->   Building
->   x86_64:pc:Opteron_G2:defconfig:smp:net,usb:efi32:mem2G:scsi[virtio-p
->   ci-old]:hd ... running ......... passed
->
->   Building
->   x86_64:q35:core2duo:defconfig:smp2:net,i82559a:mem4G:virtio-pci:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:Broadwell:defconfig:smp4:net,i82558b:efi:mem8G:virtio:hd
->   ... running ....... passed
->
->   Building
->   x86_64:q35:Nehalem:defconfig:smp2:net,i82558a:efi32:mem1G:virtio:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:me
->   m2G:virtio:cd ... running ............ passed
->
->   Building
->   x86_64:q35:Icelake-Server:defconfig:preempt:smp8:net,i82557a:mem4G:n
->   vme:hd ... running ....... passed
->
->   Building
->   x86_64:q35:Skylake-Client-IBRS:defconfig:preempt:smp2:net,i82558b:ef
->   i32:mem1G:sdhci:mmc:hd ... running ...... passed
->
->   Building
->   x86_64:q35:KnightsMill:defconfig:preempt:smp6:net,i82550:mem512:init
->   rd ... running ...... passed
->
->   Building
->   x86_64:q35:Cooperlake:defconfig:smp2:net,usb-ohci:efi:mem1G:scsi[53C
->   810]:hd ... running ....... passed
->
->   Building
->   x86_64:q35:EPYC-Rome:defconfig:smp4:net,igb:mem2G:scsi[53C895A]:hd
->   ... running .......... passed
->
->   Building x86_64:pc:Opteron_G3:defconfig:nosmp:net,e1000:mem1G:usb:hd
->   ... running .......... passed
->
->   Building
->   x86_64:q35:Opteron_G4:defconfig:nosmp:net,ne2k_pci:efi:mem512:ata:hd
->   ... running ...... passed
->
->   Building
->   x86_64:q35:Haswell-noTSX-IBRS:defconfig:nosmp:net,pcnet:efi32:mem2G:
->   ata:hd ... running ...... passed
->
->   I freely confess that I am having a hard time imagining what would
->
->   be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
->
->   I am not seeing these failures in my testing.
->
->   So which of the following Kconfig options is defined in your
->   .config?
->
->   CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
->
->   If you have more than one of them, could you please apply this patch
->
->   and show me the corresponding console output from the resulting
->   hang?
->
-> FWIW, I am not able to repro this issue either. If a .config can be
-> shared of the problem system, I can try it out to see if it can be
-> reproduced on my side.
->
-> I do see this now on 5.15 stable:
->
->TASKS03 ------- 3089 GPs (0.858056/s)
->QEMU killed
->TASKS03 no success message, 64 successful version messages
->!!! PID 3309783 hung at 3781 vs. 3600 seconds
->
-> I have not looked too closely yet. The full test artifacts are here:
->
-> [1]Artifacts of linux-5.15.y 5.15.123 :
-> /tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44 [Jenkins]
-> [2]box.joelfernandes.org
-> [3]apple-touch-icon.png
->
-> Thanks,
->
-> - Joel
->
-> (Apologies if the email is html, I am sending from phone).
+Currently we use the drm_dp_dpcd_read_caps() helper in the DRM side of
+nouveau in order to read the DPCD of a DP connector, which makes sure we do
+the right thing and also check for extended DPCD caps. However, it turns
+out we're not currently doing this on the nvkm side since we don't have
+access to the drm_dp_aux structure there - which means that the DRM side of
+the driver and the NVKM side can end up with different DPCD capabilities
+for the same connector.
 
-Heh.  I have a script that runs lynx.  Which isn't perfect, but usually
-makes things at least somewhat legible.
+Ideally in order to fix this, we just want to use the
+drm_dp_read_dpcd_caps() helper in nouveau. That's not currently possible
+though, and is going to depend on having a bunch of the DP code moved out
+of nvkm and into the DRM side of things as part of the GSP enablement work.
 
-This looks like the prototypical hard hang with interrupts disabled,
-which could be anywhere in the kernel, including RCU.  I am not seeing
-this.  but the usual cause when I have seen it in the past was deadlock
-of irq-disabled locks.  In one spectacular case, it was a timekeeping
-failure that messed up a CPU-hotplug operation.
+Until then however, let's workaround this problem by porting a copy of
+drm_dp_read_dpcd_caps() into NVKM - which should fix this issue.
 
-If this is reproducible, one trick would be to have a script look at
-the console.log file, and have it do something (NMI? sysrq?  something
-else?) to qemu if output ceased for too long.
+Issue: https://gitlab.freedesktop.org/drm/nouveau/-/issues/211
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c | 48 ++++++++++++++++++-
+ 1 file changed, 47 insertions(+), 1 deletion(-)
 
-One way to do this without messing with the rcutorture scripting is to
-grab the qemu-cmd file from this run, and then invoke that file from your
-own script, possibly with suitable modifications to qemu's parameters.
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+index 40c8ea43c42f2..b8ac66b4a2c4b 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c
+@@ -26,6 +26,8 @@
+ #include "head.h"
+ #include "ior.h"
+ 
++#include <drm/display/drm_dp.h>
++
+ #include <subdev/bios.h>
+ #include <subdev/bios/init.h>
+ #include <subdev/gpio.h>
+@@ -634,6 +636,50 @@ nvkm_dp_enable_supported_link_rates(struct nvkm_outp *outp)
+ 	return outp->dp.rates != 0;
+ }
+ 
++/* XXX: This is a big fat hack, and this is just drm_dp_read_dpcd_caps()
++ * converted to work inside nvkm. This is a temporary holdover until we start
++ * passing the drm_dp_aux device through NVKM
++ */
++static int
++nvkm_dp_read_dpcd_caps(struct nvkm_outp *outp)
++{
++	struct nvkm_i2c_aux *aux = outp->dp.aux;
++	u8 dpcd_ext[DP_RECEIVER_CAP_SIZE];
++	int ret;
++
++	ret = nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd, DP_RECEIVER_CAP_SIZE);
++	if (ret < 0)
++		return ret;
++
++	/*
++	 * Prior to DP1.3 the bit represented by
++	 * DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT was reserved.
++	 * If it is set DP_DPCD_REV at 0000h could be at a value less than
++	 * the true capability of the panel. The only way to check is to
++	 * then compare 0000h and 2200h.
++	 */
++	if (!(outp->dp.dpcd[DP_TRAINING_AUX_RD_INTERVAL] &
++	      DP_EXTENDED_RECEIVER_CAP_FIELD_PRESENT))
++		return 0;
++
++	ret = nvkm_rdaux(aux, DP_DP13_DPCD_REV, dpcd_ext, sizeof(dpcd_ext));
++	if (ret < 0)
++		return ret;
++
++	if (outp->dp.dpcd[DP_DPCD_REV] > dpcd_ext[DP_DPCD_REV]) {
++		OUTP_DBG(outp, "Extended DPCD rev less than base DPCD rev (%d > %d)\n",
++			 outp->dp.dpcd[DP_DPCD_REV], dpcd_ext[DP_DPCD_REV]);
++		return 0;
++	}
++
++	if (!memcmp(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext)))
++		return 0;
++
++	memcpy(outp->dp.dpcd, dpcd_ext, sizeof(dpcd_ext));
++
++	return 0;
++}
++
+ void
+ nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
+ {
+@@ -689,7 +735,7 @@ nvkm_dp_enable(struct nvkm_outp *outp, bool auxpwr)
+ 			memset(outp->dp.lttpr, 0x00, sizeof(outp->dp.lttpr));
+ 		}
+ 
+-		if (!nvkm_rdaux(aux, DPCD_RC00_DPCD_REV, outp->dp.dpcd, sizeof(outp->dp.dpcd))) {
++		if (!nvkm_dp_read_dpcd_caps(outp)) {
+ 			const u8 rates[] = { 0x1e, 0x14, 0x0a, 0x06, 0 };
+ 			const u8 *rate;
+ 			int rate_max;
+-- 
+2.40.1
 
-Thoughts?
-
-							Thanx, Paul
-
-> Cheers,
-> - Joel
->
->                             Thanx, Paul
->
->   --------------------------------------------------------------------
->   ----
->
->   commit 709a917710dc01798e01750ea628ece4bfc42b7b
->
->   Author: Paul E. McKenney <paulmck@kernel.org>
->
->   Date:   Thu Jul 27 13:13:46 2023 -0700
->
->     rcu-tasks: Add printk()s to localize boot-time self-test hang
->
->     Currently, rcu_tasks_initiate_self_tests() prints a message and
->   then
->
->     initiates self tests on up to three different RCU Tasks flavors.
->   If one
->
->     of the flavors has a grace-period hang, it is not easy to work out
->   which
->
->     of the three hung.  This commit therefore prints a message prior
->   to each
->
->     individual test.
->
->     Reported-by: Guenter Roeck <linux@roeck-us.net>
->
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
->   diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->
->   index 56c470a489c8..427433c90935 100644
->
->   --- a/kernel/rcu/tasks.h
->
->   +++ b/kernel/rcu/tasks.h
->
->   @@ -1981,20 +1981,22 @@ static void test_rcu_tasks_callback(struct
->   rcu_head *rhp)
->
->   static void rcu_tasks_initiate_self_tests(void)
->
->   {
->
->   -    pr_info("Running RCU-tasks wait API self tests\n");
->
->   #ifdef CONFIG_TASKS_RCU
->
->   +    pr_info("Running RCU Tasks wait API self tests\n");
->
->     tests[0].runstart = jiffies;
->
->     synchronize_rcu_tasks();
->
->     call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
->
->   #endif
->
->   #ifdef CONFIG_TASKS_RUDE_RCU
->
->   +    pr_info("Running RCU Tasks Rude wait API self tests\n");
->
->     tests[1].runstart = jiffies;
->
->     synchronize_rcu_tasks_rude();
->
->     call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
->
->   #endif
->
->   #ifdef CONFIG_TASKS_TRACE_RCU
->
->   +    pr_info("Running RCU Tasks Trace wait API self tests\n");
->
->     tests[2].runstart = jiffies;
->
->     synchronize_rcu_tasks_trace();
->
->     call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
->
->References
->
-> Visible links:
-> 1. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> 2. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
-> 3. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
->
-> Hidden links:
-> 5. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
