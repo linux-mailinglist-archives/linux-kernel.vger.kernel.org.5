@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 208E07665DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A30B7665E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbjG1H5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S234531AbjG1H54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbjG1H5K (ORCPT
+        with ESMTP id S234347AbjG1H5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:57:10 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3053588
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:57:08 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230728075705epoutp019147b83ea6f19048bec67c27e13344a9~1_QLby_Hm0322503225epoutp01C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:57:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230728075705epoutp019147b83ea6f19048bec67c27e13344a9~1_QLby_Hm0322503225epoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690531025;
-        bh=fEBI3jFG7Yl1AWZ7NNNtJEMNDWilG4sULmX3Oko94OE=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=o/6Abm2zLDWk8oTBJ9gMmOehqk2OirOD1tmtGyvRKwm4noiKn2E1AEc0kG79ILPZR
-         GBZ5gSj3JQqvBDJv6uo1Mz2YiayUa/cr4c/PfHeDSV1W1vBTLpiqUIbjpwM4KqPdaI
-         6i8xf81HDexicAEaA2cBWQlCprJsoVuvpMqh2QmY=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20230728075705epcas2p2624e302aa77c663146ee97f7418e8739~1_QK4C-ot3006630066epcas2p2S;
-        Fri, 28 Jul 2023 07:57:05 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.90]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4RC0N04msqz4x9Q3; Fri, 28 Jul
-        2023 07:57:04 +0000 (GMT)
-X-AuditID: b6c32a45-e43e0a800000c2f9-7c-64c374d0b755
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DA.B2.49913.0D473C46; Fri, 28 Jul 2023 16:57:04 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH 1/2] block: make bvec_try_merge_hw_page() non-static
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung Choi <j-young.choi@samsung.com>
-From:   Jinyoung Choi <j-young.choi@samsung.com>
-To:     "hch@lst.de" <hch@lst.de>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63@epcms2p1>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230728075704epcms2p1fec48202cbda466411c44437cf788dea@epcms2p1>
-Date:   Fri, 28 Jul 2023 16:57:04 +0900
-X-CMS-MailID: 20230728075704epcms2p1fec48202cbda466411c44437cf788dea
-Content-Transfer-Encoding: 7bit
+        Fri, 28 Jul 2023 03:57:47 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F188F3A85
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:57:44 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so12800421fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690531062; x=1691135862;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j0egf4lvYdcuItu5sen9yx+hMceloBrv5HDtWkj+EBQ=;
+        b=dS3PNhWJYTk9cprQeaGLT67v18rkYMVG8OD1eutt+f164WQIPznvCQMs7Si18TZqga
+         41LKjZwbhGquP/773V+3Vgg+t5yUvegeP4iKWSKuv2M+Hf++5IGdh6BZruuA+Tal36xD
+         6M6l1dohtyWMfZdJpQsIdrhHjoYPlkg71FMgddsgM2IVxZa7wMjQAPJO7REo247krxQ9
+         BhS8nE+gdvHKQleh2noz0hKehulWCCFpLKNZCZVlkGPHyE/O7/D1kqPveRZMDz/vE8uw
+         xfsNZ9h9/JbSN4iosvgAdkXzl3uZe3stDsJlYoq2UW3aJIRXtF/93v31NK9c9JAkRucj
+         sT5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690531062; x=1691135862;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j0egf4lvYdcuItu5sen9yx+hMceloBrv5HDtWkj+EBQ=;
+        b=IsIve9oqMa0QP6Y1MLn4C0xpSmzvYYlniAACHGix2SsVULT5Qv5OTyemtgjFLWxDd9
+         rg1we9sXkJI4FOAqf0uvhKtqNRqE+uJYISGJ3iBvhIjn7/fXEmk9c53GeGQWEkXSQwwR
+         IYGMXv1g/uB/UD5PTs1vzW5N6K/3z8GPGJPf8EqoDLOi82Q/3ykYp/yEoEzaJ/s2YG5S
+         2rTQS6NLvtUxeAG5T/lALA7lpmX9SuwwhCaYyXeoB96Siq3tRAlMfKasxrmlp6BJV7Xh
+         AFJ6uLOTLJF7VKkIe6A6fehK04ovvy7tPvXb7eMLMNhGawyu5q/mg4iYiVXT4A++b58m
+         vE6A==
+X-Gm-Message-State: ABy/qLYGvlJDOtRHf45TrI5ok7VkP+uwQ3hc929VQ2Yf6t69U/nQqWwH
+        FsURq1XO7w6Ki9rfvDKeL0thEQ==
+X-Google-Smtp-Source: APBJJlExEQ4pj7ugLoNByUG8EtzPoAPNQAMl1O8D7AkLZ3lHhZRhnffSaaDkTHoh4VybbisqyXWvzw==
+X-Received: by 2002:a2e:8052:0:b0:2b7:2066:10e1 with SMTP id p18-20020a2e8052000000b002b7206610e1mr1073206ljg.0.1690531062110;
+        Fri, 28 Jul 2023 00:57:42 -0700 (PDT)
+Received: from [192.168.1.101] (abxi112.neoplus.adsl.tpnet.pl. [83.9.2.112])
+        by smtp.gmail.com with ESMTPSA id b9-20020a2e9889000000b002b9b90474c7sm812128ljj.129.2023.07.28.00.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 00:57:41 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Fri, 28 Jul 2023 09:57:38 +0200
+Subject: [PATCH v3] clk: qcom: reset: Use the correct type of sleep/delay
+ based on length
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmue6FksMpBjc2qlisvtvPZjHr9msW
-        i5eHNC1Wrj7KZDHp0DVGi723tC0u75rDZrH8+D8mi3Wv37M4cHqcv7eRxePy2VKPTas62Tx2
-        32xg8/j49BaLR9+WVYwenzfJebQf6GYK4IjKtslITUxJLVJIzUvOT8nMS7dV8g6Od443NTMw
-        1DW0tDBXUshLzE21VXLxCdB1y8wBOk5JoSwxpxQoFJBYXKykb2dTlF9akqqQkV9cYquUWpCS
-        U2BeoFecmFtcmpeul5daYmVoYGBkClSYkJ3xZ+529oL73BVPP4Y3MD7m7GLk5JAQMJE4/PkQ
-        axcjF4eQwA5GibcLdzN2MXJw8AoISvzdIQxSIyzgIjHz8jU2EFtIQEni3JpZjBBxA4mW220s
-        IDabgJ7Ejue72UHmiAhMYJbYvOk2M8QCXokZ7U9ZIGxpie3Lt4I1cwr4Saxf+5IVIq4h8WNZ
-        L1S9qMTN1W/ZYez3x+YzQtgiEq33zkLVCEo8+LkbKi4pcejQVzaQmyUE8iU2HAiECNdItP16
-        D1WuL3GtYyPYCbwCvhIXrhwGs1kEVCXe3+5jg6hxkVh07DLYWmYBeYntb+cwg4xkFtCUWL9L
-        H2K6ssSRWywQFXwSHYf/ssM82LDxN1b2jnlPmCBa1SQWNRlBhGUkvh6ezz6BUWkWIphnIVk7
-        C2HtAkbmVYxiqQXFuempxUYFhvCITc7P3cQITqNarjsYJ7/9oHeIkYmD8RCjBAezkgjvqYBD
-        KUK8KYmVValF+fFFpTmpxYcYTYEensgsJZqcD0zkeSXxhiaWBiZmZobmRqYG5krivPda56YI
-        CaQnlqRmp6YWpBbB9DFxcEo1MJ1ZafXy0fPpR2e1vfrwX3ubu75S/3u1NezeQTPCVkjIVJeu
-        c53pUfLp3VU5t7qA9O7r0blWn3YtNPir9OFk97Wo+bNNVzx0VPm6JMNSrCXzZLDSZdVKiytm
-        0zI2PDYXMomS3uLzqv/GC+XGyqy8vTzrbNcf7e7+8tDwua3pg9XXjG8wb4i6msTZsov3yK/1
-        +zUnu952rLj1Lldd4UaRVGR2ZNBqtq60eLbtVssY7qXm2Wd2TCttc11YOm9Xe3hPwlW/DcaH
-        JqRmG2j8n5uYdzZPOp5X6sfjufUHPDtW6rRznJm0+NLvWMm5C67O/Jd84ueM9XcF3hy8l2dk
-        v//slfmtLbLnCxtDIwV32GRq9iqxFGckGmoxFxUnAgBSZj6jLAQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63
-References: <20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63@epcms2p1>
-        <CGME20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63@epcms2p1>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230726-topic-qcom_reset-v3-1-5958facd5db2@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAPF0w2QC/4WNywrCMBQFf0Wy9kpepK0r/0NE0uTaBmpSkxqU0
+ n837c6NLufAmZlJwugwkeNuJhGzSy74AmK/I6bXvkNwtjDhlAtacQVTGJ2Bhwn3a8SEE0hZV42
+ hoq6MIuXW6oTQRu1NX47+OQxlHCPe3GvrnC+Fe5emEN9bNrN1/VHIDCg03KKyAqWpzGlwXsdwC
+ LEjqy3zfwYODKRWyFpmqRTNl2FZlg8k00lNCAEAAA==
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690531060; l=1668;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=KmWdb1cFJ5NCkxYQVBMw/8dqUkNhoXKd6PZJInnl0sk=;
+ b=5ex5l4lNbpCLd6R/8kOSv9yzeJmaFT0DCt2kcnOoNuiA0y2TM42MwY7xpad/DVo/0JpqjJo5P
+ ADVi7622fQhClBiG34qwptIDGxNnP2l+BEjaVBhjtu5DNOwN4gIIkff
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will be used for multi-page configuration for integrity payload.
+Use the fsleep() helper that (based on the length of the delay, see: [1])
+chooses the correct sleep/delay functions.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+[1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
 
-Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
+Fixes: 2cb8a39b6781 ("clk: qcom: reset: Allow specifying custom reset delay")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- block/bio.c | 2 +-
- block/blk.h | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Let the toggle include a bigger delay and make sure it's using the
+correct function to achieve that.
+---
+Changes in v3:
+- Improve the commit message
+- Link to v2: https://lore.kernel.org/r/20230726-topic-qcom_reset-v2-1-4a6e1b1d0439@linaro.org
 
-diff --git a/block/bio.c b/block/bio.c
-index c92dda962449..8d1533af7c60 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -934,7 +934,7 @@ static bool bvec_try_merge_page(struct bio_vec *bv, struct page *page,
-  * size limit.  This is not for normal read/write bios, but for passthrough
-  * or Zone Append operations that we can't split.
-  */
--static bool bvec_try_merge_hw_page(struct request_queue *q, struct bio_vec *bv,
-+bool bvec_try_merge_hw_page(struct request_queue *q, struct bio_vec *bv,
- 		struct page *page, unsigned len, unsigned offset,
- 		bool *same_page)
- {
-diff --git a/block/blk.h b/block/blk.h
-index 686712e13835..9d22ec3a53bc 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -75,6 +75,10 @@ struct bio_vec *bvec_alloc(mempool_t *pool, unsigned short *nr_vecs,
- 		gfp_t gfp_mask);
- void bvec_free(mempool_t *pool, struct bio_vec *bv, unsigned short nr_vecs);
+Changes in v2:
+- Drop the "allow bigger delay" until there's a user
+- Use fsleep instead of open-coding effectively the same
+- Fix the fixes tag
+- Link to v1: https://lore.kernel.org/r/20230726-topic-qcom_reset-v1-0-92de6d3e4c7c@linaro.org
+---
+ drivers/clk/qcom/reset.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clk/qcom/reset.c b/drivers/clk/qcom/reset.c
+index 0e914ec7aeae..e45e32804d2c 100644
+--- a/drivers/clk/qcom/reset.c
++++ b/drivers/clk/qcom/reset.c
+@@ -16,7 +16,8 @@ static int qcom_reset(struct reset_controller_dev *rcdev, unsigned long id)
+ 	struct qcom_reset_controller *rst = to_qcom_reset_controller(rcdev);
  
-+bool bvec_try_merge_hw_page(struct request_queue *q, struct bio_vec *bv,
-+		struct page *page, unsigned len, unsigned offset,
-+		bool *same_page);
+ 	rcdev->ops->assert(rcdev, id);
+-	udelay(rst->reset_map[id].udelay ?: 1); /* use 1 us as default */
++	fsleep(rst->reset_map[id].udelay ?: 1); /* use 1 us as default */
 +
- static inline bool biovec_phys_mergeable(struct request_queue *q,
- 		struct bio_vec *vec1, struct bio_vec *vec2)
- {
+ 	rcdev->ops->deassert(rcdev, id);
+ 	return 0;
+ }
+
+---
+base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+change-id: 20230726-topic-qcom_reset-44879c0387c6
+
+Best regards,
 -- 
-2.34.1
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
