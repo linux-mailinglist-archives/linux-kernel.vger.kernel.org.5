@@ -2,118 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48247672D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D8E7672DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235869AbjG1RE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S234871AbjG1RHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235717AbjG1REM (ORCPT
+        with ESMTP id S230344AbjG1RHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:04:12 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAAF49D7;
-        Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99bd1d0cf2fso323879366b.3;
-        Fri, 28 Jul 2023 10:03:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690563825; x=1691168625;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tzbpmy5CCesVeQWGWqphI5Ah11VcG7gal7MV1usl0UM=;
-        b=CU+NOYFryuYxCKuQcP6HgylayRgiNsGKJE1HPz92I3v4wllzqoo5Ob8lLGz3MH5PHH
-         hqi8iibkJVfrZaeT4DsCvAO+c4kO+HTPmGApD/+at9U2Bi9MdXpxhg094PJsZn+nBi8K
-         ReMwjFSFOwwQrLGKUAO+qJrqs7ZnbC3ZSXYN2EbWvH+m2OI5zSPvMnZDlL9LCnsqL8yU
-         J1aojVrGwWIRyBzd7rJ12wd+4Ns3cXQqe4aqrp7eWwJCJRb+ODnx9nheK3kZRTqNSzLO
-         M60SabbEvtmaDnxLxeZXMqFHd59CmYIKHAd9krk0K8OlZe6jQl/DxFMwNHV1e1lvnnU3
-         5UkA==
-X-Gm-Message-State: ABy/qLagh3AnId8zMZWYgLFSY800oFd1g2s7Z2WZ3sSX2ncmIklRa7Yr
-        SXn5R5TyvbP8GjaErlRz69Y=
-X-Google-Smtp-Source: APBJJlFkFo8sLIpwvsf/6r+8p9st0JibovN+mnUD9/Akswil8Kxf7K9RUBjI3zU0vCR+30lPCARKQQ==
-X-Received: by 2002:a17:906:6494:b0:994:9ed:300b with SMTP id e20-20020a170906649400b0099409ed300bmr2362960ejm.16.1690563825459;
-        Fri, 28 Jul 2023 10:03:45 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-006.fbsv.net. [2a03:2880:31ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id y10-20020a17090668ca00b009934b1eb577sm2277769ejr.77.2023.07.28.10.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 10:03:44 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 10:03:40 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <ZMP07KtOeJ09ejAd@gmail.com>
-References: <20230724142237.358769-1-leitao@debian.org>
- <20230724142237.358769-3-leitao@debian.org>
- <ZL61cIrQuo92Xzbu@google.com>
- <ZL+VfRiJQqrrLe/9@gmail.com>
- <ZMAAMKTaKSIKi1RW@google.com>
+        Fri, 28 Jul 2023 13:07:06 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2076.outbound.protection.outlook.com [40.107.244.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13553B5;
+        Fri, 28 Jul 2023 10:07:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KQSyqJ/gnS1BZ0140KmsCaAj66/DdYKIJgyNoTz39sPbvNGmepZU87qkMc1nxX3x9uirL1bmz51HIACx1v5NYCMHchCXNc6bQSDNYzj6as4J0fcsaM5x28yVNrV9z6M9kxr007YqEj6eX5BI2HvIA+tw6OgM2u/gpw8r6vTomX0G9I3GoVBjPJZNQVOBmyI5YIbQQD9uSt2sHKGfotkFw0IFfVEAeeZT7QrLP5P0X0Eur6kVEPjTiiW9JXAAXy4As13B2whJu7XyGJyVGOHKYYVBzZA/5jkk8etkus3v3lunXwjT8lYP/08EFhnm0BeeVc8zPOycm1l2iEkWl0Fo1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BzDFPt/aHfMAsfidd/1AosN6zA6sV1BIECAFCEv3pnY=;
+ b=VDAdMa2CtfM1PbCadH+YQg/3A7f8CUf5owdzwwrKv/+cFhtmTNED1MCX1rM/GwLJXzxSgTjX7xxOPXjBNBYEgn0hw9oLRoBBLOlGJWQtmD/w3MrJJOSljqTdmOIbDakUXuQEm6uW1SaOlqP7bhrpiakTMlhOnbafySTotMY734EusHx9y+raVLqmd7QB66rvBEpsVbX1DMi4Vk+PgPMj8gAQ3bdwSqiauqM0m5PcL+dqJbruch7/tjVjn8dgxCfOiz0GpZVJcm9Q1ibGLXlC2xvPCmBXy8BJ2wJ07zpwX25dJI3/yxMlf+IIer6c346VFBKNEqSwyqhrapRdnf4/KQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BzDFPt/aHfMAsfidd/1AosN6zA6sV1BIECAFCEv3pnY=;
+ b=2Eqsrf95++HsfOrrCTlQHHnlWZdBTvz5T1T7AfRbI0L76Q2tPsVCaHQNUlaz9BRDDzHobZYH8Xn7TEFKhg+hbOCjyJqvKILck1Jwp4//lDlYqz3RmwrFcZvjwlsuqVoc79ueiRM4C4SrUFmHv6mxMeorO/ypa8Xxspn2UXe34k0=
+Received: from CY5PR15CA0258.namprd15.prod.outlook.com (2603:10b6:930:66::29)
+ by SA1PR12MB7150.namprd12.prod.outlook.com (2603:10b6:806:2b4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 17:07:02 +0000
+Received: from CY4PEPF0000EE30.namprd05.prod.outlook.com
+ (2603:10b6:930:66:cafe::41) by CY5PR15CA0258.outlook.office365.com
+ (2603:10b6:930:66::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.34 via Frontend
+ Transport; Fri, 28 Jul 2023 17:07:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000EE30.mail.protection.outlook.com (10.167.242.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6631.29 via Frontend Transport; Fri, 28 Jul 2023 17:07:01 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 12:07:01 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 12:07:00 -0500
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Fri, 28 Jul 2023 12:07:00 -0500
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh@kernel.org>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <max.zhen@amd.com>,
+        <sonal.santan@amd.com>, <stefano.stabellini@xilinx.com>
+Subject: [PATCH V12 0/5] Generate device tree node for pci devices
+Date:   Fri, 28 Jul 2023 10:06:53 -0700
+Message-ID: <1690564018-11142-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMAAMKTaKSIKi1RW@google.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE30:EE_|SA1PR12MB7150:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9d091456-0d0e-4bb3-7aba-08db8f8d0fa3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bk5wqqVDg76sIypTes51w5if7y9OarsdD6EJBZ6CBINM6R3jnmWyyc3VvVknPomSOvvtcMyU/Ta3K2T3UCM6Qx3nly29qonH/iHterybhnb1wQ7g/iwNZlhwKzYxre6Kl+qkwLaLthznMADg1tmuRw2KvYGbK+RPOyvLK5Wsd+alelMgGyaYsxokC7XB8fi7a8F+Tkjm4CQoheV91fa0IzXIspauZCj+0roIWzVoq3Zvy5Jox2jA5l4m9N2bAo5BoYSCdVENkJuTVcK1W83pC5XCqeb9jC+XQipKdpsY0a+zxssNiH5OnWPwfUC15oklQ1F+pT8a2tmHuUDeha9xtqvJf1WZqCIhPBR/gHoNu/e17NrSYubrXqJfX85/XFVqgc8xUlLQOSCYMaQ5RyD7UnhbSKFdDEgdbaw7f+uTW6IEkjQmEMdWLTzewRzTBFtLPFiPD+zu8KG+9vvp/XDYwBS8ZQ6qVLyTdyTZqEFdPtFBJZgOewUXvPhF7cICuASQuf6tPV8YL6H9MID8OoAfNHJ4M67NkI42dUxdN+G9CVyq8gRsWcoLkrtgXbt156G/OeLHZRPSiY4eZrf4I7jmKOppzBG0y2Ee5a4qX7TV6N1B8WH00k96vzJwf+XVaugfhIsgbXaYhoQw/YpyeqRTzcWgAoAtRI866Z1Y2+1jUZHiuhwOVyOHG9WZ+6rnQeQiBZkJc9JPmheD7EL+2UO1wSP6G8kZuKWiLoFgmonIWkzRPPu5bWKuvIBHuRASIgsMm+CMcWsFKOtQKkWZQox2OsXdL+RlFrG/zg2V+HdcE1Q=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(39860400002)(396003)(346002)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(6666004)(82740400003)(478600001)(356005)(83380400001)(47076005)(36860700001)(966005)(26005)(70586007)(70206006)(54906003)(110136005)(81166007)(186003)(426003)(336012)(2616005)(4326008)(5660300002)(40460700003)(44832011)(41300700001)(316002)(2906002)(8936002)(8676002)(86362001)(40480700001)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:07:01.7652
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d091456-0d0e-4bb3-7aba-08db8f8d0fa3
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE30.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7150
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stanislav,
+This patch series introduces OF overlay support for PCI devices which
+primarily addresses two use cases. First, it provides a data driven method
+to describe hardware peripherals that are present in a PCI endpoint and
+hence can be accessed by the PCI host. Second, it allows reuse of a OF
+compatible driver -- often used in SoC platforms -- in a PCI host based
+system.
 
-On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
-> On 07/25, Breno Leitao wrote:
-> > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
-> > > On 07/24, Breno Leitao wrote:
-> > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
-> > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
-> > > > where a sockptr_t is either userspace or kernel space, and handled as
-> > > > such.
-> > > > 
-> > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
-> > > 
-> > > We probably need to also have bpf bits in the new
-> > > io_uring_cmd_getsockopt?
-> > 
-> > It might be interesting to have the BPF hook for this function as
-> > well, but I would like to do it in a following patch, so, I can
-> > experiment with it better, if that is OK.
+There are 2 series devices rely on this patch:
 
-I spent smoe time looking at the problem, and I understand we want to
-call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
-io_uring_cmd_{g,s}etsockopt().
+  1) Xilinx Alveo Accelerator cards (FPGA based device)
+  2) Microchip LAN9662 Ethernet Controller
 
-Per the previous conversation with Williem,
-io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void __user
-*optval), and optlen as a kernel integer (it comes as from the io_uring
-SQE), such as:
+     Please see: https://lore.kernel.org/lkml/20220427094502.456111-1-clement.leger@bootlin.com/
 
-	void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
-	int optlen = READ_ONCE(cmd->sqe->optlen);
+Normally, the PCI core discovers PCI devices and their BARs using the
+PCI enumeration process. However, the process does not provide a way to
+discover the hardware peripherals that are present in a PCI device, and
+which can be accessed through the PCI BARs. Also, the enumeration process
+does not provide a way to associate MSI-X vectors of a PCI device with the
+hardware peripherals that are present in the device. PCI device drivers
+often use header files to describe the hardware peripherals and their
+resources as there is no standard data driven way to do so. This patch
+series proposes to use flattened device tree blob to describe the
+peripherals in a data driven way. Based on previous discussion, using
+device tree overlay is the best way to unflatten the blob and populate
+platform devices. To use device tree overlay, there are three obvious
+problems that need to be resolved.
 
-Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
-__cgroup_bpf_run_filter_getsockopt() which expects userpointer for
-optlen and optval.
+First, we need to create a base tree for non-DT system such as x86_64. A
+patch series has been submitted for this:
+https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list@gmail.com/
+https://lore.kernel.org/lkml/20220216050056.311496-1-lizhi.hou@xilinx.com/
 
-At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
-pointers for both optlen and optval.
+Second, a device tree node corresponding to the PCI endpoint is required
+for overlaying the flattened device tree blob for that PCI endpoint.
+Because PCI is a self-discoverable bus, a device tree node is usually not
+created for PCI devices. This series adds support to generate a device
+tree node for a PCI device which advertises itself using PCI quirks
+infrastructure.
 
-In this current patchset, it has user pointer for optval and kernel value
-for optlen. I.e., a third combination.  So, none of the functions would
-work properly, and we probably do not want to create another function.
+Third, we need to generate device tree nodes for PCI bridges since a child
+PCI endpoint may choose to have a device tree node created.
 
-I am wondering if it is a good idea to move
-__cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
-able to adapt to any combination.
+This patch series is made up of three patches.
 
-Any feedback is appreciate.
-Thanks!
+The first patch is adding OF interface to create or destroy OF node
+dynamically.
+
+The second patch introduces a kernel option, CONFIG_PCI_DYNAMIC_OF_NODES.
+When the option is turned on, the kernel will generate device tree nodes
+for all PCI bridges unconditionally. The patch also shows how to use the
+PCI quirks infrastructure, DECLARE_PCI_FIXUP_FINAL to generate a device
+tree node for a device. Specifically, the patch generates a device tree
+node for Xilinx Alveo U50 PCIe accelerator device. The generated device
+tree nodes do not have any property.
+
+The third patch adds basic properties ('reg', 'compatible' and
+'device_type') to the dynamically generated device tree nodes. More
+properties can be added in the future.
+
+Here is the example of device tree nodes generated within the ARM64 QEMU.
+
+# lspci -t
+-[0000:00]-+-00.0
+           +-01.0
+           +-03.0-[01-03]----00.0-[02-03]----00.0-[03]----00.0
+           +-03.1-[04]--
+           \-04.0-[05-06]----00.0-[06]--
+
+Without CONFIG_PCI_DYNAMIC_OF_NODES
+
+# tree /sys/firmware/devicetree/base/pcie@10000000/
+/sys/firmware/devicetree/base/pcie@10000000/
+|-- #address-cells
+|-- #interrupt-cells
+|-- #size-cells
+|-- bus-range
+|-- compatible
+|-- device_type
+|-- dma-coherent
+|-- interrupt-map
+|-- interrupt-map-mask
+|-- linux,pci-domain
+|-- msi-map
+|-- name
+|-- ranges
+`-- reg
+
+With CONFIG_PCI_DYNAMIC_OF_NODES
+
+# tree /sys/firmware/devicetree/base/pcie@10000000/
+/sys/firmware/devicetree/base/pcie@10000000/
+|-- #address-cells
+|-- #interrupt-cells
+|-- #size-cells
+|-- bus-range
+|-- compatible
+|-- device_type
+|-- dma-coherent
+|-- interrupt-map
+|-- interrupt-map-mask
+|-- linux,pci-domain
+|-- msi-map
+|-- name
+|-- pci@3,0
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- interrupts
+|   |-- pci@0,0
+|   |   |-- #address-cells
+|   |   |-- #interrupt-cells
+|   |   |-- #size-cells
+|   |   |-- bus-range
+|   |   |-- compatible
+|   |   |-- device_type
+|   |   |-- interrupt-map
+|   |   |-- interrupt-map-mask
+|   |   |-- pci@0,0
+|   |   |   |-- #address-cells
+|   |   |   |-- #interrupt-cells
+|   |   |   |-- #size-cells
+|   |   |   |-- bus-range
+|   |   |   |-- compatible
+|   |   |   |-- dev@0,0
+|   |   |   |   |-- #address-cells
+|   |   |   |   |-- #size-cells
+|   |   |   |   |-- compatible
+|   |   |   |   |-- ranges
+|   |   |   |   `-- reg
+|   |   |   |-- device_type
+|   |   |   |-- interrupt-map
+|   |   |   |-- interrupt-map-mask
+|   |   |   |-- ranges
+|   |   |   `-- reg
+|   |   |-- ranges
+|   |   `-- reg
+|   |-- ranges
+|   `-- reg
+|-- pci@3,1
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- interrupts
+|   |-- ranges
+|   `-- reg
+|-- pci@4,0
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- pci@0,0
+|   |   |-- #address-cells
+|   |   |-- #interrupt-cells
+|   |   |-- #size-cells
+|   |   |-- bus-range
+|   |   |-- compatible
+|   |   |-- device_type
+|   |   |-- interrupt-map
+|   |   |-- interrupt-map-mask
+|   |   |-- interrupts
+|   |   |-- ranges
+|   |   `-- reg
+|   |-- ranges
+|   `-- reg
+|-- ranges
+`-- reg
+
+Changes since v11:
+- Create interrupt related properties
+
+Changes since v10:
+- Remove 'dynamic' property
+
+Changes since v9:
+- Introduce 'dynamic' property to identify dynamically generated device tree
+  node for PCI device
+- Added 'bus-range' property to remove dtc warnings
+- Minor code review fixes
+
+Changes since v8:
+- Added patches to create unit test to verifying address translation
+    The test relies on QEMU PCI Test Device, please see
+        https://github.com/houlz0507/xoclv2/blob/pci-dt-0329/pci-dt-patch-0329/README
+    for test setup
+- Minor code review fixes
+
+Changes since v7:
+- Modified dynamic node creation interfaces
+- Added unittest for new added interfaces
+
+Changes since v6:
+- Removed single line wrapper functions
+- Added Signed-off-by Clément Léger <clement.leger@bootlin.com>
+
+Changes since v5:
+- Fixed code review comments
+- Fixed incorrect 'ranges' and 'reg' properties
+
+Changes since RFC v4:
+- Fixed code review comments
+
+Changes since RFC v3:
+- Split the Xilinx Alveo U50 PCI quirk to a separate patch
+- Minor changes in commit description and code comment
+
+Changes since RFC v2:
+- Merged patch 3 with patch 2
+- Added OF interfaces of_changeset_add_prop_* and use them to create
+  properties.
+- Added '#address-cells', '#size-cells' and 'ranges' properties.
+
+Changes since RFC v1:
+- Added one patch to create basic properties.
+- To move DT related code out of PCI subsystem, replaced of_node_alloc()
+  with of_create_node()/of_destroy_node()
+
+Lizhi Hou (5):
+  of: dynamic: Add interfaces for creating device node dynamically
+  PCI: Create device tree node for bridge
+  PCI: Add quirks to generate device tree node for Xilinx Alveo U50
+  of: overlay: Extend of_overlay_fdt_apply() to specify the target node
+  of: unittest: Add pci_dt_testdrv pci driver
+
+ drivers/of/dynamic.c                          | 164 ++++++++
+ drivers/of/overlay.c                          |  42 ++-
+ drivers/of/unittest-data/Makefile             |   3 +-
+ .../of/unittest-data/overlay_pci_node.dtso    |  22 ++
+ drivers/of/unittest.c                         | 211 ++++++++++-
+ drivers/pci/Kconfig                           |  12 +
+ drivers/pci/Makefile                          |   1 +
+ drivers/pci/bus.c                             |   2 +
+ drivers/pci/of.c                              |  79 ++++
+ drivers/pci/of_property.c                     | 355 ++++++++++++++++++
+ drivers/pci/pci.h                             |  12 +
+ drivers/pci/quirks.c                          |  12 +
+ drivers/pci/remove.c                          |   1 +
+ include/linux/of.h                            |  25 +-
+ 14 files changed, 926 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_pci_node.dtso
+ create mode 100644 drivers/pci/of_property.c
+
+-- 
+2.34.1
+
