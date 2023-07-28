@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDD0766ECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CECC766EED
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbjG1NwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        id S236132AbjG1N6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjG1NwO (ORCPT
+        with ESMTP id S233675AbjG1N6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:52:14 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6F32D57;
-        Fri, 28 Jul 2023 06:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690552333; x=1722088333;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=13yUOGGfMfswl4RW/YVIRSa8RvBKZJkyMPeM4Uwztbc=;
-  b=e6736ybDF52saJEtkI1Nv+VCrxASeBeCyw9HzplhRlqxGy5xKPlO0cgD
-   +H2X3xUy6XZE5FI+GaAFa2uNEiJi1OG0zEIjwiRsQhvFguwlwiS3dMpH/
-   puXOyQZCWSbBVM1n1mkw5QYHNv2mJFr31rYjeLF4EGX4WSidY3lptM7jX
-   JyZZapClJMqb3LW4JoW3o5bYIMXjd+wrjApsqe0Kw3M5bR4EPqDsh7KME
-   KwZa+YlCyg38kmJJ1iMuEYAx/BXH1hHaJ3hyx6ovgwSYoQbMRPrWwUV2V
-   W90g0BJkMhCw5VgskiH9TvX25kxS00ekyCduniQr3K2bF8W6oy5Qp4cHI
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="asc'?scan'208";a="163744085"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 06:52:12 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 06:52:08 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 28 Jul 2023 06:52:06 -0700
-Date:   Fri, 28 Jul 2023 14:51:31 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Andrew Jones <ajones@ventanamicro.com>
-CC:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-arch@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] riscv: Make __flush_tlb_range() loop over pte
- instead of flushing the whole tlb
-Message-ID: <20230728-snout-defiance-082befdeaa51@wendy>
-References: <20230727185553.980262-1-alexghiti@rivosinc.com>
- <20230727185553.980262-4-alexghiti@rivosinc.com>
- <20230728-f2cd8ddd252c2ece2e438790@orel>
+        Fri, 28 Jul 2023 09:58:34 -0400
+X-Greylist: delayed 306 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Jul 2023 06:58:32 PDT
+Received: from forward502a.mail.yandex.net (forward502a.mail.yandex.net [IPv6:2a02:6b8:c0e:500:1:45:d181:d502])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E82E78;
+        Fri, 28 Jul 2023 06:58:32 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:5f1d:0:640:49bf:0])
+        by forward502a.mail.yandex.net (Yandex) with ESMTP id 1A7DF5E60E;
+        Fri, 28 Jul 2023 16:53:21 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id JrNbvTADeSw0-7PPWQYMX;
+        Fri, 28 Jul 2023 16:53:20 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1690552400;
+        bh=IGd1caYMnGQqPAgvXoIm8JMgIZ2GeGdFwnaOHTKLCpk=;
+        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+        b=ZRh0MkarejUMzSy8oqhtMQoF75RrJV8Gq5MOOpq8/7pluKNwqJaMGuSUNnM71EGZy
+         EQ8Bu2RyeQfz0PvG3T9FgDHgjyHR3GInMQLund6lzK6GbxA6HkIeG2Nu2+KVk5ZwPx
+         tqOtou/6UPVPKkPx3qwzyOyQnWvltcWa/RSPKOlw=
+Authentication-Results: mail-nwsmtp-smtp-production-main-18.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <7788b12515f7e00b4bb0a04da30fc7fd0fdb8d51.camel@maquefel.me>
+Subject: Re: [PATCH v3 14/42] power: reset: Add a driver for the ep93xx reset
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 28 Jul 2023 16:53:19 +0300
+In-Reply-To: <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+         <20230605-ep93xx-v3-14-3d63a5f1103e@maquefel.me>
+         <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="avaIEXfS61g8yoTO"
-Content-Disposition: inline
-In-Reply-To: <20230728-f2cd8ddd252c2ece2e438790@orel>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---avaIEXfS61g8yoTO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jul 28, 2023 at 03:32:35PM +0200, Andrew Jones wrote:
-> On Thu, Jul 27, 2023 at 08:55:52PM +0200, Alexandre Ghiti wrote:
-
-> > +	else if (size =3D=3D (unsigned long)-1)
+On Fri, 2023-07-21 at 19:37 +0300, Andy Shevchenko wrote:
+> On Thu, Jul 20, 2023 at 02:29:14PM +0300, Nikita Shubin via B4 Relay
+> wrote:
+> > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> >=20
+> > Implement the reset behaviour of the various EP93xx SoCS in
+> > drivers/power/reset.
+> >=20
+> > It used to be located in arch/arm/mach-ep93xx.
 >=20
-> The more we scatter this -1 around, especially now that we also need to
-> cast it, the more I think we should introduce a #define for it.
+> ...
+>=20
+> > +// SPDX-License-Identifier: (GPL-2.0)
+>=20
+> Are you sure this is correct form?=C2=A0
 
-Please.
+Should it be // SPDX-License-Identifier: GPL-2.0+ ?
 
---avaIEXfS61g8yoTO
-Content-Type: application/pgp-signature; name="signature.asc"
+> Have you checked your patches?
 
------BEGIN PGP SIGNATURE-----
+Could you please be more specific:
+$ scripts/checkpatch.pl -f drivers/power/reset/ep93xx-restart.c
+total: 0 errors, 0 warnings, 86 lines checked
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMPH4wAKCRB4tDGHoIJi
-0pcKAP98p/ImDQ/uxeHvVZf6GCqG6+uNVE4h+qEzQF4LDzyZJAEAu/5LBu9gRRSH
-/J59XOyZqO6G+WA6CW2Eh+46AhRzmwc=
-=3/WE
------END PGP SIGNATURE-----
+$ git format-patch -1 51f03c64b8fde79fb16b146d87769b7508b6d114 --stdout
+| scripts/checkpatch.pl -
+WARNING: please write a help paragraph that fully describes the config
+symbol
+...
+WARNING: added, moved or deleted file(s), does MAINTAINERS need
+updating?
 
---avaIEXfS61g8yoTO--
+I don't see any license complains...
+
+checkpatch.pl is working as intented as:
+
+$ scripts/checkpatch.pl -f drivers/power/reset/ep93xx-restart.c
+WARNING: 'SPDX-License-Identifier: (FOOOO)' is not supported in
+LICENSES/...
+#1: FILE: drivers/power/reset/ep93xx-restart.c:1:
++// SPDX-License-Identifier: (FOOOO)
+
+>=20
+> ...
+>=20
+> > +#include <linux/of_device.h>
+>=20
+> Do you need this?
+> Or maybe you need another (of*.h) one?
+>=20
+> ...
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Issue the reboot */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ep93xx_devcfg_set_clear(priv=
+->map,
+> > EP93XX_SYSCON_DEVCFG_SWRST, 0x00);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ep93xx_devcfg_set_clear(priv=
+->map, 0x00,
+> > EP93XX_SYSCON_DEVCFG_SWRST);
+>=20
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mdelay(1000);
+>=20
+> Atomic?! Such a huge delay must be explained, esp. why it's atomic.
+
+Indeed let's drop it entirely.
+
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pr_emerg("Unable to restart =
+system\n");
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NOTIFY_DONE;
+>=20
+> ...
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D register_restart_han=
+dler(&priv->restart_handler);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0return dev_err_probe(dev, err, "can't register
+> > restart notifier\n");
+>=20
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return err;
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+>=20
+
