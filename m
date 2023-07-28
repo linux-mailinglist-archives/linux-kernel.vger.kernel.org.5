@@ -2,181 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9181A766260
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B989F76626A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjG1DWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
+        id S233096AbjG1D3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbjG1DWg (ORCPT
+        with ESMTP id S230395AbjG1D3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:22:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ABA26B8;
-        Thu, 27 Jul 2023 20:22:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB76661FBA;
-        Fri, 28 Jul 2023 03:22:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 249FFC433C9;
-        Fri, 28 Jul 2023 03:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690514554;
-        bh=XhxDNdSW5b0BQGhJcLfTJp+gYFmz7jQ7UbyAr8zcZ34=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BpTQ1L2XEf5TRXvzLIiG3wk/gUVdV6IUiyl8OIVEZhuYMqbLRi60PpvAapVTod5kg
-         ShuZsxPPMfhU2t7UTNw2Pk4aLhk5PihxSTrqW9VPm8HR4mIXNKUYNt7k8nfIKtDRLE
-         s0b5HuOm5bvH7UAGJkRgAxjWBVDJwIcWpOZh+oGjEf51/RAnOy8WrVXXJWgHoqSUbs
-         sQz/frTniTkS0Ejt6DA9qsaKDuUcSAuDqu4jIA+yL/xb1uVKiA7KMS8paE6UQtCXPS
-         vM1/fjnYwUFqIapEKZdt1n80snTMCJQ2CsnOsn4hfJi2IpG8OEkRongjt1fYWwpxGu
-         bdLTnFbq3tFjw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C2FDACE0AE0; Thu, 27 Jul 2023 20:22:33 -0700 (PDT)
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        kernel-team@android.com, John Stultz <jstultz@google.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: [PATCH rcu 2/2] torture: Add lock_torture writer_fifo module parameter
-Date:   Thu, 27 Jul 2023 20:22:32 -0700
-Message-Id: <20230728032232.816584-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop>
-References: <12d34340-6c94-4bfd-aa16-3c39026070d8@paulmck-laptop>
+        Thu, 27 Jul 2023 23:29:45 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1D426AE;
+        Thu, 27 Jul 2023 20:29:44 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBtMb2JWdzNmbY;
+        Fri, 28 Jul 2023 11:26:19 +0800 (CST)
+Received: from [10.174.179.215] (10.174.179.215) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 28 Jul 2023 11:29:42 +0800
+Subject: Re: [PATCH v2 -next] Bluetooth: Remove unused declaration
+ amp_read_loc_info()
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+CC:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <pmenzel@molgen.mpg.de>
+References: <20230727013907.29068-1-yuehaibing@huawei.com>
+ <CABBYNZ+Fxmkxg3qQMABt-1DcvhMcUnqsOrwGgHXMQum5ezF82Q@mail.gmail.com>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <a452560c-97b3-ed32-e9a5-ac9f8f3ba14c@huawei.com>
+Date:   Fri, 28 Jul 2023 11:29:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <CABBYNZ+Fxmkxg3qQMABt-1DcvhMcUnqsOrwGgHXMQum5ezF82Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+On 2023/7/28 6:21, Luiz Augusto von Dentz wrote:
+> Hi Yue,
+> 
+> On Wed, Jul 26, 2023 at 6:42 PM Yue Haibing <yuehaibing@huawei.com> wrote:
+>>
+>> This is introduced in commit 903e45411099 ("Bluetooth: AMP: Use HCI cmd to Read Loc AMP Assoc")
+>> and never be implemented.
+> 
+> The commit information above shall be added with Fixes: tag so it can
+> be properly backported, etc.
 
-This commit adds a module parameter that causes the locktorture writer
-to run at real-time priority.
-
-To use it:
-insmod /lib/modules/torture.ko random_shuffle=1
-insmod /lib/modules/locktorture.ko torture_type=mutex_lock rt_boost=1 rt_boost_factor=50 nested_locks=3 writer_fifo=1
-													^^^^^^^^^^^^^
-
-A predecessor to this patch has been helpful to uncover issues with the
-proxy-execution series.
-
-[ paulmck: Remove locktorture-specific code from kernel/torture.c. ]
-
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: kernel-team@android.com
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-[jstultz: Include header change to build, reword commit message]
-Signed-off-by: John Stultz <jstultz@google.com>
-Acked-by: Davidlohr Bueso <dave@stgolabs.net>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- Documentation/admin-guide/kernel-parameters.txt |  4 ++++
- kernel/locking/locktorture.c                    | 12 +++++++-----
- kernel/torture.c                                |  3 ++-
- 3 files changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1457995fd41..7b94455e9ae2 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2918,6 +2918,10 @@
- 	locktorture.torture_type= [KNL]
- 			Specify the locking implementation to test.
- 
-+	locktorture.writer_fifo= [KNL]
-+			Run the write-side locktorture kthreads at
-+			sched_set_fifo() real-time priority.
-+
- 	locktorture.verbose= [KNL]
- 			Enable additional printk() statements.
- 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 949d3deae506..270c7f80ce84 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -45,6 +45,7 @@ torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
- torture_param(int, rt_boost, 2,
- 		   "Do periodic rt-boost. 0=Disable, 1=Only for rt_mutex, 2=For all lock types.");
- torture_param(int, rt_boost_factor, 50, "A factor determining how often rt-boost happens.");
-+torture_param(int, writer_fifo, 0, "Run writers at sched_set_fifo() priority");
- torture_param(int, verbose, 1, "Enable verbose debugging printk()s");
- torture_param(int, nested_locks, 0, "Number of nested locks (max = 8)");
- /* Going much higher trips "BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!" errors */
-@@ -809,7 +810,8 @@ static int lock_torture_writer(void *arg)
- 	bool skip_main_lock;
- 
- 	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
--	set_user_nice(current, MAX_NICE);
-+	if (!rt_task(current))
-+		set_user_nice(current, MAX_NICE);
- 
- 	do {
- 		if ((torture_random(&rand) & 0xfffff) == 0)
-@@ -1015,8 +1017,7 @@ static void lock_torture_cleanup(void)
- 
- 	if (writer_tasks) {
- 		for (i = 0; i < cxt.nrealwriters_stress; i++)
--			torture_stop_kthread(lock_torture_writer,
--					     writer_tasks[i]);
-+			torture_stop_kthread(lock_torture_writer, writer_tasks[i]);
- 		kfree(writer_tasks);
- 		writer_tasks = NULL;
- 	}
-@@ -1244,8 +1245,9 @@ static int __init lock_torture_init(void)
- 			goto create_reader;
- 
- 		/* Create writer. */
--		firsterr = torture_create_kthread(lock_torture_writer, &cxt.lwsa[i],
--						  writer_tasks[i]);
-+		firsterr = torture_create_kthread_cb(lock_torture_writer, &cxt.lwsa[i],
-+						     writer_tasks[i],
-+						     writer_fifo ? sched_set_fifo : NULL);
- 		if (torture_init_error(firsterr))
- 			goto unwind;
- 
-diff --git a/kernel/torture.c b/kernel/torture.c
-index b88a1a86d9da..a1ac493488e2 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -37,6 +37,7 @@
- #include <linux/ktime.h>
- #include <asm/byteorder.h>
- #include <linux/torture.h>
-+#include <linux/sched/rt.h>
- #include "rcu/rcu.h"
- 
- MODULE_LICENSE("GPL");
-@@ -734,7 +735,7 @@ bool stutter_wait(const char *title)
- 	cond_resched_tasks_rcu_qs();
- 	spt = READ_ONCE(stutter_pause_test);
- 	for (; spt; spt = READ_ONCE(stutter_pause_test)) {
--		if (!ret) {
-+		if (!ret && !rt_task(current)) {
- 			sched_set_normal(current, MAX_NICE);
- 			ret = true;
- 		}
--- 
-2.40.1
-
+Ok, v3 on the way.
+> 
+>> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+>> ---
+>> v2: fix SOB and update commit log
+>> ---
+>>  net/bluetooth/amp.h | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/net/bluetooth/amp.h b/net/bluetooth/amp.h
+>> index 832764dfbfb3..97c87abd129f 100644
+>> --- a/net/bluetooth/amp.h
+>> +++ b/net/bluetooth/amp.h
+>> @@ -28,7 +28,6 @@ struct hci_conn *phylink_add(struct hci_dev *hdev, struct amp_mgr *mgr,
+>>
+>>  int phylink_gen_key(struct hci_conn *hcon, u8 *data, u8 *len, u8 *type);
+>>
+>> -void amp_read_loc_info(struct hci_dev *hdev, struct amp_mgr *mgr);
+>>  void amp_read_loc_assoc_frag(struct hci_dev *hdev, u8 phy_handle);
+>>  void amp_read_loc_assoc(struct hci_dev *hdev, struct amp_mgr *mgr);
+>>  void amp_read_loc_assoc_final_data(struct hci_dev *hdev,
+>> --
+>> 2.34.1
+>>
+> 
+> 
