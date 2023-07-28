@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 186C27678C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B3A7678C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbjG1XAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 19:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S233548AbjG1XAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbjG1XAN (ORCPT
+        with ESMTP id S231248AbjG1XAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:00:13 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E8544BD
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:00:07 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-760dff4b701so33306239f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:00:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690585206; x=1691190006;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MwUGAXlWTnPRJAd9ATS5GD+jmGk/Py4JKBUesXwXH2A=;
-        b=d98DSZkdO+2JdfHRp58xcUD6LnqaYwJDvDZpaJyN70zZT2JY8lfcHfRFsUeJzKeUTr
-         0HwHHXR9frV3x3oDKHSvV0B3QxqOhanpLkl2q/ayOWCyt7ZeGYK0+RdS7LzDsZzISPDP
-         BYu408eZ0VFLR+YSbXX8T/q0e3f+Kf4iKmGcQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690585206; x=1691190006;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MwUGAXlWTnPRJAd9ATS5GD+jmGk/Py4JKBUesXwXH2A=;
-        b=BrLPjWcB5+CKuIkqQPGebs7/d40enz1p6u1qzJboyB6pstCb1NBW5oIWeSCn4/SvWB
-         v4YAKIN+UEcEJUIA60FTGZOcB/Uk/l+OPk36hCUzWynusm8sToFnsBmxQ3LsecVtJX8k
-         ddb7CzrhCb1BYK1Jpyw3n4MB3XpwKhLfJtMKzLj9a/pN/V7H6P0Bj7H4GrZSPr2pVBxu
-         AIJy3qrzBQQTxUlr2wlP3LvMGfNS1nqwNvpW+0Uh6lvEG1rJ5K8KJaq+c3G2053C4/LV
-         NfiFL3nXSuk19TihIriKffNdX4BCSlRbt+yHZ1IE3p9TipRm+jkTBg2ES+SOANCDdOdr
-         dVvw==
-X-Gm-Message-State: ABy/qLZNgBXI+YH8WjZ5KntnffBmmgpeRJDuL4fchP4DMYNhvpjOIrXj
-        Kjpt3Z4xX8xUHH6Es7unk4JEFQ==
-X-Google-Smtp-Source: APBJJlEl3f9B0LRCAMAtZeUVRE9TycWryhTlDQ4lnn7NVwAHszrL7FHn1XB9SyLXuWu1rJBJoOPqbA==
-X-Received: by 2002:a92:cd05:0:b0:345:e438:7381 with SMTP id z5-20020a92cd05000000b00345e4387381mr785191iln.2.1690585206252;
-        Fri, 28 Jul 2023 16:00:06 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id w12-20020a02cf8c000000b0042acf934cbasm1346038jar.72.2023.07.28.16.00.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 16:00:05 -0700 (PDT)
-Message-ID: <8c92599f-fcb4-3aba-f367-17abd9b52451@linuxfoundation.org>
-Date:   Fri, 28 Jul 2023 17:00:05 -0600
+        Fri, 28 Jul 2023 19:00:33 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D3E198A;
+        Fri, 28 Jul 2023 16:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690585228; x=1722121228;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=OGwkzgJQziWMw/+lEEi2YDn3TUr7J59nLJwjAeM5WFA=;
+  b=f5tgJM13zj2klxlSX98dyV1xnrnrol8O939HwsR3xsI6vYBOCvaf8lLk
+   0Fp3psxIR1JHTmNUGI8ZJ1955wjDesWjmAQMA/xPiZnhqfMTsnHW5DTqc
+   SyD1LyZpVn0W1LyCfKtKkO/1GFQgwBMxgFzfQ1wTMK55F35wJv2f3qrvM
+   ZuHsG8l31y1uKFt+NB4Moamt+ol3v3R/+GukRAJ5ICDGQh0FFiJ/n4B5+
+   jGgN8JGRyHmPanMeicvoBF1QCPcNETzCfbKAOKfIhG9tM5dCalOS36kFy
+   642tJcjudR7mZu/NOPwFQRvpMvwH7vSWMDKnLtTV/hdjrrJb7qDPbkJNr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="455058663"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="455058663"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:00:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="793064994"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="793064994"
+Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.98.123])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:00:27 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+Date:   Fri, 28 Jul 2023 16:00:12 -0700
+Subject: [PATCH] cxl/memdev: Avoid mailbox functionality on device memory
+ CXL devices
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
- error paths to skip
-Content-Language: en-US
-To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1690564372.git.skhan@linuxfoundation.org>
- <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
- <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
- <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
- <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
- <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
- <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
- <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
- <84048d13-9311-36f6-9eb4-8169952580d7@linuxfoundation.org>
- <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230728-cxl-fix-devmemdev-v1-1-dbd3269b3295@intel.com>
+X-B4-Tracking: v=1; b=H4sIAHtIxGQC/x2N0QqDMBAEf0XuuQdppFX7K6UPMa71wKQlJyKI/
+ 96zLwvDMsxOiiJQelQ7Fayi8skG10tFcQr5DZbBmLzztWt8y3GbeZSNB6wJyZZvztURnW/Ge0v
+ m9UHBfQk5TqeZgi4o5/EtMPMfe76O4wdc34kNfAAAAA==
+To:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-c6835
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690585226; l=7848;
+ i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
+ bh=OGwkzgJQziWMw/+lEEi2YDn3TUr7J59nLJwjAeM5WFA=;
+ b=xg85+dOWSgwxdbBDBxuTlZfIZIOR1ZSIDsS7MAoZUkEdEvUUME05nXUkq7idBIK4XhIt/TmAU
+ F/YiLI3717UB5q8LZuAzpUYnpCxTuXJgh7YZU4jdMWx+SNoUXtLGh6z
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,112 +75,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 16:40, Anjali Kulkarni wrote:
-> 
-> 
->> On Jul 28, 2023, at 3:25 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 7/28/23 15:59, Anjali Kulkarni wrote:
->>>> On Jul 28, 2023, at 2:41 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>
->>>> On 7/28/23 15:21, Anjali Kulkarni wrote:
->>>>>> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>>
->>>>>> On 7/28/23 13:06, Shuah Khan wrote:
->>>>>>> On 7/28/23 12:10, Anjali Kulkarni wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>>>>>
->>>>>>>>> proc_filter test requires root privileges. Add root privilege check
->>>>>>>>> and skip the test. Also fix argument parsing paths to skip in their
->>>>>>>>> error legs.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>>>>>> ---
->>>>>>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
->>>>>>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
->>>>>>>>> --- a/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
->>>>>>>>>
->>>>>>>>> if (argc > 2) {
->>>>>>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
->>>>>>>>> - exit(1);
->>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>> }
->>>>>>>>>
->>>>>>>>> if (argc == 2) {
->>>>>>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
->>>>>>>>> filter = 1;
->>>>>>>>> } else {
->>>>>>>>> printf("Valid option : -f (for filter feature)\n");
->>>>>>>>> - exit(1);
->>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>> }
->>>>>>>>> }
->>>>>>>>>
->>>>>>>>> + if (geteuid()) {
->>>>>>>>> + printf("Connector test requires root privileges.\n");
->>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>> + }
->>>>>>>>> +
->>>>>>>>
->>>>>>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
->>>>>>>>
->>>>>>> It failed for me when I ran it saying it requires root privileges.
->>>>>>> I had to run it as root.
->>>>>>
->>>>>> The following is what I see when I run the test as non-root
->>>>>> user:
->>>>>>
->>>>>> bind failed: Operation not permitted
->>>>>>
->>>>> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
->>>>> So this check for root needs to be removed.
->>>>
->>>> I will send v2 for this patch without root check. I should have
->>>> split the argument error paths and root check anyway.
->>>>
->>>> However, what is strange is if the test run by root, bind() doesn't fail.
->>>> This doesn't make sense to me based on what you said about bind() fails
->>>> if kernel doesn't support the new feature.
->>>>
->>> I didn’t say that - part of the changes introduced by the patches is to remove the root check and add some features on top of existing code.
->>
->> Okay. So what should happen if a root user runs this test on a kernel
->> that doesn't have the kernel patches submitted with this selftest
->> installed on it?
->>
-> 
-> It will default to the behavior previous to my changes - that is it will report all events as opposed to a subset of events (which is the new feature added by my change)
-> 
+Using the proposed type-2 cxl-test device[1] the following
+splat was observed:
 
-Okay. Sorry I am unable to follow this explanation. This test has just
-been added in commit 73a29531f45fed6423144057d7a844aae46dad9d
+  BUG: kernel NULL pointer dereference, address: 0000000000000278
+  [...]
+  RIP: 0010:devm_cxl_add_memdev+0x1de/0x2c0 [cxl_core]
+  [...]
+  Call Trace:
+   <TASK>
+   ? __die+0x1f/0x70
+   ? page_fault_oops+0x149/0x420
+   ? fixup_exception+0x22/0x310
+   ? kernelmode_fixup_or_oops+0x84/0x110
+   ? exc_page_fault+0x6d/0x150
+   ? asm_exc_page_fault+0x22/0x30
+   ? devm_cxl_add_memdev+0x1de/0x2c0 [cxl_core]
+   cxl_mock_mem_probe+0x632/0x870 [cxl_mock_mem]
+   platform_probe+0x40/0x90
+   really_probe+0x19e/0x3e0
+   ? __pfx___driver_attach+0x10/0x10
+   __driver_probe_device+0x78/0x160
+   driver_probe_device+0x1f/0x90
+   __driver_attach+0xce/0x1c0
+   bus_for_each_dev+0x63/0xa0
+   bus_add_driver+0x112/0x210
+   driver_register+0x55/0x100
+   ? __pfx_cxl_mock_mem_driver_init+0x10/0x10 [cxl_mock_mem]
+   [...]
 
-Can you please look at the usage for this test:
+Commit f6b8ab32e3ec made the mailbox functionality optional.  However,
+some mailbox functionality was merged after that patch.  Therefore some
+mailbox functionality can be accessed on a device which did not set up
+the mailbox.
 
-- What should happen when kernel without filtering is run as
-   root or non-root
-- What should happen when kernel with filtering is run as
-   root or non-root
+While no devices currently exist, commit f6b8ab32e3ec is incomplete.
+Complete the checks for memdev state to bring the code to a consistent
+state for when type-2 devices are introduced.
 
-There seems to be difference in behavior of this test depending
-on user privileges. This should reflect in the message the user
-sees.
+[1] https://lore.kernel.org/all/168592160379.1948938.12863272903570476312.stgit@dwillia2-xfh.jf.intel.com/
 
-This message "bind failed: Operation not permitted" doesn't tell
-user anything - add a better message. Also this needs to be a skip
-and not fail.
+Fixes: f6b8ab32e3ec ("cxl/memdev: Make mailbox functionality optional")
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ drivers/cxl/core/mbox.c   |  9 +++++++++
+ drivers/cxl/core/memdev.c | 26 ++++++++++++++++++++++++++
+ drivers/cxl/mem.c         | 18 ++++++++++--------
+ drivers/cxl/pci.c         |  5 ++++-
+ drivers/cxl/pmem.c        |  3 +++
+ 5 files changed, 52 insertions(+), 9 deletions(-)
 
-I just sent v2 without the root check.
+diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+index d6d067fbee97..eb1758fb8cdf 100644
+--- a/drivers/cxl/core/mbox.c
++++ b/drivers/cxl/core/mbox.c
+@@ -482,6 +482,9 @@ int cxl_query_cmd(struct cxl_memdev *cxlmd,
+ 
+ 	dev_dbg(dev, "Query IOCTL\n");
+ 
++	if (!mds)
++		return -EIO;
++
+ 	if (get_user(n_commands, &q->n_commands))
+ 		return -EFAULT;
+ 
+@@ -586,6 +589,9 @@ int cxl_send_cmd(struct cxl_memdev *cxlmd, struct cxl_send_command __user *s)
+ 
+ 	dev_dbg(dev, "Send IOCTL\n");
+ 
++	if (!mds)
++		return -EIO;
++
+ 	if (copy_from_user(&send, s, sizeof(send)))
+ 		return -EFAULT;
+ 
+@@ -1245,6 +1251,9 @@ int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+ 	int nr_records = 0;
+ 	int rc;
+ 
++	if (!mds)
++		return -EIO;
++
+ 	rc = mutex_lock_interruptible(&mds->poison.lock);
+ 	if (rc)
+ 		return rc;
+diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+index f99e7ec3cc40..629e479f751b 100644
+--- a/drivers/cxl/core/memdev.c
++++ b/drivers/cxl/core/memdev.c
+@@ -201,6 +201,19 @@ static ssize_t security_erase_store(struct device *dev,
+ static struct device_attribute dev_attr_security_erase =
+ 	__ATTR(erase, 0200, NULL, security_erase_store);
+ 
++static umode_t cxl_memdev_security_visible(struct kobject *kobj,
++					   struct attribute *a, int n)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
++
++	if (!mds)
++		return 0;
++
++	return a->mode;
++}
++
+ static int cxl_get_poison_by_memdev(struct cxl_memdev *cxlmd)
+ {
+ 	struct cxl_dev_state *cxlds = cxlmd->cxlds;
+@@ -332,6 +345,9 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
+ 	struct cxl_region *cxlr;
+ 	int rc;
+ 
++	if (!mds)
++		return -EIO;
++
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+@@ -380,6 +396,9 @@ int cxl_clear_poison(struct cxl_memdev *cxlmd, u64 dpa)
+ 	struct cxl_region *cxlr;
+ 	int rc;
+ 
++	if (!mds)
++		return -EIO;
++
+ 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
+ 		return 0;
+ 
+@@ -480,6 +499,7 @@ static struct attribute_group cxl_memdev_pmem_attribute_group = {
+ static struct attribute_group cxl_memdev_security_attribute_group = {
+ 	.name = "security",
+ 	.attrs = cxl_memdev_security_attributes,
++	.is_visible = cxl_memdev_security_visible,
+ };
+ 
+ static const struct attribute_group *cxl_memdev_attribute_groups[] = {
+@@ -542,6 +562,9 @@ static void cxl_memdev_security_shutdown(struct device *dev)
+ 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+ 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
+ 
++	if (!mds)
++		return;
++
+ 	if (mds->security.poll)
+ 		cancel_delayed_work_sync(&mds->security.poll_dwork);
+ }
+@@ -997,6 +1020,9 @@ static int cxl_memdev_security_init(struct cxl_memdev *cxlmd)
+ 	struct device *dev = &cxlmd->dev;
+ 	struct kernfs_node *sec;
+ 
++	if (!mds)
++		return 0;
++
+ 	sec = sysfs_get_dirent(dev->kobj.sd, "security");
+ 	if (!sec) {
+ 		dev_err(dev, "sysfs_get_dirent 'security' failed\n");
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 317c7548e4e9..4755a890018d 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -132,12 +132,14 @@ static int cxl_mem_probe(struct device *dev)
+ 	dentry = cxl_debugfs_create_dir(dev_name(dev));
+ 	debugfs_create_devm_seqfile(dev, "dpamem", dentry, cxl_mem_dpa_show);
+ 
+-	if (test_bit(CXL_POISON_ENABLED_INJECT, mds->poison.enabled_cmds))
+-		debugfs_create_file("inject_poison", 0200, dentry, cxlmd,
+-				    &cxl_poison_inject_fops);
+-	if (test_bit(CXL_POISON_ENABLED_CLEAR, mds->poison.enabled_cmds))
+-		debugfs_create_file("clear_poison", 0200, dentry, cxlmd,
+-				    &cxl_poison_clear_fops);
++	if (mds) {
++		if (test_bit(CXL_POISON_ENABLED_INJECT, mds->poison.enabled_cmds))
++			debugfs_create_file("inject_poison", 0200, dentry, cxlmd,
++					    &cxl_poison_inject_fops);
++		if (test_bit(CXL_POISON_ENABLED_CLEAR, mds->poison.enabled_cmds))
++			debugfs_create_file("clear_poison", 0200, dentry, cxlmd,
++					    &cxl_poison_clear_fops);
++	}
+ 
+ 	rc = devm_add_action_or_reset(dev, remove_debugfs, dentry);
+ 	if (rc)
+@@ -222,8 +224,8 @@ static umode_t cxl_mem_visible(struct kobject *kobj, struct attribute *a, int n)
+ 		struct cxl_memdev_state *mds =
+ 			to_cxl_memdev_state(cxlmd->cxlds);
+ 
+-		if (!test_bit(CXL_POISON_ENABLED_LIST,
+-			      mds->poison.enabled_cmds))
++		if (!mds || !test_bit(CXL_POISON_ENABLED_LIST,
++				      mds->poison.enabled_cmds))
+ 			return 0;
+ 	}
+ 	return a->mode;
+diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+index 1cb1494c28fe..93f6140432cd 100644
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -122,7 +122,7 @@ static irqreturn_t cxl_pci_mbox_irq(int irq, void *id)
+ 	struct cxl_dev_state *cxlds = dev_id->cxlds;
+ 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
+ 
+-	if (!cxl_mbox_background_complete(cxlds))
++	if (!mds || !cxl_mbox_background_complete(cxlds))
+ 		return IRQ_NONE;
+ 
+ 	reg = readq(cxlds->regs.mbox + CXLDEV_MBOX_BG_CMD_STATUS_OFFSET);
+@@ -624,6 +624,9 @@ static irqreturn_t cxl_event_thread(int irq, void *id)
+ 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
+ 	u32 status;
+ 
++	if (!mds)
++		return IRQ_HANDLED;
++
+ 	do {
+ 		/*
+ 		 * CXL 3.0 8.2.8.3.1: The lower 32 bits are the status;
+diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
+index 7cb8994f8809..f1adfdd1a2b3 100644
+--- a/drivers/cxl/pmem.c
++++ b/drivers/cxl/pmem.c
+@@ -70,6 +70,9 @@ static int cxl_nvdimm_probe(struct device *dev)
+ 	struct nvdimm *nvdimm;
+ 	int rc;
+ 
++	if (WARN_ON_ONCE(!mds))
++		return -EIO;
++
+ 	set_exclusive_cxl_commands(mds, exclusive_cmds);
+ 	rc = devm_add_action_or_reset(dev, clear_exclusive, mds);
+ 	if (rc)
 
-thanks,
--- Shuah
+---
+base-commit: 20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
+change-id: 20230728-cxl-fix-devmemdev-5003ce927f68
 
-
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
 
