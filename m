@@ -2,164 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5D2766889
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696907668B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbjG1JOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        id S233517AbjG1JXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235225AbjG1JMl (ORCPT
+        with ESMTP id S235320AbjG1JWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:12:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D593A97;
-        Fri, 28 Jul 2023 02:10:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A8B1762088;
-        Fri, 28 Jul 2023 09:10:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFF74C433C7;
-        Fri, 28 Jul 2023 09:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690535437;
-        bh=jsukJ3h2ilmz083UcYGengZNcUIJYlLHWk6g/LKxW1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jq54e2P2vabTsv0/ZkCTu/TtAKcPA/986KlVzpTtjaLAFsettUVGxIIEhV012qHmY
-         XjZnDjmAeW2ab1ZsUURkM7jE4L/524t63e/2b+AR7jZDEQXiyB3jMa2BRjo+JEpwRs
-         l3QdUPJ8w/4urXWddV+VETsCyali7ZkVGVcRJ/K6g+RVz5T9C+bf9WioC+uygEDa9I
-         Rh3AvZFW0PdulmDiZySwu0Xy2XsI/jHB3Xyi77hPM/dAwa7KUnEsd9+KEupPqjueWP
-         u1x3RpBtfjI/oksjIHjYF89qn/jUU3ZW18drI+6RQKSDrQ5SYoMzV9cMfadNlCraZU
-         lW9h48LazI1/g==
-Date:   Fri, 28 Jul 2023 10:10:24 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Thor Thayer <thor.thayer@linux.intel.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        linux-actions@lists.infradead.org, chrome-platform@lists.linux.dev,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mfd: Explicitly include correct DT includes
-Message-ID: <20230728091024.GE8175@google.com>
-References: <20230714174731.4059811-1-robh@kernel.org>
+        Fri, 28 Jul 2023 05:22:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1B6B8A7F
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:17:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8B42D75;
+        Fri, 28 Jul 2023 02:17:21 -0700 (PDT)
+Received: from [10.57.77.173] (unknown [10.57.77.173])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8985D3F67D;
+        Fri, 28 Jul 2023 02:16:36 -0700 (PDT)
+Message-ID: <9b54e5af-af1a-6741-424b-6c667d0b405b@arm.com>
+Date:   Fri, 28 Jul 2023 10:16:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 3/3] mm: Batch-zap large anonymous folio PTE mappings
+To:     Yu Zhao <yuzhao@google.com>, Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230727141837.3386072-1-ryan.roberts@arm.com>
+ <20230727141837.3386072-4-ryan.roberts@arm.com>
+ <CAOUHufYiEwYw0sFGK0kP0FFRfV51=hVJ==e5R_hXZXQo-OEcwQ@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAOUHufYiEwYw0sFGK0kP0FFRfV51=hVJ==e5R_hXZXQo-OEcwQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230714174731.4059811-1-robh@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023, Rob Herring wrote:
-
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On 27/07/2023 18:22, Yu Zhao wrote:
+> On Thu, Jul 27, 2023 at 8:18 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> This allows batching the rmap removal with folio_remove_rmap_range(),
+>> which means we avoid spuriously adding a partially unmapped folio to the
+>> deferred split queue in the common case, which reduces split queue lock
+>> contention.
+>>
+>> Previously each page was removed from the rmap individually with
+>> page_remove_rmap(). If the first page belonged to a large folio, this
+>> would cause page_remove_rmap() to conclude that the folio was now
+>> partially mapped and add the folio to the deferred split queue. But
+>> subsequent calls would cause the folio to become fully unmapped, meaning
+>> there is no value to adding it to the split queue.
+>>
+>> A complicating factor is that for platforms where MMU_GATHER_NO_GATHER
+>> is enabled (e.g. s390), __tlb_remove_page() drops a reference to the
+>> page. This means that the folio reference count could drop to zero while
+>> still in use (i.e. before folio_remove_rmap_range() is called). This
+>> does not happen on other platforms because the actual page freeing is
+>> deferred.
+>>
+>> Solve this by appropriately getting/putting the folio to guarrantee it
+>> does not get freed early. Given the need to get/put the folio in the
+>> batch path, we stick to the non-batched path if the folio is not large.
+>> While the batched path is functionally correct for a folio with 1 page,
+>> it is unlikely to be as efficient as the existing non-batched path in
+>> this case.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/mfd/ab8500-core.c           | 1 -
->  drivers/mfd/acer-ec-a500.c          | 2 +-
->  drivers/mfd/act8945a.c              | 2 +-
->  drivers/mfd/altera-sysmgr.c         | 3 +--
->  drivers/mfd/arizona-core.c          | 1 -
->  drivers/mfd/atc260x-core.c          | 1 -
->  drivers/mfd/bcm590xx.c              | 1 -
->  drivers/mfd/cros_ec_dev.c           | 2 +-
->  drivers/mfd/da9052-i2c.c            | 5 +----
->  drivers/mfd/da9055-i2c.c            | 1 -
->  drivers/mfd/da9062-core.c           | 2 +-
->  drivers/mfd/hi655x-pmic.c           | 4 ++--
->  drivers/mfd/iqs62x.c                | 2 +-
->  drivers/mfd/lp873x.c                | 2 +-
->  drivers/mfd/madera-i2c.c            | 1 -
->  drivers/mfd/madera-spi.c            | 1 -
->  drivers/mfd/max77620.c              | 1 -
->  drivers/mfd/max77686.c              | 1 -
->  drivers/mfd/max77843.c              | 2 +-
->  drivers/mfd/max8907.c               | 1 -
->  drivers/mfd/max8925-core.c          | 1 -
->  drivers/mfd/max8997.c               | 1 -
->  drivers/mfd/max8998.c               | 1 -
->  drivers/mfd/mt6358-irq.c            | 5 ++---
->  drivers/mfd/mt6397-core.c           | 5 +++--
->  drivers/mfd/mt6397-irq.c            | 5 ++---
->  drivers/mfd/palmas.c                | 3 ++-
->  drivers/mfd/qcom-pm8008.c           | 2 +-
->  drivers/mfd/rave-sp.c               | 2 +-
->  drivers/mfd/rk8xx-core.c            | 2 +-
->  drivers/mfd/rohm-bd71828.c          | 2 +-
->  drivers/mfd/rohm-bd718x7.c          | 2 +-
->  drivers/mfd/rohm-bd9576.c           | 2 +-
->  drivers/mfd/rt5033.c                | 2 +-
->  drivers/mfd/rz-mtu3.c               | 4 +++-
->  drivers/mfd/sec-core.c              | 2 --
->  drivers/mfd/sprd-sc27xx-spi.c       | 2 +-
->  drivers/mfd/ssbi.c                  | 6 +++---
->  drivers/mfd/stm32-lptimer.c         | 1 +
->  drivers/mfd/stm32-timers.c          | 1 +
->  drivers/mfd/sun4i-gpadc.c           | 4 ++--
->  drivers/mfd/ti-lmu.c                | 1 -
->  drivers/mfd/ti_am335x_tscadc.c      | 2 +-
->  drivers/mfd/tps6507x.c              | 1 -
->  drivers/mfd/tps65090.c              | 1 -
->  drivers/mfd/tps65217.c              | 1 -
->  drivers/mfd/tps65218.c              | 1 -
->  drivers/mfd/tps6594-core.c          | 2 +-
->  drivers/mfd/twl6040.c               | 2 --
->  drivers/mfd/wm831x-core.c           | 3 +--
->  drivers/mtd/chips/cfi_cmdset_0002.c | 3 +--
->  51 files changed, 42 insertions(+), 66 deletions(-)
+> This ad hoc patch looks unacceptable to me: we can't afford to keep
+> adding special cases.
+> 
+> I vote for completely converting zap_pte_range() to use
+> folio_remove_rmap_range(), and that includes tlb_flush_rmap_batch()
+> and other types of large folios, not just anon. 
 
-Applied, thanks
+The intent of the change is to avoid the deferred split queue lock contention,
+and this is only a problem for anon folios; page cache folios are never split in
+this way. My intention was to do the smallest change to solve the problem. I
+don't see the value in reworking a much bigger piece of the code, making it more
+complex, when its not going to give any clear perf benefits.
 
--- 
-Lee Jones [李琼斯]
+
+Otherwise I'll leave
+> it to Matthew and David.
+
+If there is concensus that this is _required_ in order to merge this series,
+then I guess I'll bite the bullet and do it. But my preference is to leave it
+for if/when a reason is found that it is actually bringing benefit.
+
