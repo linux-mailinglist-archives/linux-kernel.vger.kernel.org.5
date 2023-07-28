@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369F1767437
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DD3767434
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbjG1SIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S235211AbjG1SH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233537AbjG1SIF (ORCPT
+        with ESMTP id S231363AbjG1SH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:08:05 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3511110DD
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:08:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690567684; x=1722103684;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=NulXN+ROxffC2iCyg6Lgw79l/zCrBShlqR6llwtxQzw=;
-  b=cCHH/1mlU920AxvCF75jz+SLl41Yqo9ykaMc+eP/5wYkHTOEgB4gVTIZ
-   PBMVtd5e5B6xLgJYwRCWjvswtvibv8iTGmgUcOi6PRE7BjTe45/M0ANQV
-   KCKXVA3Y5uFE+8vT71l/ocqseNge3+iUt/an3tRH/GdVaQROiWGoxrwPI
-   gNbe41C6UUcCJuUYcdkW/eY3/8RzEHUf3BO7b/iNS65iPWPmJ4Fx3g6k3
-   utZ3P/f5J1QNO/jlpO75ziBou2xSNRfX9n4HiI9VFBIHtPUu88QSpFfUQ
-   encdEVSfPCVg5nc6pa8q6s8dq/w7spkurIsQhptx1mA3zI83rOjJ26yaZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="368666822"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="368666822"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 11:08:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="797515986"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="797515986"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Jul 2023 11:08:01 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPRsf-0003T7-0N;
-        Fri, 28 Jul 2023 18:08:01 +0000
-Date:   Sat, 29 Jul 2023 02:07:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Rohan McLure <rmclure@linux.ibm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: drivers/bus/fsl-mc/dprc.c:494:9: warning: 'strncpy' specified bound
- 16 equals destination size
-Message-ID: <202307290251.hKiztLyo-lkp@intel.com>
+        Fri, 28 Jul 2023 14:07:26 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1F23C1F
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-563f752774fso1369853a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690567642; x=1691172442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
+        b=bthRLJgmCvjOnYvWo+2qon30TpingFUg2Fsc6mWV841J6V//QLFLhA/3pFUZ3RWjjp
+         lvqPYA00NNy/7rUAp+SRbT6DXYQV9P2xYvt6Fw87chrCyM0dslS+R/6hc5wlsGx04nxH
+         0m+HjUzgJ46oDMGQuIwdEtvGiOlhwqQO7dlBEa8W8NizZqJBs/5UmVIm7NdU+q4u2kwT
+         Ig/XvZWu743pJjwIQVwK0TnKLi848DKrm8Rcsm7V8TXDR7pyX+R3tOBiI8YtrQRupbSq
+         VYHkCSyOu+v4UnQfxGoiP/bFyUwxKmqJjciC1srz6+GGr7OHRgKVsqbjV3O/RlK8YIV7
+         7yGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690567642; x=1691172442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
+        b=ACiNrmYYCnULyjtnodoooxDy82n2nBE4aiLfC4Al67jhLTZcaOpuVetAU13Z9JwUxv
+         USRBLhiF63+AGQYsn7+YgyB+KN2dLHScGp+EDX1Nsz2Cgv9gt5UKOFIe30ybIeZ1brFq
+         ij55BA+FMX64kOSFcZW0ws9kkwBaHNk5QGgzGyw8Y1DH4gNnoFnJPqPQHiUMIzh2E1Xu
+         TtMwLNtSwH47jom15LdykPsSSsa1m4URgIz6+wdkmbcUzV9dwwhEGfILtKziMwvUx373
+         jm5oDadtY02m6MJXISm51do0FfpYR2p0+JK9whDNf05HEPhk9pcFnYhWOYR5PRfYMy6K
+         gcZw==
+X-Gm-Message-State: ABy/qLbpEOgkDXNDnT1plCqNrMKT9xZgW5PXFN/UrhptRH4mmUhllgp1
+        uqEC97y7IUq5ROa0de2FawnagM0wljzdyuep7biO5g==
+X-Google-Smtp-Source: APBJJlHgwJ3A+UmtsOH2HeGY6HcpJx29kymYLleOv2cjpggHGfecNjMbkiZLUi0kBVGPqDLYF511j6F7xC4+th4qRMQ=
+X-Received: by 2002:a17:90b:8c4:b0:268:23d7:21c with SMTP id
+ ds4-20020a17090b08c400b0026823d7021cmr2007489pjb.30.1690567641609; Fri, 28
+ Jul 2023 11:07:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230724142237.358769-1-leitao@debian.org> <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com> <ZL+VfRiJQqrrLe/9@gmail.com>
+ <ZMAAMKTaKSIKi1RW@google.com> <ZMP07KtOeJ09ejAd@gmail.com>
+In-Reply-To: <ZMP07KtOeJ09ejAd@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 28 Jul 2023 11:07:10 -0700
+Message-ID: <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+To:     Breno Leitao <leitao@debian.org>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,93 +75,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rohan,
+On Fri, Jul 28, 2023 at 10:03=E2=80=AFAM Breno Leitao <leitao@debian.org> w=
+rote:
+>
+> Hello Stanislav,
+>
+> On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
+> > On 07/25, Breno Leitao wrote:
+> > > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > > > On 07/24, Breno Leitao wrote:
+> > > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), =
+where
+> > > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastruct=
+ure,
+> > > > > where a sockptr_t is either userspace or kernel space, and handle=
+d as
+> > > > > such.
+> > > > >
+> > > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockop=
+t().
+> > > >
+> > > > We probably need to also have bpf bits in the new
+> > > > io_uring_cmd_getsockopt?
+> > >
+> > > It might be interesting to have the BPF hook for this function as
+> > > well, but I would like to do it in a following patch, so, I can
+> > > experiment with it better, if that is OK.
+>
+> I spent smoe time looking at the problem, and I understand we want to
+> call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
+> io_uring_cmd_{g,s}etsockopt().
+>
+> Per the previous conversation with Williem,
+> io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void _=
+_user
+> *optval), and optlen as a kernel integer (it comes as from the io_uring
+> SQE), such as:
+>
+>         void __user *optval =3D u64_to_user_ptr(READ_ONCE(cmd->sqe->optva=
+l));
+>         int optlen =3D READ_ONCE(cmd->sqe->optlen);
+>
+> Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
+> __cgroup_bpf_run_filter_getsockopt() which expects userpointer for
+> optlen and optval.
+>
+> At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
+> pointers for both optlen and optval.
+>
+> In this current patchset, it has user pointer for optval and kernel value
+> for optlen. I.e., a third combination.  So, none of the functions would
+> work properly, and we probably do not want to create another function.
+>
+> I am wondering if it is a good idea to move
+> __cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
+> able to adapt to any combination.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Yeah, I think it makes sense. However, note that the intent of that
+optlen being a __user pointer is to possibly write some (updated)
+value back into the userspace.
+Presumably, you'll pass that updated optlen into some io_uring
+completion queue? (maybe a stupid question, not super familiar with
+io_uring)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   57012c57536f8814dec92e74197ee96c3498d24e
-commit: 95567f46b4d20c047750a5e3029461afcdc67697 powerpc/{32,book3e}: kcsan: Extend KCSAN Support
-date:   7 weeks ago
-config: powerpc-randconfig-r032-20230728 (https://download.01.org/0day-ci/archive/20230729/202307290251.hKiztLyo-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290251.hKiztLyo-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307290251.hKiztLyo-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/bus/fsl-mc/dprc.c: In function 'dprc_get_obj':
-   drivers/bus/fsl-mc/dprc.c:453:9: warning: 'strncpy' output may be truncated copying 15 bytes from a string of length 15 [-Wstringop-truncation]
-     453 |         strncpy(obj_desc->type, rsp_params->type, 16);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/bus/fsl-mc/dprc.c:455:9: warning: 'strncpy' output may be truncated copying 15 bytes from a string of length 15 [-Wstringop-truncation]
-     455 |         strncpy(obj_desc->label, rsp_params->label, 16);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/bus/fsl-mc/dprc.c: In function 'dprc_set_obj_irq':
->> drivers/bus/fsl-mc/dprc.c:494:9: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
-     494 |         strncpy(cmd_params->obj_type, obj_type, 16);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/bus/fsl-mc/dprc.c: In function 'dprc_get_obj_region':
-   drivers/bus/fsl-mc/dprc.c:567:9: warning: 'strncpy' specified bound 16 equals destination size [-Wstringop-truncation]
-     567 |         strncpy(cmd_params->obj_type, obj_type, 16);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/strncpy +494 drivers/bus/fsl-mc/dprc.c
-
-31c889653c10dd drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-03-05  460  
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  461  /**
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  462   * dprc_set_obj_irq() - Set IRQ information for object to trigger an interrupt.
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  463   * @mc_io:	Pointer to MC portal's I/O object
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  464   * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  465   * @token:	Token of DPRC object
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  466   * @obj_type:	Type of the object to set its IRQ
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  467   * @obj_id:	ID of the object to set its IRQ
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  468   * @irq_index:	The interrupt index to configure
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  469   * @irq_cfg:	IRQ configuration
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  470   *
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  471   * Return:	'0' on Success; Error code otherwise.
-e9bf3f206bd5e6 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-24  472   */
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  473  int dprc_set_obj_irq(struct fsl_mc_io *mc_io,
-ba72f25b2588e1 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-25  474  		     u32 cmd_flags,
-ba72f25b2588e1 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-25  475  		     u16 token,
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  476  		     char *obj_type,
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  477  		     int obj_id,
-ba72f25b2588e1 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-25  478  		     u8 irq_index,
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  479  		     struct dprc_irq_cfg *irq_cfg)
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  480  {
-5b04cedeca1888 drivers/bus/fsl-mc/dprc.c         Ioana Ciornei    2018-03-15  481  	struct fsl_mc_command cmd = { 0 };
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  482  	struct dprc_cmd_set_obj_irq *cmd_params;
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  483  
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  484  	/* prepare command */
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  485  	cmd.header = mc_encode_cmd_header(DPRC_CMDID_SET_OBJ_IRQ,
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  486  					  cmd_flags,
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  487  					  token);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  488  	cmd_params = (struct dprc_cmd_set_obj_irq *)cmd.params;
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  489  	cmd_params->irq_val = cpu_to_le32(irq_cfg->val);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  490  	cmd_params->irq_index = irq_index;
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  491  	cmd_params->irq_addr = cpu_to_le64(irq_cfg->paddr);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  492  	cmd_params->irq_num = cpu_to_le32(irq_cfg->irq_num);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  493  	cmd_params->obj_id = cpu_to_le32(obj_id);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22 @494  	strncpy(cmd_params->obj_type, obj_type, 16);
-9989b59961a8ad drivers/staging/fsl-mc/bus/dprc.c Ioana Radulescu  2016-06-22  495  	cmd_params->obj_type[15] = '\0';
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  496  
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  497  	/* send command to mc*/
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  498  	return mc_send_command(mc_io, &cmd);
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  499  }
-c9d57ea0b6fb0b drivers/staging/fsl-mc/bus/dprc.c Laurentiu Tudor  2017-11-17  500  EXPORT_SYMBOL_GPL(dprc_set_obj_irq);
-1ee695fab32e25 drivers/staging/fsl-mc/bus/dprc.c J. German Rivera 2015-09-23  501  
-
-:::::: The code at line 494 was first introduced by commit
-:::::: 9989b59961a8ad55d92df4588b556f0c6c838ec7 staging: fsl-mc: convert mc command build/parse to use C structs
-
-:::::: TO: Ioana Radulescu <ruxandra.radulescu@nxp.com>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Any feedback is appreciate.
+> Thanks!
