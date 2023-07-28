@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C2976685D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ACD76685E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbjG1JLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S235183AbjG1JL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235309AbjG1JLU (ORCPT
+        with ESMTP id S234304AbjG1JLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:11:20 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AA65BAD;
-        Fri, 28 Jul 2023 02:09:16 -0700 (PDT)
-X-UUID: 59e8b5ba2d2611ee9cb5633481061a41-20230728
+        Fri, 28 Jul 2023 05:11:21 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09DE30EA;
+        Fri, 28 Jul 2023 02:09:18 -0700 (PDT)
+X-UUID: 5bbfc64e2d2611eeb20a276fd37b9834-20230728
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=6O25UN01f8z68mG3EH8Lj9+JX6dIjVHTITtOhlUCgBI=;
-        b=mSWD02d5IovtEeBZ+YZJ7aYZon+dnPVyJmzYLGBp2j0sXmhBmuYAObFAGirhFACkPEnknwpi4DsJsk66+lV02vfgsrTxoIg/XI2q7MEW6DTM+jhTUWq1EBsn1tYnsNAUbutkQoYpORsDZLA2H49K33Lo1IWZt2aaSIRLKoMcDK4=;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=l34mPcn1Q293OyvQAL1/IzESpE+TFYTg0yUQxAbMLkg=;
+        b=ZpAXdc6H1nTDWSQJTg1h5SGHNd86u2G+093csRADVa2/P9FIYNdzHxmwHEBVKKW73SpGMgimlrsmI6YylFt/pcJyxgapiIhwFKADpzOsGXpzm5ZWhgqsaaLL8EFaT66AvqTSde9VsgQq2zplNUpNvijxxVIf5UIR7dINwGYZ8oo=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:587dc5d9-47a5-41cf-a717-58a5da2fade5,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:95
-X-CID-INFO: VERSION:1.1.30,REQID:587dc5d9-47a5-41cf-a717-58a5da2fade5,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
-        :quarantine,TS:95
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:1fc26dd2-cd77-4e67-bbfd-aa4eaace762f,B
-        ulkID:230728170846JIYL7OMV,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+X-CID-O-INFO: VERSION:1.1.30,REQID:1265f983-8d80-41b9-aa2d-05bcf6141f48,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:70
+X-CID-INFO: VERSION:1.1.30,REQID:1265f983-8d80-41b9-aa2d-05bcf6141f48,IP:0,URL
+        :0,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
+        ON:quarantine,TS:70
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:aa39a2a0-0933-4333-8d4f-6c3c53ebd55b,B
+        ulkID:230728170849C5Q83CRL,BulkQuantity:0,Recheck:0,SF:28|17|19|48|38|29,T
         C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
         ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
 X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,
         TF_CID_SPAM_ASC
-X-UUID: 59e8b5ba2d2611ee9cb5633481061a41-20230728
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+X-UUID: 5bbfc64e2d2611eeb20a276fd37b9834-20230728
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
         (envelope-from <maso.huang@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1204730561; Fri, 28 Jul 2023 17:08:43 +0800
+        with ESMTP id 1851184081; Fri, 28 Jul 2023 17:08:46 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 28 Jul 2023 17:08:42 +0800
+ 15.2.1118.26; Fri, 28 Jul 2023 17:08:45 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 28 Jul 2023 17:08:42 +0800
+ 15.2.1118.26 via Frontend Transport; Fri, 28 Jul 2023 17:08:45 +0800
 From:   Maso Huang <maso.huang@mediatek.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -66,17 +66,18 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>
 CC:     Maso Huang <maso.huang@mediatek.com>
-Subject: [PATCH v3 1/6] ASoC: mediatek: mt7986: add common header
-Date:   Fri, 28 Jul 2023 17:08:14 +0800
-Message-ID: <20230728090819.18038-2-maso.huang@mediatek.com>
+Subject: [PATCH v3 2/6] ASoC: mediatek: mt7986: support etdm in platform driver
+Date:   Fri, 28 Jul 2023 17:08:15 +0800
+Message-ID: <20230728090819.18038-3-maso.huang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20230728090819.18038-1-maso.huang@mediatek.com>
 References: <20230728090819.18038-1-maso.huang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,284 +85,441 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add header files for register definition and structure.
+Add mt7986 etdm dai driver support.
 
 Signed-off-by: Maso Huang <maso.huang@mediatek.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/mediatek/mt7986/mt7986-afe-common.h |  49 +++++
- sound/soc/mediatek/mt7986/mt7986-reg.h        | 206 ++++++++++++++++++
- 2 files changed, 255 insertions(+)
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-afe-common.h
- create mode 100644 sound/soc/mediatek/mt7986/mt7986-reg.h
+ sound/soc/mediatek/mt7986/mt7986-dai-etdm.c | 420 ++++++++++++++++++++
+ 1 file changed, 420 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
 
-diff --git a/sound/soc/mediatek/mt7986/mt7986-afe-common.h b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
+diff --git a/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c b/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
 new file mode 100644
-index 000000000000..1c59549d91b4
+index 000000000000..dc094e25ddb4
 --- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-afe-common.h
-@@ -0,0 +1,49 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++++ b/sound/soc/mediatek/mt7986/mt7986-dai-etdm.c
+@@ -0,0 +1,420 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * mt7986-afe-common.h  --  MediaTek 7986 audio driver definitions
++ * MediaTek ALSA SoC Audio DAI eTDM Control
 + *
 + * Copyright (c) 2021 MediaTek Inc.
 + * Author: Vic Wu <vic.wu@mediatek.com>
 + *         Maso Huang <maso.huang@mediatek.com>
 + */
 +
-+#ifndef _MT_7986_AFE_COMMON_H_
-+#define _MT_7986_AFE_COMMON_H_
-+
-+#include <sound/soc.h>
-+#include <linux/clk.h>
-+#include <linux/list.h>
++#include <linux/bitops.h>
 +#include <linux/regmap.h>
-+#include "../common/mtk-base-afe.h"
++#include <sound/pcm_params.h>
++#include "mt7986-afe-common.h"
++#include "mt7986-reg.h"
 +
 +enum {
-+	MT7986_MEMIF_DL1,
-+	MT7986_MEMIF_VUL12,
-+	MT7986_MEMIF_NUM,
-+	MT7986_DAI_ETDM = MT7986_MEMIF_NUM,
-+	MT7986_DAI_NUM,
++	HOPPING_CLK = 0,
++	APLL_CLK = 1,
 +};
 +
 +enum {
-+	MT7986_IRQ_0,
-+	MT7986_IRQ_1,
-+	MT7986_IRQ_2,
-+	MT7986_IRQ_NUM,
++	MTK_DAI_ETDM_FORMAT_I2S = 0,
++	MTK_DAI_ETDM_FORMAT_DSPA = 4,
++	MTK_DAI_ETDM_FORMAT_DSPB = 5,
 +};
 +
-+struct mt7986_afe_private {
-+	struct clk_bulk_data *clks;
-+	int num_clks;
-+
-+	int pm_runtime_bypass_reg_ctl;
-+
-+	/* dai */
-+	void *dai_priv[MT7986_DAI_NUM];
++enum {
++	ETDM_IN5 = 2,
++	ETDM_OUT5 = 10,
 +};
 +
-+unsigned int mt7986_afe_rate_transform(struct device *dev,
-+				       unsigned int rate);
++enum {
++	MTK_ETDM_RATE_8K = 0,
++	MTK_ETDM_RATE_12K = 1,
++	MTK_ETDM_RATE_16K = 2,
++	MTK_ETDM_RATE_24K = 3,
++	MTK_ETDM_RATE_32K = 4,
++	MTK_ETDM_RATE_48K = 5,
++	MTK_ETDM_RATE_96K = 7,
++	MTK_ETDM_RATE_192K = 9,
++	MTK_ETDM_RATE_11K = 16,
++	MTK_ETDM_RATE_22K = 17,
++	MTK_ETDM_RATE_44K = 18,
++	MTK_ETDM_RATE_88K = 19,
++	MTK_ETDM_RATE_176K = 20,
++};
 +
-+/* dai register */
-+int mt7986_dai_etdm_register(struct mtk_base_afe *afe);
-+#endif
-diff --git a/sound/soc/mediatek/mt7986/mt7986-reg.h b/sound/soc/mediatek/mt7986/mt7986-reg.h
-new file mode 100644
-index 000000000000..88861f81890f
---- /dev/null
-+++ b/sound/soc/mediatek/mt7986/mt7986-reg.h
-@@ -0,0 +1,206 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt7986-reg.h  --  MediaTek 7986 audio driver reg definition
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Vic Wu <vic.wu@mediatek.com>
-+ *         Maso Huang <maso.huang@mediatek.com>
-+ */
++struct mtk_dai_etdm_priv {
++	bool bck_inv;
++	bool lrck_inv;
++	bool slave_mode;
++	unsigned int format;
++};
 +
-+#ifndef _MT7986_REG_H_
-+#define _MT7986_REG_H_
++static unsigned int mt7986_etdm_rate_transform(struct device *dev, unsigned int rate)
++{
++	switch (rate) {
++	case 8000:
++		return MTK_ETDM_RATE_8K;
++	case 11025:
++		return MTK_ETDM_RATE_11K;
++	case 12000:
++		return MTK_ETDM_RATE_12K;
++	case 16000:
++		return MTK_ETDM_RATE_16K;
++	case 22050:
++		return MTK_ETDM_RATE_22K;
++	case 24000:
++		return MTK_ETDM_RATE_24K;
++	case 32000:
++		return MTK_ETDM_RATE_32K;
++	case 44100:
++		return MTK_ETDM_RATE_44K;
++	case 48000:
++		return MTK_ETDM_RATE_48K;
++	case 88200:
++		return MTK_ETDM_RATE_88K;
++	case 96000:
++		return MTK_ETDM_RATE_96K;
++	case 176400:
++		return MTK_ETDM_RATE_176K;
++	case 192000:
++		return MTK_ETDM_RATE_192K;
++	default:
++		dev_warn(dev, "%s(), rate %u invalid, using %d!!!\n",
++			 __func__, rate, MTK_ETDM_RATE_48K);
++		return MTK_ETDM_RATE_48K;
++	}
++}
 +
-+#define AUDIO_TOP_CON2                  0x0008
-+#define AUDIO_TOP_CON4                  0x0010
-+#define AUDIO_ENGEN_CON0                0x0014
-+#define AFE_IRQ_MCU_EN                  0x0100
-+#define AFE_IRQ_MCU_STATUS              0x0120
-+#define AFE_IRQ_MCU_CLR                 0x0128
-+#define AFE_IRQ0_MCU_CFG0               0x0140
-+#define AFE_IRQ0_MCU_CFG1               0x0144
-+#define AFE_IRQ1_MCU_CFG0               0x0148
-+#define AFE_IRQ1_MCU_CFG1               0x014c
-+#define AFE_IRQ2_MCU_CFG0               0x0150
-+#define AFE_IRQ2_MCU_CFG1               0x0154
-+#define ETDM_IN5_CON0                   0x13f0
-+#define ETDM_IN5_CON1                   0x13f4
-+#define ETDM_IN5_CON2                   0x13f8
-+#define ETDM_IN5_CON3                   0x13fc
-+#define ETDM_IN5_CON4                   0x1400
-+#define ETDM_OUT5_CON0                  0x1570
-+#define ETDM_OUT5_CON4                  0x1580
-+#define ETDM_OUT5_CON5                  0x1584
-+#define ETDM_4_7_COWORK_CON0            0x15e0
-+#define ETDM_4_7_COWORK_CON1            0x15e4
-+#define AFE_CONN018_1                   0x1b44
-+#define AFE_CONN018_4                   0x1b50
-+#define AFE_CONN019_1                   0x1b64
-+#define AFE_CONN019_4                   0x1b70
-+#define AFE_CONN124_1                   0x2884
-+#define AFE_CONN124_4                   0x2890
-+#define AFE_CONN125_1                   0x28a4
-+#define AFE_CONN125_4                   0x28b0
-+#define AFE_CONN_RS_0                   0x3920
-+#define AFE_CONN_RS_3                   0x392c
-+#define AFE_CONN_16BIT_0                0x3960
-+#define AFE_CONN_16BIT_3                0x396c
-+#define AFE_CONN_24BIT_0                0x3980
-+#define AFE_CONN_24BIT_3                0x398c
-+#define AFE_MEMIF_CON0                  0x3d98
-+#define AFE_MEMIF_RD_MON                0x3da0
-+#define AFE_MEMIF_WR_MON                0x3da4
-+#define AFE_DL0_BASE_MSB                0x3e40
-+#define AFE_DL0_BASE                    0x3e44
-+#define AFE_DL0_CUR_MSB                 0x3e48
-+#define AFE_DL0_CUR                     0x3e4c
-+#define AFE_DL0_END_MSB                 0x3e50
-+#define AFE_DL0_END                     0x3e54
-+#define AFE_DL0_RCH_MON                 0x3e58
-+#define AFE_DL0_LCH_MON                 0x3e5c
-+#define AFE_DL0_CON0                    0x3e60
-+#define AFE_VUL0_BASE_MSB               0x4220
-+#define AFE_VUL0_BASE                   0x4224
-+#define AFE_VUL0_CUR_MSB                0x4228
-+#define AFE_VUL0_CUR                    0x422c
-+#define AFE_VUL0_END_MSB                0x4230
-+#define AFE_VUL0_END                    0x4234
-+#define AFE_VUL0_CON0                   0x4238
++static int get_etdm_wlen(unsigned int bitwidth)
++{
++	return bitwidth <= 16 ? 16 : 32;
++}
 +
-+#define AFE_MAX_REGISTER AFE_VUL0_CON0
-+#define AFE_IRQ_STATUS_BITS             0x7
-+#define AFE_IRQ_CNT_SHIFT               0
-+#define AFE_IRQ_CNT_MASK	        0xffffff
++/* dai component */
++/* interconnection */
 +
-+/* AUDIO_TOP_CON2 */
-+#define CLK_OUT5_PDN                    BIT(14)
-+#define CLK_OUT5_PDN_MASK               BIT(14)
-+#define CLK_IN5_PDN                     BIT(7)
-+#define CLK_IN5_PDN_MASK                BIT(7)
++static const struct snd_kcontrol_new o124_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I032_Switch", AFE_CONN124_1, 0, 1, 0),
++};
 +
-+/* AUDIO_TOP_CON4 */
-+#define PDN_APLL_TUNER2                 BIT(12)
-+#define PDN_APLL_TUNER2_MASK            BIT(12)
++static const struct snd_kcontrol_new o125_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I033_Switch", AFE_CONN125_1, 1, 1, 0),
++};
 +
-+/* AUDIO_ENGEN_CON0 */
-+#define AUD_APLL2_EN                    BIT(3)
-+#define AUD_APLL2_EN_MASK               BIT(3)
-+#define AUD_26M_EN                      BIT(0)
-+#define AUD_26M_EN_MASK                 BIT(0)
++static const struct snd_soc_dapm_widget mtk_dai_etdm_widgets[] = {
 +
-+/* AFE_DL0_CON0 */
-+#define DL0_ON_SFT                      28
-+#define DL0_ON_MASK                     0x1
-+#define DL0_ON_MASK_SFT                 BIT(28)
-+#define DL0_MINLEN_SFT                  20
-+#define DL0_MINLEN_MASK                 0xf
-+#define DL0_MINLEN_MASK_SFT             (0xf << 20)
-+#define DL0_MODE_SFT                    8
-+#define DL0_MODE_MASK                   0x1f
-+#define DL0_MODE_MASK_SFT               (0x1f << 8)
-+#define DL0_PBUF_SIZE_SFT               5
-+#define DL0_PBUF_SIZE_MASK              0x3
-+#define DL0_PBUF_SIZE_MASK_SFT          (0x3 << 5)
-+#define DL0_MONO_SFT                    4
-+#define DL0_MONO_MASK                   0x1
-+#define DL0_MONO_MASK_SFT               BIT(4)
-+#define DL0_HALIGN_SFT                  2
-+#define DL0_HALIGN_MASK                 0x1
-+#define DL0_HALIGN_MASK_SFT             BIT(2)
-+#define DL0_HD_MODE_SFT                 0
-+#define DL0_HD_MODE_MASK                0x3
-+#define DL0_HD_MODE_MASK_SFT            (0x3 << 0)
++	/* DL */
++	SND_SOC_DAPM_MIXER("I150", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("I151", SND_SOC_NOPM, 0, 0, NULL, 0),
++	/* UL */
++	SND_SOC_DAPM_MIXER("O124", SND_SOC_NOPM, 0, 0, o124_mix, ARRAY_SIZE(o124_mix)),
++	SND_SOC_DAPM_MIXER("O125", SND_SOC_NOPM, 0, 0, o125_mix, ARRAY_SIZE(o125_mix)),
++};
 +
-+/* AFE_VUL0_CON0 */
-+#define VUL0_ON_SFT                     28
-+#define VUL0_ON_MASK                    0x1
-+#define VUL0_ON_MASK_SFT                BIT(28)
-+#define VUL0_MODE_SFT                   8
-+#define VUL0_MODE_MASK                  0x1f
-+#define VUL0_MODE_MASK_SFT              (0x1f << 8)
-+#define VUL0_MONO_SFT                   4
-+#define VUL0_MONO_MASK                  0x1
-+#define VUL0_MONO_MASK_SFT              BIT(4)
-+#define VUL0_HALIGN_SFT                 2
-+#define VUL0_HALIGN_MASK                0x1
-+#define VUL0_HALIGN_MASK_SFT            BIT(2)
-+#define VUL0_HD_MODE_SFT                0
-+#define VUL0_HD_MODE_MASK               0x3
-+#define VUL0_HD_MODE_MASK_SFT           (0x3 << 0)
++static const struct snd_soc_dapm_route mtk_dai_etdm_routes[] = {
++	{"I150", NULL, "ETDM Capture"},
++	{"I151", NULL, "ETDM Capture"},
++	{"ETDM Playback", NULL, "O124"},
++	{"ETDM Playback", NULL, "O125"},
++	{"O124", "I032_Switch", "I032"},
++	{"O125", "I033_Switch", "I033"},
++};
 +
-+/* AFE_IRQ_MCU_CON */
-+#define IRQ_MCU_MODE_SFT                4
-+#define IRQ_MCU_MODE_MASK               0x1f
-+#define IRQ_MCU_MODE_MASK_SFT           (0x1f << 4)
-+#define IRQ_MCU_ON_SFT                  0
-+#define IRQ_MCU_ON_MASK                 0x1
-+#define IRQ_MCU_ON_MASK_SFT             BIT(0)
-+#define IRQ0_MCU_CLR_SFT                0
-+#define IRQ0_MCU_CLR_MASK               0x1
-+#define IRQ0_MCU_CLR_MASK_SFT           BIT(0)
-+#define IRQ1_MCU_CLR_SFT                1
-+#define IRQ1_MCU_CLR_MASK               0x1
-+#define IRQ1_MCU_CLR_MASK_SFT           BIT(1)
-+#define IRQ2_MCU_CLR_SFT                2
-+#define IRQ2_MCU_CLR_MASK               0x1
-+#define IRQ2_MCU_CLR_MASK_SFT           BIT(2)
++/* dai ops */
++static int mtk_dai_etdm_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++	int ret;
 +
-+/* ETDM_IN5_CON2 */
-+#define IN_CLK_SRC(x)                   ((x) << 10)
-+#define IN_CLK_SRC_SFT                  10
-+#define IN_CLK_SRC_MASK                 GENMASK(12, 10)
++	ret = clk_bulk_prepare_enable(afe_priv->num_clks, afe_priv->clks);
++	if (ret)
++		return dev_err_probe(afe->dev, ret, "Failed to enable clocks\n");
 +
-+/* ETDM_IN5_CON3 */
-+#define IN_SEL_FS(x)                    ((x) << 26)
-+#define IN_SEL_FS_SFT                   26
-+#define IN_SEL_FS_MASK                  GENMASK(30, 26)
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_OUT5_PDN_MASK, 0);
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_IN5_PDN_MASK, 0);
 +
-+/* ETDM_IN5_CON4 */
-+#define IN_RELATCH(x)                   ((x) << 20)
-+#define IN_RELATCH_SFT                  20
-+#define IN_RELATCH_MASK                 GENMASK(24, 20)
-+#define IN_CLK_INV                      BIT(18)
-+#define IN_CLK_INV_MASK                 BIT(18)
++	return 0;
++}
 +
-+/* ETDM_IN5_CON0 & ETDM_OUT5_CON0 */
-+#define RELATCH_SRC(x)                  ((x) << 28)
-+#define RELATCH_SRC_SFT                 28
-+#define RELATCH_SRC_MASK                GENMASK(30, 28)
-+#define ETDM_CH_NUM(x)                  (((x) - 1) << 23)
-+#define ETDM_CH_NUM_SFT                 23
-+#define ETDM_CH_NUM_MASK                GENMASK(27, 23)
-+#define ETDM_WRD_LEN(x)                 (((x) - 1) << 16)
-+#define ETDM_WRD_LEN_SFT                16
-+#define ETDM_WRD_LEN_MASK               GENMASK(20, 16)
-+#define ETDM_BIT_LEN(x)                 (((x) - 1) << 11)
-+#define ETDM_BIT_LEN_SFT                11
-+#define ETDM_BIT_LEN_MASK               GENMASK(15, 11)
-+#define ETDM_FMT(x)                     ((x) << 6)
-+#define ETDM_FMT_SFT                    6
-+#define ETDM_FMT_MASK                   GENMASK(8, 6)
-+#define ETDM_SYNC                       BIT(1)
-+#define ETDM_SYNC_MASK                  BIT(1)
-+#define ETDM_EN                         BIT(0)
-+#define ETDM_EN_MASK                    BIT(0)
++static void mtk_dai_etdm_shutdown(struct snd_pcm_substream *substream,
++				  struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
 +
-+/* ETDM_OUT5_CON4 */
-+#define OUT_RELATCH(x)                  ((x) << 24)
-+#define OUT_RELATCH_SFT                 24
-+#define OUT_RELATCH_MASK                GENMASK(28, 24)
-+#define OUT_CLK_SRC(x)                  ((x) << 6)
-+#define OUT_CLK_SRC_SFT                 6
-+#define OUT_CLK_SRC_MASK                GENMASK(8, 6)
-+#define OUT_SEL_FS(x)                   (x)
-+#define OUT_SEL_FS_SFT                  0
-+#define OUT_SEL_FS_MASK                 GENMASK(4, 0)
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_OUT5_PDN_MASK,
++			   CLK_OUT5_PDN);
++	regmap_update_bits(afe->regmap, AUDIO_TOP_CON2, CLK_IN5_PDN_MASK,
++			   CLK_IN5_PDN);
 +
-+/* ETDM_OUT5_CON5 */
-+#define ETDM_CLK_DIV                    BIT(12)
-+#define ETDM_CLK_DIV_MASK               BIT(12)
-+#define OUT_CLK_INV                     BIT(9)
-+#define OUT_CLK_INV_MASK                BIT(9)
++	clk_bulk_disable_unprepare(afe_priv->num_clks, afe_priv->clks);
++}
 +
-+/* ETDM_4_7_COWORK_CON0 */
-+#define OUT_SEL(x)                      ((x) << 12)
-+#define OUT_SEL_SFT                     12
-+#define OUT_SEL_MASK                    GENMASK(15, 12)
-+#endif
++static unsigned int get_etdm_ch_fixup(unsigned int channels)
++{
++	if (channels > 16)
++		return 24;
++	else if (channels > 8)
++		return 16;
++	else if (channels > 4)
++		return 8;
++	else if (channels > 2)
++		return 4;
++	else
++		return 2;
++}
++
++static int mtk_dai_etdm_config(struct mtk_base_afe *afe,
++			       struct snd_pcm_hw_params *params,
++			       struct snd_soc_dai *dai,
++			       int stream)
++{
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_etdm_priv *etdm_data = afe_priv->dai_priv[dai->id];
++	unsigned int rate = params_rate(params);
++	unsigned int etdm_rate = mt7986_etdm_rate_transform(afe->dev, rate);
++	unsigned int afe_rate = mt7986_afe_rate_transform(afe->dev, rate);
++	unsigned int channels = params_channels(params);
++	unsigned int bit_width = params_width(params);
++	unsigned int wlen = get_etdm_wlen(bit_width);
++	unsigned int val = 0;
++	unsigned int mask = 0;
++
++	dev_dbg(afe->dev, "%s(), stream %d, rate %u, bitwidth %u\n",
++		 __func__, stream, rate, bit_width);
++
++	/* CON0 */
++	mask |= ETDM_BIT_LEN_MASK;
++	val |= ETDM_BIT_LEN(bit_width);
++	mask |= ETDM_WRD_LEN_MASK;
++	val |= ETDM_WRD_LEN(wlen);
++	mask |= ETDM_FMT_MASK;
++	val |= ETDM_FMT(etdm_data->format);
++	mask |= ETDM_CH_NUM_MASK;
++	val |= ETDM_CH_NUM(get_etdm_ch_fixup(channels));
++	mask |= RELATCH_SRC_MASK;
++	val |= RELATCH_SRC(APLL_CLK);
++
++	switch (stream) {
++	case SNDRV_PCM_STREAM_PLAYBACK:
++		/* set ETDM_OUT5_CON0 */
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, mask, val);
++
++		/* set ETDM_OUT5_CON4 */
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
++				   OUT_RELATCH_MASK, OUT_RELATCH(afe_rate));
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
++				   OUT_CLK_SRC_MASK, OUT_CLK_SRC(APLL_CLK));
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON4,
++				   OUT_SEL_FS_MASK, OUT_SEL_FS(etdm_rate));
++
++		/* set ETDM_OUT5_CON5 */
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON5,
++				   ETDM_CLK_DIV_MASK, ETDM_CLK_DIV);
++		break;
++	case SNDRV_PCM_STREAM_CAPTURE:
++		/* set ETDM_IN5_CON0 */
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, mask, val);
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON0,
++				   ETDM_SYNC_MASK, ETDM_SYNC);
++
++		/* set ETDM_IN5_CON2 */
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON2,
++				   IN_CLK_SRC_MASK, IN_CLK_SRC(APLL_CLK));
++
++		/* set ETDM_IN5_CON3 */
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON3,
++				   IN_SEL_FS_MASK, IN_SEL_FS(etdm_rate));
++
++		/* set ETDM_IN5_CON4 */
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON4,
++				   IN_RELATCH_MASK, IN_RELATCH(afe_rate));
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mtk_dai_etdm_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params,
++				  struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++
++	mtk_dai_etdm_config(afe, params, dai, SNDRV_PCM_STREAM_PLAYBACK);
++	mtk_dai_etdm_config(afe, params, dai, SNDRV_PCM_STREAM_CAPTURE);
++
++	return 0;
++}
++
++static int mtk_dai_etdm_trigger(struct snd_pcm_substream *substream, int cmd,
++				struct snd_soc_dai *dai)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++
++	dev_dbg(afe->dev, "%s(), cmd %d, dai id %d\n", __func__, cmd, dai->id);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, ETDM_EN_MASK,
++				   ETDM_EN);
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, ETDM_EN_MASK,
++				   ETDM_EN);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		regmap_update_bits(afe->regmap, ETDM_IN5_CON0, ETDM_EN_MASK,
++				   0);
++		regmap_update_bits(afe->regmap, ETDM_OUT5_CON0, ETDM_EN_MASK,
++				   0);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mtk_dai_etdm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt7986_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_etdm_priv *etdm_data;
++	void *priv_data;
++
++	switch (dai->id) {
++	case MT7986_DAI_ETDM:
++		break;
++	default:
++		dev_warn(afe->dev, "%s(), id %d not support\n",
++			 __func__, dai->id);
++		return -EINVAL;
++	}
++
++	priv_data = devm_kzalloc(afe->dev, sizeof(struct mtk_dai_etdm_priv),
++				 GFP_KERNEL);
++	if (!priv_data)
++		return -ENOMEM;
++
++	afe_priv->dai_priv[dai->id] = priv_data;
++	etdm_data = afe_priv->dai_priv[dai->id];
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		etdm_data->format = MTK_DAI_ETDM_FORMAT_I2S;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		etdm_data->format = MTK_DAI_ETDM_FORMAT_DSPA;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		etdm_data->format = MTK_DAI_ETDM_FORMAT_DSPB;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		etdm_data->bck_inv = false;
++		etdm_data->lrck_inv = false;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		etdm_data->bck_inv = false;
++		etdm_data->lrck_inv = true;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		etdm_data->bck_inv = true;
++		etdm_data->lrck_inv = false;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		etdm_data->bck_inv = true;
++		etdm_data->lrck_inv = true;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		etdm_data->slave_mode = true;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		etdm_data->slave_mode = false;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops mtk_dai_etdm_ops = {
++	.startup = mtk_dai_etdm_startup,
++	.shutdown = mtk_dai_etdm_shutdown,
++	.hw_params = mtk_dai_etdm_hw_params,
++	.trigger = mtk_dai_etdm_trigger,
++	.set_fmt = mtk_dai_etdm_set_fmt,
++};
++
++/* dai driver */
++#define MTK_ETDM_RATES (SNDRV_PCM_RATE_8000_48000 |\
++			SNDRV_PCM_RATE_88200 |\
++			SNDRV_PCM_RATE_96000 |\
++			SNDRV_PCM_RATE_176400 |\
++			SNDRV_PCM_RATE_192000)
++
++#define MTK_ETDM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			  SNDRV_PCM_FMTBIT_S24_LE |\
++			  SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver mtk_dai_etdm_driver[] = {
++	{
++		.name = "ETDM",
++		.id = MT7986_DAI_ETDM,
++		.capture = {
++			.stream_name = "ETDM Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_ETDM_RATES,
++			.formats = MTK_ETDM_FORMATS,
++		},
++		.playback = {
++			.stream_name = "ETDM Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_ETDM_RATES,
++			.formats = MTK_ETDM_FORMATS,
++		},
++		.ops = &mtk_dai_etdm_ops,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
++	},
++};
++
++int mt7986_dai_etdm_register(struct mtk_base_afe *afe)
++{
++	struct mtk_base_afe_dai *dai;
++
++	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
++	list_add(&dai->list, &afe->sub_dais);
++
++	dai->dai_drivers = mtk_dai_etdm_driver;
++	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_etdm_driver);
++
++	dai->dapm_widgets = mtk_dai_etdm_widgets;
++	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_etdm_widgets);
++	dai->dapm_routes = mtk_dai_etdm_routes;
++	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_etdm_routes);
++
++	return 0;
++}
 -- 
 2.18.0
 
