@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CA4766224
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F428766226
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbjG1C5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
+        id S232144AbjG1C5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjG1C46 (ORCPT
+        with ESMTP id S229786AbjG1C5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:56:58 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A12B2135
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:56:54 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bbdc05a93bso9867975ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:56:54 -0700 (PDT)
+        Thu, 27 Jul 2023 22:57:44 -0400
+Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFC4213A;
+        Thu, 27 Jul 2023 19:57:43 -0700 (PDT)
+Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-583b3939521so17394907b3.0;
+        Thu, 27 Jul 2023 19:57:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690513014; x=1691117814;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ewkP+fmHss4rf5fbUWv/EEGxmt6BbWfLF1hqZGGiplc=;
-        b=QFRViFLG4n+6xeUQihXNdibwOjsEggW7wMy5EmI1udqq+jgL8F5EU5b2llFM3FvYSJ
-         WrnQjwXdVjwwVcWBuKigXquZFFcakgIE4xcsR4qKGFLciUgYWUxKoMBO01WXMW9SQv9W
-         lxpQrEsUpN0M3U71Ynl+ejCb1yFgruqQEKMZo1AiYyWW/NZ4v88wlyoLukM9ijQwGOJM
-         uy6TFPz53nUcc8Hg8DkQ4qmer3WegVso9gc7PG31ce0fFG6d/FrJltjVfqUNNjWu2XBM
-         lHbSx96ujkMSRfv7tV6WqSEDnaKiy4ZIRNfLeLT4H+ozIeXIoDGIbpze9s5xJqy6fyqo
-         S7yA==
+        d=gmail.com; s=20221208; t=1690513062; x=1691117862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OsaOUxGKCUymU5XYv3kBwo3bO2Reb2k4CNVi51cNoCA=;
+        b=AvI4pzn50m6Z4u+JcVsB4FGBnU5TVw1vda+BSDO1IiJHRfmQ+jOWSYr5tslGSBAFWG
+         /r42a+vYprV5AFLXj38ZTQyeNgwEci/tL00m7KK46qnUm+cKq+lMgqtVel1Jeps3E/kp
+         VPitOzL6WD0s8ObGvAN0HwIfvgH5YIgJx21BpUFITf5l3Ljt+1pXyvlQz6YdQ4tyt1jV
+         eZgOAeHCQkhPKRcsT69NnGYqYxmAaXLg5+JKytP0aX+TaAKr83PsXCRws+vn+W1BUlEM
+         xWOb4nSSKgfaboQYrinS3Cr+H8isUwMtQm7KPTW4wPBc3s7VG95hPOon/RAQZxFcl2DS
+         aGsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690513014; x=1691117814;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ewkP+fmHss4rf5fbUWv/EEGxmt6BbWfLF1hqZGGiplc=;
-        b=GibqweOmrkWl14X8jNlxXSf9TyWTGpqbCn2XJI0DUx3aGTq/tg+B9RDKfp59rSaPjl
-         /HH/3b9+1qpGTMKz7JHQctQqK7H/ZT5YKwCM2yFkMjoirUwfJdq6i2XHUL9Nd69tk3fT
-         Vc4d1pRw4AhXkviZpmHyWY5rB/FenpDPLy1x+EHLT/W+7vipHMe6A8IsE5l25uIHupj5
-         EnNZU2kDQ4l6tophDwkViLkchDA+0wLMYVyjoa4T6Sdy067xA/NH2fQvXce0K1HbVSvi
-         vnD5BM62SdKw6jguJJDL5QlEEefflsiTc4mD0VGOSJ+iDW/0AP7F5taZHwkPcuLAvLjd
-         XjmQ==
-X-Gm-Message-State: ABy/qLY5Uheq5P4TlETam1Bzx4DuZZzv4KhQPxdRxGe/vpoltf3Dg0tY
-        gdE5lh4ZlCvI4exMpDv24NyLZOWNt+2Jlmgy3w==
-X-Google-Smtp-Source: APBJJlFxQ90Alx8AU5MexunkvV8ksiaGkHdDV8tqLd3yiYFBexMo7dJ4W53DRJTcP72UwBrWUmm97Q==
-X-Received: by 2002:a17:902:db06:b0:1b8:8670:541 with SMTP id m6-20020a170902db0600b001b886700541mr335799plx.25.1690513013775;
-        Thu, 27 Jul 2023 19:56:53 -0700 (PDT)
-Received: from thinkpad ([2405:201:e002:907b:3cd6:46d1:3de:9a66])
-        by smtp.gmail.com with ESMTPSA id g14-20020a1709029f8e00b001b9dab0397bsm2349682plq.29.2023.07.27.19.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 19:56:53 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 08:26:48 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v10 0/4] PCI: qcom: ep: Add basic interconnect support
-Message-ID: <20230728025648.GC4433@thinkpad>
-References: <1689751218-24492-1-git-send-email-quic_krichai@quicinc.com>
+        d=1e100.net; s=20221208; t=1690513062; x=1691117862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OsaOUxGKCUymU5XYv3kBwo3bO2Reb2k4CNVi51cNoCA=;
+        b=UZYZpDInejFcFKBPffjaNzyjEitFq495fZrIQjnXYHVD6pTPhYEKNBSQqQhkAmOjkK
+         P07YRXAEebKc1UtvWD3Ncoev2O/Tr/sX52ZzUUvrxA3z6ZmtlGr7IM7HpqRM11gfdis0
+         12IDlgFC3BN7yc+D1MBNKI8kOcD5TpGeQlxUn69AICI06b2eR+uUKWGMjz5ib9c4dRrd
+         /yC6cvHSi4FHxLplbbeAUyZpgA0E8IXOz9PmOl1cq+YRRThgEQ4TTMnezRRlnDlL7TQb
+         r/LpN51wWjDhTRFzhcOtI8zbALXr2zHHkj0Nf6GeTARnupJXjHy4YhCatOMNpWBN0KZI
+         up7A==
+X-Gm-Message-State: ABy/qLbkVECKTHIld7SVK3lYCyqhsejOjn0cQnyoQwktBd10ueKrJzaa
+        ZJFZ+Z/+lM3eOR35D0ng0LpCa5VOwQEmm8nD5rw=
+X-Google-Smtp-Source: APBJJlGlA2T5FCdHiKh52XA6dYrRm3KVlVjVOLmOqr+mbwAk7TIBdfOzDK3sX3iqxcQJEv8xJdDJKkhV5hUyruwm1O8=
+X-Received: by 2002:a81:4703:0:b0:583:3c7e:7749 with SMTP id
+ u3-20020a814703000000b005833c7e7749mr558721ywa.41.1690513062128; Thu, 27 Jul
+ 2023 19:57:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1689751218-24492-1-git-send-email-quic_krichai@quicinc.com>
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+In-Reply-To: <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Fri, 28 Jul 2023 10:57:30 +0800
+Message-ID: <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
+ icsk->icsk_timeout in tcp_retransmit_timer()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>,
+        Neal Cardwell <ncardwell@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:50:14PM +0530, Krishna chaitanya chundru wrote:
-> Add basic support for managing "pcie-mem" interconnect path by setting
-> a low constraint before enabling clocks and updating it after the link
-> is up based on link speed and width the device got enumerated.
-> 
+On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail.com> wrote:
+> >
+> > From: Menglong Dong <imagedong@tencent.com>
+> >
+> > In tcp_retransmit_timer(), a window shrunk connection will be regarded
+> > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is n=
+ot
+> > right all the time.
+> >
+> > The retransmits will become zero-window probes in tcp_retransmit_timer(=
+)
+> > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
+> > TCP_RTO_MAX sooner or later.
+> >
+> > However, the timer is not precise enough, as it base on timer wheel.
+> > Sorry that I am not good at timer, but I know the concept of time-wheel=
+.
+> > The longer of the timer, the rougher it will be. So the timeout is not
+> > triggered after TCP_RTO_MAX, but 122877ms as I tested.
+> >
+> > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always tru=
+e
+> > once the RTO come up to TCP_RTO_MAX.
+> >
+> > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout=
+',
+> > which is exact the timestamp of the timeout.
+> >
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > ---
+> >  net/ipv4/tcp_timer.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> > index 470f581eedd4..3a20db15a186 100644
+> > --- a/net/ipv4/tcp_timer.c
+> > +++ b/net/ipv4/tcp_timer.c
+> > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock *sk)
+> >                                             tp->snd_una, tp->snd_nxt);
+> >                 }
+> >  #endif
+> > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
+> > +               /* It's a little rough here, we regard any valid packet=
+ that
+> > +                * update tp->rcv_tstamp as the reply of the retransmit=
+ted
+> > +                * packet.
+> > +                */
+> > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstamp > TCP_RTO_=
+MAX) {
+> >                         tcp_write_err(sk);
+> >                         goto out;
+> >                 }
+>
+>
+> Hmm, this looks like a net candidate, since this is unrelated to the
+> other patches ?
 
-Krzysztof, can this series be merged for 6.6? Bjorn A will pick the dts patches.
+Yeah, this patch can be standalone. However, considering the
+purpose of this series, it is necessary. Without this patch, the
+OOM probe will always timeout after a few minutes.
 
-- Mani
+I'm not sure if I express the problem clearly in the commit log.
+Let's explain it more.
 
-> changes from v9:
-> 	- addressed the comments by mani.
-> changes from v8:
->         - Added cpu to pcie path in dtsi and in dtsi binding.
-> changes from v7:
->         - setting icc bw to '0' in disable resources as suggested by mani.
-> changes from v6:
->         - addressed the comments as suggested by mani.
-> changes from v5:
->         - addressed the comments by mani.
-> changes from v4:
->         - rebased with linux-next.
->         - Added comments as suggested by mani.
->         - removed the arm: dts: qcom: sdx55: Add interconnect path
->           as that patch is already applied.
-> changes from v3:
->         - ran make DT_CHECKER_FLAGS=-m dt_binding_check and fixed
->          errors.
->         - Added macros in the qcom ep driver patch as suggested by Dmitry
-> changes from v2:
->         - changed the logic for getting speed and width as suggested
->          by bjorn.
->         - fixed compilation errors.
-> 
-> 
-> Krishna chaitanya chundru (4):
->   PCI: qcom-ep: Add ICC bandwidth voting support
->   arm: dts: qcom: sdx65: Add PCIe EP interconnect path
->   arm: dts: qcom: sdx55: Add CPU PCIe EP interconnect path
->   dt-bindings: PCI: qcom: ep: Add interconnects path
-> 
->  .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 15 +++++
->  arch/arm/boot/dts/qcom/qcom-sdx55.dtsi             |  5 +-
->  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi             |  4 ++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c          | 71 ++++++++++++++++++++++
->  4 files changed, 93 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.7.4
-> 
+Let's mark the timestamp of the 10th timeout of the rtx timer
+as TS1. Now, the retransmission happens and the ACK of
+the retransmitted packet will update the tp->rcv_tstamp to
+TS1+rtt.
 
--- 
-மணிவண்ணன் சதாசிவம்
+The RTO now is TCP_RTO_MAX. So let's see what will
+happen in the 11th timeout. As we timeout after 122877ms,
+so tcp_jiffies32 now is "TS1+122877ms", and
+"tcp_jiffies32 - tp->rcv_tstamp" is
+"TS1+122877ms - (TS1+rtt)" -> "122877ms - rtt",
+which is always bigger than TCP_RTO_MAX, which is 120000ms.
+
+>
+> Neal, what do you think ?
