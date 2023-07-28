@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA58766FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E62766FA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbjG1OlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S237222AbjG1Oms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237181AbjG1OlE (ORCPT
+        with ESMTP id S237216AbjG1Omq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:41:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083813C31
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:41:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 738666216F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:41:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E46AC433C8;
-        Fri, 28 Jul 2023 14:41:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690555261;
-        bh=kSXsnHnwVcJeZp6xR87fgehZfFMYiwcUJhbgW1tPkp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LOM6vudpAc9TxxYRLu9oYyWRiQzi3SLFY4/7ktvnUqaD0+H6Uensn1ACf9+BWOyD1
-         yPWlQ7JqpbKqgrqQpAeTNauI+mozOUVOJwnTk2jzLT6NvBVmd6+rq5O1uRb1SEs8Np
-         DeuuhuBLhPIQpK3AZQbjaIJgMNifZ1UOUdIbXsZXQk1cX00smBn0/V404oT5Npfl2a
-         QaTPxBpgo0+9UjhpEoC3FnR2Qb58MlHPKSSNIVQ6Lk3UUmwlbm80s331IiVP14FyKC
-         x5SXJM1rczf546NzeJevmgy+hpKqS2ws7yhQRs+yybC2ZuUNAzgJxg9RjPoWRkBXtM
-         utfFNV6zclPww==
-Date:   Fri, 28 Jul 2023 15:40:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm_pmu: acpi: Add a representative platform device
- for TRBE
-Message-ID: <20230728144056.GE21718@willie-the-truck>
-References: <20230728112733.359620-1-anshuman.khandual@arm.com>
- <20230728112733.359620-2-anshuman.khandual@arm.com>
+        Fri, 28 Jul 2023 10:42:46 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ABE1AD;
+        Fri, 28 Jul 2023 07:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1690555313; x=1691160113; i=georgmueller@gmx.net;
+ bh=M/WETmw5YIFP0LfRJ5a0hlrmqjLYh88H3TYqQUuDLdg=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=irSBPPfsD9YZWAOoLipis84tV4HY5LroJoPAytKtykYfw9PxsUvriC+YKqWh6yTuAizMhy7
+ pRAvDM7vGICrT/FKpnz7bp+NhefqKYSasC2tqDJBXp2v4Za009ZmyP5L5byKVpWexWU4y7MI7
+ Lf+nO7EAXI1jNkYySLM8WTz/bU4PTME5Afai9Vr6Bz7H+DFywHvaOB1/TVpz8g1rBtrfMcl4o
+ iYciGffDtIZlV+e180y/dcklMQJrgUGoK+Z+Ow5U554VvFzj37No6kWTYIwL2SMAHicCJtXFl
+ w10YdaTU+VDyfIxpwHR5I3ildC6jXqYkpd7eMluRWpT+xZhG6Ncg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.54.0.101] ([79.246.95.128]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfYLa-1pweU51ln6-00g23i; Fri, 28
+ Jul 2023 16:41:53 +0200
+Message-ID: <adcb2f0e-9db1-dd5a-91dd-6f5567357174@gmx.net>
+Date:   Fri, 28 Jul 2023 16:41:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728112733.359620-2-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] perf probe: add test for regression introduced by
+ switch to die_get_decl_file
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        regressions@lists.linux.dev,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230628082337.1857302-1-georgmueller@gmx.net>
+ <20230628082337.1857302-2-georgmueller@gmx.net>
+ <CAP-5=fUP6UuLgRty3t2=fQsQi3k4hDMz415vWdp1x88QMvZ8ug@mail.gmail.com>
+From:   =?UTF-8?Q?Georg_M=c3=bcller?= <georgmueller@gmx.net>
+In-Reply-To: <CAP-5=fUP6UuLgRty3t2=fQsQi3k4hDMz415vWdp1x88QMvZ8ug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sDrqkfLvyKv87wPdI67Pfq8Dl0IoJ7GwNZNYrQTBseNuxPM0HT1
+ qaKXhyQgK8x53dir8/keVvV22/H9RvuV71zhL1tJG6CDG1X4iCBQxMORJKb8tItAU7iI9IX
+ heIB3x11p57i727oXCjTtGgruGT5oIT7tJukV+4omfX7u6h1x+dBmFZoC8eTsDC2H4XXl8f
+ RCUgGladaVclQG/JHOtbg==
+UI-OutboundReport: notjunk:1;M01:P0:jMofSfNp27s=;ALDfp4otrWiPAi0bWjifjlNZHxp
+ FBbnIv+agpXiztrLKqyKpIQny49hWZ/AfZHlEqm0cFNlKQAMXWdBWzSA7arZy6yw9shgjbwiz
+ Sk6IirbVwFZpg51EOEGApCAw3zaWP9d5fY5zwJYfCsSFmuTXBkqS3lnYOTuT3U6Npt75H3B9l
+ C22ALRlC3RLbO9rCMTPJCLrhvlBbXVErl6FdsGuFgH/2SiKD12cODw0HENT7fkWwmBrrMA27x
+ rswn5qfdcr84cbvauFzegSqfNKAioIqCDCtWA7KKYWCLfNR5bfUdin0EHapSO0LGSWgoGIFxE
+ 029AZGpjK4D9RM3ncmPDJ8m31dhvEEyIE++JhRtW6+cqq9Lg6q8cG0tDOeOzPCLZ3KV+b3FcO
+ iQi2aUm6aiwE5m0zKFGktutYM66VooTrUJJaocfB26IN/bQ5EahN2wYciKqX+aiwWYTMnWMGn
+ fYJJSq534xJNFez2X1DaNMQ1TtamRDDxmoETXUmd+TozWRAMisn6/2tP+MyzFLPAe66A5wPnp
+ JSmcyaGgF1t+S/utiBz6QbZRwH/uaEviIFZnnI67CyfdFdmCk3QB5FTiRMCXkdcoJrEvwwtOu
+ O+p2TjUOwg1ZLQXgwaGMegIqtrmBKA75q6CHA45ykdIr4TOzyozuBVBWsoylWgfQzL3srPqaW
+ SXHIZY6xOjQtVvhjWhc8PSv+7jQKJQTV2zvazKzX8OJVhjx39NXkkifPO4A9dMkehmSz0vrSK
+ QzVBPEyaVyvhol5UQbKEsX/u3lv7SgYopDVxeYyI4q+GP5iQM/meAl3z6hZuNmHaEmVkne577
+ xc90UBXi5Cjdm2CbuPPWPHMLOrmY66XtBgdpOw9BX/oIH52isqOtnW0KTzTU0HwwwlclTtHJM
+ 5qtxKPThslkhRUT8pYdHygR3tCS7eM+O5xtuzNXeRtVp8ik8RQJfZaIuvf+eHl/gQV7Lqi5PS
+ m83DSw==
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 04:57:31PM +0530, Anshuman Khandual wrote:
-> ACPI TRBE does not have a HID for identification which could create and add
-> a platform device into the platform bus. Also without a platform device, it
-> cannot be probed and bound to a platform driver.
-> 
-> This creates a dummy platform device for TRBE after ascertaining that ACPI
-> provides required interrupts uniformly across all cpus on the system. This
-> device gets created inside drivers/perf/arm_pmu_acpi.c to accommodate TRBE
-> being built as a module.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
---->8
+Am 27.07.23 um 19:45 schrieb Ian Rogers:
+> On Wed, Jun 28, 2023 at 1:25=E2=80=AFAM Georg M=C3=BCller <georgmueller@=
+gmx.net> wrote:
+>
+> Thanks for the test Georg! By directly relying on gcc this test fails
+> for me in some constrained environments, like containers. I think
+> there should be a skip if gcc isn't present. A different option is to
+> just build the test code into the perf binary itself as a test
+> workload:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git=
+/tree/tools/perf/tests/workloads?h=3Dperf-tools-next
+>
+> Wdyt? Thanks,
+> Ian
+>
 
-> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-> index 90815ad762eb..dd3df6729808 100644
-> --- a/drivers/perf/arm_pmu_acpi.c
-> +++ b/drivers/perf/arm_pmu_acpi.c
-> @@ -139,6 +139,68 @@ static inline void arm_spe_acpi_register_device(void)
->  }
->  #endif /* CONFIG_ARM_SPE_PMU */
->  
-> +#ifdef CONFIG_CORESIGHT_TRBE
-> +static struct resource trbe_acpi_resources[] = {
-> +	{
-> +		/* irq */
-> +		.flags          = IORESOURCE_IRQ,
-> +	}
-> +};
-> +
-> +static struct platform_device trbe_acpi_dev = {
-> +	.name = ARMV8_TRBE_PDEV_NAME,
-> +	.id = -1,
-> +	.resource = trbe_acpi_resources,
-> +	.num_resources = ARRAY_SIZE(trbe_acpi_resources)
-> +};
-> +
-> +static void arm_trbe_acpi_register_device(void)
-> +{
-> +	int cpu, hetid, irq, ret;
-> +	bool first = true;
-> +	u16 gsi = 0;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		struct acpi_madt_generic_interrupt *gicc;
-> +
-> +		gicc = acpi_cpu_get_madt_gicc(cpu);
-> +		if (gicc->header.length < ACPI_MADT_GICC_TRBE)
-> +			return;
-> +
-> +		if (first) {
-> +			gsi = gicc->trbe_interrupt;
-> +			if (!gsi)
-> +				return;
-> +
-> +			hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> +			first = false;
-> +		} else if ((gsi != gicc->trbe_interrupt) ||
-> +			   (hetid != find_acpi_cpu_topology_hetero_id(cpu))) {
-> +			pr_warn("ACPI: TRBE must be homogeneous\n");
-> +			return;
-> +		}
-> +	}
-> +
-> +	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-> +	if (irq < 0) {
-> +		pr_warn("ACPI: TRBE Unable to register interrupt: %d\n", gsi);
-> +		return;
-> +	}
-> +	trbe_acpi_resources[0].start = irq;
-> +
-> +	ret = platform_device_register(&trbe_acpi_dev);
-> +	if (ret < 0) {
-> +		pr_warn("ACPI: TRBE: Unable to register device\n");
-> +		acpi_unregister_gsi(gsi);
-> +	}
-> +}
-> +#else
-> +static inline void arm_trbe_acpi_register_device(void)
-> +{
-> +
-> +}
-> +#endif /* CONFIG_CORESIGHT_TRBE */
+I prepare a commit which checks for gcc and skips the test in this case.
 
-This looks like you ran s/spe/trbe/ over the SPE device registration
-code :)
+I think building thi test code into the perf binary itself is not an optio=
+n
+here, since the test relies on a special setup of using -flto for one of t=
+he
+compilation units.
 
-Please can you refactor things so we don't have all the duplication? I
-suspect this won't be the last device which needs the same treatement.
+There is also a cleanup issue if anything fails. This will be included in
+the patch as well.
 
-Cheers,
-
-Will
+Best regards,
+Georg
