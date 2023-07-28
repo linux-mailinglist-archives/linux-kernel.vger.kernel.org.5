@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3697673FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FE0767409
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbjG1Rye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45426 "EHLO
+        id S233612AbjG1Rz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233612AbjG1Ryb (ORCPT
+        with ESMTP id S232346AbjG1Rzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:54:31 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8AD3C2A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:54:14 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-348c7075afcso6575ab.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:54:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690566854; x=1691171654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G9AAgjBmyD799jjvKnH8ZnrCuWVbFIsU8j6BR3fo8nI=;
-        b=IFMJ07Jo5MYfc9jdSIkyL82QFEQawGu9euKN/ce2G+5PIx7+8KWxnLSHh3Gx9HO21J
-         4w8Kpw2y8qhWKSAJInH+bR9CThehc0Y7cOfD+MTByzzM/5BLVWzh1IWBCm/iBaBgTh9R
-         TTGw3M5cIz6sGBFiX5FYij5Ev94R6UNdOAlIZWq+34Lb76z+T791T2SSNcp3mkHi5WMK
-         FmTcRrU4bNODUY54dsMvzb7wYn9nWETgzSbQS6mazUnuxsTBfk0AqYpSf97+JPE0qmcJ
-         HG8wpPiIfPRYEyB3j1d+PjRP6zV+9iqjFl8ilKpJ0Z0I/T19cOCa8S70OzmDe2qXRkmr
-         460w==
+        Fri, 28 Jul 2023 13:55:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BD410CB
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690566899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5BKzqiVvDxpi79QFmZnEbX/IsAn0VcOVhbxmE8BoKs=;
+        b=Mgr42134k7//Fz4TY5OJV5SMK70WnwtrAcSW9xoR97WffnTYaSG+NWSX5n8sqvNKBogowr
+        0A07ZaIfoqmutHFCLDsx/dW6U7cwaltlkNSkXGJpTI5OppSUNid94uCIRiCq/fItG5RrZj
+        D1xDmvbh7D+GhrxGE+HtI87h5P0kza8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-169-R7tNtWu2N0Wax3teaPI3rw-1; Fri, 28 Jul 2023 13:54:57 -0400
+X-MC-Unique: R7tNtWu2N0Wax3teaPI3rw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso12849185e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:54:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690566854; x=1691171654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G9AAgjBmyD799jjvKnH8ZnrCuWVbFIsU8j6BR3fo8nI=;
-        b=h1Ety9v62g40hFtBzthaJB2w8ZFd2fXXa855vYVLozZ0Qxfv0APhMOFlzbx5cytzk2
-         wtrToEBgCS9Wx3+cp1wcOT6RMiw3lWPmi96BDvI1Iy8kxOIAZVqefEauMIPo+Pkpfywi
-         qbYbU+Mc4GcE2IDCy85On1z3HQYlh6O0l1mVDbMyfAB9xsmAJp01E4YCKHaUUgnn1soB
-         w0w5TtKSzhaL8nkmzddTUuTfQKl9X2RjFoCPRvPfPewlMBz6tgxyfEjm7S+sJx4CiNEQ
-         paTXGPWuSquLIFaDT9Upn/ywqH2i2oMGBlymCfNv8pIPslkkusFrHv0MJfCv8xEAdw+T
-         iGIg==
-X-Gm-Message-State: ABy/qLZFy6DwbKr+vzC6TXryCc808iEhStVWJOlSR1/pnVmhCX805UTp
-        3Ixv8bpQx2wDJXEKV2JwnIh/2oRKc6VILgmm5mopfg==
-X-Google-Smtp-Source: APBJJlH/oBIkVtQyGOMeYkPz/oJFbJ6Z643p7i54IVii3VDnaU3OEiAeI27Lip+S4Yd4zw51VVx8Ytw/k/UXxrnWNE0=
-X-Received: by 2002:a05:6e02:156d:b0:348:d8e1:50c2 with SMTP id
- k13-20020a056e02156d00b00348d8e150c2mr11186ilu.15.1690566853890; Fri, 28 Jul
- 2023 10:54:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690566896; x=1691171696;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z5BKzqiVvDxpi79QFmZnEbX/IsAn0VcOVhbxmE8BoKs=;
+        b=MdfgAvs5MGqj9GNtuaxyeukRXYJJf8TAWpcJ5Y+xy7WmiayfZ8h4qq2Gg+uHG6QO0F
+         AKyMLi3DQrcmi9Gd+xc8aV4FjYs97lU3d+yC7djIGopN3cUBZEq+Te/EWnn4jbl5FeHG
+         qvuQVN1zZXamu5V39ZvpdCbPg77I6IXtauLhHvvYS9POpS9S2rmN48HB6NPLrbQewIs5
+         nYRgYylM2Zz6+pRgh7fg0ul3YDLEWIQcihi5PpoArFe64aDAl3dsftok5NvQMLDoi6CC
+         TN837x2XiT9SYcr3ftInftQwybKZ3TwA/6nH+Dq13OFKnqdlH3LiVa75FWhXN7wm4q53
+         Ezkg==
+X-Gm-Message-State: ABy/qLZC5Pzk1j6LyOvYzsJEZGqyQsfGubF6Z8/ccO9JotkQayOXIErk
+        cOuFq4Ah2pbLCB0vfAlAbmMLDzlosby9dzsqwDRS0jnjqficMMjg5lytS4FykwoW1QcCvItBtaf
+        4noLHQ7taEfFjMupTrc33APuQ
+X-Received: by 2002:a7b:cd8c:0:b0:3fb:fa9f:5292 with SMTP id y12-20020a7bcd8c000000b003fbfa9f5292mr2354778wmj.25.1690566896496;
+        Fri, 28 Jul 2023 10:54:56 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlG7SOsuepFtym4CnisxHoIJWa6n6aCxJkcZmmuVxr7VgQqWSHOCuv9c22vtqlzHoKGzRhjwVA==
+X-Received: by 2002:a7b:cd8c:0:b0:3fb:fa9f:5292 with SMTP id y12-20020a7bcd8c000000b003fbfa9f5292mr2354756wmj.25.1690566896027;
+        Fri, 28 Jul 2023 10:54:56 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c029100b003f9bd9e3226sm4760553wmk.7.2023.07.28.10.54.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 10:54:55 -0700 (PDT)
+Message-ID: <29a7a660-ea24-abcd-ba7a-beef9c074340@redhat.com>
+Date:   Fri, 28 Jul 2023 19:54:54 +0200
 MIME-Version: 1.0
-References: <20230727141428.962286-1-alexghiti@rivosinc.com> <20230727141428.962286-11-alexghiti@rivosinc.com>
-In-Reply-To: <20230727141428.962286-11-alexghiti@rivosinc.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 28 Jul 2023 10:54:02 -0700
-Message-ID: <CAP-5=fXvqJk9hA51pDSXodEWSP4DzN+RJ1scpyzJOrxk2w5kjg@mail.gmail.com>
-Subject: Re: [PATCH v4 10/10] perf: tests: Adapt mmap-basic.c for riscv
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <anup@brainfault.org>,
-        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
+Organization: Red Hat
+In-Reply-To: <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 7:30=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> riscv now supports mmaping hardware counters to userspace so adapt the te=
-st
-> to run on this architecture.
->
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  tools/perf/tests/mmap-basic.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.=
-c
-> index e68ca6229756..f5075ca774f8 100644
-> --- a/tools/perf/tests/mmap-basic.c
-> +++ b/tools/perf/tests/mmap-basic.c
-> @@ -284,7 +284,7 @@ static struct test_case tests__basic_mmap[] =3D {
->                          "permissions"),
->         TEST_CASE_REASON("User space counter reading of instructions",
->                          mmap_user_read_instr,
-> -#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__) || =
-__riscv_xlen =3D=3D 64
+[...]
 
-Same comment relating to the guard, why not defined(__riscv) ?
+> 
+> There was the case for "FOLL_PIN represents application behavior and
+> should trigger NUMA faults", but I guess that can be ignored.
+> 
+> But it would be much better to just remove all that if we can.
+> 
+> Let me look into some details.
 
-Thanks,
-Ian
+I just stumbled over the comment from Mel in follow_trans_huge_pmd():
 
->                          "permissions"
->  #else
->                          "unsupported"
-> @@ -292,7 +292,7 @@ static struct test_case tests__basic_mmap[] =3D {
->                 ),
->         TEST_CASE_REASON("User space counter reading of cycles",
->                          mmap_user_read_cycles,
-> -#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__) || =
-__riscv_xlen =3D=3D 64
->                          "permissions"
->  #else
->                          "unsupported"
-> --
-> 2.39.2
->
+/* Full NUMA hinting faults to serialise migration in fault paths */
+
+It dates back to
+
+commit 2b4847e73004c10ae6666c2e27b5c5430aed8698
+Author: Mel Gorman <mgorman@suse.de>
+Date:   Wed Dec 18 17:08:32 2013 -0800
+
+     mm: numa: serialise parallel get_user_page against THP migration
+     
+     Base pages are unmapped and flushed from cache and TLB during normal
+     page migration and replaced with a migration entry that causes any
+     parallel NUMA hinting fault or gup to block until migration completes.
+     
+     THP does not unmap pages due to a lack of support for migration entries
+     at a PMD level.  This allows races with get_user_pages and
+     get_user_pages_fast which commit 3f926ab945b6 ("mm: Close races between
+     THP migration and PMD numa clearing") made worse by introducing a
+     pmd_clear_flush().
+     
+     This patch forces get_user_page (fast and normal) on a pmd_numa page to
+     go through the slow get_user_page path where it will serialise against
+     THP migration and properly account for the NUMA hinting fault.  On the
+     migration side the page table lock is taken for each PTE update.
+
+
+We nowadays do have migration entries at PMD level -- and setting FOLL_FORCE
+could similarly trigger such a race.
+
+So I suspect we're good.
+
+-- 
+Cheers,
+
+David / dhildenb
+
