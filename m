@@ -2,106 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 562667676F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF837676F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbjG1UYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S232634AbjG1UZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjG1UYX (ORCPT
+        with ESMTP id S229588AbjG1UZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:24:23 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3FF421D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:24:22 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so612125a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:24:22 -0700 (PDT)
+        Fri, 28 Jul 2023 16:25:35 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0375421D;
+        Fri, 28 Jul 2023 13:25:33 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe0e23a4b1so4287056e87.3;
+        Fri, 28 Jul 2023 13:25:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690575860; x=1691180660;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=SyWx051AYSsya+pzm/2CESWC0aQN46Y6mRWxZ4kl/fY=;
-        b=egf2Rz95PyDNX8IizAW5XrdqSjJf6qdj38CzmhwqczML/OIYIUEuzt9pfAc90nEwLn
-         jtrv37frD//VlJOKN/DiRV7n3B+e0UzFXmPcUP1GLQcTaL3zzszw5xdf3lTmApyk7snC
-         9Pl+9nqxnXuQJAozoq2qAzwf1Zh5AmyeKiNlBXUja2713h5BERQB84hq/L9qu0ZwqLaN
-         cEzzD44FyZg5mBDjNzRXbx71ke7ANxmL3IpjKFsEKVkvjEaibWhjubR+cKUmPajIFslc
-         y0arK5e8DhN0ZvHgPue4HrLhR8TtF0TiQxDuxWRox/xqamiiIUR0nDyh8Wj7nIAB0JnC
-         NKAA==
+        d=gmail.com; s=20221208; t=1690575932; x=1691180732;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p5zFoHHbl1khNeaZtgyvQfmr2Eml2xUSE31w1MROj8s=;
+        b=Mvp+uZ2ubAXR7fJy2rP/rjMADNJ8iWiCFTmuuQLAUa2cvN9t5ZQKVS/Kvjj5FbuH1o
+         SkTTPk0FT2yY4AEEZC/R/ouurPlLpT4t/HOq1wUbB+6YMZeIVmPLZvSzpKxD+9K+flOJ
+         frJbPrjnz4NZGqIpnaEB6JoNuvD7Upq0U2EM+kErzKEZA5C6Q9TgUv3ttDhDuBCLs01x
+         roY2ooPQKOf58tF6n/XA8RqBQnFoF+e1brkbQOD3oCkbSibtAw7uF3jpgiGa20R5gQp5
+         VAw3pFMmOtHwl0yl1snJ1oktiNbEFjM9Umo9Fe4J14Bibt083/bxTLsPhvwIEixwsKvb
+         sgCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690575860; x=1691180660;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SyWx051AYSsya+pzm/2CESWC0aQN46Y6mRWxZ4kl/fY=;
-        b=LjOgDnK/B2AsQ9RggSm+xcD1JDGPHsQK82FaJjZKTIZvmLQVmeX7DPoQsXrPt/kzuG
-         7zCwSQ1/qSHrkxwZyA4btfcwzlHlXu9DV5lPJAYOCdpdh9zr0oZwxXhUu7HfOvQSDHyu
-         vtOo/a7UGVbHV8BtlXcR3l2E9BAwc8wsxim1hvA7mdsscpGWa23dzkc9qV9z/qsRj9q9
-         BeYl+nj/JHmmTGzERrXlI33Z+GkYo4UxKj9cOgoJZnMgUnmMNvJI07W0OceA08psi9AH
-         +GQXwV+Ur2W7nmWrlPooyX7l21bMniJoP38Fyr0QtbsKV0J888M+GQ0OVNvMpRhHCBgn
-         dniQ==
-X-Gm-Message-State: ABy/qLa7Rg6cHZJf4BoRzNX2+6I1DsPlIpPRMdtxGR00bNsWs70LUnuP
-        qtFZ1vsRJqFaBmmu9cEALzfeCQbQAiv7QN0/EB1CEJuO+adHVw==
-X-Google-Smtp-Source: APBJJlEQwAAJE7THVOfVT1AKUCR/Luci/f2ahGxKh3rLvwitZerOsACiJW4U0DagAxUgQaNb1ooPI7Jg1NHOERc4tVs=
-X-Received: by 2002:aa7:d507:0:b0:522:3a28:feca with SMTP id
- y7-20020aa7d507000000b005223a28fecamr2821803edq.24.1690575860450; Fri, 28 Jul
- 2023 13:24:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690575932; x=1691180732;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p5zFoHHbl1khNeaZtgyvQfmr2Eml2xUSE31w1MROj8s=;
+        b=E/K4M/FMgf+v0oS658jL6mdxJAXDf4lxCcGYjnebLv9XDnYPZHa17TN7rkENSw6xDI
+         y4uKAhRWZHlnOzZpNB+VyimogyfSZvHG2kf0G48afH8QEJ2LZS0LcpiUv3tK87U3aqQH
+         Mgt/+iw/6R4JGRwUl3YlvlA1rhMpsOER85FiWKnzGdU61VwSjGr/ZUkP2VpbKieoZg9q
+         ofcfgE22CcpIr93wGXZlE7BAops3jkmVXXwmXyz4dkMV56TAI7HSuYJeJLHCobUAd/RN
+         0T0ltmhjzkaCjnEybFwYL0731tIHvArXXzeomfs3+EIJOgA8VRDzPJKP05Gy3rRXeErq
+         sH0w==
+X-Gm-Message-State: ABy/qLbOMAOwghtAAdsihtNoX1QEYHFllRr+r4qZmdrFzTTVOrD/rInp
+        zJLgavLoPxrzDKKo8fzmpt4=
+X-Google-Smtp-Source: APBJJlGT5wQqKEBo7g6Vlgk7jSYvRDN95uB5jwEuNX9pjmCrlHmNhjuVQwfT9dUq+K8snBX+L9df6g==
+X-Received: by 2002:ac2:4e8c:0:b0:4fe:993:2218 with SMTP id o12-20020ac24e8c000000b004fe09932218mr2420186lfr.31.1690575931619;
+        Fri, 28 Jul 2023 13:25:31 -0700 (PDT)
+Received: from localhost ([2a05:3580:f312:6c00:826c:ae47:61a7:8af8])
+        by smtp.gmail.com with ESMTPSA id x17-20020ac24891000000b004fe1960dd7csm854139lfc.132.2023.07.28.13.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 13:25:30 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 23:25:30 +0300
+From:   Andrey Skvortsov <andrej.skvortzov@gmail.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Subject: Re: [PATCH] arm64: dts: pinephone: Add pstore support for PinePhone
+ A64
+Message-ID: <ZMQkOpDzyNx7Y44F@skv.local>
+Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>
+References: <20230724213457.24593-1-andrej.skvortzov@gmail.com>
+ <7f4a7739-cb03-bda8-df90-e8eb119b732b@arm.com>
 MIME-Version: 1.0
-Received: by 2002:aa7:c6d2:0:b0:51e:1856:95ca with HTTP; Fri, 28 Jul 2023
- 13:24:19 -0700 (PDT)
-Reply-To: mrsmadinadina@gmail.com
-From:   MADINA DINA <dmadinadina@gmail.com>
-Date:   Fri, 28 Jul 2023 21:24:19 +0100
-Message-ID: <CAFNMNTjmH2RbHdkn7eruxgs3jCmtgZQK_3mtB2+SX8D6L+BCzw@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:542 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [dmadinadina[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7f4a7739-cb03-bda8-df90-e8eb119b732b@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Hello beloved,
+On 23-07-27 15:57, Andre Przywara wrote:
+> Hi,
+> 
+> On 24/07/2023 22:34, Andrey Skvortsov wrote:
+> > This patch reserves some memory in the DTS and sets up a
+> > pstore device tree node to enable pstore support.
+> > 
+> > Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+> > 
+> > Gbp-Pq: Topic pinephone
+> > Gbp-Pq: Name 0161-arm64-dts-pinephone-Add-pstore-support-for-PinePhone.patch
+> > ---
+> >   .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 16 ++++++++++++++++
+> >   1 file changed, 16 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > index 87847116ab6d..84f9410b0b70 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
+> > @@ -19,6 +19,22 @@ aliases {
+> >   		serial0 = &uart0;
+> >   	};
+> > +	reserved-memory {
+> > +		#address-cells = <1>;
+> > +		#size-cells = <1>;
+> > +		ranges;
+> > +
+> > +		pstore_mem: ramoops@61000000 {
+> > +			compatible = "ramoops";
+> > +			reg = <0x61000000 0x100000>;
+> 
+> So what's the significance of this address? That's 528MB into DRAM, so
+> somewhat in the middle of it, fragmenting the physical address space.
+> And is there any other firmware component that needs to know about this
+> address?
 
-I am Mrs Madina Dina, I am a sick woman who was diagnosed with cancer six
-years ago. My main reason for contacting you is because I want to entrust a
-charity project to you, I know this may sound so strange to you and also
-extremely risky for me to offer such a proposal to a total stranger via
-email but this is my last resort to get this done. I am looking for a
-confidant, someone to help fulfill my last wish. Hope to read from you. I
-will appreciate your selfless act towards the less privileged, I don=E2=80=
-=99t mind
-if you could be of trustful help. I will be waiting to read from you
-urgently as time is of essence due the limited time I have and my ill
-health condition.
+Hi, Andre,
+
+there is nothing special about this address.
+Range from 0x40000000 - 0x50000000 is heavily used by u-boot for
+internal use and to load kernel, fdt, fdto, scripts, pxefile and ramdisk
+later in the boot process.
+Ramdisk start address is 0x4FF00000, Mobian initramfs for PinePhone
+for kernel with some hacking features and debug info enabled can
+take more than 100Mb and final address will be around 0x58000000.
+So I've picked address that will most likely not overlap with
+that. Probably it can be moved below 512Mb. If you have address
+suggestion, I'd happy to check it.
+
+-- 
+Best regards,
+Andrey Skvortsov
