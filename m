@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAA2766528
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35341766532
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbjG1HUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:20:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
+        id S234134AbjG1HXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbjG1HUs (ORCPT
+        with ESMTP id S234118AbjG1HXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:20:48 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4486A268B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:20:45 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9bd59d465so26657231fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1690528843; x=1691133643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LkEJgaTxs/ddkAEFRCk2052gAcbygjssKU7AjsGzwec=;
-        b=PKQK3qh1VT8jWnxGjPqzEVsJuktxUM1+9+LsRoGobu0ema7mHkV2H7s6B44fGP6u0y
-         vYu6LWth0HrM+LQQpLoXSUx5GaLx8NtfKPAWlWnIYc0/RLtOewMQhwXBz2FShmr9NO02
-         MYxGpnAgxWm1C1bmbIs+P8NwK/IwN99YZkfj/PnK7QNXzBTEWJyq3RY55mpICMpteKf7
-         IcztGUSxxtggRc0qNgriTRKa9zOJmvGxUIbPZ16XNNAeAB0vyYPHFgKFibRMZPxwaNOu
-         MiSVRpatWcyzTLZjpEQyCYAX6xzBAw4hIaD9CbgmNd1rOnYRTeSrtCIzXGsUOXLf0vta
-         kmng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690528843; x=1691133643;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LkEJgaTxs/ddkAEFRCk2052gAcbygjssKU7AjsGzwec=;
-        b=f/F+opCde4iqJW0+pOm5llNuPJKWmHUwzLKnLbiokLFfViq+XbuFzTrct6wgn+9fKe
-         wRbwNH7gGFYPkbF3Ov8Gu6AT8+S4NSD516XYpbM8jq3Aa5kFXnHqjZlNkmraOt5rIhCE
-         qX9e7EQ8LQ3XL5tXOuC0WM1soVXwYLeDMPq7nvwYbHkwi6SmTd+Jg2uKgsMvL6yezWnf
-         +TSPmHP8tqk/orPGbVbUFLCa1mBwERAqHjByxxImu+qHLfbGUHGZfmQa1C9QTeh3VmkS
-         bOA692ehr33Ygbox1zSp1VuASyMbRqtFQHX0nQkctAOn6FgPUEt4PIhux0jn3e283RwF
-         bdLQ==
-X-Gm-Message-State: ABy/qLaqHvIU7BCDtWLSrS/4yvNzh1FFGxcRnK1P9crQlCfvDUsE4Cji
-        NWhyH1G/RmT4gPbVeczoOusOvk13CeCQ1BBqWEvMzA==
-X-Google-Smtp-Source: APBJJlEYv4VXz8ssay967YiIFAwaE1Bq5ymyjMJx4WO3gnt0z/waK2x38yUfDHp5coKHkN/e3yk5XwZu3CgAkivseE8=
-X-Received: by 2002:a2e:84c6:0:b0:2b9:ac48:d804 with SMTP id
- q6-20020a2e84c6000000b002b9ac48d804mr1129754ljh.38.1690528843528; Fri, 28 Jul
- 2023 00:20:43 -0700 (PDT)
+        Fri, 28 Jul 2023 03:23:15 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F23DF7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:23:12 -0700 (PDT)
+Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RBzbp3NXtz1GDMb;
+        Fri, 28 Jul 2023 15:22:14 +0800 (CST)
+Received: from huawei.com (10.50.163.32) by kwepemm600005.china.huawei.com
+ (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 15:23:09 +0800
+From:   liulongfang <liulongfang@huawei.com>
+To:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>
+CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <liulongfang@huawei.com>
+Subject: [PATCH v12 0/4] add debugfs to migration driver
+Date:   Fri, 28 Jul 2023 15:21:00 +0800
+Message-ID: <20230728072104.64834-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
- <cbf0a8fd-3479-1684-fe90-81f2159804ef@linaro.org> <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
- <20230728-penpal-prelude-29a952c03827@wendy>
-In-Reply-To: <20230728-penpal-prelude-29a952c03827@wendy>
-From:   Eric Lin <eric.lin@sifive.com>
-Date:   Fri, 28 Jul 2023 15:20:32 +0800
-Message-ID: <CAPqJEFo3LPuwm6dtgdMP243jYtT23LjaFvXDVQiF876WmOw1bQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com, greentime.hu@sifive.com,
-        vincent.chen@sifive.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 2:47=E2=80=AFPM Conor Dooley <conor.dooley@microchi=
-p.com> wrote:
->
-> On Fri, Jul 28, 2023 at 02:01:28PM +0800, Eric Lin wrote:
-> > Hi Krzysztof,
-> >
-> > On Fri, Jul 21, 2023 at 4:35=E2=80=AFPM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> > >
-> > > On 20/07/2023 15:51, Eric Lin wrote:
-> > > > This add YAML DT binding documentation for SiFive Private L2
-> > > > cache controller
-> > > >
-> > > > Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> > > > Reviewed-by: Zong Li <zong.li@sifive.com>
-> > > > Reviewed-by: Nick Hu <nick.hu@sifive.com>
-> > >
-> > >
-> > > ...
-> > >
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    items:
-> > > > +      - const: sifive,pl2cache1
-> > >
-> > > I still have doubts that it is not used in any SoC. This is what you
-> > > said last time: "is not part of any SoC."
-> > > If not part of any SoC, then where is it? Why are you adding it to th=
-e
-> > > kernel?
-> > >
-> >
-> > Sorry for the late reply. I didn't describe it clearly last time.
-> > Currently, we have two hardware versions of pl2cache: pl2cache0 and pl2=
-cache1.
-> > The pl2cache0 is used in unmatched board SoC.
->
-> Wait a second, does the fu740 on the unmatched not have a ccache as
-> it's L2 cache?
->
+Add a debugfs function to the migration driver in VFIO to provide
+a step-by-step test function for the migration driver.
 
-Hi Conor,
-Sorry, I misremember the L2 cache on the unmatched board.
-I just check again. The unmatched board L2 cache is ccache not
-pl2cache0. You are right. Thanks.
+When the execution of live migration fails, the user can view the
+status and data during the migration process separately from the
+source and the destination, which is convenient for users to analyze
+and locate problems.
 
-Best regards,
-Eric Lin
+Changes v11 -> v12
+	Update loading conditions of vfio debugfs.
 
-> > The pl2cache1 is
-> > utilized in our internal FPGA platform for evaluation; it's our core
-> > IP.
+Changes v10 -> v11
+	Delete the device restore function in debugfs.
+
+Changes v9 -> v10
+	Update the debugfs file of the live migration driver.
+
+Changes v8 -> v9
+	Update the debugfs directory structure of vfio.
+
+Changes v7 -> v8
+	Add support for platform devices.
+
+Changes v6 -> v7
+	Fix some code style issues.
+
+Changes v5 -> v6
+	Control the creation of debugfs through the CONFIG_DEBUG_FS.
+
+Changes v4 -> v5
+	Remove the newly added vfio_migration_ops and use seq_printf
+	to optimize the implementation of debugfs.
+
+Changes v3 -> v4
+	Change the migration_debug_operate interface to debug_root file.
+
+Changes v2 -> v3
+	Extend the debugfs function from hisilicon device to vfio.
+
+Changes v1 -> v2
+	Change the registration method of root_debugfs to register
+	with module initialization.
+
+Longfang Liu (4):
+  vfio/migration: Add debugfs to live migration driver
+  hisi_acc_vfio_pci: extract public functions for container_of
+  hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
+  Documentation: add debugfs description for vfio
+
+ .../ABI/testing/debugfs-hisi-migration        |  36 ++++
+ Documentation/ABI/testing/debugfs-vfio        |  25 +++
+ MAINTAINERS                                   |   2 +
+ drivers/vfio/Makefile                         |   1 +
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 199 +++++++++++++++++-
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |   3 +
+ drivers/vfio/vfio.h                           |  14 ++
+ drivers/vfio/vfio_debugfs.c                   |  80 +++++++
+ drivers/vfio/vfio_main.c                      |   5 +-
+ include/linux/vfio.h                          |   7 +
+ 10 files changed, 361 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+ create mode 100644 Documentation/ABI/testing/debugfs-vfio
+ create mode 100644 drivers/vfio/vfio_debugfs.c
+
+-- 
+2.24.0
+
