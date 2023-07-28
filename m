@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0706B7668EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044F77668EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbjG1Jdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S235424AbjG1Jdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235697AbjG1JdU (ORCPT
+        with ESMTP id S234081AbjG1Jd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:33:20 -0400
+        Fri, 28 Jul 2023 05:33:29 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DB34203
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D6B3C27
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690536726;
+        s=mimecast20190719; t=1690536740;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gcjUt618Z45nMTb+RFtsmBBBhq7ViXpq+z7I95/Kk+o=;
-        b=Aj23PC+VMiq6A7MXrtkCzCVHkCRZgmcHRjCJuaOLWPq6YfwUSKuUQOm9C4ybxrGifXrD8J
-        XyMplmNEfplWEuPhAgbdHe04NHX8D00uJd+nagH9ix9BWb6+cc5Wta4t2wsJX6oj3XcLyW
-        +hbfl6pogtgHKZD1tFNt5k2CLxFCI8A=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=PUpytj5yUNrs3kxSkN6zpJqxqa3HoC6l1C2y3i10Sbc=;
+        b=N2h+kbOQ/aT4dmn2rcpwv66Z7ZqDQzN5SyGcebICWbpl4cyQOg1IzhYegImdMRodIlExL+
+        c3qvjL1GaSxor3NzVRIfySC0tBV9kCNg5GLDIdMYpIUSQZNRkUmwrQs211p1KIkY76MMWZ
+        xlONjaycCD3HmwoNj5mQWk8eSynlnLg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-512-Du9-U1jlMVW89p6cVo6CUg-1; Fri, 28 Jul 2023 05:32:04 -0400
-X-MC-Unique: Du9-U1jlMVW89p6cVo6CUg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-98e40d91fdfso121372166b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:04 -0700 (PDT)
+ us-mta-600-QE8Nu2mxP8ePhLPcsIDXFQ-1; Fri, 28 Jul 2023 05:32:19 -0400
+X-MC-Unique: QE8Nu2mxP8ePhLPcsIDXFQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fd2e286689so10765125e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690536723; x=1691141523;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gcjUt618Z45nMTb+RFtsmBBBhq7ViXpq+z7I95/Kk+o=;
-        b=NUpDeFmiZXbOxxHu9/cvymeMoVATk1dJK0lTIEfuSIGFRKbsDILnq6fj20YZt+WtWK
-         P2C27v7vPGJVc6/xqAe+EIOYVVT2KKDyEQ56+rW5aUf4i7+toRn7U1KcO2j2iFNDA+sk
-         8YamOkeSrukRwhnYmS/CxXXmquTQ2b7iXPCdo3s/Ki4831LDTXpm4cvKQzZ9dKW/e+Lq
-         rvL2yk4443ICD6BXFWPk7HqBXT5i2hOmSwmU+1laZF82Qv5HNBt33UzszE9Jyz3lq8JL
-         LEd/lPh7pDdaDtXc1VDZwUveGVVAgZ60gyHXO6Mrzr+QI58ZevEAuq6WrESMo6UraT/P
-         OfDg==
-X-Gm-Message-State: ABy/qLY+ey5KT+6jF1eNVahHFjmRhVV//vgX7oLhaJYq+t3b+qXEl/1F
-        euCFmh8q+GMuyUA6TzQKsiQLLvF0CwpKqYd6lQDpNezUVl0FCrhVFiHKh6DIRxmP1Z27/xxm7ZM
-        uKc5VG9o+1s37pwobQ20WcDXh
-X-Received: by 2002:aa7:d616:0:b0:522:3081:ddb4 with SMTP id c22-20020aa7d616000000b005223081ddb4mr1368400edr.20.1690536723366;
-        Fri, 28 Jul 2023 02:32:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGdL9m3DjLNN/ZU/lTc9TOFyIZ02cvDfIMMhRXp57SSjAnA34gcDPuPkMEe2O1hvcsTsletfg==
-X-Received: by 2002:aa7:d616:0:b0:522:3081:ddb4 with SMTP id c22-20020aa7d616000000b005223081ddb4mr1368388edr.20.1690536723082;
-        Fri, 28 Jul 2023 02:32:03 -0700 (PDT)
-Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id x8-20020aa7d388000000b005228614c358sm1584021edq.88.2023.07.28.02.32.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 02:32:02 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <db85d260-fdad-9b7c-cf7e-2e848151292d@redhat.com>
-Date:   Fri, 28 Jul 2023 11:32:01 +0200
+        d=1e100.net; s=20221208; t=1690536738; x=1691141538;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PUpytj5yUNrs3kxSkN6zpJqxqa3HoC6l1C2y3i10Sbc=;
+        b=RG/rG8/UKogDEdsVaOlCfIWPD+k/YdA6M/S8/ZDmb44RiebBrldGxWmp/ZIF+2+gE7
+         qEB1XTXh2BiKFxdlIxVHzcYaSH7lS2BjklbV6T0qCfCKyu64ZPLZ/Y9N/Xe7BPG/x+aQ
+         mbzlFtaNZpEJhnRsOMtWgTlbPcY3HmzZb1UnLOsIFIWUDGghFzsGAelGH1CE1fsrH233
+         NNoFCRtXifqhD2HLlWOMTNC6rhoiv2lQzeagrCbeQ1mHaoKen7hP9S3RZ8ZynuxBcLGt
+         SFWA1j80eDBY2dwQbZ7m7iH2tuX+70KsBTHToHpQNfKXhzLsoLUuydMQpzi7SbUYddhj
+         3Amw==
+X-Gm-Message-State: ABy/qLZMk6Luf3scxYyRarcZy4mxUEYPKHSTCxaRuA0CrJo4TVAlmyYr
+        wcDjelhlvtTA0Zuz/3jHdV3gI0KZQKAcvauOKPYZCoYlMh1JGOzyMnDIyT0/i1tmGepJRRfER14
+        smm3qovdg0vUIxlcRpAA68til
+X-Received: by 2002:a1c:ed0e:0:b0:3fc:5a3:367c with SMTP id l14-20020a1ced0e000000b003fc05a3367cmr1397480wmh.32.1690536738012;
+        Fri, 28 Jul 2023 02:32:18 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGJ0ZJIOZj9cnw9EBMK5YcoiQG18GglmeHsszodanL4lUHj6bphDDU+iSErcJ6q6IMB3uTENw==
+X-Received: by 2002:a1c:ed0e:0:b0:3fc:5a3:367c with SMTP id l14-20020a1ced0e000000b003fc05a3367cmr1397462wmh.32.1690536737627;
+        Fri, 28 Jul 2023 02:32:17 -0700 (PDT)
+Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id d12-20020a1c730c000000b003fa999cefc0sm3670492wmb.36.2023.07.28.02.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 02:32:16 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 11:32:16 +0200
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
+        rafael@kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
+ pci_assign_unassigned_bridge_resources() only if bus->self not NULL
+Message-ID: <20230728113216.3140577c@imammedo.users.ipa.redhat.com>
+In-Reply-To: <20230727174102.GA689794@bhelgaas>
+References: <20230726123518.2361181-2-imammedo@redhat.com>
+        <20230727174102.GA689794@bhelgaas>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     brouer@redhat.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qingfang.deng@siflower.com.cn
-Subject: Re: [PATCH net-next 9/9] net: skbuff: always try to recycle PP pages
- directly when in softirq
-Content-Language: en-US
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
- <20230727144336.1646454-10-aleksander.lobakin@intel.com>
-In-Reply-To: <20230727144336.1646454-10-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -97,73 +83,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 Jul 2023 12:41:02 -0500
+Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-
-On 27/07/2023 16.43, Alexander Lobakin wrote:
-> Commit 8c48eea3adf3 ("page_pool: allow caching from safely localized
-> NAPI") allowed direct recycling of skb pages to their PP for some cases,
-> but unfortunately missed a couple of other majors.
-> For example, %XDP_DROP in skb mode. The netstack just calls kfree_skb(),
-> which unconditionally passes `false` as @napi_safe. Thus, all pages go
-> through ptr_ring and locks, although most of time we're actually inside
-> the NAPI polling this PP is linked with, so that it would be perfectly
-> safe to recycle pages directly.
-
-The commit messages is hard to read. It would help me as the reader if
-you used a empty line between paragraphs, like in this location (same
-goes for other commit descs).
-
-> Let's address such. If @napi_safe is true, we're fine, don't change
-> anything for this path. But if it's false, check whether we are in the
-> softirq context. It will most likely be so and then if ->list_owner
-> is our current CPU, we're good to use direct recycling, even though
-> @napi_safe is false -- concurrent access is excluded. in_softirq()
-> protection is needed mostly due to we can hit this place in the
-> process context (not the hardirq though).
-
-This patch make me a little nervous, as it can create hard-to-debug bugs
-if this isn't 100% correct.  (Thanks for previous patch that exclude
-hardirq via lockdep).
-
-> For the mentioned xdp-drop-skb-mode case, the improvement I got is
-> 3-4% in Mpps. As for page_pool stats, recycle_ring is now 0 and
-> alloc_slow counter doesn't change most of time, which means the
-> MM layer is not even called to allocate any new pages.
+> Thank you to both you and Woody for chasing this down!
 > 
-> Suggested-by: Jakub Kicinski <kuba@kernel.org> # in_softirq()
-> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->   net/core/skbuff.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+> On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:
+> > Commit [1] switched acpiphp hotplug to use
+> >    pci_assign_unassigned_bridge_resources()
+> > which depends on bridge being available, however in some cases
+> > when acpiphp is in use, enable_slot() can get a slot without
+> > bridge associated.
+> >   1. legitimate case of hotplug on root bus
+> >       (likely not exiting on real hw, but widely used in virt world)
+> >   2. broken firmware, that sends 'Bus check' events to non
+> >      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
+> >      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
+> >      without bridge assigned to it.  
 > 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index e701401092d7..5ba3948cceed 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -901,8 +901,10 @@ bool page_pool_return_skb_page(struct page *page, bool napi_safe)
->   	/* Allow direct recycle if we have reasons to believe that we are
->   	 * in the same context as the consumer would run, so there's
->   	 * no possible race.
-> +	 * __page_pool_put_page() makes sure we're not in hardirq context
-> +	 * and interrupts are enabled prior to accessing the cache.
->   	 */
-> -	if (napi_safe) {
-> +	if (napi_safe || in_softirq()) {
+> Do we have evidence about the details of this non-existent root port?
+> If we do, I think it would be interesting to include a URL to them in
+> case there's some hole in the way we handle Bus Check events.
 
-I used to have in_serving_softirq() in PP to exclude process context
-that just disabled BH to do direct recycling (into a lockless array).
-This changed in kernel v6.3 commit 542bcea4be86 ("net: page_pool: use
-in_softirq() instead") to help threaded NAPI.  I guess, nothing blew up
-so I guess this was okay to relax this.
+it's scattered over logs Woody has provided, here are links to
+emails with
+  1: lspci output
+      https://lore.kernel.org/r/92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com/
 
->   		const struct napi_struct *napi = READ_ONCE(pp->p.napi);
->   
->   		allow_direct = napi &&
+according to lscpi and dmesg there is only one root-port at 1c.0
+which is occupied by wifi card
 
-AFAIK this in_softirq() will allow process context with disabled BH to
-also recycle directly into the PP lockless array.  With the additional
-checks (that are just outside above diff-context) that I assume makes
-sure CPU (smp_processor_id()) also match.  Is this safe?
+while DSTD table has more ports described, which is fine as long as
+missing/disabled are not reported as present.
 
---Jesper
+  2: last round of logs with debug patch /before 40613da5, with 40613da5, and after/
+      https://lore.kernel.org/r/46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com/
+
+here dmesg shows 1st correct port
+ ACPI: \_SB_.PCI0.RP03: acpiphp_glue: Bus check in hotplug_event(): bridge: 000000000dad0b34
+and then later on
+ ACPI: \_SB_.PCI0.RP07: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+ ACPI: \_SB_.PCI0.RP08: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+which aren't recognized as bridge
+
+I don't know ACPICA code enough to guesstimate where we might miss
+a check that device is actually exists to do further debug
+over mail list within reasonable timeframe.
+
+> > Issue is easy to reproduce with QEMU's 'pc' machine provides
+> > PCI hotplug on hostbridge slots. to reproduce boot kernel at
+> > commit [1] in VM started with followin CLI and hotplug a device:  
+> 
+> You mention CLI; did you mean to include a qemu command line here?
+> Maybe it's the same thing mentioned in the 40613da52b13 commit log?
+> I tried briefly to reproduce this using the 40613da52b13 command line
+> but haven't quite got it going yet.  I think it would be very useful
+> to either include it here again or point to the 40613da52b13 commit
+> log.
+
+my bad, I didn't realize that saying 'pc' machine is not sufficient.
+
+minimal CLI can be (important part '-M pc -monitor stdio',
+the rest is for making guest boot and run at tolerable speed):
+
+$QEMU -M pc -m 4G -monitor stdio -cpu host --enable-kvm vm_disk_image 
+
+Will you amend commit message or shall I repost with changes/Acks?
+
+> > once guest OS is fully booted at qemu prompt:
+> > 
+> > (qemu) device_add e1000
+> > 
+> > it will cause NULL pointer dereference at
+> > 
+> >     void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
+> >     {
+> >         struct pci_bus *parent = bridge->subordinate;
+> > 
+> > [  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
+> > [...]
+> > [  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
+> > [  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
+> > [  612.277809]  enable_slot+0x21f/0x3e0
+> > [  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
+> > [  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
+> > [  612.277827]  acpi_device_hotplug+0xbc/0x540
+> > [  612.277834]  acpi_hotplug_work_fn+0x15/0x20
+> > [  612.277839]  process_one_work+0x1f7/0x370
+> > [  612.277845]  worker_thread+0x45/0x3b0
+> > [  612.277850]  ? __pfx_worker_thread+0x10/0x10
+> > [  612.277854]  kthread+0xdc/0x110
+> > [  612.277860]  ? __pfx_kthread+0x10/0x10
+> > [  612.277866]  ret_from_fork+0x28/0x40
+> > [  612.277871]  ? __pfx_kthread+0x10/0x10
+> > [  612.277876]  ret_from_fork_asm+0x1b/0x30
+> > 
+> > The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
+> > following sequence:
+> >    1. suspend to RAM
+> >    2. wake up with the same backtrace being observed:
+> >    3. 2nd suspend to RAM attempt makes laptop freeze
+> > 
+> > Fix it by using __pci_bus_assign_resources() instead of
+> > pci_assign_unassigned_bridge_resources()as we used to do
+> > but only in case when bus doesn't have a bridge associated
+> > with it.
+> > 
+> > That let us keep hotplug on root bus working like it used to be
+> > but at the same time keeps resource reassignment usable on
+> > root ports (and other 1st level bridges) that was fixed by [1].
+> > 
+> > 1)
+> > Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
+> > Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
+> > Reported-by: Woody Suwalski <terraluna977@gmail.com>
+> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+> > ---
+> >  drivers/pci/hotplug/acpiphp_glue.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+> > index 328d1e416014..3bc4e1f3efee 100644
+> > --- a/drivers/pci/hotplug/acpiphp_glue.c
+> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> > @@ -498,6 +498,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+> >  				acpiphp_native_scan_bridge(dev);
+> >  		}
+> >  	} else {
+> > +		LIST_HEAD(add_list);
+> >  		int max, pass;
+> >  
+> >  		acpiphp_rescan_slot(slot);
+> > @@ -511,10 +512,15 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+> >  				if (pass && dev->subordinate) {
+> >  					check_hotplug_bridge(slot, dev);
+> >  					pcibios_resource_survey_bus(dev->subordinate);
+> > +					if (!bus->self)
+> > +						__pci_bus_size_bridges(dev->subordinate, &add_list);
+> >  				}
+> >  			}
+> >  		}
+> > -		pci_assign_unassigned_bridge_resources(bus->self);
+> > +		if (bus->self)
+> > +			pci_assign_unassigned_bridge_resources(bus->self);
+> > +		else
+> > +			__pci_bus_assign_resources(bus, &add_list, NULL);
+> >  	}
+> >  
+> >  	acpiphp_sanitize_bus(bus);
+> > -- 
+> > 2.39.3
+> >   
+> 
 
