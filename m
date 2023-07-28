@@ -2,54 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCE8766243
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5938766246
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjG1DEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S232311AbjG1DGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjG1DEO (ORCPT
+        with ESMTP id S233110AbjG1DFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:04:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1950D2688
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690513387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=w7A8DUBQAAPdvxITFYdrC5cFY9Ke6WrqD74ZBOps/Ko=;
-        b=dQIdjmNaXQBjynIT4NDdnRFcwUOMQjbQQ3O82u+XSHyeqT+u2vsBDLkdsmjXEExxCkFroD
-        +FTcEafT2oK2H4Vr952hhFxD06MdLbcW09tHDrep+M+DMo0/MGB5fma+yZzY9g7xOo9gbk
-        GdELumHIswqYqKu296szoTPUEIXfu7I=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-433-Y4PCtH-HO6qgImkgM0He2w-1; Thu, 27 Jul 2023 23:03:03 -0400
-X-MC-Unique: Y4PCtH-HO6qgImkgM0He2w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 08B2C1C0725A;
-        Fri, 28 Jul 2023 03:03:03 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E07440C2063;
-        Fri, 28 Jul 2023 03:03:00 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org, dennis@kernel.org
-Cc:     linux-mm@kvack.org, Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2] mm/percpu.c: print error message too if atomic alloc failed
-Date:   Fri, 28 Jul 2023 11:02:55 +0800
-Message-Id: <20230728030255.8458-1-bhe@redhat.com>
+        Thu, 27 Jul 2023 23:05:44 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6728030DA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:05:43 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RBssw3LmCzVjtV;
+        Fri, 28 Jul 2023 11:04:04 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 28 Jul 2023 11:05:40 +0800
+From:   Huisong Li <lihuisong@huawei.com>
+To:     <xuwei5@hisilicon.com>, <arnd@arndb.de>, <krzk@kernel.org>,
+        <sudeep.holla@arm.com>, <rdunlap@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <wanghuiqiang@huawei.com>,
+        <tanxiaofei@huawei.com>, <liuyonglong@huawei.com>,
+        <lihuisong@huawei.com>
+Subject: [PATCH v4 0/2] soc: hisilicon: Support HCCS driver on Kunpeng SoC
+Date:   Fri, 28 Jul 2023 11:03:00 +0800
+Message-ID: <20230728030302.23356-1-lihuisong@huawei.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20230424073020.4039-1-lihuisong@huawei.com>
+References: <20230424073020.4039-1-lihuisong@huawei.com>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,42 +51,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'err' is assgigned to an error message if atomic alloc
-failed, while it has no chance to be printed if is_atomic is true.
+This series add HCCS driver to query the health status and port information
+of HCCS on Kunpeng SoC as well as document all sysfs entries provided by
+this driver.
 
-Here change to print error message too if atomic alloc failed, while
-avoid to call dump_stack() if that case.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
-v1->v2:
- Fix the code bug in v1 pointed out by Dennis.
+ v4:
+ - remove useless header and reorder linux header.
+ - use __ATTR_RO to replace __ATTR for port attributes.
+ - add MODULE_DEVICE_TABLE to autoload the driver.
+ - update the date to "November 2023".
+ - fix some comments about HCCS description.
 
- mm/percpu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ v3:
+  - replace "using_status" with "enable" attribute.
+  - fix some comments in codes.
 
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 83fc47206680..bdca8ec33d49 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1890,13 +1890,15 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
- fail:
- 	trace_percpu_alloc_percpu_fail(reserved, is_atomic, size, align);
- 
--	if (!is_atomic && do_warn && warn_limit) {
-+	if (do_warn && warn_limit) {
- 		pr_warn("allocation failed, size=%zu align=%zu atomic=%d, %s\n",
- 			size, align, is_atomic, err);
--		dump_stack();
-+		if (!is_atomic)
-+			dump_stack();
- 		if (!--warn_limit)
- 			pr_info("limit reached, disable warning\n");
- 	}
-+
- 	if (is_atomic) {
- 		/* see the flag handling in pcpu_balance_workfn() */
- 		pcpu_atomic_alloc_failed = true;
+ v2:
+  - Document all sysfs entries provided by driver.
+  - drop 'pcc_type' and 'intr_mode' in struct hccs_dev.
+  - using _CRS with PCC GAS to get channel ID instead of _DSD.
+  - replace readw_relaxed_poll_timeout with readw_poll_timeout.
+  - use sysfs_emit() instead of sprintf().
+  - drop ACPI_PTR in hccs_driver.
+  - drop useless log during the probe phase.
+
+Huisong Li (2):
+  soc: hisilicon: Support HCCS driver on Kunpeng SoC
+  doc: soc: hisilicon: Add Kunpeng HCCS driver documentation
+
+ .../sysfs-devices-platform-kunpeng_hccs       |   76 +
+ MAINTAINERS                                   |    7 +
+ drivers/soc/Kconfig                           |    1 +
+ drivers/soc/Makefile                          |    1 +
+ drivers/soc/hisilicon/Kconfig                 |   20 +
+ drivers/soc/hisilicon/Makefile                |    2 +
+ drivers/soc/hisilicon/kunpeng_hccs.c          | 1282 +++++++++++++++++
+ drivers/soc/hisilicon/kunpeng_hccs.h          |  196 +++
+ 8 files changed, 1585 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-platform-kunpeng_hccs
+ create mode 100644 drivers/soc/hisilicon/Kconfig
+ create mode 100644 drivers/soc/hisilicon/Makefile
+ create mode 100644 drivers/soc/hisilicon/kunpeng_hccs.c
+ create mode 100644 drivers/soc/hisilicon/kunpeng_hccs.h
+
 -- 
-2.34.1
+2.33.0
 
