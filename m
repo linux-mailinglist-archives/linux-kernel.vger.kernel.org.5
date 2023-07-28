@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7FC766F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660DC766F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbjG1OG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
+        id S235834AbjG1OJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjG1OG1 (ORCPT
+        with ESMTP id S232825AbjG1OJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:06:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1032230E2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zfhLlZEY9jrlQ/2kEYtQ+IcpResvxW4Nqgr5z97KTN4=; b=RV1/HdoOOaLQNqjA6/byw1rzTB
-        YtfU6b1OVsO3YHk/qeJ85dCatzu6sFtmWuQNyc+l9tjmmqzcUfeIo60z5go1TammYWptXZwqwb+E5
-        Hws7Kw/6mANlTUxkWpI6OR0YjVBAdGNnG3epD1niymrzrD9dWSJhv9+GQGGW7uOeN3+jifKy7GUnj
-        Fh/2YF7kE0xcDFgdrsejedNpdINcW3mqKr2e9qaVDOxsXMCKNM5X17VjlU8YOtE/Fu9ph5KGB6SBW
-        5h7RfSYucQAjZx2BERsNQmnVNEWLGQNroJT3NyzbkyJdwDRXAwadtTZiRj809vVF6lVZdDtiUB5wf
-        JCfK7hzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qPO5e-008YJz-Fg; Fri, 28 Jul 2023 14:05:10 +0000
-Date:   Fri, 28 Jul 2023 15:05:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yongqin Liu <yongqin.liu@linaro.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
+        Fri, 28 Jul 2023 10:09:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0BB35A8;
+        Fri, 28 Jul 2023 07:09:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 477326214B;
+        Fri, 28 Jul 2023 14:09:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FCC2C433C8;
+        Fri, 28 Jul 2023 14:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690553374;
+        bh=KLjExLhXnoctgt1F9lPT4E5ymQFk/shVtkceDCu/DEw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t1etBMMWEBHJC08coP28YOQwC8VVdJesVcfvy18HnTq4G3U1ROuBFX3sNmyhnlKTl
+         wzoA/DYjJ9eVCXjIoEXKzN04peXut9x/9jSSA7B5xCwZsMzPTHo90weaB40QoBvyld
+         uQk112OiQI6MIxJprD1k1RhOn5ktNfrkPrD8vBnsS3PjIaVFvXg9U+vWyl4e81df8f
+         flm6vvxxn/AdxotNwvTgG3a4NQ9YzWxOBMIojxnRRBZOG+Vez+N0ASvKC0jf5k5S3U
+         u28l5ip/GchiYuL7gT1qqst1buMHlNuF6xlr1ijT4wdC3CrUJvKzQob07kx4kyawIR
+         MHlq42gPSy/bA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 37CD740096; Fri, 28 Jul 2023 11:09:32 -0300 (-03)
+Date:   Fri, 28 Jul 2023 11:09:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 04/32] mm/pgtable: allow pte_offset_map[_lock]() to
- fail
-Message-ID: <ZMPLFqJ192j0loCV@casper.infradead.org>
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com>
- <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com>
- <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com>
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Anup Sharma <anupnewsmail@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf build: Update build rule for generated files
+Message-ID: <ZMPMHNjX2IxsLbAe@kernel.org>
+References: <20230728022447.1323563-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230728022447.1323563-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 09:53:29PM +0800, Yongqin Liu wrote:
-> Hi, Hugh
+Em Thu, Jul 27, 2023 at 07:24:46PM -0700, Namhyung Kim escreveu:
+> The bison and flex generate C files from the source (.y and .l)
+> files.  When O= option is used, they are saved in a separate directory
+> but the default build rule assumes the .C files are in the source
+> directory.  So it might read invalid file if there are generated files
+> from an old version.  The same is true for the pmu-events files.
 > 
-> It seems this change makes pte_offset_map_lock not possible to be
-> called in out of tree modules,
-> otherwise it will report error like this:
->         ERROR: modpost: "__pte_offset_map_lock"
-> [../omap-modules/android-mainline/pvr/pvrsrvkm.ko] undefined!
+> For example, the following command would cause a build failure:
 > 
-> Not sure if you have any idea about it, and any suggestions on how to
-> resolve it?
+>   $ git checkout v6.3
+>   $ make -C tools/perf  # build in the same directory
+> 
+>   $ git checkout v6.5-rc2
+>   $ mkdir build  # create a build directory
+>   $ make -C tools/perf O=build  # build in a different directory but it
+>                                 # refers files in the source directory
+> 
+> Let's update the build rule to specify those cases explicitly to depend
+> on the files in the output directory.
+> 
+> Note that it's not a complete fix and it needs the next patch for the
+> include path too.
 
-Please explain why this module needs to map page tables
+Applied, testing it on the container builds.
+
+- Arnaldo
+ 
+> Fixes: 80eeb67fe577 ("perf jevents: Program to convert JSON file")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/build/Makefile.build  | 10 ++++++++++
+>  tools/perf/pmu-events/Build |  6 ++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/tools/build/Makefile.build b/tools/build/Makefile.build
+> index 89430338a3d9..fac42486a8cf 100644
+> --- a/tools/build/Makefile.build
+> +++ b/tools/build/Makefile.build
+> @@ -117,6 +117,16 @@ $(OUTPUT)%.s: %.c FORCE
+>  	$(call rule_mkdir)
+>  	$(call if_changed_dep,cc_s_c)
+>  
+> +# bison and flex files are generated in the OUTPUT directory
+> +# so it needs a separate rule to depend on them properly
+> +$(OUTPUT)%-bison.o: $(OUTPUT)%-bison.c FORCE
+> +	$(call rule_mkdir)
+> +	$(call if_changed_dep,$(host)cc_o_c)
+> +
+> +$(OUTPUT)%-flex.o: $(OUTPUT)%-flex.c FORCE
+> +	$(call rule_mkdir)
+> +	$(call if_changed_dep,$(host)cc_o_c)
+> +
+>  # Gather build data:
+>  #   obj-y        - list of build objects
+>  #   subdir-y     - list of directories to nest
+> diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
+> index 150765f2baee..1d18bb89402e 100644
+> --- a/tools/perf/pmu-events/Build
+> +++ b/tools/perf/pmu-events/Build
+> @@ -35,3 +35,9 @@ $(PMU_EVENTS_C): $(JSON) $(JSON_TEST) $(JEVENTS_PY) $(METRIC_PY) $(METRIC_TEST_L
+>  	$(call rule_mkdir)
+>  	$(Q)$(call echo-cmd,gen)$(PYTHON) $(JEVENTS_PY) $(JEVENTS_ARCH) $(JEVENTS_MODEL) pmu-events/arch $@
+>  endif
+> +
+> +# pmu-events.c file is generated in the OUTPUT directory so it needs a
+> +# separate rule to depend on it properly
+> +$(OUTPUT)pmu-events/pmu-events.o: $(PMU_EVENTS_C)
+> +	$(call rule_mkdir)
+> +	$(call if_changed_dep,cc_o_c)
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
+
+-- 
+
+- Arnaldo
