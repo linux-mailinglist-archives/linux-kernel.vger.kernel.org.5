@@ -2,161 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55766766D88
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445CF766D8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbjG1Moi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
+        id S235088AbjG1Mpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234518AbjG1Mog (ORCPT
+        with ESMTP id S234614AbjG1Mpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:44:36 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAD9135;
-        Fri, 28 Jul 2023 05:44:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HcilafKUisSkzzK6Pq1QeJLShfFHTEoVQnpChcqcc3GekrFTZhFQwNQ4+mQTpmDYcm9y7oAONQW+Gde7yFn7Y/Kkf9YT/Gx7FDZwd2oZFBLkPTamHGAxz8xy3oNmb9097lZaJ+OiaT9mhTHQSb4ErN74ozibYYtrcEal3//IeaROUDDauOSy5fg6zwZJ5nNvtm/Zu0dqH5hEguEJO3tFv08FpxaYJkkEKpqzpEprXx4fhAxUiq4w3D1ObKLQf29GwToiMYWgMC1578EgOQNHCIzB9lrrDeMYmnSxCrOy5ZrYM8zdI2A3ghJGjJaz8sjHRX5Fyfc344NU462yrLFT6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HM5sayR3OJDaVPh8oFsXJFWb3rJCgJs03eahQuh4gbM=;
- b=MiuAGPsoUoIWloVFns/VROHhFg2KTOF2+ajuv0hmDnzL5qs2ZNsSTNXqrTdLDrQ9a37EDSMZDpRrqWa5HdFLh6A9e6l8QRQ5o8s3PKhHum/XslUXnd9iERoOpvmZJibj1GYlm3x5q53u8OMgWFW99ZpnsrihrPjzs8auLKVn21tIo4mekWElTnDE9fY6Z1QetK1sm03e0lBhKfCOSse0V1gu7VEbZOm6K5FFIGtYjiogSnfpq+StmfpJ9q2udr0WU7zjjy/y0x5qtrN8Xr/6DMH9nQiw7GdMUBZ6jsOW1tPQkHISPR7amAXlURfnOkBH+4TXPviESnhxEqXvX44QFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HM5sayR3OJDaVPh8oFsXJFWb3rJCgJs03eahQuh4gbM=;
- b=HN1JrJVprk21VW4hfyMYfPcIo1PofmP4ZuRT2bNNBpciTVSrjkcmwB41tRcAf1D+nRGAb1c7IgB3oT7+ei36O1WKUr8kNrd+LslFHXXNgCpflBVYcM/MCLSEj390yABqp6I3RTrpNPgtyI0/roAy9bUXp6+VSWaajB9rKyosa1a+S/8tCibMSjpeZlaJQFWJlK+w+k7XRHo2O15FtWzksQaMdMzi6mZEZ3CTVIdA1BL+S63Gp6n48BV3r/8WScQapfobaZwVPRDN5tmjp9K+C1fERO28YEhDzsLrPrXq1XH/EIL+cC2BTbc0Xm6qUa3iQwlZDAtIKmnUbhIeRZm2Hw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- DM4PR12MB6398.namprd12.prod.outlook.com (2603:10b6:8:b5::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Fri, 28 Jul 2023 12:44:32 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::8833:f1bb:7d8b:dce7]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::8833:f1bb:7d8b:dce7%4]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 12:44:31 +0000
-Message-ID: <64e55105-8d11-2ed6-3753-9bf74a782787@nvidia.com>
-Date:   Fri, 28 Jul 2023 13:44:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V4] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
+        Fri, 28 Jul 2023 08:45:41 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB918187
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a426e70575so1383180b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690548313; x=1691153113;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dZhd6Z+1TRytPTwd9c5Pl7JGaMAas8iSnbHYztoIY+I=;
+        b=TgN5QPu9YYBwRx1weOr/WieWPm5UErXX8Yl2ZnYRnuydyDECUF4gTKm/YstmY5l56B
+         +wnzxryDqAXht0H4tNvFivjOPlHsYMJXJT16Ya4FZKhXjvLU+tu2ANlM2Hnggey8OizN
+         kDKwNfr3/H1DGnnb8CFZ3Da0gxp96slSEQTjWN+YY002DAwTEY+vBkU5qAN2XCWJu/gT
+         esYhuHCDSJ7t6D7godXKexmEfaiKr8p6lUWl2qVGZEu58BKWOAgb1Dxwj7NUCNOh0esu
+         0woAXuC1jDCs0SqpMA1m8vH5WR568aWfDh6ShMuQiWhHo8Rn/ZYpvSR8Y3tRNJRX9GW7
+         st9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690548313; x=1691153113;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dZhd6Z+1TRytPTwd9c5Pl7JGaMAas8iSnbHYztoIY+I=;
+        b=DHz379miYt4xsN5Ookm7DMWV6Ki99dKEfRvtG5IttiXQxVXiCi1684FAELvzROUyRs
+         7D5B8j+HFjN6onEAPofaibMzUV1z2HZ3R1UCYP6lcW2CG/V5EAtBDwFsBZmxGzstTUhZ
+         hjdx3qEG6/Yu9gocqQjl9gxhXM7QkMBdH/gMRkpBLmwNoZT4iJAw8xX66baQLL7gh8A7
+         vGq0w0n0bpSlTIsJOlYTU7Oz/SDe8+EXmZAORuuk4agtGPqvjEVJ7/PgwRRpJPzTq40t
+         o7tcU+3ssmozladjtvSJVEG30HWBAcNiGKigM4Z4P8t42VdSveRiQqrGdRAZB2i179uI
+         FWwQ==
+X-Gm-Message-State: ABy/qLY1kX2PJYM2HcjBv0WlQMproEdtPILc17x4TKxI6egkalgx8yhE
+        vml6k/qUxlm5BWbbJhr0HrImBg==
+X-Google-Smtp-Source: APBJJlF4g9xuHBTxSNvuB+rX75MGVV2iZ9M7FOEM/W01jL7dos+/qDXYGULWfOSaRyQ0x7r2zW5CBw==
+X-Received: by 2002:a05:6808:e82:b0:3a4:6b13:b721 with SMTP id k2-20020a0568080e8200b003a46b13b721mr2742390oil.46.1690548313043;
+        Fri, 28 Jul 2023 05:45:13 -0700 (PDT)
+Received: from [10.254.173.0] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00262eccfa29fsm4145574pjb.33.2023.07.28.05.45.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 05:45:12 -0700 (PDT)
+Message-ID: <e2929fb0-35e6-b213-0ba1-15fa7282e3f4@bytedance.com>
+Date:   Fri, 28 Jul 2023 20:45:00 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+From:   Abel Wu <wuyun.abel@bytedance.com>
+Subject: Re: [PATCH RESEND net-next 1/2] net-memcg: Scopify the indicators of
+ sockmem pressure
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Breno Leitao <leitao@debian.org>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+References: <20230711124157.97169-1-wuyun.abel@bytedance.com>
+ <ZLsg1wklldKkVI2Z@P9FQF9L96D.corp.robot.car>
+ <58e75f44-16e3-a40a-4c8a-0f61bbf393f9@bytedance.com>
+ <ZMCLTQgVT68jwbVh@P9FQF9L96D>
+ <29de901f-ae4c-a900-a553-17ec4f096f0e@bytedance.com>
+ <ZMG39B6B41yLAu9r@P9FQF9L96D>
 Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, lpieralisi@kernel.org,
-        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
-        thierry.reding@gmail.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-References: <20230721103544.GA569300@bhelgaas>
-From:   Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20230721103544.GA569300@bhelgaas>
+In-Reply-To: <ZMG39B6B41yLAu9r@P9FQF9L96D>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0324.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a4::24) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|DM4PR12MB6398:EE_
-X-MS-Office365-Filtering-Correlation-Id: ec5f5867-0323-4949-798a-08db8f6863c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: T9jMhKTlHXnCDlAwXTDGjkvTYmoi5ZfQEFpxpxo/B9sGHZ++3Z82LbaCt5uP/PnRTyX+8GD1lpLQW2oNuytKmQfMOkzgGnneJPHXBnO0zRksWAPvvxuWzCavQ4xEvDvOFfb4DThq7Jy/eFw0FWqa/CjUPv0l6uGpuNqxHLrbEy/pgPCDY7HuISqu2kUHm2S4t10iV1v0hdiwRW3/vUyePlLFx7CmFO156HuPANYWf36XyVmBDFVRzcRh3PEYdy4aVrsDu93hTZxsOz8uLLkAVs2oSUUNENfDBeQIvJBIsEEYj3RoYzQDBrrh9/0051VIZzWcAO807m0Y+16kCdnMwR0e0wsCqEg0+j7HN8e4au6PRx4bJez73uPb29vKhlYw3A4JlJTBuIeMxIgdoDyoAa8gOT2nbKnpjJ7xROJ73b28Mr0K743D6wz9WG5QI7ccbkIOoHEXnh/BkvwdHlDFYeVUMv/QYvycNIL+TAG50sdqVRpf2BKTkrP9ZgVZJdsfPiA1SQDfmcdUyRBjLHaerhszZVqWA5oYNgeLlhJAGb3yRHuOiDXq1uyfeZFNZ12L8avyHHsyZOyF82f7PUHjQaAIp2/hJSDFCNvm+b4mwpOLDsOO2MChR0yD70ehSZ+1+6WbYxa/DuChP/zk4RPv2mvH4/pP1Mzse/WWhSUNleTB2rLVKKGDEmmMe9pduJbE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(451199021)(6486002)(6666004)(6512007)(6506007)(966005)(478600001)(53546011)(31686004)(186003)(2616005)(4326008)(6916009)(83380400001)(38100700002)(66476007)(66946007)(66556008)(5660300002)(8676002)(8936002)(4744005)(7416002)(2906002)(41300700001)(316002)(86362001)(31696002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?clNwR2pTS2VRMG5KR29US1ZteHNTd2htcTQxeHhvd1E5aThJcmd6bU96ZUlw?=
- =?utf-8?B?Nm4vSk1KdWVIbG51REZvYUlJUlJnaDFzbnRvOGo0RU5mMWxCeEFSWEM1SGlZ?=
- =?utf-8?B?Q1ZGV3RhUFVaVXNwb1hrYWRXcGY0SWhwK3RCeHdZaE5SYUpOQzU3SU1VdHBW?=
- =?utf-8?B?RTlaRGsxNVFnZldra2U3NXR5U0JLdWdVbUhiZFVKTGsxd1ZvS0Y1RHJpL1Zj?=
- =?utf-8?B?bUVTMjRhZlhmZ0hWNUt0R0ExbXB1a1oyNVIxL1NEYkpOSWlvQzlQYUJGMzZS?=
- =?utf-8?B?SCtEWnpZSkI2Y2hYZDlIay9pVWphU2Z3cG5MU1pBaWpOd2hZMEdGRWRDQ1lt?=
- =?utf-8?B?VTZRa2FXWFNDTlRXQmhmOW1kczMxQkZaNUQ4a0dqc1FGblN5cDV2K0xJZmNl?=
- =?utf-8?B?NGduam1qZHFBb2M1SVMxTmwwV3MrOVlxODNEOERKWXM0d1JUK2VxQjNmd1pF?=
- =?utf-8?B?K3AxaEowUVJqTWtWMkpVWTA0ZGlyODNaS1l2T0taa08ydlRkNkxJVjN0VGxj?=
- =?utf-8?B?Z1h2VVdVem5CcXV5eGplcWxjcDNoM09zR2RxQkw0V01lV1R5NmVJYWlQa1p4?=
- =?utf-8?B?NTJsZGhpSHprMUUzNXE3ODM5ZlU1SGV6Ykd6TXhWdStjRmN2NzBScDVXZjZx?=
- =?utf-8?B?eUo0ZGpOZWJidDFRMHpjZ0NXNnRPTDZTell6MVQ1R0dOWXRXT3hKN0lBZ1Zj?=
- =?utf-8?B?ZWZPdUNCdzNkenIwSFlzazNFYkJ2NThxSWRGM2U1UEJVQmZkUHk1TEJwYVl6?=
- =?utf-8?B?ZXZYaXozRllQMldKcXhUOTJuR1dzSzdkVCtJNXlHdVhOVDVmYVo4TjVHUCsz?=
- =?utf-8?B?VldSTm11M00rUXhqNnBqQkc2V0kwVjY1TkRYSUl0aW4yalhMV1dXT0hscW0r?=
- =?utf-8?B?TngyekYxSlgwTWZDK2ZuaEMranYweFZpOVVVV0hCTzEwa2NaYTZkcjh1U2tB?=
- =?utf-8?B?SkpMUnFiYTdnZnJxRGlLZHlUV0V3eXE4cFN3VUpUMnpFVW56YWlqcVZUTjNp?=
- =?utf-8?B?Kys2eE95VW80UWRGWmJvVGJNeFUyaHhwamdLVXRFK2JXTXl5OFExSU04L1Vs?=
- =?utf-8?B?akdCUVV5TmlyMXZ0TllkY3pkL3QyV09hR1NSSTZqc2lPaVZ0SUhHbGVubzZq?=
- =?utf-8?B?RWRNZ3VyWERSTHdUOFV0c01PMFRrSXpoc25tblZ5S3BpRmY4Y0plcFpSRFhS?=
- =?utf-8?B?M2U1bHpyTVgxakpleCtUbGxGZzhPczI2SXkvV0I1cEFnZlordnBMTVlpZTkr?=
- =?utf-8?B?YU1LTFMyYUk2Sllsa3htYjhKU1Y4anMxaEdaSTNzMUZXMkZ6Y3Z1MjFPU0FU?=
- =?utf-8?B?YVd6Z3lLQ29uSFZBQzZYVkVjUnJOU0xjWVNwTGRZakdveXJRaFJieit2TmhC?=
- =?utf-8?B?Mng2bU5WbVFYeWg4b1pFQko3dTVESG9KWjJNWkh5TDd1L29JMHViWFkvOUNT?=
- =?utf-8?B?MzI3MkFPMHdXSW1seTIyUThOTFJQd0tyUzM1RTErbTBEaWdySi9xZUVQL2pj?=
- =?utf-8?B?MElLOElIOTRzRnZWZEl6YXVBa29ZN0laYXVWKytwTCtBYU9iVSsxYXpTQzJN?=
- =?utf-8?B?NElhTXB2Ti9IajZubThJVEYvOHBJc3pEU09OODUrcGtoV0ZHU1oySWtTSXNN?=
- =?utf-8?B?eTFpcURGNURaeERNcTJuSFhpVUlhOXNvSHdjRThOWEsvUFhBVVBaTUlsMnA1?=
- =?utf-8?B?Zy80RUk3azF6NzY1U25KYmVBVEZVNTRzbW9IeUFXR3B3UkkvZHhRc3VJcUd2?=
- =?utf-8?B?R0NDcURoTU1Xb2tnMGNickZKN1RhN1RCTUhGMHBFZUhEWnFYQU1EQ09qbEF2?=
- =?utf-8?B?ZExXL2NSUFhwcENiYnVta28wUjdsNmNOd0F4UEFibjc0MW1aSnBoalRSbE1k?=
- =?utf-8?B?NjJnbUFhWmxxQ1lkS29rdFJXMElEOGppckNkaW10VW1uTEJmMngwQkxTc3FR?=
- =?utf-8?B?ZWRKdzc3UVUvQjU0aG5VUjMvMTJ6Mm9uSmR3RTZpU3lxck5mWHd4WXNBQjlx?=
- =?utf-8?B?T2gvYlZQM2NHZlJuTTVVVEJUbHQveVlMcDNKaGRhUGkzbmlJRVp5VnBNUFg1?=
- =?utf-8?B?bHQ1eEIxb3gwLzFYZFlvTXV6b3k0WUxyNC83dGhEZVE5UlBpMHV3TzBrOHJj?=
- =?utf-8?B?djlvcHBYUm9xdXEwdjFTL0gzREg1dE9OakR4RkRERm5CVUZWb3J4MGNEM1k1?=
- =?utf-8?B?N2JBZEo3Vk9jUVRRS0tEcUJkeWJZQnlRTFRjM2ZBcnpkQ2R0RXRFQm9LKzUy?=
- =?utf-8?B?QUNDOGk4bm5OUThsRzBxdm53LzRRPT0=?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec5f5867-0323-4949-798a-08db8f6863c0
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 12:44:31.9316
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aDI6WokBWt1wQDDh1Q6nlnFBZLWyg/vV55TPulqzubngrhJ5AqF8bqDU62EE89//vLnFcbnk3Dxe9DkNxfuamQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6398
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
-
-On 21/07/2023 11:35, Bjorn Helgaas wrote:
-> On Fri, Jul 21, 2023 at 09:23:01AM +0100, Jon Hunter wrote:
->> ...
-> 
->> I see a version of this patch here ...
+On 7/27/23 8:19 AM, Roman Gushchin wrote:
+> On Wed, Jul 26, 2023 at 04:44:24PM +0800, Abel Wu wrote:
+>> On 7/26/23 10:56 AM, Roman Gushchin wrote:
+>>> On Mon, Jul 24, 2023 at 11:47:02AM +0800, Abel Wu wrote:
+>>>> Hi Roman, thanks for taking time to have a look!
+>>>>>
+>>>>> Overall I think it's a good idea to clean these things up and thank you
+>>>>> for working on this. But I wonder if we can make the next step and leave only
+>>>>> one mechanism for both cgroup v1 and v2 instead of having this weird setup
+>>>>> where memcg->socket_pressure is set differently from different paths on cgroup
+>>>>> v1 and v2.
+>>>>
+>>>> There is some difficulty in unifying the mechanism for both cgroup
+>>>> designs. Throttling socket memory allocation when memcg is under
+>>>> pressure only makes sense when socket memory and other usages are
+>>>> sharing the same limit, which is not true for cgroupv1. Thoughts?
+>>>
+>>> I see... Generally speaking cgroup v1 is considered frozen, so we can leave it
+>>> as it is, except when it creates an unnecessary complexity in the code.
 >>
->> https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=controller/tegra194
->>
->> However, I don't see this in -next yet. If you are happy with this latest
->> version, could we get this into -next?
+>> Are you suggesting that the 2nd patch can be ignored and keep
+>> ->tcpmem_pressure as it is? Or keep the 2nd patch and add some
+>> explanation around as you suggested in last reply?
 > 
-> I'm on vacation until Tuesday; will build a new -next branch Tuesday
-> or Wednesday.
+> I suggest to split a code refactoring (which is not expected to bring any
+> functional changes) and an actual change of the behavior on cgroup v1.
+> Re the refactoring: I see a lot of value in adding comments and make the
+> code more readable, I don't see that much value in merging two variables.
+> But if it comes organically with the code simplification - nice.
 
+I see, thanks for the clarification!
 
-A friendly reminder on this. Can we queue this up for -next?
+> 
+>>> I'm curious, was your work driven by some real-world problem or a desire to clean
+>>> up the code? Both are valid reasons of course.
+>>
+>> We (a cloud service provider) are migrating users to cgroupv2,
+>> but encountered some problems among which the socket memory
+>> really puts us in a difficult situation. There is no specific
+>> threshold for socket memory in cgroupv2 and relies largely on
+>> workloads doing traffic control themselves.
+>>
+>> Say one workload behaves fine in cgroupv1 with 10G of ->memory
+>> and 1G of ->tcpmem, but will suck (or even be OOMed) in cgroupv2
+>> with 11G of ->memory due to burst memory usage on socket.
+>>
+>> It's rational for the workloads to build some traffic control
+>> to better utilize the resources they bought, but from kernel's
+>> point of view it's also reasonable to suppress the allocation
+>> of socket memory once there is a shortage of free memory, given
+>> that performance degradation is better than failure.
+> 
+> Yeah, I can see it. But Idk if it's too workload-specific to have
+> a single-policy-fits-all-cases approach.
+> E.g. some workloads might prefer to have a portion of pagecache
+> being reclaimed.
+> What do you think?
 
-I know that there is further discussion on-going about if the core could 
-handle this, but right now PCIe is broken on our NVIDIA IGX Orin board 
-and we would like to merge this now in the short-term at least.
+Now the memcg is considered to be under pressure if the number of
+pages reclaimed is much less than desired. I doubt it could be a
+win in such case to spend more time on reclaiming while letting
+socket continue to allocate memory (which could make things worse),
+compared to relieving reclaim pressure and putting time on its real
+work.
 
-Thanks!
-Jon
-
--- 
-nvpublic
+Best,
+	Abel
