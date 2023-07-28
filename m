@@ -2,197 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6248766182
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D5676618B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbjG1BzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 21:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        id S232434AbjG1B7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 21:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjG1BzB (ORCPT
+        with ESMTP id S229483AbjG1B7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 21:55:01 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EEB19A1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 18:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690509300; x=1722045300;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ea11Ood4xUvAJBfxUoQpzhxEVLD1nG0C2OXp3e2JHKY=;
-  b=MtgBsh8hrGuT/beNVSPpEHp5JQHSXKe8TJfnWh6PZJcfmrU51IQLoy1F
-   dkWZmbds+fosquRQj8PEnCND0fSiGoFAZpkZrv3fGdNUZnLvEZgmIulQD
-   re2SgeOzvcwUL8dYovwnoy2hg5MxI+zJUTHYqEe0mIvKLuRwvqre7LlPU
-   Z4bvteXjQ3rfSJybvIN1mPg0fxCz+iDlcK6VfMn74kn1DJWgbCvEeQwc4
-   kubhVDPYaWkTxqlhOk13+RIelY3LW3jvCfvVFCDKmUF6hJQbF+t6ohKC2
-   krjkIXYEjFbzPoVqHyaeJQiQICYDQKTLgesNmwyunsQTtQJ/crf7XrPGe
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="434768442"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="434768442"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 18:55:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="756960085"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="756960085"
-Received: from rfergus1-mobl1.amr.corp.intel.com (HELO [10.212.250.57]) ([10.212.250.57])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 18:54:59 -0700
-Message-ID: <b9fbbbb7-f855-5744-d6ad-c650b10ce135@linux.intel.com>
-Date:   Thu, 27 Jul 2023 18:54:59 -0700
+        Thu, 27 Jul 2023 21:59:06 -0400
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84169173F
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 18:59:04 -0700 (PDT)
+Received: from 4d92782a4194.home.arpa (unknown [124.16.138.129])
+        by APP-03 (Coremail) with SMTP id rQCowACnr2fXIMNkUDmTDg--.20935S2;
+        Fri, 28 Jul 2023 09:58:47 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@gmail.com, daniel@ffwll.ch, robdclark@chromium.org,
+        lucas.demarchi@intel.com, thomas.hellstrom@linux.intel.com,
+        chris@chris-wilson.co.uk
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] drm/i915/gem: Add check for bitmap_zalloc()
+Date:   Fri, 28 Jul 2023 09:58:46 +0800
+Message-Id: <20230728015846.20228-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 03/12] x86/tdx: Make macros of TDCALLs consistent with
- the spec
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, peterz@infradead.org,
-        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, isaku.yamahata@intel.com,
-        n.borisov.lkml@gmail.com
-References: <cover.1690369495.git.kai.huang@intel.com>
- <b3f5a25e72094a11add22e1a7c5dda3ea91d0e98.1690369495.git.kai.huang@intel.com>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <b3f5a25e72094a11add22e1a7c5dda3ea91d0e98.1690369495.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowACnr2fXIMNkUDmTDg--.20935S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF4kAr1fAw1DuFWDWr17Jrb_yoWDWFg_Ca
+        48Xr1rW39rGFnY9F12vwnavFyFyan5Zr48Xw1rKFZ3JrW3AwsxW39xAr15Zr17AFW7Zwnr
+        GF4kZFn8Zr12kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb38FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7Cj
+        xVA2Y2ka0xkIwI1lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUOMKZDUUUU
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add the check for the return value of bitmap_zalloc() in order to
+guarantee the success of the allocation.
 
+Fixes: e9b73c67390a ("drm/i915: Reduce memory pressure during shrinker by preallocating swizzle pages")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/gpu/drm/i915/gem/i915_gem_tiling.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On 7/26/23 4:25 AM, Kai Huang wrote:
-> The TDX spec names all TDCALLs with prefix "TDG".  Currently, the kernel
-> doesn't follow such convention for the macros of those TDCALLs but uses
-> prefix "TDX_" for all of them.  Although it's arguable whether the TDX
-> spec names those TDCALLs properly, it's better for the kernel to follow
-> the spec when naming those macros.
-> 
-> Change all macros of TDCALLs to make them consistent with the spec.  As
-> a bonus, they get distinguished easily from the host-side SEAMCALLs,
-> which all have prefix "TDH".
-> 
-> No functional change intended.
-> 
-
-When upstreaming the TDX guest patches, there was a discussion about using
-TDG vs TDX. Final agreement is to use TDX_ prefix. I think it makes sense
-to align with the spec, but it is up to the maintainer.
-
-What about the function name prefix? Are you planning to change them to tdg_*?
-
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
-> 
-> v2 -> v3:
->  - No change.
-> 
-> v1 -> v2:
->  - Rebase to 6.5-rc2.
-> 
-> ---
->  arch/x86/coco/tdx/tdx-shared.c    |  4 ++--
->  arch/x86/coco/tdx/tdx.c           |  8 ++++----
->  arch/x86/include/asm/shared/tdx.h | 10 +++++-----
->  3 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
-> index ef20ddc37b58..f10cd3e4a04e 100644
-> --- a/arch/x86/coco/tdx/tdx-shared.c
-> +++ b/arch/x86/coco/tdx/tdx-shared.c
-> @@ -35,7 +35,7 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
->  	}
->  
->  	tdcall_rcx = start | page_size;
-> -	if (__tdx_module_call(TDX_ACCEPT_PAGE, tdcall_rcx, 0, 0, 0, NULL))
-> +	if (__tdx_module_call(TDG_MEM_PAGE_ACCEPT, tdcall_rcx, 0, 0, 0, NULL))
->  		return 0;
->  
->  	return accept_size;
-> @@ -45,7 +45,7 @@ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
->  {
->  	/*
->  	 * For shared->private conversion, accept the page using
-> -	 * TDX_ACCEPT_PAGE TDX module call.
-> +	 * TDG_MEM_PAGE_ACCEPT TDX module call.
->  	 */
->  	while (start < end) {
->  		unsigned long len = end - start;
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 1d6b863c42b0..05785df66b1c 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -91,7 +91,7 @@ int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport)
->  {
->  	u64 ret;
->  
-> -	ret = __tdx_module_call(TDX_GET_REPORT, virt_to_phys(tdreport),
-> +	ret = __tdx_module_call(TDG_MR_REPORT, virt_to_phys(tdreport),
->  				virt_to_phys(reportdata), TDREPORT_SUBTYPE_0,
->  				0, NULL);
->  	if (ret) {
-> @@ -152,7 +152,7 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
->  	 * Guest-Host-Communication Interface (GHCI), section 2.4.2 TDCALL
->  	 * [TDG.VP.INFO].
->  	 */
-> -	tdx_module_call(TDX_GET_INFO, 0, 0, 0, 0, &out);
-> +	tdx_module_call(TDG_VP_INFO, 0, 0, 0, 0, &out);
->  
->  	/*
->  	 * The highest bit of a guest physical address is the "sharing" bit.
-> @@ -594,7 +594,7 @@ void tdx_get_ve_info(struct ve_info *ve)
->  	 * Note, the TDX module treats virtual NMIs as inhibited if the #VE
->  	 * valid flag is set. It means that NMI=>#VE will not result in a #DF.
->  	 */
-> -	tdx_module_call(TDX_GET_VEINFO, 0, 0, 0, 0, &out);
-> +	tdx_module_call(TDG_VP_VEINFO_GET, 0, 0, 0, 0, &out);
->  
->  	/* Transfer the output parameters */
->  	ve->exit_reason = out.rcx;
-> @@ -774,7 +774,7 @@ void __init tdx_early_init(void)
->  	cc_set_mask(cc_mask);
->  
->  	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
-> -	tdx_module_call(TDX_WR, 0, TDCS_NOTIFY_ENABLES, 0, -1ULL, NULL);
-> +	tdx_module_call(TDG_VM_WR, 0, TDCS_NOTIFY_ENABLES, 0, -1ULL, NULL);
->  
->  	/*
->  	 * All bits above GPA width are reserved and kernel treats shared bit
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index 7513b3bb69b7..78f109446da6 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -11,11 +11,11 @@
->  #define TDX_IDENT		"IntelTDX    "
->  
->  /* TDX module Call Leaf IDs */
-> -#define TDX_GET_INFO			1
-> -#define TDX_GET_VEINFO			3
-> -#define TDX_GET_REPORT			4
-> -#define TDX_ACCEPT_PAGE			6
-> -#define TDX_WR				8
-> +#define TDG_VP_INFO			1
-> +#define TDG_VP_VEINFO_GET		3
-> +#define TDG_MR_REPORT			4
-> +#define TDG_MEM_PAGE_ACCEPT		6
-> +#define TDG_VM_WR			8
->  
->  /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
->  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_tiling.c b/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
+index a049ca0b7980..e9cf99d95966 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
+@@ -311,6 +311,11 @@ i915_gem_object_set_tiling(struct drm_i915_gem_object *obj,
+ 		if (!obj->bit_17) {
+ 			obj->bit_17 = bitmap_zalloc(obj->base.size >> PAGE_SHIFT,
+ 						    GFP_KERNEL);
++			if (!obj->bit_17) {
++				i915_gem_object_unlock(obj);
++				i915_gem_object_release_mmap_gtt(obj);
++				return -ENOMEM;
++			}
+ 		}
+ 	} else {
+ 		bitmap_free(obj->bit_17);
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.25.1
+
