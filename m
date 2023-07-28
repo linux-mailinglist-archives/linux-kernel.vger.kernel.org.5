@@ -2,110 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C32D767079
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB2576707D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbjG1PZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
+        id S237161AbjG1P0S convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237166AbjG1PZ1 (ORCPT
+        with ESMTP id S236138AbjG1P0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:25:27 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD72A35AD
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:25:25 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fba8e2aa52so24752525e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690557924; x=1691162724;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p88Nz4aiaNVDn50m16T/KmFwj/8wZh1FcbIhem0oQa4=;
-        b=qUrDN5dXvCPI9oi0VyQallvgjskKpeDxWvY1kJJXknZ/lZVxhjXZ7AywV/0e6wvPz5
-         ozF9AnzZIeSv3gFUflvy7wacf/cqS9RLDEAcfiexTHVHdEC22PSxgUASZL4g9vowfOsC
-         rNn/WsYIZrXI8WXh3sNQnBI8pLmuHXPwew4NZLjtdV/p+iB0MADg0kQ/I/sEiCwTiLiG
-         fPCfUVOYeVVI4zBHD+yJ3SJtAg8QsC7RZhHOgAs5GzR1RoWjIJbFXZUGdJMdGp20BVpZ
-         6tco+bCYOzDf2HdH3b1mHkG5zdjUV8f5RPOW3DsNvHF64EvK8HWgzAjpKZFw8/lTUKC4
-         jBAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690557924; x=1691162724;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p88Nz4aiaNVDn50m16T/KmFwj/8wZh1FcbIhem0oQa4=;
-        b=TwugApPkrXS+cgwliMtiYB/dr1pFstHhFpzhwhjF36U9AI7K8N/Lm+a8bLNXfKs4BN
-         aNUnpgvFlt/ug8EibLpGNUJCx2yQHypuoHdbk1KetT6Oel9behN9xWM+ZN6ikkY3k4nv
-         mqDQH+McbU+pW1YoShN5hTicozQ4fvRM48zSAOqTpTBY8omsT0q+dNIsqivrDBrt/xJ0
-         iZUaLXtaB6mRYLD6EmUItBUCDEQO5PGopVCeH2SU5fa/T3Ghqh1OezC2x7uprEsmY7Q2
-         uQEiW0xs52QbidIzcJefN1FK8otG2GekGw2QPyq27b0nl1VHv1zz4IbB1WsFCKZJeLpe
-         OU/g==
-X-Gm-Message-State: ABy/qLZ/Pm64Xi7IdUmwM3B03F33S04TBQHv3jtCcNeQ1CDiSG82Q/A1
-        T7bQsr2e6Uy/722hYYnJDgmmPg==
-X-Google-Smtp-Source: APBJJlHY5Oa5Rvo7n/XhzdBMJCsn0Sy6qy0jwUz+QQHL4rc7cdrx+VTz8+bW1BNBNbAYEsCYbuyqOA==
-X-Received: by 2002:a1c:f70e:0:b0:3fd:2e89:31bd with SMTP id v14-20020a1cf70e000000b003fd2e8931bdmr1866493wmh.14.1690557924072;
-        Fri, 28 Jul 2023 08:25:24 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id n5-20020a1c7205000000b003fe11148055sm1042224wmc.27.2023.07.28.08.25.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 08:25:23 -0700 (PDT)
-Message-ID: <bbc22e71-d581-36c0-d5ac-24a2dc8d84fc@linaro.org>
-Date:   Fri, 28 Jul 2023 16:25:22 +0100
+        Fri, 28 Jul 2023 11:26:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D7A1717
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:26:15 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-217-YVmH9eBiMmG5VIsPrBuaNQ-1; Fri, 28 Jul 2023 16:26:12 +0100
+X-MC-Unique: YVmH9eBiMmG5VIsPrBuaNQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
+ 2023 16:26:11 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 28 Jul 2023 16:26:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Oleksandr Natalenko' <oleksandr@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "GR-QLogic-Storage-Upstream@marvell.com" 
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jozef Bacik <jobacik@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        "Rob Evers" <revers@redhat.com>
+Subject: RE: [PATCH 2/3] scsi: qedf: do not touch __user pointer in
+ qedf_dbg_debug_cmd_read() directly
+Thread-Topic: [PATCH 2/3] scsi: qedf: do not touch __user pointer in
+ qedf_dbg_debug_cmd_read() directly
+Thread-Index: AQHZwSEN9Ls1iMTEjEyz1kbENNwADa/PTLUA
+Date:   Fri, 28 Jul 2023 15:26:11 +0000
+Message-ID: <2938f701ba56419e861f1bb410831862@AcuMS.aculab.com>
+References: <20230728065819.139694-1-oleksandr@redhat.com>
+ <20230728065819.139694-3-oleksandr@redhat.com>
+In-Reply-To: <20230728065819.139694-3-oleksandr@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 33/33] iris: enable building of iris video driver
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-34-git-send-email-quic_vgarodia@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <1690550624-14642-34-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 14:23, Vikash Garodia wrote:
-> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+From: Oleksandr Natalenko
+> Sent: 28 July 2023 07:58
 > 
-> This adds iris driver Makefile and Kconfig, also changes
-> v4l2 platform/qcom Makefile/Kconfig in order to
-> enable compilation of the driver.
+> The qedf_dbg_debug_cmd_read() function invokes sprintf()
+> directly on a __user pointer, which may crash the kernel.
+                                      ^^^ will
 
-This is not a meaningfully bisectable patch.
+> 
+> Avoid doing that by using a small on-stack buffer for sprintf()
+> and then calling simple_read_from_buffer() which does a proper
+> copy_to_user() call.
+...
+> diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
+> index 4d1b99569d490..f910af0029a2c 100644
+> --- a/drivers/scsi/qedf/qedf_debugfs.c
+> +++ b/drivers/scsi/qedf/qedf_debugfs.c
+> @@ -138,15 +138,14 @@ qedf_dbg_debug_cmd_read(struct file *filp, char __user *buffer, size_t count,
+>  			loff_t *ppos)
+>  {
+>  	int cnt;
+> +	char cbuf[35];
 
-It should go with the addition of the driver. Its good practice to break 
-up incremental changes to a driver in a series but, I don't see why you 
-really need to do that when adding a whole new driver.
+Why 35?
+I pick a multiple of 8 that if 'enough.
 
-Just
+>  	struct qedf_dbg_ctx *qedf_dbg =
+>  				(struct qedf_dbg_ctx *)filp->private_data;
+> 
+>  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "debug mask=0x%x\n", qedf_debug);
+> -	cnt = sprintf(buffer, "debug mask = 0x%x\n", qedf_debug);
+> +	cnt = sprintf(cbuf, "debug mask = 0x%x\n", qedf_debug);
 
-- Documentation
-- Bindings
-- Driver code
+Use scnprintf() to be sure it doesn't overflow.
+Much safer if someone does a quick update or copies the code.
 
-On the other hand if you were switching on IRIS in the default defconfig 
-then that should be a separate patch.
+	David
 
-If we were say adding inter-frame power-collapse to the existing venus 
-as part of a series, then that makes sense as a standalone patch but IMO 
-when adding a whole new driver, add it as one.
+> 
+> -	cnt = min_t(int, count, cnt - *ppos);
+> -	*ppos += cnt;
+> -	return cnt;
+> +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
+>  }
+> 
+>  static ssize_t
+> --
+> 2.41.0
 
-Its easier to read that way
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
----
-bod
