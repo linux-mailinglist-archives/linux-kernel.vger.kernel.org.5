@@ -2,208 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F10766311
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64782766314
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbjG1EVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 00:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        id S232868AbjG1EW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 00:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjG1EVm (ORCPT
+        with ESMTP id S230009AbjG1EW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 00:21:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030E635A3;
-        Thu, 27 Jul 2023 21:21:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 88FB261FCD;
-        Fri, 28 Jul 2023 04:21:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56257C433C7;
-        Fri, 28 Jul 2023 04:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690518099;
-        bh=npFFPyaQEwifiFYx76sBK90ncmNWu0Npk+xLXEgPOFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=poONmNBGtWzL4WLzQeFUMI1MU/sWcd2mhhLf6n/Sdh9yEHZnQo8VQ7N34a9MgLGAd
-         Prdg7+WXlUvgsfF8D74J9LCEB4q7rz1OOid38+jNBPrBZXIxZ3qt8/9Q5VxrnIrRa9
-         WsJILO8++a1g3goYgbxnkECSrxTXsOb62Rp5bekx30JzhVNGsb+1GK7jyAEd0ewmB4
-         JtsJiT56WhQPYQbA9jEGZdOAG+ARDPssjk3IcDM6NtA60VD/0D076KS4ktIPpnlrf0
-         2i5A5T0q1JG3LEunOY6RU3AdT9uq5uNx4r5mBBh7wvURZH9F2YcfFFkA+z+q2swW7s
-         oKyTpHmlIIhRQ==
-Date:   Fri, 28 Jul 2023 09:51:29 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v4 5/9] PCI: endpoint: Add wakeup host API to EPC core
-Message-ID: <20230728042129.GH4433@thinkpad>
-References: <1689232218-28265-1-git-send-email-quic_krichai@quicinc.com>
- <1689232218-28265-6-git-send-email-quic_krichai@quicinc.com>
+        Fri, 28 Jul 2023 00:22:56 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1F919B;
+        Thu, 27 Jul 2023 21:22:55 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b9d68a7abaso1432007a34.3;
+        Thu, 27 Jul 2023 21:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690518175; x=1691122975;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VV0P9pUy9vYqeeF+U2QGC4EBJiwKPd9OR6nuiKq0Vrk=;
+        b=bI34xHbV8wsJQ7rk1eHO42aSS7+10Qzi771SDCDenpeB4/aut5cyPDX5s8oNu+VbbO
+         yGaF/yan7iTQ+C5Fdd4I7mz9DfTNfsRYXPD/bthFMW0B7/CHmWtVxeTDYktoGq/3Cog+
+         bwEsOfBUFiXbBTADVSNHJc0f1HstfcApi+bpxWrRL5gHc7HxHsr6ttFEzFiBgbq15O6I
+         Oxpjg3sU/RdZL3fVQpsvBjQiAHrN+2FZ/fmD364KYWvnNeHDsDyRolejOwNT//LNV1zg
+         SjxD1dPK2K3tGazBe9dUyv2ywgf8Fdcp1/HPemi9YTALgLQ3wKaGY4euBPvX6xAQzsRW
+         k5rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690518175; x=1691122975;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VV0P9pUy9vYqeeF+U2QGC4EBJiwKPd9OR6nuiKq0Vrk=;
+        b=H5Pvt7ny+aI3PWjabFduCzzhnuHqA4VXoESCE9AowNJD6ou/oSGHzooaDrvZ7qWHgq
+         ag+087oJDiELIX9+i+rAqQACUV+aaZnSDpADpvCwALHw+SkuT2PMg5hJVP+OQ+V69add
+         9kOS5lTIYKZ1h1VtjIS8DSXd8Z55N3inUvjtpThUT4yMcWvWUV1lHmvfSmZNTb/X/ONT
+         +HQnicaZyYI9fk5SxO6zNi6UOV5Ct/Fjrb7UQS7JkfOBridQgxfMb56xNF+0PHqTEqYE
+         bmae4+xhIfFSk6VDeG3mYFDleY8EDKiMX/be17lAmz+Dx5NPUKUDGH05tdkYtSGz8gZf
+         +gaQ==
+X-Gm-Message-State: ABy/qLZ6NQkKY8I3WpFs+nb9bfp7ZHglXaWCBZBnaH/qWU98FR6iBdUe
+        ZYmcxTMAmyeeMQARAMWe8Y4=
+X-Google-Smtp-Source: APBJJlEtTA3SL1VfbQWXbttnJZZZvzurq0mKggh2iAIIW7LSOdqSbTrwvYptvfod0y4fGuBgU/WsOg==
+X-Received: by 2002:a9d:6285:0:b0:6b9:182b:cccc with SMTP id x5-20020a9d6285000000b006b9182bccccmr1375585otk.33.1690518174744;
+        Thu, 27 Jul 2023 21:22:54 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o29-20020a63731d000000b0054fe6bae952sm2403714pgc.4.2023.07.27.21.22.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 21:22:54 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <6d45f1d0-25e5-8603-0fbb-73374be00503@roeck-us.net>
+Date:   Thu, 27 Jul 2023 21:22:52 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1689232218-28265-6-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org
+References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
+ <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
+ <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
+ <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
+ <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
+ <2f4b012e-1f95-30aa-3f43-c31e84cb2c42@roeck-us.net>
+ <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+In-Reply-To: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 12:40:14PM +0530, Krishna chaitanya chundru wrote:
-> Endpoint cannot send any data/MSI when the D-state is in
-> D3cold or D3hot. Endpoint needs to wake up the host to
-> bring the D-state to D0.
-> 
-> Endpoint can toggle wake signal when the D-state is in D3cold and vaux is
-> not supplied or can send inband PME.
-> 
-> To support this add wakeup_host() callback to the EPC core.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  Documentation/PCI/endpoint/pci-endpoint.rst |  6 ++++++
->  drivers/pci/endpoint/pci-epc-core.c         | 31 +++++++++++++++++++++++++++++
->  include/linux/pci-epc.h                     | 11 ++++++++++
->  3 files changed, 48 insertions(+)
-> 
-> diff --git a/Documentation/PCI/endpoint/pci-endpoint.rst b/Documentation/PCI/endpoint/pci-endpoint.rst
-> index 3a54713..eb79b77 100644
-> --- a/Documentation/PCI/endpoint/pci-endpoint.rst
-> +++ b/Documentation/PCI/endpoint/pci-endpoint.rst
-> @@ -53,6 +53,7 @@ by the PCI controller driver.
->  	 * raise_irq: ops to raise a legacy, MSI or MSI-X interrupt
->  	 * start: ops to start the PCI link
->  	 * stop: ops to stop the PCI link
-> +	 * wakeup_host: ops to wakeup host
->  
->     The PCI controller driver can then create a new EPC device by invoking
->     devm_pci_epc_create()/pci_epc_create().
-> @@ -122,6 +123,11 @@ by the PCI endpoint function driver.
->     The PCI endpoint function driver should use pci_epc_mem_free_addr() to
->     free the memory space allocated using pci_epc_mem_alloc_addr().
->  
-> +* pci_epc_wakeup_host()
-> +
-> +   The PCI endpoint function driver should use pci_epc_wakeup_host() to wakeup
-> +   host.
-> +
->  Other EPC APIs
->  ~~~~~~~~~~~~~~
->  
-> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> index ea76baf..b419eff 100644
-> --- a/drivers/pci/endpoint/pci-epc-core.c
-> +++ b/drivers/pci/endpoint/pci-epc-core.c
-> @@ -167,6 +167,37 @@ const struct pci_epc_features *pci_epc_get_features(struct pci_epc *epc,
->  EXPORT_SYMBOL_GPL(pci_epc_get_features);
->  
->  /**
-> + * pci_epc_wakeup_host() - Wakeup the host
-> + * @epc: the EPC device which has to wakeup the host
-> + * @func_no: the physical endpoint function number in the EPC device
-> + * @vfunc_no: the virtual endpoint function number in the physical function
-> + * @type: specify the type of wakeup: WAKEUP_FROM_D3COLD, WAKEUP_FROM_D3HOT
-> + *
-> + * Invoke to wakeup host
-> + */
-> +bool pci_epc_wakeup_host(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
-> +			enum pci_epc_wakeup_host_type type)
-> +{
-> +	int ret;
-> +
-> +	if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
-> +		return false;
-> +
-> +	if (vfunc_no > 0 && (!epc->max_vfs || vfunc_no > epc->max_vfs[func_no]))
-> +		return false;
-> +
-> +	if (!epc->ops->wakeup_host)
-> +		return true;
-> +
-> +	mutex_lock(&epc->lock);
-> +	ret = epc->ops->wakeup_host(epc, func_no, vfunc_no, type);
-> +	mutex_unlock(&epc->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_epc_wakeup_host);
-> +
-> +/**
->   * pci_epc_stop() - stop the PCI link
->   * @epc: the link of the EPC device that has to be stopped
->   *
-> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
-> index 26a1108..d262179 100644
-> --- a/include/linux/pci-epc.h
-> +++ b/include/linux/pci-epc.h
-> @@ -26,6 +26,12 @@ enum pci_epc_irq_type {
->  	PCI_EPC_IRQ_MSIX,
->  };
->  
-> +enum pci_epc_wakeup_host_type {
-> +	PCI_WAKEUP_UNKNOWN,
-> +	PCI_WAKEUP_SEND_PME,
-> +	PCI_WAKEUP_TOGGLE_WAKE,
+On 7/27/23 13:33, Paul E. McKenney wrote:
+[ ... ]
 
-I think I asked you to get rid of these enums and use a bool. I don't see any
-new wakeup mechanism going to be added to the spec. So using enums for just 2
-options looks overkill to me.
-
-If you defer, please discuss it here.
-
-- Mani
-
-> +};
-> +
->  static inline const char *
->  pci_epc_interface_string(enum pci_epc_interface_type type)
->  {
-> @@ -59,6 +65,7 @@ pci_epc_interface_string(enum pci_epc_interface_type type)
->   * @start: ops to start the PCI link
->   * @stop: ops to stop the PCI link
->   * @get_features: ops to get the features supported by the EPC
-> + * @wakeup_host: ops to wakeup the host
->   * @owner: the module owner containing the ops
->   */
->  struct pci_epc_ops {
-> @@ -88,6 +95,8 @@ struct pci_epc_ops {
->  	void	(*stop)(struct pci_epc *epc);
->  	const struct pci_epc_features* (*get_features)(struct pci_epc *epc,
->  						       u8 func_no, u8 vfunc_no);
-> +	bool	(*wakeup_host)(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
-> +				enum pci_epc_wakeup_host_type type);
->  	struct module *owner;
->  };
->  
-> @@ -234,6 +243,8 @@ int pci_epc_start(struct pci_epc *epc);
->  void pci_epc_stop(struct pci_epc *epc);
->  const struct pci_epc_features *pci_epc_get_features(struct pci_epc *epc,
->  						    u8 func_no, u8 vfunc_no);
-> +bool pci_epc_wakeup_host(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
-> +					enum pci_epc_wakeup_host_type type);
->  enum pci_barno
->  pci_epc_get_first_free_bar(const struct pci_epc_features *epc_features);
->  enum pci_barno pci_epc_get_next_free_bar(const struct pci_epc_features
-> -- 
-> 2.7.4
+> So which of the following Kconfig options is defined in your .config?
+> CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
 > 
 
--- 
-மணிவண்ணன் சதாசிவம்
+Only CONFIG_TASKS_RCU. I added another log message after call_rcu_tasks().
+It never returns from that function.
+
+[    1.168993] Running RCU synchronous self tests
+[    1.169219] Running RCU synchronous self tests
+[    1.285795] smpboot: CPU0: Intel Xeon Processor (Cascadelake) (family: 0x6, model: 0x55, stepping: 0x6)
+[    1.302827] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+[    1.304526] Running RCU Tasks wait API self tests
+
+... and then nothing for at least 10 minutes (then I gave up and stopped the test).
+
+Qemu command line:
+
+qemu-system-x86_64 -kernel \
+      arch/x86/boot/bzImage -M q35 -cpu Cascadelake-Server -no-reboot \
+      -snapshot -device e1000e,netdev=net0 -netdev user,id=net0 -m 256 \
+      -drive file=rootfs.iso,format=raw,if=ide,media=cdrom \
+      --append "earlycon=uart8250,io,0x3f8,9600n8 panic=-1 slub_debug=FZPUA root=/dev/sr0 rootwait console=ttyS0 noreboot" \
+      -d unimp,guest_errors -nographic -monitor none
+
+Again, this doesn't happen all the time. With Cascadelake-Server
+I see it maybe once every 5 boot attempts. I tried with qemu v8.0
+and v8.1. Note that it does seem to happen with various CPU types,
+only for some it seems to me more likely to happen (so maybe the
+CPU type was a red herring). It does seem to depend on the system
+load, and happen more often if the system is under heavy load.
+
+Guenter
+
