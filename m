@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD8776766A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EAA76766C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbjG1Tes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 15:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
+        id S234035AbjG1TfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 15:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233020AbjG1Teq (ORCPT
+        with ESMTP id S233020AbjG1TfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:34:46 -0400
+        Fri, 28 Jul 2023 15:35:00 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477E330D3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:34:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD3E30CD;
+        Fri, 28 Jul 2023 12:34:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6397621D3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 19:34:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB423C433C7;
-        Fri, 28 Jul 2023 19:34:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7FAD621DE;
+        Fri, 28 Jul 2023 19:34:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51D56C433C7;
+        Fri, 28 Jul 2023 19:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690572884;
-        bh=j8jNcmTYYntq9pAVo2UzJdRoU3x1ihUFJCes2YsaF/E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jJtVHE1oCeKXFQ2YOPpEvTEVZW6WSuvjT+4P7eaX6T5Uf5dTTbHVJFaiA9BFwPTaS
-         H9IMeFpMevEQQKjqRFGvrvkwAtQC+gb4b3p5ee3vHF+fiIwycWYCCjDsoXzYgH9xBm
-         63X7w/U3dkPG09uiHZUbwMxBo0v+ySrscND2ZbTGFMN3kx4P+kbpXEm6Zu8jsqt8pW
-         rFXgI97jdb/6sEFGxM14NkB1Dgnge/dDvmuoqKndSuOE7w0n1d6pRGBzIWC3lWdIMd
-         m99opBLE4qgS7OJaJ/Ea+s1YVPCTZl3zpC86thlNo0TmUaUe9PsMMj4zETHc+Gs1S0
-         qkeA6dhtaxEmQ==
-Date:   Fri, 28 Jul 2023 13:34:41 -0600
-From:   Keith Busch <kbusch@kernel.org>
-To:     Pratyush Yadav <ptyadav@amazon.de>
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Jens Axboe <axboe@kernel.dk>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
- none
-Message-ID: <ZMQYURrKPqIyTkG7@kbusch-mbp.dhcp.thefacebook.com>
-References: <20230725110622.129361-1-ptyadav@amazon.de>
- <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
- <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
- <20230726131408.GA15909@lst.de>
- <mafs0cz0e8zc6.fsf_-_@amazon.de>
- <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com>
- <mafs08rb28o4u.fsf_-_@amazon.de>
- <ZMGddjINDt10BSvf@kbusch-mbp.dhcp.thefacebook.com>
- <mafs0tttn7vs3.fsf_-_@amazon.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mafs0tttn7vs3.fsf_-_@amazon.de>
+        s=k20201202; t=1690572897;
+        bh=If4Emo2O17OY4TfYWsV1LYKtnxtVCde0EHi6DPH4fvU=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=pnwVH/Wl6Xrr2LAaPxJY2R5VxDGZMaP/PAVeNi/BCKYFKPhJKRY60Kcj9EGQ7zzlb
+         CyzRZWuIOJGmPnRK0yX1b6Kiw4gPeEPkyeu5Osu4uHlU2TCxsziquPbZK/McRe85Qj
+         RQN3WJWiXrVblKySNoPX6iS6tA5hF490DZ2l1+lMdL/dn2/NrqqmyBX2kDw5TnhbQl
+         AqKUS9u1xl6b0hEuXljqFNyfsldBEThQTdStkT6RyzetNFU1ynH3EccScj+3NgNvk0
+         XFcB4lMhfNRzAZGmb62pzXVkI6YzI4/S2h1YHjPWVKo8iBD8QnAr5mxNaOmBh5I6yx
+         +D5ymSDOk3tzA==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 28 Jul 2023 19:34:52 +0000
+Message-Id: <CUE22P5RYPH3.1K05T2OCK1CN1@seitikki>
+Cc:     "Brijesh Singh" <brijesh.singh@amd.com>,
+        "Kuppuswamy Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        "Dionna Amalie Glaze" <dionnaglaze@google.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Samuel Ortiz" <sameo@rivosinc.com>,
+        "Dionna Glaze" <dionnaglaze@google.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        <linux-coco@lists.linux.dev>, <keyrings@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dan Williams" <dan.j.williams@intel.com>, <dhowells@redhat.com>
+X-Mailer: aerc 0.14.0
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+In-Reply-To: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,34 +68,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 08:09:32PM +0200, Pratyush Yadav wrote:
-> 
-> I am guessing you are looking at irq_create_affinity_masks(). Yeah, It
-> does not take into account the NUMA information. In fact, even if it
-> did, the NUMA node associated with the IRQ is NUMA_NO_NODE
-> (/proc/$irq/node == -1).
-> 
-> I did some more digging over the week to figure out what is going on. It
-> seems like the kernel _does_ in fact allow all CPUs in the affinity. I
-> added some prints in set_affinity_irq() in
-> drivers/xen/events/events_base.c (since that is the irqchip for the
-> interrupt). I see it being called with mask: ffffffff,ffffffff.
-> 
-> But I later see the function being called again with a different mask:
-> 00000000,00008000. The stack trace shows the call is coming from
-> ksys_write(). The process doing the write is irqbalance.
-> 
-> So I think your earlier statement was incorrect. irqbalance does in fact
-> balance these interrupts and it probably looks at the NUMA information
-> of the device to make that decision. My original reasoning holds and
-> irqbalance is the one picking the affinity.
-> 
-> With this explanation, do you think the patch is good to go?
+On Fri Jul 28, 2023 at 7:30 PM UTC, Dan Williams wrote:
+> The bulk of the justification for this patch kit is in "[PATCH 1/4]
 
-irqbalance still writes to the /proc/<irq>/smp_affinity to change it,
-right? That's just getting I/O errors on my machines because it fails
-irq_can_set_affinity_usr() for nvme's kernel managed interrupts (except
-the first vector, but that one is not used for I/O). Is there another
-path irqbalance is using that's somehow getting past the appropriate
-checks? Or perhaps is your xen irq_chip somehow bypassing the managed
-irq property?
+/patch kit/patch set/
+
+> keys: Introduce tsm keys". The short summary is that the current
+> approach of adding new char devs and new ioctls, for what amounts to the
+> same functionality with minor formatting differences across vendors, is
+> untenable. Common concepts and the community benefit from common
+> infrastructure.
+>
+> Use Keys to build common infrastructure for confidential computing
+
+/Keys/Linux keyring/
+
+> attestation report blobs, convert sevguest to use it (leaving the
+> deprecation question alone for now), and pave the way for tdx-guest and
+> the eventual risc-v equivalent to use it in lieu of new ioctls.
+>
+> The sevguest conversion is only compile-tested.
+>
+> This submission is To:David since he needs to sign-off on the idea of a
+> new Keys type, the rest is up to the confidential-computing driver
+> maintainers to adopt.
+>
+> Changes from / credit for internal review:
+> - highlight copy_{to,from}_sockptr() as a common way to mix
+>   copy_user() and memcpy() paths (Andy)
+> - add MODULE_DESCRIPTION() (Andy)
+> - clarify how the user-defined portion blob might be used (Elena)
+> - clarify the key instantiation options (Sathya)
+> - drop usage of a list for registering providers (Sathya)
+> - drop list.h include from tsm.h (Andy)
+> - add a comment for how TSM_DATA_MAX was derived (Andy)
+> - stop open coding kmemdup_nul() (Andy)
+> - add types.h to tsm.h (Andy)
+> - fix punctuation in comment (Andy)
+> - reorder security/keys/Makefile (Andy)
+> - add some missing includes to tsm.c (Andy)
+> - undo an 81 column clang-format line break (Andy)
+> - manually reflow tsm_token indentation (Andy)
+> - move allocations after input validation in tsm_instantiate() (Andy)
+> - switch to bin2hex() in tsm_read() (Andy)
+> - move init/exit declarations next to their functions (Andy)
+>
+>
+> ---
+>
+> Dan Williams (4):
+>       keys: Introduce tsm keys
+>       virt: sevguest: Prep for kernel internal {get,get_ext}_report()
+>       mm/slab: Add __free() support for kvfree
+>       virt: sevguest: Add TSM key support for SNP_{GET,GET_EXT}_REPORT
+>
+>
+>  drivers/virt/coco/sev-guest/Kconfig     |    2=20
+>  drivers/virt/coco/sev-guest/sev-guest.c |  135 ++++++++++++++-
+>  include/keys/tsm.h                      |   71 ++++++++
+>  include/linux/slab.h                    |    2=20
+>  security/keys/Kconfig                   |   12 +
+>  security/keys/Makefile                  |    1=20
+>  security/keys/tsm.c                     |  282 +++++++++++++++++++++++++=
+++++++
+>  7 files changed, 494 insertions(+), 11 deletions(-)
+>  create mode 100644 include/keys/tsm.h
+>  create mode 100644 security/keys/tsm.c
+>
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+
+So how does this scale? Does it scale to TDX, SGX, TPM's or even TEE's
+(ARM SM, RISC-V Keystone etc.). I'm not sure about the scope but we want
+of course something that adapts to multiple use cases, right?
+
+BR, Jarkko
