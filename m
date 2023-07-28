@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E50A97671DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DC67671DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjG1QeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
+        id S232637AbjG1Qee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjG1QeG (ORCPT
+        with ESMTP id S232474AbjG1Qe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:34:06 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD863C35;
-        Fri, 28 Jul 2023 09:34:05 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fd190065a8so25692525e9.3;
-        Fri, 28 Jul 2023 09:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690562044; x=1691166844;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WT48dgkldoDe9AzLyWANAP5X6Ur3eOt79TKT0p646Vk=;
-        b=PL7k9y3SFFBii4fOawRir/gNsBhgbmvRm1vXGV82Iv3o+8onTo+KviHDLgN9ePrPtc
-         BCP/28c8Ns8g2K32B32sQk4KWPcO14CFDFIt3mRSEM968IMz2Cf1Oao0FuLWHk608Y5S
-         WVgp8DiUJ8084mJfE66rHtcB5d4EnJFXB+zIHFlEsxjCTXl9VQjUnLuZjOeAib/2bo6t
-         U0pmoG5xA5aLOvArdDS2acjKJRd6dmKPsaPRz5IfdEkUTZqVJBXzPWn1zjv4BBfWCiCQ
-         Z0/K6YUch95zkp1xPzuXuJSBi5MfJXUFglnyNFpnahbri3/hKzTgS4QcGabmhd7mSOoC
-         Fa2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562044; x=1691166844;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WT48dgkldoDe9AzLyWANAP5X6Ur3eOt79TKT0p646Vk=;
-        b=dFPU39p7c9J8l81FDoc+ZasYqVV2cj8JVAY3Rf9E1ZmNH/8uIv+qGbSC9jGd0Y6uOs
-         oq5qvHyIKM9whlLl7KZFXdL+n26e6iZzzKFUg7B6V9sQ6uo+ncL3OLjlgvF8UGDpRNfe
-         iRGM8ajr0NTq1ChgzNEFqHqhmn8y0grd1oiEOQVQNTQM/C22m2fGTBgEgNCnukfYLF6f
-         /hJbsKUR7j7CscDCORF8WPGIaQK2NaDwKFMxLSJRHzkDIzM73ApeqhIqD6T4Y4S4b/Bu
-         stIFizClEeiiTW5/FExWVt9GphwfHj55CgGuEuq2rmw1T9ERtmNUgSAASVdzWBCyEM/Z
-         N0iQ==
-X-Gm-Message-State: ABy/qLY39TAjvRNKCBaFarohVlubgPw3KuHwDAZ0qEvggnhsNGkd+TwB
-        TW2hBNmg/2pOcnpwnEi4eORnzVJbF+4=
-X-Google-Smtp-Source: APBJJlG76OulxNjUSTZC57LQsWop4la3xga6beCk2Lcd+WxGXQ7miBnEIJPq6t/f5FxFAyIx/b6cVg==
-X-Received: by 2002:a05:600c:285:b0:3fa:97ad:2b9f with SMTP id 5-20020a05600c028500b003fa97ad2b9fmr2317986wmk.16.1690562043714;
-        Fri, 28 Jul 2023 09:34:03 -0700 (PDT)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id z24-20020a7bc7d8000000b003fbc681c8d1sm7388179wmk.36.2023.07.28.09.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:34:02 -0700 (PDT)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 6.5-rc4
-Date:   Fri, 28 Jul 2023 18:33:46 +0200
-Message-ID: <20230728163347.176178-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 28 Jul 2023 12:34:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6FCD4202
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:34:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7EC17D75;
+        Fri, 28 Jul 2023 09:35:09 -0700 (PDT)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1033C3F67D;
+        Fri, 28 Jul 2023 09:34:22 -0700 (PDT)
+Message-ID: <b53da670-c2b3-124a-e315-a0a9d5936eb1@arm.com>
+Date:   Fri, 28 Jul 2023 17:34:07 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 24/24] x86/resctrl: Separate arch and fs resctrl locks
+Content-Language: en-GB
+To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+References: <20230525180209.19497-1-james.morse@arm.com>
+ <20230525180209.19497-25-james.morse@arm.com>
+ <09751242-365d-bf0a-a031-d636e34e08d0@intel.com>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <09751242-365d-bf0a-a031-d636e34e08d0@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,36 +59,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Reinette,
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+On 15/06/2023 23:26, Reinette Chatre wrote:
+> On 5/25/2023 11:02 AM, James Morse wrote:
+>> resctrl has one mutex that is taken by the architecture specific code,
+>> and the filesystem parts. The two interact via cpuhp, where the
+>> architecture code updates the domain list. Filesystem handlers that
+>> walk the domains list should not run concurrently with the cpuhp
+>> callback modifying the list.
+>>
+>> Exposing a lock from the filesystem code means the interface is not
+>> cleanly defined, and creates the possibility of cross-architecture
+>> lock ordering headaches. The interaction only exists so that certain
+>> filesystem paths are serialised against cpu hotplug. The cpu hotplug
+>> code already has a mechanism to do this using cpus_read_lock().
+>>
+>> MPAM's monitors have an overflow interrupt, so it needs to be possible
+>> to walk the domains list in irq context. RCU is ideal for this,
+>> but some paths need to be able to sleep to allocate memory.
+>>
+>> Because resctrl_{on,off}line_cpu() take the rdtgroup_mutex as part
+>> of a cpuhp callback, cpus_read_lock() must always be taken first.
+>> rdtgroup_schemata_write() already does this.
+>>
+>> Most of the filesystem code's domain list walkers are currently
+>> protected by the rdtgroup_mutex taken in rdtgroup_kn_lock_live().
+>> The exceptions are rdt_bit_usage_show() and the mon_config helpers
+>> which take the lock directly.
+>>
+>> Make the domain list protected by RCU. An architecture-specific
+>> lock prevents concurrent writers. rdt_bit_usage_show() can
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
+> This does not sound right to me. The domain list belongs to resctrl,
+> the filesystem,
 
-are available in the Git repository at:
+I'd argue the list belongs to the arch code, as only the arch code writes to it.
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.5-rc4
 
-for you to fetch changes up to 588159009d5b7a09c3e5904cffddbe4a4e170301:
+> having an architecture specific lock protect it does
+> not seem like the right thing to do. Could this instead be a resctrl
+> owned lock that is hidden behind helpers for the architecture
+> code to add domains?
 
-  rbd: retrieve and check lock owner twice before blocklisting (2023-07-26 15:08:21 +0200)
+resctrl should never be writing to the domain list, so it never needs to know how
+concurrent-writers are avoided.
 
-----------------------------------------------------------------
-A patch to reduce the potential for erroneous RBD exclusive lock
-blocklisting (fencing) with a couple of prerequisites and a fixup to
-prevent metrics from being sent to the MDS even just once after that
-has been disabled by the user.  All marked for stable.
+The memory is allocated and added to the list by the architecture code.
+This new domain-list-lock API would only ever be called by the arch code, and there is no
+resctrl call that needs to be made with that lock held. I don't see any reason for this to
+be visible to the filesystem code.
 
-----------------------------------------------------------------
-Ilya Dryomov (3):
-      rbd: make get_lock_owner_info() return a single locker or NULL
-      rbd: harden get_lock_owner_info() a bit
-      rbd: retrieve and check lock owner twice before blocklisting
+I'm trying to keep the number of functions exposed by resctrl to the arch code as small as
+possible. After all this they are:
+resctrl_online_domain()
+resctrl_offline_domain()
+resctrl_online_cpu()
+resctrl_offline_cpu()
+resctrl_init()
+resctrl_exit()
 
-Xiubo Li (1):
-      ceph: never send metrics if disable_send_metrics is set
+The weird one is resctrl_get_domain_from_cpu(), which is used by both architecture and
+filesystem code, because I wanted to avoid duplicating it. It ends up inlined from a
+header file.
 
- drivers/block/rbd.c  | 124 +++++++++++++++++++++++++++++++++++----------------
- fs/ceph/metric.c     |   2 +-
- net/ceph/messenger.c |   1 +
- 3 files changed, 88 insertions(+), 39 deletions(-)
+Part of this is to explore making resctrl a loadable module in the future, which I think
+fits with Tony Luck's aims.
+
+
+Thanks,
+
+James
