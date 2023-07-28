@@ -2,216 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65B77673C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7C7673C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbjG1RrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        id S232151AbjG1Rq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbjG1RrI (ORCPT
+        with ESMTP id S229765AbjG1Rq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:47:08 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72783AA5;
-        Fri, 28 Jul 2023 10:47:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690566427; x=1722102427;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fQcCyWy7ZpLKPdeNo1tv2DTEdBFWmo67ai8pbgNx/Sc=;
-  b=htP/es4R5YItqzDCtIP1+A1/F4kbjO17fH4UvmpUZv0nn/ltiVj+8Kar
-   fH6jDVe4LhLecIIqNKsooq8BRsyNqxde4K7nKLYY0Arh36U/VVvcLUFSs
-   HgNTAWD3wsh0rv3dszMSJoAZVD97wNv5fa1El79yThZiUORHOTYQoYQfa
-   nuFjOQDMy/wlrerN0Xj6EfXIjzeAYOriMNC7+v7hkWnFfQAWt7xPkHlib
-   v1EmOW5Q31SRy5917JIxa+1nycd+qEFAkmW93CE+o60z6jlPhMY2oeIpu
-   1FUBL/hGq6WxWUW79rGRI4E09mUjp+Smy0UC6z22xansgjQ+vabzt6k9q
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="371348214"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="371348214"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 10:47:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="901369122"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="901369122"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 28 Jul 2023 10:47:03 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPRYM-0003Rn-16;
-        Fri, 28 Jul 2023 17:47:02 +0000
-Date:   Sat, 29 Jul 2023 01:46:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, igt-dev@lists.freedesktop.org,
-        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] kunit: Allow kunit test modules to use test filtering
-Message-ID: <202307290100.7X8zOW5k-lkp@intel.com>
-References: <20230728154419.1810177-8-janusz.krzysztofik@linux.intel.com>
+        Fri, 28 Jul 2023 13:46:56 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71153A8B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:46:54 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so4017970e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690566412; x=1691171212;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PUOsuK9U4cZ6JZwfdNB+TmQHxYWxH/A53SQYnwAxe3c=;
+        b=nqfDkCoab4utHUbd/anH85Av0oTWL2HcyEIByGM13NbdM6gIR1d/rsHZ7hXlD2i8L8
+         GNxc8SY+uedXv64TvxFBY/QZGUk+Hm6z3fNfghbSZDci/jfvsWED7TecYKzYLi17iGxf
+         8JkCkyXYHx24sBhTA+DdqgYntE/uQw+y+LL48KBNdGofivN5jggSqsjLLVL13Xo+6oxs
+         IHhxe+7dow63bxvyqgkmYa5MjU0P3Lk+KCu/APhW2T1D6JcrC+mGDzMP5ovEm4+sWLid
+         LwyYf2GTkPOKO6zT0hyqAAvLGkCp/dFbM0zB3gUJqruMAWw8xWYRtfDnJnubB9RlP16u
+         +L1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690566412; x=1691171212;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PUOsuK9U4cZ6JZwfdNB+TmQHxYWxH/A53SQYnwAxe3c=;
+        b=Hm1+7zBi8ZiQURWz9uSvBt01+ojbkrWyvVTIFc42HYlSnCN2A6lYf+pWfxXujaHCXK
+         rDxrw4h/yhAIsiOuJMmE8F6QoF7f/8DDAJPpdVupBjK/7NfSRyM9VXK/fmZfZZ42YCHc
+         5Hsvl1VSr2MQ69lroLjo3E9Dl8SHni/jul4ULoA/AC2L735KzabeTPfUAfQFFA1iEw/F
+         uvBeiFvye5eo11Ac/xct0KyCqNX48pGNiHLJH/PkU263IF1qn8RuEqzgxAVIgPSLgte+
+         HkVEnx5snpBaQ3SNXNR12x4Pdop6DcRs3uMV6Z4ljQOe2MRAu/BeXJl/g2RbuJiIpoEl
+         VHPQ==
+X-Gm-Message-State: ABy/qLZdKn6Ab1PD/0K61KRLhzv9M3fZAB7vin+V9TPQozVr/or8bYxp
+        YWNSMYNtMNTVqOqj/PpzPPZGxA==
+X-Google-Smtp-Source: APBJJlGnVjSw7A9DS3Za+2hl0ftYT1UQ5cn4KqOuMH5176hNY6DIv7UEGrIyoIsMuCy2H67BAkFgwQ==
+X-Received: by 2002:a05:6512:3c8c:b0:4fb:7da3:de4 with SMTP id h12-20020a0565123c8c00b004fb7da30de4mr2561530lfv.13.1690566412057;
+        Fri, 28 Jul 2023 10:46:52 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id w9-20020a05651204c900b004f85628ec34sm897120lfq.33.2023.07.28.10.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 10:46:51 -0700 (PDT)
+Message-ID: <a8ebcacd-19c7-b5e7-f372-6abde311e17d@linaro.org>
+Date:   Fri, 28 Jul 2023 19:46:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728154419.1810177-8-janusz.krzysztofik@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/33] iris: vidc: add helper functions for power
+ management
+Content-Language: en-US
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     quic_dikshita@quicinc.com
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-14-git-send-email-quic_vgarodia@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <1690550624-14642-14-git-send-email-quic_vgarodia@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Janusz,
+On 28.07.2023 15:23, Vikash Garodia wrote:
+> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> 
+> this implements functions for calculating current load of the
+> hardware. Depending on the count of instances and
+> resolutions it selects the best clock rate for the video
+> core. Also it scales clocks, power and enable/disable dcvs.
+> 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> ---[...]
 
-kernel test robot noticed the following build errors:
+> +
+> +/* TODO: Move to dtsi OR use source clock instead of branch clock.*/
+> +#define MSM_VIDC_CLOCK_SOURCE_SCALING_RATIO 3
+Seems unused in this patch.
 
-[auto build test ERROR on shuah-kselftest/kunit-fixes]
-[also build test ERROR on linus/master v6.5-rc3]
-[cannot apply to shuah-kselftest/kunit next-20230728]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> +
+> +enum vidc_bus_type {
+> +	PERF,
+> +	DDR,
+> +	LLCC,
+> +};
+> +
+> +/*
+> + * Minimum dimensions for which to calculate bandwidth.
+> + * This means that anything bandwidth(0, 0) ==
+> + * bandwidth(BASELINE_DIMENSIONS.width, BASELINE_DIMENSIONS.height)
+> + */
+> +static const struct {
+> +	int height, width;
+> +} BASELINE_DIMENSIONS = {
+> +	.width = 1280,
+> +	.height = 720,
+> +};
+> +
+> +/* converts Mbps to bps (the "b" part can be bits or bytes based on context) */
+if 'b', the multiplier must be 1024 or it makes no sense
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Janusz-Krzysztofik/kunit-Report-the-count-of-test-suites-in-a-module/20230728-234736
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git kunit-fixes
-patch link:    https://lore.kernel.org/r/20230728154419.1810177-8-janusz.krzysztofik%40linux.intel.com
-patch subject: [PATCH 3/3] kunit: Allow kunit test modules to use test filtering
-config: mips-randconfig-r002-20230728 (https://download.01.org/0day-ci/archive/20230729/202307290100.7X8zOW5k-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230729/202307290100.7X8zOW5k-lkp@intel.com/reproduce)
+> +#define kbps(__mbps) ((__mbps) * 1000)
+> +#define bps(__mbps) (kbps(__mbps) * 1000)
+> +
+[...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307290100.7X8zOW5k-lkp@intel.com/
+> +void __dump(struct dump dump[], int len)
+> +{
+> +	int c = 0;
+> +
+> +	for (c = 0; c < len; ++c) {
+> +		char format_line[128] = "", formatted_line[128] = "";
+That's a lot of bytes on the stack..
 
-All error/warnings (new ones prefixed by >>):
-
->> lib/kunit/executor.c:182:42: warning: declaration of 'struct suite_set' will not be visible outside of this function [-Wvisibility]
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
->> lib/kunit/executor.c:190:25: error: incomplete definition of type 'struct suite_set'
-     190 |         for (suites = suite_set->start; suites < suite_set->end; suites++)
-         |                       ~~~~~~~~~^
-   lib/kunit/executor.c:182:42: note: forward declaration of 'struct suite_set'
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
-   lib/kunit/executor.c:190:52: error: incomplete definition of type 'struct suite_set'
-     190 |         for (suites = suite_set->start; suites < suite_set->end; suites++)
-         |                                                  ~~~~~~~~~^
-   lib/kunit/executor.c:182:42: note: forward declaration of 'struct suite_set'
-     182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
-         |                                          ^
->> lib/kunit/executor.c:198:19: error: variable has incomplete type 'struct suite_set'
-     198 |         struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-         |                          ^
-   lib/kunit/executor.c:198:9: note: forward declaration of 'struct suite_set'
-     198 |         struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-         |                ^
-   In file included from lib/kunit/executor.c:230:
->> lib/kunit/executor_test.c:45:19: error: variable has incomplete type 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:45:9: note: forward declaration of 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:46:19: error: variable has incomplete type 'struct suite_set'
-      46 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:45:9: note: forward declaration of 'struct suite_set'
-      45 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:69:19: error: variable has incomplete type 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:69:9: note: forward declaration of 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:70:19: error: variable has incomplete type 'struct suite_set'
-      70 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:69:9: note: forward declaration of 'struct suite_set'
-      69 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:96:19: error: variable has incomplete type 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                          ^
-   lib/kunit/executor_test.c:96:9: note: forward declaration of 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:97:19: error: variable has incomplete type 'struct suite_set'
-      97 |         struct suite_set got;
-         |                          ^
-   lib/kunit/executor_test.c:96:9: note: forward declaration of 'struct suite_set'
-      96 |         struct suite_set suite_set = {.start = subsuite, .end = &subsuite[2]};
-         |                ^
-   lib/kunit/executor_test.c:138:4: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
-     138 |                         (kunit_action_t *)kfree,
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~
-   2 warnings and 9 errors generated.
+> +
+> +		if (dump[c].val == DUMP_HEADER_MAGIC) {
+> +			snprintf(formatted_line, sizeof(formatted_line), "%s\n",
+> +				 dump[c].key);
+> +		} else {
+> +			snprintf(format_line, sizeof(format_line),
+> +				 "    %-35s: %s\n", dump[c].key,
+> +					 dump[c].format);
+> +			snprintf(formatted_line, sizeof(formatted_line),
+> +				 format_line, dump[c].val);
+> +		}
+> +		d_vpr_b("%s", formatted_line);
+> +	}
+> +}
+> +
+> +u64 msm_vidc_max_freq(struct msm_vidc_inst *inst)
+> +{
+> +	struct msm_vidc_core *core;
+> +	struct frequency_table *freq_tbl;
+> +	u64 freq = 0;
+> +
+> +	core = inst->core;
+> +
+> +	if (!core->resource || !core->resource->freq_set.freq_tbl ||
+> +	    !core->resource->freq_set.count) {
+> +		i_vpr_e(inst, "%s: invalid frequency table\n", __func__);
+> +		return freq;
+> +	}
+> +	freq_tbl = core->resource->freq_set.freq_tbl;
+Do we need a separate freuqency table if we have OPP?
+[...]
 
 
-vim +190 lib/kunit/executor.c
+> +	if (inst->power.fw_cf) {
+> +		cf = inst->power.fw_cf;
+> +		frame_size = (msm_vidc_get_mbs_per_frame(inst) / (32 * 8) * 3) / 2;
+too magic!
 
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  181  
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30 @182  static void kunit_exec_list_tests(struct suite_set *suite_set)
-aac35468ca20a3 Alan Maguire    2020-08-04  183  {
-e5857d396f35e5 Daniel Latypov  2022-07-09  184  	struct kunit_suite * const *suites;
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  185  	struct kunit_case *test_case;
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  186  
-6c738b52316c58 Rae Moar        2022-11-23  187  	/* Hack: print a ktap header so kunit.py can find the start of KUnit output. */
-6c738b52316c58 Rae Moar        2022-11-23  188  	pr_info("KTAP version 1\n");
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  189  
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30 @190  	for (suites = suite_set->start; suites < suite_set->end; suites++)
-e5857d396f35e5 Daniel Latypov  2022-07-09  191  		kunit_suite_for_each_test_case((*suites), test_case) {
-e5857d396f35e5 Daniel Latypov  2022-07-09  192  			pr_info("%s.%s\n", (*suites)->name, test_case->name);
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  193  		}
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  194  }
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  195  
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  196  int kunit_run_all_tests(void)
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  197  {
-e5857d396f35e5 Daniel Latypov  2022-07-09 @198  	struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-1b11063d32d7e1 Daniel Latypov  2022-05-13  199  	int err = 0;
-d20a6ba5e3be5f Joe Fradley     2022-08-23  200  	if (!kunit_enabled()) {
-d20a6ba5e3be5f Joe Fradley     2022-08-23  201  		pr_info("kunit: disabled\n");
-d20a6ba5e3be5f Joe Fradley     2022-08-23  202  		goto out;
-d20a6ba5e3be5f Joe Fradley     2022-08-23  203  	}
-aac35468ca20a3 Alan Maguire    2020-08-04  204  
-a02353f491622e Daniel Latypov  2022-05-11  205  	if (filter_glob_param) {
-a02353f491622e Daniel Latypov  2022-05-11  206  		suite_set = kunit_filter_suites(&suite_set, filter_glob_param, &err);
-a02353f491622e Daniel Latypov  2022-05-11  207  		if (err) {
-a02353f491622e Daniel Latypov  2022-05-11  208  			pr_err("kunit executor: error filtering suites: %d\n", err);
-1b11063d32d7e1 Daniel Latypov  2022-05-13  209  			goto out;
-a02353f491622e Daniel Latypov  2022-05-11  210  		}
-a02353f491622e Daniel Latypov  2022-05-11  211  	}
-45dcbb6f5ef78b Brendan Higgins 2020-08-04  212  
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  213  	if (!action_param)
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  214  		kunit_exec_run_tests(&suite_set);
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  215  	else if (strcmp(action_param, "list") == 0)
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  216  		kunit_exec_list_tests(&suite_set);
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  217  	else
-9c6b0e1d8993e4 Daniel Latypov  2021-09-30  218  		pr_err("kunit executor: unknown action '%s'\n", action_param);
-aac35468ca20a3 Alan Maguire    2020-08-04  219  
-e5857d396f35e5 Daniel Latypov  2022-07-09  220  	if (filter_glob_param) { /* a copy was made of each suite */
-a127b154a8f231 Daniel Latypov  2021-09-14  221  		kunit_free_suite_set(suite_set);
-5d31f71efcb6bc Daniel Latypov  2021-02-05  222  	}
-5d31f71efcb6bc Daniel Latypov  2021-02-05  223  
-1b11063d32d7e1 Daniel Latypov  2022-05-13  224  out:
-1b11063d32d7e1 Daniel Latypov  2022-05-13  225  	kunit_handle_shutdown();
-1b11063d32d7e1 Daniel Latypov  2022-05-13  226  	return err;
-aac35468ca20a3 Alan Maguire    2020-08-04  227  }
-aac35468ca20a3 Alan Maguire    2020-08-04  228  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
