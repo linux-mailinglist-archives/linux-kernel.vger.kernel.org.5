@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083EB7669BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E267669C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235666AbjG1KDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        id S235704AbjG1KET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbjG1KDY (ORCPT
+        with ESMTP id S235728AbjG1KDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:03:24 -0400
+        Fri, 28 Jul 2023 06:03:54 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977973C0E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:02:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D704535B6
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690538559;
+        s=mimecast20190719; t=1690538591;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=WJxfGpxbppzJwgJdPmeEdmGhAfwaruKH//tjBHG7QkQ=;
-        b=UcW/bvsfuhZr/nwmvVUjy/TSHGeqUP9SzsPLXJnkWIR0Sbz1CeQ14a7oG5HO2DipEdRmxO
-        QaIYvYTxaFWeblsrzNF/Jyg73INo2TW19gtRjXQzIpUR1cLDTLy1BLjeZPcpAYtEiJpJnV
-        SFpwbl+ioRsa5jF0xNAnQ9D35AuXYIU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=p9uBh6FMvfeDKYc8dvTUQUg/D36NNqMboTJZgEA5t70=;
+        b=NhdTBWxS5zR1hpSMFz0ovjNKayFZuMdr9Ia+UJXS92OtxtnMCdsxoWcggPNmIPsvytudVs
+        WCG+b/ggyLRvIW44zHMMoNAiZnbiTKmumvZF8CbEo7ibPVKNVFy+9sJr5jVsSs8hXMRTyv
+        bJL0UN4PkKDt+6wUBDTtp7/9hpWsJp0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-492-UIABiW5QM1m8NJnH-WniKQ-1; Fri, 28 Jul 2023 06:02:38 -0400
-X-MC-Unique: UIABiW5QM1m8NJnH-WniKQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fbdf341934so10664455e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:02:38 -0700 (PDT)
+ us-mta-288-kyJWvHp-NESdxCvq9yAY8g-1; Fri, 28 Jul 2023 06:03:09 -0400
+X-MC-Unique: kyJWvHp-NESdxCvq9yAY8g-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fbab56aac7so10927145e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:03:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690538557; x=1691143357;
+        d=1e100.net; s=20221208; t=1690538588; x=1691143388;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WJxfGpxbppzJwgJdPmeEdmGhAfwaruKH//tjBHG7QkQ=;
-        b=hjkMD4jpZbxqXVs0yHhROQ4Ibjr57Oi1AVioglR8VRhZ6+Ltp6po8OK2VZjFzQRPtm
-         7IQSaKehqUoz/QPDp77pT8MKJDEUGtwidNA+tT7uBLxpEFiPA8sAXiMsJq2iy1QuZDC3
-         WMMG2mS4kByqpsqEbYXGxEa4eVuto/Oe5ykOEGKMO54tf4Yf2gAObCK5DmwMdr4XFVjD
-         TvN26hqJxKPFQRJ1I/lUqKFlwrVW4rkDv9MtaUjr3/E6GaYIr12PAaPlCkAzCCcigLhg
-         +STF19foujgBavzqwMmA6/EI69CZWtqHirswaGI+3UnjnWIKe508qAERvG3+e0RZCY8Z
-         vvhA==
-X-Gm-Message-State: ABy/qLZQrirA1SnqCRXop94fr+ECpYC38/w2KZOxXRym3weNC3Xg5C68
-        Cg6ubC0eqQuwX/uBLcrqSl88h+v3l90MI5zJF6xRODQJkrfCRUsuvnxNbSmYMPcBaUMVDo56B3K
-        3rFQMcxvbQ44y9kaSEz1Vg2yK
-X-Received: by 2002:a05:600c:290b:b0:3fd:1cfa:939e with SMTP id i11-20020a05600c290b00b003fd1cfa939emr1548204wmd.4.1690538557637;
-        Fri, 28 Jul 2023 03:02:37 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGZAUlnXLzjKeLMo1ALDnDndM9wZM0oCDKowY7IKMK5H4noYhpTucg62NPlgPhdJHLTvyOrGA==
-X-Received: by 2002:a05:600c:290b:b0:3fd:1cfa:939e with SMTP id i11-20020a05600c290b00b003fd1cfa939emr1548187wmd.4.1690538557338;
-        Fri, 28 Jul 2023 03:02:37 -0700 (PDT)
+        bh=p9uBh6FMvfeDKYc8dvTUQUg/D36NNqMboTJZgEA5t70=;
+        b=IwMWffamBEWUsYsPaamP8zdGNyPj+WTgdODUykImJtF+/RtxMD3w2vAnBszu2IMkbs
+         b+Mpy2spUjLzl4lxD2KBNrq8DOqfjsZY1ikJGY9UKc4vLWIr7eUb3Ql0pW7HM0xi/4FX
+         jaXuM2eNjRhTjH/AtBqkH0vSFfKr2qrGnznODtcl6ps6TtGl5W3goB/giWpITKI1FG0U
+         HTYIGN0cS4Bqq1PqYe5NgzGHuQZY0xC2dv8+bYOZb16Xg5SR/nMDTOMPHKPRsyQKj5uF
+         TcfCu8N02uCTkMoH7u9RRZlXf4230pkSqZ97v0+1udY5NBpilsN7qAbmuq83QwRy4SjV
+         e01g==
+X-Gm-Message-State: ABy/qLbT9w4c6BVDuqn2SgpXz8X1k7NfHzco1t0WxA44n7x5vb30hfEO
+        dhrMh3mxMy9S2FjMiLRSi25ibmwvXFSWaraJbJ++WZDrk2n0uNHRbwxBQXnDhj2S4ILnEXi0dGo
+        WUubZJlonjX96Rd8PkcHbFGTk
+X-Received: by 2002:a05:600c:20f:b0:3fe:785:ac0b with SMTP id 15-20020a05600c020f00b003fe0785ac0bmr1222138wmi.5.1690538588605;
+        Fri, 28 Jul 2023 03:03:08 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHtdYABsrhIonVjfx9OTENY+L0T6vf82VlJ9iuT/7Og+9ZVj9h0aqYiRuknX63TfNx/AP5fxg==
+X-Received: by 2002:a05:600c:20f:b0:3fe:785:ac0b with SMTP id 15-20020a05600c020f00b003fe0785ac0bmr1222130wmi.5.1690538588357;
+        Fri, 28 Jul 2023 03:03:08 -0700 (PDT)
 Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id m25-20020a7bcb99000000b003fc0505be19sm3716930wmi.37.2023.07.28.03.02.36
+        by smtp.gmail.com with ESMTPSA id y17-20020a05600c20d100b003fba6709c68sm3763721wmm.47.2023.07.28.03.03.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 03:02:36 -0700 (PDT)
+        Fri, 28 Jul 2023 03:03:08 -0700 (PDT)
 From:   Javier Martinez Canillas <javierm@redhat.com>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>
-Cc:     Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-fbdev@vger.kernel.org,
-        kasan-dev <kasan-dev@googlegroups.com>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
-        Alexander Potapenko <glider@google.com>,
-        dri-devel@lists.freedesktop.org, Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2] Revert "fbcon: Use kzalloc() in fbcon_prepare_logo()"
-In-Reply-To: <bd8b71bb13af21cc48af40349db440f794336d3a.1690535849.git.geert+renesas@glider.be>
-References: <bd8b71bb13af21cc48af40349db440f794336d3a.1690535849.git.geert+renesas@glider.be>
-Date:   Fri, 28 Jul 2023 12:02:36 +0200
-Message-ID: <87wmykxsjn.fsf@minerva.mail-host-address-is-not-set>
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH v2] video: logo: LOGO should depend on FB_CORE i.s.o. FB
+In-Reply-To: <e4142b7cc9aad9975de1bc6b1c7d86ccee487e4c.1690535997.git.geert+renesas@glider.be>
+References: <e4142b7cc9aad9975de1bc6b1c7d86ccee487e4c.1690535997.git.geert+renesas@glider.be>
+Date:   Fri, 28 Jul 2023 12:03:07 +0200
+Message-ID: <87tttoxsis.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,19 +79,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Geert Uytterhoeven <geert+renesas@glider.be> writes:
 
-Hello Geert,
-
-> This reverts commit a6a00d7e8ffd78d1cdb7a43f1278f081038c638f.
+> If CONFIG_FB_CORE=y and CONFIG_FB=n, the frame buffer bootup logos can
+> no longer be enabled.  Fix this by making CONFIG_LOGO depend on
+> CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
+> logo code to depend on the presence of real frame buffer device drivers.
 >
-> This commit is redundant, as the root cause that resulted in a false
-> positive was fixed by commit 27f644dc5a77f8d9 ("x86: kmsan: use C
-> versions of memset16/memset32/memset64").
->
-> Closes: https://lore.kernel.org/r/CAMuHMdUH4CU9EfoirSxjivg08FDimtstn7hizemzyQzYeq6b6g@mail.gmail.com/
+> Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 > ---
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
 Pushed to drm-misc (drm-misc-next). Thanks!
 
