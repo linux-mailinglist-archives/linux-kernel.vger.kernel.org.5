@@ -2,171 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6BD7671B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808A57671BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbjG1QQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        id S230329AbjG1QTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjG1QQn (ORCPT
+        with ESMTP id S229885AbjG1QTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:16:43 -0400
-Received: from out-97.mta0.migadu.com (out-97.mta0.migadu.com [91.218.175.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581641BF2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:16:41 -0700 (PDT)
-Message-ID: <2c3bec7a-812c-0a65-f8c1-b9749430adba@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690560999; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+4d5dX2QpOs/NQAOKyRlBye3q/eaKn/kIqTx/3BJqMA=;
-        b=S05AXoOWkRtVDQgNWaAU61a0PxShD2p1OxKAwho6I33bMP7fQDFkZkX23n+ctKHnZCStqs
-        Ts4R+FVbXlgRYYQbVBvxeT1Cd1Z5TGGngWG7uEaYCyfWE3mg8P5zxV/T7pOh4r4ERI0fZ0
-        JCqPMJOh+BqLS6XHBsB5AoDSX8Trnyg=
-Date:   Fri, 28 Jul 2023 09:16:32 -0700
+        Fri, 28 Jul 2023 12:19:07 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A659F1BF2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:04 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bed101b70so129084766b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690561143; x=1691165943;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oiqXtLXb56gWHpFHlkrGXB0htpi3zn1ShhYELBek5ko=;
+        b=bynKf6n+TpRfz0DyR2rYNbqu0v4M0dTgmVz8xWQq8X+28lhY2cl5XnPRKgqX9HAqiE
+         H79vFTkAB/9Itwu2leZ1xBpWwBB4F2uReu+dWnEz72qQ+dgV9BK2g3sOlh+7HQG5ShkZ
+         9P+UQsfvk3Zbb2D6K+z9GjqGwuGQGpMLf/2Vk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690561143; x=1691165943;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oiqXtLXb56gWHpFHlkrGXB0htpi3zn1ShhYELBek5ko=;
+        b=OuzElrfl70+GCeOfi5AujhdSfCarjsZWEopwmYp5EMS+S5Sxkdk2oubCc/9lfyUddG
+         je0RSUfICqhycR+eqvud7Ft1Q0qKpBB6vavBcMPlaNjSAiVPb5wWdLbZbzdAPpmNY7h8
+         bjhrlcLfeb/GmEHZKxbRrWd2fmK/x67mD9g+fibNRmyRKiw2s3DUAJTFfqsGMXSAwIWj
+         dxBQ/xzSgG2Tv/cBb97sfMU+XMnjztyntVlqHkjhXnLC1GvKBl7EyaHSegwSNX7skddH
+         b5auryxmOaC93N5Bk7AdcW2cLGhpjWA5rwotsrwZhoW3w/oMVZslDXiQ0SMw7DOiNrN6
+         9crw==
+X-Gm-Message-State: ABy/qLaBuWSid5N+T8Pej8yiye02/kuiy2CCqgbIP1nJE8SdoEeh7RKq
+        P75Gd1Zw3GxC70KPZRNUVcuhKWiLd58N+b5XWVL7aBDt
+X-Google-Smtp-Source: APBJJlHtHnySbls+rIikJ/DoMFTNgt0h2iBwUcrqg0Wgn3rTIkQy1vToeRUv9a55cqtlXJ8lFShMFA==
+X-Received: by 2002:a17:906:845c:b0:99b:465c:fb9f with SMTP id e28-20020a170906845c00b0099b465cfb9fmr2787546ejy.8.1690561142849;
+        Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id dc26-20020a170906c7da00b00988e953a586sm2220259ejb.61.2023.07.28.09.19.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5222b917e0cso3093600a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
+X-Received: by 2002:a05:6402:1141:b0:51e:5322:a642 with SMTP id
+ g1-20020a056402114100b0051e5322a642mr2296690edw.27.1690561141923; Fri, 28 Jul
+ 2023 09:19:01 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
- sock_map_sk_acquire
-Content-Language: en-US
-To:     Jiri Olsa <olsajiri@gmail.com>, tglozar@redhat.com
-Cc:     linux-kernel@vger.kernel.org, john.fastabend@gmail.com,
-        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230728064411.305576-1-tglozar@redhat.com>
- <ZMOrEi3cNWGXp9ZS@krava>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZMOrEi3cNWGXp9ZS@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230727212845.135673-1-david@redhat.com>
+In-Reply-To: <20230727212845.135673-1-david@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 28 Jul 2023 09:18:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+Message-ID: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone fallout
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
+>
+> This is my proposal on how to handle the fallout of 474098edac26
+> ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
+> accidentially missed that follow_page() and smaps implicitly kept the
+> FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
+> not trigger faults on PROT_NONE-mapped PTEs.
 
+Ugh.
 
-On 7/28/23 4:48 AM, Jiri Olsa wrote:
-> On Fri, Jul 28, 2023 at 08:44:11AM +0200, tglozar@redhat.com wrote:
->> From: Tomas Glozar <tglozar@redhat.com>
->>
->> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
->> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
->> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
->> patchset notes for details).
->>
->> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
->> BUG (sleeping function called from invalid context) on RT kernels.
->>
->> preempt_disable was introduced together with lock_sk and rcu_read_lock
->> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
->> in parallel"), probably to match disabled migration of BPF programs, and
->> is no longer necessary.
->>
->> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
-> 
-> FYI, I'm not sure it's related but I started to see following splat recently:
-> 
-> [  189.360689][  T658] =============================
-> [  189.361149][  T658] [ BUG: Invalid wait context ]
-> [  189.361588][  T658] 6.5.0-rc2+ #589 Tainted: G           OE
-> [  189.362174][  T658] -----------------------------
-> [  189.362660][  T658] test_progs/658 is trying to lock:
-> [  189.363176][  T658] ffff8881702652b8 (&psock->link_lock){....}-{3:3}, at: sock_map_update_common+0x1c4/0x340
-> [  189.364152][  T658] other info that might help us debug this:
-> [  189.364689][  T658] context-{5:5}
-> [  189.365021][  T658] 3 locks held by test_progs/658:
-> [  189.365508][  T658]  #0: ffff888177611a80 (sk_lock-AF_INET){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x82/0x260
-> [  189.366503][  T658]  #1: ffffffff835a3180 (rcu_read_lock){....}-{1:3}, at: sock_map_update_elem_sys+0x78/0x260
-> [  189.367470][  T658]  #2: ffff88816cf19240 (&stab->lock){+...}-{2:2}, at: sock_map_update_common+0x12a/0x340
-> [  189.368420][  T658] stack backtrace:
-> [  189.368806][  T658] CPU: 0 PID: 658 Comm: test_progs Tainted: G           OE      6.5.0-rc2+ #589 98af30b3c42d747b51da05f1d0e4899e394be6c9
-> [  189.369889][  T658] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-> [  189.370736][  T658] Call Trace:
-> [  189.371063][  T658]  <TASK>
-> [  189.371365][  T658]  dump_stack_lvl+0xb2/0x120
-> [  189.371798][  T658]  __lock_acquire+0x9ad/0x2470
-> [  189.372243][  T658]  ? lock_acquire+0x104/0x350
-> [  189.372680][  T658]  lock_acquire+0x104/0x350
-> [  189.373104][  T658]  ? sock_map_update_common+0x1c4/0x340
-> [  189.373615][  T658]  ? find_held_lock+0x32/0x90
-> [  189.374074][  T658]  ? sock_map_update_common+0x12a/0x340
-> [  189.374587][  T658]  _raw_spin_lock_bh+0x38/0x80
-> [  189.375060][  T658]  ? sock_map_update_common+0x1c4/0x340
-> [  189.375571][  T658]  sock_map_update_common+0x1c4/0x340
-> [  189.376118][  T658]  sock_map_update_elem_sys+0x184/0x260
-> [  189.376704][  T658]  __sys_bpf+0x181f/0x2840
-> [  189.377147][  T658]  __x64_sys_bpf+0x1a/0x30
-> [  189.377556][  T658]  do_syscall_64+0x38/0x90
-> [  189.377980][  T658]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [  189.378473][  T658] RIP: 0033:0x7fe52f47ab5d
-> 
-> the patch did not help with that
+I hate how it uses FOLL_FORCE that is inherently scary.
 
-I think the above splat is not related to this patch. In function
-sock_map_update_common func we have
-   raw_spin_lock_bh(&stab->lock);
+Why do we have that "gup_can_follow_protnone()" logic AT ALL?
 
-   sock_map_add_link(psock, link, map, &stab->sks[idx]);
-     spin_lock_bh(&psock->link_lock);
-     ...
-     spin_unlock_bh(&psock->link_lock);
+Couldn't we just get rid of that disgusting thing, and just say that
+GUP (and follow_page()) always just ignores NUMA hinting, and always
+just follows protnone?
 
-   raw_spin_unlock_bh(&stab->lock);
+We literally used to have this:
 
-I think you probably have CONFIG_PROVE_RAW_LOCK_NESTING turned on
-in your config.
+        if (!(gup_flags & FOLL_FORCE))
+                gup_flags |= FOLL_NUMA;
 
-In the above case, for RT kernel, spin_lock_bh will become
-'mutex' and it is sleepable, while raw_spin_lock_bh remains
-to be a spin lock. The warning is about potential
-locking violation with RT kernel.
+ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
+be the rare crazy case.
 
-To fix the issue, you can convert spin_lock_bh to raw_spin_lock_bh
-to silence the warning.
+The original reason for not setting FOLL_NUMA all the time is
+documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
+page faults from gup/gup_fast") from way back in 2012:
 
-> 
-> jirka
-> 
->>
->> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
->> ---
->>   net/core/sock_map.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
->> index 19538d628714..08ab108206bf 100644
->> --- a/net/core/sock_map.c
->> +++ b/net/core/sock_map.c
->> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
->>   	__acquires(&sk->sk_lock.slock)
->>   {
->>   	lock_sock(sk);
->> -	preempt_disable();
->>   	rcu_read_lock();
->>   }
->>   
->> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
->>   	__releases(&sk->sk_lock.slock)
->>   {
->>   	rcu_read_unlock();
->> -	preempt_enable();
->>   	release_sock(sk);
->>   }
->>   
->> -- 
->> 2.39.3
->>
->>
-> 
+         * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
+         * would be called on PROT_NONE ranges. We must never invoke
+         * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
+         * page faults would unprotect the PROT_NONE ranges if
+         * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
+         * bitflag. So to avoid that, don't set FOLL_NUMA if
+         * FOLL_FORCE is set.
+
+but I don't think the original reason for this is *true* any more.
+
+Because then two years later in 2014, in commit c46a7c817e66 ("x86:
+define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
+Mel made the code able to distinguish between PROT_NONE and NUMA
+pages, and he changed the comment above too.
+
+But I get the very very strong feeling that instead of changing the
+comment, he should have actually removed the comment and the code.
+
+So I get the strong feeling that all these FOLL_NUMA games should just
+go away. You removed the FOLL_NUMA bit, but you replaced it with using
+FOLL_FORCE.
+
+So rather than make this all even more opaque and make it even harder
+to figure out why we have that code in the first place, I think it
+should all just be removed.
+
+The original reason for FOLL_NUMA simply does not exist any more. We
+know exactly when a page is marked for NUMA faulting, and we should
+simply *ignore* it for GUP and follow_page().
+
+I think we should treat a NUMA-faulting page as just being present
+(and not NUMA-fault it).
+
+Am I missing something?
+
+                  Linus
