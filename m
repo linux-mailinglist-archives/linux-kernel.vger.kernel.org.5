@@ -2,214 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1061766F60
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207F3766F6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236934AbjG1OYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48862 "EHLO
+        id S236901AbjG1OZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236953AbjG1OYB (ORCPT
+        with ESMTP id S236048AbjG1OZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:24:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1283C04;
-        Fri, 28 Jul 2023 07:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690554239; x=1722090239;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=QMYFgQafyYRWZzRHR7Qk3UfKsSOcKGDRsY94y39LZvs=;
-  b=UOc1MlrpHJinevfV7Ak4dzd2fPx45gehkEGrwi9nNoR454jyt3rF37vv
-   wPhIM4NwTH/MteP7UYzwdS8f+W8ftTd0yJtZl5q9+hcWtABRd0FCJYiV8
-   kR9K3GwAZzQn0SwfIPX7CqBxk7fr1nZVNK5qQp2iZn6Qris0wEEjhUERU
-   GnyY+YKPPsyJxCNQRRXCzeQ9Ahwvud+6DfQM19us0R0xmE2QpFLLQgbY7
-   L+FO5F0RGvdyGLElujh8p0xqr5/fiiBzIWHJF+3z5iyqLj9T0dqR5YlN8
-   rXqjYhc+iwYUz7+SgyiaAIL6AoST+MbgdhoE1A9B0yUYAgE5abt61Sh4I
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="434888114"
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="434888114"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 07:23:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="817533790"
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="817533790"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2023 07:23:58 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 28 Jul 2023 07:23:58 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 28 Jul 2023 07:23:58 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 28 Jul 2023 07:23:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JRHWhiqRJLnxpv0Xxv20O7S2NX/wlnW3B4QcrQtI2HFm3RNX1jHZfwBENKKy2hXuhPPBeWUbb9OluLDPcjhnPfiEiEVKZ/MKqNfinuMof0FKguVc+WlHcnsTLLfkU7IiYGSF4qm+APPMw3TC2hSA3k556gkx6Vlgua8+G2lRnDAetEYNSfFgtkvVlmy/zVkcbzKH6ymqqeymYcvabORvKTcQJiYb6/eFPhmKQdmGn0vQYWSJQrExxINdG1ihTU7Bf9x5XOrNdk+C1HlZVfBF184dZUGCygksYTLDA1fUyIrV5uSspVYRxoe+JWMHK+rQjlrsDEkYbaUHqo6NyJi2Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMYFgQafyYRWZzRHR7Qk3UfKsSOcKGDRsY94y39LZvs=;
- b=lgtWn6o4ajWESBh7+ZOalZAJ2bX+Wk7TA4fErFAKmzGaydLVlVSFGJjz+wcuKmM55en66vO/+EZ8K/zQftSaz81Tu90LYgyYMRBK8Teiie4pKVDU/uYaw3EaeZWBkiSFb5ZpIqTAbtLYZt9xKtb2svQzgBcyOyWZFGWoUJMqCbxd5sfSStBN9rKy4ogi3fF/9ubf2ynkx3YxqztQfI6j1Ie8pk7pXAa0ckfUYbsDoPRuGh1/Z2hzDDH1mtojYhqvf9klIAFe31kBfYHiuUm7vuozU0/TT1lzYaHOps64fSHGg925DK27VCWjT9zs74ZRjArmKtwWfGNc08I8XkAOFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by SN7PR11MB7019.namprd11.prod.outlook.com (2603:10b6:806:2ae::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 14:23:56 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::75c5:4a90:a6c3:9d8d]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::75c5:4a90:a6c3:9d8d%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 14:23:55 +0000
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "ldufour@linux.ibm.com" <ldufour@linux.ibm.com>
-CC:     "npiggin@gmail.com" <npiggin@gmail.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
-Thread-Topic: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
-Thread-Index: AQHZr1BM9gzmeFoLCkCaGIrrlOZu8K+xlKUAgB1aO4CAAHDEgA==
-Date:   Fri, 28 Jul 2023 14:23:55 +0000
-Message-ID: <beaab9ae25de92bace2f2e30dff5e0d2e7774e56.camel@intel.com>
-References: <20230705145143.40545-1-ldufour@linux.ibm.com>
-         <c66e3e800a7d257ef7a90749fe567f056f4c3ace.camel@intel.com>
-         <87wmykqyam.ffs@tglx>
-In-Reply-To: <87wmykqyam.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|SN7PR11MB7019:EE_
-x-ms-office365-filtering-correlation-id: 2f231e59-c5f6-4afa-2b56-08db8f764698
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nMy3j/MiuURR8UjOga8nn9Fwlxw5UKNhB1dRAWe9dFQi6VEo50d7nAOElYriODKlwHdU3H6TjkEwbDkgDtQOq+aBltvdDSJ4kqlAEJU6XIIRLGpAkbB4a88zW3EvPkFclgovpqgnECcgPkrAjYcpdiZkvjF163RFak5eNUcwarpeG7hGsnVN5l9pkJnf5jNIqA7uK0ws7qOgilset0j/DUjShxfhBvUxCzzzfq5fxOaI9hVSMO9JKm1mtlhxagSMzwxHp1akiyVbe6zH4PIYNNVA4Uxor6sxRgeYPUf0YQX2szxY/3Gcv2kIlPGYxP5t2Pc1EWklxhPtVZa038bvqJEdKZitaPjafFrFQnq5K2FJXWoLyfSdoadGC9KjHdqsDx8oUzJ9uTeDXoYufnZJphc0E44KQvm1PVM/r3/My2pZboSTUj6u03RZ+0AuPM0jxdNMRtb4HwIUW9zWbliBTnIK+/Oo0IpIFKiqYZgmDz07AWEyn757dquW/xWCIh384ew0+upYyRzDyfnVEXTCDuDjlyniLA/XkGcOwE2rZPtw8YSYp6A+9HjEZK+GTPIA915LGZUNq/EZKczZDGkUF38Hd6EoLCrY44WvN7HnGtqIMKgDMR2Z4r48s2poN64TCrvc3LiRcw00L127uFNtjg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(366004)(396003)(136003)(376002)(451199021)(2906002)(38070700005)(82960400001)(71200400001)(6506007)(26005)(186003)(86362001)(83380400001)(38100700002)(2616005)(66574015)(6486002)(966005)(122000001)(478600001)(36756003)(6512007)(66946007)(54906003)(66476007)(66556008)(8936002)(66446008)(64756008)(76116006)(41300700001)(8676002)(7416002)(316002)(4326008)(110136005)(66899021)(91956017)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YzY0OHpoMHMvYTYrWXprejNMa0VWV3V0WGNwODBvZUk1emdCV3hBYUlmV1pp?=
- =?utf-8?B?eWFuZTBDVXVXeW1Odm55bGR0dkZCbVFJcWx3bVVzckNaRlRJUlNVSFdqYzRN?=
- =?utf-8?B?cEdtem9lemhTQjE3Tmcrb1UzWHhGb0VreUJVZG0rblBYZmZrWS92a1NqWUFq?=
- =?utf-8?B?Ull1eU9aS2hRejlUbE05Y1k1c2RzWVlZY1VzaU5DV3BnL3ZBUzBXdWRZWXh4?=
- =?utf-8?B?TmJUakJNQkRrYzBNYW1Ia1puVExLTW5BbzlVWWdiSEgwZWN2Z1lJMDNRdkxm?=
- =?utf-8?B?dTZKUEtFM0FIWC9zdHBYMGw2RktuR0xjTTlVVjIwdXpuMVBFVjZGWTlkQVF6?=
- =?utf-8?B?cDF4UVhaTVNZd0xQWFFtNUQ0Nnh2MGxuTEtXTktGQW05U090c2k1YkhhUjNN?=
- =?utf-8?B?enNWcUl3OE1yWng2dC9sdnRUVmVicDVMYnhEMVREQ3FHc0NsbUtFb3NpSE8v?=
- =?utf-8?B?dmhELyszb2hWcUszbEphYWdoYy8vWjhia29kdllkZFV6bjNDQUpmWCtlSDZ2?=
- =?utf-8?B?Q3gzbzFnbnU3VzFlQnJIcFJuRGQ2eUdSWEIrVkxXYmR1ZjlLU2wzTm85aVIw?=
- =?utf-8?B?aU1TbEZyNDNSMzZHT1F3NUFlUGtXd3JhSGJvK1dhL0t0Zk9uVkFtN2NIcXdF?=
- =?utf-8?B?Zk0zdmxvam9BTmxUZGoxbDRBbm5IK040aUZSOW42a2gvbG81KzJuZi9PK0hn?=
- =?utf-8?B?dlFpWjRveWxOR3VnTVVPb2RNbWFxK3JOd0V3ZThMUnpnTWI4WndEUTJ1Ykw5?=
- =?utf-8?B?aFFZSm83cU1UblpqaHFuRUIxWUtEanhUd3ZVNmRPQ2lHOS9RY0srT1Jmd1pz?=
- =?utf-8?B?ZVBHYzZ2b0FNY1E5S1l1dlI3SDJSempOQ2ZnOElzd2FQSmVVK2NTWjQwSlpZ?=
- =?utf-8?B?SlJkVG9DSzlkUkdjR0ZZOGh2VS9DcUREYTIrd3FiNXpLSlZZTmQ2bm9tcGpY?=
- =?utf-8?B?alBTU0JrWDBydENGRGR5WjFPUlFnbUxYcCtPcWhXRHBXOGhBam16ZFVORldI?=
- =?utf-8?B?dUFvYmVLdXE5bFBlSXZUUzZVenI0NHlBM25sUUVEcStIVVRzcjVqQWZRb2Rz?=
- =?utf-8?B?N2JZcVg3NjlOL1k2WVV3VmxscjgyZHRtTnhDSVMvYlFiYjl3UkVBaFlpbS9K?=
- =?utf-8?B?YkpwZzFaQ3o3bE9sb3FjRGVrNnpzM0dvakduempFSUczcUZLNVcwdlNDZDZU?=
- =?utf-8?B?TlpjY3JnRFhyNlFQVVZuN010a0lMNHNMcXVZdkEvdXdpWFFTbjBaV20yQWhp?=
- =?utf-8?B?anVURWFQWWI1Y3BIQVo4bzF1NTFVejZiV1R6aG1jYnQ4blFUOFNZRytBY2JO?=
- =?utf-8?B?KzAwdVhLZHgyR0c5L0ZvR0xoclkzSWJpeWJCK2ZVc010UkdaNG9nbVZaY2Y1?=
- =?utf-8?B?ZGIwcVBSNW82eG9TR0hrc1hMTVhjK0owcUlydkJYelJxUVc1TGt4M3F3SlFF?=
- =?utf-8?B?bkZpdjNSRXFsWkc0ZmpkZDkxRHVPOVpJWEJDS3JmaHRmREVoN0dMeFNkTlE0?=
- =?utf-8?B?cm9lRnlDSy9mcEdqenRYKytIT2hDd0MybTVUWUhZTHFaaE4wUTNHYUpvekZY?=
- =?utf-8?B?UFJBa255UkF5Y1NKdlFsR1ZxNTBmUUFxejRCejdIaVFNRXdneWRuV2NjNkRS?=
- =?utf-8?B?NEJBaVBhQnczQ1laRWJPVlozWFFJaTk3SC9nWXZLSjNNRzJWOWF1Q2R3TjNk?=
- =?utf-8?B?b29jUjV0d3Z4QmRKaG9Wd2ljbWIrQUdkKzViWnVoa3VSeXlxMEhxWVpzZ1k1?=
- =?utf-8?B?aDBycXc2ZmJ4czJDUmhqaDUwbUFsNURIT1puNmFaRHhRaW9ZVjNyYytjZDVL?=
- =?utf-8?B?aWwrNHI2Vlo4aTUwY3F4SkdWakNUcjZ3RGlUMmlyUlE3R1ZNVG0vUjJjdmh1?=
- =?utf-8?B?MXo1M2hucE9HK29hSnFLYWI3K0V5cHE3RktPdUp1R3UvYzNXWGc4RWRwV3pj?=
- =?utf-8?B?TTdxMWZXa2h4VkxhNzVlK3BPbGttKzNnclYxemZkMXhkMG4zaDdNUUk1N29X?=
- =?utf-8?B?TXhpbXlFRWM3QUl0ZTR6WTZMbk00SG5Bam5sSHNFZHRmblNVSURHeWJyMVJJ?=
- =?utf-8?B?dUFwN0hxWkFyempmTXJrV0lBTUFMMWxEc0F1OG4rMy90NG5BYjkyVktqNHE2?=
- =?utf-8?Q?VWg19m8bsHLJw/CXYbLO/bbLn?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3BA8E55B94CC6D4ABF9F81A83BAD78E7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 28 Jul 2023 10:25:34 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3789E62
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:25:31 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-44756c21105so1374842137.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690554331; x=1691159131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=27aQYdk+GOHmVhE9sA46Z9rhTnBRw/hSKTLvVSeeasU=;
+        b=Li869wmuYJUds4SHPE1nGP+FSRK6La7TKX+0/sTkl+Q8GRqc8+9vG2ZtxhTFaI/zzg
+         rsjX3MaxSRBt3W/EQywpATzEAhUdQk4BKGqH7pf1EgVh72GgWymH+d6N+tjpelMi/kbn
+         sKUUsD+yCqrCZ+C7mdh0/xF/J5bWtHsTGZyPypEBRerrN0Ec085MoqXOlEFMgSb08Kw/
+         Pc+VQdm4QfaSn3g2fPKiXak4VKaXTDtwaopZADj9raeOdIwu1LNSscoaQUTv+3vdUvmY
+         SQ31Q6DHIGvkGUaQJ8Vee98be22keBYskX8so4Y3p8UdzY1JN8NGYNF8hCPvyFczN0p7
+         5q9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690554331; x=1691159131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=27aQYdk+GOHmVhE9sA46Z9rhTnBRw/hSKTLvVSeeasU=;
+        b=OA/M9NDBg5NaKsW4Q26X+WoVQgzs2SvyTDwrVr8TF5xjdJMch476D+fpM9unQSrYJe
+         LZXdMeyx9Y+k8vz5GDLwgtyVpEVoe8h9zcEtG9uoxTJVv/VVkhX3BO19UOVHEbKIiQCP
+         eobyPyi77rK5ZQoaujx56LYvJaP6efOD+HG0jXkchHamrb4WCfZihR8SLnp+rP/Iv8G8
+         pSQLptO2Hnrkkr3N9behF/vKBhj+GI70QQJMi9gtFTVNBojv7zk9xUJaL94Y7nBcBFRO
+         UXZM1AlZ7NHYwmETq8Rv+XmswOE3OfZG/0UIbBHiK66Q+8pICYEZ9snMTY4OBSFyJ4wm
+         Ct5w==
+X-Gm-Message-State: ABy/qLZSBAQWQTzWUeYIGQUNkkHu582B7+spOamhZz5K3RDr6viaXRmT
+        QV8BgO1xznM2bvBwTAhacIO9Wr8MuTS8zj4pbZvyPg==
+X-Google-Smtp-Source: APBJJlHBt3CL4dgKyqNagt6YmHoaGEo00/grmbhMXEtc62vHLUWQmyTq4fzzYtkBalyq1iviWBZEWLZrXHCebyEyaTg=
+X-Received: by 2002:a67:bd10:0:b0:43f:3426:9e35 with SMTP id
+ y16-20020a67bd10000000b0043f34269e35mr1090402vsq.12.1690554330570; Fri, 28
+ Jul 2023 07:25:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f231e59-c5f6-4afa-2b56-08db8f764698
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 14:23:55.6169
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cAbPvyWt+QmNHvW3g43wRTyw0y4gAv9iGEIeMuW10alxbVUZGT3YvpnfREkTRBgiMaZmjireiFhewpbS0IxUmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7019
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+ <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
+ <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
+ <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com> <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com>
+In-Reply-To: <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Fri, 28 Jul 2023 07:25:13 -0700
+Message-ID: <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
+ icsk->icsk_timeout in tcp_retransmit_timer()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Menglong Dong <menglong8.dong@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFRob21hcywNCg0KT24gRnJpLCAyMDIzLTA3LTI4IGF0IDA5OjQwICswMjAwLCBUaG9tYXMg
-R2xlaXhuZXIgd3JvdGU6DQo+IFJ1aSENCj4gDQo+IE9uIFN1biwgSnVsIDA5IDIwMjMgYXQgMTU6
-MjUsIFJ1aSBaaGFuZyB3cm90ZToNCj4gPiBJIHJhbiBpbnRvIGEgYm9vdCBoYW5nIHJlZ3Jlc3Np
-b24gd2l0aCBsYXRlc3QgdXBzdHJlYW0gY29kZSwgYW5kIGl0DQo+ID4gdG9vayBtZSBhIHdoaWxl
-IHRvIGJpc2VjdCB0aGUgb2ZmZW5kaW5nIGNvbW1pdCBhbmQgd29ya2Fyb3VuZCBpdC4NCj4gDQo+
-IFdoZXJlIGlzIHRoZSBidWcgcmVwb3J0IGFuZCB0aGUgYW5hbHlzaXM/IEFuZCB3aGF0J3MgdGhl
-IHdvcmthcm91bmQ/DQoNCkFzIGl0IGlzIGFuIGl3bHdpZmkgcmVncmVzc2lvbiwgSSBkaWRuJ3Qg
-cGFzdGUgdGhlIGxpbmsgaGVyZS4NCg0KVGhlIHJlZ3Jlc3Npb24gd2FzIHJlcG9ydGVkIGF0DQpo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvYjUzMzA3MWYzODgwNDI0N2YwNmRhOWU1MmEwNGYx
-NWNjZTdhMzgzNi5jYW1lbEBpbnRlbC5jb20vDQoNCkFuZCBpdCB3YXMgZml4ZWQgbGF0ZXIgYnkg
-YmVsb3cgY29tbWl0IGluIDYuNS1yYzIuDQoNCnRoYW5rcywNCnJ1aQ0KDQpjb21taXQgMTJhODlm
-MDE3NzA5MmRiYzJhMWNiMWQwNWE5NzkwYWRiY2VhMjMwOQ0KQXV0aG9yOiAgICAgSm9oYW5uZXMg
-QmVyZyA8am9oYW5uZXMuYmVyZ0BpbnRlbC5jb20+DQpBdXRob3JEYXRlOiBNb24gSnVsIDEwIDE2
-OjUwOjM5IDIwMjMgKzAyMDANCkNvbW1pdDogICAgIEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5l
-bC5vcmc+DQpDb21taXREYXRlOiBUdWUgSnVsIDExIDIwOjI2OjA2IDIwMjMgLTA3MDANCg0KICAg
-IHdpZmk6IGl3bHdpZmk6IHJlbW92ZSAndXNlX3RmaCcgY29uZmlnIHRvIGZpeCBjcmFzaA0KICAg
-IA0KICAgIFRoaXMgaXMgZXF1aXZhbGVudCB0byAnZ2VuMicsIGFuZCBpdCB3YXMgYWx3YXlzIGNv
-bmZ1c2luZyB0byBoYXZlDQogICAgdHdvIGlkZW50aWNhbCBjb25maWcgZW50cmllcy4gVGhlIHNw
-bGl0IGNvbmZpZyBwYXRjaCBhY3R1YWxseSBoYWQNCiAgICBiZWVuIG9yaWdpbmFsbHkgZGV2ZWxv
-cGVkIGFmdGVyIHJlbW92aW5nICd1c2VfdGZoIiBhbmQgZGlkbid0IGFkZA0KICAgIHRoZSB1c2Vf
-dGZoIGluIHRoZSBuZXcgY29uZmlncyBhcyB0aGV5J2QgbGF0ZXIgYmVlbiBjb3BpZWQgdG8gdGhl
-DQogICAgbmV3IGZpbGVzLiBUaHVzIHRoZSBlYXNpZXN0IHdheSB0byBmaXggdGhlIGluaXQgY3Jh
-c2ggaGVyZSBub3cgaXMNCiAgICB0byBqdXN0IHJlbW92ZSB1c2VfdGZoICh3aGljaCBpcyBlcnJv
-bmVvdXNseSB1bnNldCBpbiBtb3N0IG9mIHRoZQ0KICAgIGNvbmZpZ3Mgbm93KSBhbmQgdXNlICdn
-ZW4yJyBpbiB0aGUgY29kZSBpbnN0ZWFkLg0KICAgIA0KICAgIFRoZXJlJ3MgcG9zc2libHkgc3Rp
-bGwgYW4gdW53aW5kIGVycm9yIGluIGl3bF90eHFfZ2VuMl9pbml0KCkgYXMNCiAgICBpdCBjcmFz
-aGVzIGlmIFRYUSAwIGZhaWxzIHRvIGluaXRpYWxpemUsIGJ1dCB3ZSBjYW4gZGVhbCB3aXRoIGl0
-DQogICAgbGF0ZXIgc2luY2UgdGhlIG9yaWdpbmFsIGZhaWx1cmUgaXMgZHVlIHRvIHRoZSB1c2Vf
-dGZoIGNvbmZ1c2lvbi4NCiAgICANCiAgICBUZXN0ZWQtYnk6IFhpIFJ1b3lhbyA8eHJ5MTExQHhy
-eTExMS5zaXRlPg0KICAgIFJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6IE5pa2zEgXZzIEtvxLxlc8WG
-aWtvdnMNCjxwaW5rZmxhbWVzLmxpbnV4QGdtYWlsLmNvbT4NCiAgICBSZXBvcnRlZC1hbmQtdGVz
-dGVkLWJ5OiBKZWZmIENodWEgPGplZmYuY2h1YS5saW51eEBnbWFpbC5jb20+DQogICAgUmVwb3J0
-ZWQtYW5kLXRlc3RlZC1ieTogWmhhbmcgUnVpIDxydWkuemhhbmdAaW50ZWwuY29tPg0KICAgIExp
-bms6IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MjE3NjIyDQog
-ICAgTGluazoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC85Mjc0ZDliZDNkMDgwYTQ1NzY0
-OWZmNWFkZGNjMTcyNmYwOGVmNWIyLmNhbWVsQHhyeTExMS5zaXRlLw0KICAgIExpbms6DQpodHRw
-czovL2xvcmUua2VybmVsLm9yZy9hbGwvQ0FBSndfWnVnNlZDUzVacVRXYUZTcjlzZDg1ayUzRHR5
-UG05REVFJTJCbVYlM0RBS29FQ1pNJTJCc1FAbWFpbC5nbWFpbC5jb20vDQogICAgRml4ZXM6IDE5
-ODk4Y2U5Y2Y4YSAoIndpZmk6IGl3bHdpZmk6IHNwbGl0IDIyMDAwLmMgaW50byBtdWx0aXBsZQ0K
-ZmlsZXMiKQ0KICAgIFNpZ25lZC1vZmYtYnk6IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzLmJlcmdA
-aW50ZWwuY29tPg0KICAgIExpbms6DQpodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjMwNzEw
-MTQ1MDM4Ljg0MTg2LTItam9oYW5uZXNAc2lwc29sdXRpb25zLm5ldA0KICAgIFNpZ25lZC1vZmYt
-Ynk6IEpha3ViIEtpY2luc2tpIDxrdWJhQGtlcm5lbC5vcmc+DQoNCj4gDQo+IFRoYW5rcywNCj4g
-DQo+IMKgwqDCoMKgwqDCoMKgIHRnbHgNCg0K
+On Fri, Jul 28, 2023 at 1:50=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Fri, Jul 28, 2023 at 8:25=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > On Fri, Jul 28, 2023 at 12:44=E2=80=AFPM Neal Cardwell <ncardwell@googl=
+e.com> wrote:
+> > >
+> > > On Thu, Jul 27, 2023 at 7:57=E2=80=AFPM Menglong Dong <menglong8.dong=
+@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@goog=
+le.com> wrote:
+> > > > >
+> > > > > On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail.com=
+> wrote:
+> > > > > >
+> > > > > > From: Menglong Dong <imagedong@tencent.com>
+> > > > > >
+> > > > > > In tcp_retransmit_timer(), a window shrunk connection will be r=
+egarded
+> > > > > > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. T=
+his is not
+> > > > > > right all the time.
+> > > > > >
+> > > > > > The retransmits will become zero-window probes in tcp_retransmi=
+t_timer()
+> > > > > > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will com=
+e up to
+> > > > > > TCP_RTO_MAX sooner or later.
+> > > > > >
+> > > > > > However, the timer is not precise enough, as it base on timer w=
+heel.
+> > > > > > Sorry that I am not good at timer, but I know the concept of ti=
+me-wheel.
+> > > > > > The longer of the timer, the rougher it will be. So the timeout=
+ is not
+> > > > > > triggered after TCP_RTO_MAX, but 122877ms as I tested.
+> > > > > >
+> > > > > > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is al=
+ways true
+> > > > > > once the RTO come up to TCP_RTO_MAX.
+> > > > > >
+> > > > > > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk=
+_timeout',
+> > > > > > which is exact the timestamp of the timeout.
+> > > > > >
+> > > > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > > > > > ---
+> > > > > >  net/ipv4/tcp_timer.c | 6 +++++-
+> > > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> > > > > > index 470f581eedd4..3a20db15a186 100644
+> > > > > > --- a/net/ipv4/tcp_timer.c
+> > > > > > +++ b/net/ipv4/tcp_timer.c
+> > > > > > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock *sk)
+> > > > > >                                             tp->snd_una, tp->sn=
+d_nxt);
+> > > > > >                 }
+> > > > > >  #endif
+> > > > > > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MA=
+X) {
+> > > > > > +               /* It's a little rough here, we regard any vali=
+d packet that
+> > > > > > +                * update tp->rcv_tstamp as the reply of the re=
+transmitted
+> > > > > > +                * packet.
+> > > > > > +                */
+> > > > > > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstamp > =
+TCP_RTO_MAX) {
+> > > > > >                         tcp_write_err(sk);
+> > > > > >                         goto out;
+> > > > > >                 }
+> > > > >
+> > > > >
+> > > > > Hmm, this looks like a net candidate, since this is unrelated to =
+the
+> > > > > other patches ?
+> > > >
+> > > > Yeah, this patch can be standalone. However, considering the
+> > > > purpose of this series, it is necessary. Without this patch, the
+> > > > OOM probe will always timeout after a few minutes.
+> > > >
+> > > > I'm not sure if I express the problem clearly in the commit log.
+> > > > Let's explain it more.
+> > > >
+> > > > Let's mark the timestamp of the 10th timeout of the rtx timer
+> > > > as TS1. Now, the retransmission happens and the ACK of
+> > > > the retransmitted packet will update the tp->rcv_tstamp to
+> > > > TS1+rtt.
+> > > >
+> > > > The RTO now is TCP_RTO_MAX. So let's see what will
+> > > > happen in the 11th timeout. As we timeout after 122877ms,
+> > > > so tcp_jiffies32 now is "TS1+122877ms", and
+> > > > "tcp_jiffies32 - tp->rcv_tstamp" is
+> > > > "TS1+122877ms - (TS1+rtt)" -> "122877ms - rtt",
+> > > > which is always bigger than TCP_RTO_MAX, which is 120000ms.
+> > > >
+> > > > >
+> > > > > Neal, what do you think ?
+> > >
+> > > Sorry, I am probably missing something here, but: what would ever mak=
+e
+> > > this new proposed condition ((u32)icsk->icsk_timeout - tp->rcv_tstamp
+> > > > TCP_RTO_MAX) true? :-)
+> > >
+> >
+> > If the snd_wnd is 0, we need to keep probing until the window
+> > is available. Meanwhile, any retransmission that don't have
+> > a corresponding ACK (see what we do in the 1st patch), which
+> > can be caused by the lost of the ACK or the lost of the retransmitted
+> > packet, can make the condition true, as the tp->rcv_tstamp can't be
+> > updated in time.
+> >
+> > This is a little strict here. In the tcp_probe_timer(), we are allowed =
+to
+> > retransmit the probe0 packet for sysctl_tcp_retries2 times. But
+> > we don't allow packets to be lost here.
+> >
+> > > In your nicely explained scenario, your new expression,
+> > > icsk->icsk_timeout - tp->rcv_tstamp, will be:
+> > >
+> > >   icsk->icsk_timeout - tp->rcv_tstamp
+> > > =3D TS1 + 120 sec      - (TS1+rtt)
+> > > =3D 120 sec - RTT
+> > >
+> > > AFAICT there is no way for that expression to be bigger than
+> > > TCP_RTO_MAX =3D 120 sec unless somehow RTT is negative. :-)
+> > >
+> > > So AFAICT your expression ((u32)icsk->icsk_timeout - tp->rcv_tstamp >
+> > > TCP_RTO_MAX) will always be false, so rather than this patch we may a=
+s
+> > > well remove the if check and the body of the if block?
+> > >
+> >
+> > Hmm......as I explained above, the condition will be true
+> > if the real packet loss happens. And I think it is the origin
+> > design.
+> >
+> > > To me such a change does not seem like a safe and clear bug fix for
+> > > the "net" branch but rather a riskier design change (appropriate for
+> > > "net-next" branch) that has connections retry forever when the
+> > > receiver retracts the window to zero, under the estimation that this
+> > > is preferable to having the connections die in such a case.
+> > >
+> > > There might be apps that depend on the old behavior of having
+> > > connections die in such cases, so we might want to have this new
+> > > fail-faster behavior guarded by a sysctl in case some sites need to
+> > > revert to the older behavior? Not sure...
+> >
+> > Yeah, the behavior here will be different for the users. I'm not
+> > sure if there are any users that rely on such behavior.
+> >
+> > What do you think, Eric? Do we need a sysctl here?
+> >
+>
+> I honestly do not know what problem you want to solve.
+>
+> As Neal pointed out, the new condition would not trigger,
+> so one can question about the whole piece of code,
+> what is its purpose exactly ?
+>
+> When receiving WIN 0 acks, we should enter the so called probe0 state.
+> Maybe the real issue is that the 'receiver' will falsely send WIN X>0 ACK=
+S,
+> because win probe acks do not really ensure memory is available to
+> receive new packets ?
+>
+> Maybe provide a packetdrill test to show what kind of issue you are facin=
+g...
+>
+> In Google kernels, we have TCP_MAX_RTO reduced to 30 seconds, and the
+> following test runs fine.
+>
+> // Test how sender reacts to unexpected arrival rwin of 0.
+>
+> `../common/defaults.sh`
+>
+> // Create a socket.
+>     0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
+>    +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
+>    +0 bind(3, ..., ...) =3D 0
+>    +0 listen(3, 1) =3D 0
+>
+> // Establish a connection.
+>   +.1 < S 0:0(0) win 65535 <mss 1000,nop,nop,sackOK,nop,wscale 6>
+>    +0 > S. 0:0(0) ack 1 win 65535 <mss 1460,nop,nop,sackOK,nop,wscale 8>
+>   +.1 < . 1:1(0) ack 1 win 457
+>    +0 accept(3, ..., ...) =3D 4
+>
+>    +0 write(4, ..., 20000) =3D 20000
+>    +0 > P. 1:10001(10000) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+> // Send zwp since we received rwin of 0 and have data to send.
+>   +.3 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+>   +.6 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+>  +1.2 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+>  +2.4 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win  0
+>
+>  +4.8 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win  0
+>
+>  +9.6 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win  0
+>
+> +19.2 > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+> +30   > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 0
+>
+> +30   > . 10000:10000(0) ack 1
+>   +.1 < . 1:1(0) ack 10001 win 193
+>
+> // Received non-zero window update. Send rest of the data.
+>    +0 > P. 10001:20001(10000) ack 1
+>   +.1 < . 1:1(0) ack 20001 win 457
+
+In that packetdrill case AFAICT that is the ZWP timer firing, and the
+sender sends a ZWP.
+
+I think maybe Menglong is looking more at something like the following
+scenario, where at the time the RTO timer fires the data sender finds
+the tp->snd_wnd is zero, so it sends a retransmit of the
+lowest-sequence data packet.
+
+Here is a packetdrill case and the tcpdump trace on an upstream
+net-next kernel... I have not worked out all the details at the end,
+but perhaps it can help move the discussion forward:
+
+
+~/packetdrill/gtests/net/tcp/receiver_window# cat rwin-rto-zero-window.pkt
+// Test how sender reacts to unexpected arrival rwin of 0.
+
+`../common/defaults.sh`
+
+// Create a socket.
+    0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
+   +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
+   +0 bind(3, ..., ...) =3D 0
+   +0 listen(3, 1) =3D 0
+
+// Establish a connection.
+  +.1 < S 0:0(0) win 65535 <mss 1000,nop,nop,sackOK,nop,wscale 6>
+   +0 > S. 0:0(0) ack 1 win 65535 <mss 1460,nop,nop,sackOK,nop,wscale 14>
+  +.1 < . 1:1(0) ack 1 win 457
+   +0 accept(3, ..., ...) =3D 4
+
+   +0 write(4, ..., 20000) =3D 20000
+   +0 > P. 1:10001(10000) ack 1
+
+// TLP
+  +.2 > . 10001:11001(1000) ack 1
+// Receiver has retracted rwin to 0
+// (perhaps from the 2023 proposed OOM code?).
+  +.1 < . 1:1(0) ack 1 win 0
+
+// RTO, and in tcp_retransmit_timer() we see the receiver window is zero,
+// so we take the special f (!tp->snd_wnd...) code path.
+  +.2 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
+  +.5 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
+ +1.2 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
+ +2.4 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
+ +4.8 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
+ +9.6 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
++19.2 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
++38.4 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
++76.8 > . 1:1001(1000) ack 1
+  +.1 < . 1:1(0) ack 1 win 0
+
++120 > . 1:1001(1000) ack 1
+ +.1 < . 1:1(0) ack 1 win 0
+
++120 > . 1:1001(1000) ack 1
+ +.1 < . 1:1(0) ack 1001 win 1000
+
+// Received non-zero window update. Send more data.
+  +0 > P. 1001:3001(2000) ack 1
+ +.1 < . 1:1(0) ack 3001 win 1000
+
+----------
+When I run that script on a net-next kernel I see the rounding up of
+the RTO to 122 secs rather than 120 secs, but for whatever reason the
+script does not cause the socket to die early...
+
+The tcpdump trace:
+
+ tcpdump -ttt -n -i any port 8080 &
+
+->
+
+~/packetdrill/gtests/net/tcp/receiver_window#
+../../packetdrill/packetdrill rwin-rto-zero-window.pkt
+ 00:01:01.370344 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [S], seq 0, win 65535, options [mss
+1000,nop,nop,sackOK,nop,wscale 6], length 0
+ 00:00:00.000096 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [S.], seq 3847169154, ack 1, win 65535, options [mss
+1460,nop,nop,sackOK,nop,wscale 14], length 0
+ 00:00:00.100277 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 457, length 0
+ 00:00:00.000090 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [P.], seq 1:2001, ack 1, win 4, length 2000: HTTP
+ 00:00:00.000006 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [P.], seq 2001:4001, ack 1, win 4, length 2000: HTTP
+ 00:00:00.000003 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [P.], seq 4001:6001, ack 1, win 4, length 2000: HTTP
+ 00:00:00.000002 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [P.], seq 6001:8001, ack 1, win 4, length 2000: HTTP
+ 00:00:00.000001 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [P.], seq 8001:10001, ack 1, win 4, length 2000: HTTP
+ 00:00:00.209131 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 10001:11001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100190 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:00.203824 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100175 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:00.507835 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100192 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:01.115858 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100182 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:02.331747 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100198 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:04.955980 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100197 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:09.627985 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100179 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:19.355725 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100203 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:00:42.395633 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100202 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:01:17.724059 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100201 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:02:02.779516 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100229 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1, win 0, length 0
+ 00:02:02.779828 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.100230 ?     In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+Flags [.], ack 1001, win 1000, length 0
+ 00:00:00.000034 ?     Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 11001:12001, ack 1, win 4, length 1000: HTTP
+ 00:00:00.000005 ?     Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+Flags [.], seq 12001:13001, ack 1, win 4, length 1000: HTTP
+
+rwin-rto-zero-window.pkt:62: error handling packet: live packet field
+tcp_psh: expected: 1 (0x1) vs actual: 0 (0x0)
+script packet: 405.390244 P. 1001:3001(2000) ack 1
+actual packet: 405.390237 . 11001:13001(2000) ack 1 win 4
