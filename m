@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54A87668CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FD97668D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjG1J1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        id S235565AbjG1J1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235476AbjG1J0k (ORCPT
+        with ESMTP id S234779AbjG1J0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:26:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4057D3A93;
-        Fri, 28 Jul 2023 02:22:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C559862093;
-        Fri, 28 Jul 2023 09:22:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64FD8C433C9;
-        Fri, 28 Jul 2023 09:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690536174;
-        bh=AL6UUgG3FZVUbTmbZ9j5ob/iwxMoLlBtI6VOTuk7L3Y=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kV/4SwJSDxGPIFO9SqzBTr/WKfLl3fbG9+JtdkQ5g68+3qG+FbBQhGQhgyXFRxeuF
-         x2TzzXv2KahqFkWG4DpisftoqyieCHUe/aScTwjmOLzH4trlPzjWGjVOgIAdBXCLZz
-         cv3q4MTA/ZbxPvumqXarQGAB3+GV9C8T1M2xgDCgX7JWQy31xH5NGc7VSRUpHBgIBU
-         FoALgxCfhFHAQcDe1SiRqZGt9BI2mvzCopjpifgAWFDuwOSwn2VPcyFBZS/bBt9s4B
-         Y1xidOeK7t6p+21I5G+vW8zX7mbUs9WyPYsD8qBg/kESFYAs8FWgKC+o8NKWV77XUR
-         KCMIjwEZZrYcw==
-From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>, Artur Weber <aweber.kernel@gmail.com>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-In-Reply-To: <20230714121440.7717-1-aweber.kernel@gmail.com>
-References: <20230714121440.7717-1-aweber.kernel@gmail.com>
-Subject: Re: [PATCH 0/2] backlight: lp855x: Fixes after c1ff7da03e16
-Message-Id: <169053617109.301530.1109574128133922072.b4-ty@kernel.org>
-Date:   Fri, 28 Jul 2023 10:22:51 +0100
+        Fri, 28 Jul 2023 05:26:46 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB63AA9;
+        Fri, 28 Jul 2023 02:23:47 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S9EC02012984;
+        Fri, 28 Jul 2023 09:23:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=LWxQ1EEos2cV97Yv0h3NvRp8id3vWdJ7k6pejvwldaw=;
+ b=T3vRAJQRjBEqjxJux0b+10LOFR6Xk2Oox1qPuMVKzNohUA4XlcNnq5HaoQkbOjPrpDrA
+ ESq1iKXpCg/pg4R0S4oHsH2OGZniR+hZ3zx1q7RbPKaibk9SPi8t19ObrcOQxndjNB84
+ nqhuqKPLyxo3tOdJzsO/IWGBaxa8NWk5JfFZoG2ZtzO0pWpnULndKXDvkAhHTDeLLzeI
+ /Sbg1sIb2IgcZ9sAfWJz1z5bomVUdhi7ww/x/1yXOWY4EGfY336Zg3kgWmsIKqo5oUSX
+ uKb5mZ9m/7seivkNEIkJwrkGo5esELIt2E9FqIP0jRWifG8j3Fn/+6ybTNiPGnbDcJlh rA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s4av287s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 09:23:46 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36S9EFXC013116;
+        Fri, 28 Jul 2023 09:23:46 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s4av287rx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 09:23:46 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36S6vmov002013;
+        Fri, 28 Jul 2023 09:23:45 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s0tenmt96-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 09:23:45 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36S9NgHJ17957578
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Jul 2023 09:23:42 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11BC42004E;
+        Fri, 28 Jul 2023 09:23:42 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2E1E20040;
+        Fri, 28 Jul 2023 09:23:41 +0000 (GMT)
+Received: from a46lp73.lnxne.boe (unknown [9.152.108.100])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 28 Jul 2023 09:23:41 +0000 (GMT)
+From:   Steffen Eiden <seiden@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>
+Subject: [PATCH v2 0/3]  KVM: s390: Enable AP instructions for pv-guests
+Date:   Fri, 28 Jul 2023 11:23:38 +0200
+Message-Id: <20230728092341.1131787-1-seiden@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: lB25_JTRQGoTL_y296AgFA60HxuWfoRE
+X-Proofpoint-GUID: LbtxkgT84I9fGprDZYHAaVsMSjdCtcgj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=533 impostorscore=0 clxscore=1015 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280082
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 14:14:38 +0200, Artur Weber wrote:
-> Two small fixes after commit c1ff7da03e16 ("video: backlight: lp855x:
-> Get PWM for PWM mode during probe"), stemming from a review[1] by
-> Uwe Kleine-König.
-> 
-> [1] https://lore.kernel.org/all/20230614083953.e4kkweddjz7wztby@pengutronix.de/
-> 
-> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
-> 
-> [...]
+This series enables general KVM support for AP-passthrough for Secure
+Execution guests (pv-guests).
 
-Applied, thanks!
+To enable AP inside pv-guests two things have to be done/considered:
+	1) set corresponding flags in the Create Secure Configuration UVC ifi
+     firmware supports AP for pv-guests (patch 3).
+	2) enable/disable AP in pv-guests if the VMM wants this (patch 2).
 
-[1/2] backlight: lp855x: Initialize PWM state on first brightness change
-      commit: 4c09e20b3c85f60353ace21092e34f35f5e3ab00
-[2/2] backlight: lp855x: Catch errors when changing brightness
-      commit: 5145531be5fbad0e914d1dc1cbd392d7b756abaa
+since v1:
+  - PATCH 1: r-b from Claudio
+  - PATCH 2: fixed formatting issues (Claudio)
+  - PATCH 3: removed unnecessary checks (Claudio)
 
---
-Lee Jones [李琼斯]
+Steffen
+
+Steffen Eiden (3):
+  s390: uv: UV feature check utility
+  KVM: s390: Add UV feature negotiation
+  KVM: s390: pv:  Allow AP-instructions for pv guests
+
+ arch/s390/include/asm/kvm_host.h |  2 ++
+ arch/s390/include/asm/uv.h       | 17 ++++++++-
+ arch/s390/include/uapi/asm/kvm.h | 25 +++++++++++++
+ arch/s390/kernel/uv.c            |  2 +-
+ arch/s390/kvm/kvm-s390.c         | 62 +++++++++++++++++++++++++++++++-
+ arch/s390/kvm/pv.c               |  6 ++--
+ arch/s390/mm/fault.c             |  2 +-
+ 7 files changed, 110 insertions(+), 6 deletions(-)
+
+-- 
+2.40.1
 
