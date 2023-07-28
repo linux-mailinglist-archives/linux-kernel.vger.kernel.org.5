@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 808A57671BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9487671C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbjG1QTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
+        id S230335AbjG1QUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjG1QTH (ORCPT
+        with ESMTP id S230293AbjG1QUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:19:07 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A659F1BF2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:04 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bed101b70so129084766b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:04 -0700 (PDT)
+        Fri, 28 Jul 2023 12:20:00 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E682723
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:59 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76714caf466so186423085a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690561143; x=1691165943;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oiqXtLXb56gWHpFHlkrGXB0htpi3zn1ShhYELBek5ko=;
-        b=bynKf6n+TpRfz0DyR2rYNbqu0v4M0dTgmVz8xWQq8X+28lhY2cl5XnPRKgqX9HAqiE
-         H79vFTkAB/9Itwu2leZ1xBpWwBB4F2uReu+dWnEz72qQ+dgV9BK2g3sOlh+7HQG5ShkZ
-         9P+UQsfvk3Zbb2D6K+z9GjqGwuGQGpMLf/2Vk=
+        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1690561199; x=1691165999;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=f5FSJWNjl98U9ps1qviIrSxLLSw9XgjSAMERAsNrO8o=;
+        b=KEXrHXE3gUClBeMJtvBhVMzAyFvMFnNREdMBkD+3LXyQSu+9xqdjyGdL+kXW3v8wCv
+         rBg60jzO1fLTjU8skLo059I3y/KDwourf0c8jYvW17+Pu2/tu7MSwjp+54+XhNiXJSyp
+         I0OHDW6Rnns0LogQb9uGjdtjVgHV0vZ0MW/fPzx9QCj8W2aK37Simctem8zaFjVsNyLS
+         SX1gIAzNbVoXeVdtO5+JTeRNq3j0UVmlnL74Oo2YeBlv6zQuQ00y1A60Wpq00YTCWgFg
+         omF86mYj9w7XZMuIhgy6RW4RhnvnPIcf4zfyEO/Wpjr6cU/I3t9t3xMCWtlWL7j02o/K
+         ahEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690561143; x=1691165943;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oiqXtLXb56gWHpFHlkrGXB0htpi3zn1ShhYELBek5ko=;
-        b=OuzElrfl70+GCeOfi5AujhdSfCarjsZWEopwmYp5EMS+S5Sxkdk2oubCc/9lfyUddG
-         je0RSUfICqhycR+eqvud7Ft1Q0qKpBB6vavBcMPlaNjSAiVPb5wWdLbZbzdAPpmNY7h8
-         bjhrlcLfeb/GmEHZKxbRrWd2fmK/x67mD9g+fibNRmyRKiw2s3DUAJTFfqsGMXSAwIWj
-         dxBQ/xzSgG2Tv/cBb97sfMU+XMnjztyntVlqHkjhXnLC1GvKBl7EyaHSegwSNX7skddH
-         b5auryxmOaC93N5Bk7AdcW2cLGhpjWA5rwotsrwZhoW3w/oMVZslDXiQ0SMw7DOiNrN6
-         9crw==
-X-Gm-Message-State: ABy/qLaBuWSid5N+T8Pej8yiye02/kuiy2CCqgbIP1nJE8SdoEeh7RKq
-        P75Gd1Zw3GxC70KPZRNUVcuhKWiLd58N+b5XWVL7aBDt
-X-Google-Smtp-Source: APBJJlHtHnySbls+rIikJ/DoMFTNgt0h2iBwUcrqg0Wgn3rTIkQy1vToeRUv9a55cqtlXJ8lFShMFA==
-X-Received: by 2002:a17:906:845c:b0:99b:465c:fb9f with SMTP id e28-20020a170906845c00b0099b465cfb9fmr2787546ejy.8.1690561142849;
-        Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id dc26-20020a170906c7da00b00988e953a586sm2220259ejb.61.2023.07.28.09.19.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5222b917e0cso3093600a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:19:02 -0700 (PDT)
-X-Received: by 2002:a05:6402:1141:b0:51e:5322:a642 with SMTP id
- g1-20020a056402114100b0051e5322a642mr2296690edw.27.1690561141923; Fri, 28 Jul
- 2023 09:19:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230727212845.135673-1-david@redhat.com>
-In-Reply-To: <20230727212845.135673-1-david@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 Jul 2023 09:18:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
-Message-ID: <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone fallout
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
+        d=1e100.net; s=20221208; t=1690561199; x=1691165999;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f5FSJWNjl98U9ps1qviIrSxLLSw9XgjSAMERAsNrO8o=;
+        b=GrSa0H8bqzhDCbhsAb3wWnApKCUUYrmOT78AJD1Nnut6JQUer3zXX+mp7Q5u5+Wbvk
+         KXrpHss3+UuevJ/AQTFg/kqAZVx7vsFvD4Zr4rl0o7WATtrmC+0aKIBs+mPA8t+8Cg4F
+         lYYmMGbG4heDjQYOe/UpEvH7ePoKauO1oHwQu0gGUZSSjiYA7NzhRLqn0zBYVJRRUzPd
+         pGdVn0C8dwnwtbp3SOHxT7ieK6zljcfTBZO9/eyEq2JfUxGsuCehRWWTcgMTNHAtDxRN
+         xYSr43ZndEp9Tb33GJ3hlcGdoK9ecCkCYkgzihscChL8aH0Bu7g3/EJmPe4N4Qu+IjAC
+         KZ0w==
+X-Gm-Message-State: ABy/qLY8hfA1se6SeXRc5KsfxbCYwVLkY6quTS8G34UIWYpRMdCdE6JP
+        6OHMqVXmlgG4GHMNO0tN1qVAMA==
+X-Google-Smtp-Source: APBJJlH7zyAaV18gkPgZ97/o1KJg4A+vwfhVKbZVCQQlngEXqjzP+rHHJ0ha2jQ+CB3N7D8voenUZQ==
+X-Received: by 2002:a05:620a:2545:b0:767:3e13:6017 with SMTP id s5-20020a05620a254500b007673e136017mr3460606qko.30.1690561198853;
+        Fri, 28 Jul 2023 09:19:58 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:10:2688::7a9])
+        by smtp.gmail.com with ESMTPSA id x8-20020a05620a14a800b0076aeeb69cb1sm1246028qkj.4.2023.07.28.09.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 09:19:58 -0700 (PDT)
+Message-ID: <70ed7b3197f34c9f3dce9c83c527884c89df5449.camel@ndufresne.ca>
+Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Hsia-Jun Li <Randy.Li@synaptics.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Cc:     linux-media@vger.kernel.org, ayaka@soulik.info,
+        hans.verkuil@cisco.com, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
+        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
+Date:   Fri, 28 Jul 2023 12:19:57 -0400
+In-Reply-To: <10ad26e6-b2d0-d0e6-40c8-2cc70613188b@synaptics.com>
+References: <20230704040044.681850-1-randy.li@synaptics.com>
+         <20230704040044.681850-3-randy.li@synaptics.com>
+         <20230712093301.nkj2vok2x7esdhb3@chromium.org>
+         <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
+         <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com>
+         <583e22718b80cc5e1ae631528c83c95e97de5cae.camel@ndufresne.ca>
+         <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
+         <7d340df3-e14c-24de-4fc2-b7dca619447c@synaptics.com>
+         <CAAFQd5BKHQPNVpDvpQaFn-q721BJknJCUB72urc2=EKsAH=OCg@mail.gmail.com>
+         <10ad26e6-b2d0-d0e6-40c8-2cc70613188b@synaptics.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
->
-> This is my proposal on how to handle the fallout of 474098edac26
-> ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
-> accidentially missed that follow_page() and smaps implicitly kept the
-> FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
-> not trigger faults on PROT_NONE-mapped PTEs.
+Le vendredi 28 juillet 2023 =C3=A0 15:37 +0800, Hsia-Jun Li a =C3=A9crit=C2=
+=A0:
+> > I think this is one reason to migrate to the stateless decoder design.
+> >=20
+> I didn't know such plan here. I don't think the current stateless API=20
+> could export the reconstruction buffers for encoder or post-processing=
+=20
+> buffer for decoder to us.
 
-Ugh.
+Someone suggested introduce auxiliary queues in our meeting in Lyon a while=
+ ago,
+but I bet everyone got too busy with finalizing APIs, fixing fluster tests =
+etc.
+The suggestion felt like it would be possible to add it after the fact. Thi=
+s was
+also being discussed in the context of supporting multi-scalers (standalone=
+ our
+inline with the codec, like VC8000D+). It could also cover for primary and
+secondary buffers, along with encoder primary, and reconstruction buffers, =
+but
+also auxiliary reference data. This would also be needed to properly suppor=
+t
+Vulkan Video fwiw, and could also help with a transition to DMABuf Heaps an=
+d
+memory accounting.
 
-I hate how it uses FOLL_FORCE that is inherently scary.
+I've also had corridor discussion around having multi-instance media constr=
+oller
+devices. It wasn't clear how to bind the media instance to the video node
+instances, but assuming there is a way, it would be a tad more flexible (bu=
+t
+massively more complex).
 
-Why do we have that "gup_can_follow_protnone()" logic AT ALL?
+Nicolas
 
-Couldn't we just get rid of that disgusting thing, and just say that
-GUP (and follow_page()) always just ignores NUMA hinting, and always
-just follows protnone?
-
-We literally used to have this:
-
-        if (!(gup_flags & FOLL_FORCE))
-                gup_flags |= FOLL_NUMA;
-
-ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
-be the rare crazy case.
-
-The original reason for not setting FOLL_NUMA all the time is
-documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
-page faults from gup/gup_fast") from way back in 2012:
-
-         * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
-         * would be called on PROT_NONE ranges. We must never invoke
-         * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
-         * page faults would unprotect the PROT_NONE ranges if
-         * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
-         * bitflag. So to avoid that, don't set FOLL_NUMA if
-         * FOLL_FORCE is set.
-
-but I don't think the original reason for this is *true* any more.
-
-Because then two years later in 2014, in commit c46a7c817e66 ("x86:
-define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
-Mel made the code able to distinguish between PROT_NONE and NUMA
-pages, and he changed the comment above too.
-
-But I get the very very strong feeling that instead of changing the
-comment, he should have actually removed the comment and the code.
-
-So I get the strong feeling that all these FOLL_NUMA games should just
-go away. You removed the FOLL_NUMA bit, but you replaced it with using
-FOLL_FORCE.
-
-So rather than make this all even more opaque and make it even harder
-to figure out why we have that code in the first place, I think it
-should all just be removed.
-
-The original reason for FOLL_NUMA simply does not exist any more. We
-know exactly when a page is marked for NUMA faulting, and we should
-simply *ignore* it for GUP and follow_page().
-
-I think we should treat a NUMA-faulting page as just being present
-(and not NUMA-fault it).
-
-Am I missing something?
-
-                  Linus
