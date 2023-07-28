@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38535766ADE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFF6766AE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235976AbjG1KkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
+        id S236020AbjG1KkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235934AbjG1Kjt (ORCPT
+        with ESMTP id S235807AbjG1Kj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:39:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200E959CB
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690540543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jOcaw/0qBs1pPL6pAEnr1BL8Snh0gAK7vHtXru4ReFI=;
-        b=Mp6i+tWKHowr6O8EBcPtrZP8HXhjy7fNpLcdmaKsw6lGuvJeO/TN7fS7Cfkgw5tD2LoaX5
-        Yx81O/b+Y8jOmFzaz0nwBNXubtOQi4O9RYIJhFBORgbVaGLlIXUfoF7boVZebfR3z3IHii
-        BoM9EikcfqIN8CapwOKphO+zjm1oXvs=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-359-v39PRSG4MWqI5GqZE-TN5A-1; Fri, 28 Jul 2023 06:35:41 -0400
-X-MC-Unique: v39PRSG4MWqI5GqZE-TN5A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31444df0fafso1275166f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:35:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690540541; x=1691145341;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jOcaw/0qBs1pPL6pAEnr1BL8Snh0gAK7vHtXru4ReFI=;
-        b=eYXhgK1ZUQa9q0ZrQO3X38vOElk17RTK7l4HjJDqOwbHVsyVQM17zRBW9Nvmij7S3y
-         vW64/qojOmXUc27pLpJsVN7KShSsz+fuoyDUrB1yS8PiIccN2IPS+hUUOFzCWCRJ33aM
-         UBlfwR/etCt48BtBQ4bJfyVb90Enwyfk0Bl/KOdXtlCmQ3nflQVacngznJU8Kb4yb0i5
-         LGezbpCRAGXgRq4FAPao0nKKiOqbeJK1spX8CH+labMAe69jENb/SYQRHYtMEjZM60KD
-         owdR6/7ef/8dQNCi6cmjBi+YCo5ngEQSKj79kN33O5IhuBhtuQsEk5GI39NF2xNrIf29
-         6CHA==
-X-Gm-Message-State: ABy/qLYks0HTeEdtgZEIobm0SOh9d45W9MALDjf12q4SF4QZ3gZgMptN
-        FYHAST3PG+h8OrseGTSldSntR2XJ7+71NSrwdSPKDINB8fgEanNLEDSf+V/+mW19p2Y0opEFcRk
-        5IbPB8gKvDquEORBmx+cDWP0S4cleOE9M
-X-Received: by 2002:a5d:424f:0:b0:317:7c31:f3a7 with SMTP id s15-20020a5d424f000000b003177c31f3a7mr1510171wrr.17.1690540540784;
-        Fri, 28 Jul 2023 03:35:40 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHjjIUzyCArZTitz+9i+d3qhAkwJUs0xSjHxU4IyWnOBX1very2BprXi83soc4m7lHWi0Qymw==
-X-Received: by 2002:a5d:424f:0:b0:317:7c31:f3a7 with SMTP id s15-20020a5d424f000000b003177c31f3a7mr1510156wrr.17.1690540540408;
-        Fri, 28 Jul 2023 03:35:40 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id g17-20020adfe411000000b0031437299fafsm4497581wrm.34.2023.07.28.03.35.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:35:40 -0700 (PDT)
-Message-ID: <cd29967b-b07d-1eb7-0d28-2bd983f0c0ee@redhat.com>
-Date:   Fri, 28 Jul 2023 12:35:39 +0200
+        Fri, 28 Jul 2023 06:39:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC8830C2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:37:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 940E8620DD
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:37:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB14BC433CC;
+        Fri, 28 Jul 2023 10:37:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690540671;
+        bh=ONObWE6ZhfDnATcaTcPlY8CoLD+81fZVEWLGKUEkp94=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qv6/cG2nGfQHwUQNpVT3rvmYUoTXiiuA0eAvXaYtS6Q44y8gLerW54dJZMLeFZZgN
+         pndTqVw5Wvyqi9XxPyHcOKVEXrUD5HW3qRpMicZlP9XDZwfADMUjvuJJCrOg058YRs
+         zjVGhxgJK2/nQC5tWwqmkiIu+wciQOpKTAa4hz9LhW8IJexxtU1UoUGGgYElKQYIaF
+         LzVvLphH7r0IRDnPZAb6MeC+oTJ2k+woTV+7L1E0N3mKj7W+rexcKR5Ba8WcPvAI3Q
+         WmhSuC9JdzpsA8IpK5xWOzZVtl59diAErplaoWn/XGGJ7+dDnx+Aj5wHqxDqpvYM4z
+         kJUkxm1hwZG0A==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qPKqy-0002xP-NI;
+        Fri, 28 Jul 2023 11:37:48 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5/8] mm/compaction: corret comment of cached migrate pfn
- update
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
-        willy@infradead.org
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-6-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230728171037.2219226-6-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date:   Fri, 28 Jul 2023 11:37:48 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc:     tglx@linutronix.de, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Hari Prasath <Hari.PrasathGE@microchip.com>
+Subject: Re: [PATCH v3 42/50] irqchip/atmel-aic5: Add support for sam9x7 aic
+In-Reply-To: <20230728103002.267440-1-varshini.rajendran@microchip.com>
+References: <20230728103002.267440-1-varshini.rajendran@microchip.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <87ee1e3c365686bc60e92ba3972dc1a5@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: varshini.rajendran@microchip.com, tglx@linutronix.de, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Hari.PrasathGE@microchip.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 19:10, Kemeng Shi wrote:
-> Commit e380bebe47715 ("mm, compaction: keep migration source private to
-> a single compaction instance") moved update of async and sync
-> compact_cached_migrate_pfn from update_pageblock_skip to
-> update_cached_migrate but left the comment behind.
-> Move the relevant comment to correct this.
+On 2023-07-28 11:30, Varshini Rajendran wrote:
+> From: Hari Prasath <Hari.PrasathGE@microchip.com>
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Add support for the Advanced interrupt controller(AIC) chip in the 
+> sam9x7.
+> 
+> Signed-off-by: Hari Prasath <Hari.PrasathGE@microchip.com>
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 > ---
->   mm/compaction.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/irqchip/irq-atmel-aic5.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 09c36251c613..1eebb61a1f63 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -464,6 +464,7 @@ static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->   
->   	pfn = pageblock_end_pfn(pfn);
->   
-> +	/* Update where async and sync compaction should restart */
->   	if (pfn > zone->compact_cached_migrate_pfn[0])
->   		zone->compact_cached_migrate_pfn[0] = pfn;
->   	if (cc->mode != MIGRATE_ASYNC &&
-> @@ -485,7 +486,6 @@ static void update_pageblock_skip(struct compact_control *cc,
->   
->   	set_pageblock_skip(page);
->   
-> -	/* Update where async and sync compaction should restart */
->   	if (pfn < zone->compact_cached_free_pfn)
->   		zone->compact_cached_free_pfn = pfn;
->   }
+> diff --git a/drivers/irqchip/irq-atmel-aic5.c 
+> b/drivers/irqchip/irq-atmel-aic5.c
+> index 145535bd7560..bab11900f3ef 100644
+> --- a/drivers/irqchip/irq-atmel-aic5.c
+> +++ b/drivers/irqchip/irq-atmel-aic5.c
+> @@ -320,6 +320,7 @@ static const struct of_device_id aic5_irq_fixups[]
+> __initconst = {
+>  	{ .compatible = "atmel,sama5d3", .data = sama5d3_aic_irq_fixup },
+>  	{ .compatible = "atmel,sama5d4", .data = sama5d3_aic_irq_fixup },
+>  	{ .compatible = "microchip,sam9x60", .data = sam9x60_aic_irq_fixup },
+> +	{ .compatible = "microchip,sam9x7", .data = sam9x60_aic_irq_fixup },
+>  	{ /* sentinel */ },
+>  };
+> 
+> @@ -406,3 +407,12 @@ static int __init sam9x60_aic5_of_init(struct
+> device_node *node,
+>  	return aic5_of_init(node, parent, NR_SAM9X60_IRQS);
+>  }
+>  IRQCHIP_DECLARE(sam9x60_aic5, "microchip,sam9x60-aic", 
+> sam9x60_aic5_of_init);
+> +
+> +#define NR_SAM9X7_IRQS		70
 
-Again, no expert, but LGTM
+One can only wonder why this stuff doesn't come from the device tree,
+given that there is no other meaningful difference between this
+version of the IP and the previous ones...
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+         M.
+
+> +
+> +static int __init sam9x7_aic5_of_init(struct device_node *node,
+> +				      struct device_node *parent)
+> +{
+> +	return aic5_of_init(node, parent, NR_SAM9X7_IRQS);
+> +}
+> +IRQCHIP_DECLARE(sam9x7_aic5, "microchip,sam9x7-aic", 
+> sam9x7_aic5_of_init);
 
 -- 
-Cheers,
-
-David / dhildenb
-
+Jazz is not dead. It just smells funny...
