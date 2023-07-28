@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F234766F6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27763766F76
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237057AbjG1O0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
+        id S237065AbjG1O2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237024AbjG1O0G (ORCPT
+        with ESMTP id S237059AbjG1O2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:26:06 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440BA30E3;
-        Fri, 28 Jul 2023 07:26:05 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so1376383b3a.1;
-        Fri, 28 Jul 2023 07:26:05 -0700 (PDT)
+        Fri, 28 Jul 2023 10:28:39 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B0A23A97;
+        Fri, 28 Jul 2023 07:28:38 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2680eee423aso1247150a91.2;
+        Fri, 28 Jul 2023 07:28:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690554365; x=1691159165;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jiAYhokEZcrTVzxMHL4xFUn+Azr4GzhtRL2PbFtiZek=;
-        b=fmbTory/3cYy7n80ExlZcth5qoYwumkWkeH9jVO61kyL28k+zP/RA4kT8W7ffkF/w8
-         IkSqomePnMJFSvvHY3XWlUBwbl+PC8cpHqoGJJIhwZ5kBgqXbTVzdVCvTodfh51ohTkw
-         w9GU7IXZlFFmeo5JXM3RJwV4IMBTy1dmoQSRU80c5iok7zERhb7Jt/h6v7YNz6qtC8le
-         O7luovCK5UMbyp2g3J9QtIg9XcFXFhifDv0sW2pVkuhUv6omwPSoQx/UjCU6vTPiho6e
-         8/93WPnINm424J4oe++fQ+PLPNg0m/B4xJX4gMvbV4uOphdMGNoG59QecSdKIMUTcndv
-         PtLQ==
+        d=gmail.com; s=20221208; t=1690554518; x=1691159318;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZtDsi+pEp/nNRMu+KQzhU8MBpSDJijbUVBsN9cf24GY=;
+        b=OmGn8k07nYiaEegv+GN8Im0wQ/MpUTRCtGXnxVIXHRXZhnkinbLI1dHjM0Wy+8280B
+         0B7Tj81pS5VPYDyNSntXbAH52kvELUz6/AeraNGj2ls6QGAi41zzdb0p8Ep63toSfeX4
+         i4wgVCtgk4vvbeJwonFdItN3LBliaSw5obqJjYw9s0D4oyblTc3wvEMSPo1K8+QncJDl
+         N6UN9YdNm4w5hvjkCZ6tAXTBJy4oiit2eN4Zm7QcW4kaWiWA1MtN0VDtGdVwUmAl4mfu
+         FUbLag8pu2jGxZfma8MfyBl+UcQan7RkBzSI14+VZ8wbIlYVlDmqaN46fYGFO5ODfo1e
+         haeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690554365; x=1691159165;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jiAYhokEZcrTVzxMHL4xFUn+Azr4GzhtRL2PbFtiZek=;
-        b=b+pAU0MoP2CptsZJ4mGPoAma/xiGb4vqPFyRCp/csjTHK5lF6XawQsNghwg38dG7oV
-         gutHNb8TddJVB6GTVSZ1v6sM51OMX/Ud8hhOXfQ6svsL4Ja1IQYTnq0OPPBBvfirGhYd
-         8lGZkSawQZ6Q2jT8bxs6P5QyCyNuWjvYyz+Tctk0KShgZLEkC87MAfYi1+227jsns3mx
-         7eO7POmjA6sUAjLZZ+ia260ch8vbnHL0Yv+oHPa4HLrXgmwJSVwHAKDeRMk4FJ5NWGo/
-         Gf5FsA7WAkNFH2cpJFs7Ni5RIrmycj/WxD+5Qxw+nL3UEAb+YK8LnJMyXwMjFBZk/Q1p
-         rNoQ==
-X-Gm-Message-State: ABy/qLYrM+/p9GQ+LxT+/hJ9T2ZzMi0wq9o+Pfb1RCJmMvjyY8j6CXt3
-        tJkSm6A/Nf8EGmeB9b6PD+rQOzvuTg8=
-X-Google-Smtp-Source: APBJJlERqU/HsdiYX+vftDBFUxsU1Lkg2g5PrDtoj6HpURFThjN9d5z/umLp4m3qaXyPMrfdXqu4dA==
-X-Received: by 2002:a05:6a20:918b:b0:132:c1fd:aaab with SMTP id v11-20020a056a20918b00b00132c1fdaaabmr1961941pzd.30.1690554364622;
-        Fri, 28 Jul 2023 07:26:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690554518; x=1691159318;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZtDsi+pEp/nNRMu+KQzhU8MBpSDJijbUVBsN9cf24GY=;
+        b=S4CDW/0GgHEGjcJ/zItdMlh/Ka3NaJHmk6v/uCflY6lCd5iX/qgOVD3AEuTobGWNeU
+         ZQ1oUpADr+tpyQuvDbCTh8kypWeixEHxC1v9VOg0ja9dryqMilBZBwg0/A/U1uQy3rEM
+         L1dpj5n0Ls1/UTec57s7VxyiLzSrRcrrtT0FOkshWrf+czDF7tf1yiNtDCqypz2TnCMg
+         PrflM6T6Ow/ME4snhxX3z0zYBqFv7Bqjwfjyj5yLZAUDUXms6CljKAIJ25Eue4GiDuq8
+         uUHIzIk7SMbBqRTVT4mj/qhuxpwOGJ8j4wo+PkHaayJJ40MuFDxXHdaYQv/DkIqVTv4R
+         V8rQ==
+X-Gm-Message-State: ABy/qLb/Wh8Cr3MrOOlwnZ7ZvWgVDZiUiNs5FeS2nXu2YYGD4VQ4X8fg
+        kQVjQTHVFxv9kHTxgu0mBs0=
+X-Google-Smtp-Source: APBJJlGq9Ppy+Td/hyv0vhyaQQiigQlnAv2Qg4dsZhHVbEQ+e/KYrMad5RnxSg1dauRUoujuBVziQA==
+X-Received: by 2002:a17:90b:38c6:b0:268:8da4:72ac with SMTP id nn6-20020a17090b38c600b002688da472acmr1145098pjb.22.1690554517616;
+        Fri, 28 Jul 2023 07:28:37 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r6-20020a63b106000000b00563feb7113dsm3455016pgf.91.2023.07.28.07.26.03
+        by smtp.gmail.com with ESMTPSA id ms19-20020a17090b235300b00263f446d432sm4381643pjb.43.2023.07.28.07.28.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 07:26:04 -0700 (PDT)
+        Fri, 28 Jul 2023 07:28:37 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f47d38f8-02e7-3269-2754-300be3d4036e@roeck-us.net>
-Date:   Fri, 28 Jul 2023 07:26:02 -0700
+Message-ID: <8686c5c3-81b0-278f-d81b-0c906bac62a8@roeck-us.net>
+Date:   Fri, 28 Jul 2023 07:28:35 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
+Subject: Re: [PATCH] Add Silicom Platform Driver
 Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org, linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-References: <20230728082527.3531940-1-Naresh.Solanki@9elements.com>
- <1cc12337-759e-c932-0303-b1b78e254c27@roeck-us.net>
- <CABqG17jXyx4GQqa2M7w78r0F99FzsqpNhft3w3jtUGKuBbfCDg@mail.gmail.com>
+To:     Huibin Shi <henrys@silicom-usa.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Henry Shi <henryshi2018@gmail.com>,
+        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Cc:     "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+References: <20230718160104.2716-1-henryshi2018@gmail.com>
+ <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
+ <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] hwmon: (pmbus/mp2975) Fix PGOOD in READ_STATUS_WORD
-In-Reply-To: <CABqG17jXyx4GQqa2M7w78r0F99FzsqpNhft3w3jtUGKuBbfCDg@mail.gmail.com>
+In-Reply-To: <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -81,64 +95,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 04:28, Naresh Solanki wrote:
-> Hi Guenter,
+On 7/28/23 05:59, Huibin Shi wrote:
+> Christophe,
+> 
+> Thanks for the comments. See my comments below.
+> 
+> Updated patch will be sent out later after review comments from other reviewers are addressed.
+> 
+> Henry
+> -----Original Message-----
+> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Sent: Tuesday, July 25, 2023 5:03 PM
+> To: Henry Shi <henryshi2018@gmail.com>; hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux@roeck-us.net; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org
+> Cc: hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
+> Subject: Re: [PATCH] Add Silicom Platform Driver
+> 
+> Caution: This is an external email. Please take care when clicking links or opening attachments.
 > 
 > 
-> On Fri, 28 Jul 2023 at 15:30, Guenter Roeck <linux@roeck-us.net> wrote:
+> Le 18/07/2023 à 18:01, Henry Shi a écrit :
+>> The Silicom platform (silicom-platform) Linux driver for Swisscom
+>> Business Box (Swisscom BB) as well as Cordoba family products is a
+>> software solution designed to facilitate the efficient management and
+>> control of devices through the integration of various Linux
+>> frameworks. This platform driver provides seamless support for device
+>> management via the Linux LED framework, GPIO framework, Hardware
+>> Monitoring (HWMON), and device attributes. The Silicom platform
+>> driver's compatibility with these Linux frameworks allows applications
+>> to access and control Cordoba family devices using existing software
+>> that is compatible with these frameworks. This compatibility
+>> simplifies the development process, reduces dependencies on
+>> proprietary solutions, and promotes interoperability with other
+>> Linux-based systems and software.
 >>
->> On 7/28/23 01:25, Naresh Solanki wrote:
->>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->>>
->>> MPS returns PGOOD instead of PB_STATUS_POWER_GOOD_N.
->>> Fix that in the read_word_data hook.
->>>
->> Datasheets are not public, so I can not verify, but the code below
->> only handles MP2973 and MP2971. What about MP2975 ?
-> I dont have MP2975 to even verify. I'm not sure if its applicable.
->>
->> Either case, this appears to affect most Monolithic chips, but
->> not all of them. Please limit the statement to known to be affected
->> chips.
-> Yes. With what we observed, this affects mp2973 & mp2971.
-> Will update accordingly.
+>> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+>> ---
+> 
+> [...]
+> 
+>> +static int __init silicom_mc_leds_register(struct device *dev,
+>> +                                        const struct led_classdev_mc
+>> +*mc_leds) {
+>> +     struct led_classdev_mc *led;
+>> +     int i, err;
+>> +
+>> +     for (i = 0; mc_leds[i].led_cdev.name; i++) {
+>> +             /* allocate and copy data from the init constansts */
+>> +             led = devm_kzalloc(dev, sizeof(struct led_classdev_mc),
+>> + GFP_KERNEL);
+> 
+> sizeof(*led) is shorter.
+> Mostly a matter of taste.
+> 
+> Maybe even devm_kmemdup()?
+> 
+> Henry: thanks. Devm_kmemdup() API requires additional argument that is not necessary of this driver. I prefer devm_kzalloc for now.
+> 
 
-Please also add a comment that MP2975 is likely affected but can not be
-confirmed due to lack of a datasheet.
+I am curious: What would that additional argument be ?
 
-Thanks,
 Guenter
-
->>
->>> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
->>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->>> ---
->>>    drivers/hwmon/pmbus/mp2975.c | 4 ++++
->>>    1 file changed, 4 insertions(+)
->>>
->>> diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
->>> index 28f33f4618fa..410b6eae6d02 100644
->>> --- a/drivers/hwmon/pmbus/mp2975.c
->>> +++ b/drivers/hwmon/pmbus/mp2975.c
->>> @@ -297,6 +297,10 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
->>>        int ret;
->>>
->>>        switch (reg) {
->>> +     case PMBUS_STATUS_WORD:
->>> +             ret = pmbus_read_word_data(client, page, phase, reg);
->>
->>                  if (ret < 0)
->>                          return ret;
->>
->> Please add a comment explaining what is going on.
-> Sure.
->>
->>> +             ret ^= PB_STATUS_POWER_GOOD_N;
->>> +             break;
->>>        case PMBUS_OT_FAULT_LIMIT:
->>>                ret = mp2975_read_word_helper(client, page, phase, reg,
->>>                                              GENMASK(7, 0));
->>>
->>> base-commit: a4bb1ce5b9e3ca403c04e20ebeae77fd6447cb11
->>
 
