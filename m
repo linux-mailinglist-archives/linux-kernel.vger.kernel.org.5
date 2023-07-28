@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA37E76666C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E2D766676
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjG1IJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S234559AbjG1IJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjG1IJB (ORCPT
+        with ESMTP id S234411AbjG1IJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:09:01 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C3930DB
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690531740; x=1722067740;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7H1DGTtPz3o+QAj240HysVc/w83lxlzbiBKVni7/XEY=;
-  b=DAgkVRyI5KD5rebYeeKKLGO5DOQuJJBQtRwJ2xK2Zh4KxM8C3dhgTtsZ
-   KeNAPUxL8uNlW6CIW/4dk2vtur+LPppwJK8RB1zQKTzQDVEUqaAmnnrdk
-   CEeYIQbBvxpsEUWHXbDSeEvFZqROD1+O/Jh3B2jfSnCtAj6nDvn99+4hp
-   /uMkqpmSGmhodItUFb3phxx4JhbVO1fiujwQX5Cebit9OXIXlRZ/0VMxZ
-   yAcTcaaEI6Z+ohKQKxOwRBsLXClZNJJju2DONbqRYDbnEeJL+HlY8DzO/
-   7Vu+MNcnmbJGftmqzDXt5kkAwC+Zzau3QCe4XTlJhvx0Jr718JqeauNPa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="372156414"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="372156414"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 01:08:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="797357757"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="797357757"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Jul 2023 01:08:57 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPIWu-000313-2R;
-        Fri, 28 Jul 2023 08:08:56 +0000
-Date:   Fri, 28 Jul 2023 16:08:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Levi Yun <ppbuk5246@gmail.com>, sj@kernel.org,
-        akpm@linux-foundation.org
-Cc:     oe-kbuild-all@lists.linux.dev, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Levi Yun <ppbuk5246@gmail.com>
-Subject: Re: [PATCH] damon: Use pmdp_get instead of drect dereferencing pmd.
-Message-ID: <202307281532.pVsrTsL2-lkp@intel.com>
-References: <20230727183745.682880-1-ppbuk5246@gmail.com>
+        Fri, 28 Jul 2023 04:09:41 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501AC3A93
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:09:40 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742bso20419415e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690531779; x=1691136579;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GqLr/DM3vzoT2FIGmxl1EtsMfdCCfHjdp08hXZT3Xyg=;
+        b=jNqp0QPCVYTkV4bvppxC/WE1D3dThiR6UKFK8p4qV3WMajrs8aXfR/yEOGVVt4WO/4
+         C6lj+p89l37MtuxXWAebhshvKx83b6ctlrKZ3CD7QWkKwaUrDUSdAhTUkL5JZllRwaIn
+         aUO/FOw/zeur8egsp7p8tXrfbkQm2MAPBeeKrptG93bsgZA/gRiHUfaZXvUwjeD9JUty
+         PZXizjxorCUDAclhWNrac3NH1InWJ9R9WrAat5wjHGfPbEQyyaYYdn/ntfYc9fC8ZlFj
+         2jP6M0Ff0Led0BcYGs2Hc3hK+Sblib/akOE7NoPjHj59JUM1ML9mw3yh6Xauefqt8RMT
+         9fPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690531779; x=1691136579;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GqLr/DM3vzoT2FIGmxl1EtsMfdCCfHjdp08hXZT3Xyg=;
+        b=LeXR7JtNsPyvzkSwcsS80NwEaUc4XxT0RhJA07flYJNmlFXQQjypH1ybTIcmCqZXB4
+         A2CpNhY+qhflJWIvr6cKiRrF6U4ol958VK4rjuB65N5FAG+ueKLC5v2PhMYdpngfOqVt
+         zo40kIvMmET8Vt5jTC7FWNOC3xgK+UIZTk502sgdWNxvs1KhcnzcW3RE93JZTBqyTNYR
+         6EhpF/bKnHG8b793Z7lv3Plq5fDYJBUMiqicIwir3/9Gbe/Mai3Y/Kg2TpuqVHoWsoYk
+         A1SMP430Qz6RGO1OjBCan4t4dUL5n23H9PxXFiMM1xTQz3vDTa1HMUxj4GfUVYKnncWY
+         XNMA==
+X-Gm-Message-State: ABy/qLbifrcfZMcYJvH+pQOmvWtDrN1U2GstXp2h7RSFeBiSg9hyGYty
+        Hd5/qNk98kN7mtcK6E1Ib3A=
+X-Google-Smtp-Source: APBJJlFQW3i7+kOV3XLOmwouH4a0XHOhL2g3BliaVEr4MqWslzbF6GJX6aD17eqL//lIKPOLtJwD6Q==
+X-Received: by 2002:a7b:c853:0:b0:3fb:b67b:7f15 with SMTP id c19-20020a7bc853000000b003fbb67b7f15mr1289443wml.21.1690531778542;
+        Fri, 28 Jul 2023 01:09:38 -0700 (PDT)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id f21-20020a7bcc15000000b003fd32074e74sm6447479wmh.31.2023.07.28.01.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 01:09:38 -0700 (PDT)
+Message-ID: <29e17fa4-0dc3-2542-f303-7dceb1ed16bc@gmail.com>
+Date:   Fri, 28 Jul 2023 09:09:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727183745.682880-1-ppbuk5246@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Ben Skeggs <bskeggs@redhat.com>, Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   "Colin King (gmail)" <colin.i.king@gmail.com>
+Subject: drm/nouveau: fan:
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,52 +77,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Levi,
+Hi,
 
-kernel test robot noticed the following build warnings:
+static analysis with cppcheck has detected an issue in function 
+nvkm_fan_update() in drivers/gpu/drm/nouveau/nvkm/subdev/therm/fan.c as 
+follows:
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.5-rc3 next-20230728]
-[cannot apply to sj/damon/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+         /* schedule next fan update, if not at target speed already */
+         if (target != duty) {
+                 u16 bump_period = fan->bios.bump_period;
+                 u16 slow_down_period = fan->bios.slow_down_period;
+                 u64 delay;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Levi-Yun/damon-Use-pmdp_get-instead-of-drect-dereferencing-pmd/20230728-024044
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230727183745.682880-1-ppbuk5246%40gmail.com
-patch subject: [PATCH] damon: Use pmdp_get instead of drect dereferencing pmd.
-config: i386-randconfig-i016-20230727 (https://download.01.org/0day-ci/archive/20230728/202307281532.pVsrTsL2-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230728/202307281532.pVsrTsL2-lkp@intel.com/reproduce)
+                 if (duty > target)
+                         delay = slow_down_period;
+                 else if (duty == target)
+                         delay = min(bump_period, slow_down_period) ;
+                 else
+                         delay = bump_period;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307281532.pVsrTsL2-lkp@intel.com/
+                 nvkm_timer_alarm(tmr, delay * 1000 * 1000, &fan->alarm);
+         }
 
-All warnings (new ones prefixed by >>):
+Checking drivers/gpu/drm/nouveau/nvkm/subdev/therm/gm107.c ...
+drivers/gpu/drm/nouveau/nvkm/subdev/therm/fan.c:93:17: warning: Opposite 
+inner 'if' condition leads to a dead code block. [oppositeInnerCondition]
+   else if (duty == target)
+                 ^
 
-   mm/damon/vaddr.c: In function 'damon_young_pmd_entry':
->> mm/damon/vaddr.c:440:15: warning: unused variable 'pmde' [-Wunused-variable]
-     440 |         pmd_t pmde;
-         |               ^~~~
+The first if statement checks if target != duty, however inside the code 
+block there is a check if duty == target which can never be true. Either 
+the logic is wrong, or the duty == target can be safely removed.
 
-
-vim +/pmde +440 mm/damon/vaddr.c
-
-   434	
-   435	static int damon_young_pmd_entry(pmd_t *pmd, unsigned long addr,
-   436			unsigned long next, struct mm_walk *walk)
-   437	{
-   438		pte_t *pte;
-   439		pte_t ptent;
- > 440		pmd_t pmde;
-   441		spinlock_t *ptl;
-   442		struct folio *folio;
-   443		struct damon_young_walk_private *priv = walk->private;
-   444	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Colin
