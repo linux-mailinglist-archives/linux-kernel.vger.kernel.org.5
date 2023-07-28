@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3D7766E1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B519766E1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbjG1NZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        id S236712AbjG1NZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236248AbjG1NZ1 (ORCPT
+        with ESMTP id S235488AbjG1NZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:25:27 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5044B3AB3;
-        Fri, 28 Jul 2023 06:25:26 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S9r5Ep002075;
-        Fri, 28 Jul 2023 13:25:15 GMT
+        Fri, 28 Jul 2023 09:25:26 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72478211C;
+        Fri, 28 Jul 2023 06:25:24 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SBTCdR016636;
+        Fri, 28 Jul 2023 13:25:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=QtVWmx7sMR3bZfvSX8QR1AHyfv5xD8RTgyhdN6qj+0E=;
- b=pZau4dpukTm7NfMINXnBqREDsAE85igassxeoRoSk8hth5QqlZhByKFYs3Os61mWibIr
- h+WtG8EWiqYghpUMTQkScHZ2ztQeb6cqcRGE3hwRh79WJbTqJNJWD5z+dfjuTk77XRkW
- WLmYWX3wn74O2yNquwVxops1+Uj1PygQVSVqavcAFBZje3qESFzk1sNXkcCCVCGzrmlS
- ZxLChPNBLQvdHshluXROb+rOrY5V7TGDRxv/ti/5FgRJtwJ+ySMnZSlEWA8oV084lphG
- o+vKO0SkMHhRrpBetueTTkAL1C65x4qUp4kqDpM19tO1tw4JmELnjc8dFLPa+8C+VS3l vQ== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s448hh7ga-1
+ bh=cP+Wc3KqdeHD/f+dcdEtVMlTEbXl+sOCN19Hua0L34I=;
+ b=gLqPCn66JL3I4/wjzkPbkoI1nfOhSGXfeZ+kcffR0PL++E+w+9AZ2fPdc45LeX/4zc8F
+ MefCpJiIjuxoSGnBF45MTqKTeCZbLhAPhYGgdJkyRtmOFjK9lN97UWuWVb5fayQMb4A0
+ Cdrz3/9gqxFmCt5qW6fKd0O2dcupMasTlPtJPAi9YoRWwxZVACCFaCpzELVvqs7huGnS
+ DBKtnBolDrKOd3wlvZTuLUggOCMfNG8Ch1VB3dA78WzYTvQ8+OiUIK/bImRlk4uUb38+
+ EAokBtIbZYD+NO7a0YbSfKZJnBQBY3zJxkrTV8H1+j9UDnPyPKlxgOLGU4DyYGmxkSLD DA== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3k7u3jxn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:15 +0000
+        Fri, 28 Jul 2023 13:25:19 +0000
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPE9P025076
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPI3U002584
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:14 GMT
+        Fri, 28 Jul 2023 13:25:18 GMT
 Received: from hu-vgarodia-hyd.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 06:25:10 -0700
+ 15.2.1118.30; Fri, 28 Jul 2023 06:25:14 -0700
 From:   Vikash Garodia <quic_vgarodia@quicinc.com>
 To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -47,9 +47,9 @@ To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <linux-arm-msm@vger.kernel.org>
 CC:     <quic_dikshita@quicinc.com>,
         Vikash Garodia <quic_vgarodia@quicinc.com>
-Subject: [PATCH 01/33] MAINTAINERS: Add Qualcomm Iris video accelerator driver
-Date:   Fri, 28 Jul 2023 18:53:12 +0530
-Message-ID: <1690550624-14642-2-git-send-email-quic_vgarodia@quicinc.com>
+Subject: [PATCH 02/33] iris: vidc: add core functions
+Date:   Fri, 28 Jul 2023 18:53:13 +0530
+Message-ID: <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
 References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
@@ -60,55 +60,704 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: gd1TGAVpIwlxqpg9Vok5-kEqoxlLRnyf
-X-Proofpoint-ORIG-GUID: gd1TGAVpIwlxqpg9Vok5-kEqoxlLRnyf
+X-Proofpoint-GUID: 9Qsij7_7W5FPVwDvqJvbfwHUebqYa0Re
+X-Proofpoint-ORIG-GUID: 9Qsij7_7W5FPVwDvqJvbfwHUebqYa0Re
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
- mlxscore=0 priorityscore=1501 mlxlogscore=877 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307280124
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 clxscore=1015 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307280123
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for Iris video encoder/decoder accelerator driver.
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+
+This implements the platform driver methods, file
+operations and v4l2 registration.
 
 Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
 ---
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../platform/qcom/iris/vidc/src/msm_vidc_probe.c   | 660 +++++++++++++++++++++
+ 1 file changed, 660 insertions(+)
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3be1bdf..ea633b2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17671,6 +17671,16 @@ T:	git git://linuxtv.org/media_tree.git
- F:	Documentation/devicetree/bindings/media/*venus*
- F:	drivers/media/platform/qcom/venus/
- 
-+QUALCOMM IRIS VIDEO ACCELERATOR DRIVER
-+M:	Vikash Garodia <quic_vgarodia@quicinc.com>
-+M:	Dikshita Agarwal <quic_dikshita@quicinc.com>
-+L:	linux-media@vger.kernel.org
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+T:	git git://linuxtv.org/media_tree.git
-+F:	Documentation/devicetree/bindings/media/qcom,*-iris.yaml
-+F:	drivers/media/platform/qcom/iris/
+diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+new file mode 100644
+index 0000000..43439cb
+--- /dev/null
++++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+@@ -0,0 +1,660 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2020-2022, The Linux Foundation. All rights reserved.
++ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
 +
- QUALCOMM WCN36XX WIRELESS DRIVER
- M:	Loic Poulain <loic.poulain@linaro.org>
- L:	wcn36xx@lists.infradead.org
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/iommu.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/stringify.h>
++#include <linux/version.h>
++#include <linux/workqueue.h>
++
++#include "msm_vidc_core.h"
++#include "msm_vidc_debug.h"
++#include "msm_vidc_driver.h"
++#include "msm_vidc_internal.h"
++#include "msm_vidc_memory.h"
++#include "msm_vidc_platform.h"
++#include "msm_vidc_state.h"
++#include "venus_hfi.h"
++
++#define BASE_DEVICE_NUMBER 32
++
++struct msm_vidc_core *g_core;
++
++static inline bool is_video_device(struct device *dev)
++{
++	return !!(of_device_is_compatible(dev->of_node, "qcom,sm8550-vidc"));
++}
++
++static inline bool is_video_context_bank_device(struct device *dev)
++{
++	return !!(of_device_is_compatible(dev->of_node, "qcom,vidc,cb-ns"));
++}
++
++static int msm_vidc_init_resources(struct msm_vidc_core *core)
++{
++	struct msm_vidc_resource *res = NULL;
++	int rc = 0;
++
++	res = devm_kzalloc(&core->pdev->dev, sizeof(*res), GFP_KERNEL);
++	if (!res) {
++		d_vpr_e("%s: failed to alloc memory for resource\n", __func__);
++		return -ENOMEM;
++	}
++	core->resource = res;
++
++	rc = call_res_op(core, init, core);
++	if (rc) {
++		d_vpr_e("%s: Failed to init resources: %d\n", __func__, rc);
++		return rc;
++	}
++
++	return 0;
++}
++
++static const struct of_device_id msm_vidc_dt_match[] = {
++	{.compatible = "qcom,sm8550-vidc"},
++	{.compatible = "qcom,vidc,cb-ns"},
++	MSM_VIDC_EMPTY_BRACE
++};
++MODULE_DEVICE_TABLE(of, msm_vidc_dt_match);
++
++static void msm_vidc_release_video_device(struct video_device *vdev)
++{
++	d_vpr_e("%s: video device released\n", __func__);
++}
++
++static void msm_vidc_unregister_video_device(struct msm_vidc_core *core,
++					     enum msm_vidc_domain_type type)
++{
++	int index;
++
++	if (type == MSM_VIDC_DECODER)
++		index = 0;
++	else if (type == MSM_VIDC_ENCODER)
++		index = 1;
++	else
++		return;
++
++	v4l2_m2m_release(core->vdev[index].m2m_dev);
++
++	video_set_drvdata(&core->vdev[index].vdev, NULL);
++	video_unregister_device(&core->vdev[index].vdev);
++}
++
++static int msm_vidc_register_video_device(struct msm_vidc_core *core,
++					  enum msm_vidc_domain_type type, int nr)
++{
++	int rc = 0;
++	int index;
++
++	d_vpr_h("%s: domain %d\n", __func__, type);
++
++	if (type == MSM_VIDC_DECODER)
++		index = 0;
++	else if (type == MSM_VIDC_ENCODER)
++		index = 1;
++	else
++		return -EINVAL;
++
++	core->vdev[index].vdev.release =
++		msm_vidc_release_video_device;
++	core->vdev[index].vdev.fops = core->v4l2_file_ops;
++	if (type == MSM_VIDC_DECODER)
++		core->vdev[index].vdev.ioctl_ops = core->v4l2_ioctl_ops_dec;
++	else
++		core->vdev[index].vdev.ioctl_ops = core->v4l2_ioctl_ops_enc;
++	core->vdev[index].vdev.vfl_dir = VFL_DIR_M2M;
++	core->vdev[index].type = type;
++	core->vdev[index].vdev.v4l2_dev = &core->v4l2_dev;
++	core->vdev[index].vdev.device_caps = core->capabilities[DEVICE_CAPS].value;
++	rc = video_register_device(&core->vdev[index].vdev,
++				   VFL_TYPE_VIDEO, nr);
++	if (rc) {
++		d_vpr_e("Failed to register the video device\n");
++		return rc;
++	}
++	video_set_drvdata(&core->vdev[index].vdev, core);
++
++	core->vdev[index].m2m_dev = v4l2_m2m_init(core->v4l2_m2m_ops);
++	if (IS_ERR(core->vdev[index].m2m_dev)) {
++		d_vpr_e("Failed to initialize V4L2 M2M device\n");
++		rc = PTR_ERR(core->vdev[index].m2m_dev);
++		goto m2m_init_failed;
++	}
++
++	return 0;
++
++m2m_init_failed:
++	video_unregister_device(&core->vdev[index].vdev);
++	return rc;
++}
++
++static int msm_vidc_deinitialize_core(struct msm_vidc_core *core)
++{
++	int rc = 0;
++
++	if (!core) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return -EINVAL;
++	}
++
++	mutex_destroy(&core->lock);
++	msm_vidc_update_core_state(core, MSM_VIDC_CORE_DEINIT, __func__);
++
++	if (core->batch_workq)
++		destroy_workqueue(core->batch_workq);
++
++	if (core->pm_workq)
++		destroy_workqueue(core->pm_workq);
++
++	core->batch_workq = NULL;
++	core->pm_workq = NULL;
++
++	return rc;
++}
++
++static int msm_vidc_initialize_core(struct msm_vidc_core *core)
++{
++	int rc = 0;
++
++	msm_vidc_update_core_state(core, MSM_VIDC_CORE_DEINIT, __func__);
++
++	core->pm_workq = create_singlethread_workqueue("pm_workq");
++	if (!core->pm_workq) {
++		d_vpr_e("%s: create pm workq failed\n", __func__);
++		rc = -EINVAL;
++		goto exit;
++	}
++
++	core->batch_workq = create_singlethread_workqueue("batch_workq");
++	if (!core->batch_workq) {
++		d_vpr_e("%s: create batch workq failed\n", __func__);
++		rc = -EINVAL;
++		goto exit;
++	}
++
++	core->packet_size = VIDC_IFACEQ_VAR_HUGE_PKT_SIZE;
++	core->packet = devm_kzalloc(&core->pdev->dev, core->packet_size, GFP_KERNEL);
++	if (!core->packet) {
++		d_vpr_e("%s: failed to alloc core packet\n", __func__);
++		rc = -ENOMEM;
++		goto exit;
++	}
++
++	core->response_packet = devm_kzalloc(&core->pdev->dev, core->packet_size, GFP_KERNEL);
++	if (!core->packet) {
++		d_vpr_e("%s: failed to alloc core response packet\n", __func__);
++		rc = -ENOMEM;
++		goto exit;
++	}
++
++	mutex_init(&core->lock);
++	INIT_LIST_HEAD(&core->instances);
++	INIT_LIST_HEAD(&core->dangling_instances);
++
++	INIT_DELAYED_WORK(&core->pm_work, venus_hfi_pm_work_handler);
++	INIT_DELAYED_WORK(&core->fw_unload_work, msm_vidc_fw_unload_handler);
++
++	return 0;
++exit:
++	if (core->batch_workq)
++		destroy_workqueue(core->batch_workq);
++	if (core->pm_workq)
++		destroy_workqueue(core->pm_workq);
++	core->batch_workq = NULL;
++	core->pm_workq = NULL;
++
++	return rc;
++}
++
++static void msm_vidc_devm_deinit_core(void *res)
++{
++	struct msm_vidc_core *core = res;
++
++	msm_vidc_deinitialize_core(core);
++}
++
++static int msm_vidc_devm_init_core(struct device *dev, struct msm_vidc_core *core)
++{
++	int rc = 0;
++
++	if (!dev || !core) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return -EINVAL;
++	}
++
++	rc = msm_vidc_initialize_core(core);
++	if (rc) {
++		d_vpr_e("%s: init failed with %d\n", __func__, rc);
++		return rc;
++	}
++
++	rc = devm_add_action_or_reset(dev, msm_vidc_devm_deinit_core, (void *)core);
++	if (rc)
++		return -EINVAL;
++
++	return rc;
++}
++
++static void msm_vidc_devm_debugfs_put(void *res)
++{
++	struct dentry *parent = res;
++
++	debugfs_remove_recursive(parent);
++}
++
++static struct dentry *msm_vidc_devm_debugfs_get(struct device *dev)
++{
++	struct dentry *parent = NULL;
++	int rc = 0;
++
++	if (!dev) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return NULL;
++	}
++
++	parent = msm_vidc_debugfs_init_drv();
++	if (!parent)
++		return NULL;
++
++	rc = devm_add_action_or_reset(dev, msm_vidc_devm_debugfs_put, (void *)parent);
++	if (rc)
++		return NULL;
++
++	return parent;
++}
++
++static int msm_vidc_setup_context_bank(struct msm_vidc_core *core,
++				       struct device *dev)
++{
++	struct context_bank_info *cb = NULL;
++	int rc = 0;
++
++	cb = msm_vidc_get_context_bank_for_device(core, dev);
++	if (!cb) {
++		d_vpr_e("%s: Failed to get context bank device for %s\n",
++			__func__, dev_name(dev));
++		return -EIO;
++	}
++
++	/* populate dev & domain field */
++	cb->dev = dev;
++	cb->domain = iommu_get_domain_for_dev(cb->dev);
++	if (!cb->domain) {
++		d_vpr_e("%s: Failed to get iommu domain for %s\n", __func__, dev_name(dev));
++		return -EIO;
++	}
++
++	if (cb->dma_mask) {
++		rc = dma_set_mask_and_coherent(cb->dev, cb->dma_mask);
++		if (rc) {
++			d_vpr_e("%s: dma_set_mask_and_coherent failed\n", __func__);
++			return rc;
++		}
++	}
++
++	/*
++	 * configure device segment size and segment boundary to ensure
++	 * iommu mapping returns one mapping (which is required for partial
++	 * cache operations)
++	 */
++	if (!dev->dma_parms)
++		dev->dma_parms =
++			devm_kzalloc(dev, sizeof(*dev->dma_parms), GFP_KERNEL);
++	dma_set_max_seg_size(dev, (unsigned int)DMA_BIT_MASK(32));
++	dma_set_seg_boundary(dev, (unsigned long)DMA_BIT_MASK(64));
++
++	iommu_set_fault_handler(cb->domain, msm_vidc_smmu_fault_handler, (void *)core);
++
++	d_vpr_h("%s: name %s addr start %x size %x secure %d\n",
++		__func__, cb->name, cb->addr_range.start,
++		cb->addr_range.size, cb->secure);
++	d_vpr_h("%s: dma_coherant %d region %d dev_name %s domain %pK dma_mask %llu\n",
++		__func__, cb->dma_coherant, cb->region, dev_name(cb->dev),
++		cb->domain, cb->dma_mask);
++
++	return rc;
++}
++
++static int msm_vidc_remove_video_device(struct platform_device *pdev)
++{
++	struct msm_vidc_core *core;
++
++	if (!pdev) {
++		d_vpr_e("%s: invalid input %pK", __func__, pdev);
++		return -EINVAL;
++	}
++
++	core = dev_get_drvdata(&pdev->dev);
++	if (!core) {
++		d_vpr_e("%s: invalid core\n", __func__);
++		return -EINVAL;
++	}
++
++	msm_vidc_core_deinit(core, true);
++	venus_hfi_queue_deinit(core);
++
++	msm_vidc_unregister_video_device(core, MSM_VIDC_ENCODER);
++	msm_vidc_unregister_video_device(core, MSM_VIDC_DECODER);
++
++	v4l2_device_unregister(&core->v4l2_dev);
++
++	d_vpr_h("depopulating sub devices\n");
++	/*
++	 * Trigger remove for each sub-device i.e. qcom,context-bank,xxxx
++	 * When msm_vidc_remove is called for each sub-device, destroy
++	 * context-bank mappings.
++	 */
++	of_platform_depopulate(&pdev->dev);
++
++	dev_set_drvdata(&pdev->dev, NULL);
++	g_core = NULL;
++	d_vpr_h("%s(): succssful\n", __func__);
++
++	return 0;
++}
++
++static int msm_vidc_remove_context_bank(struct platform_device *pdev)
++{
++	d_vpr_h("%s(): %s\n", __func__, dev_name(&pdev->dev));
++
++	return 0;
++}
++
++static int msm_vidc_remove(struct platform_device *pdev)
++{
++	/*
++	 * Sub devices remove will be triggered by of_platform_depopulate()
++	 * after core_deinit(). It return immediately after completing
++	 * sub-device remove.
++	 */
++	if (is_video_device(&pdev->dev))
++		return msm_vidc_remove_video_device(pdev);
++	else if (is_video_context_bank_device(&pdev->dev))
++		return msm_vidc_remove_context_bank(pdev);
++
++	/* How did we end up here? */
++	WARN_ON(1);
++	return -EINVAL;
++}
++
++static int msm_vidc_probe_video_device(struct platform_device *pdev)
++{
++	int rc = 0;
++	struct msm_vidc_core *core = NULL;
++	int nr = BASE_DEVICE_NUMBER;
++
++	d_vpr_h("%s: %s\n", __func__, dev_name(&pdev->dev));
++
++	core = devm_kzalloc(&pdev->dev, sizeof(struct msm_vidc_core), GFP_KERNEL);
++	if (!core) {
++		d_vpr_e("%s: failed to alloc memory for core\n", __func__);
++		return -ENOMEM;
++	}
++	g_core = core;
++
++	core->pdev = pdev;
++	dev_set_drvdata(&pdev->dev, core);
++
++	core->debugfs_parent = msm_vidc_devm_debugfs_get(&pdev->dev);
++	if (!core->debugfs_parent)
++		d_vpr_h("Failed to create debugfs for msm_vidc\n");
++
++	rc = msm_vidc_devm_init_core(&pdev->dev, core);
++	if (rc) {
++		d_vpr_e("%s: init core failed with %d\n", __func__, rc);
++		goto init_core_failed;
++	}
++
++	rc = msm_vidc_init_platform(core);
++	if (rc) {
++		d_vpr_e("%s: init platform failed with %d\n", __func__, rc);
++		rc = -EINVAL;
++		goto init_plat_failed;
++	}
++
++	rc = msm_vidc_init_resources(core);
++	if (rc) {
++		d_vpr_e("%s: init resource failed with %d\n", __func__, rc);
++		goto init_res_failed;
++	}
++
++	rc = msm_vidc_init_core_caps(core);
++	if (rc) {
++		d_vpr_e("%s: init core caps failed with %d\n", __func__, rc);
++		goto init_res_failed;
++	}
++
++	rc = msm_vidc_init_instance_caps(core);
++	if (rc) {
++		d_vpr_e("%s: init inst cap failed with %d\n", __func__, rc);
++		goto init_inst_caps_fail;
++	}
++
++	core->debugfs_root = msm_vidc_debugfs_init_core(core);
++	if (!core->debugfs_root)
++		d_vpr_h("Failed to init debugfs core\n");
++
++	d_vpr_h("populating sub devices\n");
++	/*
++	 * Trigger probe for each sub-device i.e. qcom,msm-vidc,context-bank.
++	 * When msm_vidc_probe is called for each sub-device, parse the
++	 * context-bank details.
++	 */
++	rc = of_platform_populate(pdev->dev.of_node, msm_vidc_dt_match, NULL,
++				  &pdev->dev);
++	if (rc) {
++		d_vpr_e("Failed to trigger probe for sub-devices\n");
++		goto sub_dev_failed;
++	}
++
++	rc = v4l2_device_register(&pdev->dev, &core->v4l2_dev);
++	if (rc) {
++		d_vpr_e("Failed to register v4l2 device\n");
++		goto v4l2_reg_failed;
++	}
++
++	/* setup the decoder device */
++	rc = msm_vidc_register_video_device(core, MSM_VIDC_DECODER, nr);
++	if (rc) {
++		d_vpr_e("Failed to register video decoder\n");
++		goto dec_reg_failed;
++	}
++
++	/* setup the encoder device */
++	rc = msm_vidc_register_video_device(core, MSM_VIDC_ENCODER, nr + 1);
++	if (rc) {
++		d_vpr_e("Failed to register video encoder\n");
++		goto enc_reg_failed;
++	}
++
++	rc = venus_hfi_queue_init(core);
++	if (rc) {
++		d_vpr_e("%s: interface queues init failed\n", __func__);
++		goto queues_init_failed;
++	}
++
++	rc = msm_vidc_core_init(core);
++	if (rc) {
++		d_vpr_e("%s: sys init failed\n", __func__);
++		goto core_init_failed;
++	}
++
++	d_vpr_h("%s(): succssful\n", __func__);
++
++	return rc;
++
++core_init_failed:
++	venus_hfi_queue_deinit(core);
++queues_init_failed:
++	of_platform_depopulate(&pdev->dev);
++sub_dev_failed:
++	msm_vidc_unregister_video_device(core, MSM_VIDC_ENCODER);
++enc_reg_failed:
++	msm_vidc_unregister_video_device(core, MSM_VIDC_DECODER);
++dec_reg_failed:
++	v4l2_device_unregister(&core->v4l2_dev);
++v4l2_reg_failed:
++init_inst_caps_fail:
++init_res_failed:
++init_plat_failed:
++init_core_failed:
++	dev_set_drvdata(&pdev->dev, NULL);
++	g_core = NULL;
++
++	return rc;
++}
++
++static int msm_vidc_probe_context_bank(struct platform_device *pdev)
++{
++	struct msm_vidc_core *core = NULL;
++	int rc = 0;
++
++	if (!pdev) {
++		d_vpr_e("%s: Invalid platform device %pK", __func__, pdev);
++		return -EINVAL;
++	} else if (!pdev->dev.parent) {
++		d_vpr_e("%s: Failed to find a parent for %s\n",
++			__func__, dev_name(&pdev->dev));
++		return -ENODEV;
++	}
++
++	d_vpr_h("%s(): %s\n", __func__, dev_name(&pdev->dev));
++
++	core = dev_get_drvdata(pdev->dev.parent);
++	if (!core) {
++		d_vpr_e("%s: core not found in device %s",
++			__func__, dev_name(pdev->dev.parent));
++		return -EINVAL;
++	}
++
++	rc = msm_vidc_setup_context_bank(core, &pdev->dev);
++	if (rc) {
++		d_vpr_e("%s: Failed to probe context bank %s\n",
++			__func__, dev_name(&pdev->dev));
++		return rc;
++	}
++
++	return rc;
++}
++
++static int msm_vidc_probe(struct platform_device *pdev)
++{
++	if (!pdev) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return -EINVAL;
++	}
++
++	/*
++	 * Sub devices probe will be triggered by of_platform_populate() towards
++	 * the end of the probe function after msm-vidc device probe is
++	 * completed. Return immediately after completing sub-device probe.
++	 */
++	if (is_video_device(&pdev->dev))
++		return msm_vidc_probe_video_device(pdev);
++	else if (is_video_context_bank_device(&pdev->dev))
++		return msm_vidc_probe_context_bank(pdev);
++
++	/* How did we end up here? */
++	WARN_ON(1);
++	return -EINVAL;
++}
++
++static int msm_vidc_pm_suspend(struct device *dev)
++{
++	int rc = 0;
++	struct msm_vidc_core *core;
++	enum msm_vidc_allow allow = MSM_VIDC_DISALLOW;
++
++	/*
++	 * Bail out if
++	 * - driver possibly not probed yet
++	 * - not the main device. We don't support power management on
++	 *   subdevices (e.g. context banks)
++	 */
++	if (!dev || !dev->driver || !is_video_device(dev))
++		return 0;
++
++	core = dev_get_drvdata(dev);
++	if (!core) {
++		d_vpr_e("%s: invalid core\n", __func__);
++		return -EINVAL;
++	}
++
++	core_lock(core, __func__);
++	allow = msm_vidc_allow_pm_suspend(core);
++
++	if (allow == MSM_VIDC_IGNORE) {
++		d_vpr_h("%s: pm already suspended\n", __func__);
++		msm_vidc_change_core_sub_state(core, 0, CORE_SUBSTATE_PM_SUSPEND, __func__);
++		rc = 0;
++		goto unlock;
++	} else if (allow != MSM_VIDC_ALLOW) {
++		d_vpr_h("%s: pm suspend not allowed\n", __func__);
++		rc = 0;
++		goto unlock;
++	}
++
++	rc = msm_vidc_suspend(core);
++	if (rc == -EOPNOTSUPP)
++		rc = 0;
++	else if (rc)
++		d_vpr_e("Failed to suspend: %d\n", rc);
++	else
++		msm_vidc_change_core_sub_state(core, 0, CORE_SUBSTATE_PM_SUSPEND, __func__);
++
++unlock:
++	core_unlock(core, __func__);
++	return rc;
++}
++
++static int msm_vidc_pm_resume(struct device *dev)
++{
++	struct msm_vidc_core *core;
++
++	/*
++	 * Bail out if
++	 * - driver possibly not probed yet
++	 * - not the main device. We don't support power management on
++	 *   subdevices (e.g. context banks)
++	 */
++	if (!dev || !dev->driver || !is_video_device(dev))
++		return 0;
++
++	core = dev_get_drvdata(dev);
++	if (!core) {
++		d_vpr_e("%s: invalid core\n", __func__);
++		return -EINVAL;
++	}
++
++	/* remove PM suspend from core sub_state */
++	core_lock(core, __func__);
++	msm_vidc_change_core_sub_state(core, CORE_SUBSTATE_PM_SUSPEND, 0, __func__);
++	core_unlock(core, __func__);
++
++	return 0;
++}
++
++static const struct dev_pm_ops msm_vidc_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(msm_vidc_pm_suspend, msm_vidc_pm_resume)
++};
++
++struct platform_driver msm_vidc_driver = {
++	.probe = msm_vidc_probe,
++	.remove = msm_vidc_remove,
++	.driver = {
++		.name = "msm_vidc_v4l2",
++		.of_match_table = msm_vidc_dt_match,
++		.pm = &msm_vidc_pm_ops,
++	},
++};
++
++module_platform_driver(msm_vidc_driver);
++MODULE_LICENSE("GPL");
 -- 
 2.7.4
 
