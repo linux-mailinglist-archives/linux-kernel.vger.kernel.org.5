@@ -2,128 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174F9767072
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55157767074
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbjG1PXc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50910 "EHLO
+        id S237135AbjG1PYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237037AbjG1PXa (ORCPT
+        with ESMTP id S237343AbjG1PYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:23:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B10235B8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:23:29 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-405-eJcN3k0sP7Kvuwhq7UFxfw-1; Fri, 28 Jul 2023 16:23:26 +0100
-X-MC-Unique: eJcN3k0sP7Kvuwhq7UFxfw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
- 2023 16:23:25 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 28 Jul 2023 16:23:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Oleksandr Natalenko' <oleksandr@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "GR-QLogic-Storage-Upstream@marvell.com" 
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        "Rob Evers" <revers@redhat.com>
-Subject: RE: [PATCH 1/3] scsi: qedf: do not touch __user pointer in
- qedf_dbg_stop_io_on_error_cmd_read() directly
-Thread-Topic: [PATCH 1/3] scsi: qedf: do not touch __user pointer in
- qedf_dbg_stop_io_on_error_cmd_read() directly
-Thread-Index: AQHZwSEI7kbXXpGPc0ikqDMKVqIzOK/PS6TQ
-Date:   Fri, 28 Jul 2023 15:23:25 +0000
-Message-ID: <314512939ebd44508b767d799e7c30af@AcuMS.aculab.com>
-References: <20230728065819.139694-1-oleksandr@redhat.com>
- <20230728065819.139694-2-oleksandr@redhat.com>
-In-Reply-To: <20230728065819.139694-2-oleksandr@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 28 Jul 2023 11:24:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17FE94487
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:24:01 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E45BF2F4;
+        Fri, 28 Jul 2023 08:24:43 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.89.82])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54A1C3F67D;
+        Fri, 28 Jul 2023 08:23:59 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 16:23:56 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Gowthami Thiagarajan <gthiagarajan@marvell.com>
+Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
+        bbhushan2@marvell.com, gcherian@marvell.com, lcherian@marvell.com
+Subject: Re: [PATCH 2/6] dt-bindings: perf: marvell: Add YAML schemas for
+ Marvell PEM pmu
+Message-ID: <ZMPdjIUJqJwcX22a@FVFF77S0Q05N>
+References: <20230630120351.1143773-1-gthiagarajan@marvell.com>
+ <20230630120351.1143773-3-gthiagarajan@marvell.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230630120351.1143773-3-gthiagarajan@marvell.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Natalenko
-> Sent: 28 July 2023 07:58
+On Fri, Jun 30, 2023 at 05:33:47PM +0530, Gowthami Thiagarajan wrote:
+> Add device tree bindings for Marvell PEM performance monitor unit
 > 
-> The qedf_dbg_stop_io_on_error_cmd_read() function invokes sprintf()
-> directly on a __user pointer, which may crash the kernel.
+> Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
+> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+
+As Krzysztof mentioned, the device tree list (and the DT bindings maintainers)
+haven't been Cc'd, so this cannot be acked.
+
+When resending, please CC the devicetree list, Rob, and Conor:
+
+[mark@lakrids:~/src/linux]% ./scripts/get_maintainer.pl -f Documentation/devicetree/bindings/perf
+Will Deacon <will@kernel.org> (maintainer:ARM PMU PROFILING AND DEBUGGING)
+Mark Rutland <mark.rutland@arm.com> (maintainer:ARM PMU PROFILING AND DEBUGGING)
+Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+Conor Dooley <conor+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+linux-arm-kernel@lists.infradead.org (moderated list:ARM PMU PROFILING AND DEBUGGING)
+devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+linux-kernel@vger.kernel.org (open list)
+
+Thanks,
+Mark.
+
+> ---
+>  .../bindings/perf/marvell-odyssey-pem.yaml    | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/perf/marvell-odyssey-pem.yaml
 > 
-> Avoid doing that by using a small on-stack buffer for sprintf()
-> and then calling simple_read_from_buffer() which does a proper
-> copy_to_user() call.
+> diff --git a/Documentation/devicetree/bindings/perf/marvell-odyssey-pem.yaml b/Documentation/devicetree/bindings/perf/marvell-odyssey-pem.yaml
+> new file mode 100644
+> index 000000000000..6af201fbccd8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/perf/marvell-odyssey-pem.yaml
+> @@ -0,0 +1,38 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/perf/marvell-odyssey-pem.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell Odyssey PCIe interface performance monitor
+> +
+> +maintainers:
+> +  - Linu Cherian <lcherian@marvell.com>
+> +  - Gowthami Thiagarajan <gthiagarajan@marvell.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - marvell,pem-pmu
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pmu@8e0000005000 {
+> +            compatible = "marvell,pem-pmu";
+> +            reg = <0x8E00 0x00005000 0x0 0x3000>;
+> +        };
+> +    };
+> -- 
+> 2.25.1
 > 
-> Fixes: 61d8658b4a ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver framework.")
-...
-> diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
-> index a3ed681c8ce3f..4d1b99569d490 100644
-> --- a/drivers/scsi/qedf/qedf_debugfs.c
-> +++ b/drivers/scsi/qedf/qedf_debugfs.c
-> @@ -185,18 +185,17 @@ qedf_dbg_stop_io_on_error_cmd_read(struct file *filp, char __user *buffer,
->  				   size_t count, loff_t *ppos)
->  {
->  	int cnt;
-> +	char cbuf[7];
->  	struct qedf_dbg_ctx *qedf_dbg =
->  				(struct qedf_dbg_ctx *)filp->private_data;
->  	struct qedf_ctx *qedf = container_of(qedf_dbg,
->  	    struct qedf_ctx, dbg_ctx);
 > 
->  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
-> -	cnt = sprintf(buffer, "%s\n",
-> +	cnt = sprintf(cbuf, "%s\n",
->  	    qedf->stop_io_on_error ? "true" : "false");
-
-You've made cbuf[] exactly just big enough.
-If anyone breathes on this code it could overflow.
-You really should use scnprintf() for safety.
-
-> 
-> -	cnt = min_t(int, count, cnt - *ppos);
-> -	*ppos += cnt;
-> -	return cnt;
-> +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
-
-Or just:
-	if (gedf->stop_on_error)
-		return simple_read_from_buffer(buffer, count, ppos, "true\n", 5);
-	return simple_read_from_buffer(buffer, count, ppos, "false\n", 6);
-
-	David
-
-	
->  }
-> 
->  static ssize_t
-> --
-> 2.41.0
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
