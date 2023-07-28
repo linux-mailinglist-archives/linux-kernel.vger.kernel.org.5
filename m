@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7979C76720A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A9F76720B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjG1Qks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
+        id S231848AbjG1Qku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjG1Qkn (ORCPT
+        with ESMTP id S232517AbjG1Qkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:40:43 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FD13C35
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:38 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40631c5b9e9so01cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:38 -0700 (PDT)
+        Fri, 28 Jul 2023 12:40:45 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1903420C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:43 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso23388265e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690562437; x=1691167237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KCIwiRybbqPdL+GA2easp6/q5mEFWhkL8APip1GzAdM=;
-        b=iUphQGDCq/P5HhC+B4wUCuShqcKB/O4cys8ksGxGvtLePX7+FMDl4tNiIlgooGBJDx
-         U2WHRT0l4ZU8fSGyRypuXxpLDVMdNvQpm6CHSxbVorcJ8Sz3/CAKqRaSuavn0Z4VpxPR
-         1LiYZL8Aw29mGThNJlIHO9zgRQr0g7JLfedKs+YgrLYNF8ETIn52a6zgcmjoNTP87VkT
-         3kmTuM26TnV5neBSrxUqTCeVixR3g7N0svKUDbFNYKZHPJhYpbiYk3Q4ZvFYutNnkfo4
-         Bib3hPVKzfNdI2PjgaWPCFx0rQkZJ2mg4D+cOw+c2fXYcSczcH4YJCG9F0woHQWJWSOc
-         s6jw==
+        d=linaro.org; s=google; t=1690562442; x=1691167242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vHUNO/IrnfFN0MhhDh/0mFjdxBVg/OLd4PkUkNG7FnI=;
+        b=ZGdTtBipas8Fy5PIhI/L5R3iS9ZPXGscxN4xBXd6FBdKqKbV0JJJysUIYY4sFfVdOu
+         Mpw3cAvkDHFxP769McZZH2VRi3SQB7vCv7zE+PblnNc9Sat7NOp/agTaNpTEdNcihR+D
+         aaDdXIXpyWHSU2bamemLdDUMV6LN65U2QC1cp/mlPHs89xo7qEmRCj45XR/Qa+jD9bsG
+         u3oXvA+Rn3UUxA0rpB+zlsRxrsawNxdN3pvJCysyFlVeiuZ/MQ343VdrSWLc2TavimaX
+         Ynh+Ati5bMSuJ+rm1qVy7ZfEOYqaZXQ2+PxscO0AbdPkpFx+3eJiRZCQlBsfpoPmX+Y8
+         1TKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562437; x=1691167237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KCIwiRybbqPdL+GA2easp6/q5mEFWhkL8APip1GzAdM=;
-        b=LDPuFrspml6kf5wurOrPuodFQ62joUo5DPsowmM5T9GHb38BKaHmANaokTy8dSKh8e
-         bm7bpX+mCWfPfHs7tkUqna4FxwyvxiLGLkklYRuK+qkipVzkqTwWV+R/HAD/3Y1afRtU
-         uFgYV07bRQX2+oHDIMKF4jtPW57EyGRjBXI77Ek7SdxyrpM9yzX6qqY2mlnyCvWgtsmu
-         G0x7O71K+3ZkAWav4O6peKjXw90L0AkmtDxoMQF4/KlfKJs9SfFlrBMlB6w/03EDNoN+
-         brkV/6Zh0VRfeFJPDJHNAoOer6TPBLZ0WoOqzz2I39XYlcU/C+eheZanmM0p7khMmJ8A
-         YSfA==
-X-Gm-Message-State: ABy/qLYGosdr3ZEbtdlQGmG6yBSbvCrWN1GQnqbeDKYECz9tISbtFks2
-        +vDxmOLwqZDMNRktgP2kdaJqy4r14ijiiRDDVCw8Sw==
-X-Google-Smtp-Source: APBJJlHgM67EtrkE4O/uKl+m1fTY3fGU+3E/kVtkUeSbuYgG0IcBcufA64tWxYrhYYykVVM758vi0LRGrXHA7crs93g=
-X-Received: by 2002:a05:622a:15d0:b0:3f8:5b2:aef4 with SMTP id
- d16-20020a05622a15d000b003f805b2aef4mr7604qty.28.1690562437418; Fri, 28 Jul
- 2023 09:40:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690562442; x=1691167242;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vHUNO/IrnfFN0MhhDh/0mFjdxBVg/OLd4PkUkNG7FnI=;
+        b=HMQHEVyQ0NtFIRsovBvp43SEVb1ZZ8jVNDUjp+Gz6BZmBhSIWsnMS2KjR/zYznYhwj
+         16uS1Q2VjfkOP6Q6esFQ5YdtNY4X0EHOSDNMclBc6vEjYfQES+n0vjm43ReaAWOiWSHA
+         ++xsKLosySdQ3VdhwJDlbYz3n+t5m638ddLFMeN5MERZHAFVL+GM/GKYofV83w+FQ5r/
+         LOPFVOGmGvYc1KkXKVoMv5WpmkZmcgVAtLboo9qb1CIrkQO5sPZNpg8EW//MmUVbdTEG
+         ouup3czpji40wYPRP2769vu4jUu/etduuVfb+5p63JudoqWp9U8g5y8tjUieehJnI4IN
+         mzjQ==
+X-Gm-Message-State: ABy/qLYpjr+SQxgeTO5X7DgXj4rl4D9EeEIqyW0ZaLEILj2+mZNVeNyR
+        tZqMoH9IqrQosqinHQR0RuHqHQ==
+X-Google-Smtp-Source: APBJJlGShlM1dO3+fMhExjYv6Dh8m7h06nmIvJBTl25b1p7ACzbItvuCgoGAcNo1XJsyv0g0/4Kb5Q==
+X-Received: by 2002:a05:600c:3789:b0:3f7:678c:74b0 with SMTP id o9-20020a05600c378900b003f7678c74b0mr2106898wmr.12.1690562442214;
+        Fri, 28 Jul 2023 09:40:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n5-20020a1c7205000000b003fe11148055sm1185888wmc.27.2023.07.28.09.40.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 09:40:41 -0700 (PDT)
+Message-ID: <68b7d772-8dc4-a781-031b-ea33dae41751@linaro.org>
+Date:   Fri, 28 Jul 2023 18:40:39 +0200
 MIME-Version: 1.0
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-3-yangjihong1@huawei.com> <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
- <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
-In-Reply-To: <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 28 Jul 2023 09:40:25 -0700
-Message-ID: <CAP-5=fXmpaKrVLifHh5H7Lf_nhNLGWFS0=CLRT2yHK5guReNGA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event() helper
-To:     Yang Jihong <yangjihong1@huawei.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
-        kan.liang@linux.intel.com, james.clark@arm.com,
-        tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Add compatible and DT bindings
+ for Amlogic C3 Reset Controller
+Content-Language: en-US
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        zelong dong <zelong.dong@amlogic.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, kelvin.zhang@amlogic.com
+References: <20230719060954.14864-1-zelong.dong@amlogic.com>
+ <20230719060954.14864-2-zelong.dong@amlogic.com>
+ <f7b72ee90009f6749700a7bd79a3a63786a82a32.camel@pengutronix.de>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <f7b72ee90009f6749700a7bd79a3a63786a82a32.camel@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,69 +86,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 12:24=E2=80=AFAM Yang Jihong <yangjihong1@huawei.co=
-m> wrote:
->
-> Hello,
->
-> On 2023/7/20 0:44, Ian Rogers wrote:
-> > On Fri, Jul 14, 2023 at 8:31=E2=80=AFPM Yang Jihong <yangjihong1@huawei=
-.com> wrote:
-> >>
-> >> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
-> >> tracking to the evlist. We may need to search for the dummy event for
-> >> some settings. Therefore, add evlist__findnew_tracking_event() helper.
-> >>
-> >> evlist__findnew_tracking_event() also deal with system_wide maps if
-> >> system_wide is true.
-> >
-> > I'm wondering if we can simplify the naming in the API, we have "dummy
-> > event" which makes sense as we literally call the event "dummy",
-> > "sideband" which refers to the kind of samples/events the dummy event
-> > will record but "tracking" I think tends to get used as a verb rather
-> > than a noun. So I think evlist__findnew_tracking_event should be
-> > evlist__findnew_dummy_event.
-> >
-> Uh, from the discussion that followed, it seems that there is no
-> consensus yet...
-> If there is a clear consensus on whether to use "dummy event" or
-> "tracking event", I will change the name of the API.
->
-> I think sideband event is equivalent to tracking event (refer
-> evsel__config(), tracking events include task, mmap, mmap2, and comm
-> sideband events, which are all sideband).
->
-> tracking event are instances of dummy event. For example, we create
-> another dummy event to record the text poke event of ksymbol (refer perf
-> record --kcore).
->
-> An evlist contains only one tracking event, but can contain multiple
-> dummy events.
+On 28/07/2023 17:49, Philipp Zabel wrote:
+>>      maxItems: 1
+>> diff --git a/include/dt-bindings/reset/amlogic,c3-reset.h b/include/dt-bindings/reset/amlogic,c3-reset.h
+>> new file mode 100644
+>> index 000000000000..d9127863f603
+>> --- /dev/null
+>> +++ b/include/dt-bindings/reset/amlogic,c3-reset.h
+> 
+> Given that this is only included by
+> arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi, should this header be
+> moved to arch/arm64/boot/dts/amlogic ?
 
-Thanks for the feedback. So the tracking event is by definition the
-first dummy event in the evlist? What is the purpose of the other
-dummy events in this case? Perhaps we can get to an intention
-revealing implementation something like:
+I think there is ongoing work or at least plan to use the IDs also in
+clock/reset drivers for all Amlogic platforms. Do I recall this correctly?
 
-/** The "tracking event" gathering sideband data is the first dummy
-event in the list. */
-struct evsel *evlist__findnew_tracking_event(struct evlist *evlist)
-{
-   struct evsel *dummy =3D evlist__find_first_dummy_event(evlist);
+Best regards,
+Krzysztof
 
-   if (!dummy) {
-      dummy =3D evlist__add_dummy(evlist);
-   }
-   return dummy;
-}
-
-But I think the key thing for me is I'm still not sure what is going
-on when there are multiple dummy events for you, what are the other
-dummy events for other than tracking sideband data?
-
-Thanks,
-Ian
-
->
-> Thanks,
-> Yang
