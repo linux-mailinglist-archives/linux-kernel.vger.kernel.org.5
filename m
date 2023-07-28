@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D572766489
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4557D766485
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbjG1GvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S233796AbjG1Gun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbjG1Gue (ORCPT
+        with ESMTP id S233625AbjG1GuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:50:34 -0400
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 01FB54483;
-        Thu, 27 Jul 2023 23:50:07 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [42.120.103.58] ) by
- ajax-webmail-mail-app4 (Coremail) ; Fri, 28 Jul 2023 14:49:33 +0800
- (GMT+08:00)
-X-Originating-IP: [42.120.103.58]
-Date:   Fri, 28 Jul 2023 14:49:33 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        razor@blackwall.org, idosch@nvidia.com, lucien.xin@gmail.com,
-        liuhangbin@gmail.com, edwin.peer@broadcom.com, jiri@resnulli.us,
-        md.fahad.iqbal.polash@intel.com, anirudh.venkataramanan@intel.com,
-        jeffrey.t.kirsher@intel.com, neerav.parikh@intel.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v3] rtnetlink: let rtnl_bridge_setlink checks
- IFLA_BRIDGE_MODE length
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230727171551.28b7504d@kernel.org>
-References: <20230726075314.1059224-1-linma@zju.edu.cn>
- <20230727171551.28b7504d@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 28 Jul 2023 02:50:16 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976F43C2F;
+        Thu, 27 Jul 2023 23:50:01 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe10691ef6so820835e9.2;
+        Thu, 27 Jul 2023 23:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690527000; x=1691131800;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uhSR/39SsHibv71ovDtdFhaEOQZBAeJ8bNjoNr9uDp0=;
+        b=FXJ5lz2iLlHLoCIF000EnExmKrZsCW4Ka/ScVT4MzNXmVTFi4GvkwDLYANYxP+ZHCy
+         CNr7tybHkrDv+Zgo19HvRVwtM0j1XbqnsX2XThJmP74AbFUVVW8sEBDF2HbKusrPQiHD
+         Uo3jLXRuFIqSJPUCq8dCfU1wf2sZGR6qyT/M/n/eNrWA20KjlczR8/OMMf3585Gg/G82
+         VanX4X4OpvCJqWFbNMHM5NGsY1OxW8hOA6lOaDS3sk8frkRJXsIC8AoXi1bjY+OU/T4m
+         ctlKKxxQLNoLB1aFHshjRQ/ynKExLbZF+BPg6NL342YnAdhwvAoHK85EunCmFp3BCCwr
+         DD1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690527000; x=1691131800;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uhSR/39SsHibv71ovDtdFhaEOQZBAeJ8bNjoNr9uDp0=;
+        b=FzgXCBV9toSF9gxuINQXoiP8O7NulbYC9nGl9Q5HWXLIj8MhkW9FVLOasF9op6vvSe
+         aAzok8Hj4Rzzdi0iBELOE2wwyHaJhpnawSByre54mPISs2PKEDnOd8YoA4ruwtMJIhMg
+         eH5owdS0/vpXyjJ8aEr1CDniEq5hZJeYPpsRYgwfrsnqMk+FQMAQPn0nZmCquH259n9e
+         MqUXCiI2xSlR+vyc4+pD7ZU2yZqIIp4Ws9eVhSQ0vF3zbCPjb0QbnxHJ6h+EgOXHYZ8J
+         997GHOm1Qx3DDTVaLcm1kCxwuVhPUU0Y7CcvnYKZWs+YhhPFF3OlQURD8c+82PIRh7eZ
+         hMkw==
+X-Gm-Message-State: ABy/qLZx3WI2D3pLaHMjUI/0M86Qd6C9ao5bt4YzavS0WXSqjT1jaEa9
+        tybbbmayFhHBiwxiKpivGKDBjbqSWtIpfqhwpE8=
+X-Google-Smtp-Source: APBJJlG0HScZfh6FKqpkhYfnx3dtioDusRby0/HOvMWJE3Vi2nhEuoRCvDZ1ryeb+V9lRE3E3oEgMyL3TgN2wC7ETNM=
+X-Received: by 2002:a7b:c314:0:b0:3fb:403d:90c0 with SMTP id
+ k20-20020a7bc314000000b003fb403d90c0mr776397wmj.39.1690526999748; Thu, 27 Jul
+ 2023 23:49:59 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <213aba20.edc73.1899b427db9.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgB3ybH+ZMNkZ01JCg--.55904W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIIEmTAePoLZAAss+
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Fri, 28 Jul 2023 14:49:48 +0800
+Message-ID: <CAPm50aLxCQ3TQP2Lhc0PX3y00iTRg+mniLBqNDOC=t9CLxMwwA@mail.gmail.com>
+Subject: [PATCH] KVM: X86: Use GFP_KERNEL_ACCOUNT for pid_table in ipiv
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gdGhlcmUsCgo+IAo+IEJlY2F1c2Ugb2YgdGhlIHJlcG9zdCB0aGlzIHBhdGNoIGRpZG4n
-dCBtYWtlIGl0IGluIHRpbWUgdG8gdG9kYXkncwo+IFBSIGFuZCB5b3UnbGwgaGF2ZSB0byB3YWl0
-IGFub3RoZXIgd2VlayBiZWZvcmUgcG9zdGluZyB0aGUgY2xlYW51cAo+IG9mIHRoZSBkcml2ZXJz
-IDooCgpHb3RjaGEgOk8KSSB3aWxsIHJlbWVtYmVyIHRvIGRvIHRoYXQgbmV4dCB3ZWVrIDspCgpS
-ZWdhcmRzCkxpbg==
+From: Peng Hao <flyingpeng@tencent.com>
+
+The pid_table of ipiv is the persistent memory allocated by
+per-vcpu, which should be counted into the memory cgroup.
+
+Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 0ecf4be2c6af..da1bf3648939 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4651,7 +4651,7 @@ static int vmx_alloc_ipiv_pid_table(struct kvm *kvm)
+        if (kvm_vmx->pid_table)
+                return 0;
+
+-       pages = alloc_pages(GFP_KERNEL | __GFP_ZERO,
+vmx_get_pid_table_order(kvm));
++       pages = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO,
+vmx_get_pid_table_order(kvm));
+        if (!pages)
+                return -ENOMEM;
+
+--
+2.31.1
