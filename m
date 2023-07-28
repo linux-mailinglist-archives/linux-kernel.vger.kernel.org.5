@@ -2,315 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B3A7678C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CBD7678CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbjG1XAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 19:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
+        id S231839AbjG1XG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbjG1XAd (ORCPT
+        with ESMTP id S230274AbjG1XG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:00:33 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D3E198A;
-        Fri, 28 Jul 2023 16:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690585228; x=1722121228;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=OGwkzgJQziWMw/+lEEi2YDn3TUr7J59nLJwjAeM5WFA=;
-  b=f5tgJM13zj2klxlSX98dyV1xnrnrol8O939HwsR3xsI6vYBOCvaf8lLk
-   0Fp3psxIR1JHTmNUGI8ZJ1955wjDesWjmAQMA/xPiZnhqfMTsnHW5DTqc
-   SyD1LyZpVn0W1LyCfKtKkO/1GFQgwBMxgFzfQ1wTMK55F35wJv2f3qrvM
-   ZuHsG8l31y1uKFt+NB4Moamt+ol3v3R/+GukRAJ5ICDGQh0FFiJ/n4B5+
-   jGgN8JGRyHmPanMeicvoBF1QCPcNETzCfbKAOKfIhG9tM5dCalOS36kFy
-   642tJcjudR7mZu/NOPwFQRvpMvwH7vSWMDKnLtTV/hdjrrJb7qDPbkJNr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="455058663"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="455058663"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:00:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="793064994"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="793064994"
-Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.98.123])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:00:27 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-Date:   Fri, 28 Jul 2023 16:00:12 -0700
-Subject: [PATCH] cxl/memdev: Avoid mailbox functionality on device memory
- CXL devices
+        Fri, 28 Jul 2023 19:06:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC2D2680
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690585539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UYKoF8Ks1Q67e6cOSRG114BapfSWNUAmHuoWgV7fg1k=;
+        b=QCC0BaOel0FTs6pSCRCmGkuCsiWANgJlYz4U0lKO39574QIkMF4VR6EjAPQ1EKMXHcNUU8
+        6DEAoqGpYWXUqtY0zyTItNKKr5vv0bjLoirzvd6mvI6JczvZ9u5q0lysy+v0QrmLfAew2A
+        b9JOe/flYG6/UimMYchd/qjVs/97DcU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-279-WSq0HwDhOx6o8JgrLTBOeQ-1; Fri, 28 Jul 2023 19:05:37 -0400
+X-MC-Unique: WSq0HwDhOx6o8JgrLTBOeQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3176ace3f58so1430499f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:05:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690585536; x=1691190336;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UYKoF8Ks1Q67e6cOSRG114BapfSWNUAmHuoWgV7fg1k=;
+        b=iZ/p8q6VvVUh4hz7UJSWya+NR8pGL83/pdyQG65wN71HCi5VJoF6out1/Mzp4kUPJV
+         EbFG35jmDNulTfvscW/YfnQF5iI+kf/FED4nYHxyHZmCQwp7hVi2fZl2epz1utstz3WS
+         hkzInzKj9t7FtLRV3m2Rnoj9KxldpE9kUvXJAe74jy30y8+zwdWvKpYo1wvv6QqewxAX
+         vXmeQVgawf34tFGQnwPSMr6LV1/+nGfquuHj1ygowKKZam/Z/87C8KoB2Nn+4fuS5RQ/
+         HZdCrZf6P2DGxgR17l5qF/EwHu6KDDd0smFdpMk4xIacWYY8QHsdRmUmnaDdL7CFr/WI
+         9K2w==
+X-Gm-Message-State: ABy/qLbMV6/60bUBprbdJLY0UhMZBZtpv8VxgUEgpz9kY6QqyFqm1Sex
+        H0MooVfSB08PE7uH5jgv4fy860z9uLcDoOMllAj24zC9EvoUcmNtNMdnRKHf473Mh2zXOCwDgKk
+        L2IhK5meSK7Hrat875ZU7+FTOXqhsKNQM
+X-Received: by 2002:a5d:570f:0:b0:317:6f5b:2fb7 with SMTP id a15-20020a5d570f000000b003176f5b2fb7mr2789567wrv.57.1690585535956;
+        Fri, 28 Jul 2023 16:05:35 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGaqeup1KKkFNHEx1uCh4LA2D3TrUL7PCcqpRPBbZgzdQVEdE5dFoZXTmOfccIkNlSYxmwzdA==
+X-Received: by 2002:a5d:570f:0:b0:317:6f5b:2fb7 with SMTP id a15-20020a5d570f000000b003176f5b2fb7mr2789560wrv.57.1690585535608;
+        Fri, 28 Jul 2023 16:05:35 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id y18-20020adff152000000b0031784ac0babsm4768741wro.28.2023.07.28.16.05.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 16:05:35 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maya Matuszczyk <maccraft123mc@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Peter Geis <pgwipeout@gmail.com>, linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Caleb Connolly <kc@postmarketos.org>,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Martijn Braam <martijn@brixit.nl>, Ondrej Jirman <megi@xff.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Change serial baud rate for
+ Pinephone Pro to 1.5 MB
+In-Reply-To: <CAO_Mup+JZjUyQK4yC8XwgcRpDU8_TTRJT0rjFQ6OpsEU1BnbJw@mail.gmail.com>
+References: <20230403175937.2842085-1-javierm@redhat.com>
+ <3797122.KgjxqYA5nG@diego>
+ <87pm4kuanl.fsf@minerva.mail-host-address-is-not-set>
+ <4495367.TLkxdtWsSY@phil>
+ <CAO_Mup+JZjUyQK4yC8XwgcRpDU8_TTRJT0rjFQ6OpsEU1BnbJw@mail.gmail.com>
+Date:   Sat, 29 Jul 2023 01:05:34 +0200
+Message-ID: <87fs57y6v5.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230728-cxl-fix-devmemdev-v1-1-dbd3269b3295@intel.com>
-X-B4-Tracking: v=1; b=H4sIAHtIxGQC/x2N0QqDMBAEf0XuuQdppFX7K6UPMa71wKQlJyKI/
- 96zLwvDMsxOiiJQelQ7Fayi8skG10tFcQr5DZbBmLzztWt8y3GbeZSNB6wJyZZvztURnW/Ge0v
- m9UHBfQk5TqeZgi4o5/EtMPMfe76O4wdc34kNfAAAAA==
-To:     Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-c6835
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690585226; l=7848;
- i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
- bh=OGwkzgJQziWMw/+lEEi2YDn3TUr7J59nLJwjAeM5WFA=;
- b=xg85+dOWSgwxdbBDBxuTlZfIZIOR1ZSIDsS7MAoZUkEdEvUUME05nXUkq7idBIK4XhIt/TmAU
- F/YiLI3717UB5q8LZuAzpUYnpCxTuXJgh7YZU4jdMWx+SNoUXtLGh6z
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the proposed type-2 cxl-test device[1] the following
-splat was observed:
+Maya Matuszczyk <maccraft123mc@gmail.com> writes:
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000278
-  [...]
-  RIP: 0010:devm_cxl_add_memdev+0x1de/0x2c0 [cxl_core]
-  [...]
-  Call Trace:
-   <TASK>
-   ? __die+0x1f/0x70
-   ? page_fault_oops+0x149/0x420
-   ? fixup_exception+0x22/0x310
-   ? kernelmode_fixup_or_oops+0x84/0x110
-   ? exc_page_fault+0x6d/0x150
-   ? asm_exc_page_fault+0x22/0x30
-   ? devm_cxl_add_memdev+0x1de/0x2c0 [cxl_core]
-   cxl_mock_mem_probe+0x632/0x870 [cxl_mock_mem]
-   platform_probe+0x40/0x90
-   really_probe+0x19e/0x3e0
-   ? __pfx___driver_attach+0x10/0x10
-   __driver_probe_device+0x78/0x160
-   driver_probe_device+0x1f/0x90
-   __driver_attach+0xce/0x1c0
-   bus_for_each_dev+0x63/0xa0
-   bus_add_driver+0x112/0x210
-   driver_register+0x55/0x100
-   ? __pfx_cxl_mock_mem_driver_init+0x10/0x10 [cxl_mock_mem]
-   [...]
+> Hi Heiko
+>
+> pt., 28 lip 2023 o 21:00 Heiko Stuebner <heiko@sntech.de> napisa=C5=82(a):
+>>
 
-Commit f6b8ab32e3ec made the mailbox functionality optional.  However,
-some mailbox functionality was merged after that patch.  Therefore some
-mailbox functionality can be accessed on a device which did not set up
-the mailbox.
+[...]
 
-While no devices currently exist, commit f6b8ab32e3ec is incomplete.
-Complete the checks for memdev state to bring the code to a consistent
-state for when type-2 devices are introduced.
+>> So far people only reported "breaks my setup". I'm in a pickle here ;-) .
+>> Without anybody saying "I want to also move into this direction" I really
+>> feel I should not merge a patch that breaks other peoples setups.
+>
+> Well, I'd prefer 1.5M baud rate as it is more consistent with other Rockc=
+hip
+> boards and it makes for a much more usable terminal experience when
+> logged in, it also doesn't affect boot times when serial is enabled with a
+> high loglevel and console on serial as 115200 does.
+>
+> Though I'm just fine with using kernel's cmdline to set a baud rate.
+>
 
-[1] https://lore.kernel.org/all/168592160379.1948938.12863272903570476312.stgit@dwillia2-xfh.jf.intel.com/
+Same, but also what Peter mentioned in this thread:
 
-Fixes: f6b8ab32e3ec ("cxl/memdev: Make mailbox functionality optional")
-Cc: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/cxl/core/mbox.c   |  9 +++++++++
- drivers/cxl/core/memdev.c | 26 ++++++++++++++++++++++++++
- drivers/cxl/mem.c         | 18 ++++++++++--------
- drivers/cxl/pci.c         |  5 ++++-
- drivers/cxl/pmem.c        |  3 +++
- 5 files changed, 52 insertions(+), 9 deletions(-)
+Peter Geis <pgwipeout@gmail.com> writes:
+>
+> Good Morning Heiko,
+>
+> The 1.5M baud is default because the clock structure on rockchip
+> devices does not allow a clean 115200 baud. By attempting to force
+> 115200, it will always be slightly off (either low or high depending
+> on how the driver decided to round). If this actually causes any
+> problems is the subject of much debate.
+>
+> Very Respectfully,
+> Peter Geis
+>
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index d6d067fbee97..eb1758fb8cdf 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -482,6 +482,9 @@ int cxl_query_cmd(struct cxl_memdev *cxlmd,
- 
- 	dev_dbg(dev, "Query IOCTL\n");
- 
-+	if (!mds)
-+		return -EIO;
-+
- 	if (get_user(n_commands, &q->n_commands))
- 		return -EFAULT;
- 
-@@ -586,6 +589,9 @@ int cxl_send_cmd(struct cxl_memdev *cxlmd, struct cxl_send_command __user *s)
- 
- 	dev_dbg(dev, "Send IOCTL\n");
- 
-+	if (!mds)
-+		return -EIO;
-+
- 	if (copy_from_user(&send, s, sizeof(send)))
- 		return -EFAULT;
- 
-@@ -1245,6 +1251,9 @@ int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
- 	int nr_records = 0;
- 	int rc;
- 
-+	if (!mds)
-+		return -EIO;
-+
- 	rc = mutex_lock_interruptible(&mds->poison.lock);
- 	if (rc)
- 		return rc;
-diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-index f99e7ec3cc40..629e479f751b 100644
---- a/drivers/cxl/core/memdev.c
-+++ b/drivers/cxl/core/memdev.c
-@@ -201,6 +201,19 @@ static ssize_t security_erase_store(struct device *dev,
- static struct device_attribute dev_attr_security_erase =
- 	__ATTR(erase, 0200, NULL, security_erase_store);
- 
-+static umode_t cxl_memdev_security_visible(struct kobject *kobj,
-+					   struct attribute *a, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-+	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
-+
-+	if (!mds)
-+		return 0;
-+
-+	return a->mode;
-+}
-+
- static int cxl_get_poison_by_memdev(struct cxl_memdev *cxlmd)
- {
- 	struct cxl_dev_state *cxlds = cxlmd->cxlds;
-@@ -332,6 +345,9 @@ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa)
- 	struct cxl_region *cxlr;
- 	int rc;
- 
-+	if (!mds)
-+		return -EIO;
-+
- 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
- 		return 0;
- 
-@@ -380,6 +396,9 @@ int cxl_clear_poison(struct cxl_memdev *cxlmd, u64 dpa)
- 	struct cxl_region *cxlr;
- 	int rc;
- 
-+	if (!mds)
-+		return -EIO;
-+
- 	if (!IS_ENABLED(CONFIG_DEBUG_FS))
- 		return 0;
- 
-@@ -480,6 +499,7 @@ static struct attribute_group cxl_memdev_pmem_attribute_group = {
- static struct attribute_group cxl_memdev_security_attribute_group = {
- 	.name = "security",
- 	.attrs = cxl_memdev_security_attributes,
-+	.is_visible = cxl_memdev_security_visible,
- };
- 
- static const struct attribute_group *cxl_memdev_attribute_groups[] = {
-@@ -542,6 +562,9 @@ static void cxl_memdev_security_shutdown(struct device *dev)
- 	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
- 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
- 
-+	if (!mds)
-+		return;
-+
- 	if (mds->security.poll)
- 		cancel_delayed_work_sync(&mds->security.poll_dwork);
- }
-@@ -997,6 +1020,9 @@ static int cxl_memdev_security_init(struct cxl_memdev *cxlmd)
- 	struct device *dev = &cxlmd->dev;
- 	struct kernfs_node *sec;
- 
-+	if (!mds)
-+		return 0;
-+
- 	sec = sysfs_get_dirent(dev->kobj.sd, "security");
- 	if (!sec) {
- 		dev_err(dev, "sysfs_get_dirent 'security' failed\n");
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 317c7548e4e9..4755a890018d 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -132,12 +132,14 @@ static int cxl_mem_probe(struct device *dev)
- 	dentry = cxl_debugfs_create_dir(dev_name(dev));
- 	debugfs_create_devm_seqfile(dev, "dpamem", dentry, cxl_mem_dpa_show);
- 
--	if (test_bit(CXL_POISON_ENABLED_INJECT, mds->poison.enabled_cmds))
--		debugfs_create_file("inject_poison", 0200, dentry, cxlmd,
--				    &cxl_poison_inject_fops);
--	if (test_bit(CXL_POISON_ENABLED_CLEAR, mds->poison.enabled_cmds))
--		debugfs_create_file("clear_poison", 0200, dentry, cxlmd,
--				    &cxl_poison_clear_fops);
-+	if (mds) {
-+		if (test_bit(CXL_POISON_ENABLED_INJECT, mds->poison.enabled_cmds))
-+			debugfs_create_file("inject_poison", 0200, dentry, cxlmd,
-+					    &cxl_poison_inject_fops);
-+		if (test_bit(CXL_POISON_ENABLED_CLEAR, mds->poison.enabled_cmds))
-+			debugfs_create_file("clear_poison", 0200, dentry, cxlmd,
-+					    &cxl_poison_clear_fops);
-+	}
- 
- 	rc = devm_add_action_or_reset(dev, remove_debugfs, dentry);
- 	if (rc)
-@@ -222,8 +224,8 @@ static umode_t cxl_mem_visible(struct kobject *kobj, struct attribute *a, int n)
- 		struct cxl_memdev_state *mds =
- 			to_cxl_memdev_state(cxlmd->cxlds);
- 
--		if (!test_bit(CXL_POISON_ENABLED_LIST,
--			      mds->poison.enabled_cmds))
-+		if (!mds || !test_bit(CXL_POISON_ENABLED_LIST,
-+				      mds->poison.enabled_cmds))
- 			return 0;
- 	}
- 	return a->mode;
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 1cb1494c28fe..93f6140432cd 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -122,7 +122,7 @@ static irqreturn_t cxl_pci_mbox_irq(int irq, void *id)
- 	struct cxl_dev_state *cxlds = dev_id->cxlds;
- 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
- 
--	if (!cxl_mbox_background_complete(cxlds))
-+	if (!mds || !cxl_mbox_background_complete(cxlds))
- 		return IRQ_NONE;
- 
- 	reg = readq(cxlds->regs.mbox + CXLDEV_MBOX_BG_CMD_STATUS_OFFSET);
-@@ -624,6 +624,9 @@ static irqreturn_t cxl_event_thread(int irq, void *id)
- 	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
- 	u32 status;
- 
-+	if (!mds)
-+		return IRQ_HANDLED;
-+
- 	do {
- 		/*
- 		 * CXL 3.0 8.2.8.3.1: The lower 32 bits are the status;
-diff --git a/drivers/cxl/pmem.c b/drivers/cxl/pmem.c
-index 7cb8994f8809..f1adfdd1a2b3 100644
---- a/drivers/cxl/pmem.c
-+++ b/drivers/cxl/pmem.c
-@@ -70,6 +70,9 @@ static int cxl_nvdimm_probe(struct device *dev)
- 	struct nvdimm *nvdimm;
- 	int rc;
- 
-+	if (WARN_ON_ONCE(!mds))
-+		return -EIO;
-+
- 	set_exclusive_cxl_commands(mds, exclusive_cmds);
- 	rc = devm_add_action_or_reset(dev, clear_exclusive, mds);
- 	if (rc)
+So that's another argument for setting it to 1.5M. Anyways, I'll just stop
+asking for this and set my cmdline to a non-default baud rate and move on.
 
----
-base-commit: 20ea1e7d13c1b544fe67c4a8dc3943bb1ab33e6f
-change-id: 20230728-cxl-fix-devmemdev-5003ce927f68
+I was just asking in case there was a decision made on this topic.
 
+--=20
 Best regards,
--- 
-Ira Weiny <ira.weiny@intel.com>
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
