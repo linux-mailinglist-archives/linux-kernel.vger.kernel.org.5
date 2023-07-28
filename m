@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD617670AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0807670AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbjG1PgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S237204AbjG1Pgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjG1PgH (ORCPT
+        with ESMTP id S236823AbjG1Pg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:36:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F03110FA;
-        Fri, 28 Jul 2023 08:36:06 -0700 (PDT)
+        Fri, 28 Jul 2023 11:36:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2DD10FA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:36:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12E276218D;
-        Fri, 28 Jul 2023 15:36:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F875C433D9;
-        Fri, 28 Jul 2023 15:35:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EE5362179
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:36:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD475C433C8;
+        Fri, 28 Jul 2023 15:36:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690558565;
-        bh=RiameAJyaqASlv6hb4c10KMAlN4/6+6/hqnDkYkEzPY=;
+        s=k20201202; t=1690558582;
+        bh=g4K5vq4lPyGBYhqgJJE0//L14vL/7BRJwDrh2+NOlqk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5Tu2hgT+a6gPKQMW1urJHIGxB0ZTZOTtxLFvSij1f/yjSQQyTa3zf0mqdYayXPmV
-         iccIrLhwD4QgY1Nagc4saDTCQBBcQAV3RcD1m6I2F1ForGzrpqfl32G6a840/Taa7m
-         jAW0KefOuBEpEOxh9v1oNKyA0vJvkBsDdk4UOR1d8fmxbhTXNBN479coNCzX9EKVkf
-         g7e48OjBzRhIJ1ioN6rN2lAkY9uA3PrFeg93sId02DNN6tLC0glfzPl7gZYl7gg3Gu
-         4sC+6Du26Ly24TZAb5B0eOcNMIwGZbynuoLApCVvleEIQpqXqssPsuv7UECOCOrQMQ
-         03M7Kq16bokjw==
-Date:   Fri, 28 Jul 2023 10:35:57 -0500
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 12/20] objtool: Warn about non __ro_after_init
- static key usage in .noinstr
-Message-ID: <20230728153557.frzmaayyy3auibx3@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-13-vschneid@redhat.com>
+        b=S0/2qOh9DNQM/zNi5r9udD62Tuu5Uosyrt7S4golN5beku3HBItbqx/hsmFGSsjso
+         /K78hYySn6CsOKCp40tUlRsYRNgEQR/ZSeR3x2gxM6/SvBC/W1YQyj7muSEibPxpt4
+         9fx5kaG5gptMsk367e7ditSVFDcX2XzKOQai8PgIupG70U0dRp3wNZW74zkoQPzZ/g
+         DdsyYULweQssqFoRfX7p2gW8o4eVxrtPtFqJjxOjm0Ib1hFQBJULx5RV4D8BgBxHCD
+         dMb7FJIYJfoGEcIG/KcIdeYFlcF4Pb77Kzu9Gez3zZTCGgrk3wvZLSiigrkx4o4R2s
+         S/qZhlXIcMYCQ==
+Date:   Fri, 28 Jul 2023 16:36:12 +0100
+From:   Will Deacon <will@kernel.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, imx@lists.linux.dev,
+        Frank Li <frank.li@nxp.com>
+Subject: Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the TXC clock
+ in fixed-link
+Message-ID: <20230728153611.GH21718@willie-the-truck>
+References: <20230727152503.2199550-1-shenwei.wang@nxp.com>
+ <20230727152503.2199550-3-shenwei.wang@nxp.com>
+ <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
+ <ZMPdKyOtpZKEMLsO@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-13-vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <ZMPdKyOtpZKEMLsO@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -107,34 +91,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:30:48PM +0100, Valentin Schneider wrote:
-> +static int validate_static_key(struct instruction *insn, struct insn_state *state)
-> +{
-> +	if (state->noinstr && state->instr <= 0) {
-> +		if ((strcmp(insn->key_sym->sec->name, ".data..ro_after_init"))) {
-> +			WARN_INSN(insn,
-> +				  "Non __ro_after_init static key \"%s\" in .noinstr section",
+On Fri, Jul 28, 2023 at 04:22:19PM +0100, Russell King (Oracle) wrote:
+> On Thu, Jul 27, 2023 at 01:36:45PM -0500, Andrew Halaney wrote:
+> > I don't have any documentation for the registers here, and as you can
+> > see I'm an amateur with respect to memory ordering based on my prior
+> > comment.
+> > 
+> > But you:
+> > 
+> >     1. Read intf_reg_off into variable iface
+> >     2. Write the RESET_SPEED for the appropriate mode to MAC_CTRL_REG
+> >     3. wmb() to ensure that write goes through
+> 
+> I wonder about whether that wmb() is required. If the mapping is
+> device-like rather than memory-like, the write should be committed
+> before the read that regmap_update_bits() does according to the ARM
+> memory model. Maybe a bit of information about where this barrier
+> has come from would be good, and maybe getting it reviewed by the
+> arm64 barrier specialist, Will Deacon. :)
+> 
+> wmb() is normally required to be paired with a rmb(), but we're not
+> talking about system memory here, so I also wonder whether wmb() is
+> the correct barrier to use.
 
-For consistency with other warnings, this should start with a lowercase
-"n" and the string literal should be on the same line as the WARN_INSN,
-like
+Yes, I don't think wmb() is the right thing here. If you need to ensure
+that the write to MAC_CTRL_REG has taken effect, then you'll need to go
+through some device-specific sequence which probably involves reading
+something back. If you just need things to arrive in order eventually,
+the memory type already gives you that.
 
-			WARN_INSN(insn, "non __ro_after_init static key \"%s\" in .noinstr section",
-				  ...
+It's also worth pointing out that udelay() isn't necessarily ordered wrt
+MMIO writes, so that usleep_range() might need some help as well.
+Non-relaxed MMIO reads, however, _are_ ordered against a subsequent
+udelay(), so if you add the readback then this might all work out.
 
-> diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-> index 91b1950f5bd8a..1f76cfd815bf3 100644
-> --- a/tools/objtool/special.c
-> +++ b/tools/objtool/special.c
-> @@ -127,6 +127,9 @@ static int get_alt_entry(struct elf *elf, const struct special_entry *entry,
->  			return -1;
->  		}
->  		alt->key_addend = reloc_addend(key_reloc);
-> +
-> +		reloc_to_sec_off(key_reloc, &sec, &offset);
-> +		alt->key_sym = find_symbol_by_offset(sec, offset & ~2);
+I gave a (slightly dated) talk about some of this at ELC a while back:
 
-Bits 0 and 1 can both store data, should be ~3?
+https://www.youtube.com/watch?v=i6DayghhA8Q
 
--- 
-Josh
+which might help.
+
+Will
