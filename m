@@ -2,127 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E164F76681D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3707766825
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbjG1JEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S235171AbjG1JGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233673AbjG1JEh (ORCPT
+        with ESMTP id S234304AbjG1JGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:04:37 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E91B6
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:04:35 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9b904bb04so28639501fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:04:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1690535074; x=1691139874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QoUjJ9zL9e663eyjUh3+yZMV+gsB92P640Sm3159mYQ=;
-        b=GWE2v5GO0nR84rzpqfnEgejBzGhN8kmeIhUex9shslMfLPk8x4dv8QTreZX6Xth0FC
-         SJeQBMwslj3Hg8jppS7yNQ41Jg+5J0l6/aJ5iPM0raqiZN+GpksIu2nXTlyYkCXNNw4S
-         VPHZWoR4IgMDrMmwkp3ms++fNSTf/MykV8Ugh41L+duzNuhm2XvaRObJa9FOZgr7uI6y
-         amAEVguzKhWS8ui7CoNHnTNhIjJFZohoStgGhN7io2g3TVUDTHvkeyYhINgDBQYrEDZe
-         mW0R3+Yg0QnEfTlQbNFhmxx90NlZjF7MX3YyJypumLONO3cERP2TLnj3r0TibU9nN/um
-         MpqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690535074; x=1691139874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QoUjJ9zL9e663eyjUh3+yZMV+gsB92P640Sm3159mYQ=;
-        b=aas3z2QTJdhMqjUk7KVhG+OCqVMmTI++doUGshBZe0aZpDZbxG6CdCSr9S6jhm/giI
-         T4a6h5sfhmz/jHM9Hes7n3A6FgqvMvyg71SNQsT9iCMYiVh1hwBTUex3TZPVntArc+be
-         RegQ3Ck0cJHt8noocGPZUWHR+8JNZOjjKTOSggo699dP2NXgmsrJL+CuGpokTZ9r38mD
-         vpi/Mg2RK8DjKz19EzaGuE9d2RWT1+nFXv+f8uwtI4qM24Xo1VXSkhIPZ1lOefD70HOB
-         3mtgjM3feOu7+1jmrA8LcTtK4vJ60GUBThyFmPEgBP7UyO+DKaFM5FpzlXlG6R+CHkNN
-         3s6w==
-X-Gm-Message-State: ABy/qLZXzot1dvTns7slcIJxCbOaPkKYxTSAnBs3YgHeiar53Ne4pamu
-        FeuE2T1Hg3E+C+NWt5m7v2CSKfYYSYHbW2zERVDvfA==
-X-Google-Smtp-Source: APBJJlE2xC/ePHFkPLVLV9/WTr37CR88KoeWLBzMv1tBu7gB0t5QjfHg6H1TPAqSzSN+blmCxSh5RZhbRETHKEBz5Gs=
-X-Received: by 2002:a2e:97d7:0:b0:2b6:fa60:85a1 with SMTP id
- m23-20020a2e97d7000000b002b6fa6085a1mr1301429ljj.21.1690535074159; Fri, 28
- Jul 2023 02:04:34 -0700 (PDT)
+        Fri, 28 Jul 2023 05:06:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E440997;
+        Fri, 28 Jul 2023 02:06:10 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S8graT013450;
+        Fri, 28 Jul 2023 09:06:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dDr+mZ5n/+jifFglNaPwWUcpxSJ9ZKrPvbO7Mr0GJ/Q=;
+ b=jHLGOfjfJe75dVcfVMwLO6mv4JYVXvVoLeFxA+RwkepHzEnG8GBvIhRhewyCzRPD/sHr
+ rL62VI3EBRIvSWDXCdV/IqdT158NSGm2Sb6RNCloztp5KXfxEl+MhlUqdAOop3/rpvHH
+ 0A4v3fceGl420yfVixwd2cTqoghC+F3uQUc7dWy8PNqynOGlhu8CoAtw9F5kjeMsODyJ
+ 82CZu3AR2uwwCPHHdZBVTlXM14/I2H/JIcSdnU2DDdJPYRDVIDQg5CRTBtJst22r+XGY
+ khAd2yKOXRcDZ7LnDA+WqM5h0DclU8NjUWJ8DM8fnWAbveB0Y4eGJJOWQDG6+2YRWm7q uA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3k7u31cj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 09:06:01 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S95wZU009730
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 09:05:58 GMT
+Received: from [10.50.49.240] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
+ 2023 02:05:53 -0700
+Message-ID: <0ec5202e-02c0-2df4-42bf-e4faa824f243@quicinc.com>
+Date:   Fri, 28 Jul 2023 14:35:48 +0530
 MIME-Version: 1.0
-References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
- <cbf0a8fd-3479-1684-fe90-81f2159804ef@linaro.org> <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
- <be748338-987b-d474-d040-82af7cfb5f01@linaro.org>
-In-Reply-To: <be748338-987b-d474-d040-82af7cfb5f01@linaro.org>
-From:   Eric Lin <eric.lin@sifive.com>
-Date:   Fri, 28 Jul 2023 17:04:23 +0800
-Message-ID: <CAPqJEFpYOgaEiSJ4HJwxMtpu1MZeUg9=tARTWa7hwTkjsQ3UAA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com, greentime.hu@sifive.com,
-        vincent.chen@sifive.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] media: venus: Fix firmware path for resources
+Content-Language: en-US
+To:     Patrick Whewell <patrick.whewell@sightlineapplications.com>
+CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        William Gray <william.gray@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <6afa314b-ca5e-a924-de2f-f1db90770623@linaro.org>
+ <20230719214943.22641-1-patrick.whewell@sightlineapplications.com>
+From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <20230719214943.22641-1-patrick.whewell@sightlineapplications.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0nGPh5Wounlo5MCKK0yHyfKTKBOET5l-
+X-Proofpoint-ORIG-GUID: 0nGPh5Wounlo5MCKK0yHyfKTKBOET5l-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ suspectscore=0 priorityscore=1501 clxscore=1011 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307280082
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 2:58=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 28/07/2023 08:01, Eric Lin wrote:
-> > Hi Krzysztof,
-> >
-> > On Fri, Jul 21, 2023 at 4:35=E2=80=AFPM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 20/07/2023 15:51, Eric Lin wrote:
-> >>> This add YAML DT binding documentation for SiFive Private L2
-> >>> cache controller
-> >>>
-> >>> Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> >>> Reviewed-by: Zong Li <zong.li@sifive.com>
-> >>> Reviewed-by: Nick Hu <nick.hu@sifive.com>
-> >>
-> >>
-> >> ...
-> >>
-> >>> +properties:
-> >>> +  compatible:
-> >>> +    items:
-> >>> +      - const: sifive,pl2cache1
-> >>
-> >> I still have doubts that it is not used in any SoC. This is what you
-> >> said last time: "is not part of any SoC."
-> >> If not part of any SoC, then where is it? Why are you adding it to the
-> >> kernel?
-> >>
-> >
-> > Sorry for the late reply. I didn't describe it clearly last time.
-> > Currently, we have two hardware versions of pl2cache: pl2cache0 and pl2=
-cache1.
-> > The pl2cache0 is used in unmatched board SoC. The pl2cache1 is
-> > utilized in our internal FPGA platform for evaluation; it's our core
-> > IP.
->
-> And why do you add bindings for some internal FPGA IP block which does
-> not interface with any SW?
->
 
-Hi Krzysztof,
-The pl2cache has mmio interface for SW. Thanks.
 
-Best regards,
-Eric Lin
+On 7/20/2023 3:19 AM, Patrick Whewell wrote:
+> The firmware path for some of the resources is still the old format. This
+> fixes the path to address the firmware correctly using the new .mbn
+> format.
+> 
+> Signed-off-by: Patrick Whewell <patrick.whewell@sightlineapplications.com>
+> ---
 
-> Best regards,
-> Krzysztof
->
+the changes look good to me.
+
+Reviewed-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+
+> I've updated all .fwname to match the .mbn format. There is a
+> qcom/venus-4.4/venus.mdt for the sdm660 that still remains but the linux-firmware
+> package does not contain that firmware file anymore, so i left as is.
+> 
+>  drivers/media/platform/qcom/venus/core.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 2ae867cb4c48..2d62669d99e1 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -548,7 +548,7 @@ static const struct venus_resources msm8916_res = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xddc00000 - 1,
+> -	.fwname = "qcom/venus-1.8/venus.mdt",
+> +	.fwname = "qcom/venus-1.8/venus.mbn",
+>  };
+>  
+>  static const struct freq_tbl msm8996_freq_table[] = {
+> @@ -581,7 +581,7 @@ static const struct venus_resources msm8996_res = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xddc00000 - 1,
+> -	.fwname = "qcom/venus-4.2/venus.mdt",
+> +	.fwname = "qcom/venus-4.2/venus.mbn",
+>  };
+>  
+>  static const struct freq_tbl sdm660_freq_table[] = {
+> @@ -688,7 +688,7 @@ static const struct venus_resources sdm845_res = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xe0000000 - 1,
+> -	.fwname = "qcom/venus-5.2/venus.mdt",
+> +	.fwname = "qcom/venus-5.2/venus.mbn",
+>  };
+>  
+>  static const struct venus_resources sdm845_res_v2 = {
+> @@ -717,7 +717,7 @@ static const struct venus_resources sdm845_res_v2 = {
+>  	.cp_size = 0x70800000,
+>  	.cp_nonpixel_start = 0x1000000,
+>  	.cp_nonpixel_size = 0x24800000,
+> -	.fwname = "qcom/venus-5.2/venus.mdt",
+> +	.fwname = "qcom/venus-5.2/venus.mbn",
+>  };
+>  
+>  static const struct freq_tbl sc7180_freq_table[] = {
+> @@ -760,7 +760,7 @@ static const struct venus_resources sc7180_res = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xe0000000 - 1,
+> -	.fwname = "qcom/venus-5.4/venus.mdt",
+> +	.fwname = "qcom/venus-5.4/venus.mbn",
+>  };
+>  
+>  static const struct freq_tbl sm8250_freq_table[] = {
+> @@ -814,7 +814,7 @@ static const struct venus_resources sm8250_res = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xe0000000 - 1,
+> -	.fwname = "qcom/vpu-1.0/venus.mdt",
+> +	.fwname = "qcom/vpu-1.0/venus.mbn",
+>  };
+>  
+>  static const struct freq_tbl sc7280_freq_table[] = {
