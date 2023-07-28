@@ -2,209 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041C3767185
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3201A767187
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbjG1QIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        id S231429AbjG1QJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjG1QId (ORCPT
+        with ESMTP id S230334AbjG1QJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:08:33 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2271D3C31;
-        Fri, 28 Jul 2023 09:08:29 -0700 (PDT)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230728160825euoutp012bf6120b3190b9499b604d40586dede1~2E9K74EOX2341623416euoutp01R;
-        Fri, 28 Jul 2023 16:08:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230728160825euoutp012bf6120b3190b9499b604d40586dede1~2E9K74EOX2341623416euoutp01R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690560505;
-        bh=IfYerOX8MhzeuNNwVLAHXLKPDo/w1koh4w2hwJ18k1Q=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=psn1YHiAQcHT3KpVjHbfw8ck8NfIagUS30Zg+LjuMVJXWHZPq9Yw+dxm3wKR9PyMf
-         gPiQMfTdAdPqDlgJEeizSl58UHPsbUlZJ6oztB2VepJN07/nULHQ9iNR26O9oPit4O
-         v85CBrSNjoa9rkVj6XWZIG+YH+JMfLZu7yYSwV/c=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230728160825eucas1p1ea1f509e71760121da5da2591639efac~2E9Kiolnf2840228402eucas1p12;
-        Fri, 28 Jul 2023 16:08:25 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 72.9C.42423.9F7E3C46; Fri, 28
-        Jul 2023 17:08:25 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230728160825eucas1p226b0f61470b979c7dd8bfd7c6f0fb61c~2E9KEp1LC1959919599eucas1p2I;
-        Fri, 28 Jul 2023 16:08:25 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230728160825eusmtrp2a41bdd346d41dcca92c6481d223cc3f3~2E9KD7R2P0698806988eusmtrp2k;
-        Fri, 28 Jul 2023 16:08:25 +0000 (GMT)
-X-AuditID: cbfec7f2-a51ff7000002a5b7-6c-64c3e7f9bbe1
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id B5.4D.10549.8F7E3C46; Fri, 28
-        Jul 2023 17:08:24 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230728160824eusmtip1caf52e300c95c38610a5d4f537da89a9~2E9J2_9GK3013030130eusmtip1c;
-        Fri, 28 Jul 2023 16:08:24 +0000 (GMT)
-Received: from localhost (106.210.248.223) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Fri, 28 Jul 2023 17:08:23 +0100
-Date:   Fri, 28 Jul 2023 18:08:22 +0200
-From:   Joel Granados <j.granados@samsung.com>
-To:     Simon Horman <horms@kernel.org>
-CC:     <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <willy@infradead.org>,
-        <josh@joshtriplett.org>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH 05/14] sysctl: Add a size arg to __register_sysctl_table
-Message-ID: <20230728160822.4dh3asnao2l4bdwx@localhost>
+        Fri, 28 Jul 2023 12:09:11 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B9E3C31
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:09:10 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34642952736so9594425ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690560549; x=1691165349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jm+S60Tfcv7dUGtSL3EZSXu0wC+3ZSyjYJF/PJfzkQs=;
+        b=dy3I6U/Wh/mLg8N6WgBoCV0cotOrS0ecFDbXoa3kgzOysXy3OzDiib/avqAWr973RX
+         sJX13QmNnsc3WfzyqD9Rp0+GYnyzenECtcAaF4gwNv5Vl+sFXrnGHoaNa7nOE1+3Q2zJ
+         vgAc9/8GwSN3ui0TEnP3Je2Zuzd6L+qqQWSQ0TrfIddfNQN5BGCLEeNfDd3WAeaVUQrB
+         Hejod2KRVaw7OnVIPGDyZIm6vpkSRWdudFX1SIJzyzD7NJtJaEtDHZaio9l5HFO/Uf1h
+         aCSDqIVxLsx7wboQvyapUEFHhGO1vhE7Eaa2mnF+EEUyr4GRJGl32dzy535SixnHEbfy
+         Sp9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690560549; x=1691165349;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jm+S60Tfcv7dUGtSL3EZSXu0wC+3ZSyjYJF/PJfzkQs=;
+        b=bq2J4w+CT0gbXZcXKc5+B1OyCr80F6f80TwSCv3cC1CQ0vrYviqigRgrFpzuZ6VPtg
+         L6woik+ZFlGrE66KA9SR3HsooVAzUbtXdJHSF2PtDJvyI8k4rUloQq8W5hQK+jyoMu/A
+         KobC3FqGiWxe9eYXuG0Vq7G6CEDLW15Cl48lMrK1/jG5gTbkxpXH6QqpP/8S+epG1DQ1
+         wUgTCMIeRho5B4kZJAyvU41P0D8hm2KGjD49EYE3sgM9hSa8ud4PuBnrdT40EWUFUV4r
+         JnGADdcBgdgUR/VKmnUOG7gebPSMbXee0mY1Ii+yn98YAplhtyw8IF1GxUglD7iizRBj
+         p9MQ==
+X-Gm-Message-State: ABy/qLZ2dTc4CV2QhmKWaorqgI3+yRpN8NY1tGEcYALC+uXH07fbAYvN
+        6JOsQxyQ1yc6pVh2bSqF2GA=
+X-Google-Smtp-Source: APBJJlEeo9xzx7BJ+oPAADHYicSTr5juwZCJHvu4N/2gFTaIVZuNkpqtBpZhaHP9yHzKR8WU+U7mAw==
+X-Received: by 2002:a05:6e02:df2:b0:348:7c4e:2959 with SMTP id m18-20020a056e020df200b003487c4e2959mr3184587ilj.23.1690560549258;
+        Fri, 28 Jul 2023 09:09:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t4-20020a92d144000000b00348abdfad8esm1230523ilg.32.2023.07.28.09.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 09:09:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 28 Jul 2023 09:09:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH] mm,memblock: reset memblock.reserved to system init
+ state to  prevent UAF
+Message-ID: <8a48adce-3ad5-4793-8ca6-0b9f59e14665@roeck-us.net>
+References: <20230719154137.732d8525@imladris.surriel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="7ni6yiinrfnn3syj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMOdqvMfyPkNYBoq@kernel.org>
-X-Originating-IP: [106.210.248.223]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKKsWRmVeSWpSXmKPExsWy7djPc7o/nx9OMbi/VMpizvkWFounxx6x
-        WzzqP8Fm8X9BvsWZ7lyLC9v6WC327D3JYnF51xw2ixsTnjJaHFsgZvHt9BtGi98/gELLdvo5
-        8HrMbrjI4rFl5U0mjwWbSj02r9DyuPXa1mPTqk42j/f7rrJ5fN4kF8ARxWWTkpqTWZZapG+X
-        wJUx48BGpoLjkhVvts9mamDcKNrFyMkhIWAiMWXSJ/YuRi4OIYEVjBL3fqxihnC+MEq86roL
-        lfnMKPHm+De2LkYOsJbry6sg4ssZJSa9fotQNLvhFROEs5VRYs7XySwgS1gEVCV+vuhgBLHZ
-        BHQkzr+5wwxiiwgoS5yd2wLWwCzQxCzxaP5WdpCEsICPxOzfl5lAbF4Bc4mWe7vYIGxBiZMz
-        n4ANZRaokNi/dBU7yEnMAtISy/9xgIQ5BbQk5k+dwgrxnLLEwSW/2SHsWolTW26B7ZIQuMQp
-        Mf9dN1TCReLmvTdQDcISr45vgYrLSPzfOR+qYTKjxP5/H9ghnNWMEssavzJBVFlLtFx5AtXh
-        KHH53TVGSCDxSdx4KwhxKJ/EpG3TmSHCvBIdbUIQ1WoSq++9YZnAqDwLyWuzkLw2C+E1iLCO
-        xILdn9gwhLUlli18zQxh20qsW/eeZQEj+ypG8dTS4tz01GLDvNRyveLE3OLSvHS95PzcTYzA
-        1Hj63/FPOxjnvvqod4iRiYPxEKMKUPOjDasvMEqx5OXnpSqJ8J4KOJQixJuSWFmVWpQfX1Sa
-        k1p8iFGag0VJnFfb9mSykEB6YklqdmpqQWoRTJaJg1OqgYmthrtiu9Yn02X5Z+03LzzyMiSs
-        YJvxwYrS4lWcGinXPsR5b9y0hsP31Olo41z7xsmHNi2QbrDSvj2TXb3w2J2YtffW5Z680DnP
-        zGep33NW3TmPt0tFrz+upbPRfp7LhBm2Wlr/n3xW/BWbuu3628def+vn9ZpP6PX6v85otde2
-        i8InDzBsC9wltZZ/4d9H7442/Gz7d9cj32LC/vOcohwMRvd9Z88qiD1ilW60IFjk59FD+w29
-        vvip/1vJm89000n9heyPDRwdKosnz+c/MXfRhTuzL7y3deM7yBuaJFHhJTuJtVxCZkn4Bu2q
-        Lyqff4hqT9+sdFT+YS27sUr9x7173Mz6o5o33+B+szGOz+WzEktxRqKhFnNRcSIA9uDFgQgE
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnleLIzCtJLcpLzFFi42I5/e/4Xd0fzw+nGLw5amYx53wLi8XTY4/Y
-        LR71n2Cz+L8g3+JMd67FhW19rBZ79p5ksbi8aw6bxY0JTxktji0Qs/h2+g2jxe8fQKFlO/0c
-        eD1mN1xk8diy8iaTx4JNpR6bV2h53Hpt67FpVSebx/t9V9k8Pm+SC+CI0rMpyi8tSVXIyC8u
-        sVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL0Mt4N+U8e8FRyYqeWQ/ZGhjX
-        i3YxcnBICJhIXF9e1cXIxSEksJRR4sDVgyxdjJxAcRmJjV+uskLYwhJ/rnWxQRR9ZJRovjiB
-        CcLZyiixfcsSZpAqFgFViZ8vOhhBbDYBHYnzb+6AxUUElCXOzm0Ba2AWaGKWeDR/KztIQljA
-        R2L278tMIDavgLlEy71dUCueMkos3N/BCpEQlDg58wkLyK3MAmUSnS9jIUxpieX/OEAqOAW0
-        JOZPnQJ1qbLEwSW/2SHsWonPf58xTmAUnoVk0CyEQbMQBoFUMAMNuvHvJROGsLbEsoWvmSFs
-        W4l1696zLGBkX8UoklpanJueW2yoV5yYW1yal66XnJ+7iRGYGrYd+7l5B+O8Vx/1DjEycTAe
-        YlQB6ny0YfUFRimWvPy8VCUR3lMBh1KEeFMSK6tSi/Lji0pzUosPMZoCA3Eis5Rocj4waeWV
-        xBuaGZgamphZGphamhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTCt5l622vTUj4f3p4Rf
-        L69hXXaGpaXO5HzCvbULn1WqiFZtTdRI/vSnxm2nydl3xmbLpq0wX7yet4ZlQk/p+88aF6Iu
-        yDAzJP79E8Gfq2A8M///2dYd9tZB7+MUPjmW1ZvLquz/cOJBdLk2y4qe7dNn6c+843BfwLT5
-        1Y3Z/O95d7LtbLzTGBEyv7JbqD32vl+O/aEVy3LXR10JFLR7/9RQuFrv3saUrMbNUiu+vp58
-        i8HY6/zyVv6777Rm7LzwUNHf33Df8R9z3XdLdaVe7lw9ceuEJhdbnsptvoz7YwsSj9aE9CyS
-        yXlg7ivHW1LMUv5rofQzYd9zxgtOhRxYPeVS7L7cpl0fus/rv9C33ZamxFKckWioxVxUnAgA
-        JbiPsKIDAAA=
-X-CMS-MailID: 20230728160825eucas1p226b0f61470b979c7dd8bfd7c6f0fb61c
-X-Msg-Generator: CA
-X-RootMTR: 20230726140656eucas1p26cd9da21663d25b51dda75258aaa3b55
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230726140656eucas1p26cd9da21663d25b51dda75258aaa3b55
-References: <20230726140635.2059334-1-j.granados@samsung.com>
-        <CGME20230726140656eucas1p26cd9da21663d25b51dda75258aaa3b55@eucas1p2.samsung.com>
-        <20230726140635.2059334-6-j.granados@samsung.com>
-        <ZMOdqvMfyPkNYBoq@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230719154137.732d8525@imladris.surriel.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---7ni6yiinrfnn3syj
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Fri, Jul 28, 2023 at 12:51:22PM +0200, Simon Horman wrote:
-> On Wed, Jul 26, 2023 at 04:06:25PM +0200, Joel Granados wrote:
-> > This is part of the effort to remove the sentinel element in the
-> > ctl_table arrays. We add a table_size argument to
-> > __register_sysctl_table and adjust callers, all of which pass ctl_table
-> > pointers and need an explicit call to ARRAY_SIZE.
-> >=20
-> > The new table_size argument does not yet have any effect in the
-> > init_header call which is still dependent on the sentinel's presence.
-> > table_size *does* however drive the `kzalloc` allocation in
-> > __register_sysctl_table with no adverse effects as the allocated memory
-> > is either one element greater than the calculated ctl_table array (for
-> > the calls in ipc_sysctl.c, mq_sysctl.c and ucount.c) or the exact size
-> > of the calculated ctl_table array (for the call from sysctl_net.c and
-> > register_sysctl). This approach will allows us to "just" remove the
-> > sentinel without further changes to __register_sysctl_table as
-> > table_size will represent the exact size for all the callers at that
-> > point.
-> >=20
-> > Temporarily implement a size calculation in register_net_sysctl, which
-> > is an indirection call for all the network register calls.
-> >=20
-> > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > ---
-> >  fs/proc/proc_sysctl.c  | 22 +++++++++++-----------
-> >  include/linux/sysctl.h |  2 +-
-> >  ipc/ipc_sysctl.c       |  4 +++-
-> >  ipc/mq_sysctl.c        |  4 +++-
-> >  kernel/ucount.c        |  3 ++-
-> >  net/sysctl_net.c       |  8 +++++++-
-> >  6 files changed, 27 insertions(+), 16 deletions(-)
-> >=20
-> > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> > index fa1438f1a355..8d04f01a89c1 100644
-> > --- a/fs/proc/proc_sysctl.c
-> > +++ b/fs/proc/proc_sysctl.c
-> > @@ -1354,27 +1354,20 @@ static struct ctl_dir *sysctl_mkdir_p(struct ct=
-l_dir *dir, const char *path)
-> >   */
-> >  struct ctl_table_header *__register_sysctl_table(
-> >  	struct ctl_table_set *set,
-> > -	const char *path, struct ctl_table *table)
-> > +	const char *path, struct ctl_table *table, size_t table_size)
->=20
-> Hi Joel,
->=20
-> Please consider adding table_size to the kernel doc for this function.
-Good catch. Will do for V2.
->=20
-> ...
+On Wed, Jul 19, 2023 at 03:41:37PM -0400, Rik van Riel wrote:
+> The memblock_discard function frees the memblock.reserved.regions
+> array, which is good.
+> 
+> However, if a subsequent memblock_free (or memblock_phys_free) comes
+> in later, from for example ima_free_kexec_buffer, that will result in
+> a use after free bug in memblock_isolate_range.
+> 
+> When running a kernel with CONFIG_KASAN enabled, this will cause a
+> kernel panic very early in boot. Without CONFIG_KASAN, there is
+> a chance that memblock_isolate_range might scribble on memory
+> that is now in use by somebody else.
+> 
+> Avoid those issues by making sure that memblock_discard points
+> memblock.reserved.regions back at the static buffer.
+> 
+> If memblock_discard is called while there is still memory
+> in the memblock.reserved type, that will print a warning
+> in memblock_remove_region.
+> 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
---=20
+This patch results in the following WARNING backtrace when booting sparc
+or sparc64 images in qemu. Bisect log is attached.
 
-Joel Granados
+sparc:
 
---7ni6yiinrfnn3syj
-Content-Type: application/pgp-signature; name="signature.asc"
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at mm/memblock.c:352 memblock_remove_region+0x80/0xb0
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 6.5.0-rc3-00350-gb917f578dc45 #1
+[f0022af8 : __warn+0x9c/0xe4 ]
+[f0022b84 : warn_slowpath_fmt+0x44/0x54 ]
+[f07a16a0 : memblock_remove_region+0x80/0xb0 ]
+[f0787240 : memblock_discard+0x84/0x100 ]
+[f0784e00 : page_alloc_init_late+0xc/0x5c ]
+[f07782fc : kernel_init_freeable+0xb8/0x208 ]
+[f05ad41c : kernel_init+0x10/0x120 ]
+[f0007ed0 : ret_from_kernel_thread+0xc/0x38 ]
+[00000000 : 0x0 ]
+---[ end trace 0000000000000000 ]---
 
------BEGIN PGP SIGNATURE-----
+sparc64:
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmTD5/UACgkQupfNUreW
-QU9yVgv9FI6vEoP7ICCbc5xmO32SsGcIFVIFRjwlStRGZfznmH4DaIVLUvsVajtg
-gMqLu/YrmLsfl7iz5QgfiYPDMfvUyG6AsC9/XGAjdXaKjC8VT3O23CvJji8fxTQU
-QgxsNakRW3zpxygah1h3adb/S51n4yGl+eElZsmusDXMNIzCH190fTh6ycyU7z+Y
-Abr4KDJAGm9tNKZNoNyMnJfqrzbfAEQtOTvFn12CgthunKuIYPCbl82yrSoroe08
-skv+dnNSy8hFS6pVSd3EN/EiDfQeJgkFQOIfQLmh/TDjKRhMjIQ8qI4ngVdityay
-QdCRCOfIphwVjSgFP/9sBKUyb3zAccJrW/se5PPoj9aLG+9Kx5zgjyQ0yj2jlAg3
-8BMRy69ViAIsc1kgxXxhkYvn2mFYYkRkrN+p2xuWk72Ipbi9rJpl5eVOmEPMaSLL
-ijchIfcEGPOMzcXbGquuZRrmL0Yj9DEKjSpwLigL90aFG//0w4xBomEUo6GS2S/6
-BJfVnki5
-=L0jG
------END PGP SIGNATURE-----
+[    1.876345] ------------[ cut here ]------------
+[    1.876852] WARNING: CPU: 0 PID: 1 at mm/memblock.c:352 memblock_remove_region+0x78/0xb4
+[    1.877912] Modules linked in:
+[    1.880783] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc3+ #1
+[    1.881473] Call Trace:
+[    1.881935] [<0000000000467c30>] __warn+0xf0/0x1a0
+[    1.882515] [<0000000000467d98>] warn_slowpath_fmt+0xb8/0x100
+[    1.883128] [<0000000001b8d83c>] memblock_remove_region+0x78/0xb4
+[    1.883564] [<0000000001b6df50>] memblock_discard+0x88/0x108
+[    1.883987] [<0000000001b6abc0>] page_alloc_init_late+0xc/0x94
+[    1.884594] [<0000000001b56e44>] kernel_init_freeable+0xcc/0x228
+[    1.885181] [<0000000000f673c4>] kernel_init+0x18/0x134
+[    1.885612] [<00000000004060e8>] ret_from_fork+0x1c/0x2c
+[    1.886035] [<0000000000000000>] 0x0
+[    1.886697] irq event stamp: 1013
+[    1.887293] hardirqs last  enabled at (1021): [<00000000004e1534>] __up_console_sem+0x74/0xa0
+[    1.887786] hardirqs last disabled at (1028): [<00000000004e1510>] __up_console_sem+0x50/0xa0
+[    1.888273] softirqs last  enabled at (1004): [<0000000000f76ae4>] __do_softirq+0x4c4/0x5a0
+[    1.888760] softirqs last disabled at (997): [<000000000042b94c>] do_softirq_own_stack+0x2c/0x40
+[    1.889610] ---[ end trace 0000000000000000 ]---
 
---7ni6yiinrfnn3syj--
+Guenter
+
+---
+# bad: [57012c57536f8814dec92e74197ee96c3498d24e] Merge tag 'net-6.5-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net
+# good: [18b44bc5a67275641fb26f2c54ba7eef80ac5950] ovl: Always reevaluate the file signature for IMA
+git bisect start 'HEAD' '18b44bc5a672'
+# good: [6c58c8816abb7b93b21fa3b1d0c1726402e5e568] net/sched: mqprio: Add length check for TCA_MQPRIO_{MAX/MIN}_RATE64
+git bisect good 6c58c8816abb7b93b21fa3b1d0c1726402e5e568
+# bad: [379e66711b33f9fdc0513daee6cf3dd8d2f6f435] Merge tag 'fixes-2023-07-27' of git://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock
+git bisect bad 379e66711b33f9fdc0513daee6cf3dd8d2f6f435
+# good: [c21733754cd6ecbca346f2adf9b17d4cfa50504f] platform/x86: huawei-wmi: Silence ambient light sensor
+git bisect good c21733754cd6ecbca346f2adf9b17d4cfa50504f
+# good: [536bb492d39bb6c080c92f31e8a55fe9934f452b] ksmbd: fix out of bounds in init_smb2_rsp_hdr()
+git bisect good 536bb492d39bb6c080c92f31e8a55fe9934f452b
+# good: [0a8db05b571ad5b8d5c8774a004c0424260a90bd] Merge tag 'platform-drivers-x86-v6.5-3' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86
+git bisect good 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+# bad: [9e46e4dcd9d6cd88342b028dbfa5f4fb7483d39c] mm,memblock: reset memblock.reserved to system init state to prevent UAF
+git bisect bad 9e46e4dcd9d6cd88342b028dbfa5f4fb7483d39c
+# first bad commit: [9e46e4dcd9d6cd88342b028dbfa5f4fb7483d39c] mm,memblock: reset memblock.reserved to system init state to prevent UAF
