@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A9F76720B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D34767216
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjG1Qku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S232653AbjG1Qla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:41:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjG1Qkp (ORCPT
+        with ESMTP id S232182AbjG1Ql1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:40:45 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1903420C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:43 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso23388265e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690562442; x=1691167242;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vHUNO/IrnfFN0MhhDh/0mFjdxBVg/OLd4PkUkNG7FnI=;
-        b=ZGdTtBipas8Fy5PIhI/L5R3iS9ZPXGscxN4xBXd6FBdKqKbV0JJJysUIYY4sFfVdOu
-         Mpw3cAvkDHFxP769McZZH2VRi3SQB7vCv7zE+PblnNc9Sat7NOp/agTaNpTEdNcihR+D
-         aaDdXIXpyWHSU2bamemLdDUMV6LN65U2QC1cp/mlPHs89xo7qEmRCj45XR/Qa+jD9bsG
-         u3oXvA+Rn3UUxA0rpB+zlsRxrsawNxdN3pvJCysyFlVeiuZ/MQ343VdrSWLc2TavimaX
-         Ynh+Ati5bMSuJ+rm1qVy7ZfEOYqaZXQ2+PxscO0AbdPkpFx+3eJiRZCQlBsfpoPmX+Y8
-         1TKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562442; x=1691167242;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vHUNO/IrnfFN0MhhDh/0mFjdxBVg/OLd4PkUkNG7FnI=;
-        b=HMQHEVyQ0NtFIRsovBvp43SEVb1ZZ8jVNDUjp+Gz6BZmBhSIWsnMS2KjR/zYznYhwj
-         16uS1Q2VjfkOP6Q6esFQ5YdtNY4X0EHOSDNMclBc6vEjYfQES+n0vjm43ReaAWOiWSHA
-         ++xsKLosySdQ3VdhwJDlbYz3n+t5m638ddLFMeN5MERZHAFVL+GM/GKYofV83w+FQ5r/
-         LOPFVOGmGvYc1KkXKVoMv5WpmkZmcgVAtLboo9qb1CIrkQO5sPZNpg8EW//MmUVbdTEG
-         ouup3czpji40wYPRP2769vu4jUu/etduuVfb+5p63JudoqWp9U8g5y8tjUieehJnI4IN
-         mzjQ==
-X-Gm-Message-State: ABy/qLYpjr+SQxgeTO5X7DgXj4rl4D9EeEIqyW0ZaLEILj2+mZNVeNyR
-        tZqMoH9IqrQosqinHQR0RuHqHQ==
-X-Google-Smtp-Source: APBJJlGShlM1dO3+fMhExjYv6Dh8m7h06nmIvJBTl25b1p7ACzbItvuCgoGAcNo1XJsyv0g0/4Kb5Q==
-X-Received: by 2002:a05:600c:3789:b0:3f7:678c:74b0 with SMTP id o9-20020a05600c378900b003f7678c74b0mr2106898wmr.12.1690562442214;
-        Fri, 28 Jul 2023 09:40:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id n5-20020a1c7205000000b003fe11148055sm1185888wmc.27.2023.07.28.09.40.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 09:40:41 -0700 (PDT)
-Message-ID: <68b7d772-8dc4-a781-031b-ea33dae41751@linaro.org>
-Date:   Fri, 28 Jul 2023 18:40:39 +0200
+        Fri, 28 Jul 2023 12:41:27 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2073.outbound.protection.outlook.com [40.107.92.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088C43C35;
+        Fri, 28 Jul 2023 09:41:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eQGFh3hl/WCG5LhUQ5cOec0irgUEd5kz623ZeLSo3LE3+T8AtXh6BRexgY757mi6OqN6eIS7vaY56yf2/asIanpkSGE3GSsf9tCmsxMibMzOVLPzsMZ55pAlr30UzRJ16AO1Hk1KyIPRijspHV+7w3MbSs1T82EtbDlZsvxxz2BtmNZgpq0xTcHKJL3V5SCVQymuLk1DgieSt+Y/drB3DCb0+Qny7XMMFrdfk+TIXTzzIztA2/Shmj1Vlr1g6jaPMqG80QLC2OV6LIht533vkRZMOFYitTDeFW72mBq/TDwGba9AYWBe9E6zLJ0s09QKdBgdBA7qSS3HxrsP7vbL/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
+ b=EQvAb2+sUqPhbHzG4eBgjPsxbiQt7IjE2WSbnz+I9adCIcZvpCCHl2KA1FBTkwida0ogF1VBZ41cGHyhBW6anM7mgmZa8cxZ7YiCE32vV+fuqq25low96a6DQNmJpr+31xONOE6n9uNCF6ux6AB0IqMjHiI5zWl4mxZLueKUyKY3d9Q+FXkvP3FQYQu1f5vHDhGxBfms+FlPKdPLftUXeJn/+Lyos5h11pMVjpe4heXU1yLnaBaId7wKDJGjUQ+PcfWeI1MxQXuJyf8zBZhfh7fjdMxnQPePoCk5/tr5N3bOlmU15cUMpqOT6nQcKdXlpJPWAY4Q1C6ndFyJnl6VWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
+ b=AH3yAzONhnExP/A9nk7HTKfDBELXkxIMsQLO8s4IgEcdh752krIGlQBi/7PD2PS3HFFrAKlCYonL5eCSCOzSujBpqxif8mIQz/RL/gUg50EkWcJ/QAHb8ATIVOCHkA2ubmragFqSk1S+yQi0fiQ7HOSF9ERVENubA4lo4uLgJG0=
+Received: from BY5PR16CA0017.namprd16.prod.outlook.com (2603:10b6:a03:1a0::30)
+ by CH0PR12MB5154.namprd12.prod.outlook.com (2603:10b6:610:b9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 16:41:22 +0000
+Received: from DM6NAM11FT030.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:1a0:cafe::41) by BY5PR16CA0017.outlook.office365.com
+ (2603:10b6:a03:1a0::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Fri, 28 Jul 2023 16:41:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT030.mail.protection.outlook.com (10.13.172.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6631.35 via Frontend Transport; Fri, 28 Jul 2023 16:41:22 +0000
+Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 11:41:17 -0500
+From:   Ayush Jain <ayush.jain3@amd.com>
+To:     <akpm@linux-foundation.org>, <shuah@kernel.org>,
+        <pasha.tatashin@soleen.com>, <zhansayabagdaulet@gmail.com>,
+        <tyhicks@linux.microsoft.com>, <shr@devkernel.io>,
+        <raghavendra.kt@amd.com>
+CC:     <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Narasimhan.V@amd.com>,
+        <Santosh.Shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v2 2/2] selftests: mm: add KSM_MERGE_TIME tests
+Date:   Fri, 28 Jul 2023 22:11:02 +0530
+Message-ID: <20230728164102.4655-1-ayush.jain3@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/3] dt-bindings: reset: Add compatible and DT bindings
- for Amlogic C3 Reset Controller
-Content-Language: en-US
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        zelong dong <zelong.dong@amlogic.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, kelvin.zhang@amlogic.com
-References: <20230719060954.14864-1-zelong.dong@amlogic.com>
- <20230719060954.14864-2-zelong.dong@amlogic.com>
- <f7b72ee90009f6749700a7bd79a3a63786a82a32.camel@pengutronix.de>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <f7b72ee90009f6749700a7bd79a3a63786a82a32.camel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT030:EE_|CH0PR12MB5154:EE_
+X-MS-Office365-Filtering-Correlation-Id: 91682171-bea5-4911-69e7-08db8f8979dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4yxy0vHFlWv/w8ya7wgiL6OmB9I74OV59heuMawk+pf2ZsZ9ubivde8cV5ZxN0p7IyTFoe7OCCnk0ZaVmXVqvTwciBeRiI8CpRsA+0JEkmPYeNcuXzExIIbedJ7zQM33oLIFQHd5SBhG97pfHoG/rmXGG52MnmjtKpThJdtXiNPKR95TiW3lE3nVQVQiNoIeqBtG4CgAA57aXySgcg+dRuRJZnlMhV6wxJTWkRS5oRIR9+XucWjeltvBeOPtG+skL5beqph+ZeVaTO0ustGH3htUtmqCWczJwXCqThJp2yIGBTOEAl/bWDt+g67c12lWC+ank8Hok08kxHKosPhWZbUxw6/0r+bzZUnchNuJl+ibHhI6GQfkrg5kXtWBkzlQpKtaaF3q62kOo9/+9O/cM27AFsuvcUEo8T02SUog5xdoRksaXfm1tONpet3k+GlZXG4l6PLZZET3lIeDkR0klSk0E0NyEQlxNdnCcIsEM4LXKLe9VwV3cO3h90mb29nBdy2Psrw5eUiJSPHw2xpp+dahzV0XXtcs0G0dNEP6tPXhaD2pQaWicq6De9UmiVmGtt1jmMt7xBjhvbUs9na7h343jxjMPJ/AdeJCG4iWBE98fdy298ZGRODHybI7lv5nf3+FTH3zPA9UcgVNjEY4ExMTJIHXi6alPchZLAYDiTxOwQAhc8m0zd0MXtvLDw2b554G4tWYyrPtywxL4fg4DVXfnqNLrkU010033gE8Wl2JYEjoDT/GKhQlS+mKOXN+3pPd43/DaF1pFy7qOch/Bw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(39860400002)(136003)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(2906002)(47076005)(426003)(2616005)(40480700001)(16526019)(1076003)(70206006)(336012)(70586007)(186003)(6666004)(7696005)(54906003)(478600001)(110136005)(26005)(41300700001)(81166007)(86362001)(36860700001)(356005)(8936002)(316002)(8676002)(36756003)(6636002)(7416002)(4326008)(40460700003)(5660300002)(82740400003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:41:22.0055
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91682171-bea5-4911-69e7-08db8f8979dc
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT030.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5154
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 17:49, Philipp Zabel wrote:
->>      maxItems: 1
->> diff --git a/include/dt-bindings/reset/amlogic,c3-reset.h b/include/dt-bindings/reset/amlogic,c3-reset.h
->> new file mode 100644
->> index 000000000000..d9127863f603
->> --- /dev/null
->> +++ b/include/dt-bindings/reset/amlogic,c3-reset.h
-> 
-> Given that this is only included by
-> arch/arm64/boot/dts/amlogic/amlogic-c3.dtsi, should this header be
-> moved to arch/arm64/boot/dts/amlogic ?
+add KSM_MERGE_TIME and KSM_MERGE_TIME_HUGE_PAGES tests with
+size of 100.
 
-I think there is ongoing work or at least plan to use the IDs also in
-clock/reset drivers for all Amlogic platforms. Do I recall this correctly?
+./run_vmtests.sh -t ksm
+-----------------------------
+running ./ksm_tests -H -s 100
+-----------------------------
+Number of normal pages:    0
+Number of huge pages:    50
+Total size:    100 MiB
+Total time:    0.399844662 s
+Average speed:  250.097 MiB/s
+[PASS]
+-----------------------------
+running ./ksm_tests -P -s 100
+-----------------------------
+Total size:    100 MiB
+Total time:    0.451931496 s
+Average speed:  221.272 MiB/s
+[PASS]
 
-Best regards,
-Krzysztof
+Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+v1 -> v2
+collect Reviewed-by from David
+
+ tools/testing/selftests/mm/run_vmtests.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 3f26f6e15b2a..ca3738e042c2 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -262,6 +262,10 @@ CATEGORY="madv_populate" run_test ./madv_populate
+ 
+ CATEGORY="memfd_secret" run_test ./memfd_secret
+ 
++# KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
++CATEGORY="ksm" run_test ./ksm_tests -H -s 100
++# KSM KSM_MERGE_TIME test with size of 100
++CATEGORY="ksm" run_test ./ksm_tests -P -s 100
+ # KSM MADV_MERGEABLE test with 10 identical pages
+ CATEGORY="ksm" run_test ./ksm_tests -M -p 10
+ # KSM unmerge test
+-- 
+2.34.1
 
