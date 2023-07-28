@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738B576679E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F38D7667A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbjG1IrS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 04:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        id S235053AbjG1Ir5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235039AbjG1IrB (ORCPT
+        with ESMTP id S235164AbjG1IrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:47:01 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5443590;
-        Fri, 28 Jul 2023 01:46:58 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 3AFFC24E276;
-        Fri, 28 Jul 2023 16:46:47 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 28 Jul
- 2023 16:46:47 +0800
-Received: from [192.168.125.127] (113.72.147.196) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 28 Jul
- 2023 16:46:45 +0800
-Message-ID: <dbb39cd2-4437-92ab-b6c6-8dae18748c98@starfivetech.com>
-Date:   Fri, 28 Jul 2023 16:46:44 +0800
+        Fri, 28 Jul 2023 04:47:25 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59BBB3C30;
+        Fri, 28 Jul 2023 01:47:19 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36S8l5cP017291;
+        Fri, 28 Jul 2023 03:47:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690534025;
+        bh=ospLJOiRLA8qDpt2SMFfsnLKB32y9OULjpCRa2jD87k=;
+        h=Date:Subject:To:References:From:In-Reply-To;
+        b=YTXCK0Fftm3PoA8be2LeRyP47nLVi2TQz/nPtdgpu8ADu7fYZvHGHBFmwmc4cK4Ko
+         KWQpR9B5f5ajOAT63x5i90tf1loofytl0LhbfKxRchMhKswqudj514DJbtGIq6aqxc
+         r8+zaaRitBCeaEn7WzAlTALQGO9xTFcv8yBeEH1A=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36S8l5u1004205
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Jul 2023 03:47:05 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
+ Jul 2023 03:47:05 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 28 Jul 2023 03:47:05 -0500
+Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36S8l2k3061575;
+        Fri, 28 Jul 2023 03:47:02 -0500
+Message-ID: <72f0010b-fa38-56c2-8b7f-fe1af89e5e36@ti.com>
+Date:   Fri, 28 Jul 2023 14:17:01 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 2/4] PCI: plda: Get common codes from Microchip
- PolarFire host
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/2] arm64: dts: ti: k3-j784s4: Add UFS support
 Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20230727120207.GA769710@bhelgaas>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230727120207.GA769710@bhelgaas>
+To:     Udit Kumar <u-kumar1@ti.com>, <nm@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230725133607.2021379-1-u-kumar1@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20230725133607.2021379-1-u-kumar1@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [113.72.147.196]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -69,65 +70,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/7/27 20:02, Bjorn Helgaas wrote:
-> On Thu, Jul 27, 2023 at 06:39:47PM +0800, Minda Chen wrote:
->> Add PLDA PCIe controller driver codes, Move them from Microchip
->> PolarFire PCIe host driver codes. And move pcie-microchip-host.c
->> to plda directory.
->> 
->> The change includes:
->> - copy the IP register marcos.
->> - Add related data structures of PCIe host instance.
->>   mc_pcie --> plda_pcie (Get most of data members)
->>   mc_msi  --> plda_msi
->>   add plda_pcie_ops and plda_evt data structures.
->> - function rename list:
->>   mc_pcie_enable_msi       --> plda_pcie_enable_msi
->>   mc_pcie_setup_window     --> plda_pcie_setup_window
->>   mc_pcie_setup_windows    --> plda_pcie_setup_iomems
->>   mc_pcie_init_irq_domains --> plda_pcie_init_irq_domains
->>   mc_allocate_msi_domains  --> plda_allocate_msi_domains
->>   mc_init_interrupts       --> plda_pcie_init_irq
->>   msi interrupts related functions and irq domain
->>   (primary function is mc_handle_msi):
->>   mc_handle_msi            --> plda_handle_msi
->>   intx interrupts related functions and irq domain
->>   (primary function is mc_handle_intx):
->>   mc_handle_intx           --> plda_handle_intx
->>   event interrupts:
->>   mc_handle_event	   --> plda_handle_event
->> - For PolarFire implements non-plda local interrupt events, most of
->>   event interrupt process codes can not be re-used. PLDA implements
->>   new codes and irq domain ops like PolarFire.
->>   New event functions:
->>     plda_event_handler
->>     plda_pcie_event_map
->>     plda_ack_event_irq
->>     plda_mask_event_irq
->>     plda_unmask_event_irq
->>     plda_hwirq_to_mask
->> - plda_handle_event adds a new irqnum to event num mapping codes for
->>   PLDA local event except DMA engine interrupt events. The DMA engine
->>   interrupt events are implemented by vendors. So do not add these
->>   events. PolarFire PCIe uses get_events function pointer to get
->>   their events num.
+On 25/07/23 19:06, Udit Kumar wrote:
+> This patch series adds UFS support for J784S4 SOC,
+> UFS is kept disabled at SOC level, and enabled in EVM where
+> UFS flash is present.
 > 
-> There's a lot going on here, which makes this hard to review.  If
-> possible, I suggest splitting this into multiple patches:
+> This patch is tested by enabling below configs on top of defconfig
+> CONFIG_SCSI_UFS_BSG=y
+> CONFIG_SCSI_UFS_CDNS_PLATFORM=y
+> CONFIG_SCSI_UFS_TI_J721E=y
 > 
->   - Move code to plda/ directory with no other changes
->   - Rename structs/functions from mc_* to plda_* with no other changes
->   - Add PolarFire-specific code
+> Change log:
 > 
-Yeah, This is a lot modification. I will try to split more patches to get it easier
-to review. maybe split IP register macros first, second rename structs/function only.
-third add the new event mapping codes， at last add PolarFire-specific codes.
-> Other general things:
+> Changes in v2
+> v1: https://lore.kernel.org/all/20230725053843.1721028-1-u-kumar1@ti.com/
+> Add DT node for UFS:
+>   Corrected typo
+>   Added 0x00 instead of 0x0 to align with test of file
+>   Added Tested by
 > 
->   - Capitalize PLDA, IRQ, INTx, MSI, PCIe in commit logs, comments,
->     dmesg text
->   - Sort MAINTAINERS entries alphabetically; see
->     https://git.kernel.org/linus/c192ac735768
+> Add Support for UFS peripheral
+>   Added Tested by
 > 
-ok
-> Bjorn
+> Test logs of v1 patch
+> https://gist.github.com/uditkumarti/ab188e4b433058ae86734cd46eff7d94
+> 
+> 
+> Udit Kumar (2):
+>   arm64: dts: ti: k3-j784s4-main: Add DT node for UFS
+>   arm64: dts: ti: k3-j784s4-evm: Add Support for UFS peripheral
+> 
+>  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  4 ++++
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 24 ++++++++++++++++++++++
+>  2 files changed, 28 insertions(+)
+> 
+
+Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
+
+-- 
+Regards
+Vignesh
