@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97929766C3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE1B766C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbjG1L6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S236137AbjG1L7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjG1L6H (ORCPT
+        with ESMTP id S236338AbjG1L7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:58:07 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A14CC3;
-        Fri, 28 Jul 2023 04:58:05 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RC5f62HY5zNmWP;
-        Fri, 28 Jul 2023 19:54:38 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 19:58:01 +0800
-Subject: Re: [PATCH net-next 1/9] page_pool: split types and declarations from
- page_pool.h
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
- <20230727144336.1646454-2-aleksander.lobakin@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fb6330ef-5e74-01a4-a418-0b33748932ff@huawei.com>
-Date:   Fri, 28 Jul 2023 19:58:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 28 Jul 2023 07:59:07 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA8F3C2F;
+        Fri, 28 Jul 2023 04:59:04 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4RC5l91gd3z9sTn;
+        Fri, 28 Jul 2023 13:59:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1690545541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9/8Enmq6dGEBOaAdXif/TTkAgQwGHnKWZ5AzFbgN4lM=;
+        b=t5NZavTc7lWMKBbq8l3ZnXRLu/MSHXptAjkir+IPnEbyJtD5N+MkUUZW4zTOWwNf2tiqzU
+        /zRFaTWsRg705H2Svh+ckkCC1uUTfv5zRQfRac37UDqlVvB1UaRwHRhzWKtaJuXB6JXrBh
+        YS0s0IFQeC7V+g++epP5p17PlYO0wu9ez6u/1lRDrTJ1BBJqeW/krT6PDXd2hmOUvyTQGC
+        laYDsAPgtBG6N9QxDcA3ndGe2StnvvdBQvPiTVcga4jkGnnniZSz3bGGMcdbYgxZV2cagy
+        SiodEq0drMJBmEQJApSnSyTpYEQxHDwSCNoeGcalJ57epuPhXNMVGes8bM/H6g==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+Date:   Fri, 28 Jul 2023 21:58:26 +1000
+Subject: [PATCH] fchmodat2: add support for AT_EMPTY_PATH
 MIME-Version: 1.0
-In-Reply-To: <20230727144336.1646454-2-aleksander.lobakin@intel.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-Id: <20230728-fchmodat2-at_empty_path-v1-1-f3add31d3516@cyphar.com>
+X-B4-Tracking: v=1; b=H4sIAGGtw2QC/x3MTQqAIBBA4avErBN0Cvq5SoSIjTmLSlSiiO6et
+ PwW7z2QKDIlGKsHIp2c+NgLVF2B9WZfSfBSDCixkR32wlm/HYvJKEzWtIV862CyF42S1rXSDqg
+ clDpEcnz952l+3w8jpB3yaQAAAA==
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Palmer Dabbelt <palmer@sifive.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Aleksa Sarai <cyphar@cyphar.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1877; i=cyphar@cyphar.com;
+ h=from:subject:message-id; bh=Sdckq9QBnej4bYwFL1SzVqR7z5ef8LWJ7BK0J1vaGeM=;
+ b=owGbwMvMwCWmMf3Xpe0vXfIZT6slMaQcXls/546PAaPoeos/bF1/XzHtjn7Pe6ib3eDr0o8BK
+ dN2Rc2e1FHKwiDGxSArpsiyzc8zdNP8xVeSP61kg5nDygQyhIGLUwAm0r6c4Z9m64T9W5KdbQKO
+ uuz6lMgyY/Hy/H0BiQZXV96SbincMIGXkWG5ePa9Dw+WiBV8mCXF7/sgc9EZkdnPcryaZNOy2HJ
+ 3RbICAA==
+X-Developer-Key: i=cyphar@cyphar.com; a=openpgp;
+ fpr=C9C370B246B09F6DBCFC744C34401015D1D2D386
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/27 22:43, Alexander Lobakin wrote:
+This allows userspace to avoid going through /proc/self/fd when dealing
+with all types of file descriptors for chmod(), and makes fchmodat2() a
+proper superset of all other chmod syscalls.
 
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d0553ad37865..30037d39b82d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -16015,8 +16015,7 @@ M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
->  L:	netdev@vger.kernel.org
->  S:	Supported
->  F:	Documentation/networking/page_pool.rst
-> -F:	include/net/page_pool.h
-> -F:	include/trace/events/page_pool.h
+The primary difference between fchmodat2(AT_EMPTY_PATH) and fchmod() is
+that fchmod() doesn't operate on O_PATH file descriptors by design. To
+quote open(2):
 
-Is there any reason to remove the above?
+> O_PATH (since Linux 2.6.39)
+> [...]
+> The file itself is not opened, and other file operations (e.g.,
+> read(2), write(2), fchmod(2), fchown(2), fgetxattr(2), ioctl(2),
+> mmap(2)) fail with the error EBADF.
 
-> +F:	include/net/page_pool/*.h
+However, procfs has allowed userspace to do this operation ever since
+the introduction of O_PATH through magic-links, so adding this feature
+is only an improvement for programs that have to mess around with
+/proc/self/fd/$n today to get this behaviour. In addition,
+fchownat(AT_EMPTY_PATH) has existed since the introduction of O_PATH and
+allows chown() operations directly on O_PATH descriptors.
 
-It seems more common to use 'include/net/page_pool/' in
-MAINTAINERS.
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+ fs/open.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->  F:	net/core/page_pool.c
->  
+diff --git a/fs/open.c b/fs/open.c
+index e52d78e5a333..b8883ec286f5 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -678,10 +678,12 @@ static int do_fchmodat(int dfd, const char __user *filename, umode_t mode,
+ 	int error;
+ 	unsigned int lookup_flags;
+ 
+-	if (unlikely(flags & ~AT_SYMLINK_NOFOLLOW))
++	if (unlikely(flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)))
+ 		return -EINVAL;
+ 
+ 	lookup_flags = (flags & AT_SYMLINK_NOFOLLOW) ? 0 : LOOKUP_FOLLOW;
++	if (flags & AT_EMPTY_PATH)
++		lookup_flags |= LOOKUP_EMPTY;
+ 
+ retry:
+ 	error = user_path_at(dfd, filename, lookup_flags, &path);
+
+---
+base-commit: 4859c257d295949c23f4074850a8c2ec31357abb
+change-id: 20230728-fchmodat2-at_empty_path-310cf40c921f
+
+Best regards,
+-- 
+Aleksa Sarai <cyphar@cyphar.com>
+
