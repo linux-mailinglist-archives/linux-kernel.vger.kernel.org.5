@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0299766AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 490CC766AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbjG1Kso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        id S235957AbjG1Ksy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234180AbjG1Ksi (ORCPT
+        with ESMTP id S234908AbjG1Ksj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:48:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FED919B6;
-        Fri, 28 Jul 2023 03:48:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C16C6620DE;
-        Fri, 28 Jul 2023 10:48:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3E6C433C8;
-        Fri, 28 Jul 2023 10:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690541316;
-        bh=Ua3Nq6ErGR02ZKzEq2FJx72D5cYGNbW8Cmy7BoDjPAQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XOd/EpcNBPP/niX953VLgFzat1P9RgReSHB0gx9zv7anYC1NXoaSfcQdlzVeqdCR8
-         JVOa4fRN9P5JtI6eCeoc+FRe+kv+Z26K8nGA3pgbvK3Z2Rmvzn858CSR7LadVUbGKS
-         s2XDXRzQr+9itqFp0Uw5UWtVM7OLEufWypIVwuf+EiE4NfdkTFKUKPHzbWnTTnFgso
-         8mgYiWqpqqk5UokkEopcp2VhXRtHg3SvOE0kmZWeuiUtI0ifIYUST8dlreFfQVOaIE
-         UoxSlDmHW/zI5FyYfSUDrpQSLgRo5mgRo6e6GNDhL/mAvT1gQpYH9XCnn5D7LxzyyF
-         Nmi3B0FJA5v3w==
-Date:   Fri, 28 Jul 2023 12:48:31 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>, willy@infradead.org,
-        josh@joshtriplett.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 03/14] sysctl: Add ctl_table_size to ctl_table_header
-Message-ID: <ZMOc/+Q0PT48ed0G@kernel.org>
-References: <20230726140635.2059334-1-j.granados@samsung.com>
- <CGME20230726140653eucas1p2e234b7cd0af5dc506bd27399b84292a6@eucas1p2.samsung.com>
- <20230726140635.2059334-4-j.granados@samsung.com>
+        Fri, 28 Jul 2023 06:48:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E0451BC6;
+        Fri, 28 Jul 2023 03:48:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 048B92F4;
+        Fri, 28 Jul 2023 03:49:21 -0700 (PDT)
+Received: from [10.57.0.116] (unknown [10.57.0.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1D293F6C4;
+        Fri, 28 Jul 2023 03:48:35 -0700 (PDT)
+Message-ID: <85fad198-278a-aea2-3ada-f4f6a31f02ef@arm.com>
+Date:   Fri, 28 Jul 2023 11:48:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726140635.2059334-4-j.granados@samsung.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1 0/1] perf tools: Add a place to put kernel config
+ fragments for test runs
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+To:     Namhyung Kim <namhyung@kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, masahiroy@kernel.org,
+        leo.yan@linaro.org, broonie@kernel.org, Aishwarya.TCV@arm.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org
+References: <20230628105303.4053478-1-james.clark@arm.com>
+ <CAM9d7cgo97jJTTTV7F2kJ=sF9MBoRwegN4r0dWotbUD=Nr1_cQ@mail.gmail.com>
+ <36767548-fbc3-9c4b-848c-d1d3102e442a@arm.com>
+In-Reply-To: <36767548-fbc3-9c4b-848c-d1d3102e442a@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:06:23PM +0200, Joel Granados wrote:
-> The new ctl_table_size element will hold the size of the ctl_table
-> contained in the header. This value is passed by the callers to the
-> sysctl register infrastructure.
-> 
-> This is a preparation commit that allows us to systematically add
-> ctl_table_size and start using it only when it is in all the places
-> where there is a sysctl registration.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  include/linux/sysctl.h | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index 59d451f455bf..33252ad58ebe 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -159,12 +159,22 @@ struct ctl_node {
->  	struct ctl_table_header *header;
->  };
->  
-> -/* struct ctl_table_header is used to maintain dynamic lists of
-> -   struct ctl_table trees. */
-> +/**
-> + * struct ctl_table_header - maintains dynamic lists of struct ctl_table trees
-> + * @ctl_table: pointer to the first element in ctl_table array
-> + * @ctl_table_size: number of elements pointed by @ctl_table
-> + * @used: The entry will never be touched when equal to 0.
-> + * @count: Upped every time something is added to @inodes and downed every time
-> + *         something is removed from inodes
-> + * @nreg: When nreg drops to 0 the ctl_table_header will be unregistered.
-> + * @rcu: Delays the freeing of the inode. Introduced with "unfuck proc_sysctl ->d_compare()"
-> + *
-> + */
 
-Please consider documenting all fields of struct ctl_table_header.
-./scripts/kernel-doc complains that the following are missing:
 
-  unregistering
-  ctl_table_arg
-  root
-  set
-  parent
-  node
-  inodes
+On 30/06/2023 09:04, James Clark wrote:
+> 
+> 
+> On 29/06/2023 23:03, Namhyung Kim wrote:
+>> Hi James,
+>>
+>> On Wed, Jun 28, 2023 at 3:53 AM James Clark <james.clark@arm.com> wrote:
+>>>
+>>> Changes since RFC:
+>>>
+>>>  * Changed arch filename convention to use the ARCH= build time values
+>>>    instead of uname
+>>>
+>>> It seems like there were no objections on the RFC, apart from maybe
+>>> changing the perf tests to run as a kself test. But that's probably not
+>>> going to happen for a while, if ever, and these fragments can always
+>>> be moved in that case.
+>>
+>> I missed the RFC, sorry.  Could you please add a link for that?
+>>
+>> Thanks,
+>> Namhyung
+> 
+> Yep, it's here:
+> https://lore.kernel.org/lkml/d02cce4a-47b1-a776-0d3a-a6a7c9a4d8fd@arm.com/T/
+> 
+
+Hi Arnaldo,
+
+Any interest in taking this one?
+
+Thanks
+James
+
+>>
+>>
+>>>
+>>> James Clark (1):
+>>>   perf tools: Add a place to put kernel config fragments for test runs
+>>>
+>>>  tools/perf/tests/config-fragments/README |  7 +++++++
+>>>  tools/perf/tests/config-fragments/arm64  |  1 +
+>>>  tools/perf/tests/config-fragments/config | 11 +++++++++++
+>>>  3 files changed, 19 insertions(+)
+>>>  create mode 100644 tools/perf/tests/config-fragments/README
+>>>  create mode 100644 tools/perf/tests/config-fragments/arm64
+>>>  create mode 100644 tools/perf/tests/config-fragments/config
+>>>
+>>>
+>>> base-commit: ad5f604e186ac08d12c401e34ea96c09c38ddbc5
+>>> --
+>>> 2.34.1
+>>>
