@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9632276770E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCED9767713
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235113AbjG1UfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41166 "EHLO
+        id S235346AbjG1UfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbjG1UfA (ORCPT
+        with ESMTP id S234197AbjG1UfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:35:00 -0400
+        Fri, 28 Jul 2023 16:35:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAA14490;
-        Fri, 28 Jul 2023 13:34:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7134494
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:34:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0888562207;
-        Fri, 28 Jul 2023 20:34:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF58C433CA;
-        Fri, 28 Jul 2023 20:34:52 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A2B676220C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 20:34:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A610AC433C9;
+        Fri, 28 Jul 2023 20:34:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690576493;
-        bh=mWNsxedk/0WTpVC5xcDAG+vRRRu0kRA2F/h2AlUSJkY=;
+        s=k20201202; t=1690576494;
+        bh=lBNvXKzEBU9SpXm5U6wWrF6OxTFy+UZXhLu/dKriIQI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CiBEtbKQkxm2uJu76Q7F8N2yDxl7U5CsSNj+H9GfJqYbtTv7BZogItSj796IfRVIR
-         reirwqk2lf3SQmPHseotaQPiwRXIv4DFNdE+HCeISoYCebyK8fyGjqQ8W7W40YSkt+
-         ekvACadx5lNO4AbeT1UpcZwlZRfaFTUeki1AZoqq1pn+TiQpFMqT70qy6wOK2IWr4/
-         T6zFjbNqKY91/5trFT+gdfYXLSUjglkvFNyyagx8TzGMljLf09PSPnMSUZ/EkJ9rqm
-         ZQGqEVzV7Mf6CflFGRu02KLrdkoWza77p9pW4Qrx72dMFkuZ9Ets1DZNdBAL1IhH8z
-         ykHmI5hTachgQ==
+        b=YrOFSGFNnrBc5Reg0+yJCBH7k9bWeWBT5Gq+TF4ipLVskyigsxce3viD7Y6iwy+S/
+         whBMJQI/svZuVbpeKEWFPGGOlDIiJ1yfXFd9TBr57ujIvjkA9LgLV0wAppx2r9Xt0K
+         3BdjuxLZa+l5OQTbe2UyHjBtMo0AYThLHmfBix6+VAbWj3e05tx9OkPH5QN0LcENxS
+         8msdjvmyMmwUNx//uRUz0LW6+dyERhdC6rb4ilktALtVGfP7mVHc1IcgSkbHlxDai0
+         zrFGFjGmYl8Nx8x2urnvKcX+I5dNy/iSIC/E6qe8SBndPORNPboomgqV2t0rO/e9Jn
+         blzDGsBDvqg9w==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 07/13] Docs/admin-guide/mm/damon/usage: update for address range type DAMOS filter
-Date:   Fri, 28 Jul 2023 20:34:38 +0000
-Message-Id: <20230728203444.70703-8-sj@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 08/13] mm/damon/core: implement target type damos filter
+Date:   Fri, 28 Jul 2023 20:34:39 +0000
+Message-Id: <20230728203444.70703-9-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230728203444.70703-1-sj@kernel.org>
 References: <20230728203444.70703-1-sj@kernel.org>
@@ -56,63 +55,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update DAMON usage document for the newly added address range type DAMOS
-filter.
+One DAMON context can have multiple monitoring targets, and DAMOS
+schemes are applied to all targets.  In some cases, users need to apply
+different scheme to different targets.  Retrieving monitoring results
+via DAMON sysfs interface' 'tried_regions' directory could be one good
+example.  Also, there could be cases that cgroup DAMOS filter is not
+enough.  All such use cases can be worked around by having multiple
+DAMON contexts having only single target, but it is inefficient in terms
+of resource usage, thogh the overhead is not estimated to be huge.
+
+Implement DAMON monitoring target based DAMOS filter for the case.  Like
+address range target DAMOS filter, handle these filters in the DAMON
+core layer, since it is more efficient than doing in operations set
+layer.  This also means that regions that filtered out by monitoring
+target type DAMOS filters are counted as not tried by the scheme.
+Hence, target granularity monitoring results retrieval via DAMON sysfs
+interface becomes available.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 31 +++++++++++++-------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ include/linux/damon.h |  6 ++++++
+ mm/damon/core.c       | 22 ++++++++++++++++------
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 1859dd6c3834..a9cb9949b796 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -363,15 +363,18 @@ number (``N``) to the file creates the number of child directories named ``0``
- to ``N-1``.  Each directory represents each filter.  The filters are evaluated
- in the numeric order.
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index 476f37a883a4..ae2664d1d5f1 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -227,6 +227,7 @@ struct damos_stat {
+  * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
+  * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
+  * @DAMOS_FILTER_TYPE_ADDR:	Address range.
++ * @DAMOS_FILTER_TYPE_TARGET:	Data Access Monitoring target.
+  * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
+  *
+  * The anon pages type and memcg type filters are handled by underlying
+@@ -244,6 +245,7 @@ enum damos_filter_type {
+ 	DAMOS_FILTER_TYPE_ANON,
+ 	DAMOS_FILTER_TYPE_MEMCG,
+ 	DAMOS_FILTER_TYPE_ADDR,
++	DAMOS_FILTER_TYPE_TARGET,
+ 	NR_DAMOS_FILTER_TYPES,
+ };
  
--Each filter directory contains three files, namely ``type``, ``matcing``, and
--``memcg_path``.  You can write one of two special keywords, ``anon`` for
--anonymous pages, or ``memcg`` for specific memory cgroup filtering.  In case of
--the memory cgroup filtering, you can specify the memory cgroup of the interest
--by writing the path of the memory cgroup from the cgroups mount point to
--``memcg_path`` file.  You can write ``Y`` or ``N`` to ``matching`` file to
--filter out pages that does or does not match to the type, respectively.  Then,
--the scheme's action will not be applied to the pages that specified to be
--filtered out.
-+Each filter directory contains five files, namely ``type``, ``matcing``,
-+``memcg_path``, ``addr_start``, and ``addr_end``.  To ``type`` file, you can
-+write one of three special keywords: ``anon`` for anonymous pages, ``memcg``
-+for specific memory cgroup, or ``addr`` for specific address range (an
-+open-ended interval) filtering.  In case of the memory cgroup filtering, you
-+can specify the memory cgroup of the interest by writing the path of the memory
-+cgroup from the cgroups mount point to ``memcg_path`` file.  In case of the
-+address range filtering, you can specify the start and end address of the range
-+to ``addr_start`` and ``addr_end`` files, respectively.  You can write ``Y`` or
-+``N`` to ``matching`` file to filter out pages that does or does not match to
-+the type, respectively.  Then, the scheme's action will not be applied to the
-+pages that specified to be filtered out.
+@@ -253,6 +255,9 @@ enum damos_filter_type {
+  * @matching:	If the matching page should filtered out or in.
+  * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
+  * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
++ * @target_idx:	Index of the &struct damon_target of
++ *		&damon_ctx->adaptive_targets if @type is
++ *		DAMOS_FILTER_TYPE_TARGET.
+  * @list:	List head for siblings.
+  *
+  * Before applying the &damos->action to a memory region, DAMOS checks if each
+@@ -266,6 +271,7 @@ struct damos_filter {
+ 	union {
+ 		unsigned short memcg_id;
+ 		struct damon_addr_range addr_range;
++		int target_idx;
+ 	};
+ 	struct list_head list;
+ };
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index c061d289c832..334bc5823d83 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -906,13 +906,23 @@ static void damos_update_stat(struct damos *s,
+ 	s->stat.sz_applied += sz_applied;
+ }
  
- For example, below restricts a DAMOS action to be applied to only non-anonymous
- pages of all memory cgroups except ``/having_care_already``.::
-@@ -385,8 +388,14 @@ pages of all memory cgroups except ``/having_care_already``.::
-     echo /having_care_already > 1/memcg_path
-     echo N > 1/matching
+-static bool __damos_filter_out(struct damon_target *t, struct damon_region *r,
+-		struct damos_filter *filter)
++static bool __damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
++		struct damon_region *r, struct damos_filter *filter)
+ {
+ 	bool matched = false;
++	struct damon_target *ti;
++	int target_idx = 0;
+ 	unsigned long start, end;
  
--Note that filters are currently supported only when ``paddr``
--`implementation <sysfs_contexts>` is being used.
-+Note that ``anon`` and ``memcg`` filters are currently supported only when
-+``paddr`` `implementation <sysfs_contexts>` is being used.
-+
-+Also, memory regions that are filtered out by ``addr`` filters are not counted
-+as the scheme has tried to those, while regions that filtered out by other type
-+filters are counted as the scheme has tried to.  The difference is applied to
-+:ref:`stats <damos_stats>` and :ref:`tried regions
-+<sysfs_schemes_tried_regions>`.
+ 	switch (filter->type) {
++	case DAMOS_FILTER_TYPE_TARGET:
++		damon_for_each_target(ti, ctx) {
++			if (ti == t)
++				break;
++			target_idx++;
++		}
++		matched = target_idx == filter->target_idx;
++		break;
+ 	case DAMOS_FILTER_TYPE_ADDR:
+ 		start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
+ 		end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
+@@ -944,13 +954,13 @@ static bool __damos_filter_out(struct damon_target *t, struct damon_region *r,
+ 	return matched == filter->matching;
+ }
  
- .. _sysfs_schemes_stats:
+-static bool damos_filter_out(struct damon_target *t, struct damon_region *r,
+-		struct damos *s)
++static bool damos_filter_out(struct damon_ctx *ctx, struct damon_target *t,
++		struct damon_region *r, struct damos *s)
+ {
+ 	struct damos_filter *filter;
  
+ 	damos_for_each_filter(filter, s) {
+-		if (__damos_filter_out(t, r, filter))
++		if (__damos_filter_out(ctx, t, r, filter))
+ 			return true;
+ 	}
+ 	return false;
+@@ -982,7 +992,7 @@ static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
+ 			}
+ 			damon_split_region_at(t, r, sz);
+ 		}
+-		if (damos_filter_out(t, r, s))
++		if (damos_filter_out(c, t, r, s))
+ 			return;
+ 		ktime_get_coarse_ts64(&begin);
+ 		if (c->callback.before_damos_apply)
 -- 
 2.25.1
 
