@@ -2,125 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680527669AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4896B7669B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbjG1KCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:02:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
+        id S235420AbjG1KCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235627AbjG1KC3 (ORCPT
+        with ESMTP id S235349AbjG1KC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 06:02:29 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA446A2;
-        Fri, 28 Jul 2023 03:01:55 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RC3683prdzVjn4;
-        Fri, 28 Jul 2023 18:00:16 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 18:01:53 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <yoshfuji@linux-ipv6.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yue Haibing <yuehaibing@huawei.com>
-Subject: [PATCH] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
-Date:   Fri, 28 Jul 2023 18:00:35 +0800
-Message-ID: <20230728100035.32092-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE0149CA;
+        Fri, 28 Jul 2023 03:01:59 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id da2d6a680178221d; Fri, 28 Jul 2023 12:01:57 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 0B801661E3D;
+        Fri, 28 Jul 2023 12:01:57 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Subject: [PATCH v2 2/3] cpuidle: teo: Avoid stopping the tick unnecessarily when bailing out
+Date:   Fri, 28 Jul 2023 12:00:46 +0200
+Message-ID: <3254124.aeNJFYEL58@kreacher>
+In-Reply-To: <5707588.DvuYhMxLoT@kreacher>
+References: <5707588.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrieeigddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohepfhhrvggu
+ vghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- skbuff: skb_under_panic: text:ffffffff88771f69 len:56 put:-4
- head:ffff88805f86a800 data:ffff887f5f86a850 tail:0x88 end:0x2c0 dev:pim6reg
- ------------[ cut here ]------------
- kernel BUG at net/core/skbuff.c:192!
- invalid opcode: 0000 [#1] PREEMPT SMP KASAN
- CPU: 2 PID: 22968 Comm: kworker/2:11 Not tainted 6.5.0-rc3-00044-g0a8db05b571a #236
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
- Workqueue: ipv6_addrconf addrconf_dad_work
- RIP: 0010:skb_panic+0x152/0x1d0
- Call Trace:
-  <TASK>
-  skb_push+0xc4/0xe0
-  ip6mr_cache_report+0xd69/0x19b0
-  reg_vif_xmit+0x406/0x690
-  dev_hard_start_xmit+0x17e/0x6e0
-  __dev_queue_xmit+0x2d6a/0x3d20
-  vlan_dev_hard_start_xmit+0x3ab/0x5c0
-  dev_hard_start_xmit+0x17e/0x6e0
-  __dev_queue_xmit+0x2d6a/0x3d20
-  neigh_connected_output+0x3ed/0x570
-  ip6_finish_output2+0x5b5/0x1950
-  ip6_finish_output+0x693/0x11c0
-  ip6_output+0x24b/0x880
-  NF_HOOK.constprop.0+0xfd/0x530
-  ndisc_send_skb+0x9db/0x1400
-  ndisc_send_rs+0x12a/0x6c0
-  addrconf_dad_completed+0x3c9/0xea0
-  addrconf_dad_work+0x849/0x1420
-  process_one_work+0xa22/0x16e0
-  worker_thread+0x679/0x10c0
-  ret_from_fork+0x28/0x60
-  ret_from_fork_asm+0x11/0x20
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-When setup a vlan device on dev pim6reg, DAD ns packet may sent on reg_vif_xmit().
-reg_vif_xmit()
-    ip6mr_cache_report()
-        skb_push(skb, -skb_network_offset(pkt));//skb_network_offset(pkt) is 4
-And skb_push declar as this:
-	void *skb_push(struct sk_buff *skb, unsigned int len);
-		skb->data -= len;
-		//0xffff888f5f86a84c - 0xfffffffc = 0xffff887f5f86a850
-skb->data is set to 0xffff887f5f86a850, which is invalid mem addr, lead to skb_push() fails.
+When teo_select() is going to return early in some special cases, make
+it avoid stopping the tick if the idle state to be returned is shallow.
 
-Fixes: 14fb64e1f449 ("[IPV6] MROUTE: Support PIM-SM (SSM).")
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- net/ipv6/ip6mr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/cpuidle/governors/teo.c |   50 +++++++++++++++++++++++++---------------
+ 1 file changed, 32 insertions(+), 18 deletions(-)
 
-diff --git a/net/ipv6/ip6mr.c b/net/ipv6/ip6mr.c
-index cc3d5ad17257..ee9c2ff8b0e4 100644
---- a/net/ipv6/ip6mr.c
-+++ b/net/ipv6/ip6mr.c
-@@ -1051,9 +1051,9 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
- 	int ret;
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -462,9 +462,9 @@ static int teo_select(struct cpuidle_dri
+ 	/* Avoid unnecessary overhead. */
+ 	if (idx < 0) {
+ 		idx = 0; /* No states enabled, must use 0. */
+-		goto end;
++		goto bail_out;
+ 	} else if (idx == idx0) {
+-		goto end;
++		goto bail_out;
+ 	}
  
- #ifdef CONFIG_IPV6_PIMSM_V2
-+	int nhoff = skb_network_offset(pkt);
- 	if (assert == MRT6MSG_WHOLEPKT || assert == MRT6MSG_WRMIFWHOLE)
--		skb = skb_realloc_headroom(pkt, -skb_network_offset(pkt)
--						+sizeof(*msg));
-+		skb = skb_realloc_headroom(pkt, -nhoff + sizeof(*msg));
- 	else
- #endif
- 		skb = alloc_skb(sizeof(struct ipv6hdr) + sizeof(*msg), GFP_ATOMIC);
-@@ -1073,7 +1073,8 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
- 		   And all this only to mangle msg->im6_msgtype and
- 		   to set msg->im6_mbz to "mbz" :-)
- 		 */
--		skb_push(skb, -skb_network_offset(pkt));
-+		skb->data += nhoff;
-+		skb->len  -= nhoff;
+ 	/*
+@@ -547,8 +547,10 @@ static int teo_select(struct cpuidle_dri
+ 	 * If there is a latency constraint, it may be necessary to select an
+ 	 * idle state shallower than the current candidate one.
+ 	 */
+-	if (idx > constraint_idx)
++	if (idx > constraint_idx) {
+ 		idx = constraint_idx;
++		goto bail_out;
++	}
  
- 		skb_push(skb, sizeof(*msg));
- 		skb_reset_transport_header(skb);
--- 
-2.34.1
+ 	/*
+ 	 * If the CPU is being utilized over the threshold, choose a shallower
+@@ -569,23 +571,35 @@ static int teo_select(struct cpuidle_dri
+ 
+ end:
+ 	/*
+-	 * Don't stop the tick if the selected state is a polling one or if the
+-	 * expected idle duration is shorter than the tick period length.
++	 * Allow the tick to be stopped unless the selected state is a polling
++	 * one or the expected idle duration is shorter than the tick period
++	 * length.
+ 	 */
+-	if (((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) ||
+-	    duration_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
+-		*stop_tick = false;
++	if ((!(drv->states[idx].flags & CPUIDLE_FLAG_POLLING) &&
++	    duration_ns >= TICK_NSEC) || tick_nohz_tick_stopped())
++		return idx;
+ 
+-		/*
+-		 * The tick is not going to be stopped, so if the target
+-		 * residency of the state to be returned is not within the time
+-		 * till the closest timer including the tick, try to correct
+-		 * that.
+-		 */
+-		if (idx > idx0 &&
+-		    drv->states[idx].target_residency_ns > delta_tick)
+-			idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
+-	}
++retain_tick:
++	*stop_tick = false;
++
++	/*
++	 * The tick is not going to be stopped, so if the target residency of
++	 * the state to be returned is not within the time till the closest
++	 * timer including the tick, try to correct that.
++	 */
++	if (idx > idx0 &&
++	    drv->states[idx].target_residency_ns > delta_tick)
++		idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
++
++	return idx;
++
++bail_out:
++	/*
++	 * Do not allow the tick to be stopped if the selected state is shallow
++	 * enough.
++	 */
++	if (drv->states[idx].target_residency_ns < TICK_NSEC)
++		goto retain_tick;
+ 
+ 	return idx;
+ }
+
+
 
