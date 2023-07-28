@@ -2,187 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7B676791C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A9F767926
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbjG1Xoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 19:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40338 "EHLO
+        id S229639AbjG1Xty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjG1Xog (ORCPT
+        with ESMTP id S234180AbjG1Xtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:44:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDDB4231;
-        Fri, 28 Jul 2023 16:44:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C236D62208;
-        Fri, 28 Jul 2023 23:44:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A074C433C8;
-        Fri, 28 Jul 2023 23:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690587872;
-        bh=cWmX8dje9L/t2n0sGzkMqdIweI7HyRrXvW9fatE/XmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sEVL1iBujhtX6KL8vieDNOZRit8WKLYgDPzlWjysDVvATw3dW3wMmAmqcv34C7gRX
-         ixTPaqduG6ZU+yDJxPY0C3oJHXRYtTeQkkOUf9/047ZjrYURNDRWQxHlx+8tFetvl2
-         gs+UByaUwQOUX/PxL/HkxJI+P/D5LLLhEY4Z47Iw2CkDYTcr+cSKgchC9Dlz7hUZsj
-         QKcn/9LAtdOSVe1jtA2tZfPMnMi/QT++V+KxpJ0wvSvygmtVpqvsfWgZUqK1Vq7pfT
-         lrP2XQW+jWAq9IE9uEO62ZFYFgeVg9jPpJiFVb0TnAFo2Jznnfl5w2gzg6V/begJs8
-         lhnvdL500Uy1A==
-Date:   Fri, 28 Jul 2023 16:44:29 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
-        Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/2] asm-generic: Unify uapi bitsperlong.h for arm64,
- riscv and loongarch
-Message-ID: <20230728234429.GA611252@dev-arch.thelio-3990X>
-References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn>
- <1687443219-11946-2-git-send-email-yangtiezhu@loongson.cn>
- <20230727213648.GA354736@dev-arch.thelio-3990X>
- <1777400a-4d9c-4bdb-9d3b-f8808ef054cc@app.fastmail.com>
- <20230728173103.GA1299743@dev-arch.thelio-3990X>
- <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2fa1a31-e8bb-4659-9631-398b564e7c2b@app.fastmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 19:49:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04A14231
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:49:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d087ffcc43cso2484225276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690588191; x=1691192991;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKuAUegaPzT2dlDDYBmBZr79HoAY+aEQdI3dh05x1do=;
+        b=IHEo6B7QLOdOilVB5wc5aR/qpiIxDS03sgjaJUTOEJcD6VD61l9Lyy1JFy0LvDREO9
+         FET/mL7wXo598iMXAYeEqcLFLCCp57wbjR6HQuS/Z6C8ADSCjceP4yMfaJ0tw5prWMpw
+         2JpFGadvMn3PBiCc1JpOjLxl0DRKoktbH5ffR03xZ2bIslQYsbWKZJgcD5gYCPO52zSQ
+         ocflUPkWAdb02Gk8/JK/K6DzWKS2jMQiF6lIZbbL++1gc6dI2CLX3tg77py5Pn+4uX8u
+         D3qoNkTvtsuMxx9C3YzhpWTEXn2pzd+VXCFWoYJGeOpR8t2hXl7ej8sAr35DOqbhVSgd
+         mMsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690588191; x=1691192991;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DKuAUegaPzT2dlDDYBmBZr79HoAY+aEQdI3dh05x1do=;
+        b=exmi2ge7yxbNXdG7OFvInF4YiVZURMMEs9+b4AO2A9Oqh/9e9IzWGOrlGS1Z6M3gkC
+         FY8+zmHBtqnwxnq/1yrlcV9hOrpt7/yi6F7iWQW4cNI3rJzmjL6xWhAGy/SwC74zPR/q
+         DRyeT0Sr1GOeh2zWzzkf7FEthYgPyBVqkc6jKpp2ysgFlFWQA75ARRHap7aji58+R23T
+         Er5tIvGOEXIR5SSoyPH3dXJIqmXcP2/IcMPcDwmo3TEjY2QucGTS1sm2wb+IPg2sPXI+
+         JRDzu+ny+gdlYYvb7Vr4C0mB8+7Wx2bZE6vhIQ5tVQNzWwNhguWwoxJqB2iBUMuuSNy7
+         0ORA==
+X-Gm-Message-State: ABy/qLbtmL6WVMFre9bHvsW9YuibGgdeQ5mtkDXnXGbJZCvKl9DUeioL
+        elZUFiwnvQcSGuOx1Ynhai1yYgXaK1s=
+X-Google-Smtp-Source: APBJJlGAkeWqd8KJHMn6lV6CBNP775TxKkAeVKZcTh6dZof9dTQs+DyK7ozs4XGf3NiPP8Svy1OAk6NS0so=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ae49:0:b0:d29:d655:2690 with SMTP id
+ g9-20020a25ae49000000b00d29d6552690mr11054ybe.10.1690588191184; Fri, 28 Jul
+ 2023 16:49:51 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 16:49:42 -0700
+In-Reply-To: <20230615063757.3039121-1-aik@amd.com>
+Mime-Version: 1.0
+References: <20230615063757.3039121-1-aik@amd.com>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <169058576410.1024559.1052772292093755719.b4-ty@google.com>
+Subject: Re: [PATCH kernel 0/9] KVM: SEV: Enable AMD SEV-ES DebugSwap
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        Alexey Kardashevskiy <aik@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 10:56:38PM +0200, Arnd Bergmann wrote:
-> On Fri, Jul 28, 2023, at 19:31, Nathan Chancellor wrote:
-> > On Fri, Jul 28, 2023 at 01:00:30PM +0200, Arnd Bergmann wrote:
-> >>
-> >> of the uapi version. The sanity check in the kernel-side header
-> >> is intended to cross-check the CONFIG_64BIT value against the
-> >> __BITS_PER_LONG constant from the header.
-> >> 
-> >> My first guess would be that this only worked by accident if the headers
-> >> defaulted to "#define __BITS_PER_LONG 32" in and #undef CONFIG_64BIT"
-> >> when include/generated/autoconf.h, but now the __BITS_PER_LONG value
-> >> is actually correct.
-> >
-> > That seems like a reasonable theory. I am still busy looking into other
-> > things today but I can try to double back to this on Monday if you don't
-> > make any progress.
+On Thu, 15 Jun 2023 16:37:48 +1000, Alexey Kardashevskiy wrote:
+> This is to use another AMD SEV-ES hardware assisted register swap,
+> more detail in 6/9. In the process it's been suggested to fix other
+> things, here is the attempt, with the great help of amders.
 > 
-> I tried reproducing this today on arm64 Debian with linux-6.5-rc3
-> and clang-14.0.6 but I don't see the problem here. With 'make V=1'
-> I see command for building scripts/sorttable is
+> The previous conversation is here:
+> https://lore.kernel.org/r/20230411125718.2297768-1-aik@amd.com
 > 
-> clang -Wp,-MMD,scripts/.sorttable.d -Wall -Wmissing-prototypes \
->  -Wstrict-prototypes -O2 -fomit-frame-pointer -std=gnu11   \
->  -I./tools/include -I./tools/arch/x86/include -DUNWINDER_ORC_ENABLED \
->  -o scripts/sorttable scripts/sorttable.c   -lpthread
-> 
-> which does create an arm64 executable but includes the x86 headers,
-> which is clearly a bug by itself, it just doesn't trigger the problem
-> for me.
+> [...]
 
-I could not initially reproduce this on Debian either but I figured out
-why that might be: the default include paths on Debian look different
-from Fedora so just doing 'headers_install' into /usr will not reproduce
-this. If I add '-H' to that GCC command, Debian shows (I highlighted the
-key difference):
+Finally applied to kvm-x86 svm, thanks!  Though I was *really* tempted to see
+just how snarky the pings would get at week 5+ ;-)
 
-  . /linux-stable/scripts/sorttable.h
-  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
-  ... /linux-stable/tools/include/linux/types.h
-  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stdbool.h
-  .... /usr/lib/gcc/aarch64-linux-gnu/12/include/stddef.h
-  .... /usr/include/aarch64-linux-gnu/asm/types.h
-  ..... /usr/include/asm-generic/types.h
-  ...... /usr/include/asm-generic/int-ll64.h
-  ....... /usr/include/aarch64-linux-gnu/asm/bitsperlong.h <-
-  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
-  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
+[1/9] KVM: SEV: move set_dr_intercepts/clr_dr_intercepts from the header
+      https://github.com/kvm-x86/linux/commit/b265ee7bae11
+[2/9] KVM: SEV: Move SEV's GP_VECTOR intercept setup to SEV
+      https://github.com/kvm-x86/linux/commit/29de732cc95c
+[3/9] KVM: SVM: Rewrite sev_es_prepare_switch_to_guest()'s comment about swap types
+      https://github.com/kvm-x86/linux/commit/f8d808ed1ba0
+[4/9] KVM: SEV-ES: explicitly disable debug
+      https://github.com/kvm-x86/linux/commit/2837dd00f8fc
+[5/9] KVM: SVM/SEV/SEV-ES: Rework intercepts
+      https://github.com/kvm-x86/linux/commit/5aefd3a05fe1
+[6/9] KVM: SEV: Enable data breakpoints in SEV-ES
+      https://github.com/kvm-x86/linux/commit/fb71b1298709
+[7/9] KVM: SEV-ES: Eliminate #DB intercept when DebugSwap enabled
+      https://github.com/kvm-x86/linux/commit/8b54cc7e1817
+[8/9] KVM: SVM: Don't defer NMI unblocking until next exit for SEV-ES guests
+      https://github.com/kvm-x86/linux/commit/c54268e1036f
+[9/9] KVM: SVM: Don't try to pointlessly single-step SEV-ES guests for NMI window
+      https://github.com/kvm-x86/linux/commit/e11f81043a12
 
-Whereas Fedora shows:
-
-  . /linux-stable/scripts/sorttable.h
-  .. /linux-stable/tools/arch/x86/include/asm/orc_types.h
-  ... /linux-stable/tools/include/linux/types.h
-  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stdbool.h
-  .... /usr/lib/gcc/aarch64-redhat-linux/13/include/stddef.h
-  .... /usr/include/asm/types.h
-  ..... /usr/include/asm-generic/types.h
-  ...... /usr/include/asm-generic/int-ll64.h
-  ....... /usr/include/asm/bitsperlong.h <-
-  ........ /linux-stable/tools/include/asm-generic/bitsperlong.h
-  ......... /linux-stable/tools/include/uapi/asm-generic/bitsperlong.h
-
-Running 'gcc -fsyntax-only -v -x c /dev/null' shows:
-
-Debian:
-
-  #include <...> search starts here:
-   /usr/lib/gcc/aarch64-linux-gnu/12/include
-   /usr/local/include
-   /usr/include/aarch64-linux-gnu
-   /usr/include
-  End of search list.
-
-Fedora:
-
-  #include <...> search starts here:
-   /usr/lib/gcc/aarch64-redhat-linux/13/include
-   /usr/local/include
-   /usr/include
-  End of search list.
-
-It looks like Debian installs the architecture asm files into an
-architecture specific subdirectory, which headers_install does not know
-about, so the new "problematic" bitsperlong.h file gets installed to the
-default location but the older one actually gets used because it has
-higher priority in the include search path.
-
-https://salsa.debian.org/kernel-team/linux/-/blob/36b9562acea404ecdc2911aeb2c4539402f441a3/debian/rules.real#L334-336
-
-If I install/manipulate the headers as Debian does, I can reproduce this
-issue in a fresh Debian container.
-
-  # make -C /linux -j$(nproc) INSTALL_HDR_PATH=/usr O=/build headers_install
-  # rm -fr /usr/include/aarch64-linux-gnu/asm
-  # mv -v /usr/include/asm /usr/include/aarch64-linux-gnu
-  # make -C /linux-stable -j$(nproc) ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- O=/build mrproper defconfig prepare
-  ...
-    DESCEND objtool
-  In file included from /usr/include/aarch64-linux-gnu/asm/bitsperlong.h:1,
-                   from /usr/include/asm-generic/int-ll64.h:12,
-                   from /usr/include/asm-generic/types.h:7,
-                   from /usr/include/aarch64-linux-gnu/asm/types.h:1,
-                   from /linux-stable/tools/include/linux/types.h:13,
-                   from /linux-stable/tools/arch/x86/include/asm/orc_types.h:9,
-                   from /linux-stable/scripts/sorttable.h:96,
-                   from /linux-stable/scripts/sorttable.c:201:
-  /linux-stable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
-     14 | #error Inconsistent word size. Check asm/bitsperlong.h
-        |  ^~~~~
-  make[3]: *** [/linux-stable/scripts/Makefile.host:114: scripts/sorttable] Error 1
-  ...
-
-> I also noticed that your command line includes CROSS_COMPILE=x86_64-linux-
-> rather than CROSS_COMPILE=x86_64-linux-gnu-
-
-Right, as I was reproducing this with your kernel.org GCC for
-CROSS_COMPILE and Fedora's GCC for HOSTCC, since I wanted to make sure
-this was not some issue with clang (which it does not appear to be).
-
-Cheers,
-Nathan
+--
+https://github.com/kvm-x86/linux/tree/next
+https://github.com/kvm-x86/linux/tree/fixes
