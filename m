@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 685B1766DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F85766DC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236613AbjG1NAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S236658AbjG1NAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbjG1NAi (ORCPT
+        with ESMTP id S236669AbjG1NAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:00:38 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B8F3ABF
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:35 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3177163aa97so2181104f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:35 -0700 (PDT)
+        Fri, 28 Jul 2023 09:00:48 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6473C03
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:46 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so23467405e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690549234; x=1691154034;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690549244; x=1691154044;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YRiix5Wbu8cUEwewXZbHXypVIH/8I/HGpsd1Ld0zKcA=;
-        b=uHTsjZTdPbQOhN2xXT6vdB0e9iO2q8OEekgi3R6Xo0vBRxfuKAXOdM3HXC2odGRF6g
-         5kH+wW4g1ClRUuR8clAablsRloAM2bbpa9geV5YCXqHdwwC5Ukq2oCs2TF+/zkAT/QQr
-         TzlOqqsX4DFI+O0mCYWL76K/Km7TOj96/J4JfrcaOHHN6C+pjBhJxtT90ZZILcP1gsyt
-         5eZHOG+BeJxR8jz9RpVGayWNNxlXU1KpLdNIoM4/nIdlSX73xh3G4E54Q6n4dQKRnh/P
-         Rciqu/UaxuYOfL4tfruaUs+27zxYNsTJfKLEhmWxYGce3PoXcwg4MWJ+v9E1kj/ak/RP
-         K1Vg==
+        bh=aQ7TENtsQkFhqj90o2fCA4gySBLYYAXohXgU0sJf+S4=;
+        b=TdgjYD7E5glMNvLk6eOm8Wy4ecM1zmFsHffYKx7OaFpA70eMULEUlnhr6EL5yhYphW
+         ZXgzaO13Wjwqi+BroISZ6BxBCOYa39GX3b9vqNLkACsaxu4Rw0XUYwypzCS1i6uPP4fV
+         BZHq9PktFfwqULKVHpjNjOachoMGI7Fs5IbtzmHdqJnmKvQpb3qyXiMYwQtZq5y7pmpP
+         USfLCCn74J/L4j285lKh2BfAh3Q5EgT44fgFVkVj2SW737O2dF2yiCo7MVfUxL/apsgc
+         k5/ZGfkKcLpKJuUzSK00u49bww46McJbYi3k57a/JbSlZObpfe+UmTNo4rJmsYOJRmzM
+         38tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690549234; x=1691154034;
+        d=1e100.net; s=20221208; t=1690549244; x=1691154044;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YRiix5Wbu8cUEwewXZbHXypVIH/8I/HGpsd1Ld0zKcA=;
-        b=XY7HOyXUwzCrQPF+qOIHcQxLqHTrn1CusLAGsNiNSknIwmDfinV8VrZ/+xiR27YMPK
-         zASEuNO4G/AyB04Q6mGjNTFPOsIbW25PLq1WB8SsJKL+xdKUG1oZ5Y99WKwwJKfrOAgT
-         QRlOrFTd7M6DyU155cB0W8tuL7OyoHZ2wRZeZN0oDsMZc5m46fGR4uk9GmbUWS/zgPRR
-         4+4QNNNz4XG/SLI77ToCeBH1u6lsNHapb+kiJpzCUZBrj7z6AM16fuOSxELnPsRwonHs
-         F5sEzZVumsnGB7jyh2Nn5TGfzFBFUTRKtVyJaISCvXZWp74D107mqK2zAkwtBHefTV8o
-         Us+Q==
-X-Gm-Message-State: ABy/qLb77x3wKhGyCTK9eL+zxFzAGLzseGViGmkcmsuWHqt5E0u7NJjO
-        nav/n77Tj+4IcqLEDKb9LXcKGQ==
-X-Google-Smtp-Source: APBJJlGf644aS69IfHiGjdU78DPSh3l7c3O8DBAe3QaqLPykUWVJ56ZWmKuFuzDN/9JXfQ8Mwtgj9A==
-X-Received: by 2002:adf:f009:0:b0:306:2e62:8d2e with SMTP id j9-20020adff009000000b003062e628d2emr2022404wro.1.1690549233876;
-        Fri, 28 Jul 2023 06:00:33 -0700 (PDT)
+        bh=aQ7TENtsQkFhqj90o2fCA4gySBLYYAXohXgU0sJf+S4=;
+        b=K6z7NRZLWa3cda2IkZ8i7LDZEwlSfzhdG9l7UlZ6jhySh3wpkZUr93TDqBxlrNXVzo
+         ACqbm3O5EqNBvL5ARR4sC2WLJLUxsDQgyB6drK0Efh+DcsEstIVAke7fBkSBuO6yMUId
+         V8zGIFXcHeRIdd1r61gRLBSrWQG7Uuqn47aWwFjSWWpGRZhgMPell4Ag3yM9xU9l6djw
+         9caFU/VGXv18E8ajtlsOzty2Vd1k4+hD2BpdMVgH+0fHTIUWKM5q5eF+ibnfx/dNaX4y
+         IqH1eTYDf9eT6kTo0+poh/1yLniAtJbPjNbMCCRpVGFwkAakep+siHkV4KAExPNNU+NB
+         C9kw==
+X-Gm-Message-State: ABy/qLZCo1ESS+WyxO3ka6URbzdywp8kBv4ynMWDwRrNfg8sYByYsoMS
+        6BNdaq555eoPbaiW/5Fo4oktrA==
+X-Google-Smtp-Source: APBJJlEOKfW1ZGAJOsrsnkH2CgAX1ClU5jm83vu2VnugwVvxyESowVTnZPErdgM6iYKniY4urP6VQA==
+X-Received: by 2002:a7b:cd0c:0:b0:3f9:b244:c294 with SMTP id f12-20020a7bcd0c000000b003f9b244c294mr1858283wmj.35.1690549244305;
+        Fri, 28 Jul 2023 06:00:44 -0700 (PDT)
 Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id l18-20020a05600012d200b0031753073abcsm4756456wrx.36.2023.07.28.06.00.32
+        by smtp.gmail.com with ESMTPSA id g17-20020adfe411000000b0031437299fafsm4818155wrm.34.2023.07.28.06.00.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 06:00:33 -0700 (PDT)
-Message-ID: <550b9775-e11a-7481-4b4a-0f4512d3bd26@baylibre.com>
-Date:   Fri, 28 Jul 2023 15:00:32 +0200
+        Fri, 28 Jul 2023 06:00:43 -0700 (PDT)
+Message-ID: <06162f85-bb38-d07a-38f6-e7303c80996c@baylibre.com>
+Date:   Fri, 28 Jul 2023 15:00:42 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v6 03/11] drm/mediatek: gamma: Support SoC specific
- LUT size
+Subject: Re: [PATCH RESEND v6 04/11] drm/mediatek: gamma: Improve and simplify
+ HW LUT calculation
 Content-Language: en-US
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
@@ -67,9 +67,9 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         kernel@collabora.com, ehristev@collabora.com,
         "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
 References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
- <20230727094633.22505-4-angelogioacchino.delregno@collabora.com>
+ <20230727094633.22505-5-angelogioacchino.delregno@collabora.com>
 From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230727094633.22505-4-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230727094633.22505-5-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,8 +84,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
 On 27/07/2023 11:46, AngeloGioacchino Del Regno wrote:
-> Newer SoCs support a bigger Gamma LUT table: wire up a callback
-> to retrieve the correct LUT size for each different Gamma IP.
+> Use drm_color_lut_extract() to avoid open-coding the bits reduction
+> calculations for each color channel and use a struct drm_color_lut
+> to temporarily store the information instead of an array of u32.
+> 
+> Also, slightly improve the precision of the HW LUT calculation in the
+> LUT DIFF case by performing the subtractions on the 16-bits values and
+> doing the 10 bits conversion later.
 
 -- 
 Regards,
