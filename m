@@ -2,159 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9929E767417
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558AB767419
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234278AbjG1R65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S234381AbjG1R7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjG1R6z (ORCPT
+        with ESMTP id S234290AbjG1R7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:58:55 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72E03585
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:58:53 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so12119941fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:58:53 -0700 (PDT)
+        Fri, 28 Jul 2023 13:59:20 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F290C12C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:59:16 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso4745085e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:59:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690567132; x=1691171932;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0PCtupfgsAglFpkiVX1w6ol0/6o9i9+s5VwspB80GYo=;
-        b=XDZ7D0tDXdczOXhwYoFMDZtgXk7+4VRhpTP0+jiRWT470cNjw2UE8MoaNoY80DFI82
-         ouqxU9cpTeRclXF2ZLoK05dDy95rlinO4d+QcZ2Fe3Naf2Ld25W7tRgFT24TleMPzpCV
-         WV22cBb520HRReksmKrQXz0VYiM6GLiBAU6RGbEj9jLgulYWNjzSBWbzmiAI1ZSwtGOe
-         pqmWnQBhd+7201bBvESyfvwniwJQ9BvswK092co/3s9A/AtANxsoilK8wmqm/qiIo73c
-         W86bctkcWQSl03GiAuBWnJdKwebz3NAwM4AsxboUNMwVU/W9zJ0p8KpH29nos077+SAp
-         qcSQ==
+        d=linaro.org; s=google; t=1690567155; x=1691171955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nBFXkAvWa+aXsF7eSgVNSwTnXiRmGqg72Px7o+vU698=;
+        b=gX0YCrz6pmK3ry1xC0Zf6w79H0bLGB8w5z2/6DxdWVZWK5IwccQjQ0uHo23kPd+B6o
+         livSgSJcaM7Y99xB70UDUF2jUN8Ylt4UGKnEVoWzmOpIG47K+jsJufgZioGRmrmPqnh1
+         kqTY3H8Ej5AOU6x9HZa5+Gjf7QkKu8eyQmqips+jdswOp6M+WVTMtsiYaycwzpskf4Kt
+         HNZ2YP93OHVsxktreHeY3qRFjqjqK/g1NXDjOCdtnLDdoAwTnSkU66EeMDD1PffKiD0W
+         uMp2wAjvBxfdjIxMDo1RtymL8jwnAXu6bJUl55+8y13mY8Thc28XaVxom2zDOAtqL0Xz
+         kjdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690567132; x=1691171932;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0PCtupfgsAglFpkiVX1w6ol0/6o9i9+s5VwspB80GYo=;
-        b=ZFr7aMOUlw5NXw/lGwE1P48dC0OgeoioxdmzeiElYj2xy99ICme/Z/sn04czX/QVjN
-         MKoYRVeLI1z/wCI4sLvdDJetyE0GJzVlF04esM0ZYa3iUVjqkxXkyvagmDcWjcACLN6t
-         tHwnmp40VjsNM2mAYyK6MuiZUdjF1DsUTxpmQTFkH4F+2hQJZP2qoPPhtOUYMek0GTK8
-         WWPJIXaDq93R8Np8Lb5n83J5OrDFQ8DGMGAInESfuJK77Y+6h3842Gkzv2ll95xeVcPS
-         K7Al2oDTe2i8Nbe7Z5Tn2J2wXNqA9gbzlpURG/DTq3bXlafqTAClLlw7/ewETI9lm92L
-         vZbA==
-X-Gm-Message-State: ABy/qLYA3IjGSnfxlo1BoBwugL3kuRFGRQgBbomMDaYWHb/tPjNmvFlf
-        K2Q/JtZDQVQE92Vw9sET+wR63Q==
-X-Google-Smtp-Source: APBJJlEFFhc7OMeaagWIzDaKbymNsMF85h7Q0x1dUfB5wcoaOwanCYTEGXrPfpMqvjxStJqUBLQFWw==
-X-Received: by 2002:a2e:a27b:0:b0:2b9:aad7:9d89 with SMTP id k27-20020a2ea27b000000b002b9aad79d89mr2745154ljm.15.1690567131952;
-        Fri, 28 Jul 2023 10:58:51 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id p28-20020a2ea41c000000b002b94327308asm1053770ljn.133.2023.07.28.10.58.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:58:51 -0700 (PDT)
-Message-ID: <9eec378f-9e77-6c08-eb82-2387c77734f1@linaro.org>
-Date:   Fri, 28 Jul 2023 19:58:50 +0200
+        d=1e100.net; s=20221208; t=1690567155; x=1691171955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nBFXkAvWa+aXsF7eSgVNSwTnXiRmGqg72Px7o+vU698=;
+        b=IR0uaNFQSrZ2EDFQWd1bTrL8sUWNwtID/8jNHTVMGLw/3TttIsV8hPmDojG5u7mqF8
+         s8/6wMnUSkx3BKs0mVvTPwsmE2HqSTTqTbW2wc0jKwGpWUNVfzAto70j+LD2zp6eMHyT
+         h93WYUrhJCLT3VvGtyhKElv0iW0enmE/yPc5dnoiUOc1SkpM9tolMnndR2dpoukAPE8N
+         8FXTYSCrpU4N2rFoQqlPxuDs29T7d5s2qszRMqc7qUOCzFjKYyAY9DnPWhTTZ4GERSDk
+         fZbr8WpcuRMP3wBKPoFwLdsGJVsvTg9nNzK1MxkBb6hj9Si4KcU+TpXj0Z5FBwORMo0e
+         1D1w==
+X-Gm-Message-State: ABy/qLaXW9jow1lf94v3fS53E6v6GO4+MkBenc4s3N9YjSdGjH/4eh9L
+        XUa5p6CtIL6AByuHVXwyvm1c0g==
+X-Google-Smtp-Source: APBJJlHzraxaXLJ82YOth2sjomKi5XTmeP574pxXQWxZZHaHnA2C1yV4FlMniC6vxu4o9dhNjGvtLg==
+X-Received: by 2002:a7b:c84e:0:b0:3fc:3991:94be with SMTP id c14-20020a7bc84e000000b003fc399194bemr2274248wml.24.1690567155447;
+        Fri, 28 Jul 2023 10:59:15 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id a10-20020a5d508a000000b0031773e3cf46sm5388803wrt.61.2023.07.28.10.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 10:59:15 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 20:59:12 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
+        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <5be80f9a-7dc9-4f56-9b8c-467321321d48@kadam.mountain>
+References: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
+ <2023072729-sensitive-spyglass-ec96@gregkh>
+ <ZMKDeyGaPQHm6/pr@alolivei-thinkpadt480s.gru.csb>
+ <2023072741-mankind-ethics-b95b@gregkh>
+ <ZMKkgItqf8r8BcRB@alolivei-thinkpadt480s.gru.csb>
+ <2023072752-stem-pupil-76ab@gregkh>
+ <ZMKrcvpu3b15Hdif@alolivei-thinkpadt480s.gru.csb>
+ <2354895b-c127-40eb-8f16-b19e4750e1d0@kadam.mountain>
+ <ZMP+MPdQ2IjJjFCE@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 20/33] iris: vidc: hfi: add helpers for handling shared
- queues
-Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-21-git-send-email-quic_vgarodia@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690550624-14642-21-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMP+MPdQ2IjJjFCE@alolivei-thinkpadt480s.gru.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.2023 15:23, Vikash Garodia wrote:
-> This implements functions to allocate and update the shared memory
-> used for sending commands to firmware and receiving messages from
-> firmware.
+On Fri, Jul 28, 2023 at 02:43:12PM -0300, Alexon Oliveira wrote:
+> On Fri, Jul 28, 2023 at 08:24:56AM +0300, Dan Carpenter wrote:
+> > On Thu, Jul 27, 2023 at 02:37:54PM -0300, Alexon Oliveira wrote:
+> > > > 
+> > > > I would have thought you would get a "line is too long" warning, that
+> > > > didn't happen?
+> > > $ pwd
+> > > /home/alolivei/git/kernels/staging
+> > > $ perl scripts/checkpatch.pl --strict -f drivers/staging/vme_user/vme_bridge.h | grep -i parenthesis
+> > > $ 
+> > > Nope. I didn't get any of that. Check it out:
+> > 
+> > Heh.  The warning is there but you used grep to remove it.
+> > 
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
->  .../platform/qcom/iris/vidc/inc/venus_hfi_queue.h  |  89 ++++
->  .../platform/qcom/iris/vidc/src/venus_hfi_queue.c  | 537 +++++++++++++++++++++
->  2 files changed, 626 insertions(+)
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_queue.h
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/src/venus_hfi_queue.c
+> I only used grep so as not to pollute my answer with too long
+> output, but you can validate the full output by running the following:
 > 
-> diff --git a/drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_queue.h b/drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_queue.h
-> new file mode 100644
-> index 0000000..f533811
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/iris/vidc/inc/venus_hfi_queue.h
-> @@ -0,0 +1,89 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020-2022, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#ifndef _VENUS_HFI_QUEUE_H_
-> +#define _VENUS_HFI_QUEUE_H_
-> +
-> +#include <linux/types.h>
-> +
-> +#include "msm_vidc_internal.h"
-> +
-> +#define HFI_MASK_QHDR_TX_TYPE			0xff000000
-> +#define HFI_MASK_QHDR_RX_TYPE			0x00ff0000
-> +#define HFI_MASK_QHDR_PRI_TYPE			0x0000ff00
-> +#define HFI_MASK_QHDR_Q_ID_TYPE			0x000000ff
-> +#define HFI_Q_ID_HOST_TO_CTRL_CMD_Q		0
-> +#define HFI_Q_ID_CTRL_TO_HOST_MSG_Q		1
-> +#define HFI_Q_ID_CTRL_TO_HOST_DEBUG_Q		2
-> +#define HFI_MASK_QHDR_STATUS			0x000000ff
-GENMASK, BIT()..
+> curl -ks https://people.redhat.com/alolivei/kernel/evidence
+> 
+> You'll see there's no warning related to this patch.
 
-Konrad
+I checked before I emailed you...  The warning is there in your URL as
+well.
+
+CHECK: line length of 121 exceeds 100 columns
+#133: FILE: drivers/staging/vme_user/vme_bridge.h:133:
++	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
+
+> As I mentioned, there are other warnings that were already there before
+> I submitted the patch, and I didn't touch them (yet).
+
+No, these warnings are new.  Here are the relevant lines from the diff.
+Originally it was short and now it's a bajillion characters long.
+
+-       int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
+-               unsigned long long, dma_addr_t, u32, u32);
++       int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
+
+regards,
+dan carpenter
+
