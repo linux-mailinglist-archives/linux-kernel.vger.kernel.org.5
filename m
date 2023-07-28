@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB73766AED
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064F1766AF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbjG1KnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S235433AbjG1KqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbjG1KnO (ORCPT
+        with ESMTP id S233660AbjG1KqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:43:14 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7DEE2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:43:13 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc1218262so21019245e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:43:13 -0700 (PDT)
+        Fri, 28 Jul 2023 06:46:08 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C438A0;
+        Fri, 28 Jul 2023 03:46:05 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bbc2e1c6b2so12920665ad.3;
+        Fri, 28 Jul 2023 03:46:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690540991; x=1691145791;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0qcpfuVCMGDrdLqRszLnxUe+cmtYNnFPz1CO5kAvPCs=;
-        b=Kn6Eyadxs5TmmhGXwtb2w2a2hKu6nRGDFNi6ofLv7Xgs8evLF31c91xaW7GyFKUX7s
-         jKu2Yyo5YVqCloaGb9MCzYdczP5wdQZCSkuGie0dZfEMrsyenb9T5+cxj6HhyQaoKyDX
-         rEY4no0pvlXHpqS2QP1aKXenrorcxiyH805yfNxJj3h9k4IGxX9hcE5eOYzzesZ50e24
-         VjLKT7Ae8gptBbuOzclb2NWFgYiLsWl0GEDPvpo7mZ7ujBDtU2Y35RtFTccvGvCJZgW2
-         74uB+wM8alrGnGQdE0vEIWgIOACpboQ2q4S/qWPAzNgVRlqq+V4WLP6GWTjrwBgkA32r
-         Q7Iw==
+        d=gmail.com; s=20221208; t=1690541164; x=1691145964;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nPaup7cUyVRbpTRQswB0viHDK7comrm26phPHKmAKzI=;
+        b=Fi3Jsfr/+uQ1WuimMMOFiC7VTQSiKAH57Dy7rLtpa0KUxXB02PiP3TRa/+iWga7uC7
+         bcmhfoHiBbFwaFRZ3zvdzZOrEuZJ2qXGFCwSoi3R1I6KXiO4GGGnhd8ZfqsN+5BJk8dP
+         AaFNZPhtufvUsPvUhXzRCTAb4IhFXEvGkz2OF8n0/qXHG78bOxcuMCLWJJ0qhER0vmjV
+         8rf8NfnTxEGftz/fRKlVPl5Qoeaiz4NQ3wcSPJdJ0FaT0nLapQ/W2mFmFJdA/I/9z0VG
+         hSt7iz4Xavn97uvO3BPAQI9WQlpeuRFmoBOyubybOSgl6+flPRJzCnxYMSs3lmJ9RgEH
+         75ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690540991; x=1691145791;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0qcpfuVCMGDrdLqRszLnxUe+cmtYNnFPz1CO5kAvPCs=;
-        b=TT+ofDdOyD4eDsTHtGKh3lxaR1SuoxZ+cH8VDjnvtCaP7+At2+sx7eR/e4ndMELCpZ
-         0L6PCSp6NRsNlJtZfy91zrzyxMg6usQeYO76/fFBOk/0f22LPXEubqe/S6mD0FkVXg+/
-         QBq7CME16VUJ2dnCgMri8sxZS7mK74bOQtWzSgNcXXrsoOtLN5XOGZfOvne9SoKKigig
-         EzNtZqm2m9h8IgCLCAEQe2ChJjmloZtFvdIzL7YQIhcS28aIK6NGKXJyoczkiaRyLscY
-         /97lJe5QA4XQE2uAHdrr1ruLvzRItZkToiPap6Sa5VACgRDkRk3kydCyOEdTcMYtKl5t
-         WprA==
-X-Gm-Message-State: ABy/qLYOGRr66eYSHvxAzOA7Cqqrkn5zIdlfB3uly4ts2uAKK7QG++PN
-        mTpxVsnGwBWRpSqQCUwcuKjmTg==
-X-Google-Smtp-Source: APBJJlEJ4WGtWvMTHhF0N6xAI1lu6JltQyIEQMdnAl9JSRk+TAhydjZrfGGMjQeFXtiuF+iigEWRLQ==
-X-Received: by 2002:a7b:ce07:0:b0:3fe:e1e:5041 with SMTP id m7-20020a7bce07000000b003fe0e1e5041mr889214wmc.32.1690540991684;
-        Fri, 28 Jul 2023 03:43:11 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id l14-20020a1c790e000000b003fbc9371193sm3897602wme.13.2023.07.28.03.43.10
+        d=1e100.net; s=20221208; t=1690541164; x=1691145964;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nPaup7cUyVRbpTRQswB0viHDK7comrm26phPHKmAKzI=;
+        b=VOCu494FfuRUFkcY4Uowd4FKeJh0mu7aezp4ZFGOQcHq6WWBgg418fNY5fSKL+ciXp
+         lRxzgR6IGhcnrBvtnnvDMMgGRiEpQ0zY1vrwSIpTz0Eet5HFdjMhzlER4yVQWcQEXxS9
+         Nsz7H1AExDwM2QuBpt/YAY5k20MQsVb9mW9p+63A4deWJ76eCvZvgA1o03/cdCyqMBuQ
+         wtiejSWutK1w2tV0JyUB0LGleEUJTy8xsCiRsYmSgq6T6sZgYRSpXdWxr+5qGroQ4ZSu
+         6ThUlI+CgVpHzgvpCFO9oef6CxBjC/5ajYY7XHQQfkUvGEUx4bexLQiPJ/YtR6rq1ssu
+         +FSg==
+X-Gm-Message-State: ABy/qLZTVVx7JRCmXyHtImT/whHBYNgiWHc8lHlaySCSni9ukom2szth
+        s4TyyUUiC3DlgFMELmq5iwo=
+X-Google-Smtp-Source: APBJJlEp8OfeRIGgcYdWOg4/SHQSfmeHRo51elGMyHJ+bImcPqLh3vBKYSv3JjL5KaKxE+IKnV3zUw==
+X-Received: by 2002:a17:902:f547:b0:1b8:b827:aa8e with SMTP id h7-20020a170902f54700b001b8b827aa8emr1026011plf.11.1690541164368;
+        Fri, 28 Jul 2023 03:46:04 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:18:efec::75b])
+        by smtp.gmail.com with ESMTPSA id ix17-20020a170902f81100b001b3d0aff88fsm3285386plb.109.2023.07.28.03.45.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:43:11 -0700 (PDT)
-Message-ID: <6a9cc326-06ea-dfce-6a48-043fd7ba0d50@linaro.org>
-Date:   Fri, 28 Jul 2023 11:43:10 +0100
+        Fri, 28 Jul 2023 03:46:02 -0700 (PDT)
+Message-ID: <36b73cf6-4594-c9b2-2896-cd0dd49f8974@gmail.com>
+Date:   Fri, 28 Jul 2023 18:45:54 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] misc: fastrpc: Fix DSP capabilities request
-Content-Language: en-US
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        linux-arm-msm@vger.kernel.org
-Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
-        stable <stable@kernel.org>
-References: <1687328900-3039-1-git-send-email-quic_ekangupt@quicinc.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <1687328900-3039-1-git-send-email-quic_ekangupt@quicinc.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH V3 5/9] x86/hyperv: Use vmmcall to implement Hyper-V
+ hypercall in sev-snp enlightened guest
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>
+References: <20230718032304.136888-1-ltykernel@gmail.com>
+ <20230718032304.136888-6-ltykernel@gmail.com>
+ <BYAPR21MB16882FAEDEFAED59208ED9E0D700A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <89c9f27c-f539-ef75-dc67-bdb0a8480c4b@gmail.com>
+ <BYAPR21MB16880B1657BA4C907D002730D700A@BYAPR21MB1688.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <BYAPR21MB16880B1657BA4C907D002730D700A@BYAPR21MB1688.namprd21.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/26/2023 10:29 PM, Michael Kelley (LINUX) wrote:
+>> Hi Michael:
+>> 	Thanks for your review. The patch mentioned by Boris has not been
+>> merged and so still use X86_FEATURE_SEV_ES here. We may replace the
+>> feature flag with X86_FEATURE_SEV_SNP after it's upstreamed.
+>>
+> Just so I'm clear, is it true that in an SEV-SNP VM, the CPUID flags for
+> SEV-ES*and*  SEV-SNP are set?  That would seem to be necessary for
+> your approach to work.
 
+Yes, SEV and SEV-ES flags are set in the SEV-SNP guest and they are 
+necessary.
 
-On 21/06/2023 07:28, Ekansh Gupta wrote:
-> Incorrect remote arguments are getting passed when requesting for
-> capabilities from DSP. Also there is no requirement to update the
-> PD type as it might cause problems for any PD other than user PD.
-> In addition to this, the collected capability information is not
-> getting copied properly to user. Add changes to address these
-> problems and get correct DSP capabilities.
 > 
-> Fixes: 6c16fd8bdd40 ("misc: fastrpc: Add support to get DSP capabilities")
-> Cc: stable <stable@kernel.org>
-> Tested-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> ---
->   drivers/misc/fastrpc.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index 30d4d04..776c596 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -1693,9 +1693,8 @@ static int fastrpc_get_info_from_dsp(struct fastrpc_user *fl, uint32_t *dsp_attr
->   	args[0].length = sizeof(dsp_attr_buf_len);
->   	args[0].fd = -1;
->   	args[1].ptr = (u64)(uintptr_t)&dsp_attr_buf[1];
+> I wonder if it would be better to take the patch from Brijesh Singh
+> that adds X86_FEATURE_SEV_SNP and add it to your patch set (with
+> Brijesh's agreement, of course).  That patch is small and straightforward.
+>
 
-<--snip
-> -	args[1].length = dsp_attr_buf_len;
-> +	args[1].length = dsp_attr_buf_len * sizeof(uint32_t);
--->
->   	args[1].fd = -1;
-> -	fl->pd = USER_PD;
+I will sync with Brijesh. Thanks for suggestion.
 
-this looks fine.
->   
->   	return fastrpc_internal_invoke(fl, true, FASTRPC_DSP_UTILITIES_HANDLE,
->   				       FASTRPC_SCALARS(0, 1, 1), args);
-> @@ -1723,7 +1722,7 @@ static int fastrpc_get_info_from_kernel(struct fastrpc_ioctl_capability *cap,
->   	if (!dsp_attributes)
->   		return -ENOMEM;
->   
-
-<-- snip
-> -	err = fastrpc_get_info_from_dsp(fl, dsp_attributes, FASTRPC_MAX_DSP_ATTRIBUTES_LEN);
-> +	err = fastrpc_get_info_from_dsp(fl, dsp_attributes, FASTRPC_MAX_DSP_ATTRIBUTES);
-
--->
-Before this change we passed a value which is already multipled now we 
-pass a value that will be mulitplied inside fastrpc_get_info_from_dsp, 
-both will work, but I dont see any value in doing this change.
-
-
->   	if (err == DSP_UNSUPPORTED_API) {
->   		dev_info(&cctx->rpdev->dev,
->   			 "Warning: DSP capabilities not supported on domain: %d\n", domain);
-> @@ -1776,7 +1775,7 @@ static int fastrpc_get_dsp_info(struct fastrpc_user *fl, char __user *argp)
->   	if (err)
->   		return err;
->   
-> -	if (copy_to_user(argp, &cap.capability, sizeof(cap.capability)))
-> +	if (copy_to_user(argp, &cap, sizeof(cap)))
-
-Can you explain this change, and what is it fixing exactly?
-
---srini
->   		return -EFAULT;
->   
->   	return 0;
