@@ -2,252 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75AA7673F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5E07673F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233580AbjG1RxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S233256AbjG1RxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbjG1RxA (ORCPT
+        with ESMTP id S234744AbjG1RxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:53:00 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026A73588
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:52:56 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so4026860e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:52:55 -0700 (PDT)
+        Fri, 28 Jul 2023 13:53:06 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CAF10CB;
+        Fri, 28 Jul 2023 10:53:04 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1bbaa549bcbso1905775fac.3;
+        Fri, 28 Jul 2023 10:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690566774; x=1691171574;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SL9ORKV7EqBhOElFVd5vnXP5HIc4kBpa3/e5CVa3AcI=;
-        b=pqFdhBqFxV1vXMvtxKLGxGxna95F1EiQl9DfW5vPWfjygSsGAPJVhk/KnTZ6XknLRX
-         4wuQTBAqBwSmD+yZD1feRNTbJkPrZP+uRmAPJioI+LQ4VnezuvhnI9bJqgi8mgPbxbcb
-         pn3aUKhv94/LRzp6AdJP6Oq28Oj2VssSCrIalB50p1ADeC7mrLr2J/Rp2kAqstsjhvEq
-         ovJoLW2L9Nss1Z1Q3ACWF4x75jn4Kt9G5GKQIwvJDbWvktlYqyr8oZPOKNc59p644fYC
-         tMnG/Obj3S/m+EfIO3pAsMfFkG/5REqXFem0cxQ7WTy33D6WEremM0krEIaIiTNH4GLX
-         dK9g==
+        d=gmail.com; s=20221208; t=1690566784; x=1691171584;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=KPNS8nAOP/RrJU4iRZ8nyG6vRXAppFpu9cvYXhZaAxc=;
+        b=nQ6vN8NS6m7Tan+my3bjZ8J88psSiUXdIDGTCFbkm3XGBoyu9KtsoU7ip+ICqFCkEe
+         Yo3JuqUTUU6hhqZ+hykzQjoQJ2AANRvUdC1Z3un3XG/Iprm6mW6vrszW052D0i9U1D5T
+         fmU9YHgNUw5ztoJ5/671ZUR6W4255E6/LCq64/j/+F0MoBBHJLONQCeeXT6MumA3SZuO
+         EQw8xem00AlGM0GwCvCk7FINT9GyLtgm1/DnlrA27m22j4ulSlUzJnTuqKPA/SneY6nR
+         UwrbGXmGj7LeT4Orh/Hv9nrPwNYEWccCxo+ne2u0ATeOs3SbbAzvOIzPeq35i/TAq7xj
+         B+kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690566774; x=1691171574;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SL9ORKV7EqBhOElFVd5vnXP5HIc4kBpa3/e5CVa3AcI=;
-        b=KCiJSjJ5vguarBIsQA0qZj8GaB1H824i0Yo7jA8EXL/TlJhzyKSTmzfhIbWziJLp1c
-         VftwYNgyoKLObGYjQQb80G0ys1dFKMf/4BKLflvE8yg2ckUbDuclBE4RT5aLFtuWlrT/
-         v6WFyX5rvw8NxvzVLHPM/eGdSuKsng61wwhCHGWTVmg2lCRbeMzObGRYzimlHZyYBiZw
-         6KapvyYH/nxgmjey/2oHIQYM3ygdonZpe5XRXGiTDM6cIiTSru01xMxo1dtWGfw4y/KX
-         pO6fFYEAaOodLJ/TvjgjHA85iRc58IZ9ipEh8BcedfYdgFZHu3xAgoEeD/8Sx8it0Dt3
-         fikQ==
-X-Gm-Message-State: ABy/qLain/FF4bcK1rGD6Bd62/9jcUcCqRXGUXUVz78zD9VPbISK/ny4
-        8sI1LcVcBu4ekKeOmNcFMabqqQ==
-X-Google-Smtp-Source: APBJJlFGl6dMuVGyqR+QXnIAMlLI6igrXS/52DnF0PKtWsKYAVFtQO+cRwB9qSKji1k4xApHlFoDSw==
-X-Received: by 2002:a19:e05b:0:b0:4ef:ed49:fcc2 with SMTP id g27-20020a19e05b000000b004efed49fcc2mr2127957lfj.26.1690566774123;
-        Fri, 28 Jul 2023 10:52:54 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id z5-20020ac25de5000000b004fdc8e52ddasm911957lfq.129.2023.07.28.10.52.53
+        d=1e100.net; s=20221208; t=1690566784; x=1691171584;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KPNS8nAOP/RrJU4iRZ8nyG6vRXAppFpu9cvYXhZaAxc=;
+        b=V0+xOCoxJDDBhU8coXYxNf2ZjP4CEDPBaKZppifMetjd4QYqJPZjWywPsGR0X1HaV/
+         vUZAS/cqyXjJ0Ec92VkdA1P6uCyXI1aGv5UJyMw7p4ahwnprHgNjhYgPcp49GlgMz+pe
+         838jrDyt5iAiaaJBKmiuYvoW31njBe+IlnduopsKqbBZVDC3N4pYXFVJN6Vcu7x5rBYt
+         F16BTKw+bzN8OmJy0TyufW5um+HqUJk1l8ZpQekgQv+xCrhbC3z22bQPvBzuYH1HCeWk
+         iygFop4VIJ41NYDIjKlvMJR7p1UWzt6hQdYAtuxbswuBXj8xBAGqCUbmQWqIn8s8ws2T
+         iPrQ==
+X-Gm-Message-State: ABy/qLaB2HQEvmCPUppO00S27cs9h8ulCWb1yQXBY8nEpX2X+eM7TG6Q
+        jA9qdP7vzz5tZYYpunrq26A=
+X-Google-Smtp-Source: APBJJlFWUlb2Ly6uOXXtBjf7T2juDs1nvjcT+1uhjAxlFk76hRAEcAa1Pn2egCbqR+btETo0eD44KA==
+X-Received: by 2002:a05:6870:f70b:b0:1b7:609f:e0d4 with SMTP id ej11-20020a056870f70b00b001b7609fe0d4mr3676457oab.15.1690566781962;
+        Fri, 28 Jul 2023 10:53:01 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k9-20020a02c649000000b0042b265bf3besm1207040jan.115.2023.07.28.10.52.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:52:53 -0700 (PDT)
-Message-ID: <60271d41-7807-0808-34d0-684ab9e81a90@linaro.org>
-Date:   Fri, 28 Jul 2023 19:52:52 +0200
+        Fri, 28 Jul 2023 10:53:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f400750d-e53c-65f8-210f-aa127d8f6beb@roeck-us.net>
+Date:   Fri, 28 Jul 2023 10:52:59 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/33] iris: vidc: add helpers for state management
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Add Silicom Platform Driver
 Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-15-git-send-email-quic_vgarodia@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690550624-14642-15-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Huibin Shi <henrys@silicom-usa.com>,
+        Henry Shi <henryshi2018@gmail.com>,
+        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Cc:     "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+References: <20230718160104.2716-1-henryshi2018@gmail.com>
+ <fb62b2e7-7c7c-dc2e-768d-3393f151eb32@wanadoo.fr>
+ <PA4PR04MB92225B65A45868A9CBE25B999A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+ <08469a96-24f2-2099-0a0a-019cb81f976b@wanadoo.fr>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <08469a96-24f2-2099-0a0a-019cb81f976b@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.2023 15:23, Vikash Garodia wrote:
-> This implements the functions to handle different core
-> and instance state transitions.
+On 7/28/23 09:47, Christophe JAILLET wrote:
+> Le 28/07/2023 à 14:59, Huibin Shi a écrit :
+>> Christophe,
+>>
+>> Thanks for the comments. See my comments below.
+>>
+>> Updated patch will be sent out later after review comments from other reviewers are addressed.
+>>
+>> Henry
+>> -----Original Message-----
+>> From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> Sent: Tuesday, July 25, 2023 5:03 PM
+>> To: Henry Shi <henryshi2018@gmail.com>; hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux@roeck-us.net; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org
+>> Cc: hb_shi2003@yahoo.com; Huibin Shi <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
+>> Subject: Re: [PATCH] Add Silicom Platform Driver
+>>
+>> Caution: This is an external email. Please take care when clicking links or opening attachments.
+>>
+>>
+>> Le 18/07/2023 à 18:01, Henry Shi a écrit :
+>>> The Silicom platform (silicom-platform) Linux driver for Swisscom
+>>> Business Box (Swisscom BB) as well as Cordoba family products is a
+>>> software solution designed to facilitate the efficient management and
+>>> control of devices through the integration of various Linux
+>>> frameworks. This platform driver provides seamless support for device
+>>> management via the Linux LED framework, GPIO framework, Hardware
+>>> Monitoring (HWMON), and device attributes. The Silicom platform
+>>> driver's compatibility with these Linux frameworks allows applications
+>>> to access and control Cordoba family devices using existing software
+>>> that is compatible with these frameworks. This compatibility
+>>> simplifies the development process, reduces dependencies on
+>>> proprietary solutions, and promotes interoperability with other
+>>> Linux-based systems and software.
+>>>
+>>> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+>>> ---
+>>
+>> [...]
+>>
+>>> +static int __init silicom_mc_leds_register(struct device *dev,
+>>> +                                        const struct led_classdev_mc
+>>> +*mc_leds) {
+>>> +     struct led_classdev_mc *led;
+>>> +     int i, err;
+>>> +
+>>> +     for (i = 0; mc_leds[i].led_cdev.name; i++) {
+>>> +             /* allocate and copy data from the init constansts */
+>>> +             led = devm_kzalloc(dev, sizeof(struct led_classdev_mc),
+>>> + GFP_KERNEL);
+>>
+>> sizeof(*led) is shorter.
+>> Mostly a matter of taste.
+>>
+>> Maybe even devm_kmemdup()?
+>>
+>> Henry: thanks. Devm_kmemdup() API requires additional argument that is not necessary of this driver. I prefer devm_kzalloc for now.
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
-[...]
+> CJ: The only additionnal parameter I can think of are the one of memcpy() ...
+> 
+>>
+>>> +             if (IS_ERR_OR_NULL(led)) {
+>>
+>> if (!led)
+>> is enough.
+>>
+>> Henry: OK, changed
+>>
+>>> +                     dev_err(dev, "Failed to alloc
+>>> + led_classdev_mc[%d]: %ld\n", i, PTR_ERR(led));
+>>
+>> This kind of message is useless and should be removed (checkpatch should warn about it)
+>>
+>> Henry: OK, removed.
+>>
+>>> +                     return -ENOMEM;
+>>> +             }
+>>> +             memcpy(led, &mc_leds[i], sizeof(*led));
+> 
+> ... here.
+> 
+> devm_kzalloc() + this memcpy() could be done with only devm_kmemdup().
+> 
+> This is mostly a matter of taste.
+> 
 
-> +enum msm_vidc_core_sub_state {
-> +	CORE_SUBSTATE_NONE                   = 0x0,
-> +	CORE_SUBSTATE_POWER_ENABLE           = BIT(0),
-> +	CORE_SUBSTATE_GDSC_HANDOFF           = BIT(1),
-> +	CORE_SUBSTATE_PM_SUSPEND             = BIT(2),
-> +	CORE_SUBSTATE_FW_PWR_CTRL            = BIT(3),
-> +	CORE_SUBSTATE_PAGE_FAULT             = BIT(4),
-> +	CORE_SUBSTATE_CPU_WATCHDOG           = BIT(5),
-> +	CORE_SUBSTATE_VIDEO_UNRESPONSIVE     = BIT(6),
-> +	CORE_SUBSTATE_MAX                    = BIT(7),
-Why store it in an enum if they're not consecutive? You can make them
-preprocessor #defines.
+I don't think that using (or not using) available API functions should
+be a matter of taste, or the next step might be to re-implement memcpy().
 
-> +};
-> +
-> +enum msm_vidc_core_event_type {
-> +	CORE_EVENT_NONE                      = BIT(0),
-> +	CORE_EVENT_UPDATE_SUB_STATE          = BIT(1),
-> +};
-Ditto (even though techinically they're consecutive)
+Guenter
 
-> +
-> +enum msm_vidc_state {
-> +	MSM_VIDC_OPEN,
-> +	MSM_VIDC_INPUT_STREAMING,
-> +	MSM_VIDC_OUTPUT_STREAMING,
-> +	MSM_VIDC_STREAMING,
-> +	MSM_VIDC_CLOSE,
-> +	MSM_VIDC_ERROR,
-> +};
-> +
-> +#define MSM_VIDC_SUB_STATE_NONE          0
-> +#define MSM_VIDC_MAX_SUB_STATES          6
-> +/*
-> + * max value of inst->sub_state if all
-> + * the 6 valid bits are set i.e 111111==>63
-> + */
-> +#define MSM_VIDC_MAX_SUB_STATE_VALUE     ((1 << MSM_VIDC_MAX_SUB_STATES) - 1)
-> +
-> +enum msm_vidc_sub_state {
-> +	MSM_VIDC_DRAIN                     = BIT(0),
-> +	MSM_VIDC_DRC                       = BIT(1),
-> +	MSM_VIDC_DRAIN_LAST_BUFFER         = BIT(2),
-> +	MSM_VIDC_DRC_LAST_BUFFER           = BIT(3),
-> +	MSM_VIDC_INPUT_PAUSE               = BIT(4),
-> +	MSM_VIDC_OUTPUT_PAUSE              = BIT(5),
-Ditto
-
-[...]
-
-> +static int msm_vidc_core_init_wait_state(struct msm_vidc_core *core,
-> +					 enum msm_vidc_core_event_type type,
-> +					 struct msm_vidc_event_data *data)
-> +{
-> +	int rc = 0;
-rc seems never assigned again, good to drop
-
-[...]
-
-> +
-> +static int msm_vidc_core_init_state(struct msm_vidc_core *core,
-> +				    enum msm_vidc_core_event_type type,
-> +				    struct msm_vidc_event_data *data)
-> +{
-> +	int rc = 0;
-Ditto
-
-[...]
-
-> +static int msm_vidc_core_error_state(struct msm_vidc_core *core,
-> +				     enum msm_vidc_core_event_type type,
-> +				     struct msm_vidc_event_data *data)
-> +{
-> +	int rc = 0;
-Ditto
-
-[...]
-
-> +int msm_vidc_update_core_state(struct msm_vidc_core *core,
-> +			       enum msm_vidc_core_state request_state, const char *func)
-> +{
-> +	struct msm_vidc_core_state_handle *state_handle = NULL;
-> +	int rc = 0;
-Ditto
-
-[...]
-
-> +int msm_vidc_change_core_state(struct msm_vidc_core *core,
-> +			       enum msm_vidc_core_state request_state, const char *func)
-> +{
-> +	enum msm_vidc_allow allow;
-> +	int rc = 0;
-Ditto
-
-[...]
-
-> +bool is_state(struct msm_vidc_inst *inst, enum msm_vidc_state state)
-> +{
-> +	return inst->state == state;
-> +}
-> +
-> +bool is_sub_state(struct msm_vidc_inst *inst, enum msm_vidc_sub_state sub_state)
-> +{
-> +	return (inst->sub_state & sub_state);
-> +}
-Why are there 2 separate funcs for core and inst? Don't we have
-a pointer within one to the other?
-
-
-[...]
-
-> +
-> +int msm_vidc_update_state(struct msm_vidc_inst *inst,
-> +			  enum msm_vidc_state request_state, const char *func)
-> +{
-> +	struct msm_vidc_state_handle *state_handle = NULL;
-> +	int rc = 0;
-rc is unused
-
-[...]
-
-> +static int msm_vidc_set_sub_state(struct msm_vidc_inst *inst,
-> +				  enum msm_vidc_sub_state sub_state, const char *func)
-> +{
-> +	char sub_state_name[MAX_NAME_LENGTH];
-> +	int cnt, rc = 0;
-ditto
-
-Konrad
