@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C6B76653E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C44A76652F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbjG1HZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        id S234108AbjG1HW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbjG1HZ0 (ORCPT
+        with ESMTP id S234109AbjG1HWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:25:26 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610BB3A9C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:25:16 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RBzcD4nkyzLnxW;
-        Fri, 28 Jul 2023 15:22:36 +0800 (CST)
-Received: from huawei.com (10.50.163.32) by kwepemm600005.china.huawei.com
- (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 15:25:13 +0800
-From:   liulongfang <liulongfang@huawei.com>
-To:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>
-CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <liulongfang@huawei.com>
-Subject: [PATCH v12 4/4] Documentation: add debugfs description for vfio
-Date:   Fri, 28 Jul 2023 15:21:04 +0800
-Message-ID: <20230728072104.64834-5-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20230728072104.64834-1-liulongfang@huawei.com>
-References: <20230728072104.64834-1-liulongfang@huawei.com>
+        Fri, 28 Jul 2023 03:22:23 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623D7170D;
+        Fri, 28 Jul 2023 00:22:19 -0700 (PDT)
+Received: from [192.168.0.2] (ip5f5ae990.dynamic.kabel-deutschland.de [95.90.233.144])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D9C1561E5FE01;
+        Fri, 28 Jul 2023 09:21:31 +0200 (CEST)
+Message-ID: <fefca89d-2bf3-b732-4812-5341203c0818@molgen.mpg.de>
+Date:   Fri, 28 Jul 2023 09:21:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH -next] md:ensure mddev->reconfig_mutex is hold when try to
+ get mddev->sync_thread
+To:     Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc:     song@kernel.org, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        linan122@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+        lilingfeng3@huawei.com
+References: <20230727072047.389637-1-lilingfeng@huaweicloud.com>
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20230727072047.389637-1-lilingfeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,114 +49,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longfang Liu <liulongfang@huawei.com>
+Dear Li,
 
-1.Add two debugfs document description file to help users understand
-how to use the accelerator live migration driver's debugfs.
-2.Update the file paths that need to be maintained in MAINTAINERS
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
----
- .../ABI/testing/debugfs-hisi-migration        | 36 +++++++++++++++++++
- Documentation/ABI/testing/debugfs-vfio        | 25 +++++++++++++
- MAINTAINERS                                   |  2 ++
- 3 files changed, 63 insertions(+)
- create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
- create mode 100644 Documentation/ABI/testing/debugfs-vfio
+Thank you for your patch.
 
-diff --git a/Documentation/ABI/testing/debugfs-hisi-migration b/Documentation/ABI/testing/debugfs-hisi-migration
-new file mode 100644
-index 000000000000..791dd8a09575
---- /dev/null
-+++ b/Documentation/ABI/testing/debugfs-hisi-migration
-@@ -0,0 +1,36 @@
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/data
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Read the live migration data of the vfio device.
-+		These data include device status data, queue configuration
-+		data and some task configuration data.
-+		The output format of the data is defined by the live
-+		migration driver.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/attr
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Read the live migration attributes of the vfio device.
-+		it include device status attributes and data length attributes
-+		The output format of the attributes is defined by the live
-+		migration driver.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/io_test
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Trigger the HiSilicon accelerator device to perform
-+		the io test through the read operation. If successful,
-+		it returns the execution result of mailbox. If fails,
-+		it returns error log result.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/save
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Trigger the Hisilicon accelerator device to perform
-+		the state saving operation of live migration through the read
-+		operation, and output the operation log results.
-+
-diff --git a/Documentation/ABI/testing/debugfs-vfio b/Documentation/ABI/testing/debugfs-vfio
-new file mode 100644
-index 000000000000..086a8c52df35
---- /dev/null
-+++ b/Documentation/ABI/testing/debugfs-vfio
-@@ -0,0 +1,25 @@
-+What:		/sys/kernel/debug/vfio
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	This debugfs file directory is used for debugging
-+		of vfio devices, it's a common directory for all vfio devices.
-+		Each device should create a device subdirectory under this
-+		directory by referencing the public registration interface.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	This debugfs file directory is used for debugging
-+		of vfio devices that support live migration.
-+		The debugfs of each vfio device that supports live migration
-+		could be created under this directory.
-+
-+What:		/sys/kernel/debug/vfio/<device>/migration/state
-+Date:		Aug 2023
-+KernelVersion:  6.6
-+Contact:	Longfang Liu <liulongfang@huawei.com>
-+Description:	Read the live migration status of the vfio device.
-+		The status of these live migrations includes:
-+		ERROR, RUNNING, STOP, STOP_COPY, RESUMING.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d516295978a4..d4fb7547b687 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22304,6 +22304,7 @@ L:	kvm@vger.kernel.org
- S:	Maintained
- T:	git https://github.com/awilliam/linux-vfio.git
- F:	Documentation/ABI/testing/sysfs-devices-vfio-dev
-+F:	Documentation/ABI/testing/debugfs-vfio
- F:	Documentation/driver-api/vfio.rst
- F:	drivers/vfio/
- F:	include/linux/vfio.h
-@@ -22321,6 +22322,7 @@ M:	Longfang Liu <liulongfang@huawei.com>
- M:	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
- L:	kvm@vger.kernel.org
- S:	Maintained
-+F:	Documentation/ABI/testing/debugfs-hisi-migration
- F:	drivers/vfio/pci/hisilicon/
- 
- VFIO MEDIATED DEVICE DRIVERS
--- 
-2.24.0
+I notice two minor things in the summary:
 
+1.  Please add a space after the colon
+2.  “is hold” should be “is held”.
+
+Maybe even shorter:
+
+md: Hold mddev->reconfig_mutex when trying to get mddev->sync_thread
+
+Am 27.07.23 um 09:20 schrieb Li Lingfeng:
+> Commit ba9d9f1a707f ("Revert "md: unlock mddev before reap sync_thread in
+> action_store"") removed the scenario of calling md_unregister_thread()
+> without holding mddev->reconfig_mutex, so add a lock holding check before
+> acquiring mddev->sync_thread.
+
+Maybe also mention, that this is done by passing `mdev` to 
+`md_unregister_thread()`.
+
+Plesae add a Fixes: tag.
+
+> Signed-off-by: Li Lingfeng <lilingfeng@huaweicloud.com>
+> ---
+>   drivers/md/md-cluster.c  | 8 ++++----
+>   drivers/md/md.c          | 9 +++++----
+>   drivers/md/md.h          | 2 +-
+>   drivers/md/raid1.c       | 4 ++--
+>   drivers/md/raid10.c      | 2 +-
+>   drivers/md/raid5-cache.c | 2 +-
+>   drivers/md/raid5.c       | 2 +-
+>   7 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/md/md-cluster.c b/drivers/md/md-cluster.c
+> index 3d9fd74233df..1e26eb223349 100644
+> --- a/drivers/md/md-cluster.c
+> +++ b/drivers/md/md-cluster.c
+> @@ -952,8 +952,8 @@ static int join(struct mddev *mddev, int nodes)
+>   	return 0;
+>   err:
+>   	set_bit(MD_CLUSTER_HOLDING_MUTEX_FOR_RECVD, &cinfo->state);
+> -	md_unregister_thread(&cinfo->recovery_thread);
+> -	md_unregister_thread(&cinfo->recv_thread);
+> +	md_unregister_thread(mddev, &cinfo->recovery_thread);
+> +	md_unregister_thread(mddev, &cinfo->recv_thread);
+>   	lockres_free(cinfo->message_lockres);
+>   	lockres_free(cinfo->token_lockres);
+>   	lockres_free(cinfo->ack_lockres);
+> @@ -1015,8 +1015,8 @@ static int leave(struct mddev *mddev)
+>   		resync_bitmap(mddev);
+>   
+>   	set_bit(MD_CLUSTER_HOLDING_MUTEX_FOR_RECVD, &cinfo->state);
+> -	md_unregister_thread(&cinfo->recovery_thread);
+> -	md_unregister_thread(&cinfo->recv_thread);
+> +	md_unregister_thread(mddev, &cinfo->recovery_thread);
+> +	md_unregister_thread(mddev, &cinfo->recv_thread);
+>   	lockres_free(cinfo->message_lockres);
+>   	lockres_free(cinfo->token_lockres);
+>   	lockres_free(cinfo->ack_lockres);
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index a3d98273b295..5c3c19b8d509 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -6258,7 +6258,7 @@ static void mddev_detach(struct mddev *mddev)
+>   		mddev->pers->quiesce(mddev, 1);
+>   		mddev->pers->quiesce(mddev, 0);
+>   	}
+> -	md_unregister_thread(&mddev->thread);
+> +	md_unregister_thread(mddev, &mddev->thread);
+>   	if (mddev->queue)
+>   		blk_sync_queue(mddev->queue); /* the unplug fn references 'conf'*/
+>   }
+> @@ -7990,9 +7990,10 @@ struct md_thread *md_register_thread(void (*run) (struct md_thread *),
+>   }
+>   EXPORT_SYMBOL(md_register_thread);
+>   
+> -void md_unregister_thread(struct md_thread __rcu **threadp)
+> +void md_unregister_thread(struct mddev *mddev, struct md_thread __rcu **threadp)
+>   {
+> -	struct md_thread *thread = rcu_dereference_protected(*threadp, true);
+> +	struct md_thread *thread = rcu_dereference_protected(*threadp,
+> +					lockdep_is_held(&mddev->reconfig_mutex));
+>   
+>   	if (!thread)
+>   		return;
+> @@ -9484,7 +9485,7 @@ void md_reap_sync_thread(struct mddev *mddev)
+>   	bool is_reshaped = false;
+>   
+>   	/* resync has finished, collect result */
+> -	md_unregister_thread(&mddev->sync_thread);
+> +	md_unregister_thread(mddev, &mddev->sync_thread);
+>   	atomic_inc(&mddev->sync_seq);
+>   
+>   	if (!test_bit(MD_RECOVERY_INTR, &mddev->recovery) &&
+> diff --git a/drivers/md/md.h b/drivers/md/md.h
+> index 8ae957480976..9bcb77bca963 100644
+> --- a/drivers/md/md.h
+> +++ b/drivers/md/md.h
+> @@ -761,7 +761,7 @@ extern struct md_thread *md_register_thread(
+>   	void (*run)(struct md_thread *thread),
+>   	struct mddev *mddev,
+>   	const char *name);
+> -extern void md_unregister_thread(struct md_thread __rcu **threadp);
+> +extern void md_unregister_thread(struct mddev *mddev, struct md_thread __rcu **threadp);
+>   extern void md_wakeup_thread(struct md_thread __rcu *thread);
+>   extern void md_check_recovery(struct mddev *mddev);
+>   extern void md_reap_sync_thread(struct mddev *mddev);
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 23d211969565..581dfbdfca89 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -3152,7 +3152,7 @@ static int raid1_run(struct mddev *mddev)
+>   	 * RAID1 needs at least one disk in active
+>   	 */
+>   	if (conf->raid_disks - mddev->degraded < 1) {
+> -		md_unregister_thread(&conf->thread);
+> +		md_unregister_thread(mddev, &conf->thread);
+>   		ret = -EINVAL;
+>   		goto abort;
+>   	}
+> @@ -3179,7 +3179,7 @@ static int raid1_run(struct mddev *mddev)
+>   
+>   	ret = md_integrity_register(mddev);
+>   	if (ret) {
+> -		md_unregister_thread(&mddev->thread);
+> +		md_unregister_thread(mddev, &mddev->thread);
+>   		goto abort;
+>   	}
+>   	return 0;
+> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> index 16aa9d735880..6188b71186f4 100644
+> --- a/drivers/md/raid10.c
+> +++ b/drivers/md/raid10.c
+> @@ -4320,7 +4320,7 @@ static int raid10_run(struct mddev *mddev)
+>   	return 0;
+>   
+>   out_free_conf:
+> -	md_unregister_thread(&mddev->thread);
+> +	md_unregister_thread(mddev, &mddev->thread);
+>   	raid10_free_conf(conf);
+>   	mddev->private = NULL;
+>   out:
+> diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
+> index 47ba7d9e81e1..ce9b42fd54b9 100644
+> --- a/drivers/md/raid5-cache.c
+> +++ b/drivers/md/raid5-cache.c
+> @@ -3171,7 +3171,7 @@ void r5l_exit_log(struct r5conf *conf)
+>   	/* Ensure disable_writeback_work wakes up and exits */
+>   	wake_up(&conf->mddev->sb_wait);
+>   	flush_work(&log->disable_writeback_work);
+> -	md_unregister_thread(&log->reclaim_thread);
+> +	md_unregister_thread(conf->mddev, &log->reclaim_thread);
+>   
+>   	conf->log = NULL;
+>   
+> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> index 4cdb35e54251..f41f9b712d3d 100644
+> --- a/drivers/md/raid5.c
+> +++ b/drivers/md/raid5.c
+> @@ -8107,7 +8107,7 @@ static int raid5_run(struct mddev *mddev)
+>   
+>   	return 0;
+>   abort:
+> -	md_unregister_thread(&mddev->thread);
+> +	md_unregister_thread(mddev, &mddev->thread);
+>   	print_raid5_conf(conf);
+>   	free_conf(conf);
+>   	mddev->private = NULL;
