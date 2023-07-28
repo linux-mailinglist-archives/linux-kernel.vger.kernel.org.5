@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78077667F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3157667F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjG1I5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        id S234271AbjG1I6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233450AbjG1I5r (ORCPT
+        with ESMTP id S235198AbjG1I6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:57:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4894E106;
-        Fri, 28 Jul 2023 01:57:46 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FA95D75;
-        Fri, 28 Jul 2023 01:58:29 -0700 (PDT)
-Received: from [10.57.0.116] (unknown [10.57.0.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03EA73F67D;
-        Fri, 28 Jul 2023 01:57:42 -0700 (PDT)
-Message-ID: <c44279fa-9c7c-fe18-8040-677ed3eb1a95@arm.com>
-Date:   Fri, 28 Jul 2023 09:57:41 +0100
+        Fri, 28 Jul 2023 04:58:05 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ABA1731;
+        Fri, 28 Jul 2023 01:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=XO04uRIxA4guTxkcu7RQ08+aVzvwwBtSGQVQXA0Q9qY=; b=YW8CDX+BSc+DoSsnuaaZktrZz2
+        kCfgSWqWG0mc07IWwSkwV/nAj+QpdmxsgqTPkwBQpN9FJJeOKZOXtYLxMm34DK5b+RHS6hbFKjZl5
+        b6AhT3lsOPdaQE5iBux5Jvos5RJvBE/gmISN4uj4lfahQnSkPejXnEpXUpgSPUiMtuTw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qPJII-002WG8-IX; Fri, 28 Jul 2023 10:57:54 +0200
+Date:   Fri, 28 Jul 2023 10:57:54 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, wangpeiyang1@huawei.com,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 5/6] net: hns3: fix wrong print link down up
+Message-ID: <7ce32389-550b-4beb-82b1-1b6183fdeabb@lunn.ch>
+References: <20230728075840.4022760-1-shaojijie@huawei.com>
+ <20230728075840.4022760-6-shaojijie@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1 3/6] perf build: Add Wextra for C++ compilation
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20230728064917.767761-1-irogers@google.com>
- <20230728064917.767761-4-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230728064917.767761-4-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728075840.4022760-6-shaojijie@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/07/2023 07:49, Ian Rogers wrote:
-> Commit d58ac0bf8d1e ("perf build: Add clang and llvm compile and
-> linking support") added -Wall and -Wno-strict-aliasing for CXXFLAGS,
-> but not -Wextra. -Wno-strict-aliasing is no longer necessary, adding
-> -Wextra for CXXFLAGS requires adding -Wno-unused-parameter clang.cpp
-> and clang-test.cpp for LIBCLANGLLVM=1 to build.
+On Fri, Jul 28, 2023 at 03:58:39PM +0800, Jijie Shao wrote:
+> From: Peiyang Wang <wangpeiyang1@huawei.com>
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/Makefile.config | 2 +-
->  tools/perf/util/c++/Build  | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> index 14709a6bd622..fe7afe6d8529 100644
-> --- a/tools/perf/Makefile.config
-> +++ b/tools/perf/Makefile.config
-> @@ -333,8 +333,8 @@ CORE_CFLAGS += -std=gnu11
->  
->  CXXFLAGS += -std=gnu++14 -fno-exceptions -fno-rtti
->  CXXFLAGS += -Wall
-> +CXXFLAGS += -Wextra
->  CXXFLAGS += -fno-omit-frame-pointer
-> -CXXFLAGS += -Wno-strict-aliasing
->  
->  HOSTCFLAGS += -Wall
->  HOSTCFLAGS += -Wextra
-> diff --git a/tools/perf/util/c++/Build b/tools/perf/util/c++/Build
-> index 613ecfd76527..8610d032ac19 100644
-> --- a/tools/perf/util/c++/Build
-> +++ b/tools/perf/util/c++/Build
-> @@ -1,2 +1,5 @@
->  perf-$(CONFIG_CLANGLLVM) += clang.o
->  perf-$(CONFIG_CLANGLLVM) += clang-test.o
-> +
-> +CXXFLAGS_clang.o += -Wno-unused-parameter
-> +CXXFLAGS_clang-test.o += -Wno-unused-parameter
+> This patch will fix a wrong print "device link down/up". Consider a case
+> that set autoneg to off with same speed and duplex configuration. The link
+> is always up while the phy state is set to PHY_UP and set back to
+> PHY_RUNNING later. It will print link down when the phy state is not
+> PHY_RUNNING. To avoid that, the condition should include PHY_UP.
 
-Acked-by: James Clark <james.clark@arm.com>
+Does this really happen? If autoneg is on, and there is link, it means
+the link peer is auto using auto-neg. If you turn auto-neg off, the
+link peer is not going to know what speed to use, and so the link will
+go down. The link will only come up again when you reconfigure the
+link peer to also not use auto-neg.
+
+I don't see how you can turn auto-neg off and not loose the link.
+
+  Andrew
