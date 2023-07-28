@@ -2,213 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0214A766072
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C81766075
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjG1AAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 20:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S231587AbjG1ACp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 20:02:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjG1AAx (ORCPT
+        with ESMTP id S229621AbjG1ACl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 20:00:53 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82E51FC4;
-        Thu, 27 Jul 2023 17:00:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690502449;
-        bh=kYd9MCQv4bFC1hzebI8mdDUARnwaJlRVeWrVkwXaNSE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QzshTNZnGsk63UlEyMgQU+nueGmpdigNrI99Ra2O5xGNSte1DqLsWFLvaYeqSKCKw
-         tf++yNGPiwjBAbMchcnRYWqiCFvL1oTTKIbOULzVHfHI6m3rbrprJPMbo5i0Qn+gKt
-         KotTxcLCzaaXDLNNlqfpkf7lUgHdJRTQyCMxCSV4WF/mDgEsq4csgdhEJeJyBb798C
-         opZRFhjEzkIB8yC6a5WsUWf/7Hdx18xVGa3VGGQosX10oOEduV3gFInROMPpKsEzIR
-         Hgq0qlAf1h64H1nQvoTqU06q1LA1eg/kW+siOtCLAl5zhXMB5Nd/rIqSqEe4fa98XU
-         4pQdtE8JSczMg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBnpT1G5Dz4wZp;
-        Fri, 28 Jul 2023 10:00:49 +1000 (AEST)
-Date:   Fri, 28 Jul 2023 10:00:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
-Message-ID: <20230728100047.4f9cd375@canb.auug.org.au>
-In-Reply-To: <20230728092915.732d4115@canb.auug.org.au>
-References: <20230728091849.7f32259d@canb.auug.org.au>
-        <20230728092915.732d4115@canb.auug.org.au>
+        Thu, 27 Jul 2023 20:02:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65F71FC4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:02:39 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690502556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7VJGt1oaLzPzNdavyJrVicoAw+051RIQFfoOM0HgoeU=;
+        b=dQK4Uv3Jodc5Kva/yhj7snHQMbc4IQxTJMp4U872Rxlxuappy4YirzsNEJmcF+0S/uJmRk
+        962OlizcyNyzUieKkvemuiiUUnujNDvPQRzqpfJQzFlmiA2a9+F0n/Qtq+i9K5xSlXgdrc
+        Y1hAKdbcW9wlhERuxx1l64FrMQC3cG05hRJ4CRXI8AZb+fmY7VZKhGa6UtvDSNUZ8Z9Gve
+        wvujpa/2zcMhMVXs6mdF93jR46ON1sCb5cXFwtlD7ZvuVLcBgQQsxBDLwXcoTSFbV5jjiE
+        l/07s4ZkDCBnRXxoC6sn0BcwvnyhKPpRHspEKHh+ME/ERTsxn5v/oqib0K0AFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690502556;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7VJGt1oaLzPzNdavyJrVicoAw+051RIQFfoOM0HgoeU=;
+        b=FRGww273bt+j0G7gz/jDlCvorOZWl24p2vIVefkL/ZJvV5Q1bemqEJiBEf869gCwu9JLzP
+        KFKmOA+icKLXn4Ag==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH printk v2 0/8] wire up nbcon consoles
+Date:   Fri, 28 Jul 2023 02:08:25 +0206
+Message-Id: <20230728000233.50887-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hSaS_j2wk.vRPV.Q0JkEiBf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hSaS_j2wk.vRPV.Q0JkEiBf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+This is v2 of a series to introduce the new non-BKL (nbcon)
+consoles. This series is only a subset of the original
+v1 [0]. In particular, this series represents patches 5-10 of
+the v1 series. For information about the motivation of the
+atomic consoles, please read the cover letter of v1.
 
-On Fri, 28 Jul 2023 09:29:15 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Fri, 28 Jul 2023 09:18:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the mm tree got a conflict in:
-> >=20
-> >   mm/memory.c
-> >=20
-> > between commit:
-> >=20
-> >   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma unde=
-r vma lock")
-> >=20
-> > from Linus' tree and commits:
-> >=20
-> >   69f6bbd1317f ("mm: handle userfaults under VMA lock")
-> >   a3bdf38e85aa ("mm: allow per-VMA locks on file-backed VMAs")
-> >=20
-> > from the mm tree.
-> >=20
-> > I fixed it up (I think, please check - see below) and can carry the fix
-> > as necessary. This is now fixed as far as linux-next is concerned, but
-> > any non trivial conflicts should be mentioned to your upstream
-> > maintainer when your tree is submitted for merging.  You may also want
-> > to consider cooperating with the maintainer of the conflicting tree to
-> > minimise any particularly complex conflicts.
-> >=20
-> > --=20
-> > Cheers,
-> > Stephen Rothwell
-> >=20
-> > diff --cc mm/memory.c
-> > index ca632b58f792,271982fab2b8..000000000000
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@@ -5392,32 -5597,18 +5597,21 @@@ retry
-> >   	if (!vma)
-> >   		goto inval;
-> >  =20
-> > - 	/* Only anonymous and tcp vmas are supported for now */
-> > - 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
-> >  -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
-> >  -	if (vma_is_anonymous(vma) && !vma->anon_vma)
-> > --		goto inval;
-> > --
-> >   	if (!vma_start_read(vma))
-> >   		goto inval;
-> >  =20
-> >  +	/*
-> >  +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
-> >  +	 * This check must happen after vma_start_read(); otherwise, a
-> >  +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
-> >  +	 * from its anon_vma.
-> >  +	 */
-> > - 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
-> > - 		goto inval_end_read;
-> > -=20
-> > - 	/*
-> > - 	 * Due to the possibility of userfault handler dropping mmap_lock, a=
-void
-> > - 	 * it for now and fall back to page fault handling under mmap_lock.
-> > - 	 */
-> > - 	if (userfaultfd_armed(vma))
-> > ++	if (unlikely(vma_is_anonymous(vma) && !vma_is_tcp(vma)))
-> >  +		goto inval_end_read;
-> >  +
-> >   	/* Check since vm_start/vm_end might change before we lock the VMA */
-> >  -	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)) {
-> >  -		vma_end_read(vma);
-> >  -		goto inval;
-> >  -	}
-> >  +	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end))
-> >  +		goto inval_end_read;
-> >  =20
-> >   	/* Check if the VMA got isolated after we found it */
-> >   	if (vma->detached) { =20
->=20
-> Sorry, doesn't even build ... let me try that again.
+This series focuses on wiring up the printk subsystem to
+be able to use the nbcon consoles and implement their ownership
+interfaces and rules. This series does _not_ include threaded
+printing, atomic printing regions, or nbcon drivers. Those
+features will be added in separate follow-up series.
 
-I have gone with below.  Again, please check.
+There is not much that has _not_ changed since v1. Here is an
+attempt to list the changes:
 
---=20
-Cheers,
-Stephen Rothwell
+- new naming:
+    OLD         NEW
+    bkl         legacy
+    nobkl       nbcon
+    CON_NO_BKL  CON_NBCON
+    cons_()     nbcon_()
 
-diff --cc mm/memory.c
-index ca632b58f792,271982fab2b8..000000000000
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@@ -5392,32 -5597,18 +5597,21 @@@ retry
-  	if (!vma)
-  		goto inval;
- =20
-- 	/* Only anonymous and tcp vmas are supported for now */
-- 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
- -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
- -	if (vma_is_anonymous(vma) && !vma->anon_vma)
---		goto inval;
---
-  	if (!vma_start_read(vma))
-  		goto inval;
- =20
- +	/*
- +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
- +	 * This check must happen after vma_start_read(); otherwise, a
- +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
- +	 * from its anon_vma.
- +	 */
-- 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
-- 		goto inval_end_read;
--=20
-- 	/*
-- 	 * Due to the possibility of userfault handler dropping mmap_lock, avoid
-- 	 * it for now and fall back to page fault handling under mmap_lock.
-- 	 */
-- 	if (userfaultfd_armed(vma))
-++	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
- +		goto inval_end_read;
- +
-  	/* Check since vm_start/vm_end might change before we lock the VMA */
- -	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)) {
- -		vma_end_read(vma);
- -		goto inval;
- -	}
- +	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end))
- +		goto inval_end_read;
- =20
-  	/* Check if the VMA got isolated after we found it */
-  	if (vma->detached) {
+- rather than allocating context objects per-cpu, per-prio, and
+  per-console, require the context object to sit on the stack
 
---Sig_/hSaS_j2wk.vRPV.Q0JkEiBf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- serialize nbcon consoles with the console_lock until there
+  are no more boot consoles registered
 
------BEGIN PGP SIGNATURE-----
+- update @have_boot_console and @have_legacy_console on
+  unregister_console()
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTDBTAACgkQAVBC80lX
-0GzkCgf/QACgILMpdlRwvRTIkbx7OqyjpWUAKpW2FU9kGrd9EcelDxIdWI8vptKy
-KFKn7Pw6Dy5HNMplbYeNcX0JufbYzEjktj2WBsgX4S4PivyMaahC/sTYoYxTK8pC
-xDqLw1GvtLUfXvixlv87b8KE3YsHXF6dcn8D6+2B1bk7fT8DytVbPPrgJ6DZek+P
-rqOAHL+iN5zVIDXY13W/yLoxecWHYF7lLgb2gej1oDH0s47MI2KBp/455/iUCnxl
-CG0BkUx0c/WFzEBAn+GZ7aZNG75S7Gu3zLTYp28b67QTpQCz3xR4dIxmD0AzbKpa
-Tukj2PCd5+i/u4uYbLQkBK1SNTP8XQ==
-=Bbl/
------END PGP SIGNATURE-----
+- only use @nbcon_seq for the nbcon sequence counter
 
---Sig_/hSaS_j2wk.vRPV.Q0JkEiBf--
+- avoid console lock in __pr_flush() if there are only nbcon
+  consoles
+
+- use only 1 state variable instead of CUR and REQ states
+
+- replace saved states in the context with boolean flags
+
+- use atomic long for nbcon_seq, expanded as needed on 32bit
+  systems
+
+- instead of the owner performing the handover, now the owner
+  gives up ownership and the waiter takes ownership
+
+- remove unnecessary state and context fields
+
+- simplify sequence tracking by only allowing incrementing
+  (positive) updates
+
+- simplify buffer handling by only allowing hostile takeovers
+  in the single panic context
+
+- remove early buffer handling because there is no early window
+
+- carefully consider individual state bits rather than
+  performing general set compares
+
+- split the code for various locking strategies based on
+  complete methods rather than functional pieces
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20230302195618.156940-1-john.ogness@linutronix.de
+
+John Ogness (1):
+  printk: Provide debug_store() for nbcon debugging
+
+Thomas Gleixner (7):
+  printk: Add non-BKL (nbcon) console basic infrastructure
+  printk: nbcon: Add acquire/release logic
+  printk: nbcon: Add buffer management
+  printk: nbcon: Add sequence handling
+  printk: nbcon: Add ownership state functions
+  printk: nbcon: Add emit function and callback function for atomic
+    printing
+  printk: nbcon: Add functions for drivers to mark unsafe regions
+
+ include/linux/console.h      | 132 +++++
+ kernel/printk/Makefile       |   2 +-
+ kernel/printk/internal.h     |  29 ++
+ kernel/printk/printk.c       | 156 ++++--
+ kernel/printk/printk_nbcon.c | 955 +++++++++++++++++++++++++++++++++++
+ 5 files changed, 1243 insertions(+), 31 deletions(-)
+ create mode 100644 kernel/printk/printk_nbcon.c
+
+
+base-commit: 132a90d1527fedba2d95085c951ccf00dbbebe41
+-- 
+2.39.2
+
