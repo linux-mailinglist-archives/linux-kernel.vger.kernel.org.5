@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CDB7667FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8747667FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234495AbjG1I7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        id S234679AbjG1I77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbjG1I7O (ORCPT
+        with ESMTP id S233289AbjG1I75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:59:14 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6223CB6;
-        Fri, 28 Jul 2023 01:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690534753; x=1722070753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MiL4JcDaa63IArou+91r6pY5u0LcbVgPl5qQ2hlkSVE=;
-  b=Aci547Ddl/b9rgct6PAMHn/ZGEbywszOomZ72hT12UI/i1SjkkEaAKqw
-   uSh5vLrMt7jBUMAN7bunjHZ42p9TmVpHNobfnviUacRA6BHfmAlM7x9V1
-   zDyT+W3k+KHxEdrmuLAuY1DqMLV6c+knsLoGcPZ4YGcLD15IQ2sveuOwd
-   m/syT2iFtRKP6+N7kEGLgOnJdTeQSdxYwWeqSJUpweCiagarSaeq+21g0
-   yeCvusOuHq76p4K7tyeL6C7CkKAGEKLJfIhtNwoqAvMtvbgVlm+ENlTr0
-   UL6BBvwRJ9J4WZ4qiMfN1XTIyWY5AAZj0iBxBGHtmqTtkiu9VvbAp1BHC
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="asc'?scan'208";a="227039084"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 01:59:12 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 01:59:06 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 28 Jul 2023 01:59:04 -0700
-Date:   Fri, 28 Jul 2023 09:58:29 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     William Qiu <william.qiu@starfivetech.com>
-CC:     <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Ziv Xu <ziv.xu@starfivetech.com>
-Subject: Re: [PATCH v5 2/3] spi: cadence-quadspi: Add clock configuration for
- StarFive JH7110 QSPI
-Message-ID: <20230728-retread-starch-3399b921718a@wendy>
-References: <20230719092545.1961401-1-william.qiu@starfivetech.com>
- <20230719092545.1961401-3-william.qiu@starfivetech.com>
+        Fri, 28 Jul 2023 04:59:57 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55126B6;
+        Fri, 28 Jul 2023 01:59:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 13BD3219B8;
+        Fri, 28 Jul 2023 08:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690534795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1yAQj2+drdxOg7W1xMMihj39vdtsCy+k9dgFHWRk9A=;
+        b=N0rVU+qUJPLE+5c9Fe2qfiQ4QbEZQ7uOazDWiF4qTaPR4NpWdkKkS8jI1Ck9Zwe6bae+mr
+        im99wL/jnP6faUX3Uo+ijZIgeoz6KKw7xaNAQ915XLzDNdTC3uQAKTpq9JFAvSll8YZiD7
+        G2jza5/bdosUUSWdRG9M5kbJdc7MUAM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690534795;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1yAQj2+drdxOg7W1xMMihj39vdtsCy+k9dgFHWRk9A=;
+        b=XmNFzsCzeT8aHQNyOZo67JTXE5Qr3GO1uEDjLw+BvbWChknTYmwEHmuilIIvi327JDHha2
+        NIeacs1hzD+6y8AA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04B0D133F7;
+        Fri, 28 Jul 2023 08:59:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3oH3AIuDw2SleQAAMHmgww
+        (envelope-from <dwagner@suse.de>); Fri, 28 Jul 2023 08:59:55 +0000
+Date:   Fri, 28 Jul 2023 10:59:54 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>
+Subject: Re: [PATCH blktests v1 00/11] Switch to allowed_host
+Message-ID: <ldlkosfmplhb4cqunws5nknpxrgcenbgytlabszl547vygxtbh@xsd7pzil6nk4>
+References: <20230726124644.12619-1-dwagner@suse.de>
+ <hqi4yxhc3jc7v7ywf5qvy3u2th676irollqngbsh62rrlitkyy@rhl6axqsve5s>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xNYFoGrA1aUBT3jU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719092545.1961401-3-william.qiu@starfivetech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <hqi4yxhc3jc7v7ywf5qvy3u2th676irollqngbsh62rrlitkyy@rhl6axqsve5s>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---xNYFoGrA1aUBT3jU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 28, 2023 at 08:20:55AM +0000, Shinichiro Kawasaki wrote:
+> > Except the last two patches are just refactoring patches. So if we decide to use
+> > common target setup/cleanup helpers, I think we could add them before the last
+> > two patches, which would make the last patch way smaller.
+> 
+> I ran 'make check' and saw shellecheck complaints below. I added 'export' to the
+> variables then they disappeared.
+> 
+> tests/nvme/rc:19:1: warning: def_subsysnqn appears unused. Verify use (or export if used externally). [SC2034]
+> tests/nvme/rc:20:1: warning: def_file_path appears unused. Verify use (or export if used externally). [SC2034]
+> tests/nvme/rc:21:1: warning: def_file_path appears unused. Verify use (or export if used externally). [SC2034]
 
-Hey William,
+These variables are not used in nvme/rc at the point I introduce them. Only in
+the tests. I could add the nvmet setup/cleanup helpers with the variables which
+would make those warnings go away. But these helpers would then add the end of
+the series. Also not really good. I don't what is best here.
 
-Since you pinged things, I had a quick look.
+> I also ran nvme tests with the export fixes and saw no regression. Looks good
+> from test run point of view.
 
-On Wed, Jul 19, 2023 at 05:25:44PM +0800, William Qiu wrote:
-> Add JH7110's clock initialization code to the driver.
->=20
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+Thanks!
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202306022017.UbwjjWRN-lkp@i=
-ntel.com/
-> Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> Closes: https://lore.kernel.org/r/202306040644.6ZHs55x4-lkp@intel.com/
-
-These, as pointed out on the last version, should not be here.
-kernel test robot complaints about un-applied patches do not get a
-reported-by etc in subsequent versions of the same patchset, just as
-comments from human reviewers do not require reported-by tags.
-
-These tags should only be used when the code has been merged & you need
-to create a new patch to fix the issue.
-
-Hopefully, if the code is otherwise fine, Mark can fix this when he
-applies the patches.
-
-Thanks,
-Conor.
-
---xNYFoGrA1aUBT3jU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMODNQAKCRB4tDGHoIJi
-0mzeAQCBPYWIWHeooX+CXBqGc/l9282J1oE6BHOrLzocw8kPYgD/W6c8DOiiyTgN
-vgn7W2EhtJn/VjCn1htwnUyT49JAdw8=
-=BRBz
------END PGP SIGNATURE-----
-
---xNYFoGrA1aUBT3jU--
+BTW, I am off next week, so I don't think I send soon an update.
