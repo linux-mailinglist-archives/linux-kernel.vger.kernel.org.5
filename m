@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A637660C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391B27660C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbjG1A3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 20:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S229683AbjG1A3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 20:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbjG1A3S (ORCPT
+        with ESMTP id S229661AbjG1A3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 20:29:18 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 198DC271C;
-        Thu, 27 Jul 2023 17:29:16 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF0A0D75;
-        Thu, 27 Jul 2023 17:29:58 -0700 (PDT)
-Received: from slackpad.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BEB33F5A1;
-        Thu, 27 Jul 2023 17:29:13 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 01:28:24 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Matthew Croughan <matthew.croughan@nix.how>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: arm: sunxi: add Mango Pi MQ-Quad
- binding
-Message-ID: <20230728012818.52f32a00@slackpad.lan>
-In-Reply-To: <20230719172551.3248166-3-matthew.croughan@nix.how>
-References: <20230719172551.3248166-1-matthew.croughan@nix.how>
-        <20230719172551.3248166-3-matthew.croughan@nix.how>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+        Thu, 27 Jul 2023 20:29:50 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFA23582;
+        Thu, 27 Jul 2023 17:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690504177;
+        bh=X8AmoRd7j6IOIhRCdXxSiOZ/cStGRBhbymInXzXdygQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VUmhHHPPqDvFFoYhKV7MGwCD15EfGQhAd+AIV8nLJGwAmHlNH/9DIML6XHiCP1gKU
+         mqXukKq4mkoqca+QjVCv1iDF3c030xeHhpKkavrtI5VElK5cewJszDnUEdtc9rWWkT
+         kCj3G0+uyz8lbqBEfSxWfac9SgMvWBVk2KV3BZfVSp9PceUBRdV8ASArO4Hob6UCcf
+         c1GS5LICBqxbNwyxLaQoRPseaN9uBH3BKNeJu286TWa/PqhnWybycgpdbQ0j+X1ZoA
+         f2Bhfa6UjOEZ4XXSHevPNa4/wKBvi10sJBAoOUlNiH1hS/KnorndUX/FMg5jYMl2Uf
+         VwOBVw/DaTYWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBpRj1R6Pz4wqW;
+        Fri, 28 Jul 2023 10:29:37 +1000 (AEST)
+Date:   Fri, 28 Jul 2023 10:29:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
+Message-ID: <20230728102936.66ac5481@canb.auug.org.au>
+In-Reply-To: <CAJuCfpHzz3f8Ru7C03b-TVi0g1gcMOEkd2v=ayNunEEs6cjZxg@mail.gmail.com>
+References: <20230728091849.7f32259d@canb.auug.org.au>
+        <ZMMCnvc3h7XT/NM2@casper.infradead.org>
+        <20230728102022.7593856b@canb.auug.org.au>
+        <CAJuCfpHzz3f8Ru7C03b-TVi0g1gcMOEkd2v=ayNunEEs6cjZxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/ibcE64FQAK_yk=G3_xqGofC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 18:25:40 +0100
-Matthew Croughan <matthew.croughan@nix.how> wrote:
+--Sig_/ibcE64FQAK_yk=G3_xqGofC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Document board compatible names for Mango Pi MQ-Quad
-> 
-> Signed-off-by: Matthew Croughan <matthew.croughan@nix.how>
+Hi Suren,
 
-Thanks, this looks alright, but needs to be the first patch in this
-series. Otherwise dt-validate would fail when bisecting lands just in
-the middle.
-For the patch itself:
+On Thu, 27 Jul 2023 17:23:45 -0700 Suren Baghdasaryan <surenb@google.com> w=
+rote:
+>
+ Hmm. 657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma
+> under vma lock") should be adding a "inval_end_read" label. At least I
+> see it in https://lore.kernel.org/all/20230726214103.3261108-3-jannh@goog=
+le.com/
+> and will check Linus' tree in a min. I don't see that label in your
+> patch...
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+It's there in the file, but did not conflict with anything.  What I
+published is not a "patch" as such, but a diff showing the conflict
+resolution.
 
+--=20
 Cheers,
-Andre
+Stephen Rothwell
 
+--Sig_/ibcE64FQAK_yk=G3_xqGofC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> ---
->  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-> index ee8fdd2da869..2dee815fd45e 100644
-> --- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-> +++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-> @@ -862,6 +862,11 @@ properties:
->            - const: wexler,tab7200
->            - const: allwinner,sun7i-a20
->  
-> +      - description: MangoPi MQ-Quad
-> +        items:
-> +          - const: widora,mangopi-mq-quad
-> +          - const: allwinner,sun50i-h616
-> +
->        - description: MangoPi MQ-R board
->          items:
->            - const: widora,mangopi-mq-r-t113
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTDC/AACgkQAVBC80lX
+0GzTHQf+OXi69pT60/0oRH3j3DOf4ju7DTL6TG9umapsSJ3UzJdRhz8k35gSW8NR
+7adT/rHmqegKfUqlLP3ybAXDGI1eGSKVLBQp5pTx0EeIe36o+zGBRwNECADwmo9h
+YaFDvVceDEVC8VQcyqVLz+ny45cvIdS/Fn0jvny2S/xIM7BTJo0OPwFWoKEpX+Pz
+86rKQKIUiJtJBIj4oDwBv23b5FzfQjO0OgFRNouJK3kLzHiBfmITzLtThY0ANQhv
+I/TUdFyB9SGA+navuFvbJ0GWElvRF6F8tfjNY+OJOJ+1t18E+hX1G7qQ0lyfzwO+
+utMDB6Ku0IOLkVszSM2xv9E8SsaLiA==
+=onmo
+-----END PGP SIGNATURE-----
+
+--Sig_/ibcE64FQAK_yk=G3_xqGofC--
