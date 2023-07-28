@@ -2,160 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3DD57666B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7177666B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbjG1IPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
+        id S234711AbjG1IRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjG1IPv (ORCPT
+        with ESMTP id S233663AbjG1IRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:15:51 -0400
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79914D9;
-        Fri, 28 Jul 2023 01:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1690532150; x=1722068150;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=3LJP9HEjkNZN9kGtNssgxqeddtAvODTfiyGrf8fNWBI=;
-  b=R8NZiZswYTIBwX10Bdfwk0zwOT0IpLKJJVs8xwAfxxaFuzjI46Ax+tXr
-   eOFBQIKVKm9XKrLAjN6y+1VwKFNXzwcIHw/RsMSae7JSbaEGD4vCIhI1L
-   WV1t6MRlKvett+BpZbHw4wotJci2DajniT8ZbNrRwX8A9iGaJlDsey21K
-   3h5iLpVLlyGqKM8/Uifp8PbB6rAbANSs0qVosxnmkqcO6lCYXIVanr+sr
-   92VTrhjFhoEOZ2L4C9FWfXKBmKs6zX7WoI+iW+mR0kMz2djilCwblhTjn
-   fkCHGFWZLFdUgphtuHHzfD4m4A631fdXD10gZNJ49elpSz0qwV6OHs5Sk
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,236,1684771200"; 
-   d="scan'208";a="239175954"
-Received: from mail-co1nam11lp2168.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.168])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jul 2023 16:15:48 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UfsqQ4DdT91Q6rVtMydrDcTzNLdWqLurKrkay87rnZUPZP0JRPIbC81py6eaPNkigK+bbUQcc74jsY9g+S6Hgt/BeI4rfOesMg9XSJHIKr08f2IHYJDh+J6YM1YRbKgOJQZQHo9mS7Ucznq4DIysoWZyvlTmmTjn2JGAScjc1rFPNdqOJqvpaPR8FAvo4SANJugKzSD7YoEtujMAOc0TSTYj01/o/dOtLRyan3AicsNCtZKFFWc9PMRvc5bzRRjDHSMq/BMY/5mhP0aL5xtwtn7NlcjGfcR+FrBUGrat+3K3N55ezesbBOb5f78dDG6mLfCIeO3Wn0jWyIOmzRjbrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rg8r101PC/WVtdLzATPvruAR6bWooPSpZBHKszKpDLc=;
- b=Q5peD/7b2nV99p7HYWtUm3bFf7GffnalYQhmwdDB3UI4QX2rduePG5nPfEVgMkeMTu/anz9PBvNAVeV+MslszNmxDu7mfAFVmC9u066qT4ctaLwvM5llv1vyJkuAjeK9h/j7b73TIEYdjUhWcrFFKIw0DtYvvZx36LtsXXRz28o6fTbFjT4QAC7FiA/FxK8ykkX8wZPQwm4wx+VxNtWWgPmmHGxbcQNCgnw3OOBk1JZHzRs25cBDVtCQT4Z4ZVybo0vq0r9uRyc/mPgCAiphl9/RaGm6E5geGayb2XfHSHI4BoBhUhuJnE0xaVqICABBTffqzxIvy2WtwiuguYrMSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rg8r101PC/WVtdLzATPvruAR6bWooPSpZBHKszKpDLc=;
- b=QVpPyULSg4zuIPWaTo709M76SPOJpSCUdp2R/Irn3yIX9KyP+tc16bm4vadjse9vlx97twTwvqKowqgHfDiRXkZUuH+tUUiwEkwTReuozbOHTR7mXnLgI8VNAc5h7QiUuiEVaWkEfa0TrRHkXj58yi6Ggag4N96zxHL0YxvIpGw=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- BY5PR04MB7060.namprd04.prod.outlook.com (2603:10b6:a03:223::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 08:15:45 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::f92a:6d40:fe94:34e9]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::f92a:6d40:fe94:34e9%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 08:15:45 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>
-Subject: Re: [PATCH blktests v1 11/11] nvme: Add explicitly host to allow_host
- list
-Thread-Topic: [PATCH blktests v1 11/11] nvme: Add explicitly host to
- allow_host list
-Thread-Index: AQHZv79Io1HdxWhQwUSyrN2PI2zcrq/O1+oA
-Date:   Fri, 28 Jul 2023 08:15:45 +0000
-Message-ID: <4eztk7hhup2le6nqd4u4udvdrek3sngrljfr22b7rnhaqcr4of@aoe2j52jfwzb>
-References: <20230726124644.12619-1-dwagner@suse.de>
- <20230726124644.12619-12-dwagner@suse.de>
-In-Reply-To: <20230726124644.12619-12-dwagner@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|BY5PR04MB7060:EE_
-x-ms-office365-filtering-correlation-id: 9d6769dc-bdd3-4644-4a84-08db8f42d7f8
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vUxZPvhv2CKqKXNY7A+emho6vPt0kFggwLmf7tcPfSJYc+22e/d1tOysbFzxzhHoZm0nRW6ruVoNLHji4a8mDyAOiU4it1dWatYSS8MruzJt2tuHm+B3rYGIDH/NPoM/h3WBZbg11mW4oNEo5SejZW7p7YKOT2y8DdFmEP3kbDwantB7pQ4BUI8lo4AFFF5IqJZ4nsCUMI9iFs9mq4/OAyPrz5u5/FPWNhgRF1G4NNMZxXQ2PsQ82x+zAILX3+JL9Y4pslg3gpaBnbjagbGkZX3yVuq5JyumWYtBUDYsryYDDCFWGwcrSTkdtD1VCJuerBTBpcY5H3HU5sqYx20jNHrFaZttmIR1mbH8JM6+qnRC3Yd31UqDQ7z3J0ugaPVT7IHOifovOt93fx1GdGWVwEihtRUW+9mzibPkvb6eZjCe6E6HIKuDangfDJtWieHjNha8HMUxoQaTMIN52tiumYo1rGBacDIFzanjO/Ay9Xcst4VecUJ2EW2h5qjGsbpSgPMpo0NPWmQcJKJ8FLxD/EMeeMhBjgrqeEexxdFN0yrz+TWEjPntHkZFDAt7qXIVlJZxztLWcbvRjQLiFMOcElO1DN0HBN7nRLfMGDFeqok2gc1wrB4rBs+Q7JZ6ZGx6
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(39860400002)(396003)(136003)(376002)(346002)(366004)(451199021)(38070700005)(83380400001)(122000001)(66946007)(86362001)(66476007)(38100700002)(82960400001)(5660300002)(44832011)(66446008)(316002)(4326008)(6916009)(66556008)(41300700001)(64756008)(8676002)(8936002)(6512007)(91956017)(6486002)(9686003)(6506007)(71200400001)(186003)(76116006)(26005)(478600001)(54906003)(33716001)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ehbyyWGeeJbRgzyaEOBx6FzbHN9RjVj6hHpsG/DexXOELRMZUmXfBC5QZ87x?=
- =?us-ascii?Q?2PZw8sVWx6RzljAJaF4bxUhdYYYqi7qBL2q4MzzhN9hDrljOJfBLlSLn4rTe?=
- =?us-ascii?Q?zwCobwQQ0PNBHEIxDnbHmN7xQw3kSkf23Nkbg50bO5ZWJ7ZKB7F0e1N0Rff3?=
- =?us-ascii?Q?+8KVuGKJmyLdOTMBQoa8ba8nn5MZzUpqOlKOuqp2/ZqLG4Od9syUQeI1INgo?=
- =?us-ascii?Q?T45p9HuyopA80UY1D6I2utT/Ev/+VZ8YmRyomKT8Rh5bG0k/+OQ30ihAVXVw?=
- =?us-ascii?Q?f20GyDTpows3Jt58pvRJbeaxw0uHWpJ2bKpb7v4AnON1m3lpr6A5VbVyghPB?=
- =?us-ascii?Q?u3RoAXrWRjKlzjVhdynB5EQbgWThQ49NP7cWSFxkYTwT6znMhgX21UNWxoat?=
- =?us-ascii?Q?cO43nBTuhePVdxNzi2gNI5KkfhyuNqrr69XI/r65d5yjLJoEONVhn3nU0U7e?=
- =?us-ascii?Q?2WAIH0UvwWuFvGiPG1coZVXDrU13NQRtL8axxbpOEgZZ0qdxS+aB5QCOkPhV?=
- =?us-ascii?Q?Qy9FdpuOoDd576wBRPnGi3ok8RZ8xwBSvhYuRRgE7Ft0AbK7qD+ROt+7Rok7?=
- =?us-ascii?Q?yRRPO0Bn1YIH5O620lKIt4ZUK5y73F0I+217KrotNElI/G53f5dP6gp811AJ?=
- =?us-ascii?Q?+4tOzXoWIxqPa4Yr5O9/aH6lZKf3/6Z0tfPUi4aEkjRs2eZ/x/IKDt9XLbZi?=
- =?us-ascii?Q?s7MVqfa0l1T0HB5r3QDkSs/e5IlDOfaL3PnfisxXTWEb1sIhWQjoSL83lFeG?=
- =?us-ascii?Q?mZPLDlOxOhcRMzYSsk+kFi6ROv58BXx+7VIkbFavNTg4nYUvzbQJ1f6UuoUr?=
- =?us-ascii?Q?ni6pS/HeDbPHLQ0r7dMaw1/1WtGGg5Ef62unjONIgsdhPlDInGc0YejKFvCS?=
- =?us-ascii?Q?Hz5wzktUJucosgyKnWNBFxPc2KqvjuwB3lX+dY+IymCEjfuZidCZlFHJXn9j?=
- =?us-ascii?Q?GYfVsK3I7hof4ir336aJdJaiVE0gfYe9AKl6KgIsPL8MfCwn8HAoq0qkZryG?=
- =?us-ascii?Q?OGc89ZHdaPJab9pifQNZKtxVmRDe/5VLAPGV0q/0lRo4HvQpyGFbscy/02h0?=
- =?us-ascii?Q?Z/jYWjOhE+zOfjp3NksDoHZy1jnzJQixWI5/GBhifxAgtrxy4NHvkpArQCNI?=
- =?us-ascii?Q?iJ6H++toskb7kDazodJKe53pJdkHSL+p7omAZluXREaRNeRRkWMI+pgtJufi?=
- =?us-ascii?Q?wESgBZ37aJLmTHqxmyUsTP0Ign5Hvjav4iqKQrEhiZOVHSV0iF3xHeWHME7s?=
- =?us-ascii?Q?Vhf/MBU4Dtz1DPpB/u1CBK15Sj1VxLCmyJKc7aXNnqYWI7dUtxejtMNaf9OK?=
- =?us-ascii?Q?rATwPzL4Hon9GfTp+J9D+UwQnaSYXxL5jsbyXPHs4//cwxurRcEmqyiEmYR/?=
- =?us-ascii?Q?/B9J+KyO2GMS3SacwIPmFTJ247TBS3308o+42uB45mmyUiYLIf5HMB/fJPFk?=
- =?us-ascii?Q?lBszPCpC+Qq9omoZDF62hr5/9kmqqSQiFbKqYnNP5bgPQBD6Xvpdn2oGLTJ6?=
- =?us-ascii?Q?jQOzIpVTcy05WzYQsHiojGvvyxR7S7/0ga0wK40dFzDugo4OmRMSrvir5SUD?=
- =?us-ascii?Q?XenDwOZRKsBtCDG7bv9hrc4PmG31faCmBVxCIjhg+2+iZRunUmQDtpAt5Mcy?=
- =?us-ascii?Q?KepvlMFNzSAWYt7j4mOKc34=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E61C1B5E3F998B43982EC5079A7939A5@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 28 Jul 2023 04:17:08 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69DBD9;
+        Fri, 28 Jul 2023 01:17:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3ED0221A01;
+        Fri, 28 Jul 2023 08:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1690532225; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ghht76QOTxzDxCda6HnQevUA6BKXH8t8KmvPf+xUsOs=;
+        b=K5ulzuJV6pcSr6AUW+hkFl9CVzZrvpcEQE5hietwTCPmxOX4JMeyXsDI1PSLuxtA2RS1pa
+        0jeHrjkvStN5dyKWBVEdAYPzK7WPFjSz6Jhoes0spXKODWjXcdQpbunMXiRVPbDfLIhJYy
+        F8kIMkAlkQ+eOqC/USm9n4i47rhLHro=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1690532225;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ghht76QOTxzDxCda6HnQevUA6BKXH8t8KmvPf+xUsOs=;
+        b=IY3I4/9kU7fYl0uis6KfnvJ1XjTGgn0WOrS01uzglfcLE3Qq2Q0mACWeWlafmogHZ9ZqxT
+        bRkMnTku1y6PFMAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A3F4D133F7;
+        Fri, 28 Jul 2023 08:17:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eScdJYB5w2QRYwAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Fri, 28 Jul 2023 08:17:04 +0000
+From:   Petr Vorel <pvorel@suse.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Petr Vorel <pvorel@suse.cz>, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH 1/1] Remove CONFIG_NET_CLS_TCINDEX
+Date:   Fri, 28 Jul 2023 10:16:51 +0200
+Message-ID: <20230728081651.26533-1-pvorel@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?VnG9Z9vgE7jsXGlXP01/F91ig3j/jJ2iYasXDNlaPjYPSZhixtNt3Qt9z9kU?=
- =?us-ascii?Q?jjZvGiGlRhOD84jxdnyCBO1Nre7k6Vl+CBJmVZGdGipEWwa3u7vjcuxcbWbh?=
- =?us-ascii?Q?9tz7SfEZcXqbmYCOE3PeMlmE4I3/vOfY8bh+K8EmwtmWkrgyNC+b3BeBsuTT?=
- =?us-ascii?Q?pzYeAfBCAES2LhWneoMYYGVd8+bSScPRilpI6E4+rFKRLW1wN0TGlGEqHly/?=
- =?us-ascii?Q?5sy7sSZ8prpivWyvaKrAPWfC+5GR0Euhew3aDdMsO+KPxd5Wy5BRVod3WMjd?=
- =?us-ascii?Q?l3A74IA1yw1rvDmY8xUcFdevdvRsatUfFg1R9U+HaNKgXmnlKKcKRTCH7wkW?=
- =?us-ascii?Q?GAMA+SDVvSIw7I4zITUsQjCiL474XVRnxkTCldQlinXkdY7K94CKW00+5jAi?=
- =?us-ascii?Q?kIoFHctb9ok2kxRRMdK4CtDr5pz+MgJvyIxC12ZjQ4FdnA5ioYNpreyEn4wb?=
- =?us-ascii?Q?4OvgRP8da6Fqxj+uBc4kxn///SuBatiIXYt8JQNzD6/sVxNSAeuxuGcr1IUX?=
- =?us-ascii?Q?3+cU1sD3llIMRS7CUR2X86LEaN6isMvakmA/+IkIiblLW5tAr7uAaY4ll/BT?=
- =?us-ascii?Q?4gg+W+fwlQzLyiV4e6tozpVofgpqkDq3VnDNonv5DVn4IWPV8GkBFH8Dwz6S?=
- =?us-ascii?Q?lviIJBrF/qywy8cg/3uxfMKDK+m8LO49Fn6skF1amCZ37ZoXPAubVx8+jHo2?=
- =?us-ascii?Q?oEYu+3Ym0Adf7Ele4lVsqf+cjjvsQCbd3Q51CblWsCHMw7FX5CDWjkp2cOvx?=
- =?us-ascii?Q?Vm9AnbzO6AS8HC+jWjKvvoZT1tzEO3EonI+zjseS+MPGd9/lEWe6rZSh1FBq?=
- =?us-ascii?Q?28Sx1z7Ko9aZUr4asE17tjjHWTh0U/yf+e69bwkGxVOy0L7pfAgbNjMoTbDF?=
- =?us-ascii?Q?Dp9cbRpe9rctCEGz40wnXAOtVhbaE2lohUP2K88Q0E2QyCEcyC887La01jpk?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d6769dc-bdd3-4644-4a84-08db8f42d7f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 08:15:45.6512
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zLI2nfY2WiloeAwPCpoGMvWPSBaVYPAT3twUVpTiab3Qox9rksozRxzdB1EHzUUV/UtcJMibgpBEB9e2aealNMbIGCHN8sFOHN20DPuaG7g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB7060
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -163,43 +70,287 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 26, 2023 / 14:46, Daniel Wagner wrote:
-> Only allow to connect to our setup target with the correct hostnqn.
->=20
-> Thus we have to explicitly add the test hostnqn to the test subsysnqn
-> allow_host list.
+CONFIG_NET_CLS_TCINDEX has been removed in 8c710f75256b in v6.3-rc1,
+remove it's definition from configs.
 
-[...]
+Fixes: 8c710f75256b ("net/sched: Retire tcindex classifier")
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ arch/arm/configs/ixp4xx_defconfig           | 1 -
+ arch/mips/configs/gpr_defconfig             | 1 -
+ arch/mips/configs/ip22_defconfig            | 1 -
+ arch/mips/configs/ip27_defconfig            | 1 -
+ arch/mips/configs/malta_defconfig           | 1 -
+ arch/mips/configs/malta_kvm_defconfig       | 1 -
+ arch/mips/configs/malta_qemu_32r6_defconfig | 1 -
+ arch/mips/configs/maltaaprp_defconfig       | 1 -
+ arch/mips/configs/maltasmvp_defconfig       | 1 -
+ arch/mips/configs/maltasmvp_eva_defconfig   | 1 -
+ arch/mips/configs/maltaup_defconfig         | 1 -
+ arch/mips/configs/maltaup_xpa_defconfig     | 1 -
+ arch/mips/configs/mtx1_defconfig            | 1 -
+ arch/mips/configs/rb532_defconfig           | 1 -
+ arch/mips/configs/rm200_defconfig           | 1 -
+ arch/powerpc/configs/ppc6xx_defconfig       | 1 -
+ arch/sh/configs/se7712_defconfig            | 1 -
+ arch/sh/configs/se7721_defconfig            | 1 -
+ arch/sh/configs/sh7710voipgw_defconfig      | 1 -
+ arch/sh/configs/titan_defconfig             | 1 -
+ arch/xtensa/configs/common_defconfig        | 1 -
+ 21 files changed, 21 deletions(-)
 
-> --- a/tests/nvme/030
-> +++ b/tests/nvme/030
-> @@ -28,6 +28,7 @@ test() {
-> =20
->  	_create_nvmet_subsystem "${subsys}1" "$(losetup -f)"
->  	_add_nvmet_subsys_to_port "${port}" "${subsys}1"
-> +	_create_nvmet_host "${subsys}1" "${def_hostnqn}"
-> =20
->  	genctr=3D$(_discovery_genctr)
-> =20
-> @@ -36,13 +37,13 @@ test() {
-> =20
->  	genctr=3D$(_check_genctr "${genctr}" "adding a subsystem to a port")
-> =20
-> -	echo 0 > "${NVMET_CFS}/subsystems/${subsys}2/attr_allow_any_host"
-> +	_add_nvmet_allow_hosts "${subsys}2" "${def_hostnqn}"
-> =20
-> -	genctr=3D$(_check_genctr "${genctr}" "clearing attr_allow_any_host")
-> +	genctr=3D$(_check_genctr "${genctr}" "adding host to allow_hosts")
-> =20
-> -	echo 1 > "${NVMET_CFS}/subsystems/${subsys}2/attr_allow_any_host"
-> +	_remove_nvmet_allow_hosts "${subsys}2" "${def_hostnqn}"
-> =20
-> -	genctr=3D$(_check_genctr "${genctr}" "setting attr_allow_any_host")
-> +	genctr=3D$(_check_genctr "${genctr}" "removing host from allow_hosts")
-> =20
->  	_remove_nvmet_subsystem_from_port "${port}" "${subsys}2"
->  	_remove_nvmet_subsystem "${subsys}2"
+diff --git a/arch/arm/configs/ixp4xx_defconfig b/arch/arm/configs/ixp4xx_defconfig
+index 3cb995b9616a..9c7e55384386 100644
+--- a/arch/arm/configs/ixp4xx_defconfig
++++ b/arch/arm/configs/ixp4xx_defconfig
+@@ -75,7 +75,6 @@ CONFIG_NET_SCH_TBF=m
+ CONFIG_NET_SCH_GRED=m
+ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_INGRESS=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/gpr_defconfig b/arch/mips/configs/gpr_defconfig
+index 92fc0edbac47..12f3eed8a946 100644
+--- a/arch/mips/configs/gpr_defconfig
++++ b/arch/mips/configs/gpr_defconfig
+@@ -116,7 +116,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/ip22_defconfig b/arch/mips/configs/ip22_defconfig
+index 897e55579af0..ffba76c4c107 100644
+--- a/arch/mips/configs/ip22_defconfig
++++ b/arch/mips/configs/ip22_defconfig
+@@ -162,7 +162,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/ip27_defconfig b/arch/mips/configs/ip27_defconfig
+index b51f738a39a0..997ad8f0a5a8 100644
+--- a/arch/mips/configs/ip27_defconfig
++++ b/arch/mips/configs/ip27_defconfig
+@@ -63,7 +63,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/malta_defconfig b/arch/mips/configs/malta_defconfig
+index 743209047792..8e9f139f2b55 100644
+--- a/arch/mips/configs/malta_defconfig
++++ b/arch/mips/configs/malta_defconfig
+@@ -191,7 +191,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/malta_kvm_defconfig b/arch/mips/configs/malta_kvm_defconfig
+index dd2b9c181f32..b99d61facb28 100644
+--- a/arch/mips/configs/malta_kvm_defconfig
++++ b/arch/mips/configs/malta_kvm_defconfig
+@@ -195,7 +195,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/malta_qemu_32r6_defconfig b/arch/mips/configs/malta_qemu_32r6_defconfig
+index 82183ec6bc31..6f06bbe6b0b6 100644
+--- a/arch/mips/configs/malta_qemu_32r6_defconfig
++++ b/arch/mips/configs/malta_qemu_32r6_defconfig
+@@ -64,7 +64,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/maltaaprp_defconfig b/arch/mips/configs/maltaaprp_defconfig
+index 9a199867a5e7..372588557993 100644
+--- a/arch/mips/configs/maltaaprp_defconfig
++++ b/arch/mips/configs/maltaaprp_defconfig
+@@ -66,7 +66,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/maltasmvp_defconfig b/arch/mips/configs/maltasmvp_defconfig
+index e5502d66a474..6daaad737dee 100644
+--- a/arch/mips/configs/maltasmvp_defconfig
++++ b/arch/mips/configs/maltasmvp_defconfig
+@@ -67,7 +67,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/maltasmvp_eva_defconfig b/arch/mips/configs/maltasmvp_eva_defconfig
+index a378aad97138..39d4823253bb 100644
+--- a/arch/mips/configs/maltasmvp_eva_defconfig
++++ b/arch/mips/configs/maltasmvp_eva_defconfig
+@@ -68,7 +68,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/maltaup_defconfig b/arch/mips/configs/maltaup_defconfig
+index fc6f88cae7be..a23e55cb4bc7 100644
+--- a/arch/mips/configs/maltaup_defconfig
++++ b/arch/mips/configs/maltaup_defconfig
+@@ -65,7 +65,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/maltaup_xpa_defconfig b/arch/mips/configs/maltaup_xpa_defconfig
+index 97c2d7f530b3..d0d27c98c85c 100644
+--- a/arch/mips/configs/maltaup_xpa_defconfig
++++ b/arch/mips/configs/maltaup_xpa_defconfig
+@@ -192,7 +192,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/mtx1_defconfig b/arch/mips/configs/mtx1_defconfig
+index b64172179160..b0746ce65981 100644
+--- a/arch/mips/configs/mtx1_defconfig
++++ b/arch/mips/configs/mtx1_defconfig
+@@ -162,7 +162,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/rb532_defconfig b/arch/mips/configs/rb532_defconfig
+index 02ec6c1a5116..1d30d3950b3e 100644
+--- a/arch/mips/configs/rb532_defconfig
++++ b/arch/mips/configs/rb532_defconfig
+@@ -77,7 +77,6 @@ CONFIG_NET_SCH_CBQ=m
+ CONFIG_NET_SCH_PRIO=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/mips/configs/rm200_defconfig b/arch/mips/configs/rm200_defconfig
+index 7475c2cbea89..21807d982cd9 100644
+--- a/arch/mips/configs/rm200_defconfig
++++ b/arch/mips/configs/rm200_defconfig
+@@ -144,7 +144,6 @@ CONFIG_NET_SCH_GRED=m
+ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+index f21170b8fa11..fc411b74c8d0 100644
+--- a/arch/powerpc/configs/ppc6xx_defconfig
++++ b/arch/powerpc/configs/ppc6xx_defconfig
+@@ -255,7 +255,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/sh/configs/se7712_defconfig b/arch/sh/configs/se7712_defconfig
+index dc854293da43..c01325bf97a9 100644
+--- a/arch/sh/configs/se7712_defconfig
++++ b/arch/sh/configs/se7712_defconfig
+@@ -57,7 +57,6 @@ CONFIG_NET_SCH_TBF=y
+ CONFIG_NET_SCH_GRED=y
+ CONFIG_NET_SCH_DSMARK=y
+ CONFIG_NET_SCH_NETEM=y
+-CONFIG_NET_CLS_TCINDEX=y
+ CONFIG_NET_CLS_ROUTE4=y
+ CONFIG_NET_CLS_FW=y
+ CONFIG_MTD=y
+diff --git a/arch/sh/configs/se7721_defconfig b/arch/sh/configs/se7721_defconfig
+index c891945b8a90..a1dfb666644f 100644
+--- a/arch/sh/configs/se7721_defconfig
++++ b/arch/sh/configs/se7721_defconfig
+@@ -56,7 +56,6 @@ CONFIG_NET_SCH_TBF=y
+ CONFIG_NET_SCH_GRED=y
+ CONFIG_NET_SCH_DSMARK=y
+ CONFIG_NET_SCH_NETEM=y
+-CONFIG_NET_CLS_TCINDEX=y
+ CONFIG_NET_CLS_ROUTE4=y
+ CONFIG_NET_CLS_FW=y
+ CONFIG_MTD=y
+diff --git a/arch/sh/configs/sh7710voipgw_defconfig b/arch/sh/configs/sh7710voipgw_defconfig
+index 7f742729df69..b0fd9a8f5fc7 100644
+--- a/arch/sh/configs/sh7710voipgw_defconfig
++++ b/arch/sh/configs/sh7710voipgw_defconfig
+@@ -26,7 +26,6 @@ CONFIG_NETFILTER=y
+ CONFIG_NET_SCHED=y
+ CONFIG_NET_SCH_CBQ=y
+ CONFIG_NET_CLS_BASIC=y
+-CONFIG_NET_CLS_TCINDEX=y
+ CONFIG_NET_CLS_ROUTE4=y
+ CONFIG_NET_CLS_U32=y
+ CONFIG_MTD=y
+diff --git a/arch/sh/configs/titan_defconfig b/arch/sh/configs/titan_defconfig
+index 871092753591..114d22466802 100644
+--- a/arch/sh/configs/titan_defconfig
++++ b/arch/sh/configs/titan_defconfig
+@@ -119,7 +119,6 @@ CONFIG_NET_SCH_DSMARK=m
+ CONFIG_NET_SCH_NETEM=m
+ CONFIG_NET_SCH_INGRESS=m
+ CONFIG_NET_CLS_BASIC=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+diff --git a/arch/xtensa/configs/common_defconfig b/arch/xtensa/configs/common_defconfig
+index fa9389869154..09e4a1d9d1f3 100644
+--- a/arch/xtensa/configs/common_defconfig
++++ b/arch/xtensa/configs/common_defconfig
+@@ -32,7 +32,6 @@ CONFIG_NET_SCH_TEQL=m
+ CONFIG_NET_SCH_TBF=m
+ CONFIG_NET_SCH_GRED=m
+ CONFIG_NET_SCH_DSMARK=m
+-CONFIG_NET_CLS_TCINDEX=m
+ CONFIG_NET_CLS_ROUTE4=m
+ CONFIG_NET_CLS_FW=m
+ CONFIG_NET_CLS_U32=m
+-- 
+2.41.0
 
-The hunk above looks different from other changes. Is it changing test
-content slightly to meet request by Max? If so, it would be good to note
-in the commit message.=
