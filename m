@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0522766D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D216766D31
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236460AbjG1M1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
+        id S234923AbjG1M1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235279AbjG1M0j (ORCPT
+        with ESMTP id S236539AbjG1M0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:26:39 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B69E44A6;
-        Fri, 28 Jul 2023 05:26:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690547162; x=1722083162;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Z+uMfTjCUF0qRpVrI9/2vNl3B4Ax0Elwxre0Rq9ooZg=;
-  b=BGKe816X+n/MYtQNEmYej1fN2nCAvW8ELnpL6wJKMR3vTAClya8cO6o+
-   kGF5LTNsMfBkzXqZSGSiiPLM48RTyLo06WURFMqrs02e5sWYNrAFGsA6X
-   4WblkYqF4nI7wqMeizUMd8dzlvDtS4Tz52M8sdD8PXYqMiug2ehFuK85X
-   1VXXttBloKLjNJkcc20xYaZKY8+5IzFUb24dtg3y5N0rniADrTF825X/3
-   V8QTUHvBcl/989QGwz3qxWK1sBZVgPGSfg/E5Zhmkm8bqGJuzwDFa/w5n
-   odpjyBVaFPPEuQO4I5h0KFLzp5vk4lBIJ5pmLJU50jvqCqTezsjH0udTt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="353488392"
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="353488392"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 05:26:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="792926075"
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="792926075"
-Received: from mylly.fi.intel.com (HELO [10.237.72.59]) ([10.237.72.59])
-  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2023 05:25:59 -0700
-Message-ID: <f0e0c31e-ad5e-c3ae-945e-c2af0d68beab@linux.intel.com>
-Date:   Fri, 28 Jul 2023 15:25:58 +0300
+        Fri, 28 Jul 2023 08:26:40 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF0435A8;
+        Fri, 28 Jul 2023 05:26:18 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 12AE3660716E;
+        Fri, 28 Jul 2023 13:26:16 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690547176;
+        bh=Zuw3jk8mejPhGkU4q+qt5KLfIfe2BfW1w5UKG2oKYJg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CXGHqz2KdwadkHCSRUxB388XGBuPyDuOkH/TrBhRLZROG/LJGdIUiKsxWjDGrpq4p
+         qo62jLxKl2bRNl0su1D73yldGjEM8xmC7S6jweG06y1u/2tdWXnRJ1Ih3nTbb6NqqO
+         wr4FNBwH9u9F3NcqB+YHRkHgfxNn2B5BNlWKL5lTmxLCijitlJKZvpmHFwbbqWBJLy
+         /GJr77MVKq5v7GXuNvAsYQyljhdYDnkgmKqRKhFp2vHptb0+cgMZO+bysK4IXV+iTv
+         GQr5a7eoXjcskeHopo9TIa31E4yMY/mhd/BctWaqitn2DLsO7b6Dnpz4dzx4WtVtpo
+         nmLCKxDNuKVKQ==
+Date:   Fri, 28 Jul 2023 14:26:12 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, tzimmermann@suse.de, corbet@lwn.net,
+        christian.koenig@amd.com, bskeggs@redhat.com,
+        Liam.Howlett@oracle.com, matthew.brost@intel.com,
+        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
+        willy@infradead.org, jason@jlekstrand.net,
+        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [PATCH drm-misc-next v8 01/12] drm: manager to keep track of
+ GPUs VA mappings
+Message-ID: <20230728142612.2ecf99ef@collabora.com>
+In-Reply-To: <hi5magp4icayy5dxmylfyxws52cu63jvlhu4yj5xem3acoaylk@msf7zthcr3lg>
+References: <20230720001443.2380-1-dakr@redhat.com>
+        <20230720001443.2380-2-dakr@redhat.com>
+        <hi5magp4icayy5dxmylfyxws52cu63jvlhu4yj5xem3acoaylk@msf7zthcr3lg>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 4/9] i2c: designware: Propagate firmware node
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-References: <20230725143023.86325-1-andriy.shevchenko@linux.intel.com>
- <20230725143023.86325-5-andriy.shevchenko@linux.intel.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230725143023.86325-5-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/23 17:30, Andy Shevchenko wrote:
-> Propagate firmware node by using a specific API call, i.e. device_set_node().
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   drivers/i2c/busses/i2c-designware-core.h    | 6 ++++--
->   drivers/i2c/busses/i2c-designware-pcidrv.c  | 2 --
->   drivers/i2c/busses/i2c-designware-platdrv.c | 2 --
->   3 files changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-> index 03f4d44ae94c..f0c683ad860f 100644
-> --- a/drivers/i2c/busses/i2c-designware-core.h
-> +++ b/drivers/i2c/busses/i2c-designware-core.h
-> @@ -10,11 +10,11 @@
->    */
->   
->   #include <linux/bits.h>
-> -#include <linux/compiler_types.h>
->   #include <linux/completion.h>
-> -#include <linux/dev_printk.h>
-> +#include <linux/device.h>
->   #include <linux/errno.h>
->   #include <linux/i2c.h>
-> +#include <linux/property.h>
->   #include <linux/regmap.h>
->   #include <linux/types.h>
->   
-> @@ -363,6 +363,8 @@ static inline int i2c_dw_probe_slave(struct dw_i2c_dev *dev) { return -EINVAL; }
->   
->   static inline int i2c_dw_probe(struct dw_i2c_dev *dev)
->   {
-> +	device_set_node(&dev->adapter.dev, dev_fwnode(dev->dev));
-> +
+On Fri, 28 Jul 2023 13:31:36 +0200
+Maxime Ripard <mripard@kernel.org> wrote:
 
-Would this be better to put in the same place where ACPI_COMPANION_SET() 
-is removed like below? I'd keep this static inline function in the 
-header file as simple as possible. All extra code might invite adding 
-even more.
+> Hi Danilo,
+>=20
+> On Thu, Jul 20, 2023 at 02:14:22AM +0200, Danilo Krummrich wrote:
+> > Add infrastructure to keep track of GPU virtual address (VA) mappings
+> > with a decicated VA space manager implementation.
+> >=20
+> > New UAPIs, motivated by Vulkan sparse memory bindings graphics drivers
+> > start implementing, allow userspace applications to request multiple and
+> > arbitrary GPU VA mappings of buffer objects. The DRM GPU VA manager is
+> > intended to serve the following purposes in this context.
+> >=20
+> > 1) Provide infrastructure to track GPU VA allocations and mappings,
+> >    making using an interval tree (RB-tree).
+> >=20
+> > 2) Generically connect GPU VA mappings to their backing buffers, in
+> >    particular DRM GEM objects.
+> >=20
+> > 3) Provide a common implementation to perform more complex mapping
+> >    operations on the GPU VA space. In particular splitting and merging
+> >    of GPU VA mappings, e.g. for intersecting mapping requests or partial
+> >    unmap requests.
+> >=20
+> > Acked-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
+> > Acked-by: Matthew Brost <matthew.brost@intel.com>
+> > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Tested-by: Matthew Brost <matthew.brost@intel.com>
+> > Tested-by: Donald Robson <donald.robson@imgtec.com>
+> > Suggested-by: Dave Airlie <airlied@redhat.com>
+> > Signed-off-by: Danilo Krummrich <dakr@redhat.com> =20
+>=20
+> For some reason this breaks the drm_exec kunit patches:
 
->   	switch (dev->mode) {
->   	case DW_IC_SLAVE:
->   		return i2c_dw_probe_slave(dev);
-> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> index 7f5a04538c71..a42a47e0032d 100644
-> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> @@ -9,7 +9,6 @@
->    * Copyright (C) 2009 Provigent Ltd.
->    * Copyright (C) 2011, 2015, 2016 Intel Corporation.
->    */
-> -#include <linux/acpi.h>
->   #include <linux/delay.h>
->   #include <linux/err.h>
->   #include <linux/errno.h>
-> @@ -325,7 +324,6 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->   	adap = &dev->adapter;
->   	adap->owner = THIS_MODULE;
->   	adap->class = 0;
-> -	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
->   	adap->nr = controller->bus_num;
+Fix available here [1].
 
+[1]https://lore.kernel.org/dri-devel/cbf4ccf9-8131-27a0-332c-6942866340d1@i=
+galia.com/T/#t
