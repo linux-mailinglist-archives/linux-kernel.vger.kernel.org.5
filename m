@@ -2,196 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33604767246
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F7C76723A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbjG1Qon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
+        id S234868AbjG1QoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbjG1Qnh (ORCPT
+        with ESMTP id S234035AbjG1Qm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:43:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 547401739
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:33 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24E791655;
-        Fri, 28 Jul 2023 09:44:16 -0700 (PDT)
-Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5DA8D3F67D;
-        Fri, 28 Jul 2023 09:43:30 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        carl@os.amperecomputing.com, lcherian@marvell.com,
-        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-        dfustini@baylibre.com
-Subject: [PATCH v5 05/24] x86/resctrl: Allow RMID allocation to be scoped by CLOSID
-Date:   Fri, 28 Jul 2023 16:42:35 +0000
-Message-Id: <20230728164254.27562-6-james.morse@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
-References: <20230728164254.27562-1-james.morse@arm.com>
+        Fri, 28 Jul 2023 12:42:59 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B84422C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:50 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7835bbeb6a0so33280539f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562570; x=1691167370;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=drbhhN+DgCzYIDWIkMO3R/dcC4lBZr1F8QCpgicu1Fc=;
+        b=KFM1fbdwvRrsljCjrkepuuqyPrAaKzObZiavJxeWD4pfvPJLr3n0YLL31QNQ3DBMve
+         Du1HIhROVhrBmIabwyFRABSuGjA7AQJgCROXuZ/G7IrlyrXuuxtAymS1LRwBiqZbDQtJ
+         di/x2uY+xdGTL+JaoyETBIHeRG4rAL3Hf03nHsjbDvESUBgopLYmY2upYfbAJu/vN0is
+         jFPIf+ySmbAKPSazj14/5lJE3KmZt6EAc4Sr1kikqjwBCxTdohs3ndVUQxnNmjzxb+AC
+         WykeQHIVt4o4J0Vr02vhs4xeuTfZLVAca9zufF3LtJuLpZoZzrFDd3ao8MVCbd8yHNIi
+         S4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690562570; x=1691167370;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=drbhhN+DgCzYIDWIkMO3R/dcC4lBZr1F8QCpgicu1Fc=;
+        b=T8TOi5BiZlOWhgg/lfoUZtH70jYDKRGYeJlkCBI6MxrliXZ8kVGvUHe8jc5adQUVfk
+         azKZ0Xk7GiMYIDyRG5dhHGC+DZbzp6FuOYpf/5G2o6BYqapL0dWCRzD60NCs6UI68gr+
+         zBkzA7C0oIJ+YNRAuNcn0nLpyNwOO4HmYrqLBr2OPfr2jXLCjMLlqqET1TkknLNrzfVg
+         RMMAADeC1jutvDtsKvvb/+6otZbBf0FNvArz6jFEoqC8T0ywSPiicXyJHBRAeoSoQiyl
+         oxVvp0uOzEJfsrCgVcxvcQJM6PYBWvIY5xol4RcXgM7of6y+aW1h2HMVxht0TVlNppY+
+         GNIw==
+X-Gm-Message-State: ABy/qLYeUiSbHqYGH1cLpB2aYLpgw4Iq5lAXmbAZN8hjZkG6YE3plafE
+        2KaWajdZmcU7FLTOZ+YpQCE21Q==
+X-Google-Smtp-Source: APBJJlEG/KFr3aeK7vdfC86yyv7/KC3aRIRUCWSydQliroQhOQy7gxMw26reO4i12hyztyYdjGCm/A==
+X-Received: by 2002:a92:dc51:0:b0:346:1919:7cb1 with SMTP id x17-20020a92dc51000000b0034619197cb1mr43797ilq.2.1690562570053;
+        Fri, 28 Jul 2023 09:42:50 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1158808jal.136.2023.07.28.09.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 09:42:49 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 12/12] io_uring: add support for vectored futex waits
+Date:   Fri, 28 Jul 2023 10:42:35 -0600
+Message-Id: <20230728164235.1318118-13-axboe@kernel.dk>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230728164235.1318118-1-axboe@kernel.dk>
+References: <20230728164235.1318118-1-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPAMs RMID values are not unique unless the CLOSID is considered as well.
+This adds support for IORING_OP_FUTEX_WAITV, which allows registering a
+notification for a number of futexes at once. If one of the futexes are
+woken, then the request will complete with the index of the futex that got
+woken as the result. This is identical to what the normal vectored futex
+waitv operation does.
 
-alloc_rmid() expects the RMID to be an independent number.
+Use like IORING_OP_FUTEX_WAIT, except sqe->addr must now contain the a
+pointer to a struct futex_waitv array, and sqe->off must now contain the
+number of elements in that array.
 
-Pass the CLOSID in to alloc_rmid(). Use this to compare indexes when
-allocating. If the CLOSID is not relevant to the index, this ends up
-comparing the free RMID with itself, and the first free entry will be
-used. With MPAM the CLOSID is included in the index, so this becomes a
-walk of the free RMID entries, until one that matches the supplied
-CLOSID is found.
+Waiting on N futexes could be done with IORING_OP_FUTEX_WAIT as well,
+but that punts a lot of the work to the application:
 
-Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-Signed-off-by: James Morse <james.morse@arm.com>
+1) Application would need to submit N IORING_OP_FUTEX_WAIT requests,
+   rather than just a single IORING_OP_FUTEX_WAITV.
+
+2) When one futex is woken, application would need to cancel the
+   remaining N-1 requests that didn't trigger.
+
+While this is of course doable, having a single vectored futex wait
+makes for much simpler application code.
+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
-Changes since v2;
- * Rephrased comment in resctrl_find_free_rmid() to describe this in terms of
-   list_entry_first()
- * Rephrased comment above alloc_rmid()
+ include/uapi/linux/io_uring.h |   1 +
+ io_uring/futex.c              | 164 ++++++++++++++++++++++++++++++++--
+ io_uring/futex.h              |   2 +
+ io_uring/opdef.c              |  11 +++
+ 4 files changed, 169 insertions(+), 9 deletions(-)
 
-Changes since v3:
- * Flipped conditions in alloc_rmid()
-
-Changes since v4:
- * Typo in comment
----
- arch/x86/kernel/cpu/resctrl/internal.h    |  2 +-
- arch/x86/kernel/cpu/resctrl/monitor.c     | 51 +++++++++++++++++------
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  2 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  2 +-
- 4 files changed, 41 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index b48715bb8762..94749ee950dd 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -535,7 +535,7 @@ void rdtgroup_pseudo_lock_remove(struct rdtgroup *rdtgrp);
- struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r);
- int closids_supported(void);
- void closid_free(int closid);
--int alloc_rmid(void);
-+int alloc_rmid(u32 closid);
- void free_rmid(u32 closid, u32 rmid);
- int rdt_get_mon_l3_config(struct rdt_resource *r);
- bool __init rdt_cpu_has(int flag);
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index bd234b66dddf..de91ca781d9f 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -337,24 +337,49 @@ bool has_busy_rmid(struct rdt_domain *d)
- 	return find_first_bit(d->rmid_busy_llc, idx_limit) != idx_limit;
+diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+index 3bd2d765f593..420f38675769 100644
+--- a/include/uapi/linux/io_uring.h
++++ b/include/uapi/linux/io_uring.h
+@@ -238,6 +238,7 @@ enum io_uring_op {
+ 	IORING_OP_SENDMSG_ZC,
+ 	IORING_OP_FUTEX_WAIT,
+ 	IORING_OP_FUTEX_WAKE,
++	IORING_OP_FUTEX_WAITV,
+ 
+ 	/* this goes last, obviously */
+ 	IORING_OP_LAST,
+diff --git a/io_uring/futex.c b/io_uring/futex.c
+index f58ab33bfb32..c7936a34319a 100644
+--- a/io_uring/futex.c
++++ b/io_uring/futex.c
+@@ -14,10 +14,15 @@
+ 
+ struct io_futex {
+ 	struct file	*file;
+-	u32 __user	*uaddr;
++	union {
++		u32 __user			*uaddr;
++		struct futex_waitv __user	*uwaitv;
++	};
+ 	unsigned long	futex_val;
+ 	unsigned long	futex_mask;
++	unsigned long	futexv_owned;
+ 	u32		futex_flags;
++	unsigned int	futex_nr;
+ };
+ 
+ struct io_futex_data {
+@@ -44,6 +49,13 @@ void io_futex_cache_free(struct io_ring_ctx *ctx)
+ 	io_alloc_cache_free(&ctx->futex_cache, io_futex_cache_entry_free);
  }
  
--/*
-- * As of now the RMIDs allocation is global.
-- * However we keep track of which packages the RMIDs
-- * are used to optimize the limbo list management.
-- */
--int alloc_rmid(void)
-+static struct rmid_entry *resctrl_find_free_rmid(u32 closid)
- {
--	struct rmid_entry *entry;
--
--	lockdep_assert_held(&rdtgroup_mutex);
-+	struct rmid_entry *itr;
-+	u32 itr_idx, cmp_idx;
- 
- 	if (list_empty(&rmid_free_lru))
--		return rmid_limbo_count ? -EBUSY : -ENOSPC;
-+		return rmid_limbo_count ? ERR_PTR(-EBUSY) : ERR_PTR(-ENOSPC);
-+
-+	list_for_each_entry(itr, &rmid_free_lru, list) {
-+		/*
-+		 * Get the index of this free RMID, and the index it would need
-+		 * to be if it were used with this CLOSID.
-+		 * If the CLOSID is irrelevant on this architecture, these will
-+		 * always be the same meaning the compiler can reduce this loop
-+		 * to a single list_entry_first() call.
-+		 */
-+		itr_idx = resctrl_arch_rmid_idx_encode(itr->closid, itr->rmid);
-+		cmp_idx = resctrl_arch_rmid_idx_encode(closid, itr->rmid);
-+
-+		if (itr_idx == cmp_idx)
-+			return itr;
-+	}
-+
-+	return ERR_PTR(-ENOSPC);
++static void __io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
++{
++	req->async_data = NULL;
++	hlist_del_init(&req->hash_node);
++	io_req_task_complete(req, ts);
 +}
 +
-+/*
-+ * For MPAM the RMID value is not unique, and has to be considered with
-+ * the CLOSID. The (CLOSID, RMID) pair is allocated on all domains, which
-+ * allows all domains to be managed by a single limbo list.
-+ * Each domain also has a rmid_busy_llc to reduce the work of the limbo handler.
-+ */
-+int alloc_rmid(u32 closid)
-+{
-+	struct rmid_entry *entry;
-+
-+	lockdep_assert_held(&rdtgroup_mutex);
-+
-+	entry = resctrl_find_free_rmid(closid);
-+	if (IS_ERR(entry))
-+		return PTR_ERR(entry);
- 
--	entry = list_first_entry(&rmid_free_lru,
--				 struct rmid_entry, list);
- 	list_del(&entry->list);
--
- 	return entry->rmid;
+ static void io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
+ {
+ 	struct io_futex_data *ifd = req->async_data;
+@@ -52,22 +64,59 @@ static void io_futex_complete(struct io_kiocb *req, struct io_tw_state *ts)
+ 	io_tw_lock(ctx, ts);
+ 	if (!io_alloc_cache_put(&ctx->futex_cache, &ifd->cache))
+ 		kfree(ifd);
+-	req->async_data = NULL;
+-	hlist_del_init(&req->hash_node);
+-	io_req_task_complete(req, ts);
++	__io_futex_complete(req, ts);
  }
  
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index aeadaeb5df9a..5ebd6e54c7f2 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -763,7 +763,7 @@ int rdtgroup_locksetup_exit(struct rdtgroup *rdtgrp)
- 	int ret;
+-static bool __io_futex_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
++static void io_futexv_complete(struct io_kiocb *req, struct io_tw_state *ts)
+ {
+-	struct io_futex_data *ifd = req->async_data;
++	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
++	struct futex_vector *futexv = req->async_data;
++	struct io_ring_ctx *ctx = req->ctx;
++	int res = 0;
  
- 	if (rdt_mon_capable) {
--		ret = alloc_rmid();
-+		ret = alloc_rmid(rdtgrp->closid);
- 		if (ret < 0) {
- 			rdt_last_cmd_puts("Out of RMIDs\n");
- 			return ret;
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 7c5cfb373d03..b97e119dbe46 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -3172,7 +3172,7 @@ static int mkdir_rdt_prepare_rmid_alloc(struct rdtgroup *rdtgrp)
- 	if (!rdt_mon_capable)
- 		return 0;
+-	/* futex wake already done or in progress */
+-	if (!futex_unqueue(&ifd->q))
++	io_tw_lock(ctx, ts);
++
++	res = futex_unqueue_multiple(futexv, iof->futex_nr);
++	if (res != -1)
++		io_req_set_res(req, res, 0);
++
++	kfree(req->async_data);
++	req->flags &= ~REQ_F_ASYNC_DATA;
++	__io_futex_complete(req, ts);
++}
++
++static bool io_futexv_claimed(struct io_futex *iof)
++{
++	return test_bit(0, &iof->futexv_owned);
++}
++
++static bool io_futexv_claim(struct io_futex *iof)
++{
++	if (test_bit(0, &iof->futexv_owned) ||
++	    test_and_set_bit(0, &iof->futexv_owned))
+ 		return false;
++	return true;
++}
++
++static bool __io_futex_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
++{
++	/* futex wake already done or in progress */
++	if (req->opcode == IORING_OP_FUTEX_WAIT) {
++		struct io_futex_data *ifd = req->async_data;
++
++		if (!futex_unqueue(&ifd->q))
++			return false;
++		req->io_task_work.func = io_futex_complete;
++	} else {
++		struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
++
++		if (!io_futexv_claim(iof))
++			return false;
++		req->io_task_work.func = io_futexv_complete;
++	}
  
--	ret = alloc_rmid();
-+	ret = alloc_rmid(rdtgrp->closid);
- 	if (ret < 0) {
- 		rdt_last_cmd_puts("Out of RMIDs\n");
- 		return ret;
+ 	hlist_del_init(&req->hash_node);
+ 	io_req_set_res(req, -ECANCELED, 0);
+-	req->io_task_work.func = io_futex_complete;
+ 	io_req_task_work_add(req);
+ 	return true;
+ }
+@@ -146,6 +195,54 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	return 0;
+ }
+ 
++static void io_futex_wakev_fn(struct wake_q_head *wake_q, struct futex_q *q)
++{
++	struct io_kiocb *req = q->wake_data;
++	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
++
++	if (!io_futexv_claim(iof))
++		return;
++	if (unlikely(!__futex_wake_mark(q)))
++		return;
++
++	io_req_set_res(req, 0, 0);
++	req->io_task_work.func = io_futexv_complete;
++	io_req_task_work_add(req);
++}
++
++int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
++{
++	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
++	struct futex_vector *futexv;
++	int ret;
++
++	/* No flags or mask supported for waitv */
++	if (unlikely(sqe->fd || sqe->buf_index || sqe->file_index ||
++		     sqe->addr2 || sqe->addr3))
++		return -EINVAL;
++
++	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
++	iof->futex_nr = READ_ONCE(sqe->len);
++	if (!iof->futex_nr || iof->futex_nr > FUTEX_WAITV_MAX)
++		return -EINVAL;
++
++	futexv = kcalloc(iof->futex_nr, sizeof(*futexv), GFP_KERNEL);
++	if (!futexv)
++		return -ENOMEM;
++
++	ret = futex_parse_waitv(futexv, iof->uwaitv, iof->futex_nr,
++				io_futex_wakev_fn, req);
++	if (ret) {
++		kfree(futexv);
++		return ret;
++	}
++
++	iof->futexv_owned = 0;
++	req->flags |= REQ_F_ASYNC_DATA;
++	req->async_data = futexv;
++	return 0;
++}
++
+ static void io_futex_wake_fn(struct wake_q_head *wake_q, struct futex_q *q)
+ {
+ 	struct io_futex_data *ifd = container_of(q, struct io_futex_data, q);
+@@ -170,6 +267,55 @@ static struct io_futex_data *io_alloc_ifd(struct io_ring_ctx *ctx)
+ 	return kmalloc(sizeof(struct io_futex_data), GFP_NOWAIT);
+ }
+ 
++int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags)
++{
++	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
++	struct futex_vector *futexv = req->async_data;
++	struct io_ring_ctx *ctx = req->ctx;
++	int ret, woken = -1;
++
++	io_ring_submit_lock(ctx, issue_flags);
++
++	ret = futex_wait_multiple_setup(futexv, iof->futex_nr, &woken);
++
++	/*
++	 * The above call leaves us potentially non-running. This is fine
++	 * for the sync syscall as it'll be blocking unless we already got
++	 * one of the futexes woken, but it obviously won't work for an async
++	 * invocation. Mark us runnable again.
++	 */
++	__set_current_state(TASK_RUNNING);
++
++	/*
++	 * We got woken while setting up, let that side do the completion
++	 */
++	if (io_futexv_claimed(iof)) {
++skip:
++		io_ring_submit_unlock(ctx, issue_flags);
++		return IOU_ISSUE_SKIP_COMPLETE;
++	}
++
++	/*
++	 * 0 return means that we successfully setup the waiters, and that
++	 * nobody triggered a wakeup while we were doing so. < 0 or 1 return
++	 * is either an error or we got a wakeup while setting up.
++	 */
++	if (!ret) {
++		hlist_add_head(&req->hash_node, &ctx->futex_list);
++		goto skip;
++	}
++
++	io_ring_submit_unlock(ctx, issue_flags);
++	if (ret < 0)
++		req_set_fail(req);
++	else if (woken != -1)
++		ret = woken;
++	io_req_set_res(req, ret, 0);
++	kfree(futexv);
++	req->flags &= ~REQ_F_ASYNC_DATA;
++	return IOU_OK;
++}
++
+ int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
+ {
+ 	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+diff --git a/io_uring/futex.h b/io_uring/futex.h
+index ddc9e0d73c52..0847e9e8a127 100644
+--- a/io_uring/futex.h
++++ b/io_uring/futex.h
+@@ -3,7 +3,9 @@
+ #include "cancel.h"
+ 
+ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
++int io_futexv_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe);
+ int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags);
++int io_futexv_wait(struct io_kiocb *req, unsigned int issue_flags);
+ int io_futex_wake(struct io_kiocb *req, unsigned int issue_flags);
+ 
+ #if defined(CONFIG_FUTEX)
+diff --git a/io_uring/opdef.c b/io_uring/opdef.c
+index c9f23c21a031..b9e1e12cac9c 100644
+--- a/io_uring/opdef.c
++++ b/io_uring/opdef.c
+@@ -443,6 +443,14 @@ const struct io_issue_def io_issue_defs[] = {
+ 		.issue			= io_futex_wake,
+ #else
+ 		.prep			= io_eopnotsupp_prep,
++#endif
++	},
++	[IORING_OP_FUTEX_WAITV] = {
++#if defined(CONFIG_FUTEX)
++		.prep			= io_futexv_prep,
++		.issue			= io_futexv_wait,
++#else
++		.prep			= io_eopnotsupp_prep,
+ #endif
+ 	},
+ };
+@@ -670,6 +678,9 @@ const struct io_cold_def io_cold_defs[] = {
+ 	[IORING_OP_FUTEX_WAKE] = {
+ 		.name			= "FUTEX_WAKE",
+ 	},
++	[IORING_OP_FUTEX_WAITV] = {
++		.name			= "FUTEX_WAITV",
++	},
+ };
+ 
+ const char *io_uring_get_opcode(u8 opcode)
 -- 
-2.39.2
+2.40.1
 
