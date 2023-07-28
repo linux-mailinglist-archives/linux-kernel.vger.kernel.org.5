@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4BF767700
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33381767704
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbjG1Uen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S233542AbjG1Ue5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232142AbjG1Uej (ORCPT
+        with ESMTP id S233189AbjG1Uey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:34:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AAE422B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690576432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NPoM804CxQXNyaqYOi76F9KayN7Vk1JGyDtsJtbRViY=;
-        b=HahAFVaO/3KqYT+rdbVpmuS0X6b0lQstZJYvEMl5R0AD8wVByxcEq+DjR48AvRIjWdvHi2
-        /NSFcCWXbz1HC6F/Yb5Psx6B3aMA/slrNI/J9qfB19JsoDt/uV2rvbRtQuhq6E9p7cEbNk
-        IjwRn3JIZcecd7CLS/+kyLHNgNgi5sg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-436-rUUA8VMxPRGJfueHvOCFgg-1; Fri, 28 Jul 2023 16:33:50 -0400
-X-MC-Unique: rUUA8VMxPRGJfueHvOCFgg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fd2dec82a6so14886335e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:33:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690576429; x=1691181229;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NPoM804CxQXNyaqYOi76F9KayN7Vk1JGyDtsJtbRViY=;
-        b=PlOBLqQZ2tMReBI7RHG4PzTrDW7tWrYdgtbIdMB7demgQNYgCE0kyGx1R/PvXlDP/2
-         LStSHhwnnSOajNdnso1te/adkwlcOcA+YkM58EJLS4nY2/06Lq8kdldy4xugReU0ibm2
-         rhM49apYiqwbRhRNy2kk16ovLOcYGiIjqazuJLKUSVERAeEUzoK4UesVOzLDUFx4I806
-         819hBWZH47a6Qm1nnIzx2yNhUUKfwgwWT7iFpO7kSuPWOo8tk7gZSbV4ja3zLNzCGnFA
-         XysaAKutHXjawLu0mun7/2pb0i8lbRqrIhvBUz/954H1SZQdBI/SPRaDO70FxCSndmfR
-         IsNQ==
-X-Gm-Message-State: ABy/qLZu3AdVV+uQHhOezl18AdKVImJTaQx53afw06uxLG+ll+Z9dd55
-        sZ3Wm/laemYGEYA1XxAiAGHWNVlktf5G837tBkXN8MO0T5KGUA0vP0OWhsxdqJOuHLY+ZOSG6v4
-        1iii0r7MPJe7CQhTA83HDkhrM
-X-Received: by 2002:a05:600c:210b:b0:3fb:fb88:974b with SMTP id u11-20020a05600c210b00b003fbfb88974bmr2633201wml.6.1690576429286;
-        Fri, 28 Jul 2023 13:33:49 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE0EWcwQHpVt4+4O+ITavcaEd7PJtizFZdLzot0OrKUsQ+DOTY++M7GZKjU+qSoarDGlXFOaA==
-X-Received: by 2002:a05:600c:210b:b0:3fb:fb88:974b with SMTP id u11-20020a05600c210b00b003fbfb88974bmr2633190wml.6.1690576428946;
-        Fri, 28 Jul 2023 13:33:48 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id v25-20020a05600c215900b003fc02a410d0sm7630531wml.48.2023.07.28.13.33.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 13:33:48 -0700 (PDT)
-Message-ID: <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
-Date:   Fri, 28 Jul 2023 22:33:47 +0200
+        Fri, 28 Jul 2023 16:34:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75924497;
+        Fri, 28 Jul 2023 13:34:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BE3F62202;
+        Fri, 28 Jul 2023 20:34:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A96AEC433C8;
+        Fri, 28 Jul 2023 20:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690576488;
+        bh=tjC+t1JVwwxq1scLPA5k2+mNVlIe2UmfsNt2gxgEsnM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aGso/o3OKHGpXF3mWTBc9SGewTCa94We1PMmqibntTGcbh/vbZ01JHpu50/O5ZXca
+         cFpSVC/oKArONAo8Oa0b1bO79wK/fskqVInSV1cT/Uo/oUdnDagJ4Xsa8O4aa4TEax
+         viFYwF+YGG6eXxvu9/AtIcVGiAl3u3poFYAvT/S0eO3ocVGkIEWddv+o1iuYJuVFAg
+         R1uoOcVfgn0ODALY+sQzrJmsB1IkZwRf6RdbXzwHZpKJ++nrofK/AY1fC+XV3kq44w
+         a3W/13TitbiQG8m65JEx8oz0gTzQz5QTRJ2TDql8XLEnmt8aPse6xTWFjusstCugie
+         +TDfZ8+i/p6ZA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        damon@lists.linux.dev, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-mm@kvack.org
+Subject: [RFC PATCH 00/13] Extedn DAMOS filters for address ranges and
+Date:   Fri, 28 Jul 2023 20:34:31 +0000
+Message-Id: <20230728203444.70703-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <ZMQZfn/hUURmfqWN@x1n>
- <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 22:23, Linus Torvalds wrote:
-> On Fri, 28 Jul 2023 at 12:39, Peter Xu <peterx@redhat.com> wrote:
->>
->> But then does it means that any gup-only user will have numa balancing
->> completely disabled?
-> 
-> Why would we ever care about a GUP-only user?
-> 
-> Who knows where the actual access is coming from? It might be some
-> device that is on a different node entirely.
-> 
-> And even if the access is local from the CPU, it
-> 
->   (a) might have happened after we moved somewhere else
-> 
->   (b) who cares about the extra possible NUMA overhead when we just
-> wasted *thousands* of cycles on GUP?
-> 
-> So NUMA balancing really doesn't seem to make sense for GUP anyway as
-> far as I can see.
+There are use cases that need to apply DAMOS schemes to specific address
+ranges or DAMON monitoring targets.  NUMA nodes in the physical address
+space, special memory objects in the virtual address space, and
+monitoring target specific efficient monitoring results snapshot
+retrieval could be examples of such use cases.  This patchset extends
+DAMOS filters feature for such cases, by implementing two more filter
+types, namely address ranges and DAMON monitoring types.
 
-I do agree regarding many GUP users.
+Patches sequence
+----------------
 
-But at least for KVM (and probably some others, but most probably KVM is 
-the most important GUP user) it does make sense and we have to find a 
-way to keep that working.
+The first seven patches are for the address ranges based DAMOS filter.
+The first patch implements the filter feature and expose it via DAMON
+kernel API.  The second patch further expose the feature to users via
+DAMON sysfs interface.  The third and fourth patches implement unit
+tests and selftests for the feature.  Three patches (fifth to seventh)
+updating the documents follow.
 
-At least, removing it creates significantly more harm than having it, 
-guaranteed :)
+The following six patches are for the DAMON monitoring target based
+DAMOS filter.  The eighth patch implements the feature in the core layer
+and expose it via DAMON's kernel API.  The ninth patch further expose it
+to users via DAMON sysfs interface.  Tenth patch add a selftest, and two
+patches (eleventh and twelfth) update documents.
 
-So would you rather favor a FOLL_NUMA that has to be passed from the 
-outside by selected callers or a FOLL_NUMA that is set on the GUP path 
-unconditionally (but left clear for follow_page())?
+SeongJae Park (13):
+  mm/damon/core: introduce address range type damos filter
+  mm/damon/sysfs-schemes: support address range type DAMOS filter
+  mm/damon/core-test: add a unit test for __damos_filter_out()
+  selftests/damon/sysfs: test address range damos filter
+  Docs/mm/damon/design: update for address range filters
+  Docs/ABI/damon: update for address range DAMOS filter
+  Docs/admin-guide/mm/damon/usage: update for address range type DAMOS
+    filter
+  mm/damon/core: implement target type damos filter
+  mm/damon/sysfs-schemes: support target damos filter
+  selftests/damon/sysfs: test damon_target filter
+  Docs/mm/damon/design: update for DAMON monitoring target type DAMOS
+    filter
+  Docs/ABI/damon: update for DAMON monitoring target type DAMOS filter
+  Docs/admin-guide/mm/damon/usage: update for DAMON monitoring target
+    type DAMOS filter
+
+ .../ABI/testing/sysfs-kernel-mm-damon         | 27 +++++-
+ Documentation/admin-guide/mm/damon/usage.rst  | 34 +++++---
+ Documentation/mm/damon/design.rst             | 24 ++++--
+ include/linux/damon.h                         | 28 +++++--
+ mm/damon/core-test.h                          | 61 ++++++++++++++
+ mm/damon/core.c                               | 62 ++++++++++++++
+ mm/damon/sysfs-schemes.c                      | 83 +++++++++++++++++++
+ tools/testing/selftests/damon/sysfs.sh        |  5 ++
+ 8 files changed, 299 insertions(+), 25 deletions(-)
 
 -- 
-Cheers,
-
-David / dhildenb
+2.25.1
 
