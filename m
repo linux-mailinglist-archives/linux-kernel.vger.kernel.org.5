@@ -2,550 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7EC766675
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453F8766654
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbjG1IJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S234541AbjG1IGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234607AbjG1IJh (ORCPT
+        with ESMTP id S234069AbjG1IFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:09:37 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00184171D;
-        Fri, 28 Jul 2023 01:09:34 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 85C03120008;
-        Fri, 28 Jul 2023 11:09:33 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 85C03120008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690531773;
-        bh=Qc2c/9inxR6/RCD5nT/HqbtAo4WGeBY2in5hkCOcE2o=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=PgcUbzUywb2tBV8wV/VBftEz8BiVP1fAMEiABcj5tXG57zsqWR8NGpcErP3S61wyE
-         jnNHAsbfm2w8+IU7PeySPEF7RIPbZaxXjpgjZe/EWPgjvqBVFBPQVEglkd9afjfrMu
-         lR9vw6Frxf6Zc7W7L5dLopjFWIlIFIdHK8lqLtsIsvFi+aWRCjouAU6jiadwv+WnWY
-         bHE1iHvE9wZYYfG+5cp89UnvfVtBG/BJdjn3bcKDdXtHLHt6skOMDUzag7rg5Irbyx
-         xiJALxMSs7zaiMqD/nKpLKYa/0DTf69oXJnGXGAOhRcEsKlE4OihG/t4ZmoLGkbYJo
-         Y/KLXunHDzLCw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 28 Jul 2023 11:09:33 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 11:09:10 +0300
-Message-ID: <c72684dd-71cc-dd7a-50fa-d9f949feca69@sberdevices.ru>
-Date:   Fri, 28 Jul 2023 11:03:59 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v4 4/4] vsock/virtio: MSG_ZEROCOPY flag support
+        Fri, 28 Jul 2023 04:05:44 -0400
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AE03C3C;
+        Fri, 28 Jul 2023 01:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1690531486; x=1722067486;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=QC3nZ7U0H36xnCSR7mS1jyfzCLUVDFznb0j2mXmCK6Y=;
+  b=J09ADTAzZ+nLNixoWRrILj/3U4ApM1kn5vxVSgCMl2VT7pDtAGtLwakZ
+   yANqalh0Ub9dm4hPxfvyGWFAf4rZ5vXn80OQaPeT4vwpB7ggIxA2x1nNc
+   pBwsn8cYhD3wyhTTeyjbMKH3YQV6LToEMP+zzoOHrq5Inr5jIpIQ6hK6j
+   kz9jji0ZbZPNMHtqcfgzrnry/XphijKHGa30o9mz9amNmu2LHYkL9QTXA
+   F1B6cPPYH9Qqavw7oR9d+pnUTJoLjjDkCCQZh5cBYRtfywQ326qxg+Uet
+   98vwzYvuwH5TZ1x5XYR81Z4baZzmqGU7AZnvhDkZRib3UauLPMw4fJcwV
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,236,1684771200"; 
+   d="scan'208";a="243987105"
+Received: from mail-dm3nam02lp2047.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.47])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jul 2023 16:04:42 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d6f3ELd4qGkQymGyMerPNVzRnTP/r9ISs0ZSV1ZlHVh+RLLIvsYNzB/YSD9xI5IyfMXlewrNx4tqNWHvmESgTncXAS/3DTyShZsSBAJqcrhkkMzgu/CZcraaGcD5jwsU2V/S9rA8rL6rZETlviGV3OBqEShwLt4cPzlZWqxqKJkYqQjanXZO9O+0wFw2OJ9caq2V0mNb5FDRi5rq1GBZL6H4RSmNIVAQz2imcPb0LsfQPcY1hbNhSK+TMsEGGVOmuRM2LYxDU88E7mt0aBISJPLl34TdWxywuCvX4IyR37BuZMUjcHaAh6/aQEKee83hrlNfH3rl2LZ7lFI+DETQLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vlmBHc0T3efZXyHTsvaNjOUxFW1nqScjKnOgdpYxFO4=;
+ b=ekB1LvEbWuoLfFgZdDTuKdD9fwa7Hbvw08YCZ+UZvWPm5nO5/4CRBQFPfVNMZYbTuu5TtfofUl1nNr9FgIeheX3joVmyn/Pn85ZC6tW1o7p7+dZCE5dYN19t+6Z0m3e04hembkGPACl9XWiLGrIC/zr4B/NDCTEWEWTYVIPJjKEqJ3OmR2U3JLFhjexAhnJ1AWx1MK7GZ1j6HHR51vPAKAsmFQU0LLuNvzaDks1oJX1n7l+7XaQQ5XVlpAatXPJcWwHpVIujTXOLgxnimQypxbaULPVQjmK1l/ChVIdkHUiOerP7cbwoX1fPtXZor6NZKZfhfxApZX9uOgrEry7hbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vlmBHc0T3efZXyHTsvaNjOUxFW1nqScjKnOgdpYxFO4=;
+ b=FB4SbEdjwkXekExVFJpNI1TfLh1wi32FAxE9Du5nQnrqiexadVps437NakE1v3NOHpNYIebRWbAq1P0hQ70FvWuj3X9wInWsYVTq5c+yBWDb3I+vp6MlXSiaZTaU7dYaYjACeNllfkZ4o8LM6LV9QQ7tmjbz30jTScvH3SUdqtI=
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
+ DM6PR04MB7066.namprd04.prod.outlook.com (2603:10b6:5:242::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.29; Fri, 28 Jul 2023 08:04:41 +0000
+Received: from DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9]) by DM8PR04MB8037.namprd04.prod.outlook.com
+ ([fe80::f92a:6d40:fe94:34e9%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 08:04:41 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     Daniel Wagner <dwagner@suse.de>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>
+Subject: Re: [PATCH blktests v1 04/11] nvme: Use def_subsysnqn variable
+ instead local variable
+Thread-Topic: [PATCH blktests v1 04/11] nvme: Use def_subsysnqn variable
+ instead local variable
+Thread-Index: AQHZv79I1kiCd2iKNECml+OSVsLt4q/O1NSA
+Date:   Fri, 28 Jul 2023 08:04:41 +0000
+Message-ID: <yiandzaqpwhcvxrc3xsdtdplxss4nknkiseoiwc2cgokldlyil@deykhee2rr7g>
+References: <20230726124644.12619-1-dwagner@suse.de>
+ <20230726124644.12619-5-dwagner@suse.de>
+In-Reply-To: <20230726124644.12619-5-dwagner@suse.de>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230727222627.1895355-1-AVKrasnov@sberdevices.ru>
- <20230727222627.1895355-5-AVKrasnov@sberdevices.ru>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230727222627.1895355-5-AVKrasnov@sberdevices.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|DM6PR04MB7066:EE_
+x-ms-office365-filtering-correlation-id: 2517a178-7a7a-42a3-a631-08db8f414c2b
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FuuRtXLJLU6pI8NK2wFPOHjSEcOAoZQ2mkWJaLsTQmXZskbOvRswz6VF11rpIOgSy0zxqSB+F2YOYDh1Heua7Bc1ABtjaEWVBmjcq3wkQxj48uA7Ieo3GRQJGzrA53SkovDtaX62sDLT9EToBIGk7OpYnUzPbQO/ZsQcPVuXlXu4Wox3o7bKS8CWnzHWk1hz03VYnKfjpK3sHH3aV4bKL9z38P2UYAZn3Lkxy1c1LgkcHx6Tic4ilFRGTU98PJJ1GcKTs4CI/rqwhDXKp4P5atb01Ckj+wWgp/pzFibgsWHiYZRROdgtMF8DXqmI6f5toUg7n23fp0FkojlI1xHxKMFliJQ1Ut7W4kf6aFj/KuD/ON97eap0FiQLPJ2WE6/7UxrTALIJ9ILXzNfpBqaGfn7btBv3OBgKEWHtdBY/ExW/wpr7sPfT2pqVPQS9uPEqEd3yalprJyYH30vmxBbde0/dujjSNQ4fMXoAswYcvIIR7cw2cH0EgHa0ZeQB1dvE4dzb7/NYO8mU48nUALWl2gXAtruS1z4yPCTa0aM+uj60l/z2IkFuHei4/ldbQtIokToBk1Q03vW0F4c+35ZQz/nmLBmMGoyhmwOSEiKGmSoabf1uLVjVJpv7ZZDQ3VYS
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(396003)(39860400002)(366004)(136003)(346002)(376002)(451199021)(66446008)(41300700001)(33716001)(26005)(86362001)(66556008)(71200400001)(38100700002)(478600001)(122000001)(91956017)(9686003)(6512007)(4326008)(8676002)(6916009)(8936002)(186003)(316002)(66946007)(64756008)(66476007)(76116006)(6506007)(5660300002)(44832011)(82960400001)(54906003)(38070700005)(6486002)(2906002)(4744005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Kt8ZErU7rYXkJtb1tIHMrZDItENpj2y6u8reqyALACcEJ72IZ/d4HY1/quqE?=
+ =?us-ascii?Q?ztHH5+hs9fhc0Ezze77K51r2yxbHfUtCbEQcM+i9nHH2D+XzVMEZSKsK+GW6?=
+ =?us-ascii?Q?/JEv0nCX5HptluqE5OEWQuitAmtRu9g3gIn5IylFfpjELD3Icq+OlZ64jRS/?=
+ =?us-ascii?Q?jl0gQpjgQOO+Ks46Op8kMefe9IGw5nVvRjaPMXrxrxA7bajZqtLMu5ZVZLrZ?=
+ =?us-ascii?Q?04a4HrCPYemQ8iAOtQFYmx2LPqlXo/XxvFid02UnI5vSLlui62rCSLAizW2c?=
+ =?us-ascii?Q?8/DyIiYI00gJgTzxcrZJhvStNrGT47hAKZ7gVRmmCcdMKbAjA3IoYyEM6ZOk?=
+ =?us-ascii?Q?ExHorhtEqkp/KlNdAfwZTJlRnTCvUeTs5bpAjMnu2emVNrXF5LbafJptqQhq?=
+ =?us-ascii?Q?2x87dtsXCgmywBQuyORHnmYvK0rOzI3biEnyhhJHNH0AcIKN613HiAeAK42j?=
+ =?us-ascii?Q?BgSfYHj5eFTnQ/154SkcfniO78fRODv5Imvk3E92eGjSLT9I0ddbDPYMBaSz?=
+ =?us-ascii?Q?YbReAXqLmIOjHUNj8txAUuR+SZ2k+m2oRY8tkvwFiWSwLzX+k6COkwm/W8g0?=
+ =?us-ascii?Q?dPFco5O95oEfKfRTTrqpQJUEhtkMZLwlrap5mJR8mYuhhQD1MO/6fygrnQJf?=
+ =?us-ascii?Q?mTK7g97l/hj05q0NdY37FWeHacUyc6J66nt9HVbf5bvAecWKyv0Un695LvJD?=
+ =?us-ascii?Q?eVMTyWPinndLsuKzkNJ7Dnn/C43nJnzfb1CqhzBvFcmqkj5GKuRvQNzP5kQQ?=
+ =?us-ascii?Q?4JiyJSGfZFnhYQVdOvyuAkVEn+OyklCreotnNpgjKMmXsKXUOyE4lNqVSj4Z?=
+ =?us-ascii?Q?tEphP+h363fkB5fjU2mdMTPp0KDdpSkbqwvMs0EiRzWP5qv8zjdLYXUXDOyJ?=
+ =?us-ascii?Q?fW8IOo8LVhfTPcNJSKseHZ9cUU2fPz8D9BTgq6e8QdqPn2qvNHvkuIDhonwX?=
+ =?us-ascii?Q?RoqLvtZxnp0wlwFsIrym8iR81Gss53Q6xMKUrFqHsyjTOyumD9fsK93AusD+?=
+ =?us-ascii?Q?7U6Eait4on6d0RDhFK2dHnDzzNClb2UMIJNYwqt39xUYJvg30cmzdqlIjAZz?=
+ =?us-ascii?Q?pkKiLgoVo/t2xLxglk4IvGESEQO+Vn0b+aY8zOqn3duda7C/O14Hq3RCB+72?=
+ =?us-ascii?Q?NBiNwxWQVDS9BhbMnqpzi+CrDYMAZo0Xc3yXnInBRMuBHNEZEN12zTJZr93v?=
+ =?us-ascii?Q?EuNRW+tybskjI2Adj/a9lZ/ioy3Dv59ySfSY3Fqt3QLSperguUyHanDDmxTC?=
+ =?us-ascii?Q?QrbXzRUY/MBNuAoQQN6npi8+6VCO+gQJAQX6eQRklREDHBUDpycrNJiRVJJD?=
+ =?us-ascii?Q?4QgV6EVl9DOsSKObJuMeL0BJJ8wgwir1jrRb+U8RNS69FAQFoP7Ddl+Exjp4?=
+ =?us-ascii?Q?3Ca6HBj6IZin66zZDyPrM8kV8HyzkQZdhyIn3G5JnYHPFqqtqYjpCaqg/zAX?=
+ =?us-ascii?Q?TAQsIt0kul9UUtNpApiGHxunaD1dpoldCPNbaamBZ40G5XJyd6ABR1y3bKEw?=
+ =?us-ascii?Q?mAj2MPmcRY2lYcPp5HZbww4sqsybrck20u/Jop4gopSuyeELyXmPfQEmYfgv?=
+ =?us-ascii?Q?LjEfrHHLyOV7UX/UzR6di+m/pD0VpV6xsHg141YhTovT9sWG2uaOZjctc+yH?=
+ =?us-ascii?Q?ZOjH2IOek2gMxoKtfyUOWJw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <040561077F0E8041B318F7BF3DD23E99@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?Vx/mJhadTcU2at1uXmoQ1cHXo3SEZRLwYSexK5ZDajugW9hwDz95vhAzHR16?=
+ =?us-ascii?Q?LOf0qMPqp8Eb5QdZlRXkUCdz4PAxBwn5d2EHDYSWZetENnktro7mHFwt9Noi?=
+ =?us-ascii?Q?fp8digw7otq4BZtXiPm0rjl2pKbyS/vyR7CIck0z9+k4awNVkzg9cD4Ocu3I?=
+ =?us-ascii?Q?A+aXKsmutAJ5urcwaDiVhDCMUD5YTY9mF0oyAxxk7u6LVrxVAA3soln5BK7y?=
+ =?us-ascii?Q?pfJywqAvYfQpVYwwgm0TWpUSw15vXUocfWLSofMOyPs3+S3Sd/nPx1VUnb0K?=
+ =?us-ascii?Q?37vAx/92CISsFH93endKZuluS4lFhO5PLX+13YlEfLGo1JGykQi1/j03Ea9H?=
+ =?us-ascii?Q?sbVAwSBclSE9TqobJF55yLXdxwnNXeZumXlHk+CypbrjNRV9qL79Os8fzj1T?=
+ =?us-ascii?Q?LZm5Vp9+r/shv/kTmFWkr0X7d4s3HZLnRyN3g2R+Rj1jZDLmxuhGAp7xZ6Up?=
+ =?us-ascii?Q?EULARbzm8rhAQGMaM8PE6ZDT8Huk4vSad248w6wU1xXEe7FZuFqjrqTjVGmk?=
+ =?us-ascii?Q?7YV1IIupNNNx8hRjZkHot4EIpZ4xh53thHHLLzpmdfXH9UaiFdX9s4TNFtPd?=
+ =?us-ascii?Q?LJ+dt1D6tg49V16dkcsa8c/2GoYAxj6jleQCkklWkSpyoEoJNEgCGsek0otp?=
+ =?us-ascii?Q?Vi9nrvcA5mGTOcyme3Fo3kLpu9bp+ibnHu8gfxRmW9XCEKbml2dButcmsyHq?=
+ =?us-ascii?Q?UvwQU1gaRze7L9zSY3srmMR8r7aRdVc1hRylQXfaDRUBfDyniaAL57/cn6EK?=
+ =?us-ascii?Q?9kuAHvgQK8PVDEhaxQkJtNMDqy0DbpeGZjkUX4LdYUuQJV0MItW7Wi7dTIyx?=
+ =?us-ascii?Q?8EErrZxd3v9/Jm5xae/LKmgI8QX9aUE/QzUrs8pICPusH/fUQaZZP6nVlhrg?=
+ =?us-ascii?Q?ezEP5xab6SBeOF/rxFWthhbUblBQXb/MTHIULJNlWr6q/NJd0EmIgjCjk2Do?=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2517a178-7a7a-42a3-a631-08db8f414c2b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 08:04:41.6520
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lLb5VPsGk3ORQsqAeNuzt7VAYPvjviuvu04E7LdVQKKLZS6BeTGqaZRrlNUIckZAhJXLcLcWuvFY9NQG3vV8JJsCePGQYPBi+Z8i3vUtHow=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7066
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Jul 26, 2023 / 14:46, Daniel Wagner wrote:
+> As all tests are using the same subsystem nqn anyway, use
+> the def_subsysnqn variable and drop the local subsys_name
+> variable.
 
+[...]
 
-On 28.07.2023 01:26, Arseniy Krasnov wrote:
-> This adds handling of MSG_ZEROCOPY flag on transmission path: if this
-> flag is set and zerocopy transmission is possible (enabled in socket
-> options and transport allows zerocopy), then non-linear skb will be
-> created and filled with the pages of user's buffer. Pages of user's
-> buffer are locked in memory by 'get_user_pages()'. Second thing that
-> this patch does is replace type of skb owning: instead of calling
-> 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
-> change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
-> of socket, so to decrease this field correctly proper skb destructor is
-> needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
-> 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> ---
->  Changelog:
->  v5(big patchset) -> v1:
->   * Refactorings of 'if' conditions.
->   * Remove extra blank line.
->   * Remove 'frag_off' field unneeded init.
->   * Add function 'virtio_transport_fill_skb()' which fills both linear
->     and non-linear skb with provided data.
->  v1 -> v2:
->   * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
->  v2 -> v3:
->   * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
->     provided 'iov_iter' with data could be sent in a zerocopy mode.
->     If this callback is not set in transport - transport allows to send
->     any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
->     then zerocopy is allowed. Reason of this callback is that in case of
->     G2H transmission we insert whole skb to the tx virtio queue and such
->     skb must fit to the size of the virtio queue to be sent in a single
->     iteration (may be tx logic in 'virtio_transport.c' could be reworked
->     as in vhost to support partial send of current skb). This callback
->     will be enabled only for G2H path. For details pls see comment 
->     'Check that tx queue...' below.
->  v3 -> v4:
->   * 'msgzerocopy_check_iov' moved from 'struct vsock_transport' to
->     'struct virtio_transport' as it is virtio specific callback and
->     never needed in other transports.
-> 
->  include/linux/virtio_vsock.h            |   5 +
->  net/vmw_vsock/virtio_transport.c        |  38 ++++
->  net/vmw_vsock/virtio_transport_common.c | 257 ++++++++++++++++++------
->  3 files changed, 242 insertions(+), 58 deletions(-)
-> 
-> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> index 17dbb7176e37..33d878abbfcb 100644
-> --- a/include/linux/virtio_vsock.h
-> +++ b/include/linux/virtio_vsock.h
-> @@ -160,6 +160,11 @@ struct virtio_transport {
->  
->  	/* Takes ownership of the packet */
->  	int (*send_pkt)(struct sk_buff *skb);
-> +
-> +	/* Used in MSG_ZEROCOPY mode. Checks that provided data
-> +	 * could be transmitted with zerocopy mode.
-> +	 */
-> +	bool (*msgzerocopy_check_iov)(const struct iov_iter *iov);
->  };
->  
->  ssize_t
-> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> index 7bbcc8093e51..f0abcaad5cfd 100644
-> --- a/net/vmw_vsock/virtio_transport.c
-> +++ b/net/vmw_vsock/virtio_transport.c
-> @@ -442,6 +442,43 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
->  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
->  }
->  
-> +static bool virtio_transport_msgzerocopy_check_iov(const struct iov_iter *iov)
-> +{
-> +	struct virtio_vsock *vsock;
-> +	bool res = false;
-> +
-> +	rcu_read_lock();
-> +
-> +	vsock = rcu_dereference(the_virtio_vsock);
-> +	if (vsock) {
-> +		struct virtqueue *vq;
-> +		int iov_pages;
-> +
-> +		vq = vsock->vqs[VSOCK_VQ_TX];
-> +
-> +		iov_pages = round_up(iov->count, PAGE_SIZE) / PAGE_SIZE;
-> +
-> +		/* Check that tx queue is large enough to keep whole
-> +		 * data to send. This is needed, because when there is
-> +		 * not enough free space in the queue, current skb to
-> +		 * send will be reinserted to the head of tx list of
-> +		 * the socket to retry transmission later, so if skb
-> +		 * is bigger than whole queue, it will be reinserted
-> +		 * again and again, thus blocking other skbs to be sent.
-> +		 * Each page of the user provided buffer will be added
-> +		 * as a single buffer to the tx virtqueue, so compare
-> +		 * number of pages against maximum capacity of the queue.
-> +		 * +1 means buffer for the packet header.
-> +		 */
-> +		if (iov_pages + 1 <= vq->num_max)
+> diff --git a/tests/nvme/043 b/tests/nvme/043
+> index 4a37f91e50c3..6392bd8b2492 100755
+> --- a/tests/nvme/043
+> +++ b/tests/nvme/043
+> @@ -26,7 +26,6 @@ test() {
+>  	_setup_nvmet
+> =20
+>  	local port
+> -	local subsys_name=3D"blktests-subsystem-1"
 
-^^^
-Oops, here is bug, it must be
-
-if (min(iov_pages, MAX_SKB_FRAGS) + 1 <= vq->num_max)
-
-This is because whole iov is not inserted to the tx queue. iov is splitted by
-MAX_SKB_FRAGS limit (in tx loop in virtio_transport_common.c) and then every
-skb is inserted to the tx queue. I'll fix it in v5, sorry
-
-Thanks, Arseniy
-
-> +			res = true;
-> +	}
-> +
-> +	rcu_read_unlock();
-> +
-> +	return res;
-> +}
-> +
->  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
->  
->  static struct virtio_transport virtio_transport = {
-> @@ -491,6 +528,7 @@ static struct virtio_transport virtio_transport = {
->  	},
->  
->  	.send_pkt = virtio_transport_send_pkt,
-> +	.msgzerocopy_check_iov = virtio_transport_msgzerocopy_check_iov,
->  };
->  
->  static bool virtio_transport_seqpacket_allow(u32 remote_cid)
-> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> index de7b44675254..659f9d70266b 100644
-> --- a/net/vmw_vsock/virtio_transport_common.c
-> +++ b/net/vmw_vsock/virtio_transport_common.c
-> @@ -37,73 +37,122 @@ virtio_transport_get_ops(struct vsock_sock *vsk)
->  	return container_of(t, struct virtio_transport, transport);
->  }
->  
-> -/* Returns a new packet on success, otherwise returns NULL.
-> - *
-> - * If NULL is returned, errp is set to a negative errno.
-> - */
-> -static struct sk_buff *
-> -virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
-> -			   size_t len,
-> -			   u32 src_cid,
-> -			   u32 src_port,
-> -			   u32 dst_cid,
-> -			   u32 dst_port)
-> -{
-> -	const size_t skb_len = VIRTIO_VSOCK_SKB_HEADROOM + len;
-> -	struct virtio_vsock_hdr *hdr;
-> -	struct sk_buff *skb;
-> -	void *payload;
-> -	int err;
-> +static bool virtio_transport_can_zcopy(struct virtio_vsock_pkt_info *info,
-> +				       size_t max_to_send)
-> +{
-> +	const struct virtio_transport *t_ops;
-> +	struct iov_iter *iov_iter;
->  
-> -	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
-> -	if (!skb)
-> -		return NULL;
-> +	if (!info->msg)
-> +		return false;
->  
-> -	hdr = virtio_vsock_hdr(skb);
-> -	hdr->type	= cpu_to_le16(info->type);
-> -	hdr->op		= cpu_to_le16(info->op);
-> -	hdr->src_cid	= cpu_to_le64(src_cid);
-> -	hdr->dst_cid	= cpu_to_le64(dst_cid);
-> -	hdr->src_port	= cpu_to_le32(src_port);
-> -	hdr->dst_port	= cpu_to_le32(dst_port);
-> -	hdr->flags	= cpu_to_le32(info->flags);
-> -	hdr->len	= cpu_to_le32(len);
-> +	iov_iter = &info->msg->msg_iter;
->  
-> -	if (info->msg && len > 0) {
-> -		payload = skb_put(skb, len);
-> -		err = memcpy_from_msg(payload, info->msg, len);
-> -		if (err)
-> -			goto out;
-> +	t_ops = virtio_transport_get_ops(info->vsk);
->  
-> -		if (msg_data_left(info->msg) == 0 &&
-> -		    info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
-> -			hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
-> +	if (t_ops->msgzerocopy_check_iov &&
-> +	    !t_ops->msgzerocopy_check_iov(iov_iter))
-> +		return false;
->  
-> -			if (info->msg->msg_flags & MSG_EOR)
-> -				hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
-> -		}
-> +	/* Data is simple buffer. */
-> +	if (iter_is_ubuf(iov_iter))
-> +		return true;
-> +
-> +	if (!iter_is_iovec(iov_iter))
-> +		return false;
-> +
-> +	if (iov_iter->iov_offset)
-> +		return false;
-> +
-> +	/* We can't send whole iov. */
-> +	if (iov_iter->count > max_to_send)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static int virtio_transport_init_zcopy_skb(struct vsock_sock *vsk,
-> +					   struct sk_buff *skb,
-> +					   struct msghdr *msg,
-> +					   bool zerocopy)
-> +{
-> +	struct ubuf_info *uarg;
-> +
-> +	if (msg->msg_ubuf) {
-> +		uarg = msg->msg_ubuf;
-> +		net_zcopy_get(uarg);
-> +	} else {
-> +		struct iov_iter *iter = &msg->msg_iter;
-> +		struct ubuf_info_msgzc *uarg_zc;
-> +		int len;
-> +
-> +		/* Only ITER_IOVEC or ITER_UBUF are allowed and
-> +		 * checked before.
-> +		 */
-> +		if (iter_is_iovec(iter))
-> +			len = iov_length(iter->__iov, iter->nr_segs);
-> +		else
-> +			len = iter->count;
-> +
-> +		uarg = msg_zerocopy_realloc(sk_vsock(vsk),
-> +					    len,
-> +					    NULL);
-> +		if (!uarg)
-> +			return -1;
-> +
-> +		uarg_zc = uarg_to_msgzc(uarg);
-> +		uarg_zc->zerocopy = zerocopy ? 1 : 0;
->  	}
->  
-> -	if (info->reply)
-> -		virtio_vsock_skb_set_reply(skb);
-> +	skb_zcopy_init(skb, uarg);
->  
-> -	trace_virtio_transport_alloc_pkt(src_cid, src_port,
-> -					 dst_cid, dst_port,
-> -					 len,
-> -					 info->type,
-> -					 info->op,
-> -					 info->flags);
-> +	return 0;
-> +}
->  
-> -	if (info->vsk && !skb_set_owner_sk_safe(skb, sk_vsock(info->vsk))) {
-> -		WARN_ONCE(1, "failed to allocate skb on vsock socket with sk_refcnt == 0\n");
-> -		goto out;
-> +static int virtio_transport_fill_skb(struct sk_buff *skb,
-> +				     struct virtio_vsock_pkt_info *info,
-> +				     size_t len,
-> +				     bool zcopy)
-> +{
-> +	if (zcopy) {
-> +		return __zerocopy_sg_from_iter(info->msg, NULL, skb,
-> +					      &info->msg->msg_iter,
-> +					      len);
-> +	} else {
-> +		void *payload;
-> +		int err;
-> +
-> +		payload = skb_put(skb, len);
-> +		err = memcpy_from_msg(payload, info->msg, len);
-> +		if (err)
-> +			return -1;
-> +
-> +		if (msg_data_left(info->msg))
-> +			return 0;
-> +
-> +		return 0;
->  	}
-> +}
->  
-> -	return skb;
-> +static void virtio_transport_init_hdr(struct sk_buff *skb,
-> +				      struct virtio_vsock_pkt_info *info,
-> +				      u32 src_cid,
-> +				      u32 src_port,
-> +				      u32 dst_cid,
-> +				      u32 dst_port,
-> +				      size_t len)
-> +{
-> +	struct virtio_vsock_hdr *hdr;
->  
-> -out:
-> -	kfree_skb(skb);
-> -	return NULL;
-> +	hdr = virtio_vsock_hdr(skb);
-> +	hdr->type	= cpu_to_le16(info->type);
-> +	hdr->op		= cpu_to_le16(info->op);
-> +	hdr->src_cid	= cpu_to_le64(src_cid);
-> +	hdr->dst_cid	= cpu_to_le64(dst_cid);
-> +	hdr->src_port	= cpu_to_le32(src_port);
-> +	hdr->dst_port	= cpu_to_le32(dst_port);
-> +	hdr->flags	= cpu_to_le32(info->flags);
-> +	hdr->len	= cpu_to_le32(len);
->  }
->  
->  static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
-> @@ -214,6 +263,70 @@ static u16 virtio_transport_get_type(struct sock *sk)
->  		return VIRTIO_VSOCK_TYPE_SEQPACKET;
->  }
->  
-> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
-> +						  struct virtio_vsock_pkt_info *info,
-> +						  size_t payload_len,
-> +						  bool zcopy,
-> +						  u32 src_cid,
-> +						  u32 src_port,
-> +						  u32 dst_cid,
-> +						  u32 dst_port)
-> +{
-> +	struct sk_buff *skb;
-> +	size_t skb_len;
-> +
-> +	skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
-> +
-> +	if (!zcopy)
-> +		skb_len += payload_len;
-> +
-> +	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
-> +	if (!skb)
-> +		return NULL;
-> +
-> +	virtio_transport_init_hdr(skb, info, src_cid, src_port,
-> +				  dst_cid, dst_port,
-> +				  payload_len);
-> +
-> +	/* Set owner here, because '__zerocopy_sg_from_iter()' uses
-> +	 * owner of skb without check to update 'sk_wmem_alloc'.
-> +	 */
-> +	if (vsk)
-> +		skb_set_owner_w(skb, sk_vsock(vsk));
-> +
-> +	if (info->msg && payload_len > 0) {
-> +		int err;
-> +
-> +		err = virtio_transport_fill_skb(skb, info, payload_len, zcopy);
-> +		if (err)
-> +			goto out;
-> +
-> +		if (info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
-> +			struct virtio_vsock_hdr *hdr = virtio_vsock_hdr(skb);
-> +
-> +			hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
-> +
-> +			if (info->msg->msg_flags & MSG_EOR)
-> +				hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
-> +		}
-> +	}
-> +
-> +	if (info->reply)
-> +		virtio_vsock_skb_set_reply(skb);
-> +
-> +	trace_virtio_transport_alloc_pkt(src_cid, src_port,
-> +					 dst_cid, dst_port,
-> +					 payload_len,
-> +					 info->type,
-> +					 info->op,
-> +					 info->flags);
-> +
-> +	return skb;
-> +out:
-> +	kfree_skb(skb);
-> +	return NULL;
-> +}
-> +
->  /* This function can only be used on connecting/connected sockets,
->   * since a socket assigned to a transport is required.
->   *
-> @@ -222,10 +335,12 @@ static u16 virtio_transport_get_type(struct sock *sk)
->  static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->  					  struct virtio_vsock_pkt_info *info)
->  {
-> +	u32 max_skb_len = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
->  	u32 src_cid, src_port, dst_cid, dst_port;
->  	const struct virtio_transport *t_ops;
->  	struct virtio_vsock_sock *vvs;
->  	u32 pkt_len = info->pkt_len;
-> +	bool can_zcopy = false;
->  	u32 rest_len;
->  	int ret;
->  
-> @@ -254,15 +369,30 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->  	if (pkt_len == 0 && info->op == VIRTIO_VSOCK_OP_RW)
->  		return pkt_len;
->  
-> +	if (info->msg) {
-> +		/* If zerocopy is not enabled by 'setsockopt()', we behave as
-> +		 * there is no MSG_ZEROCOPY flag set.
-> +		 */
-> +		if (!sock_flag(sk_vsock(vsk), SOCK_ZEROCOPY))
-> +			info->msg->msg_flags &= ~MSG_ZEROCOPY;
-> +
-> +		if (info->msg->msg_flags & MSG_ZEROCOPY)
-> +			can_zcopy = virtio_transport_can_zcopy(info, pkt_len);
-> +
-> +		if (can_zcopy)
-> +			max_skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE,
-> +					    (MAX_SKB_FRAGS * PAGE_SIZE));
-> +	}
-> +
->  	rest_len = pkt_len;
->  
->  	do {
->  		struct sk_buff *skb;
->  		size_t skb_len;
->  
-> -		skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE, rest_len);
-> +		skb_len = min(max_skb_len, rest_len);
->  
-> -		skb = virtio_transport_alloc_skb(info, skb_len,
-> +		skb = virtio_transport_alloc_skb(vsk, info, skb_len, can_zcopy,
->  						 src_cid, src_port,
->  						 dst_cid, dst_port);
->  		if (!skb) {
-> @@ -270,6 +400,17 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->  			break;
->  		}
->  
-> +		/* This is last skb to send this portion of data. */
-> +		if (info->msg && info->msg->msg_flags & MSG_ZEROCOPY &&
-> +		    skb_len == rest_len && info->op == VIRTIO_VSOCK_OP_RW) {
-> +			if (virtio_transport_init_zcopy_skb(vsk, skb,
-> +							    info->msg,
-> +							    can_zcopy)) {
-> +				ret = -ENOMEM;
-> +				break;
-> +			}
-> +		}
-> +
->  		virtio_transport_inc_tx_pkt(vvs, skb);
->  
->  		ret = t_ops->send_pkt(skb);
-> @@ -985,7 +1126,7 @@ static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
->  	if (!t)
->  		return -ENOTCONN;
->  
-> -	reply = virtio_transport_alloc_skb(&info, 0,
-> +	reply = virtio_transport_alloc_skb(NULL, &info, 0, false,
->  					   le64_to_cpu(hdr->dst_cid),
->  					   le32_to_cpu(hdr->dst_port),
->  					   le64_to_cpu(hdr->src_cid),
+The variable subsys_name is removed here, but this patch still leaves a
+reference to it. This causes this test case fail. The reference is removed =
+in
+the next patch. I think the left reference should be replaced with def_subs=
+ysnqn
+in this patch.=
