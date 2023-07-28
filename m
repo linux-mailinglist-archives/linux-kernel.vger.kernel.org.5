@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED99766245
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFC076624F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 05:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbjG1DF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 23:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        id S231314AbjG1DNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 23:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbjG1DFh (ORCPT
+        with ESMTP id S229577AbjG1DNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 23:05:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376E11BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 20:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690513449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GStcZIMJcpm3mEc/b6/z0GhlYIMNmnnV6wFHKdIVD34=;
-        b=brP/FL66dLn+T9qd6ldQK1PpoC73Iw9+4CLM3ZKMCasTWlxAhj9byu62kFfjqBosJtdw3H
-        8hiurJycvgwAK5HFh5A6HnyBHnpLKHFeA8k7PzwyIe6AiZXHnr3Bi2WW994+wKL2b+38Le
-        SKx6UFyQh52TLpbCDPOVQSTtGxg51nY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-31-UZIbd7wuPReYBwkAFZlj-w-1; Thu, 27 Jul 2023 23:04:05 -0400
-X-MC-Unique: UZIbd7wuPReYBwkAFZlj-w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 134EB800159;
-        Fri, 28 Jul 2023 03:04:05 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0A4994094DC0;
-        Fri, 28 Jul 2023 03:04:03 +0000 (UTC)
-Date:   Fri, 28 Jul 2023 11:04:01 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, tj@kernel.org, cl@linux.com,
-        mawupeng1@huawei.com
-Subject: Re: [PATCH 0/3] percpu: some trivial cleanup patches
-Message-ID: <ZMMwIYCw8YQ0WeKK@MiWiFi-R3L-srv>
-References: <20230721131800.20003-1-bhe@redhat.com>
- <ZLry5gupx9mp1659@snowbird>
- <ZLtNRsDuN4xEMSMB@MiWiFi-R3L-srv>
- <ZML0qwKTG5zB4VwL@snowbird>
+        Thu, 27 Jul 2023 23:13:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8342686;
+        Thu, 27 Jul 2023 20:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vxH+Ar3Pm3xjODXON89Eu2OP8Ll5EmsHBUYLyH6aHso=; b=TrUoJjZUv7PjKwfiYd4aYJ/CJK
+        umPzc4eqwlVu0zGZ9JATn/Zf0zo1ET7jVxj7dflohQoaIgvp91h2IsrhIeNlAaKlrHMdAni0hMCvU
+        blVoQ58//jiwJlljYa3gF/7ObUNmlLzY2Qiee3az2gstEpX/NtwsuQZg896Qc/djUiFBr6nPW76db
+        4wkLSQlmpoQCm4HCBVyI5+Mnu7c7vrxMz82AFp7LdHzrkvqXV0GBgb+mfHPZ+SKLPocXKI7WNThEZ
+        qU6wHXhYhwp4SMZJ+u+GJi+39FsEURm3N5MEq3loNmvnEftCkQb7xK1ASrQwdOWpoeRtDhMkiNy3+
+        kX4l0zsQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qPDv0-0087wb-DO; Fri, 28 Jul 2023 03:13:31 +0000
+Date:   Fri, 28 Jul 2023 04:13:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
+Message-ID: <ZMMyWmyC8EvFIL/G@casper.infradead.org>
+References: <20230728091849.7f32259d@canb.auug.org.au>
+ <20230728092915.732d4115@canb.auug.org.au>
+ <20230728100047.4f9cd375@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZML0qwKTG5zB4VwL@snowbird>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230728100047.4f9cd375@canb.auug.org.au>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/27/23 at 03:50pm, Dennis Zhou wrote:
-> Hi,
-> 
-> On Sat, Jul 22, 2023 at 11:30:14AM +0800, Baoquan He wrote:
-> > On 07/21/23 at 02:04pm, Dennis Zhou wrote:
-> > > Hello,
-> > > 
-> > > On Fri, Jul 21, 2023 at 09:17:57PM +0800, Baoquan He wrote:
-> > > > There's a left issue in my mailbox about percpu code at below. When
-> > > > I rechecked it and considered Dennis's comment, I made an attmept
-> > > > to fix it with patch 3.
-> > > > 
-> > > > https://lore.kernel.org/all/Y407wDMKq5ibE9sc@fedora/T/#u
-> > > > 
-> > > > Patch 1 and 2 are trivial clean up patches when reading percpu code.
-> > > > 
-> > > > Baoquan He (3):
-> > > >   mm/percpu.c: remove redundant check
-> > > >   mm/percpu.c: optimize the code in pcpu_setup_first_chunk() a little
-> > > >     bit
-> > > >   mm/percpu.c: print error message too if atomic alloc failed
-> > > > 
-> > > >  mm/percpu.c | 39 +++++++++++++++++----------------------
-> > > >  1 file changed, 17 insertions(+), 22 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.34.1
-> > > > 
-> > > 
-> > > Thanks for these. I left a few comments. I think I might have some stuff
-> > > for v6.6, I'll figure that out in a couple days. If that's so, I can
-> > > pull 1, probably massage 2 and send that out again, and then I think
-> > > you'll need to resend 3.
-> > 
-> > Sure, thanks for careful reviewing and great suggestion. So I only need
-> > to send v2 of patch 3, right? Or I should change and send v2 of the
-> > whold series? I may not get it clear.
-> > 
-> 
-> Sorry for the delay. I've pulled 1 and 2 (reworded the comment). Can you
-> please resend patch 3.
+On Fri, Jul 28, 2023 at 10:00:47AM +1000, Stephen Rothwell wrote:
+> I have gone with below.  Again, please check.
 
-Sent out v2 of patch 3, thanks.
+LGTM
 
+> diff --cc mm/memory.c
+> index ca632b58f792,271982fab2b8..000000000000
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@@ -5392,32 -5597,18 +5597,21 @@@ retry
+>   	if (!vma)
+>   		goto inval;
+>   
+> - 	/* Only anonymous and tcp vmas are supported for now */
+> - 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
+>  -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
+>  -	if (vma_is_anonymous(vma) && !vma->anon_vma)
+> --		goto inval;
+> --
+>   	if (!vma_start_read(vma))
+>   		goto inval;
+>   
+>  +	/*
+>  +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+>  +	 * This check must happen after vma_start_read(); otherwise, a
+>  +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+>  +	 * from its anon_vma.
+>  +	 */
+> - 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
+> - 		goto inval_end_read;
+> - 
+> - 	/*
+> - 	 * Due to the possibility of userfault handler dropping mmap_lock, avoid
+> - 	 * it for now and fall back to page fault handling under mmap_lock.
+> - 	 */
+> - 	if (userfaultfd_armed(vma))
+> ++	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
+>  +		goto inval_end_read;
+>  +
+>   	/* Check since vm_start/vm_end might change before we lock the VMA */
+>  -	if (unlikely(address < vma->vm_start || address >= vma->vm_end)) {
+>  -		vma_end_read(vma);
+>  -		goto inval;
+>  -	}
+>  +	if (unlikely(address < vma->vm_start || address >= vma->vm_end))
+>  +		goto inval_end_read;
+>   
+>   	/* Check if the VMA got isolated after we found it */
+>   	if (vma->detached) {
+
+If Andrew wants to rebase on Linus' tree, I'll be happy to respin
+on top of that.
