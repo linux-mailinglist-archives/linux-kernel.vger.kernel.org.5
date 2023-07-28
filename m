@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00027767236
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEE376723E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbjG1Qnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S232314AbjG1QoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbjG1Qmy (ORCPT
+        with ESMTP id S235596AbjG1Qn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:42:54 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C781512C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:45 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-78706966220so22789939f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562565; x=1691167365;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jgmPORLNso3KhGjKAf8ri1EDar6yb/Ua+Lm2vp9NjUk=;
-        b=Ur0yn05vA4g6T1oMAgp5S9eOXhQtpLAoIUiHwtUeZg7WO3bUolj2hC6IlLND4XUMQk
-         1f6OAMKnGzk4YG7fQyrPaVOicySAWV6S/Uppg1jacyTOFCo0Jg3Ci/zeD2fpcWM+Wacy
-         fQXHgBS5CGBszY2iiZR+K4mhDOLA+caxiY8mRZ9YkvIEC+UdvmAejzvXVylbd5FW88sw
-         YvtNlixuhvlm/8yVwYJfR6N9j4H0qPCMSeouDkwUC91RSldd+8w2qTixfwoIAyYhQ/OZ
-         iHx0excWbAyl4KxIih6EFokslp1PTrvrkYZcLTIMotZrIGaDpyOyTFCWsp9BkQQHkb+u
-         vkog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562565; x=1691167365;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jgmPORLNso3KhGjKAf8ri1EDar6yb/Ua+Lm2vp9NjUk=;
-        b=AzMn590AAbIpzB6Pr8scNPilyXH95H2tscmrd+WmLF5NrMksK9UQOpxig9L6aCeE2X
-         xzaydcvL43feWR8s0Xsqn/0jF2nsCTrh33qCTdTJknKZtLK9lAj80BE4N78hV9iSRW3a
-         69/ZNi/AUHOlf9u4b1qAoHzFXJtBYjRH61sCtsrD9VeyMThc/S0+hcmt/AGKCTCtdrL2
-         taCDZBPASm+Gc+KXYzEfQ+tYawwk8Z6v4xneOW2xqqaO4sXi8omecUZcDvG/XEj+zzNF
-         eU2wQ+hZ7FafOv+gZ7C/07ii2yoD6UVSNxlTv8nlMme6pESPEKPermbYsrGzPJ7amq3m
-         zIcQ==
-X-Gm-Message-State: ABy/qLaGShRfiTYdBmWVyLUn3FSFo4SHuXxKOX7CXXceICSF855dPZsT
-        mlgzJlHLQ8fm40R0j4fJtzBIwg==
-X-Google-Smtp-Source: APBJJlECGCC1BnbNTLfhF7JxlO0uEAba+K6k5FLKU0FPSM8izihcvb6OwaDmFe2CUiDnhujBkA9Whg==
-X-Received: by 2002:a6b:c9d3:0:b0:788:2d78:813c with SMTP id z202-20020a6bc9d3000000b007882d78813cmr110344iof.0.1690562565051;
-        Fri, 28 Jul 2023 09:42:45 -0700 (PDT)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1158808jal.136.2023.07.28.09.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:42:44 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 07/12] futex: abstract out a __futex_wake_mark() helper
-Date:   Fri, 28 Jul 2023 10:42:30 -0600
-Message-Id: <20230728164235.1318118-8-axboe@kernel.dk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230728164235.1318118-1-axboe@kernel.dk>
-References: <20230728164235.1318118-1-axboe@kernel.dk>
+        Fri, 28 Jul 2023 12:43:27 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A29B4449E
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:13 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 681DD2F4;
+        Fri, 28 Jul 2023 09:43:56 -0700 (PDT)
+Received: from merodach.members.linode.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F7083F67D;
+        Fri, 28 Jul 2023 09:43:10 -0700 (PDT)
+From:   James Morse <james.morse@arm.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        xingxin.hx@openanolis.org, baolin.wang@linux.alibaba.com,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com
+Subject: [PATCH v5 00/24] x86/resctrl: monitored closid+rmid together, separate arch/fs locking
+Date:   Fri, 28 Jul 2023 16:42:30 +0000
+Message-Id: <20230728164254.27562-1-james.morse@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the unqueue and lock_ptr clear into a helper that futex_wake_mark()
-calls. Add it to the public functions as well, in preparation for using
-it outside the core futex code.
+Hello!
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- kernel/futex/futex.h    |  1 +
- kernel/futex/waitwake.c | 33 ++++++++++++++++++++++-----------
- 2 files changed, 23 insertions(+), 11 deletions(-)
+The most interesting change since v4 is to use a sequence counter when accessing the
+QM_EVTSEL MSR to avoid the cost of re-reading the system register to detect when
+this becomes re-entrant. Otherwise changes since v3 are noted in each patch.
+~
+This series does two things, it changes resctrl to call resctrl_arch_rmid_read()
+in a way that works for MPAM, and it separates the locking so that the arch code
+and filesystem code don't have to share a mutex. I tried to split this as two
+series, but these touch similar call sites, so it would create more work.
 
-diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index bfc1e3c260b0..e04c74a34832 100644
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -217,6 +217,7 @@ extern int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
- 			    struct futex_q *q, struct futex_hash_bucket **hb);
- extern void futex_wait_queue(struct futex_hash_bucket *hb, struct futex_q *q,
- 				   struct hrtimer_sleeper *timeout);
-+extern bool __futex_wake_mark(struct futex_q *q);
- extern void futex_wake_mark(struct wake_q_head *wake_q, struct futex_q *q);
- 
- extern int fault_in_user_writeable(u32 __user *uaddr);
-diff --git a/kernel/futex/waitwake.c b/kernel/futex/waitwake.c
-index 0272b8c3b132..86f67f652b95 100644
---- a/kernel/futex/waitwake.c
-+++ b/kernel/futex/waitwake.c
-@@ -106,20 +106,11 @@
-  * double_lock_hb() and double_unlock_hb(), respectively.
-  */
- 
--/*
-- * The hash bucket lock must be held when this is called.
-- * Afterwards, the futex_q must not be accessed. Callers
-- * must ensure to later call wake_up_q() for the actual
-- * wakeups to occur.
-- */
--void futex_wake_mark(struct wake_q_head *wake_q, struct futex_q *q)
-+bool __futex_wake_mark(struct futex_q *q)
- {
--	struct task_struct *p = q->task;
--
- 	if (WARN(q->pi_state || q->rt_waiter, "refusing to wake PI futex\n"))
--		return;
-+		return false;
- 
--	get_task_struct(p);
- 	__futex_unqueue(q);
- 	/*
- 	 * The waiting task can free the futex_q as soon as q->lock_ptr = NULL
-@@ -130,6 +121,26 @@ void futex_wake_mark(struct wake_q_head *wake_q, struct futex_q *q)
- 	 */
- 	smp_store_release(&q->lock_ptr, NULL);
- 
-+	return true;
-+}
-+
-+/*
-+ * The hash bucket lock must be held when this is called.
-+ * Afterwards, the futex_q must not be accessed. Callers
-+ * must ensure to later call wake_up_q() for the actual
-+ * wakeups to occur.
-+ */
-+void futex_wake_mark(struct wake_q_head *wake_q, struct futex_q *q)
-+{
-+	struct task_struct *p = q->task;
-+
-+	get_task_struct(p);
-+
-+	if (!__futex_wake_mark(q)) {
-+		put_task_struct(p);
-+		return;
-+	}
-+
- 	/*
- 	 * Queue the task for later wakeup for after we've released
- 	 * the hb->lock.
+(What's MPAM? See the cover letter of the first series. [1])
+
+On x86 the RMID is an independent number. MPAMs equivalent is PMG, but this
+isn't an independent number - it extends the PARTID (same as CLOSID) space
+with bits that aren't used to select the configuration. The monitors can
+then be told to match specific PMG values, allowing monitor-groups to be
+created.
+
+But, MPAM expects the monitors to always monitor by PARTID. The
+Cache-storage-utilisation counters can only work this way.
+(In the MPAM spec not setting the MATCH_PARTID bit is made CONSTRAINED
+UNPREDICTABLE - which is Arm's term to mean portable software can't rely on
+this)
+
+It gets worse, as some SoCs may have very few PMG bits. I've seen the
+datasheet for one that has a single bit of PMG space.
+
+To be usable, MPAM's counters always need the PARTID and the PMG.
+For resctrl, this means always making the CLOSID available when the RMID
+is used.
+
+To ensure RMID are always unique, this series combines the CLOSID and RMID
+into an index, and manages RMID based on that. For x86, the index and RMID
+would always be the same.
+
+
+Currently the architecture specific code in the cpuhp callbacks takes the
+rdtgroup_mutex. This means the filesystem code would have to export this
+lock, resulting in an ill-defined interface between the two, and the possibility
+of cross-architecture lock-ordering head aches.
+
+The second part of this series adds a domain_list_lock to protect writes to the
+domain list, and protects the domain list with RCU - or cpus_read_lock().
+
+Use of RCU is to allow lockless readers of the domain list. To get MPAMs monitors
+working, its very likely they'll need to be plumbed up to perf. An uncore PMU
+driver would need to be a lockless reader of the domain list.
+
+This series is based on v6.5-rc1, and can be retrieved from:
+https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/monitors_and_locking/v5
+
+Bugs welcome,
+
+Thanks,
+
+James
+
+[1] https://lore.kernel.org/lkml/20210728170637.25610-1-james.morse@arm.com/
+[v1] https://lore.kernel.org/all/20221021131204.5581-1-james.morse@arm.com/
+[v2] https://lore.kernel.org/lkml/20230113175459.14825-1-james.morse@arm.com/
+[v3] https://lore.kernel.org/r/20230320172620.18254-1-james.morse@arm.com 
+[v4] https://lore.kernel.org/r/20230525180209.19497-1-james.morse@arm.com
+
+James Morse (24):
+  x86/resctrl: Track the closid with the rmid
+  x86/resctrl: Access per-rmid structures by index
+  x86/resctrl: Create helper for RMID allocation and mondata dir
+    creation
+  x86/resctrl: Move rmid allocation out of mkdir_rdt_prepare()
+  x86/resctrl: Allow RMID allocation to be scoped by CLOSID
+  x86/resctrl: Track the number of dirty RMID a CLOSID has
+  x86/resctrl: Use set_bit()/clear_bit() instead of open coding
+  x86/resctrl: Allocate the cleanest CLOSID by searching
+    closid_num_dirty_rmid
+  x86/resctrl: Move CLOSID/RMID matching and setting to use helpers
+  tick/nohz: Move tick_nohz_full_mask declaration outside the #ifdef
+  x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
+  x86/resctrl: Make resctrl_arch_rmid_read() retry when it is
+    interrupted
+  x86/resctrl: Queue mon_event_read() instead of sending an IPI
+  x86/resctrl: Allow resctrl_arch_rmid_read() to sleep
+  x86/resctrl: Allow arch to allocate memory needed in
+    resctrl_arch_rmid_read()
+  x86/resctrl: Make resctrl_mounted checks explicit
+  x86/resctrl: Move alloc/mon static keys into helpers
+  x86/resctrl: Make rdt_enable_key the arch's decision to switch
+  x86/resctrl: Add helpers for system wide mon/alloc capable
+  x86/resctrl: Add cpu online callback for resctrl work
+  x86/resctrl: Allow overflow/limbo handlers to be scheduled on any-but
+    cpu
+  x86/resctrl: Add cpu offline callback for resctrl work
+  x86/resctrl: Move domain helper migration into resctrl_offline_cpu()
+  x86/resctrl: Separate arch and fs resctrl locks
+
+ arch/x86/include/asm/resctrl.h            |  90 +++++
+ arch/x86/kernel/cpu/resctrl/core.c        |  78 ++--
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  45 ++-
+ arch/x86/kernel/cpu/resctrl/internal.h    |  82 +++-
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 440 ++++++++++++++++------
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  15 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 340 ++++++++++++-----
+ include/linux/resctrl.h                   |  43 ++-
+ include/linux/tick.h                      |   9 +-
+ 9 files changed, 870 insertions(+), 272 deletions(-)
+
 -- 
-2.40.1
+2.39.2
 
