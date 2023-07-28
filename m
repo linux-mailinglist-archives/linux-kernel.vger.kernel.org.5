@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 763FB7661CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5507661CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 04:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbjG1CdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 22:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        id S232665AbjG1Ceu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 22:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjG1CdX (ORCPT
+        with ESMTP id S229864AbjG1Ces (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 22:33:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FB30DA;
-        Thu, 27 Jul 2023 19:33:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B82361F97;
-        Fri, 28 Jul 2023 02:33:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D2DC433C8;
-        Fri, 28 Jul 2023 02:33:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690511601;
-        bh=H5DZiC+YGeGkUW+jjo5LoBNHhvMZFNEnZwIT7bvrBX4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PRlj79ZaeaAKHeUVKI/L6crpFIc8/WF3LSUJJpTKmFHAppfcCwiUNidwqXpLthN64
-         Nz+AHCbzjyF8JoBmdvX9MC1XueQ+GP1j7qKzto+tRqKQorxKxfbuCZ5l04bH1HXZCp
-         jpwQ3vgc8nCdWH29HYh55CsXYqfxnR+HY7vA6h+ABRoQFkXi6gmeCwhoUF7zsXCqjO
-         5dAMINBKICbmOsWCqpIAV2mZL5/LcXOmGwCo82GEjuNc2ntjPKeoDovaXhxA3JlchZ
-         SptGNaqek6fmbCAu1lScUPo5EoESrHsetYDo3CofFLV2KKw9s81PHFvK+AIwTIxZjg
-         MUoS0pE4me1SA==
-Message-ID: <40365501-283a-408b-3514-48c29db36861@kernel.org>
-Date:   Fri, 28 Jul 2023 11:33:19 +0900
+        Thu, 27 Jul 2023 22:34:48 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7499E
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7654e1d83e8so131532585a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690511686; x=1691116486;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iV2OpDFH9mfKiN5o/E3y0+fHFzEHfVifc7bcrvvmdpQ=;
+        b=UCo6nPeWk10retrRAhiA6H/0n5V5NFnkQ751kF/vzVAogJRK/dpbvJ2g4b9H6IZCI2
+         xro41pT6S1Whnx9E6Tej+DWrF9WguAIzzvVzwgrkryXtS0Dq4KDolRKNu8lQIn69uuYs
+         WGDGNgzZRXaHPeESlqnZ1CfsZAXGtU8d/KrPmfXxE/nQHNkpH6tDCy5+ZWuuXrKJIZPW
+         D1NZsW9BQN8miX6Rx9ZF3NAsi5bLvkme3Osc3Sijq6nUtED5JgLXQJtsA/5jkJYxIlLx
+         9gJj07IG8b17oBr8Ojk3Ph2KRe2WzlKrkshjVsZiBd5EIvesEJr8cfeMLkxZWBUN/lNH
+         /B9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690511686; x=1691116486;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iV2OpDFH9mfKiN5o/E3y0+fHFzEHfVifc7bcrvvmdpQ=;
+        b=P3naQfvtZvwP99UTA7uymWuneeYBP8p79PeimFjcihNbWtlvorkprvgMNt+SolKZzO
+         TGyJYDC4LGzM1A72vLZvYYZjPSuaMhhdFZHuwgSkQow5f6FS5CWMy2tUBq4/WQaUZVml
+         UtbknInkp9jsJI5cW0XwXBGG9Pc4EFr3Cz9P2kiNIi32hUZgb38FUV0QGAY+EgWor86Q
+         YIIu9PuezOGeZA1q1jUDjQD4QN3SMaGXvTpbtGOLzKZHVWfl/WwehSp4pmMkdZMni2P9
+         gNmfqEDU4zL/uhS36Z+uRk4Yr9FM9qX3qevZ8WgGEE3TVaTkQfksqLejvSSCC9cR0n+Y
+         OXpQ==
+X-Gm-Message-State: ABy/qLYdw5BjjTYZGBe11/EtCo3rx3/WcDux0v7JY9L3T/r09Y3hiJnj
+        5Kn9enkF3fRna+2yhlw0UpjYzQ==
+X-Google-Smtp-Source: APBJJlG4B7eb1CM0q5XNynOuTLstLOf606ewnMNnGA0lykt65q4xWGc03YqffuMWfSsD75HOGencBw==
+X-Received: by 2002:a05:620a:2951:b0:768:efd:2685 with SMTP id n17-20020a05620a295100b007680efd2685mr1553377qkp.33.1690511686024;
+        Thu, 27 Jul 2023 19:34:46 -0700 (PDT)
+Received: from [10.85.117.81] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a19c900b00267f7405a3csm1876445pjj.32.2023.07.27.19.34.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 19:34:45 -0700 (PDT)
+Message-ID: <4555470c-ea4f-244b-ed40-9403df3f5e4f@bytedance.com>
+Date:   Fri, 28 Jul 2023 10:34:38 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
-Content-Language: en-US
-To:     TW <dalzot@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     regressions@lists.linux.dev,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
- <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
- <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
- <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
- <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
- <48bc1736-5e4e-3a9b-3715-60509c333bb1@kernel.org>
- <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [External] Re: [RFC PATCH 0/5] mm: Select victim memcg using
+ BPF_OOM_POLICY
+To:     Alan Maguire <alan.maguire@oracle.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wuyun.abel@bytedance.com, robin.lu@bytedance.com
+References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
+ <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <7dbaabf9-c7c6-478b-0d07-b4ce0d7c116c@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,96 +78,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 21:25, TW wrote:
-> It was all 1 patch but the first change had a formatting issue from the 
-> email format I guess. So I fixed that and the patch went through and 
-> looks like the drive error message has stopped. Still a little slow 
-> coming back but that error is gone at least.
+Hi,
 
-"Slow coming back" -> Compared to which version of the kernel ? Do you have
-numbers ?
-
-If the devices are HDDs, resume will wait for these to spin up. That takes a
-while (about 10s normally).
-
-> 
-> Jul 27 05:05:05 rageworks systemd[1]: Starting System Suspend...
-> Jul 27 05:05:05 rageworks systemd-sleep[1624]: Entering sleep state 
-> 'suspend'...
-> Jul 27 05:05:05 rageworks kernel: PM: suspend entry (deep)
-> Jul 27 05:05:05 rageworks kernel: Filesystems sync: 0.246 seconds
-> Jul 27 05:05:26 rageworks kernel: Freezing user space processes
-> Jul 27 05:05:26 rageworks kernel: Freezing user space processes 
-> completed (elapsed 0.001 seconds)
-> Jul 27 05:05:26 rageworks kernel: OOM killer disabled.
-> Jul 27 05:05:26 rageworks kernel: Freezing remaining freezable tasks
-> Jul 27 05:05:26 rageworks kernel: Freezing remaining freezable tasks 
-> completed (elapsed 0.000 seconds)
-> Jul 27 05:05:26 rageworks kernel: printk: Suspending console(s) (use 
-> no_console_suspend to debug)
-> Jul 27 05:05:26 rageworks kernel: serial 00:05: disabled
-> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Synchronizing SCSI cache
-> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Synchronizing SCSI cache
-> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Synchronizing SCSI cache
-> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Stopping disk
-> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Stopping disk
-> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Stopping disk
-> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Preparing to enter system 
-> sleep state S3
-> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Saving platform NVS memory
-> Jul 27 05:05:26 rageworks kernel: Disabling non-boot CPUs ...
-> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 1 is now offline
-> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 2 is now offline
-> Jul 27 05:05:26 rageworks kernel: smpboot: CPU 3 is now offline
-> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Low-level resume complete
-> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Restoring platform NVS memory
-> Jul 27 05:05:26 rageworks kernel: Enabling non-boot CPUs ...
-> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 1 
-> APIC 0x1
-> Jul 27 05:05:26 rageworks kernel: CPU1 is up
-> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 2 
-> APIC 0x2
-> Jul 27 05:05:26 rageworks kernel: CPU2 is up
-> Jul 27 05:05:26 rageworks kernel: smpboot: Booting Node 0 Processor 3 
-> APIC 0x3
-> Jul 27 05:05:26 rageworks kernel: CPU3 is up
-> Jul 27 05:05:26 rageworks kernel: ACPI: PM: Waking up from system sleep 
-> state S3
-> Jul 27 05:05:26 rageworks kernel: xhci_hcd 0000:02:00.0: xHC error in 
-> resume, USBSTS 0x401, Reinit
-> Jul 27 05:05:26 rageworks kernel: usb usb1: root hub lost power or was reset
-> Jul 27 05:05:26 rageworks kernel: usb usb2: root hub lost power or was reset
-> Jul 27 05:05:26 rageworks kernel: sd 0:0:0:0: [sda] Starting disk
-> Jul 27 05:05:26 rageworks kernel: sd 1:0:0:0: [sdb] Starting disk
-> Jul 27 05:05:26 rageworks kernel: sd 9:0:0:0: [sdc] Starting disk
-> Jul 27 05:05:26 rageworks kernel: serial 00:05: activated
-> Jul 27 05:05:26 rageworks kernel: ata6: SATA link down (SStatus 0 
-> SControl 330)
-> Jul 27 05:05:26 rageworks kernel: ata5: SATA link down (SStatus 0 
-> SControl 330)
-> Jul 27 05:05:26 rageworks kernel: ata9: SATA link down (SStatus 0 
-> SControl 300)
-> Jul 27 05:05:26 rageworks kernel: usb 1-10: reset full-speed USB device 
-> number 4 using xhci_hcd
-> Jul 27 05:05:26 rageworks kernel: usb 1-8: reset full-speed USB device 
-> number 3 using xhci_hcd
-> Jul 27 05:05:26 rageworks kernel: usb 1-7: reset full-speed USB device 
-> number 2 using xhci_hcd
-> Jul 27 05:05:26 rageworks kernel: OOM killer enabled.
-> Jul 27 05:05:26 rageworks kernel: Restarting tasks ... done.
-> Jul 27 05:05:26 rageworks kernel: random: crng reseeded on system resumption
-> Jul 27 05:05:26 rageworks kernel: PM: suspend exit
-> 
-> 
-> On 7/27/23 04:27, Damien Le Moal wrote:
->> On 7/27/23 19:22, TW wrote:
->>> I managed to fix the patch file, guess the formatting messed up a bit. So will
->>> try with those patches installed.
->> Just in case, patch fil attached to avoid formatting issues.
+在 2023/7/27 19:43, Alan Maguire 写道:
+> On 27/07/2023 08:36, Chuyi Zhou wrote:
+>> This patchset tries to add a new bpf prog type and use it to select
+>> a victim memcg when global OOM is invoked. The mainly motivation is
+>> the need to customizable OOM victim selection functionality so that
+>> we can protect more important app from OOM killer.
 >>
+> 
+> It's a nice use case, but at a high level, the approach pursued here
+> is, as I understand it, discouraged for new BPF program development.
+> Specifically, adding a new BPF program type with semantics like this
+> is not preferred. Instead, can you look at using something like
+> 
+> - using "fmod_ret" instead of a new program type
+> - use BPF kfuncs instead of helpers.
+> - add selftests in tools/testing/selftests/bpf not samples.
+> 
+> There's some examples of how solutions have evolved from the traditional
+> approach (adding a new program type, helpers etc) to using kfuncs etc on
+> this list - for example HID-BPF and the BPF scheduler series - which
+> should help orient you. There are presentations from Linux Plumbers 2022
+> that walk through some of this too.
+> 
+> Judging by the sample program example, all you should need here is a way
+> to override the return value of bpf_oom_set_policy() - a noinline
+> function that by default returns a no-op. It can then be overridden by
+> an "fmod_ret" BPF program.
+> 
+Indeed, I'll try to use kfuncs & fmod_ret.
+
+Thanks for your advice.
+--
+Chuyi Zhou
+> One thing you lose is cgroup specificity at BPF attach time, but you can
+> always add predicates based on the cgroup to your BPF program if needed.
+> 
+> Alan
+> 
+>> Chuyi Zhou (5):
+>>    bpf: Introduce BPF_PROG_TYPE_OOM_POLICY
+>>    mm: Select victim memcg using bpf prog
+>>    libbpf, bpftool: Support BPF_PROG_TYPE_OOM_POLICY
+>>    bpf: Add a new bpf helper to get cgroup ino
+>>    bpf: Sample BPF program to set oom policy
 >>
-
--- 
-Damien Le Moal
-Western Digital Research
-
+>>   include/linux/bpf_oom.h        |  22 ++++
+>>   include/linux/bpf_types.h      |   2 +
+>>   include/linux/memcontrol.h     |   6 ++
+>>   include/uapi/linux/bpf.h       |  21 ++++
+>>   kernel/bpf/core.c              |   1 +
+>>   kernel/bpf/helpers.c           |  17 +++
+>>   kernel/bpf/syscall.c           |  10 ++
+>>   mm/memcontrol.c                |  50 +++++++++
+>>   mm/oom_kill.c                  | 185 +++++++++++++++++++++++++++++++++
+>>   samples/bpf/Makefile           |   3 +
+>>   samples/bpf/oom_kern.c         |  42 ++++++++
+>>   samples/bpf/oom_user.c         | 128 +++++++++++++++++++++++
+>>   tools/bpf/bpftool/common.c     |   1 +
+>>   tools/include/uapi/linux/bpf.h |  21 ++++
+>>   tools/lib/bpf/libbpf.c         |   3 +
+>>   tools/lib/bpf/libbpf_probes.c  |   2 +
+>>   16 files changed, 514 insertions(+)
+>>   create mode 100644 include/linux/bpf_oom.h
+>>   create mode 100644 samples/bpf/oom_kern.c
+>>   create mode 100644 samples/bpf/oom_user.c
+>>
