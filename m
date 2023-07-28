@@ -2,286 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C8476634A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E566676634F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbjG1EoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 00:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S232339AbjG1Eou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 00:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjG1En6 (ORCPT
+        with ESMTP id S233324AbjG1Eof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 00:43:58 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A36E2726
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:43:54 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63cf8754d95so9520106d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690519432; x=1691124232;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zJXU0zdhDbd4PjwjLH9DqPwBcwJ9xMKRgNCiI/oFA1A=;
-        b=GTdxSusfJ9siEumeQcTS/fIwe8B7am+yihThTwskH3y9KzEYrvc4uKQyFBB066NuVA
-         QshITO4d018XewEOzS1kAKcx+pdQVNKaYbhVzcuUghZ1uAM9YmOd6cb0Ydqdq7NH/049
-         LnlyzvQBv23l8fiTErVAEIN5vUUJ2nW1Fgz60=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690519432; x=1691124232;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zJXU0zdhDbd4PjwjLH9DqPwBcwJ9xMKRgNCiI/oFA1A=;
-        b=OP+VM4c4DCkCxP3nKGcsSbxiV0PlReZ3paelGayMod+Un2h7v133Q4aOwOep0+dvq1
-         dXz0FUYI274WsF+DHMXhUAsZP/AcfdLdCFmmTVyaNbWp4g5bIaHeZvi95lzHf+zjdQIs
-         zc4GGdevOvsWpeiyzE0geq7+bUGMeW5kT2yUicTcBb5Cd3mOkdjSznzPivgPw6e/tjXL
-         sD6zZSBSKQxw7Xs30ZJYc923AcPJ1xxc+nt+xAt01aymEQaiaYyl+6+NedCAAdnCbqgW
-         ewGf3f7z6bwHm1kLYrIt70umMNgaDcT1O5elnKX7LixL+VA+b4QJrrHKw65mCMuK0uVK
-         GIyA==
-X-Gm-Message-State: ABy/qLaXjMOnT280kFyYy/OnoP/loQfU5E45m7TxvIw05N1oEMYfUnqN
-        HC5ZlMpMgeySK38PuoLyQcGwO8PdOVshVA0p5CLj9A==
-X-Google-Smtp-Source: APBJJlEJV0Wbl/faUXZeCIPx9a8C8+FX5KjUEw2gIXKQGy04mjSo1Q4xVaBsrDip55Q3Q/4c79bOcg==
-X-Received: by 2002:a0c:b449:0:b0:635:e4ed:b6c9 with SMTP id e9-20020a0cb449000000b00635e4edb6c9mr1476674qvf.24.1690519432470;
-        Thu, 27 Jul 2023 21:43:52 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id i17-20020a0cf111000000b0063d4631d1e4sm321642qvl.68.2023.07.27.21.43.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jul 2023 21:43:51 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-403b36a4226so9537661cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:43:51 -0700 (PDT)
-X-Received: by 2002:a05:620a:d88:b0:765:aa35:f03f with SMTP id
- q8-20020a05620a0d8800b00765aa35f03fmr1369543qkl.37.1690519431101; Thu, 27 Jul
- 2023 21:43:51 -0700 (PDT)
+        Fri, 28 Jul 2023 00:44:35 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0FA3A92;
+        Thu, 27 Jul 2023 21:44:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WZV8b+dQK94sf3ur23uyFm3gLwYVKEJeUqaLAscTqGfsHa6GmtasAPu/O25GDnvHMZYE/oHFMsgYp7ZZ0e7zzxr+eeFyirqRwteteSGRrjux+Jwq5VfyIB6GjIpxhNUqylaML2b6jhdn35CQTyIBj5uX65bI5u2VjYNYlYgDBtX9ASj/wqkJ3Qdzl36sYilW0ImveaqCba2JIr5xmdpJPK5SnhHcxhJO1mBmZEsP6dguxAJzpV0ZeAAj0o8683RL9bsVkwltG80eBaeEY31kIICnEZllj1faaGAX0S/1OZSiKkbN8Db8R8sj7A/h0hX+06ZP9RHa2P6J91DtF5tlLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cO+HdEFRgc+fGIm0mnRjW78mYR10GWTU281tj5iX7rM=;
+ b=ABNtpHGLWUF7v9XXYaP77N2C4b3Qj90MjW0DRb/LoXQLpFGplHnJ4sx9FEwaQvwesHzSIRt1elcHpoz2Luu+dtkSvurF0Vse5iZJfJyDRA7QWGcH1/LP2uJbgWwMd/wQIhRF1GC4gQeYAY386nUlj8rd7o/UeMgc7Z2apgRnifwzNV55pOaX11FOjohOAskrcozwPKvIaLXYf/cHQ8RaEwYlHc5m2hn5qOwaxDU0gRngEgC1ca2yuGOOgyWHj1cfSBqdArusl99rVLM1Bf4YXQhZHcCXyoWR+5v9dgKSw6/CGpX96a5lIuNgoihve1gMKV7iuD9L+Sd6LbAGC2LDzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cO+HdEFRgc+fGIm0mnRjW78mYR10GWTU281tj5iX7rM=;
+ b=frWQjZK9ckHV0AouQ4zU/AFzEhL6mLTg3Y9LxAVMgeouhcRqlFAPZrCPLWvg+aFRjfnz/wmLOV3ixuZdkG+r6X/1nJRLjcC6L9hd1nNTOkiveJVGHzCVx18UhImmG3r5MmuyMnZQVdtGuEK1bYu0MVk7r3fo9q0QDVPcT99xI64n51nbSQQ0waQ+QXCV4OatRJAs16SGM0r+d82gDBkNi2lbXBHRiduu6m6v4Zp0AG5I24YLqU+ZkX6gvG9FItc9dJFi3zFH/A8c2ENZ+NU4l0ZrgZ8YPJ3b2xxy+HZvv/lHnOVR6Py52R0oIGNG/cCJhxXcWUXxEy9Wi82lP3/WaQ==
+Received: from CYZPR05CA0038.namprd05.prod.outlook.com (2603:10b6:930:a3::29)
+ by DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 04:44:24 +0000
+Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
+ (2603:10b6:930:a3:cafe::6f) by CYZPR05CA0038.outlook.office365.com
+ (2603:10b6:930:a3::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.5 via Frontend
+ Transport; Fri, 28 Jul 2023 04:44:24 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.22 via Frontend Transport; Fri, 28 Jul 2023 04:44:24 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 27 Jul 2023
+ 21:44:17 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Thu, 27 Jul 2023 21:44:16 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 27 Jul 2023 21:44:16 -0700
+Date:   Thu, 27 Jul 2023 21:44:14 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     "jgg@nvidia.com" <jgg@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "farman@linux.ibm.com" <farman@linux.ibm.com>
+Subject: Re: [PATCH v10 3/6] iommufd: Add iommufd_access_change_ioas(_id)
+ helpers
+Message-ID: <ZMNHnmydMM1zExZW@Asurada-Nvidia>
+References: <cover.1690488745.git.nicolinc@nvidia.com>
+ <ad75a1f7f0b4d5b6d35238b4ae7b41db1410110c.1690488745.git.nicolinc@nvidia.com>
+ <BN9PR11MB527660F2932964A47396D1E88C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZMNF5vTTp2IRMsWH@Asurada-Nvidia>
+ <BN9PR11MB5276C3F296F27696AFD92D0F8C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20230704040044.681850-1-randy.li@synaptics.com>
- <20230704040044.681850-3-randy.li@synaptics.com> <20230712093301.nkj2vok2x7esdhb3@chromium.org>
- <f8f766c0166c502e29b06cda71f6531e44a91a17.camel@ndufresne.ca>
- <CAAFQd5CO4TS6wMsnaL7ob4CXogj5KT52x85YUUN1ZwDkOxW0oQ@mail.gmail.com> <583e22718b80cc5e1ae631528c83c95e97de5cae.camel@ndufresne.ca>
-In-Reply-To: <583e22718b80cc5e1ae631528c83c95e97de5cae.camel@ndufresne.ca>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 28 Jul 2023 13:43:39 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
-Message-ID: <CAAFQd5CAJ7GxiY5=bBAa+L=1WJth6QZ3+PG83=GX+eEx1S4uhg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] media: v4l2-mem2mem: add a list for buf used by hw
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Hsia-Jun Li <randy.li@synaptics.com>
-Cc:     linux-media@vger.kernel.org, ayaka@soulik.info,
-        hans.verkuil@cisco.com, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, hiroh@chromium.org,
-        hverkuil@xs4all.nl, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276C3F296F27696AFD92D0F8C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|DM4PR12MB6280:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd70e105-c776-4a02-9c3b-08db8f255151
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I1wUtZkaja0CxmVv7lFDspaD0pihNxFGIvNEvfL0zFI05yy4WYAD/VVSrIsQsB9GhUN354rbyyjyON+kIydHQhHe+CBc0TLJRTCShf0fMKjGM5CWTGPc1sh5xca5TizDzpLnnakMggPk9S7frzTw3rpc2MNuf68CRx+w5Uq8UHRA6fc6Xvm8wzm+OVya1Czk5PmTUA2bvJ+CwrHqbceLEfyqD329s+iUSKLS/ysyb+kMnsEutV5h9MvAkgEFLaR1O5vATDPLnQslO3yuVQhDo6MZdV2gRLRPjLzC6ZpMME9ohZSogcgDo9i+FWvUjE+p850BQyDIbPKeCFT3XLGhcvqOwy9Y+zD8U06ubzIvC8oYwSx5rkyQ716w/ezYGMY49uyO2avYerBzyxplHr+nWYgTf62/5SvX9UXYc5Yhlclh1iuNpIFM6mE8w+ClRIFrK2pW9NCkTaiioOsOAPYjVgUi6S60PqefmtpZn4PxnMc2/7xxZK4Lt8ph+O106XgTFfPt+P/3pc1cTbmpT2E38elnJ/gwob9fhyENLFlYSOzg8IotxhesXItUwpdqQ50fJl8sh7MxuYdOmN5lUHsoFpue38voj8ySST0j2hXYi0UL9rvRw+lbew8hvYq1tX6mn5IpIEPbuw2gS6CseksU6PcCMg40chU2CEFwXnAcu19k5PlwHyB8BUJVXgBLDyjJIbDQzzqFrvsdSj62fAlH+e/DBeSLv/nB0urKP1qi47N1o91PoWjZ60cyiuKMf+3b
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39860400002)(396003)(346002)(451199021)(82310400008)(46966006)(36840700001)(40470700004)(86362001)(7416002)(33716001)(2906002)(40460700003)(40480700001)(55016003)(426003)(47076005)(83380400001)(186003)(36860700001)(336012)(26005)(9686003)(7636003)(478600001)(356005)(54906003)(4326008)(82740400003)(6916009)(8936002)(70586007)(316002)(70206006)(8676002)(41300700001)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 04:44:24.2828
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd70e105-c776-4a02-9c3b-08db8f255151
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6280
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 1:58=E2=80=AFAM Nicolas Dufresne <nicolas@ndufresne=
-.ca> wrote:
->
-> Le jeudi 27 juillet 2023 =C3=A0 16:43 +0900, Tomasz Figa a =C3=A9crit :
-> > On Mon, Jul 17, 2023 at 11:07=E2=80=AFPM Nicolas Dufresne <nicolas@nduf=
-resne.ca> wrote:
-> > >
-> > > Le mercredi 12 juillet 2023 =C3=A0 09:33 +0000, Tomasz Figa a =C3=A9c=
-rit :
-> > > > On Tue, Jul 04, 2023 at 12:00:38PM +0800, Hsia-Jun Li wrote:
-> > > > > From: "Hsia-Jun(Randy) Li" <randy.li@synaptics.com>
-> > > > >
-> > > > > Many drivers have to create its own buf_struct for a
-> > > > > vb2_queue to track such a state. Also driver has to
-> > > > > iterate over rdy_queue every times to find out a buffer
-> > > > > which is not sent to hardware(or firmware), this new
-> > > > > list just offers the driver a place to store the buffer
-> > > > > that hardware(firmware) has acknowledged.
-> > > > >
-> > > > > One important advance about this list, it doesn't like
-> > > > > rdy_queue which both bottom half of the user calling
-> > > > > could operate it, while the v4l2 worker would as well.
-> > > > > The v4l2 core could only operate this queue when its
-> > > > > v4l2_context is not running, the driver would only
-> > > > > access this new hw_queue in its own worker.
-> > > >
-> > > > Could you describe in what case such a list would be useful for a
-> > > > mem2mem driver?
-> > >
-> > > Today all driver must track buffers that are "owned by the hardware".=
- This is a
-> > > concept dictated by the m2m framework and enforced through the ACTIVE=
- flag. All
-> > > buffers from this list must be mark as done/error/queued after stream=
-off of the
-> > > respective queue in order to acknowledge that they are no longer in u=
-se by the
-> > > HW. Not doing so will warn:
-> > >
-> > >   videobuf2_common: driver bug: stop_streaming operation is leaving b=
-uf ...
-> > >
-> > > Though, there is no queue to easily iterate them. All driver endup ha=
-ving their
-> > > own queue, or just leaving the buffers in the rdy_queue (which isn't =
-better).
-> > >
+On Fri, Jul 28, 2023 at 04:41:18AM +0000, Tian, Kevin wrote:
+> > From: Nicolin Chen <nicolinc@nvidia.com>
+> > Sent: Friday, July 28, 2023 12:37 PM
 > >
-> > Thanks for the explanation. I see how it could be useful now.
-> >
-> > Although I guess this is a problem specifically for hardware (or
-> > firmware) which can internally queue more than 1 buffer, right?
-> > Otherwise the current buffer could just stay at the top of the
-> > rdy_queue until it's removed by the driver's completion handler,
-> > timeout/error handler or context destruction.
->
-> Correct, its only an issue when you need to process multiple src buffers =
-before
-> producing a dst buffer. If affects stateful decoder, stateful encoders an=
-d
-> deinterlacer as far as I'm aware.
-
-Is it actually necessary to keep those buffers in a list in that case, thou=
-gh?
-I can see that a deinterlacer would indeed need 2 input buffers to
-perform the deinterlacing operation, but those would be just known to
-the driver, since it's running the task currently.
-For a stateful decoder, wouldn't it just consume the bitstream buffer
-(producing something partially decoded to its own internal buffers)
-and return it shortly?
-The most realistic scenario would be for stateful encoders which could
-keep some input buffers as reference frames for further encoding, but
-then would this patch actually work for them? It would make
-__v4l2_m2m_try_queue never add the context to the job_queue if there
-are some buffers in that hw_queue list.
-
-Maybe what I need here are actual patches modifying some existing
-drivers. Randy, would you be able to include that in the next version?
-Thanks.
-
-Best regards,
-Tomasz
-
->
-> Nicolas
->
-> >
-> > Best regards,
-> > Tomasz
-> >
-> > > Nicolas
+> > On Fri, Jul 28, 2023 at 04:23:03AM +0000, Tian, Kevin wrote:
+> > > > From: Nicolin Chen <nicolinc@nvidia.com>
+> > > > Sent: Friday, July 28, 2023 4:25 AM
 > > > >
-> > > > >
-> > > > > Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
-> > > > > ---
-> > > > >  drivers/media/v4l2-core/v4l2-mem2mem.c | 25 +++++++++++++++++---=
------
-> > > > >  include/media/v4l2-mem2mem.h           | 10 +++++++++-
-> > > > >  2 files changed, 26 insertions(+), 9 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/med=
-ia/v4l2-core/v4l2-mem2mem.c
-> > > > > index c771aba42015..b4151147d5bd 100644
-> > > > > --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > > > +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > > > > @@ -321,15 +321,21 @@ static void __v4l2_m2m_try_queue(struct v4l=
-2_m2m_dev *m2m_dev,
-> > > > >             goto job_unlock;
-> > > > >     }
-> > > > >
-> > > > > -   src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > > > -   dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > > > -   if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > > > -           dprintk("No input buffers available\n");
-> > > > > -           goto job_unlock;
-> > > > > +   if (list_empty(&m2m_ctx->out_q_ctx.hw_queue)) {
-> > > > > +           src =3D v4l2_m2m_next_src_buf(m2m_ctx);
-> > > > > +
-> > > > > +           if (!src && !m2m_ctx->out_q_ctx.buffered) {
-> > > > > +                   dprintk("No input buffers available\n");
-> > > > > +                   goto job_unlock;
-> > > > > +           }
-> > > > >     }
-> > > > > -   if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > > > -           dprintk("No output buffers available\n");
-> > > > > -           goto job_unlock;
-> > > > > +
-> > > > > +   if (list_empty(&m2m_ctx->cap_q_ctx.hw_queue)) {
-> > > > > +           dst =3D v4l2_m2m_next_dst_buf(m2m_ctx);
-> > > > > +           if (!dst && !m2m_ctx->cap_q_ctx.buffered) {
-> > > > > +                   dprintk("No output buffers available\n");
-> > > > > +                   goto job_unlock;
-> > > > > +           }
-> > > > >     }
-> > > >
-> > > > src and dst would be referenced unitialized below if neither of the
-> > > > above ifs hits...
-> > > >
-> > > > Best regards,
-> > > > Tomasz
-> > > >
-> > > > >
-> > > > >     m2m_ctx->new_frame =3D true;
-> > > > > @@ -896,6 +902,7 @@ int v4l2_m2m_streamoff(struct file *file, str=
-uct v4l2_m2m_ctx *m2m_ctx,
-> > > > >     INIT_LIST_HEAD(&q_ctx->rdy_queue);
-> > > > >     q_ctx->num_rdy =3D 0;
-> > > > >     spin_unlock_irqrestore(&q_ctx->rdy_spinlock, flags);
-> > > > > +   INIT_LIST_HEAD(&q_ctx->hw_queue);
-> > > > >
-> > > > >     if (m2m_dev->curr_ctx =3D=3D m2m_ctx) {
-> > > > >             m2m_dev->curr_ctx =3D NULL;
-> > > > > @@ -1234,6 +1241,8 @@ struct v4l2_m2m_ctx *v4l2_m2m_ctx_init(stru=
-ct v4l2_m2m_dev *m2m_dev,
-> > > > >
-> > > > >     INIT_LIST_HEAD(&out_q_ctx->rdy_queue);
-> > > > >     INIT_LIST_HEAD(&cap_q_ctx->rdy_queue);
-> > > > > +   INIT_LIST_HEAD(&out_q_ctx->hw_queue);
-> > > > > +   INIT_LIST_HEAD(&cap_q_ctx->hw_queue);
-> > > > >     spin_lock_init(&out_q_ctx->rdy_spinlock);
-> > > > >     spin_lock_init(&cap_q_ctx->rdy_spinlock);
-> > > > >
-> > > > > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-me=
-m2mem.h
-> > > > > index d6c8eb2b5201..2342656e582d 100644
-> > > > > --- a/include/media/v4l2-mem2mem.h
-> > > > > +++ b/include/media/v4l2-mem2mem.h
-> > > > > @@ -53,9 +53,16 @@ struct v4l2_m2m_dev;
-> > > > >   * processed
-> > > > >   *
-> > > > >   * @q:             pointer to struct &vb2_queue
-> > > > > - * @rdy_queue:     List of V4L2 mem-to-mem queues
-> > > > > + * @rdy_queue:     List of V4L2 mem-to-mem queues. If v4l2_m2m_b=
-uf_queue() is
-> > > > > + *         called in struct vb2_ops->buf_queue(), the buffer enq=
-ueued
-> > > > > + *         by user would be added to this list.
-> > > > >   * @rdy_spinlock: spin lock to protect the struct usage
-> > > > >   * @num_rdy:       number of buffers ready to be processed
-> > > > > + * @hw_queue:      A list for tracking the buffer is occupied by=
- the hardware
-> > > > > + *                 (or device's firmware). A buffer could only b=
-e in either
-> > > > > + *                 this list or @rdy_queue.
-> > > > > + *                 Driver may choose not to use this list while =
-uses its own
-> > > > > + *                 private data to do this work.
-> > > > >   * @buffered:      is the queue buffered?
-> > > > >   *
-> > > > >   * Queue for buffers ready to be processed as soon as this
-> > > > > @@ -68,6 +75,7 @@ struct v4l2_m2m_queue_ctx {
-> > > > >     struct list_head        rdy_queue;
-> > > > >     spinlock_t              rdy_spinlock;
-> > > > >     u8                      num_rdy;
-> > > > > +   struct list_head        hw_queue;
-> > > > >     bool                    buffered;
-> > > > >  };
-> > > > >
-> > > > > --
-> > > > > 2.17.1
-> > > > >
+> > > > +static int iommufd_access_change_ioas(struct iommufd_access *access,
+> > > > +                                   struct iommufd_ioas *new_ioas)
+> > > > +{
+> > > > +     u32 iopt_access_list_id = access->iopt_access_list_id;
+> > > > +     struct iommufd_ioas *cur_ioas = access->ioas;
+> > > > +     int rc;
+> > > > +
+> > > > +     lockdep_assert_held(&access->ioas_lock);
+> > > > +
+> > > > +     /* We are racing with a concurrent detach, bail */
+> > > > +     if (cur_ioas != access->ioas_unpin)
+> > > > +             return -EBUSY;
+> > > > +
+> > > > +     if (IS_ERR(new_ioas))
+> > > > +             return PTR_ERR(new_ioas);
 > > >
->
+> > > iommufd_access_change_ioas_id() already checks errors.
+> >
+> > I've thought about that: given that iommufd_access_change_ioas
+> > is a standalone API, though it's not used anywhere else at the
+> > moment, it might be safer to have this check again. Otherwise,
+> > we would need a line of comments saying that "caller must make
+> > sure that the input new_ioas is not holding an error code" or
+> > so?
+> >
+> 
+> I don't think it's a common practice for the caller to pass in
+> an error pointer when it already knows it's an error...
+
+OK. I will just drop it then.
