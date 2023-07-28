@@ -2,261 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BA5766414
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27780766418
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbjG1GWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
+        id S233543AbjG1GZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbjG1GWd (ORCPT
+        with ESMTP id S232782AbjG1GZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:22:33 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD0013D;
-        Thu, 27 Jul 2023 23:22:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31768ce2e81so1832209f8f.1;
-        Thu, 27 Jul 2023 23:22:31 -0700 (PDT)
+        Fri, 28 Jul 2023 02:25:41 -0400
+Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BFCA0;
+        Thu, 27 Jul 2023 23:25:40 -0700 (PDT)
+Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-577497ec6c6so19553587b3.2;
+        Thu, 27 Jul 2023 23:25:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690525350; x=1691130150;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5AXK0Ni3D8/7s0A80t4cTIWv2xD52KLhJj4n6BOIgqE=;
-        b=eV6CAthNEL7hgH6desoxudrSYZbnBC/Q6RMzgg6rzNJMOx7aZRSA57S4gZqOu+rh29
-         tqJ9utpnLxqA/a/VIn7ZmUdNFhUM2cLP3VCv69D/6DkM+BDkEPmfDhJca1RVCj6vMz4Q
-         OOSLDf+IBQu2Aa5XKWDlQ9Y1gPhfxJM4rpo1sb03Bp4OALqpWWCQ16fOb305Ty8zucvB
-         rPMY3CdG2lqysd5MIDFLcBtIUOrdurLQ6A7vaiUqxNO1qp2rp+Ztkt+lJuBr6Vy8ZfWh
-         GBOZ/A0OZZudaoErDAwnkIPpWoR0ZxwLzIhyyFWIe+RHkIAZYy0GZfETaTgoCiSXhTnB
-         PlTQ==
+        d=gmail.com; s=20221208; t=1690525540; x=1691130340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zJ7uCM9gCmC7Ec+PIxmYSly2Nv+UftyJKyYRxKcBUVA=;
+        b=K9Y/MMyD9/5jKIzEZ/V/aFDa8azmFWJIZhBSBmsqXY1q5rGJsWO1rjjmVzXBoL3NBW
+         X4+LFZYEg2OkaZOtDHdPauWx5VKj0EdTuPcl1VVwZgKd24Yr+vH7J6eKNC8OKn8W8V+J
+         S3UUC8UgdhkxmVhe3gycNurrRMNte7RMMNo3X7++pDxoWHZ5HJ7fRdiNMLlp0bB+wIDa
+         MMLigdB1YwOpPYgOn0bRn7ldv1ZL0JSXlMc283ViCV4DBYmcvzEkxTGcOdEP7a5/DxKZ
+         vo9G5A1rJQoEfgzNVXPO7f4OgfHeehx7uKobZz2r3YO2CxjBhtYEFQ6tJ0y+2EaS4z5n
+         su3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690525350; x=1691130150;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5AXK0Ni3D8/7s0A80t4cTIWv2xD52KLhJj4n6BOIgqE=;
-        b=IC4TWkjEbcFw4ljInWq/b5+3vuTOFiCMqfmCKybQJQAelC/+V087mTMf4Z/u6a4Wea
-         shVw82adLKED2byAuQ7fltDVEtZtQr/h/4C16ynUUk3ZT8yXzxutX+f/yZnjCjzwm8En
-         H6ZWkGz06jhswvaPAFLtxoLqxtGP4S65UE9EKFbzVVlhE/HYycV2e4vEUA8BuCpIJfmi
-         +hE4bcGI5gC+LkwLbj1qPcgS3ryqckEjMWtUQZKMohZOGiYt7IJq0n/17KuOiykwxpaB
-         PBWMuQ088ZFpHIRiVzHwqbHgh0kVrTsMn/9nyV2kRCepOAoxLcj4aMFiXq561THL0p6S
-         4isQ==
-X-Gm-Message-State: ABy/qLbyxZ4P2LlUhEgnk7OqjEtlKnlZ2trc8JfBlVqS2SPcGFpoAezG
-        9YfXfxMWdVFds6qgh/v4xz1whxk+Sk76qg==
-X-Google-Smtp-Source: APBJJlFTDm+O4jPKZ1QEtORAuSSXOUSXhXzmBL0hGdWwpffR9/7DWNRdCtim5K52OVVDHjCXzzheQA==
-X-Received: by 2002:a5d:5312:0:b0:313:ee73:cc9a with SMTP id e18-20020a5d5312000000b00313ee73cc9amr882516wrv.70.1690525349996;
-        Thu, 27 Jul 2023 23:22:29 -0700 (PDT)
-Received: from torreasustufgamingpro (209.pool90-77-130.dynamic.orange.es. [90.77.130.209])
-        by smtp.gmail.com with ESMTPSA id bf10-20020a0560001cca00b0031432f1528csm3930939wrb.45.2023.07.27.23.22.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 23:22:29 -0700 (PDT)
-From:   =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Contributing subsequent patch versions
-References: <877cqlmdpg.fsf@gmail.com>
-        <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
-Date:   Fri, 28 Jul 2023 08:22:22 +0200
-In-Reply-To: <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de> (Markus Elfring's
-        message of "Thu, 27 Jul 2023 21:40:59 +0200")
-Message-ID: <877cqk5zdt.fsf@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        d=1e100.net; s=20221208; t=1690525540; x=1691130340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zJ7uCM9gCmC7Ec+PIxmYSly2Nv+UftyJKyYRxKcBUVA=;
+        b=XSagOv6T0Wu6J/1Ik/viN1C1w7FGmYY8zj7ySent/35QLj5+wSVoW4uDGid2itdedH
+         yqUdr16OBNlE/1pqLasDoS1puHuZIpvkU59mVdYkc5IVWsE+d5vR6EuvBukXWJP+xMw5
+         ID0be+Hy3DaBEVCgCJK2yteDmQRJDMxKaMHsoH1U0krgeR5BrHu2/BOPOSL5VtGPlIHx
+         XpjZArUcA+nxmYMO4iLvP7NFA8/nHNyK6+Xu5chiTzqTJty/SnVVsMGWAiINlPd+UngK
+         98xr9m3k033pOcZkLsMIjLvLKbzrmobY03Y3vXDiaqxxc/rUD9DttLXuJlTHalcm5YLZ
+         rthA==
+X-Gm-Message-State: ABy/qLbvVpbzkNrsgev/CjQxEaPszCpJIrPH0VJOTFFTo/gFQ7otvRrO
+        p1BlJNNGAffxwxp6jkSBcY3KSPQI7FKL4RfirFY=
+X-Google-Smtp-Source: APBJJlGbJBxbMIsBz86uOE3YjHYLMuHaEEnEY+fVotWoJjYeOSf7FpwhrzqYGVClNvIMsEy4X2wQkro8l4ADRPuelDY=
+X-Received: by 2002:a81:4943:0:b0:583:78b8:f42e with SMTP id
+ w64-20020a814943000000b0058378b8f42emr1093347ywa.42.1690525539847; Thu, 27
+ Jul 2023 23:25:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+ <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com> <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
+In-Reply-To: <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Fri, 28 Jul 2023 14:25:28 +0800
+Message-ID: <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
+ icsk->icsk_timeout in tcp_retransmit_timer()
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Markus Elfring <Markus.Elfring@web.de> writes:
-
->> I have submitted a patch to linux-ext4 at vger.kernel.org mailing list
->> and they have responded with whatever changes they think are necessary.
+On Fri, Jul 28, 2023 at 12:44=E2=80=AFPM Neal Cardwell <ncardwell@google.co=
+m> wrote:
 >
-> Do you refer to your change approach =E2=80=9Ce2fsck: Add percent to files
-> and blocks feature=E2=80=9D (from 2023-04-23) here?
-> https://lore.kernel.org/linux-ext4/20230423082349.53474-2-megia.oscar@gma=
-il.com/
+> On Thu, Jul 27, 2023 at 7:57=E2=80=AFPM Menglong Dong <menglong8.dong@gma=
+il.com> wrote:
+> >
+> > On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@google.c=
+om> wrote:
+> > >
+> > > On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail.com> wr=
+ote:
+> > > >
+> > > > From: Menglong Dong <imagedong@tencent.com>
+> > > >
+> > > > In tcp_retransmit_timer(), a window shrunk connection will be regar=
+ded
+> > > > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This =
+is not
+> > > > right all the time.
+> > > >
+> > > > The retransmits will become zero-window probes in tcp_retransmit_ti=
+mer()
+> > > > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up=
+ to
+> > > > TCP_RTO_MAX sooner or later.
+> > > >
+> > > > However, the timer is not precise enough, as it base on timer wheel=
+.
+> > > > Sorry that I am not good at timer, but I know the concept of time-w=
+heel.
+> > > > The longer of the timer, the rougher it will be. So the timeout is =
+not
+> > > > triggered after TCP_RTO_MAX, but 122877ms as I tested.
+> > > >
+> > > > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always=
+ true
+> > > > once the RTO come up to TCP_RTO_MAX.
+> > > >
+> > > > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_tim=
+eout',
+> > > > which is exact the timestamp of the timeout.
+> > > >
+> > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > > > ---
+> > > >  net/ipv4/tcp_timer.c | 6 +++++-
+> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> > > > index 470f581eedd4..3a20db15a186 100644
+> > > > --- a/net/ipv4/tcp_timer.c
+> > > > +++ b/net/ipv4/tcp_timer.c
+> > > > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock *sk)
+> > > >                                             tp->snd_una, tp->snd_nx=
+t);
+> > > >                 }
+> > > >  #endif
+> > > > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX) {
+> > > > +               /* It's a little rough here, we regard any valid pa=
+cket that
+> > > > +                * update tp->rcv_tstamp as the reply of the retran=
+smitted
+> > > > +                * packet.
+> > > > +                */
+> > > > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstamp > TCP_=
+RTO_MAX) {
+> > > >                         tcp_write_err(sk);
+> > > >                         goto out;
+> > > >                 }
+> > >
+> > >
+> > > Hmm, this looks like a net candidate, since this is unrelated to the
+> > > other patches ?
+> >
+> > Yeah, this patch can be standalone. However, considering the
+> > purpose of this series, it is necessary. Without this patch, the
+> > OOM probe will always timeout after a few minutes.
+> >
+> > I'm not sure if I express the problem clearly in the commit log.
+> > Let's explain it more.
+> >
+> > Let's mark the timestamp of the 10th timeout of the rtx timer
+> > as TS1. Now, the retransmission happens and the ACK of
+> > the retransmitted packet will update the tp->rcv_tstamp to
+> > TS1+rtt.
+> >
+> > The RTO now is TCP_RTO_MAX. So let's see what will
+> > happen in the 11th timeout. As we timeout after 122877ms,
+> > so tcp_jiffies32 now is "TS1+122877ms", and
+> > "tcp_jiffies32 - tp->rcv_tstamp" is
+> > "TS1+122877ms - (TS1+rtt)" -> "122877ms - rtt",
+> > which is always bigger than TCP_RTO_MAX, which is 120000ms.
+> >
+> > >
+> > > Neal, what do you think ?
 >
-
-Yes
-
->
->> Can someone help me by telling me the steps I need to take to send v2?
->> I don't know where ask it.
->
-> Did you become more familiar with available development documentation
-> and further information sources?
-
-Yes, I read
-https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
-yesterday and more online documentation and I didn't find any describing the
-correct way to send next patch version.
-
-Today I found this
-https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
-but I still have some doubts.
-
->
->
->> Do I have to create a new branch?
->
-> Probably, yes.
->
-> You can manage as many topic or development branches as needed,
-> can't you?
-
-Yes, I know, but I want to know how an expert programmer send
-next version (create new branch for each patch's version?, create new
-directory outgoing for each patch's version?, run git pull on patch's
-branch?, add --in-reply-to=3D to previous patch's version email?
-=C2=BFcover letter or 1/1?, etc.).
-
->
-> See also:
-> https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell
->
->
->> Do I have to do a git pull on the patch branch before the changes?
->
-> You can recheck if your development basis is still recent enough
-> for your ideas.
->
-
-Yesterday I did git pull on patch develop branch, commit v2 changes and I g=
-ot this error:
-
-$ LC_ALL=3DC git format-patch --base=3Dauto --in-reply-to=3D20230423082349.=
-53474-1-megia.oscar@gmail.com --cover-letter -o outgoing/ master
-fatal: base commit should be the ancestor of revision list
-
-I searched on the internet and found no solution.
-
-That's why I asked about how send patch version v2. This command is similar
-than v1 (only added --in-reply-to=3D because I read it on the internet to s=
-end
-next versions).
-
->
->> Do I have to to commit the changes before running
->> git format-patch =E2=80=A6
->
-> Yes, of course.
->
-> See also:
-> https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#=
-_project_over_email
->
-
-I asked this because the above error.
-
->
->> Please, is my first time to send a patch version's v2 and I didn't find
->> any place where explain step by step how to do it.
->
-> Is the guidance usable by the document =E2=80=9CSubmitting patches:
-> the essential guide to getting your code into the kernel=E2=80=9D?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/submitting-patches.rst?h=3Dv6.5-rc3#n3
->
->
-
-As I said before, I read this web page and much more,
-but I didn't find the correct steps to submit next version.
-
-I can do this on my way, but sure that I will make mistakes
-(I'm not perfect and is my first time) and I don't want to disturb mantaine=
-rs.
-
-I search on e2fsprogs repository directory and I didn't find
-any information about how send next patch's version.
-
-I'm sure that this help to send next versions will be also good for all
-newbies.
-
-Here https://ext4.wiki.kernel.org/index.php/Ext4_Contributing I found
-enought information to send first patch, but not for next version. The
-page is quite old (2014) and I cannot contact with Djwong user.
-
->> I tried several steps, but I get errors or resend v1 patch too.
->
-> Learning approaches will evolve as usual.
+> Sorry, I am probably missing something here, but: what would ever make
+> this new proposed condition ((u32)icsk->icsk_timeout - tp->rcv_tstamp
+> > TCP_RTO_MAX) true? :-)
 >
 
-I create new branch and reseted to my v1 patch's commit and commited v2
-changes. And when I ran:
+If the snd_wnd is 0, we need to keep probing until the window
+is available. Meanwhile, any retransmission that don't have
+a corresponding ACK (see what we do in the 1st patch), which
+can be caused by the lost of the ACK or the lost of the retransmitted
+packet, can make the condition true, as the tp->rcv_tstamp can't be
+updated in time.
 
-$ git format-patch --base=3Dauto --in-reply-to=3D20230423082349.53474-1-meg=
-ia.oscar@gmail.com --cover-letter -o outgoing/ master=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-outgoing/0000-cover-letter.patch=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
-outgoing/0001-e2fsck-Add-percent-to-files-and-blocks-feature.patch
-outgoing/0002-e2fsck-Add-percent-to-files-and-blocks-feature.patch=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20
-$
+This is a little strict here. In the tcp_probe_timer(), we are allowed to
+retransmit the probe0 packet for sysctl_tcp_retries2 times. But
+we don't allow packets to be lost here.
 
-It didn't return previous error and also saved the previous patch and
-I don't know if is correct to send previous patch's version.
-I didn't see any v2 on ext4 maillist
-https://www.spinics.net/lists/linux-ext4/maillist.html
-sending previous version.
+> In your nicely explained scenario, your new expression,
+> icsk->icsk_timeout - tp->rcv_tstamp, will be:
+>
+>   icsk->icsk_timeout - tp->rcv_tstamp
+> =3D TS1 + 120 sec      - (TS1+rtt)
+> =3D 120 sec - RTT
+>
+> AFAICT there is no way for that expression to be bigger than
+> TCP_RTO_MAX =3D 120 sec unless somehow RTT is negative. :-)
+>
+> So AFAICT your expression ((u32)icsk->icsk_timeout - tp->rcv_tstamp >
+> TCP_RTO_MAX) will always be false, so rather than this patch we may as
+> well remove the if check and the body of the if block?
+>
 
-So I doubt I'm doing it correctly because git send-email will send
-previous patch that I sent. I can delete this file but for me is not
-correct way.
+Hmm......as I explained above, the condition will be true
+if the real packet loss happens. And I think it is the origin
+design.
 
-As I said before, if one of the lines I have changed has been changed
-later, it would tell the maintainer that there is a conflict and
-I don't want send wrong patch to maintaners.
+> To me such a change does not seem like a safe and clear bug fix for
+> the "net" branch but rather a riskier design change (appropriate for
+> "net-next" branch) that has connections retry forever when the
+> receiver retracts the window to zero, under the estimation that this
+> is preferable to having the connections die in such a case.
+>
+> There might be apps that depend on the old behavior of having
+> connections die in such cases, so we might want to have this new
+> fail-faster behavior guarded by a sysctl in case some sites need to
+> revert to the older behavior? Not sure...
 
-I think it would be good to document how to send the next versions of
-the patch. I am facing different problems and doubts, but I imagine that
-the same will happen to other newbies like me.
+Yeah, the behavior here will be different for the users. I'm not
+sure if there are any users that rely on such behavior.
 
-I would like to have detailed documentation that tells me the correct
-way to send the following versions of the patch. When there was no
-internet you used to read the manuals when you wanted to learn new
-things. Without manuals it is almost impossible to do something new
-correctly without making serious mistakes. I learned MSX BASIC,
-assembler, Turbo Pascal, Delphi, C, C++, linux, etc. reading manuals.
+What do you think, Eric? Do we need a sysctl here?
 
-How am I going to learn without manuals?
+Thanks!
+Menglong Dong
 
-It is beyond my imagination to read the mind of the one who created
-those languages or OS. There are instructions that can be guessed,
-but others cannot. Everything I have learned has been with manuals.
-
-The same to send the following versions of the patch. If there isn't a
-manual that says how to do it, I can try and I'm sure I'll make mistakes.
-I send the patch and they don't accept it because it has errors, I try
-again and I send it again with other errors and they won't accept it
-because it has other errors, like this until all the maintainers block
-me (with good reason).
-
-I know you are very busy, so I offer to add this to the documentation
-(for newbies) if someone tells me the correct steps in any case (if the
-same lines have been modified since the previous version, if a link
-needs to be added to the previous version(s) or if all versions are
-shipped each time, etc.). I need all the steps to follow with the
-example commands.
-
-What I want is that nobody bothers you like me again, and if it bothers
-you, you will only have to send them the link with the documentation
-that I will create.
-
-> Regards,
-> Markus
-
---=20
-Regards
-Oscar Megia L=C3=B3pez
+>
+> neal
