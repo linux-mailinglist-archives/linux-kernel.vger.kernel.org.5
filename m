@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585CE766AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7254766AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjG1Kcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S235927AbjG1KcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234346AbjG1Kc1 (ORCPT
+        with ESMTP id S235265AbjG1Kbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:32:27 -0400
+        Fri, 28 Jul 2023 06:31:41 -0400
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162A05584;
-        Fri, 28 Jul 2023 03:30:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986B1524E;
+        Fri, 28 Jul 2023 03:29:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690540233; x=1722076233;
+  t=1690540193; x=1722076193;
   h=from:to:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=+9RuzNpYmHyqf7fIjBX42rka1JAIk57K6KkiNE8I2wU=;
-  b=bPO5meYIKfMiK7y3y7VOhDAynBAglYcOKp3HT74UBn+KxwxHsL+/ye5H
-   Ag6G8bO1ihKQi4BBCCUOzKmAerjDLfXDSQn9lJ5HDT9b/ragBaRnOMZPE
-   v0Xpq7tuePBuNx17t51yfAr3Ivu2sZyZ5dPVGjo+mbVFGdRVJ/0b/gq8z
-   kJEbWZYxXWubplH+1KhdqkWJCoOZbUo9wgVOp/9HwGwOGyO1/+J882chE
-   UX95UfxZhUeOO5SIApkk88UrdNnfbUGbH28GDFoDPVyogiyF1ThnRfAI6
-   ELEoSswDRLquYW1+SDYhT5yrS+ABmPlLGNzIrG4I7sFW3BZVnZrqFF1rV
-   g==;
+  bh=f1dps+oGiDe/KHzYb18t8lFz4154pwNNCSulv4GCbrs=;
+  b=SIdC84STOF9b087VL4m3alBzYCcrG+8TKXrfTSpTuGmLVWafh3qoISsH
+   AEDqtkKyXg/G4gnzANUURsKWAi3QmCPxQ7787FY3U5STakVqnfX96oObc
+   ES7182zY8m0HQSG6tg9RgczFFBBRWp8F8totxJVwD7/6uyfInoiRf2SKZ
+   Q5AJwvSrFBkS1xiEqGu0xRCkLUNHBOBaoGpUir6Fv5kod7Ns9qBFXlelb
+   ngKG/xAb7PK9qnGeXHA3FhA+/rJOVnGqW1c9ZiDgoY/eZuR8jBto4fN6a
+   X+KjUSM8FLAXNKamDyVctdxcgNGq6AEJ4/L77AgGOhSJUsa8AoYsV0cMF
+   Q==;
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="225813731"
+   d="scan'208";a="226623427"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:29:44 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:29:44 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 03:29:34 -0700
+ 15.1.2507.21; Fri, 28 Jul 2023 03:29:42 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:29:30 -0700
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:29:38 -0700
 From:   Varshini Rajendran <varshini.rajendran@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@microchip.com>, <varshini.rajendran@microchip.com>,
-        <mripard@kernel.org>, <linux-clk@vger.kernel.org>,
+        <claudiu.beznea@microchip.com>, <mripard@kernel.org>,
+        <varshini.rajendran@microchip.com>, <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 38/50] clk: at91: sam9x7: add support for HW PLL freq dividers
-Date:   Fri, 28 Jul 2023 15:59:28 +0530
-Message-ID: <20230728102928.267237-1-varshini.rajendran@microchip.com>
+Subject: [PATCH v3 39/50] clk: at91: sama7g5: move mux table macros to header file
+Date:   Fri, 28 Jul 2023 15:59:35 +0530
+Message-ID: <20230728102935.267294-1-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,110 +65,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for hardware dividers for PLL IDs in sam9x7 SoC. The system
-PLL - PLLA and the system PLL divided by 2 - PLLADIV2 with PLL ID 0 and
-4 respectively, both have a hardware divider /2. This has to taken into
-account in the software to obtain the right frequencies. Support for the
-same is added in the PLL driver.
-
-fcorepllack -----> HW Div = 2 -+--> fpllack
-                               |
-                               +--> HW Div = 2 ---> fplladiv2ck
-
-In this case the corepll freq is 1600 MHz. So, the plla freq is 800 MHz
-after the hardware divider and the plladiv2 freq is 400 MHz after the
-hardware divider (Given that the DIVPMC is 0).
+Move the mux table init and fill macro function definitions from the
+sama7g5 pmc driver to the pmc.h header file since they will be used
+by other SoC's pmc drivers as well like sam9x7.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- drivers/clk/at91/clk-sam9x60-pll.c | 38 ++++++++++++++++++++++++++----
- drivers/clk/at91/pmc.h             |  1 +
- 2 files changed, 34 insertions(+), 5 deletions(-)
+ drivers/clk/at91/pmc.h     | 16 ++++++++++++++++
+ drivers/clk/at91/sama7g5.c | 35 ++++++++++-------------------------
+ 2 files changed, 26 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/clk/at91/clk-sam9x60-pll.c b/drivers/clk/at91/clk-sam9x60-pll.c
-index b0314dfd7393..1f80759309c0 100644
---- a/drivers/clk/at91/clk-sam9x60-pll.c
-+++ b/drivers/clk/at91/clk-sam9x60-pll.c
-@@ -73,9 +73,15 @@ static unsigned long sam9x60_frac_pll_recalc_rate(struct clk_hw *hw,
- {
- 	struct sam9x60_pll_core *core = to_sam9x60_pll_core(hw);
- 	struct sam9x60_frac *frac = to_sam9x60_frac(core);
-+	unsigned long freq;
- 
--	return parent_rate * (frac->mul + 1) +
-+	freq = parent_rate * (frac->mul + 1) +
- 		DIV_ROUND_CLOSEST_ULL((u64)parent_rate * frac->frac, (1 << 22));
-+
-+	if (core->layout->div2)
-+		freq >>= 1;
-+
-+	return freq;
- }
- 
- static int sam9x60_frac_pll_set(struct sam9x60_pll_core *core)
-@@ -432,6 +438,12 @@ static unsigned long sam9x60_div_pll_recalc_rate(struct clk_hw *hw,
- 	return DIV_ROUND_CLOSEST_ULL(parent_rate, (div->div + 1));
- }
- 
-+static unsigned long sam9x60_fixed_div_pll_recalc_rate(struct clk_hw *hw,
-+						       unsigned long parent_rate)
-+{
-+	return parent_rate >> 1;
-+}
-+
- static long sam9x60_div_pll_compute_div(struct sam9x60_pll_core *core,
- 					unsigned long *parent_rate,
- 					unsigned long rate)
-@@ -606,6 +618,16 @@ static const struct clk_ops sam9x60_div_pll_ops_chg = {
- 	.restore_context = sam9x60_div_pll_restore_context,
- };
- 
-+static const struct clk_ops sam9x60_fixed_div_pll_ops = {
-+	.prepare = sam9x60_div_pll_prepare,
-+	.unprepare = sam9x60_div_pll_unprepare,
-+	.is_prepared = sam9x60_div_pll_is_prepared,
-+	.recalc_rate = sam9x60_fixed_div_pll_recalc_rate,
-+	.round_rate = sam9x60_div_pll_round_rate,
-+	.save_context = sam9x60_div_pll_save_context,
-+	.restore_context = sam9x60_div_pll_restore_context,
-+};
-+
- struct clk_hw * __init
- sam9x60_clk_register_frac_pll(struct regmap *regmap, spinlock_t *lock,
- 			      const char *name, const char *parent_name,
-@@ -725,10 +747,16 @@ sam9x60_clk_register_div_pll(struct regmap *regmap, spinlock_t *lock,
- 	else
- 		init.parent_names = &parent_name;
- 	init.num_parents = 1;
--	if (flags & CLK_SET_RATE_GATE)
--		init.ops = &sam9x60_div_pll_ops;
--	else
--		init.ops = &sam9x60_div_pll_ops_chg;
-+
-+	if (layout->div2) {
-+		init.ops = &sam9x60_fixed_div_pll_ops;
-+	} else {
-+		if (flags & CLK_SET_RATE_GATE)
-+			init.ops = &sam9x60_div_pll_ops;
-+		else
-+			init.ops = &sam9x60_div_pll_ops_chg;
-+	}
-+
- 	init.flags = flags;
- 
- 	div->core.id = id;
 diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index bb9da35198d9..91d1c6305d95 100644
+index 91d1c6305d95..4fb29ca111f7 100644
 --- a/drivers/clk/at91/pmc.h
 +++ b/drivers/clk/at91/pmc.h
-@@ -64,6 +64,7 @@ struct clk_pll_layout {
- 	u8 frac_shift;
- 	u8 div_shift;
- 	u8 endiv_shift;
-+	u8 div2;
- };
+@@ -121,6 +121,22 @@ struct at91_clk_pms {
  
- extern const struct clk_pll_layout at91rm9200_pll_layout;
+ #define ndck(a, s) (a[s - 1].id + 1)
+ #define nck(a) (a[ARRAY_SIZE(a) - 1].id + 1)
++
++#define PMC_INIT_TABLE(_table, _count)			\
++	do {						\
++		u8 _i;					\
++		for (_i = 0; _i < (_count); _i++)	\
++			(_table)[_i] = _i;		\
++	} while (0)
++
++#define PMC_FILL_TABLE(_to, _from, _count)		\
++	do {						\
++		u8 _i;					\
++		for (_i = 0; _i < (_count); _i++) {	\
++			(_to)[_i] = (_from)[_i];	\
++		}					\
++	} while (0)
++
+ struct pmc_data *pmc_data_allocate(unsigned int ncore, unsigned int nsystem,
+ 				   unsigned int nperiph, unsigned int ngck,
+ 				   unsigned int npck);
+diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+index e6eb5afba93d..6706d1305baa 100644
+--- a/drivers/clk/at91/sama7g5.c
++++ b/drivers/clk/at91/sama7g5.c
+@@ -16,21 +16,6 @@
+ 
+ #include "pmc.h"
+ 
+-#define SAMA7G5_INIT_TABLE(_table, _count)		\
+-	do {						\
+-		u8 _i;					\
+-		for (_i = 0; _i < (_count); _i++)	\
+-			(_table)[_i] = _i;		\
+-	} while (0)
+-
+-#define SAMA7G5_FILL_TABLE(_to, _from, _count)		\
+-	do {						\
+-		u8 _i;					\
+-		for (_i = 0; _i < (_count); _i++) {	\
+-			(_to)[_i] = (_from)[_i];	\
+-		}					\
+-	} while (0)
+-
+ static DEFINE_SPINLOCK(pmc_pll_lock);
+ static DEFINE_SPINLOCK(pmc_mck0_lock);
+ static DEFINE_SPINLOCK(pmc_mckX_lock);
+@@ -1119,17 +1104,17 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 		if (!mux_table)
+ 			goto err_free;
+ 
+-		SAMA7G5_INIT_TABLE(mux_table, 3);
+-		SAMA7G5_FILL_TABLE(&mux_table[3], sama7g5_mckx[i].ep_mux_table,
+-				   sama7g5_mckx[i].ep_count);
++		PMC_INIT_TABLE(mux_table, 3);
++		PMC_FILL_TABLE(&mux_table[3], sama7g5_mckx[i].ep_mux_table,
++			       sama7g5_mckx[i].ep_count);
+ 		for (j = 0; j < sama7g5_mckx[i].ep_count; j++) {
+ 			u8 pll_id = sama7g5_mckx[i].ep[j].pll_id;
+ 			u8 pll_compid = sama7g5_mckx[i].ep[j].pll_compid;
+ 
+ 			tmp_parent_hws[j] = sama7g5_plls[pll_id][pll_compid].hw;
+ 		}
+-		SAMA7G5_FILL_TABLE(&parent_hws[3], tmp_parent_hws,
+-				   sama7g5_mckx[i].ep_count);
++		PMC_FILL_TABLE(&parent_hws[3], tmp_parent_hws,
++			       sama7g5_mckx[i].ep_count);
+ 
+ 		hw = at91_clk_sama7g5_register_master(regmap, sama7g5_mckx[i].n,
+ 				   num_parents, NULL, parent_hws, mux_table,
+@@ -1215,17 +1200,17 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 		if (!mux_table)
+ 			goto err_free;
+ 
+-		SAMA7G5_INIT_TABLE(mux_table, 3);
+-		SAMA7G5_FILL_TABLE(&mux_table[3], sama7g5_gck[i].pp_mux_table,
+-				   sama7g5_gck[i].pp_count);
++		PMC_INIT_TABLE(mux_table, 3);
++		PMC_FILL_TABLE(&mux_table[3], sama7g5_gck[i].pp_mux_table,
++			       sama7g5_gck[i].pp_count);
+ 		for (j = 0; j < sama7g5_gck[i].pp_count; j++) {
+ 			u8 pll_id = sama7g5_gck[i].pp[j].pll_id;
+ 			u8 pll_compid = sama7g5_gck[i].pp[j].pll_compid;
+ 
+ 			tmp_parent_hws[j] = sama7g5_plls[pll_id][pll_compid].hw;
+ 		}
+-		SAMA7G5_FILL_TABLE(&parent_hws[3], tmp_parent_hws,
+-				   sama7g5_gck[i].pp_count);
++		PMC_FILL_TABLE(&parent_hws[3], tmp_parent_hws,
++			       sama7g5_gck[i].pp_count);
+ 
+ 		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock,
+ 						 &sama7g5_pcr_layout,
 -- 
 2.25.1
 
