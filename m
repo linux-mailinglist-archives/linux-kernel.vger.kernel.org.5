@@ -2,151 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1537676714B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C31767154
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235970AbjG1P7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
+        id S236700AbjG1QAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbjG1P7n (ORCPT
+        with ESMTP id S234529AbjG1QA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:59:43 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5236D30C5;
-        Fri, 28 Jul 2023 08:59:42 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9cdbf682eso15545331fa.2;
-        Fri, 28 Jul 2023 08:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1690559980; x=1691164780;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZCo106lcr9OqOXKGEBc+DWq16XxEQ27Fez5FxReeABs=;
-        b=KYAbHJ5LH+6aRGAn/7WkpYeyXXARCEkOEG+I8VHav2Bv9WJffcJ5uztxifyhpuTPjs
-         nzZoDWg4Zj0pxIG10JMgsZLYFU7wmRpLHgd94u8c/fS9wVf5SKy1NYbyqx0ML9OHmNxs
-         0tFWzO8QaS/s8kkjyx9TcvvZ4zkF9sE8Gmqk3pdGZ+ft1IhK46tFu3tl8bwk9yHs+B3C
-         3oTTxD8Yrl3xKRqnNxuZiASXdockAuWDljHS3gjeqGAQ4GqhlSlnO74CCq+NvbuLE9Ug
-         a/CAIPmyOKTqhDUyyMI7CnCVx5m40153Zw0dtvq497zHZNvi0hQiol0DTWLGqeiIM56R
-         5U7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690559980; x=1691164780;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZCo106lcr9OqOXKGEBc+DWq16XxEQ27Fez5FxReeABs=;
-        b=Mi7Yewi8DCq+O0YG5MEVsgM+mLvBXA9UFk+gSgzZVL46QggdkCRJUFmthRrnnUG10w
-         49g/AxBgFoQBqr9tISZN1Wt/Zak1dNzEABjy/sgDmtMbvD7/Sp+y1sDxl+UnGe1sTcIB
-         iB0hV6/hbNyOsPcElU7t40O3ZTA8n5NeXqRtuUJifmFxBwvaXABwDjUYEscQrH2QCTbK
-         GoWyqxcqlr5OlXGYbF8jx0J5VdY9MjcEM0iScrHuAbNbPDogfRi2t3Ep2WTg0uSyDk8Y
-         bdJgFiGemyCtgdFG8A7/5lae/eiLL2S0azUDuqjyKIiuh+V1Pytdqt0e4p6TtX2m3+yk
-         K7qg==
-X-Gm-Message-State: ABy/qLY+mjfZhZiq082lERLaGFJ8dnEC2pCCFc+xsz0B17tyfGinfAUc
-        27nHBUncAlDiNPd0rgQaBhB3ehldEe5VRLDh
-X-Google-Smtp-Source: APBJJlFngmMeT1B/NQJD0a55UKx2ii0K3srqbk3P4CC5ivKeUAKqKFzB0MR6HKuhwkNamexMh8lEcw==
-X-Received: by 2002:a05:651c:156:b0:2b9:c644:415d with SMTP id c22-20020a05651c015600b002b9c644415dmr1981105ljd.46.1690559980215;
-        Fri, 28 Jul 2023 08:59:40 -0700 (PDT)
-Received: from debian_development.DebianHome (dynamic-077-000-157-016.77.0.pool.telefonica.de. [77.0.157.16])
-        by smtp.gmail.com with ESMTPSA id lu44-20020a170906faec00b00992f309cfe8sm2215810ejb.178.2023.07.28.08.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 08:59:39 -0700 (PDT)
-From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To:     selinux@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] selinux: optimize ebitmap_and()
-Date:   Fri, 28 Jul 2023 17:59:36 +0200
-Message-Id: <20230728155937.41580-1-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 28 Jul 2023 12:00:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E0D110;
+        Fri, 28 Jul 2023 09:00:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 846536217D;
+        Fri, 28 Jul 2023 16:00:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95828C433C8;
+        Fri, 28 Jul 2023 16:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690560024;
+        bh=hYf2rKT66EA0CLZn0dh5++ZEnZG97g1m9o59RcdzOUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Td4BxKeLp8QaPwWqHQy6Fx8W2LrPCrYUlu1FHCBUsHZ8/LXjVoR3VvSXxZEnMOk+8
+         i337flH1gYWa/tB98k96VkLHwDSJ+1PwC98Kzs1DyywIpuw5G7NXMPM3FLfSrU1/tC
+         cBI6M2GLk95RDUgycJ7+eBXJGEKJyIkwRBbAKoJNmRJunmbvtQI5nDCnoXjP/MQf1D
+         3yLjOHYu0p2S53UnrI14nFrYm+1xXZxoO7U7N+5vLDMvCBs59Sf7pwbG6y4K8qb+UV
+         73axdh7/A0S74p9M6VVrD8rFpNpgPlupr2+Ne5VA9RxvXeOoCAEAAxKv1+S9w1/tRQ
+         v+JeeohU1wfFw==
+Date:   Fri, 28 Jul 2023 11:00:14 -0500
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 13/20] context_tracking: Make context_tracking_key
+ __ro_after_init
+Message-ID: <20230728160014.vjxikkoo4rieng55@treble>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-14-vschneid@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230720163056.2564824-14-vschneid@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Iterate on nodes instead of single bits to save node resolution for each
-single bit.
+On Thu, Jul 20, 2023 at 05:30:49PM +0100, Valentin Schneider wrote:
+> objtool now warns about it:
+> 
+>   vmlinux.o: warning: objtool: enter_from_user_mode+0x4e: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: enter_from_user_mode+0x50: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x60: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x62: Non __ro_after_init static key "context_tracking_key" in .noinstr section
+>   [...]
+> 
+> The key can only be enabled (and not disabled) in the __init function
+> ct_cpu_tracker_user(), so mark it as __ro_after_init.
+> 
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
 
-Similar to userspace patch efcd00814879 ("libsepol: optimize
-ebitmap_and").
+It's best to avoid temporarily introducing warnings.  Bots will
+rightfully complain about that.  This patch and the next one should come
+before the objtool patches.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- security/selinux/ss/ebitmap.c | 48 ++++++++++++++++++++++++++++++-----
- 1 file changed, 41 insertions(+), 7 deletions(-)
+Also it would be helpful for the commit log to have a brief
+justification for the patch beyond "fix the objtool warning".  Something
+roughly like:
 
-diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
-index 77875ad355f7..5ac8acacf873 100644
---- a/security/selinux/ss/ebitmap.c
-+++ b/security/selinux/ss/ebitmap.c
-@@ -81,18 +81,52 @@ int ebitmap_cpy(struct ebitmap *dst, const struct ebitmap *src)
- 
- int ebitmap_and(struct ebitmap *dst, const struct ebitmap *e1, const struct ebitmap *e2)
- {
--	struct ebitmap_node *n;
--	int bit, rc;
-+	const struct ebitmap_node *n1, *n2;
-+	struct ebitmap_node *new = NULL, **prev;
- 
- 	ebitmap_init(dst);
- 
--	ebitmap_for_each_positive_bit(e1, n, bit) {
--		if (ebitmap_get_bit(e2, bit)) {
--			rc = ebitmap_set_bit(dst, bit, 1);
--			if (rc < 0)
--				return rc;
-+	prev = &dst->node;
-+	n1 = e1->node;
-+	n2 = e2->node;
-+	while (n1 && n2) {
-+		if (n1->startbit == n2->startbit) {
-+			unsigned long testmap[EBITMAP_UNIT_NUMS];
-+			unsigned int i;
-+			bool match = false;
-+
-+			for (i = 0; i < sizeof(testmap); i++) {
-+				testmap[i] = n1->maps[i] & n2->maps[i];
-+				if (testmap[i] != 0)
-+					match = true;
-+			}
-+
-+			if (match) {
-+				new = kmem_cache_zalloc(ebitmap_node_cachep, GFP_ATOMIC);
-+				if (!new) {
-+					ebitmap_destroy(dst);
-+					return -ENOMEM;
-+				}
-+				new->startbit = n1->startbit;
-+				memcpy(new->maps, testmap, EBITMAP_SIZE / 8);
-+				new->next = NULL;
-+
-+				*prev = new;
-+				prev = &(new->next);
-+			}
-+
-+			n1 = n1->next;
-+			n2 = n2->next;
-+		} else if (n1->startbit > n2->startbit) {
-+			n2 = n2->next;
-+		} else {
-+			n1 = n1->next;
- 		}
- 	}
-+
-+	if (new)
-+		dst->highbit = new->startbit + EBITMAP_SIZE;
-+
- 	return 0;
- }
- 
+  Soon, runtime-mutable text won't be allowed in .noinstr sections, so
+  that a code patching IPI to a userspace-bound CPU can be safely
+  deferred to the next kernel entry.
+
+  'context_tracking_key' is only enabled in __init ct_cpu_tracker_user().
+  Mark it as __ro_after_init.
+
 -- 
-2.40.1
-
+Josh
