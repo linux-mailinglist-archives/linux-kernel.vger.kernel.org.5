@@ -2,161 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC26F76745B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05612767464
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbjG1SS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        id S235853AbjG1SUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjG1SSZ (ORCPT
+        with ESMTP id S233253AbjG1SUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:18:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A093C1F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:18:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 252DA621CF
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:18:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A71BC433C7;
-        Fri, 28 Jul 2023 18:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690568303;
-        bh=xS3JH0ac4EOyWddaobfJi6wjfpgQcUOBaFzhfO9ijNM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uoKmSpJAM7WBqZwGvJ5UKdxWqkplEHHF10EqOUebYlT33zKsGvrkUN+FJxnBhwVIB
-         gid1Zh8gd6vhJ3zyV7hZyJrf9PKGOEy3Cf2CdILd2svD727hN0iP6kxUWtEHgTzX0l
-         hgBgjoQpdxN6/D7D5EiexQwUMTbraQFoYZse6bSs6EvPZzfp76zNIKz3iZt5xSkQ1z
-         MvZK4CJw8kSFTh0lUEPgVOfa+zej+JgCXMI+KpQ3I+E9dVbGi6DouFIN8zVjrY1aV6
-         cUJHSOPxohUTcqBmhIaElpBlDodClnhw9QE08WeMZZWdnee8+UF+7CukZW/iDfdc0Q
-         GykyDSaHTMc5w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F1ABBCE0B66; Fri, 28 Jul 2023 11:18:22 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 11:18:22 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Will Deacon <will@kernel.org>, Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>
-Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
- anon_vma memory ordering
-Message-ID: <ca3706a4-3153-449e-bef0-56183a668d57@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <BCDEA397-AA7A-4FDE-8046-C68625CDE166@joelfernandes.org>
- <20230728124412.GA21303@willie-the-truck>
- <CAEXW_YRtUd4jUP68jzMgDgWxAy8tdJQortK07TZgCxVLNAgaNA@mail.gmail.com>
- <9fd99405-a3ff-4ab7-b6b7-e74849f1d334@rowland.harvard.edu>
- <CAEXW_YS-axyXvX4-aMc9a2EWY59KAyHvirMewVuoNGOGSh35Vw@mail.gmail.com>
+        Fri, 28 Jul 2023 14:20:40 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7004F422A;
+        Fri, 28 Jul 2023 11:20:39 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso3075688a12.2;
+        Fri, 28 Jul 2023 11:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690568437; x=1691173237;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i0MBJeozieN7RIE8kNLl/uGWmYsWBsu6wJK96hz5N2E=;
+        b=QOTP0xhn/BMAWeGZ6vOZTV1gy2SgiLvIh3/Y7RaFDdaYicZERfXjIqDn5fILMAnPTo
+         0SjpIcwfmrLsNLE+LtPMm/AqSAjEVnRWHlWpu6SNKTF8h2uNohQsJm5eY5eS1UscNHYn
+         KCXg4WRDh0W85sctR1OfidE90FMBHOJHrElDM3hu3YbHCsxvtzAksSF4Z19EgxYNPRu8
+         t0my61FtHclVkdvwj26MoHcFK7vegpcWdss9scIpV3T4UcpWuCdd+dgUWVK1ghDM2KED
+         RcLk02w9Ap0rbC8j1ttVnEcVAAzYBmLpW4Gq5m0LC6yavIgDeQIXAJTTSwCr/FXLnaKd
+         M15A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690568437; x=1691173237;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i0MBJeozieN7RIE8kNLl/uGWmYsWBsu6wJK96hz5N2E=;
+        b=TU6bs5v9QsdPYp5E/0TSlR1ME99mTHQDZaWv5nCrR6uX7TCi9O9gcpO4NxQVIJMWen
+         pGN2QKF4akW2EdMs6F3lcOhmomT4XjCyxo7cgFJksKMDlSU0h6BtyusY19w5D/bt0B/l
+         YZa54dcknxPjhYz3VkV6OAcfV3Zpkt/p0H2vQfRJawSkmvCJ0MVXoPltWkfBek0jQ71g
+         i2YblGWfGf6/rKeyotRHKbhB/1idCj4609wgkAYkpSvAiK9w1xvcCdUeuNxMVUY28NGO
+         7KpHsJ07mW4xwaZ4tkZ7fNBdLwh0RFIeaIWK8u+avPJcePguNctAU4D01jUwfs5GiyNb
+         zJ9g==
+X-Gm-Message-State: ABy/qLadazxRAtwtxkYY9VcBmTuVhASPDQB6QrapHf+Wz4pU2EwR22VV
+        PEMcubRNvkcHPfAPi3Jnux+q98I5KgnNHA==
+X-Google-Smtp-Source: APBJJlHyailxSXANyPgkHXVCri0eBf8tqZkiVYo5PDXjQJRxuHB0C8RPIra3UKKYVigTMch+45YyRw==
+X-Received: by 2002:a17:906:1d1:b0:997:e7ce:1e88 with SMTP id 17-20020a17090601d100b00997e7ce1e88mr104383ejj.52.1690568437496;
+        Fri, 28 Jul 2023 11:20:37 -0700 (PDT)
+Received: from localhost.localdomain ([78.97.234.98])
+        by smtp.gmail.com with ESMTPSA id ga15-20020a170906b84f00b00997c1d125fasm2317766ejb.170.2023.07.28.11.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 11:20:37 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
+        Andrei Coardos <aboutphysycs@gmail.com>,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: [PATCH] gpio: rc5t583: remove unneeded call to platform_set_drvdata()
+Date:   Fri, 28 Jul 2023 21:20:09 +0300
+Message-Id: <20230728182009.18445-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YS-axyXvX4-aMc9a2EWY59KAyHvirMewVuoNGOGSh35Vw@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 02:03:09PM -0400, Joel Fernandes wrote:
-> On Fri, Jul 28, 2023 at 1:51 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Fri, Jul 28, 2023 at 01:35:43PM -0400, Joel Fernandes wrote:
-> > > On Fri, Jul 28, 2023 at 8:44 AM Will Deacon <will@kernel.org> wrote:
-> > > >
-> > > > On Thu, Jul 27, 2023 at 12:34:44PM -0400, Joel Fernandes wrote:
-> > > > > > On Jul 27, 2023, at 10:57 AM, Will Deacon <will@kernel.org> wrote:
-> > > > > > ﻿On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
-> > > > > >> if (READ_ONCE(vma->anon_vma) != NULL) {
-> > > > > >>  // we now know that vma->anon_vma cannot change anymore
-> > > > > >>
-> > > > > >>  // access the same memory location again with a plain load
-> > > > > >>  struct anon_vma *a = vma->anon_vma;
-> > > > > >>
-> > > > > >>  // this needs to be address-dependency-ordered against one of
-> > > > > >>  // the loads from vma->anon_vma
-> > > > > >>  struct anon_vma *root = a->root;
-> > > > > >> }
-> > > > > >>
-> > > > > >>
-> > > > > >> Is this fine? If it is not fine just because the compiler might
-> > > > > >> reorder the plain load of vma->anon_vma before the READ_ONCE() load,
-> > > > > >> would it be fine after adding a barrier() directly after the
-> > > > > >> READ_ONCE()?
-> > > > > >
-> > > > > > I'm _very_ wary of mixing READ_ONCE() and plain loads to the same variable,
-> > > > > > as I've run into cases where you have sequences such as:
-> > > > > >
-> > > > > >    // Assume *ptr is initially 0 and somebody else writes it to 1
-> > > > > >    // concurrently
-> > > > > >
-> > > > > >    foo = *ptr;
-> > > > > >    bar = READ_ONCE(*ptr);
-> > > > > >    baz = *ptr;
-> > > > > >
-> > > > > > and you can get foo == baz == 0 but bar == 1 because the compiler only
-> > > > > > ends up reading from memory twice.
-> > > > > >
-> > > > > > That was the root cause behind f069faba6887 ("arm64: mm: Use READ_ONCE
-> > > > > > when dereferencing pointer to pte table"), which was very unpleasant to
-> > > > > > debug.
-> > > > >
-> > > > > Will, Unless I am missing something fundamental, this case is different though.
-> > > > > This case does not care about fewer reads. As long as the first read is volatile, the subsequent loads (even plain)
-> > > > > should work fine, no?
-> > > > > I am not seeing how the compiler can screw that up, so please do enlighten :).
-> > > >
-> > > > I guess the thing I'm worried about is if there is some previous read of
-> > > > 'vma->anon_vma' which didn't use READ_ONCE() and the compiler kept the
-> > > > result around in a register. In that case, 'a' could be NULL, even if
-> > > > the READ_ONCE(vma->anon_vma) returned non-NULL.
-> > >
-> > > If I can be a bit brave enough to say -- that appears to be a compiler
-> > > bug to me. It seems that the compiler in such an instance violates the
-> > > "Sequential Consistency Per Variable" rule? I mean if it can't even
-> > > keep SCPV true for a same memory-location load (plain or not) for a
-> > > sequence of code, how can it expect the hardware to.
-> >
-> > It's not a compiler bug.  In this example, some other thread performs a
-> > write that changes vma->anon_vma from NULL to non-NULL.  This write
-> > races with the plain reads, and compilers are not required to obey the
-> > "Sequential Consistency Per Variable" rule (or indeed, any rule) when
-> > there is a data race.
-> 
-> So you're saying the following code behavior is OK?
-> 
-> /* Say anon_vma can only ever transition from NULL to non-NULL values */
-> a = vma->anon_vma;  // Reads NULL
-> b = READ_ONCE(vma->anon_vma); // Reads non-NULL
-> c = vma->anon_vma;  // Reads NULL!!!
-> if (b) {
->   c->some_attribute++; // Oopsie
-> }
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-Is there some way to obtain (a && !b) that does not involve a data race,
-and they carte blanche for the compiler to do whatever it pleases?
-I am not seeing one.
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/gpio/gpio-rc5t583.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-What am I missing?
+diff --git a/drivers/gpio/gpio-rc5t583.c b/drivers/gpio/gpio-rc5t583.c
+index 4fae3ebea790..c34dcadaee36 100644
+--- a/drivers/gpio/gpio-rc5t583.c
++++ b/drivers/gpio/gpio-rc5t583.c
+@@ -121,8 +121,6 @@ static int rc5t583_gpio_probe(struct platform_device *pdev)
+ 	if (pdata && pdata->gpio_base)
+ 		rc5t583_gpio->gpio_chip.base = pdata->gpio_base;
+ 
+-	platform_set_drvdata(pdev, rc5t583_gpio);
+-
+ 	return devm_gpiochip_add_data(&pdev->dev, &rc5t583_gpio->gpio_chip,
+ 				      rc5t583_gpio);
+ }
+-- 
+2.34.1
 
-							Thanx, Paul
