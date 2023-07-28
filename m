@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E62766FA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36812766FAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237222AbjG1Oms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S237144AbjG1OqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237216AbjG1Omq (ORCPT
+        with ESMTP id S237105AbjG1Op6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:42:46 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ABE1AD;
-        Fri, 28 Jul 2023 07:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1690555313; x=1691160113; i=georgmueller@gmx.net;
- bh=M/WETmw5YIFP0LfRJ5a0hlrmqjLYh88H3TYqQUuDLdg=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=irSBPPfsD9YZWAOoLipis84tV4HY5LroJoPAytKtykYfw9PxsUvriC+YKqWh6yTuAizMhy7
- pRAvDM7vGICrT/FKpnz7bp+NhefqKYSasC2tqDJBXp2v4Za009ZmyP5L5byKVpWexWU4y7MI7
- Lf+nO7EAXI1jNkYySLM8WTz/bU4PTME5Afai9Vr6Bz7H+DFywHvaOB1/TVpz8g1rBtrfMcl4o
- iYciGffDtIZlV+e180y/dcklMQJrgUGoK+Z+Ow5U554VvFzj37No6kWTYIwL2SMAHicCJtXFl
- w10YdaTU+VDyfIxpwHR5I3ildC6jXqYkpd7eMluRWpT+xZhG6Ncg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.54.0.101] ([79.246.95.128]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfYLa-1pweU51ln6-00g23i; Fri, 28
- Jul 2023 16:41:53 +0200
-Message-ID: <adcb2f0e-9db1-dd5a-91dd-6f5567357174@gmx.net>
-Date:   Fri, 28 Jul 2023 16:41:51 +0200
+        Fri, 28 Jul 2023 10:45:58 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490033C35
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oiMutyUMmVTk99ASOanACyUD72nSCbLfCygSg1z4+14=; b=Y1pdF6VAaU5RBGv2OSYBkSpK9G
+        qAkOTLW06hJyFxgChOD8q1GLjdJltoz4LI80qJInTti5eo8pZMdho56qPQIYTP+onXpNhM/GtGZfP
+        Dg4jJ9eoZao82TSWhPGvDgJi+QWT9deZw0Tzcsyzz6UJldyFIb/1V6Nume99Uij9oT30HM41QGyqX
+        2HxLgbkDqiRLdsAZnuCLny+y0XlxpxxM+Wot3bwpamG2WFb0ZvFhTPUqF6jOnveBmrhbD6x0dRAdK
+        vuZZ9PTrYrPPWNajYZ1px+zXpWmtvsfwgE5yCDTAdINWjUhy/c00rJPzt4HuVxOPthR79machWgt3
+        jjCw25Lg==;
+Received: from [189.111.93.147] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qPOix-005De2-UM; Fri, 28 Jul 2023 16:45:48 +0200
+Message-ID: <24fc3974-a303-e792-b6d5-5ca634c2bc4b@igalia.com>
+Date:   Fri, 28 Jul 2023 11:45:42 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] perf probe: add test for regression introduced by
- switch to die_get_decl_file
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/5] drm/amdgpu: Add new reset option and rework
+ coredump
 Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        regressions@lists.linux.dev,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230628082337.1857302-1-georgmueller@gmx.net>
- <20230628082337.1857302-2-georgmueller@gmx.net>
- <CAP-5=fUP6UuLgRty3t2=fQsQi3k4hDMz415vWdp1x88QMvZ8ug@mail.gmail.com>
-From:   =?UTF-8?Q?Georg_M=c3=bcller?= <georgmueller@gmx.net>
-In-Reply-To: <CAP-5=fUP6UuLgRty3t2=fQsQi3k4hDMz415vWdp1x88QMvZ8ug@mail.gmail.com>
+To:     christian.koenig@amd.com
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        amd-gfx@lists.freedesktop.org, pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        =?UTF-8?Q?Timur_Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        michel.daenzer@mailbox.org, dri-devel@lists.freedesktop.org
+References: <20230714161128.69545-1-andrealmeid@igalia.com>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <20230714161128.69545-1-andrealmeid@igalia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sDrqkfLvyKv87wPdI67Pfq8Dl0IoJ7GwNZNYrQTBseNuxPM0HT1
- qaKXhyQgK8x53dir8/keVvV22/H9RvuV71zhL1tJG6CDG1X4iCBQxMORJKb8tItAU7iI9IX
- heIB3x11p57i727oXCjTtGgruGT5oIT7tJukV+4omfX7u6h1x+dBmFZoC8eTsDC2H4XXl8f
- RCUgGladaVclQG/JHOtbg==
-UI-OutboundReport: notjunk:1;M01:P0:jMofSfNp27s=;ALDfp4otrWiPAi0bWjifjlNZHxp
- FBbnIv+agpXiztrLKqyKpIQny49hWZ/AfZHlEqm0cFNlKQAMXWdBWzSA7arZy6yw9shgjbwiz
- Sk6IirbVwFZpg51EOEGApCAw3zaWP9d5fY5zwJYfCsSFmuTXBkqS3lnYOTuT3U6Npt75H3B9l
- C22ALRlC3RLbO9rCMTPJCLrhvlBbXVErl6FdsGuFgH/2SiKD12cODw0HENT7fkWwmBrrMA27x
- rswn5qfdcr84cbvauFzegSqfNKAioIqCDCtWA7KKYWCLfNR5bfUdin0EHapSO0LGSWgoGIFxE
- 029AZGpjK4D9RM3ncmPDJ8m31dhvEEyIE++JhRtW6+cqq9Lg6q8cG0tDOeOzPCLZ3KV+b3FcO
- iQi2aUm6aiwE5m0zKFGktutYM66VooTrUJJaocfB26IN/bQ5EahN2wYciKqX+aiwWYTMnWMGn
- fYJJSq534xJNFez2X1DaNMQ1TtamRDDxmoETXUmd+TozWRAMisn6/2tP+MyzFLPAe66A5wPnp
- JSmcyaGgF1t+S/utiBz6QbZRwH/uaEviIFZnnI67CyfdFdmCk3QB5FTiRMCXkdcoJrEvwwtOu
- O+p2TjUOwg1ZLQXgwaGMegIqtrmBKA75q6CHA45ykdIr4TOzyozuBVBWsoylWgfQzL3srPqaW
- SXHIZY6xOjQtVvhjWhc8PSv+7jQKJQTV2zvazKzX8OJVhjx39NXkkifPO4A9dMkehmSz0vrSK
- QzVBPEyaVyvhol5UQbKEsX/u3lv7SgYopDVxeYyI4q+GP5iQM/meAl3z6hZuNmHaEmVkne577
- xc90UBXi5Cjdm2CbuPPWPHMLOrmY66XtBgdpOw9BX/oIH52isqOtnW0KTzTU0HwwwlclTtHJM
- 5qtxKPThslkhRUT8pYdHygR3tCS7eM+O5xtuzNXeRtVp8ik8RQJfZaIuvf+eHl/gQV7Lqi5PS
- m83DSw==
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christian, gently ping here
 
-Am 27.07.23 um 19:45 schrieb Ian Rogers:
-> On Wed, Jun 28, 2023 at 1:25=E2=80=AFAM Georg M=C3=BCller <georgmueller@=
-gmx.net> wrote:
->
-> Thanks for the test Georg! By directly relying on gcc this test fails
-> for me in some constrained environments, like containers. I think
-> there should be a skip if gcc isn't present. A different option is to
-> just build the test code into the perf binary itself as a test
-> workload:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git=
-/tree/tools/perf/tests/workloads?h=3Dperf-tools-next
->
-> Wdyt? Thanks,
-> Ian
->
-
-I prepare a commit which checks for gcc and skips the test in this case.
-
-I think building thi test code into the perf binary itself is not an optio=
-n
-here, since the test relies on a special setup of using -flto for one of t=
-he
-compilation units.
-
-There is also a cleanup issue if anything fails. This will be included in
-the patch as well.
-
-Best regards,
-Georg
+Em 14/07/2023 13:11, André Almeida escreveu:
+> Hi,
+> 
+> The goal of this patchset is to improve debugging device resets on amdgpu.
+> 
+> The first patch creates a new module parameter to disable soft recoveries,
+> ensuring every recovery go through the full device reset, making easier to
+> generate resets from userspace tools like [0] and [1]. This is important to
+> validate how the stack behaves on resets, from end-to-end.
+> 
+> The last patches are a rework to alloc devcoredump dynamically and to move it to
+> a better source file.
+> 
+> I have dropped the patches that add more information to devcoredump for now,
+> until I figure out a better way to do so, like storing the IB address in the
+> fence.
+> 
+> Thanks,
+> 	André
+> 
+> [0] https://gitlab.freedesktop.org/andrealmeid/gpu-timeout
+> [1] https://github.com/andrealmeid/vulkan-triangle-v1
+> 
+> Changelog:
+> 
+> v2: https://lore.kernel.org/dri-devel/20230713213242.680944-1-andrealmeid@igalia.com/
+> - Drop the IB and ring patch
+> - Drop patch that limited information from kernel threads
+> - Add patch to move coredump to amdgpu_reset
+> 
+> v1: https://lore.kernel.org/dri-devel/20230711213501.526237-1-andrealmeid@igalia.com/
+>   - Drop "Mark contexts guilty for causing soft recoveries" patch
+>   - Use GFP_NOWAIT for devcoredump allocation
+> 
+> André Almeida (5):
+>    drm/amdgpu: Create a module param to disable soft recovery
+>    drm/amdgpu: Allocate coredump memory in a nonblocking way
+>    drm/amdgpu: Rework coredump to use memory dynamically
+>    drm/amdgpu: Move coredump code to amdgpu_reset file
+>    drm/amdgpu: Create version number for coredumps
+> 
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        |  6 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 67 +-----------------
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    |  9 +++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c  | 79 ++++++++++++++++++++++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h  | 14 ++++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c   |  6 +-
+>   6 files changed, 111 insertions(+), 70 deletions(-)
+> 
