@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE28766E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11BB766E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbjG1NZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        id S236744AbjG1NZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236713AbjG1NZi (ORCPT
+        with ESMTP id S233488AbjG1NZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:25:38 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A43A3ABD;
-        Fri, 28 Jul 2023 06:25:32 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S8v0Qb001161;
-        Fri, 28 Jul 2023 13:25:26 GMT
+        Fri, 28 Jul 2023 09:25:39 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107CE3C27;
+        Fri, 28 Jul 2023 06:25:37 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SBTCUi009156;
+        Fri, 28 Jul 2023 13:25:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=RXxSbb1po9KEOK21uuwHvNLiGOLOvf6Gp9gYXfdMDUI=;
- b=DWQQ4ctPVhwgMC/WsdpJcd/Ogyva2q+51uX4gypSro7Q2xNsR3y/s/Nscqi/yVx/Jo4/
- A8M4hCLTRIxSMBHctUUZ8AVk4XJFKaHvLjQDfUYxYjg26ljpC2GAbi/npfqa5mZNq/Lm
- uwLC+kZbRJRl91iV0EumWMOn2O216d4JO5silPiwro/p6E6Q5CUYsEpgCVx++G5aSUW+
- RrmCRfa/EHYHUOT6WemqgTJsQImqPENTBzr1hAwHCSFC08KznPfuZ12RWaNUUuoOBegY
- 5M7atfZ7iVsZukEcveH/9/g27F5M0tQN36VwDJeW4SiE5TVJtDLVjMAjeq/mxnCeVlpQ rA== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3n2kbcmv-1
+ bh=/uSRfTECbhlqVOfiWP+fxAnqrA7hoq4tLnjWEr+IL8o=;
+ b=WkqehVRJcBasVGJzmnLgQwlyPFL0lSNqv7+OuVrfKmRYu1/Qyly87KggyAu8nRsztQww
+ F3/6dFmIWxDq4fGQnCzFJRP72wlfwd7k/JZA45M+4SFyx8xhlMbYu5HI3B+elck2iuz1
+ eTkHERSR2E3iyMDzyMnpuRxqDzOOutHFTkRlt2++4q7SCLPkUsZpJ99x/kbXsoeRaFiG
+ B6NiC7S8iuGK4511f1E2SJNHOFhwiG5N3jbCSKn+MW+TKYUHrmS/zQpXYUnKcMWyqG73
+ VoRGthErt9GmxYXPKaYrACsTLWT76EzdhXch0YYDovt3sBsVug1TQ3/xXFuVfuLiIYBQ 8Q== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3ufutb46-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:26 +0000
+        Fri, 28 Jul 2023 13:25:29 +0000
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPPsO025554
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDPSxs002751
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 13:25:25 GMT
+        Fri, 28 Jul 2023 13:25:28 GMT
 Received: from hu-vgarodia-hyd.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 06:25:21 -0700
+ 15.2.1118.30; Fri, 28 Jul 2023 06:25:25 -0700
 From:   Vikash Garodia <quic_vgarodia@quicinc.com>
 To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -47,9 +47,9 @@ To:     <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
         <linux-arm-msm@vger.kernel.org>
 CC:     <quic_dikshita@quicinc.com>,
         Vikash Garodia <quic_vgarodia@quicinc.com>
-Subject: [PATCH 04/33] iris: add vidc wrapper file
-Date:   Fri, 28 Jul 2023 18:53:15 +0530
-Message-ID: <1690550624-14642-5-git-send-email-quic_vgarodia@quicinc.com>
+Subject: [PATCH 05/33] iris: vidc: add vb2 ops
+Date:   Fri, 28 Jul 2023 18:53:16 +0530
+Message-ID: <1690550624-14642-6-git-send-email-quic_vgarodia@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
 References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
@@ -60,20 +60,20 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _A8VWtD7wEHHQjf1GDneDiOPEiBpGKvo
-X-Proofpoint-ORIG-GUID: _A8VWtD7wEHHQjf1GDneDiOPEiBpGKvo
+X-Proofpoint-GUID: JAR4xasuA_ZIt4CJ7MzL39YrkZr7aXFc
+X-Proofpoint-ORIG-GUID: JAR4xasuA_ZIt4CJ7MzL39YrkZr7aXFc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- spamscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxlogscore=631 mlxscore=0
+ clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307280123
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+ engine=8.12.0-2306200000 definitions=main-2307280124
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,929 +82,673 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dikshita Agarwal <quic_dikshita@quicinc.com>
 
-This implements vidc wrapper functions for all v4l2 IOCTLs.
+This implements vb2 ops for streaming modes for
+alloc, free, map and unmap buffers.
 
 Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
 ---
- .../media/platform/qcom/iris/vidc/inc/msm_vidc.h   |  60 ++
- .../media/platform/qcom/iris/vidc/src/msm_vidc.c   | 841 +++++++++++++++++++++
- 2 files changed, 901 insertions(+)
- create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc.h
- create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc.c
+ .../platform/qcom/iris/vidc/inc/msm_vidc_vb2.h     |  39 ++
+ .../platform/qcom/iris/vidc/src/msm_vidc_vb2.c     | 605 +++++++++++++++++++++
+ 2 files changed, 644 insertions(+)
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_vb2.h
+ create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_vb2.c
 
-diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc.h
+diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_vb2.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_vb2.h
 new file mode 100644
-index 0000000..6cd5fad
+index 0000000..12378ce
 --- /dev/null
-+++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc.h
-@@ -0,0 +1,60 @@
++++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_vb2.h
+@@ -0,0 +1,39 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
 + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
 + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
 +
-+#ifndef _MSM_VIDC_H_
-+#define _MSM_VIDC_H_
++#ifndef _MSM_VIDC_VB2_H_
++#define _MSM_VIDC_VB2_H_
 +
-+#include <linux/videodev2.h>
-+#include <media/media-device.h>
++#include <media/videobuf2-core.h>
++#include <media/videobuf2-v4l2.h>
 +
-+struct msm_vidc_core;
-+struct msm_vidc_inst;
++#include "msm_vidc_inst.h"
 +
-+union msm_v4l2_cmd {
-+	struct v4l2_decoder_cmd dec;
-+	struct v4l2_encoder_cmd enc;
-+};
++struct vb2_queue *msm_vidc_get_vb2q(struct msm_vidc_inst *inst,
++				    u32 type, const char *func);
 +
-+void *msm_vidc_open(struct msm_vidc_core *core, u32 session_type);
-+int msm_vidc_close(struct msm_vidc_inst *inst);
-+int msm_vidc_querycap(struct msm_vidc_inst *inst, struct v4l2_capability *cap);
-+int msm_vidc_enum_fmt(struct msm_vidc_inst *inst, struct v4l2_fmtdesc *f);
-+int msm_vidc_try_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f);
-+int msm_vidc_s_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f);
-+int msm_vidc_g_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f);
-+int msm_vidc_s_selection(struct msm_vidc_inst *inst, struct v4l2_selection *s);
-+int msm_vidc_g_selection(struct msm_vidc_inst *inst, struct v4l2_selection *s);
-+int msm_vidc_s_param(struct msm_vidc_inst *inst, struct v4l2_streamparm *sp);
-+int msm_vidc_g_param(struct msm_vidc_inst *inst, struct v4l2_streamparm *sp);
-+int msm_vidc_reqbufs(struct msm_vidc_inst *inst, struct v4l2_requestbuffers *b);
-+int msm_vidc_querybuf(struct msm_vidc_inst *inst, struct v4l2_buffer *b);
-+int msm_vidc_create_bufs(struct msm_vidc_inst *inst, struct v4l2_create_buffers *b);
-+int msm_vidc_prepare_buf(struct msm_vidc_inst *inst, struct media_device *mdev,
-+			 struct v4l2_buffer *b);
-+int msm_vidc_release_buffer(struct msm_vidc_inst *inst, int buffer_type,
-+			    unsigned int buffer_index);
-+int msm_vidc_qbuf(struct msm_vidc_inst *inst, struct media_device *mdev,
-+		  struct v4l2_buffer *b);
-+int msm_vidc_dqbuf(struct msm_vidc_inst *inste, struct v4l2_buffer *b);
-+int msm_vidc_streamon(struct msm_vidc_inst *inst, enum v4l2_buf_type i);
-+int msm_vidc_query_ctrl(struct msm_vidc_inst *inst, struct v4l2_queryctrl *ctrl);
-+int msm_vidc_query_menu(struct msm_vidc_inst *inst, struct v4l2_querymenu *qmenu);
-+int msm_vidc_streamoff(struct msm_vidc_inst *inst, enum v4l2_buf_type i);
-+int msm_vidc_try_cmd(struct msm_vidc_inst *inst, union msm_v4l2_cmd *cmd);
-+int msm_vidc_start_cmd(struct msm_vidc_inst *inst);
-+int msm_vidc_stop_cmd(struct msm_vidc_inst *inst);
-+int msm_vidc_poll(struct msm_vidc_inst *inst, struct file *filp,
-+		  struct poll_table_struct *pt);
-+int msm_vidc_subscribe_event(struct msm_vidc_inst *inst,
-+			     const struct v4l2_event_subscription *sub);
-+int msm_vidc_unsubscribe_event(struct msm_vidc_inst *inst,
-+			       const struct v4l2_event_subscription *sub);
-+int msm_vidc_dqevent(struct msm_vidc_inst *inst, struct v4l2_event *event);
-+int msm_vidc_g_crop(struct msm_vidc_inst *inst, struct v4l2_crop *a);
-+int msm_vidc_enum_framesizes(struct msm_vidc_inst *inst, struct v4l2_frmsizeenum *fsize);
-+int msm_vidc_enum_frameintervals(struct msm_vidc_inst *inst, struct v4l2_frmivalenum *fival);
++/* vb2_mem_ops */
++void *msm_vb2_alloc(struct vb2_buffer *vb, struct device *dev,
++		    unsigned long size);
++void *msm_vb2_attach_dmabuf(struct vb2_buffer *vb, struct device *dev,
++			    struct dma_buf *dbuf, unsigned long size);
 +
-+#endif
-diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc.c
++void msm_vb2_put(void *buf_priv);
++int msm_vb2_mmap(void *buf_priv, struct vm_area_struct *vma);
++void msm_vb2_detach_dmabuf(void *buf_priv);
++int msm_vb2_map_dmabuf(void *buf_priv);
++void msm_vb2_unmap_dmabuf(void *buf_priv);
++
++/* vb2_ops */
++int msm_vb2_queue_setup(struct vb2_queue *q,
++			unsigned int *num_buffers, unsigned int *num_planes,
++			unsigned int sizes[], struct device *alloc_devs[]);
++int msm_vidc_start_streaming(struct msm_vidc_inst *inst, struct vb2_queue *q);
++int msm_vidc_stop_streaming(struct msm_vidc_inst *inst, struct vb2_queue *q);
++int msm_vb2_start_streaming(struct vb2_queue *q, unsigned int count);
++void msm_vb2_stop_streaming(struct vb2_queue *q);
++void msm_vb2_buf_queue(struct vb2_buffer *vb2);
++#endif // _MSM_VIDC_VB2_H_
+diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_vb2.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_vb2.c
 new file mode 100644
-index 0000000..c9848c7
+index 0000000..c936d95
 --- /dev/null
-+++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc.c
-@@ -0,0 +1,841 @@
++++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_vb2.c
+@@ -0,0 +1,605 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
 + * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
 + */
 +
-+#include <linux/hash.h>
-+#include <linux/types.h>
-+
 +#include "msm_vdec.h"
 +#include "msm_venc.h"
-+#include "msm_vidc.h"
 +#include "msm_vidc_control.h"
 +#include "msm_vidc_core.h"
 +#include "msm_vidc_debug.h"
 +#include "msm_vidc_driver.h"
 +#include "msm_vidc_inst.h"
 +#include "msm_vidc_internal.h"
-+#include "msm_vidc_memory.h"
++#include "msm_vidc_platform.h"
 +#include "msm_vidc_power.h"
-+#include "msm_vidc_v4l2.h"
 +#include "msm_vidc_vb2.h"
-+#include "venus_hfi_response.h"
 +
-+#define MSM_VIDC_DRV_NAME "msm_vidc_driver"
-+#define MSM_VIDC_BUS_NAME "platform:msm_vidc_bus"
-+
-+static inline bool valid_v4l2_buffer(struct v4l2_buffer *b,
-+				     struct msm_vidc_inst *inst)
++struct vb2_queue *msm_vidc_get_vb2q(struct msm_vidc_inst *inst,
++				    u32 type, const char *func)
 +{
-+	if (b->type == INPUT_MPLANE || b->type == OUTPUT_MPLANE)
-+		return b->length > 0;
-+
-+	return false;
-+}
-+
-+static int get_poll_flags(struct msm_vidc_inst *inst, u32 port)
-+{
-+	int poll = 0;
 +	struct vb2_queue *q = NULL;
-+	struct vb2_buffer *vb = NULL;
-+	unsigned long flags = 0;
 +
-+	if (port >= MAX_PORT) {
-+		d_vpr_e("%s: invalid params, inst %pK, port %d\n",
-+			__func__, inst, port);
-+		return poll;
++	if (type == INPUT_MPLANE) {
++		q = inst->bufq[INPUT_PORT].vb2q;
++	} else if (type == OUTPUT_MPLANE) {
++		q = inst->bufq[OUTPUT_PORT].vb2q;
++	} else {
++		i_vpr_e(inst, "%s: invalid buffer type %d\n",
++			__func__, type);
 +	}
-+	q = inst->bufq[port].vb2q;
-+
-+	spin_lock_irqsave(&q->done_lock, flags);
-+	if (!list_empty(&q->done_list))
-+		vb = list_first_entry(&q->done_list, struct vb2_buffer,
-+				      done_entry);
-+	if (vb && (vb->state == VB2_BUF_STATE_DONE ||
-+		   vb->state == VB2_BUF_STATE_ERROR)) {
-+		if (port == OUTPUT_PORT)
-+			poll |= POLLIN | POLLRDNORM;
-+		else if (port == INPUT_PORT)
-+			poll |= POLLOUT | POLLWRNORM;
-+	}
-+	spin_unlock_irqrestore(&q->done_lock, flags);
-+
-+	return poll;
++	return q;
 +}
 +
-+int msm_vidc_poll(struct msm_vidc_inst *inst, struct file *filp,
-+		  struct poll_table_struct *wait)
++void *msm_vb2_alloc(struct vb2_buffer *vb, struct device *dev,
++		    unsigned long size)
 +{
-+	int poll = 0;
-+
-+	poll_wait(filp, &inst->fh.wait, wait);
-+	poll_wait(filp, &inst->bufq[INPUT_PORT].vb2q->done_wq, wait);
-+	poll_wait(filp, &inst->bufq[OUTPUT_PORT].vb2q->done_wq, wait);
-+
-+	if (v4l2_event_pending(&inst->fh))
-+		poll |= POLLPRI;
-+
-+	poll |= get_poll_flags(inst, INPUT_PORT);
-+	poll |= get_poll_flags(inst, OUTPUT_PORT);
-+
-+	return poll;
++	return (void *)0xdeadbeef;
 +}
 +
-+int msm_vidc_querycap(struct msm_vidc_inst *inst, struct v4l2_capability *cap)
++void *msm_vb2_attach_dmabuf(struct vb2_buffer *vb, struct device *dev,
++			    struct dma_buf *dbuf, unsigned long size)
 +{
-+	strscpy(cap->driver, MSM_VIDC_DRV_NAME, sizeof(cap->driver));
-+	strscpy(cap->bus_info, MSM_VIDC_BUS_NAME, sizeof(cap->bus_info));
++	struct msm_vidc_inst *inst;
++	struct msm_vidc_core *core;
++	struct msm_vidc_buffer *buf = NULL;
++	struct msm_vidc_buffer *ro_buf, *dummy;
 +
-+	memset(cap->reserved, 0, sizeof(cap->reserved));
++	if (!vb || !dev || !dbuf || !vb->vb2_queue) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return NULL;
++	}
++	inst = vb->vb2_queue->drv_priv;
++	inst = get_inst_ref(g_core, inst);
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params %pK\n", __func__, inst);
++		return NULL;
++	}
++	core = inst->core;
 +
-+	if (is_decode_session(inst))
-+		strscpy(cap->card, "msm_vidc_decoder", sizeof(cap->card));
-+	else if (is_encode_session(inst))
-+		strscpy(cap->card, "msm_vidc_encoder", sizeof(cap->card));
-+	else
-+		return -EINVAL;
++	buf = msm_vidc_fetch_buffer(inst, vb);
++	if (!buf) {
++		i_vpr_e(inst, "%s: failed to fetch buffer\n", __func__);
++		buf = NULL;
++		goto exit;
++	}
++	buf->inst = inst;
++	buf->dmabuf = dbuf;
 +
++	if (is_decode_session(inst) && is_output_buffer(buf->type)) {
++		list_for_each_entry_safe(ro_buf, dummy, &inst->buffers.read_only.list, list) {
++			if (ro_buf->dmabuf != buf->dmabuf)
++				continue;
++			print_vidc_buffer(VIDC_LOW, "low ", "attach: found ro buf", inst, ro_buf);
++			buf->attach = ro_buf->attach;
++			ro_buf->attach = NULL;
++			goto exit;
++		}
++	}
++
++	buf->attach = call_mem_op(core, dma_buf_attach, core, dbuf, dev);
++	if (!buf->attach) {
++		buf->attach = NULL;
++		buf = NULL;
++		goto exit;
++	}
++	print_vidc_buffer(VIDC_LOW, "low ", "attach", inst, buf);
++
++exit:
++	if (!buf)
++		msm_vidc_change_state(inst, MSM_VIDC_ERROR, __func__);
++	put_inst(inst);
++	return buf;
++}
++
++void msm_vb2_put(void *buf_priv)
++{
++}
++
++int msm_vb2_mmap(void *buf_priv, struct vm_area_struct *vma)
++{
 +	return 0;
 +}
 +
-+int msm_vidc_enum_fmt(struct msm_vidc_inst *inst, struct v4l2_fmtdesc *f)
++void msm_vb2_detach_dmabuf(void *buf_priv)
 +{
-+	if (is_decode_session(inst))
-+		return msm_vdec_enum_fmt(inst, f);
-+	if (is_encode_session(inst))
-+		return msm_venc_enum_fmt(inst, f);
++	struct msm_vidc_buffer *vbuf = buf_priv;
++	struct msm_vidc_buffer *ro_buf, *dummy;
++	struct msm_vidc_core *core;
++	struct msm_vidc_inst *inst;
 +
-+	return -EINVAL;
++	if (!vbuf || !vbuf->inst) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return;
++	}
++	inst = vbuf->inst;
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params %pK\n", __func__, inst);
++		return;
++	}
++	core = inst->core;
++
++	if (is_decode_session(inst) && is_output_buffer(vbuf->type)) {
++		list_for_each_entry_safe(ro_buf, dummy, &inst->buffers.read_only.list, list) {
++			if (ro_buf->dmabuf != vbuf->dmabuf)
++				continue;
++			print_vidc_buffer(VIDC_LOW, "low ", "detach: found ro buf", inst, ro_buf);
++			ro_buf->attach = vbuf->attach;
++			vbuf->attach = NULL;
++			goto exit;
++		}
++	}
++
++	print_vidc_buffer(VIDC_LOW, "low ", "detach", inst, vbuf);
++	if (vbuf->attach && vbuf->dmabuf) {
++		call_mem_op(core, dma_buf_detach, core, vbuf->dmabuf, vbuf->attach);
++		vbuf->attach = NULL;
++	}
++
++exit:
++	vbuf->dmabuf = NULL;
++	vbuf->inst = NULL;
 +}
 +
-+int msm_vidc_query_ctrl(struct msm_vidc_inst *inst, struct v4l2_queryctrl *q_ctrl)
++int msm_vb2_map_dmabuf(void *buf_priv)
 +{
 +	int rc = 0;
-+	struct v4l2_ctrl *ctrl;
++	struct msm_vidc_buffer *buf = buf_priv;
++	struct msm_vidc_core *core;
++	struct msm_vidc_inst *inst;
++	struct msm_vidc_buffer *ro_buf, *dummy;
 +
-+	ctrl = v4l2_ctrl_find(&inst->ctrl_handler, q_ctrl->id);
-+	if (!ctrl) {
-+		i_vpr_e(inst, "%s: get_ctrl failed for id %d\n",
-+			__func__, q_ctrl->id);
++	if (!buf || !buf->inst) {
++		d_vpr_e("%s: invalid params\n", __func__);
 +		return -EINVAL;
 +	}
-+	q_ctrl->minimum = ctrl->minimum;
-+	q_ctrl->maximum = ctrl->maximum;
-+	q_ctrl->default_value = ctrl->default_value;
-+	q_ctrl->flags = 0;
-+	q_ctrl->step = ctrl->step;
-+	i_vpr_h(inst,
-+		"query ctrl: %s: min %d, max %d, default %d step %d flags %#x\n",
-+		ctrl->name, q_ctrl->minimum, q_ctrl->maximum,
-+		q_ctrl->default_value, q_ctrl->step, q_ctrl->flags);
-+	return rc;
-+}
-+
-+int msm_vidc_query_menu(struct msm_vidc_inst *inst, struct v4l2_querymenu *qmenu)
-+{
-+	int rc = 0;
-+	struct v4l2_ctrl *ctrl;
-+
-+	ctrl = v4l2_ctrl_find(&inst->ctrl_handler, qmenu->id);
-+	if (!ctrl) {
-+		i_vpr_e(inst, "%s: get_ctrl failed for id %d\n",
-+			__func__, qmenu->id);
++	inst = buf->inst;
++	inst = get_inst_ref(g_core, inst);
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params\n", __func__);
 +		return -EINVAL;
 +	}
-+	if (ctrl->type != V4L2_CTRL_TYPE_MENU) {
-+		i_vpr_e(inst, "%s: ctrl: %s: type (%d) is not MENU type\n",
-+			__func__, ctrl->name, ctrl->type);
-+		return -EINVAL;
++	core = inst->core;
++
++	if (is_decode_session(inst) && is_output_buffer(buf->type)) {
++		list_for_each_entry_safe(ro_buf, dummy, &inst->buffers.read_only.list, list) {
++			if (ro_buf->dmabuf != buf->dmabuf)
++				continue;
++			print_vidc_buffer(VIDC_LOW, "low ", "map: found ro buf", inst, ro_buf);
++			buf->sg_table = ro_buf->sg_table;
++			buf->device_addr = ro_buf->device_addr;
++			ro_buf->sg_table = NULL;
++			goto exit;
++		}
 +	}
-+	if (qmenu->index < ctrl->minimum || qmenu->index > ctrl->maximum)
-+		return -EINVAL;
 +
-+	if (ctrl->menu_skip_mask & (1 << qmenu->index))
-+		rc = -EINVAL;
++	buf->sg_table = call_mem_op(core, dma_buf_map_attachment, core, buf->attach);
++	if (!buf->sg_table || !buf->sg_table->sgl) {
++		buf->sg_table = NULL;
++		rc = -ENOMEM;
++		goto exit;
++	}
++	buf->device_addr = sg_dma_address(buf->sg_table->sgl);
++	print_vidc_buffer(VIDC_HIGH, "high", "map", inst, buf);
 +
-+	i_vpr_h(inst,
-+		"%s: ctrl: %s: min %lld, max %lld, menu_skip_mask %lld, qmenu: id %u, index %d, %s\n",
-+		__func__, ctrl->name, ctrl->minimum, ctrl->maximum,
-+		ctrl->menu_skip_mask, qmenu->id, qmenu->index,
-+		rc ? "not supported" : "supported");
-+	return rc;
-+}
-+
-+int msm_vidc_try_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f)
-+{
-+	int rc = 0;
-+
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_try_fmt(inst, f);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_try_fmt(inst, f);
-+
++exit:
 +	if (rc)
-+		i_vpr_e(inst, "%s: try_fmt(%d) failed %d\n",
-+			__func__, f->type, rc);
++		msm_vidc_change_state(inst, MSM_VIDC_ERROR, __func__);
++	put_inst(inst);
 +	return rc;
 +}
 +
-+int msm_vidc_s_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f)
++void msm_vb2_unmap_dmabuf(void *buf_priv)
++{
++	struct msm_vidc_buffer *vbuf = buf_priv;
++	struct msm_vidc_buffer *ro_buf, *dummy;
++	struct msm_vidc_core *core;
++	struct msm_vidc_inst *inst;
++
++	if (!vbuf || !vbuf->inst) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return;
++	}
++	inst = vbuf->inst;
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params %pK\n", __func__, inst);
++		return;
++	}
++	core = inst->core;
++
++	if (is_decode_session(inst) && is_output_buffer(vbuf->type)) {
++		list_for_each_entry_safe(ro_buf, dummy, &inst->buffers.read_only.list, list) {
++			if (ro_buf->dmabuf != vbuf->dmabuf)
++				continue;
++			print_vidc_buffer(VIDC_LOW, "low ", "unmap: found ro buf", inst, ro_buf);
++			ro_buf->sg_table = vbuf->sg_table;
++			vbuf->sg_table = NULL;
++			vbuf->device_addr = 0x0;
++			goto exit;
++		}
++	}
++
++	print_vidc_buffer(VIDC_HIGH, "high", "unmap", inst, vbuf);
++	if (vbuf->attach && vbuf->sg_table) {
++		call_mem_op(core, dma_buf_unmap_attachment, core, vbuf->attach, vbuf->sg_table);
++		vbuf->sg_table = NULL;
++		vbuf->device_addr = 0x0;
++	}
++
++exit:
++	return;
++}
++
++int msm_vb2_queue_setup(struct vb2_queue *q,
++			unsigned int *num_buffers, unsigned int *num_planes,
++			unsigned int sizes[], struct device *alloc_devs[])
 +{
 +	int rc = 0;
++	struct msm_vidc_inst *inst;
++	struct msm_vidc_core *core;
++	int port;
++	struct v4l2_format *f;
++	enum msm_vidc_buffer_type buffer_type = 0;
++	enum msm_vidc_buffer_region region = MSM_VIDC_REGION_NONE;
++	struct context_bank_info *cb = NULL;
++	struct msm_vidc_buffers *buffers;
 +
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_s_fmt(inst, f);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_s_fmt(inst, f);
++	if (!q || !num_buffers || !num_planes ||
++	    !sizes || !q->drv_priv) {
++		d_vpr_e("%s: invalid params, q = %pK, %pK, %pK\n",
++			__func__, q, num_buffers, num_planes);
++		return -EINVAL;
++	}
++	inst = q->drv_priv;
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params %pK\n", __func__, inst);
++		return -EINVAL;
++	}
++	core = inst->core;
 +
-+	if (rc)
-+		i_vpr_e(inst, "%s: s_fmt(%d) failed %d\n",
-+			__func__, f->type, rc);
++	if (is_state(inst, MSM_VIDC_STREAMING)) {
++		i_vpr_e(inst, "%s: invalid state %d\n", __func__, inst->state);
++		return -EINVAL;
++	}
++
++	port = v4l2_type_to_driver_port(inst, q->type, __func__);
++	if (port < 0)
++		return -EINVAL;
++
++	/* prepare dependency list once per session */
++	if (!inst->caps_list_prepared) {
++		rc = msm_vidc_prepare_dependency_list(inst);
++		if (rc)
++			return rc;
++		inst->caps_list_prepared = true;
++	}
++
++	/* adjust v4l2 properties for master port */
++	if ((is_encode_session(inst) && port == OUTPUT_PORT) ||
++	    (is_decode_session(inst) && port == INPUT_PORT)) {
++		rc = msm_vidc_adjust_v4l2_properties(inst);
++		if (rc) {
++			i_vpr_e(inst, "%s: failed to adjust properties\n", __func__);
++			return rc;
++		}
++	}
++
++	if (*num_planes && (port == INPUT_PORT || port == OUTPUT_PORT)) {
++		f = &inst->fmts[port];
++		if (*num_planes != f->fmt.pix_mp.num_planes) {
++			i_vpr_e(inst, "%s: requested num_planes %d not supported %d\n",
++				__func__, *num_planes, f->fmt.pix_mp.num_planes);
++			return -EINVAL;
++		}
++		if (sizes[0] < inst->fmts[port].fmt.pix_mp.plane_fmt[0].sizeimage) {
++			i_vpr_e(inst, "%s: requested size %d not acceptable\n",
++				__func__, sizes[0]);
++			return -EINVAL;
++		}
++	}
++
++	buffer_type = v4l2_type_to_driver(q->type, __func__);
++	if (!buffer_type)
++		return -EINVAL;
++
++	rc = msm_vidc_free_buffers(inst, buffer_type);
++	if (rc) {
++		i_vpr_e(inst, "%s: failed to free buffers, type %s\n",
++			__func__, v4l2_type_name(q->type));
++		return rc;
++	}
++
++	buffers = msm_vidc_get_buffers(inst, buffer_type, __func__);
++	if (!buffers)
++		return -EINVAL;
++
++	buffers->min_count = call_session_op(core, min_count, inst, buffer_type);
++	buffers->extra_count = call_session_op(core, extra_count, inst, buffer_type);
++	if (*num_buffers < buffers->min_count + buffers->extra_count)
++		*num_buffers = buffers->min_count + buffers->extra_count;
++	buffers->actual_count = *num_buffers;
++	*num_planes = 1;
++
++	buffers->size = call_session_op(core, buffer_size, inst, buffer_type);
++
++	inst->fmts[port].fmt.pix_mp.plane_fmt[0].sizeimage = buffers->size;
++	sizes[0] = inst->fmts[port].fmt.pix_mp.plane_fmt[0].sizeimage;
++
++	rc = msm_vidc_allocate_buffers(inst, buffer_type, *num_buffers);
++	if (rc) {
++		i_vpr_e(inst, "%s: failed to allocate buffers, type %s\n",
++			__func__, v4l2_type_name(q->type));
++		return rc;
++	}
++
++	region = call_mem_op(core, buffer_region, inst, buffer_type);
++	cb = msm_vidc_get_context_bank_for_region(core, region);
++	if (!cb) {
++		d_vpr_e("%s: Failed to get context bank device\n",
++			__func__);
++		return -EIO;
++	}
++	q->dev = cb->dev;
++
++	i_vpr_h(inst,
++		"queue_setup: type %s num_buffers %d sizes[0] %d cb %s\n",
++		v4l2_type_name(q->type), *num_buffers, sizes[0], cb->name);
 +	return rc;
 +}
 +
-+int msm_vidc_g_fmt(struct msm_vidc_inst *inst, struct v4l2_format *f)
++int msm_vb2_start_streaming(struct vb2_queue *q, unsigned int count)
 +{
 +	int rc = 0;
++	struct msm_vidc_inst *inst;
++
++	if (!q || !q->drv_priv) {
++		d_vpr_e("%s: invalid input, q = %pK\n", __func__, q);
++		return -EINVAL;
++	}
++	inst = q->drv_priv;
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return -EINVAL;
++	}
++
++	rc = inst->event_handle(inst, MSM_VIDC_STREAMON, q);
++	if (rc) {
++		i_vpr_e(inst, "Streamon: %s failed\n", v4l2_type_name(q->type));
++		msm_vidc_change_state(inst, MSM_VIDC_ERROR, __func__);
++		goto exit;
++	}
++
++exit:
++	return rc;
++}
++
++int msm_vidc_start_streaming(struct msm_vidc_inst *inst, struct vb2_queue *q)
++{
++	enum msm_vidc_buffer_type buf_type;
++	int rc = 0;
++
++	if (q->type != INPUT_MPLANE && q->type != OUTPUT_MPLANE) {
++		i_vpr_e(inst, "%s: invalid type %d\n", __func__, q->type);
++		return -EINVAL;
++	}
++	if (!is_decode_session(inst) && !is_encode_session(inst)) {
++		i_vpr_e(inst, "%s: invalid session %d\n", __func__, inst->domain);
++		return -EINVAL;
++	}
++	i_vpr_h(inst, "Streamon: %s\n", v4l2_type_name(q->type));
++
++	if (!inst->once_per_session_set) {
++		inst->once_per_session_set = true;
++		rc = msm_vidc_session_set_codec(inst);
++		if (rc)
++			return rc;
++
++		if (is_encode_session(inst)) {
++			rc = msm_vidc_alloc_and_queue_session_int_bufs(inst,
++								       MSM_VIDC_BUF_ARP);
++			if (rc)
++				return rc;
++		} else if (is_decode_session(inst)) {
++			rc = msm_vidc_session_set_default_header(inst);
++			if (rc)
++				return rc;
++
++			rc = msm_vidc_alloc_and_queue_session_int_bufs(inst,
++								       MSM_VIDC_BUF_PERSIST);
++			if (rc)
++				return rc;
++		}
++	}
 +
 +	if (is_decode_session(inst))
-+		rc = msm_vdec_g_fmt(inst, f);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_g_fmt(inst, f);
++		inst->decode_batch.enable = msm_vidc_allow_decode_batch(inst);
++
++	msm_vidc_allow_dcvs(inst);
++	msm_vidc_power_data_reset(inst);
++
++	if (q->type == INPUT_MPLANE) {
++		if (is_decode_session(inst))
++			rc = msm_vdec_streamon_input(inst);
++		else if (is_encode_session(inst))
++			rc = msm_venc_streamon_input(inst);
++	} else if (q->type == OUTPUT_MPLANE) {
++		if (is_decode_session(inst))
++			rc = msm_vdec_streamon_output(inst);
++		else if (is_encode_session(inst))
++			rc = msm_venc_streamon_output(inst);
++	}
 +	if (rc)
 +		return rc;
 +
-+	i_vpr_h(inst, "%s: type %s format %s width %d height %d size %d\n",
-+		__func__, v4l2_type_name(f->type),
-+		v4l2_pixelfmt_name(inst, f->fmt.pix_mp.pixelformat),
-+		f->fmt.pix_mp.width, f->fmt.pix_mp.height,
-+		f->fmt.pix_mp.plane_fmt[0].sizeimage);
++	/* print final buffer counts & size details */
++	msm_vidc_print_buffer_info(inst);
 +
-+	return 0;
-+}
-+
-+int msm_vidc_s_selection(struct msm_vidc_inst *inst, struct v4l2_selection *s)
-+{
-+	int rc = 0;
-+
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_s_selection(inst, s);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_s_selection(inst, s);
-+
-+	return rc;
-+}
-+
-+int msm_vidc_g_selection(struct msm_vidc_inst *inst, struct v4l2_selection *s)
-+{
-+	int rc = 0;
-+
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_g_selection(inst, s);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_g_selection(inst, s);
-+
-+	return rc;
-+}
-+
-+int msm_vidc_s_param(struct msm_vidc_inst *inst, struct v4l2_streamparm *param)
-+{
-+	int rc = 0;
-+
-+	if (param->type != V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
-+	    param->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-+		return -EINVAL;
-+
-+	if (is_encode_session(inst)) {
-+		rc = msm_venc_s_param(inst, param);
-+	} else {
-+		i_vpr_e(inst, "%s: invalid domain %#x\n",
-+			__func__, inst->domain);
-+		return -EINVAL;
-+	}
-+
-+	return rc;
-+}
-+
-+int msm_vidc_g_param(struct msm_vidc_inst *inst, struct v4l2_streamparm *param)
-+{
-+	int rc = 0;
-+
-+	if (param->type != V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
-+	    param->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-+		return -EINVAL;
-+
-+	if (is_encode_session(inst)) {
-+		rc = msm_venc_g_param(inst, param);
-+	} else {
-+		i_vpr_e(inst, "%s: invalid domain %#x\n",
-+			__func__, inst->domain);
-+		return -EINVAL;
-+	}
-+
-+	return rc;
-+}
-+
-+int msm_vidc_reqbufs(struct msm_vidc_inst *inst, struct v4l2_requestbuffers *b)
-+{
-+	int rc = 0;
-+	int port;
-+
-+	port = v4l2_type_to_driver_port(inst, b->type, __func__);
-+	if (port < 0) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_reqbufs(inst->bufq[port].vb2q, b);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: vb2_reqbufs(%d) failed, %d\n",
-+			__func__, b->type, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_querybuf(struct msm_vidc_inst *inst, struct v4l2_buffer *b)
-+{
-+	int rc = 0;
-+	int port;
-+
-+	port = v4l2_type_to_driver_port(inst, b->type, __func__);
-+	if (port < 0) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_querybuf(inst->bufq[port].vb2q, b);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: vb2_querybuf(%d) failed, %d\n",
-+			__func__, b->type, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_create_bufs(struct msm_vidc_inst *inst, struct v4l2_create_buffers *b)
-+{
-+	int rc = 0;
-+	int port;
-+	struct v4l2_format *f;
-+
-+	f = &b->format;
-+	port = v4l2_type_to_driver_port(inst, f->type, __func__);
-+	if (port < 0) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_create_bufs(inst->bufq[port].vb2q, b);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: vb2_create_bufs(%d) failed, %d\n",
-+			__func__, f->type, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_prepare_buf(struct msm_vidc_inst *inst, struct media_device *mdev,
-+			 struct v4l2_buffer *b)
-+{
-+	int rc = 0;
-+	struct vb2_queue *q;
-+
-+	if (!valid_v4l2_buffer(b, inst)) {
-+		d_vpr_e("%s: invalid params %pK %pK\n", __func__, inst, b);
-+		return -EINVAL;
-+	}
-+
-+	q = msm_vidc_get_vb2q(inst, b->type, __func__);
-+	if (!q) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_prepare_buf(q, mdev, b);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: failed with %d\n", __func__, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_qbuf(struct msm_vidc_inst *inst, struct media_device *mdev,
-+		  struct v4l2_buffer *b)
-+{
-+	int rc = 0;
-+	struct vb2_queue *q;
-+
-+	if (!valid_v4l2_buffer(b, inst)) {
-+		d_vpr_e("%s: invalid params %pK %pK\n", __func__, inst, b);
-+		return -EINVAL;
-+	}
-+
-+	q = msm_vidc_get_vb2q(inst, b->type, __func__);
-+	if (!q) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_qbuf(q, mdev, b);
-+	if (rc)
-+		i_vpr_e(inst, "%s: failed with %d\n", __func__, rc);
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_dqbuf(struct msm_vidc_inst *inst, struct v4l2_buffer *b)
-+{
-+	int rc = 0;
-+	struct vb2_queue *q;
-+
-+	if (!valid_v4l2_buffer(b, inst)) {
-+		d_vpr_e("%s: invalid params %pK %pK\n", __func__, inst, b);
-+		return -EINVAL;
-+	}
-+
-+	q = msm_vidc_get_vb2q(inst, b->type, __func__);
-+	if (!q) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_dqbuf(q, b, true);
-+	if (rc == -EAGAIN) {
-+		goto exit;
-+	} else if (rc) {
-+		i_vpr_l(inst, "%s: failed with %d\n", __func__, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_streamon(struct msm_vidc_inst *inst, enum v4l2_buf_type type)
-+{
-+	int rc = 0;
-+	int port;
-+
-+	port = v4l2_type_to_driver_port(inst, type, __func__);
-+	if (port < 0) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_streamon(inst->bufq[port].vb2q, type);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: vb2_streamon(%d) failed, %d\n",
-+			__func__, type, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+EXPORT_SYMBOL(msm_vidc_streamon);
-+
-+int msm_vidc_streamoff(struct msm_vidc_inst *inst, enum v4l2_buf_type type)
-+{
-+	int rc = 0;
-+	int port;
-+
-+	port = v4l2_type_to_driver_port(inst, type, __func__);
-+	if (port < 0) {
-+		rc = -EINVAL;
-+		goto exit;
-+	}
-+
-+	rc = vb2_streamoff(inst->bufq[port].vb2q, type);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: vb2_streamoff(%d) failed, %d\n",
-+			__func__, type, rc);
-+		goto exit;
-+	}
-+
-+exit:
-+	return rc;
-+}
-+
-+int msm_vidc_try_cmd(struct msm_vidc_inst *inst, union msm_v4l2_cmd *cmd)
-+{
-+	int rc = 0;
-+	struct v4l2_decoder_cmd *dec = NULL;
-+	struct v4l2_encoder_cmd *enc = NULL;
-+
-+	if (is_decode_session(inst)) {
-+		dec = (struct v4l2_decoder_cmd *)cmd;
-+		i_vpr_h(inst, "%s: cmd %d\n", __func__, dec->cmd);
-+		if (dec->cmd != V4L2_DEC_CMD_STOP && dec->cmd != V4L2_DEC_CMD_START)
-+			return -EINVAL;
-+		dec->flags = 0;
-+		if (dec->cmd == V4L2_DEC_CMD_STOP) {
-+			dec->stop.pts = 0;
-+		} else if (dec->cmd == V4L2_DEC_CMD_START) {
-+			dec->start.speed = 0;
-+			dec->start.format = V4L2_DEC_START_FMT_NONE;
-+		}
-+	} else if (is_encode_session(inst)) {
-+		enc = (struct v4l2_encoder_cmd *)cmd;
-+		i_vpr_h(inst, "%s: cmd %d\n", __func__, enc->cmd);
-+		if (enc->cmd != V4L2_ENC_CMD_STOP && enc->cmd != V4L2_ENC_CMD_START)
-+			return -EINVAL;
-+		enc->flags = 0;
-+	}
-+
-+	return rc;
-+}
-+
-+int msm_vidc_start_cmd(struct msm_vidc_inst *inst)
-+{
-+	int rc = 0;
-+
-+	if (!is_decode_session(inst) && !is_encode_session(inst)) {
-+		i_vpr_e(inst, "%s: invalid session %d\n", __func__, inst->domain);
-+		return -EINVAL;
-+	}
-+
-+	if (is_decode_session(inst)) {
-+		rc = msm_vdec_start_cmd(inst);
-+		if (rc)
-+			return rc;
-+	} else if (is_encode_session(inst)) {
-+		rc = msm_venc_start_cmd(inst);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return rc;
-+}
-+
-+int msm_vidc_stop_cmd(struct msm_vidc_inst *inst)
-+{
-+	int rc = 0;
-+
-+	if (!is_decode_session(inst) && !is_encode_session(inst)) {
-+		i_vpr_e(inst, "%s: invalid session %d\n", __func__, inst->domain);
-+		return -EINVAL;
-+	}
-+
-+	if (is_decode_session(inst)) {
-+		rc = msm_vdec_stop_cmd(inst);
-+		if (rc)
-+			return rc;
-+	} else if (is_encode_session(inst)) {
-+		rc = msm_venc_stop_cmd(inst);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	return rc;
-+}
-+
-+int msm_vidc_enum_framesizes(struct msm_vidc_inst *inst, struct v4l2_frmsizeenum *fsize)
-+{
-+	enum msm_vidc_colorformat_type colorfmt;
-+	enum msm_vidc_codec_type codec;
-+
-+	/* only index 0 allowed as per v4l2 spec */
-+	if (fsize->index)
-+		return -EINVAL;
-+
-+	/* validate pixel format */
-+	codec = v4l2_codec_to_driver(inst, fsize->pixel_format, __func__);
-+	if (!codec) {
-+		colorfmt = v4l2_colorformat_to_driver(inst, fsize->pixel_format,
-+						      __func__);
-+		if (colorfmt == MSM_VIDC_FMT_NONE) {
-+			i_vpr_e(inst, "%s: unsupported pix fmt %#x\n",
-+				__func__, fsize->pixel_format);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	fsize->type = V4L2_FRMSIZE_TYPE_STEPWISE;
-+	fsize->stepwise.min_width = inst->capabilities[FRAME_WIDTH].min;
-+	fsize->stepwise.max_width = inst->capabilities[FRAME_WIDTH].max;
-+	fsize->stepwise.step_width =
-+		inst->capabilities[FRAME_WIDTH].step_or_mask;
-+	fsize->stepwise.min_height = inst->capabilities[FRAME_HEIGHT].min;
-+	fsize->stepwise.max_height = inst->capabilities[FRAME_HEIGHT].max;
-+	fsize->stepwise.step_height =
-+		inst->capabilities[FRAME_HEIGHT].step_or_mask;
-+
-+	return 0;
-+}
-+
-+int msm_vidc_enum_frameintervals(struct msm_vidc_inst *inst, struct v4l2_frmivalenum *fival)
-+{
-+	struct msm_vidc_core *core;
-+	enum msm_vidc_colorformat_type colorfmt;
-+	u32 fps, mbpf;
-+
-+	if (is_decode_session(inst)) {
-+		i_vpr_e(inst, "%s: not supported by decoder\n", __func__);
-+		return -ENOTTY;
-+	}
-+
-+	core = inst->core;
-+
-+	/* only index 0 allowed as per v4l2 spec */
-+	if (fival->index)
-+		return -EINVAL;
-+
-+	/* validate pixel format */
-+	colorfmt = v4l2_colorformat_to_driver(inst, fival->pixel_format, __func__);
-+	if (colorfmt == MSM_VIDC_FMT_NONE) {
-+		i_vpr_e(inst, "%s: unsupported pix fmt %#x\n",
-+			__func__, fival->pixel_format);
-+		return -EINVAL;
-+	}
-+
-+	/* validate resolution */
-+	if (fival->width > inst->capabilities[FRAME_WIDTH].max ||
-+	    fival->width < inst->capabilities[FRAME_WIDTH].min ||
-+	    fival->height > inst->capabilities[FRAME_HEIGHT].max ||
-+	    fival->height < inst->capabilities[FRAME_HEIGHT].min) {
-+		i_vpr_e(inst, "%s: unsupported resolution %u x %u\n", __func__,
-+			fival->width, fival->height);
-+		return -EINVAL;
-+	}
-+
-+	/* calculate max supported fps for a given resolution */
-+	mbpf = NUM_MBS_PER_FRAME(fival->height, fival->width);
-+	fps = core->capabilities[MAX_MBPS].value / mbpf;
-+
-+	fival->type = V4L2_FRMIVAL_TYPE_STEPWISE;
-+	fival->stepwise.min.numerator = 1;
-+	fival->stepwise.min.denominator =
-+			min_t(u32, fps, inst->capabilities[FRAME_RATE].max);
-+	fival->stepwise.max.numerator = 1;
-+	fival->stepwise.max.denominator = 1;
-+	fival->stepwise.step.numerator = 1;
-+	fival->stepwise.step.denominator = inst->capabilities[FRAME_RATE].max;
-+
-+	return 0;
-+}
-+
-+int msm_vidc_subscribe_event(struct msm_vidc_inst *inst,
-+			     const struct v4l2_event_subscription *sub)
-+{
-+	int rc = 0;
-+
-+	i_vpr_h(inst, "%s: type %d id %d\n", __func__, sub->type, sub->id);
-+
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_subscribe_event(inst, sub);
-+	if (is_encode_session(inst))
-+		rc = msm_venc_subscribe_event(inst, sub);
-+
-+	return rc;
-+}
-+
-+int msm_vidc_unsubscribe_event(struct msm_vidc_inst *inst,
-+			       const struct v4l2_event_subscription *sub)
-+{
-+	int rc = 0;
-+
-+	i_vpr_h(inst, "%s: type %d id %d\n", __func__, sub->type, sub->id);
-+	rc = v4l2_event_unsubscribe(&inst->fh, sub);
-+	if (rc)
-+		i_vpr_e(inst, "%s: failed, type %d id %d\n",
-+			__func__, sub->type, sub->id);
-+	return rc;
-+}
-+
-+int msm_vidc_dqevent(struct msm_vidc_inst *inst, struct v4l2_event *event)
-+{
-+	int rc = 0;
-+
-+	rc = v4l2_event_dequeue(&inst->fh, event, false);
-+	if (rc)
-+		i_vpr_e(inst, "%s: fialed\n", __func__);
-+	return rc;
-+}
-+
-+void *msm_vidc_open(struct msm_vidc_core *core, u32 session_type)
-+{
-+	int rc = 0;
-+	struct msm_vidc_inst *inst = NULL;
-+	int i = 0;
-+
-+	d_vpr_h("%s: %s\n", __func__, video_banner);
-+
-+	if (session_type != MSM_VIDC_DECODER &&
-+	    session_type != MSM_VIDC_ENCODER) {
-+		d_vpr_e("%s: invalid session_type %d\n",
-+			__func__, session_type);
-+		return NULL;
-+	}
-+
-+	rc = msm_vidc_core_init(core);
-+	if (rc)
-+		return NULL;
-+
-+	rc = msm_vidc_core_init_wait(core);
-+	if (rc)
-+		return NULL;
-+
-+	inst = vzalloc(sizeof(*inst));
-+	if (!inst) {
-+		d_vpr_e("%s: allocation failed\n", __func__);
-+		return NULL;
-+	}
-+
-+	inst->core = core;
-+	inst->domain = session_type;
-+	inst->session_id = hash32_ptr(inst);
-+	msm_vidc_update_state(inst, MSM_VIDC_OPEN, __func__);
-+	inst->sub_state = MSM_VIDC_SUB_STATE_NONE;
-+	strscpy(inst->sub_state_name, "SUB_STATE_NONE", sizeof(inst->sub_state_name));
-+	inst->active = true;
-+	inst->ipsc_properties_set = false;
-+	inst->opsc_properties_set = false;
-+	inst->caps_list_prepared = false;
-+	inst->has_bframe = false;
-+	inst->iframe = false;
-+	inst->initial_time_us = ktime_get_ns() / 1000;
-+	kref_init(&inst->kref);
-+	mutex_init(&inst->lock);
-+	mutex_init(&inst->ctx_q_lock);
-+	mutex_init(&inst->client_lock);
-+	msm_vidc_update_debug_str(inst);
-+	i_vpr_h(inst, "Opening video instance: %d\n", session_type);
-+
-+	rc = msm_vidc_add_session(inst);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: failed to add session\n", __func__);
-+		goto fail_add_session;
-+	}
-+
-+	rc = msm_vidc_pools_init(inst);
-+	if (rc) {
-+		i_vpr_e(inst, "%s: failed to init pool buffers\n", __func__);
-+		goto fail_pools_init;
-+	}
-+	INIT_LIST_HEAD(&inst->caps_list);
-+	INIT_LIST_HEAD(&inst->timestamps.list);
-+	INIT_LIST_HEAD(&inst->buffers.input.list);
-+	INIT_LIST_HEAD(&inst->buffers.output.list);
-+	INIT_LIST_HEAD(&inst->buffers.read_only.list);
-+	INIT_LIST_HEAD(&inst->buffers.bin.list);
-+	INIT_LIST_HEAD(&inst->buffers.arp.list);
-+	INIT_LIST_HEAD(&inst->buffers.comv.list);
-+	INIT_LIST_HEAD(&inst->buffers.non_comv.list);
-+	INIT_LIST_HEAD(&inst->buffers.line.list);
-+	INIT_LIST_HEAD(&inst->buffers.dpb.list);
-+	INIT_LIST_HEAD(&inst->buffers.persist.list);
-+	INIT_LIST_HEAD(&inst->buffers.vpss.list);
-+	INIT_LIST_HEAD(&inst->mem_info.bin.list);
-+	INIT_LIST_HEAD(&inst->mem_info.arp.list);
-+	INIT_LIST_HEAD(&inst->mem_info.comv.list);
-+	INIT_LIST_HEAD(&inst->mem_info.non_comv.list);
-+	INIT_LIST_HEAD(&inst->mem_info.line.list);
-+	INIT_LIST_HEAD(&inst->mem_info.dpb.list);
-+	INIT_LIST_HEAD(&inst->mem_info.persist.list);
-+	INIT_LIST_HEAD(&inst->mem_info.vpss.list);
-+	INIT_LIST_HEAD(&inst->children_list);
-+	INIT_LIST_HEAD(&inst->firmware_list);
-+	INIT_LIST_HEAD(&inst->enc_input_crs);
-+	INIT_LIST_HEAD(&inst->dmabuf_tracker);
-+	INIT_LIST_HEAD(&inst->input_timer_list);
-+	INIT_LIST_HEAD(&inst->buffer_stats_list);
-+	for (i = 0; i < MAX_SIGNAL; i++)
-+		init_completion(&inst->completions[i]);
-+
-+	inst->workq = create_singlethread_workqueue("workq");
-+	if (!inst->workq) {
-+		i_vpr_e(inst, "%s: create workq failed\n", __func__);
-+		goto fail_create_workq;
-+	}
-+
-+	INIT_DELAYED_WORK(&inst->stats_work, msm_vidc_stats_handler);
-+
-+	rc = msm_vidc_v4l2_fh_init(inst);
-+	if (rc)
-+		goto fail_eventq_init;
-+
-+	rc = msm_vidc_vb2_queue_init(inst);
-+	if (rc)
-+		goto fail_vb2q_init;
-+
-+	if (is_decode_session(inst))
-+		rc = msm_vdec_inst_init(inst);
-+	else if (is_encode_session(inst))
-+		rc = msm_venc_inst_init(inst);
-+	if (rc)
-+		goto fail_inst_init;
-+
-+	msm_vidc_scale_power(inst, true);
-+
-+	rc = msm_vidc_session_open(inst);
-+	if (rc) {
-+		msm_vidc_core_deinit(core, true);
-+		goto fail_session_open;
-+	}
-+
-+	inst->debugfs_root =
-+		msm_vidc_debugfs_init_inst(inst, core->debugfs_root);
-+	if (!inst->debugfs_root)
-+		i_vpr_h(inst, "%s: debugfs not available\n", __func__);
-+
-+	return inst;
-+
-+fail_session_open:
-+	if (is_decode_session(inst))
-+		msm_vdec_inst_deinit(inst);
-+	else if (is_encode_session(inst))
-+		msm_venc_inst_deinit(inst);
-+fail_inst_init:
-+	msm_vidc_vb2_queue_deinit(inst);
-+fail_vb2q_init:
-+	msm_vidc_v4l2_fh_deinit(inst);
-+fail_eventq_init:
-+	destroy_workqueue(inst->workq);
-+fail_create_workq:
-+	msm_vidc_pools_deinit(inst);
-+fail_pools_init:
-+	msm_vidc_remove_session(inst);
-+	msm_vidc_remove_dangling_session(inst);
-+fail_add_session:
-+	mutex_destroy(&inst->client_lock);
-+	mutex_destroy(&inst->ctx_q_lock);
-+	mutex_destroy(&inst->lock);
-+	vfree(inst);
-+	return NULL;
-+}
-+
-+int msm_vidc_close(struct msm_vidc_inst *inst)
-+{
-+	struct msm_vidc_core *core;
-+
-+	core = inst->core;
-+
-+	client_lock(inst, __func__);
-+	inst_lock(inst, __func__);
-+	/* print final stats */
-+	msm_vidc_print_stats(inst);
 +	/* print internal buffer memory usage stats */
 +	msm_vidc_print_memory_stats(inst);
-+	msm_vidc_session_close(inst);
-+	msm_vidc_change_state(inst, MSM_VIDC_CLOSE, __func__);
-+	inst->sub_state = MSM_VIDC_SUB_STATE_NONE;
-+	strscpy(inst->sub_state_name, "SUB_STATE_NONE", sizeof(inst->sub_state_name));
-+	inst_unlock(inst, __func__);
-+	client_unlock(inst, __func__);
-+	cancel_stats_work_sync(inst);
-+	put_inst(inst);
-+	msm_vidc_schedule_core_deinit(core);
 +
-+	return 0;
++	buf_type = v4l2_type_to_driver(q->type, __func__);
++	if (!buf_type)
++		return -EINVAL;
++
++	/* queue pending buffers */
++	rc = msm_vidc_queue_deferred_buffers(inst, buf_type);
++	if (rc)
++		return rc;
++
++	/* initialize statistics timer(one time) */
++	if (!inst->stats.time_ms)
++		inst->stats.time_ms = ktime_get_ns() / 1000 / 1000;
++
++	/* schedule to print buffer statistics */
++	rc = schedule_stats_work(inst);
++	if (rc)
++		return rc;
++
++	if ((q->type == INPUT_MPLANE && inst->bufq[OUTPUT_PORT].vb2q->streaming) ||
++	    (q->type == OUTPUT_MPLANE && inst->bufq[INPUT_PORT].vb2q->streaming)) {
++		rc = msm_vidc_get_properties(inst);
++		if (rc)
++			return rc;
++	}
++
++	i_vpr_h(inst, "Streamon: %s successful\n", v4l2_type_name(q->type));
++	return rc;
++}
++
++int msm_vidc_stop_streaming(struct msm_vidc_inst *inst, struct vb2_queue *q)
++{
++	int rc = 0;
++
++	if (q->type != INPUT_MPLANE && q->type != OUTPUT_MPLANE) {
++		i_vpr_e(inst, "%s: invalid type %d\n", __func__, q->type);
++		return -EINVAL;
++	}
++	if (!is_decode_session(inst) && !is_encode_session(inst)) {
++		i_vpr_e(inst, "%s: invalid session %d\n", __func__, inst->domain);
++		return -EINVAL;
++	}
++	i_vpr_h(inst, "Streamoff: %s\n", v4l2_type_name(q->type));
++
++	if (q->type == INPUT_MPLANE) {
++		if (is_decode_session(inst))
++			rc = msm_vdec_streamoff_input(inst);
++		else if (is_encode_session(inst))
++			rc = msm_venc_streamoff_input(inst);
++	} else if (q->type == OUTPUT_MPLANE) {
++		if (is_decode_session(inst))
++			rc = msm_vdec_streamoff_output(inst);
++		else if (is_encode_session(inst))
++			rc = msm_venc_streamoff_output(inst);
++	}
++	if (rc)
++		return rc;
++
++	/* Input port streamoff */
++	if (q->type == INPUT_MPLANE) {
++		/* flush timestamps list */
++		msm_vidc_flush_ts(inst);
++	}
++
++	/* print internal buffer memory usage stats */
++	msm_vidc_print_memory_stats(inst);
++
++	i_vpr_h(inst, "Streamoff: %s successful\n", v4l2_type_name(q->type));
++	return rc;
++}
++
++void msm_vb2_stop_streaming(struct vb2_queue *q)
++{
++	struct msm_vidc_inst *inst;
++	int rc = 0;
++
++	if (!q || !q->drv_priv) {
++		d_vpr_e("%s: invalid input, q = %pK\n", __func__, q);
++		return;
++	}
++	inst = q->drv_priv;
++	if (!inst) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return;
++	}
++
++	rc = inst->event_handle(inst, MSM_VIDC_STREAMOFF, q);
++	if (rc) {
++		i_vpr_e(inst, "Streamoff: %s failed\n", v4l2_type_name(q->type));
++		msm_vidc_change_state(inst, MSM_VIDC_ERROR, __func__);
++	}
++}
++
++void msm_vb2_buf_queue(struct vb2_buffer *vb2)
++{
++	int rc = 0;
++	struct msm_vidc_inst *inst;
++	struct dma_buf *dbuf = NULL;
++	struct msm_vidc_core *core;
++	u64 ktime_ns = ktime_get_ns();
++
++	if (!vb2) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return;
++	}
++
++	inst = vb2_get_drv_priv(vb2->vb2_queue);
++	if (!inst || !inst->core) {
++		d_vpr_e("%s: invalid params\n", __func__);
++		return;
++	}
++	core = inst->core;
++
++	if (!vb2->planes[0].bytesused) {
++		if (vb2->type == INPUT_MPLANE) {
++			/* Expecting non-zero filledlen on INPUT port */
++			i_vpr_e(inst,
++				"%s: zero bytesused input buffer not supported\n", __func__);
++			rc = -EINVAL;
++			goto exit;
++		}
++	}
++
++	inst->last_qbuf_time_ns = ktime_ns;
++
++	if (vb2->type == INPUT_MPLANE) {
++		rc = msm_vidc_update_input_rate(inst, div_u64(ktime_ns, 1000));
++		if (rc)
++			goto exit;
++	}
++
++	/*
++	 * Userspace may close fd(from other thread), before driver attempts to call
++	 * dma_buf_get() in qbuf(FTB) sequence(for decoder output buffer) which may
++	 * lead to different kind of security issues. Add check to compare if dma_buf
++	 * address is matching with driver dma_buf_get returned address for that fd.
++	 */
++
++	dbuf = call_mem_op(core, dma_buf_get, inst, vb2->planes[0].m.fd);
++	if (dbuf != vb2->planes[0].dbuf) {
++		i_vpr_e(inst, "%s: invalid dmabuf address 0x%p expected 0x%p\n",
++			__func__, dbuf, vb2->planes[0].dbuf);
++		rc = -EINVAL;
++		goto exit;
++	}
++
++	if (is_decode_session(inst))
++		rc = msm_vdec_qbuf(inst, vb2);
++	else if (is_encode_session(inst))
++		rc = msm_venc_qbuf(inst, vb2);
++	else
++		rc = -EINVAL;
++	if (rc) {
++		print_vb2_buffer("failed vb2-qbuf", inst, vb2);
++		goto exit;
++	}
++
++exit:
++	if (dbuf)
++		call_mem_op(core, dma_buf_put, inst, dbuf);
++
++	if (rc) {
++		msm_vidc_change_state(inst, MSM_VIDC_ERROR, __func__);
++		vb2_buffer_done(vb2, VB2_BUF_STATE_ERROR);
++	}
 +}
 -- 
 2.7.4
