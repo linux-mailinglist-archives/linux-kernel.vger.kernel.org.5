@@ -2,150 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E7C767848
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DDC76784A
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjG1WA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
+        id S235199AbjG1WBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 18:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjG1WAZ (ORCPT
+        with ESMTP id S230373AbjG1WBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:00:25 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2044.outbound.protection.outlook.com [40.107.94.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D52DC;
-        Fri, 28 Jul 2023 15:00:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MfCR2+zQDxUNjERtmkFX5Y/1Gu/kqHV36/CJZ/p4B49HH1QAiCQU8DhlPoDjSbSW7FwpzNO5N/dZKkTS2Ki35vBGcstdg4B4Xo508bdlphV2CNahvl/ZlqEU/99lcMv108jyBFYfylBIqjb6tcky4G9ka1sE5n7blptnZFEABrtd5PNINpWEeoVQXOcXoqhVwk9xkjNLgaV10HOPmcCJ3EEKO8FQ/ZwZZstNaRCZ3rGiOnqng9yK7eGXaSH+CISE35SLboeHINdM9E0ZDqkpCOQvhWVw3d+g3MSxygUHrkZPVt4AtBCmKFxnHgOIlYY4W8Gp5/+Wynoi3cSB5nu40w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F/2EoH2+Qr2sFLFCf42LTOLIG7hZWQHUXQLRlN766Mc=;
- b=R8zrLg7eZSTTbnNZKsHgMpe4w6NDfrJT+pcG1pLx0BpUS9KHMlqPel11VYRmyqgLg4iEzFOjngOlpCAxF0Ccym+x5MHuuE0nyja2AXSbeoGycUlKF0OVGC9cKN+t0d2wG/RxxpguschJloHHN++ne7hfInS0I1ZznmZ27Fe+bjDoxKm5CD/WK0hQEJjRuLkHYXjvxyKD7E+cG6I+DRBAv0BpS08ja0tCsd70VCI+5FP9vzd3fg7fNDOpBbXBZY4GObtvC1IvgAtqdM9zIbzBkns+OjvQ4aM4ih12SrPjp7VuAgVwGP/Gxn3fsi/xvzMvLwUHwKC10Gy9hnLNaKbHcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F/2EoH2+Qr2sFLFCf42LTOLIG7hZWQHUXQLRlN766Mc=;
- b=BIjsPEmqpTeqhF7m3yHweJmUl8lZ/87a5gl79lpZ0SwJQdnFlL9XQM7KZgq/jDWPMRyDhuiHCkF2uNHEC2pd10mBYi+UH5/9TaQzIlQDJ6miktGYBX7rLUeqqYvow0yczvR1H6YqcSZnSGt9PxfEVbmOT8nW0zNrwz60jr2qSeQ5X6CZRYBKUvsLHpAYVfZO3vDlrQn/Tb07u6vMuDio5ARCPgseyu2qAu+ks5Dg/nuoBsNEX/Vg4nLXYcwipi1FI9Qp3Zb1mdnILoWMWss6B1TsN4iX6LC9s5Bc99i4XYDddvcCr2EeDoarykLWIl6Ggt7GNYRi2CmzpUXdW81Dkw==
-Received: from BYAPR05CA0008.namprd05.prod.outlook.com (2603:10b6:a03:c0::21)
- by PH0PR12MB7958.namprd12.prod.outlook.com (2603:10b6:510:285::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 22:00:20 +0000
-Received: from DM6NAM11FT073.eop-nam11.prod.protection.outlook.com
- (2603:10b6:a03:c0:cafe::b0) by BYAPR05CA0008.outlook.office365.com
- (2603:10b6:a03:c0::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.12 via Frontend
- Transport; Fri, 28 Jul 2023 22:00:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DM6NAM11FT073.mail.protection.outlook.com (10.13.173.152) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.35 via Frontend Transport; Fri, 28 Jul 2023 22:00:19 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 28 Jul 2023
- 15:00:06 -0700
-Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 28 Jul
- 2023 15:00:05 -0700
-Message-ID: <118e571c-a79f-5020-b9fd-4c0a3722236d@nvidia.com>
-Date:   Fri, 28 Jul 2023 15:00:04 -0700
+        Fri, 28 Jul 2023 18:01:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9199A2D5F;
+        Fri, 28 Jul 2023 15:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=xAH+c1piOJB40XU/MsQCVTQGpkyYY3lEGRLDIKN6cZQ=; b=F6zfeU7WSv2XJ20J7YUQDAYhY/
+        aavnAWiiu8VCq+vJN5XyRKPck4yf2CANLpeDWbjCQ4t/AWWjKH5XNVXkH/zW4/TNQH+/Pombo5Aio
+        N0ljJ0LDA4TAClqNi7Mf6STG2/43+YwvAa9bUsg/RI6Km223spzW1J9ft6j8wfIVFTM7gAcpjXtfK
+        hpKhIBWTRz8XU0Y4YGq/LnM1DaTN3EvkHKOm0NlrC8yLovo4a3yZ9+/p60xR7QIv+RTnFje4UI0wl
+        FAASTAgUCPTYgGLsBTa+gNHIYbBsos7HMWBVCANOBDQpCTBST87cyrqmIuc8mXmsezVUz8poLwtka
+        mF+ohA9Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qPVWH-008zgV-OL; Fri, 28 Jul 2023 22:01:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48B59300346;
+        Sat, 29 Jul 2023 00:01:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 39C5D2C8FF2BD; Sat, 29 Jul 2023 00:01:09 +0200 (CEST)
+Date:   Sat, 29 Jul 2023 00:01:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     anna-maria@linutronix.de, tglx@linutronix.de, frederic@kernel.org,
+        gautham.shenoy@amd.com, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Subject: Re: [RFC][PATCH 2/3] cpuidle,teo: Improve NOHZ management
+Message-ID: <20230728220109.GA3934165@hirez.programming.kicks-ass.net>
+References: <20230728145515.990749537@infradead.org>
+ <20230728145808.902892871@infradead.org>
+ <CAJZ5v0hi25zZ_SRnSk0r=7q=UFh1dsrWEao6225KZVWp3-ivDQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-CC:     David Hildenbrand <david@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>, Jason Gunthorpe <jgg@ziepe.ca>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <ZMQZfn/hUURmfqWN@x1n>
- <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
- <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
- <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
- <69a5f457-63b6-2d4f-e5c0-4b3de1e6c9f1@redhat.com> <ZMQxNzDcYTQRjWNh@x1n>
- <edd9b468-2d60-1df7-a515-22475fd94fe2@nvidia.com> <ZMQ32RRJlW/aDYAE@x1n>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <ZMQ32RRJlW/aDYAE@x1n>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT073:EE_|PH0PR12MB7958:EE_
-X-MS-Office365-Filtering-Correlation-Id: e7b43cf1-eac2-47ea-9fd7-08db8fb608ca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rmfw6FVXeorqXSwCIYI5wBxScMmz9huFWA0BZA8C6D3I6Vx09oriOM6HvWCs4uRsXJuN3P2BGsvx2Q95vZJFbkwrUDTK/99zljnS7ouwPp3aF2zVS2ZnnO4pJ+q/ytkyOQRSgteG33ffCsZnU6MaaJFnwMARbdPK4aPthoF2xgVjkSzTJgJixQfOR6ucbSU/hNj9gmPQESfrwT9hSn1QXWAWBSMGde1PNH32/MndWBqtYznYxRNgHsfNFwvCyBMpzXdtGaI0zEikGF2oOQ8BLSFfl/R2eHQqDGhWMRyG+uG7N0zvIl8rBPRbFtqx+oUTU7SgoFmrxjzh2K/secKYvpf7fbeyXAOXvCbunJR6jG/J9gP3Rhft8P+fy0Z41Qy90xKe4EXtU5uXDt5H1GWkU0IZXnAP/MsmUh2izLexwlwvsuAWWVwz0IcrtjwLCmrYqMdouYVZl56x1PDNdKBeciCOLj9BHSuuv0Cdzhlbv1qGNQtpwTgGXndkuH86Rlp0a6ulzXMWNtdq0agEglKmnH5VouPKtqIr9GaJc+4TL5vSFGBLgO2FuAv/CUV/ycqg9BGUIdpeg3PKxfXC2zSaHAB7xuptud08d6SwYCVUKOPDUzzz9ZsuOQYSpR6Pi/ly0I5vr27neZIJHfz0ByXzqeEVM7pkj/ifOriEi+w4lp7MpegY2/RwAcPCwkDfNNtFK73bREzMz7LQ5L5WRG/lyHxx3s1OYZ1GaK47vhfOCKNcMC+TnP+3x6kwvbXPr4kfz9617L70qWL7/UFy5nMmmA==
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(39860400002)(396003)(451199021)(82310400008)(36840700001)(40470700004)(46966006)(26005)(7636003)(356005)(54906003)(82740400003)(478600001)(53546011)(186003)(16526019)(336012)(426003)(47076005)(70586007)(4326008)(6916009)(2616005)(31686004)(36860700001)(70206006)(40460700003)(4744005)(5660300002)(7416002)(41300700001)(16576012)(316002)(2906002)(8936002)(8676002)(40480700001)(86362001)(31696002)(36756003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 22:00:19.5811
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7b43cf1-eac2-47ea-9fd7-08db8fb608ca
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT073.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7958
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hi25zZ_SRnSk0r=7q=UFh1dsrWEao6225KZVWp3-ivDQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 14:49, Peter Xu wrote:
->> The story of how FOLL_NUMA and FOLL_FORCE became entangled was enlightening,
->> by the way, and now that I've read it I don't want to go back. :)
+On Fri, Jul 28, 2023 at 06:56:24PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Jul 28, 2023 at 5:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
+
+> > @@ -276,11 +276,11 @@ static void teo_update(struct cpuidle_dr
+> >
+> >                 cpu_data->total += bin->hits + bin->intercepts;
+> >
+> > -               if (target_residency_ns <= cpu_data->sleep_length_ns) {
+> > +               if (target_residency_ns <= cpu_data->sleep_length_ns)
+> >                         idx_timer = i;
+> > -                       if (target_residency_ns <= measured_ns)
+> > -                               idx_duration = i;
+> > -               }
+> > +
+> > +               if (target_residency_ns <= measured_ns)
+> > +                       idx_duration = i;
 > 
-> Yeah I fully agree we should hopefully remove the NUMA / FORCE
-> tangling.. even if we want to revert back to the FOLL_NUMA flag we may want
-> to not revive that specific part.  I had a feeling that we're all on the
-> same page there.
+> I'm not quite sure what happens here.
+
+Oh, I couldn't convince myself that measured_ns <= sleep_length_ns. If
+measured was longer we still want the higher index.
+
+But yeah, I forgots I had that hunk in.
+
+> >         }
+> >
+> >         i = cpu_data->next_recent_idx++;
+> > @@ -362,11 +362,12 @@ static int teo_select(struct cpuidle_dri
+> >         unsigned int recent_sum = 0;
+> >         unsigned int idx_hit_sum = 0;
+> >         unsigned int hit_sum = 0;
+> > +       unsigned int tick_sum = 0;
+> >         int constraint_idx = 0;
+> >         int idx0 = 0, idx = -1;
+> >         bool alt_intercepts, alt_recent;
+> >         ktime_t delta_tick;
+> > -       s64 duration_ns;
+> > +       s64 duration_ns = TICK_NSEC;
+> >         int i;
+> >
+> >         if (dev->last_state_idx >= 0) {
+> > @@ -376,36 +377,26 @@ static int teo_select(struct cpuidle_dri
+> >
+> >         cpu_data->time_span_ns = local_clock();
+> >
+> > -       duration_ns = tick_nohz_get_sleep_length(&delta_tick);
+> > -       cpu_data->sleep_length_ns = duration_ns;
+> > +       /* Should we stop the tick? */
 > 
+> Who's we?  I'd prefer something like "Should the tick be stopped?"
+> here (analogously below).
 
-Yes, I think so. :)
+Sure.
 
-> It's more about the further step to make FOLL_NUMA opt-in for GUP.
+> > +       for (i = 1; i < drv->state_count; i++) {
+> > +               struct teo_bin *prev_bin = &cpu_data->state_bins[i-1];
+> > +               struct cpuidle_state *s = &drv->states[i];
+> >
+> > -       /* Check if there is any choice in the first place. */
+> > -       if (drv->state_count < 2) {
+> > -               idx = 0;
+> > -               goto end;
+> > -       }
+> > -       if (!dev->states_usage[0].disable) {
+> > -               idx = 0;
+> > -               if (drv->states[1].target_residency_ns > duration_ns)
+> > -                       goto end;
+> > -       }
+> > +               tick_sum += prev_bin->intercepts;
+> > +               tick_sum += prev_bin->hits;
+> >
+> > -       cpu_data->utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
+> > -       /*
+> > -        * If the CPU is being utilized over the threshold and there are only 2
+> > -        * states to choose from, the metrics need not be considered, so choose
+> > -        * the shallowest non-polling state and exit.
+> > -        */
+> > -       if (drv->state_count < 3 && cpu_data->utilized) {
+> > -               for (i = 0; i < drv->state_count; ++i) {
+> > -                       if (!dev->states_usage[i].disable &&
+> > -                           !(drv->states[i].flags & CPUIDLE_FLAG_POLLING)) {
+> > -                               idx = i;
+> > -                               goto end;
+> > -                       }
+> > -               }
+> > +               if (s->target_residency_ns >= SHORT_TICK_NSEC)
+> > +                       break;
+> >         }
+> >
+> > +       if (2*tick_sum > cpu_data->total)
+> > +               *stop_tick = false;
+> 
+> This means "if over 50% of all the events fall into the buckets below
+> the tick period length, don't stop the tick".  Fair enough, but this
+> covers long-term only and what about the most recent events?  I think
+> that they need to be taken into account here too.
 
-Let's say "FOLL_HONOR_NUMA_FAULT" for this next discussion, but yes. So
-given that our API allows passing in FOLL_ flags, I don't understand the
-objection to letting different callers pass in, or not pass in, that
-flag.
+From looking at a few traces this 'long' term is around 8-10 samples.
+Which I figured was quick enough.
 
-It's the perfect way to clean up the whole thing. As Linus suggested
-slightly earlier here, there can be a comment at the call site,
-explaining why KVM needs FOLL_HONOR_NUMA_FAULT, and you're good, right?
+Note that DECAY_SHIFT is 3, while the pulse is 10 bits, so 3-4 cycles
+will drain most of the history when there's a distinct phase shift.
 
+That said; I did look at the recent thing and those seem geared towards
+the intercepts, while I think hits+intercepts makes more sense here.
+Given it adjusted quickly enough I didn't put more time in it.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+> > +
+> > +       /* If we do stop the tick, ask for the next timer. */
+> > +       if (*stop_tick)
+> > +               duration_ns = tick_nohz_get_sleep_length(&delta_tick);
+> > +       cpu_data->sleep_length_ns = duration_ns;
+> 
+> If the decision is made to retain the tick and the time to the closest
+> tick event is very small, it would be better to refine the state
+> selection so as to avoid returning a state with the target residency
+> above that time (which essentially is wasting energy).  That's what
+> delta_tick above is for, but now tick_nohz_get_sleep_length() is never
+> called when the tick is not going to be stopped.
 
+Right, so I did ponder using something like
+ktime_sub(tick_nohz_get_next_hrtimer(), now) instead of TICK_NSEC to get
+a more accurate measure, but I didn't do so yet.
+
+> Besides, if I'm not mistaken, setting sleep_length_ns to TICK_NSEC
+> every time the tick is not stopped will not really work on systems
+> where there are real idle states with target residencies beyond
+> TICK_NSEC.
+
+It does work; you really don't want to select such a state if the tick
+is still active -- you'll never get your residency. Such a state should
+really only be used when the tick is off.
+
+> > +
+> >         /*
+> >          * Find the deepest idle state whose target residency does not exceed
+> >          * the current sleep length and the deepest idle state not deeper than
+> > @@ -446,13 +437,13 @@ static int teo_select(struct cpuidle_dri
+> >                 idx_recent_sum = recent_sum;
+> >         }
+> >
+> > -       /* Avoid unnecessary overhead. */
+> > -       if (idx < 0) {
+> > -               idx = 0; /* No states enabled, must use 0. */
+> > -               goto end;
+> > -       } else if (idx == idx0) {
+> > -               goto end;
+> > -       }
+> > +       /* No states enabled, must use 0 */
+> > +       if (idx < 0)
+> > +               return 0;
+> > +
+> > +       /* No point looking for something shallower than the first enabled state */
+> > +       if (idx == idx0)
+> > +               return idx;
+> >
+> >         /*
+> >          * If the sum of the intercepts metric for all of the idle states
+> > @@ -541,29 +532,9 @@ static int teo_select(struct cpuidle_dri
+> >          * If the CPU is being utilized over the threshold, choose a shallower
+> >          * non-polling state to improve latency
+> >          */
+> > -       if (cpu_data->utilized)
+> > +       if (teo_cpu_is_utilized(dev->cpu, cpu_data))
+> >                 idx = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> >
+> > -end:
+> > -       /*
+> > -        * Don't stop the tick if the selected state is a polling one or if the
+> > -        * expected idle duration is shorter than the tick period length.
+> > -        */
+> > -       if (((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) ||
+> > -           duration_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
+> > -               *stop_tick = false;
+> > -
+> > -               /*
+> > -                * The tick is not going to be stopped, so if the target
+> > -                * residency of the state to be returned is not within the time
+> > -                * till the closest timer including the tick, try to correct
+> > -                * that.
+> > -                */
+> > -               if (idx > idx0 &&
+> > -                   drv->states[idx].target_residency_ns > delta_tick)
+> > -                       idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
+> > -       }
+> > -
+> >         return idx;
+> >  }
+> 
+> Overall, I think that the problem with calling
+> tick_nohz_get_sleep_length() is limited to the cases when the CPU is
+> almost fully loaded, so the overall amount of idle time on it is tiny.
+> I would rather use a special pah for those cases and I would register
+> all of the wakeups as "intercepts" in those cases.
+
+I'm not sure what you're proposing. If we track the tick+ bucket -- as
+we must in order to say anything useful about it, then we can decide the
+tick state before (as I do here) calling sleep_length().
+
+The timer-pull rework from Anna-Maria unfortunately makes the
+tick_nohz_get_sleep_length() thing excessively expensive and it really
+doesn't make sense to call it when we retain the tick.
+
+It's all a bit of a chicken-egg situation, cpuidle wants to know when
+the next timer is, but telling when that is, wants to know if the tick
+stays. We need to break that somehow -- I propose by not calling it when
+we know we'll keep the tick.
