@@ -2,118 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC37F766755
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD05766739
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbjG1Ife (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
+        id S233538AbjG1IeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjG1Ie6 (ORCPT
+        with ESMTP id S234953AbjG1Idx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:34:58 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235D4118;
-        Fri, 28 Jul 2023 01:34:37 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S2wiqA013590;
-        Fri, 28 Jul 2023 08:34:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=zUse9ir/CXgWYdnMJAoQPik1ELZjQR031x6ui3U01tI=;
- b=kQGQ1TpmUcVFPuFO40A4ArO45YCJVq5f6Iuza6/O8TI4LeCcZG18JmqyI3mUCOIkpWkS
- HqWAt8O5vGtCQqmU+SSL7OyZRl8WMuFQcZqFUo53/lZdb+04SqI/VwxPyRZl8A0OMd4R
- G0FMcrmKjDCR8vNtJmI1ZnGiNPitzG/GoE9F/FxYre7VimxnosPm1j8ffQ+A81/ca+Io
- wDZeTErQ5rQwx2WVhrD5KtBM4jVGGSbmHRxZ+P2jUCREzzL755sfQLune/y/9sRFFzrs
- NzWUHcX4HgYPc0JAzcsbFSdBcllvPlBFuUI5UBxJs/Jg2g7isF4WLQoJ281UjAMxXbcO 9Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s448hgk2t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 08:34:18 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S8YEmd003493
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 08:34:14 GMT
-Received: from srichara-linux.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 01:34:07 -0700
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <ulf.hansson@linaro.org>,
-        <linus.walleij@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <robimarko@gmail.com>,
-        <krzysztof.kozlowski@linaro.org>, <andy.shevchenko@gmail.com>
-CC:     <quic_srichara@quicinc.com>
-Subject: [PATCH V12 6/6] arm64: defconfig: Enable IPQ5018 SoC base configs
-Date:   Fri, 28 Jul 2023 14:03:12 +0530
-Message-ID: <1690533192-22220-7-git-send-email-quic_srichara@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1690533192-22220-1-git-send-email-quic_srichara@quicinc.com>
-References: <1690533192-22220-1-git-send-email-quic_srichara@quicinc.com>
+        Fri, 28 Jul 2023 04:33:53 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721703A9C
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:33:42 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qPIuf-00089N-KI; Fri, 28 Jul 2023 10:33:29 +0200
+Message-ID: <4ea87f8f-740d-7bea-f82b-54946699ef1d@pengutronix.de>
+Date:   Fri, 28 Jul 2023 10:33:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: cY3oxgFf-Nuy6TS7vhxTKqYIcB2_aU2h
-X-Proofpoint-ORIG-GUID: cY3oxgFf-Nuy6TS7vhxTKqYIcB2_aU2h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0
- mlxscore=0 priorityscore=1501 mlxlogscore=820 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307280078
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: move LVDS data-mapping
+ definition to separate file
+Content-Language: en-US, de-DE
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dan Carpenter <error27@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        patchwork-jzi@pengutronix.de, David Airlie <airlied@gmail.com>,
+        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
+References: <20230523-simplepanel_support_nondefault_datamapping-v2-0-87196f0d0b64@pengutronix.de>
+ <20230523-simplepanel_support_nondefault_datamapping-v2-1-87196f0d0b64@pengutronix.de>
+ <20230602153239.GK26944@pendragon.ideasonboard.com>
+From:   Johannes Zink <j.zink@pengutronix.de>
+In-Reply-To: <20230602153239.GK26944@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enables clk & pinctrl related configs
+Hi Laurent,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
----
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+thank you for your review.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 736cbc1..f2f328f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -563,6 +563,7 @@ CONFIG_PINCTRL_IMX8ULP=y
- CONFIG_PINCTRL_IMX93=y
- CONFIG_PINCTRL_MSM=y
- CONFIG_PINCTRL_IPQ8074=y
-+CONFIG_PINCTRL_IPQ5018=y
- CONFIG_PINCTRL_IPQ5332=y
- CONFIG_PINCTRL_IPQ6018=y
- CONFIG_PINCTRL_IPQ9574=y
-@@ -1180,6 +1181,8 @@ CONFIG_QCOM_CLK_SMD_RPM=y
- CONFIG_QCOM_CLK_RPMH=y
- CONFIG_IPQ_APSS_6018=y
- CONFIG_IPQ_GCC_5332=y
-+CONFIG_IPQ_APSS_5018=y
-+CONFIG_IPQ_GCC_5018=y
- CONFIG_IPQ_GCC_6018=y
- CONFIG_IPQ_GCC_8074=y
- CONFIG_IPQ_GCC_9574=y
+On 6/2/23 17:32, Laurent Pinchart wrote:
+> Hello Johannes,
+> 
+> Thank you for the patch.
+> 
+> On Tue, May 23, 2023 at 10:19:41AM +0200, Johannes Zink wrote:
+>> As the LVDS data-mapping property is required in multiple bindings: move
+>> it to separate file and include instead of duplicating it.
+>>
+>> Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+>>
+>> ---
+>>
+>> Changes:
+>>
+>> v1 -> v2: worked in Rob's review findings (thank you for reviewing my
+>>            work): extract common properties to
+>>            file and include it instead of duplicating it
+>> ---
+>>   .../bindings/display/lvds-data-mapping.yaml        | 84 ++++++++++++++++++++++
+>>   .../devicetree/bindings/display/lvds.yaml          | 75 +++----------------
+>>   2 files changed, 92 insertions(+), 67 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/lvds-data-mapping.yaml b/Documentation/devicetree/bindings/display/lvds-data-mapping.yaml
+>> new file mode 100644
+>> index 000000000000..17ef5c9a5a90
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/display/lvds-data-mapping.yaml
+>> @@ -0,0 +1,84 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/display/lvds-data-mapping.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: LVDS Data Mapping
+>> +
+>> +maintainers:
+>> +  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+>> +  - Thierry Reding <thierry.reding@gmail.com>
+>> +
+>> +description: |+
+>> +  LVDS is a physical layer specification defined in ANSI/TIA/EIA-644-A. Multiple
+>> +  incompatible data link layers have been used over time to transmit image data
+>> +  to LVDS devices. This bindings supports devices compatible with the following
+>> +  specifications.
+>> +
+>> +  [JEIDA] "Digital Interface Standards for Monitor", JEIDA-59-1999, February
+>> +  1999 (Version 1.0), Japan Electronic Industry Development Association (JEIDA)
+>> +  [LDI] "Open LVDS Display Interface", May 1999 (Version 0.95), National
+>> +  Semiconductor
+>> +  [VESA] "VESA Notebook Panel Standard", October 2007 (Version 1.0), Video
+>> +  Electronics Standards Association (VESA)
+>> +
+>> +  Device compatible with those specifications have been marketed under the
+>> +  FPD-Link and FlatLink brands.
+>> +
+>> +properties:
+>> +  data-mapping:
+>> +    enum:
+>> +      - jeida-18
+>> +      - jeida-24
+>> +      - vesa-24
+>> +    description: |
+>> +      The color signals mapping order.
+>> +
+>> +      LVDS data mappings are defined as follows.
+>> +
+>> +      - "jeida-18" - 18-bit data mapping compatible with the [JEIDA], [LDI] and
+>> +        [VESA] specifications. Data are transferred as follows on 3 LVDS lanes.
+>> +
+>> +      Slot          0       1       2       3       4       5       6
+>> +                ________________                         _________________
+>> +      Clock                     \_______________________/
+>> +                  ______  ______  ______  ______  ______  ______  ______
+>> +      DATA0     ><__G0__><__R5__><__R4__><__R3__><__R2__><__R1__><__R0__><
+>> +      DATA1     ><__B1__><__B0__><__G5__><__G4__><__G3__><__G2__><__G1__><
+>> +      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B5__><__B4__><__B3__><__B2__><
+>> +
+>> +      - "jeida-24" - 24-bit data mapping compatible with the [DSIM] and [LDI]
+>> +        specifications. Data are transferred as follows on 4 LVDS lanes.
+>> +
+>> +      Slot          0       1       2       3       4       5       6
+>> +                ________________                         _________________
+>> +      Clock                     \_______________________/
+>> +                  ______  ______  ______  ______  ______  ______  ______
+>> +      DATA0     ><__G2__><__R7__><__R6__><__R5__><__R4__><__R3__><__R2__><
+>> +      DATA1     ><__B3__><__B2__><__G7__><__G6__><__G5__><__G4__><__G3__><
+>> +      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B7__><__B6__><__B5__><__B4__><
+>> +      DATA3     ><_CTL3_><__B1__><__B0__><__G1__><__G0__><__R1__><__R0__><
+>> +
+>> +      - "vesa-24" - 24-bit data mapping compatible with the [VESA] specification.
+>> +        Data are transferred as follows on 4 LVDS lanes.
+>> +
+>> +      Slot          0       1       2       3       4       5       6
+>> +                ________________                         _________________
+>> +      Clock                     \_______________________/
+>> +                  ______  ______  ______  ______  ______  ______  ______
+>> +      DATA0     ><__G0__><__R5__><__R4__><__R3__><__R2__><__R1__><__R0__><
+>> +      DATA1     ><__B1__><__B0__><__G5__><__G4__><__G3__><__G2__><__G1__><
+>> +      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B5__><__B4__><__B3__><__B2__><
+>> +      DATA3     ><_CTL3_><__B7__><__B6__><__G7__><__G6__><__R7__><__R6__><
+>> +
+>> +      Control signals are mapped as follows.
+>> +
+>> +      CTL0: HSync
+>> +      CTL1: VSync
+>> +      CTL2: Data Enable
+>> +      CTL3: 0
+>> +
+>> +additionalProperties: true
+>> +
+>> +...
+>> diff --git a/Documentation/devicetree/bindings/display/lvds.yaml b/Documentation/devicetree/bindings/display/lvds.yaml
+>> index 7cd2ce7e9c33..2200f986c3cf 100644
+>> --- a/Documentation/devicetree/bindings/display/lvds.yaml
+>> +++ b/Documentation/devicetree/bindings/display/lvds.yaml
+>> @@ -6,83 +6,24 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>>   
+>>   title: LVDS Display Common Properties
+>>   
+>> +allOf:
+>> +  - $ref: lvds-data-mapping.yaml#
+>> +
+>>   maintainers:
+>>     - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+>>     - Thierry Reding <thierry.reding@gmail.com>
+>>   
+>>   description: |+
+> 
+> You can drop the |+ here.
+
+ack, gonna change that in V3.
+
+Best regards
+Johannes
+
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+>> -  LVDS is a physical layer specification defined in ANSI/TIA/EIA-644-A. Multiple
+>> -  incompatible data link layers have been used over time to transmit image data
+>> -  to LVDS devices. This bindings supports devices compatible with the following
+>> -  specifications.
+>> -
+>> -  [JEIDA] "Digital Interface Standards for Monitor", JEIDA-59-1999, February
+>> -  1999 (Version 1.0), Japan Electronic Industry Development Association (JEIDA)
+>> -  [LDI] "Open LVDS Display Interface", May 1999 (Version 0.95), National
+>> -  Semiconductor
+>> -  [VESA] "VESA Notebook Panel Standard", October 2007 (Version 1.0), Video
+>> -  Electronics Standards Association (VESA)
+>> -
+>> -  Device compatible with those specifications have been marketed under the
+>> -  FPD-Link and FlatLink brands.
+>> +  This binding extends the data mapping defined in lvds-data-mapping.yaml.
+>> +  It supports reversing the bit order on the formats defined there in order
+>> +  to accomodate for even more specialized data formats, since a variety of
+>> +  data formats and layouts is used to drive LVDS displays.
+>>   
+>>   properties:
+>> -  data-mapping:
+>> -    enum:
+>> -      - jeida-18
+>> -      - jeida-24
+>> -      - vesa-24
+>> -    description: |
+>> -      The color signals mapping order.
+>> -
+>> -      LVDS data mappings are defined as follows.
+>> -
+>> -      - "jeida-18" - 18-bit data mapping compatible with the [JEIDA], [LDI] and
+>> -        [VESA] specifications. Data are transferred as follows on 3 LVDS lanes.
+>> -
+>> -      Slot          0       1       2       3       4       5       6
+>> -                ________________                         _________________
+>> -      Clock                     \_______________________/
+>> -                  ______  ______  ______  ______  ______  ______  ______
+>> -      DATA0     ><__G0__><__R5__><__R4__><__R3__><__R2__><__R1__><__R0__><
+>> -      DATA1     ><__B1__><__B0__><__G5__><__G4__><__G3__><__G2__><__G1__><
+>> -      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B5__><__B4__><__B3__><__B2__><
+>> -
+>> -      - "jeida-24" - 24-bit data mapping compatible with the [DSIM] and [LDI]
+>> -        specifications. Data are transferred as follows on 4 LVDS lanes.
+>> -
+>> -      Slot          0       1       2       3       4       5       6
+>> -                ________________                         _________________
+>> -      Clock                     \_______________________/
+>> -                  ______  ______  ______  ______  ______  ______  ______
+>> -      DATA0     ><__G2__><__R7__><__R6__><__R5__><__R4__><__R3__><__R2__><
+>> -      DATA1     ><__B3__><__B2__><__G7__><__G6__><__G5__><__G4__><__G3__><
+>> -      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B7__><__B6__><__B5__><__B4__><
+>> -      DATA3     ><_CTL3_><__B1__><__B0__><__G1__><__G0__><__R1__><__R0__><
+>> -
+>> -      - "vesa-24" - 24-bit data mapping compatible with the [VESA] specification.
+>> -        Data are transferred as follows on 4 LVDS lanes.
+>> -
+>> -      Slot          0       1       2       3       4       5       6
+>> -                ________________                         _________________
+>> -      Clock                     \_______________________/
+>> -                  ______  ______  ______  ______  ______  ______  ______
+>> -      DATA0     ><__G0__><__R5__><__R4__><__R3__><__R2__><__R1__><__R0__><
+>> -      DATA1     ><__B1__><__B0__><__G5__><__G4__><__G3__><__G2__><__G1__><
+>> -      DATA2     ><_CTL2_><_CTL1_><_CTL0_><__B5__><__B4__><__B3__><__B2__><
+>> -      DATA3     ><_CTL3_><__B7__><__B6__><__G7__><__G6__><__R7__><__R6__><
+>> -
+>> -      Control signals are mapped as follows.
+>> -
+>> -      CTL0: HSync
+>> -      CTL1: VSync
+>> -      CTL2: Data Enable
+>> -      CTL3: 0
+>> -
+>>     data-mirror:
+>>       type: boolean
+>>       description:
+>> -      If set, reverse the bit order described in the data mappings below on all
+>> +      If set, reverse the bit order described in the data mappings on all
+>>         data lanes, transmitting bits for slots 6 to 0 instead of 0 to 6.
+>>   
+>>   additionalProperties: true
+>>
+> 
+
 -- 
-2.7.4
+Pengutronix e.K.                | Johannes Zink                  |
+Steuerwalder Str. 21            | https://www.pengutronix.de/    |
+31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
