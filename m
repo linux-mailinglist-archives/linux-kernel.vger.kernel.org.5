@@ -2,131 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7225766647
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D8F76665F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbjG1IEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
+        id S234777AbjG1IHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbjG1IDw (ORCPT
+        with ESMTP id S234736AbjG1IGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:03:52 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658D630E0;
-        Fri, 28 Jul 2023 01:01:53 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RC0Pb6MhmzNm62;
-        Fri, 28 Jul 2023 15:58:27 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 28 Jul 2023 16:01:50 +0800
-From:   Jijie Shao <shaojijie@huawei.com>
-To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>
-CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <wangpeiyang1@huawei.com>,
-        <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
-        <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 6/6] net: hns3: fix deadlock issue when externel_lb and reset are executed together
-Date:   Fri, 28 Jul 2023 15:58:40 +0800
-Message-ID: <20230728075840.4022760-7-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230728075840.4022760-1-shaojijie@huawei.com>
-References: <20230728075840.4022760-1-shaojijie@huawei.com>
+        Fri, 28 Jul 2023 04:06:24 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E43C3A8C;
+        Fri, 28 Jul 2023 01:05:59 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 3EF65120008;
+        Fri, 28 Jul 2023 11:05:57 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3EF65120008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690531557;
+        bh=pxmpm6ehJB6yrppCYchV6OYzSRmL4h9Nwe7yz4TJX7U=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=T1WzpL//7RykxP3nVZxJqwmjY9QrHUciBG8aRwhT1L13GginezvhTdDIVwdyaPAl8
+         5qJHF2rniEmeGAg5ic1xECJCwr45z5ttPWRait6pIqxwtlwgC/JYrwiVPSFrFJPDs3
+         iS36wYP4m3goHRtoCzSbRWMa/lZq3Rc1PkHLfkYuwdTFMKvO5MLJ5plVbSni4oiGo1
+         zt05hRLGeW/nd6SB8SZnoqKsi4Ruj9ODBEBbf4Nv7H6pcRJuQaoZbCnrZTVTrGl0h4
+         XVh+jEl5wzxneAE0iniFlR/aU6wFt9wVbPnAhmWmTv5Y29Qt53bbXW3R+4HuV0cmzS
+         L+BEVrKXu1SDw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 28 Jul 2023 11:05:57 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 28 Jul 2023 11:05:33 +0300
+Message-ID: <eeefef14-2c92-a7a6-e58e-77dccbe38282@sberdevices.ru>
+Date:   Fri, 28 Jul 2023 11:00:18 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600007.china.huawei.com (7.193.23.208)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v4 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
+ preparations
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230727222627.1895355-1-AVKrasnov@sberdevices.ru>
+ <20230728012845-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <20230728012845-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonglong Liu <liuyonglong@huawei.com>
 
-When externel_lb and reset are executed together, a deadlock may
-occur:
-[ 3147.217009] INFO: task kworker/u321:0:7 blocked for more than 120 seconds.
-[ 3147.230483] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 3147.238999] task:kworker/u321:0  state:D stack:    0 pid:    7 ppid:     2 flags:0x00000008
-[ 3147.248045] Workqueue: hclge hclge_service_task [hclge]
-[ 3147.253957] Call trace:
-[ 3147.257093]  __switch_to+0x7c/0xbc
-[ 3147.261183]  __schedule+0x338/0x6f0
-[ 3147.265357]  schedule+0x50/0xe0
-[ 3147.269185]  schedule_preempt_disabled+0x18/0x24
-[ 3147.274488]  __mutex_lock.constprop.0+0x1d4/0x5dc
-[ 3147.279880]  __mutex_lock_slowpath+0x1c/0x30
-[ 3147.284839]  mutex_lock+0x50/0x60
-[ 3147.288841]  rtnl_lock+0x20/0x2c
-[ 3147.292759]  hclge_reset_prepare+0x68/0x90 [hclge]
-[ 3147.298239]  hclge_reset_subtask+0x88/0xe0 [hclge]
-[ 3147.303718]  hclge_reset_service_task+0x84/0x120 [hclge]
-[ 3147.309718]  hclge_service_task+0x2c/0x70 [hclge]
-[ 3147.315109]  process_one_work+0x1d0/0x490
-[ 3147.319805]  worker_thread+0x158/0x3d0
-[ 3147.324240]  kthread+0x108/0x13c
-[ 3147.328154]  ret_from_fork+0x10/0x18
 
-In externel_lb process, the hns3 driver call napi_disable()
-first, then the reset happen, then the restore process of the
-externel_lb will fail, and will not call napi_enable(). When
-doing externel_lb again, napi_disable() will be double call,
-cause a deadlock of rtnl_lock().
+On 28.07.2023 08:45, Michael S. Tsirkin wrote:
+> On Fri, Jul 28, 2023 at 01:26:23AM +0300, Arseniy Krasnov wrote:
+>> Hello,
+>>
+>> this patchset is first of three parts of another big patchset for
+>> MSG_ZEROCOPY flag support:
+>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
+> 
+> overall looks good. Two points I'd like to see addressed:
 
-This patch use the HNS3_NIC_STATE_DOWN state to protect the
-calling of napi_disable() and napi_enable() in externel_lb
-process, just as the usage in ndo_stop() and ndo_start().
+Thanks!
 
-Fixes: 04b6ba143521 ("net: hns3: add support for external loopback test")
-Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+> - what's the performance with all these changes - still same?
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 823e6d2e85f5..7da54a5b81d1 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -5855,6 +5855,9 @@ void hns3_external_lb_prepare(struct net_device *ndev, bool if_running)
- 	if (!if_running)
- 		return;
- 
-+	if (test_and_set_bit(HNS3_NIC_STATE_DOWN, &priv->state))
-+		return;
-+
- 	netif_carrier_off(ndev);
- 	netif_tx_disable(ndev);
- 
-@@ -5883,7 +5886,16 @@ void hns3_external_lb_restore(struct net_device *ndev, bool if_running)
- 	if (!if_running)
- 		return;
- 
--	hns3_nic_reset_all_ring(priv->ae_handle);
-+	if (hns3_nic_resetting(ndev))
-+		return;
-+
-+	if (!test_bit(HNS3_NIC_STATE_DOWN, &priv->state))
-+		return;
-+
-+	if (hns3_nic_reset_all_ring(priv->ae_handle))
-+		return;
-+
-+	clear_bit(HNS3_NIC_STATE_DOWN, &priv->state);
- 
- 	for (i = 0; i < priv->vector_num; i++)
- 		hns3_vector_enable(&priv->tqp_vector[i]);
--- 
-2.30.0
+Yes, I perform quick tests and seems result are same. This is because last
+implemented logic when I compare size of payload against 'num_max' is
+for "emergency" case and not triggered in default environment. Anyway, I'll
+perform retest at least in nested guest case.
 
+> - most systems have a copybreak scheme where buffers
+>   smaller than a given size are copied directly.
+>   This will address regression you see with small buffers -
+>   but need to find that value. we know it's between 4k and 32k :)
+
+I see, You suggest to find this value and add this check for decision to
+use zerocopy or copy ?
+
+Thanks, Arseniy
+
+> 
+> 
+>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+>> suggested to split it for three parts to simplify review and merging:
+>>
+>> 1) virtio and vhost updates (for fragged skbs) <--- this patchset
+>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+>>    tx completions) and update for Documentation/.
+>> 3) Updates for tests and utils.
+>>
+>> This series enables handling of fragged skbs in virtio and vhost parts.
+>> Newly logic won't be triggered, because SO_ZEROCOPY options is still
+>> impossible to enable at this moment (next bunch of patches from big
+>> set above will enable it).
+>>
+>> I've included changelog to some patches anyway, because there were some
+>> comments during review of last big patchset from the link above.
+>>
+>> Head for this patchset is 9d0cd5d25f7d45bce01bbb3193b54ac24b3a60f3
+>>
+>> Link to v1:
+>> https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+>> Link to v2:
+>> https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+>> Link to v3:
+>> https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
+>>
+>> Changelog:
+>>  * Patchset rebased and tested on new HEAD of net-next (see hash above).
+>>  * See per-patch changelog after ---.
+>>
+>> Arseniy Krasnov (4):
+>>   vsock/virtio/vhost: read data from non-linear skb
+>>   vsock/virtio: support to send non-linear skb
+>>   vsock/virtio: non-linear skb handling for tap
+>>   vsock/virtio: MSG_ZEROCOPY flag support
+>>
+>>  drivers/vhost/vsock.c                   |  14 +-
+>>  include/linux/virtio_vsock.h            |   6 +
+>>  net/vmw_vsock/virtio_transport.c        |  79 +++++-
+>>  net/vmw_vsock/virtio_transport_common.c | 312 ++++++++++++++++++------
+>>  4 files changed, 330 insertions(+), 81 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+> 
