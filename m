@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B777672EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401D27672F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjG1RIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
+        id S235217AbjG1RKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234687AbjG1RIk (ORCPT
+        with ESMTP id S235488AbjG1RKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:08:40 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7804208;
-        Fri, 28 Jul 2023 10:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=qSUnnCZQMRkMrm5j848oE/p8R8PLMnPTw/F+iTVJ2Gc=; b=l1IdxACZogE3IHjDAXh2Q6RSi8
-        0UZlCAHyzL6VuBAIFg6RwshYfN/7oR1JkKrg5m1hpJ6KaHFR0PEaX7m9yw+Li6qYqU++slgxErj1U
-        fWfAmbUNmnyLlxny38j68C51wgD8kOFjQietbGMu+FQfE6OJlt3FvJ9Sl0wNmmuncpYQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qPQwC-002Y4t-Lg; Fri, 28 Jul 2023 19:07:36 +0200
-Date:   Fri, 28 Jul 2023 19:07:36 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Masahisa Kojima <masahisa.kojima@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
-Message-ID: <7f21c1d3-331d-4bff-8a4c-f6e235a3dd6a@lunn.ch>
-References: <20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org>
- <CAMj1kXH_4OEY58Nb9yGHTDvjfouJHKNVhReo0mMdD_aGWW_WGQ@mail.gmail.com>
- <6766e852-dfb9-4057-b578-33e7d6b9e08e@lunn.ch>
- <46853c47-b698-4d96-ba32-5b2802f2220a@sirena.org.uk>
- <CADQ0-X_pXKvUxLW23vEyH=9aZ6iLA2jOKz8QX6aqwQmxFcPY8Q@mail.gmail.com>
+        Fri, 28 Jul 2023 13:10:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E8D35B0;
+        Fri, 28 Jul 2023 10:09:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11F72621BF;
+        Fri, 28 Jul 2023 17:09:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8045C433C8;
+        Fri, 28 Jul 2023 17:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690564190;
+        bh=SXejYXaAZ4GyHrjgSzFQsSPl50CtyiFEvgiICxRytCM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uJaMFweVlB38fpubvsVipnDJiHV3BiVpSFNrlwSxtEyl2l6z6pENUETrSG1VfnLiH
+         2ztMk3LKaWP4p/HA9+vVkqtteydxbdR6r+UwGYfu3DTUxR/+IyR7qqUj4e5M7DFUV/
+         bWV/ShsWdAfHTxR44uZKXSLOLwIwEceoV1AReid3vH7DOPBtYINJQ8FTzt2qzePnUB
+         T05s7C2YLhzf3ARQIsiPoXftH1dPcYQMuXj/gGAWxrqII8PZEl+5LT+3zg+7xPotdC
+         1DTrARLSpJrNcIuNOGL/ri03ovIizWsKFo7K7pR0MprvXZiNn4R/KaQTnh0RXglqoy
+         9qzHelxQTNiUA==
+Date:   Fri, 28 Jul 2023 18:09:45 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+Subject: Re: [PATCH] dt-bindings: clock: xlnx,versal-clk: drop select:false
+Message-ID: <20230728-geologic-vending-836dbceeee87@spud>
+References: <20230728165923.108589-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n2nes34cEsEA2WN1"
 Content-Disposition: inline
-In-Reply-To: <CADQ0-X_pXKvUxLW23vEyH=9aZ6iLA2jOKz8QX6aqwQmxFcPY8Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230728165923.108589-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 09:35:00PM +0900, Masahisa Kojima wrote:
-> On Fri, 28 Jul 2023 at 20:43, Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Fri, Jul 28, 2023 at 10:41:40AM +0200, Andrew Lunn wrote:
-> > > > Wouldn't this break SynQuacers booting with firmware that lacks a
-> > > > network driver? (I.e., u-boot?)
-> >
-> > > > I am not sure why, but quite some effort has gone into porting u-boot
-> > > > to this SoC as well.
-> >
-> > > Agreed, Rather than PHY_INTERFACE_MODE_NA, please use the correct
-> > > value.
-> >
-> > Does anyone know off hand what the correct value is?  I only have access
-> > to one of these in a remote test lab which makes everything more
-> > painful.
-> 
-> "rgmii-id" is correct, configured by board level.
-> The latest EDK2 firmware was already modified to use the correct value
-> for DT(Thank you, Ard).
-> http://snapshots.linaro.org/components/kernel/leg-96boards-developerbox-edk2/100/
 
-Yes, anything other than rgmii-id is generally wrong. That maps to
-PHY_INTERFACE_MODE_RGMII_ID.
+--n2nes34cEsEA2WN1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If the firmware has been fixed, i would actually do something like:
+On Fri, Jul 28, 2023 at 06:59:23PM +0200, Krzysztof Kozlowski wrote:
+> select:false makes the schema basically ignored and not effective, which
+> is clearly not what we want for a device binding.
+>=20
+> Fixes: 352546805a44 ("dt-bindings: clock: Add bindings for versal clock d=
+river")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-	err = of_get_phy_mode(pdev->dev.of_node, &priv->phy_interface);
-	if (err)
-		return err;
+Thanks for spotting it!
+Validation of the other patch seems to function as intended with this
+applied.
 
-	if (of_machine_is_compatible("socionext,developer-box") &&
-	    priv->phy_interface != PHY_INTERFACE_MODE_RGMII_ID) {
-	    	pr_warn(FW_WARN, "Working around broken firmware. Please upgrade your firmware");
-		priv->phy_interface = PHY_INTERFACE_MODE_RGMII_ID;
-	}
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-	Andrew
+Thanks,
+Conor.
+
+>=20
+> ---
+>=20
+> Cc: Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+> ---
+>  Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml=
+ b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+> index e9cf747bf89b..04ea327d5313 100644
+> --- a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+> +++ b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+> @@ -14,8 +14,6 @@ description: |
+>    reads required input clock frequencies from the devicetree and acts as=
+ clock
+>    provider for all clock consumers of PS clocks.
+> =20
+> -select: false
+> -
+>  properties:
+>    compatible:
+>      oneOf:
+> --=20
+> 2.34.1
+>=20
+
+--n2nes34cEsEA2WN1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMP2WQAKCRB4tDGHoIJi
+0nUpAQDumoe1TTNjt3WHWnwpEOmwvvRlQd3uIYODGU7sxqwBjQEAyHtoosnaKD8l
+93WfbkVIvBKL3Di0Md8yGLm0yjxbyQc=
+=+FoO
+-----END PGP SIGNATURE-----
+
+--n2nes34cEsEA2WN1--
