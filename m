@@ -2,80 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CC7766D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD85766D1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbjG1MVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
+        id S236637AbjG1MWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236565AbjG1MVG (ORCPT
+        with ESMTP id S236346AbjG1MV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:21:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FDA5BB2;
-        Fri, 28 Jul 2023 05:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=0vGzHPOHRgwV2rrCJY+z+iKt3Xe22jPI5VspopXK2NU=; b=sJRROBhDfmYmeSmTgTGOt8SFY0
-        bDZz3f0wR6a2kXM2ns6izfQ2/JejJbk0fBYT8Z0R6CPDfwN7OE5/+qH4GRXY2K/AX9E6e/bnP3XCL
-        ykz6XXNDiF/Z8MGhusNxDfsTVmkBajUdMlg/K0p5ULCtiyLdhEDvcnaLmlOtNUmu+4l+nk/Xs3O+J
-        nZG1ZSqdpN9S1DAOySNanAlMYexHD/jIDikdenef6iRzHrnECZd/gwrlGnXPlZ6nTwmmOaOIhLaOq
-        XwDbogXsLoRfxOg90WxvFvBE41953j+8Whg0BaJSrN5laJi8jBknbO5Vav6YQsem8sM/q4sHLNzh1
-        5x0zbOrQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPMPZ-003JFK-0x;
-        Fri, 28 Jul 2023 12:17:37 +0000
-Message-ID: <cefa57cf-2ff1-22f1-5cb3-ce0c04a30c57@infradead.org>
-Date:   Fri, 28 Jul 2023 05:17:33 -0700
+        Fri, 28 Jul 2023 08:21:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2385149C6;
+        Fri, 28 Jul 2023 05:19:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BC14617A1;
+        Fri, 28 Jul 2023 12:18:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19337C433C7;
+        Fri, 28 Jul 2023 12:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690546730;
+        bh=gQurcQuCxiDt0SBlMwFfwQnLQiDNL6w3VdbHaWWy1Bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cEXwOWhRje/2/MMOu5YHNslDYmqDxXyXLCSWjZeIB7hWVlL49Fl8JmndUR6cBZ6go
+         85Ff5S60I8ohbVozgj8omXYlqBdN4Mf0QEiB46KvkF9Ze4LQN3ex3CteHgy135w4Xq
+         rotf8YltM7XjsM7GsFuIh6rmXFbah2OdjS/BTfXg9s0pB0twCfAYx+Db/Zd0h6Dz2o
+         VBEksIhi8TN6eiS8apERvZ0chyjJOHWZdqdNuMayuhmVS8M1lOIGEdrUdy/Y4W7kF9
+         IiQMOXIl15OXpJPdAwTfZyd/XROYtVulGercHZXMmpRaC6EA4PfPBs5OBrFShAcu5f
+         aL8wPFRw6Go0g==
+Date:   Fri, 28 Jul 2023 14:18:40 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 09/22] i2c: img-scb: Remove #ifdef guards for PM
+ related functions
+Message-ID: <20230728121840.tdzwsf4zwrdywvkz@intel.intel>
+References: <20230722115046.27323-1-paul@crapouillou.net>
+ <20230722115046.27323-10-paul@crapouillou.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 2/2] soc: loongson2_pm: add power management support
-Content-Language: en-US
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, Liu Yun <liuyun@loongson.cn>
-References: <20230728074944.26746-1-zhuyinbo@loongson.cn>
- <20230728074944.26746-3-zhuyinbo@loongson.cn>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230728074944.26746-3-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230722115046.27323-10-paul@crapouillou.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+Hi Paul,
 
-On 7/28/23 00:49, Yinbo Zhu wrote:
-> +config LOONGSON2_PM
-> +	bool "Loongson-2 SoC Power Management Controller Driver"
-> +	depends on LOONGARCH && OF
-> +	help
-> +	 The Loongson-2's power management controller was ACPI, supports ACPI
-> +	 S2Idle (Suspend To Idle), ACPI S3 (Suspend To RAM), ACPI S4 (Suspend To
-> +	 Disk), ACPI S5 (Soft Shutdown) and supports multiple wake-up methods
-> +	 (USB, GMAC, PWRBTN, etc.). This driver was to add power management
-> +	 controller support that base on dts for Loongson-2 series SoCs.
+On Sat, Jul 22, 2023 at 01:50:33PM +0200, Paul Cercueil wrote:
+> Use the new PM macros for the suspend and resume functions to be
+> automatically dropped by the compiler when CONFIG_PM or
+> CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
+> 
+> This has the advantage of always compiling these functions in,
+> independently of any Kconfig option. Thanks to that, bugs and other
+> regressions are subsequently easier to catch.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-Kconfig help text should be indented with one tab +2 spaces, as documented
-in Documentation/process/coding-style.rst.
+Acked-by: Andi Shyti <andi.shyti@kernel.org> 
 
-thanks.
--- 
-~Randy
+Andi
