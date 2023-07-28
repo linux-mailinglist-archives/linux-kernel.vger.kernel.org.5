@@ -2,155 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BCB766079
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6B4766082
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbjG1ADB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 20:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S230128AbjG1AIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 20:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbjG1ACn (ORCPT
+        with ESMTP id S229600AbjG1AIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 20:02:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025E0170D
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:02:42 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690502559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xb4IARB7ZGs0NFGdahNKOcVuwqCsWQdgRW9ky2NkqP0=;
-        b=bHC60CvVn0k5V/Ob2wGVruqaoijuC5OhwuGq8OdO28M1v7kmYBNC5Pcqlj112Tv329px04
-        xoOv0JbDAZi0d03qVzIOkCpF4WQqlZHC5grMzu3eSIEdETyqjHzI4FFpNF4tAECymfMoU/
-        1prM90FTfK0afeyH9Y3/MWGPlJWUQ8RpEzLBEje2JR+Dgnci+X/hzJ6zRCI7/1JSuJ7MnM
-        gQS9e8ch2R/Fu0sDtea01twbCChPWz4ci6k472ezTOlD3l01I+CjNir1j30oIDTNLEtWJe
-        N8uEgfZ9p79D7fCuV51NoJidOWaApXHLw0GmUz/EpfFxkjiqifa9L1ptEHhEbA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690502559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xb4IARB7ZGs0NFGdahNKOcVuwqCsWQdgRW9ky2NkqP0=;
-        b=OClN8Ozq+PUpq9KrNWc9iSN08LxWbFx7BcujZAphNTRhSaICw0IwD2aaHDjeSPsnVeuht6
-        4AgtmvM4HAAqv/CA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH printk v2 8/8] printk: nbcon: Add functions for drivers to mark unsafe regions
-Date:   Fri, 28 Jul 2023 02:08:33 +0206
-Message-Id: <20230728000233.50887-9-john.ogness@linutronix.de>
-In-Reply-To: <20230728000233.50887-1-john.ogness@linutronix.de>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
+        Thu, 27 Jul 2023 20:08:18 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555D0A3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:08:17 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d0728058651so1385585276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 17:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690502896; x=1691107696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dtTvM5Vq5jGq47OwLqe5C4EcXJ2/hEwJJ43AjprfYhY=;
+        b=d0p+OrRHlljMePXr1xZWOrjChJUEjcNLhruwHUnEQ7Dt/4iaco4TnVoq7bxDVuO6Qn
+         E2vLu/Ql8DAtaYEJU5k3n3BkApogefajtylPXnvbu4hc0tkN0pOU1OjFwWp59++pELgF
+         1yladkRkOA0kQRzuHI92ongxqpADqj3FU2wx/DaFArEI/1qKRHuUDN4JmzRLJfxaqNI2
+         VgIwCjVMSA1+2Je3qxjSDuALz/ZOdi4+jbGIJwqb5p+xTTJwEsw7up4V0nI9nFrO+3/L
+         WwxZPuR59ahNtr2KlOr2YHxDDzJ3nWKwxv0zlusL8CMNsF1G+b9EVdV1sdLlvZXDkgAW
+         Y56w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690502896; x=1691107696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dtTvM5Vq5jGq47OwLqe5C4EcXJ2/hEwJJ43AjprfYhY=;
+        b=XoijT9bfTe2gF00SzRkNwtzZ/3rN3Yr+CadhEbqmHbyLG4o7RfW2ufEGidQr+NGYbS
+         Lu6u5Ti55FmOnjYWmZDCBHiNpT1D7bskOm3qJeEBIg1ORidc/2yOQYylLIQ4ZHFNjz+g
+         ZtlJct6m4IQQecccJdGbMTICQmf/CpIMysBCHtzqIXFH/DzNJ41yVk3lCfL1BMbhRDYX
+         mEHJaOS/HTb5FfJZoSKECciGG0KmLGRPHa16TECX+0bNrdMfgCRmmM8MpEMkVClA8RVF
+         SAQVaLPoFe0LG82/RES6A908WYvZviiaIPHjA9BstqPvqJVCCAzKforjBHckF2Nu84xS
+         gz0A==
+X-Gm-Message-State: ABy/qLb5Z+VVK7zb2NYiYYdZmf/wgVuwfBDDt+OxAkeE1gP00u1e9LAg
+        qkhScG6f/Ghm0uspxy18Mxvgv1YYT6P1mtUNEP6WZQ==
+X-Google-Smtp-Source: APBJJlG56ohe06r5T/Qy/YR4xnA8rC2Cv3JqWl7ELQZMflyxIg1sLSCzn/9D4+1QNpbqZfXIpngqEAqNAkH+R4Cpw/4=
+X-Received: by 2002:a5b:945:0:b0:cf7:770:229f with SMTP id x5-20020a5b0945000000b00cf70770229fmr182755ybq.46.1690502896297;
+ Thu, 27 Jul 2023 17:08:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230728091849.7f32259d@canb.auug.org.au> <20230728092915.732d4115@canb.auug.org.au>
+ <CAJuCfpHe72rCZgkGQpRnVQHOQFdH4Vd=uj9nWi5aA2_2nNDFLA@mail.gmail.com> <ZMMCxRGMsSd9H+J3@casper.infradead.org>
+In-Reply-To: <ZMMCxRGMsSd9H+J3@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 27 Jul 2023 17:08:03 -0700
+Message-ID: <CAJuCfpFPyFvaJOWW8NcvibZ5_QQg7t-GOo_270wRBXs8zX7QOg@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Thu, Jul 27, 2023 at 4:50=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Jul 27, 2023 at 04:40:20PM -0700, Suren Baghdasaryan wrote:
+> > On Thu, Jul 27, 2023 at 4:29=E2=80=AFPM Stephen Rothwell <sfr@canb.auug=
+.org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > On Fri, 28 Jul 2023 09:18:49 +1000 Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:
+> > > >
+> > > > Today's linux-next merge of the mm tree got a conflict in:
+> > > >
+> > > >   mm/memory.c
+> > > >
+> > > > between commit:
+> > > >
+> > > >   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma =
+under vma lock")
+> > > >
+> > > > from Linus' tree and commits:
+> > > >
+> > > >   69f6bbd1317f ("mm: handle userfaults under VMA lock")
+> > > >   a3bdf38e85aa ("mm: allow per-VMA locks on file-backed VMAs")
+> > > >
+> > > > from the mm tree.
+> > > >
+> > > > I fixed it up (I think, please check - see below) and can carry the=
+ fix
+> > > > as necessary. This is now fixed as far as linux-next is concerned, =
+but
+> > > > any non trivial conflicts should be mentioned to your upstream
+> > > > maintainer when your tree is submitted for merging.  You may also w=
+ant
+> > > > to consider cooperating with the maintainer of the conflicting tree=
+ to
+> > > > minimise any particularly complex conflicts.
+> > > >
+> > > > --
+> > > > Cheers,
+> > > > Stephen Rothwell
+> > > >
+> > > > diff --cc mm/memory.c
+> > > > index ca632b58f792,271982fab2b8..000000000000
+> > > > --- a/mm/memory.c
+> > > > +++ b/mm/memory.c
+> > > > @@@ -5392,32 -5597,18 +5597,21 @@@ retry
+> > > >       if (!vma)
+> > > >               goto inval;
+> > > >
+> > > > -     /* Only anonymous and tcp vmas are supported for now */
+> > > > -     if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
+> > > >  -    /* find_mergeable_anon_vma uses adjacent vmas which are not l=
+ocked */
+> > > >  -    if (vma_is_anonymous(vma) && !vma->anon_vma)
+> > > > --            goto inval;
+> > > > --
+> > > >       if (!vma_start_read(vma))
+> > > >               goto inval;
+> > > >
+> > > >  +    /*
+> > > >  +     * find_mergeable_anon_vma uses adjacent vmas which are not l=
+ocked.
+> > > >  +     * This check must happen after vma_start_read(); otherwise, =
+a
+> > > >  +     * concurrent mremap() with MREMAP_DONTUNMAP could dissociate=
+ the VMA
+> > > >  +     * from its anon_vma.
+> > > >  +     */
+> > > > -     if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
+> > > > -             goto inval_end_read;
+> > > > -
+> > > > -     /*
+> > > > -      * Due to the possibility of userfault handler dropping mmap_=
+lock, avoid
+> > > > -      * it for now and fall back to page fault handling under mmap=
+_lock.
+> > > > -      */
+> > > > -     if (userfaultfd_armed(vma))
+> > > > ++    if (unlikely(vma_is_anonymous(vma) && !vma_is_tcp(vma)))
+> >
+> > Is the above extra '+' what compiler complains about?
+> > Patches from Linus' tree remove some code from that function, so
+> > applying them first should simplify the merge.
+>
+> I see you're unfamiliar with the output of git diff --cc ...
 
-For the write_atomic callback, the console driver may have unsafe
-regions that need to be appropriately marked. Provide functions
-that accept the nbcon_write_context struct to allow for the driver
-to enter and exit unsafe regions.
+guilty as charged.
 
-Co-developed-by: John Ogness <john.ogness@linutronix.de>
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
-Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
----
- include/linux/console.h      |  4 ++++
- kernel/printk/printk_nbcon.c | 41 +++++++++++++++++++++++++++++++++++-
- 2 files changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 3d129b2b70a1..e4ce1015627c 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -456,8 +456,12 @@ static inline bool console_is_registered(const struct console *con)
- 
- #ifdef CONFIG_PRINTK
- extern bool nbcon_can_proceed(struct nbcon_write_context *wctxt);
-+extern bool nbcon_enter_unsafe(struct nbcon_write_context *wctxt);
-+extern bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt);
- #else
- static inline bool nbcon_can_proceed(struct nbcon_write_context *wctxt) { return false; }
-+static inline bool nbcon_enter_unsafe(struct nbcon_write_context *wctxt) { return false; }
-+static inline bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt) { return false; }
- #endif
- 
- extern int console_set_on_cmdline;
-diff --git a/kernel/printk/printk_nbcon.c b/kernel/printk/printk_nbcon.c
-index e1f0e4278ffa..57b7539bbbb2 100644
---- a/kernel/printk/printk_nbcon.c
-+++ b/kernel/printk/printk_nbcon.c
-@@ -761,7 +761,6 @@ EXPORT_SYMBOL_GPL(nbcon_can_proceed);
-  *
-  * Internal helper to avoid duplicated code
-  */
--__maybe_unused
- static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
- {
- 	struct console *con = ctxt->console;
-@@ -787,6 +786,46 @@ static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
- 	return true;
- }
- 
-+/**
-+ * nbcon_enter_unsafe - Enter an unsafe region in the driver
-+ * @wctxt:	The write context that was handed to the write function
-+ *
-+ * Return:	True if the state is correct. False if ownership was
-+ *		handed over or taken.
-+ *
-+ * When this function returns false then the calling context is no longer
-+ * the owner and is no longer allowed to go forward. In this case it must
-+ * back out immediately and carefully. The buffer content is also no longer
-+ * trusted since it no longer belongs to the calling context.
-+ */
-+bool nbcon_enter_unsafe(struct nbcon_write_context *wctxt)
-+{
-+	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
-+
-+	return nbcon_context_update_unsafe(ctxt, true);
-+}
-+EXPORT_SYMBOL_GPL(nbcon_enter_unsafe);
-+
-+/**
-+ * nbcon_exit_unsafe - Exit an unsafe region in the driver
-+ * @wctxt:	The write context that was handed to the write function
-+ *
-+ * Return:	True if the state is correct. False if ownership was
-+ *		handed over or taken.
-+ *
-+ * When this function returns false then the calling context is no longer
-+ * the owner and is no longer allowed to go forward. In this case it must
-+ * back out immediately and carefully. The buffer content is also no longer
-+ * trusted since it no longer belongs to the calling context.
-+ */
-+bool nbcon_exit_unsafe(struct nbcon_write_context *wctxt)
-+{
-+	struct nbcon_context *ctxt = &ACCESS_PRIVATE(wctxt, ctxt);
-+
-+	return nbcon_context_update_unsafe(ctxt, false);
-+}
-+EXPORT_SYMBOL_GPL(nbcon_exit_unsafe);
-+
- /**
-  * nbcon_emit_next_record - Emit a record in the acquired context
-  * @wctxt:	The write context that will be handed to the write function
--- 
-2.39.2
-
+>
