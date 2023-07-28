@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C21276708A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858A076708B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236365AbjG1Pah convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54450 "EHLO
+        id S237136AbjG1Pao convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjG1Paf (ORCPT
+        with ESMTP id S236943AbjG1Pan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:30:35 -0400
+        Fri, 28 Jul 2023 11:30:43 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EAE35A8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:30:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9C635B3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:30:41 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1qPPQD-0007RM-Ja; Fri, 28 Jul 2023 17:30:29 +0200
+        id 1qPPQL-0007TD-W5; Fri, 28 Jul 2023 17:30:38 +0200
 Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1qPPQC-002jsY-Gh; Fri, 28 Jul 2023 17:30:28 +0200
+        id 1qPPQL-002jsd-9A; Fri, 28 Jul 2023 17:30:37 +0200
 Received: from pza by lupine with local (Exim 4.96)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1qPPQC-000GWD-0p;
-        Fri, 28 Jul 2023 17:30:28 +0200
-Message-ID: <e8d1526a71be2054a4276880ce6b243d0d654259.camel@pengutronix.de>
-Subject: Re: [PATCH v2 08/19] gpu: ipu-v3: prg: Convert to
+        id 1qPPQL-000GWr-0C;
+        Fri, 28 Jul 2023 17:30:37 +0200
+Message-ID: <df2e8804c1c5b7c39535f52025ca68f161380ab0.camel@pengutronix.de>
+Subject: Re: [PATCH v2 02/19] gpu: ipu-v3: pre: Convert to
  devm_platform_ioremap_resource()
 From:   Philipp Zabel <p.zabel@pengutronix.de>
 To:     Yangtao Li <frank.li@vivo.com>, David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Fri, 28 Jul 2023 17:30:28 +0200
-In-Reply-To: <20230710032355.72914-8-frank.li@vivo.com>
+Date:   Fri, 28 Jul 2023 17:30:36 +0200
+In-Reply-To: <20230710032355.72914-2-frank.li@vivo.com>
 References: <20230710032355.72914-1-frank.li@vivo.com>
-         <20230710032355.72914-8-frank.li@vivo.com>
+         <20230710032355.72914-2-frank.li@vivo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.46.4-2 
