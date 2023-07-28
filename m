@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9D47668C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54A87668CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235283AbjG1J01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S229718AbjG1J1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235272AbjG1JZ7 (ORCPT
+        with ESMTP id S235476AbjG1J0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:25:59 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48316E9D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:21:14 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:12b0:7b7e:d1ff:7873])
-        by michel.telenet-ops.be with bizsmtp
-        id SZMC2A00Z0d1nm806ZMC3r; Fri, 28 Jul 2023 11:21:13 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qPJed-002ltx-Ki;
-        Fri, 28 Jul 2023 11:21:12 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qPJeq-00AoGz-Ou;
-        Fri, 28 Jul 2023 11:21:12 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] video: logo: LOGO should depend on FB_CORE i.s.o. FB
-Date:   Fri, 28 Jul 2023 11:21:11 +0200
-Message-Id: <e4142b7cc9aad9975de1bc6b1c7d86ccee487e4c.1690535997.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Fri, 28 Jul 2023 05:26:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4057D3A93;
+        Fri, 28 Jul 2023 02:22:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C559862093;
+        Fri, 28 Jul 2023 09:22:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64FD8C433C9;
+        Fri, 28 Jul 2023 09:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690536174;
+        bh=AL6UUgG3FZVUbTmbZ9j5ob/iwxMoLlBtI6VOTuk7L3Y=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=kV/4SwJSDxGPIFO9SqzBTr/WKfLl3fbG9+JtdkQ5g68+3qG+FbBQhGQhgyXFRxeuF
+         x2TzzXv2KahqFkWG4DpisftoqyieCHUe/aScTwjmOLzH4trlPzjWGjVOgIAdBXCLZz
+         cv3q4MTA/ZbxPvumqXarQGAB3+GV9C8T1M2xgDCgX7JWQy31xH5NGc7VSRUpHBgIBU
+         FoALgxCfhFHAQcDe1SiRqZGt9BI2mvzCopjpifgAWFDuwOSwn2VPcyFBZS/bBt9s4B
+         Y1xidOeK7t6p+21I5G+vW8zX7mbUs9WyPYsD8qBg/kESFYAs8FWgKC+o8NKWV77XUR
+         KCMIjwEZZrYcw==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>, Artur Weber <aweber.kernel@gmail.com>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+In-Reply-To: <20230714121440.7717-1-aweber.kernel@gmail.com>
+References: <20230714121440.7717-1-aweber.kernel@gmail.com>
+Subject: Re: [PATCH 0/2] backlight: lp855x: Fixes after c1ff7da03e16
+Message-Id: <169053617109.301530.1109574128133922072.b4-ty@kernel.org>
+Date:   Fri, 28 Jul 2023 10:22:51 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_FB_CORE=y and CONFIG_FB=n, the frame buffer bootup logos can
-no longer be enabled.  Fix this by making CONFIG_LOGO depend on
-CONFIG_FB_CORE instead of CONFIG_FB, as there is no good reason for the
-logo code to depend on the presence of real frame buffer device drivers.
+On Fri, 14 Jul 2023 14:14:38 +0200, Artur Weber wrote:
+> Two small fixes after commit c1ff7da03e16 ("video: backlight: lp855x:
+> Get PWM for PWM mode during probe"), stemming from a review[1] by
+> Uwe Kleine-König.
+> 
+> [1] https://lore.kernel.org/all/20230614083953.e4kkweddjz7wztby@pengutronix.de/
+> 
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+> 
+> [...]
 
-Fixes: 55bffc8170bb5813 ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
----
-v2:
-  - Add Reviewed-by.
----
- drivers/video/Kconfig      | 2 +-
- drivers/video/logo/Kconfig | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Applied, thanks!
 
-diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
-index e5b1cc54cafa10d5..b694d7669d3200b1 100644
---- a/drivers/video/Kconfig
-+++ b/drivers/video/Kconfig
-@@ -63,7 +63,7 @@ if VT
- 	source "drivers/video/console/Kconfig"
- endif
- 
--if FB || SGI_NEWPORT_CONSOLE
-+if FB_CORE || SGI_NEWPORT_CONSOLE
- 	source "drivers/video/logo/Kconfig"
- 
- endif
-diff --git a/drivers/video/logo/Kconfig b/drivers/video/logo/Kconfig
-index 6d6f8c08792dc897..b7d94d1dd1585a84 100644
---- a/drivers/video/logo/Kconfig
-+++ b/drivers/video/logo/Kconfig
-@@ -5,7 +5,7 @@
- 
- menuconfig LOGO
- 	bool "Bootup logo"
--	depends on FB || SGI_NEWPORT_CONSOLE
-+	depends on FB_CORE || SGI_NEWPORT_CONSOLE
- 	help
- 	  Enable and select frame buffer bootup logos.
- 
--- 
-2.34.1
+[1/2] backlight: lp855x: Initialize PWM state on first brightness change
+      commit: 4c09e20b3c85f60353ace21092e34f35f5e3ab00
+[2/2] backlight: lp855x: Catch errors when changing brightness
+      commit: 5145531be5fbad0e914d1dc1cbd392d7b756abaa
+
+--
+Lee Jones [李琼斯]
 
