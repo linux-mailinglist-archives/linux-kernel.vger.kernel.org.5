@@ -2,216 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14340766EBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4ADD766EBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbjG1Ns7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        id S236920AbjG1NtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236883AbjG1Nsy (ORCPT
+        with ESMTP id S236911AbjG1Nsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 09:48:54 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11804448A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:45 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b8b2b60731so12244685ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:45 -0700 (PDT)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3402B3C33
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:44 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcd6c0282so299634066b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690552124; x=1691156924;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zkI5B1fYnOW1A7MzN7mTgOwUMjz85+xmt1DBTkDKYpg=;
-        b=ndgCqYsfNmqSZOkAIMOpky4X60EeGkOJ5PzwxRa58hayeaHZcwFq8NG2s8RyCwFWnN
-         AKcwXnE3+nCppaWAhFcuOTpiCgWOz9emdsITzPeXD8Rxj/k1Xa6F04am9uNFoM4zk6p3
-         w2tDhPACpeolBlIbg7CD34ESdtWx1VwlgrkAJRyHTswnmROz7ukZImpFqYo5ahriYcT8
-         vy7JiXh5rHdfL6Ykx94WdhSCZiX+0XrRt3hmLmON5ebf0zYZez5djBtDQRk5eee+XT47
-         WdvQ3vf00AgEhY5w/HQ6F1anV1tT9qHuVBZ+0iXjWny7MOK2aNm6PMoTaIhD6Ynurj0Q
-         hZYA==
+        d=ventanamicro.com; s=google; t=1690552122; x=1691156922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xglqSrB2iPFW2I/fuXfPFH2AjeG9G8DHiCGCdZ7AftA=;
+        b=AB6+MgpeqsfDfT0Gtsokz5BQci7npK3FQ2KziJGiv0UyZ8bcgvhqc+jcNFZrgvptI9
+         AIrPkUC39/8FTuu/2fdqNt4nPY7RpvzNBpE7u/1AXmaIiKrDozV1gP+5xgOZOIjJVg14
+         v4JrgVF+IQYC8AW77Co4dn69YatbvqQJ1SQm5mYkHE6NZyD60qjFEj4H0s0FvdQ5X9/s
+         ujEuMICe9jOyJ0EPcuouBIXvftZ9Tthnvhpr+wf+Bx5uPEZrkR50ZxRGeActqvJAADh7
+         bvgMp3mmy12GUl0qjKexge/lNeaeMf3tZsrb+qxNw4/y3M9VQ2w6+z84jeC0dMO0xJRS
+         5fFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690552124; x=1691156924;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zkI5B1fYnOW1A7MzN7mTgOwUMjz85+xmt1DBTkDKYpg=;
-        b=HXTbDttsztsdjSK1GEmpr0XCDUg7vUC+qoiqBV7ofgjuEURIfftnWOMMvUQJSlp0Nt
-         J9Ufslg0L0KUgV34pbqj17FLoQiNBUcqhrsrCUJ/KbZa6KLi/4JABEZAqYD5homlZGJg
-         nMOTFoEyjxZLXwS/ZBLnBvcRz9r0JRPBgv0+VQdgdtOh0DKr4uMkaKxSNOalpmf8q8ul
-         mi1LMtKpUm3p20esUgDVVmw5rVvi6AmoMaQcQ1oGel0oqeU9SHQHYOnoHhOsGJhxJgZV
-         PIEqvamzTVQ9G02fSwp6lORfgkUbwzQzobCVpNSaTfGOaQYwGILCh7NeAnkb+eBwk1mJ
-         spRg==
-X-Gm-Message-State: ABy/qLa1dMI7IS6ImadvfszMXccT2QsjNh5Gg7rGi8mvZYQjJQMDNFfF
-        6Nlu3meNRNVewuVfwbRwwqLEjg==
-X-Google-Smtp-Source: APBJJlEpdVFluy4yw9KQTfazh89ofWC+2KnQU3wzx78HzaNMvs55ZUHUn0qOybkf9kxSI3SLnYiEzQ==
-X-Received: by 2002:a17:903:2791:b0:1b8:b275:3d20 with SMTP id jw17-20020a170903279100b001b8b2753d20mr1248925plb.27.1690552124490;
-        Fri, 28 Jul 2023 06:48:44 -0700 (PDT)
-Received: from sumit-X1.. ([223.178.208.50])
-        by smtp.gmail.com with ESMTPSA id y18-20020a170902ed5200b001993a1fce7bsm3589619plb.196.2023.07.28.06.48.40
+        d=1e100.net; s=20221208; t=1690552122; x=1691156922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xglqSrB2iPFW2I/fuXfPFH2AjeG9G8DHiCGCdZ7AftA=;
+        b=k62UN8w2lP2VW1eBNun0lF1rl6t9piMHfewpxuoUwe56q0A1CRawwJuFY/bntYtqgu
+         6Uj29Alfb06wXpEkGBKz3bi6lzIEvSajgMWL2GXFSZEMZ80kzZSqjqy5c4PaGf+4xQHG
+         S0Kew9fMSPuF3EhNEaB72rDFBxoPkRifa4d3//dTo71zUVR1Ta/OJvXs67/4Oqgc+H/i
+         Dk66BWJalvGv6LcbLYCUbrtQdaPiExFcr5bgqVUwb7S8tWYGdEPZABn9XQFA6UyyNez9
+         Grc6vH1r/G+ntXqeW5xDilXwMCgxQFAWy89rsi5NsZuzJjZYlalA1MtEnh31rYmMU/iU
+         2WhQ==
+X-Gm-Message-State: ABy/qLanDcpxYkO5hLnh/6Xf4dXGbCYzOjqkEqtFNGpM/j7GRVeZYvoJ
+        Ez8vMxYRXfKG2ZEuZCDZoH3qiw==
+X-Google-Smtp-Source: APBJJlGnEXAlsMCADN+Nq6BK+wfKYf1MY6AOSQRz7CvibJgwy8Y7+jhKeE+hbVuLfVBpD8mGaYmFsQ==
+X-Received: by 2002:a17:907:7710:b0:988:6491:98e1 with SMTP id kw16-20020a170907771000b00988649198e1mr2173678ejc.42.1690552122403;
+        Fri, 28 Jul 2023 06:48:42 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id t10-20020a17090616ca00b00982a352f078sm2066763ejd.124.2023.07.28.06.48.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 06:48:44 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     op-tee@lists.trustedfirmware.org
-Cc:     jens.wiklander@linaro.org, jan.kiszka@siemens.com, arnd@linaro.org,
-        ardb@kernel.org, jerome.forissier@linaro.org,
-        ilias.apalodimas@linaro.org, masahisa.kojima@linaro.org,
-        maxim.uvarov@linaro.org, jarkko.sakkinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v2] tee: optee: Fix supplicant based device enumeration
-Date:   Fri, 28 Jul 2023 19:18:32 +0530
-Message-Id: <20230728134832.326467-1-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 28 Jul 2023 06:48:41 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 15:48:41 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] riscv: Improve flush_tlb_kernel_range()
+Message-ID: <20230728-f5c389ac7f2a9aadf93939f5@orel>
+References: <20230727185553.980262-1-alexghiti@rivosinc.com>
+ <20230727185553.980262-5-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727185553.980262-5-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently supplicant dependent optee device enumeration only registers
-devices whenever tee-supplicant is invoked for the first time. But it
-forgets to remove devices when tee-supplicant daemon stops running and
-closes its context gracefully. This leads to following error for fTPM
-driver during reboot/shutdown:
+On Thu, Jul 27, 2023 at 08:55:53PM +0200, Alexandre Ghiti wrote:
+> This function used to simply flush the whole tlb of all harts, be more
+> subtile and try to only flush the range.
+> 
+> The problem is that we can only use PAGE_SIZE as stride since we don't know
+> the size of the underlying mapping and then this function will be improved
+> only if the size of the region to flush is < threshold * PAGE_SIZE.
+> 
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/tlbflush.h | 11 +++++-----
+>  arch/riscv/mm/tlbflush.c          | 35 +++++++++++++++++++++++--------
+>  2 files changed, 32 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> index f5c4fb0ae642..7426fdcd8ec5 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -37,6 +37,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+>  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>  		     unsigned long end);
+> +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+> @@ -53,15 +54,15 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
+>  	local_flush_tlb_all();
+>  }
+>  
+> -#define flush_tlb_mm(mm) flush_tlb_all()
+> -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> -#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> -
+>  /* Flush a range of kernel pages */
+>  static inline void flush_tlb_kernel_range(unsigned long start,
+>  	unsigned long end)
+>  {
+> -	flush_tlb_all();
+> +	local_flush_tlb_all();
+>  }
+>  
+> +#define flush_tlb_mm(mm) flush_tlb_all()
+> +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+> +#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> +
+>  #endif /* _ASM_RISCV_TLBFLUSH_H */
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 8017d2130e27..96aeacb269d5 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -117,18 +117,27 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+>  			      unsigned long size, unsigned long stride)
+>  {
+>  	struct flush_tlb_range_data ftd;
+> -	struct cpumask *cmask = mm_cpumask(mm);
+> -	unsigned int cpuid;
+> +	struct cpumask *cmask, full_cmask;
+>  	bool broadcast;
+>  
+> -	if (cpumask_empty(cmask))
+> -		return;
+> +	if (mm) {
+> +		unsigned int cpuid;
+> +
+> +		cmask = mm_cpumask(mm);
+> +		if (cpumask_empty(cmask))
+> +			return;
+> +
+> +		cpuid = get_cpu();
+> +		/* check if the tlbflush needs to be sent to other CPUs */
+> +		broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+> +	} else {
+> +		cpumask_setall(&full_cmask);
+> +		cmask = &full_cmask;
+> +		broadcast = true;
+> +	}
+>  
+> -	cpuid = get_cpu();
+> -	/* check if the tlbflush needs to be sent to other CPUs */
+> -	broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
+>  	if (static_branch_unlikely(&use_asid_allocator)) {
+> -		unsigned long asid = atomic_long_read(&mm->context.id) & asid_mask;
+> +		unsigned long asid = mm ? atomic_long_read(&mm->context.id) & asid_mask : 0;
+>  
+>  		if (broadcast) {
+>  			if (riscv_use_ipi_for_rfence()) {
+> @@ -162,7 +171,8 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
+>  		}
+>  	}
+>  
+> -	put_cpu();
+> +	if (mm)
+> +		put_cpu();
+>  }
+>  
+>  void flush_tlb_mm(struct mm_struct *mm)
+> @@ -194,6 +204,13 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>  	__flush_tlb_range(vma->vm_mm,
+>  			  start, end - start, 1 << stride_shift);
+>  }
+> +
+> +void flush_tlb_kernel_range(unsigned long start,
+> +			    unsigned long end)
 
-[   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke error: 0xffff3024
+No need to wrap this line.
 
-Fix this by separating supplicant dependent devices so that the
-user-space service can detach supplicant devices before closing the
-supplicant. While at it use the global system workqueue for OP-TEE bus
-scanning work rather than our own custom one.
+> +{
+> +	__flush_tlb_range(NULL, start, end, PAGE_SIZE);
+> +}
+> +
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>  			unsigned long end)
+> -- 
+> 2.39.2
+>
 
-Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-Link: https://github.com/OP-TEE/optee_os/issues/6094
-Fixes: 5f178bb71e3a ("optee: enable support for multi-stage bus enumeration")
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
+Otherwise,
 
-Changes in v2:
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-Apologies for taking it too long push this v2. Actually I did brainstorm
-how to best fix this tee-supplicant dependent device probing. Its hard
-to predict the lifetime of user-space daemon from kernel space. So
-following is the least intrusive approach:
-
-- Use device names to seperate out tee-supplicant dependent devices via
-  this patch.
-- Since user-space service is aware about tee-supplicant lifespan, so
-  allow the user-space service to unbind tee-supplicant dependent
-  devices before killing the supplicant. Following command has to be
-  added to the tee-supplicant service file.
-
-  $ for dev in /sys/bus/tee/devices/*; do if [[ "$dev" == *"optee-ta-supp-"* ]]; \
-        then echo $(basename "$dev") > $dev/driver/unbind; fi done
-
- drivers/tee/optee/core.c          | 13 ++-----------
- drivers/tee/optee/device.c        | 13 ++++++++++---
- drivers/tee/optee/optee_private.h |  2 --
- 3 files changed, 12 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index d01ca47f7bde..8ee3c71bd989 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -15,7 +15,6 @@
- #include <linux/string.h>
- #include <linux/tee_drv.h>
- #include <linux/types.h>
--#include <linux/workqueue.h>
- #include "optee_private.h"
- 
- int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
-@@ -110,12 +109,7 @@ int optee_open(struct tee_context *ctx, bool cap_memref_null)
- 
- 		if (!optee->scan_bus_done) {
- 			INIT_WORK(&optee->scan_bus_work, optee_bus_scan);
--			optee->scan_bus_wq = create_workqueue("optee_bus_scan");
--			if (!optee->scan_bus_wq) {
--				kfree(ctxdata);
--				return -ECHILD;
--			}
--			queue_work(optee->scan_bus_wq, &optee->scan_bus_work);
-+			schedule_work(&optee->scan_bus_work);
- 			optee->scan_bus_done = true;
- 		}
- 	}
-@@ -159,10 +153,7 @@ void optee_release_supp(struct tee_context *ctx)
- 	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 
- 	optee_release_helper(ctx, optee_close_session_helper);
--	if (optee->scan_bus_wq) {
--		destroy_workqueue(optee->scan_bus_wq);
--		optee->scan_bus_wq = NULL;
--	}
-+
- 	optee_supp_release(&optee->supp);
- }
- 
-diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-index 64f0e047c23d..78fc0a15c463 100644
---- a/drivers/tee/optee/device.c
-+++ b/drivers/tee/optee/device.c
-@@ -60,9 +60,10 @@ static void optee_release_device(struct device *dev)
- 	kfree(optee_device);
- }
- 
--static int optee_register_device(const uuid_t *device_uuid)
-+static int optee_register_device(const uuid_t *device_uuid, u32 func)
- {
- 	struct tee_client_device *optee_device = NULL;
-+	const char *dev_name_fmt = NULL;
- 	int rc;
- 
- 	optee_device = kzalloc(sizeof(*optee_device), GFP_KERNEL);
-@@ -71,7 +72,13 @@ static int optee_register_device(const uuid_t *device_uuid)
- 
- 	optee_device->dev.bus = &tee_bus_type;
- 	optee_device->dev.release = optee_release_device;
--	if (dev_set_name(&optee_device->dev, "optee-ta-%pUb", device_uuid)) {
-+
-+	if (func == PTA_CMD_GET_DEVICES_SUPP)
-+		dev_name_fmt = "optee-ta-supp-%pUb";
-+	else
-+		dev_name_fmt = "optee-ta-%pUb";
-+
-+	if (dev_set_name(&optee_device->dev, dev_name_fmt, device_uuid)) {
- 		kfree(optee_device);
- 		return -ENOMEM;
- 	}
-@@ -142,7 +149,7 @@ static int __optee_enumerate_devices(u32 func)
- 	num_devices = shm_size / sizeof(uuid_t);
- 
- 	for (idx = 0; idx < num_devices; idx++) {
--		rc = optee_register_device(&device_uuid[idx]);
-+		rc = optee_register_device(&device_uuid[idx], func);
- 		if (rc)
- 			goto out_shm;
- 	}
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 6dcecb83c893..af4aa266c3fb 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -193,7 +193,6 @@ struct optee_ops {
-  * @pool:		shared memory pool
-  * @rpc_param_count:	If > 0 number of RPC parameters to make room for
-  * @scan_bus_done	flag if device registation was already done.
-- * @scan_bus_wq		workqueue to scan optee bus and register optee drivers
-  * @scan_bus_work	workq to scan optee bus and register optee drivers
-  */
- struct optee {
-@@ -212,7 +211,6 @@ struct optee {
- 	struct tee_shm_pool *pool;
- 	unsigned int rpc_param_count;
- 	bool   scan_bus_done;
--	struct workqueue_struct *scan_bus_wq;
- 	struct work_struct scan_bus_work;
- };
- 
--- 
-2.34.1
-
+Thanks,
+drew
