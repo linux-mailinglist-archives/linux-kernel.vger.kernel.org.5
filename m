@@ -2,237 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044F77668EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49280766904
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235424AbjG1Jdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        id S235529AbjG1Jfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbjG1Jd3 (ORCPT
+        with ESMTP id S235511AbjG1Jfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:33:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D6B3C27
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690536740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PUpytj5yUNrs3kxSkN6zpJqxqa3HoC6l1C2y3i10Sbc=;
-        b=N2h+kbOQ/aT4dmn2rcpwv66Z7ZqDQzN5SyGcebICWbpl4cyQOg1IzhYegImdMRodIlExL+
-        c3qvjL1GaSxor3NzVRIfySC0tBV9kCNg5GLDIdMYpIUSQZNRkUmwrQs211p1KIkY76MMWZ
-        xlONjaycCD3HmwoNj5mQWk8eSynlnLg=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-600-QE8Nu2mxP8ePhLPcsIDXFQ-1; Fri, 28 Jul 2023 05:32:19 -0400
-X-MC-Unique: QE8Nu2mxP8ePhLPcsIDXFQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fd2e286689so10765125e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:32:18 -0700 (PDT)
+        Fri, 28 Jul 2023 05:35:44 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD711E4F
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:35:41 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so9946551fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1690536940; x=1691141740;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JSbAR7dWxwhLJYW8XT5bgVlaA1SWINOC/DZLLBHhIYo=;
+        b=lIoVuOtw/ATsFdZ7Lm4PGDkfR9lmoNWmdnio9/6Nm4oXrrxm4DUz+ar+vI0yCE8D2/
+         crIsqShYOkjA0W5guOU5wR+2YXYEEGXhsAhuLHC/uLHZzMthPusUjRy50cCs6RfWtIks
+         q+Q8dzMkeheMOO8vfqGme5RwvOyszbNpdAOJ4DQj9iNeUSho/xbDbwYm0VnnSl6zkZzS
+         0H1xAz9Jm0QhEspBJVeIjdfsmsmdTnoPzYrXnhiG64V89m9vPsbmGHwNXbmFc1/MlA9D
+         8503yc59+xGXsZDIgfFrTgmeGcby6sUWBLGxsr/iRnl13SXKkZHgqUDej9esVnAPWgwH
+         U6uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690536738; x=1691141538;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PUpytj5yUNrs3kxSkN6zpJqxqa3HoC6l1C2y3i10Sbc=;
-        b=RG/rG8/UKogDEdsVaOlCfIWPD+k/YdA6M/S8/ZDmb44RiebBrldGxWmp/ZIF+2+gE7
-         qEB1XTXh2BiKFxdlIxVHzcYaSH7lS2BjklbV6T0qCfCKyu64ZPLZ/Y9N/Xe7BPG/x+aQ
-         mbzlFtaNZpEJhnRsOMtWgTlbPcY3HmzZb1UnLOsIFIWUDGghFzsGAelGH1CE1fsrH233
-         NNoFCRtXifqhD2HLlWOMTNC6rhoiv2lQzeagrCbeQ1mHaoKen7hP9S3RZ8ZynuxBcLGt
-         SFWA1j80eDBY2dwQbZ7m7iH2tuX+70KsBTHToHpQNfKXhzLsoLUuydMQpzi7SbUYddhj
-         3Amw==
-X-Gm-Message-State: ABy/qLZMk6Luf3scxYyRarcZy4mxUEYPKHSTCxaRuA0CrJo4TVAlmyYr
-        wcDjelhlvtTA0Zuz/3jHdV3gI0KZQKAcvauOKPYZCoYlMh1JGOzyMnDIyT0/i1tmGepJRRfER14
-        smm3qovdg0vUIxlcRpAA68til
-X-Received: by 2002:a1c:ed0e:0:b0:3fc:5a3:367c with SMTP id l14-20020a1ced0e000000b003fc05a3367cmr1397480wmh.32.1690536738012;
-        Fri, 28 Jul 2023 02:32:18 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGJ0ZJIOZj9cnw9EBMK5YcoiQG18GglmeHsszodanL4lUHj6bphDDU+iSErcJ6q6IMB3uTENw==
-X-Received: by 2002:a1c:ed0e:0:b0:3fc:5a3:367c with SMTP id l14-20020a1ced0e000000b003fc05a3367cmr1397462wmh.32.1690536737627;
-        Fri, 28 Jul 2023 02:32:17 -0700 (PDT)
-Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id d12-20020a1c730c000000b003fa999cefc0sm3670492wmb.36.2023.07.28.02.32.16
+        d=1e100.net; s=20221208; t=1690536940; x=1691141740;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JSbAR7dWxwhLJYW8XT5bgVlaA1SWINOC/DZLLBHhIYo=;
+        b=ejQkWw+wOZUcpSIQ1KPC/3TInIS/fwKzsyPjC4mQZcuF0lyTcukvtrtTClsweQXBjp
+         6MhEdw6bUeXGe0EcZWiJU+jQs19dcmkwov1iXbAKC/M/iNaSegnnz2hQhbkDXNtWiZ7V
+         9EhQ9UVxIvdwq0EkzH6O2nYu93hDy2yC4YVeqBZq/OuQWwikDMePmzb3l/7hJFA5ayaT
+         ujNRqh469IyEvp3t8rtXjUsUXbc17S3hgTahCfwp+wkIAXVaggW0Eg9tNg4NDtbdc8Xm
+         iWjKgIBP9flO6jXDv0w+iYZwYhEoRgrXZh7Gi3JdCGaqrEltCL6ZzcHyka6i1vv/ffXA
+         PJRw==
+X-Gm-Message-State: ABy/qLYAHitwWS8KP9gh8i16pzx3ALys5mHjAm6uWzkrrpi+duiMmuGZ
+        WFpPgAy01GSRuVcL2ZFcvoA83g==
+X-Google-Smtp-Source: APBJJlEHZ7r1CaEonFBJjkbPox8z5/FfBaI8gpUQi3c+2Olbd3dDjPeZZ3+w/AabJVmtob4/bpGObA==
+X-Received: by 2002:a2e:95c6:0:b0:2b7:339c:f791 with SMTP id y6-20020a2e95c6000000b002b7339cf791mr1345168ljh.25.1690536939979;
+        Fri, 28 Jul 2023 02:35:39 -0700 (PDT)
+Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
+        by smtp.gmail.com with ESMTPSA id t6-20020a5d6906000000b0031760af2331sm4248180wru.100.2023.07.28.02.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 02:32:16 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 11:32:16 +0200
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
-        rafael@kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
- pci_assign_unassigned_bridge_resources() only if bus->self not NULL
-Message-ID: <20230728113216.3140577c@imammedo.users.ipa.redhat.com>
-In-Reply-To: <20230727174102.GA689794@bhelgaas>
-References: <20230726123518.2361181-2-imammedo@redhat.com>
-        <20230727174102.GA689794@bhelgaas>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 28 Jul 2023 02:35:39 -0700 (PDT)
+From:   Adam Sindelar <adam@wowsignal.io>
+To:     bpf@vger.kernel.org
+Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v5] libbpf: Expose API to consume one ring at a time
+Date:   Fri, 28 Jul 2023 11:33:47 +0200
+Message-Id: <20230728093346.673994-1-adam@wowsignal.io>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 12:41:02 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+We already provide ring_buffer__epoll_fd to enable use of external
+polling systems. However, the only API available to consume the ring
+buffer is ring_buffer__consume, which always checks all rings. When
+polling for many events, this can be wasteful.
 
-> Thank you to both you and Woody for chasing this down!
-> 
-> On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:
-> > Commit [1] switched acpiphp hotplug to use
-> >    pci_assign_unassigned_bridge_resources()
-> > which depends on bridge being available, however in some cases
-> > when acpiphp is in use, enable_slot() can get a slot without
-> > bridge associated.
-> >   1. legitimate case of hotplug on root bus
-> >       (likely not exiting on real hw, but widely used in virt world)
-> >   2. broken firmware, that sends 'Bus check' events to non
-> >      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
-> >      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
-> >      without bridge assigned to it.  
-> 
-> Do we have evidence about the details of this non-existent root port?
-> If we do, I think it would be interesting to include a URL to them in
-> case there's some hole in the way we handle Bus Check events.
+Signed-off-by: Adam Sindelar <adam@wowsignal.io>
+---
+v1->v2: Added entry to libbpf.map
+v2->v3: Correctly set errno and handle overflow
+v3->v4: Fixed an embarrasing typo from zealous autocomplete
+v4->v5: Added a selftest to show usage
 
-it's scattered over logs Woody has provided, here are links to
-emails with
-  1: lspci output
-      https://lore.kernel.org/r/92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com/
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/lib/bpf/libbpf.map                      |  1 +
+ tools/lib/bpf/ringbuf.c                       | 22 ++++++++++++++++
+ .../selftests/bpf/prog_tests/ringbuf_multi.c  | 26 +++++++++++++++++++
+ 4 files changed, 50 insertions(+)
 
-according to lscpi and dmesg there is only one root-port at 1c.0
-which is occupied by wifi card
-
-while DSTD table has more ports described, which is fine as long as
-missing/disabled are not reported as present.
-
-  2: last round of logs with debug patch /before 40613da5, with 40613da5, and after/
-      https://lore.kernel.org/r/46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com/
-
-here dmesg shows 1st correct port
- ACPI: \_SB_.PCI0.RP03: acpiphp_glue: Bus check in hotplug_event(): bridge: 000000000dad0b34
-and then later on
- ACPI: \_SB_.PCI0.RP07: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
- ACPI: \_SB_.PCI0.RP08: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
-which aren't recognized as bridge
-
-I don't know ACPICA code enough to guesstimate where we might miss
-a check that device is actually exists to do further debug
-over mail list within reasonable timeframe.
-
-> > Issue is easy to reproduce with QEMU's 'pc' machine provides
-> > PCI hotplug on hostbridge slots. to reproduce boot kernel at
-> > commit [1] in VM started with followin CLI and hotplug a device:  
-> 
-> You mention CLI; did you mean to include a qemu command line here?
-> Maybe it's the same thing mentioned in the 40613da52b13 commit log?
-> I tried briefly to reproduce this using the 40613da52b13 command line
-> but haven't quite got it going yet.  I think it would be very useful
-> to either include it here again or point to the 40613da52b13 commit
-> log.
-
-my bad, I didn't realize that saying 'pc' machine is not sufficient.
-
-minimal CLI can be (important part '-M pc -monitor stdio',
-the rest is for making guest boot and run at tolerable speed):
-
-$QEMU -M pc -m 4G -monitor stdio -cpu host --enable-kvm vm_disk_image 
-
-Will you amend commit message or shall I repost with changes/Acks?
-
-> > once guest OS is fully booted at qemu prompt:
-> > 
-> > (qemu) device_add e1000
-> > 
-> > it will cause NULL pointer dereference at
-> > 
-> >     void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
-> >     {
-> >         struct pci_bus *parent = bridge->subordinate;
-> > 
-> > [  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
-> > [...]
-> > [  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
-> > [  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
-> > [  612.277809]  enable_slot+0x21f/0x3e0
-> > [  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
-> > [  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
-> > [  612.277827]  acpi_device_hotplug+0xbc/0x540
-> > [  612.277834]  acpi_hotplug_work_fn+0x15/0x20
-> > [  612.277839]  process_one_work+0x1f7/0x370
-> > [  612.277845]  worker_thread+0x45/0x3b0
-> > [  612.277850]  ? __pfx_worker_thread+0x10/0x10
-> > [  612.277854]  kthread+0xdc/0x110
-> > [  612.277860]  ? __pfx_kthread+0x10/0x10
-> > [  612.277866]  ret_from_fork+0x28/0x40
-> > [  612.277871]  ? __pfx_kthread+0x10/0x10
-> > [  612.277876]  ret_from_fork_asm+0x1b/0x30
-> > 
-> > The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
-> > following sequence:
-> >    1. suspend to RAM
-> >    2. wake up with the same backtrace being observed:
-> >    3. 2nd suspend to RAM attempt makes laptop freeze
-> > 
-> > Fix it by using __pci_bus_assign_resources() instead of
-> > pci_assign_unassigned_bridge_resources()as we used to do
-> > but only in case when bus doesn't have a bridge associated
-> > with it.
-> > 
-> > That let us keep hotplug on root bus working like it used to be
-> > but at the same time keeps resource reassignment usable on
-> > root ports (and other 1st level bridges) that was fixed by [1].
-> > 
-> > 1)
-> > Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
-> > Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
-> > Reported-by: Woody Suwalski <terraluna977@gmail.com>
-> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-> > ---
-> >  drivers/pci/hotplug/acpiphp_glue.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> > index 328d1e416014..3bc4e1f3efee 100644
-> > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > @@ -498,6 +498,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
-> >  				acpiphp_native_scan_bridge(dev);
-> >  		}
-> >  	} else {
-> > +		LIST_HEAD(add_list);
-> >  		int max, pass;
-> >  
-> >  		acpiphp_rescan_slot(slot);
-> > @@ -511,10 +512,15 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
-> >  				if (pass && dev->subordinate) {
-> >  					check_hotplug_bridge(slot, dev);
-> >  					pcibios_resource_survey_bus(dev->subordinate);
-> > +					if (!bus->self)
-> > +						__pci_bus_size_bridges(dev->subordinate, &add_list);
-> >  				}
-> >  			}
-> >  		}
-> > -		pci_assign_unassigned_bridge_resources(bus->self);
-> > +		if (bus->self)
-> > +			pci_assign_unassigned_bridge_resources(bus->self);
-> > +		else
-> > +			__pci_bus_assign_resources(bus, &add_list, NULL);
-> >  	}
-> >  
-> >  	acpiphp_sanitize_bus(bus);
-> > -- 
-> > 2.39.3
-> >   
-> 
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 55b97b2087540..20ccc65eb3f9d 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 				ring_buffer_sample_fn sample_cb, void *ctx);
+ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+ LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
++LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
+ LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+ 
+ struct user_ring_buffer_opts {
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 9c7538dd5835e..42dc418b4672f 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -398,4 +398,5 @@ LIBBPF_1.3.0 {
+ 		bpf_prog_detach_opts;
+ 		bpf_program__attach_netfilter;
+ 		bpf_program__attach_tcx;
++		ring_buffer__consume_ring;
+ } LIBBPF_1.2.0;
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 02199364db136..457469fc7d71e 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -290,6 +290,28 @@ int ring_buffer__consume(struct ring_buffer *rb)
+ 	return res;
+ }
+ 
++/* Consume available data from a single RINGBUF map identified by its ID.
++ * The ring ID is returned in epoll_data by epoll_wait when called with
++ * ring_buffer__epoll_fd.
++ */
++int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
++{
++	struct ring *ring;
++	int64_t res;
++
++	if (ring_id >= rb->ring_cnt)
++		return libbpf_err(-EINVAL);
++
++	ring = &rb->rings[ring_id];
++	res = ringbuf_process_ring(ring);
++	if (res < 0)
++		return libbpf_err(res);
++
++	if (res > INT_MAX)
++		return INT_MAX;
++	return res;
++}
++
+ /* Poll for available data and consume records, if any are available.
+  * Returns number of records consumed (or INT_MAX, whichever is less), or
+  * negative number, if any of the registered callbacks returned error.
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+index 1455911d9fcbe..8123efc94d1a8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+@@ -29,6 +29,11 @@ static int process_sample(void *ctx, void *data, size_t len)
+ 		CHECK(s->value != 777, "sample2_value", "exp %ld, got %ld\n",
+ 		      777L, s->value);
+ 		break;
++	case 2:
++		CHECK(ring != 2, "sample3_ring", "exp %d, got %d\n", 2, ring);
++		CHECK(s->value != 1337, "sample3_value", "exp %ld, got %ld\n",
++		      1337L, s->value);
++		break;
+ 	default:
+ 		CHECK(true, "extra_sample", "unexpected sample seq %d, val %ld\n",
+ 		      s->seq, s->value);
+@@ -45,6 +50,8 @@ void test_ringbuf_multi(void)
+ 	int err;
+ 	int page_size = getpagesize();
+ 	int proto_fd = -1;
++	int epoll_fd;
++	struct epoll_event events[2];
+ 
+ 	skel = test_ringbuf_multi__open();
+ 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+@@ -124,6 +131,25 @@ void test_ringbuf_multi(void)
+ 	CHECK(skel->bss->total != 2, "err_total", "exp %ld, got %ld\n",
+ 	      2L, skel->bss->total);
+ 
++	/* validate APIs to support external polling */
++	epoll_fd = ring_buffer__epoll_fd(ringbuf);
++
++	/* expect events on either ring to trigger through the epoll_fd */
++	skel->bss->target_ring = 2;
++	skel->bss->value = 1337;
++	syscall(__NR_getpgid);
++
++	err = epoll_wait(epoll_fd, events, sizeof(events) / sizeof(struct epoll_event), -1);
++	if (CHECK(err != 1, "epoll_wait", "epoll_wait exp %d, got %d\n", 1, err))
++		goto cleanup;
++	if (CHECK(!(events[0].events & EPOLLIN), "epoll_event", "expected EPOLLIN\n"))
++		goto cleanup;
++
++	/* epoll data can be used to consume only the affected ring */
++	err = ring_buffer__consume_ring(ringbuf, events[0].data.u32);
++	CHECK(err != 1, "consume_ring", "consume_ring %u exp %d, got %d\n",
++		  events[0].data.u32, 1, err);
++
+ cleanup:
+ 	if (proto_fd >= 0)
+ 		close(proto_fd);
+-- 
+2.39.2
 
