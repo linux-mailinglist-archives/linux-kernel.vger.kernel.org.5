@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40BA766C0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25902766C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236313AbjG1Ltg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        id S236314AbjG1LvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbjG1Lte (ORCPT
+        with ESMTP id S233787AbjG1LvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:49:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093813C2A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690544931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=amggK1c1iFQcIsltx9iiMJ/J2TdCT43VOB9zNEC3MjI=;
-        b=XaA2Ymu3O+5JsaHScx6dm4yid9YJkBftsU4KEZRPf20w43437oGkoYb6HAnjQXkChHW5OI
-        k9Qlnc4nQiNb20II50tGcxEvDm4RwND206QcodaKJySHIZvWs0/X+Ndx2f5kjeE/MoWXgF
-        w/g8xRhQ0je7NMcB5BEup3cohxLeG3w=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-103-hxUPg5U6OxiXix3FtJWTWw-1; Fri, 28 Jul 2023 07:48:49 -0400
-X-MC-Unique: hxUPg5U6OxiXix3FtJWTWw-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4053a03d5b2so22908221cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
+        Fri, 28 Jul 2023 07:51:02 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E153ABA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:51:01 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-992acf67388so276264566b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:51:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690545060; x=1691149860;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D/uELZJizv4is37kGWOvFpksJ1ez4XLF6M0hB83T1R8=;
+        b=qOvJXNyWTsmIF8kFtSbkK/0IwC48UpaN7brf9S6BzEBaLix+T04aMi9q5OtIiTwczF
+         srisU/bOzSu35V2CAJlcc9lbPW7WwjIBzWn+ejDoY/pB6IDBJVEzf4tzsWl8xU75jtZE
+         G66RDOegqDxp4Nt43TZCD/YfW7J8wFbdLGrLkLq6MyDap9Z4GFbTM7iVEl9ZpD9GZXUa
+         iRvHqeUb/v9Hp4fcU214e0POEUvrdMyAt3xJ01w7Ma7vCq2F3UmpMWfU8QpkeXyYvkwi
+         HafI1GWsTQqLK7w5ACYXAjKYVVTd68PehxtqtrLSN8ABOOjmMktALpBej21vvjpqBISo
+         NGqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690544929; x=1691149729;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690545060; x=1691149860;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=amggK1c1iFQcIsltx9iiMJ/J2TdCT43VOB9zNEC3MjI=;
-        b=d1Suu36lrIF4pvvAsdJUKqQOq5X5H+56MmyFEhHNj+5IJIunzhtSgOXk7X9VhG3vk4
-         pmNu6eIHY+kCNSikt9qt/Wsj7DgV5Ej+SPfZbLQUThZQN52hKhCPY7hYSztjfQRM/1kw
-         I/KtSitIjxTtJ8sc1BvOFH9VvQyrR61Ycht21mJNy945Ad7yL61j1BLb5QwqFFNnDlUe
-         HmkHQguJWFwjw2xefV1csxy/Zgyi/Z4rA+cViuzuST0588DhVyP6IEihI3L5mqGhTe1W
-         WDKbM5k0Y0syFDtcoI3+9Cbd7U7/CKo0DUQmZ9ifEWm4uECgDxphgW99smCbgf1GZsw4
-         gT6Q==
-X-Gm-Message-State: ABy/qLYyI9PioJq7UAwWinxu1rhxqBFWQRErGmwa7Uoh8rGD5w+Ga949
-        W9lofRcJPQQvW4xa3Coy9Trm7arkUieIKWcqBDb2q9z7tLRXqFQZ4ndeNQkBR164lyTBqlkbHUM
-        0z3u4YG7HzyIynxrV1vksKhq+
-X-Received: by 2002:a05:622a:170c:b0:403:a263:5402 with SMTP id h12-20020a05622a170c00b00403a2635402mr2914424qtk.18.1690544929313;
-        Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF4HP9emyj8PfcdfRAEbYECoLJjWWPCTFXihnHLKkpiXAxEqfjwIUSpFIWY/4/sObMMv7h2zQ==
-X-Received: by 2002:a05:622a:170c:b0:403:a263:5402 with SMTP id h12-20020a05622a170c00b00403a2635402mr2914415qtk.18.1690544929078;
-        Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
-Received: from [172.16.0.7] ([209.73.90.46])
-        by smtp.gmail.com with ESMTPSA id c26-20020ac81e9a000000b00403fcd4ea59sm1099677qtm.10.2023.07.28.04.48.47
+        bh=D/uELZJizv4is37kGWOvFpksJ1ez4XLF6M0hB83T1R8=;
+        b=gLTxqso9LACURqVsFX3Upapjk81iUC8WuRDv6QIO5u87YsWhRgIIkyUfmmAaO8mBxf
+         M/XSQuQizzp1FHjMRHCj6V2gw/mouNz7qnM4fy8AV1REurKWie5+BnlmTbCU0X9G9RFm
+         w37+906/sBdIQHfoaQeCG9c53BdNq6gdhjL279mFWkWFLqZnKC4pEA44jUsu2t6yPt9V
+         IY0AjCF8LW0QP05i0iUvnJ+CRIMH6R3qeyaWfyuTr/Itngsox8qG+o9saXLDJ4a0ViXM
+         s5WyBOEEowHYvR/uBG29mFawdJtdrnduKG0CzJqZjMl1Pz4MU1GlYzg44KyltrWdHBcN
+         lGDQ==
+X-Gm-Message-State: ABy/qLaEO/Uh2GOUSWQgukpL4xdPJRHVXSWOlFiV1ENOGzJYMsOw106L
+        6AUkxZZrANhT2voHczlFQ20u6Q==
+X-Google-Smtp-Source: APBJJlGS++d0sRT2c3rAtoKA2jdF+oCpok6IprmNdlsUIan8A1ZsbG0hxgjlds4XaW0pt6cSO9Ipkg==
+X-Received: by 2002:a17:907:2cc9:b0:993:d536:3cb8 with SMTP id hg9-20020a1709072cc900b00993d5363cb8mr1744265ejc.2.1690545060152;
+        Fri, 28 Jul 2023 04:51:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b14-20020a1709062b4e00b00992acab8c45sm2002125ejg.12.2023.07.28.04.50.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 04:48:48 -0700 (PDT)
-Message-ID: <c4360163-3595-e152-765d-641f9c79e8fd@redhat.com>
-Date:   Fri, 28 Jul 2023 06:48:47 -0500
+        Fri, 28 Jul 2023 04:50:59 -0700 (PDT)
+Message-ID: <181e2a7c-4299-ed90-e069-9838847d4049@linaro.org>
+Date:   Fri, 28 Jul 2023 13:50:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [syzbot] [gfs2?] kernel panic: hung_task: blocked tasks (2)
-To:     David Howells <dhowells@redhat.com>,
-        syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com>
-Cc:     agruenba@redhat.com, arnd@arndb.de, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000045a44b0601802056@google.com>
- <200478.1690532408@warthog.procyon.org.uk>
+Subject: Re: [PATCH v3 30/50] spi: dt-bindings: atmel,at91rm9200-spi: remove
+ 9x60 compatible from list
 Content-Language: en-US
-From:   Bob Peterson <rpeterso@redhat.com>
-In-Reply-To: <200478.1690532408@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
+        broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@microchip.com, tudor.ambarus@linaro.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230728102819.266809-1-varshini.rajendran@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728102819.266809-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 3:20 AM, David Howells wrote:
-> syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com> wrote:
-> 
->> Fixes: 9c8ad7a2ff0b ("uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]")
-> 
-> This would seem unlikely to be the culprit.  It just changes the numbering on
-> the fsconfig-related syscalls.
-> 
-> Running the test program on v6.5-rc3, however, I end up with the test process
-> stuck in the D state:
-> 
-> INFO: task repro-17687f1aa:5551 blocked for more than 120 seconds.
->        Not tainted 6.5.0-rc3-build3+ #1448
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:repro-17687f1aa state:D stack:0     pid:5551  ppid:5516   flags:0x00004002
-> Call Trace:
->   <TASK>
->   __schedule+0x4a7/0x4f1
->   schedule+0x66/0xa1
->   schedule_timeout+0x9d/0xd7
->   ? __next_timer_interrupt+0xf6/0xf6
->   gfs2_gl_hash_clear+0xa0/0xdc
->   ? sugov_irq_work+0x15/0x15
->   gfs2_put_super+0x19f/0x1d3
->   generic_shutdown_super+0x78/0x187
->   kill_block_super+0x1c/0x32
->   deactivate_locked_super+0x2f/0x61
->   cleanup_mnt+0xab/0xcc
->   task_work_run+0x6b/0x80
->   exit_to_user_mode_prepare+0x76/0xfd
->   syscall_exit_to_user_mode+0x14/0x31
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f89aac31dab
-> RSP: 002b:00007fff43d9b878 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-> RAX: 0000000000000000 RBX: 00007fff43d9cad8 RCX: 00007f89aac31dab
-> RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff43d9b920
-> RBP: 00007fff43d9c960 R08: 0000000000000000 R09: 0000000000000073
-> R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
-> R13: 00007fff43d9cae8 R14: 0000000000417e18 R15: 00007f89aad51000
->   </TASK>
-> 
-> David
-> 
-Hi David,
+On 28/07/2023 12:28, Varshini Rajendran wrote:
+> Remove microchip,sam9x60-spi compatible from the list as the fallback is
+> really atmel,at91rm9200-spi.
 
-This indicates gfs2 is having trouble resolving and freeing all its 
-glocks, which usually means a reference counting problem or ail (active 
-items list) problem during unmount.
+Sorry, this explanation tells me nothing. The fallback is really
+microchip,sam9x60-spi... You need to explain in commit msg why sam9x60
+is incorrect as fallback.
 
-If gfs2_gl_hash_clear gets stuck for a long period of time it is 
-supposed to dump the remaining list of glocks that still have not been 
-resolved. I think it takes 10 minutes or so. Can you post the console 
-messages that follow? That will help us figure out what's happening. Thanks.
+> 
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml b/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+> index 58367587bfbc..32e7c14033c2 100644
+> --- a/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/atmel,at91rm9200-spi.yaml
+> @@ -22,7 +22,6 @@ properties:
+>            - const: atmel,at91rm9200-spi
+>        - items:
+>            - const: microchip,sam9x7-spi
+> -          - const: microchip,sam9x60-spi
 
-Regards,
+If that's true, then it should be part of previous enum.
 
-Bob Peterson
+>            - const: atmel,at91rm9200-spi
+>  
+>    reg:
+
+Best regards,
+Krzysztof
 
