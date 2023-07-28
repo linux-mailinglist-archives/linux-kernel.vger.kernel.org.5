@@ -2,343 +2,557 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E50E766545
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AEB76654A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjG1H07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55012 "EHLO
+        id S234310AbjG1H1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234046AbjG1H0i (ORCPT
+        with ESMTP id S234244AbjG1H0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:26:38 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C2A3C1D;
-        Fri, 28 Jul 2023 00:26:33 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S2NHS1032033;
-        Fri, 28 Jul 2023 00:26:30 -0700
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s44uggptx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 00:26:29 -0700
-Received: from m0045849.ppops.net (m0045849.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36S7Nrvt026757;
-        Fri, 28 Jul 2023 00:26:29 -0700
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s44uggptu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 28 Jul 2023 00:26:29 -0700
+        Fri, 28 Jul 2023 03:26:42 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F41B3A8B;
+        Fri, 28 Jul 2023 00:26:39 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFA6oz1paiiK+xH0Akrzm6DH4/9D9+/XBRfGQduAg9sODSJtd2rJWW0GYjkf6wXKRq4+Gh9dnVoIpcg97Qyypy79AwXTta0NUSUoO9f1wQUhVsPIJO+wsHdlGGmVxlMjzit1y3b8ki66tcp5UXb5+0Qyv6O9iSNdASmpTYZKbmFEt6fJ6hxlMUuworpWW0QyIYIxtQQW9MudlpErw2UAv1lwJccL5FhRUMdhCsWKhYQPZIwbnO9zc5W9HXbWzW9Y/whWXcyIA2Gv+UFdwUVJCk90MCGBzC7iacExFihlV8vjgqoxQn+eVkDGFzHmMA9mCUIfbU/sND+eVKTsr3lh0Q==
+ b=EF+fGvR4OBiI6LMCZJvdVuJ+iNd13Qq2Ngg5vlgoi1dXxbb1S9h6INGivzhNgn+yXgrg3RZfyO3MaNBVzxd/o94UpFrbK4O8SK/GvCkupw1VHMfCgcVbnrf7AdCwdED4XYGfGztNTP91VZs9VzCFX5CvCX63H/glbQnCTcjxF4GbgoVocFCCFAU1/7Xs/Hiqtlwa5Mt7C//5esLxljhnPlpHOkKyhvLSt4VaLpV1mwyfOZ8Q8cC1TQWn+FGd+3U126mJ1jDzsOFjNrfSpn9njHPLMHJkpsUAClO/JWX9ChObmnWFpTJSxqZKBK4Q6bAg2IwbFAPUnIj3kfGvmV8hrg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9oqtLVSOtDzCx0D7pjK2CGdFQDn4AYd6imNMptPdr6E=;
- b=m3zUZi+xRDpvGoTT+Lp4HWkeUjNozI9t20lTJ0owEUkFskRKX+x0Mt+kSCqRyFCHu3tprgp12ZM6MRuVF+Cu5oe8a6oe/g+h3MVivf1FqbeEZ8AC6G5UmKsZJnpCK0rHl2WLwFMyIQ/kgodUql/Z2o64oBmvmvx9LDeUxAG3odoku1VvaGH8nzKsUu7rsa5f7aHzO5LXruli/6+v4m4HX89g9rAGCna3faNaJuXZ71MS7QyMA/2X0M+lnmlavZ/JqLDZL7SIf4A7fL86rpNrT/JNc9aXE/9F+Bozi1UDcGJ+i9PBsdeTumgE5fngHtQQz7DNxOXVSPnZQpNJ5E3diQ==
+ bh=6YnMa943IaLT1zPYOXIwbj9Uh3YFWLDIQg6XYWGD3Kw=;
+ b=g4T4WOG5fF7rtAyhH0FEkVGR+vOX8Mx6u2dfBuRdJkQCdrDvZBQrvqt0EOM87WkuQVorgAFXbXFA5GcjXfG1HCojYXDKf1OorxsCWNTGYbR6rtzWhmVgnoGi4f8RlXuwk1LeZ9EDWO1Jd8nVNfVWZArxohRnh2LL9FLS9oHYzYlOzkD+6JHYlkdtpUvNPMTqnGhFhQGjo3YrfA31d7dOu3Eal/RwV6wwcilPMpRuYGGkpTXMNZ/MGq3+FXiaT2xeSYP5sBUfTBNiPmykjMNEq+QzvDeg0TtQj4RJ9GG88O7RGn3mqm2ef9ZGKPmCjK/6mdUtvQbjErBOzYmSsB+PnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9oqtLVSOtDzCx0D7pjK2CGdFQDn4AYd6imNMptPdr6E=;
- b=I7IXZ4Zp2voFd7CxM8dq3AC4HyKdThEjSUTETp6KcZ8IojxV7PUo4fYitnBdph8AZfxn82ejia6DwHWi9UnPbTmCxceMEOyLTnx0+yGL1bA0V38P46CdwzhBvegiHzsgLLk46rFdA/UnTErbxzjwEVHMue38IKvTjnhZswkLV+Q=
-Received: from DM4PR18MB5220.namprd18.prod.outlook.com (2603:10b6:8:53::16) by
- PH7PR18MB5178.namprd18.prod.outlook.com (2603:10b6:510:158::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.29; Fri, 28 Jul 2023 07:26:25 +0000
-Received: from DM4PR18MB5220.namprd18.prod.outlook.com
- ([fe80::5bc6:1bcd:632:4db2]) by DM4PR18MB5220.namprd18.prod.outlook.com
- ([fe80::5bc6:1bcd:632:4db2%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 07:26:24 +0000
-From:   Saurav Kashyap <skashyap@marvell.com>
-To:     Oleksandr Natalenko <oleksandr@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Rob Evers <revers@redhat.com>
-Subject: RE: [EXT] [PATCH 0/3] scsi: qedf: sanitise uaccess
-Thread-Topic: [EXT] [PATCH 0/3] scsi: qedf: sanitise uaccess
-Thread-Index: AQHZwSDpRRSk+cuWs0Ox5FI9qOsZ96/OxzMQ
-Date:   Fri, 28 Jul 2023 07:26:24 +0000
-Message-ID: <DM4PR18MB5220645416C02E2250D03B69D206A@DM4PR18MB5220.namprd18.prod.outlook.com>
-References: <20230728065819.139694-1-oleksandr@redhat.com>
-In-Reply-To: <20230728065819.139694-1-oleksandr@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc2thc2h5YXBc?=
- =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy0wYzFlNzRjNC0yZDE4LTExZWUtOTUyYi0wNGI5?=
- =?us-ascii?Q?ZTM5ZDMzNDRcYW1lLXRlc3RcMGMxZTc0YzYtMmQxOC0xMWVlLTk1MmItMDRi?=
- =?us-ascii?Q?OWUzOWQzMzQ0Ym9keS50eHQiIHN6PSIzMTY0IiB0PSIxMzMzNTAwMjc4MjI2?=
- =?us-ascii?Q?MDg3NzAiIGg9ImtjSWRYdzBOM3JmOTFtSlJLbWpNQTZ3MEY1QT0iIGlkPSIi?=
- =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQU40UEFB?=
- =?us-ascii?Q?Q0NzU2ZQSk1IWkFmeHdkT3NBd2tYWS9IQjA2d0RDUmRnWkFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFFQUFRRUJBQUFBSTdxVHBBQ0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFa?=
- =?us-ascii?Q?QUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNB?=
- =?us-ascii?Q?QmxBSElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FB?=
- =?us-ascii?Q?QUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdC?=
- =?us-ascii?Q?MUFHMEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhV?=
- =?us-ascii?Q?QWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
- =?us-ascii?Q?TUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dC?=
- =?us-ascii?Q?a0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcw?=
- =?us-ascii?Q?QVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0Jm?=
- =?us-ascii?Q?QUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFB?=
- =?us-ascii?Q?QUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhB?=
- =?us-ascii?Q?Y3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FB?=
- =?us-ascii?Q?QUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFa?=
- =?us-ascii?Q?UUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpB?=
- =?us-ascii?Q?R3dBWVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpR?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJm?=
- =?us-ascii?Q?QUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFh?=
- =?us-ascii?Q?UUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
- =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtB?=
- =?us-ascii?Q?SElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQ2dBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
- =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFG?=
- =?us-ascii?Q?OEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFC?=
- =?us-ascii?Q?aEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNn?=
- =?us-ascii?Q?QjJBR1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhN?=
- =?us-ascii?Q?QVh3QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0Js?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FC?=
- =?us-ascii?Q?eUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFB?=
- =?us-ascii?Q?Y2dCcEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
- =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndC?=
- =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
- =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2?=
- =?us-ascii?Q?QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dB?=
- =?us-ascii?Q?YkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtB?=
- =?us-ascii?Q?R2tBWXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFB?=
- =?us-ascii?Q?QUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFh?=
- =?us-ascii?Q?Z0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FH?=
- =?us-ascii?Q?VUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFB?=
- =?us-ascii?Q?RzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJn?=
- =?us-ascii?Q?QmhBRzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3?=
- =?us-ascii?Q?QVh3QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
- =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFY?=
- =?us-ascii?Q?d0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFH?=
- =?us-ascii?Q?RUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndC?=
- =?us-ascii?Q?bkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
- =?us-ascii?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3?=
- =?us-ascii?Q?QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdV?=
- =?us-ascii?Q?QWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
- =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FI?=
- =?us-ascii?Q?SUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFC?=
- =?us-ascii?Q?eUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElB?=
- =?us-ascii?Q?WHdCaEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
- =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhV?=
- =?us-ascii?Q?QWN3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dC?=
- =?us-ascii?Q?MkFHVUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBQUFBQUFF?=
- =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUEiLz48L21ldGE+?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR18MB5220:EE_|PH7PR18MB5178:EE_
-x-ms-office365-filtering-correlation-id: 5c465b39-2242-4f05-8bd0-08db8f3bf30c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GuESSxgRDwUlJd6QY1qqVZe+jrcGWqtZLHtclPautGMrO6achOY5vJXnpD5JbpHKW2RnqD9DXVyAIwPo8I4pAcPac36zKU/aSovwlistkgwEUsC30X17F3XSBT7uMVFpKeaBpBWr/MJl/WHSp7siaJt+5mUvT/pRx1oz8DibkKafzH/uyZJgu5KuNb47aQlASZvKAmNnWNK74POe9zwyXGm/mLLAw5yIYU/3sVIatpir3PyN3VgLaAr8uJJDvb+nOXrdti3IOPoGkE/nhSZuuqYtxktgN7xhqxJHFcfwMkg/KUADMhQLyymrd+PXAExeqxph/DaSGdPF6T96VCFNVVGfic1a/WqFN6GuTAizO/d6KGEqBbyJl3SLr5UIN56BJdZaWQYSlwEqPoTlgp3FXK98RNLKeiycA7FsMXzIoRwq4/JApjUm6q5KA7uxx9ybNoip9zEPP20vz/lbciYSJqnc+RDQi+M0ls5OyMcgCxpwQQbNv3DpC3EhN9WE8v2JXzAZMV9WLO8AkQEEpJ2UsI3NLrRzDbYWsuj9/1+FqaFQlzlV3aVstRHMQQFJDtWghF/9W/IuYn3mawkqt5tHpqTRVkJzWO0uouGSYaXw3JE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR18MB5220.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(136003)(366004)(396003)(39860400002)(451199021)(71200400001)(7696005)(478600001)(83380400001)(966005)(53546011)(9686003)(26005)(6506007)(66446008)(66946007)(66476007)(76116006)(66556008)(64756008)(38100700002)(122000001)(54906003)(110136005)(186003)(4326008)(5660300002)(52536014)(33656002)(41300700001)(38070700005)(316002)(2906002)(8676002)(8936002)(86362001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vu04hYMhK9/Tv+le77/6kumIS+ZSiexL8dcCTseYlRwJ5wprzes94Ta7GKWb?=
- =?us-ascii?Q?m2FfIObLKV8RIemsbylq2XWJb9aIbudrWOLM3NfJ0MK+eee627Qimtk7u/yI?=
- =?us-ascii?Q?IVSlXPvQNpdGiUTR+VeESOP7Y+V7socuCFytYKA+9wmtt001qmf2I3T9Es2R?=
- =?us-ascii?Q?Rd44KhvBq/tdQ6HFO+jeZ3CPp0SyZDao0LcRvRwpEcP4G0vuziJ4GbaFwLA/?=
- =?us-ascii?Q?XSmtdKCtxcOX23fo3gNlvCrjSC8XB+PMfFP0odWvJZz/HNE+t1ZmSQ7UoK5r?=
- =?us-ascii?Q?reFKC1Uxv3HNaPW1FepgkbvlQ7hrZss7R24BrF5PT4twWymN64MxeqU9BuRP?=
- =?us-ascii?Q?kHZi2cV14rj331y2UG0hoeXXPmDH66NVF2pjBiJ8/X2L2EsKZGmbUOve03Nn?=
- =?us-ascii?Q?cYKlE0i+N0eApxQoHhaxeYT4lcgd56c+D9uXjCgEt+yLNBdNd3uBy2mGgaHa?=
- =?us-ascii?Q?ykEPB9x/ox9ybQDlDkHPzXBHi7Nkz+12RlqyMIurLXoFX5NBOvho1G076zLw?=
- =?us-ascii?Q?eMUMFNRMvpanLmAFAnlI3vuirPaQbK9ezJMK9LUb2xIUfWriH3V+DNdFhIUl?=
- =?us-ascii?Q?L8Bwj9p49PwTnm+VSqk4WU3wxICnKFaogK6SXrm53Bwg3KDpaI4lkIH4otuA?=
- =?us-ascii?Q?+hRUH8KYO9aDlCsfsSi8gL3OXLukRDlioerXt/WA2WFChrJYBSr3dkxka9uU?=
- =?us-ascii?Q?n9NNUVywQRlh5FYvRAi63tIxaJ9+XRs0b4q+B3ygKqRePY20uJTnWyDI3K0R?=
- =?us-ascii?Q?h5lxfGWqCnolRX6r4Pqmg1kpbL2garCcXd30WbaOQNvGla4re8vxBY0sf0Cg?=
- =?us-ascii?Q?vaVHBeAQyYVW7exVDsQA7wtpJojEj2VxmRrgxiBnZL6rJGqPaF2vHX8Zn+zc?=
- =?us-ascii?Q?hHSALZDUAQ1R027ozm2gbxT45Nos2RA9fCq5t5MMe9uQoucw3brE6clqyK2F?=
- =?us-ascii?Q?B9Lry/HTJqBMrdjm2yEKCcwO6tr8HsvtC3IkGkyl8spk0yaRoZG+fq1ZiOll?=
- =?us-ascii?Q?Af+OfBmffgEH2d/p5Zee3iUUAQvRuVhvew9qKNCQpLQC/5mmIJvcNJhCBJ90?=
- =?us-ascii?Q?5TxJ6xbIMCimAtRDjxwGpC2uN8YHTYoH6LvzVwxzgR+Any5HNG9MBb2w5E33?=
- =?us-ascii?Q?b7eNCffMEFWW5OQgWV43ImQgnx0cGDwBPTMFLMybvR3aIci+z4iOpgx5xyTL?=
- =?us-ascii?Q?wMmYSXKkX3LjXst+cgkmL6fcgPV7s2TOL01H+9ew4gQNn4cVPpuI46AN2j17?=
- =?us-ascii?Q?o1M1BbQTOcU/yJtZUn5hZCsIs/nsRXY3deCcG8/wzwbAPM7C4pe9sE/u9fQI?=
- =?us-ascii?Q?/3MxwhdpW5EjEMVqY8AhS28ibFXU4ABsNESHJMUNsevL4IJV5CdQ5fJUY+Vz?=
- =?us-ascii?Q?QNq+bmQ40hkrV/DDEToZpAgR9OfSYtyVfZAfjw5ePxrH0UZZC7OVPEpTRirF?=
- =?us-ascii?Q?ojwK4fXirZ1Ebh80lwGIWdnXVARdWqlCDwS1FDzJq5yMakNGD8yxBvbZOv5F?=
- =?us-ascii?Q?ErGXGv4/1uFm2Gu3cZa0e7DqyL73JMS4xtnFbyZ3qNbuKITUM6hioDG8Rzxf?=
- =?us-ascii?Q?A4q9SpiKIKeSrL49bkc=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=6YnMa943IaLT1zPYOXIwbj9Uh3YFWLDIQg6XYWGD3Kw=;
+ b=jnoK+NsZ4sQ6gnFJ5Pim1iqQgizOuVisdwpdf+7iH0O9G1Uf6MiMGOA9YrwwSuUpFTw4rV6ZxcIy4d2tiYdFEY38G/1yIQccshTSTBUp4Ml7VWzH75a4JuBUGZOm4XDfg3VveCFdxCu/IKCwUTJX5V2xZWRn4gGYAqT0joqhU6c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB5196.namprd03.prod.outlook.com (2603:10b6:5:24a::19)
+ by CH2PR03MB5285.namprd03.prod.outlook.com (2603:10b6:610:9c::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 07:26:37 +0000
+Received: from DM6PR03MB5196.namprd03.prod.outlook.com
+ ([fe80::411c:e486:3837:cc25]) by DM6PR03MB5196.namprd03.prod.outlook.com
+ ([fe80::411c:e486:3837:cc25%3]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 07:26:37 +0000
+Message-ID: <08588eb0-0e3f-828a-65be-50460560095d@synaptics.com>
+Date:   Fri, 28 Jul 2023 15:26:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 10/11] media: v4l2: Add DELETE_BUF ioctl
+Content-Language: en-GB
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        p.zabel@pengutronix.de, ming.qian@nxp.com,
+        hverkuil-cisco@xs4all.nl, gregkh@linuxfoundation.org,
+        ezequiel@vanguardiasur.com.ar,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, nicolas.dufresne@collabora.com,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        mchehab@kernel.org, m.szyprowski@samsung.com,
+        ayaka <ayaka@soulik.info>
+References: <20230622131349.144160-1-benjamin.gaignard@collabora.com>
+ <20230622131349.144160-11-benjamin.gaignard@collabora.com>
+ <80a03c29-6f3d-43f1-755c-10f3ae2c2756@synaptics.com>
+ <42a45bad-09c7-ffb6-49cb-29ec0826599d@collabora.com>
+ <3b22fda9-4a0e-2c03-2f12-19e5e3239235@synaptics.com>
+ <54833256-7d88-9316-4f0f-b8c57552cd7b@synaptics.com>
+ <20230713090944.3gxrxt7lqnozhu7r@chromium.org>
+ <e4bb9520-489f-2bb3-4a17-668c3f448668@synaptics.com>
+ <CAAFQd5D8bTdqT4tS5R4P60+T+qLcqQ-JMeA3vSN6TRLQXCazWw@mail.gmail.com>
+From:   Hsia-Jun Li <Randy.Li@synaptics.com>
+In-Reply-To: <CAAFQd5D8bTdqT4tS5R4P60+T+qLcqQ-JMeA3vSN6TRLQXCazWw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BY5PR03CA0021.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::31) To DM6PR03MB5196.namprd03.prod.outlook.com
+ (2603:10b6:5:24a::19)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR03MB5196:EE_|CH2PR03MB5285:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98d06053-9ca0-43fa-a022-08db8f3bfa71
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cX0GFrYIXEyUlnpjP5NAFHGx5vOv2QKdNYE2VouHFADOSMRyjATFeQjE82USjmYfBXGfMiqaOYSaVFJsMNeroTpOXWxx4Vl2fkNxKnGU5drZ8kcgO3uqmaShF5TiOcoTsJ9uDDuHPXVB4eFGT1PtPsk0Y+NZEJTK/85UDVMCdJzsnHqWjE1SKfIi2xWd1jqSs0qPZHKOOi+l0wSqeM6Eg7xeMHVsxtpgvdpuz0m83bIRqdSIXiCswa0sH4QUNwYIYsSbE3PgNyYmW22vxyD6cUjEQrZhANhO11BTotblEHRQlLSjD033rcd/Iir8isbax9jy12Hj8S6aIYqhgeciTQettM8GNxvq/+9tlxJmDSuTDc/9FBdowXqsDexwv+kMHS8jHn9BWhQ2zGHnpT5NdSjpviw5841l7pLlMT/Up6ydwun6SAd5beszEmXVzUZjl5wTO0ZDDHpB5BNCHJjxRsmuHxKWWhhvkt6pijnxSfUTwvtJMVby8RZkdpnpTNy1As1MSBAbVi7ajiu67jVMznDIkAfNcXu7+DFE0uQRB1fXgPnz71djUHmPO2gidIY9qlz2yDr49fJaohVQSzjGBefV6/m3G9Vm5lglVi7GYsdglnmTQN5TEI1ZO8Ux+3pE002fAEtWyEZZno/7xEf/Yl/wExDkbX1J+Y8J45dbqkQIfBXkxGn1R93lM/CKDMMt
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB5196.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(39850400004)(376002)(136003)(366004)(451199021)(38100700002)(54906003)(6666004)(6486002)(478600001)(38350700002)(52116002)(316002)(8676002)(41300700001)(6916009)(2616005)(66476007)(66946007)(8936002)(66556008)(5660300002)(4326008)(186003)(66574015)(83380400001)(26005)(53546011)(6506007)(6512007)(31696002)(86362001)(30864003)(2906002)(7416002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWxiM2NCK2s3NzRRdjhCMnBERCs4R1NDR3lmWDU4SUNzeFhuMXdpc0ZZcndC?=
+ =?utf-8?B?amVCMzBDM3pORnBCT1FoVWN4U01NZStSTjJpY1M4Lzg2cWorSG1VNDkyVXpv?=
+ =?utf-8?B?bm5KM09HVFBreHdrLzFKbW45U3pwWkVVOGI5eFV0U2l5c3dSS1Vpc0ZoUU5P?=
+ =?utf-8?B?aitxZUFlYVBIaXpGaFBUWUIzV2VEWm5jOVhEUGh1cVFjenRIYnlHZG1vUG1G?=
+ =?utf-8?B?aXhTZWh0T3BmN3VmenlpSFNmSUJyMk01TCtuTE01ZzVVcDRkMStVL2JRR2xn?=
+ =?utf-8?B?d1J4SmVpNHhCaCtpZXV6L0JlTnlRSW1UYzIzSnE5S3N6d0hRS01hTGNCUTNB?=
+ =?utf-8?B?SXBZbStHQ3gvaXQwRWVjZEFtZXRPd2Z2RXFodktuV2VyaE9xRXhSUTg4RnQw?=
+ =?utf-8?B?d1grRVVWZ2JTZ1pPL0Jsdk1ITkJDNkNsbFc4aDMrTjB3RTc4SjVZUms5TGJk?=
+ =?utf-8?B?M2tPTDBZT2dmVUdsV0xkN3hwcHd6UWVDejFQMjZHb29aYW5ldCt5bzBrSlNt?=
+ =?utf-8?B?eWpycUgzTGVQREQ2TmMvSEUwSUdwTTdGR0RqWEtWNk1NbU5YRUxTVDhURGdE?=
+ =?utf-8?B?Z1p3bDVaT0hxT2hjNDJrZHdkeVAybXg1Y3h5QWVMUCtUcGJzUktWMXBjcFF5?=
+ =?utf-8?B?cHRxSUVJQjV2QjhQOGRGYW00MUZiWkdpUTI0UGcwR0RRVisyWlFDYkI2Nkhy?=
+ =?utf-8?B?bmJrbnBwMTBzcElTYnVhVTdwSm4vTWdxNXRGaFNmK2FyZEpudndpZ1ZVcWpm?=
+ =?utf-8?B?bjdqUlNJdTEvaW5taHNMQTU2S21qYnZCQjRpajZhSUNHQmwxM0FmZDNwWGg2?=
+ =?utf-8?B?OU83dVZieFZkLzYycEJFQlpsaFMrd1hGOXpvTS9LVllaTytSWnRaV01RN2la?=
+ =?utf-8?B?V3k3UXVzVzZYbGNhT2MycXJrN1E0T1FGejQ5Slh6eWdsRm8rUmptQ3pMNkF0?=
+ =?utf-8?B?Qi9mUW9VRGxXLy9jSFFxVmlkRW05S3lHYUhJK0k0WURTa0ZyQkgyd2JUbjVh?=
+ =?utf-8?B?NHBDd0hOdWtiNWduN2w5QmxGZWIyMzBIdCtYVW1ibXJaZzRqbm5PYk4reTQw?=
+ =?utf-8?B?Q1VmMkd2NElPNHRVbElPTHMyaUErNXdLNTdnTjBlMWxRbDR0cUl4WHBLVFp2?=
+ =?utf-8?B?Sk5wU2VYcTZ6bnZ3V1lrQ2FGeFhiM2JtZmhBZHhkNTlqQnRLTU9XWG4rU0kz?=
+ =?utf-8?B?QmRtVDQxZEhwQVk3OWRDUlFZZU9seWNBLzg2MXhsbTFMdDYyeStHM0Z5YlI0?=
+ =?utf-8?B?R295R3pBVGk0Z1N4SWp6WkZxZ0N5R2FPc0xUQ0JlanM3T2kxVzE2S2hyYjVT?=
+ =?utf-8?B?Sm9jNkg1R2UzSHVNS0NLTTZ0Y1ViQzRKOG9NVFY5VGZCTDNneEhCYXZxNWNx?=
+ =?utf-8?B?dG9nNk1Rd0RZQ1VsME55Yk5Nd1dvUFZPQzdVQmpZcUkzRjIvNjZGOXV0M1cw?=
+ =?utf-8?B?U1hwUUZKRVZXU2oyS3ZDeHJRNFduZkZZV1JIT3NxM2x2REErTm8zS1d4MkNN?=
+ =?utf-8?B?K1BpbzkwUERnbm5SNFBuVVoxYVlXNSswVzQxQmttRHk0ZUszQzBNQXkva0s1?=
+ =?utf-8?B?THNQc1VZZ2JsZVlkeFU4RlhVZUR1N01DV2FaMVBFUGp2Ukp3ZzgzUGp6eXFV?=
+ =?utf-8?B?TXJDYlNObUhkRnhoV3hkY1VjUHhwN3hHQ1N0ZWtRdkM3MjZZTGNlNktIdjll?=
+ =?utf-8?B?SjJuWmVEZGUvUGRmSE80MkJvTHRlL05QN3AvcmxXWWtZbHlydEpPakVIQmVp?=
+ =?utf-8?B?ZlovcHo2UERvcGxzejJ1VjIwZklQV1pQRmZwaFM3RHc4ZUdHbmNzS2VieURF?=
+ =?utf-8?B?aDRKZDlCMGNDRndCeE5ScklVVXpZV05YV0hObTdtL0Vsck04SUMyNEdxeFNR?=
+ =?utf-8?B?aHFVNHF4dHNZakN5NTNhU3ZocjJUTUI0WTdrZTJjQk1tNnhuRUJJWmJqM3Jq?=
+ =?utf-8?B?ditYaW9NdUVMNkpmWTY4N3dwN0V4S1dyaEltZGd2VEFqZWY0ajVmTmQ4OTBs?=
+ =?utf-8?B?bXhoU29xMXpXVjBoM0dEQWdkMlZ4RXVSUG5YazVoZXFBZStjNHB1QWE5TjdO?=
+ =?utf-8?B?dEpEVWRoQjRHcmwvaUJOb0E4dHpNcms2R0kxcTJqTUJzYkNwNS8wQm1HeEZt?=
+ =?utf-8?Q?GhZaippR+VM3KtrszN2Il4Os/?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98d06053-9ca0-43fa-a022-08db8f3bfa71
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB5196.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR18MB5220.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c465b39-2242-4f05-8bd0-08db8f3bf30c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 07:26:24.6373
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 07:26:37.1878
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xem/7vDgjw2P29HM2zw6b9aEiBGLbkAQmSaw3JiD9UZDBgcCHkYccXV5UbgDWguKQwh1f5wQpSimS57QGbd5Xw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR18MB5178
-X-Proofpoint-GUID: HQ0CsRVInTwNRVSDfnAeODGaLwR5SEZs
-X-Proofpoint-ORIG-GUID: 2aHNL1tIOmWE8AemNSQMQyHC_IFtys6_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 70xINtGZSwR9QjsuWKfdgxt8L+XNzrZlnWVSu2OOFpAy8A6aze7tkjKNq3YkY5tNxRtMXPwrsK0ME1clt9lmvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR03MB5285
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Saurav Kashyap <skashyap@marvell.com> for full series.
 
-> -----Original Message-----
-> From: Oleksandr Natalenko <oleksandr@redhat.com>
-> Sent: Friday, July 28, 2023 12:28 PM
-> To: linux-kernel@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org; Saurav Kashyap <skashyap@marvell.com>;
-> Johannes Thumshirn <Johannes.Thumshirn@wdc.com>; GR-QLogic-Storage-
-> Upstream <GR-QLogic-Storage-Upstream@marvell.com>; James E.J. Bottomley
-> <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@oracle.com>;
-> Jozef Bacik <jobacik@redhat.com>; Laurence Oberman
-> <loberman@redhat.com>; Rob Evers <revers@redhat.com>
-> Subject: [EXT] [PATCH 0/3] scsi: qedf: sanitise uaccess
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> qedf driver, debugfs part of it specifically, touches __user pointers
-> directly for printing out info to userspace via sprintf(), which may
-> cause crash like this:
->=20
-> BUG: unable to handle kernel paging request at 00007ffd1d6b43a0
-> IP: [<ffffffffaa7a882a>] string.isra.7+0x6a/0xf0
-> Oops: 0003 [#1] SMP
-> Call Trace:
->  [<ffffffffaa7a9f31>] vsnprintf+0x201/0x6a0
->  [<ffffffffaa7aa556>] sprintf+0x56/0x80
->  [<ffffffffc04227ed>] qedf_dbg_stop_io_on_error_cmd_read+0x6d/0x90
-> [qedf]
->  [<ffffffffaa65bb2f>] vfs_read+0x9f/0x170
->  [<ffffffffaa65cb82>] SyS_pread64+0x92/0xc0
->=20
-> Avoid this by preparing the info in a kernel buffer first, either
-> allocated on stack for small printouts, or via vmalloc() for big ones,
-> and then copying it to the userspace properly.
->=20
-> Previous submission is an RFC: [1]. There are no code changes since
-> then. The RFC prefix is dropped. The Tested-by tag from Laurence is
-> added.
->=20
-> There's similar submission from Saurav [2], but we agreed I could nack
-> it and proceed with my one.
->=20
-> [1] https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
-> 3A__lore.kernel.org_linux-2Dscsi_20230724120241.40495-2D1-2Doleksandr-
-> 40redhat.com_&d=3DDwIDAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3DZHZbmY_LbM3
-> DUZK_BDO1OITP3ot_Vkb_5w-
-> gas5TBMQ&m=3DI6CdYJNbvw1q9OWTYmMTCWzCcXFG7MelqlMZ_DmhEMDeW
-> ViVj2b3_EadDZUUdzNT&s=3DjoHzWsadjq2HUMSxGvJZMkLQULriRotQk2RYPgDW
-> pWc&e=3D
-> [2] https://urldefense.proofpoint.com/v2/url?u=3Dhttps-
-> 3A__lore.kernel.org_linux-2Dscsi_20230726101236.11922-2D1-2Dskashyap-
-> 40marvell.com_&d=3DDwIDAg&c=3DnKjWec2b6R0mOyPaz7xtfQ&r=3DZHZbmY_LbM
-> 3DUZK_BDO1OITP3ot_Vkb_5w-
-> gas5TBMQ&m=3DI6CdYJNbvw1q9OWTYmMTCWzCcXFG7MelqlMZ_DmhEMDeW
-> ViVj2b3_EadDZUUdzNT&s=3Dq2LVoTVsEfj1rCnih48VaDUxOCOobRLhIaTatga1qm
-> Q&e=3D
->=20
-> Oleksandr Natalenko (3):
->   scsi: qedf: do not touch __user pointer in
->     qedf_dbg_stop_io_on_error_cmd_read() directly
->   scsi: qedf: do not touch __user pointer in qedf_dbg_debug_cmd_read()
->     directly
->   scsi: qedf: do not touch __user pointer in qedf_dbg_fp_int_cmd_read()
->     directly
->=20
->  drivers/scsi/qedf/qedf_dbg.h     |  2 ++
->  drivers/scsi/qedf/qedf_debugfs.c | 35 +++++++++++++++++++-------------
->  2 files changed, 23 insertions(+), 14 deletions(-)
->=20
-> --
-> 2.41.0
 
+On 7/28/23 14:57, Tomasz Figa wrote:
+> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
+> 
+> 
+> On Mon, Jul 17, 2023 at 11:17 AM Hsia-Jun Li <Randy.Li@synaptics.com> wrote:
+>>
+>>
+>> On 7/13/23 17:09, Tomasz Figa wrote:
+>>> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
+>>>
+>>>
+>>> On Fri, Jun 30, 2023 at 05:43:51PM +0800, Hsia-Jun Li wrote:
+>>>> On 6/27/23 16:47, Hsia-Jun Li wrote:
+>>>>> CAUTION: Email originated externally, do not click links or open
+>>>>> attachments unless you recognize the sender and know the content is
+>>>>> safe.
+>>>>>
+>>>>>
+>>>>> On 6/27/23 16:43, Benjamin Gaignard wrote:
+>>>>>> CAUTION: Email originated externally, do not click links or open
+>>>>>> attachments unless you recognize the sender and know the content is
+>>>>>> safe.
+>>>>>>
+>>>>>>
+>>>>>> Le 27/06/2023 à 09:30, Hsia-Jun Li a écrit :
+>>>>>>> On 6/22/23 21:13, Benjamin Gaignard wrote:
+>>>>>>>> CAUTION: Email originated externally, do not click links or open
+>>>>>>>> attachments unless you recognize the sender and know the content is
+>>>>>>>> safe.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> VIDIOC_DELETE_BUF ioctl allows to delete a buffer from a queue.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>>>>>> ---
+>>>>>>>>     .../userspace-api/media/v4l/user-func.rst     |  1 +
+>>>>>>>>     .../media/v4l/vidioc-delete-buf.rst           | 51
+>>>>>>>> +++++++++++++++++++
+>>>>>>>>     .../media/common/videobuf2/videobuf2-core.c   | 33 ++++++++++++
+>>>>>>>>     .../media/common/videobuf2/videobuf2-v4l2.c   |  6 +++
+>>>>>>>>     drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+>>>>>>>>     drivers/media/v4l2-core/v4l2-ioctl.c          | 10 ++++
+>>>>>>>>     include/media/v4l2-ioctl.h                    |  4 ++
+>>>>>>>>     include/media/videobuf2-core.h                |  9 ++++
+>>>>>>>>     include/media/videobuf2-v4l2.h                | 11 ++++
+>>>>>>>>     include/uapi/linux/videodev2.h                |  2 +
+>>>>>>>>     10 files changed, 128 insertions(+)
+>>>>>>>>     create mode 100644
+>>>>>>>> Documentation/userspace-api/media/v4l/vidioc-delete-buf.rst
+>>>>>>>>
+>>>>>>>> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst
+>>>>>>>> b/Documentation/userspace-api/media/v4l/user-func.rst
+>>>>>>>> index 15ff0bf7bbe6..8c74016e12fd 100644
+>>>>>>>> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+>>>>>>>> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+>>>>>>>> @@ -17,6 +17,7 @@ Function Reference
+>>>>>>>>         vidioc-dbg-g-chip-info
+>>>>>>>>         vidioc-dbg-g-register
+>>>>>>>>         vidioc-decoder-cmd
+>>>>>>>> +    vidioc-delete-buf
+>>>>>>>>         vidioc-dqevent
+>>>>>>>>         vidioc-dv-timings-cap
+>>>>>>>>         vidioc-encoder-cmd
+>>>>>>>> diff --git
+>>>>>>>> a/Documentation/userspace-api/media/v4l/vidioc-delete-buf.rst
+>>>>>>>> b/Documentation/userspace-api/media/v4l/vidioc-delete-buf.rst
+>>>>>>>> new file mode 100644
+>>>>>>>> index 000000000000..0e7ce58f91bc
+>>>>>>>> --- /dev/null
+>>>>>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-buf.rst
+>>>>>>>> @@ -0,0 +1,51 @@
+>>>>>>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>>>>>>> +.. c:namespace:: V4L
+>>>>>>>> +
+>>>>>>>> +.. _VIDIOC_DELETE_BUF:
+>>>>>>>> +
+>>>>>>>> +************************
+>>>>>>>> +ioctl VIDIOC_DELETE_BUF
+>>>>>>>> +************************
+>>>>>>>> +
+>>>>>>>> +Name
+>>>>>>>> +====
+>>>>>>>> +
+>>>>>>>> +VIDIOC_DELETE_BUF - Delete a buffer from a queue
+>>>>>>>> +
+>>>>>>>> +Synopsis
+>>>>>>>> +========
+>>>>>>>> +
+>>>>>>>> +.. c:macro:: VIDIOC_DELETE_BUF
+>>>>>>>> +
+>>>>>>>> +``int ioctl(int fd, VIDIOC_DELETE_BUF, struct v4l2_buffer *argp)``
+>>>>>>>> +
+>>>>>>>> +Arguments
+>>>>>>>> +=========
+>>>>>>>> +
+>>>>>>>> +``fd``
+>>>>>>>> +    File descriptor returned by :c:func:`open()`.
+>>>>>>>> +
+>>>>>>>> +``argp``
+>>>>>>>> +    Pointer to struct :c:type:`v4l2_buffer`.
+>>>>>>>> +
+>>>>>>>> +Description
+>>>>>>>> +===========
+>>>>>>>> +
+>>>>>>>> +Applications can optionally call the
+>>>>>>>> :ref:`VIDIOC_DELETE_BUF` ioctl to
+>>>>>>>> +delete a buffer from a queue.
+>>>>>>>> +
+>>>>>>>> +The struct :c:type:`v4l2_buffer` structure is specified in
+>>>>>>>> +:ref:`buffer`.
+>>>>>>>> +
+>>>>>>>> +Return Value
+>>>>>>>> +============
+>>>>>>>> +
+>>>>>>>> +On success 0 is returned, on error -1 and the ``errno`` variable is
+>>>>>>>> set
+>>>>>>>> +appropriately. The generic error codes are described at the
+>>>>>>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
+>>>>>>>> +
+>>>>>>>> +EBUSY
+>>>>>>>> +    File I/O is in progress.
+>>>>>>>> +
+>>>>>>>> +EINVAL
+>>>>>>>> +    The buffer ``index`` doesn't exist in the queue.
+>>>>>>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c
+>>>>>>>> b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>>>>>> index 899783f67580..aa546c972c3d 100644
+>>>>>>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>>>>>>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>>>>>> @@ -1637,6 +1637,39 @@ int vb2_core_prepare_buf(struct vb2_queue *q,
+>>>>>>>> unsigned int index, void *pb)
+>>>>>>>>     }
+>>>>>>>>     EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>>>>>>>>
+>>>>>>>> +int vb2_core_delete_buf(struct vb2_queue *q, unsigned int index)
+>>>>>>>> +{
+>>>>>>>> +       struct vb2_buffer *vb;
+>>>>>>>> +
+>>>>>>>> +       vb = vb2_get_buffer(q, index);
+>>>>>>>> +       if (!vb) {
+>>>>>>>> +               dprintk(q, 1, "invalid buffer index %d\n", index);
+>>>>>>>> +               return -EINVAL;
+>>>>>>>> +       }
+>>>>>>>> +
+>>>>>>>> +       if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+>>>>>>>> +               dprintk(q, 1, "can't delete non dequeued buffer index
+>>>>>>>> %d\n", index);
+>>>>>>>> +               return -EINVAL;
+>>>>>>>> +       }
+>>>>>>>> +
+>>>>>>> I know the driver could implement its own
+>>>>>>> v4l2_ioctl_ops->vidioc_delete_buf() that check whether a buffer is
+>>>>>>> used by the hardware as a future reference frame.
+>>>>>>> But I think we need a flag to let the user know which buffer is still
+>>>>>>> used by the hardware.
+>>>>>>> Alternative ref case is safe, we only know it's existing when it is
+>>>>>>> dequeued in current V4L2 buffer mechanism.
+>>>>>>> While the Golden reference frame, such long term reference frame could
+>>>>>>> last much longer.
+>>>>>> It is up to userland stack to know frames life time, it got the
+>>>>>> information for that.
+>>>>> That is true for the stateless codec driver.
+>>>>>
+>>>>> While application for stateful decoder could never do that. It also
+>>>>> breaks what the document said:
+>>>>>
+>>>>> "The backing memory of |CAPTURE| buffers that are used as reference
+>>>>> frames by the stream may be read by the hardware even after they are
+>>>>> dequeued. Consequently, the client should avoid writing into this memory
+>>>>> while the |CAPTURE| queue is streaming. Failure to observe this may
+>>>>> result in corruption of decoded frames."
+>>>>>
+>>>>>>>> +       if (vb->planes[0].mem_priv)
+>>>>>>>> +               call_void_vb_qop(vb, buf_cleanup, vb);
+>>>>>>>> +
+>>>>>>>> +       /* Free MMAP buffers or release USERPTR buffers */
+>>>>>>>> +       if (q->memory == VB2_MEMORY_MMAP)
+>>>>>>>> +               __vb2_buf_mem_free(vb);
+>>>> Here is another problem for the existing application, the mmap() from the
+>>>> mmap offset or exportbuffer fd would not create a reference to buffer in
+>>>> this step(while the exportbuffer would create one itself).
+>>>>
+>>>> When you delete a buffer, you may not release it from its virtual memory
+>>>> space, leaving a corrupted virtual memory space.
+>>> What do you mean? __vb2_buf_mem_free() doesn't unconditionally free the
+>>> memory, it just decrements a reference counter.
+>>
+>> struct dma_buf_ops->mmap() may not increase a reference to its buffer.
+I think we are talking the same refcount.
+That is vb2_vmarea_handler->refcount.
+While, I am thinking about refcount from vb2_dc_buf.
+> 
+> Both V4L2 mmap() and DMA-buf mmap() of buffers exported from V4L2
+> would increase a reference to the buffer. They both lead to
+> vb2_{dc,sg,vmalloc}_mmap() which open the VMA, which in turn calls
+> vb2_common_vm_open() that increases the buffer refcount.
+> 
+> Best regards,
+> Tomasz
+> 
+>>
+>> While struct vb2_mem_ops->get_dmabuf() would.
+>>
+>>> The VMA holds its own,
+>>> so the buffer is only fully released when the application calls
+>>> munmap().
+>>
+>> DELETE_BUF ioctl() didn't answer to this problem. Should the DELETE_BUF
+>> ioctl() make the no other user could access to this.
+>>
+>>>
+>>> Best regards,
+>>> Tomasz
+>>>
+>>>> Also this behavior is
+>>>> right, because mmap(2) says:
+>>>>
+>>>> "After  the  mmap()  call has returned, the file descriptor, fd, can be
+>>>> closed immediately without invalidating the map‐ping."
+>>>>
+>>>>>>>> +       else if (q->memory == VB2_MEMORY_DMABUF)
+>>>>>>>> +               __vb2_buf_dmabuf_put(vb);
+>>>>>>>> +       else
+>>>>>>>> +               __vb2_buf_userptr_put(vb);
+>>>>>>>> +
+>>>>>>>> +       vb2_queue_remove_buffer(q, vb);
+>>>>>>>> +       kfree(vb);
+>>>>>>>> +
+>>>>>>>> +       dprintk(q, 2, "buffer %d deleted\n", index);
+>>>>>>>> +       return 0;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>>     /*
+>>>>>>>>      * vb2_start_streaming() - Attempt to start streaming.
+>>>>>>>>      * @q:         videobuf2 queue
+>>>>>>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>>>>>> b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>>>>>> index 724135d41f7f..cea666c17b41 100644
+>>>>>>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>>>>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>>>>>> @@ -751,6 +751,12 @@ int vb2_prepare_buf(struct vb2_queue *q, struct
+>>>>>>>> media_device *mdev,
+>>>>>>>>     }
+>>>>>>>>     EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+>>>>>>>>
+>>>>>>>> +int vb2_delete_buf(struct vb2_queue *q, struct v4l2_buffer *b)
+>>>>>>>> +{
+>>>>>>>> +       return vb2_core_delete_buf(q, b->index);
+>>>>>>>> +}
+>>>>>>>> +EXPORT_SYMBOL_GPL(vb2_delete_buf);
+>>>>>>>> +
+>>>>>>>>     int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers
+>>>>>>>> *create)
+>>>>>>>>     {
+>>>>>>>>            unsigned requested_planes = 1;
+>>>>>>>> diff --git a/drivers/media/v4l2-core/v4l2-dev.c
+>>>>>>>> b/drivers/media/v4l2-core/v4l2-dev.c
+>>>>>>>> index f81279492682..80ace2e1e932 100644
+>>>>>>>> --- a/drivers/media/v4l2-core/v4l2-dev.c
+>>>>>>>> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+>>>>>>>> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct
+>>>>>>>> video_device *vdev)
+>>>>>>>>                    SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF,
+>>>>>>>> vidioc_prepare_buf);
+>>>>>>>>                    SET_VALID_IOCTL(ops, VIDIOC_STREAMON,
+>>>>>>>> vidioc_streamon);
+>>>>>>>>                    SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF,
+>>>>>>>> vidioc_streamoff);
+>>>>>>>> +               SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUF,
+>>>>>>>> vidioc_delete_buf);
+>>>>>>>>            }
+>>>>>>>>
+>>>>>>>>            if (is_vid || is_vbi || is_meta) {
+>>>>>>>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>>>>>> b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>>>>>> index a858acea6547..1c737279d3ef 100644
+>>>>>>>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>>>>>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>>>>>> @@ -2156,6 +2156,15 @@ static int v4l_prepare_buf(const struct
+>>>>>>>> v4l2_ioctl_ops *ops,
+>>>>>>>>            return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+>>>>>>>>     }
+>>>>>>>>
+>>>>>>>> +static int v4l_delete_buf(const struct v4l2_ioctl_ops *ops,
+>>>>>>>> +                         struct file *file, void *fh, void *arg)
+>>>>>>>> +{
+>>>>>>>> +       struct v4l2_buffer *b = arg;
+>>>>>>>> +       int ret = check_fmt(file, b->type);
+>>>>>>>> +
+>>>>>>>> +       return ret ? ret : ops->vidioc_delete_buf(file, fh, b);
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>>     static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+>>>>>>>>                                    struct file *file, void *fh, void
+>>>>>>>> *arg)
+>>>>>>>>     {
+>>>>>>>> @@ -2905,6 +2914,7 @@ static const struct v4l2_ioctl_info
+>>>>>>>> v4l2_ioctls[] = {
+>>>>>>>>            IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands,
+>>>>>>>> v4l_print_freq_band, 0),
+>>>>>>>>            IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info,
+>>>>>>>> v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>>>>>>>>            IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl,
+>>>>>>>> v4l_print_query_ext_ctrl, INFO_FL_CTRL |
+>>>>>>>> INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+>>>>>>>> +       IOCTL_INFO(VIDIOC_DELETE_BUF, v4l_delete_buf,
+>>>>>>>> v4l_print_buffer, INFO_FL_QUEUE),
+>>>>>>>>     };
+>>>>>>>>     #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>>>>>>>>
+>>>>>>>> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+>>>>>>>> index edb733f21604..2f232ed884c7 100644
+>>>>>>>> --- a/include/media/v4l2-ioctl.h
+>>>>>>>> +++ b/include/media/v4l2-ioctl.h
+>>>>>>>> @@ -163,6 +163,8 @@ struct v4l2_fh;
+>>>>>>>>      *     :ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+>>>>>>>>      * @vidioc_prepare_buf: pointer to the function that implements
+>>>>>>>>      *     :ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+>>>>>>>> + * @vidioc_delete_buf: pointer to the function that implements
+>>>>>>>> + *     :ref:`VIDIOC_DELETE_BUF <vidioc_delete_buf>` ioctl
+>>>>>>>>      * @vidioc_overlay: pointer to the function that implements
+>>>>>>>>      *     :ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+>>>>>>>>      * @vidioc_g_fbuf: pointer to the function that implements
+>>>>>>>> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+>>>>>>>>                                      struct v4l2_create_buffers *b);
+>>>>>>>>            int (*vidioc_prepare_buf)(struct file *file, void *fh,
+>>>>>>>>                                      struct v4l2_buffer *b);
+>>>>>>>> +       int (*vidioc_delete_buf)(struct file *file, void *fh,
+>>>>>>>> +                                struct v4l2_buffer *b);
+>>>>>>>>
+>>>>>>>>            int (*vidioc_overlay)(struct file *file, void *fh, unsigned
+>>>>>>>> int i);
+>>>>>>>>            int (*vidioc_g_fbuf)(struct file *file, void *fh,
+>>>>>>>> diff --git a/include/media/videobuf2-core.h
+>>>>>>>> b/include/media/videobuf2-core.h
+>>>>>>>> index 080b783d608d..0f9e68f76b77 100644
+>>>>>>>> --- a/include/media/videobuf2-core.h
+>>>>>>>> +++ b/include/media/videobuf2-core.h
+>>>>>>>> @@ -840,6 +840,15 @@ int vb2_core_create_bufs(struct vb2_queue *q,
+>>>>>>>> enum vb2_memory memory,
+>>>>>>>>      */
+>>>>>>>>     int vb2_core_prepare_buf(struct vb2_queue *q, unsigned int index,
+>>>>>>>> void *pb);
+>>>>>>>>
+>>>>>>>> +/**
+>>>>>>>> + * vb2_core_delete_buf() -
+>>>>>>>> + * @q: pointer to &struct vb2_queue with videobuf2 queue.
+>>>>>>>> + * @index:     id number of the buffer.
+>>>>>>>> + *
+>>>>>>>> + *  Return: returns zero on success; an error code otherwise.
+>>>>>>>> + */
+>>>>>>>> +int vb2_core_delete_buf(struct vb2_queue *q, unsigned int index);
+>>>>>>>> +
+>>>>>>>>     /**
+>>>>>>>>      * vb2_core_qbuf() - Queue a buffer from userspace
+>>>>>>>>      *
+>>>>>>>> diff --git a/include/media/videobuf2-v4l2.h
+>>>>>>>> b/include/media/videobuf2-v4l2.h
+>>>>>>>> index 88a7a565170e..3beeb4c735f0 100644
+>>>>>>>> --- a/include/media/videobuf2-v4l2.h
+>>>>>>>> +++ b/include/media/videobuf2-v4l2.h
+>>>>>>>> @@ -114,6 +114,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct
+>>>>>>>> v4l2_create_buffers *create);
+>>>>>>>>      */
+>>>>>>>>     int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>>>>>>                        struct v4l2_buffer *b);
+>>>>>>>> +/**
+>>>>>>>> + * vb2_delete_buf() - Delete the buffer from the queue
+>>>>>>>> + *
+>>>>>>>> + * @q:         pointer to &struct vb2_queue with videobuf2 queue.
+>>>>>>>> + * @b:         buffer structure passed from userspace to
+>>>>>>>> + *             &v4l2_ioctl_ops->vidioc_delete_buf handler in driver
+>>>>>>>> + *
+>>>>>>>> + * The return values from this function are intended to be directly
+>>>>>>>> returned
+>>>>>>>> + * from &v4l2_ioctl_ops->vidioc_delete_buf handler in driver.
+>>>>>>>> + */
+>>>>>>>> +int vb2_delete_buf(struct vb2_queue *q, struct v4l2_buffer *b);
+>>>>>>>>
+>>>>>>>>     /**
+>>>>>>>>      * vb2_qbuf() - Queue a buffer from userspace
+>>>>>>>> diff --git a/include/uapi/linux/videodev2.h
+>>>>>>>> b/include/uapi/linux/videodev2.h
+>>>>>>>> index aee75eb9e686..31bba1915642 100644
+>>>>>>>> --- a/include/uapi/linux/videodev2.h
+>>>>>>>> +++ b/include/uapi/linux/videodev2.h
+>>>>>>>> @@ -2702,6 +2702,8 @@ struct v4l2_create_buffers {
+>>>>>>>>     #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct
+>>>>>>>> v4l2_dbg_chip_info)
+>>>>>>>>
+>>>>>>>>     #define VIDIOC_QUERY_EXT_CTRL  _IOWR('V', 103, struct
+>>>>>>>> v4l2_query_ext_ctrl)
+>>>>>>>> +#define VIDIOC_DELETE_BUF      _IOWR('V', 104, struct v4l2_buffer)
+>>>>>>>> +
+>>>>>>>>
+>>>>>>>>     /* Reminder: when adding new ioctls please add support for them to
+>>>>>>>>        drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+>>>>>>>> --
+>>>>>>>> 2.39.2
+>>>>>>>>
+>>>>> --
+>>>>> Hsia-Jun(Randy) Li
+>>>>>
+>>>> --
+>>>> Hsia-Jun(Randy) Li
+>>>>
+>> --
+>> Hsia-Jun(Randy) Li
+>>
+
+-- 
+Hsia-Jun(Randy) Li
