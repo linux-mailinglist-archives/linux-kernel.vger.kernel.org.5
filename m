@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B5D767766
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D3767768
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjG1VFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 17:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        id S232570AbjG1VF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 17:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjG1VFG (ORCPT
+        with ESMTP id S230125AbjG1VF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 17:05:06 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905E5449C
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:05:04 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26814e27a9eso1485800a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690578304; x=1691183104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mzLjWb2IvKpNxetuxpIL5OUHvXbEPP7sO5JHMTXgoFM=;
-        b=DUzSJHWXkFm+UzMm4dk0GxmM2lh2CU0cXH7uio1EOVxzROxMN7PSytZUTv1i3Fc6C/
-         QYKcvelkqpaycnCFRoG9PCzQj62E5541Mh6NnAQ2Y+sSq+1L2mIq4t2+1j081dAuDtvH
-         Bx/QPVhFvOADdzXk9Rl9p0j13NdbQZKN2REAU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690578304; x=1691183104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mzLjWb2IvKpNxetuxpIL5OUHvXbEPP7sO5JHMTXgoFM=;
-        b=gbw0KlvE7YG6GDsBLNYxKVgdZQW1dITvHtJxPgvcZFKMogTvBHIR+zbGvl4hsENmWj
-         doVG3Aro3XhwJ2+lXJJklbICAxCuwYE4y0OM0atVigr2xzwaZIE63s5lxUVD33EX2KpL
-         qQKjsSdoPguiCdymbSNN42D/A2aIPoqHFjGrJdo9aKgBV6j2qlIexWU0soYXNNLnCTpa
-         2naEZXrgCqhffiCAQ2cYNSOleTbADCzQ2Q9pmVeZBPV8cgy2jq8QGBp0MDVicbqPh8B5
-         OCpzNDB6abJ7PuK7HhzkKjN9Qanq9g7nmYtewfUpiuKv6sjVciQsiIAXUvRtvRIlibAw
-         b7rA==
-X-Gm-Message-State: ABy/qLYtUVd4Fokh2GGGqTQd3vFrmKgs4aFr1fGp265P5rpAd2UVdmWz
-        3VIFUILf9iut91Vl8RZ+ErOuTmqfJscWoawoTVs=
-X-Google-Smtp-Source: APBJJlE/Bj0YDv8/cqAifhSQW91oOrA1CcZeDO76w2S84U8EV7YhttyyW5XGorEq/S0odyjPHkgqcg==
-X-Received: by 2002:a17:90b:4c0f:b0:268:553f:1938 with SMTP id na15-20020a17090b4c0f00b00268553f1938mr2398856pjb.4.1690578304059;
-        Fri, 28 Jul 2023 14:05:04 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a19c900b00267f7405a3csm3176140pjj.32.2023.07.28.14.05.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 14:05:03 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 14:05:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: 88pm860x: refactor deprecated strncpy
-Message-ID: <202307281205.175FD2FC@keescook>
-References: <20230727-sound-soc-codecs-v1-1-562fa2836bf4@google.com>
+        Fri, 28 Jul 2023 17:05:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32D144B5;
+        Fri, 28 Jul 2023 14:05:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 550436220B;
+        Fri, 28 Jul 2023 21:05:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE97C433C8;
+        Fri, 28 Jul 2023 21:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690578319;
+        bh=7qOs7TnG/8tF9E4QPJWYx9tCPCwzVufdhmnJ191LcHY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=frguYMS9LYFIXpkA2hQ4p752eTEDDRN028mZ8JSp9Cp/XV5nhamo2EG7gQEP+dyvb
+         +7mkpatxWOaRzYliEvatZBbe/w4r1lApI3B185bTcw3KyT9wSPO6z81FUK1ai7+HzV
+         F7WdIFqzzHzqrNonUugUSKfgvyCdEvS7oYdZV248BVIbdWI8uiEdZBUPwx1lIvYXWJ
+         pMavPk7jwjm1bLwVgzVn0CFmSgAuej6JtKv0IV+kBsKd6MnNt3/Mx3L7oJWKr+y+Cz
+         F1jBiQj8T+/CXbwSEJCF0Dbrb/TuNLpzbpD+TugjjQ9x0fWhcXBlPxbosdn+jaGOI8
+         XJDxvgQ9Ku19w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2CEE6CE0A13; Fri, 28 Jul 2023 14:05:19 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 14:05:19 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     akpm@linux-foundation.org, adobriyan@gmail.com,
+        mhiramat@kernel.org, arnd@kernel.org, ndesaulniers@google.com,
+        sfr@canb.auug.org.au, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig 0/2] Distinguish bootloader and embedded
+ kernel parameters
+Message-ID: <2007473f-cdf3-4f15-bee9-470e4b30bb16@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+ <cc9ba6e9-1154-ad84-0fef-d67834169110@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230727-sound-soc-codecs-v1-1-562fa2836bf4@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cc9ba6e9-1154-ad84-0fef-d67834169110@infradead.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 10:46:13PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Thu, Jul 27, 2023 at 09:25:06PM -0700, Randy Dunlap wrote:
 > 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ always the case for `strncpy`!
 > 
-> In this case, though, there was care taken to ensure that the
-> destination buffer would be NUL-terminated. The destination buffer is
-> zero-initialized and each `pm860x->name[i]` has a size of
-> `MAX_NAME_LENGTH + 1`. This means that there is unlikely to be a bug
-> here.
+> On 7/27/23 20:35, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > This series provides /proc interfaces parallel to /proc/cmdline that
+> > provide only those kernel boot parameters that were provided by the
+> > bootloader (/proc/cmdline_load) and only those parameters that were
+> > embedded in the kernel image (/proc/cmdline_image, in boot-config format).
+> > This is especially important when these parameters are presented to the
+> > boot loader by automation that might gather them from diverse sources,
+> > and also when a kexec-based reboot process pulls the kernel boot
+> > parameters from /proc.  If such a reboot process uses /proc/cmdline,
+> > the kernel parameters from the image are replicated on every reboot,
+> > which can be frustrating when the new kernel has different embedded
+> > kernel boot parameters.
+> > 
+> > Why put these in /proc?  Because they is quite similar to /proc/cmdline,
+> > so it makes sense to put it in the same place that /proc/cmdline is
+> > located.
+> > 
+> > 1.	fs/proc: Add /proc/cmdline_load for boot loader arguments.
+> > 
+> > 2.	fs/proc: Add /proc/cmdline_image for embedded arguments.
+> > 
+> > 						Thanx, Paul
+> > 
 > 
-> However, in an attempt to eliminate the usage of the `strncpy` API as
-> well as disambiguate implementations, replacements such as: `strscpy`,
-> `strscpy_pad`, `strtomem` and `strtomem_pad` should be preferred.
+> Hi Paul,
 > 
-> We are able to eliminate the need for `len + 1` since `strscpy`
-> guarantees NUL-termination for its destination buffer as per its
-> implementation [3]:
+> This series seems to be missing updates to
+> Documentation/filesystems/proc.rst.
 > 
-> |       /* Hit buffer length without finding a NUL; force NUL-termination. */
-> |       if (res)
-> | 	        dest[res-1] = '\0';
-> 
-> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-> [3]: https://elixir.bootlin.com/linux/v6.3/source/lib/string.c#L183
-> 
-> Link: https://github.com/KSPP/linux/issues/90
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
->  sound/soc/codecs/88pm860x-codec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-> index 3574c68e0dda..d99b674d574b 100644
-> --- a/sound/soc/codecs/88pm860x-codec.c
-> +++ b/sound/soc/codecs/88pm860x-codec.c
-> @@ -143,7 +143,7 @@ struct pm860x_priv {
->  	struct pm860x_det	det;
->  
->  	int			irq[4];
-> -	unsigned char		name[4][MAX_NAME_LEN+1];
-> +	unsigned char		name[4][MAX_NAME_LEN];
->  };
->  
->  /* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
-> @@ -1373,7 +1373,7 @@ static int pm860x_codec_probe(struct platform_device *pdev)
->  			return -EINVAL;
->  		}
->  		pm860x->irq[i] = res->start + chip->irq_base;
-> -		strncpy(pm860x->name[i], res->name, MAX_NAME_LEN);
-> +		strscpy(pm860x->name[i], res->name, MAX_NAME_LEN);
+> Please add them.
 
-res->name is (perhaps) unbounded in length:
+Good catch, thank you!
 
-struct resource {
-	...
-        const char *name;
-	...
-};
+I will fold the diff below into the three respective commits on my next
+rebase, but in the meantime, please let me know what you think.
 
-So reducing struct pm860x_priv::name's size _might_ have a user-visible
-effect, but probably not.
+							Thanx, Paul
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
--- 
-Kees Cook
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 7897a7dafcbc..98c43c5ef1ee 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -686,7 +686,10 @@ files are there, and which are missing.
+  apm          Advanced power management info
+  buddyinfo    Kernel memory allocator information (see text)	(2.5)
+  bus          Directory containing bus specific information
+- cmdline      Kernel command line
++ cmdline      Kernel command line, both from bootloader and embedded
++ 	      in the kernel image
++ cmdline_image Kernel command line obtained from boot loader	(6.6)
++ cmdline_load Kernel command line obtained from kernel image	(6.6)
+  cpuinfo      Info about the CPU
+  devices      Available devices (block and character)
+  dma          Used DMS channels
