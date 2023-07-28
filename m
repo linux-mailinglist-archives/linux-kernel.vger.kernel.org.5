@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0035766DBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B96766DBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbjG1NAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
+        id S236330AbjG1NAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236360AbjG1NAM (ORCPT
+        with ESMTP id S234885AbjG1NA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:00:12 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341E13A9A
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:08 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso21323235e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:08 -0700 (PDT)
+        Fri, 28 Jul 2023 09:00:26 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1533AB7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:23 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so23127095e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:00:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690549206; x=1691154006;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690549221; x=1691154021;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dcKLSf6eqeHNfF6j88elstYU7E8m3+v2pua4wp1GvKY=;
-        b=Id2I/uZXCxhGf9uU5JGy2ExbghV75fhZ6VryidaP0Rm4p/HFiINjNvsZTqW+TTwG6E
-         xj5V3JZ8OvvX0HZw97ct2sh03vk2b3UBBfYXsNgjdUlYMN6aAsT3fWCOjrnUIoVyUViR
-         0/ippRm7XO4dhfIKpj4S7ygUnn/CIaj8OnC+DUUfs2s/qReboPkYT8Hroxqep3LqWTkP
-         d8+C3wL3wehXODPOj2iuqhos8FMdR2Wz4RWw3oy78kdyHYjuth5tSYTbp03kmyoANkad
-         /gTZ3QWuAJhDuLbXwsMGXRgr5MqfvF/wk9VdiXKr7u1uaoQRWsSUR5rDm5xGgQ9cl0iS
-         MxPQ==
+        bh=yic5Bry11hKn18+YDDsJcZ+oLXRJ3te0nRA7jPdDSuk=;
+        b=C8SH7e13yDBuQNlBegZNj6Cjo6qnz1S13aPtEuLkjrMSfJ/0x/3F4YieBmzJhEWtsG
+         /WJrO00RPtlKCp7uKiMh1NNnrW6LYFmXCwf2hY7xEIljqnJnBaMsWk6ZFfsu2azWTzA4
+         8PGLxI1vVKylGrycsWVcmzdQo5EWwy/4oMwTvWIw5kLn4pNN5kta7bx4HGCzmNpL52td
+         n1gYMGEFJVEnRXT3jB8/B8XSHloB05w8X+FJy5Ly8JUFit6OgWAo0mHSV4Ddwo6YkoSZ
+         P4GvqfLxTUTFulnPzeXRPQhtIlheI3vn3rVPTddbHax7wUfqnfcv04KipcDfJ0dg3+IJ
+         0ZCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690549207; x=1691154007;
+        d=1e100.net; s=20221208; t=1690549221; x=1691154021;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dcKLSf6eqeHNfF6j88elstYU7E8m3+v2pua4wp1GvKY=;
-        b=fzbTHIGi3ibpz6TdLH5c4yTzixq6dfuRxgro0OsN4L4/xIJ6Dr0VxoYcfXzgKOF1xT
-         C6BPixfs5xKEJgz6m7PLHLpVSWp/olyuP4g09SvbsJYpxldHroXkg6m4l0VjcymI86ru
-         6kNnN09tZptSrnxARzRwVYqFmz6UfO+wDzSPJ6K2iyrFxABZkmbEA8/PXLWeXy98p3he
-         nonp8Xge7XPFutHgSYaqeJGrW5/apvtU2h3vt8fI3kqLKqn5OwR89oWHDMN7FcNuKXi8
-         msOEzObw3EtmXhtwLrEQ6XYqMfz+imwhj3txdzkVg3zQMArFzTpNbBB7njpTZb+ktKFY
-         TjWw==
-X-Gm-Message-State: ABy/qLbDjyNYRWhMeExJyblVXvNJvlriIYCcV5D9XeYXyLgu5MuMuhGy
-        zowbylsoiYDDt2jukB0AJWpDdw==
-X-Google-Smtp-Source: APBJJlGuVwTkep94/YrL0o8XuTMW4QyNix57ZU5EauEPig4YFvwYocrHTQEry9NYmVRz7W36RYtFog==
-X-Received: by 2002:a05:600c:2946:b0:3fe:6f7:60aa with SMTP id n6-20020a05600c294600b003fe06f760aamr1514434wmd.12.1690549206657;
-        Fri, 28 Jul 2023 06:00:06 -0700 (PDT)
+        bh=yic5Bry11hKn18+YDDsJcZ+oLXRJ3te0nRA7jPdDSuk=;
+        b=iWvjh3LjmX6nrvi1WkyaYgbxKyVGXnRqqZN8uyKIf2Htm/0gPG+wlqj9MO8HlXLfg5
+         VHtQkTq+jTjmZ6eVKtcS6SVpjeMKKfnljKLClT2vhZgGtNEYj4Sz/gENsgbut8zcbvIU
+         3fd2TIW11LANscnqTnlXr+mx2Aih6KqvMLHcroQbw9wyzvB7fK5wwgIyBqeRi92kY3G8
+         st0y8ckI+FTWm3eBvco3JpDuK8wONdzSuXtVED68X5gK4lbMj0DDvDq8E7ZHLfrNmTKA
+         mknmdpG78Htty5oKrN8hI92jGc04fKoPts6+TRsPoZypDwsw3JtXAi5HycJwPUETtOyc
+         B9Zw==
+X-Gm-Message-State: ABy/qLYe2Z/v1v2aKVtLANh9b4pURB9tKwn1IDfPnIsCrCRbU8tRBBua
+        0RlRLTf9C7RDQFjFnxv1EZaNfg==
+X-Google-Smtp-Source: APBJJlFc/T42hioLjioKgeh5+0Y8oQql3aNGb6cv0TdhzPmmOfEvCeU7I9mo8PbPpDI5/FunIizlbA==
+X-Received: by 2002:a7b:c7d0:0:b0:3fc:a5:2c3a with SMTP id z16-20020a7bc7d0000000b003fc00a52c3amr1638513wmk.41.1690549221035;
+        Fri, 28 Jul 2023 06:00:21 -0700 (PDT)
 Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id c22-20020a7bc856000000b003fbd0c50ba2sm6994646wml.32.2023.07.28.06.00.05
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c230900b003fbe561f6a3sm6950289wmo.37.2023.07.28.06.00.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 06:00:06 -0700 (PDT)
-Message-ID: <e695ddf2-b129-3671-2aec-6e96da3f8be5@baylibre.com>
-Date:   Fri, 28 Jul 2023 15:00:04 +0200
+        Fri, 28 Jul 2023 06:00:20 -0700 (PDT)
+Message-ID: <49e7661c-a3f9-9f6c-3f34-5104ac60eca2@baylibre.com>
+Date:   Fri, 28 Jul 2023 15:00:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v6 01/11] drm/mediatek: gamma: Adjust
- mtk_drm_gamma_set_common parameters
+Subject: Re: [PATCH RESEND v6 02/11] drm/mediatek: gamma: Reduce indentation
+ in mtk_gamma_set_common()
 Content-Language: en-US
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
@@ -65,11 +65,11 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
         kernel@collabora.com, ehristev@collabora.com,
-        "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
 References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
- <20230727094633.22505-2-angelogioacchino.delregno@collabora.com>
+ <20230727094633.22505-3-angelogioacchino.delregno@collabora.com>
 From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230727094633.22505-2-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230727094633.22505-3-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,11 +84,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 
 On 27/07/2023 11:46, AngeloGioacchino Del Regno wrote:
-> From: "Jason-JH.Lin"<jason-jh.lin@mediatek.com>
+> Invert the check for state->gamma_lut and move it at the beginning
+> of the function to reduce indentation: this prepares the code for
+> keeping readability on later additions.
 > 
-> Adjust the parameters in mtk_drm_gamma_set_common()
->    - add (struct device *dev) to get lut_diff from gamma's driver data
->    - remove (bool lut_diff) and use false as default value in the function
+> This commit brings no functional changes.
 
 -- 
 Regards,
