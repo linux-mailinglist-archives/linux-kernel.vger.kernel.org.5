@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED88767168
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C740F767179
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbjG1QDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
+        id S236921AbjG1QFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbjG1QC5 (ORCPT
+        with ESMTP id S230473AbjG1QFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:02:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF32F2109;
-        Fri, 28 Jul 2023 09:02:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4BC6162199;
-        Fri, 28 Jul 2023 16:02:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE414C433C7;
-        Fri, 28 Jul 2023 16:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690560175;
-        bh=5+J+83TIFs9lZ6wTmxsZgXtKL3q38n2yCo3y8qTZ7N8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jvO9hazSNAGUk8tEio79eCKsYssfSy0geDTTQuH3rVlrLBw9BRzr2W8FKEp1g6GE7
-         xyyV6wG+/gEhhnojSaYN0xZGYJ7TNz41xrH/5namT+MasnVI6q+netdOigN1p2F8Xs
-         UiajqzXuIHzaW/VQWNXZVjdeHLaWRINZKoWv20D+yd69SZLrcXxn7/VhnVnC6azcV0
-         uakFy04j7DDn+wgdzr/6qhCxnzBm56Z8AETjHGHt12OebNyGVCIjmiqGlIPoZKq+mE
-         Ysaqt3HMjsRuQ585YU8rA70URXv7n98gIUhFEAPZW6v4toNlPHr90hL3YQ7Jn0OGn5
-         bbUw1+uTfxHCg==
-Date:   Fri, 28 Jul 2023 11:02:47 -0500
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 12/20] objtool: Warn about non __ro_after_init
- static key usage in .noinstr
-Message-ID: <20230728160247.multb2csnpa22fgx@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-13-vschneid@redhat.com>
+        Fri, 28 Jul 2023 12:05:10 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32E53C1D;
+        Fri, 28 Jul 2023 09:05:06 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 47AE9FF802;
+        Fri, 28 Jul 2023 16:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690560303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DOwouwDm/Kasz+cImp4ZpLSYmghBWaSXArlXLO1rpH0=;
+        b=ljouRWt14CzNxKdUZLfGcvVcD/MG5DdymZazb90A1RiBoJhkZfx33QMCamA/nq64KgQViJ
+        5j94ziGUbCxvMyciw8LIg6YwFQkSf7yHDnrs3zIfxUjdSzdBKykEKG0kWvz/aV8i05xP78
+        mqj89PddP7bz5a6JA8nBI8sawR22k7xKkRbiJMjIfLhDef/HPbnKzJyS+UFodCJ+DT53ZN
+        A4VJB+/3Z1hacM8uhegA536VPmo5HTtstM9AcUBZ8j7k+5ooOrDw8+C3Kc1ufE3I2crSNT
+        VFHW+ZQvhNQgc6+HqrnlnydP17EiBNygti/FGEhzRdi0EfCxPi4SUnCrthjHlQ==
+Date:   Fri, 28 Jul 2023 18:04:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Varshini Rajendran <varshini.rajendran@microchip.com>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
+        andi.shyti@kernel.org, tglx@linutronix.de, maz@kernel.org,
+        lee@kernel.org, ulf.hansson@linaro.org, tudor.ambarus@linaro.org,
+        richard@nod.at, vigneshr@ti.com, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linus.walleij@linaro.org,
+        sre@kernel.org, p.zabel@pengutronix.de, olivia@selenic.com,
+        a.zummo@towertech.it, radu_nicolae.pirea@upb.ro,
+        richard.genoud@gmail.com, gregkh@linuxfoundation.org,
+        lgirdwood@gmail.com, broonie@kernel.org, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux@armlinux.org.uk,
+        durai.manickamkr@microchip.com, andrew@lunn.ch,
+        jerry.ray@microchip.com, andre.przywara@arm.com, mani@kernel.org,
+        alexandre.torgue@st.com, gregory.clement@bootlin.com,
+        arnd@arndb.de, rientjes@google.com, deller@gmx.de,
+        42.hyeyoo@gmail.com, vbabka@suse.cz, mripard@kernel.org,
+        mihai.sain@microchip.com, codrin.ciubotariu@microchip.com,
+        eugen.hristev@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        netdev@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 00/50] Add support for sam9x7 SoC family
+Message-ID: <20230728180443.55363550@xps-13>
+In-Reply-To: <20230728-floss-stark-889158f968ea@spud>
+References: <20230728102223.265216-1-varshini.rajendran@microchip.com>
+        <c0792cfd-db4f-7153-0775-824912277908@linaro.org>
+        <20230728-floss-stark-889158f968ea@spud>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-13-vschneid@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:30:48PM +0100, Valentin Schneider wrote:
-> Later commits will depend on having no runtime-mutable text in early entry
-> code. (ab)use the .noinstr section as a marker of early entry code and warn
-> about static keys used in it that can be flipped at runtime.
+Hi Conor,
 
-Similar to my comment on patch 13, this could also use a short
-justification for adding the feature, i.e. why runtime-mutable text
-isn't going to be allowed in .noinstr.
+conor@kernel.org wrote on Fri, 28 Jul 2023 16:50:24 +0100:
 
-Also, please add a short description of the warning (and why it exists)
-to tools/objtool/Documentation/objtool.txt.
+> On Fri, Jul 28, 2023 at 01:32:12PM +0200, Krzysztof Kozlowski wrote:
+> > On 28/07/2023 12:22, Varshini Rajendran wrote: =20
+> > > This patch series adds support for the new SoC family - sam9x7.
+> > >  - The device tree, configs and drivers are added
+> > >  - Clock driver for sam9x7 is added
+> > >  - Support for basic peripherals is added
+> > >  - Target board SAM9X75 Curiosity is added
+> > >  =20
+> >=20
+> > Your threading is absolutely broken making it difficult to review and a=
+pply. =20
+>=20
+> I had a chat with Varshini today, they were trying to avoid sending the
+> patches to a massive CC list, but didn't set any in-reply-to header.
+> For the next submission whole series could be sent to the binding &
+> platform maintainers and the individual patches additionally to their
+> respective lists/maintainers. Does that sound okay to you, or do you
+> think it should be broken up?
 
--- 
-Josh
+I usually prefer receiving the dt-bindings *and* the driver changes, so
+I can give my feedback on the description side, as well as looking at
+the implementation and see if that really matches what was discussed
+with you :)
+
+Thanks,
+Miqu=C3=A8l
