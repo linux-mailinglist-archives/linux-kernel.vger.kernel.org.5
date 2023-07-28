@@ -2,152 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1793376671E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D1776671C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbjG1I2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        id S234341AbjG1I2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234820AbjG1I1W (ORCPT
+        with ESMTP id S234846AbjG1I1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:27:22 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AFD5230EA;
-        Fri, 28 Jul 2023 01:27:18 -0700 (PDT)
-Received: from loongson.cn (unknown [112.20.109.108])
-        by gateway (Coremail) with SMTP id _____8Cx7+vke8Nk4T8LAA--.26916S3;
-        Fri, 28 Jul 2023 16:27:16 +0800 (CST)
-Received: from chenhuacai$loongson.cn ( [112.20.109.108] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Fri, 28 Jul 2023 16:27:13
- +0800 (GMT+08:00)
-X-Originating-IP: [112.20.109.108]
-Date:   Fri, 28 Jul 2023 16:27:13 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>
-To:     loongson-kernel@lists.loongnix.cn
-Cc:     "Arnd Bergmann" <arnd@arndb.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jianmin Lv" <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        "Liu Peibao" <liupeibao@loongson.cn>,
-        "Yinbo Zhu" <zhuyinbo@loongson.cn>, "Liu Yun" <liuyun@loongson.cn>
-Subject: Re: [PATCH v5 0/2] soc: loongson2_pm: add power management support
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT5 build
- 20230523(b0518e05) Copyright (c) 2002-2023 www.mailtech.cn .loongson.cn
-In-Reply-To: <20230728074944.26746-1-zhuyinbo@loongson.cn>
-References: <20230728074944.26746-1-zhuyinbo@loongson.cn>
-Content-Transfer-Encoding: base64
-X-CM-CTRLDATA: VsEg+mZvb3Rlcl90eHQ9MzMzNjo2MTI=
-Content-Type: text/plain; charset=UTF-8
+        Fri, 28 Jul 2023 04:27:23 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E142035A9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:27:21 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe1c285690so1906311e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690532840; x=1691137640;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wjknMk9xDOdfH8tlcXEgST094q3tv+7K3A03BMiS3S8=;
+        b=yAWwa/GRLkDZZ4Rykif2uAUtYp20wQlJjIM/2pHOafKd8dC7tf2fAwuqDhVoCgwlQL
+         vFjNP8uv2Wp38EdfqcTxdkfiKmsLid5aBHt+ivLuJH7nkWcx3a/m8eLq7YGwtBcYgb6D
+         xPEYuwkxCtT8dKNQhFuyLGx576ny357Frkunl/FF2VY8p2FUO1ziVgp4sVVNgzzQHXJM
+         Q3U/qs0yM4pSB2soclGhm6Qt1KbVhfDj/eFtWUEdKKkJsnolCHV2XjflaTQr3lynn5f9
+         E8tD7Iflhv3cw3iKswUXQtpGqB+2jC2zEXHBGy+EnCs3PVowXfTMuzMvjq+JZ0oTYS5I
+         u+gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690532840; x=1691137640;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjknMk9xDOdfH8tlcXEgST094q3tv+7K3A03BMiS3S8=;
+        b=V5QyzIjVjqF+bs4f5+ygbcpE8BBwybEtHrTZIYXUg32fw+DKpEEhBQeRUJ+Ap2EWyt
+         OQeaRBiYXtGmtHhWGKBg05BHj/SpmkCFA9mNa3hvDICBnkZk+0Rdm/agGgc4/4zRpck3
+         m+ZnofCXis8X9TxBDzkGcqNvUciuS9pyJoRyOHNNGOvPw1n++1kEVCxLkkMxk44V6yEW
+         RvtRI9PCqHFmq4p1QnJjYk3tsq3+X0mpwvprvnz3zGnw9XpeAnT1g2uRya5Yy2VT6rRR
+         eLn0jLRZ7SMT+WDZioUKn7aFyPW0zXlugZdl6m+S2Fg8XZe9hu2CA/DVpRcCYjru/LwM
+         qlNQ==
+X-Gm-Message-State: ABy/qLYllJB35o1QH+44yqp1Y/7EJWzHFOh3qZXVzPa0WG27SINNAH/F
+        V3MUNnaxWbHbB3Oe+lbmv0bKRA==
+X-Google-Smtp-Source: APBJJlF3I5wf7RWZJLYXn4nrVP+lvIHaqAMcKZc3ypHI+/2MRCVd46QbfOZh+nv/toPn/5epDiSLMg==
+X-Received: by 2002:ac2:5f4c:0:b0:4fb:a990:bb28 with SMTP id 12-20020ac25f4c000000b004fba990bb28mr1052611lfz.18.1690532840066;
+        Fri, 28 Jul 2023 01:27:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id w6-20020aa7dcc6000000b005223ad8d7d7sm1520005edu.30.2023.07.28.01.27.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 01:27:19 -0700 (PDT)
+Message-ID: <117f6341-55d7-601b-203f-8a09dd4bb22f@linaro.org>
+Date:   Fri, 28 Jul 2023 10:27:16 +0200
 MIME-Version: 1.0
-Message-ID: <74a37e9d.9a24.1899b9bea85.Coremail.chenhuacai@loongson.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAf8AxOM3ie8NkkRE+AA--.6210W
-X-CM-SenderInfo: hfkh0x5xdftxo6or00hjvr0hdfq/1tbiAQAGBmTDQC8ECQAAsE
-X-Coremail-Antispam: 1Uk129KBj93XoWxZF1kWr4DGw1DWrWUAF1rXwc_yoW5uw4Dpa
-        nxCrs8Cr4UJr18ZwsxGrWUC3W5Z395Gr9rXrsxGa43u3srZ345ZF1IkF15ZrsFyry5ta17
-        XFykGr4kKa1UGFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUQSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JM4xvF2IEb7IF0Fy264kE64k0F24lFcxC0VAYjxAxZF0Ex2IqxwCY1x0262kKe7AK
-        xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267
-        AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_Gr1l6VACY4
-        xI67k04243AbIYCTnIWIevJa73UjIFyTuYvjxU4rgADUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 09/11] remoteproc: qcom: Add Hexagon based multipd
+ rproc driver
+Content-Language: en-US
+To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        quic_eberman@quicinc.com, kvalo@kernel.org,
+        loic.poulain@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Cc:     quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
+        quic_varada@quicinc.com
+References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
+ <20230728063412.1641856-10-quic_mmanikan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728063412.1641856-10-quic_mmanikan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UmV2aWV3ZC1ieTogSHVhY2FpIENoZW4gPGNoZW5odWFjYWlAbG9vbmdzb24uY24+CgoKPiAtLS0t
-LeWOn+Wni+mCruS7ti0tLS0tCj4g5Y+R5Lu25Lq6OiAiWWluYm8gWmh1IiA8emh1eWluYm9AbG9v
-bmdzb24uY24+Cj4g5Y+R6YCB5pe26Ze0OjIwMjMtMDctMjggMTU6NDk6NDIgKOaYn+acn+S6lCkK
-PiDmlLbku7bkuro6ICJBcm5kIEJlcmdtYW5uIiA8YXJuZEBhcm5kYi5kZT4sICJSb2IgSGVycmlu
-ZyIgPHJvYmgrZHRAa2VybmVsLm9yZz4sICJLcnp5c3p0b2YgS296bG93c2tpIiA8a3J6eXN6dG9m
-Lmtvemxvd3NraStkdEBsaW5hcm8ub3JnPiwgIkNvbm9yIERvb2xleSIgPGNvbm9yK2R0QGtlcm5l
-bC5vcmc+LCBsaW51eC1wbUB2Z2VyLmtlcm5lbC5vcmcsIGRldmljZXRyZWVAdmdlci5rZXJuZWwu
-b3JnLCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4g5oqE6YCBOiAiSmlhbm1pbiBMdiIg
-PGx2amlhbm1pbkBsb29uZ3Nvbi5jbj4sIHdhbmdob25nbGlhbmdAbG9vbmdzb24uY24sICJMaXUg
-UGVpYmFvIiA8bGl1cGVpYmFvQGxvb25nc29uLmNuPiwgbG9vbmdzb24ta2VybmVsQGxpc3RzLmxv
-b25nbml4LmNuLCAiWWluYm8gWmh1IiA8emh1eWluYm9AbG9vbmdzb24uY24+LCAiTGl1IFl1biIg
-PGxpdXl1bkBsb29uZ3Nvbi5jbj4KPiDkuLvpopg6IFtQQVRDSCB2NSAwLzJdIHNvYzogbG9vbmdz
-b24yX3BtOiBhZGQgcG93ZXIgbWFuYWdlbWVudCBzdXBwb3J0Cj4gCj4gTG9vbmdzb24tMiBwbGF0
-Zm9ybSBzdXBwb3J0IFBvd2VyIE1hbmFnZW1lbnQgQ29udHJvbGxlciAoQUNQSSkgYW5kIHRoaXMK
-PiBzZXJpZXMgcGF0Y2ggd2FzIHRvIGFkZCBQTSBkcml2ZXIgdGhhdCBiYXNlIG9uIGR0cyBhbmQg
-UE0gYmluZGluZyBzdXBwb3J0Lgo+IAo+IENoYW5nZSBpbiB2NToKPiAJCTEuIFRoZSBwYXRjaCAi
-W1BBVENIIHYzIDEvM10gbG9vbmdhcmNoOiBleHBvcnQgc29tZSBhcmNoLXNwZWNpZmljCj4gCQkg
-ICBwbSBpbnRlcmZhY2VzIiBoYWQgYmVlbiBtZXJnZWQgaW50byBsaW51eC1uZXh0IHRyZWUgdGh1
-cyB0aGlzCj4gCQkgICB2NCBzZXJpZXMgcGF0Y2ggbmVlZCBkcm9wIGl0IGFuZCBuZWVkIGRlcGVu
-ZCBvbiBpdCBhbmQgaXQncwo+IAkJICAgcGF0Y2ggbGluayB3YXM6Cj4gaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvYWxsLzIwMjMwNjE1MDkxNzU3LjI0Njg2LTItemh1eWluYm9AbG9vbmdzb24uY24v
-Cj4gCQkyLiBTd2FwIHRoZSBwb3NpdGlvbnMgb2YgY29tcGF0aWJsZSBmb3IgMmsxMDAwIGFuZCAy
-azA1MDAuCj4gQ2hhbmdlIGluIHY0Ogo+IAkJMS4gVGhlIHBhdGNoICJbUEFUQ0ggdjMgMS8zXSBs
-b29uZ2FyY2g6IGV4cG9ydCBzb21lIGFyY2gtc3BlY2lmaWMKPiAJCSAgIHBtIGludGVyZmFjZXMi
-IGhhZCBiZWVuIG1lcmdlZCBpbnRvIGxpbnV4LW5leHQgdHJlZSB0aHVzIHRoaXMKPiAJCSAgIHY0
-IHNlcmllcyBwYXRjaCBuZWVkIGRyb3AgaXQgYW5kIG5lZWQgZGVwZW5kIG9uIGl0IGFuZCBpdCdz
-Cj4gCQkgICBwYXRjaCBsaW5rIHdhczoKPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAy
-MzA2MTUwOTE3NTcuMjQ2ODYtMi16aHV5aW5ib0Bsb29uZ3Nvbi5jbi8KPiAJCTIuIFJlbW92ZSB0
-aGUgcG1jIGxhYmVsIGluIGR0LWJpbmRpbmcgcGF0Y2guCj4gCQkzLiBBZGQgdGhlIENvLWRldmVs
-b3BlZC1ieSBmb3IgZHJpdmVyIHBhdGNoLgo+IAkJNC4gU2ltcGxpZnkgdGhlIGxvb25nc29uMl9z
-dXNwZW5kX3ZhbGlkX3N0YXRlIHRoYXQgInJldHVybgo+IAkJICAgKHN0YXRlID09IFBNX1NVU1BF
-TkRfTUVNKSIuCj4gCQk1LiBVc2UgVXNpbmcgbG9vbmdzb24yX3BtX2lycV9lbmFibGUoKSB0byBy
-ZXBsYWNlLgo+IAkJICAgbG9vbmdzb24yX3Bvd2VyX2J1dHRvbl9pcnFfZW5hYmxlKCkuCj4gCQk2
-LiBSZW1vdmUgdGhlICJvbmVPZiIgaW4gZHQtYmluZGluZ3MgcGF0Y2guCj4gCQk3LiBSZXBsYWNl
-ICJzdXNwZW5kLWFkZHJlc3MiIHRoYXQgdXNlICJsb29uZ3NvbixzdXNwZW5kLWFkZHJlc3MiLgo+
-IAkJOC4gVXNlIHU2NCB0eXBlIHRoYXQgZm9yICJsb29uZ3NvbixzdXNwZW5kLWFkZHJlc3MiLgo+
-IAkJOS4gUmVuYW1lICJwbSIgdG8gInBvd2VyLW1hbmdlbWVudCIgaW4gZHQtYmluZGluZ3MgcGF0
-Y2guCj4gCQkxMC4gQWRkIHRoZSByZWl2ZXdlZC1ieSBmb3IgZHQtYmluZGluZ3MgcGF0Y2guCj4g
-Q2hhbmdlIGluIHYzOgo+IAkJMS4gUmV3b3JkIHRoZSBbMS8zXSBwYXRjaCBjb21taXQgbG9nIGFu
-ZCB0aXRsZS4KPiAJCTIuIFVzZSB0aGUgb2xkIG5hbWluZyBmb3Igc3VzcGVuZCBpbnRlcmZhY2Ug
-Zm9yIHRoZSBbMS8zXSBhbmQKPiAJCSAgIFszLzNdIHBhdGNoLgo+IAkJMy4gQ29tYmluZSBzb21l
-IHNtYWxsIGZ1bmN0aW9uIGluIHRoZSBkcml2ZXIgcGF0Y2guCj4gCQk0LiBSZW5hbWUgJ3B3cmJ0
-JyB0byAnYnV0dG9uJyBpbiB0aGUgZHJpdmVyIHBhdGNoLgo+IAkJNS4gVXNlIHRoZSBzcGVjaWZp
-YyBjb21wYXRpYmxlIGluIHlhbWwgZmlsZS4KPiBDaGFuZ2UgaW4gdjI6Cj4gCQkxLiBGaXh1cCB0
-aGUgInN1c3BlbmQtYWRkcmVzcyIgZGVzY3JpcHRpb24uCj4gCQkyLiBSZW1vdmUgdGhlICJyZXR1
-cm4gLUVJTlZBTCIgaW4gUE0gZHJpdmVyIHByb2JlIHdoZW4gZmlybXdhcmUKPiAJCSAgIG5vIGNv
-bmZpZ3VyZSAic3VzcGVuZC1hZGRyZXNzIiBwcm9wZXJ0eSBpbiBkdHMgaW4gb2RlciB0bwo+IAkJ
-ICAgb3RoZXIgUE0gc3RhdGUgdG8gd29yay4KPiAKPiBZaW5ibyBaaHUgKDIpOgo+ICAgc29jOiBk
-dC1iaW5kaW5nczogYWRkIGxvb25nc29uLTIgcG0KPiAgIHNvYzogbG9vbmdzb24yX3BtOiBhZGQg
-cG93ZXIgbWFuYWdlbWVudCBzdXBwb3J0Cj4gCj4gIC4uLi9zb2MvbG9vbmdzb24vbG9vbmdzb24s
-bHMyay1wbWMueWFtbCAgICAgICB8ICA1MiArKysrKwo+ICBNQUlOVEFJTkVSUyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKwo+ICBkcml2ZXJzL3NvYy9sb29uZ3Nvbi9L
-Y29uZmlnICAgICAgICAgICAgICAgICAgfCAgMTAgKwo+ICBkcml2ZXJzL3NvYy9sb29uZ3Nvbi9N
-YWtlZmlsZSAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBkcml2ZXJzL3NvYy9sb29uZ3Nvbi9s
-b29uZ3NvbjJfcG0uYyAgICAgICAgICAgfCAyMTUgKysrKysrKysrKysrKysrKysrCj4gIDUgZmls
-ZXMgY2hhbmdlZCwgMjg1IGluc2VydGlvbnMoKykKPiAKPiAtLSAKPiAyLjIwLjEKPiAKPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExvb25nc29uLWtl
-cm5lbCBtYWlsaW5nIGxpc3QgLS0gbG9vbmdzb24ta2VybmVsQGxpc3RzLmxvb25nbml4LmNuCj4g
-VG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBsb29uZ3Nvbi1rZXJuZWwtbGVhdmVAbGlz
-dHMubG9vbmduaXguY24KDQoNCuacrOmCruS7tuWPiuWFtumZhOS7tuWQq+aciem+meiKr+S4reen
-keeahOWVhuS4muenmOWvhuS/oeaBr++8jOS7hemZkOS6juWPkemAgee7meS4iumdouWcsOWdgOS4
-reWIl+WHuueahOS4quS6uuaIlue+pOe7hOOAguemgeatouS7u+S9leWFtuS7luS6uuS7peS7u+S9
-leW9ouW8j+S9v+eUqO+8iOWMheaLrOS9huS4jemZkOS6juWFqOmDqOaIlumDqOWIhuWcsOazhOmc
-suOAgeWkjeWItuaIluaVo+WPke+8ieacrOmCruS7tuWPiuWFtumZhOS7tuS4reeahOS/oeaBr+OA
-guWmguaenOaCqOmUmeaUtuacrOmCruS7tu+8jOivt+aCqOeri+WNs+eUteivneaIlumCruS7tumA
-muefpeWPkeS7tuS6uuW5tuWIoOmZpOacrOmCruS7tuOAgiANClRoaXMgZW1haWwgYW5kIGl0cyBh
-dHRhY2htZW50cyBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbiBmcm9tIExvb25nc29u
-IFRlY2hub2xvZ3kgLCB3aGljaCBpcyBpbnRlbmRlZCBvbmx5IGZvciB0aGUgcGVyc29uIG9yIGVu
-dGl0eSB3aG9zZSBhZGRyZXNzIGlzIGxpc3RlZCBhYm92ZS4gQW55IHVzZSBvZiB0aGUgaW5mb3Jt
-YXRpb24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgd2F5IChpbmNsdWRpbmcsIGJ1dCBub3QgbGlt
-aXRlZCB0bywgdG90YWwgb3IgcGFydGlhbCBkaXNjbG9zdXJlLCByZXByb2R1Y3Rpb24gb3IgZGlz
-c2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQo
-cykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlbWFpbCBpbiBlcnJvciwgcGxl
-YXNlIG5vdGlmeSB0aGUgc2VuZGVyIGJ5IHBob25lIG9yIGVtYWlsIGltbWVkaWF0ZWx5IGFuZCBk
-ZWxldGUgaXQuIA==
+On 28/07/2023 08:34, Manikanta Mylavarapu wrote:
+> +
+> +static int q6_get_inbound_irq(struct qcom_q6v5 *q6,
+> +			      struct platform_device *pdev,
+> +			      const char *int_name,
+> +			      int index, int *pirq,
+> +			      irqreturn_t (*handler)(int irq, void *data))
+> +{
+> +	int ret, irq;
+> +	char *interrupt, *tmp = (char *)int_name;
+> +	struct q6_wcss *wcss = q6->rproc->priv;
+> +
+> +	irq = platform_get_irq(pdev, index);
+> +	if (irq < 0) {
+> +		if (irq != -EPROBE_DEFER)
+
+Still not good... I think I am saying this the third time: drop this
+eprobe defer dance. It is not needed. Just open the definition of
+dev_err_probe().
+
+> +			return dev_err_probe(&pdev->dev, irq,
+> +					     "failed to retrieve %s IRQ: %d\n",
+> +					     int_name, irq);
+> +	}
+> +
+
+
+
+Best regards,
+Krzysztof
 
