@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDB27667CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E627667E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234893AbjG1Ix0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        id S235244AbjG1Ixo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235201AbjG1Iwu (ORCPT
+        with ESMTP id S235373AbjG1IxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:52:50 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA6CC2728;
-        Fri, 28 Jul 2023 01:51:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC5852F4;
-        Fri, 28 Jul 2023 01:51:46 -0700 (PDT)
-Received: from [10.57.0.116] (unknown [10.57.0.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1BF53F67D;
-        Fri, 28 Jul 2023 01:51:00 -0700 (PDT)
-Message-ID: <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
-Date:   Fri, 28 Jul 2023 09:50:59 +0100
+        Fri, 28 Jul 2023 04:53:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D22A44BD;
+        Fri, 28 Jul 2023 01:52:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0862762066;
+        Fri, 28 Jul 2023 08:52:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6129DC433D9;
+        Fri, 28 Jul 2023 08:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690534325;
+        bh=vlJpUCrv2ALxslQErLAhvVvaZrwz4OsGjEvmf2Y+iu0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CBi6cn4Lj2WE+3ndu8ojTuLCbCpK7Pkmx9A6xtinX0HCBOZXhEZF98ugJzTOeLFAu
+         +0XMAZNEYpti4YI8V6nchFBp+xpcfTWTHZps6mKo9/8VGwdADXksAATF9qh3LJsTTB
+         /h1qfr19Z4W4JEDvguLAMduLZRTpPYOcqcmk0arqtOaHQwE4cvmDthraAt5bzOw9M1
+         aVv1xh2gTuR7awDFF4SXPauublFBaHAFoLy+vhYC3DRRLSTVPs3IJz2RFLX2+HnKdc
+         qKaF7MGOAQHIF057Hd7Wa1bbsBT16hXTF2FulnhU0N3iOGJXgPcvq03ROV6GFoLYK6
+         tIfGzXbc2MbVA==
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3a412653335so1461556b6e.1;
+        Fri, 28 Jul 2023 01:52:05 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZ64PSMxY91tVYIaDyhEm1HO01BrSBrR5J5KwrtXD/eyQ5qzMr4
+        csBqHukhW9Fib/Z/EzuNXjHJF+xlRaunCNcTGg0=
+X-Google-Smtp-Source: APBJJlHDe8hfWrxF/nfBaQSGuEQ6bNQXuA7hrJmGUDKgzOxljYyC1ls87OOK7YRy0OrT3TlhYCmy7eRtQ7kYiLbq06Q=
+X-Received: by 2002:a54:400b:0:b0:3a3:ed22:6b51 with SMTP id
+ x11-20020a54400b000000b003a3ed226b51mr2282641oie.50.1690534324598; Fri, 28
+ Jul 2023 01:52:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-References: <20230728064917.767761-1-irogers@google.com>
- <20230728064917.767761-5-irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+References: <20230728043013.27776-1-rdunlap@infradead.org>
+In-Reply-To: <20230728043013.27776-1-rdunlap@infradead.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 28 Jul 2023 17:51:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR4BkAKhZZ8+Zybed3Jm3omxzzdgus-Nqj-9MjWAeSmiA@mail.gmail.com>
+Message-ID: <CAK7LNAR4BkAKhZZ8+Zybed3Jm3omxzzdgus-Nqj-9MjWAeSmiA@mail.gmail.com>
+Subject: Re: [PATCH v3] um/drivers: fix hostaudio build errors
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230728064917.767761-5-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/07/2023 07:49, Ian Rogers wrote:
-> If flex is version 2.6.4, reduce the number of flex C warnings
-> disabled. Earlier flex versions have all C warnings disabled.
-
-Hi Ian,
-
-I get a build error with either this one or the bison warning change:
-
-  $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
-
-  util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but not
-used [-Werror,-Wunused-but-set-variable]
-    int yynerrs = 0;
-
-I tried a clean build which normally fixes these kind of bison errors.
-Let me know if you need any version info.
-
-James
-
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Fri, Jul 28, 2023 at 1:30=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+> Use "select"s to ensure that the required kconfig symbols are set
+> as expected.
+> Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+>
+> Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+> kconfig warning for unmet dependencies. (This was not an issue when
+> SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+> builds and didn't find any issues.)
+>
+> This fixes build errors when CONFIG_SOUND is not set:
+>
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_modu=
+le':
+> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sou=
+nd_mixer'
+> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregiste=
+r_sound_dsp'
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module'=
+:
+> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_soun=
+d_dsp'
+> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_=
+sound_mixer'
+> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregiste=
+r_sound_dsp'
+>
+> and this kconfig warning:
+> WARNING: unmet direct dependencies detected for SOUND
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
 > ---
->  tools/perf/util/Build | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 96f4ea1d45c5..32239c4b0393 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -279,13 +279,9 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-filter-bison.h: util/bpf-filt
->  	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
->  		-o $(OUTPUT)util/bpf-filter-bison.c -p perf_bpf_filter_
->  
-> -FLEX_GE_26 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 26)
-> -ifeq ($(FLEX_GE_26),1)
-> -  flex_flags := -Wno-switch-enum -Wno-switch-default -Wno-unused-function -Wno-redundant-decls -Wno-sign-compare -Wno-unused-parameter -Wno-missing-prototypes -Wno-missing-declarations
-> -  CC_HASNT_MISLEADING_INDENTATION := $(shell echo "int main(void) { return 0 }" | $(CC) -Werror -Wno-misleading-indentation -o /dev/null -xc - 2>&1 | grep -q -- -Wno-misleading-indentation ; echo $$?)
-> -  ifeq ($(CC_HASNT_MISLEADING_INDENTATION), 1)
-> -    flex_flags += -Wno-misleading-indentation
-> -  endif
-> +FLEX_GE_264 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 264)
-> +ifeq ($(FLEX_GE_264),1)
-> +  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function
->  else
->    flex_flags := -w
->  endif
+> v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
+> v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
+>     add SOUND depends on "|| UML" to HAS_IOMEM
+>
+>  arch/um/drivers/Kconfig  |   14 ++------------
+>  arch/um/drivers/Makefile |    2 +-
+>  sound/Kconfig            |    2 +-
+>  3 files changed, 4 insertions(+), 14 deletions(-)
+>
+> diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+> --- a/arch/um/drivers/Kconfig
+> +++ b/arch/um/drivers/Kconfig
+> @@ -111,24 +111,14 @@ config SSL_CHAN
+>
+>  config UML_SOUND
+>         tristate "Sound support"
+> +       select SOUND
+
+
+This would be the only instance that select's SOUND.
+Perhaps, this could be 'depends on SOUND'.
+(in that case, arch/um/configs/*_defconfig needs modification).
+
+Just my two cents.
+
+
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
