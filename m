@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1707665F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1BD7665F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbjG1H6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        id S234665AbjG1H6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234556AbjG1H6A (ORCPT
+        with ESMTP id S234557AbjG1H6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 03:58:00 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ED135A0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C463598;
         Fri, 28 Jul 2023 00:57:58 -0700 (PDT)
 Date:   Fri, 28 Jul 2023 07:57:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690531075;
+        s=2020; t=1690531076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5gWSLXCy4of2Obd0KdbLgy6MwVfgLmfmLKJL7BqXty4=;
-        b=x3YuUxb7qaToAxIQ8gwDu6R1CN2UDnwOxPSXZW4hNUXKGoDWYiq7anf5mfU1jKlNforkrq
-        SUcPihHVpsJz531oSf8CO7198WJYlxxN8whp6RtVvVLnsKdgtKhQVjhVM2LKHrFTvwcos0
-        5rbiyfUgCqgoqINXFQJ0neNilo9PxkD98jECywc5tjRzQKBldPJ3CLFqTS4dL/D4N+aJm0
-        cYAxxtfhn/2o3J/t05t5gujUtMauQE2DaxRCZ4apfkD8skNcHVU8dIsvojQtH8Oimdv4q8
-        hAspDC47QgfsaFtJQuE7b6CVPLw9c46toOuAwTiQk1sRBYE7iA9KkOobtuGqEQ==
+        bh=ZkJmbLByvVLLbdC4tk/TA0S14VRcxaBYW/wOJ5jRGtg=;
+        b=ohqTXWgPMsAgCzfdbrWAqv6qFru6K7gte+hLZG+lwGOMeaikQaxFL0DZTzGMkmqjASSyEK
+        /5ovfShF8kxyShTAYQUSgC5/ceup9A8w8m9Q0CX3VlgWf/pnyQ4rSmxGK47x52r970ZkXu
+        DaredsqRCQ8n2dQXclsdyh06tAzYzDSEZW6EeiKuIdiqaAQkw/1YmZNy9JSkCDxgxtCJH8
+        dpDf8+JpQHmn2XcDiynUYGuxTQbGCL+05y3QkdsTDt83xZMkIvIt/9rsK82F6FwYzucM0E
+        65NVH5QgqEOmQal3i1FxL0mTnV0qk2akhYaTa3cc15Werix60H1jjZW9qLHcnQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690531075;
+        s=2020e; t=1690531076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5gWSLXCy4of2Obd0KdbLgy6MwVfgLmfmLKJL7BqXty4=;
-        b=sGWBYJKHHXLGO7BPQud/fRbd0IUO9my1YIAJkmNNt9bzvbRoKGTbWrrnRYlPgYXiu4bNc5
-        O4Y1EQl5D2q/8FBg==
-From:   "tip-bot2 for Michael Ellerman" <tip-bot2@linutronix.de>
+        bh=ZkJmbLByvVLLbdC4tk/TA0S14VRcxaBYW/wOJ5jRGtg=;
+        b=IfwLtX191mJLFH5Os9LZK7V92Xd3ve24a+XZq+F0Ks/DdpNt17jPD+nvTa+l/Sgs4ZE4dp
+        UfxY+ffwy6fy+HDA==
+From:   "tip-bot2 for Laurent Dufour" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/core] cpu/SMT: Move SMT prototypes into cpu_smt.h
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
+Subject: [tip: smp/core] cpu/hotplug: Remove dependancy against
+ cpu_primary_thread_mask
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Zhang Rui <rui.zhang@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230705145143.40545-3-ldufour@linux.ibm.com>
-References: <20230705145143.40545-3-ldufour@linux.ibm.com>
+In-Reply-To: <20230705145143.40545-2-ldufour@linux.ibm.com>
+References: <20230705145143.40545-2-ldufour@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <169053107521.28540.11891274511415221088.tip-bot2@tip-bot2>
+Message-ID: <169053107559.28540.11243157708630222054.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,138 +69,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the smp/core branch of tip:
 
-Commit-ID:     3f9169196be55590a794b52f49637561ddd1ba4f
-Gitweb:        https://git.kernel.org/tip/3f9169196be55590a794b52f49637561ddd1ba4f
-Author:        Michael Ellerman <mpe@ellerman.id.au>
-AuthorDate:    Wed, 05 Jul 2023 16:51:35 +02:00
+Commit-ID:     7a4dcb4a5de1214c4a59448a759e2e264c2c4473
+Gitweb:        https://git.kernel.org/tip/7a4dcb4a5de1214c4a59448a759e2e264c2c4473
+Author:        Laurent Dufour <ldufour@linux.ibm.com>
+AuthorDate:    Wed, 05 Jul 2023 16:51:34 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 28 Jul 2023 09:53:36 +02:00
 
-cpu/SMT: Move SMT prototypes into cpu_smt.h
+cpu/hotplug: Remove dependancy against cpu_primary_thread_mask
 
-In order to export the cpuhp_smt_control enum as part of the interface
-between generic and architecture code, the architecture code needs to
-include asm/topology.h.
+The commit 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to
+CPUHP_BP_KICK_AP_STATE") introduce a dependancy against a global variable
+cpu_primary_thread_mask exported by the X86 code. This variable is only
+used when CONFIG_HOTPLUG_PARALLEL is set.
 
-But that leads to circular header dependencies. So split the enum and
-related declarations into a separate header.
+Since cpuhp_get_primary_thread_mask() and cpuhp_smt_aware() are only used
+when CONFIG_HOTPLUG_PARALLEL is set, don't define them when it is not set.
 
-[ ldufour: Reworded the commit's description ]
+No functional change.
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Zhang Rui <rui.zhang@intel.com>
-Link: https://lore.kernel.org/r/20230705145143.40545-3-ldufour@linux.ibm.com
+Link: https://lore.kernel.org/r/20230705145143.40545-2-ldufour@linux.ibm.com
 
 ---
- arch/x86/include/asm/topology.h |  2 ++
- include/linux/cpu.h             | 25 +------------------------
- include/linux/cpu_smt.h         | 29 +++++++++++++++++++++++++++++
- kernel/cpu.c                    |  1 +
- 4 files changed, 33 insertions(+), 24 deletions(-)
- create mode 100644 include/linux/cpu_smt.h
+ kernel/cpu.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index caf41c4..ae49ed4 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -136,6 +136,8 @@ static inline int topology_max_smt_threads(void)
- 	return __max_smt_threads;
- }
- 
-+#include <linux/cpu_smt.h>
-+
- int topology_update_package_map(unsigned int apicid, unsigned int cpu);
- int topology_update_die_map(unsigned int dieid, unsigned int cpu);
- int topology_phys_to_logical_pkg(unsigned int pkg);
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index 6e6e57e..6b326a9 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -18,6 +18,7 @@
- #include <linux/compiler.h>
- #include <linux/cpumask.h>
- #include <linux/cpuhotplug.h>
-+#include <linux/cpu_smt.h>
- 
- struct device;
- struct device_node;
-@@ -204,30 +205,6 @@ void cpuhp_report_idle_dead(void);
- static inline void cpuhp_report_idle_dead(void) { }
- #endif /* #ifdef CONFIG_HOTPLUG_CPU */
- 
--enum cpuhp_smt_control {
--	CPU_SMT_ENABLED,
--	CPU_SMT_DISABLED,
--	CPU_SMT_FORCE_DISABLED,
--	CPU_SMT_NOT_SUPPORTED,
--	CPU_SMT_NOT_IMPLEMENTED,
--};
--
--#if defined(CONFIG_SMP) && defined(CONFIG_HOTPLUG_SMT)
--extern enum cpuhp_smt_control cpu_smt_control;
--extern void cpu_smt_disable(bool force);
--extern void cpu_smt_check_topology(void);
--extern bool cpu_smt_possible(void);
--extern int cpuhp_smt_enable(void);
--extern int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval);
--#else
--# define cpu_smt_control		(CPU_SMT_NOT_IMPLEMENTED)
--static inline void cpu_smt_disable(bool force) { }
--static inline void cpu_smt_check_topology(void) { }
--static inline bool cpu_smt_possible(void) { return false; }
--static inline int cpuhp_smt_enable(void) { return 0; }
--static inline int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval) { return 0; }
--#endif
--
- extern bool cpu_mitigations_off(void);
- extern bool cpu_mitigations_auto_nosmt(void);
- 
-diff --git a/include/linux/cpu_smt.h b/include/linux/cpu_smt.h
-new file mode 100644
-index 0000000..722c2e3
---- /dev/null
-+++ b/include/linux/cpu_smt.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_CPU_SMT_H_
-+#define _LINUX_CPU_SMT_H_
-+
-+enum cpuhp_smt_control {
-+	CPU_SMT_ENABLED,
-+	CPU_SMT_DISABLED,
-+	CPU_SMT_FORCE_DISABLED,
-+	CPU_SMT_NOT_SUPPORTED,
-+	CPU_SMT_NOT_IMPLEMENTED,
-+};
-+
-+#if defined(CONFIG_SMP) && defined(CONFIG_HOTPLUG_SMT)
-+extern enum cpuhp_smt_control cpu_smt_control;
-+extern void cpu_smt_disable(bool force);
-+extern void cpu_smt_check_topology(void);
-+extern bool cpu_smt_possible(void);
-+extern int cpuhp_smt_enable(void);
-+extern int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval);
-+#else
-+# define cpu_smt_control               (CPU_SMT_NOT_IMPLEMENTED)
-+static inline void cpu_smt_disable(bool force) { }
-+static inline void cpu_smt_check_topology(void) { }
-+static inline bool cpu_smt_possible(void) { return false; }
-+static inline int cpuhp_smt_enable(void) { return 0; }
-+static inline int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval) { return 0; }
-+#endif
-+
-+#endif /* _LINUX_CPU_SMT_H_ */
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 03309f2..e02204c 100644
+index 88a7ede..03309f2 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -592,6 +592,7 @@ static void lockdep_release_cpus_lock(void)
- void __weak arch_smt_update(void) { }
+@@ -650,22 +650,8 @@ bool cpu_smt_possible(void)
+ }
+ EXPORT_SYMBOL_GPL(cpu_smt_possible);
  
- #ifdef CONFIG_HOTPLUG_SMT
+-static inline bool cpuhp_smt_aware(void)
+-{
+-	return topology_smt_supported();
+-}
+-
+-static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
+-{
+-	return cpu_primary_thread_mask;
+-}
+ #else
+ static inline bool cpu_smt_allowed(unsigned int cpu) { return true; }
+-static inline bool cpuhp_smt_aware(void) { return false; }
+-static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
+-{
+-	return cpu_present_mask;
+-}
+ #endif
+ 
+ static inline enum cpuhp_state
+@@ -1793,6 +1779,16 @@ static int __init parallel_bringup_parse_param(char *arg)
+ }
+ early_param("cpuhp.parallel", parallel_bringup_parse_param);
+ 
++static inline bool cpuhp_smt_aware(void)
++{
++	return topology_smt_supported();
++}
 +
- enum cpuhp_smt_control cpu_smt_control __read_mostly = CPU_SMT_ENABLED;
- 
- void __init cpu_smt_disable(bool force)
++static inline const struct cpumask *cpuhp_get_primary_thread_mask(void)
++{
++	return cpu_primary_thread_mask;
++}
++
+ /*
+  * On architectures which have enabled parallel bringup this invokes all BP
+  * prepare states for each of the to be onlined APs first. The last state
