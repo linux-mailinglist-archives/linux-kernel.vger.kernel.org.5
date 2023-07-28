@@ -2,164 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D94766C0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40BA766C0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbjG1Lsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
+        id S236313AbjG1Ltg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236313AbjG1Lsk (ORCPT
+        with ESMTP id S234888AbjG1Lte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:48:40 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A9D3C01;
-        Fri, 28 Jul 2023 04:48:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0e23a4b1so3482421e87.3;
-        Fri, 28 Jul 2023 04:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690544917; x=1691149717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Doqj4gDdDMax3I9KTmVKAGl5S35O9n40i+nLylwwl1c=;
-        b=cPqqNdnWtUGeVSveuUj0OylqzRXbgHchOpLRZQjmwCqJxEtxUQgfsBjntoSum6Itsl
-         WzC1hHA68nOzYb92GhprV5hgxwJv6BsDlW0G7p+wQvBnKys5LVJhqddstNKm68wb3JMt
-         44lptR+NW9msvWZsEMgSmE4hsjAU4soqee5WIF4f8kSc3xt8lrt6Pz2lJ0Y1rSp8+L5N
-         HmrZmjqap/lFMZk2rxJ5N5nBxHMYhgmqg90wfe3FcDmLkPnklW+JkJ+A+FjA9rS6v9CE
-         P91MXIoo3A9ZnJ4FvLtWpDkb13dq7Viod8mDoakUvY8bET26+vMipdKXxBCZjAGBZvCW
-         Alig==
+        Fri, 28 Jul 2023 07:49:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093813C2A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690544931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=amggK1c1iFQcIsltx9iiMJ/J2TdCT43VOB9zNEC3MjI=;
+        b=XaA2Ymu3O+5JsaHScx6dm4yid9YJkBftsU4KEZRPf20w43437oGkoYb6HAnjQXkChHW5OI
+        k9Qlnc4nQiNb20II50tGcxEvDm4RwND206QcodaKJySHIZvWs0/X+Ndx2f5kjeE/MoWXgF
+        w/g8xRhQ0je7NMcB5BEup3cohxLeG3w=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-103-hxUPg5U6OxiXix3FtJWTWw-1; Fri, 28 Jul 2023 07:48:49 -0400
+X-MC-Unique: hxUPg5U6OxiXix3FtJWTWw-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4053a03d5b2so22908221cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690544917; x=1691149717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Doqj4gDdDMax3I9KTmVKAGl5S35O9n40i+nLylwwl1c=;
-        b=HaDR+yml06hGdzkwKm5sGXtLeDLqxso5Kaas5GiYraQwMYdUF/K9lqY4eB5tysbkAd
-         6Z8odNzWH73HXkM9JUEBD8BPNl/SYHCVM3/QuId1Chb7Qx50ZZan0pgeaLKciBhGDOhI
-         WDOPXuFDETc+8v7o15Zu72kskaXyUSSo7wi4aBFg3jwpiRhB3HHE3NLTdjXBf/shiNd/
-         2K8Y6xtvhr3lCTi/1iNBazfUd571FuzoNsvaJ4hs+tCIbTtyjhBuwtQZC9HVjRxzcFHb
-         MDBLmblhZVwNRW8xqI7LWL48CVx0Nfg1qhPE6/vug0Mwm/Ny3eRhJXKR/vrAPRX9BZxI
-         OBWg==
-X-Gm-Message-State: ABy/qLZQvjekAqiQAjq0MYgmSftoqYHP5wiMwrensU+Y6X6Iius9iqra
-        hicYzjMrIKAJ8cJ2Pb73we8=
-X-Google-Smtp-Source: APBJJlHmwo1+wc+ndPbxfHnXuEvhkgmwy6RaeECvnJmDu6kCaplIc1/jDHROO62mtl1zhywwtT22Vg==
-X-Received: by 2002:a05:6512:1153:b0:4f8:5d2f:902a with SMTP id m19-20020a056512115300b004f85d2f902amr1893088lfg.60.1690544917140;
-        Fri, 28 Jul 2023 04:48:37 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id s25-20020a056402165900b0051d9dbf5edfsm1714330edx.55.2023.07.28.04.48.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 04:48:36 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 28 Jul 2023 13:48:34 +0200
-To:     tglozar@redhat.com
-Cc:     linux-kernel@vger.kernel.org, john.fastabend@gmail.com,
-        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
- sock_map_sk_acquire
-Message-ID: <ZMOrEi3cNWGXp9ZS@krava>
-References: <20230728064411.305576-1-tglozar@redhat.com>
+        d=1e100.net; s=20221208; t=1690544929; x=1691149729;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=amggK1c1iFQcIsltx9iiMJ/J2TdCT43VOB9zNEC3MjI=;
+        b=d1Suu36lrIF4pvvAsdJUKqQOq5X5H+56MmyFEhHNj+5IJIunzhtSgOXk7X9VhG3vk4
+         pmNu6eIHY+kCNSikt9qt/Wsj7DgV5Ej+SPfZbLQUThZQN52hKhCPY7hYSztjfQRM/1kw
+         I/KtSitIjxTtJ8sc1BvOFH9VvQyrR61Ycht21mJNy945Ad7yL61j1BLb5QwqFFNnDlUe
+         HmkHQguJWFwjw2xefV1csxy/Zgyi/Z4rA+cViuzuST0588DhVyP6IEihI3L5mqGhTe1W
+         WDKbM5k0Y0syFDtcoI3+9Cbd7U7/CKo0DUQmZ9ifEWm4uECgDxphgW99smCbgf1GZsw4
+         gT6Q==
+X-Gm-Message-State: ABy/qLYyI9PioJq7UAwWinxu1rhxqBFWQRErGmwa7Uoh8rGD5w+Ga949
+        W9lofRcJPQQvW4xa3Coy9Trm7arkUieIKWcqBDb2q9z7tLRXqFQZ4ndeNQkBR164lyTBqlkbHUM
+        0z3u4YG7HzyIynxrV1vksKhq+
+X-Received: by 2002:a05:622a:170c:b0:403:a263:5402 with SMTP id h12-20020a05622a170c00b00403a2635402mr2914424qtk.18.1690544929313;
+        Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF4HP9emyj8PfcdfRAEbYECoLJjWWPCTFXihnHLKkpiXAxEqfjwIUSpFIWY/4/sObMMv7h2zQ==
+X-Received: by 2002:a05:622a:170c:b0:403:a263:5402 with SMTP id h12-20020a05622a170c00b00403a2635402mr2914415qtk.18.1690544929078;
+        Fri, 28 Jul 2023 04:48:49 -0700 (PDT)
+Received: from [172.16.0.7] ([209.73.90.46])
+        by smtp.gmail.com with ESMTPSA id c26-20020ac81e9a000000b00403fcd4ea59sm1099677qtm.10.2023.07.28.04.48.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 04:48:48 -0700 (PDT)
+Message-ID: <c4360163-3595-e152-765d-641f9c79e8fd@redhat.com>
+Date:   Fri, 28 Jul 2023 06:48:47 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728064411.305576-1-tglozar@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [syzbot] [gfs2?] kernel panic: hung_task: blocked tasks (2)
+To:     David Howells <dhowells@redhat.com>,
+        syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com>
+Cc:     agruenba@redhat.com, arnd@arndb.de, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <00000000000045a44b0601802056@google.com>
+ <200478.1690532408@warthog.procyon.org.uk>
+Content-Language: en-US
+From:   Bob Peterson <rpeterso@redhat.com>
+In-Reply-To: <200478.1690532408@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 08:44:11AM +0200, tglozar@redhat.com wrote:
-> From: Tomas Glozar <tglozar@redhat.com>
+On 7/28/23 3:20 AM, David Howells wrote:
+> syzbot <syzbot+607aa822c60b2e75b269@syzkaller.appspotmail.com> wrote:
 > 
-> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
-> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
-> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
-> patchset notes for details).
+>> Fixes: 9c8ad7a2ff0b ("uapi, x86: Fix the syscall numbering of the mount API syscalls [ver #2]")
 > 
-> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
-> BUG (sleeping function called from invalid context) on RT kernels.
+> This would seem unlikely to be the culprit.  It just changes the numbering on
+> the fsconfig-related syscalls.
 > 
-> preempt_disable was introduced together with lock_sk and rcu_read_lock
-> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
-> in parallel"), probably to match disabled migration of BPF programs, and
-> is no longer necessary.
+> Running the test program on v6.5-rc3, however, I end up with the test process
+> stuck in the D state:
 > 
-> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
+> INFO: task repro-17687f1aa:5551 blocked for more than 120 seconds.
+>        Not tainted 6.5.0-rc3-build3+ #1448
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:repro-17687f1aa state:D stack:0     pid:5551  ppid:5516   flags:0x00004002
+> Call Trace:
+>   <TASK>
+>   __schedule+0x4a7/0x4f1
+>   schedule+0x66/0xa1
+>   schedule_timeout+0x9d/0xd7
+>   ? __next_timer_interrupt+0xf6/0xf6
+>   gfs2_gl_hash_clear+0xa0/0xdc
+>   ? sugov_irq_work+0x15/0x15
+>   gfs2_put_super+0x19f/0x1d3
+>   generic_shutdown_super+0x78/0x187
+>   kill_block_super+0x1c/0x32
+>   deactivate_locked_super+0x2f/0x61
+>   cleanup_mnt+0xab/0xcc
+>   task_work_run+0x6b/0x80
+>   exit_to_user_mode_prepare+0x76/0xfd
+>   syscall_exit_to_user_mode+0x14/0x31
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7f89aac31dab
+> RSP: 002b:00007fff43d9b878 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+> RAX: 0000000000000000 RBX: 00007fff43d9cad8 RCX: 00007f89aac31dab
+> RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007fff43d9b920
+> RBP: 00007fff43d9c960 R08: 0000000000000000 R09: 0000000000000073
+> R10: 0000000000000000 R11: 0000000000000206 R12: 0000000000000000
+> R13: 00007fff43d9cae8 R14: 0000000000417e18 R15: 00007f89aad51000
+>   </TASK>
+> 
+> David
+> 
+Hi David,
 
-FYI, I'm not sure it's related but I started to see following splat recently:
+This indicates gfs2 is having trouble resolving and freeing all its 
+glocks, which usually means a reference counting problem or ail (active 
+items list) problem during unmount.
 
-[  189.360689][  T658] =============================
-[  189.361149][  T658] [ BUG: Invalid wait context ]
-[  189.361588][  T658] 6.5.0-rc2+ #589 Tainted: G           OE     
-[  189.362174][  T658] -----------------------------
-[  189.362660][  T658] test_progs/658 is trying to lock:
-[  189.363176][  T658] ffff8881702652b8 (&psock->link_lock){....}-{3:3}, at: sock_map_update_common+0x1c4/0x340
-[  189.364152][  T658] other info that might help us debug this:
-[  189.364689][  T658] context-{5:5}
-[  189.365021][  T658] 3 locks held by test_progs/658:
-[  189.365508][  T658]  #0: ffff888177611a80 (sk_lock-AF_INET){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x82/0x260
-[  189.366503][  T658]  #1: ffffffff835a3180 (rcu_read_lock){....}-{1:3}, at: sock_map_update_elem_sys+0x78/0x260
-[  189.367470][  T658]  #2: ffff88816cf19240 (&stab->lock){+...}-{2:2}, at: sock_map_update_common+0x12a/0x340
-[  189.368420][  T658] stack backtrace:
-[  189.368806][  T658] CPU: 0 PID: 658 Comm: test_progs Tainted: G           OE      6.5.0-rc2+ #589 98af30b3c42d747b51da05f1d0e4899e394be6c9
-[  189.369889][  T658] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-[  189.370736][  T658] Call Trace:
-[  189.371063][  T658]  <TASK>
-[  189.371365][  T658]  dump_stack_lvl+0xb2/0x120
-[  189.371798][  T658]  __lock_acquire+0x9ad/0x2470
-[  189.372243][  T658]  ? lock_acquire+0x104/0x350
-[  189.372680][  T658]  lock_acquire+0x104/0x350
-[  189.373104][  T658]  ? sock_map_update_common+0x1c4/0x340
-[  189.373615][  T658]  ? find_held_lock+0x32/0x90
-[  189.374074][  T658]  ? sock_map_update_common+0x12a/0x340
-[  189.374587][  T658]  _raw_spin_lock_bh+0x38/0x80
-[  189.375060][  T658]  ? sock_map_update_common+0x1c4/0x340
-[  189.375571][  T658]  sock_map_update_common+0x1c4/0x340
-[  189.376118][  T658]  sock_map_update_elem_sys+0x184/0x260
-[  189.376704][  T658]  __sys_bpf+0x181f/0x2840
-[  189.377147][  T658]  __x64_sys_bpf+0x1a/0x30
-[  189.377556][  T658]  do_syscall_64+0x38/0x90
-[  189.377980][  T658]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  189.378473][  T658] RIP: 0033:0x7fe52f47ab5d
+If gfs2_gl_hash_clear gets stuck for a long period of time it is 
+supposed to dump the remaining list of glocks that still have not been 
+resolved. I think it takes 10 minutes or so. Can you post the console 
+messages that follow? That will help us figure out what's happening. Thanks.
 
-the patch did not help with that
+Regards,
 
-jirka
+Bob Peterson
 
-> 
-> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
-> ---
->  net/core/sock_map.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 19538d628714..08ab108206bf 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
->  	__acquires(&sk->sk_lock.slock)
->  {
->  	lock_sock(sk);
-> -	preempt_disable();
->  	rcu_read_lock();
->  }
->  
-> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
->  	__releases(&sk->sk_lock.slock)
->  {
->  	rcu_read_unlock();
-> -	preempt_enable();
->  	release_sock(sk);
->  }
->  
-> -- 
-> 2.39.3
-> 
-> 
