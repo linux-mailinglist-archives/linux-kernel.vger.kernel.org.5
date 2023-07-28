@@ -2,69 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49280766904
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25967669B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbjG1Jfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S235748AbjG1KDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjG1Jfo (ORCPT
+        with ESMTP id S235395AbjG1KCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:35:44 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD711E4F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:35:41 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so9946551fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1690536940; x=1691141740;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JSbAR7dWxwhLJYW8XT5bgVlaA1SWINOC/DZLLBHhIYo=;
-        b=lIoVuOtw/ATsFdZ7Lm4PGDkfR9lmoNWmdnio9/6Nm4oXrrxm4DUz+ar+vI0yCE8D2/
-         crIsqShYOkjA0W5guOU5wR+2YXYEEGXhsAhuLHC/uLHZzMthPusUjRy50cCs6RfWtIks
-         q+Q8dzMkeheMOO8vfqGme5RwvOyszbNpdAOJ4DQj9iNeUSho/xbDbwYm0VnnSl6zkZzS
-         0H1xAz9Jm0QhEspBJVeIjdfsmsmdTnoPzYrXnhiG64V89m9vPsbmGHwNXbmFc1/MlA9D
-         8503yc59+xGXsZDIgfFrTgmeGcby6sUWBLGxsr/iRnl13SXKkZHgqUDej9esVnAPWgwH
-         U6uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690536940; x=1691141740;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JSbAR7dWxwhLJYW8XT5bgVlaA1SWINOC/DZLLBHhIYo=;
-        b=ejQkWw+wOZUcpSIQ1KPC/3TInIS/fwKzsyPjC4mQZcuF0lyTcukvtrtTClsweQXBjp
-         6MhEdw6bUeXGe0EcZWiJU+jQs19dcmkwov1iXbAKC/M/iNaSegnnz2hQhbkDXNtWiZ7V
-         9EhQ9UVxIvdwq0EkzH6O2nYu93hDy2yC4YVeqBZq/OuQWwikDMePmzb3l/7hJFA5ayaT
-         ujNRqh469IyEvp3t8rtXjUsUXbc17S3hgTahCfwp+wkIAXVaggW0Eg9tNg4NDtbdc8Xm
-         iWjKgIBP9flO6jXDv0w+iYZwYhEoRgrXZh7Gi3JdCGaqrEltCL6ZzcHyka6i1vv/ffXA
-         PJRw==
-X-Gm-Message-State: ABy/qLYAHitwWS8KP9gh8i16pzx3ALys5mHjAm6uWzkrrpi+duiMmuGZ
-        WFpPgAy01GSRuVcL2ZFcvoA83g==
-X-Google-Smtp-Source: APBJJlEHZ7r1CaEonFBJjkbPox8z5/FfBaI8gpUQi3c+2Olbd3dDjPeZZ3+w/AabJVmtob4/bpGObA==
-X-Received: by 2002:a2e:95c6:0:b0:2b7:339c:f791 with SMTP id y6-20020a2e95c6000000b002b7339cf791mr1345168ljh.25.1690536939979;
-        Fri, 28 Jul 2023 02:35:39 -0700 (PDT)
-Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
-        by smtp.gmail.com with ESMTPSA id t6-20020a5d6906000000b0031760af2331sm4248180wru.100.2023.07.28.02.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 02:35:39 -0700 (PDT)
-From:   Adam Sindelar <adam@wowsignal.io>
-To:     bpf@vger.kernel.org
-Cc:     Adam Sindelar <ats@fb.com>, David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v5] libbpf: Expose API to consume one ring at a time
-Date:   Fri, 28 Jul 2023 11:33:47 +0200
-Message-Id: <20230728093346.673994-1-adam@wowsignal.io>
-X-Mailer: git-send-email 2.39.2
+        Fri, 28 Jul 2023 06:02:30 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9379B49CC;
+        Fri, 28 Jul 2023 03:02:00 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 3d73668807db1266; Fri, 28 Jul 2023 12:01:58 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 749C2661E37;
+        Fri, 28 Jul 2023 12:01:58 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Subject: [PATCH v2 0/3] cpuidle: teo: Avoid stopping scheduler tick too often
+Date:   Fri, 28 Jul 2023 11:35:03 +0200
+Message-ID: <5707588.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrieeigddvtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhn
+ ihigrdguvgdprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgrjhgvthgrnhdrphhutghhrghlshhkihesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,130 +56,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We already provide ring_buffer__epoll_fd to enable use of external
-polling systems. However, the only API available to consume the ring
-buffer is ring_buffer__consume, which always checks all rings. When
-polling for many events, this can be wasteful.
+Hi Folks,
 
-Signed-off-by: Adam Sindelar <adam@wowsignal.io>
----
-v1->v2: Added entry to libbpf.map
-v2->v3: Correctly set errno and handle overflow
-v3->v4: Fixed an embarrasing typo from zealous autocomplete
-v4->v5: Added a selftest to show usage
+Patch [1/3] in this series is a v2 of this patch posted yesterday:
 
- tools/lib/bpf/libbpf.h                        |  1 +
- tools/lib/bpf/libbpf.map                      |  1 +
- tools/lib/bpf/ringbuf.c                       | 22 ++++++++++++++++
- .../selftests/bpf/prog_tests/ringbuf_multi.c  | 26 +++++++++++++++++++
- 4 files changed, 50 insertions(+)
+https://lore.kernel.org/linux-pm/4506480.LvFx2qVVIh@kreacher/
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 55b97b2087540..20ccc65eb3f9d 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1195,6 +1195,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
- 				ring_buffer_sample_fn sample_cb, void *ctx);
- LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
- LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-+LIBBPF_API int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id);
- LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
- 
- struct user_ring_buffer_opts {
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 9c7538dd5835e..42dc418b4672f 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -398,4 +398,5 @@ LIBBPF_1.3.0 {
- 		bpf_prog_detach_opts;
- 		bpf_program__attach_netfilter;
- 		bpf_program__attach_tcx;
-+		ring_buffer__consume_ring;
- } LIBBPF_1.2.0;
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 02199364db136..457469fc7d71e 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -290,6 +290,28 @@ int ring_buffer__consume(struct ring_buffer *rb)
- 	return res;
- }
- 
-+/* Consume available data from a single RINGBUF map identified by its ID.
-+ * The ring ID is returned in epoll_data by epoll_wait when called with
-+ * ring_buffer__epoll_fd.
-+ */
-+int ring_buffer__consume_ring(struct ring_buffer *rb, uint32_t ring_id)
-+{
-+	struct ring *ring;
-+	int64_t res;
-+
-+	if (ring_id >= rb->ring_cnt)
-+		return libbpf_err(-EINVAL);
-+
-+	ring = &rb->rings[ring_id];
-+	res = ringbuf_process_ring(ring);
-+	if (res < 0)
-+		return libbpf_err(res);
-+
-+	if (res > INT_MAX)
-+		return INT_MAX;
-+	return res;
-+}
-+
- /* Poll for available data and consume records, if any are available.
-  * Returns number of records consumed (or INT_MAX, whichever is less), or
-  * negative number, if any of the registered callbacks returned error.
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-index 1455911d9fcbe..8123efc94d1a8 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-@@ -29,6 +29,11 @@ static int process_sample(void *ctx, void *data, size_t len)
- 		CHECK(s->value != 777, "sample2_value", "exp %ld, got %ld\n",
- 		      777L, s->value);
- 		break;
-+	case 2:
-+		CHECK(ring != 2, "sample3_ring", "exp %d, got %d\n", 2, ring);
-+		CHECK(s->value != 1337, "sample3_value", "exp %ld, got %ld\n",
-+		      1337L, s->value);
-+		break;
- 	default:
- 		CHECK(true, "extra_sample", "unexpected sample seq %d, val %ld\n",
- 		      s->seq, s->value);
-@@ -45,6 +50,8 @@ void test_ringbuf_multi(void)
- 	int err;
- 	int page_size = getpagesize();
- 	int proto_fd = -1;
-+	int epoll_fd;
-+	struct epoll_event events[2];
- 
- 	skel = test_ringbuf_multi__open();
- 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-@@ -124,6 +131,25 @@ void test_ringbuf_multi(void)
- 	CHECK(skel->bss->total != 2, "err_total", "exp %ld, got %ld\n",
- 	      2L, skel->bss->total);
- 
-+	/* validate APIs to support external polling */
-+	epoll_fd = ring_buffer__epoll_fd(ringbuf);
-+
-+	/* expect events on either ring to trigger through the epoll_fd */
-+	skel->bss->target_ring = 2;
-+	skel->bss->value = 1337;
-+	syscall(__NR_getpgid);
-+
-+	err = epoll_wait(epoll_fd, events, sizeof(events) / sizeof(struct epoll_event), -1);
-+	if (CHECK(err != 1, "epoll_wait", "epoll_wait exp %d, got %d\n", 1, err))
-+		goto cleanup;
-+	if (CHECK(!(events[0].events & EPOLLIN), "epoll_event", "expected EPOLLIN\n"))
-+		goto cleanup;
-+
-+	/* epoll data can be used to consume only the affected ring */
-+	err = ring_buffer__consume_ring(ringbuf, events[0].data.u32);
-+	CHECK(err != 1, "consume_ring", "consume_ring %u exp %d, got %d\n",
-+		  events[0].data.u32, 1, err);
-+
- cleanup:
- 	if (proto_fd >= 0)
- 		close(proto_fd);
--- 
-2.39.2
+Patch [2/3] addresses some bail out paths in teo_select() in which the
+scheduler tick may be stopped unnecessarily too.
+
+Patch [3/3] replaces a structure field with a local variable (while at it).
+
+Thanks!
+
+
 
