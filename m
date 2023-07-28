@@ -2,108 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441A6766C89
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF43766C87
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbjG1MHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S233386AbjG1MHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233609AbjG1MHk (ORCPT
+        with ESMTP id S232776AbjG1MHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:07:40 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B640D3A8C;
-        Fri, 28 Jul 2023 05:07:38 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bb893e6365so12670545ad.2;
-        Fri, 28 Jul 2023 05:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690546058; x=1691150858;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1jpcXUzEwELWXs2RIMu0L/y8ad++SC5sQ/lHuSCbESc=;
-        b=lB6TUsU0iXYbNOhnrWHMnF4wrUyA/ZILz9dwrze8V1KY1D7tZkwst6pdmy2XTM0uox
-         5CxWYRNA1g0Jblbn3VOoVBCXzeGuaSYbgCpDy1gGzkRJnlZ+2fwW0citiYvzROP/npba
-         Kp1LELSX7x8p7iZnQRGC5+V5Qr0oNkvfz8e9ESmsc+OIL3NfTdSteCndcpFtP6ICyIIT
-         9hX1jHEBO/D3jBH1Swkn+h7fRilL+SaqFIFpqLnpu5552Feu2m63HI6hR3tqezTMvhAh
-         t5umnfszkVl0qNXrYgOrVSUTDFCfUp0haHfKi7iFhcfkP9TQG/X3qMBEvgwizIi3s/rj
-         NDaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690546058; x=1691150858;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1jpcXUzEwELWXs2RIMu0L/y8ad++SC5sQ/lHuSCbESc=;
-        b=a8lTxuswsAgzBztkDEDo1V0yjEmCKdlRJMRnknuMt5gM28A371qCBYsm4GWjjepc+c
-         IlDE18NxQiRis7cJfbKQBElr7O9UHjbGC/z5bPEY32G2pQQQ+wh3JbfH+7YiAwlrCTnc
-         7r4IlaE8vDwvMqIQsuCHQogPAwqy+pQHSjfEfYGXF2lv8AduMSv9ylOHPAk3ZmKYb0Zd
-         0R6KkYWbjt8DKsXvZz7YXxkLHRI4kWFJ0J03sb7/NmdFxjIo/qpCwKdaXkjWxtfLhf+3
-         mul4HXU+tHdmZQoppVCNiXyJ52dSOeEAqJO1E4fxpk27a3yHgu/aa5JcNGMijfd9wfwR
-         iA6g==
-X-Gm-Message-State: ABy/qLasozMNFU1zXzA8zMtverpJJv/S+8GcMlkFUV/ZhU+sgeOHtuHQ
-        COlMo7GM2EH3mBhELDMCJvA=
-X-Google-Smtp-Source: APBJJlGjnlVu0+z2TGpdvnUNa3WkMM3jcn6GPIPfxQvVrK7w1qtolsqtumhkySfGX9plpwAVveNZbw==
-X-Received: by 2002:a17:902:da83:b0:1b8:9b1b:ae8e with SMTP id j3-20020a170902da8300b001b89b1bae8emr1537022plx.59.1690546058080;
-        Fri, 28 Jul 2023 05:07:38 -0700 (PDT)
-Received: from localhost.localdomain ([113.103.5.50])
-        by smtp.gmail.com with ESMTPSA id f16-20020a170902ce9000b001b016313b1dsm3435627plg.86.2023.07.28.05.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 05:07:37 -0700 (PDT)
-From:   Guiting Shen <aarongt.shen@gmail.com>
-To:     nicolas.ferre@microchip.com, gregkh@linuxfoundation.org,
-        stern@rowland.harvard.edu
-Cc:     alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Guiting Shen <aarongt.shen@gmail.com>
-Subject: [PATCH v3 RESEND] usb: ohci-at91: Fix the unhandle interrupt when resume
-Date:   Fri, 28 Jul 2023 20:06:48 +0800
-Message-Id: <20230728120648.5878-1-aarongt.shen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 08:07:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0E8FA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:07:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 98FDE21905;
+        Fri, 28 Jul 2023 12:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690546037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=4JEXvPnCiJz1N+0zU5EevCUSAyKXotkC/FXyembEKL0=;
+        b=hytqJpq+ogJaXPeb3ufedHir1wZmi3fY25Y6p7yvb3t/awi/IsR1nHD3s5rquN3tIl7sTY
+        JqvkqiV16UkMFjUwWZa/vCQgvQiJ16RSiEsJcRexF+Twy2hTpVSH1t7PFSHHylQ4wMJlMU
+        EBQuxeg6gBxT+ToncHJMKx/Q0phlE3A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690546037;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=4JEXvPnCiJz1N+0zU5EevCUSAyKXotkC/FXyembEKL0=;
+        b=5tuT3t5YQi3qzPludSI6KjbX5SyTmySUcnVTgYxtSX/w17TCuKyBq9Jwc77F7R3kbsut3t
+        0PlRp3qofdGcW2AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7296113276;
+        Fri, 28 Jul 2023 12:07:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QCnZGnWvw2SZXAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 28 Jul 2023 12:07:17 +0000
+Date:   Fri, 28 Jul 2023 14:07:16 +0200
+Message-ID: <873518ck97.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.5-rc4
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ohci_hcd_at91_drv_suspend() sets ohci->rh_state to OHCI_RH_HALTED when
-suspend which will let the ohci_irq() skip the interrupt after resume. And
-nobody to handle this interrupt.
+Linus,
 
-According to the comment in ohci_hcd_at91_drv_suspend(), it need to reset
-when resume from suspend(MEM) to fix by setting "hibernated" argument of
-ohci_resume().
+please pull sound fixes for v6.5-rc4 from:
 
-Signed-off-by: Guiting Shen <aarongt.shen@gmail.com>
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.5-rc4
+
+The topmost commit is 3b9adfbba5af9e1e83897e832fbe6f5778bfc5d3
+
+----------------------------------------------------------------
+
+sound fixes for 6.5-rc4
+
+A collection of device-specific small fixes such as ASoC Realtek
+codec fixes for PM issues, ASoC nau8821 quirk additions, and usual
+HD- and USB-audio quirks.
+
+----------------------------------------------------------------
+
+Dmytro Maluka (2):
+      ASoC: da7219: Flush pending AAD IRQ when suspending
+      ASoC: da7219: Check for failure reading AAD IRQ events
+
+Edgar (1):
+      ASoc: codecs: ES8316: Fix DMIC config
+
+Edson Juliano Drosdeck (1):
+      ASoC: nau8821: Add DMI quirk mechanism for active-high jack-detect
+
+Guiting Shen (1):
+      ASoC: atmel: Fix the 8K sample parameter in I2SC master
+
+Jussi Laako (1):
+      ALSA: usb-audio: Update for native DSD support quirks
+
+Luka Guzenko (1):
+      ALSA: hda/relatek: Enable Mute LED on HP 250 G8
+
+Mark Brown (1):
+      ASoC: wm8904: Fill the cache for WM8904_ADC_TEST_0 register
+
+Matus Gajdos (1):
+      ASoC: fsl_spdif: Silence output on stop
+
+Pavel Asyutchenko (1):
+      ALSA: hda/realtek: Support ASUS G713PV laptop
+
+Shuming Fan (5):
+      ASoC: rt5682-sdw: fix for JD event handling in ClockStop Mode0
+      ASoC: rt712-sdca: fix for JD event handling in ClockStop Mode0
+      ASoC: rt722-sdca: fix for JD event handling in ClockStop Mode0
+      ASoC: rt711: fix for JD event handling in ClockStop Mode0
+      ASoC: rt711-sdca: fix for JD event handling in ClockStop Mode0
+
+Takashi Iwai (1):
+      ALSA: usb-audio: Add quirk for Microsoft Modern Wireless Headset
+
+Wang Weiyang (1):
+      ALSA: seq: remove redundant unsigned comparison to zero
+
 ---
- drivers/usb/host/ohci-at91.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/host/ohci-at91.c b/drivers/usb/host/ohci-at91.c
-index 533537ef3c21..360680769494 100644
---- a/drivers/usb/host/ohci-at91.c
-+++ b/drivers/usb/host/ohci-at91.c
-@@ -673,7 +673,13 @@ ohci_hcd_at91_drv_resume(struct device *dev)
- 	else
- 		at91_start_clock(ohci_at91);
- 
--	ohci_resume(hcd, false);
-+	/*
-+	 * According to the comment in ohci_hcd_at91_drv_suspend()
-+	 * we need to do a reset if the 48Mhz clock was stopped,
-+	 * that is, if ohci_at91->wakeup is clear. Tell ohci_resume()
-+	 * to reset in this case by setting its "hibernated" flag.
-+	 */
-+	ohci_resume(hcd, !ohci_at91->wakeup);
- 
- 	return 0;
- }
--- 
-2.25.1
+ sound/core/seq/seq_ump_client.c   |  3 +--
+ sound/pci/hda/patch_realtek.c     |  2 ++
+ sound/soc/atmel/atmel-i2s.c       |  5 ++++-
+ sound/soc/codecs/da7219-aad.c     | 12 +++++++++---
+ sound/soc/codecs/es8316.c         |  2 +-
+ sound/soc/codecs/nau8821.c        | 41 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5682-sdw.c     |  9 ++++++++-
+ sound/soc/codecs/rt711-sdca-sdw.c | 10 +++++++++-
+ sound/soc/codecs/rt711-sdw.c      |  9 ++++++++-
+ sound/soc/codecs/rt712-sdca-sdw.c | 10 +++++++++-
+ sound/soc/codecs/rt722-sdca-sdw.c | 10 +++++++++-
+ sound/soc/codecs/wm8904.c         |  3 +++
+ sound/soc/fsl/fsl_spdif.c         |  2 ++
+ sound/usb/mixer_maps.c            | 14 +++++++++++++
+ sound/usb/quirks.c                | 37 +++++++++++++++++++++++++++++------
+ 15 files changed, 151 insertions(+), 18 deletions(-)
 
