@@ -2,153 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A73807668E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379727668E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbjG1J3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S235436AbjG1JbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235598AbjG1J22 (ORCPT
+        with ESMTP id S235409AbjG1Jas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:28:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3470E5B90;
-        Fri, 28 Jul 2023 02:25:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B26DD620A2;
-        Fri, 28 Jul 2023 09:25:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98F40C433C7;
-        Fri, 28 Jul 2023 09:25:49 +0000 (UTC)
-Message-ID: <2d9eeb0e-71b3-157c-b947-6dd5485f46e3@xs4all.nl>
-Date:   Fri, 28 Jul 2023 11:25:47 +0200
+        Fri, 28 Jul 2023 05:30:48 -0400
+Received: from forward502a.mail.yandex.net (forward502a.mail.yandex.net [IPv6:2a02:6b8:c0e:500:1:45:d181:d502])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3439549D1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:28:12 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net [IPv6:2a02:6b8:c15:2c95:0:640:f90:0])
+        by forward502a.mail.yandex.net (Yandex) with ESMTP id 327C35E87E;
+        Fri, 28 Jul 2023 12:28:06 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 5SJNGQ8sICg0-6lgZZUIK;
+        Fri, 28 Jul 2023 12:28:05 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1690536485;
+        bh=zLwg7eZhmWTGwEH6CIMSDLok9Zn1jv1W2z4DpzPhfSQ=;
+        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+        b=mg+tbqYgEcULYwLoDOtwreGoTnktQs+q8B/CrY1lrkL+nsvh4P/yNgz9FPx2CrgBX
+         X63UheFFXgUS1hfEPkRThRbY1H2KSbgjn3QnYZn5GtGtTiVPmBNtIWmk925upPt9vF
+         mhHV3NcjnVRDSx5DlrBheWDWFgVigCJHGBgMdu+c=
+Authentication-Results: mail-nwsmtp-smtp-production-main-67.vla.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <79619e92b70fdb4b324758ddb34f84b3b8963256.camel@maquefel.me>
+Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 28 Jul 2023 12:28:05 +0300
+In-Reply-To: <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+         <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
+         <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v7,0/11] media: mediatek: vcodec: separate encoder and
- decoder
-Content-Language: en-US
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230722074230.30558-1-yunfei.dong@mediatek.com>
- <231e9976-93fe-b8b1-29d9-6c799a8e6a3a@xs4all.nl>
-In-Reply-To: <231e9976-93fe-b8b1-29d9-6c799a8e6a3a@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 11:58, Hans Verkuil wrote:
-> On 22/07/2023 09:42, Yunfei Dong wrote:
->> From: Yunfei Dong <yunfei.dong@mediatek.corp-partner.google.com>
->>
->> With the driver more and more complex, encoder and decoder need to add more parameter
->> in shared struct 'mtk_vcodec_ctx' and 'mtk_vcodec_dev'. Encoder use about 40% and
->> decoder use 60% parameter. Need to allocate extra unused memory when encoder and decoder
->> working.
->>
->> Separate encoder and decoder in different folder and use independent data struct.
->>
->> patch 1 remove unused parameter.
->> patch 2~3 align fw and interrupt related interface.
->> patch 4~6 remove the dependency of debug log
->> patch 7~8 separate mtk_vcodec_ctx and mtk_vcodec_dev
->> patch 9 fix unreasonable parameter
->> patch 10 removed unused header files
->> patch 11 separate encoder and decoder in different folder
->> ---
->> Changed from v6:
->> - rebase to: https://git.linuxtv.org/hverkuil/media_tree.git/log/?h=fo-v6.6g.
->> Changed from v5:
->> - fix some words error for patch 3/6/11.
->> - rename mtk_vcodec_comm_drv.h to mtk_vcodec_cmn_drv.h for patch 7.
->> Changed from v4:
->> - add one parameter to record register base for reg_base for patch 3.
->> - add debug string for non ctx log for patch 6.
->> - change the comment of struct mtk_vcodec_dec_ctx and struct mtk_vcodec_enc_ctx for patch 7.
->> - prefer to use struct mtk_vcodec_dec_dev an current period, will re-construct in the future for patch 8.
->> Changed from v3:
->> - re-write commit message for patch 3.
->> Changed from v2:
->> - This patch main changed:
->>   1: add different macro mtk_dec_debug and mtk_enc_debug calling common
->>      macro mtk_vcodec_debug in order to use dev_dbg instead of pr_debug.
->>   2: add different macro mtk_v4l2_venc_dbg and mtk_v4l2_vdec_dbg calling common
->>      macro  in order to use dev_dbg instead of pr_debug.
->> Changed from v1:
->> - Change pr_dbg to dev_dbg for mtk_v4l2_level and mtk_vcodec_dbg for patch 4.
->> - Change pr_err to dev_err for mtk_v4l2_err and mtk_vcodec_err for patch 5.
->> - Fix unreasonable parameter for patch 8.
->> ---
->> Yunfei Dong (11):
->>   media: mediatek: vcodec: remove unused parameter
->>   media: mediatek: vcodec: align fw interface
->>   media: mediatek: vcodec: Removing struct 'mtk_vcodec_ctx/dev' for
->>     shared interface
->>   media: mediatek: vcodec: Removing useless debug log
->>   media: mediatek: vcodec: remove the dependency of vcodec debug log
->>   media: mediatek: vcodec: replace pr_* with dev_* for v4l2 debug
->>     message
->>   media: mediatek: vcodec: separate struct 'mtk_vcodec_ctx'
->>   media: mediatek: vcodec: separate struct mtk_vcodec_dev
->>   media: mediatek: vcodec: fix unreasonable parameter definition and
->>     style
->>   media: mediatek: vcodec: remove unused include header
->>   media: mediatek: vcodec: separate decoder and encoder
-> 
-> Besides the missing argument in patch 6/11 I also get this compiler warning:
-> 
-> drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c: In function 'vpu_enc_ipi_handler':
-> drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c:64:31: warning: 'vpu' may be used uninitialized [-Wmaybe-uninitialized]
->    64 |         struct venc_vpu_inst *vpu;
->       |                               ^~~
-> 
-> and this smatch error:
-> 
-> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:138 mtk_vcodec_get_reg_bases() error: buffer overflow 'mtk_dec_reg_names' 11 <= 11
-> 
-> However, I believe that was introduced by Nicolas' patch series.
-> 
-> I'll try to pinpoint the precise patch.
+Hello Andy!
 
-That smatch error is now found and fixed in the staging tree.
+On Fri, 2023-07-21 at 17:13 +0300, Andy Shevchenko wrote:
+> On Thu, Jul 20, 2023 at 02:29:07PM +0300, Nikita Shubin via B4 Relay
+> wrote:
+> > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0spin_lock_irqsave(&ep93xx_sw=
+lock, flags);
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_read(map, EP93XX_SYSC=
+ON_DEVCFG, &val);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val &=3D ~clear_bits;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val |=3D set_bits;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_write(map, EP93XX_SYS=
+CON_SWLOCK,
+> > EP93XX_SWLOCK_MAGICK);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap_write(map, EP93XX_SYS=
+CON_DEVCFG, val);
+>=20
+> Is this sequence a must?
+> I.o.w. can you first supply magic and then update devcfg?
+>=20
 
-Can you post a v8 fixing the other issues?
-
-Thanks!
-
-Regards,
-
-	Hans
-
-> 
-> Regards,
-> 
-> 	Hans
+Unfortunately it is a must to write EP93XX_SYSCON_SWLOCK and only then
+the next write to swlocked registers will succeed.
 
