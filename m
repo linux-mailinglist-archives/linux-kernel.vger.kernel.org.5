@@ -2,86 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE079766DA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C981766DB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbjG1Mzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        id S236021AbjG1M5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235690AbjG1Mzb (ORCPT
+        with ESMTP id S233660AbjG1M5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:55:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A5B30FA;
-        Fri, 28 Jul 2023 05:55:30 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690548929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lC9d12Ft1vaZl1r5oaRHCKBKWx9YmTaYlRn9mDI8X2U=;
-        b=GoKGm+akHT+hB9vRSCpMfYGpBobhIc11qZ001utqipWUHSb9C6eoGKvkxtNxt2OMbvI1Ea
-        sSbJ4H5Xjpe9+KiXZ0xr/9ykNF8/oCyr7Nt9B8N0SyO36C31KU/Q8/cSMa9X0EfKsQ+gdR
-        KX/H6+LPUexJqDqLLpL/3d4+P9AewlNTvzROhWI6cLfXP7qZ7Z4aYRF3T1VW8D+oTxgtSb
-        pqrJD8ZspCvWnKQWpGskb9JaBMEuXMNJbtv02XUb4b+3ckqeZsgVaOqyAHwJutWTmH7rem
-        xz8MKMSvrZjJDAYyHBxFfIavPxRIGpmCZ33+TaBLRS/f4cDKE6+bsTL6sBkTIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690548929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lC9d12Ft1vaZl1r5oaRHCKBKWx9YmTaYlRn9mDI8X2U=;
-        b=iQOrrT3PGFmHIXkxPrBajQTbMYj6hUK2KHWRHTWQKkSzEaZEAZHpLGbBwmv+M18bh0AhVM
-        CrnGCbTpjBfyX5CQ==
-To:     Zhang Rui <rui.zhang@intel.com>, peterz@infradead.org,
-        bp@alien8.de, rafael.j.wysocki@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        x86@kernel.org, feng.tang@intel.com
-Subject: Re: [RFC PATCH] x86/acpi: Ignore invalid x2APIC entries
-In-Reply-To: <87jzukqjvf.ffs@tglx>
-References: <20230702162802.344176-1-rui.zhang@intel.com> <87jzukqjvf.ffs@tglx>
-Date:   Fri, 28 Jul 2023 14:55:28 +0200
-Message-ID: <87h6poqjpb.ffs@tglx>
+        Fri, 28 Jul 2023 08:57:09 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7369F30FA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:57:07 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so3466547e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1690549026; x=1691153826;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7TcuxbE1UmD9Aws4Vk4iwIGKsEWIhL1t3hDINkZP8BM=;
+        b=MJq+yStd64RJULVR6xIyGKMfDvJY/8gPnfCgrWUJ2PGBeiEnLeBY+gxcUgbEZhMYah
+         OOl137jgbX5DbfJSptbCfz75WzP42GHTgJBubqWJI0NfAuQ1YO7OrLLyzsaL+otn0o+P
+         nkdb2Elzr3r+odfHe2sh9YYEDp1TnroP2YkvgHcGQjKjGOProLgadzRBGENGhEJS84Ys
+         SRcPgU3Q4mDBytkFD1slMZEAJMtaQ5QjJ11MPABWQ6zph1XZL9nZVwOnwVPZYVIAHqDG
+         frG6dXdhI57xX7QEE+Ct6rAmW2dENPQfYtjqlOo9lMP5InM6v3WXrkSSHBpmbIAaDPNd
+         Wcyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690549026; x=1691153826;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7TcuxbE1UmD9Aws4Vk4iwIGKsEWIhL1t3hDINkZP8BM=;
+        b=jA68eeL0+Sn2ZACCLyMK9nSsSQFBuqrjw8C+iNSl6kYc3zy0Vzc2+/VWzdUbV+kfhz
+         ZKLQgtXKawI4uA3HXMtkOpsFbQqDh3sxSudS4ClppBVYMVOQ5kUvah8Lkv8f1wmLZjE/
+         L1Abqha+Zhs2OhuiemNaXwNj/eoKa55Xj+s6Pu6DAjK+l5YyBqdtWhM5PGLBwJG3XhD2
+         toXp/MBBVS7ehbkLQ/jsOX1dMwIoF3XsmIZ03MfqiLtxBVXonZQu/QsCuFMeYQlpyX39
+         Z+mtSk40FqevaWOHj+KE0WoKO+KCu6C1dSjRlHh76K5nEdAIyK4ftdjbmE0jOif5IksA
+         i6Fg==
+X-Gm-Message-State: ABy/qLYj86z6Nin8qxq92nncUAkDSCmZpF6EvHdZ1eWwUj3WwOr9FwdR
+        04tGUkjdwEPsFMYMiVerMZtIk+AUL+anKhb5vSE=
+X-Google-Smtp-Source: APBJJlGAVzKRZrbvPLrokCZ6PchUVUuxj0h7VwayM1HDhdl1TGZU2eHqQdxRs3d1Jy/+SVoWyEI0zw==
+X-Received: by 2002:a05:6512:3d06:b0:4f8:4177:e087 with SMTP id d6-20020a0565123d0600b004f84177e087mr1909770lfv.47.1690549025552;
+        Fri, 28 Jul 2023 05:57:05 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id w16-20020a50fa90000000b0052275deb475sm1774659edr.23.2023.07.28.05.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 05:57:04 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 14:57:03 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] riscv: vdso.lds.S: merge .data section into .rodata
+ section
+Message-ID: <20230728-cec389a85a7dc8dcca803e06@orel>
+References: <20230726173024.3684-1-jszhang@kernel.org>
+ <20230726173024.3684-3-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726173024.3684-3-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28 2023 at 14:51, Thomas Gleixner wrote:
-> On Mon, Jul 03 2023 at 00:28, Zhang Rui wrote:
->>  
->> +static bool has_lapic_cpus;
->
-> Yet another random flag. Sigh.
->
-> I really hate this. Why not doing the obvious?
->
-> --- a/arch/x86/kernel/apic/apic.c
-> +++ b/arch/x86/kernel/apic/apic.c
-> @@ -2452,6 +2452,9 @@ int generic_processor_info(int apicid, i
->  	bool boot_cpu_detected = physid_isset(boot_cpu_physical_apicid,
->  				phys_cpu_present_map);
+On Thu, Jul 27, 2023 at 01:30:23AM +0800, Jisheng Zhang wrote:
+> The .data section doesn't need to be separate from .rodata section,
+> they are both readonly.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/kernel/vdso/vdso.lds.S | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
+> index d43fd7c7dd11..671aa21769bc 100644
+> --- a/arch/riscv/kernel/vdso/vdso.lds.S
+> +++ b/arch/riscv/kernel/vdso/vdso.lds.S
+> @@ -29,7 +29,13 @@ SECTIONS
+>  	.eh_frame_hdr	: { *(.eh_frame_hdr) }		:text	:eh_frame_hdr
+>  	.eh_frame	: { KEEP (*(.eh_frame)) }	:text
 >  
-> +	if (physid_isset(apicid, phys_cpu_present_map))
-> +		return -EBUSY;
-> +
->  	/*
->  	 * boot_cpu_physical_apicid is designed to have the apicid
->  	 * returned by read_apic_id(), i.e, the apicid of the
->
-> As the call sites during MADT parsing ignore the return value anyway,
-> there is no harm and this is a proper defense against broken tables
-> which enumerate an APIC twice.
+> -	.rodata		: { *(.rodata .rodata.* .gnu.linkonce.r.*) }
+> +	.rodata		: {
+> +		*(.rodata .rodata.* .gnu.linkonce.r.*)
+> +		*(.got.plt) *(.got)
+> +		*(.data .data.* .gnu.linkonce.d.*)
+> +		*(.dynbss)
+> +		*(.bss .bss.* .gnu.linkonce.b.*)
 
-In fact that function should not have a return value at all, but because
-it's not clearly separated between boot time and physical hotplug, it
-has to have one ...
+Looking at other architectures, it appears the last three lines of
+sections could be discarded, but I don't know enough about this to
+state they should be.
+
+Thanks,
+drew
+
+
+> +	}
+>  
+>  	/*
+>  	 * This linker script is used both with -r and with -shared.
+> @@ -44,13 +50,6 @@ SECTIONS
+>  	.alternative : {
+>  		*(.alternative)
+>  	}
+> -
+> -	.data		: {
+> -		*(.got.plt) *(.got)
+> -		*(.data .data.* .gnu.linkonce.d.*)
+> -		*(.dynbss)
+> -		*(.bss .bss.* .gnu.linkonce.b.*)
+> -	}
+>  }
+>  
+>  /*
+> -- 
+> 2.40.1
+> 
