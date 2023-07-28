@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9360576639F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDB47663AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjG1F07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 01:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        id S233337AbjG1FeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 01:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjG1F0w (ORCPT
+        with ESMTP id S229946AbjG1FeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 01:26:52 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C1D30FC
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:26:50 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-63d0f62705dso11473856d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20221208.gappssmtp.com; s=20221208; t=1690522010; x=1691126810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cE7yzj/ShJctTo/cH8TMuQ/2VH0iD1G1+5KA9qirh/Y=;
-        b=trpErXEJEPDZtUwJrLhT56jOvw/TASEnxJqiim24u87Ey219zXjICSpgcrZjP+hIvC
-         YOisNcRp1EFcZBuqaw0v47KkdLVd0rFI+qxA+sXUlebSorcP7hGjMv3NkVKwxd1A+1fM
-         +cPBg+wk6aUxXSizYt9OOW8K2HwaRZylnOeA2baYNkYAkyTSt3uSNK4bqSBTUKRlrYKH
-         veSyepWn/C4JI0VyBkgwNf9ieJKzWg0hb3tCI/tmQqhFz8s1wdV5XOJi6PQyomubgQDL
-         AUwaUxnOfbqg6WW2SXOJHHuKT2fULl3OjCF9EdNHMtPrrV+gZMyo2wDTP0lf87ec5+Bk
-         zCEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690522010; x=1691126810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cE7yzj/ShJctTo/cH8TMuQ/2VH0iD1G1+5KA9qirh/Y=;
-        b=CzmVJzN8l3+ltnQzBbhIN8Kk/dY1WgyV4j4YAL57Zp998N2b6dgaZR+fphygzXsUFq
-         seG7yGOu3mg7VSL/henfaOtqu65D6kunHTifAJpD4jTieYIOR62FgvgYj6VDVzRG8EmY
-         uHMtvcwIeqoLxxC9NSCfJS0XRxXZuWobY0/ienFCafk/Fg09nSPggv00LdLRzL2Xrxhh
-         phL+Z0wxSkuAfzZHJke1MjM/UmE8I8X49pFxKEKdOS+0P4BCJbRlSXkGz63FRNgLhN7W
-         m2IHSbhDpVOFwez2Oir28YDLP+LSSQeeP4KavNgthms7OTjNKyhwq5HZV2xBlgElQI3V
-         wIMQ==
-X-Gm-Message-State: ABy/qLZG+kHaErfC7oAO29oIMiOKH/YSkrxY7K5Wffzuthu6FA6KtJTD
-        lrDri8fNDhomQWkEqRIuuMmMQnxywAaqlVlqEYpNig==
-X-Google-Smtp-Source: APBJJlGaHKu68l916QbJnESfurRQ8GLdxdUM6h1VlhU7qK1FfkFxQTpsfGqhPqGZxqp+5PbL922CfRISxETZ4hSkBS0=
-X-Received: by 2002:ad4:45a9:0:b0:63c:fc39:3c0d with SMTP id
- y9-20020ad445a9000000b0063cfc393c0dmr1353378qvu.62.1690522009771; Thu, 27 Jul
- 2023 22:26:49 -0700 (PDT)
+        Fri, 28 Jul 2023 01:34:07 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8950B35AD
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:34:05 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36S5Xvtp057389;
+        Fri, 28 Jul 2023 00:33:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690522437;
+        bh=UAY2pJ5KCobDzUjFKGI6/zs8XgzCPoAo1W3p2DYg3mI=;
+        h=From:To:CC:Subject:Date;
+        b=a25czI6ptSIxO9CBoutLH7sjehkGsQ3gTYTOEIEmnL42nMQLqjJeTQM7BjdN81ddS
+         LjGAGFpMQBaQZpkNExUCiTK24/wmEOL5YM6X4jGF/cXkQ2gWlDIstXGr4mFGT1kt5P
+         6TEoBk/veyDXLxAKuCuxIR8iuya9ACA8kTwsh5Uk=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36S5XvKp005299
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Jul 2023 00:33:57 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
+ Jul 2023 00:33:57 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 28 Jul 2023 00:33:57 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36S5XuER017376;
+        Fri, 28 Jul 2023 00:33:56 -0500
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+To:     <nm@ti.com>, <ssantosh@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <j-choudhary@ti.com>
+Subject: [PATCH v3] soc: ti: k3-ringacc: remove non-fatal probe deferral log
+Date:   Fri, 28 Jul 2023 11:03:56 +0530
+Message-ID: <20230728053356.31044-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230720152737.102382-1-helen.koike@collabora.com>
- <CAF6AEGtXL5vjp3Uup6Mk19MiY8E26-tpyXVmxXYhMd3fiadykQ@mail.gmail.com> <CAF6AEGsxLg4og1EkCdno6P8x31KK=rJfmerJa8uMeNR-n7RVRg@mail.gmail.com>
-In-Reply-To: <CAF6AEGsxLg4og1EkCdno6P8x31KK=rJfmerJa8uMeNR-n7RVRg@mail.gmail.com>
-From:   Daniel Stone <daniel@fooishbar.org>
-Date:   Fri, 28 Jul 2023 06:26:39 +0100
-Message-ID: <CAPj87rPNyJ=mX1Um6yaN_jTV2gH5MhMxr3mnSb7=nB7NEOf2Ag@mail.gmail.com>
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Helen Koike <helen.koike@collabora.com>, emma@anholt.net,
-        linux-doc@vger.kernel.org, david.heidelberg@collabora.com,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        jbrunet@baylibre.com, robdclark@google.com, corbet@lwn.net,
-        khilman@baylibre.com, sergi.blanch.torne@collabora.com,
-        gustavo.padovan@collabora.com, linux-rockchip@lists.infradead.org,
-        daniels@collabora.com, martin.blumenstingl@googlemail.com,
-        mripard@kernel.org, anholt@google.com,
-        linux-mediatek@lists.infradead.org, robclark@freedesktop.org,
-        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de, Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 22:47, Rob Clark <robdclark@gmail.com> wrote:
-> > I did run into a bit of a chicken vs. egg problem with testing the "in
-> > tree" version (compared to earlier versions which kept most of the yml
-> > and scripts in a separate tree), is that it actually requires this
-> > commit to exist in the branch you want to run CI on.  My earlier
-> > workaround of pulling the drm/ci commit in via
-> > ${branchname}-external-fixes no longer works.
->
-> After unwinding some more gitlab repo settings that were for the
-> previous out-of-tree yml setup, I have this working.
->
-> Tested-by: Rob Clark <robdclark@gmail.com>
-> Acked-by: Rob Clark <robdclark@gmail.com>
+Drop the non-fatal probe deferral log for getting MSI domain.
+This makes the kernel log clean and we do not get recurring logs
+stating: "Failed to get MSI domain".
 
-And it's also:
-Acked-by: Daniel Stone <daniels@collabora.com>
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+---
 
-It's been back and forth a few times by now and reviewed pretty
-heavily by all the people who are across the CI details. I think the
-next step is to answer all the workflow questions by actually getting
-it into trees and using it in anger. There was some discussion about
-whether this should come in from drm-misc, or the core DRM tree, or a
-completely separate pull, but I'm not sure what the conclusion was ...
-maintainers, thoughts?
+v2 patch: <https://lore.kernel.org/all/20230710104215.156114-1-j-choudhary@ti.com/>
 
-Cheers,
-Daniel
+Changelog v2->v3:
+- Remove unnecessary braces for the if condition
+
+Changelog v1->v2:
+- Removed the print instead of dropping the loglevel according to the comment
+  on similar patch for udma:
+  <https://lore.kernel.org/all/Y6wiXlZh1MUL2WrF@matsya/>
+
+ drivers/soc/ti/k3-ringacc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
+index c6fdf0ad3d33..4c1353616b72 100644
+--- a/drivers/soc/ti/k3-ringacc.c
++++ b/drivers/soc/ti/k3-ringacc.c
+@@ -1373,10 +1373,8 @@ static int k3_ringacc_init(struct platform_device *pdev,
+ 
+ 	dev->msi.domain = of_msi_get_domain(dev, dev->of_node,
+ 					    DOMAIN_BUS_TI_SCI_INTA_MSI);
+-	if (!dev->msi.domain) {
+-		dev_err(dev, "Failed to get MSI domain\n");
++	if (!dev->msi.domain)
+ 		return -EPROBE_DEFER;
+-	}
+ 
+ 	ret = k3_ringacc_probe_dt(ringacc);
+ 	if (ret)
+-- 
+2.25.1
+
