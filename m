@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB5E766E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D5A766E82
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236747AbjG1Nft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
+        id S235114AbjG1Nhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235967AbjG1Nfp (ORCPT
+        with ESMTP id S235105AbjG1Nhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:35:45 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83D83AA8
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:35:15 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf1f632b8so66809266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1690551313; x=1691156113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjWxYuMkYyCYydGZYyJb4wLVfHb9S4Js5IwnnFB0XSM=;
-        b=mrIibh3Dlr65plPmb3Z5x+BK8DLfVVHVgMxww4xnQSb3VTUTBAhXWOncfguFuNeGNX
-         MGsDK3J+A8xpOpSJrr/dv0TihJRHPUB9q9atC/ZgxkMr2lAponsucCOMIlt9Sd1oyHI0
-         pNBr5+KNFgBYRwp/e1r5nwpJaAtvBmzFYiAetPlrGdBs0m+Gp9YL81CyIkqTZuu1PmDM
-         T2cXP6wX/WgEj32CGATYB59Tz8DEYlqb7yCYpb0rxCi6wiXXxTMA/eFZGlgkmeEXKEqt
-         aN3bg3giPBpxEgAdV+QB9qygbyiPBv7i5ufllQpPlE/w4NmqPtSt1iX//pWE8MIo+cUn
-         NfkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690551313; x=1691156113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pjWxYuMkYyCYydGZYyJb4wLVfHb9S4Js5IwnnFB0XSM=;
-        b=PQwdllSAXTzWPqdTbWkPCZeQPWVu1gTI9MG37JlgUERV/lHV7FCpc76uq6dvAnie6I
-         Z/wK9mCXg6m8k81TzrsWWzwtFC/+bTV46LipoblUqOQLkhw6Bk3Egx/WW45d/LbALiMv
-         NTWwsiRBpcI1xxCSvY8lonCmGx29VJgCJzugaMDaoV4X/3mPW0jUjbgnAo6RfgTTgf9O
-         ZujnjU7OgnRactjY828okd4qVGTWNgywEHgwQFi4FQTgNz1sIytuAcEEE0IOMwLpjcKg
-         HEp4wC0FkhwIXFvsr7PANB2EJKtyb5KQ8BUY8LrRho7139YnPiIAUjesp1mVtkFEKjEK
-         Zo5w==
-X-Gm-Message-State: ABy/qLbrpwl+r/hHUhX+3DRtupjxW46RlxuQ7LQEbip212w6HJOGaLIx
-        5s6G992j51ouXaL1IXykLkwWQg==
-X-Google-Smtp-Source: APBJJlHKH1RVaeJ+IQWiZC6RQ/5l8Tw7cw+9QG6eDnuSTly70i49Mrj/0IX7qZ9HnNDqHSo9f1w0pQ==
-X-Received: by 2002:a17:906:2202:b0:99b:d1ef:520b with SMTP id s2-20020a170906220200b0099bd1ef520bmr2223467ejs.31.1690551312875;
-        Fri, 28 Jul 2023 06:35:12 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id m10-20020a17090607ca00b009931a3adf64sm2111178ejc.17.2023.07.28.06.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 06:35:12 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 15:35:11 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] riscv: Improve flush_tlb()
-Message-ID: <20230728-d89388540f7ad14318ad768e@orel>
-References: <20230727185553.980262-1-alexghiti@rivosinc.com>
- <20230727185553.980262-2-alexghiti@rivosinc.com>
+        Fri, 28 Jul 2023 09:37:34 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E3444B4;
+        Fri, 28 Jul 2023 06:37:02 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RC7rj4RMrzLnnm;
+        Fri, 28 Jul 2023 21:33:57 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 21:36:34 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <brian.gix@intel.com>
+CC:     <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] Bluetooth: Remove unused declaration hci_req_prepare_suspend()
+Date:   Fri, 28 Jul 2023 21:36:03 +0800
+Message-ID: <20230728133603.35112-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727185553.980262-2-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 08:55:50PM +0200, Alexandre Ghiti wrote:
-> For now, flush_tlb() simply calls flush_tlb_mm() which results in a
-> flush of the whole TLB. So let's use mmu_gather fields to provide a more
-> fine-grained flush of the TLB.
-> 
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->  arch/riscv/include/asm/tlb.h      | 8 +++++++-
->  arch/riscv/include/asm/tlbflush.h | 3 +++
->  arch/riscv/mm/tlbflush.c          | 7 +++++++
->  3 files changed, 17 insertions(+), 1 deletion(-)
->
+From: YueHaibing <yuehaibing@huawei.com>
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+commit 182ee45da083 ("Bluetooth: hci_sync: Rework hci_suspend_notifier")
+left behind this.
+
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ net/bluetooth/hci_request.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/bluetooth/hci_request.h b/net/bluetooth/hci_request.h
+index b9c5a9823837..0be75cf0efed 100644
+--- a/net/bluetooth/hci_request.h
++++ b/net/bluetooth/hci_request.h
+@@ -71,7 +71,5 @@ struct sk_buff *hci_prepare_cmd(struct hci_dev *hdev, u16 opcode, u32 plen,
+ void hci_req_add_le_scan_disable(struct hci_request *req, bool rpa_le_conn);
+ void hci_req_add_le_passive_scan(struct hci_request *req);
+ 
+-void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next);
+-
+ void hci_request_setup(struct hci_dev *hdev);
+ void hci_request_cancel_all(struct hci_dev *hdev);
+-- 
+2.34.1
+
