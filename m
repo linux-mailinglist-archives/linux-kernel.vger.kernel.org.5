@@ -2,93 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CBA767669
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8776766A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjG1TeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 15:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        id S233798AbjG1Tes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 15:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjG1TeU (ORCPT
+        with ESMTP id S233020AbjG1Teq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:34:20 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E97E69;
-        Fri, 28 Jul 2023 12:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=fPenveROvmLP9xK4bVQXMQSFpU0bLGq9l0utMcWGrfM=; b=S3P1XhiNI7tuydMrFHMGOtysw4
-        y7VxJlfdAExXJizqj4Qwc25CAaVdYRwdYTPeALneag129u+mW6NnjT+T7k+1BVbMz+6GnQ6+zyvVC
-        5D/9nWvpNBg6jeMWlTkQqS1v1Vjh6m0kkwvLLrcDyceBa4zN8zpSuc+kjysseEjfRfV+FRPavTh3I
-        2bEi9qFHbGOxrV/B3SdL+Wi8gKML0mDxdC/hgbe7PHi4k2/FvVElp9vrZNON7d8E+42y6XEfwhOfh
-        Z+s9pckqRxtpCUryeXfQx6shKLGrkvw7ZIZ02ie2f7et1TgNMLqrVWXt/zXpXur+ZGbxJDiZM4Cza
-        KjzCUZCQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47138)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qPTDb-0007kx-2V;
-        Fri, 28 Jul 2023 20:33:43 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qPTDW-0005B7-3J; Fri, 28 Jul 2023 20:33:38 +0100
-Date:   Fri, 28 Jul 2023 20:33:38 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Simon Horman <simon.horman@corigine.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, imx@lists.linux.dev
-Subject: Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the TXC clock
- in fixed-link
-Message-ID: <ZMQYEs9gULZmmijV@shell.armlinux.org.uk>
-References: <20230727152503.2199550-1-shenwei.wang@nxp.com>
- <20230727152503.2199550-3-shenwei.wang@nxp.com>
- <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
- <ZMPdKyOtpZKEMLsO@shell.armlinux.org.uk>
- <20230728153611.GH21718@willie-the-truck>
- <ZMPs+sOIzWR0LmrP@lizhi-Precision-Tower-5810>
+        Fri, 28 Jul 2023 15:34:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477E330D3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:34:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6397621D3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 19:34:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB423C433C7;
+        Fri, 28 Jul 2023 19:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690572884;
+        bh=j8jNcmTYYntq9pAVo2UzJdRoU3x1ihUFJCes2YsaF/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJtVHE1oCeKXFQ2YOPpEvTEVZW6WSuvjT+4P7eaX6T5Uf5dTTbHVJFaiA9BFwPTaS
+         H9IMeFpMevEQQKjqRFGvrvkwAtQC+gb4b3p5ee3vHF+fiIwycWYCCjDsoXzYgH9xBm
+         63X7w/U3dkPG09uiHZUbwMxBo0v+ySrscND2ZbTGFMN3kx4P+kbpXEm6Zu8jsqt8pW
+         rFXgI97jdb/6sEFGxM14NkB1Dgnge/dDvmuoqKndSuOE7w0n1d6pRGBzIWC3lWdIMd
+         m99opBLE4qgS7OJaJ/Ea+s1YVPCTZl3zpC86thlNo0TmUaUe9PsMMj4zETHc+Gs1S0
+         qkeA6dhtaxEmQ==
+Date:   Fri, 28 Jul 2023 13:34:41 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Pratyush Yadav <ptyadav@amazon.de>
+Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Jens Axboe <axboe@kernel.dk>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme-pci: do not set the NUMA node of device if it has
+ none
+Message-ID: <ZMQYURrKPqIyTkG7@kbusch-mbp.dhcp.thefacebook.com>
+References: <20230725110622.129361-1-ptyadav@amazon.de>
+ <ZL/dphk/MJMRskX8@kbusch-mbp.dhcp.thefacebook.com>
+ <50a125da-95c8-3b9b-543a-016c165c745d@grimberg.me>
+ <20230726131408.GA15909@lst.de>
+ <mafs0cz0e8zc6.fsf_-_@amazon.de>
+ <ZMFHEK95WGwtYbid@kbusch-mbp.dhcp.thefacebook.com>
+ <mafs08rb28o4u.fsf_-_@amazon.de>
+ <ZMGddjINDt10BSvf@kbusch-mbp.dhcp.thefacebook.com>
+ <mafs0tttn7vs3.fsf_-_@amazon.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMPs+sOIzWR0LmrP@lizhi-Precision-Tower-5810>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+In-Reply-To: <mafs0tttn7vs3.fsf_-_@amazon.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,59 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 12:29:46PM -0400, Frank Li wrote:
-> On Fri, Jul 28, 2023 at 04:36:12PM +0100, Will Deacon wrote:
-> > Yes, I don't think wmb() is the right thing here. If you need to ensure
-> > that the write to MAC_CTRL_REG has taken effect, then you'll need to go
-> > through some device-specific sequence which probably involves reading
-> > something back. If you just need things to arrive in order eventually,
-> > the memory type already gives you that.
-> > 
-> > It's also worth pointing out that udelay() isn't necessarily ordered wrt
-> > MMIO writes, so that usleep_range() might need some help as well.
+On Fri, Jul 28, 2023 at 08:09:32PM +0200, Pratyush Yadav wrote:
 > 
-> Hi Deacon:
+> I am guessing you are looking at irq_create_affinity_masks(). Yeah, It
+> does not take into account the NUMA information. In fact, even if it
+> did, the NUMA node associated with the IRQ is NUMA_NO_NODE
+> (/proc/$irq/node == -1).
 > 
-> Does it means below pattern will be problem?
+> I did some more digging over the week to figure out what is going on. It
+> seems like the kernel _does_ in fact allow all CPUs in the affinity. I
+> added some prints in set_affinity_irq() in
+> drivers/xen/events/events_base.c (since that is the irqchip for the
+> interrupt). I see it being called with mask: ffffffff,ffffffff.
 > 
-> 1.writel()
-> 2.udelay()
-> 3.writel()
+> But I later see the function being called again with a different mask:
+> 00000000,00008000. The stack trace shows the call is coming from
+> ksys_write(). The process doing the write is irqbalance.
+> 
+> So I think your earlier statement was incorrect. irqbalance does in fact
+> balance these interrupts and it probably looks at the NUMA information
+> of the device to make that decision. My original reasoning holds and
+> irqbalance is the one picking the affinity.
+> 
+> With this explanation, do you think the patch is good to go?
 
-Yes, it can be a problem - because the first write may take a while
-to hit the hardware. It's been this way ever since PCI became a thing,
-even on x86 hardware.
-
-PCI posting rules are that writes can be posted into the various
-bridges in the bus structure and forwarded on at some point later.
-However, reads are not allowed to bypass writes - which means that if
-one reads from a PCI device, the preceeding writes need to be flushed
-out of the bridges _in the path to the device being read_.
-
-So, if we take an example and apply it to PCI:
-
-	writel()
-	udelay(100)
-	writel()
-	readl()
-
-The device could well see nothing for a while, and then two consecutive
-writes and a read in quick succession.
-
-> It may not wait enough time between 1 and 3. I think the above pattern
-> is quite common in driver code.  I am not sure if usleep_range involve
-> MMIO to get current counter, ARM may use cp15 to get local timer counter.
-
-There are no guarantees, even on x86, that udelay() offers anything to
-space device writes apart.
-
-If this pattern is popular in drivers, and it's critical to the
-drivers operation, then it's technically buggy - and it's been that way
-for at least a couple of decades! One might get away with it (maybe the
-hardware isn't delaying the writes?) but the kernel has never
-guaranteed that writel(), udelay(), writel() will space the two writes
-apart by the specified delay.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+irqbalance still writes to the /proc/<irq>/smp_affinity to change it,
+right? That's just getting I/O errors on my machines because it fails
+irq_can_set_affinity_usr() for nvme's kernel managed interrupts (except
+the first vector, but that one is not used for I/O). Is there another
+path irqbalance is using that's somehow getting past the appropriate
+checks? Or perhaps is your xen irq_chip somehow bypassing the managed
+irq property?
