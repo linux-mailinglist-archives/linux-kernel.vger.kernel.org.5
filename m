@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51F9766D54
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC46D766D57
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbjG1MgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S236555AbjG1Mg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbjG1MgH (ORCPT
+        with ESMTP id S236464AbjG1Mg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:36:07 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0797187
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:36:05 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe110de46dso3363085e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:36:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=theentrepreneurhub-com.20221208.gappssmtp.com; s=20221208; t=1690547764; x=1691152564;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6TO6avvHDJamgdpoj57S2aPvkVsdalubgYk8UEwddwY=;
-        b=MtOZe6q3Dc59VF5lDIcRywch33fSKtoP/lfULo8SuVuuMDRS8ZrcmpT2UWeNYtDUhM
-         gsHQ0BQHL/U6GznyowFxspHFRZkf25K/PXnzpCHr9+MEi3Z7W8rsUv6yTVQ3gFsVHYJD
-         c2wQtX6AjgUIf+gPFa4+eZxEESl+IlXgbDlD2Xk4AzqdIow4jYfxBBTqa5NMfl41loWk
-         1sz1dR1VriAkeQDnr8Cf9NEpk2mlwDEwQttmOxXdQYx+wyqE3oupUOT6HeloToJISI/9
-         YGGGLcxG7HG5aeOhC+IiuLJwqqqfWpPBf9fdyWKCjlP59IlVysRIKBIUf/s7P9PeyUXS
-         kGGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690547764; x=1691152564;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6TO6avvHDJamgdpoj57S2aPvkVsdalubgYk8UEwddwY=;
-        b=R13K91cnU9srgbzfh5juw5R93C+Pl+z99rImO4GJc0KpTrNajPrNVU8qMuIi60e5iV
-         ppzO7gklYGlb9g8kQwgIoUcIK9FJ0RI4DDnIvMaDCO1aBfxScBCrjukJRW2f9bEZf3wz
-         MN0Bs3Qa2bkj7scA0jkauTqRO+u17SFwb3/mZA8nwvwp1aeTyAi+qajs9q/MOWnHOMsE
-         9ryOkjPekEFskS4pRXurMWtLdkC2OyLTjZnvF2v2eWACVfefYWiwLoqGeZoHJIqWoew3
-         jDkzlBfDQKcH7dhXpRfEhe6DBLWdo6enAHZ5qLenCoiRE2KSOspJ6TGXqoO/oTAFrN4O
-         fEAw==
-X-Gm-Message-State: ABy/qLaxtN+K4w/uWlqb8KoHLv4cSDihqFhLxy+PuwvK7ZwkxlUX1Pe/
-        QmblraUm1YFRk5mIcnKkkwpYTN8z4n6FOoZ86XYgqrGNfqwaqi2m
-X-Google-Smtp-Source: APBJJlGoG/ge9WRAaeboTb/VdO/XCmoE5VDcWtEuJvi9jALOIkwvzeZ+Zf/356YwoXjuS2KTJvhSDAFE4iftapkXJ4A=
-X-Received: by 2002:a7b:cd86:0:b0:3fb:a506:5656 with SMTP id
- y6-20020a7bcd86000000b003fba5065656mr1605595wmj.32.1690547763952; Fri, 28 Jul
- 2023 05:36:03 -0700 (PDT)
-Received: from 1060064454459 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 28 Jul 2023 07:36:03 -0500
+        Fri, 28 Jul 2023 08:36:56 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7951C26BC;
+        Fri, 28 Jul 2023 05:36:53 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RC6W25pKwztRTk;
+        Fri, 28 Jul 2023 20:33:34 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 20:36:51 +0800
+Subject: Re: [PATCH net-next 5/9] page_pool: don't use driver-set flags field
+ directly
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
+ <20230727144336.1646454-6-aleksander.lobakin@intel.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <a0be882e-558a-9b1d-7514-0aad0080e08c@huawei.com>
+Date:   Fri, 28 Jul 2023 20:36:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-From:   Michael Stephenson <information@theentrepreneurhub.com>
-Date:   Fri, 28 Jul 2023 07:36:03 -0500
-Message-ID: <CAAbNKKBeMwBoVvxX8sSBZ6c7HnCRXk-D8KfjpYZXwkivVzAQTQ@mail.gmail.com>
-Subject: Can you help me with something?
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20230727144336.1646454-6-aleksander.lobakin@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,26 +62,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2023/7/27 22:43, Alexander Lobakin wrote:
 
-I'd like to write a guest article for your website about how to
-achieve a sense of fulfillment in life that includes both a successful
-career and a fulfilling personal life. Wouldn't it be wonderful to
-feel that way instead of merely going through the motions each day and
-checking off chores as they are completed?
+>  
+>  struct page_pool {
+>  	struct page_pool_params p;
+> -	long pad;
+> +
+> +	bool dma_map:1;				/* Perform DMA mapping */
+> +	enum {
+> +		PP_DMA_SYNC_ACT_DISABLED = 0,	/* Driver didn't ask to sync */
+> +		PP_DMA_SYNC_ACT_DO,		/* Perform DMA sync ops */
+> +	} dma_sync_act:1;
+> +	bool page_frag:1;			/* Allow page fragments */
+>  
 
-My suggested material is free. Anyone seeking advice on how to
-actually start living will find insights in this unique and helpful
-piece.
+Isn't it more common or better to just remove the flags field in
+'struct page_pool_params' and pass the flags by parameter like
+below, so that patch 4 is not needed?
 
-If you're interested, let me know. I'm eager to begin writing on this
-important topic.
-
-Thank you,
-Michael Stephenson of theentrepreneurhub.com
-
-
-P.S. If you don=E2=80=99t like my proposed topic, please send over a couple=
- of
-topic options that work better for your website. If you'd prefer not
-to hear from me again, please let me know.
+struct page_pool *page_pool_create(const struct page_pool_params *params,
+				   unsigned int	flags);
