@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A24576739A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8B376739D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbjG1Rjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
+        id S230415AbjG1RlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbjG1Rjr (ORCPT
+        with ESMTP id S229530AbjG1RlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:39:47 -0400
+        Fri, 28 Jul 2023 13:41:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF562D4D;
-        Fri, 28 Jul 2023 10:39:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF4C10CB;
+        Fri, 28 Jul 2023 10:41:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 35B2B621B9;
-        Fri, 28 Jul 2023 17:39:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70CD0C433C8;
-        Fri, 28 Jul 2023 17:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690565984;
-        bh=RnyiRDGe8sr5exbmJAcAawkOFhbk5z8TLN6R9p+ZT3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qg3v2LnTBt0EZr7gZBzzJaabEIuUd2iZWmHIOkTlpowzwViFShsi0ED3+OGiNY5Mg
-         h5NC6ILShm5fcplSBvvax7rUbp0cEw/3/+MbLJCJS9efFUaK1gxcInV5bB6wzdhxPm
-         e12+1MZCYyru0UJV3moUiLTKiUYIIYCuQRcacWLsCi4A/C1Lg4vZZ16tbq6U5njUo7
-         4Fgme9LN6UMYxJflWYhuABtdFA8WLXaZ6S5KYUHmYPXI4fhhc/AfEv6rybqEXUdUMO
-         vKzTfhkQPmsYQoPZEjbOBX0YFKFRkn8kCYNDjDD8RFZGGN6WrD7VQi/WF7cA5aO3wv
-         O9WL9BYcNQW2w==
-Received: (nullmailer pid 325463 invoked by uid 1000);
-        Fri, 28 Jul 2023 17:39:41 -0000
-Date:   Fri, 28 Jul 2023 11:39:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, davem@davemloft.net,
-        linux-arm-kernel@lists.infradead.org,
-        alexandre.belloni@bootlin.com, herbert@gondor.apana.org.au,
-        claudiu.beznea@microchip.com, linux-crypto@vger.kernel.org,
-        tudor.ambarus@linaro.org, devicetree@vger.kernel.org,
-        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, nicolas.ferre@microchip.com
-Subject: Re: [PATCH v3 10/50] dt-bindings: crypto: add sam9x7 in Atmel SHA
-Message-ID: <169056598062.325408.11078837975857093343.robh@kernel.org>
-References: <20230728102433.265772-1-varshini.rajendran@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728102433.265772-1-varshini.rajendran@microchip.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2605621BE;
+        Fri, 28 Jul 2023 17:41:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC7C8C433C8;
+        Fri, 28 Jul 2023 17:41:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690566065;
+        bh=9DPcgcn7pzaeyR23aOkzMKbj+QF+0Iy5kf7XOtyyU1Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=L1PBr6Tcnx3CaNQEzImZCiiC8GGuMXX0uCH/dKs0aevRVD6d5JIu6YMxG+VYk+KCZ
+         WVk2deNn3J0NjN2Fq5eR6pBv5NTHGQv74VdNC900ARvpokqXhRTa1hlYR5Fx0p0OdZ
+         2TzU7RRdMzMlUG7kOF8e/GG1Udvzh0bEMGtaGvbE=
+Date:   Fri, 28 Jul 2023 10:41:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Yin Fengwei <fengwei.yin@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, willy@infradead.org,
+        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
+        minchan@kernel.org, yuzhao@google.com, david@redhat.com,
+        ryan.roberts@arm.com, shy828301@gmail.com
+Subject: Re: [PATCH 2/2] madvise: don't use mapcount() against large folio
+ for sharing check
+Message-Id: <20230728104103.1357b394f9be6352a7c54c79@linux-foundation.org>
+In-Reply-To: <20230728161356.1784568-3-fengwei.yin@intel.com>
+References: <20230728161356.1784568-1-fengwei.yin@intel.com>
+        <20230728161356.1784568-3-fengwei.yin@intel.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 29 Jul 2023 00:13:56 +0800 Yin Fengwei <fengwei.yin@intel.com> wrote:
 
-On Fri, 28 Jul 2023 15:54:33 +0530, Varshini Rajendran wrote:
-> Add DT bindings for atmel SHA.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  .../devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml   | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
+> Fixes: 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a folio")
+> Fixes: fc986a38b670 ("mm: huge_memory: convert madvise_free_huge_pmd to use a folio")
 
-Acked-by: Rob Herring <robh@kernel.org>
+Having two Fixes: for one patch presumably makes backporting more
+complicated and adds risk of making mistakes.
+
+So I have split this into a three-patch series and I've fixed up the patch naming:
+
+Subject: madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check
+Subject: madvise:madvise_free_huge_pmd(): don't use mapcount() against large folio for sharing check
+Subject: madvise:madvise_free_pte_range(): don't use mapcount() against large folio for sharing check
+
+I haven't added cc:stable at this time - that awaits the description of
+user-visible effects.
 
