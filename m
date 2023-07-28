@@ -2,206 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C517670B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D727670B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236823AbjG1Pgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        id S237380AbjG1PhM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 11:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237366AbjG1Pgl (ORCPT
+        with ESMTP id S235293AbjG1PhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:36:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACC24490
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:36:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 22B956217E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:36:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A74C433C8;
-        Fri, 28 Jul 2023 15:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690558594;
-        bh=cVKgEOIxXOzJuQZUsbb4DX8RCXpaEiXPOTckWWF6TlY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M4N203+JtHBDwkk+OelwXxD/1pzlc7xTp2rsw2TLdvif1Q15rVnfkAWF5o8rH72kS
-         yrBpa3OJvgGqjq3w1U64le+CSbLTZSb9oBl0x/FAIOhnwV9VnlttitBg3Ov7Vs5L08
-         QSCaTrCkXmXFBUfv2QCV6QN2++Da78m24qJ2qspM8klWIHjoFohky6wC8iLwJIkYD2
-         MPZwFzhCG7HXJq88WdKMVXH3zz+CcEAL09nIZ428SOJNR5mLLCxMWAiDhoimz+zejR
-         xVMVT5R3lJLQbUVqJT7NR3sbRnAfSzE6rnuxZUHHNrFUFygPOlxM7yBYTynsyGE+59
-         SIccOAtWpOeHw==
-Date:   Fri, 28 Jul 2023 16:36:31 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com
-Subject: Re: [PATCH] MAINTAINERS: update Claudiu Beznea's email address
-Message-ID: <20230728-hypertext-nullify-50c9f318db85@spud>
-References: <20230714183852.8370-1-claudiu.beznea@tuxon.dev>
+        Fri, 28 Jul 2023 11:37:10 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B24B5;
+        Fri, 28 Jul 2023 08:37:07 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6bb086bd510so181552a34.1;
+        Fri, 28 Jul 2023 08:37:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690558627; x=1691163427;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dZ0Z9ESIsyUW9gVEIrTvSkIVgy0wAqNp4Ppv7aOMRhQ=;
+        b=jB0+ZishA92/tK601hLFuXIxRGoRurL7p/kCPbyTHKs86w//RgXHdciI7gUhNCa0w6
+         Mmnrhr9FgCyBl7sp7UxhZ91H+tMdOC7y7/qZktceM3gnIzdskTPFlG8DfuSlyT1BjM/1
+         Pz3lo/EnVh16Gc0IUgM32ozE62N9ERn16wJjR4rZtANTxKDPkXlw6SF89zTqeAW6c1B2
+         65t+L9fKa0c4MespOhZGD1mRfDrgunLHwjb55cv5bW+9hcbxmlTpw3DmCd0K8od9HXmX
+         WKxMMO5xk/T3TM9d57QPKp+nqUkU3u/Wvhi52ujhDshRpKbAdL5GX+19gry+X+1kRlYm
+         h00g==
+X-Gm-Message-State: ABy/qLbo6ASC59jUs0ns655t2pDuKykUtte1U5Q5MLAMEEoRBKLuNofB
+        xQ39r8TFdQ+A/UgDJftqPSEPakpTYWCcSgoSILShC3tM
+X-Google-Smtp-Source: APBJJlFqjThyaz3tDJsCKI5rmy5O1v05lXluOQPh8HdSG0FSrGSUD9hwajfY7LFHI9Nbk+NavHB0ij0G7Rs38FV/4Xc=
+X-Received: by 2002:a05:6870:f682:b0:1b7:5e47:5b75 with SMTP id
+ el2-20020a056870f68200b001b75e475b75mr3070027oab.4.1690558626842; Fri, 28 Jul
+ 2023 08:37:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nO8shPH/+ajVjh+F"
-Content-Disposition: inline
-In-Reply-To: <20230714183852.8370-1-claudiu.beznea@tuxon.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230728145515.990749537@infradead.org> <20230728145808.835742568@infradead.org>
+In-Reply-To: <20230728145808.835742568@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 28 Jul 2023 17:36:55 +0200
+Message-ID: <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     anna-maria@linutronix.de, rafael@kernel.org, tglx@linutronix.de,
+        frederic@kernel.org, gautham.shenoy@amd.com,
+        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 28, 2023 at 5:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> In order to facilitate governors that track history in idle-state
+> buckets (TEO) making a useful decision about NOHZ, make sure we have a
+> bucket that counts tick-and-longer.
+>
+> In order to be inclusive of the tick itself -- after all, if we do not
+> disable NOHZ we'll sleep for a full tick, the actual boundary should
+> be just short of a full tick.
+>
+> IOW, when registering the idle-states, add one that is always
+> disabled, just to have a bucket.
 
---nO8shPH/+ajVjh+F
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This extra bucket can be created in the governor itself, can't it?
 
-Claudiu,
-
-On Fri, Jul 14, 2023 at 09:38:52PM +0300, Claudiu Beznea wrote:
-> Update MAINTAINERS entries with a valid email address as the Microchip
-> one is no longer valid.
-
-I'm not sure how you want this patch to get to the soc tree (I figure it
-should grow a cc to the soc maintainer alias & be resent) but in the
-meantime I applied this directly to at91-next so that at least patches
-generated against linux-next will arrive in your inbox.
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  MAINTAINERS | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3be1bdfe8ecc..0be71ca1cbb2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2337,7 +2337,7 @@ F:	drivers/phy/mediatek/
->  ARM/MICROCHIP (ARM64) SoC support
->  M:	Conor Dooley <conor@kernel.org>
->  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git
-> @@ -2346,7 +2346,7 @@ F:	arch/arm64/boot/dts/microchip/
->  ARM/Microchip (AT91) SoC support
->  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->  M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  W:	http://www.linux4sam.org
-> @@ -3248,7 +3248,7 @@ F:	include/uapi/linux/atm*
-> =20
->  ATMEL MACB ETHERNET DRIVER
->  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  S:	Supported
->  F:	drivers/net/ethernet/cadence/
-> =20
-> @@ -13778,7 +13778,7 @@ F:	Documentation/devicetree/bindings/serial/atmel=
-,at91-usart.yaml
->  F:	drivers/spi/spi-at91-usart.c
-> =20
->  MICROCHIP AUDIO ASOC DRIVERS
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/sound/atmel*
-> @@ -13801,7 +13801,7 @@ S:	Maintained
->  F:	drivers/crypto/atmel-ecc.*
-> =20
->  MICROCHIP EIC DRIVER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/interrupt-controller/microchip,sama=
-7g5-eic.yaml
-> @@ -13874,7 +13874,7 @@ F:	drivers/video/fbdev/atmel_lcdfb.c
->  F:	include/video/atmel_lcdc.h
-> =20
->  MICROCHIP MCP16502 PMIC DRIVER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
-> @@ -13901,7 +13901,7 @@ F:	Documentation/devicetree/bindings/mtd/atmel-na=
-nd.txt
->  F:	drivers/mtd/nand/raw/atmel/*
-> =20
->  MICROCHIP OTPC DRIVER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
-> @@ -13940,7 +13940,7 @@ F:	Documentation/devicetree/bindings/fpga/microch=
-ip,mpf-spi-fpga-mgr.yaml
->  F:	drivers/fpga/microchip-spi.c
-> =20
->  MICROCHIP PWM DRIVER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-pwm@vger.kernel.org
->  S:	Supported
-> @@ -13956,7 +13956,7 @@ F:	drivers/iio/adc/at91-sama5d2_adc.c
->  F:	include/dt-bindings/iio/adc/at91-sama5d2_adc.h
-> =20
->  MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  S:	Supported
->  F:	Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.yaml
->  F:	drivers/power/reset/at91-sama5d2_shdwc.c
-> @@ -13973,7 +13973,7 @@ S:	Supported
->  F:	drivers/spi/spi-atmel.*
-> =20
->  MICROCHIP SSC DRIVER
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Supported
->  F:	Documentation/devicetree/bindings/misc/atmel-ssc.txt
-> @@ -14002,7 +14002,7 @@ F:	drivers/usb/gadget/udc/atmel_usba_udc.*
-> =20
->  MICROCHIP WILC1000 WIFI DRIVER
->  M:	Ajay Singh <ajay.kathat@microchip.com>
-> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
-> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->  L:	linux-wireless@vger.kernel.org
->  S:	Supported
->  F:	drivers/net/wireless/microchip/wilc1000/
-> --=20
-> 2.39.2
->=20
-
---nO8shPH/+ajVjh+F
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMPgfgAKCRB4tDGHoIJi
-0pgHAQCnr/Zt/CbsyTwyE4YSzq8I6WAtLupcTnBCptbc+8sgEwEAiNnu2G4R3RzF
-H+FnI4Fvrm1B+aWKU3E9L0DJIynXZgo=
-=Vihg
------END PGP SIGNATURE-----
-
---nO8shPH/+ajVjh+F--
+>  drivers/cpuidle/cpuidle.h |    2 +
+>  drivers/cpuidle/driver.c  |   48 +++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/cpuidle.h   |    2 -
+>  3 files changed, 50 insertions(+), 2 deletions(-)
+>
+> --- a/drivers/cpuidle/cpuidle.h
+> +++ b/drivers/cpuidle/cpuidle.h
+> @@ -72,4 +72,6 @@ static inline void cpuidle_coupled_unreg
+>  }
+>  #endif
+>
+> +#define SHORT_TICK_NSEC (TICK_NSEC - TICK_NSEC/32)
+> +
+>  #endif /* __DRIVER_CPUIDLE_H */
+> --- a/drivers/cpuidle/driver.c
+> +++ b/drivers/cpuidle/driver.c
+> @@ -147,13 +147,37 @@ static void cpuidle_setup_broadcast_time
+>                 tick_broadcast_disable();
+>  }
+>
+> +static int tick_enter(struct cpuidle_device *dev,
+> +                     struct cpuidle_driver *drv,
+> +                     int index)
+> +{
+> +       return -ENODEV;
+> +}
+> +
+> +static void __cpuidle_state_init_tick(struct cpuidle_state *s)
+> +{
+> +       strcpy(s->name, "TICK");
+> +       strcpy(s->desc, "(no-op)");
+> +
+> +       s->target_residency_ns = SHORT_TICK_NSEC;
+> +       s->target_residency = div_u64(SHORT_TICK_NSEC, NSEC_PER_USEC);
+> +
+> +       s->exit_latency_ns = 0;
+> +       s->exit_latency = 0;
+> +
+> +       s->flags |= CPUIDLE_FLAG_UNUSABLE;
+> +
+> +       s->enter = tick_enter;
+> +       s->enter_s2idle = tick_enter;
+> +}
+> +
+>  /**
+>   * __cpuidle_driver_init - initialize the driver's internal data
+>   * @drv: a valid pointer to a struct cpuidle_driver
+>   */
+>  static void __cpuidle_driver_init(struct cpuidle_driver *drv)
+>  {
+> -       int i;
+> +       int tick = 0, i;
+>
+>         /*
+>          * Use all possible CPUs as the default, because if the kernel boots
+> @@ -163,6 +187,9 @@ static void __cpuidle_driver_init(struct
+>         if (!drv->cpumask)
+>                 drv->cpumask = (struct cpumask *)cpu_possible_mask;
+>
+> +       if (WARN_ON_ONCE(drv->state_count >= CPUIDLE_STATE_MAX-2))
+> +               tick = 1;
+> +
+>         for (i = 0; i < drv->state_count; i++) {
+>                 struct cpuidle_state *s = &drv->states[i];
+>
+> @@ -192,6 +219,25 @@ static void __cpuidle_driver_init(struct
+>                         s->exit_latency_ns =  0;
+>                 else
+>                         s->exit_latency = div_u64(s->exit_latency_ns, NSEC_PER_USEC);
+> +
+> +               if (!tick && s->target_residency_ns >= SHORT_TICK_NSEC) {
+> +                       tick = 1;
+> +
+> +                       if (s->target_residency_ns == SHORT_TICK_NSEC)
+> +                               continue;
+> +
+> +                       memmove(&drv->states[i+1], &drv->states[i],
+> +                               sizeof(struct cpuidle_state) * (CPUIDLE_STATE_MAX - i - 1));
+> +                       __cpuidle_state_init_tick(s);
+> +                       drv->state_count++;
+> +                       i++;
+> +               }
+> +       }
+> +
+> +       if (!tick) {
+> +               struct cpuidle_state *s = &drv->states[i];
+> +               __cpuidle_state_init_tick(s);
+> +               drv->state_count++;
+>         }
+>  }
+>
+> --- a/include/linux/cpuidle.h
+> +++ b/include/linux/cpuidle.h
+> @@ -16,7 +16,7 @@
+>  #include <linux/hrtimer.h>
+>  #include <linux/context_tracking.h>
+>
+> -#define CPUIDLE_STATE_MAX      10
+> +#define CPUIDLE_STATE_MAX      16
+>  #define CPUIDLE_NAME_LEN       16
+>  #define CPUIDLE_DESC_LEN       32
+>
+>
+>
