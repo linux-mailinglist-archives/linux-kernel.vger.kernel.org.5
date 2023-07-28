@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D1576668B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4BB766660
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbjG1IMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S234692AbjG1IHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbjG1ILe (ORCPT
+        with ESMTP id S233608AbjG1IGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:11:34 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1AD10E;
-        Fri, 28 Jul 2023 01:11:31 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 76AD3100004;
-        Fri, 28 Jul 2023 11:11:30 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 76AD3100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690531890;
-        bh=7xjggaRnRosCBX2aIuVU9Xtjjt90LbPMaiwfpvmSaBU=;
-        h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type:From;
-        b=quZZsbNFFWIIiHki+jG1xiRM9j1T9djGPPhNWufAzT9rcu/wPqC0SaFcRtaWhwKLG
-         kPbmN6j/DIGc6ek1v48TOVMVESxLF6v3NqFrEHTyiYwW8YmQF22tipC1H9PHWElRGV
-         vF/mmMYwQVl7rilr/KI3o+7n1zWRVLTtFZCCGBgv2PYN+HtyrJMdzZZSPucS0OEzdG
-         iRZpcUOJux9gpULB9E5/4btoHwna7W4pylE//DohkPONqeUAk7fcwZWy/YiJJUNBLY
-         3zYBxRgU0AnJcTIqH63NZ40H00yaeKrPHgpyvUUanZqWaExzu1uqTfD12aHzpBiCAO
-         ydDlRJ6bPc39w==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 28 Jul 2023 11:11:30 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 28 Jul 2023 11:11:06 +0300
-Message-ID: <0d0e9b6e-fbdb-fd63-3f93-8a7249711dfc@sberdevices.ru>
-Date:   Fri, 28 Jul 2023 11:05:56 +0300
+        Fri, 28 Jul 2023 04:06:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A311BD6
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690531581; x=1722067581;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=x2rUUtziHP5HRkIPgMEOOTCdi1SsP+tT2Q4VyJcV8z0=;
+  b=IorFuCtNiq0wOEbjNbY1cu+tPROb9kV2cVPyBozPElzh/zuPszzrj4le
+   RJErllgh44eQwIDBHztg/gcbTYObaHe/AwHKFLvfrfYFK/GtWwgCnqL8D
+   oVpfqSnX0LTFHlYdl/FfvW1kXqTvWA7icS6C7lQvFfWE/7WqENcI3y1ok
+   Mqc/WXg8fk6xerwcWOvNeBcHUMV/mn+q2zpvuyE87irAL3loY0nZ8Lh0f
+   cM1VdVpNe8t7ZO7vOgYpjT+0xOJt4crOYgq6uzxCpit4t5FevmqMgHuQi
+   k8/C7t0Ydf5FpRXhzyCM2mj6jezDaK8Wri1iFY0ZP8p/PPct/IiCTc1RH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348138328"
+X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
+   d="scan'208";a="348138328"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 01:06:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727384080"
+X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
+   d="scan'208";a="727384080"
+Received: from atoomey-mobl.amr.corp.intel.com (HELO [10.213.197.30]) ([10.213.197.30])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 01:06:17 -0700
+Message-ID: <54b820a4-8e8b-26a2-1b65-eaaa43f8b92d@linux.intel.com>
+Date:   Fri, 28 Jul 2023 09:06:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v4 0/4] vsock/virtio/vhost: MSG_ZEROCOPY
- preparations
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/i915/gem: Add check for bitmap_zalloc()
 Content-Language: en-US
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230727222627.1895355-1-AVKrasnov@sberdevices.ru>
- <20230728012845-mutt-send-email-mst@kernel.org>
- <eeefef14-2c92-a7a6-e58e-77dccbe38282@sberdevices.ru>
-In-Reply-To: <eeefef14-2c92-a7a6-e58e-77dccbe38282@sberdevices.ru>
-Content-Type: text/plain; charset="UTF-8"
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@gmail.com, daniel@ffwll.ch, robdclark@chromium.org,
+        lucas.demarchi@intel.com, thomas.hellstrom@linux.intel.com,
+        chris@chris-wilson.co.uk
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230728015846.20228-1-jiasheng@iscas.ac.cn>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <20230728015846.20228-1-jiasheng@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -95,88 +71,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi,
 
-On 28.07.2023 11:00, Arseniy Krasnov wrote:
+On 28/07/2023 02:58, Jiasheng Jiang wrote:
+> Add the check for the return value of bitmap_zalloc() in order to
+> guarantee the success of the allocation.
 > 
+> Fixes: e9b73c67390a ("drm/i915: Reduce memory pressure during shrinker by preallocating swizzle pages")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> ---
+>   drivers/gpu/drm/i915/gem/i915_gem_tiling.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 > 
-> On 28.07.2023 08:45, Michael S. Tsirkin wrote:
->> On Fri, Jul 28, 2023 at 01:26:23AM +0300, Arseniy Krasnov wrote:
->>> Hello,
->>>
->>> this patchset is first of three parts of another big patchset for
->>> MSG_ZEROCOPY flag support:
->>> https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
->>
->> overall looks good. Two points I'd like to see addressed:
-> 
-> Thanks!
-> 
->> - what's the performance with all these changes - still same?
-> 
-> Yes, I perform quick tests and seems result are same. This is because last
-> implemented logic when I compare size of payload against 'num_max' is
-> for "emergency" case and not triggered in default environment. Anyway, I'll
-> perform retest at least in nested guest case.
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_tiling.c b/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
+> index a049ca0b7980..e9cf99d95966 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_tiling.c
+> @@ -311,6 +311,11 @@ i915_gem_object_set_tiling(struct drm_i915_gem_object *obj,
+>   		if (!obj->bit_17) {
+>   			obj->bit_17 = bitmap_zalloc(obj->base.size >> PAGE_SHIFT,
+>   						    GFP_KERNEL);
+> +			if (!obj->bit_17) {
+> +				i915_gem_object_unlock(obj);
+> +				i915_gem_object_release_mmap_gtt(obj);
+> +				return -ENOMEM;
+> +			}
 
-"default environment" is vanilla Qemu where queue size is 128 elements. To test
-this logic i rebuild Qemu with for example queue of 8 elements.
+Hm the comment few lines above says:
 
-Thanks, Arseniy
+	/* Try to preallocate memory required to save swizzling on put-pages */
 
-> 
->> - most systems have a copybreak scheme where buffers
->>   smaller than a given size are copied directly.
->>   This will address regression you see with small buffers -
->>   but need to find that value. we know it's between 4k and 32k :)
-> 
-> I see, You suggest to find this value and add this check for decision to
-> use zerocopy or copy ?
-> 
-> Thanks, Arseniy
-> 
->>
->>
->>> During review of this series, Stefano Garzarella <sgarzare@redhat.com>
->>> suggested to split it for three parts to simplify review and merging:
->>>
->>> 1) virtio and vhost updates (for fragged skbs) <--- this patchset
->>> 2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
->>>    tx completions) and update for Documentation/.
->>> 3) Updates for tests and utils.
->>>
->>> This series enables handling of fragged skbs in virtio and vhost parts.
->>> Newly logic won't be triggered, because SO_ZEROCOPY options is still
->>> impossible to enable at this moment (next bunch of patches from big
->>> set above will enable it).
->>>
->>> I've included changelog to some patches anyway, because there were some
->>> comments during review of last big patchset from the link above.
->>>
->>> Head for this patchset is 9d0cd5d25f7d45bce01bbb3193b54ac24b3a60f3
->>>
->>> Link to v1:
->>> https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
->>> Link to v2:
->>> https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
->>> Link to v3:
->>> https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
->>>
->>> Changelog:
->>>  * Patchset rebased and tested on new HEAD of net-next (see hash above).
->>>  * See per-patch changelog after ---.
->>>
->>> Arseniy Krasnov (4):
->>>   vsock/virtio/vhost: read data from non-linear skb
->>>   vsock/virtio: support to send non-linear skb
->>>   vsock/virtio: non-linear skb handling for tap
->>>   vsock/virtio: MSG_ZEROCOPY flag support
->>>
->>>  drivers/vhost/vsock.c                   |  14 +-
->>>  include/linux/virtio_vsock.h            |   6 +
->>>  net/vmw_vsock/virtio_transport.c        |  79 +++++-
->>>  net/vmw_vsock/virtio_transport_common.c | 312 ++++++++++++++++++------
->>>  4 files changed, 330 insertions(+), 81 deletions(-)
->>>
->>> -- 
->>> 2.25.1
->>
+Lets emphasis the *try* for now. Then once the obj->bit_17 is attempted to be used we have this:
+
+i915_gem_object_save_bit_17_swizzle(..)
+{
+...
+	if (obj->bit_17 == NULL) {
+		obj->bit_17 = bitmap_zalloc(page_count, GFP_KERNEL);
+		if (obj->bit_17 == NULL) {
+			drm_err(obj->base.dev,
+				"Failed to allocate memory for bit 17 record\n");
+			return;
+		}
+	}
+
+So despite this area of the driver being a bit before my time, I'd say it quite possibly works as designed - only *tries* to preallocate but does not have to and can cope with a later failure.
+
+Good question might be why wouldn't it be better to do what you suggest. Trade off would be between failing the ioctl and possibly crashing the application, versus visual corruption if at use time allocation fails.
+
+The whole swizzling thing also only applies to old GPUs, stuff before Broadwell, which itself was released in 2014. So it is tempting to err on the side of caution and leave it as is. I'll mull it over in the background, or maybe someone else will have an opinion too.
+
+Regards,
+
+Tvrtko
+
+>   		}
+>   	} else {
+>   		bitmap_free(obj->bit_17);
