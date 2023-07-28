@@ -2,482 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC0B7669F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681247669FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbjG1KNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        id S235797AbjG1KOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235690AbjG1KN2 (ORCPT
+        with ESMTP id S235752AbjG1KNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:13:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B66035A3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:13:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9F2FC2F4;
-        Fri, 28 Jul 2023 03:14:08 -0700 (PDT)
-Received: from [10.57.77.173] (unknown [10.57.77.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 669EB3F67D;
-        Fri, 28 Jul 2023 03:13:22 -0700 (PDT)
-Message-ID: <8c0710e0-a75a-b315-dae1-dd93092e4bd6@arm.com>
-Date:   Fri, 28 Jul 2023 11:13:19 +0100
+        Fri, 28 Jul 2023 06:13:42 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19FA3AB6;
+        Fri, 28 Jul 2023 03:13:37 -0700 (PDT)
+X-UUID: 68757e482d2f11ee9cb5633481061a41-20230728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:To:From; bh=dKgZxu14XzQlIccuyHeOOYjQUTNSQ66Xw+m83Vva9iI=;
+        b=A8eZZG0IKRmL89HmwOjX+xa5GcdEXeONepIsqQLZ5CbNbaXDaLm5WiTSW+T8O1Y4G0McCeLbKFO33p2PZB7KfUD0XUKL39AAoIn7nVthRqS64rQXZRAC2N74UyHZyZ8FUSI/KuLpmp5fdCchuqkqCCCBK/5SwWy8R8DRYY1Uw0A=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.30,REQID:d7c0adc0-396a-44b0-958d-fddc4aac9c3d,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:28,RULE:Release_Ham,ACTIO
+        N:release,TS:73
+X-CID-INFO: VERSION:1.1.30,REQID:d7c0adc0-396a-44b0-958d-fddc4aac9c3d,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:28,RULE:Spam_GS981B3D,ACTIO
+        N:quarantine,TS:73
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:24cea2a0-0933-4333-8d4f-6c3c53ebd55b,B
+        ulkID:23072817381725JD5BJX,BulkQuantity:32,Recheck:0,SF:38|29|28|17|19|48|
+        102,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40|20,QS:nil,BEC:ni
+        l,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:PA,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_OBB,TF_CID_SPAM_FCD,TF_CID_SPAM_SNR,
+        TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS
+X-UUID: 68757e482d2f11ee9cb5633481061a41-20230728
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <maso.huang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1385289885; Fri, 28 Jul 2023 18:13:33 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 28 Jul 2023 18:13:32 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 28 Jul 2023 18:13:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YnoO09nbn7vyDfrY/jBy/uOs+b6k+2Qqhpi+u5fc/H84WzxIB8POvs3l1dDcrDU0E6q4Y/ydfSgpvGsuDXikJY0V5WzED7KWScFwFZ9zFL8fyfPrzrkBTAS6wrAl1a2V3KXrlVtg7kklx9jzDilWEn7eZ8lUs2rUhdMSeW2k7HSSvFXzVYGP3GkXTIgL0T9WV+aM+XN8N33Q4WUMgKjpBoBNJDVwe/GsxG8XdFU/5hwP92DwirSzIqXihJs09RtkT9d4zvTroCASZzvfF1qLlDQX3nie4yD7OLQ3PsUrqIgIpIuiYEqbYCjGp0wkwMEo/grnhjcxKHAna0vzlnP0eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dKgZxu14XzQlIccuyHeOOYjQUTNSQ66Xw+m83Vva9iI=;
+ b=BRvxpWuBRoTf8imY4IChR2A365x4fi1a2dJzQdLeexioF50cLWn4dkw0m5q0jzHv1VZYAmIozIx5DtZyaxpeXz2pOqDaYhTd2tZvR8xWqNQWyaTznd6CAaCNo73NwZ1QYNmQukLU1ZA55JbTbj2oVc16aHRr902mH0L6gt31Pp0yt9lY5GDn22SR6GlCmczk0c18o2qjWfKaDNkgzM4cGU1AXJ2YzDkS8TTATo74Pc76F5aRlafkqhSPJ58sh/cHq4jHB59525ghiA/nCxwTtaMLwd9uHPX+TiPUWE0mhed8NQ7CXTIXj4wxjKNuPM/yvl3yM9jL8+H8BA9VFRNoMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dKgZxu14XzQlIccuyHeOOYjQUTNSQ66Xw+m83Vva9iI=;
+ b=vDV90C9OTzC51d5EQWakhVe0hQW72cpdHX/pgvIOEQjvV9hyenaVMcOwufnEeW+tAkiV+45O1vrTnFOIH87twpQfAvBJ4n7MpG0Snm7MVg0sdCELtLovLMGCzE5VU8yWGprkONVeQs6//lbUdPABMu4EMfTbrBuTX3hRG2xzQuc=
+Received: from KL1PR03MB6389.apcprd03.prod.outlook.com (2603:1096:820:94::13)
+ by TYSPR03MB7691.apcprd03.prod.outlook.com (2603:1096:400:416::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 10:13:30 +0000
+Received: from KL1PR03MB6389.apcprd03.prod.outlook.com
+ ([fe80::7f10:d3b7:86ae:4271]) by KL1PR03MB6389.apcprd03.prod.outlook.com
+ ([fe80::7f10:d3b7:86ae:4271%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 10:13:30 +0000
+From:   =?utf-8?B?TWFzbyBIdWFuZyAo6buD5Yqg56u5KQ==?= 
+        <Maso.Huang@mediatek.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "chenxiangrui@huaqin.corp-partner.google.com" 
+        <chenxiangrui@huaqin.corp-partner.google.com>,
+        =?utf-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        =?utf-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?= 
+        <Allen-KH.Cheng@mediatek.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>, "arnd@arndb.de" <arnd@arndb.de>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v3 3/6] ASoC: mediatek: mt7986: add platform driver
+Thread-Topic: [PATCH v3 3/6] ASoC: mediatek: mt7986: add platform driver
+Thread-Index: AQHZwTM4vB2TH6uAe0SKmi/CtdaYlK/O7AmAgAAJ34A=
+Date:   Fri, 28 Jul 2023 10:13:29 +0000
+Message-ID: <db849b742c9d2eeba5db614d672667981402ae94.camel@mediatek.com>
+References: <20230728090819.18038-1-maso.huang@mediatek.com>
+         <20230728090819.18038-4-maso.huang@mediatek.com>
+         <4eb32bcc-9a1b-c477-71b1-823bd96c0450@collabora.com>
+In-Reply-To: <4eb32bcc-9a1b-c477-71b1-823bd96c0450@collabora.com>
+Accept-Language: zh-TW, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: KL1PR03MB6389:EE_|TYSPR03MB7691:EE_
+x-ms-office365-filtering-correlation-id: 656b6f4b-303e-4226-dfcb-08db8f534a9d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: q9+Oo/YADZdqLaqjEjQvg3I2myfkjm4/5jjuYlZHhrLhmWTZFrAajy2Go82QuPjp+JUConwbN/tZEtb24XvF/rxX6SDu9urNHJ3JPclu4WedruLvlCY/6C7NFgGsXKM2Q5QtBHGyQP3rd0y2akyub6//zdTSXSeRsNxfS53BpaAcSEz1O2ksiyP6qcjr2WHDMDN2sUaAqI6pW4VsPHZoFw2DTvYF9KgA3e99ONkaM85apu5pZUEBYYaVLCZtacfKYtBY+XtqpV3k5IstO+rU62ukWZplcQj+ayLtt49EzT24p/46FPvtQSCD3QVPhNhSkoynbYFYk+jC8Yjv4L6rpaahJGjee6lQ489QuXJxbS0p0+PobhHC+BL3LSQC/sXdtCAJxTCjF7MifbH6idwgsx+3+4K4CGi1W4mjNyNbbkVVmjrp+dUinpsZaA0uipdbZ0/ypH7nZCqaKXdriRkr3W4dUO+zIn2o5tPlf+p4tuQoh0+oRugJiNN5hNnVLnhJykFAxdzuE3dra/wJjxCNum9mGs6cruYKD79t3BINI23wiXr2p725GwemVdHaO2qoUR/Pz1IIitSBQlP6lJmHd7qzXbcxLmsqLkxQ9PQgAEmWx2jC1c+siOm9SSPyfFmdkbKzVzb4xsnCs1s3WgvvcqBwZ2iCuZBZ59hXYH+cXbNGltWJG+VW5BegvCEY1JrW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB6389.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(376002)(136003)(366004)(39860400002)(451199021)(921005)(478600001)(122000001)(186003)(83380400001)(2616005)(26005)(6506007)(6512007)(2906002)(8936002)(66946007)(66476007)(66446008)(8676002)(316002)(41300700001)(66556008)(71200400001)(91956017)(76116006)(6486002)(64756008)(38100700002)(36756003)(85182001)(5660300002)(110136005)(38070700005)(86362001)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R3gxcVBZOTdWUjdjRjM4TG5zV1p0SFdOb2pUcmRybFlZRzV5Y0lmb2JRYWpv?=
+ =?utf-8?B?SlNCZE81OEFNMy9Obi9GSkVZc2wwSjhGMjdWbU90NnRDVWhXT0J0NjM2bmNk?=
+ =?utf-8?B?cE9JY3U2QlkyeWkxR0RaV2l5SkFOemJnZExTU0VydFZ2RldYNk5JRTFoL1ZX?=
+ =?utf-8?B?aWtIZnpTTU0zK1JuRDQza010alZLSTdIakNzdjRYS2F2eU1yMFg4OHZ6bThW?=
+ =?utf-8?B?NktCWE9UaGVsdXhkMVIwM3ZwKzY2cW5qM3RwNS84UGZJcCtEdHA0eFptUXVD?=
+ =?utf-8?B?UHJLdXJuYkNMN0w0NzRPWmFEa2E4cWNic2VQaC9ERlV1TnQyZElGQzJyWHlM?=
+ =?utf-8?B?cTBjS3d0SDE4aUs2SlpLejNzNE1sS1Y1TXN2NjIvMStwQ0sxSFQvcFI5S214?=
+ =?utf-8?B?SzE5cEdHdzRYcW1ZbTBiNUJSTzJrTHpkWnlkeWVEM1h6N2NMdEFTU01uamlT?=
+ =?utf-8?B?aVhqRHVPTVJnYVZGS0R4UitWRTVLcktqWXJock5BaDQ5TlBwNjlvUTJ6aExY?=
+ =?utf-8?B?MFZIREhsMGdBUklWTmdsZUhWZjB4L0RGOUU3UXo1ZkZEejAwZ1JSbWoxSWJX?=
+ =?utf-8?B?ZnlncnNkYXVHRnh3RXJPRzlhVW8zaUVoUkdXTjVUNzJDUTlVQmV3aWtmVXJY?=
+ =?utf-8?B?UkRLMk8wenlyVTJyelg1QlBFL1JLamRxUnJGWTEvT2hOSFFyYTBsNFlKRjJY?=
+ =?utf-8?B?TVpoV0x4NGVwRkJoVnd6VW5zNk1HVXFnWTFsSUtlU1RCZHdaRnJxdXRXVEJU?=
+ =?utf-8?B?MDkvRGkwcDFiQ2VrTldyVDVTSWxja2VGaGo0UHhxZGF2Y2dNS0VrblA2aGlW?=
+ =?utf-8?B?NzNDU1BkSnRVNFE4SElPVW05akM4Y29ZbUNpbmZIeFFaVUoyMGlvUEQ3bkU1?=
+ =?utf-8?B?TnhWSWRkYWtIUVpEQ1NXb0JZbmxSd0xUS01xeVR0RVdPU1ErZFNoUkpvcW5R?=
+ =?utf-8?B?UWlHVzVPTm1xWnBXaUwxbVpBVjBXcmR3ckVlWDNuRWxKRmVHT2ozVTkzWWll?=
+ =?utf-8?B?RW0xNDJrN1VvWmxZTXZ4endIR0NMbUd4bEl4dkNjSE8wYUxlNkNiRFp4M2x6?=
+ =?utf-8?B?cVNxMTliNEk0OWhsRTgxMlFsUXM0UzIzVGtGMmJOUVJ2Z2l1dTNPU0JCajRI?=
+ =?utf-8?B?U3daSE55SEJpaVlhSHVrb3FTTGx4TW1CVTJFd0QzVy9Tbm9QZjgybWtkdVpY?=
+ =?utf-8?B?c0VFMmo1elpvaXJ2aERFaVlySUo3b0ppWHJJZWJWWkxPcEJBMEZHS3ljRVZn?=
+ =?utf-8?B?aGI0RzRWNkY5aTB1bmloTzZhWXF2bDdCWDhSMktsYS9TaExHU2w2b205d1Nz?=
+ =?utf-8?B?MHRlNVlQaFRoYXJOaVlVK0lFL3Y2YmIyY1FvNnp1TkZURHJMcjkrbEg5cjVa?=
+ =?utf-8?B?WGtrRVd6YUZQd2NodmdEK0VSWHd4K1BvaDk3eTdjaWtDVk5YYjNXLzNmcWlu?=
+ =?utf-8?B?QUJIaWs0RTFNcTFXcHlmTkUwTU0rTFF6a090TDNZZTAvcEVBK2c5a2ZJTjFN?=
+ =?utf-8?B?d001YkVPNXR0MmwycVo4Q3c5cUtMVm5BQ2laeWZWYS9obDhyVXdEUENuMmtZ?=
+ =?utf-8?B?V1RXcGFKQzdtQjQ1Q2hUbVdWT2pOOTNiR2NRaDlWcnpiRlczR1FETVNHZFFG?=
+ =?utf-8?B?YXo4R1VsbEZzbldJcHUweGVrL2dQTk1PYmsvdEpCZFNRQnIyWTZFT0RkVWQ5?=
+ =?utf-8?B?dk41bjlxYld3RjgzZnFoVmM5NDQ1TzZBT1M3NG9sRFU0MEJ3aDJiWXNqM0ZR?=
+ =?utf-8?B?Tzl1MjJFa3BhMHdkL1p6ZzE1OWxLbC9QWEhnZ1FuQkxSSHpIejJOS0M3ZTQ5?=
+ =?utf-8?B?QW9zRHhzWjRyYy9lZmdaMkFiTU9nNnJMUTR1OGF4Tk1EZkN4L1pSZ2ZOdmRr?=
+ =?utf-8?B?QTJOVmhJcTJsMTlNU0wxcDh2RnVvMGV3WkdxMGtuNmMwNjZ5NmRmSFllNEVp?=
+ =?utf-8?B?RnQ1WSt2cVNTL2p1VytDY1ZxOEJPTEZpeHJrQ0J3cUFSRksyVUcrZWg4SWtt?=
+ =?utf-8?B?WmRuSUxzanpZa2FuY1U5M0d0OXlQeis1U2dueGg4QTl5cyt5T1BzL2JwTzUw?=
+ =?utf-8?B?OUZ3MHZwenp6bWFzdWR6WnYzRmhUbXpEY2pEYURVSGNCUzhBMGkyMGZJZ3FS?=
+ =?utf-8?B?NWF6RG1wZE1IODVwdVRJU2wyWjF6SWJEc1RZd3dZekZFc2R0T1dmZnBsdkIy?=
+ =?utf-8?B?Mnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <110454776FD4AF40A61AB6F9151D44C2@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230726095146.2826796-1-ryan.roberts@arm.com>
- <20230726095146.2826796-3-ryan.roberts@arm.com>
- <CAOUHufackQzy+yXOzaej+G6DNYK-k9GAUHAK6Vq79BFHr7KwAQ@mail.gmail.com>
- <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAOUHufZ70cMR=hnMW0_J9BeWRPwXVUDoeRhES+wq19r1SioGuA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB6389.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 656b6f4b-303e-4226-dfcb-08db8f534a9d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 10:13:29.9851
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w7UxvyIDnAwr18dqOluv1rs37yMrleivoKfxTanR8okP3sga5g6G2Dwmnv5fWglH2QnXmgn7Lgy3c9F9NGlsyw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB7691
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 05:31, Yu Zhao wrote:
-> On Wed, Jul 26, 2023 at 10:41 AM Yu Zhao <yuzhao@google.com> wrote:
->>
->> On Wed, Jul 26, 2023 at 3:52 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>
->>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
->>> allocated in large folios of a determined order. All pages of the large
->>> folio are pte-mapped during the same page fault, significantly reducing
->>> the number of page faults. The number of per-page operations (e.g. ref
->>> counting, rmap management lru list management) are also significantly
->>> reduced since those ops now become per-folio.
->>>
->>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
->>> which defaults to disabled for now; The long term aim is for this to
->>> defaut to enabled, but there are some risks around internal
->>> fragmentation that need to be better understood first.
->>>
->>> When enabled, the folio order is determined as such: For a vma, process
->>> or system that has explicitly disabled THP, we continue to allocate
->>> order-0. THP is most likely disabled to avoid any possible internal
->>> fragmentation so we honour that request.
->>>
->>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
->>> that have not explicitly opted-in to use transparent hugepages (e.g.
->>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
->>> arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever is
->>> bigger). This allows for a performance boost without requiring any
->>> explicit opt-in from the workload while limitting internal
->>> fragmentation.
->>>
->>> If the preferred order can't be used (e.g. because the folio would
->>> breach the bounds of the vma, or because ptes in the region are already
->>> mapped) then we fall back to a suitable lower order; first
->>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
->>>
->>> arch_wants_pte_order() can be overridden by the architecture if desired.
->>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
->>> set of ptes map physically contigious, naturally aligned memory, so this
->>> mechanism allows the architecture to optimize as required.
->>>
->>> Here we add the default implementation of arch_wants_pte_order(), used
->>> when the architecture does not define it, which returns -1, implying
->>> that the HW has no preference. In this case, mm will choose it's own
->>> default order.
->>>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>  include/linux/pgtable.h |  13 ++++
->>>  mm/Kconfig              |  10 +++
->>>  mm/memory.c             | 166 ++++++++++++++++++++++++++++++++++++----
->>>  3 files changed, 172 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>> index 5063b482e34f..2a1d83775837 100644
->>> --- a/include/linux/pgtable.h
->>> +++ b/include/linux/pgtable.h
->>> @@ -313,6 +313,19 @@ static inline bool arch_has_hw_pte_young(void)
->>>  }
->>>  #endif
->>>
->>> +#ifndef arch_wants_pte_order
->>> +/*
->>> + * Returns preferred folio order for pte-mapped memory. Must be in range [0,
->>> + * PMD_SHIFT-PAGE_SHIFT) and must not be order-1 since THP requires large folios
->>> + * to be at least order-2. Negative value implies that the HW has no preference
->>> + * and mm will choose it's own default order.
->>> + */
->>> +static inline int arch_wants_pte_order(void)
->>> +{
->>> +       return -1;
->>> +}
->>> +#endif
->>> +
->>>  #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
->>>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
->>>                                        unsigned long address,
->>> diff --git a/mm/Kconfig b/mm/Kconfig
->>> index 09130434e30d..fa61ea160447 100644
->>> --- a/mm/Kconfig
->>> +++ b/mm/Kconfig
->>> @@ -1238,4 +1238,14 @@ config LOCK_MM_AND_FIND_VMA
->>>
->>>  source "mm/damon/Kconfig"
->>>
->>> +config LARGE_ANON_FOLIO
->>> +       bool "Allocate large folios for anonymous memory"
->>> +       depends on TRANSPARENT_HUGEPAGE
->>> +       default n
->>> +       help
->>> +         Use large (bigger than order-0) folios to back anonymous memory where
->>> +         possible, even for pte-mapped memory. This reduces the number of page
->>> +         faults, as well as other per-page overheads to improve performance for
->>> +         many workloads.
->>> +
->>>  endmenu
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index 01f39e8144ef..64c3f242c49a 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -4050,6 +4050,127 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>         return ret;
->>>  }
->>>
->>> +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
->>> +{
->>> +       int i;
->>> +
->>> +       if (nr_pages == 1)
->>> +               return vmf_pte_changed(vmf);
->>> +
->>> +       for (i = 0; i < nr_pages; i++) {
->>> +               if (!pte_none(ptep_get_lockless(vmf->pte + i)))
->>> +                       return true;
->>> +       }
->>> +
->>> +       return false;
->>> +}
->>> +
->>> +#ifdef CONFIG_LARGE_ANON_FOLIO
->>> +#define ANON_FOLIO_MAX_ORDER_UNHINTED \
->>> +               (ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
->>> +
->>> +static int anon_folio_order(struct vm_area_struct *vma)
->>> +{
->>> +       int order;
->>> +
->>> +       /*
->>> +        * If THP is explicitly disabled for either the vma, the process or the
->>> +        * system, then this is very likely intended to limit internal
->>> +        * fragmentation; in this case, don't attempt to allocate a large
->>> +        * anonymous folio.
->>> +        *
->>> +        * Else, if the vma is eligible for thp, allocate a large folio of the
->>> +        * size preferred by the arch. Or if the arch requested a very small
->>> +        * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
->>> +        * which still meets the arch's requirements but means we still take
->>> +        * advantage of SW optimizations (e.g. fewer page faults).
->>> +        *
->>> +        * Finally if thp is enabled but the vma isn't eligible, take the
->>> +        * arch-preferred size and limit it to ANON_FOLIO_MAX_ORDER_UNHINTED.
->>> +        * This ensures workloads that have not explicitly opted-in take benefit
->>> +        * while capping the potential for internal fragmentation.
->>> +        */
->>
->> What empirical evidence is SZ_64K based on?
->> What workloads would benefit from it?
->> How much would they benefit from it?
->> Would they benefit more or less from different values?
->> How much internal fragmentation would it cause?
->> What cost function was used to arrive at the conclusion that its
->> benefits outweigh its costs?
-
-Sorry this has taken a little while to reply to; I've been re-running my perf
-tests with the modern patches to recomfirm old data.
-
-In terms of empirical evidence, I've run the kernel compilation benchmark (yes I
-know its a narrow use case, but I figure some data is better than no data), for
-all values of ANON_FOLIO_MAX_ORDER_UNHINTED {4k, 16k, 32k, 64k, 128k, 256k}.
-
-I've run each test 15 times across 5 system reboots on Ampere Altra (arm64),
-with the kernel configured for 4K base pages - I could rerun for other base page
-sizes if we want to go further down this route.
-
-I've captured run time and peak memory usage, and taken the mean. The stdev for
-the peak memory usage is big-ish, but I'm confident this still captures the
-central tendancy well:
-
-| MAX_ORDER_UNHINTED |   real-time |   kern-time |   user-time | peak memory |
-|:-------------------|------------:|------------:|------------:|:------------|
-| 4k                 |        0.0% |        0.0% |        0.0% |        0.0% |
-| 16k                |       -3.6% |      -26.5% |       -0.5% |       -0.1% |
-| 32k                |       -4.8% |      -37.4% |       -0.6% |       -0.1% |
-| 64k                |       -5.7% |      -42.0% |       -0.6% |       -1.1% |
-| 128k               |       -5.6% |      -42.1% |       -0.7% |        1.4% |
-| 256k               |       -4.9% |      -41.9% |       -0.4% |        1.9% |
-
-64K looks like the clear sweet spot to me.
-
-I know you have argued for using a page order in the past, rather than a size in
-bytes. But my argument is that user space is mostly doing mmaps based on sizes
-independent of the base page size (an assumption!) and a system's memory is
-obviously a fixed quantity that doesn't it doesn't change with base page size.
-So it feels more natural to limit internal fragmentation based on an absolute
-size rather than a quantity of pages. Kyril have also suggested using absolute
-sizes in the past [1].
-
-It's also worth mentioning that the file-backed memory "fault_around" mechanism
-chooses 64K.
-
-If this approach really looks unacceptable, I have a couple of other ideas. But
-I personally favour the approach that is already in the patch.
-
-1) Add a large/small flag to arch_wants_pte_order(). arm64, at least, actually
-has 2 mechanisms, HPA and contpte. Currently arm64 is always returning the
-contpte order, but with a flag, it could return contpte order for large, and HPA
-order for small. (I know we previously passed the vma and we didn't like that,
-and this is pretty similar). I still think the SW (core-mm) needs a way to
-sensibly limit internal fragmentation though, so personally I still think having
-an upper limit in this case is useful.
-
-2) More radical: move to a per-vma auto-tuning solution, which looks at the
-fault pattern and maintains an allocation order in the VMA, which is modified
-based on fault pattern. e.g. When we get faults that occur immediately adjacent
-to the allocated range, we increase; when we get faults not connected to
-previously allocated pages we decrease. I think it's an interesting thing to
-look at, but certainly prefer that it's not part of an MVP implementation.
-
-[1]
-https://lore.kernel.org/linux-mm/20230414140948.7pcaz6niyr2tpa7s@box.shutemov.name/
-
-
->>
->>> +       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
->>> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
->>> +           !hugepage_flags_enabled())
->>> +               order = 0;
->>> +       else {
->>> +               order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
->>> +
->>> +               if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
->>> +                       order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
->>> +       }
-> 
-> I'm a bit surprised to see the above: why can we overload existing
-> ABIs? I don't think we can. 
-
-I think this is all covered by the conversation with David against v2; see [2]
-and proceeding replies. Argument is that VM_NOHUGEPAGE (and friends) is really a
-request from user space to optimize for the least memory wastage possible and
-avoid populating ptes that have not been expressly requested.
-
-[2]
-https://lore.kernel.org/linux-mm/524bacd2-4a47-2b8b-6685-c46e31a01631@redhat.com/
-
-Assuming we could, you would have to
-> update Documentation/admin-guide/mm/transhuge.rst in the same
-> patchset, and the man page for madvise() in a separate patch.
-
-Yes, that's a fair point. Although transhuge.rst doesn't even mention
-MADV_NOHUGEPAGE today.
-
-> 
-> Most importantly, existing userspace programs that don't work well
-> with THPs won't be able to use (try) large folios either -- this is a
-> big no no.
-
-I think we need some comments from David here. As mentioned I've added this
-tie-in based on his (strong) recommendation.
-
-> 
-> 
-> 
->>> +
->>> +       return order;
->>> +}
->>> +
->>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
->>
->> static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->>
->> and use ERR_PTR() and its friends.
-
-Yes, agreed. I'll change this for the next version.
-
->>
->>> +{
->>> +       int i;
->>> +       gfp_t gfp;
->>> +       pte_t *pte;
->>> +       unsigned long addr;
->>> +       struct vm_area_struct *vma = vmf->vma;
->>> +       int prefer = anon_folio_order(vma);
->>> +       int orders[] = {
->>> +               prefer,
->>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
->>> +               0,
->>> +       };
->>> +
->>> +       *folio = NULL;
->>> +
->>> +       if (vmf_orig_pte_uffd_wp(vmf))
->>> +               goto fallback;
->>> +
->>> +       for (i = 0; orders[i]; i++) {
->>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>> +               if (addr >= vma->vm_start &&
->>> +                   addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
->>> +                       break;
->>> +       }
->>> +
->>> +       if (!orders[i])
->>> +               goto fallback;
->>> +
->>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>> +       if (!pte)
->>> +               return -EAGAIN;
->>> +
->>> +       for (; orders[i]; i++) {
->>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>> +               vmf->pte = pte + pte_index(addr);
->>> +               if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
->>> +                       break;
->>> +       }
->>> +
->>> +       vmf->pte = NULL;
->>> +       pte_unmap(pte);
->>> +
->>> +       gfp = vma_thp_gfp_mask(vma);
->>> +
->>> +       for (; orders[i]; i++) {
->>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>> +               *folio = vma_alloc_folio(gfp, orders[i], vma, addr, true);
->>> +               if (*folio) {
->>> +                       clear_huge_page(&(*folio)->page, addr, 1 << orders[i]);
->>> +                       return 0;
->>> +               }
->>> +       }
->>> +
->>> +fallback:
->>> +       *folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
->>> +       return *folio ? 0 : -ENOMEM;
->>> +}
->>> +#else
->>> +static inline int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
->>> +{
->>> +       *folio = vma_alloc_zeroed_movable_folio(vmf->vma, vmf->address);
->>> +       return *folio ? 0 : -ENOMEM;
->>> +}
->>> +#endif
->>> +
->>>  /*
->>>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
->>>   * but allow concurrent faults), and pte mapped but not yet locked.
->>> @@ -4057,6 +4178,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>   */
->>>  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>  {
->>> +       int i = 0;
->>> +       int nr_pages = 1;
->>> +       unsigned long addr = vmf->address;
->>>         bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
->>>         struct vm_area_struct *vma = vmf->vma;
->>>         struct folio *folio;
->>> @@ -4101,10 +4225,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>         /* Allocate our own private page. */
->>>         if (unlikely(anon_vma_prepare(vma)))
->>>                 goto oom;
->>> -       folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
->>> +       ret = alloc_anon_folio(vmf, &folio);
->>> +       if (unlikely(ret == -EAGAIN))
->>> +               return 0;
->>>         if (!folio)
->>>                 goto oom;
->>>
->>> +       nr_pages = folio_nr_pages(folio);
->>> +       addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
->>> +
->>>         if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
->>>                 goto oom_free_page;
->>>         folio_throttle_swaprate(folio, GFP_KERNEL);
->>> @@ -4116,17 +4245,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>          */
->>>         __folio_mark_uptodate(folio);
->>>
->>> -       entry = mk_pte(&folio->page, vma->vm_page_prot);
->>> -       entry = pte_sw_mkyoung(entry);
->>> -       if (vma->vm_flags & VM_WRITE)
->>> -               entry = pte_mkwrite(pte_mkdirty(entry));
->>> -
->>> -       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
->>> -                       &vmf->ptl);
->>> +       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
->>>         if (!vmf->pte)
->>>                 goto release;
->>> -       if (vmf_pte_changed(vmf)) {
->>> -               update_mmu_tlb(vma, vmf->address, vmf->pte);
->>> +       if (vmf_pte_range_changed(vmf, nr_pages)) {
->>> +               for (i = 0; i < nr_pages; i++)
->>> +                       update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
->>>                 goto release;
->>>         }
->>>
->>> @@ -4141,16 +4265,24 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>                 return handle_userfault(vmf, VM_UFFD_MISSING);
->>>         }
->>>
->>> -       inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
->>> -       folio_add_new_anon_rmap(folio, vma, vmf->address);
->>> +       folio_ref_add(folio, nr_pages - 1);
->>> +       add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
->>> +       folio_add_new_anon_rmap(folio, vma, addr);
->>>         folio_add_lru_vma(folio, vma);
->>> +
->>> +       for (i = 0; i < nr_pages; i++) {
->>> +               entry = mk_pte(folio_page(folio, i), vma->vm_page_prot);
->>> +               entry = pte_sw_mkyoung(entry);
->>> +               if (vma->vm_flags & VM_WRITE)
->>> +                       entry = pte_mkwrite(pte_mkdirty(entry));
->>>  setpte:
->>> -       if (uffd_wp)
->>> -               entry = pte_mkuffd_wp(entry);
->>> -       set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
->>> +               if (uffd_wp)
->>> +                       entry = pte_mkuffd_wp(entry);
->>> +               set_pte_at(vma->vm_mm, addr + PAGE_SIZE * i, vmf->pte + i, entry);
->>>
->>> -       /* No need to invalidate - it was non-present before */
->>> -       update_mmu_cache(vma, vmf->address, vmf->pte);
->>> +               /* No need to invalidate - it was non-present before */
->>> +               update_mmu_cache(vma, addr + PAGE_SIZE * i, vmf->pte + i);
->>> +       }
->>>  unlock:
->>>         if (vmf->pte)
->>>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
->>
->> The rest looks good to me.
-
-Thanks, as always, for the detailed review and feedback!
-
-Thanks,
-Ryan
-
-
-
+T24gRnJpLCAyMDIzLTA3LTI4IGF0IDExOjM4ICswMjAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
+ZWdubyB3cm90ZToNCj4gSWwgMjgvMDcvMjMgMTE6MDgsIE1hc28gSHVhbmcgaGEgc2NyaXR0bzoN
+Cj4gPiBBZGQgbXQ3OTg2IHBsYXRmb3JtIGRyaXZlci4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBNYXNvIEh1YW5nIDxtYXNvLmh1YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgIHNv
+dW5kL3NvYy9tZWRpYXRlay9LY29uZmlnICAgICAgICAgICAgICAgICB8ICAxMCArDQo+ID4gICBz
+b3VuZC9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgICAgICAgICAgfCAgIDEgKw0KPiA+ICAg
+c291bmQvc29jL21lZGlhdGVrL210Nzk4Ni9NYWtlZmlsZSAgICAgICAgIHwgICA4ICsNCj4gPiAg
+IHNvdW5kL3NvYy9tZWRpYXRlay9tdDc5ODYvbXQ3OTg2LWFmZS1wY20uYyB8IDYyMg0KPiA+ICsr
+KysrKysrKysrKysrKysrKysrKw0KPiA+ICAgNCBmaWxlcyBjaGFuZ2VkLCA2NDEgaW5zZXJ0aW9u
+cygrKQ0KPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9tZWRpYXRlay9tdDc5ODYv
+TWFrZWZpbGUNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvbWVkaWF0ZWsvbXQ3
+OTg2L210Nzk4Ni1hZmUtcGNtLmMNCj4gPiANCj4gDQo+IC4uc25pcC4uDQo+IA0KPiA+ICsJLyog
+cmVnaXN0ZXIgY29tcG9uZW50ICovDQo+ID4gKwlyZXQgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJf
+Y29tcG9uZW50KCZwZGV2LT5kZXYsDQo+ID4gKwkJCQkJICAgICAgJm10Nzk4Nl9hZmVfY29tcG9u
+ZW50LA0KPiA+ICsJCQkJCSAgICAgIE5VTEwsIDApOw0KPiA+ICsJaWYgKHJldCkNCj4gPiArCQly
+ZXR1cm4gZGV2X2Vycl9wcm9iZShkZXYsIHJldCwgImVycl9wbGF0Zm9ybVxuIik7DQo+IA0KPiBJ
+IGtub3cgSSBvbmx5IHNhaWQgYWJvdXQgdXNpbmcgZGV2X2Vycl9wcm9iZSgpLCBidXQgImVycl9w
+bGF0Zm9ybSINCj4gZG9lc24ndA0KPiBtZWFuIGFueXRoaW5nIQ0KPiANCj4gUGxlYXNlIHdyaXRl
+IGEgaHVtYW4gcmVhZGFibGUgZXJyb3IgbWVzc2FnZSwgbGlrZSAiQ2Fubm90IHJlZ2lzdGVyDQo+
+IEFGRSBjb21wb25lbnRcbiINCj4gDQo+ID4gKw0KPiA+ICsJcmV0ID0gZGV2bV9zbmRfc29jX3Jl
+Z2lzdGVyX2NvbXBvbmVudChhZmUtPmRldiwNCj4gPiArCQkJCQkgICAgICAmbXQ3OTg2X2FmZV9w
+Y21fZGFpX2NvbXBvDQo+ID4gbmVudCwNCj4gPiArCQkJCQkgICAgICBhZmUtPmRhaV9kcml2ZXJz
+LA0KPiA+ICsJCQkJCSAgICAgIGFmZS0+bnVtX2RhaV9kcml2ZXJzKTsNCj4gPiArCWlmIChyZXQp
+DQo+ID4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZGV2LCByZXQsICJlcnJfZGFpX2NvbXBvbmVu
+dFxuIik7DQo+IA0KPiBBbmQgdGhlIHNhbWUgaGVyZSwgIkNhbm5vdCByZWdpc3RlciBQQ00gREFJ
+IGNvbXBvbmVudFxuIg0KPiANCj4gQWZ0ZXIgd2hpY2g6DQo+IA0KPiBSZXZpZXdlZC1ieTogQW5n
+ZWxvR2lvYWNjaGlubyBEZWwgUmVnbm8gPA0KPiBhbmdlbG9naW9hY2NoaW5vLmRlbHJlZ25vQGNv
+bGxhYm9yYS5jb20+DQoNCkhpIEFuZ2VsbywNCg0KVGhhbmtzIGZvciB5b3VyIHJldmlldy4NCkkn
+bGwgcmVmaW5lIGl0IHdpdGggaHVtYW4gcmVhZGFibGUgbWVzc2FnZSENCg0KQmVzdCByZWdhcmRz
+LA0KTWFzbw0KDQo=
