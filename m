@@ -2,128 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0E87671AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6BD7671B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbjG1QPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S233015AbjG1QQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbjG1QP3 (ORCPT
+        with ESMTP id S229592AbjG1QQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:15:29 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2042.outbound.protection.outlook.com [40.107.237.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D402A4490;
-        Fri, 28 Jul 2023 09:15:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GaMc5wEurCL6mtlfS+kbq7lETmQcHEgJye64Vye1tdI9jn8z+qqE5krZxhw72Z1auvfsln9faBs0PbfGuItKymyHmlYd+UWvtBVYoaoPcrMM7VkSvDOeEW8yRJQUTZzzulDJew14DznZIG70nET8OkxVFGJNqjF++vcXDqyg3Vy7hCzvZa6co6YhyXgrA8hFH66oLvsRouePRAY/im5hE3tsTz+KxYunr6/BsBhmxoogzjRAMi0kBkkVeis2PYCiM9VdwoFpftQnD/GKIQQ70yayUqZ/8JrB3X3nfpQdE7RpIgctPxx61CibB9nE5NuY3L32a31J2FSXr7fF7GRBGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nr+ROKqF/HVLQZ9xNQGqYrZcjS3Mvhu8ahdFrqlR35Q=;
- b=SJv0M5UAtnUUruphwK6gTUziFUqehIU1+8pLncPZH7F5xvJUfuHvJfbnAnmR6MLTsHFdY39HTfRiExVvkz53iUG+zPac1wyH9GQshIXULmFQE6K12NIBcupmYLhA2SX2C1MMS9SPkrTZaQchxaq2zfRGIC8Q8+qN+rJtDq1MsydOKARFaJ8o2ykT+DpXsqHzC3OqHbOPjGk3zXcwl5UHmHfKnzl4WzXy+D/R6lQq5CrVnMEsKUduy4GtXeUJyGJJxwENpsAjMF4WN2jlWHMpvxzlkfWvu1LgbHDWgbgO5Z9oAcztSrH0YGWwvri5EEYHhFx2oRpQ2Id6FV8sRVaxaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nr+ROKqF/HVLQZ9xNQGqYrZcjS3Mvhu8ahdFrqlR35Q=;
- b=O/Xps3/iYOvVtlON3x7cGtHgNg+5LB4Ic/iBU7ZSUSlP6YKcb3B4kn4VDPulXz73oKuHRZDUMV8KGfg4YLnn2NORx5V+g5qZjWeb5iuHJrQPR6TCYPyZtAIcAX3aUCY/OWc1aH0/DcKm8JLCTHwdessWnuPmpXHvw5m1SVi3Osc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from IA1PR12MB6137.namprd12.prod.outlook.com (2603:10b6:208:3eb::20)
- by DM6PR12MB4249.namprd12.prod.outlook.com (2603:10b6:5:223::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 16:15:18 +0000
-Received: from IA1PR12MB6137.namprd12.prod.outlook.com
- ([fe80::bc63:b5a8:902:ee0e]) by IA1PR12MB6137.namprd12.prod.outlook.com
- ([fe80::bc63:b5a8:902:ee0e%2]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 16:15:18 +0000
-Message-ID: <d1e720a1-d52c-a14b-3389-a2fb830c208e@amd.com>
-Date:   Fri, 28 Jul 2023 21:45:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH 1/2] selftests: mm: ksm: Fix incorrect evaluation of
- parameter
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        shuah@kernel.org, pasha.tatashin@soleen.com,
-        zhansayabagdaulet@gmail.com, tyhicks@linux.microsoft.com,
-        raghavendra.kodsarathimmappa@amd.com
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Narasimhan.V@amd.com,
-        Santosh.Shukla@amd.com
-References: <20230728060109.4403-1-ayush.jain3@amd.com>
- <8e4d9fa7-7550-87a9-ead1-2d2a8691cdab@redhat.com>
-From:   Ayush Jain <ayush.jain3@amd.com>
-In-Reply-To: <8e4d9fa7-7550-87a9-ead1-2d2a8691cdab@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0080.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:9a::22) To IA1PR12MB6137.namprd12.prod.outlook.com
- (2603:10b6:208:3eb::20)
+        Fri, 28 Jul 2023 12:16:43 -0400
+Received: from out-97.mta0.migadu.com (out-97.mta0.migadu.com [91.218.175.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581641BF2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:16:41 -0700 (PDT)
+Message-ID: <2c3bec7a-812c-0a65-f8c1-b9749430adba@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690560999; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+4d5dX2QpOs/NQAOKyRlBye3q/eaKn/kIqTx/3BJqMA=;
+        b=S05AXoOWkRtVDQgNWaAU61a0PxShD2p1OxKAwho6I33bMP7fQDFkZkX23n+ctKHnZCStqs
+        Ts4R+FVbXlgRYYQbVBvxeT1Cd1Z5TGGngWG7uEaYCyfWE3mg8P5zxV/T7pOh4r4ERI0fZ0
+        JCqPMJOh+BqLS6XHBsB5AoDSX8Trnyg=
+Date:   Fri, 28 Jul 2023 09:16:32 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6137:EE_|DM6PR12MB4249:EE_
-X-MS-Office365-Filtering-Correlation-Id: 42ccd3ab-02a2-4e56-6e48-08db8f85d5ed
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tHTZoGxLjpjUEMtzsOGlsmj9qvm2Be9SngPYgf1uwk8pqU3MDnu+OxemL3+oV+lchSMvnVYG2lPqioJKoeLUt0hLIC6ELYS9jMfl8VYlPmWQo11wInv2BkOgJ1qravCx/WswVu4+lNJldMWAXT7a9O4WZIMb4Mcvbj/ODqwIKnY1gXv+hRZuKL1tLfSOBpYit0Oj7QKjIa7T6aexjWnMJ6b4PMD5Pxk2nZvHF9bfTPGv62hZgbCOTrDCb/TJPlV3fSrgJvE38FKafiAeabh5Maty4kw6vWqOf8cH0MQjQqDyvlun27+VQRo0060JGb/5KzZ0VGVe/0UDIhN2F0N9ONhVu5btYS98DJVVKfgwEDspNq0cxAZHUPJtfYK01vwKgcMZ3fDFUstLI23xIre03BxAnPMTqbAboNNLQA9P10yyCKkr3lxV4o+kKLei5EXExZxPWzFEzrPfqIe1sBg/snHjJfArDRMJROTM1h0zuKeyAraiuOhNwmZByfKHynG1WwxTEfZRlapUyxkeMrIsNWLhCdKjVWbuJ26XjP3Mndv8Bbr0xdQsYORM/sRsOhBnCZNLWmz3Lk4IPHP+StNrSSc2BZTb1tgVoEbfASJ8Hj2MBIUpENYKRf6iUY4gSXGiaafEe8OHmPRjJPYYHlnbUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6137.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199021)(83380400001)(2906002)(2616005)(6666004)(6486002)(53546011)(26005)(86362001)(6512007)(478600001)(38100700002)(5660300002)(41300700001)(31686004)(316002)(186003)(66946007)(66556008)(66476007)(31696002)(6506007)(8936002)(8676002)(36756003)(4326008)(6636002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OWxwSGlHOGwveEZNVE44c2ZlUTJsc0lRRk9yZzZrLzdGd3JqNCtsUU9wQXJv?=
- =?utf-8?B?Qk1kbE5wSlpPN04xdEZGNW1jQ01SRHNEVnBGL0FaVW1oMDJjR3NuQ2JQYXBx?=
- =?utf-8?B?SVRLanVmaG5zRjd4a3YvVGNqZHJKYmRDVWxRUDJ4dG1sclVTckRYWm4xejQ4?=
- =?utf-8?B?WGZ6Ump3aVQ3c3JHMmV3d1hOQUF1SjdDeHBvSHQvaXg1QjhCRklMRWF2UUds?=
- =?utf-8?B?OW1qbS9jdGx4ZnhZSGdBM2F2YlFTelkvU1QyVVk3dGV6cm9sWXcrKzI4OHN1?=
- =?utf-8?B?ZzBmNDF2ZEo2YXpLRVVwOWl4TktNeHordjBxdVFyVXBudThoYzVCV29wVFhJ?=
- =?utf-8?B?TlRROU1QbEsvRVdlWlB6YjZHaE1NTEE0MVZSTkVzNUN5c0l4SDhwM3NaU3E2?=
- =?utf-8?B?S3B2MVpYK3FxY3piSkQ5eVZPSGpUOW9xQXhOVlY1TnZTUXNaOHdEcUV3NVVQ?=
- =?utf-8?B?eUtaRnZST2VGOGRRbHE0eVVaZG1BVk5YQVdrTFFkdVRRcUM3RUswZC9mSW9x?=
- =?utf-8?B?RnFsbFdkb0JnV2hBUTNQc3ovZjIxQ2ZwOENsWWM2VUowVFQ0Y3llTDcvdVFL?=
- =?utf-8?B?NzJRUzFxTldhNFoyekdBYTJac1EybTl4M0xHRWFaVzd1Q280cUM1V3A3QlF0?=
- =?utf-8?B?V2l0RkovN0ZEbnVBRnplOEs2bkJUTU43WTlhY2hqOGowM2JNRjA4Q2FrZGM0?=
- =?utf-8?B?NUo1YXphbm9zTVAwcHc3VW5PaEJDMEtuQnkyZ2VQN2ZmT0Nhd1VRZGRCZi85?=
- =?utf-8?B?YnhxQ3g1TTlHV0d0TmhhNEJROFZFUGttOTJuYUlHMVU2Vk9vZEZpOVMzODNI?=
- =?utf-8?B?eVFJK2lLUmhuZWF5RzZ0R0pmT21zMjlHWjlvcWd6d1lacVRrZTBMcDQvYUJM?=
- =?utf-8?B?aUlFeHd0NkFXZ1ptUHNDaUhjbUFteldZQ0hvK05PVkxYZ25lUzROY1NzR092?=
- =?utf-8?B?Q053ZUp2QjlldmpoV243MXAxOVZnajVVa0tkcEVza1RyblA5Q2dmeitiZmo4?=
- =?utf-8?B?YXVwaUZScHFCTGhqNXBjbXVkUExmUENqWXVHTnNnQjV3Z1M2TEZNYzhwRHhD?=
- =?utf-8?B?TVBsT1RzN2hRR0pJRjQ4d21icnNpYUg3ZTR2N0M4aXNCWTYwMzlKTjlvcnBG?=
- =?utf-8?B?aENkOVhtNVRpWHR1WUM5Kyt6OE90RjFSN1dxcGdaTm1tTnFhUnhxbENnUFB0?=
- =?utf-8?B?cml4QmtwbVlqNlRVTFg5MXNYL0d6aGZTbjhuUnoxWGl0eHRzWjB2UVJYSnRQ?=
- =?utf-8?B?OVVJYzFabVhvYzhQZTRHbjlIeU9RY0VKajlrbzVhYk1oZkphWWxHdWl0ek45?=
- =?utf-8?B?eEFvRjMyRDdndGI5elVrREdNWlowNkpXUCtKTjdUc3VXbUZjZlhIUHhJRW9D?=
- =?utf-8?B?UkMwamlXWERzanBjTWN2ZmNsbmxsZWxJOUE4VisxenV5K0JOVXdsOEFadGxt?=
- =?utf-8?B?eFV1Ry9QSVJwNCt3dmE1YnlXZ1VmdEY4TmxXYjE3dUFGdk9Pb2NUQUJGYVpS?=
- =?utf-8?B?ZnZtRWtBZ3l1cVZ1YzBacnJObmozM1JOaU1GT0VlZGwvT05RRTBuV1lXM1Nr?=
- =?utf-8?B?NGpFSWVJcVIza2lCQlZGWFBJdU5SeGdVYlo2MkNmV2grZmV4aGYxb01kS0Ji?=
- =?utf-8?B?MnBBZ2kvaWdnOTBmR0ZBQWNMVHJUNkpaWmcrVWJSdFhGaFFSWm9GVlVSTUts?=
- =?utf-8?B?OXMxdjBoN1IreGpNNkwzcXRvSEJtcnQyZk5MNER4MzA5RFRqQ1VtVnlzTkpU?=
- =?utf-8?B?c1ovcDQ2bU1pTlBFVEZCNU9tRWR2dmw0a3NPRGE0cFhNbEszU0lydnh6WUh6?=
- =?utf-8?B?a01DY3NJelV3WUNidFA5dFcrZEYxdXhRWkFUM0liSksyMklMQ3JzdHd1Zi9m?=
- =?utf-8?B?dVZaRmlHajcxbkh5VlFuSnAra3FHVm1RWW5ONDBpS2hLWGJ0SFRVN25CSHZ5?=
- =?utf-8?B?MTNjeThIOUEyK1BBU3BFWVhHa09yWHFmOG5Ydi9VUEc5Wjlnc3JvNEFvZWVJ?=
- =?utf-8?B?T2dieVRZKy9OOCtMQ0ZQS2VndStYdjh6WThjYm1kczVkMVh5a011OFRWazFL?=
- =?utf-8?B?cDRaNit3V3hOczRJTWZmVkRXM0NBQnNMSm1GbjlFKzVodGhSV3hCNVZXZWow?=
- =?utf-8?Q?/Kyt+fs/JcYA2RieUMG6jHwtC?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42ccd3ab-02a2-4e56-6e48-08db8f85d5ed
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6137.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:15:18.7751
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kdNQkdl3o2jC47u2PU5w7QwauOLWMkoGZ2QGGGRAdW2xo5XZt5z82r4lMUd9Q9kSGHb3DEKy2Dso6n8ZlXUpsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4249
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
+ sock_map_sk_acquire
+Content-Language: en-US
+To:     Jiri Olsa <olsajiri@gmail.com>, tglozar@redhat.com
+Cc:     linux-kernel@vger.kernel.org, john.fastabend@gmail.com,
+        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20230728064411.305576-1-tglozar@redhat.com>
+ <ZMOrEi3cNWGXp9ZS@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZMOrEi3cNWGXp9ZS@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,43 +55,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
 
-On 7/28/2023 8:05 PM, David Hildenbrand wrote:
-> On 28.07.23 08:01, Ayush Jain wrote:
->> A missing break in kms_tests leads to kselftest hang when the
->> parameter -s is used.
->> In current code flow because of missing break in -s, -t parses
->> args spilled from -s and as -t accepts only valid values as 0,1
->> so any arg in -s >1 or <0, gets in ksm_test failure
+
+On 7/28/23 4:48 AM, Jiri Olsa wrote:
+> On Fri, Jul 28, 2023 at 08:44:11AM +0200, tglozar@redhat.com wrote:
+>> From: Tomas Glozar <tglozar@redhat.com>
 >>
->> This went undetected since, before the addition of option -t,
->> the next case -M would immediately break out of the switch
->> statement but that is no longer the case
+>> Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
+>> allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
+>> GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exist
+>> patchset notes for details).
 >>
->> Add the missing break statement.
+>> This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps to
+>> BUG (sleeping function called from invalid context) on RT kernels.
 >>
->> ----Before----
->> ./ksm_tests -H -s 100
->> Invalid merge type
+>> preempt_disable was introduced together with lock_sk and rcu_read_lock
+>> in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and update
+>> in parallel"), probably to match disabled migration of BPF programs, and
+>> is no longer necessary.
 >>
->> ----After----
->> ./ksm_tests -H -s 100
->> Number of normal pages:    0
->> Number of huge pages:    50
->> Total size:    100 MiB
->> Total time:    0.401732682 s
->> Average speed:  248.922 MiB/s
->>
->> Fixes: 9e7cb94ca218 ("selftests: vm: add KSM merging time test")
+>> Remove preempt_disable to fix BUG in sock_map_update_common on RT.
 > 
-> I think this actually fixes 07115fcc15b4 ("selftests/mm: add new selftests for KSM") that added the "t" parsing.
+> FYI, I'm not sure it's related but I started to see following splat recently:
 > 
-
-Sure will update in v2.
-
-> Reviewed-by: David Hildenbrand <david@redhat.com>
+> [  189.360689][  T658] =============================
+> [  189.361149][  T658] [ BUG: Invalid wait context ]
+> [  189.361588][  T658] 6.5.0-rc2+ #589 Tainted: G           OE
+> [  189.362174][  T658] -----------------------------
+> [  189.362660][  T658] test_progs/658 is trying to lock:
+> [  189.363176][  T658] ffff8881702652b8 (&psock->link_lock){....}-{3:3}, at: sock_map_update_common+0x1c4/0x340
+> [  189.364152][  T658] other info that might help us debug this:
+> [  189.364689][  T658] context-{5:5}
+> [  189.365021][  T658] 3 locks held by test_progs/658:
+> [  189.365508][  T658]  #0: ffff888177611a80 (sk_lock-AF_INET){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x82/0x260
+> [  189.366503][  T658]  #1: ffffffff835a3180 (rcu_read_lock){....}-{1:3}, at: sock_map_update_elem_sys+0x78/0x260
+> [  189.367470][  T658]  #2: ffff88816cf19240 (&stab->lock){+...}-{2:2}, at: sock_map_update_common+0x12a/0x340
+> [  189.368420][  T658] stack backtrace:
+> [  189.368806][  T658] CPU: 0 PID: 658 Comm: test_progs Tainted: G           OE      6.5.0-rc2+ #589 98af30b3c42d747b51da05f1d0e4899e394be6c9
+> [  189.369889][  T658] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
+> [  189.370736][  T658] Call Trace:
+> [  189.371063][  T658]  <TASK>
+> [  189.371365][  T658]  dump_stack_lvl+0xb2/0x120
+> [  189.371798][  T658]  __lock_acquire+0x9ad/0x2470
+> [  189.372243][  T658]  ? lock_acquire+0x104/0x350
+> [  189.372680][  T658]  lock_acquire+0x104/0x350
+> [  189.373104][  T658]  ? sock_map_update_common+0x1c4/0x340
+> [  189.373615][  T658]  ? find_held_lock+0x32/0x90
+> [  189.374074][  T658]  ? sock_map_update_common+0x12a/0x340
+> [  189.374587][  T658]  _raw_spin_lock_bh+0x38/0x80
+> [  189.375060][  T658]  ? sock_map_update_common+0x1c4/0x340
+> [  189.375571][  T658]  sock_map_update_common+0x1c4/0x340
+> [  189.376118][  T658]  sock_map_update_elem_sys+0x184/0x260
+> [  189.376704][  T658]  __sys_bpf+0x181f/0x2840
+> [  189.377147][  T658]  __x64_sys_bpf+0x1a/0x30
+> [  189.377556][  T658]  do_syscall_64+0x38/0x90
+> [  189.377980][  T658]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [  189.378473][  T658] RIP: 0033:0x7fe52f47ab5d
 > 
+> the patch did not help with that
 
-Thanks,
-Ayush Jain
+I think the above splat is not related to this patch. In function
+sock_map_update_common func we have
+   raw_spin_lock_bh(&stab->lock);
+
+   sock_map_add_link(psock, link, map, &stab->sks[idx]);
+     spin_lock_bh(&psock->link_lock);
+     ...
+     spin_unlock_bh(&psock->link_lock);
+
+   raw_spin_unlock_bh(&stab->lock);
+
+I think you probably have CONFIG_PROVE_RAW_LOCK_NESTING turned on
+in your config.
+
+In the above case, for RT kernel, spin_lock_bh will become
+'mutex' and it is sleepable, while raw_spin_lock_bh remains
+to be a spin lock. The warning is about potential
+locking violation with RT kernel.
+
+To fix the issue, you can convert spin_lock_bh to raw_spin_lock_bh
+to silence the warning.
+
+> 
+> jirka
+> 
+>>
+>> Signed-off-by: Tomas Glozar <tglozar@redhat.com>
+>> ---
+>>   net/core/sock_map.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> index 19538d628714..08ab108206bf 100644
+>> --- a/net/core/sock_map.c
+>> +++ b/net/core/sock_map.c
+>> @@ -115,7 +115,6 @@ static void sock_map_sk_acquire(struct sock *sk)
+>>   	__acquires(&sk->sk_lock.slock)
+>>   {
+>>   	lock_sock(sk);
+>> -	preempt_disable();
+>>   	rcu_read_lock();
+>>   }
+>>   
+>> @@ -123,7 +122,6 @@ static void sock_map_sk_release(struct sock *sk)
+>>   	__releases(&sk->sk_lock.slock)
+>>   {
+>>   	rcu_read_unlock();
+>> -	preempt_enable();
+>>   	release_sock(sk);
+>>   }
+>>   
+>> -- 
+>> 2.39.3
+>>
+>>
+> 
