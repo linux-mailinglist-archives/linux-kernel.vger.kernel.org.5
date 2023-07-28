@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED208767248
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC97576724A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234683AbjG1Qot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S235025AbjG1QpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjG1Qnu (ORCPT
+        with ESMTP id S233839AbjG1QoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:43:50 -0400
+        Fri, 28 Jul 2023 12:44:08 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88423448E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA52E468B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:42 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 076B81570;
-        Fri, 28 Jul 2023 09:44:22 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05E1D15DB;
+        Fri, 28 Jul 2023 09:44:25 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E80E3F67D;
-        Fri, 28 Jul 2023 09:43:36 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BF943F67D;
+        Fri, 28 Jul 2023 09:43:39 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -38,9 +38,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com
-Subject: [PATCH v5 07/24] x86/resctrl: Use set_bit()/clear_bit() instead of open coding
-Date:   Fri, 28 Jul 2023 16:42:37 +0000
-Message-Id: <20230728164254.27562-8-james.morse@arm.com>
+Subject: [PATCH v5 08/24] x86/resctrl: Allocate the cleanest CLOSID by searching closid_num_dirty_rmid
+Date:   Fri, 28 Jul 2023 16:42:38 +0000
+Message-Id: <20230728164254.27562-9-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
 References: <20230728164254.27562-1-james.morse@arm.com>
@@ -55,70 +55,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The resctrl CLOSID allocator uses a single 32bit word to track which
-CLOSID are free. The setting and clearing of bits is open coded.
+MPAM's PMG bits extend its PARTID space, meaning the same PMG value can be
+used for different control groups.
 
-A subsequent patch adds resctrl_closid_is_free(), which adds more open
-coded bitmaps operations. These will eventually need changing to use
-the bitops helpers so that a CLOSID bitmap of the correct size can be
-allocated dynamically.
+This means once a CLOSID is allocated, all its monitoring ids may still be
+dirty, and held in limbo.
 
-Convert the existing open coded bit manipulations of closid_free_map
-to use set_bit() and friends.
+Instead of allocating the first free CLOSID, on architectures where
+CONFIG_RESCTRL_RMID_DEPENDS_ON_COSID is enabled, search
+closid_num_dirty_rmid[] to find the cleanest CLOSID.
+
+The CLOSID found is returned to closid_alloc() for the free list
+to be updated.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Changes since v4:
+ * Dropped stale section from comment
+---
+ arch/x86/kernel/cpu/resctrl/internal.h |  2 ++
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 42 ++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 +++++++++---
+ 3 files changed, 58 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 94749ee950dd..7c2a1c235480 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -557,5 +557,7 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
+ void __init thread_throttle_mode_init(void);
+ void __init mbm_config_rftype_init(const char *config);
+ void rdt_staged_configs_clear(void);
++bool closid_allocated(unsigned int closid);
++int resctrl_find_cleanest_closid(void);
+ 
+ #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 44addc0126fc..c268aa5925c7 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -379,6 +379,48 @@ static struct rmid_entry *resctrl_find_free_rmid(u32 closid)
+ 	return ERR_PTR(-ENOSPC);
+ }
+ 
++/**
++ * resctrl_find_cleanest_closid() - Find a CLOSID where all the associated
++ *                                  RMID are clean, or the CLOSID that has
++ *                                  the most clean RMID.
++ *
++ * MPAM's equivalent of RMID are per-CLOSID, meaning a freshly allocated CLOSID
++ * may not be able to allocate clean RMID. To avoid this the allocator will
++ * choose the CLOSID with the most clean RMID.
++ *
++ * When the CLOSID and RMID are independent numbers, the first free CLOSID will
++ * be returned.
++ */
++int resctrl_find_cleanest_closid(void)
++{
++	u32 cleanest_closid = ~0, iter_num_dirty;
++	int i = 0;
++
++	lockdep_assert_held(&rdtgroup_mutex);
++
++	if (!IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
++		return -EIO;
++
++	for (i = 0; i < closids_supported(); i++) {
++		if (closid_allocated(i))
++			continue;
++
++		iter_num_dirty = closid_num_dirty_rmid[i];
++		if (iter_num_dirty == 0)
++			return i;
++
++		if (cleanest_closid == ~0)
++			cleanest_closid = i;
++
++		if (iter_num_dirty < closid_num_dirty_rmid[cleanest_closid])
++			cleanest_closid = i;
++	}
++
++	if (cleanest_closid == ~0)
++		return -ENOSPC;
++	return cleanest_closid;
++}
++
+ /*
+  * For MPAM the RMID value is not unique, and has to be considered with
+  * the CLOSID. The (CLOSID, RMID) pair is allocated on all domains, which
 diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index b97e119dbe46..4ab9bb018c17 100644
+index 4ab9bb018c17..df28b81d2c9c 100644
 --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -106,7 +106,7 @@ void rdt_staged_configs_clear(void)
-  * - Our choices on how to configure each resource become progressively more
-  *   limited as the number of resources grows.
-  */
--static int closid_free_map;
-+static unsigned long closid_free_map;
- static int closid_free_map_len;
+@@ -132,11 +132,20 @@ static void closid_init(void)
  
- int closids_supported(void)
-@@ -126,7 +126,7 @@ static void closid_init(void)
- 	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
+ static int closid_alloc(void)
+ {
+-	u32 closid = ffs(closid_free_map);
++	u32 closid;
++	int err;
  
- 	/* CLOSID 0 is always reserved for the default group */
--	closid_free_map &= ~1;
-+	clear_bit(0, &closid_free_map);
- 	closid_free_map_len = rdt_min_closid;
- }
- 
-@@ -137,14 +137,14 @@ static int closid_alloc(void)
- 	if (closid == 0)
- 		return -ENOSPC;
- 	closid--;
--	closid_free_map &= ~(1 << closid);
-+	clear_bit(closid, &closid_free_map);
+-	if (closid == 0)
+-		return -ENOSPC;
+-	closid--;
++	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
++		err = resctrl_find_cleanest_closid();
++		if (err < 0)
++			return err;
++		closid = err;
++	} else {
++		closid = ffs(closid_free_map);
++		if (closid == 0)
++			return -ENOSPC;
++		closid--;
++	}
+ 	clear_bit(closid, &closid_free_map);
  
  	return closid;
- }
- 
- void closid_free(int closid)
- {
--	closid_free_map |= 1 << closid;
-+	set_bit(closid, &closid_free_map);
- }
- 
- /**
-@@ -156,7 +156,7 @@ void closid_free(int closid)
+@@ -154,7 +163,7 @@ void closid_free(int closid)
+  * Return: true if @closid is currently associated with a resource group,
+  * false if @closid is free
   */
- static bool closid_allocated(unsigned int closid)
+-static bool closid_allocated(unsigned int closid)
++bool closid_allocated(unsigned int closid)
  {
--	return (closid_free_map & (1 << closid)) == 0;
-+	return !test_bit(closid, &closid_free_map);
+ 	return !test_bit(closid, &closid_free_map);
  }
- 
- /**
 -- 
 2.39.2
 
