@@ -2,158 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D12A767407
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752FA76740D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbjG1Rzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        id S233069AbjG1R4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjG1Rzi (ORCPT
+        with ESMTP id S234007AbjG1R4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:55:38 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0B73C1F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:55:36 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso37017431fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:55:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690566935; x=1691171735;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J50FXHBVMY76jU86gdZA2hOUW6PaI5nolOLYf+ebiaY=;
-        b=hZdqr3GqH1hXtYipXXVyx+LyNKzCHTAMWViYak7U5KMHQPctf/TwIHCPkL7dpLPh+G
-         As6ugvww8cLF2tv6y3hy6wODKLWIoHdrJWEAwbOOW3n5krErLhgcCshds8/Rco4UgjCr
-         yP96bDZWp7V2CcmmciIYHyS+ZKZPZNUS2+Lz3Say9pMKVj8ai67H+JBQfqXwyo7udZWU
-         dQfObvns/GPXNF1NDDmIWgABDLbe1BMW9r4U/ZjpPRCwS62TKxfiEiKo6ox5sw0Wk9T2
-         oz7tYeA9TagpPie1B6/yfiYmOFlBh84v7oWVeVgiGBqTh91vRfwm56HLahj7NVt6qKPR
-         8dTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690566935; x=1691171735;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J50FXHBVMY76jU86gdZA2hOUW6PaI5nolOLYf+ebiaY=;
-        b=Kkxb/qmxHPrGKsBxkc1qooLDYl8XW1wSZC/HxG9CfWy0ZMVPtjOqFe9I9l7/Gdx23k
-         75oBVmKD5SGBMF0eSixbXS6VcflJi3T1SOUT8ITt2n8UWDZ0VeG+stnslPVktSOqRMIA
-         2pYildT3KnYi3wkMwj6BEXfaERv/Dn26IBimCQ5E/umiu81RoNfPcawtAkv6OTOgS12r
-         zEy9EqRfeS1MHO+pBoVDn+yHv1CSX6oeDN/pHoYFJVGQ7wTFG91MdcawvLcvoCJoRmJg
-         xUdSqR3X3AgCm3Z/HCbGgHCQoPObxm8hNOPyHY2KVySlH5zEBCyNW5sF87ROwhRcto9e
-         zrwg==
-X-Gm-Message-State: ABy/qLbu0v4WqtV6kAAZ6+Caert/8mv6x1nrXU5M6xPtC+HEtBxS64zU
-        +3huxlx4Eb/LA1g5nBI/g+D/iw==
-X-Google-Smtp-Source: APBJJlEdAdkNxm/VMjBas2n7DxBuJYqVKFC6TaGzlwER+arPmE+bBMALlJPr2kpQ/5UXmJ53563PLg==
-X-Received: by 2002:a2e:9b14:0:b0:2b4:7559:32b0 with SMTP id u20-20020a2e9b14000000b002b4755932b0mr2156492lji.19.1690566934940;
-        Fri, 28 Jul 2023 10:55:34 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id v20-20020a2e9614000000b002b9af8422a8sm1054627ljh.130.2023.07.28.10.55.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 10:55:34 -0700 (PDT)
-Message-ID: <cd1fea83-3e0c-32c2-dc9f-61569366e212@linaro.org>
-Date:   Fri, 28 Jul 2023 19:55:33 +0200
+        Fri, 28 Jul 2023 13:56:05 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B9B4205;
+        Fri, 28 Jul 2023 10:56:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jhIxpmdoC5XMqTrAVOTob9IC5uAqc399Xgmbwksitl0EORBZ0WRuTZ0ryEJKki4pWEWQS+cptCwME71dnurSRxu4R8XvRnvs0hEMPImr8nZNxj5FawrwQTSYp+uixNhuWnbioGYMBJvlRNAeQFT4cltjuNvWisMsE0Rd7rpf+pj7FhJLBYESg0xkWyi4RCKxpKv/MQdABqZszJCj92LLx40rYTm/8xYBenLhB4Bvds/uF2ui/H8vIstDWJS9euKdbmkhYMJ/JD+vKi1k25DSO4Yy71iqmIErpO3QCu+oHQNgp7gTbqzilYNIzBUy8oq8Viki84b3b38xz5JEfWs97A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wcuW2MghGpMTVkzvR4Zgk5HLNpEnjEwathmDj3laAdo=;
+ b=d/hspTclx3ZUXegOamKlDzXKDP8B4zHHmoT6ZtNTUjqSn1eF6hQmvppYr+3sv6vjDiYhDgVi0zrC1luOr7p5YKaT853qW88+GS/zWOQJKQ9L8en2x6s4hntEGNhGhAajhmvekHxPZqZqFMOGlqGeI/gHW6lkETe+IcCvMPBaD7Oo4NblpKb05+voYFN7/K7Vkb2QLJ7l7aZhHDkQ7KtaY/+iRmQ6PiW+ZuZphtndEtQcpQg6RSBfgiKPO9ZWTwC68W13EkrLGJNs4WPFl1pMK4sb48ftDEzDXqgSBYgyorbdRfrnc0zHpvkScJsu3lwpdei5TpklwRozd2ffNE5G4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wcuW2MghGpMTVkzvR4Zgk5HLNpEnjEwathmDj3laAdo=;
+ b=G8v2gCP0h4mb9ZbkY+r1YLG7fBhD020ktiBV9fX5PlEb36jcq9xz0qUzHa5H9DgSysksRlEHZHA6Sxan7SU6NhRGgLthB1r8hRqwA9oHcfe11288G6VphWWE+iJGYgtSnkMYjRi/EabMrPvwgwsZTfULbaKDRo79HVeoCvTuq9dKyCYmfNDZXXMBF8CrjHph+Uc6SGHP4/pcD1QG3kjkQNhNzMXGIhCmP0nMoMCls1Y5e7gRnKZP771Ef7jv7Z8OrE8Yd4uOK9VXm8UPRwvNnLe+mzDhSwCw0tibkWnaxVwA9ftuvGvNgFtZBJ/bqfDmf1uDuZi29JTfZBI1JuOxhQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB6590.namprd12.prod.outlook.com (2603:10b6:8:8f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 17:55:59 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.034; Fri, 28 Jul 2023
+ 17:55:59 +0000
+Date:   Fri, 28 Jul 2023 14:55:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
+        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: Re: [PATCH v3 08/17] iommufd: IOMMU_HWPT_ALLOC allocation with user
+ data
+Message-ID: <ZMQBLTm+U+5bgC/Z@nvidia.com>
+References: <20230724110406.107212-1-yi.l.liu@intel.com>
+ <20230724110406.107212-9-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230724110406.107212-9-yi.l.liu@intel.com>
+X-ClientProxiedBy: YT4PR01CA0170.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:110::10) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 16/33] iris: add helpers for media format
-Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-17-git-send-email-quic_vgarodia@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690550624-14642-17-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6590:EE_
+X-MS-Office365-Filtering-Correlation-Id: b44abea2-e965-4769-636c-08db8f93e69a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t3AQ5EtFV/YZT61FBmNMcaa5f3b9VtnE1so8htlauMUNFZ1W+D6uf/VBed8QTHWj80jA49Fbp7xGd4YXo3ma8QaFAYIDYcYIWeoeqsy2RA/B6e7owbUqrVcoa1dxb8BZURScmHAmELdJIsO8fL1fwWSqCaLdUOQ/R+M/mPuIFfIXUYG81duBZLPS5eEevAzw0JnChMZxS6iYAw9lk2uSaIhZtdZJpPBnvALhNxlyGMfi4mf9iWLb55Mg5VI4fD81VPB1yakaVHlmtl/dnsZmFxtP5lBdnDJJcMNqddFrdR1eRkFNxTrtqFKjUIf0Lmy1v4i7UttxC2mVzieoAWc8CxLGeC+0xRLxlq0Mu4qlcft4UmrYHeFPcbhi5oapQVuZ8MiZKqzt/tjvIGEH0QjYAPY//QevpzZQymnYS+DqPvbCYqDr/wi5Ta2xQRAXhZOS4myBqMVlNFEKnwsW7sKODuMi9AT90Qs3lKKeaY4QAv4bG2p4wqW9nTWlSPVAhYOIW5Nq9E0v36kB/ist9IIqLWnrF8sLD1D7TaSTVEFWCbPfmjMgOVsv6jJz2l1HhSjN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(346002)(136003)(396003)(376002)(451199021)(86362001)(6512007)(6486002)(36756003)(186003)(38100700002)(2616005)(6506007)(26005)(66556008)(4326008)(6916009)(66476007)(66946007)(316002)(2906002)(5660300002)(7416002)(41300700001)(8676002)(8936002)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z40oc5ewkQmKYph3UWJj1EtIdef73HFKU2CQ4nQ92EkjwG0D/bgXwXOhCjet?=
+ =?us-ascii?Q?dPI+B49mwhQeKdGgJNsljKrdQGs1r3MChhRHwxWuuoyQo5k8Ou8kjPk48Ohu?=
+ =?us-ascii?Q?VIZuABZ1rTOV0jdJ6U5bI2zAssqnPN1F4E0LfBCXORiEvizWRDtxXsKigz6C?=
+ =?us-ascii?Q?JJsJ/jo49A5+Ox4aOWKrb22ZwyLQF68+URaCA20GfyWZ1CO8D0/+fWewXRXp?=
+ =?us-ascii?Q?J+Q0SdXM02LC6EGsxWVUhQGJe0OLGOzsLVjAbvdcPS3mFpwVU7VGeS7PKsPZ?=
+ =?us-ascii?Q?Oyo8XoCs9kLzwkpdvPA/4TORo5FceaTtD0BZYxcjfxXcc8Ct42BlEbu42o7O?=
+ =?us-ascii?Q?3mFNpOVF6Tj4FZaeFWMjiwFVckDyh6JchqwbMxq97EA4+ju6dThmbIhy0AaL?=
+ =?us-ascii?Q?kim4/bf0AQ7X2iRLz1tHJAThHqcxKkJ5oRX0bsCn/TquDQsb5qwxWjKEiOZs?=
+ =?us-ascii?Q?q8OlHZ9H6P9XWSFB8AlJ/fsewsyx27DTpHaUy4mhsxI6uORSZTdeE28nrf25?=
+ =?us-ascii?Q?qzGJ3WGKh8jdPl35aV0mLkUrJ6n0aUnmmS6hXUZdVG5u55qXImsEGsQ2iKcb?=
+ =?us-ascii?Q?/qQFzydDUo/v77QqqZwxNYMmJB4u38Qb8Fz0k1LfneY5hr+kkNIOMwwE7yIP?=
+ =?us-ascii?Q?JYL+gVwsgxUUOOTLd72cgP1JHYDXI47lACHO7sDsu2ndn2/Z7lHmrSfTRPMA?=
+ =?us-ascii?Q?21f7t0sBrOR1ydHJwhOmMTTs4mieKtcRtXhEyM4gTA+/kv6GSbXD97Uqcd+P?=
+ =?us-ascii?Q?rx+GmDnzCTmA2dYqp/+KAYARzQl+S7vytMsEkzc3fqWMEJ4zCs6oJq0TwRAh?=
+ =?us-ascii?Q?GUC1SGn7M/cD3iXwDgH3AwAqLu4wSpX2ADI+1LxMWy4T5uPUZESFrkRzS3bS?=
+ =?us-ascii?Q?jxwMEXso/RIkjJsACTUeMWwhIN3pfc9nzPad9VIzv3YQBO5bx2n1bBjhQplu?=
+ =?us-ascii?Q?ffkAQlFL4XcafH8mSkHWBsrwcpNyjBvR6gVKEWxV099BQVTAPM7obHkOBLfb?=
+ =?us-ascii?Q?zsahY/VQ9LKgrkfKnyNsFpfqIUX4ViunoKUfo6u9rwc/WpEATL7OBMliIeNT?=
+ =?us-ascii?Q?CwSu1aHY2odHEu/aRnyOf5CI8FkS7IKsFtQsWI2IwmZuw5Zb+jvJDWnIFi+H?=
+ =?us-ascii?Q?HOdqMau1u8ImPwXCSMlqFiN5ALIpgYUrR4MApK5IOdsFLtBoPnpcC2b2SL5r?=
+ =?us-ascii?Q?gv/+kcxbc7GWlc20BGZb+q7mCbfCAnyv+Zw+iEm+5gtBQaBylGyIDdIqxIel?=
+ =?us-ascii?Q?52sXFaSpuFVgFO0zTg+WIA8XPXP5HDOjRDYYAXtkL7GsRX4oAzTGSC/F9opj?=
+ =?us-ascii?Q?sG2eviN8QOGYYfbwBz34Q+8Pm8fQMdvOxS3UVQtgSwYEZeoxsEfj4JRftn5A?=
+ =?us-ascii?Q?lgL1sZzavHLT3Mq/KxbQBhviiZsfeLAmBYby1nKV/oTHZvz3T4CSfe44QFny?=
+ =?us-ascii?Q?kAMAoe8l7aA0t8Rh9Hw8N4NUPbrw6I/G9pG/uLZdS75C4hLrBmFHROSrfbGB?=
+ =?us-ascii?Q?p0eFusbxQo3AlUmTly/msH4YEsDe3xeXRp16BLf5VWCs4ubj+5cN5rRYcOFx?=
+ =?us-ascii?Q?/kdDPE6HEO8ykKeGBZ1UMs4JaIL6qwdmTUdZ5spV?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b44abea2-e965-4769-636c-08db8f93e69a
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:55:59.7478
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Eobb3c3ThPk96H1/EXsPAg3aAZ2pFhsYMnLxTTq2HgK+LlGccpSytn78k3WwC8BA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6590
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.2023 15:23, Vikash Garodia wrote:
-> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> 
-> Add helpers to calculate stride, scanline, buffer size
-> etc. for different media formats.
-> 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
-[...]
+On Mon, Jul 24, 2023 at 04:03:57AM -0700, Yi Liu wrote:
 
-
+> +	switch (pt_obj->type) {
+> +	case IOMMUFD_OBJ_IOAS:
+> +		ioas = container_of(pt_obj, struct iommufd_ioas, obj);
+> +		break;
+> +	case IOMMUFD_OBJ_HW_PAGETABLE:
+> +		/* pt_id points HWPT only when hwpt_type is !IOMMU_HWPT_TYPE_DEFAULT */
+> +		if (cmd->hwpt_type == IOMMU_HWPT_TYPE_DEFAULT) {
+> +			rc = -EINVAL;
+> +			goto out_put_pt;
+> +		}
 > +
-> +#ifndef MSM_MEDIA_ALIGN
-> +#define MSM_MEDIA_ALIGN(__sz, __align) (((__align) & ((__align) - 1)) ?\
-> +	((((__sz) + (__align) - 1) / (__align)) * (__align)) :\
-> +	(((__sz) + (__align) - 1) & (~((__align) - 1))))
-<linux/align.h>?
+> +		parent = container_of(pt_obj, struct iommufd_hw_pagetable, obj);
+> +		/*
+> +		 * Cannot allocate user-managed hwpt linking to auto_created
+> +		 * hwpt. If the parent hwpt is already a user-managed hwpt,
+> +		 * don't allocate another user-managed hwpt linking to it.
+> +		 */
+> +		if (parent->auto_domain || parent->parent) {
+> +			rc = -EINVAL;
+> +			goto out_put_pt;
+> +		}
+> +		ioas = parent->ioas;
 
-> +#endif
-> +
-> +#ifndef MSM_MEDIA_ROUNDUP
-> +#define MSM_MEDIA_ROUNDUP(__sz, __r) (((__sz) + ((__r) - 1)) / (__r))
-> +#endif
-> +
-> +/*
-> + * Function arguments:
-> + * @v4l2_fmt
-> + * @width
-> + * Progressive: width
-> + * Interlaced: width
-> + */
-Kerneldoc would be cooler
+Why do we set ioas here? I would think it should be NULL.
 
-[...]
+I think it is looking like a mistake to try and re-use
+iommufd_hw_pagetable_alloc() directly for the nested case. It should
+not have a IOAS argument, it should not do enforce_cc, or iopt_*
+functions
 
-> +static inline unsigned int video_rgb_stride_pix(unsigned int colorformat,
-> +						unsigned int width)
-> +{
-> +	unsigned int bpp = 4;
-Always?
+So must of the function is removed. Probably better to make a new
+ioas-less function for the nesting case.
+
+> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+> index 510db114fc61..5f4420626421 100644
+> --- a/drivers/iommu/iommufd/main.c
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -426,7 +426,7 @@ static const struct iommufd_ioctl_op iommufd_ioctl_ops[] = {
+>  	IOCTL_OP(IOMMU_GET_HW_INFO, iommufd_get_hw_info, struct iommu_hw_info,
+>  		 __reserved),
+>  	IOCTL_OP(IOMMU_HWPT_ALLOC, iommufd_hwpt_alloc, struct iommu_hwpt_alloc,
+> -		 __reserved),
+> +		 data_uptr),
+
+Nono, these can never change once we put them it. It specifies the
+hard minimum size that userspace must provide. If userspace gives less
+than this then the ioctl always fails. Changing it breaks all the
+existing software.
+
+The core code ensures that the trailing part of the cmd struct is
+zero'd the extended implementation must cope with Zero'd values, which
+this does.
+
+> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> index f2026cde2d64..73bf9af91e99 100644
+> --- a/include/uapi/linux/iommufd.h
+> +++ b/include/uapi/linux/iommufd.h
+> @@ -364,12 +364,27 @@ enum iommu_hwpt_type {
+>   * @pt_id: The IOAS to connect this HWPT to
+>   * @out_hwpt_id: The ID of the new HWPT
+>   * @__reserved: Must be 0
+> + * @hwpt_type: One of enum iommu_hwpt_type
+> + * @data_len: Length of the type specific data
+> + * @data_uptr: User pointer to the type specific data
+>   *
+>   * Explicitly allocate a hardware page table object. This is the same object
+>   * type that is returned by iommufd_device_attach() and represents the
+>   * underlying iommu driver's iommu_domain kernel object.
+>   *
+> - * A HWPT will be created with the IOVA mappings from the given IOAS.
+> + * A kernel-managed HWPT will be created with the mappings from the given
+> + * IOAS via the @pt_id. The @hwpt_type for this allocation can be set to
+> + * either IOMMU_HWPT_TYPE_DEFAULT or a pre-defined type corresponding to
+> + * an I/O page table type supported by the underlying IOMMU hardware.
 
 
-Konrad
+> + * A user-managed HWPT will be created from a given parent HWPT via the
+> + * @pt_id, in which the parent HWPT must be allocated previously via the
+> + * same ioctl from a given IOAS (@pt_id). In this case, the @hwpt_type
+> + * must be set to a pre-defined type corresponding to an I/O page table
+> + * type supported by the underlying IOMMU hardware.
+> + *
+> + * If the @hwpt_type is set to IOMMU_HWPT_TYPE_DEFAULT, both the @data_len
+> + * and the @data_uptr will be ignored. Otherwise, both must be
+> given.
+
+ If the @hwpt_type is set to IOMMU_HWPT_TYPE_DEFAULT then @data_len
+ must be zero.
+
+Jason
