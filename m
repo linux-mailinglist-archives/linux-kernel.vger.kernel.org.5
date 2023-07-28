@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D9776728E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77517767293
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjG1Q6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33470 "EHLO
+        id S230432AbjG1Q7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjG1Q6h (ORCPT
+        with ESMTP id S229500AbjG1Q73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:58:37 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E0BB5
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:58:36 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d066d72eb12so3242183276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:58:36 -0700 (PDT)
+        Fri, 28 Jul 2023 12:59:29 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4BDFA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:59:28 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe078dcc3aso9225275e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690563516; x=1691168316;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GShiyClog5JSkUZzXvC/x80xpfvHryo9mYUqQG38Cyg=;
-        b=Ucc+IvgzgYZ0O9vdpuyWtxAY2hyIte0l1ud1lTHNqf3oz+BHJOulr13wgd/5mqLYWE
-         wsmBBCQ4ISMtw6+WgTwGz5ov1T81nFuUlYYzVU62nm7J3vwvq6bCQeHf6AsIIk10GxEG
-         oPdx5sRvSt/k6mhtJgP1YhjZC6qoQRfRPKbvnpKqm4gMIChhgpCEmeWc0w0SCR47ENYN
-         +En4cvk+uyC35wOQWNDyT9flOQHvJfa8+/Vz729j6L4BmClQFiHKFazBQEubog0Xb34u
-         6QK5K6cSEgMtvFwurFRdKYFASlK6rYxs+QOnkG7+Syfdvu2K/uFVPtL4rOv0L9tmd0Js
-         Zb9A==
+        d=linaro.org; s=google; t=1690563567; x=1691168367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TPB6Zeg9uXKljdUTCujmlGSCtIgPff/6E7o4lT+WLLY=;
+        b=A4qlcK5wsi1H/p3dUGzF7qhl8S1SS58cbJpGbIQ7zCqc6LV539c4j9eW5fu5qomPoA
+         1d+zqKi0V9iPNDTArvF6aQUUNNqjXiyz4RYsL2BWhbZRAWo2GYIV6aDKe4aCi50y2Cew
+         OHI/ONTP+GbnfW0YvLyJTqa7VUEIe1ifJ6dE9vanrxa/mk5Ih0H31npk47OcE4AJMtxb
+         8SMPMTAzFkotx9dxeunylfsInKsplrMOyVNOT6trTOxgOsVYzmQDNZo+64rVqTXyqlsH
+         RFQG7EiZRGPPvfNDowPSt+ISFWA0qmbyd0ig7Lm6soJiK+9FXSBBYrEws4N84LZPc+Y5
+         Ps1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690563516; x=1691168316;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GShiyClog5JSkUZzXvC/x80xpfvHryo9mYUqQG38Cyg=;
-        b=NPVOA7E+nCEcDEOoVYNZB/xvKkv+cmXyo+pdllA0o4X50EOSgHExKhRQtld+51shVE
-         ulNwQBVEuavxtM4/1XrZgSOW70z8KvlGtRr3ig6cFIoTY1xlmcHC4nkSuBHGv5NUxb1X
-         hW3/rdGDH4S8X1BGRMVljp+yB8LNMPFHG0nei8YaCWC7pyXF6i52xG7TVG43bvpDLQI7
-         u7XTwOuq8Vk80ncgVXOglH8YJxDJS3JKW6eyBt0LOZrIWpoI8P5K62YDvYbI0EDd0g5j
-         LdBBmTm3MHB2WTiQg6zdFz/dO2CK+Z7CkBc4sGyuR0Sup9Oby3vLH2nNiHtygdezpnbU
-         dOmw==
-X-Gm-Message-State: ABy/qLaDOoS7TS0pgOVL3Y5rBC4Cjk2bacDdFk1tteB7MUUdLhmjoDlI
-        6cZEcnPFiEXgeY/jhHKekYwFhA==
-X-Google-Smtp-Source: APBJJlHBFbMizlgcqeLaat734RR0N6/qgmeCbKXzz/m5ekuONhKnRvLKwdVWxRCif5G55jvVMt82Ag==
-X-Received: by 2002:a25:a362:0:b0:d07:2183:f547 with SMTP id d89-20020a25a362000000b00d072183f547mr2206323ybi.32.1690563515748;
-        Fri, 28 Jul 2023 09:58:35 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y200-20020a25dcd1000000b00d1e6e93e8f5sm913403ybe.51.2023.07.28.09.58.32
+        d=1e100.net; s=20221208; t=1690563567; x=1691168367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TPB6Zeg9uXKljdUTCujmlGSCtIgPff/6E7o4lT+WLLY=;
+        b=c++CUeSEaEF+v4KDlFEm+qOKjOIJm21GQNpFSnUhSkZ9PgT/n172vTYjg8ow1zyXAL
+         hR7UZTmI39gs20xM+tnugDx0rpIUSTA7mip5nTcFHvTKGuKaatPIofWHRwFCldmPgylk
+         6jHbfu6bR+GOnExAPah+hXxJantKKYbxMCihopVqapAmlolSxlW+L4SBwB0kUZjETsuX
+         Y1OuX/5YyOZF5h4fo6+c8fz/hEVyYekX5rhxqaODj6fN6UY92RyxrSl5S0rSJWqjCvpM
+         IqsyhulcrUIJpJ3u7XdDpC+IkC/sRaf7HiB6eUDhuiINvXlvPy6rE+/HKYUnZ/fn+iJu
+         VhpA==
+X-Gm-Message-State: ABy/qLaEWKpe1pQLOroLZfBNbedgswRbOx/lPRVbRtL5Sz0jS/GHF932
+        WVfcvRuRzz03X5+aQdefWwXaEg==
+X-Google-Smtp-Source: APBJJlE4kigzGgz+YXKTvNYunKRWlL0qH+VsPevZCbjdnQuQYwII4IhJbeRelgw6a74DDnOgo7lLWA==
+X-Received: by 2002:a1c:7712:0:b0:3f9:82f:bad1 with SMTP id t18-20020a1c7712000000b003f9082fbad1mr2284411wmi.40.1690563566826;
+        Fri, 28 Jul 2023 09:59:26 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id v24-20020a1cf718000000b003fc05b89e5bsm4532874wmh.34.2023.07.28.09.59.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:58:35 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 09:58:22 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Yongqin Liu <yongqin.liu@linaro.org>
-cc:     Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 04/32] mm/pgtable: allow pte_offset_map[_lock]() to
- fail
-In-Reply-To: <ZMPLFqJ192j0loCV@casper.infradead.org>
-Message-ID: <da591261-26f1-5cf7-1435-a98ae21f5141@google.com>
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com> <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com> <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com> <ZMPLFqJ192j0loCV@casper.infradead.org>
+        Fri, 28 Jul 2023 09:59:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        stable@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+Subject: [PATCH] dt-bindings: clock: xlnx,versal-clk: drop select:false
+Date:   Fri, 28 Jul 2023 18:59:23 +0200
+Message-Id: <20230728165923.108589-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,34 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023, Matthew Wilcox wrote:
-> On Fri, Jul 28, 2023 at 09:53:29PM +0800, Yongqin Liu wrote:
-> > Hi, Hugh
-> > 
-> > It seems this change makes pte_offset_map_lock not possible to be
-> > called in out of tree modules,
-> > otherwise it will report error like this:
-> >         ERROR: modpost: "__pte_offset_map_lock"
-> > [../omap-modules/android-mainline/pvr/pvrsrvkm.ko] undefined!
-> > 
-> > Not sure if you have any idea about it, and any suggestions on how to
-> > resolve it?
-> 
-> Please explain why this module needs to map page tables
+select:false makes the schema basically ignored and not effective, which
+is clearly not what we want for a device binding.
 
-+1
+Fixes: 352546805a44 ("dt-bindings: clock: Add bindings for versal clock driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thank you for testing 6.5-rc, and I am sorry to have inconvenienced you.
+---
 
-But there is not one example of an in-tree module needing that,
-which is a very strong hint that no module should be needing that.
+Cc: Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+---
+ Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-Sounds like pvrsrvkm.ko wants to muck around with page table entries,
-without the core mm knowing.  Not something core mm can encourage!
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+index e9cf747bf89b..04ea327d5313 100644
+--- a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
++++ b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+@@ -14,8 +14,6 @@ description: |
+   reads required input clock frequencies from the devicetree and acts as clock
+   provider for all clock consumers of PS clocks.
+ 
+-select: false
+-
+ properties:
+   compatible:
+     oneOf:
+-- 
+2.34.1
 
-If what pvrsrvkm.ko is aiming to do there would be useful for others,
-maybe its owner can share that, and work with core mm developers to
-expose a generally useful interface - but that is not likely to be
-__pte_offset_map_lock itself.
-
-Hugh
