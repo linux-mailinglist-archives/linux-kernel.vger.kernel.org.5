@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6EC766806
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B059176680F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbjG1JAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S234984AbjG1JB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbjG1JAa (ORCPT
+        with ESMTP id S230243AbjG1JBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:00:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320DFE7E
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:00:29 -0700 (PDT)
+        Fri, 28 Jul 2023 05:01:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8570CB6;
+        Fri, 28 Jul 2023 02:01:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9F6C62081
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 15F80C433BC;
-        Fri, 28 Jul 2023 09:00:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18FED6203D;
+        Fri, 28 Jul 2023 09:01:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D86C433C7;
+        Fri, 28 Jul 2023 09:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690534828;
-        bh=OZLB1TlYuhOUluQEOXMdJljYbREOPCoaejaLskUJsro=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KP31QNIhYbIcx4YnOIeBngeqJ/TqKNaQlTPAkwUcsyvMASu+cpPZhgtiFJU+vtHSG
-         zCu/91fHASrD/iZSKBVWdQmg6n4GcOG5oHeYkdEYOmbtywJRgmON+lvhPc7tYkWitd
-         W8FvanvoUfpVGBbN5uNCm/VT9NqeuCAaUoJiKIiTHwyiuIPuT/d+Zpk8XaGE2/OEEL
-         jP3Rotg4WtxzPVDAJPLqd58HlXi8DEE0K3o+gIuZPCV5gyg/GvuH37ZFWoJdVFup75
-         AVRDnhgel8UI5FpvSsN/ngRSutZ3bzMrWqLzM40XtPB2KOoR0fqy3pS3ltGcGwT6Gl
-         UiHpQEjQ3cfug==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id ED0B2C39562;
-        Fri, 28 Jul 2023 09:00:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1690534910;
+        bh=QFbAxq6StERpZ+KK7xUrlh9LufNoAHMbQ1zTa9eTS9A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=S6LwPGwK95psSYAKBfRe3YnemnLXtJH1tFmZY2LEnrfl9QzjjDzM947xHZJjJzWSg
+         8Nw5pZS5i7Qtlj3I5BHRld6dyYGG+hgztqHp+h9fm3ZRPZgqza/V7cNT+zz0l8zkDW
+         s3R4RLCccGVqBvBdpHMOTnFmLH62VBq2t783K/PHLqAC4L4FIrApZXTk8AdnUti5LT
+         Ka73CcgVkVXmh7MkY2a3bMW4ZHYROsCrTgVZxQUFJWdYb+KJp45rsGJ2C9VK6OsUzb
+         RLW62+Zi+f4DLTpUk967KT6k916JAaDzGrMouLsCicxyyH142WalportSxAXI1gTDw
+         NvfNv/ZQHSJ3A==
+From:   Lee Jones <lee@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230714175029.4065326-1-robh@kernel.org>
+References: <20230714175029.4065326-1-robh@kernel.org>
+Subject: Re: (subset) [PATCH] backlight: qcom-wled: Explicitly include
+ correct DT includes
+Message-Id: <169053490748.289850.10304540751076738824.b4-ty@kernel.org>
+Date:   Fri, 28 Jul 2023 10:01:47 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next v2 0/2] rxfh with custom RSS fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169053482796.22021.4158483891713381939.git-patchwork-notify@kernel.org>
-Date:   Fri, 28 Jul 2023 09:00:27 +0000
-References: <20230725205655.310165-1-jdamato@fastly.com>
-In-Reply-To: <20230725205655.310165-1-jdamato@fastly.com>
-To:     Joe Damato <jdamato@fastly.com>
-Cc:     netdev@vger.kernel.org, saeedm@nvidia.com, tariqt@nvidia.com,
-        ecree@solarflare.com, andrew@lunn.ch, kuba@kernel.org,
-        davem@davemloft.net, leon@kernel.org, pabeni@redhat.com,
-        arnd@arndb.de, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,31 +64,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue, 25 Jul 2023 20:56:53 +0000 you wrote:
-> Greetings:
-> 
-> Welcome to v2, now via net-next. No functional changes; only style
-> changes (see the summary below).
-> 
-> While attempting to get the RX flow hash key for a custom RSS context on
-> my mlx5 NIC, I got an error:
+On Fri, 14 Jul 2023 11:50:29 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
 > [...]
 
-Here is the summary with links:
-  - [net-next,v2,1/2] net: ethtool: Unify ETHTOOL_{G,S}RXFH rxnfc copy
-    https://git.kernel.org/netdev/net-next/c/801b27e88046
-  - [net-next,v2,2/2] net/mlx5: Fix flowhash key set/get for custom RSS
-    https://git.kernel.org/netdev/net-next/c/0212e5d915a2
+Applied, thanks!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+[1/1] backlight: qcom-wled: Explicitly include correct DT includes
+      commit: 1bb5187b673208f7191f227249ffe7401e969b97
 
+--
+Lee Jones [李琼斯]
 
