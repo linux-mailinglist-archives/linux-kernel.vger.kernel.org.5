@@ -2,164 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CA776632A
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F6F76632B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 06:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjG1Eaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 00:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S232287AbjG1Eb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 00:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjG1Eab (ORCPT
+        with ESMTP id S229933AbjG1EbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 00:30:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A15A2119;
-        Thu, 27 Jul 2023 21:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=f31BEnj08TA18IRJPg1rQ+2g1aO39BvBW1yPkSzAkKo=; b=K9oKFf/4ZoF1KVdVbEbKVRjZk7
-        Q8n0iyRlJDK8zaOFsyl5FpcawWsEsXeZWHyznQvQOAoXkK8oPdLPyrqJtKP5sXMJQA7I1Eh73iEKe
-        ojkoPftfjtAJPRZL9Huwf+KQEDuLHX0WfMmi1UH17ZEj5AE24iKiXW9E8peLNMt8MkpxyQkFgqdhj
-        H4Nf+Vczx0+dR/mPE3MBVlBA7WC6IIasnRSVItmwUsBK3BNJCmL8dOM5Qq0QzOZcg0A4u+cLJ/Bb2
-        c6mNtyOYPqnJyYKVtZxXRaDxGnvaBOi4rYpvmJfLzftdd9kGGgtxAEP7/pEByo1KmkL3Iinr5vXcd
-        5298hSIQ==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPF7G-001aUX-2x;
-        Fri, 28 Jul 2023 04:30:14 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v3] um/drivers: fix hostaudio build errors
-Date:   Thu, 27 Jul 2023 21:30:13 -0700
-Message-ID: <20230728043013.27776-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Fri, 28 Jul 2023 00:31:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87A41FFA
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690518633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OqviSGXIb7Tqt0NEZdsJaNkD5vh2uKzL/1s+FdO+i5k=;
+        b=fC0tkbKy1HiJRm1s8yUxNQuKVL3kcJ9Leo+yHNzZXURa9smmZoNqzfDdxuJDnotU0f6RMM
+        EKGGZWdWnUtrgqjNR4saSztMBJf0hA+fjggWCtcXXTSYKAh1jrwOuHx/eY3W4MBcynoEkC
+        Dks3bOmDDMpJdJzdQpCIgpqe8D3tyww=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-93-5yfqnNDgOIWvnri24YVGCA-1; Fri, 28 Jul 2023 00:30:32 -0400
+X-MC-Unique: 5yfqnNDgOIWvnri24YVGCA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6fdb7eeafso14369881fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 21:30:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690518631; x=1691123431;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OqviSGXIb7Tqt0NEZdsJaNkD5vh2uKzL/1s+FdO+i5k=;
+        b=MoT1EKgfgDMk342lAtd7NI3s/3h3a9WHnuDwlJJZYt3C8Ln/LLsHqmekX7+V05a6ZA
+         GfrB9nB7G3u3dDM+m4Dz2P2RQgr5W23+EydFON4fEQ/ct6j7qB4rqDR1uQkuaSoArtsV
+         cJkpRAVzP5nhLz2TudNDTQ0UwtdOjbSXrpnVfbqIv2m3mNJEJzMF/XwuhdHV8GAVu/cx
+         5tISdr2qpo4Zhy5fiGcAiy/RfM7q4zxAI5EGC81dk1GAknkiztJenqqm+eoS/XH0ORFL
+         v4EKg+0hl00TdNiZVUAOT7pGg0aD6Z3vfRfv+ddfb87t+VOL7FOg7d6hrw7uOR5I7h6r
+         3AAw==
+X-Gm-Message-State: ABy/qLZIpysaAqo6IIcHg3pJlVBp4DiPvzYcA7VOK/ENZi/cf/ofVThw
+        lCgZjR2EYcq93rwl0K2ZP7Q42F9ASKLxG27BlS3947sDTTC1BJVMdezepGhuJ9Na1XfK0l5aU7N
+        IGQ547I/U15hmU4PkCaP3EXc=
+X-Received: by 2002:a2e:7410:0:b0:2b9:c55f:f24e with SMTP id p16-20020a2e7410000000b002b9c55ff24emr651096ljc.52.1690518630909;
+        Thu, 27 Jul 2023 21:30:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEPBGh2+4NUMNrZs/Y80pwXkiBchQVPupt4ninzotlZR03t/gk8gqwtImPmZPiAQiE/nZAs7A==
+X-Received: by 2002:a2e:7410:0:b0:2b9:c55f:f24e with SMTP id p16-20020a2e7410000000b002b9c55ff24emr651087ljc.52.1690518630590;
+        Thu, 27 Jul 2023 21:30:30 -0700 (PDT)
+Received: from [192.168.1.86] (85-23-20-79.bb.dnainternet.fi. [85.23.20.79])
+        by smtp.gmail.com with ESMTPSA id p7-20020a2e7407000000b002b9342fcd62sm694944ljc.67.2023.07.27.21.30.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jul 2023 21:30:29 -0700 (PDT)
+Message-ID: <55750855-0029-b10f-3317-e6ae4d89d492@redhat.com>
+Date:   Fri, 28 Jul 2023 07:30:29 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [v1 4/6] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+Content-Language: en-US
+To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com
+References: <20230727204624.1942372-1-usama.arif@bytedance.com>
+ <20230727204624.1942372-5-usama.arif@bytedance.com>
+From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mpenttil@redhat.com>
+In-Reply-To: <20230727204624.1942372-5-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use "select"s to ensure that the required kconfig symbols are set
-as expected.
-Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+Hi,
 
-Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-kconfig warning for unmet dependencies. (This was not an issue when
-SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-builds and didn't find any issues.)
+On 7/27/23 23:46, Usama Arif wrote:
 
-This fixes build errors when CONFIG_SOUND is not set:
+> For reserved memory regions marked with this flag,
+> reserve_bootmem_region is not called during memmap_init_reserved_pages.
+> This can be used to avoid struct page initialization for
+> regions which won't need them, for e.g. hugepages with
+> HVO enabled.
+>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> ---
+>   include/linux/memblock.h |  7 +++++++
+>   mm/memblock.c            | 32 ++++++++++++++++++++++++++------
+>   2 files changed, 33 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index f71ff9f0ec81..7f9d06c08592 100644
+> --- a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -47,6 +47,7 @@ enum memblock_flags {
+>   	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
+>   	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
+>   	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
+> +	MEMBLOCK_RSRV_NOINIT	= 0x10,	/* don't call reserve_bootmem_region for this region */
+>   };
+>   
+>   /**
+> @@ -125,6 +126,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+>   int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+>   int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+>   int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+> +int memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size);
+>   
+>   void memblock_free_all(void);
+>   void memblock_free(void *ptr, size_t size);
+> @@ -259,6 +261,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
+>   	return m->flags & MEMBLOCK_NOMAP;
+>   }
+>   
+> +static inline bool memblock_is_noinit(struct memblock_region *m)
+> +{
+> +	return m->flags & MEMBLOCK_RSRV_NOINIT;
+> +}
+> +
+>   static inline bool memblock_is_driver_managed(struct memblock_region *m)
+>   {
+>   	return m->flags & MEMBLOCK_DRIVER_MANAGED;
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 4fd431d16ef2..3a15708af3b6 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -997,6 +997,22 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
+>   	return memblock_setclr_flag(base, size, 0, MEMBLOCK_NOMAP, 0);
+>   }
+>   
+> +/**
+> + * memblock_rsrv_mark_noinit - Mark a reserved memory region with flag MEMBLOCK_RSRV_NOINIT.
+> + * @base: the base phys addr of the region
+> + * @size: the size of the region
+> + *
+> + * For memory regions marked with %MEMBLOCK_RSRV_NOINIT, reserve_bootmem_region
+> + * is not called during memmap_init_reserved_pages, hence struct pages are not
+> + * initialized for this region.
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int __init_memblock memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size)
+> +{
+> +	return memblock_setclr_flag(base, size, 1, MEMBLOCK_RSRV_NOINIT, 1);
+> +}
+> +
+>   static bool should_skip_region(struct memblock_type *type,
+>   			       struct memblock_region *m,
+>   			       int nid, int flags)
+> @@ -2113,13 +2129,17 @@ static void __init memmap_init_reserved_pages(void)
+>   		memblock_set_node(start, end, &memblock.reserved, nid);
+>   	}
+>   
+> -	/* initialize struct pages for the reserved regions */
+> +	/*
+> +	 * initialize struct pages for reserved regions that don't have
+> +	 * the MEMBLOCK_RSRV_NOINIT flag set
+> +	 */
+>   	for_each_reserved_mem_region(region) {
+> -		nid = memblock_get_region_node(region);
+> -		start = region->base;
+> -		end = start + region->size;
+> -
+> -		reserve_bootmem_region(start, end, nid);
+> +		if (!memblock_is_noinit(region)) {
+> +			nid = memblock_get_region_node(region);
+> +			start = region->base;
+> +			end = start + region->size;
+> +			reserve_bootmem_region(start, end, nid);
+> +		}
+>   	}
+>   }
+>   
 
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+There's code like:
 
-and this kconfig warning:
-WARNING: unmet direct dependencies detected for SOUND
+static inline void free_vmemmap_page(struct page *page)
+{
+         if (PageReserved(page))
+                 free_bootmem_page(page);
+         else
+                 __free_page(page);
+}
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
----
-v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
-v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
-    add SOUND depends on "|| UML" to HAS_IOMEM
+which depends on the PageReserved being in vmempages pages, so I think you can't skip that part?
 
- arch/um/drivers/Kconfig  |   14 ++------------
- arch/um/drivers/Makefile |    2 +-
- sound/Kconfig            |    2 +-
- 3 files changed, 4 insertions(+), 14 deletions(-)
+--Mika
 
-diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -111,24 +111,14 @@ config SSL_CHAN
- 
- config UML_SOUND
- 	tristate "Sound support"
-+	select SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
- 	  soundcore and the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
- 
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
- endmenu
- 
- menu "UML Network Devices"
-diff -- a/sound/Kconfig b/sound/Kconfig
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig SOUND
- 	tristate "Sound card support"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	help
- 	  If you have a sound card in your computer, i.e. if it can say more
- 	  than an occasional beep, say Y.
-diff -- a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
- obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
--obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
-+obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
- obj-$(CONFIG_PORT_CHAN) += port.o
- obj-$(CONFIG_PTY_CHAN) += pty.o
+
