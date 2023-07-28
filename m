@@ -2,152 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BD1766FE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81193766FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbjG1Oxo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 10:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        id S237280AbjG1OyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjG1Oxm (ORCPT
+        with ESMTP id S229638AbjG1OyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:53:42 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72FA12D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:53:40 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-35-GHo7kd68Meqrvd_2dV5a8Q-1; Fri, 28 Jul 2023 15:53:37 +0100
-X-MC-Unique: GHo7kd68Meqrvd_2dV5a8Q-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
- 2023 15:53:36 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 28 Jul 2023 15:53:36 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-Subject: [PATCH next v2 5/5] minmax: Relax check to allow comparison between
- int and small unsigned constants.
-Thread-Topic: [PATCH next v2 5/5] minmax: Relax check to allow comparison
- between int and small unsigned constants.
-Thread-Index: AdnBY0Y9GCHZV09FSTWgIDzdl1Lkkg==
-Date:   Fri, 28 Jul 2023 14:53:36 +0000
-Message-ID: <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com>
-References: <bde3d2dc933848bbaceeb9b7102f6f4c@AcuMS.aculab.com>
-In-Reply-To: <bde3d2dc933848bbaceeb9b7102f6f4c@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 28 Jul 2023 10:54:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9334F12D;
+        Fri, 28 Jul 2023 07:54:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 303056217F;
+        Fri, 28 Jul 2023 14:54:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5C3C433C7;
+        Fri, 28 Jul 2023 14:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690556054;
+        bh=R9op8pPpmsKkCoqmTa7kyILBaKx3qjkB+WKspxSkx40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qAbPllgiag0JHhACI1BZnqart2OdDDXqYcHTpHOQj3SCt1iDM8OLCW0nwB1ETdBkY
+         mW4lutGWRjORuLx3M+L1to6wA7cZb3hFtA8P3imJIxuxoiYWD1EKhT9aKv43fuSIPK
+         o9EHbV6ZlTb5PfxS9hKxjTB5Tzqy9t7zMjtSix6d0bypSRygrmgCb1pGt3eCvpIrDV
+         4mSJqVgH8fsBaSrjPG6aqCpFdZOLzyoEOjF2zu7I0Wa76+MEzXXRwfesGoRfvDcbUt
+         DprSrK41ByXxrMZIP8f4v9PEshuQMvVePtiXGcjhsOxTZNPwiBfUjh9N8pS5ibdM78
+         B8Dx0laG5GL4Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BBCF640096; Fri, 28 Jul 2023 11:54:11 -0300 (-03)
+Date:   Fri, 28 Jul 2023 11:54:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Aditya Gupta <adityag@linux.ibm.com>
+Cc:     jolsa@kernel.org, irogers@google.com, namhyung@kernel.org,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        kjain@linux.ibm.com, disgoel@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] perf tests task_analyzer: Check perf build options
+ for libtraceevent support
+Message-ID: <ZMPWk5K63tadmDlU@kernel.org>
+References: <20230725061649.34937-1-adityag@linux.ibm.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725061649.34937-1-adityag@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert constants between 0 and INT_MAX to 'int' prior to comparisons
-so that min(signed_var, 20u) and, more commonly, min(signed_var, sizeof())
-are both valid.
+Em Tue, Jul 25, 2023 at 11:46:49AM +0530, Aditya Gupta escreveu:
+> Currently we depend on output of 'perf record -e "sched:sched_switch"', to
+> check whether perf was built with libtraceevent support.
+> 
+> Instead, a more straightforward approach can be to check the build options,
+> using 'perf version --build-options', to check for libtraceevent support.
+> 
+> When perf is compiled WITHOUT libtraceevent ('make NO_LIBTRACEEVENT=1'),
+> 'perf version --build-options' outputs (output trimmed):
+> 
+> 	 ...
+>          libtraceevent: [ OFF ]  # HAVE_LIBTRACEEVENT
+> 	 ...
+> 
+> While, when perf is compiled WITH libtraceevent,
+> 
+> 'perf version --build-options' outputs:
+> 
+> ...
+>          libtraceevent: [ on ]  # HAVE_LIBTRACEEVENT
+> 	 ...
+> 
+> Suggested-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Aditya Gupta <adityag@linux.ibm.com>
+> ---
+> 
+>  tools/perf/tests/shell/test_task_analyzer.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/shell/test_task_analyzer.sh b/tools/perf/tests/shell/test_task_analyzer.sh
+> index 0095abbe20ca..a28d784987b4 100755
+> --- a/tools/perf/tests/shell/test_task_analyzer.sh
+> +++ b/tools/perf/tests/shell/test_task_analyzer.sh
+> @@ -52,7 +52,7 @@ find_str_or_fail() {
+>  
+>  # check if perf is compiled with libtraceevent support
+>  skip_no_probe_record_support() {
+> -	perf record -e "sched:sched_switch" -a -- sleep 1 2>&1 | grep "libtraceevent is necessary for tracepoint support" && return 2
+> +	perf version --build-options | grep HAVE_LIBTRACEEVENT | grep -q OFF && return 2
+>  	return 0
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-v2: Add cast to fix min/max with pointer types.
+I'll apply this, but please consider adding a:
 
- include/linux/minmax.h | 34 ++++++++++++++++++++++------------
- 1 file changed, 22 insertions(+), 12 deletions(-)
+	perf build --has libtraceevent
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 7d3ad9cbbff6..28edafb3dcca 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -8,20 +8,30 @@
- /*
-  * min()/max()/clamp() macros must accomplish three things:
-  *
-- * - avoid multiple evaluations of the arguments (so side-effects like
-+ * - Avoid multiple evaluations of the arguments (so side-effects like
-  *   "x++" happen only once) when non-constant.
-- * - perform signed v unsigned type-checking (to generate compile
-+ * - Perform signed v unsigned type-checking (to generate compile
-  *   errors instead of nasty runtime surprises).
-- * - retain result as a constant expressions when called with only
-+ *   Constants from 0 to INT_MAX are cast to (int) so can be used
-+ *   in comparisons with signed types.
-+ * - Retain result as a constant expressions when called with only
-  *   constant expressions (to avoid tripping VLA warnings in stack
-  *   allocation usage).
-  */
- #define __typecheck(x, y) \
- 	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
- 
--#define __types_ok(x, y) \
--	(is_signed_type(typeof(x)) == is_signed_type(typeof(y)) ||	\
--		is_signed_type(typeof((x) + 0)) == is_signed_type(typeof((y) + 0)))
-+#define __is_noneg_int(x)					\
-+	__builtin_choose_expr(!__is_constexpr(x), false, 	\
-+		((x) >= (typeof(x))0 && (x) <= (typeof((x) + 0))(long)__INT_MAX__))
-+
-+#define __int_const(x)	__builtin_choose_expr(__is_noneg_int(x), (int)(long)(x), (x))
-+
-+#define __is_signed(x)	is_signed_type(typeof(x))
-+#define __types_ok(x, y) 					\
-+	(__is_signed(x) == __is_signed(y) ||			\
-+		__is_signed((x) + 0) == __is_signed((y) + 0) ||	\
-+		__is_noneg_int(x) || __is_noneg_int(y))
- 
- #define __cmp_op_min <
- #define __cmp_op_max >
-@@ -29,24 +39,24 @@
- #define __cmp(op, x, y)	((x) __cmp_op_##op (y) ? (x) : (y))
- 
- #define __cmp_once(op, x, y, unique_x, unique_y) ({	\
--	typeof(x) unique_x = (x);			\
--	typeof(y) unique_y = (y);			\
-+	typeof(__int_const(x)) unique_x = (x);		\
-+	typeof(__int_const(y)) unique_y = (y);		\
- 	static_assert(__types_ok(x, y),			\
- 		#op "(" #x ", " #y ") signedness error, fix types or consider " #op "_unsigned() before " #op "_t()"); \
- 	__cmp(op, unique_x, unique_y); })
- 
- #define __careful_cmp(op, x, y)					\
- 	__builtin_choose_expr(__is_constexpr((x) - (y)),	\
--		__cmp(op, x, y),				\
-+		__cmp(op, __int_const(x), __int_const(y)),	\
- 		__cmp_once(op, x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y)))
- 
- #define __clamp(val, lo, hi)	\
- 	((val) >= (hi) ? (hi) : ((val) <= (lo) ? (lo) : (val)))
- 
- #define __clamp_once(val, lo, hi, unique_val, unique_lo, unique_hi) ({		\
--	typeof(val) unique_val = (val);						\
--	typeof(lo) unique_lo = (lo);						\
--	typeof(hi) unique_hi = (hi);						\
-+	typeof(__int_const(val)) unique_val = (val);				\
-+	typeof(__int_const(lo)) unique_lo = (lo);				\
-+	typeof(__int_const(hi)) unique_hi = (hi);				\
- 	static_assert(__builtin_choose_expr(__is_constexpr((lo) > (hi)), 	\
- 			(lo) <= (hi), true),					\
- 		"clamp() low limit " #lo " greater than high limit " #hi);	\
+subcommand to have that query made more compact and to avoid the two
+extra grep.
+
+BTW, I'll change that to:
+
+[acme@quaco perf-tools-next]$ perf version --build-options | grep " on .* HAVE_LIBTRACEEVENT"
+         libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+[acme@quaco perf-tools-next]$
+
+replacing "on" with OFF, so that we have just one grep.
+
+Thanks,
+
+- Arnaldo
+
+>  }
+>  
+> -- 
+> 2.41.0
+> 
+
 -- 
-2.17.1
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+- Arnaldo
