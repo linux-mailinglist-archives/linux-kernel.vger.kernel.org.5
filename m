@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2F4766EFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18758766EFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbjG1OCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        id S236944AbjG1ODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjG1OCl (ORCPT
+        with ESMTP id S235488AbjG1ODB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:02:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DC2E78;
-        Fri, 28 Jul 2023 07:02:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F6B762156;
-        Fri, 28 Jul 2023 14:02:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C0FDC433C8;
-        Fri, 28 Jul 2023 14:02:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690552957;
-        bh=Ywx3hi1VKUFb5qgjqSV7m8wdAg/uA/mNcVqk+rP1g/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NhRkFFnjhEOsepgjme4ZvMJd9VLlQfdLKuuuAbL+JvchsphVdIwHFHWXvm7+N9Gme
-         Lflqmlzu4X+/HqbLvdfAWU5QmgV/QkP4BmdFmUFrFTh6olJVGA9ov0qmcvKaCy6MMM
-         SDTku/wt3vOPEp6L1ulIFWLZxBGH/h4TMUAQkA5aiGiZtactLusyvYPTCfYGFsehET
-         GYsvFV8kWSe2biykRpklYKnw2mj/sF4QH6IjR5kZXAhVzdI3NC3qwhdRXFFlm5SJXb
-         9aNgPwTNBJuCpiTUWk5tem/C0Kh37hx3lMSoNcSr7ma6iczm52hMni9MH7ZgXs6r3P
-         +X+R/UQTep8Ow==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E146A40096; Fri, 28 Jul 2023 11:02:34 -0300 (-03)
-Date:   Fri, 28 Jul 2023 11:02:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Fri, 28 Jul 2023 10:03:01 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5AB9A3A92;
+        Fri, 28 Jul 2023 07:03:00 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11E162F4;
+        Fri, 28 Jul 2023 07:03:43 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.89.82])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C143C3F67D;
+        Fri, 28 Jul 2023 07:02:56 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 15:02:54 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        anshuman.khandual@arm.com, will@kernel.org,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
-Message-ID: <ZMPKekDl+g5PeiH8@kernel.org>
-References: <20230728064917.767761-1-irogers@google.com>
- <20230728064917.767761-5-irogers@google.com>
- <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
- <ZMPJym7DnCkFH7aA@kernel.org>
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/4] arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE
+ capability
+Message-ID: <ZMPKjl5mDsiRVQ_C@FVFF77S0Q05N>
+References: <20230724134500.970496-1-james.clark@arm.com>
+ <20230725121023.GH3765278@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMPJym7DnCkFH7aA@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230725121023.GH3765278@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,78 +57,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 28, 2023 at 10:59:38AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Jul 28, 2023 at 09:50:59AM +0100, James Clark escreveu:
-> > 
-> > 
-> > On 28/07/2023 07:49, Ian Rogers wrote:
-> > > If flex is version 2.6.4, reduce the number of flex C warnings
-> > > disabled. Earlier flex versions have all C warnings disabled.
-> > 
-> > Hi Ian,
-> > 
-> > I get a build error with either this one or the bison warning change:
-> > 
-> >   $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
-> > 
-> >   util/pmu-bison.c:855:9: error: variable 'perf_pmu_nerrs' set but not
-> > used [-Werror,-Wunused-but-set-variable]
-> >     int yynerrs = 0;
-> > 
-> > I tried a clean build which normally fixes these kind of bison errors.
-> > Let me know if you need any version info.
+On Tue, Jul 25, 2023 at 02:10:23PM +0200, Peter Zijlstra wrote:
+> On Mon, Jul 24, 2023 at 02:44:55PM +0100, James Clark wrote:
 > 
-> Trying to build it with the command line above I get:
+> > James Clark (4):
+> >   arm_pmu: Add PERF_PMU_CAP_EXTENDED_HW_TYPE capability
+> >   perf/x86: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+> >   arm_pmu: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+> >   perf: Remove unused PERF_PMU_CAP_HETEROGENEOUS_CPUS capability
+> > 
+> >  arch/x86/events/core.c     |  1 -
+> >  drivers/perf/arm_pmu.c     | 10 ++++++----
+> >  include/linux/perf_event.h |  7 +++----
+> >  3 files changed, 9 insertions(+), 9 deletions(-)
 > 
->   CC      util/expr.o
->   CC      util/parse-events.o
->   CC      util/parse-events-flex.o
-> util/parse-events-flex.c:7503:13: error: misleading indentation; statement is not part of the previous 'if' [-Werror,-Wmisleading-indentation]
->             if ( ! yyg->yy_state_buf )
->             ^
-> util/parse-events-flex.c:7501:9: note: previous statement is here
->         if ( ! yyg->yy_state_buf )
->         ^
+> Thanks!
 
-I added this to the patch to get it moving:
+Ah, I see that you've queued that in your perf/core branch in your queue tree.
 
-make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
-⬢[acme@toolbox perf-tools-next]$ git diff
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 32239c4b0393c319..afa93eff495811cf 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -281,7 +281,7 @@ $(OUTPUT)util/bpf-filter-bison.c $(OUTPUT)util/bpf-filter-bison.h: util/bpf-filt
+Given that, I assume you don't need anything from me or from Will, but just in
+case, for the series:
 
- FLEX_GE_264 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 264)
- ifeq ($(FLEX_GE_264),1)
--  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function
-+  flex_flags := -Wno-redundant-decls -Wno-switch-default -Wno-unused-function -Wno-misleading-indentation
- else
-   flex_flags := -w
- endif
-⬢[acme@toolbox perf-tools-next]$
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-
-> 1 error generated.
-> make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: util/parse-events-flex.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
->   LD      util/scripting-engines/perf-in.o
-> make[3]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:140: util] Error 2
-> make[2]: *** [Makefile.perf:682: perf-in.o] Error 2
-> make[2]: *** Waiting for unfinished jobs....
->   CC      pmu-events/pmu-events.o
->   LD      pmu-events/pmu-events-in.o
-> make[1]: *** [Makefile.perf:242: sub-make] Error 2
-> make: *** [Makefile:70: all] Error 2
-> 
-> ⬢[acme@toolbox perf-tools-next]$ clang --version
-> clang version 14.0.5 (Fedora 14.0.5-2.fc36)
-> Target: x86_64-redhat-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
-> ⬢[acme@toolbox perf-tools-next]$
-
--- 
-
-- Arnaldo
+Mark.
