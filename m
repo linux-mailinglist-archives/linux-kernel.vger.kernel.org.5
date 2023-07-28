@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3197676F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562667676F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbjG1UXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        id S232050AbjG1UYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjG1UXc (ORCPT
+        with ESMTP id S229620AbjG1UYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:23:32 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCAD4483
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:23:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso3310530a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:23:31 -0700 (PDT)
+        Fri, 28 Jul 2023 16:24:23 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3FF421D
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:24:22 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so612125a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690575810; x=1691180610;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=gmail.com; s=20221208; t=1690575860; x=1691180660;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DaL8vCWD2qZnjDMvOO1mSqawEYt68vZaybEyeqD8qzc=;
-        b=iNa4V4wbqIB8YQAIu3YWecMdqgfDDBvx7YotKRvzxFMEkV1NPN9FFaahGfVAarwaAV
-         kRJWDO6+avyfDWom2I0N3AENnd/ucA3n3b4Lmo9UgnRCWibEYgsywdeA1ZqkQqRmTlZh
-         XV8dRItJxUnXX6LhTgM/AywiqSgw2XGInhu/8=
+        bh=SyWx051AYSsya+pzm/2CESWC0aQN46Y6mRWxZ4kl/fY=;
+        b=egf2Rz95PyDNX8IizAW5XrdqSjJf6qdj38CzmhwqczML/OIYIUEuzt9pfAc90nEwLn
+         jtrv37frD//VlJOKN/DiRV7n3B+e0UzFXmPcUP1GLQcTaL3zzszw5xdf3lTmApyk7snC
+         9Pl+9nqxnXuQJAozoq2qAzwf1Zh5AmyeKiNlBXUja2713h5BERQB84hq/L9qu0ZwqLaN
+         cEzzD44FyZg5mBDjNzRXbx71ke7ANxmL3IpjKFsEKVkvjEaibWhjubR+cKUmPajIFslc
+         y0arK5e8DhN0ZvHgPue4HrLhR8TtF0TiQxDuxWRox/xqamiiIUR0nDyh8Wj7nIAB0JnC
+         NKAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690575810; x=1691180610;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=1e100.net; s=20221208; t=1690575860; x=1691180660;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DaL8vCWD2qZnjDMvOO1mSqawEYt68vZaybEyeqD8qzc=;
-        b=kIVOX4YYLFp/9cTcfYi/XiRwMDUa4XEAPyfHcdpd+R89rboXsEBIVENHRmWq1xROrh
-         8/v2z8sbz4zy7f3EEFDeTXXnaaDWrROJcCnjWy0dqE9GGMWd0iWKMPOqXushHBCT8WO9
-         fdKb+QY6sNS29jmZb3Rqd9U0dyO2AlGhenOQiCchN3pUNqg/KDcHwCszp+I2KMsZ50Bq
-         v87CsKG1DFdysOVIq+3RgB5iLYv2N7IwaKoCv/RxjvL5QW17Bv4+mvWdgdSM3dzYKOiJ
-         LY25dv5kFtKtHuf1+UoO0aMTMZPGVpllwUp4TBHzrlnpY8Ng9LY1y34KC+4+Fg1Y1nZW
-         7kCA==
-X-Gm-Message-State: ABy/qLZgkh2vnGvDQpJRYxtruVZ4UfUhxspFwIKsYx52GrMNCi7NUfyi
-        F/X72WJZF8upqMFrGJw42/O8fhSmHXglvO8Mg/Bt0qez
-X-Google-Smtp-Source: APBJJlHigtXRyVEV8ENaDW+HpguRA4tlcs/PT8wg8O2dQu/1MbIPumA/yk0kHLAbNY4lTajUuV7QIQ==
-X-Received: by 2002:a05:6402:756:b0:522:561f:83c2 with SMTP id p22-20020a056402075600b00522561f83c2mr2513883edy.1.1690575809909;
-        Fri, 28 Jul 2023 13:23:29 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id d7-20020a056402078700b005221ce96801sm2181181edy.35.2023.07.28.13.23.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 13:23:29 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-52222562f1eso3310502a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:23:28 -0700 (PDT)
+        bh=SyWx051AYSsya+pzm/2CESWC0aQN46Y6mRWxZ4kl/fY=;
+        b=LjOgDnK/B2AsQ9RggSm+xcD1JDGPHsQK82FaJjZKTIZvmLQVmeX7DPoQsXrPt/kzuG
+         7zCwSQ1/qSHrkxwZyA4btfcwzlHlXu9DV5lPJAYOCdpdh9zr0oZwxXhUu7HfOvQSDHyu
+         vtOo/a7UGVbHV8BtlXcR3l2E9BAwc8wsxim1hvA7mdsscpGWa23dzkc9qV9z/qsRj9q9
+         BeYl+nj/JHmmTGzERrXlI33Z+GkYo4UxKj9cOgoJZnMgUnmMNvJI07W0OceA08psi9AH
+         +GQXwV+Ur2W7nmWrlPooyX7l21bMniJoP38Fyr0QtbsKV0J888M+GQ0OVNvMpRhHCBgn
+         dniQ==
+X-Gm-Message-State: ABy/qLa7Rg6cHZJf4BoRzNX2+6I1DsPlIpPRMdtxGR00bNsWs70LUnuP
+        qtFZ1vsRJqFaBmmu9cEALzfeCQbQAiv7QN0/EB1CEJuO+adHVw==
+X-Google-Smtp-Source: APBJJlEQwAAJE7THVOfVT1AKUCR/Luci/f2ahGxKh3rLvwitZerOsACiJW4U0DagAxUgQaNb1ooPI7Jg1NHOERc4tVs=
 X-Received: by 2002:aa7:d507:0:b0:522:3a28:feca with SMTP id
- y7-20020aa7d507000000b005223a28fecamr2820293edq.24.1690575808575; Fri, 28 Jul
- 2023 13:23:28 -0700 (PDT)
+ y7-20020aa7d507000000b005223a28fecamr2821803edq.24.1690575860450; Fri, 28 Jul
+ 2023 13:24:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727212845.135673-1-david@redhat.com> <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <ZMQZfn/hUURmfqWN@x1n>
-In-Reply-To: <ZMQZfn/hUURmfqWN@x1n>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 28 Jul 2023 13:23:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
-Message-ID: <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone fallout
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
+Received: by 2002:aa7:c6d2:0:b0:51e:1856:95ca with HTTP; Fri, 28 Jul 2023
+ 13:24:19 -0700 (PDT)
+Reply-To: mrsmadinadina@gmail.com
+From:   MADINA DINA <dmadinadina@gmail.com>
+Date:   Fri, 28 Jul 2023 21:24:19 +0100
+Message-ID: <CAFNMNTjmH2RbHdkn7eruxgs3jCmtgZQK_3mtB2+SX8D6L+BCzw@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:542 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [dmadinadina[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 at 12:39, Peter Xu <peterx@redhat.com> wrote:
->
-> But then does it means that any gup-only user will have numa balancing
-> completely disabled?
+--=20
+Hello beloved,
 
-Why would we ever care about a GUP-only user?
-
-Who knows where the actual access is coming from? It might be some
-device that is on a different node entirely.
-
-And even if the access is local from the CPU, it
-
- (a) might have happened after we moved somewhere else
-
- (b) who cares about the extra possible NUMA overhead when we just
-wasted *thousands* of cycles on GUP?
-
-So NUMA balancing really doesn't seem to make sense for GUP anyway as
-far as I can see.
-
-Now, the other side of the same thing is that (a) NUMA faulting should
-be fairly rare and (b) once you do GUP, who cares anyway, so you can
-also argue that "once you do GUP you might as well NUMA-fault, because
-performance simply isn't an issue".
-
-But I really think the real argument is "once you do GUP, numa
-faulting is just crazy".
-
-I think what happened is
-
- - the GUP code couldn't tell NUMA and actual PROTNONE apart
-
- - so the GUP code would punch through PROTNONE even when it shouldn't
-
- - so people added FOLL_NUMA to say "I don't want you to punch
-through, I want the NUMA fault"
-
- - but then FOLL_FORCE ends up meaning that you actually *do* want to
-punch through - regardless of NUMA or not - and now the two got tied
-together, and we end up with nonsensical garbage like
-
-        if (!(gup_flags & FOLL_FORCE))
-                gup_flags |= FOLL_NUMA;
-
-   to say "oh, actually, to avoid punching through when we shouldn't,
-we should NUMA fault".
-
-so we ended up with that case where even if YOU DIDN'T CARE AT ALL,
-you got FOLL_NUMA just so that you wouldn't punch through.
-
-And now we're in the situation that we've confused FOLL_FORCE and
-FOLL_NUMA, even though they have absolutely *nothing* to do with each
-other, except for a random implementation detail about punching
-through incorrectly that isn't even relevant any more.
-
-I really think FOLL_NUMA should just go away. And that FOLL_FORCE
-replacement for it is just wrong.  If you *don't* do something without
-FOLL_FORCE, you damn well shouldn't do it just because FOLL_FORCE is
-set.
-
-The *only* semantic meaning FOLL_FORCE should have is that it
-overrides the vma protections for debuggers (in a very limited
-manner). It should *not* affect any NUMA faulting logic in any way,
-shape, or form.
-
-               Linus
+I am Mrs Madina Dina, I am a sick woman who was diagnosed with cancer six
+years ago. My main reason for contacting you is because I want to entrust a
+charity project to you, I know this may sound so strange to you and also
+extremely risky for me to offer such a proposal to a total stranger via
+email but this is my last resort to get this done. I am looking for a
+confidant, someone to help fulfill my last wish. Hope to read from you. I
+will appreciate your selfless act towards the less privileged, I don=E2=80=
+=99t mind
+if you could be of trustful help. I will be waiting to read from you
+urgently as time is of essence due the limited time I have and my ill
+health condition.
