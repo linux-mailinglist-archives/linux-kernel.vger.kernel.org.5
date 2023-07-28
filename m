@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C382766509
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C8876650F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbjG1HPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
+        id S233982AbjG1HQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbjG1HPj (ORCPT
+        with ESMTP id S233959AbjG1HQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:15:39 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599562686
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:15:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fb863edcb6so3093536e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690528532; x=1691133332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fotJlPLg/3aVUxDnfpn1ssIHFZgy6nasrdy2qS4uw1o=;
-        b=G9zqfbBE7oUr1T5JHk0Kxp40aesKAkeUkCeMGoowd7iZ6Tx8/opQxO2k4/AYGBq+qo
-         80+NVU24n9WaHdlAIdaXH3s1PLfE5Rb7l9X2bsIK6g1cm9/JD/Xtmfwrfi+Qruv95zN5
-         DfJ0mTTaNJixDo08F8c1f9F3+R9NjIfqWuMvAdS7w795HnFFZ30se0hFVrJK6DLVzHP+
-         WUVavpibE6QCdQDlFt9ikbA7ASbV9AfOUFjSgvOq5zVmnRNvp4FlH7cevhiO/glydjMg
-         TgpIUTfms0a8HyVtBdJAdqWNzsL1QYz56XmCQEmpGbXVbXrBmskrXkH2lhJoyPezKXLk
-         +b7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690528532; x=1691133332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fotJlPLg/3aVUxDnfpn1ssIHFZgy6nasrdy2qS4uw1o=;
-        b=ksQvBHfG9ChzT4kZyhGkhXHAz/toT+c6kKgD+/o57ENWrWBMlPlCXgrG1ytNkAXSrG
-         pqCVgh130MFf2ZrgnD/4tvIjvdAGQ6h4wSJsZIzO+Z1+nnVKUa5RICl3/1amqZ7m7Rgn
-         6wnXqGWg8fEgZcP8CzzVroZnlz0q81BsY3IjVSh5tN0M3FKq/AnH8+PiioIkDCIzfPNE
-         puuv9c80wTF3q7FGgDUBZ4IH/uAovt5sqi+ZZQ6SApK1aN0CNRXh6xBqU5EmpKVMYj/A
-         w8tNz1mXKG89Htql5T8okwz0iY9AQnszG57M4GTWM2wFJ4sCM5i+ByQ9LOXPbI3M2pT3
-         Ds8w==
-X-Gm-Message-State: ABy/qLZFEANbaEuqvEWmU5q/MuQDQj5yF7GbkUCbKviIIBXTRZDM/6R+
-        ngRAJ6YT6jxUlVyTffv7WmZQgA==
-X-Google-Smtp-Source: APBJJlHDzG9r3L89z7e8mDuIPzOfkoQJTIEtNvhM5Z9fsZxbzQztOLAMUV0qIc6ViSlMzQbcQwx9Pg==
-X-Received: by 2002:ac2:5b9a:0:b0:4f8:7333:d1fd with SMTP id o26-20020ac25b9a000000b004f87333d1fdmr1168724lfn.34.1690528532577;
-        Fri, 28 Jul 2023 00:15:32 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id n10-20020aa7c44a000000b0052238bc70ccsm1469189edr.89.2023.07.28.00.15.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 00:15:32 -0700 (PDT)
-Message-ID: <11718654-24ed-ed89-81ac-f773168e216d@linaro.org>
-Date:   Fri, 28 Jul 2023 09:15:30 +0200
+        Fri, 28 Jul 2023 03:16:22 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05725212A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690528580; x=1722064580;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RqAKBI2brZz0iglwT4+ws3oysl4sVcuHnFYFiwjZ04w=;
+  b=Nvzfsi5lYXC5dm5LjD54LryhhJgRaZGqBMZGsqoXaqRWfhONUzbBmLcX
+   jNtA8plhh88PrhJ/FcGId+Sip74OD6BwRkO7GrhtLmGYNxUjNbptGHYoa
+   OZQHg3SWkcZdAX1DFBd4MVGke+89yK9fhcUTYf+UJG6k63zOXxbJR4+9K
+   rvdf/Caz0K4wBkwfqS/lfgCwwhSmkDXhYuL5A18d2WZwq8tQ8OCscbI2p
+   hlBhlp/04b2bNEd8s6j68aqg/VHePzG8Q9Zby1GFC19POQ34b0G/ZxZgp
+   GHp+s2LGRkWm2KygI0AAWIuWXMlJyxmI7nUKc2TaFaHimh1S1Vl+v9Ehh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432340444"
+X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
+   d="scan'208";a="432340444"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 00:15:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="870759216"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2023 00:15:56 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPHha-0002yB-14;
+        Fri, 28 Jul 2023 07:15:54 +0000
+Date:   Fri, 28 Jul 2023 15:15:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Laight <David.Laight@aculab.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH next resend 5/5] minmax: Relax check to allow comparison
+ between int and small unsigned constants.
+Message-ID: <202307281520.WNoM3bxU-lkp@intel.com>
+References: <48c2cd0407f14859919d4fcbe526234a@AcuMS.aculab.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 1/3] dt-bindings: remoteproc: qcom,sm6375-pas: Document
- remoteprocs
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230725-topic-6375_rproc-v5-0-a8e9cde56a20@linaro.org>
- <20230725-topic-6375_rproc-v5-1-a8e9cde56a20@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725-topic-6375_rproc-v5-1-a8e9cde56a20@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48c2cd0407f14859919d4fcbe526234a@AcuMS.aculab.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,14 +71,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 19:33, Konrad Dybcio wrote:
-> SM6375 hosts an ADSP, CDSP and modem as remote processors. Create
-> related bindings.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hi David,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+kernel test robot noticed the following build warnings:
 
-Best regards,
-Krzysztof
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.5-rc3 next-20230727]
+[cannot apply to next-20230725]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minmax-Allow-min-max-clamp-if-the-arguments-have-the-same-signedness/20230725-204940
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/48c2cd0407f14859919d4fcbe526234a%40AcuMS.aculab.com
+patch subject: [PATCH next resend 5/5] minmax: Relax check to allow comparison between int and small unsigned constants.
+config: microblaze-randconfig-r092-20230725 (https://download.01.org/0day-ci/archive/20230728/202307281520.WNoM3bxU-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230728/202307281520.WNoM3bxU-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307281520.WNoM3bxU-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: bad constant expression type
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *end_page
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *end_page
+>> crypto/skcipher.c:80:16: sparse:    int
+   crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>):
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___x297
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___y298
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *end_page
+>> crypto/skcipher.c:80:16: sparse:    int
+   crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>):
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___x297
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___y298
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *end_page
+>> crypto/skcipher.c:80:16: sparse:    int
+   crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>):
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___x297
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___y298
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *start
+>> crypto/skcipher.c:80:16: sparse:    int
+>> crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>=):
+>> crypto/skcipher.c:80:16: sparse:    unsigned char [usertype] *end_page
+>> crypto/skcipher.c:80:16: sparse:    int
+   crypto/skcipher.c:80:16: sparse: sparse: incompatible types for operation (>):
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___x297
+   crypto/skcipher.c:80:16: sparse:    bad type __UNIQUE_ID___y298
+--
+   drivers/gpu/drm/drm_modes.c: note: in included file (through include/drm/drm_plane.h, include/drm/drm_crtc.h):
+   include/drm/drm_color_mgmt.h:52:16: sparse: sparse: bad integer constant expression
+   include/drm/drm_color_mgmt.h:52:16: sparse: sparse: static assertion failed: "clamp() low limit (typeof(val))(0) greater than high limit (typeof(val))(max)"
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>=):
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    char *bpp_end_ptr
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    int
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: bad constant expression type
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>=):
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    char *[addressable] bpp_end_ptr
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    int
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>=):
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    char *[addressable] refresh_end_ptr
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    int
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>=):
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    char *[addressable] bpp_end_ptr
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    int
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>=):
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    char *[addressable] refresh_end_ptr
+>> drivers/gpu/drm/drm_modes.c:2474:29: sparse:    int
+   drivers/gpu/drm/drm_modes.c:2474:29: sparse: sparse: incompatible types for operation (>):
+   drivers/gpu/drm/drm_modes.c:2474:29: sparse:    bad type __UNIQUE_ID___x334
+   drivers/gpu/drm/drm_modes.c:2474:29: sparse:    bad type __UNIQUE_ID___y335
+--
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (>=):
+>> net/ceph/osdmap.c:1773:54: sparse:    void *
+>> net/ceph/osdmap.c:1773:54: sparse:    int
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: bad constant expression type
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2000:46: sparse:    void *
+   net/ceph/osdmap.c:2000:46: sparse:    int
+   net/ceph/osdmap.c:2000:46: sparse: sparse: bad constant expression type
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2007:57: sparse:    void *
+   net/ceph/osdmap.c:2007:57: sparse:    int
+   net/ceph/osdmap.c:2007:57: sparse: sparse: bad constant expression type
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (>=):
+>> net/ceph/osdmap.c:1773:54: sparse:    void *
+>> net/ceph/osdmap.c:1773:54: sparse:    int
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (>=):
+>> net/ceph/osdmap.c:1773:54: sparse:    void *end
+>> net/ceph/osdmap.c:1773:54: sparse:    int
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (>=):
+>> net/ceph/osdmap.c:1773:54: sparse:    void *
+>> net/ceph/osdmap.c:1773:54: sparse:    int
+>> net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (>=):
+>> net/ceph/osdmap.c:1773:54: sparse:    void *end
+>> net/ceph/osdmap.c:1773:54: sparse:    int
+   net/ceph/osdmap.c:1773:54: sparse: sparse: incompatible types for operation (<):
+   net/ceph/osdmap.c:1773:54: sparse:    bad type __UNIQUE_ID___x318
+   net/ceph/osdmap.c:1773:54: sparse:    bad type __UNIQUE_ID___y319
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2000:46: sparse:    void *
+   net/ceph/osdmap.c:2000:46: sparse:    int
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2000:46: sparse:    void *end
+   net/ceph/osdmap.c:2000:46: sparse:    int
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2000:46: sparse:    void *
+   net/ceph/osdmap.c:2000:46: sparse:    int
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2000:46: sparse:    void *end
+   net/ceph/osdmap.c:2000:46: sparse:    int
+   net/ceph/osdmap.c:2000:46: sparse: sparse: incompatible types for operation (<):
+   net/ceph/osdmap.c:2000:46: sparse:    bad type __UNIQUE_ID___x322
+   net/ceph/osdmap.c:2000:46: sparse:    bad type __UNIQUE_ID___y323
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2007:57: sparse:    void *
+   net/ceph/osdmap.c:2007:57: sparse:    int
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2007:57: sparse:    void *end
+   net/ceph/osdmap.c:2007:57: sparse:    int
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2007:57: sparse:    void *
+   net/ceph/osdmap.c:2007:57: sparse:    int
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (>=):
+   net/ceph/osdmap.c:2007:57: sparse:    void *end
+   net/ceph/osdmap.c:2007:57: sparse:    int
+   net/ceph/osdmap.c:2007:57: sparse: sparse: incompatible types for operation (<):
+   net/ceph/osdmap.c:2007:57: sparse:    bad type __UNIQUE_ID___x324
+   net/ceph/osdmap.c:2007:57: sparse:    bad type __UNIQUE_ID___y325
+--
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (>=):
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    unsigned char const *const ip_end
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    int
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: bad constant expression type
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (>=):
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    unsigned char const *const ip_end
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    int
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (>=):
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    unsigned char const *
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    int
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (>=):
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    unsigned char const *const ip_end
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    int
+>> lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (>=):
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    unsigned char const *
+>> lib/lzo/lzo1x_compress.c:53:54: sparse:    int
+   lib/lzo/lzo1x_compress.c:53:54: sparse: sparse: incompatible types for operation (<):
+   lib/lzo/lzo1x_compress.c:53:54: sparse:    bad type __UNIQUE_ID___x182
+   lib/lzo/lzo1x_compress.c:53:54: sparse:    bad type __UNIQUE_ID___y183
+
+vim +80 crypto/skcipher.c
+
+b286d8b1a69066 Herbert Xu 2016-11-22  72  
+b286d8b1a69066 Herbert Xu 2016-11-22  73  /* Get a spot of the specified length that does not straddle a page.
+b286d8b1a69066 Herbert Xu 2016-11-22  74   * The caller needs to ensure that there is enough space for this operation.
+b286d8b1a69066 Herbert Xu 2016-11-22  75   */
+b286d8b1a69066 Herbert Xu 2016-11-22  76  static inline u8 *skcipher_get_spot(u8 *start, unsigned int len)
+b286d8b1a69066 Herbert Xu 2016-11-22  77  {
+b286d8b1a69066 Herbert Xu 2016-11-22  78  	u8 *end_page = (u8 *)(((unsigned long)(start + len - 1)) & PAGE_MASK);
+b286d8b1a69066 Herbert Xu 2016-11-22  79  
+b286d8b1a69066 Herbert Xu 2016-11-22 @80  	return max(start, end_page);
+b286d8b1a69066 Herbert Xu 2016-11-22  81  }
+b286d8b1a69066 Herbert Xu 2016-11-22  82  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
