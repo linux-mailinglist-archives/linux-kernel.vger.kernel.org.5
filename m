@@ -2,274 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750BF767059
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5CF76705B
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236677AbjG1PSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        id S236146AbjG1PTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234573AbjG1PS2 (ORCPT
+        with ESMTP id S234573AbjG1PTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:18:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1656430FC;
-        Fri, 28 Jul 2023 08:18:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DCDC62173;
-        Fri, 28 Jul 2023 15:18:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62509C433C8;
-        Fri, 28 Jul 2023 15:18:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690557506;
-        bh=4CAHd/2r0jRCEBdeMRRG/xbAeKcA6Rjt+NeWrcq7040=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f8XoCTCn3tpOxd6XF8c8QZxi1Xn7N1hTaVnUIPI3fNndomp5AxOqkwQAQ0zcRsXx7
-         cpceRit7q95Xz2UOzpVhsSX1YuV3VFYUrr1mF+e/9R0ccqHDCE4fvSCeVsnSrE793E
-         aYv652LYImnjokxHsM97tk5pkbCrfIZRBzYuHaC9COQl0nIPqEDe6D8tkLLpnW/4ET
-         jTLem+01z8cM9ToiR8MP5pQbfCSKU9DyAj2KdH7jZZdV6PtftvEopRMYT58cLcUHBS
-         LiHai2TR2UHlf8cWFBkUdAzaVz3bHCsd6oCLexfmVTJ8UOOmQFZThaDC+gP4X/tD5A
-         cSFviGT3GqR0Q==
-Date:   Fri, 28 Jul 2023 16:18:18 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     broonie@kernel.org, vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, lgirdwood@gmail.com,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+        Fri, 28 Jul 2023 11:19:42 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B6E30FC;
+        Fri, 28 Jul 2023 08:19:41 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so2988761a12.2;
+        Fri, 28 Jul 2023 08:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20221208; t=1690557579; x=1691162379;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oUMA9vPryqhAo0Bpi93ruUgRTi0RXDy6bqReSvggb7Y=;
+        b=is7AQpu2eHBVvVuJqWlQnE+R4PD9yNV1vJW9sL8Wpa4JI3i+m6ZoYP9o/XUqYtPF8N
+         KLbsaHLR+DOhqhtbmtjapuogT0OS7N274YsZyMYKaw9A747IvL7UpNG/Vtrzm6F9SmKZ
+         u5s54PAb8BtuvcKBPDlepepOWO9cUPGZK8k2vGjkG8kt/PgDElza0oysdCsOPu/DJaZw
+         jyDt7nav2GtQ/NscyVvtTaGTDGfb5UYGaTWNyDpTC/2bPlShVFTJsVCt9USaJMGQYTcr
+         7f0HwEoytpR0zHgw8L+CygnTB10VJ0mYmKC1xLJ/hMeNHHaDdwMeaOW/cu2dkdKYiuFy
+         qSvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690557579; x=1691162379;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oUMA9vPryqhAo0Bpi93ruUgRTi0RXDy6bqReSvggb7Y=;
+        b=jBYFjEi98g88X0gcL4zDBmawcwmVbmSRdaG6MEWLnzYjSW7i0aw8pk2LhWrDiAhpD6
+         iwEu+/WMmXAxNZUibwv779pLAVk10mu3qkjMrRWjEDxWOw+pJLHVyxFc0SACtL8S3vKc
+         Lioe4wJhdBSKYUxuAeqRaBzQi2xyV7LKzjXQKVafN5ELcFmPk1pWzzt9iPqDXRiiVHIU
+         TzNd30savubcwdy9m5ZPTjK43qJFXyaFwMyOMOVrilLNvtdC317bl2Oy8PjUdf8M1xoR
+         RW1gcHQD3z4XNM7DvrBQZMXgGpQuzNphZeo7LjHpRlrZeKbXjOamPsB4sK0393Sjbt47
+         A7Gg==
+X-Gm-Message-State: ABy/qLZUMDu/pRqLsSmVFCawfO4+iR7kfS1mKIo+ox/JnS7sP3l81iOG
+        nXhbVqW+gFeAq/BJuDeLDL7Jx7FzPoRXPPA/
+X-Google-Smtp-Source: APBJJlFaeLK3anYMlbBjJPOYtf9gmBPNyt6hRDXt8ya8D9F4vePbpDn+7MZ2Av+MZSG3ZD1M6tyvwA==
+X-Received: by 2002:aa7:ca4b:0:b0:522:39b7:da3a with SMTP id j11-20020aa7ca4b000000b0052239b7da3amr2341009edt.31.1690557579346;
+        Fri, 28 Jul 2023 08:19:39 -0700 (PDT)
+Received: from debian_development.DebianHome (dynamic-077-000-157-016.77.0.pool.telefonica.de. [77.0.157.16])
+        by smtp.gmail.com with ESMTPSA id u19-20020aa7db93000000b0051e1660a34esm1897829edt.51.2023.07.28.08.19.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 08:19:38 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/6] soundwire: bus: Allow SoundWire peripherals to
- register IRQ handlers
-Message-ID: <20230728151818.GL8175@google.com>
-References: <20230725102532.2567580-1-ckeepax@opensource.cirrus.com>
- <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2] selinux: move debug functions into debug configuration
+Date:   Fri, 28 Jul 2023 17:19:31 +0200
+Message-Id: <20230728151932.30160-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230718184921.112786-2-cgzones@googlemail.com>
+References: <20230718184921.112786-2-cgzones@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vinod, Bard, Pierre-Louis, Sanyog,
+avtab_hash_eval() and hashtab_stat() are only used in policydb.c when
+the configuration SECURITY_SELINUX_DEBUG is enabled.
 
-This has been on the list for some time now.
+Move the function definitions under that configuration as well and
+provide empty definitions in case SECURITY_SELINUX_DEBUG is disabled, to
+avoid using #ifdef in the callers.
 
-Would one of you please review this, so we can get it merged?
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+v2:
+  - provide empty definitions for !SECURITY_SELINUX_DEBUG
+  - drop #ifdef in caller
+---
+ security/selinux/ss/avtab.c    | 2 ++
+ security/selinux/ss/avtab.h    | 7 +++++++
+ security/selinux/ss/hashtab.c  | 3 ++-
+ security/selinux/ss/hashtab.h  | 6 ++++++
+ security/selinux/ss/policydb.c | 5 +++--
+ 5 files changed, 20 insertions(+), 3 deletions(-)
 
-On Tue, 25 Jul 2023, Charles Keepax wrote:
-
-> From: Lucas Tanure <tanureal@opensource.cirrus.com>
-> 
-> Currently the in-band alerts for SoundWire peripherals can only
-> be communicated to the driver through the interrupt_callback
-> function. This however is slightly inconvient for devices that wish to
-> share IRQ handling code between SoundWire and I2C/SPI, the later would
-> normally register an IRQ handler with the IRQ subsystem. However there
-> is no reason the SoundWire in-band IRQs can not also be communicated
-> as an actual IRQ to the driver.
-> 
-> Add support for SoundWire peripherals to register a normal IRQ handler
-> to receive SoundWire in-band alerts, allowing code to be shared across
-> control buses. Note that we allow users to use both the
-> interrupt_callback and the IRQ handler, this is useful for devices which
-> must clear additional chip specific SoundWire registers that are not a
-> part of the normal IRQ flow, or the SoundWire specification.
-> 
-> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
-> 
-> No changes since v5.
-> 
-> Thanks,
-> Charles
-> 
->  drivers/soundwire/bus.c       | 32 ++++++++++++++++++++++++++++++++
->  drivers/soundwire/bus_type.c  | 12 ++++++++++++
->  include/linux/soundwire/sdw.h |  9 +++++++++
->  3 files changed, 53 insertions(+)
-> 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index dba920ec88f6f..cf55386256f3f 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -3,6 +3,7 @@
->  
->  #include <linux/acpi.h>
->  #include <linux/delay.h>
-> +#include <linux/irq.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/soundwire/sdw_registers.h>
-> @@ -25,6 +26,23 @@ static int sdw_get_id(struct sdw_bus *bus)
->  	return 0;
->  }
->  
-> +static int sdw_irq_map(struct irq_domain *h, unsigned int virq,
-> +		       irq_hw_number_t hw)
-> +{
-> +	struct sdw_bus *bus = h->host_data;
-> +
-> +	irq_set_chip_data(virq, bus);
-> +	irq_set_chip(virq, &bus->irq_chip);
-> +	irq_set_nested_thread(virq, 1);
-> +	irq_set_noprobe(virq);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct irq_domain_ops sdw_domain_ops = {
-> +	.map	= sdw_irq_map,
-> +};
-> +
->  /**
->   * sdw_bus_master_add() - add a bus Master instance
->   * @bus: bus instance
-> @@ -151,6 +169,14 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
->  	bus->params.curr_bank = SDW_BANK0;
->  	bus->params.next_bank = SDW_BANK1;
->  
-> +	bus->irq_chip.name = dev_name(bus->dev);
-> +	bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
-> +					       &sdw_domain_ops, bus);
-> +	if (!bus->domain) {
-> +		dev_err(bus->dev, "Failed to add IRQ domain\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	return 0;
->  }
->  EXPORT_SYMBOL(sdw_bus_master_add);
-> @@ -187,6 +213,9 @@ static int sdw_delete_slave(struct device *dev, void *data)
->  void sdw_bus_master_delete(struct sdw_bus *bus)
->  {
->  	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
-> +
-> +	irq_domain_remove(bus->domain);
-> +
->  	sdw_master_device_del(bus);
->  
->  	sdw_bus_debugfs_exit(bus);
-> @@ -1725,6 +1754,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
->  				struct device *dev = &slave->dev;
->  				struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
->  
-> +				if (slave->prop.use_domain_irq && slave->irq)
-> +					handle_nested_irq(slave->irq);
-> +
->  				if (drv->ops && drv->ops->interrupt_callback) {
->  					slave_intr.sdca_cascade = sdca_cascade;
->  					slave_intr.control_port = clear;
-> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> index 1f43ee848eac8..fafbc284e82da 100644
-> --- a/drivers/soundwire/bus_type.c
-> +++ b/drivers/soundwire/bus_type.c
-> @@ -122,6 +122,12 @@ static int sdw_drv_probe(struct device *dev)
->  	if (drv->ops && drv->ops->read_prop)
->  		drv->ops->read_prop(slave);
->  
-> +	if (slave->prop.use_domain_irq) {
-> +		slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
-> +		if (!slave->irq)
-> +			dev_warn(dev, "Failed to map IRQ\n");
-> +	}
-> +
->  	/* init the sysfs as we have properties now */
->  	ret = sdw_slave_sysfs_init(slave);
->  	if (ret < 0)
-> @@ -166,7 +172,13 @@ static int sdw_drv_remove(struct device *dev)
->  	int ret = 0;
->  
->  	mutex_lock(&slave->sdw_dev_lock);
-> +
->  	slave->probed = false;
-> +
-> +	if (slave->prop.use_domain_irq)
-> +		irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
-> +						     slave->dev_num));
-> +
->  	mutex_unlock(&slave->sdw_dev_lock);
->  
->  	if (drv->remove)
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index f523ceabd0596..8923387a7405b 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -6,6 +6,8 @@
->  
->  #include <linux/bug.h>
->  #include <linux/lockdep_types.h>
-> +#include <linux/irq.h>
-> +#include <linux/irqdomain.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/bitfield.h>
->  
-> @@ -370,6 +372,7 @@ struct sdw_dpn_prop {
->   * @clock_reg_supported: the Peripheral implements the clock base and scale
->   * registers introduced with the SoundWire 1.2 specification. SDCA devices
->   * do not need to set this boolean property as the registers are required.
-> + * @use_domain_irq: call actual IRQ handler on slave, as well as callback
->   */
->  struct sdw_slave_prop {
->  	u32 mipi_revision;
-> @@ -394,6 +397,7 @@ struct sdw_slave_prop {
->  	u8 scp_int1_mask;
->  	u32 quirks;
->  	bool clock_reg_supported;
-> +	bool use_domain_irq;
->  };
->  
->  #define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
-> @@ -641,6 +645,7 @@ struct sdw_slave_ops {
->   * struct sdw_slave - SoundWire Slave
->   * @id: MIPI device ID
->   * @dev: Linux device
-> + * @irq: IRQ number
->   * @status: Status reported by the Slave
->   * @bus: Bus handle
->   * @prop: Slave properties
-> @@ -670,6 +675,7 @@ struct sdw_slave_ops {
->  struct sdw_slave {
->  	struct sdw_slave_id id;
->  	struct device dev;
-> +	int irq;
->  	enum sdw_slave_status status;
->  	struct sdw_bus *bus;
->  	struct sdw_slave_prop prop;
-> @@ -885,6 +891,7 @@ struct sdw_master_ops {
->   * is used to compute and program bus bandwidth, clock, frame shape,
->   * transport and port parameters
->   * @debugfs: Bus debugfs
-> + * @domain: IRQ domain
->   * @defer_msg: Defer message
->   * @clk_stop_timeout: Clock stop timeout computed
->   * @bank_switch_timeout: Bank switch timeout computed
-> @@ -920,6 +927,8 @@ struct sdw_bus {
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs;
->  #endif
-> +	struct irq_chip irq_chip;
-> +	struct irq_domain *domain;
->  	struct sdw_defer defer_msg;
->  	unsigned int clk_stop_timeout;
->  	u32 bank_switch_timeout;
-> -- 
-> 2.30.2
-> 
-
+diff --git a/security/selinux/ss/avtab.c b/security/selinux/ss/avtab.c
+index 32f92da00b0e..243e5dabfa86 100644
+--- a/security/selinux/ss/avtab.c
++++ b/security/selinux/ss/avtab.c
+@@ -322,6 +322,7 @@ int avtab_alloc_dup(struct avtab *new, const struct avtab *orig)
+ 	return avtab_alloc_common(new, orig->nslot);
+ }
+ 
++#ifdef CONFIG_SECURITY_SELINUX_DEBUG
+ void avtab_hash_eval(struct avtab *h, const char *tag)
+ {
+ 	int i, chain_len, slots_used, max_chain_len;
+@@ -352,6 +353,7 @@ void avtab_hash_eval(struct avtab *h, const char *tag)
+ 	       tag, h->nel, slots_used, h->nslot, max_chain_len,
+ 	       chain2_len_sum);
+ }
++#endif /* CONFIG_SECURITY_SELINUX_DEBUG */
+ 
+ static const uint16_t spec_order[] = {
+ 	AVTAB_ALLOWED,
+diff --git a/security/selinux/ss/avtab.h b/security/selinux/ss/avtab.h
+index 2ef5d1ae2844..3c3904bf02b0 100644
+--- a/security/selinux/ss/avtab.h
++++ b/security/selinux/ss/avtab.h
+@@ -91,7 +91,14 @@ void avtab_init(struct avtab *h);
+ int avtab_alloc(struct avtab *, u32);
+ int avtab_alloc_dup(struct avtab *new, const struct avtab *orig);
+ void avtab_destroy(struct avtab *h);
++
++#ifdef CONFIG_SECURITY_SELINUX_DEBUG
+ void avtab_hash_eval(struct avtab *h, const char *tag);
++#else
++static inline void avtab_hash_eval(struct avtab *h, const char *tag)
++{
++}
++#endif
+ 
+ struct policydb;
+ int avtab_read_item(struct avtab *a, void *fp, struct policydb *pol,
+diff --git a/security/selinux/ss/hashtab.c b/security/selinux/ss/hashtab.c
+index 30532ec319ce..e3747b5dd3e7 100644
+--- a/security/selinux/ss/hashtab.c
++++ b/security/selinux/ss/hashtab.c
+@@ -103,7 +103,7 @@ int hashtab_map(struct hashtab *h,
+ 	return 0;
+ }
+ 
+-
++#ifdef CONFIG_SECURITY_SELINUX_DEBUG
+ void hashtab_stat(struct hashtab *h, struct hashtab_info *info)
+ {
+ 	u32 i, chain_len, slots_used, max_chain_len;
+@@ -129,6 +129,7 @@ void hashtab_stat(struct hashtab *h, struct hashtab_info *info)
+ 	info->slots_used = slots_used;
+ 	info->max_chain_len = max_chain_len;
+ }
++#endif /* CONFIG_SECURITY_SELINUX_DEBUG */
+ 
+ int hashtab_duplicate(struct hashtab *new, struct hashtab *orig,
+ 		int (*copy)(struct hashtab_node *new,
+diff --git a/security/selinux/ss/hashtab.h b/security/selinux/ss/hashtab.h
+index 9dac6da45b98..f9713b56d3d0 100644
+--- a/security/selinux/ss/hashtab.h
++++ b/security/selinux/ss/hashtab.h
+@@ -142,7 +142,13 @@ int hashtab_duplicate(struct hashtab *new, struct hashtab *orig,
+ 		int (*destroy)(void *k, void *d, void *args),
+ 		void *args);
+ 
++#ifdef CONFIG_SECURITY_SELINUX_DEBUG
+ /* Fill info with some hash table statistics */
+ void hashtab_stat(struct hashtab *h, struct hashtab_info *info);
++#else
++static inline void hashtab_stat(struct hashtab *h, struct hashtab_info *info)
++{
++}
++#endif
+ 
+ #endif	/* _SS_HASHTAB_H */
+diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
+index dc66868ff62c..a424997c79eb 100644
+--- a/security/selinux/ss/policydb.c
++++ b/security/selinux/ss/policydb.c
+@@ -701,6 +701,9 @@ static void symtab_hash_eval(struct symtab *s)
+ static inline void hash_eval(struct hashtab *h, const char *hash_name)
+ {
+ }
++static inline void symtab_hash_eval(struct symtab *s)
++{
++}
+ #endif /* CONFIG_SECURITY_SELINUX_DEBUG */
+ 
+ /*
+@@ -725,10 +728,8 @@ static int policydb_index(struct policydb *p)
+ 	pr_debug("SELinux:  %d classes, %d rules\n",
+ 		 p->p_classes.nprim, p->te_avtab.nel);
+ 
+-#ifdef CONFIG_SECURITY_SELINUX_DEBUG
+ 	avtab_hash_eval(&p->te_avtab, "rules");
+ 	symtab_hash_eval(p->symtab);
+-#endif
+ 
+ 	p->class_val_to_struct = kcalloc(p->p_classes.nprim,
+ 					 sizeof(*p->class_val_to_struct),
 -- 
-Lee Jones [李琼斯]
+2.40.1
+
