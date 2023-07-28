@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B5A766987
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44455766986
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbjG1J5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        id S234760AbjG1J5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234922AbjG1J5Q (ORCPT
+        with ESMTP id S233512AbjG1J5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:57:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EE72727
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690538186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U0nQmkIx0uMFTk7seYDZJ5H4WZLfPJM6Ejko8L/+g2U=;
-        b=AOwnnPRxuVnAwGSLdQUdQJtrXT/PzFPgBlvBVbV0c5CYkWSHD09fixVHcS+bCs5adw1GKp
-        /Dczy0IC+V9zX4u6aQIekd3TIpgS+FT6ZGnPTBrplavWza9JLIbzJiOIFa3qppSTg/Yem2
-        0LQZkcDjmU4AZDuRs61AysCOFrVMcww=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-mSulyx09MVOFBLzH3ZJIkg-1; Fri, 28 Jul 2023 05:56:25 -0400
-X-MC-Unique: mSulyx09MVOFBLzH3ZJIkg-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b961c3af8fso19125631fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:56:24 -0700 (PDT)
+        Fri, 28 Jul 2023 05:57:08 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441A430E1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:57:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bcc0adab4so278581866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1690538221; x=1691143021;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EaDqHuP1/L0EWrVmqB4LDOlJLLXlDAKqsrZaIwzPq3M=;
+        b=CiZw0lQlVNebikYEyzCGQwxP6oTaockZvcNTF5lhpUssizJZ0bAA3EEuC6Tb9lcj3Y
+         ULPlZJ2+qXx0oToN3wpzQyWpwzOaXu2TpcN7isx4h6mFOoTB5MWaCWIjQRo9TTzLFkCe
+         GudPlPLWQwqmIzUprt5rUDEJYS8qdmq0BoTlcA4Dhf0HVqU80A9aZGkGQ6+bW6kNUewp
+         hrqto0T0KRzWRPIu7GbyTh2rABfCdM6761meIXZP3jvaIk/Tw0UeMdME6VbrNMj6m5hL
+         3mX/unrEmdBuN/L9rF8W7HsnwEDjbSY3BcVYkpC2IVfmpKYqW9i8cWMLMhNfe+xK6mMY
+         +Lwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690538184; x=1691142984;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U0nQmkIx0uMFTk7seYDZJ5H4WZLfPJM6Ejko8L/+g2U=;
-        b=bP3mM2DBsHmfqqb3O1tX81G/tuXdA0/5MDGm8Yt7un/dXY5yZm6o/7dVRIJXu5k2vp
-         8+yNqOur6Ebr7zfFCsUFrYR9ftqhnUmYp6/hRr1g1jp/X0wWGVxRzzMoYO09Jka75ke+
-         /0ZTtIg6lm+qjeGr51Oni3byHV1gl8EoonuCoTonxxD6GVm9vK9RmpAUTpsv+yAxHLSD
-         9+F+0DiS3ZRDnzwZ4LaZKpwETZPkuS+RGlyU+64b/9Hx4drt8Y3nWFz6QOpRMgHlPz2w
-         WYgh7Kqr4926Z1Xgn0ePuBMy01tKdcPN57JkoGPHWjWSuZzNB9VABl2z4XrPUnE5E9l0
-         kZ9A==
-X-Gm-Message-State: ABy/qLZg3PRf4qF8x3AUUGAFgQZu8JczH1VklAi04KptylkBsaPYhSuJ
-        uLI7Hg8gCjXgJ5JjSatRvA4HBhj/dTEvTl4Q9PUCFs28ypdmpmxs56uw6sotBJ/MaYmkmtBBdrd
-        oQ5J832lr7xh1lsdfpkoCnktl
-X-Received: by 2002:a2e:8348:0:b0:2b6:ddab:506a with SMTP id l8-20020a2e8348000000b002b6ddab506amr1383763ljh.34.1690538183854;
-        Fri, 28 Jul 2023 02:56:23 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGwahOxbYJkEWBd03saQPCa6kZbAUxNDbMT+3FiXqFtgqQ72w3vwPLNd17NXDdmeysAzUDaWQ==
-X-Received: by 2002:a2e:8348:0:b0:2b6:ddab:506a with SMTP id l8-20020a2e8348000000b002b6ddab506amr1383744ljh.34.1690538183543;
-        Fri, 28 Jul 2023 02:56:23 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id f14-20020a7bcd0e000000b003fba94c9e18sm3822745wmj.4.2023.07.28.02.56.23
+        d=1e100.net; s=20221208; t=1690538221; x=1691143021;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EaDqHuP1/L0EWrVmqB4LDOlJLLXlDAKqsrZaIwzPq3M=;
+        b=E4bMlrVrXbGGSI90SlVitTMOrDv3//SY7d7jF72awZIV0F9yypuexImtg3asS+hs+K
+         V6JgdOcQS7+Md2mBkZAg8zqLC19qjli2tGMAOctOVZU1qLsZu2XA/s2mW7zY+FFfX1am
+         d+X2BuU5PWbSYFpq1Se5Tbh56AGRxk0NDWpJ3Oitff6DcpcF2AOX20nLDyd9Zeij9ULt
+         5Sx5OfYhLAOuhb+HQCmM486AYaWvhlZh/2D3TTmcDTZmvo6rJeIBHcJWk8ytIJnRhPKt
+         YR+Q8HQRoeuGSKZm0fLDK7IKNaKKOM809KEOOMjoYPFCh2xk3IIMt+I1mlhTC2S4jV+j
+         Vqsw==
+X-Gm-Message-State: ABy/qLaE117k3AJ8Wr7uicMQ8ynniFwY0XaCfb3re4AACsCh+CwejDkR
+        wpPtTQRpo9hcW8MEu8txbjbMAw==
+X-Google-Smtp-Source: APBJJlHqWfBWRzK8qa3KtWSlfnaMwOND59ErRJQPppTu7WEQ5KiBxDjr8woTjRI48lVKdKnl5PO0Vw==
+X-Received: by 2002:a17:906:9bf1:b0:99b:c952:309b with SMTP id de49-20020a1709069bf100b0099bc952309bmr1700096ejc.55.1690538221588;
+        Fri, 28 Jul 2023 02:57:01 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id qk29-20020a170906d9dd00b0099b42c90830sm1866923ejb.36.2023.07.28.02.57.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 02:56:23 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/panel: simple: Simplify matching using
- of_device_get_match_data()
-In-Reply-To: <64ded5b7e809e4c6e915b2c4d8b82e02319cd206.1690535800.git.geert+renesas@glider.be>
-References: <64ded5b7e809e4c6e915b2c4d8b82e02319cd206.1690535800.git.geert+renesas@glider.be>
-Date:   Fri, 28 Jul 2023 11:56:22 +0200
-Message-ID: <87jzuktl4p.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 28 Jul 2023 02:57:01 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 11:57:00 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <xiaobo55x@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
+Message-ID: <20230728-5b0f530eba70ad08e8f4a67d@orel>
+References: <cover.1690364259.git.haibo1.xu@intel.com>
+ <ZMKI8RknjjZBOaxf@google.com>
+ <CAJve8o=GZnLLedT7TvCLvgd5Z3ZxJNfM6gG03Eyc+7krtMY--g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJve8o=GZnLLedT7TvCLvgd5Z3ZxJNfM6gG03Eyc+7krtMY--g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert+renesas@glider.be> writes:
-
-> Both the patform_driver and mipi_dsi_driver structures contain pointers
-> to the match table used, so the custom code to obtain match and match
-> data can be replaced by calls to of_device_get_match_data().
+On Fri, Jul 28, 2023 at 09:37:36AM +0800, Haibo Xu wrote:
+> On Thu, Jul 27, 2023 at 11:14 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Thu, Jul 27, 2023, Haibo Xu wrote:
+> > > The sstc_timer selftest is used to validate Sstc timer functionality
+> > > in a guest, which sets up periodic timer interrupts and check the
+> > > basic interrupt status upon its receipt.
+> > >
+> > > This KVM selftest was ported from aarch64 arch_timer and tested
+> > > with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
+> >
+> > Would it be possible to extract the ARM bits from arch_timer and make the bulk of
+> > the test common to ARM and RISC-V?  At a glance, there is quite a bit of copy+paste.
+> 
+> Sure, I will have a try to consolidate the common code for ARM and RISC-V in v2.
 >
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> ---
 
-Pushed to drm-misc (drm-misc-next). Thanks!
+Yes, afaict, we should be able to make aarch64/arch_timer.c another "split
+test", like we did for aarch64/get-reg-list.c, but before we do that, I'd
+like to get an ack from the Arm maintainers on the get-reg-list split to
+be sure that approach is acceptable.
 
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Thanks,
+drew
