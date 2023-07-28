@@ -2,315 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C5E7671A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0E87671AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbjG1QPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S231407AbjG1QPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbjG1QPL (ORCPT
+        with ESMTP id S230294AbjG1QP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:15:11 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6C04492
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690560908; x=1722096908;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UNvxWevf55jDxPvpQxmSCDyqoqWWohmZYU5JaFVmGHk=;
-  b=jZN5MERMlwD1UnnYS80A1yupHYK7duCIvyfkw3ZcI4ZVyxaqrW33/bDg
-   x678QKm0CVc54v1kEZ9oUwn7OZQMOJQu1rDm8Z6CJU24wni5NCpep9DCX
-   krysM5MuDHfHHVFrIjgDxQpIKNorRD0Y68GImSp3UrWF7SHRe3sjPUzjf
-   9u5uwq1hk8lg9HZFrX6u9KDA6o28FCUUxjt+Lfszn6vdaUZ23yv3P61h9
-   Xtm7mqIYqQ8+06dBOKC5DLA5Kqerhuy33+4qqzzqu0FkAQZerNwgJZnbK
-   UvyTwUMSdX76zrC8l94mn3+PI2NsKCdmOZ9u1ksMehHNUQMSYuHYY9p6C
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="348917588"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="348917588"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 09:15:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="677563785"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="677563785"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2023 09:15:07 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 28 Jul 2023 09:15:06 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 28 Jul 2023 09:15:06 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 28 Jul 2023 09:15:02 -0700
+        Fri, 28 Jul 2023 12:15:29 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2042.outbound.protection.outlook.com [40.107.237.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D402A4490;
+        Fri, 28 Jul 2023 09:15:21 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U0CARDDEhogmdBANneeiQ7Aur0g36uIGY8r8I51pg0hoFX+8EZrDJQzIH1OT5VyieGo2AFFQbPzChgdczwvO6nwdHqsULzBa0frVC2rKpfJ/44vagZ7uoVBcoWvmERH9RZySAIBqu2FaEdUu3aANjNWGzvOmGpbUU1ulYALxOS/xIRI1BeSPXy1EI6Qyfj4UhLYHwKOVw5knhSbAOmccHY2c46iEuwz25J3PasCs9dHLqPzIGyJOCzCSMbX1as+Y3P6XBXEhwBolLgyVdr5UdeBkDrrIP7aUsWRs8RM9sJ36aU+KEKLticwRo/moF4krYwatRiwThpyvXha/vG/GQA==
+ b=GaMc5wEurCL6mtlfS+kbq7lETmQcHEgJye64Vye1tdI9jn8z+qqE5krZxhw72Z1auvfsln9faBs0PbfGuItKymyHmlYd+UWvtBVYoaoPcrMM7VkSvDOeEW8yRJQUTZzzulDJew14DznZIG70nET8OkxVFGJNqjF++vcXDqyg3Vy7hCzvZa6co6YhyXgrA8hFH66oLvsRouePRAY/im5hE3tsTz+KxYunr6/BsBhmxoogzjRAMi0kBkkVeis2PYCiM9VdwoFpftQnD/GKIQQ70yayUqZ/8JrB3X3nfpQdE7RpIgctPxx61CibB9nE5NuY3L32a31J2FSXr7fF7GRBGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ykyq9F++CTZEMi7kLnejCjEWRuMDRa35fnbj2pGbAro=;
- b=aZHTY+BclInVAjPwxRhXqmk6GMSlsODHbxmk/HEPJMXbKV8u53OlvGPoGgxv0AI5tpBdyHGR+BJlv13eTuw9xhpT2jSlGNUtYpWCza61HrJziNHEJYD5B8Tobzf9XLdvTFI3kIUiFSNvpjkIcnK0b6CLE5j+D6vAtmbe6PUm/8TNLwd2KAIPEoy2bWKlXoLZaSNQxitLdEDOkeZRwZm0QHft/dPgyrWPl731/RwyoyJM+21NjRGcZCu91NgL83C7BbMj87yBhPtLKnOHGmMB75l4dR8lVX/BoifK5jrsElXgn8MD2VUKDkj9OCw/eqUd60Je1r9heldqOYK8B+ZoGA==
+ bh=Nr+ROKqF/HVLQZ9xNQGqYrZcjS3Mvhu8ahdFrqlR35Q=;
+ b=SJv0M5UAtnUUruphwK6gTUziFUqehIU1+8pLncPZH7F5xvJUfuHvJfbnAnmR6MLTsHFdY39HTfRiExVvkz53iUG+zPac1wyH9GQshIXULmFQE6K12NIBcupmYLhA2SX2C1MMS9SPkrTZaQchxaq2zfRGIC8Q8+qN+rJtDq1MsydOKARFaJ8o2ykT+DpXsqHzC3OqHbOPjGk3zXcwl5UHmHfKnzl4WzXy+D/R6lQq5CrVnMEsKUduy4GtXeUJyGJJxwENpsAjMF4WN2jlWHMpvxzlkfWvu1LgbHDWgbgO5Z9oAcztSrH0YGWwvri5EEYHhFx2oRpQ2Id6FV8sRVaxaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Nr+ROKqF/HVLQZ9xNQGqYrZcjS3Mvhu8ahdFrqlR35Q=;
+ b=O/Xps3/iYOvVtlON3x7cGtHgNg+5LB4Ic/iBU7ZSUSlP6YKcb3B4kn4VDPulXz73oKuHRZDUMV8KGfg4YLnn2NORx5V+g5qZjWeb5iuHJrQPR6TCYPyZtAIcAX3aUCY/OWc1aH0/DcKm8JLCTHwdessWnuPmpXHvw5m1SVi3Osc=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by CYYPR11MB8407.namprd11.prod.outlook.com (2603:10b6:930:c1::11) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from IA1PR12MB6137.namprd12.prod.outlook.com (2603:10b6:208:3eb::20)
+ by DM6PR12MB4249.namprd12.prod.outlook.com (2603:10b6:5:223::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.32; Fri, 28 Jul
- 2023 16:14:58 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::f4df:c85c:6300:880e]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::f4df:c85c:6300:880e%5]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 16:14:57 +0000
-Message-ID: <25faaf8f-6eb6-5c8f-de5e-31aedca61d34@intel.com>
-Date:   Sat, 29 Jul 2023 00:14:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 2/4] madvise: Use notify-able API to clear and
- flush page table entries
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 16:15:18 +0000
+Received: from IA1PR12MB6137.namprd12.prod.outlook.com
+ ([fe80::bc63:b5a8:902:ee0e]) by IA1PR12MB6137.namprd12.prod.outlook.com
+ ([fe80::bc63:b5a8:902:ee0e%2]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
+ 16:15:18 +0000
+Message-ID: <d1e720a1-d52c-a14b-3389-a2fb830c208e@amd.com>
+Date:   Fri, 28 Jul 2023 21:45:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH 1/2] selftests: mm: ksm: Fix incorrect evaluation of
+ parameter
 Content-Language: en-US
-To:     Yu Zhao <yuzhao@google.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <akpm@linux-foundation.org>, <minchan@kernel.org>,
-        <willy@infradead.org>, <david@redhat.com>, <ryan.roberts@arm.com>,
-        <shy828301@gmail.com>
-References: <20230721094043.2506691-1-fengwei.yin@intel.com>
- <20230721094043.2506691-3-fengwei.yin@intel.com>
- <CAOUHufY2tdO0JNTiY=RzHitR7CB1cM5kA=7bd6nbCUW6KM_OVA@mail.gmail.com>
- <05bc90b6-4954-b945-f0d8-373f565c1248@intel.com>
- <CAOUHufYJE40wcT4HTYFJ_7X5=my3OPbMyMBt+QNZdByuL6j58Q@mail.gmail.com>
- <feb58221-e481-3d71-8707-6ffe90158b66@intel.com>
- <CAOUHufa9rFS-VjbCRG6KGjb4YKOZioH=dLdTyFLWqEFePoL+wQ@mail.gmail.com>
- <0843fb4d-ab0b-2766-281c-ef32b6031dd7@intel.com>
- <CAOUHufaZCCVr1C19tZH=+wmWN7pPoJMLuivr=e90Akj29X1evw@mail.gmail.com>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <CAOUHufaZCCVr1C19tZH=+wmWN7pPoJMLuivr=e90Akj29X1evw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        shuah@kernel.org, pasha.tatashin@soleen.com,
+        zhansayabagdaulet@gmail.com, tyhicks@linux.microsoft.com,
+        raghavendra.kodsarathimmappa@amd.com
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Narasimhan.V@amd.com,
+        Santosh.Shukla@amd.com
+References: <20230728060109.4403-1-ayush.jain3@amd.com>
+ <8e4d9fa7-7550-87a9-ead1-2d2a8691cdab@redhat.com>
+From:   Ayush Jain <ayush.jain3@amd.com>
+In-Reply-To: <8e4d9fa7-7550-87a9-ead1-2d2a8691cdab@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: KL1PR01CA0058.apcprd01.prod.exchangelabs.com
- (2603:1096:820:5::22) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+X-ClientProxiedBy: PN3PR01CA0080.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::22) To IA1PR12MB6137.namprd12.prod.outlook.com
+ (2603:10b6:208:3eb::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CYYPR11MB8407:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f89d293-14ee-447e-0025-08db8f85c94e
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6137:EE_|DM6PR12MB4249:EE_
+X-MS-Office365-Filtering-Correlation-Id: 42ccd3ab-02a2-4e56-6e48-08db8f85d5ed
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ml4Z0VTfhy50ngDW1l9iD65d2DNqFldtAxS6a4YgwK1nrFWCk8ZYshoZWznFML8+PxK4f/4lI3Lcdt+Ogxt0CBvO0hYy7ZcVyqle1zblTwZUr9jFu4c7t/owgmVYdX/2doraMqPYbGZyGolQN04XY7s0ewHMIFu5pp9/qZYTy7GSBe5qIvI+XGjL7Dy5gut6iW2mufuS4UfTj+faj1TY2zhT8f3WlVv52PKdelnW9hb7p4+1Lt3ZXeI8yUU5KnjpTi2B8JPLTNOTznAJOY/a8bWFf0xxnar+QBD4o1vO2QVV8Rea2KWtqwujyH8+90qaeT1Nhq03fH6cPk4cdlMf7muiuVHUOm64bw+yX1bHQLv3urnRYCQspFnu2dv5ig2sbQEuO6nasqUKoY68Tcmt1AMhNtnrYduwhAFgQN7dPKaVk1E1VG0axv3Le0dcYbcN3It5yQQfAro03d5kjQ4o89dqZGk3xdrgp2LqhSul7qJ3S0mSnmLc11rEEGRDbTa7sTV0a+rpCxB2L8Z7uiZGl/wpFfYpYiY/8yrp6y+tKWDcDkFZKdQ+v5iNEKREo+qnZFrz4stahAcbj9VzqM08FlpqIqkCb5z5/f3UziU7+Aj/i7mZ54LamEQEkUfOGrvN1Szxn78dZ07070gmVzjm/ERN0x7gnsB5e/oDAU9JCEo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(346002)(396003)(136003)(39860400002)(376002)(451199021)(5660300002)(2906002)(2616005)(83380400001)(8676002)(8936002)(966005)(6486002)(38100700002)(31686004)(53546011)(478600001)(26005)(186003)(41300700001)(31696002)(6666004)(82960400001)(6512007)(6506007)(36756003)(66476007)(6916009)(86362001)(66556008)(4326008)(66946007)(316002)(21314003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: tHTZoGxLjpjUEMtzsOGlsmj9qvm2Be9SngPYgf1uwk8pqU3MDnu+OxemL3+oV+lchSMvnVYG2lPqioJKoeLUt0hLIC6ELYS9jMfl8VYlPmWQo11wInv2BkOgJ1qravCx/WswVu4+lNJldMWAXT7a9O4WZIMb4Mcvbj/ODqwIKnY1gXv+hRZuKL1tLfSOBpYit0Oj7QKjIa7T6aexjWnMJ6b4PMD5Pxk2nZvHF9bfTPGv62hZgbCOTrDCb/TJPlV3fSrgJvE38FKafiAeabh5Maty4kw6vWqOf8cH0MQjQqDyvlun27+VQRo0060JGb/5KzZ0VGVe/0UDIhN2F0N9ONhVu5btYS98DJVVKfgwEDspNq0cxAZHUPJtfYK01vwKgcMZ3fDFUstLI23xIre03BxAnPMTqbAboNNLQA9P10yyCKkr3lxV4o+kKLei5EXExZxPWzFEzrPfqIe1sBg/snHjJfArDRMJROTM1h0zuKeyAraiuOhNwmZByfKHynG1WwxTEfZRlapUyxkeMrIsNWLhCdKjVWbuJ26XjP3Mndv8Bbr0xdQsYORM/sRsOhBnCZNLWmz3Lk4IPHP+StNrSSc2BZTb1tgVoEbfASJ8Hj2MBIUpENYKRf6iUY4gSXGiaafEe8OHmPRjJPYYHlnbUA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6137.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(451199021)(83380400001)(2906002)(2616005)(6666004)(6486002)(53546011)(26005)(86362001)(6512007)(478600001)(38100700002)(5660300002)(41300700001)(31686004)(316002)(186003)(66946007)(66556008)(66476007)(31696002)(6506007)(8936002)(8676002)(36756003)(4326008)(6636002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHU1N0VpSGNoMWRUc0pack9zUGkrT2x2Snpzdmd4VHhsRVhtTDBPYTEzUlI2?=
- =?utf-8?B?bDV1NWZVVVlOWng2SGtjRENPUFpTRlFLWU81MjhRZDJqTFFwMVZKbi9VbmJi?=
- =?utf-8?B?eEdCaFBRdExrWVBHYVVrM2ZpUmhGMXg4UDNacEIxNFJSckFzQTMya1oxU09L?=
- =?utf-8?B?anpxYktybHVFV3V2aGdHdi9DM1ZWK0xsRlQ1M0pPYzNZd1F5UTlBUEV5a1dG?=
- =?utf-8?B?c1hmUElZek5tRDJPVFR1Qyt0Qlg1dFpHN0JzeExjYXJ0bCsrVXlVTzhXYzhT?=
- =?utf-8?B?azB5aFN2QnNkM0hiMU80QW91UC8vQmVOS3FHY25wNnNwTmY5UjNlZEcya1FV?=
- =?utf-8?B?Y1l6eFZMR1QvTmVJaFo2d1dpS2F1QUdIUFIySTFlL2RaU0FQYXk3cElSc2o4?=
- =?utf-8?B?SUg2RkJNc1RCc0lmT1MzTlBlY3Rja1pDaHkzQ1M0TnlhWDlSUnpjU3E1YXh5?=
- =?utf-8?B?WnAzRW42Mm9Yc3o4MWFZbGk4K2FoZmZTbXppTjVmYmNOR0NKeVdmQ0Q1S2lj?=
- =?utf-8?B?eFZpM0xWd1ZvZHVzdndTdHlLQi9QYk1odHljUzFlM3FwUW9LalFEbGxoWkdr?=
- =?utf-8?B?ZXdYYUVhV0xVSzFpbjdwOGpwZGZnWk9jOHpPbHlkV0lCVzF6VVJEUnY0NHo4?=
- =?utf-8?B?bVJ3UGJKVGQ2VXBhUjlpSXZtOUl3WGJSOEVqVEpWd005elVrT1dBOEJURlBZ?=
- =?utf-8?B?Uzl4dk1OaVpmMFBVNjBEQkVBNnFvbXZNNW1FRHBYWk4vSmR0R09rWTdpRWVW?=
- =?utf-8?B?WWZ1Yi9SSG1nVHBNcWlOOThremZTUjAxL1lNZlNZZXZDYnVvVTFMOXBYemRT?=
- =?utf-8?B?cHlGaVk3R2Nuam16VDhRTFJpK3NhK0NJK0xTNG9KU0hxSUhKcU9uOEdaN0hL?=
- =?utf-8?B?ZHhtL2dqWStibFdFRTdCUVkra0ZPWis1VUUvN3laZG9VZWtwZy9LY2V0WnBV?=
- =?utf-8?B?dG9WSVYzUCszVDVDVEI5Z2g2eGMzb29mMHlvNHQrWmR2WVZJMm8yT3NYd2VV?=
- =?utf-8?B?TmZrbTVTNC9QcFJwQUdtODRNUGd4NXdxVkVXRzBuN0hHSnhlT09mSlEwRnpH?=
- =?utf-8?B?dkRTbjFjU1RNakJKRmUzb2FrYTA5QU00dXRFUUppUHJhVjFqaDhvL1JSWXpj?=
- =?utf-8?B?QkE5MjZST1MxemQvOXB1OUNEc0JHMEhTSGRXeDBLeEdjRm15THdLSGlwcFBW?=
- =?utf-8?B?bGdPazdzUVJrVUtMUDlPWUpHeFl5RlVrVjV0enVWMSs4dkllT3ZFRlVhblQ0?=
- =?utf-8?B?cWZqTUR3WUR2YXRoMm9KUW0wV3VjUVZScEpXSVlRTDFoY3FVMlArcmxzM0Vy?=
- =?utf-8?B?Mk5FcVdLaXJFYVVnQ3c4ejRWdCtybnhQd3FuMVVmSjNncjIxYUNqMkZ3YWow?=
- =?utf-8?B?QjBEL1RlMGluU3pIWU5SMU11dzZGRFkyKzFUWTVZVForTlpyYlFZTXhqSUVE?=
- =?utf-8?B?RlpYOC80RU9xY0lIajdPN1Q4S2wrZ1MzTllOSDl4NVg5TzlNdjRPOGp0TEpq?=
- =?utf-8?B?Qmg1b0NiVUd5OFhUd3RqampJTlM5OTVmc1R1bmVzKzJ3ZDl6bXJjK253dGtI?=
- =?utf-8?B?NWdhZEtNdGZrenlYRTVtWWVmN1FKdjFPQUhLYUx1Zy94TzU2d3E3Yi82bjUy?=
- =?utf-8?B?aERsT2cwNkt4WVg5Rk1weHZLNjRGUGh5TCswcFRFUFp4YjlqUHZrL3dUM0J4?=
- =?utf-8?B?VWFPcGZ0S2ZmK1d0VlpQL3FyQTRXOHFYbXJaUHlXMDdKTjhKZlp3QXk3ZVpx?=
- =?utf-8?B?M05zRnFnNXZwVTAxWnhLLzdJRFpDMFRNTzJqbFhBZzA0MStjMUV5enRvc3Fn?=
- =?utf-8?B?WXR2citCeEhIQy9mR3krd05Ob2psQzVxYnI1cm9kODdmdFdOZ2t5SXZVU0Vx?=
- =?utf-8?B?YWVDQUJwTFo0eXFubEhGaW0yUndXSlpHUG1Ka0hSend1TkpPQlF0MWlDYTF0?=
- =?utf-8?B?ZTBaUFFFYmp1Qml4VEU4SUd0QWJGZExVbzZWQjM0U2ZTZ2owbTFXVDdJRFZr?=
- =?utf-8?B?TE5xdTdGYUdBNC9CQUhMQ2VrZWQyNGliRzVxK0p1aWxOM3hKVU5IVGhzVzdJ?=
- =?utf-8?B?R0M3eVZyaFZodlozY3JWVmE0UmR3UVFLckpEekJOTHIwVGhUMVNoYjR3Smwx?=
- =?utf-8?B?ejk3Q29ZMFVCRXJvT3pDVXdqTDBiS2NwUDh2czk5TTcvQjRxN2lhTEFXb3Zr?=
- =?utf-8?B?VEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f89d293-14ee-447e-0025-08db8f85c94e
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OWxwSGlHOGwveEZNVE44c2ZlUTJsc0lRRk9yZzZrLzdGd3JqNCtsUU9wQXJv?=
+ =?utf-8?B?Qk1kbE5wSlpPN04xdEZGNW1jQ01SRHNEVnBGL0FaVW1oMDJjR3NuQ2JQYXBx?=
+ =?utf-8?B?SVRLanVmaG5zRjd4a3YvVGNqZHJKYmRDVWxRUDJ4dG1sclVTckRYWm4xejQ4?=
+ =?utf-8?B?WGZ6Ump3aVQ3c3JHMmV3d1hOQUF1SjdDeHBvSHQvaXg1QjhCRklMRWF2UUds?=
+ =?utf-8?B?OW1qbS9jdGx4ZnhZSGdBM2F2YlFTelkvU1QyVVk3dGV6cm9sWXcrKzI4OHN1?=
+ =?utf-8?B?ZzBmNDF2ZEo2YXpLRVVwOWl4TktNeHordjBxdVFyVXBudThoYzVCV29wVFhJ?=
+ =?utf-8?B?TlRROU1QbEsvRVdlWlB6YjZHaE1NTEE0MVZSTkVzNUN5c0l4SDhwM3NaU3E2?=
+ =?utf-8?B?S3B2MVpYK3FxY3piSkQ5eVZPSGpUOW9xQXhOVlY1TnZTUXNaOHdEcUV3NVVQ?=
+ =?utf-8?B?eUtaRnZST2VGOGRRbHE0eVVaZG1BVk5YQVdrTFFkdVRRcUM3RUswZC9mSW9x?=
+ =?utf-8?B?RnFsbFdkb0JnV2hBUTNQc3ovZjIxQ2ZwOENsWWM2VUowVFQ0Y3llTDcvdVFL?=
+ =?utf-8?B?NzJRUzFxTldhNFoyekdBYTJac1EybTl4M0xHRWFaVzd1Q280cUM1V3A3QlF0?=
+ =?utf-8?B?V2l0RkovN0ZEbnVBRnplOEs2bkJUTU43WTlhY2hqOGowM2JNRjA4Q2FrZGM0?=
+ =?utf-8?B?NUo1YXphbm9zTVAwcHc3VW5PaEJDMEtuQnkyZ2VQN2ZmT0Nhd1VRZGRCZi85?=
+ =?utf-8?B?YnhxQ3g1TTlHV0d0TmhhNEJROFZFUGttOTJuYUlHMVU2Vk9vZEZpOVMzODNI?=
+ =?utf-8?B?eVFJK2lLUmhuZWF5RzZ0R0pmT21zMjlHWjlvcWd6d1lacVRrZTBMcDQvYUJM?=
+ =?utf-8?B?aUlFeHd0NkFXZ1ptUHNDaUhjbUFteldZQ0hvK05PVkxYZ25lUzROY1NzR092?=
+ =?utf-8?B?Q053ZUp2QjlldmpoV243MXAxOVZnajVVa0tkcEVza1RyblA5Q2dmeitiZmo4?=
+ =?utf-8?B?YXVwaUZScHFCTGhqNXBjbXVkUExmUENqWXVHTnNnQjV3Z1M2TEZNYzhwRHhD?=
+ =?utf-8?B?TVBsT1RzN2hRR0pJRjQ4d21icnNpYUg3ZTR2N0M4aXNCWTYwMzlKTjlvcnBG?=
+ =?utf-8?B?aENkOVhtNVRpWHR1WUM5Kyt6OE90RjFSN1dxcGdaTm1tTnFhUnhxbENnUFB0?=
+ =?utf-8?B?cml4QmtwbVlqNlRVTFg5MXNYL0d6aGZTbjhuUnoxWGl0eHRzWjB2UVJYSnRQ?=
+ =?utf-8?B?OVVJYzFabVhvYzhQZTRHbjlIeU9RY0VKajlrbzVhYk1oZkphWWxHdWl0ek45?=
+ =?utf-8?B?eEFvRjMyRDdndGI5elVrREdNWlowNkpXUCtKTjdUc3VXbUZjZlhIUHhJRW9D?=
+ =?utf-8?B?UkMwamlXWERzanBjTWN2ZmNsbmxsZWxJOUE4VisxenV5K0JOVXdsOEFadGxt?=
+ =?utf-8?B?eFV1Ry9QSVJwNCt3dmE1YnlXZ1VmdEY4TmxXYjE3dUFGdk9Pb2NUQUJGYVpS?=
+ =?utf-8?B?ZnZtRWtBZ3l1cVZ1YzBacnJObmozM1JOaU1GT0VlZGwvT05RRTBuV1lXM1Nr?=
+ =?utf-8?B?NGpFSWVJcVIza2lCQlZGWFBJdU5SeGdVYlo2MkNmV2grZmV4aGYxb01kS0Ji?=
+ =?utf-8?B?MnBBZ2kvaWdnOTBmR0ZBQWNMVHJUNkpaWmcrVWJSdFhGaFFSWm9GVlVSTUts?=
+ =?utf-8?B?OXMxdjBoN1IreGpNNkwzcXRvSEJtcnQyZk5MNER4MzA5RFRqQ1VtVnlzTkpU?=
+ =?utf-8?B?c1ovcDQ2bU1pTlBFVEZCNU9tRWR2dmw0a3NPRGE0cFhNbEszU0lydnh6WUh6?=
+ =?utf-8?B?a01DY3NJelV3WUNidFA5dFcrZEYxdXhRWkFUM0liSksyMklMQ3JzdHd1Zi9m?=
+ =?utf-8?B?dVZaRmlHajcxbkh5VlFuSnAra3FHVm1RWW5ONDBpS2hLWGJ0SFRVN25CSHZ5?=
+ =?utf-8?B?MTNjeThIOUEyK1BBU3BFWVhHa09yWHFmOG5Ydi9VUEc5Wjlnc3JvNEFvZWVJ?=
+ =?utf-8?B?T2dieVRZKy9OOCtMQ0ZQS2VndStYdjh6WThjYm1kczVkMVh5a011OFRWazFL?=
+ =?utf-8?B?cDRaNit3V3hOczRJTWZmVkRXM0NBQnNMSm1GbjlFKzVodGhSV3hCNVZXZWow?=
+ =?utf-8?Q?/Kyt+fs/JcYA2RieUMG6jHwtC?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42ccd3ab-02a2-4e56-6e48-08db8f85d5ed
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6137.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:14:57.8358
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 16:15:18.7751
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fZsXEXGZoftv5LyoLN5KU1TinjyaIVgy0oQ8ATPwGVN1dN7GeolMyj7SBCfYyN2VbI/vJaMX1AKJGn2Efmr/oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR11MB8407
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: kdNQkdl3o2jC47u2PU5w7QwauOLWMkoGZ2QGGGRAdW2xo5XZt5z82r4lMUd9Q9kSGHb3DEKy2Dso6n8ZlXUpsg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4249
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello David,
 
-
-On 7/27/2023 11:28 AM, Yu Zhao wrote:
-> On Wed, Jul 26, 2023 at 12:21 AM Yin Fengwei <fengwei.yin@intel.com> wrote:
+On 7/28/2023 8:05 PM, David Hildenbrand wrote:
+> On 28.07.23 08:01, Ayush Jain wrote:
+>> A missing break in kms_tests leads to kselftest hang when the
+>> parameter -s is used.
+>> In current code flow because of missing break in -s, -t parses
+>> args spilled from -s and as -t accepts only valid values as 0,1
+>> so any arg in -s >1 or <0, gets in ksm_test failure
 >>
+>> This went undetected since, before the addition of option -t,
+>> the next case -M would immediately break out of the switch
+>> statement but that is no longer the case
 >>
->> On 7/26/23 13:40, Yu Zhao wrote:
->>> On Tue, Jul 25, 2023 at 10:44 PM Yin Fengwei <fengwei.yin@intel.com> wrote:
->>>>
->>>>
->>>> On 7/26/23 11:26, Yu Zhao wrote:
->>>>> On Tue, Jul 25, 2023 at 8:49 PM Yin Fengwei <fengwei.yin@intel.com> wrote:
->>>>>>
->>>>>>
->>>>>> On 7/25/23 13:55, Yu Zhao wrote:
->>>>>>> On Fri, Jul 21, 2023 at 3:41 AM Yin Fengwei <fengwei.yin@intel.com> wrote:
->>>>>>>>
->>>>>>>> Currently, in function madvise_cold_or_pageout_pte_range(), the
->>>>>>>> young bit of pte/pmd is cleared notify subscripter.
->>>>>>>>
->>>>>>>> Using notify-able API to make sure the subscripter is signaled about
->>>>>>>> the young bit clearing.
->>>>>>>>
->>>>>>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
->>>>>>>> ---
->>>>>>>>  mm/madvise.c | 18 ++----------------
->>>>>>>>  1 file changed, 2 insertions(+), 16 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>>>>>> index f12933ebcc24..b236e201a738 100644
->>>>>>>> --- a/mm/madvise.c
->>>>>>>> +++ b/mm/madvise.c
->>>>>>>> @@ -403,14 +403,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>>>>>                         return 0;
->>>>>>>>                 }
->>>>>>>>
->>>>>>>> -               if (pmd_young(orig_pmd)) {
->>>>>>>> -                       pmdp_invalidate(vma, addr, pmd);
->>>>>>>> -                       orig_pmd = pmd_mkold(orig_pmd);
->>>>>>>> -
->>>>>>>> -                       set_pmd_at(mm, addr, pmd, orig_pmd);
->>>>>>>> -                       tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
->>>>>>>> -               }
->>>>>>>> -
->>>>>>>> +               pmdp_clear_flush_young_notify(vma, addr, pmd);
->>>>>>>>                 folio_clear_referenced(folio);
->>>>>>>>                 folio_test_clear_young(folio);
->>>>>>>>                 if (folio_test_active(folio))
->>>>>>>> @@ -496,14 +489,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>>>>>>
->>>>>>>>                 VM_BUG_ON_FOLIO(folio_test_large(folio), folio);
->>>>>>>>
->>>>>>>> -               if (pte_young(ptent)) {
->>>>>>>> -                       ptent = ptep_get_and_clear_full(mm, addr, pte,
->>>>>>>> -                                                       tlb->fullmm);
->>>>>>>> -                       ptent = pte_mkold(ptent);
->>>>>>>> -                       set_pte_at(mm, addr, pte, ptent);
->>>>>>>> -                       tlb_remove_tlb_entry(tlb, pte, addr);
->>>>>>>> -               }
->>>>>>>> -
->>>>>>>> +               ptep_clear_flush_young_notify(vma, addr, pte);
->>>>>>>
->>>>>>> These two places are tricky.
->>>>>>>
->>>>>>> I agree there is a problem here, i.e., we are not consulting the mmu
->>>>>>> notifier. In fact, we do pageout on VMs on ChromeOS, and it's been a
->>>>>>> known problem to me for a while (not a high priority one).
->>>>>>>
->>>>>>> tlb_remove_tlb_entry() is batched flush, ptep_clear_flush_young() is
->>>>>>> not. But, on x86, we might see a performance improvement since
->>>>>>> ptep_clear_flush_young() doesn't flush TLB at all. On ARM, there might
->>>>>>> be regressions though.
->>>>>>>
->>>>>>> I'd go with ptep_clear_young_notify(), but IIRC, Minchan mentioned he
->>>>>>> prefers flush. So I'll let him chime in.
->>>>>> I am OK with either way even no flush way here is more efficient for
->>>>>> arm64. Let's wait for Minchan's comment.
->>>>>
->>>>> Yes, and I don't think there would be any "negative" consequences
->>>>> without tlb flushes when clearing the A-bit.
->>>>>
->>>>>>> If we do end up with ptep_clear_young_notify(), please remove
->>>>>>> mmu_gather -- it should have been done in this patch.
->>>>>>
->>>>>> I suppose "remove mmu_gather" means to trigger flush tlb operation in
->>>>>> batched way to make sure no stale data in TLB for long time on arm64
->>>>>> platform.
->>>>>
->>>>> In madvise_cold_or_pageout_pte_range(), we only need struct
->>>>> mmu_gather *tlb because of tlb_remove_pmd_tlb_entry(), i.e., flushing
->>>>> tlb after clearing the A-bit. There is no correction, e.g., potential
->>>>> data corruption, involved there.
->>>>
->>>> From https://lore.kernel.org/lkml/20181029105515.GD14127@arm.com/,
->>>> the reason that arm64 didn't drop whole flush tlb in ptep_clear_flush_young()
->>>> is to prevent the stale data in TLB. I suppose there is no correction issue
->>>> there also.
->>>>
->>>> So why keep stale data in TLB in madvise_cold_or_pageout_pte_range() is fine?
->>>
->>> Sorry, I'm not sure I understand your question here.
->> Oh. Sorry for the confusion. I will explain my understanding and
->> question in detail.
+>> Add the missing break statement.
 >>
->>>
->>> In this patch, you removed tlb_remove_tlb_entry(), so we don't need
->>> struct mmu_gather *tlb any more.
->> Yes. You are right.
+>> ----Before----
+>> ./ksm_tests -H -s 100
+>> Invalid merge type
 >>
->>>
->>> If you are asking why I prefer ptep_clear_young_notify() (no flush),
->>> which also doesn't need tlb_remove_tlb_entry(), then the answer is
->>> that the TLB size doesn't scale like DRAM does: the gap has been
->>> growing exponentially. So there is no way TLB can hold stale entries
->>> long enough to cause a measurable effect on the A-bit. This isn't a
->>> conjecture -- it's been proven conversely: we encountered bugs (almost
->>> every year) caused by missing TLB flushes and resulting in data
->>> corruption. They were never easy to reproduce, meaning stale entries
->>> never stayed long in TLB.
+>> ----After----
+>> ./ksm_tests -H -s 100
+>> Number of normal pages:    0
+>> Number of huge pages:    50
+>> Total size:    100 MiB
+>> Total time:    0.401732682 s
+>> Average speed:  248.922 MiB/s
 >>
->> when I read https://lore.kernel.org/lkml/20181029105515.GD14127@arm.com/,
->>
->> my understanding is that arm64 still keep something in ptep_clear_flush_young.
->> The reason is finishing TLB flush by next context-switch to make sure no
->> stale entries in TLB cross next context switch.
->>
->> Should we still keep same behavior (no stable entries in TLB cross next
->> context switch) for madvise_cold_or_pageout_pte_range()?
->>
->> So two versions work (I assume we should keep same behavior) for me:
->>   1. using xxx_flush_xxx() version. but with possible regression on arm64.
->>   2. using none flush version. But do batched TLB flush.
+>> Fixes: 9e7cb94ca218 ("selftests: vm: add KSM merging time test")
 > 
-> I see. I don't think we need to flush at all, i.e., the no flush
-> version *without* batched TLB flush. So far nobody can actually prove
-> that flushing TLB while clearing the A-bit is beneficial, not even in
-> theory :)
+> I think this actually fixes 07115fcc15b4 ("selftests/mm: add new selftests for KSM") that added the "t" parsing.
+> 
 
-I will just send the fix for folio_mapcount() (with your reviewed-by) as
-it's bug fix and it's better to be merged standalone.
+Sure will update in v2.
 
-The other three patches need more time for discussion.
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
 
-Regards
-Yin, Fengwei
-
+Thanks,
+Ayush Jain
