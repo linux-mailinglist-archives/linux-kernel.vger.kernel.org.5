@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC2A766936
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C7B766937
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjG1JqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S234900AbjG1JrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235178AbjG1Jpz (ORCPT
+        with ESMTP id S231184AbjG1JrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:45:55 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F7C26BC
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:45:53 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b93fba1f62so29357221fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:45:53 -0700 (PDT)
+        Fri, 28 Jul 2023 05:47:07 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E44B2686
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:47:06 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-56344354e2cso1316545eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:47:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690537552; x=1691142352;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FgMNDG4ongin98+9dkOLLQ9bJohCnPv4w5zxnG49dk4=;
-        b=Tim5gIJVQuPTDV1qsl6ufALej5ONI6uuREeU7Hvc5WbfNtmNiNIwZgLY28e6moZOiB
-         kKqYcbRsYtQKL95RG44vNT+LkA6a0qdoleTerLlZ2rjlXV/c2od4u0MrD6SdJ/ZGeLsk
-         h7vR4+kFIgLK1D5C1q+0tLNgqRHiI9P0IjJMFdfYDxg2Xf0eVNUlXjrpMyV4VI6+p9Wb
-         MXrwjxQUS6eFKkx7c+813w6SS/ShzwqlZqW+cfQHNMv6eFnOC+FiRyT5GaLROF0P78fB
-         ygcPIf8/6cokVlAJcXDW5f1WfQrRhwNDQRdVA/alEXSqP6DIhX0iePrgc1+ho0TOjBIR
-         AzOw==
+        d=gmail.com; s=20221208; t=1690537625; x=1691142425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+fQn/nkax78K0WoMWcF3QZWltL5QVXeLOWL6w4xEHaY=;
+        b=AC6U0OizSAXw7OQjTsMZUreuJ7KP5FMUsobCOmdiamMmQLocwwlshCfqlrPnNfPdxX
+         n1f+7KtTIAQgGKKPKPz+sYPudc9ygaqX7cmjdD1vvSMybNlQlGTDl7eum+Z38DM/2UOe
+         wqLaR1oS9KDsJeTICOo+ojIl45BwgYaBRueYRhF7jOCKsS9dJb1h6oJYP+PaNQiPDk+D
+         R/D7IEDV5q77SPIY8mfDZrl06HeKv8tAD6xYgt9Smqou3bwO0FHE/+/E9vi9IJQWiYbt
+         kZX0PirRujtHk8aVce3QI2CAlbOwJRPaDLnWVmpiD7Ihc/DUwIU+OTHpY0WDlB2xMSRz
+         3lLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690537552; x=1691142352;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgMNDG4ongin98+9dkOLLQ9bJohCnPv4w5zxnG49dk4=;
-        b=Mh/JQ4HzaEfiLISGwM3xcszNX7h8nqPkt9XPzdvwStIYTIAOA0uh977tVfm5a7/niq
-         Vdh7yc0yixvnm5VQbYid7VXYqa2EbAYhDqvNKWKyVa4aHH+Im2MMsGpz7SK6SVo3fwHw
-         Kx51oH+jAsbqbCg5Qck9sDyGlw+5RrC5XD2W7+wlBSHzbvD1maHT+GzrpwVw8eSXkbx1
-         fpCeM+2RWh07D79S0pYjrirmEiSpoEZwbl1z5r096/4U/n4Sd3rJXtBJbRuZeykh46sg
-         ZJi5HLeT0DvU40bJgZbYf7vpCXU3QG0vClf+I/39h4Qa9bdnkMBIzUWsYfVw2ekeuJP6
-         w9Bg==
-X-Gm-Message-State: ABy/qLaGDqKXATDS/0/yi/98Tv72NRszNQDfAzQZGPlVj6+P5FMaJdS9
-        9AfghpkCfXVIf0lmZ2d/l+sV6g==
-X-Google-Smtp-Source: APBJJlFooh1vUVlzLog4m8502Xt0bVDloiQgURR9dNrDuxY5+dTqA0S0UQ0HJtLhy0tZBzjlZGJiTg==
-X-Received: by 2002:a2e:7d15:0:b0:2b5:9e51:2912 with SMTP id y21-20020a2e7d15000000b002b59e512912mr1240030ljc.24.1690537551819;
-        Fri, 28 Jul 2023 02:45:51 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id a4-20020a2e8304000000b002b6ad323248sm863180ljh.10.2023.07.28.02.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 02:45:51 -0700 (PDT)
-Message-ID: <7986a634-63b2-28d6-5f17-7b982ae56bcf@linaro.org>
-Date:   Fri, 28 Jul 2023 11:45:48 +0200
+        d=1e100.net; s=20221208; t=1690537625; x=1691142425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+fQn/nkax78K0WoMWcF3QZWltL5QVXeLOWL6w4xEHaY=;
+        b=ImNegX8nRMa//Y/HoJ8B9NfHCYQU1YrxsyRNyqnZja/pRPsQsAJX1nKzTHSwFlQ7vZ
+         EINLcozlu4yjjT3gh6wAnsWO/ZonyxkU45FItYbIyshYKz+c1LNgk4h46Kdj1xMfZ1rH
+         8qP3v6Cnw5TxAniJKAozT5D500kDHoAaGyQFB2V/jf8JxbSslGZ8nAN6kQFEZdAu70bq
+         B2hZvlHjyBM6YgdDjjWaByfb2IZgxltG2t0KdkeBtCgEkHprfo1tr5TZmJYOT6A2WMJv
+         ZAzFpJF4RtXjc+fuYbEX+OC+gp/O5FwOBXwArUPIDt9b5B9jIIyUxPEn4eG3hSzh2haW
+         ojGg==
+X-Gm-Message-State: ABy/qLbzF0KKkh5Hi7RTpdG9Ru0eFBXmgsGUX/vBkVu1phxsXnPVj4br
+        J3oHgH/SoNIzYXDM06lq1pJ6jZ604YZORP32Mpt72ZZD/vo=
+X-Google-Smtp-Source: APBJJlE3AudWhrlLQbXJxrKRnc8MJuJ5fBi9b7N0eP6XhYIVsqtpDA7ZWwrSHXcHA6972AEZgtA9zVDqCGbsgdJm+tU=
+X-Received: by 2002:a4a:6519:0:b0:566:ed69:422d with SMTP id
+ y25-20020a4a6519000000b00566ed69422dmr1746130ooc.7.1690537625341; Fri, 28 Jul
+ 2023 02:47:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 0/2] soc: loongson2_pm: add power management support
-Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     =?UTF-8?B?6ZmI5Y2O5omN?= <chenhuacai@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        Yinbo Zhu <zhuyinbo@loongson.cn>, Liu Yun <liuyun@loongson.cn>
-References: <20230728074944.26746-1-zhuyinbo@loongson.cn>
- <74a37e9d.9a24.1899b9bea85.Coremail.chenhuacai@loongson.cn>
- <1c8b12b4-79c3-5018-c7df-946fe690e8c8@linaro.org>
- <20230728-pessimism-exclaim-de0dd7f4bb64@wendy>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728-pessimism-exclaim-de0dd7f4bb64@wendy>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me> <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
+ <79619e92b70fdb4b324758ddb34f84b3b8963256.camel@maquefel.me>
+In-Reply-To: <79619e92b70fdb4b324758ddb34f84b3b8963256.camel@maquefel.me>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 28 Jul 2023 12:46:28 +0300
+Message-ID: <CAHp75VdSaxzU_7A7b=Htph29XA=ZbqUPJ6RJu+HtrSA2EbcXig@mail.gmail.com>
+Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,31 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 11:18, Conor Dooley wrote:
-> On Fri, Jul 28, 2023 at 10:36:42AM +0200, Krzysztof Kozlowski wrote:
->> On 28/07/2023 10:27, 陈华才 wrote:
->>> Reviewd-by: Huacai Chen <chenhuacai@loongson.cn>
->>
->> ...
->>
->>>
->>>
->>> 本邮件及其附件含有龙芯中科的商业秘密信息，仅限于发送给上面地址中列出的个人或群组。禁止任何其他人以任何形式使用（包括但不限于全部或部分地泄露、复制或散发）本邮件及其附件中的信息。如果您错收本邮件，请您立即电话或邮件通知发件人并删除本邮件。 
->>> This email and its attachments contain confidential information from Loongson Technology , which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction or dissemination) by persons other than the intended recipient(s) is prohibited. If you receive this email in error, please notify the sender by phone or email immediately and delete it. 
->>
->>
->> Ooops!
->>
->> Are we intended person/entities to receive your Reviewed-by tag?
-> 
-> It's okay, you only got a "Reviewd-by" tag ;)
+On Fri, Jul 28, 2023 at 12:28=E2=80=AFPM Nikita Shubin
+<nikita.shubin@maquefel.me> wrote:
+>
+> Hello Andy!
+>
+> On Fri, 2023-07-21 at 17:13 +0300, Andy Shevchenko wrote:
+> > On Thu, Jul 20, 2023 at 02:29:07PM +0300, Nikita Shubin via B4 Relay
+> > wrote:
+> > > From: Nikita Shubin <nikita.shubin@maquefel.me>
+> > > +       spin_lock_irqsave(&ep93xx_swlock, flags);
+> > > +
+> > > +       regmap_read(map, EP93XX_SYSCON_DEVCFG, &val);
+> > > +       val &=3D ~clear_bits;
+> > > +       val |=3D set_bits;
+> > > +       regmap_write(map, EP93XX_SYSCON_SWLOCK,
+> > > EP93XX_SWLOCK_MAGICK);
+> > > +       regmap_write(map, EP93XX_SYSCON_DEVCFG, val);
+> >
+> > Is this sequence a must?
+> > I.o.w. can you first supply magic and then update devcfg?
+> >
+>
+> Unfortunately it is a must to write EP93XX_SYSCON_SWLOCK and only then
+> the next write to swlocked registers will succeed.
 
-I guess so, especially that this disclaimer should be useless. But on
-the other hand, do I want to deal with it if once Loongson sends me
-Cease-and-desist letter for something? Why even thinking about this
-should be my problem? Why should I even consider this topic: is it
-harmless or is there any risk?
+This doesn't answer my question. Can you first write a magic and then
+_update_ the other register (update means RMW op)?
 
-Best regards,
-Krzysztof
 
+--=20
+With Best Regards,
+Andy Shevchenko
