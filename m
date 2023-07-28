@@ -2,220 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE80A766073
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0214A766072
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 02:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjG1AA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 20:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S229715AbjG1AAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 20:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjG1AAx (ORCPT
+        with ESMTP id S229539AbjG1AAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 27 Jul 2023 20:00:53 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787401BF4;
-        Thu, 27 Jul 2023 17:00:52 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id E07585C0062;
-        Thu, 27 Jul 2023 20:00:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 27 Jul 2023 20:00:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1690502451; x=1690588851; bh=YDZ5wrTMEoKyUez3DWoQJzeqieGk0xzOSK5
-        lvx+th/c=; b=GSezMDM4tpgPyc3/2yAMYOeovTwPFQ7/URTDGh0jIsW5loyQ8qE
-        GWsxWPIYJ/CIyon1lVUG5EU3lia2Czq/9Zb19hvLYVenjRQjAugKF/nJqYSyVAfE
-        x38Rr5IuEDN2YtRkKhxQanSzwTr45+dIsFGwS//gled2QNrRR5S4qYJKXQebRF3E
-        ukO0jYpJ+nRyUBJD7MLQ1+SwoZvLZDImcXOEZa/1XsjrgfmJk4NTn4r0TW0ljKmU
-        VDFdfAjvTpWldaoKrP24Lk/va/OHwpNzbZ6+zazYaEOGPPt71MqGscVnMeBSJQHw
-        dItriuSzXfG/XHMD0ay65yIn0NCl4SPvnbA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690502451; x=1690588851; bh=YDZ5wrTMEoKyUez3DWoQJzeqieGk0xzOSK5
-        lvx+th/c=; b=d1GPFATMb4cJnbcHH1SK+5kFcDnmExRbGoPhuS9HZfU8+pSVoXT
-        8nsEUUrlbnCB5yRGck7I29Naxwp8cFg42ETug21XERIVGWedYr6+aJTr+DgpZccg
-        /f743TBiGg1ZeePRsvgJ+Ud+o1wLo0tNTFs8sZyIDAuCzEb6/+4ape+8s4VIyKuF
-        XEtz0gvEcDczaGa+IJaiciMnjDBPYx1i5+Ccv+lu+gCu0sxGb9Yw+3xp8UUPe2zi
-        lf1/K6wjFkZurpUmobgyVgSvo6KbiTtXL82nATLQ++cUY3T1VpzPPABhDu+mvI9b
-        kQeCKNpQ9m1XEn+o9tnCJJnpX1ncefl5QCg==
-X-ME-Sender: <xms:MgXDZPsbMzZG2JJ1FhJfGt2O-xx1nZ0b0ofjI_hQEuY6LLzFnkXZkA>
-    <xme:MgXDZAeIQLwlsfv_H2U2x51SsGQzBc4f4GtG-AHbL2JplWx-z736kAEjrzCOj36zs
-    KWgb6_w3U86>
-X-ME-Received: <xmr:MgXDZCyNhJFNpOLE6kQyVbI_1DSo5lyMfDBLpz__MLwr_TamXGOXwAdReb6AD2Uz2TmurAqqzLqCWt60Qzd6Xa57nQ0x5cwmCjv2tiLZaJl8aIp3aBs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieehgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    egvdetvedvfeeivdeuueejgeetvdehlefhheethfekgfejueffgeeugfekudfhjeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:MgXDZOMPuZ2rwjy38_bj67LmVzI6SQKZBwmba90NnsGXfFLITaOZuQ>
-    <xmx:MgXDZP95mSeASwB53qieoPpGW-IB5UmsECpbCpps_lTh6XinsvKtaA>
-    <xmx:MgXDZOWn7tn-FVsctyXctSZIeqm53FwQJGeMecSLrCav_-dG-c1E0Q>
-    <xmx:MwXDZCXcUWg9USleDMmSeh4MYAxNlyQrhp-M1pm8Et35nEu4g40gEQ>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 27 Jul 2023 20:00:44 -0400 (EDT)
-Message-ID: <996e11bf-5f22-3ab7-2951-92109649195d@themaw.net>
-Date:   Fri, 28 Jul 2023 08:00:39 +0800
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82E51FC4;
+        Thu, 27 Jul 2023 17:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690502449;
+        bh=kYd9MCQv4bFC1hzebI8mdDUARnwaJlRVeWrVkwXaNSE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QzshTNZnGsk63UlEyMgQU+nueGmpdigNrI99Ra2O5xGNSte1DqLsWFLvaYeqSKCKw
+         tf++yNGPiwjBAbMchcnRYWqiCFvL1oTTKIbOULzVHfHI6m3rbrprJPMbo5i0Qn+gKt
+         KotTxcLCzaaXDLNNlqfpkf7lUgHdJRTQyCMxCSV4WF/mDgEsq4csgdhEJeJyBb798C
+         opZRFhjEzkIB8yC6a5WsUWf/7Hdx18xVGa3VGGQosX10oOEduV3gFInROMPpKsEzIR
+         Hgq0qlAf1h64H1nQvoTqU06q1LA1eg/kW+siOtCLAl5zhXMB5Nd/rIqSqEe4fa98XU
+         4pQdtE8JSczMg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RBnpT1G5Dz4wZp;
+        Fri, 28 Jul 2023 10:00:49 +1000 (AEST)
+Date:   Fri, 28 Jul 2023 10:00:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the mm tree with Linus' tree
+Message-ID: <20230728100047.4f9cd375@canb.auug.org.au>
+In-Reply-To: <20230728092915.732d4115@canb.auug.org.au>
+References: <20230728091849.7f32259d@canb.auug.org.au>
+        <20230728092915.732d4115@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 1/2] kernfs: dont take i_lock on inode attr read
-To:     Imran Khan <imran.f.khan@oracle.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        elver@google.com
-References: <166606025456.13363.3829702374064563472.stgit@donald.themaw.net>
- <166606036215.13363.1288735296954908554.stgit@donald.themaw.net>
- <Y2BMonmS0SdOn5yh@slm.duckdns.org> <20221221133428.GE69385@mutt>
- <7815c8da-7d5f-c2c5-9dfd-7a77ac37c7f7@themaw.net>
- <e25ee08c-7692-4042-9961-a499600f0a49@app.fastmail.com>
- <9e35cf66-79ef-1f13-dc6b-b013c73a9fc6@themaw.net>
- <db933d76-1432-f671-8712-d94de35277d8@themaw.net> <20230718190009.GC411@mutt>
- <76fcd1fe-b5f5-dd6b-c74d-30c2300f3963@themaw.net>
- <ce407424e98bf5f2b186df5d28dd5749a6cbfa45.camel@themaw.net>
- <15eddad0-e73b-2686-b5ba-eaacc57b8947@themaw.net>
- <3505769d-9e7a-e76d-3aa7-286d689345b6@oracle.com>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <3505769d-9e7a-e76d-3aa7-286d689345b6@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/hSaS_j2wk.vRPV.Q0JkEiBf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/7/23 12:30, Imran Khan wrote:
-> Hello Ian,
-> Sorry for late reply. I was about to reply this week.
+--Sig_/hSaS_j2wk.vRPV.Q0JkEiBf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Fri, 28 Jul 2023 09:29:15 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On 27/7/2023 10:38 am, Ian Kent wrote:
->> On 20/7/23 10:03, Ian Kent wrote:
->>> On Wed, 2023-07-19 at 12:23 +0800, Ian Kent wrote:
-> [...]
->>> I do see a problem with recent changes.
->>>
->>> I'll send this off to Greg after I've done some testing (primarily just
->>> compile and function).
->>>
->>> Here's a patch which describes what I found.
->>>
->>> Comments are, of course, welcome, ;)
->> Anders I was hoping you would check if/what lockdep trace
->>
->> you get with this patch.
->>
->>
->> Imran, I was hoping you would comment on my change as it
->>
->> relates to the kernfs_iattr_rwsem changes.
->>
->>
->> Ian
->>
->>> kernfs: fix missing kernfs_iattr_rwsem locking
->>>
->>> From: Ian Kent <raven@themaw.net>
->>>
->>> When the kernfs_iattr_rwsem was introduced a case was missed.
->>>
->>> The update of the kernfs directory node child count was also protected
->>> by the kernfs_rwsem and needs to be included in the change so that the
->>> child count (and so the inode n_link attribute) does not change while
->>> holding the rwsem for read.
->>>
-> kernfs direcytory node's child count changes in kernfs_(un)link_sibling and
-> these are getting invoked while adding (kernfs_add_one),
-> removing(__kernfs_remove) or moving (kernfs_rename_ns)a node. Each of these
-> operations proceed under kernfs_rwsem and I see each invocation of
-> kernfs_link/unlink_sibling during the above mentioned operations is happening
-> under kernfs_rwsem.
-> So the child count should still be protected by kernfs_rwsem and we should not
-> need to acquire kernfs_iattr_rwsem in kernfs_link/unlink_sibling.
+> On Fri, 28 Jul 2023 09:18:49 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >
+> > Today's linux-next merge of the mm tree got a conflict in:
+> >=20
+> >   mm/memory.c
+> >=20
+> > between commit:
+> >=20
+> >   657b5146955e ("mm: lock_vma_under_rcu() must check vma->anon_vma unde=
+r vma lock")
+> >=20
+> > from Linus' tree and commits:
+> >=20
+> >   69f6bbd1317f ("mm: handle userfaults under VMA lock")
+> >   a3bdf38e85aa ("mm: allow per-VMA locks on file-backed VMAs")
+> >=20
+> > from the mm tree.
+> >=20
+> > I fixed it up (I think, please check - see below) and can carry the fix
+> > as necessary. This is now fixed as far as linux-next is concerned, but
+> > any non trivial conflicts should be mentioned to your upstream
+> > maintainer when your tree is submitted for merging.  You may also want
+> > to consider cooperating with the maintainer of the conflicting tree to
+> > minimise any particularly complex conflicts.
+> >=20
+> > --=20
+> > Cheers,
+> > Stephen Rothwell
+> >=20
+> > diff --cc mm/memory.c
+> > index ca632b58f792,271982fab2b8..000000000000
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@@ -5392,32 -5597,18 +5597,21 @@@ retry
+> >   	if (!vma)
+> >   		goto inval;
+> >  =20
+> > - 	/* Only anonymous and tcp vmas are supported for now */
+> > - 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
+> >  -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
+> >  -	if (vma_is_anonymous(vma) && !vma->anon_vma)
+> > --		goto inval;
+> > --
+> >   	if (!vma_start_read(vma))
+> >   		goto inval;
+> >  =20
+> >  +	/*
+> >  +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+> >  +	 * This check must happen after vma_start_read(); otherwise, a
+> >  +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+> >  +	 * from its anon_vma.
+> >  +	 */
+> > - 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
+> > - 		goto inval_end_read;
+> > -=20
+> > - 	/*
+> > - 	 * Due to the possibility of userfault handler dropping mmap_lock, a=
+void
+> > - 	 * it for now and fall back to page fault handling under mmap_lock.
+> > - 	 */
+> > - 	if (userfaultfd_armed(vma))
+> > ++	if (unlikely(vma_is_anonymous(vma) && !vma_is_tcp(vma)))
+> >  +		goto inval_end_read;
+> >  +
+> >   	/* Check since vm_start/vm_end might change before we lock the VMA */
+> >  -	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)) {
+> >  -		vma_end_read(vma);
+> >  -		goto inval;
+> >  -	}
+> >  +	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end))
+> >  +		goto inval_end_read;
+> >  =20
+> >   	/* Check if the VMA got isolated after we found it */
+> >   	if (vma->detached) { =20
+>=20
+> Sorry, doesn't even build ... let me try that again.
 
-Yes, that's exactly what I intended (assuming you mean write lock in 
-those cases)
+I have gone with below.  Again, please check.
 
-when I did it so now I wonder what I saw that lead to my patch, I'll 
-need to look
+--=20
+Cheers,
+Stephen Rothwell
 
-again ...
+diff --cc mm/memory.c
+index ca632b58f792,271982fab2b8..000000000000
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@@ -5392,32 -5597,18 +5597,21 @@@ retry
+  	if (!vma)
+  		goto inval;
+ =20
+- 	/* Only anonymous and tcp vmas are supported for now */
+- 	if (!vma_is_anonymous(vma) && !vma_is_tcp(vma))
+ -	/* find_mergeable_anon_vma uses adjacent vmas which are not locked */
+ -	if (vma_is_anonymous(vma) && !vma->anon_vma)
+--		goto inval;
+--
+  	if (!vma_start_read(vma))
+  		goto inval;
+ =20
+ +	/*
+ +	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+ +	 * This check must happen after vma_start_read(); otherwise, a
+ +	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+ +	 * from its anon_vma.
+ +	 */
+- 	if (unlikely(!vma->anon_vma && !vma_is_tcp(vma)))
+- 		goto inval_end_read;
+-=20
+- 	/*
+- 	 * Due to the possibility of userfault handler dropping mmap_lock, avoid
+- 	 * it for now and fall back to page fault handling under mmap_lock.
+- 	 */
+- 	if (userfaultfd_armed(vma))
+++	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
+ +		goto inval_end_read;
+ +
+  	/* Check since vm_start/vm_end might change before we lock the VMA */
+ -	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end)) {
+ -		vma_end_read(vma);
+ -		goto inval;
+ -	}
+ +	if (unlikely(address < vma->vm_start || address >=3D vma->vm_end))
+ +		goto inval_end_read;
+ =20
+  	/* Check if the VMA got isolated after we found it */
+  	if (vma->detached) {
 
+--Sig_/hSaS_j2wk.vRPV.Q0JkEiBf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->
-> Kindly let me know your thoughts. I would still like to see new lockdep traces
-> with this change.
+-----BEGIN PGP SIGNATURE-----
 
-Indeed, I hope Anders can find time to get the trace.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTDBTAACgkQAVBC80lX
+0GzkCgf/QACgILMpdlRwvRTIkbx7OqyjpWUAKpW2FU9kGrd9EcelDxIdWI8vptKy
+KFKn7Pw6Dy5HNMplbYeNcX0JufbYzEjktj2WBsgX4S4PivyMaahC/sTYoYxTK8pC
+xDqLw1GvtLUfXvixlv87b8KE3YsHXF6dcn8D6+2B1bk7fT8DytVbPPrgJ6DZek+P
+rqOAHL+iN5zVIDXY13W/yLoxecWHYF7lLgb2gej1oDH0s47MI2KBp/455/iUCnxl
+CG0BkUx0c/WFzEBAn+GZ7aZNG75S7Gu3zLTYp28b67QTpQCz3xR4dIxmD0AzbKpa
+Tukj2PCd5+i/u4uYbLQkBK1SNTP8XQ==
+=Bbl/
+-----END PGP SIGNATURE-----
 
-
-Ian
-
->
-> Thanks,
-> Imran
->
->>> Fixes: 9caf696142 (kernfs: Introduce separate rwsem to protect inode
->>> attributes)
->>>
->>> Signed-off-by: Ian Kent <raven@themaw.net>
->>> Cc: Anders Roxell <anders.roxell@linaro.org>
->>> Cc: Imran Khan <imran.f.khan@oracle.com>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Cc: Minchan Kim <minchan@kernel.org>
->>> Cc: Eric Sandeen <sandeen@sandeen.net>
->>> ---
->>>    fs/kernfs/dir.c |    4 ++++
->>>    1 file changed, 4 insertions(+)
->>>
->>> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
->>> index 45b6919903e6..6e84bb69602e 100644
->>> --- a/fs/kernfs/dir.c
->>> +++ b/fs/kernfs/dir.c
->>> @@ -383,9 +383,11 @@ static int kernfs_link_sibling(struct kernfs_node
->>> *kn)
->>>        rb_insert_color(&kn->rb, &kn->parent->dir.children);
->>>          /* successfully added, account subdir number */
->>> +    down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
->>>        if (kernfs_type(kn) == KERNFS_DIR)
->>>            kn->parent->dir.subdirs++;
->>>        kernfs_inc_rev(kn->parent);
->>> +    up_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
->>>          return 0;
->>>    }
->>> @@ -408,9 +410,11 @@ static bool kernfs_unlink_sibling(struct
->>> kernfs_node *kn)
->>>        if (RB_EMPTY_NODE(&kn->rb))
->>>            return false;
->>>    +    down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
->>>        if (kernfs_type(kn) == KERNFS_DIR)
->>>            kn->parent->dir.subdirs--;
->>>        kernfs_inc_rev(kn->parent);
->>> +    up_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
->>>          rb_erase(&kn->rb, &kn->parent->dir.children);
->>>        RB_CLEAR_NODE(&kn->rb);
->>>
+--Sig_/hSaS_j2wk.vRPV.Q0JkEiBf--
