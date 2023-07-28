@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFACB766D61
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF65766D64
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbjG1Mjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S236610AbjG1Mjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233367AbjG1Mj2 (ORCPT
+        with ESMTP id S236541AbjG1Mjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:39:28 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8EB187;
-        Fri, 28 Jul 2023 05:39:27 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RC6Zl4YsJzLnt2;
-        Fri, 28 Jul 2023 20:36:47 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 20:39:24 +0800
-Subject: Re: [PATCH net-next 6/9] page_pool: avoid calling no-op externals
- when possible
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
- <20230727144336.1646454-7-aleksander.lobakin@intel.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <a79cc7ed-5355-ef7d-8865-0ba9673af5c6@huawei.com>
-Date:   Fri, 28 Jul 2023 20:39:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 28 Jul 2023 08:39:46 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3A535A9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:39:43 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so436392666b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690547981; x=1691152781;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/rBzfWXB7xNQDsEV4qCRmgvtd9bp9OhfVonlnSy76S8=;
+        b=A0D05NGxqfkg31cngaT2LDDxF3MQdZ3uo3q4ewllKU7r4sbqg+/pW0u7LK04KDAI3z
+         FWFT1Xu2v0sY/fFwrj4D4bMCVc7o5Tb08dljKXwq8+mvtWTlraqN2xnYq8Pd/tXEStL/
+         DLnKgnyNgGWefEPzk0F2v1GrnrVpaANTSmwPfnaTFYY367+nmp/QYdy+vBPZ2T3+/5V2
+         bSuu5bdGrXkpD2E0oPRlOfmrCS2w4PHtPCtnWu06JcGfBqr10OJM0qE7kUGjA2Yj5tAr
+         Uo+I+oRxfUp8kOROYhZ+ggZ1PnVtzlWAY9BF+O3Fhcd3meE7oqxU4ITONwBwgxZb1VVf
+         NBwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690547981; x=1691152781;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rBzfWXB7xNQDsEV4qCRmgvtd9bp9OhfVonlnSy76S8=;
+        b=ime79aGqAixyFF1Y5CPz6c95xHJa/zLsxnyCBmKxf/vlf8xJFmR5iFHY36jybBY2Yr
+         EoW7ZPRDPk9/xQY6Bs2qlbJacOUVo6GruLlbGCOG1QkA2Ad88uV1/V2nk73gqgpZiFQp
+         8UykoIQLG8dbrIBMhvqJiyAW9c/p9q1QBK17cjDF0VnUf9YnaSzi263WdN40uDJB7kgF
+         lRUhswhu38IqTV7gfvnthwdPZ2WJCX+hSnNtwxTZIPSqJRVq1L70YHsYZ5v2uv5UJPV6
+         htXLbA0bHipsRffEyoaD+nSSL/48EGK6At5NeU4tPP7rZj472uuj5qijCeSDsfXz3uVH
+         CYag==
+X-Gm-Message-State: ABy/qLYd5m6GIk9AwKMDLAJI8qbWoKcqp4AWo3vy8QoZ+hYdByyz1G8a
+        HizJ9F+qgAbfigzvHRk3nLdvhw==
+X-Google-Smtp-Source: APBJJlEWHsZu0sU6xKqxR3mcuZD7XYG2BIHCSX3zHi7HmYycGTD1JKEV0OksBYVVI8xrnx0iB3MgoA==
+X-Received: by 2002:a17:907:7b9d:b0:98d:4b97:acc8 with SMTP id ne29-20020a1709077b9d00b0098d4b97acc8mr6574780ejc.25.1690547981591;
+        Fri, 28 Jul 2023 05:39:41 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n16-20020a1709067b5000b009927a49ba94sm2009719ejo.169.2023.07.28.05.39.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 05:39:41 -0700 (PDT)
+Message-ID: <bfd3d138-5cfa-1ee3-f578-1f2452900f9f@linaro.org>
+Date:   Fri, 28 Jul 2023 14:39:39 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230727144336.1646454-7-aleksander.lobakin@intel.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 28/50] dt-bindings: watchdog: sama5d4-wdt: add
+ compatible for sam9x7-wdt
 Content-Language: en-US
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
+        wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@microchip.com, eugen.hristev@collabora.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230728102801.266709-1-varshini.rajendran@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230728102801.266709-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/27 22:43, Alexander Lobakin wrote:
-> Turned out page_pool_put{,_full}_page() can burn quite a bunch of cycles
-> even when on DMA-coherent platforms (like x86) with no active IOMMU or
-> swiotlb, just for the call ladder.
-> Indeed, it's
+On 28/07/2023 12:28, Varshini Rajendran wrote:
+> Add compatible microchip,sam9x7-wdt to DT bindings documentation.
 > 
-> page_pool_put_page()
->   page_pool_put_defragged_page()                  <- external
->     __page_pool_put_page()
->       page_pool_dma_sync_for_device()             <- non-inline
->         dma_sync_single_range_for_device()
->           dma_sync_single_for_device()            <- external
->             dma_direct_sync_single_for_device()
->               dev_is_dma_coherent()               <- exit
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> ---
+>  .../bindings/watchdog/atmel,sama5d4-wdt.yaml      | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 > 
-> For the inline functions, no guarantees the compiler won't uninline them
-> (they're clearly not one-liners and sometimes compilers uninline even
-> 2 + 2). The first external call is necessary, but the rest 2+ are done
-> for nothing each time, plus a bunch of checks here and there.
-> Since Page Pool mappings are long-term and for one "device + addr" pair
-> dma_need_sync() will always return the same value (basically, whether it
-> belongs to an swiotlb pool), addresses can be tested once right after
-> they're obtained and the result can be reused until the page is unmapped.
-> Define the new PP DMA sync operation type, which will mean "do DMA syncs
-> for the device, but only when needed" and turn it on by default when the
-> driver asks to sync pages. When a page is mapped, check whether it needs
-> syncs and if so, replace that "sync when needed" back to "always do
-> syncs" globally for the whole pool (better safe than sorry). As long as
-> the pool has no pages requiring DMA syncs, this cuts off a good piece
-> of calls and checks. When at least one page required it, the pool
-> conservatively falls back to "always call sync functions", no per-page
-> verdicts. It's a fairly rare case anyway that only a few pages would
-> require syncing.
-> On my x86_64, this gives from 2% to 5% performance benefit with no
-> negative impact for cases when IOMMU is on and the shortcut can't be
-> used.
-> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+> index 816f85ee2c77..ce3d046e7244 100644
+> --- a/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/atmel,sama5d4-wdt.yaml
+> @@ -14,10 +14,17 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - atmel,sama5d4-wdt
+> -      - microchip,sam9x60-wdt
+> -      - microchip,sama7g5-wdt
+> +    oneOf:
+> +      - items:
 
-It seems other subsystem may have the similar problem as page_pool,
-is it possible to implement this kind of trick in the dma subsystem
-instead of every subsystem inventing their own trick?
+Drop items.
+
+> +          - enum:
+> +              - atmel,sama5d4-wdt
+> +              - microchip,sam9x60-wdt
+> +              - microchip,sama7g5-wdt
+> +      - items:
+> +          - enum:
+> +              - microchip,sam9x7-wdt
+> +          - enum:
+
+Not an enum.
+
+It is surprising how the same change look different between two of your
+patches.
+
+
+Best regards,
+Krzysztof
+
