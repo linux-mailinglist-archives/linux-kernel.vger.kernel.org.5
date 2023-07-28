@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2147670E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943067670EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237418AbjG1PqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35196 "EHLO
+        id S237449AbjG1PrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236368AbjG1PqK (ORCPT
+        with ESMTP id S234788AbjG1PrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:46:10 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D03649C4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:45:53 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-4036bd4fff1so352391cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:45:53 -0700 (PDT)
+        Fri, 28 Jul 2023 11:47:11 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021D32681
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:47:11 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40550136e54so348411cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690559152; x=1691163952;
+        d=google.com; s=20221208; t=1690559230; x=1691164030;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7z1/2YJsBGlL/vjVmvrWTZzbzmeM1zUvfRk85MJxJDc=;
-        b=KB5526ympzQ0XdNc1dyPDFpXfVxWaTK13HZz/RrmoHdvONdZXAcOwIvZ8ID+SOTshW
-         NGiqRIwEqtLdvLm8ByrQwvX1DpC8LX8zvQVM8EBUv5T7dS1OlNosQnkK5zv4nJS2+UZV
-         QYvmHi4lMgluAxJQGq2EAre6Asppp+XXYC4+nfzaL8FH6IQ8VWmc+X4WhXaedtLQlivh
-         5ycjM4/eCWv9chNdC9ehkslJ1F0h78FGmcgprCBHaxWTpUG4gPBYFQVLJses2FSAYjZY
-         0EIQ3svbKBORAmA4GQ1rWYpybfct+j2z/4EYwfyrFCu27D2fU6K2wJ9oKleArUBRzU7x
-         7mFQ==
+        bh=c5kOzcNksCR4x2pHItXcAlkQd0Sq49clDfLGooTZWTQ=;
+        b=FGXxPL1ytN3CB6f6k2GL8CUzTgC/qgshBaaNPmbKooV3WMiXzgpi0hkilO8oCK1nhd
+         ZQf1RWXL+HwIWRomC8cytIT6Xp4UODREmAWLDxy1Y0PcCFoGmk09V6HWeZfra1lltxXT
+         mu4hlkIvgoHq5j/sAo4vvngu63goXbxEYMmZy2vkbfMYIk3a7OE53xpPRO9THerSRrYE
+         dRQGR8/t7lTkt+dsuoaJChqXtAZ6CEX2dKZuYJQIts7olNcc3XG3q3al/GZjrnCrrG2N
+         wPFK9BPkNRVH6pPyjEq81s07JCVsfrjVZpq+B71sPugkT8zoFlYomt7WGiFUVlJzktVd
+         /lsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690559152; x=1691163952;
+        d=1e100.net; s=20221208; t=1690559230; x=1691164030;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7z1/2YJsBGlL/vjVmvrWTZzbzmeM1zUvfRk85MJxJDc=;
-        b=F6IF1bzv6EgaFY4YL5BBfXT4GZIDuD07EJ+1DOr2/qqgaFSwdRbiBzMZsqA81PTCi2
-         eA7XAoMwlq4FuK0utUXqpZGojX/0eE7osuIcUmzIIUgfCN4nOCrOQCvdmCF880IWm0M/
-         d15wPPsdGHuVSRE8QorhR8jqsGh6tkHmt0/ERFyfWl/p+YqLy7HmbrPUrSe8X+Wt8JcO
-         GbMfL1YxrBqLHS5CtGgmlDIsgng1/Sy75JUWhAC1IWUNZwOgCYDyggYxEm5nBBJoUuV8
-         5JVDjirfrwfFLfwICZtZMau7Db1y2nhDhhmOeaeafzpCND6qAW0Cez58RLJouccUztO+
-         1vwg==
-X-Gm-Message-State: ABy/qLbsTCI3sNhVr6cY1so72BEtC+iQujXolX5LtqSgkyykk4XD7t32
-        G260rqfo1z8YSYW+kVUg3UhnQFS3goB2ZbVEtb+DcQ==
-X-Google-Smtp-Source: APBJJlHaCHyFjdctpHtSANJgw9bDeHBvK8vinBiOQ1lCAJw6Cku89st2XDTkdyJwdmLkNBrOKnaDSLKyg8MfKpedzyI=
-X-Received: by 2002:ac8:5f92:0:b0:3ef:5f97:258f with SMTP id
- j18-20020ac85f92000000b003ef5f97258fmr318418qta.16.1690559151845; Fri, 28 Jul
- 2023 08:45:51 -0700 (PDT)
+        bh=c5kOzcNksCR4x2pHItXcAlkQd0Sq49clDfLGooTZWTQ=;
+        b=jQQmzZPw6EL3S4XPz+egXmI2u8/IqaLCpFoT3ctr55yxRCfuw/VmTDOuKotD32fc60
+         /0a8POKrVNUwi4HjckHN3RwBr+0OTHXG/ZCiddRWjLQzWdA/GV+6ddML6fFbnG+DBlXO
+         I28SMfyHVc7xmOzL6e120Y0Zm1WW4gwmQlFWkApV+ketNpuUsQfryyS3ww1SheHBxEmp
+         RiOZfAC7c42jI6gRypOtHbDK7NDybmSRZvdr/E/3BpdObtJY+KZlhmFiXXspOHLuXjdX
+         1SQ6QQ2kgXeu49XVLigJUzTcLga7JNVezuWw1ntTymzJ3AYbapu3KOwDBrPhHpp6qqiE
+         24uQ==
+X-Gm-Message-State: ABy/qLY+LVGy39lbxH2Ik9GOsIB55v3d+wp1fNrpmB1idvd3advtyB0/
+        /2kRCcrq/iCzIDBJ1ynXAIHhELJNQNYj/cYiXQHi1Q==
+X-Google-Smtp-Source: APBJJlEvfgnC/azHL/CZCqlcM439djFU3LDgROiAsgo3y2VeCSzSpfZB9+O5UMLQ1w3mvtFJNlKo5TcAN8tB8JLGKAw=
+X-Received: by 2002:a05:622a:1486:b0:3f0:af20:1a37 with SMTP id
+ t6-20020a05622a148600b003f0af201a37mr267553qtx.15.1690559230067; Fri, 28 Jul
+ 2023 08:47:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230728001212.457900-1-irogers@google.com> <ZMPQze90mGEdYFtr@kernel.org>
-In-Reply-To: <ZMPQze90mGEdYFtr@kernel.org>
+References: <20230728151812.454806-2-georgmueller@gmx.net>
+In-Reply-To: <20230728151812.454806-2-georgmueller@gmx.net>
 From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 28 Jul 2023 08:45:40 -0700
-Message-ID: <CAP-5=fXxGimJRXKf7bcaPqfjxxGcn1k3CspY_iSjQnpAKs3uFQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] Remove BPF arrays from perf event parsing
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Date:   Fri, 28 Jul 2023 08:46:58 -0700
+Message-ID: <CAP-5=fVxqwDwOUc2RuzHDtWtnrzz2hY6GCwBR4NPS2er5C_BeQ@mail.gmail.com>
+Subject: Re: [PATCH] perf probe: skip test_uprobe_from_different_cu if there
+ is no gcc
+To:     =?UTF-8?Q?Georg_M=C3=BCller?= <georgmueller@gmx.net>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>, He Kuang <hekuang@huawei.com>
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -82,211 +80,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 7:29=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Fri, Jul 28, 2023 at 8:19=E2=80=AFAM Georg M=C3=BCller <georgmueller@gmx=
+.net> wrote:
 >
-> Em Thu, Jul 27, 2023 at 05:12:09PM -0700, Ian Rogers escreveu:
-> > Event parsing was recently refactored:
-> > https://lore.kernel.org/all/20230502223851.2234828-1-irogers@google.com=
-/
-> >
-> > During these changes I wanted to get coverage of all parts of the
-> > parse-events.y and found that I couldn't test the array code.
-> >
-> > The first patch fixes a BPF testing issue.
-> > The 2nd and 3rd patch remove the BPF array event parsing code so that
-> > it isn't adding complexity to event parsing.
+> Without gcc, the test will fail.
 >
-> Thanks, applied and tested that 'perf trace' using the old BPF perf
-> integration continues to work modulo the sockaddr collectors, but that
-> is a problem with a newer kernel BPF verifier or clang, will
-> investigate.
+> On cleanup, ignore probe removal errors. Otherwise, in case of an error
+> adding the probe, the temporary directory is not removed.
 >
-> With those commented out:
->
-> diff --git a/tools/perf/examples/bpf/augmented_raw_syscalls.c b/tools/per=
-f/examples/bpf/augmented_raw_syscalls.c
-> index 9a03189d33d3816a..97871e2bd3a47bdf 100644
-> --- a/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> +++ b/tools/perf/examples/bpf/augmented_raw_syscalls.c
-> @@ -176,6 +176,7 @@ int syscall_unaugmented(struct syscall_enter_args *ar=
-gs)
->         return 1;
->  }
->
-> +#if 0
->  /*
->   * These will be tail_called from SEC("raw_syscalls:sys_enter"), so will=
- find in
->   * augmented_args_tmp what was read by that raw_syscalls:sys_enter and g=
-o
-> @@ -219,6 +220,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
->
->         return augmented__output(args, augmented_args, len + socklen);
->  }
-> +#endif
->
->  SEC("!syscalls:sys_enter_open")
->  int sys_enter_open(struct syscall_enter_args *args)
->
->
->
->
->   # perf trace -e /home/acme/git/perf-tools-next/tools/perf/examples/bpf/=
-augmented_raw_syscalls.c,open*
->      0.000 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", f=
-lags: RDONLY|CLOEXEC) =3D 12
->     95.302 thermald/1231 openat(dfd: CWD, filename: "/sys/class/powercap/=
-intel-rapl/intel-rapl:0/intel-rapl:0:2/energy_uj") =3D 13
->     95.586 thermald/1231 openat(dfd: CWD, filename: "/sys/class/powercap/=
-intel-rapl/intel-rapl:0/energy_uj") =3D 13
->     95.857 thermald/1231 openat(dfd: CWD, filename: "/sys/class/thermal/t=
-hermal_zone2/temp") =3D 13
->    250.064 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", f=
-lags: RDONLY|CLOEXEC) =3D 12
->    500.054 systemd-oomd/952 openat(dfd: CWD, filename: "/proc/meminfo", f=
-lags: RDONLY|CLOEXEC) =3D 12
->    500.472 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.pressure", =
-flags: RDONLY|CLOEXEC) =3D 12
->    500.669 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.current", f=
-lags: RDONLY|CLOEXEC) =3D 12
->    500.777 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.min", flags=
-: RDONLY|CLOEXEC) =3D 12
->    500.873 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.low", flags=
-: RDONLY|CLOEXEC) =3D 12
->    500.968 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.swap.curren=
-t", flags: RDONLY|CLOEXEC) =3D 12
->    501.062 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/session.slice/memory.stat", flag=
-s: RDONLY|CLOEXEC) =3D 12
->    501.435 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.pressure", flag=
-s: RDONLY|CLOEXEC) =3D 12
->    501.585 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.current", flags=
-: RDONLY|CLOEXEC) =3D 12
->    501.676 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.min", flags: RD=
-ONLY|CLOEXEC) =3D 12
->    501.761 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.low", flags: RD=
-ONLY|CLOEXEC) =3D 12
->    501.845 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.swap.current", =
-flags: RDONLY|CLOEXEC) =3D 12
->    501.929 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/memory.stat", flags: R=
-DONLY|CLOEXEC) =3D 12
->    502.118 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.pressure", flags: RDONLY|CLOEXEC) =3D 12
->    502.272 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.current", flags: RDONLY|CLOEXEC) =3D 12
->    502.367 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.min", flags: RDONLY|CLOEXEC) =3D 12
->    502.454 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.low", flags: RDONLY|CLOEXEC) =3D 12
->    502.542 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.swap.current", flags: RDONLY|CLOEXEC) =3D 12
->    502.628 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-gnome\x2dsession\x=
-2dmanager.slice/memory.stat", flags: RDONLY|CLOEXEC) =3D 12
->    502.796 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.pressure", flags: RDONLY|CLOEXEC) =3D 12
->    502.928 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.current", flags: RDONLY|CLOEXEC) =3D 12
->    503.037 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.min", flags: RDONLY|CLOEXEC) =3D 12
->    503.162 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.low", flags: RDONLY|CLOEXEC) =3D 12
->    503.255 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.swap.current", flags: RDONLY|CLOEXEC) =3D 12
->    503.341 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1000.slice/user@1000.service/app.slice/app-org.gnome.Terminal=
-.slice/memory.stat", flags: RDONLY|CLOEXEC) =3D 12
->    503.495 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.pressure", flags: RDONLY|CLOEXEC) =3D 12
->    503.620 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.current", flags: RDONLY|CLOEXEC) =3D 12
->    503.703 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.min", flags: RDONLY|CLOEXEC) =3D 12
->    503.782 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.low", flags: RDONLY|CLOEXEC) =3D 12
->    503.861 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.swap.current", flags: RDONLY|CLOEXEC) =3D 12
->    503.939 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/sy=
-stem.slice/memory.stat", flags: RDONLY|CLOEXEC) =3D 12
->    504.079 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1001.slice/user@1001.service/app.slice/memory.pressure", flag=
-s: RDONLY|CLOEXEC) =3D 12
->    504.240 systemd-oomd/952 openat(dfd: CWD, filename: "/sys/fs/cgroup/us=
-er.slice/user-1001.slice/user@1001.service/app.slice/memory.current", flags=
-: RDONLY|CLOEXEC) =3D 12
-> ^C
+> Fixes: 56cbeacf1435 ("perf probe: Add test for regression introduced by s=
+witch to die_get_decl_file()")
+> Signed-off-by: Georg M=C3=BCller <georgmueller@gmx.net>
+> Link: https://lore.kernel.org/r/CAP-5=3DfUP6UuLgRty3t2=3DfQsQi3k4hDMz415v=
+Wdp1x88QMvZ8ug@mail.gmail.com/
 
-Thanks Arnaldo, it could also be that we need the code and it is my
-user error which hasn't found a way of testing it. If the original
-Huawei authors could let us know?
+Acked-by: Ian Rogers <irogers@google.com>
 
-I suspect with this code gone, there is more bpf-loader map related
-code that can also go as there is no way to use it. I wonder if a
-better longer-term strategy is to remove BPF events entirely. My
-thoughts on this are:
-1) the code had bitrotten a few releases ago, I updated it but the
-fact it rotted means I suspect nobody uses it.
-2) the map code removed here I think is just redundant and it adds
-complexity, so removing it is value add - unless I'm mistaken :-)
-Removing more is more value add.
-3) the clang/llvm dependencies are problematic in the build, removing
-these would I think be a good value add
-4) in the event parsing the BPF events have paths with '/' as the path
-separator. This matches the modifier separator used by events and so I
-think this leads to complexity.
-5) the behavior achieved by BPF events can now be achieved with BPF
-filters, which are more user friendly:
-https://lore.kernel.org/all/20230314234237.3008956-1-namhyung@kernel.org/
-
-There is a dependency with perf trace, but I think perf trace should
-use BPF skeletons for augmented syscalls rather than a BPF event.
-Using a BPF event in the perf trace feels kind of hacky and I suspect
-perf trace users don't know they need to add the event to make
-augmentation work.
-
-Thanks,
+Thanks!
 Ian
 
-> - Arnaldo
+> ---
+>  tools/perf/tests/shell/test_uprobe_from_different_cu.sh | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 >
-> > Ian Rogers (3):
-> >   perf parse-event: Avoid BPF test segv
-> >   perf tools: Revert enable indices setting syntax for BPF map
-> >   perf parse-events: Remove array remnants
-> >
-> >  tools/perf/util/bpf-loader.c   | 101 ---------------------------
-> >  tools/perf/util/parse-events.c |  18 +----
-> >  tools/perf/util/parse-events.h |  10 ---
-> >  tools/perf/util/parse-events.l |  11 ---
-> >  tools/perf/util/parse-events.y | 122 ---------------------------------
-> >  5 files changed, 2 insertions(+), 260 deletions(-)
-> >
-> > --
-> > 2.41.0.487.g6d72f3e995-goog
-> >
+> diff --git a/tools/perf/tests/shell/test_uprobe_from_different_cu.sh b/to=
+ols/perf/tests/shell/test_uprobe_from_different_cu.sh
+> index 00d2e0e2e0c2..319f36ebb9a4 100755
+> --- a/tools/perf/tests/shell/test_uprobe_from_different_cu.sh
+> +++ b/tools/perf/tests/shell/test_uprobe_from_different_cu.sh
+> @@ -4,6 +4,12 @@
 >
+>  set -e
+>
+> +# skip if there's no gcc
+> +if ! [ -x "$(command -v gcc)" ]; then
+> +        echo "failed: no gcc compiler"
+> +        exit 2
+> +fi
+> +
+>  temp_dir=3D$(mktemp -d /tmp/perf-uprobe-different-cu-sh.XXXXXXXXXX)
+>
+>  cleanup()
+> @@ -11,7 +17,7 @@ cleanup()
+>         trap - EXIT TERM INT
+>         if [[ "${temp_dir}" =3D~ ^/tmp/perf-uprobe-different-cu-sh.*$ ]];=
+ then
+>                 echo "--- Cleaning up ---"
+> -               perf probe -x ${temp_dir}/testfile -d foo
+> +               perf probe -x ${temp_dir}/testfile -d foo || true
+>                 rm -f "${temp_dir}/"*
+>                 rmdir "${temp_dir}"
+>         fi
 > --
+> 2.41.0
 >
-> - Arnaldo
