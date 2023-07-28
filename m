@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E28766A60
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB9B766A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235299AbjG1KZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S234033AbjG1K0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235870AbjG1KZb (ORCPT
+        with ESMTP id S235834AbjG1KZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:25:31 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137894693;
-        Fri, 28 Jul 2023 03:25:05 -0700 (PDT)
+        Fri, 28 Jul 2023 06:25:46 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17C23AAC;
+        Fri, 28 Jul 2023 03:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690539906; x=1722075906;
+  t=1690539919; x=1722075919;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=Wloeck04yoAMrjbhj2T5lakE3hjP41+QMo2ggoVCzvQ=;
-  b=qCEWUn255o4SbanXhOBzOmRXMUIKEn1OpiihopmowLtDW/GIqVIUfEi3
-   RR1VQAt2Z7EtQ/zhJ7Wh2HaFVaL2RVdg3FTJrIGtpfCFZp2d3iwsJ+pGL
-   6AjBLQQSf5ekaKrxnjr8hW1NVZrvXs8/n+x594LROcfjS4M+ErCcoJUbk
-   HgoPWXQVPKRUgnKNiZxi2pTv620NUfnBwcbS3ZV2VWEAlMW1jDi+jwtsF
-   eeVqd0A2VdogmRHLDDt1YcW0YsSXV8GAEj2EXNnf1aBjpb8m3dBl+Wkpa
-   3FpQdCNZUOrscdM9Yr87q9+Roa8Vl9f2jj1JLDZc+T+kuDWsiQBMzXSQg
+  bh=DXPjYaor5Qf24EOpgH2GGN2yVYXgC8H1FPKyjlWcbio=;
+  b=Qt3wI1lM7mFZT6G4dPqkWetFZ1gQiaD7dRiprxcyNQgCNpC0stKKLkNT
+   IT0eDHyCav7m37hXpOA6DjYKZ9efbc0gxj7os92tEXosGAMj+vQD+4k8s
+   UruL+k5NsJOyj8hTfZrlbHNI7356jVOSEdym63f8DUDR7utbzL+qCF1eQ
+   3UkB9+dCwaLMfkP0zj7zClHb8zfR9FCeh04B2EP3/L1mN6AkL7/ZEW06B
+   rGPsPqNEmqaMrhMDd1nG0Y4q6lBAycuK9P1plS+5eK91cBzXEZ0SisIae
+   61XnTpPErZYQaaueRYtr9GuiOv7f1t6BXaIkd0dpOECVHJxvP56m3Xemn
    g==;
 X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="scan'208";a="226622834"
+   d="scan'208";a="222728522"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:24:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:24:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 03:24:32 -0700
+ 15.1.2507.21; Fri, 28 Jul 2023 03:24:41 -0700
 Received: from che-lt-i67070.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:24:27 -0700
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 28 Jul 2023 03:24:36 -0700
 From:   Varshini Rajendran <varshini.rajendran@microchip.com>
 To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -50,9 +50,9 @@ To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <varshini.rajendran@microchip.com>
-Subject: [PATCH v3 09/50] dt-bindings: crypto: add sam9x7 in Atmel AES
-Date:   Fri, 28 Jul 2023 15:54:22 +0530
-Message-ID: <20230728102422.265715-1-varshini.rajendran@microchip.com>
+Subject: [PATCH v3 10/50] dt-bindings: crypto: add sam9x7 in Atmel SHA
+Date:   Fri, 28 Jul 2023 15:54:33 +0530
+Message-ID: <20230728102433.265772-1-varshini.rajendran@microchip.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,27 +68,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings for atmel AES.
+Add DT bindings for atmel SHA.
 
 Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
 ---
- .../devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml   | 6 +++++-
+ .../devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml   | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
-index 0b7383b3106b..7dc0748444fd 100644
---- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
-+++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-aes.yaml
+diff --git a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
+index ee2ffb034325..d378c53314dd 100644
+--- a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
++++ b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-sha.yaml
 @@ -12,7 +12,11 @@ maintainers:
  
  properties:
    compatible:
--    const: atmel,at91sam9g46-aes
+-    const: atmel,at91sam9g46-sha
 +    oneOf:
-+      - const: atmel,at91sam9g46-aes
++      - const: atmel,at91sam9g46-sha
 +      - items:
-+          - const: microchip,sam9x7-aes
-+          - const: atmel,at91sam9g46-aes
++          - const: microchip,sam9x7-sha
++          - const: atmel,at91sam9g46-sha
  
    reg:
      maxItems: 1
