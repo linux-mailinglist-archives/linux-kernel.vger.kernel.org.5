@@ -2,158 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08DC766A12
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31599766A0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbjG1KTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S235252AbjG1KS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbjG1KSm (ORCPT
+        with ESMTP id S233520AbjG1KSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 06:18:42 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8CD3A84;
-        Fri, 28 Jul 2023 03:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690539521; x=1722075521;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4zd/F3UuyGO+qovy87KICDEK2ximibZdVG5bedGOv6I=;
-  b=oVTLscJqEFAnLewq5m70iErRg2OQDe8Rnp/Hn/NUcnG6enR6JH6U5rls
-   zGwo/kVQ97Z2YMWr/RzFGPCdvZ1LkD69gICcvWHzPTeXf/++S8B0wE6cq
-   67YPa5P1C2vveHLzRvufvoQnfd3g1SeswRdWQVFtSElUd3fQZ1be8pUAP
-   dfKYHd6LGy5Mypc94G34g0HOcNMR7gFMzsw93KXUWzzm+xixqiaHgVFiM
-   DwRAuKv34e3OYYHHWESHn8ZbTwbjP/ucpE7yX0LSQVUnum8vWy5XSaBcI
-   r4hBBenJB6MdSd3xGpCrYC4wLUgYybALHRKbZfLMyAQB3OSl/kog4nyNQ
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="asc'?scan'208";a="238400228"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 03:18:41 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 03:18:40 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 28 Jul 2023 03:18:37 -0700
-Date:   Fri, 28 Jul 2023 11:18:03 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Huacai Chen <chenhuacai@kernel.org>
-CC:     Yinbo Zhu <zhuyinbo@loongson.cn>, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        <wanghongliang@loongson.cn>, Liu Peibao <liupeibao@loongson.cn>,
-        <loongson-kernel@lists.loongnix.cn>, Liu Yun <liuyun@loongson.cn>,
-        <kernel@xen0n.name>
-Subject: Re: [PATCH v5 0/2] soc: loongson2_pm: add power management support
-Message-ID: <20230728-unedited-thank-366462ab471d@wendy>
-References: <20230728074944.26746-1-zhuyinbo@loongson.cn>
- <20230728-cornball-preacher-a7e4644fcbef@wendy>
- <CAAhV-H5cfGZLvThzu_mBOphGJeUSFAu_4nZvGNFJqF5++DN2OA@mail.gmail.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1D83A81;
+        Fri, 28 Jul 2023 03:18:40 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36S81FWU025334;
+        Fri, 28 Jul 2023 05:18:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=tDBgLObf4/016fMM1QWZPSekKXx6KyovqNEWCRV3U84=; b=
+        CScjMreJt/+dmZa9iBxGEisdzomc6rWsrf+Pt6jRz4tK5KysJ5NqUdkpC58/JKT6
+        +AzDIJkifG997m84S28Ly8xt5MDSH8uVVCa1V2iHSJjo7LVFUEYWbmC3DRRb0fyL
+        hWx2iFEC0TKZKjMopPxFZQTjY1IFgXjqObhl3aVUj1rdah5dJCRB3NWvg+snjLAo
+        A4+NsW/b7r/wTipZxf3ow7W5RAmkFXSDfukREXMVKi18vblgWAknTz35uye7X9zB
+        /gDxNToZx4xZtNsdcpjt1DU6lnfZ52Bu0MZsu8csdAuBNcfPkEk8APRO1Yon5b0L
+        smHa0fsCa6X0unJrVtCa3w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s2q713a4d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 05:18:30 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
+ 2023 11:18:28 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Fri, 28 Jul 2023 11:18:28 +0100
+Received: from [198.61.65.196] (EDIN4L06LR3.ad.cirrus.com [198.61.65.196])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ED41845D;
+        Fri, 28 Jul 2023 10:18:27 +0000 (UTC)
+Message-ID: <42c73f84-620b-471b-0a42-0c1e10798f07@opensource.cirrus.com>
+Date:   Fri, 28 Jul 2023 11:18:27 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9Yys7cBeTncYwMRU"
-Content-Disposition: inline
-In-Reply-To: <CAAhV-H5cfGZLvThzu_mBOphGJeUSFAu_4nZvGNFJqF5++DN2OA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] ACPI: scan: Create platform device for CS35L56
+Content-Language: en-US
+To:     <rafael@kernel.org>, <hdegoede@redhat.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>
+References: <20230727103754.9914-1-rf@opensource.cirrus.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230727103754.9914-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: ov3oevn6UMx-QeSkz8s7xbTWbTDwebAe
+X-Proofpoint-ORIG-GUID: ov3oevn6UMx-QeSkz8s7xbTWbTDwebAe
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---9Yys7cBeTncYwMRU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 27/7/23 11:37, Richard Fitzgerald wrote:
+> From: Simon Trimmer <simont@opensource.cirrus.com>
+> 
+> The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
+> is used in multiples, and can be connected either to I2C or SPI.
+> 
+> There will be multiple instances under the same Device() node. Add it
+> to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
+> driver.
+> 
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
 
-On Fri, Jul 28, 2023 at 05:48:29PM +0800, Huacai Chen wrote:
-> On Fri, Jul 28, 2023 at 4:44=E2=80=AFPM Conor Dooley <conor.dooley@microc=
-hip.com> wrote:
-> > On Fri, Jul 28, 2023 at 03:49:42PM +0800, Yinbo Zhu wrote:
-> > > Loongson-2 platform support Power Management Controller (ACPI) and th=
-is
-> > > series patch was to add PM driver that base on dts and PM binding sup=
-port.
-> > >
-> > > Change in v5:
-> > >               1. The patch "[PATCH v3 1/3] loongarch: export some arc=
-h-specific
-> > >                  pm interfaces" had been merged into linux-next tree =
-thus this
-> > >                  v4 series patch need drop it and need depend on it a=
-nd it's
-> > >                  patch link was:
-> > > https://lore.kernel.org/all/20230615091757.24686-2-zhuyinbo@loongson.=
-cn/
-> >
-> > Just to note, it might be in linux-next, but more importantly it is also
-> > in v6.5-rc1, so there is no issue with dependencies.
-> >
-> > >               2. Swap the positions of compatible for 2k1000 and 2k05=
-00.
-> >
-> > I noticed you sent a mail pinging the v4 of this series yesterday as it
-> > had not been picked up. Who do you actually expect to apply these
-> > patches? There does not appear to be a maintainer listed for the
-> > drivers/soc/loongson directory, just one for your GUTS driver.
-> >
-> > As a result, patches like
-> > <https://lore.kernel.org/all/a69170cb55cfc73e378b40ccf1d9c16f@208suo.co=
-m/>
-> > have gone ignored. Granted, that patch is probably crap that does not
-> > apply, due to 208suo.com people sending corrupted patches, but you the
-> > point.
-> >
-> > More interestingly there is also
-> > <https://lore.kernel.org/all/40b324af-3483-4b3d-b65a-a97944aa4a70@app.f=
-astmail.com/>
-> > which seems to have also gone missing (I don't see it in linux-next),
-> > despite some discussion about how the patch should be merged.
-> >
-> > Looks to me like drivers/soc/loongson/ needs someone to take
-> > responsibility for picking up patches for the directory & sending them
-> > to the soc maintainers (with a new MAINTAINERS entry reflecting that) so
-> > that patches don't fall through the cracks.
-
-> As discussed when the guts driver gets merged, I think it is better to
-> go via Arnd's soc tree for these patches under drivers/soc/loongson/.
-
-Discussed perhaps, and that does seem to me like the correct thing to do,
-but nobody actually did anything about it.
-Somebody needs to set up a git tree, add a MAINTAINERS entry for the
-directory, actually apply the patches and then send a PR to the soc
-maintainers (as mentioned by Arnd in the second patch I linked there).
-
-Perhaps that someone is you, or maybe it is Yinbo, up to you guys to
-decide :)
-
-Cheers,
-Conor.
-
-
---9Yys7cBeTncYwMRU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMOV2wAKCRB4tDGHoIJi
-0h5QAQCrVcz3iSUu0j4+XQQCxl/L4HK7TWqWDov3pdLYNimUlwEA4bjjRYTIub/6
-aXIjVeWyrL+cfCrNxjWNDwoYvWjTzgY=
-=87F1
------END PGP SIGNATURE-----
-
---9Yys7cBeTncYwMRU--
+Don't merge this, I've discovered that we need a 5th entry in the
+table, so I will send a V3.
