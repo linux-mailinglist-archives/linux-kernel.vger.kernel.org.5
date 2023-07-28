@@ -2,123 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D9767718
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D814767722
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjG1Ufh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S229595AbjG1Ujk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjG1UfF (ORCPT
+        with ESMTP id S229502AbjG1Ujh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:35:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9507E4483;
-        Fri, 28 Jul 2023 13:34:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C1FF621DE;
-        Fri, 28 Jul 2023 20:34:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B4C7C433CA;
-        Fri, 28 Jul 2023 20:34:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690576497;
-        bh=jeC4GAEfQQwmVnTIZskvg6L9vM/nrayE2m9ijer6n98=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCfYKwe4QL89JDRqiWJGihImM+qcoMbDWecJ7hn5Iu+Tfw0wwq6G5Soa4tXigbIs+
-         cKRMiMjzFiwRgTa6FFAOyZ/Cj4fLXYlE0wrBytmbm3mQbInHJDivY+r/aUeIdGg3oE
-         Mttwki34KUH6dQ4afT+n7RpDZEfriIuE5WtcfXH3hSOT9fbYJoS/uhCmYL6v6zaHlF
-         8kHxycb0NP0w8mRdV0JOMb4kDQW6JCY/h32sSZ8ZyZ3iqHTsijHYjs8Co5cqxVWS7F
-         bRGrb21xaEpee+/SLZW1SB2C5OnDQu3NvdTvQg0bZ/zZxF8gJPpGUrIvZB02FSjVjY
-         AEaMp+FQ3zbXQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 13/13] Docs/admin-guide/mm/damon/usage: update for DAMON monitoring target type DAMOS filter
-Date:   Fri, 28 Jul 2023 20:34:44 +0000
-Message-Id: <20230728203444.70703-14-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230728203444.70703-1-sj@kernel.org>
-References: <20230728203444.70703-1-sj@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 16:39:37 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E9E4F
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690576776; x=1722112776;
+  h=date:from:to:cc:subject:message-id;
+  bh=rua/oj2RgW2E1QNFjDtL7Qfi54WIEJ0HxSGFERjvwB8=;
+  b=FIqs7cwGrt1saiE8Ceobon9Fz3kfuc+bdXMgoVWUG8QzSqnWJP6dOEUD
+   tbirezB6h8KJhzNtZ3bbFsA+6ui/xEvHHtkYuho7D6P1ts9dFuwy/iddI
+   jssK28Pvs7bj31xWLA/AR4aVdf7XDFpyUKWIe4zGl9Z0QrD5+Huoj7k7c
+   lKseRYc759NsoIeizYRYRIPkvCNfso9MIXTfeGQxM82CTQ/w+JdrARdXi
+   cTrfzFXoSUG55SNlolTbSzDXD8ou1EiR+ZZ6mMWbYpXzx5euSDK4Fjfcd
+   KlDX9tK2jfyc7FyWAioOK8hgIEwF1vK1n3tEpNcY4a0gIYbmrga8SGXCC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="358707305"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="358707305"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 13:39:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="870974173"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2023 13:39:36 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPUFJ-0003Z3-30;
+        Fri, 28 Jul 2023 20:39:33 +0000
+Date:   Sat, 29 Jul 2023 04:39:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ d7114f83ee051dfeac82546d7ba03d74f8b92af3
+Message-ID: <202307290425.i3PqxYnl-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update DAMON usage document for newly added DAMON monitoring target type
-DAMOS filter.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: d7114f83ee051dfeac82546d7ba03d74f8b92af3  x86/smpboot: Change smp_store_boot_cpu_info() to static
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/admin-guide/mm/damon/usage.rst | 37 +++++++++++---------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+elapsed time: 728m
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index a9cb9949b796..084f0a32b421 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -363,18 +363,21 @@ number (``N``) to the file creates the number of child directories named ``0``
- to ``N-1``.  Each directory represents each filter.  The filters are evaluated
- in the numeric order.
- 
--Each filter directory contains five files, namely ``type``, ``matcing``,
--``memcg_path``, ``addr_start``, and ``addr_end``.  To ``type`` file, you can
--write one of three special keywords: ``anon`` for anonymous pages, ``memcg``
--for specific memory cgroup, or ``addr`` for specific address range (an
--open-ended interval) filtering.  In case of the memory cgroup filtering, you
--can specify the memory cgroup of the interest by writing the path of the memory
--cgroup from the cgroups mount point to ``memcg_path`` file.  In case of the
--address range filtering, you can specify the start and end address of the range
--to ``addr_start`` and ``addr_end`` files, respectively.  You can write ``Y`` or
--``N`` to ``matching`` file to filter out pages that does or does not match to
--the type, respectively.  Then, the scheme's action will not be applied to the
--pages that specified to be filtered out.
-+Each filter directory contains six files, namely ``type``, ``matcing``,
-+``memcg_path``, ``addr_start``, ``addr_end``, and ``target_idx``.  To ``type``
-+file, you can write one of four special keywords: ``anon`` for anonymous pages,
-+``memcg`` for specific memory cgroup, ``addr`` for specific address range (an
-+open-ended interval), or ``target`` for specific DAMON monitoring target
-+filtering.  In case of the memory cgroup filtering, you can specify the memory
-+cgroup of the interest by writing the path of the memory cgroup from the
-+cgroups mount point to ``memcg_path`` file.  In case of the address range
-+filtering, you can specify the start and end address of the range to
-+``addr_start`` and ``addr_end`` files, respectively.  For the DAMON monitoring
-+target filtering, you can specify the index of the target between the list of
-+the DAMON context's monitoring targets list to ``target_idx`` file.  You can
-+write ``Y`` or ``N`` to ``matching`` file to filter out pages that does or does
-+not match to the type, respectively.  Then, the scheme's action will not be
-+applied to the pages that specified to be filtered out.
- 
- For example, below restricts a DAMOS action to be applied to only non-anonymous
- pages of all memory cgroups except ``/having_care_already``.::
-@@ -391,11 +394,11 @@ pages of all memory cgroups except ``/having_care_already``.::
- Note that ``anon`` and ``memcg`` filters are currently supported only when
- ``paddr`` `implementation <sysfs_contexts>` is being used.
- 
--Also, memory regions that are filtered out by ``addr`` filters are not counted
--as the scheme has tried to those, while regions that filtered out by other type
--filters are counted as the scheme has tried to.  The difference is applied to
--:ref:`stats <damos_stats>` and :ref:`tried regions
--<sysfs_schemes_tried_regions>`.
-+Also, memory regions that are filtered out by ``addr`` or ``target`` filters
-+are not counted as the scheme has tried to those, while regions that filtered
-+out by other type filters are counted as the scheme has tried to.  The
-+difference is applied to :ref:`stats <damos_stats>` and
-+:ref:`tried regions <sysfs_schemes_tried_regions>`.
- 
- .. _sysfs_schemes_stats:
- 
+configs tested: 144
+configs skipped: 92
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r013-20230728   gcc  
+alpha                randconfig-r033-20230728   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                  randconfig-r014-20230728   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                        clps711x_defconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          sp7021_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r011-20230728   gcc  
+hexagon              randconfig-r041-20230728   clang
+hexagon              randconfig-r045-20230728   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230727   clang
+i386         buildonly-randconfig-r004-20230728   gcc  
+i386         buildonly-randconfig-r005-20230727   clang
+i386         buildonly-randconfig-r005-20230728   gcc  
+i386         buildonly-randconfig-r006-20230727   clang
+i386         buildonly-randconfig-r006-20230728   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230728   gcc  
+i386                 randconfig-i002-20230728   gcc  
+i386                 randconfig-i003-20230728   gcc  
+i386                 randconfig-i004-20230728   gcc  
+i386                 randconfig-i005-20230728   gcc  
+i386                 randconfig-i006-20230728   gcc  
+i386                 randconfig-i011-20230727   gcc  
+i386                 randconfig-i011-20230728   clang
+i386                 randconfig-i012-20230727   gcc  
+i386                 randconfig-i012-20230728   clang
+i386                 randconfig-i013-20230727   gcc  
+i386                 randconfig-i013-20230728   clang
+i386                 randconfig-i014-20230727   gcc  
+i386                 randconfig-i014-20230728   clang
+i386                 randconfig-i015-20230727   gcc  
+i386                 randconfig-i015-20230728   clang
+i386                 randconfig-i016-20230727   gcc  
+i386                 randconfig-i016-20230728   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r003-20230728   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230728   gcc  
+m68k                 randconfig-r035-20230728   gcc  
+m68k                        stmark2_defconfig   gcc  
+microblaze           randconfig-r001-20230728   gcc  
+microblaze           randconfig-r006-20230728   gcc  
+microblaze           randconfig-r013-20230728   gcc  
+microblaze           randconfig-r032-20230728   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           gcw0_defconfig   gcc  
+mips                            gpr_defconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r005-20230728   gcc  
+nios2                randconfig-r015-20230728   gcc  
+openrisc             randconfig-r001-20230728   gcc  
+openrisc             randconfig-r002-20230728   gcc  
+openrisc             randconfig-r003-20230728   gcc  
+openrisc             randconfig-r005-20230728   gcc  
+openrisc             randconfig-r016-20230728   gcc  
+openrisc             randconfig-r032-20230728   gcc  
+openrisc             randconfig-r035-20230728   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r031-20230728   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                 linkstation_defconfig   gcc  
+powerpc               mpc834x_itxgp_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230728   gcc  
+riscv                randconfig-r031-20230728   gcc  
+riscv                randconfig-r042-20230728   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r004-20230728   gcc  
+s390                 randconfig-r044-20230728   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r015-20230728   gcc  
+sh                          rsk7269_defconfig   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sparc                            alldefconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230727   clang
+x86_64       buildonly-randconfig-r001-20230728   gcc  
+x86_64       buildonly-randconfig-r002-20230727   clang
+x86_64       buildonly-randconfig-r002-20230728   gcc  
+x86_64       buildonly-randconfig-r003-20230727   clang
+x86_64       buildonly-randconfig-r003-20230728   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r034-20230728   gcc  
+x86_64               randconfig-x001-20230727   gcc  
+x86_64               randconfig-x001-20230728   clang
+x86_64               randconfig-x002-20230727   gcc  
+x86_64               randconfig-x002-20230728   clang
+x86_64               randconfig-x003-20230727   gcc  
+x86_64               randconfig-x003-20230728   clang
+x86_64               randconfig-x004-20230727   gcc  
+x86_64               randconfig-x004-20230728   clang
+x86_64               randconfig-x005-20230727   gcc  
+x86_64               randconfig-x005-20230728   clang
+x86_64               randconfig-x006-20230727   gcc  
+x86_64               randconfig-x006-20230728   clang
+x86_64               randconfig-x011-20230727   clang
+x86_64               randconfig-x011-20230728   gcc  
+x86_64               randconfig-x012-20230727   clang
+x86_64               randconfig-x012-20230728   gcc  
+x86_64               randconfig-x013-20230727   clang
+x86_64               randconfig-x013-20230728   gcc  
+x86_64               randconfig-x014-20230727   clang
+x86_64               randconfig-x014-20230728   gcc  
+x86_64               randconfig-x015-20230727   clang
+x86_64               randconfig-x015-20230728   gcc  
+x86_64               randconfig-x016-20230727   clang
+x86_64               randconfig-x016-20230728   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
