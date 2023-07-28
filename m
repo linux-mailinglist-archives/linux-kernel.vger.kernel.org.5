@@ -2,154 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B235F767320
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C291767325
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjG1RUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
+        id S232549AbjG1RV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbjG1RUI (ORCPT
+        with ESMTP id S231720AbjG1RVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:20:08 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111B13A81;
-        Fri, 28 Jul 2023 10:20:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IVLiuRUGxo8zcrfobJlbifkQknegE5MKACQIivNJvEzzMfku6mHuah8ODyAiK8bWVv92pM6Q3v6SM5UPYwjdjo4uwFEE8HwRK/NSShCyAkY3RJRY+otqd/mNk4TOkK535jPLpLgizDAbXG3fWzNlwj3IBQWk0DfpKS18I/pjDmxhikgD2iprNjZ5BGGkkFN34qXxJCC/H5+5fFs6+wdQIXT9LQAoVW2yH1gmeXgUeeV3RIuF/Emkt5ewrpxCI5B7jD6ylx/vrdPGQW1n0B7oID4yb+peRCPuUTdGALU131/0MdoU7v4a6zJt0DEo2N6gEojlRaKw/VFN5laRWgviHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
- b=YzyrHBW0euBkAxXgBcIPF/FJZajKSq7CmynV/nZamkNY99QpFur+AbVpZXdQ18GQIAbzGnbUM1GasdXQGYhm++xALN/F9WUsWAIbbw3h21L6FT34pfccWJr+kzQQSoFSYoSNcX2t9j0ddQCEa1T5OJqhQJ+0VPB4O1O1bEE6cefJHXjI+lDb/ACsfhsfZ7rY21dDtFTfLjg06ZlriX517wRZQJAKhOiPz+Y1eZhl1kAqi2SbQCYf54mA7/w53wgme6WkHnlo6AqVhNwWyXiuMWGOPqfgJCf49VSDzaarR0ljuY/jjDxaFDNW0BZ/E9KwmP0gg2fuyFHx1930IWXzgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
- b=P4SMeLDEA/uQiH5lFSi3jrZQbCH/F/uGfS8ZsO7jWkiwLBhz0Hn0GxONwXgRl/Sh1y0EIIZWU+AQRMzUuzZGMWfMgHAcovDV/ero1DvufFPZ2+U/dsQlGiJ3k1e4vM63E+c7yzx7aoDgyg3xjYVHGzy5bFmWRygLmr52+r1/XZ4=
-Received: from MW4PR03CA0157.namprd03.prod.outlook.com (2603:10b6:303:8d::12)
- by DM4PR12MB6063.namprd12.prod.outlook.com (2603:10b6:8:b1::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 17:20:03 +0000
-Received: from CO1PEPF000044EE.namprd05.prod.outlook.com
- (2603:10b6:303:8d:cafe::5b) by MW4PR03CA0157.outlook.office365.com
- (2603:10b6:303:8d::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
- Transport; Fri, 28 Jul 2023 17:20:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044EE.mail.protection.outlook.com (10.167.241.68) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6631.22 via Frontend Transport; Fri, 28 Jul 2023 17:20:03 +0000
-Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
- 2023 12:19:58 -0500
-From:   Ayush Jain <ayush.jain3@amd.com>
-To:     <akpm@linux-foundation.org>, <shuah@kernel.org>,
-        <pasha.tatashin@soleen.com>, <zhansayabagdaulet@gmail.com>,
-        <tyhicks@linux.microsoft.com>, <shr@devkernel.io>,
-        <raghavendra.kt@amd.com>
-CC:     <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Narasimhan.V@amd.com>,
-        <Santosh.Shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v2 2/2] selftests: mm: add KSM_MERGE_TIME tests
-Date:   Fri, 28 Jul 2023 22:49:42 +0530
-Message-ID: <20230728171942.4683-1-ayush.jain3@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230728163952.4634-1-ayush.jain3@amd.com>
-References: <20230728163952.4634-1-ayush.jain3@amd.com>
+        Fri, 28 Jul 2023 13:21:25 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A14130D4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:21:23 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso36166571fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 10:21:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690564881; x=1691169681;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qotOmlrxVnsJ5FI1SleCu8gMwNulnTWErnY/f2pHsMA=;
+        b=BjpBLmM4hMtItbn7OxGcPOq5zApM7tVQvfXCN2TRPidWSHQfcPUiCF3rkOh8dkBkk1
+         jQb+py+PjwrDzEqs4dEOYSRGnQBsv5walFwr87tj3C37qvtLVrK6fvddGQWU84p/WUu5
+         TeTyzdeOiPctsU3TDmW1i0mIiaHT3MPgTEsGIYJM1++Cy9Rt1U5aGZ+CR9GyZGsXgK4x
+         A7YEw7bSZXJBZf+E0gUYjQ58EFrvAGV0onDLb1dKFoDbf9SWpsS0tZPFOXk61jzxRwzt
+         +HZ6RkaOhDPba5eUu3+IsUaq8r4XCjqEwBWY6fm31vL9Is5ajVdlsMiIvBnYkXtUsjj4
+         pF0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690564881; x=1691169681;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qotOmlrxVnsJ5FI1SleCu8gMwNulnTWErnY/f2pHsMA=;
+        b=bFbFPMmZHmlmEBlsZl+PjA4Ce5U8joooBPsbITd1futrnATzpUEx9u0LkKWXvXwt2H
+         t2hOqbp1ONhe9Ek2w3C/92TyHAwx1CZmQElRScB8V34sV8qTIVzS6VSEBN372lKh7ZoD
+         eJDGQ9BNB84DZgfb5qhChmKSVtAJS3iXAml1HykNMDcT8a5N/ASojki+IDaCtCi/pu9b
+         iCaPe14pfKt34zRkassRh632Rotl0eru6wi2LcSOCWSstfWUAU5gmlO5XgfcWcp421bL
+         Urpwneo6TdDBk09fjOdY65Nt3M5b4theL4Jg6e+9kLVHMDkdIdvPLVmH+1lV8WRi4mcw
+         veXg==
+X-Gm-Message-State: ABy/qLb64mf4JuxGCOIXuDKTZTwChyOWfb5hPVX92WSIGTK4/YiLZD1c
+        WlvSGphxPe75OSHc4qFgNeqFsA==
+X-Google-Smtp-Source: APBJJlGEFkRTNrku26JAWEsMEiieT+YNxTTtzHe5wLs03E+D6SkT6/v0ZWykS6umqC1QGVi9UYDvuA==
+X-Received: by 2002:a2e:9b54:0:b0:2b6:e3d5:76a7 with SMTP id o20-20020a2e9b54000000b002b6e3d576a7mr2358259ljj.24.1690564881520;
+        Fri, 28 Jul 2023 10:21:21 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id x11-20020a2e9dcb000000b002b69f44646bsm1048747ljj.17.2023.07.28.10.21.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 10:21:21 -0700 (PDT)
+Message-ID: <1dd53227-4c44-da6c-ab05-9cfaddf58dc1@linaro.org>
+Date:   Fri, 28 Jul 2023 19:21:19 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044EE:EE_|DM4PR12MB6063:EE_
-X-MS-Office365-Filtering-Correlation-Id: e446e773-07fa-49d8-51cd-08db8f8ee15b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rv7xQD2Cxx291vpIq/v9YNAJnnWeloFjpYG2VdDH5wy7OuNdYQQ01EQFC2zUDQjPTueQy393NyyBcqiCVojcCOkefHDSy0iB3gB9JH681VbMYgGg36620uYuMBwsSfR9AHUDmCaBmzh9Ifs/N1Op33UhiahbY60+H4VKoy0Ds+fQjVeMeSO4Jv6+Mgg8+TbaI2YKgIYfsTwNyZrGLWcCU0LdWHT4Xat1Gpr8SOY9/0IONxY7j9wdtqX86BsO0WWIahAiNJn4jY0ngj2tDnvARgy77bi/C9NRAZTTmByuoCFgwmazzHxuXDXl0MLM0vVw5xg63oeKEU1r83GKkOEMnO2lN3fSSg9ZZM38I+PZ+7/G/j+Szl0aKuU8z+QtfBfvGyn+HlSO7Evfa8tqfk/ys1Z4VtwemnFYtmBeRvsGPxhF19AjN4/JVS3sSF2Quiaf97NQfe+y1aAlOHClkU1C9xTAqDu/LS97LZ8+8AyxdNq2+NjbKoxtNsyMBU7wrJMEzbghZPS+7GAxnPrqBrLBxUo10Fdw2Pb6OeR+u+zReSxFNQevvNMTmK9zEB862fHdO64f8nofZqE0FVerMyuI6q+DArcLE462pWB1d4r7jJnjgVYRSyBpHXl9sUqh4wMiORP50G9zsbCg9+Kzkfs2xx9MUitdvmvWJzFI2PVH34SVcNV7sUg6FDL1UpAu91GDyEK82SMQiLK95RHG7VtIA69jlWVBt741/nS2Qaapk2oh8/V3rJXOjfICRsQjVH5KQKds8q6BerIcn4WV7g6SGA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(396003)(136003)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(81166007)(316002)(8676002)(47076005)(110136005)(478600001)(54906003)(86362001)(70586007)(70206006)(5660300002)(6636002)(4326008)(356005)(40480700001)(1076003)(82740400003)(336012)(7696005)(40460700003)(26005)(6666004)(186003)(7416002)(8936002)(2906002)(2616005)(41300700001)(16526019)(426003)(36756003)(36860700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:20:03.0637
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e446e773-07fa-49d8-51cd-08db8f8ee15b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044EE.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6063
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/33] iris: vidc: add video decoder files
+Content-Language: en-US
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, mchehab@kernel.org, hans.verkuil@cisco.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     quic_dikshita@quicinc.com
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-9-git-send-email-quic_vgarodia@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <1690550624-14642-9-git-send-email-quic_vgarodia@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add KSM_MERGE_TIME and KSM_MERGE_TIME_HUGE_PAGES tests with
-size of 100.
+On 28.07.2023 15:23, Vikash Garodia wrote:
+> This implements decoder functionalities of the driver.
+> 
+> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> ---
+I see a whole bunch of shifts, ANDs, etc.
 
-./run_vmtests.sh -t ksm
------------------------------
-running ./ksm_tests -H -s 100
------------------------------
-Number of normal pages:    0
-Number of huge pages:    50
-Total size:    100 MiB
-Total time:    0.399844662 s
-Average speed:  250.097 MiB/s
-[PASS]
------------------------------
-running ./ksm_tests -P -s 100
------------------------------
-Total size:    100 MiB
-Total time:    0.451931496 s
-Average speed:  221.272 MiB/s
-[PASS]
+Please convert that to GENMASK + FIELD_PREP/FIELD_GET
 
-Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
-v1 -> v2
-collect Reviewed-by from David
-
- tools/testing/selftests/mm/run_vmtests.sh | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index 3f26f6e15b2a..ca3738e042c2 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -262,6 +262,10 @@ CATEGORY="madv_populate" run_test ./madv_populate
- 
- CATEGORY="memfd_secret" run_test ./memfd_secret
- 
-+# KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
-+CATEGORY="ksm" run_test ./ksm_tests -H -s 100
-+# KSM KSM_MERGE_TIME test with size of 100
-+CATEGORY="ksm" run_test ./ksm_tests -P -s 100
- # KSM MADV_MERGEABLE test with 10 identical pages
- CATEGORY="ksm" run_test ./ksm_tests -M -p 10
- # KSM unmerge test
--- 
-2.34.1
-
+Konrad
