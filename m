@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48FF7676C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAE27676E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbjG1UKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S233883AbjG1USy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjG1UKJ (ORCPT
+        with ESMTP id S233757AbjG1USc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:10:09 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3815B423B;
-        Fri, 28 Jul 2023 13:10:09 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-563393b63dbso286757eaf.1;
-        Fri, 28 Jul 2023 13:10:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690575008; x=1691179808;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ryMo8RWZEkiACeQYrmm5XmkGRuVYqp4Jcwq4ivOPstE=;
-        b=FIVii1pK9Gk91MsXcErZ6Min77acozdYnVuQV7LyN4eVVNipCxtvN964CWmbxN+/I+
-         cHqlLhMWo01BMKT++yHSFtXcZYWuMrNcRqxqcqE+A9V4dlaFUk5jsaEDLxTSy1hPrt12
-         I7s48ErbMwEiGG2HuXOD7biuYKVPbMQnyfWy3dsDYM6tJCHddDQBnXkjPQg0Fmz+17OC
-         VIaQm2PLftvckArnGlznnfrfvfsMb1FvUkPLUnpwE8g7LUyj30uLYfsm6NDSNP5Wc52z
-         xQvsibiJy9Dl3QUnB8Spv3uU9r0w3gAGy+/7BndWb41G9MoL8iJ/azk/gRmoAzDLhixO
-         zeLg==
-X-Gm-Message-State: ABy/qLZg5nRFuBgSa6UJNU95Bmdr0uIVf5KM4VZLFJjpoYQuObys2ZXI
-        S7ald6GVow2ca0/mHa4/720+qS6itSY/bgVmtgQ=
-X-Google-Smtp-Source: APBJJlGmwiVcsqEXeGGPHtsVHa+qSgqt9SDudq2YhkMkl9RkgiCA3wFvb/R5kjSdwsVMNXIhkeAgw7KKEbHTeNhZxTk=
-X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id
- d5-20020a4aa585000000b0056c484a923dmr370962oom.1.1690575008386; Fri, 28 Jul
- 2023 13:10:08 -0700 (PDT)
+        Fri, 28 Jul 2023 16:18:32 -0400
+X-Greylist: delayed 470 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Jul 2023 13:18:29 PDT
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63D62D75;
+        Fri, 28 Jul 2023 13:18:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+        t=1690575037; bh=MtbowmUPW/KlSYKyYheL1Gy0Tj8pJ1m2CPlyeud3blo=;
+        h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+        b=zNnEFCGMd3SOjwEr7PhPC7Tt4w7JouLZ2HN6SpPUF/ybtpnB0eDOmENYpp5rP4+v3
+         ODvwC8l9COkf8V64+My6OFSZMNvmLdbuY1MN8XRYTJ1CU8lLvJKKW1DBNUb2bJuvMJ
+         k9q2ZQkgbOdCofEW6kT5l5iTfounQlvnyxIfSiF4=
+Date:   Fri, 28 Jul 2023 22:10:36 +0200
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Caleb Connolly <kc@postmarketos.org>,
+        Jarrah Gosbell <kernel@undef.tools>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Martijn Braam <martijn@brixit.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Fitzhenry <tom@tom-fitzhenry.me.uk>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Change serial baud rate for
+ Pinephone Pro to 1.5 MB
+Message-ID: <nk22axbl47myincpxnhcygtb5viyldv6fkxng3m43yd7dwbzau@p6ycsad6uoqr>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+        Heiko Stuebner <heiko@sntech.de>, Peter Geis <pgwipeout@gmail.com>, 
+        Javier Martinez Canillas <javierm@redhat.com>, linux-kernel@vger.kernel.org, 
+        Peter Robinson <pbrobinson@gmail.com>, Caleb Connolly <kc@postmarketos.org>, 
+        Jarrah Gosbell <kernel@undef.tools>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+        Martijn Braam <martijn@brixit.nl>, Rob Herring <robh+dt@kernel.org>, 
+        Tom Fitzhenry <tom@tom-fitzhenry.me.uk>, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+        linux-rockchip@lists.infradead.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20230403175937.2842085-1-javierm@redhat.com>
+ <3797122.KgjxqYA5nG@diego>
+ <87pm4kuanl.fsf@minerva.mail-host-address-is-not-set>
+ <4495367.TLkxdtWsSY@phil>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 28 Jul 2023 22:09:57 +0200
-Message-ID: <CAJZ5v0jnGiQLWci3=-PM-8StYL4Dqa19HJhVLRVhDkvmuosjPA@mail.gmail.com>
-Subject: [GIT PULL] Thermal control fixes for v6.5-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4495367.TLkxdtWsSY@phil>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Heiko and Javier,
 
-Please pull from the tag
+On Fri, Jul 28, 2023 at 08:59:50PM +0200, Heiko Stuebner wrote:
+> 
+> Hi Javier,
+> 
+> > Probably won't replace the DTB shipped with the firmware either? If one is
+> > replacing the firmware provided DTB witch the one in the mainline kernel,
+> > probably such person is also using mainline u-boot?
+> 
+> Not necessarily.
+> 
+> I.e. putting an extlinux.conf on an sd-card with a kernel-image and dtb
+> is not rocket science ;-)
+> 
+> > For someone like me who is only using mainline u-boot, linux, etc then
+> > having a consistent uart baud rate across all components is really useful.
+> > 
+> > Otherwise I either have serial console for u-boot or the kernel, but can't
+> > have both working so is annoying.
+> > 
+> > It would be good to have a definite answer on this. Since every time that
+> > I try to hack on my PPP, I end changing my DTS and remember this patch :)
+> 
+> So far people only reported "breaks my setup". I'm in a pickle here ;-) .
+> Without anybody saying "I want to also move into this direction" I really
+> feel I should not merge a patch that breaks other peoples setups.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- thermal-6.5-rc4
+Even if this is not changed in kernel, bootloader should fix this situation by
+patching the kernel DTB before booting the kernel. U-Boot already patches the
+DTB in several ways, so I guess it's possible to just change stdout-path either
+in generic code, or in per-board ft_board_setup() for Pinephone Pro to something
+that matches whatever the user configured via Kconfig:
 
-with top-most commit ac4436a5b20e0ef1f608a9ef46c08d5d142f8da6
+https://elixir.bootlin.com/u-boot/latest/source/configs/pinephone-pro-rk3399_defconfig#L79
 
- thermal: of: fix double-free on unregistration
+I mean that if U-Boot allows the user to configure arbitrary baudrate via
+KConfig, then it *should* also update the kernel DTB to match, especially if the
+choice is different from DTB that it actually embeds:
 
-on top of commit 6eaae198076080886b9e7d57f4ae06fa782f90ef
+https://elixir.bootlin.com/u-boot/latest/source/arch/arm/dts/rk3399-pinephone-pro.dts#L29
 
- Linux 6.5-rc3
+No static baudrate choice in DT will save anyone anyway, with the provided flexibility
+of configuration.
 
-to receive thermal control fixes for 6.5-rc4.
+Maybe this would be a nice location to fix this:
 
-These constify thermal_zone_device_register() parameters, which was
-omitted by mistake, and fix a double free on thermal zone unregistration
-in the generic DT thermal driver (Ahmad Fatoum).
+https://elixir.bootlin.com/u-boot/v2023.07.02/source/common/fdt_support.c#L131
 
-Thanks!
+kind regards,
+	o.
 
-
----------------
-
-Ahmad Fatoum (2):
-      thermal: core: constify params in thermal_zone_device_register
-      thermal: of: fix double-free on unregistration
-
----------------
-
- drivers/thermal/thermal_core.c |  4 ++--
- drivers/thermal/thermal_of.c   | 27 ++++++---------------------
- include/linux/thermal.h        |  6 +++---
- 3 files changed, 11 insertions(+), 26 deletions(-)
+> 
+> Heiko
+> 
+> 
