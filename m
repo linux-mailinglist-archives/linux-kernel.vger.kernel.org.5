@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1609766121
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD68766110
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 03:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbjG1BQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 27 Jul 2023 21:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        id S231530AbjG1BNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 27 Jul 2023 21:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjG1BQn (ORCPT
+        with ESMTP id S229577AbjG1BNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 27 Jul 2023 21:16:43 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E98D30EB
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 18:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690506999; x=1722042999;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=8KfMBGcONL4k4Z7W2j3Cvr/WVIqdymkJqkOec38jGdU=;
-  b=SruQTVb82h6uKNponIElyDfuCdPlHqLcQGw9xsePSZaDua6tD6DReu2K
-   22aX8wMmh9MIleFj4+YuT3K5VV6Yo2bz/kDv5NGiPYipWr8UnDPxtt9C2
-   TNVvGhbgKQv9yRDvVAct7qQvbw2AlzSbwE4ZzJuIl4DTyeZT/3r8zKegI
-   z35W6o+1SRZnXkR4WLDRW/UzIcwKyZWOV6wEwvsm7kT9BPOvwAzjKVnUi
-   poxZ+8Meumc4Lz6cEwS3VZClH4WXa6AiBBb4mWkeMDj3zGwHOap903QZR
-   YA3ozdyZVHDSQO4ERbzJe9YO6RI6NsE1eAD+CXnM5I18yWSWCUSpIU09E
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="432289208"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="432289208"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 18:16:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="792692843"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="792692843"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Jul 2023 18:16:36 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPC5H-0002k3-0f;
-        Fri, 28 Jul 2023 01:16:25 +0000
-Date:   Fri, 28 Jul 2023 09:13:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johannes Berg <johannes.berg@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-Subject: drivers/spi/spi-stm32-qspi.c:468:27: warning: 'op' is used
- uninitialized
-Message-ID: <202307280915.PELlO3TQ-lkp@intel.com>
+        Thu, 27 Jul 2023 21:13:41 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A21C30E1
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 18:13:36 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8BxpPA_FsNkxwoLAA--.27511S3;
+        Fri, 28 Jul 2023 09:13:35 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX889FsNkfrA9AA--.32888S3;
+        Fri, 28 Jul 2023 09:13:34 +0800 (CST)
+Message-ID: <893f8801-b36d-8146-93a6-e97b29826980@loongson.cn>
+Date:   Fri, 28 Jul 2023 09:13:33 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm/percpu: Remove some local variables in
+ pcpu_populate_pte
+To:     Dennis Zhou <dennis@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, WANG Xuerui <kernel@xen0n.name>
+References: <20230712031622.1888321-1-maobibo@loongson.cn>
+ <20230712031622.1888321-2-maobibo@loongson.cn> <ZML414eLkT78bO5G@snowbird>
+Content-Language: en-US
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <ZML414eLkT78bO5G@snowbird>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxX889FsNkfrA9AA--.32888S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7KFy3GFyfCFy8Kr15Xw4UKFX_yoW8ZrW7pr
+        Z3Ga4v9F48JrnrKws3Xas8WrnxXw4rKa40k3ZrW3WrZwnIvrn7Kr4UKr13K342vFyxXF4x
+        tF45JasrCa1qvacCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
+        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jeq2NUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   57012c57536f8814dec92e74197ee96c3498d24e
-commit: 68f5d3f3b6543266b29e047cfaf9842333019b4c um: add PCI over virtio emulation driver
-date:   2 years, 1 month ago
-config: um-allyesconfig (https://download.01.org/0day-ci/archive/20230728/202307280915.PELlO3TQ-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230728/202307280915.PELlO3TQ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307280915.PELlO3TQ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/spi/spi-stm32-qspi.c: In function 'stm32_qspi_dirmap_read':
->> drivers/spi/spi-stm32-qspi.c:468:27: warning: 'op' is used uninitialized [-Wuninitialized]
-     468 |         struct spi_mem_op op;
-         |                           ^~
-   drivers/spi/spi-stm32-qspi.c:468:27: note: 'op' declared here
-     468 |         struct spi_mem_op op;
-         |                           ^~
 
 
-vim +/op +468 drivers/spi/spi-stm32-qspi.c
+在 2023/7/28 07:08, Dennis Zhou 写道:
+> Hello,
+> 
+> On Wed, Jul 12, 2023 at 11:16:20AM +0800, Bibo Mao wrote:
+>> In function pcpu_populate_pte there are already variable defined,
+>> it can be reused for later use, here remove duplicated local
+>> variables.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>  mm/percpu.c | 24 +++++++++---------------
+>>  1 file changed, 9 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/mm/percpu.c b/mm/percpu.c
+>> index 28e07ede46f6..85e3f9b2a61f 100644
+>> --- a/mm/percpu.c
+>> +++ b/mm/percpu.c
+>> @@ -3189,32 +3189,26 @@ void __init __weak pcpu_populate_pte(unsigned long addr)
+>>  	pmd_t *pmd;
+>>  
+>>  	if (pgd_none(*pgd)) {
+>> -		p4d_t *new;
+>> -
+>> -		new = memblock_alloc(P4D_TABLE_SIZE, P4D_TABLE_SIZE);
+>> -		if (!new)
+>> +		p4d = memblock_alloc(P4D_TABLE_SIZE, P4D_TABLE_SIZE);
+>> +		if (!p4d)
+>>  			goto err_alloc;
+>> -		pgd_populate(&init_mm, pgd, new);
+>> +		pgd_populate(&init_mm, pgd, p4d);
+>>  	}
+>>  
+>>  	p4d = p4d_offset(pgd, addr);
+>>  	if (p4d_none(*p4d)) {
+>> -		pud_t *new;
+>> -
+>> -		new = memblock_alloc(PUD_TABLE_SIZE, PUD_TABLE_SIZE);
+>> -		if (!new)
+>> +		pud = memblock_alloc(PUD_TABLE_SIZE, PUD_TABLE_SIZE);
+>> +		if (!pud)
+>>  			goto err_alloc;
+>> -		p4d_populate(&init_mm, p4d, new);
+>> +		p4d_populate(&init_mm, p4d, pud);
+>>  	}
+>>  
+>>  	pud = pud_offset(p4d, addr);
+>>  	if (pud_none(*pud)) {
+>> -		pmd_t *new;
+>> -
+>> -		new = memblock_alloc(PMD_TABLE_SIZE, PMD_TABLE_SIZE);
+>> -		if (!new)
+>> +		pmd = memblock_alloc(PMD_TABLE_SIZE, PMD_TABLE_SIZE);
+>> +		if (!pmd)
+>>  			goto err_alloc;
+>> -		pud_populate(&init_mm, pud, new);
+>> +		pud_populate(&init_mm, pud, pmd);
+>>  	}
+>>  
+>>  	pmd = pmd_offset(pud, addr);
+>> -- 
+>> 2.27.0
+>>
+> 
+> I've pulled this, but the other 2 are part of loongarch and should be
+> reviewed and pulled by those maintainers.
+Dennis,
 
-18674dee3cd651 Patrice Chotard 2021-04-19  463  
-18674dee3cd651 Patrice Chotard 2021-04-19  464  static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
-18674dee3cd651 Patrice Chotard 2021-04-19  465  				      u64 offs, size_t len, void *buf)
-18674dee3cd651 Patrice Chotard 2021-04-19  466  {
-18674dee3cd651 Patrice Chotard 2021-04-19  467  	struct stm32_qspi *qspi = spi_controller_get_devdata(desc->mem->spi->master);
-18674dee3cd651 Patrice Chotard 2021-04-19 @468  	struct spi_mem_op op;
-18674dee3cd651 Patrice Chotard 2021-04-19  469  	u32 addr_max;
-18674dee3cd651 Patrice Chotard 2021-04-19  470  	int ret;
-18674dee3cd651 Patrice Chotard 2021-04-19  471  
-18674dee3cd651 Patrice Chotard 2021-04-19  472  	ret = pm_runtime_get_sync(qspi->dev);
-18674dee3cd651 Patrice Chotard 2021-04-19  473  	if (ret < 0) {
-18674dee3cd651 Patrice Chotard 2021-04-19  474  		pm_runtime_put_noidle(qspi->dev);
-18674dee3cd651 Patrice Chotard 2021-04-19  475  		return ret;
-18674dee3cd651 Patrice Chotard 2021-04-19  476  	}
-18674dee3cd651 Patrice Chotard 2021-04-19  477  
-18674dee3cd651 Patrice Chotard 2021-04-19  478  	mutex_lock(&qspi->lock);
-18674dee3cd651 Patrice Chotard 2021-04-19  479  	/* make a local copy of desc op_tmpl and complete dirmap rdesc
-18674dee3cd651 Patrice Chotard 2021-04-19  480  	 * spi_mem_op template with offs, len and *buf in  order to get
-18674dee3cd651 Patrice Chotard 2021-04-19  481  	 * all needed transfer information into struct spi_mem_op
-18674dee3cd651 Patrice Chotard 2021-04-19  482  	 */
-18674dee3cd651 Patrice Chotard 2021-04-19  483  	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
-14ef64ebdc2a45 Arnd Bergmann   2021-04-22  484  	dev_dbg(qspi->dev, "%s len = 0x%zx offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
-18674dee3cd651 Patrice Chotard 2021-04-19  485  
-18674dee3cd651 Patrice Chotard 2021-04-19  486  	op.data.nbytes = len;
-18674dee3cd651 Patrice Chotard 2021-04-19  487  	op.addr.val = desc->info.offset + offs;
-18674dee3cd651 Patrice Chotard 2021-04-19  488  	op.data.buf.in = buf;
-18674dee3cd651 Patrice Chotard 2021-04-19  489  
-18674dee3cd651 Patrice Chotard 2021-04-19  490  	addr_max = op.addr.val + op.data.nbytes + 1;
-18674dee3cd651 Patrice Chotard 2021-04-19  491  	if (addr_max < qspi->mm_size && op.addr.buswidth)
-18674dee3cd651 Patrice Chotard 2021-04-19  492  		qspi->fmode = CCR_FMODE_MM;
-18674dee3cd651 Patrice Chotard 2021-04-19  493  	else
-18674dee3cd651 Patrice Chotard 2021-04-19  494  		qspi->fmode = CCR_FMODE_INDR;
-18674dee3cd651 Patrice Chotard 2021-04-19  495  
-18674dee3cd651 Patrice Chotard 2021-04-19  496  	ret = stm32_qspi_send(desc->mem, &op);
-18674dee3cd651 Patrice Chotard 2021-04-19  497  	mutex_unlock(&qspi->lock);
-18674dee3cd651 Patrice Chotard 2021-04-19  498  
-18674dee3cd651 Patrice Chotard 2021-04-19  499  	pm_runtime_mark_last_busy(qspi->dev);
-18674dee3cd651 Patrice Chotard 2021-04-19  500  	pm_runtime_put_autosuspend(qspi->dev);
-18674dee3cd651 Patrice Chotard 2021-04-19  501  
-18674dee3cd651 Patrice Chotard 2021-04-19  502  	return ret ?: len;
-18674dee3cd651 Patrice Chotard 2021-04-19  503  }
-18674dee3cd651 Patrice Chotard 2021-04-19  504  
+Thanks for your feedback.
 
-:::::: The code at line 468 was first introduced by commit
-:::::: 18674dee3cd651279eb3d9ba789fe483ddfe1137 spi: stm32-qspi: Add dirmap support
+Huacai,
 
-:::::: TO: Patrice Chotard <patrice.chotard@foss.st.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
+Could you give some review comments about the remaining 2 patches?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards
+Bibo Mao
+
+> 
+> Thanks,
+> Dennis
+
