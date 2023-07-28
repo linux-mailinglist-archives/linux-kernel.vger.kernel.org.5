@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C6C766AD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BC4766AD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbjG1KhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        id S235852AbjG1KhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235931AbjG1KhG (ORCPT
+        with ESMTP id S235355AbjG1Kge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:37:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F1D4EC9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690540394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=loKHor4heQF4evwuaE0DPh9ksKzfUuyvJ2BFPrdMAY0=;
-        b=KiSmiZySPfT2TPGfUlA7eFqLssYzDCn/WOaJquilEibas/B21z81jq/9o2wqePVrhk5l/M
-        g6EBv2MMeri2prGJxedFvMSXCtG+rkfClDF3DKdJS2QoAxHhScATzN27F9gJQQtRRZV0LR
-        Zs61ZMt002FUMXdeW7FRhmoZysct4EE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90-G3IKizU6P_CR-kHZn4TCQA-1; Fri, 28 Jul 2023 06:33:13 -0400
-X-MC-Unique: G3IKizU6P_CR-kHZn4TCQA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fc0855dcc5so11035665e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 03:33:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690540392; x=1691145192;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=loKHor4heQF4evwuaE0DPh9ksKzfUuyvJ2BFPrdMAY0=;
-        b=GzfiVEbZrKVFAManERorI3IHA4zS6fIm2i+/cjK9Yu80HBA4DvXNQLqA1nrU0lolSR
-         I6jWjg3jOc2dkIp3bvI2pbv4ti1LNifo/X5Fg2cfAA6LVQ3J7gMkqRhGBOmEVo5kgNJr
-         EhTv8W1ZI4Z1xw85TDC0cIfaY65oZkg2bo0pxsK9D1E9VawgFdu4q+W6+QV5MuTAjmyq
-         S8Uqpg4pazryFgbWo820Fn4JuwREToQSXbjfH12aGgaWieT61LeTMA4rjvTDlt/mg0d2
-         tpY+lG9VP4ketf/ZV8Vn/ZOj60aLHEM032u/VWcZnGXNZwegEDpxOZksalSg+wybUWIt
-         eXsA==
-X-Gm-Message-State: ABy/qLYLGxDn1x7Q9tfFE9b8tcL5Q6DQrAwxx8pIuOp3GJ/tlzP/v/K9
-        /71PesWDP7PH0mR6Dnii0V5bSbqSLU+R0EBUMK+JCltPnoeQ2CIWuBOCXL7cBogcJbEb6bUaXZm
-        AO95Qqw9dxuGUQZeJDULdkcxa
-X-Received: by 2002:a7b:c459:0:b0:3f9:b955:5584 with SMTP id l25-20020a7bc459000000b003f9b9555584mr1406939wmi.34.1690540391945;
-        Fri, 28 Jul 2023 03:33:11 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHJIicurWmbYq2RRi0Fxc2aMXkMrUFIvxVHBN5OO35hHxmTsx8C9A4ChJuPJy6FLq/qOmhJXw==
-X-Received: by 2002:a7b:c459:0:b0:3f9:b955:5584 with SMTP id l25-20020a7bc459000000b003f9b9555584mr1406928wmi.34.1690540391603;
-        Fri, 28 Jul 2023 03:33:11 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id v16-20020a1cf710000000b003fc080acf68sm6688003wmh.34.2023.07.28.03.33.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 03:33:11 -0700 (PDT)
-Message-ID: <06d566cc-fa03-f68f-e0a4-236567ae5684@redhat.com>
-Date:   Fri, 28 Jul 2023 12:33:10 +0200
+        Fri, 28 Jul 2023 06:36:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2C44ED0;
+        Fri, 28 Jul 2023 03:33:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8210C620D5;
+        Fri, 28 Jul 2023 10:33:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8F4DC433C8;
+        Fri, 28 Jul 2023 10:33:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690540433;
+        bh=De0OBn9WOW/3B2pyULgUhwXszW9Q66YIYLoomDnSz0A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=s40RjITnwRE+UpjErTp94GWb29V+u+SmEbqR0uyoFiZ3xkMSjVe2/kHLv7R1pac4d
+         W/3R9F3RmhhOvq3xpLOp6pZRkh4mDYj0uNAZWgL9PYkx8VwCNcewPhP0chbgYGeodn
+         T97/1IzzNglMCq+KaDqNrYW2rZEMKby0iEhWahLqMnTDOSpEweWADjvUa5yE/hn2d3
+         vjem3Nd/PC4ZHYaIZvucc5y0sGlbEgsgXYqb7clt21r2+8KlZJreZZSAQtw+7eO1Ry
+         A0rJ9f6dyl8Psr0UxtF8WLgPmIAi9NZBN/OKvvi93GnavA5+wFF9eJLmGf5bCen/0r
+         BXZAJcdn5s8Cw==
+From:   Lee Jones <lee@kernel.org>
+To:     Wolfram Sang <wsa@kernel.org>, Lee Jones <lee@kernel.org>,
+        rafael.j.wysocki@intel.com,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Benjamin Bara <bbara93@gmail.com>
+Cc:     dmitry.osipenko@collabora.com, peterz@infradead.org,
+        jonathanh@nvidia.com, richard.leitner@linux.dev,
+        treding@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>
+In-Reply-To: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
+References: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
+Subject: Re: [PATCH v7 0/5] mfd: tps6586x: register restart handler
+Message-Id: <169054042966.328674.7411378579702852995.b4-ty@kernel.org>
+Date:   Fri, 28 Jul 2023 11:33:49 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 8/8] mm/compaction: only set skip flag if
- cc->no_set_skip_hint is false
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
-        willy@infradead.org
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-9-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230728171037.2219226-9-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 19:10, Kemeng Shi wrote:
-> Keep the same logic as update_pageblock_skip, only set skip if
-> no_set_skip_hint is false which is more reasonable.
+On Sat, 15 Jul 2023 09:53:22 +0200, Benjamin Bara wrote:
+> The Tegra20 requires an enabled VDE power domain during startup. As the
+> VDE is currently not used, it is disabled during runtime.
+> Since 8f0c714ad9be, there is a workaround for the "normal restart path"
+> which enables the VDE before doing PMC's warm reboot. This workaround is
+> not executed in the "emergency restart path", leading to a hang-up
+> during start.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 188d610eb3b6..6841c0496223 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1418,7 +1418,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->   	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
->   
->   	/* Skip this pageblock in the future as it's full or nearly full */
-> -	if (start_pfn == end_pfn)
-> +	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
->   		set_pageblock_skip(page);
->   }
->   
+> [...]
 
-LGTM, although I am not an expert on that code.
+Applied, thanks!
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+[1/5] kernel/reboot: emergency_restart: set correct system_state
+      commit: 60466c067927abbcaff299845abd4b7069963139
+[2/5] i2c: core: run atomic i2c xfer when !preemptible
+      commit: aa49c90894d06e18a1ee7c095edbd2f37c232d02
+[3/5] kernel/reboot: add device to sys_off_handler
+      commit: db2d6038c5e795cab4f0a8d3e86b4f7e33338629
+[4/5] mfd: tps6586x: use devm-based power off handler
+      commit: 8bd141b17cedcbcb7d336df6e0462e4f4a528ab1
+[5/5] mfd: tps6586x: register restart handler
+      commit: 510f276df2b91efd73f6c53be62b7e692ff533c1
 
--- 
-Cheers,
-
-David / dhildenb
+--
+Lee Jones [李琼斯]
 
