@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB84766F94
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E643766F90
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbjG1Of6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S237113AbjG1Of1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237116AbjG1Ofz (ORCPT
+        with ESMTP id S236932AbjG1Of0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:35:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0379C3A9B
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690554912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T8f2jcEWHe85NAwJ+QYf2QWkY01PugbZbbWPEErvXII=;
-        b=HP555RYAGoMulDbepeE3vfE+fAj9BQhSkYdK5vEzeF4PerbuBcggP9IdLDS+UIBYr18WWs
-        KlSRKYnF+I7prgeRaxlhb67bzyDi3YqntOP4GPNDYkFj540ZhuCM7NXixdMgugmJYyQ0Yi
-        3W6C6BJPezQZyRDrWPlJ/z8RfGEgtZc=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-67-jhzvxM1eNfKD4Es_Ni7Qdw-1; Fri, 28 Jul 2023 10:35:07 -0400
-X-MC-Unique: jhzvxM1eNfKD4Es_Ni7Qdw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fa9a282fffso11827455e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:35:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690554906; x=1691159706;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8f2jcEWHe85NAwJ+QYf2QWkY01PugbZbbWPEErvXII=;
-        b=Kze/odMVdrFdGWccQ1MNQZUVX7vJ6RiopygBI/+6M0IXhFsQzIPMnuNGcRoS2P744F
-         tFfy46QRScpEsBD7D/I5YNDtnq8u8RmutqYkK7N5qpcjTCF1DVnVz30qEe5WpgbdQ++v
-         W29rcjtTBcZBIEvoIHHNwqrddC90DBofupBo6VErSwmtJkzJihovfH+7RAfkyiXZ5Ar3
-         j/lsAEvkyQa9K8MnsOD5oXqyTrNdqyv8jcRmrIXke8Yp8dDRGEYdNYdvRxzAASTZZ9IC
-         3nsGL9ogp2s87pNjJZC/jmp/LRCWv3NyUn+s2QN2S++1LJ3kMnz/0iFX9llh296ccQJg
-         WYpA==
-X-Gm-Message-State: ABy/qLYlYHEQ+lPZ7HEuG4JpsALDw2hNGof2Z+GVuly8WgKhJpQuuwLb
-        vl5R4NSVfiCTUT4TDtVhhx0/3DsjB6PFN17UAyKlzf1KeVGw9PcGD1KPdOV9wFX5Hd1ZTXhiIdt
-        JUPxtLOMFFN/at1UvFzhn/rAP
-X-Received: by 2002:a05:600c:2248:b0:3fb:ffa8:6d78 with SMTP id a8-20020a05600c224800b003fbffa86d78mr1882095wmm.36.1690554906732;
-        Fri, 28 Jul 2023 07:35:06 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGghZKLFi0VL5qxS7EG+DsAnMC4z1b9QjFmvxxsSdSuv02WebYTiWKZNZ14tKbZSFP1Q1dm0w==
-X-Received: by 2002:a05:600c:2248:b0:3fb:ffa8:6d78 with SMTP id a8-20020a05600c224800b003fbffa86d78mr1882076wmm.36.1690554906382;
-        Fri, 28 Jul 2023 07:35:06 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:6b00:bf49:f14b:380d:f871? (p200300cbc7066b00bf49f14b380df871.dip0.t-ipconnect.de. [2003:cb:c706:6b00:bf49:f14b:380d:f871])
-        by smtp.gmail.com with ESMTPSA id f2-20020a7bc8c2000000b003fbc9b9699dsm4324357wml.45.2023.07.28.07.35.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 07:35:05 -0700 (PDT)
-Message-ID: <8e4d9fa7-7550-87a9-ead1-2d2a8691cdab@redhat.com>
-Date:   Fri, 28 Jul 2023 16:35:04 +0200
+        Fri, 28 Jul 2023 10:35:26 -0400
+Received: from out28-131.mail.aliyun.com (out28-131.mail.aliyun.com [115.124.28.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AAF3AB4
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:35:22 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08700002|-1;BR=01201311R131S69rulernew998_84748_2000303;CH=blue;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00311369-0.000355902-0.99653;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=sunran001@208suo.com;NM=1;PH=DW;RN=6;RT=6;SR=0;TI=W4_0.2.3_v5_212501EE_1690554907535_o7001c54a;
+Received: from WS-web (sunran001@208suo.com[W4_0.2.3_v5_212501EE_1690554907535_o7001c54a]) at Fri, 28 Jul 2023 22:35:19 +0800
+Date:   Fri, 28 Jul 2023 22:35:19 +0800
+From:   "=?UTF-8?B?5a2Z5YaJ?=" <sunran001@208suo.com>
+To:     "airlied" <airlied@gmail.com>, "daniel" <daniel@ffwll.ch>,
+        "alexander.deucher" <alexander.deucher@amd.com>
+Cc:     "amd-gfx" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Reply-To: "=?UTF-8?B?5a2Z5YaJ?=" <sunran001@208suo.com>
+Message-ID: <3a4bebc5-79fb-4799-8743-14a0dde97a4f.sunran001@208suo.com>
+Subject: =?UTF-8?B?W1BBVENIXSBkcm0vcmFkZW9uOiBQcmVmZXIgJ3Vuc2lnbmVkIGludCcgdG8gYmFyZSB1c2Ug?=
+  =?UTF-8?B?b2YgJ3Vuc2lnbmVkJw==?=
+X-Mailer: [Alimail-Mailagent][W4_0.2.3][v5][Chrome]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] selftests: mm: ksm: Fix incorrect evaluation of
- parameter
-Content-Language: en-US
-To:     Ayush Jain <ayush.jain3@amd.com>, akpm@linux-foundation.org,
-        shuah@kernel.org, pasha.tatashin@soleen.com,
-        zhansayabagdaulet@gmail.com, tyhicks@linux.microsoft.com,
-        raghavendra.kodsarathimmappa@amd.com
-Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Narasimhan.V@amd.com,
-        Santosh.Shukla@amd.com
-References: <20230728060109.4403-1-ayush.jain3@amd.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230728060109.4403-1-ayush.jain3@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+x-aliyun-mail-creator: W4_0.2.3_v5_TCwTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzExNS4wLjAuMCBTYWZhcmkvNTM3LjM2IEVkZy8xMTUuMC4xOTAxLjE4Mw==FR
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.07.23 08:01, Ayush Jain wrote:
-> A missing break in kms_tests leads to kselftest hang when the
-> parameter -s is used.
-> In current code flow because of missing break in -s, -t parses
-> args spilled from -s and as -t accepts only valid values as 0,1
-> so any arg in -s >1 or <0, gets in ksm_test failure
-> 
-> This went undetected since, before the addition of option -t,
-> the next case -M would immediately break out of the switch
-> statement but that is no longer the case
-> 
-> Add the missing break statement.
-> 
-> ----Before----
-> ./ksm_tests -H -s 100
-> Invalid merge type
-> 
-> ----After----
-> ./ksm_tests -H -s 100
-> Number of normal pages:    0
-> Number of huge pages:    50
-> Total size:    100 MiB
-> Total time:    0.401732682 s
-> Average speed:  248.922 MiB/s
-> 
-> Fixes: 9e7cb94ca218 ("selftests: vm: add KSM merging time test")
-
-I think this actually fixes 07115fcc15b4 ("selftests/mm: add new 
-selftests for KSM") that added the "t" parsing.
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+V0FSTklORzogUHJlZmVyICd1bnNpZ25lZCBpbnQnIHRvIGJhcmUgdXNlIG9mICd1bnNpZ25lZCcK
+ClNpZ25lZC1vZmYtYnk6IFJhbiBTdW4gPHN1bnJhbjAwMUAyMDhzdW8uY29tPgotLS0KIGRyaXZl
+cnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX29iamVjdC5oIHwgOCArKysrLS0tLQogMSBmaWxlIGNo
+YW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9vYmplY3QuaCBiL2RyaXZlcnMvZ3B1L2RybS9yYWRl
+b24vcmFkZW9uX29iamVjdC5oCmluZGV4IDM5Y2M4N2E1OWE5YS4uOWI1NWE3MTAzY2ZkIDEwMDY0
+NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9vYmplY3QuaAorKysgYi9kcml2
+ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9vYmplY3QuaApAQCAtMzcsNyArMzcsNyBAQAogICoK
+ICAqIFJldHVybnMgY29ycmVzcG9uZGluZyBkb21haW4gb2YgdGhlIHR0bSBtZW1fdHlwZQogICov
+Ci1zdGF0aWMgaW5saW5lIHVuc2lnbmVkIHJhZGVvbl9tZW1fdHlwZV90b19kb21haW4odTMyIG1l
+bV90eXBlKQorc3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgcmFkZW9uX21lbV90eXBlX3RvX2Rv
+bWFpbih1MzIgbWVtX3R5cGUpCiB7CiAgc3dpdGNoIChtZW1fdHlwZSkgewogIGNhc2UgVFRNX1BM
+X1ZSQU06CkBAIC0xMTIsMTIgKzExMiwxMiBAQCBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcg
+cmFkZW9uX2JvX3NpemUoc3RydWN0IHJhZGVvbl9ibyAqYm8pCiAgcmV0dXJuIGJvLT50Ym8uYmFz
+ZS5zaXplOwogfQogCi1zdGF0aWMgaW5saW5lIHVuc2lnbmVkIHJhZGVvbl9ib19uZ3B1X3BhZ2Vz
+KHN0cnVjdCByYWRlb25fYm8gKmJvKQorc3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgcmFkZW9u
+X2JvX25ncHVfcGFnZXMoc3RydWN0IHJhZGVvbl9ibyAqYm8pCiB7CiAgcmV0dXJuIGJvLT50Ym8u
+YmFzZS5zaXplIC8gUkFERU9OX0dQVV9QQUdFX1NJWkU7CiB9CiAKLXN0YXRpYyBpbmxpbmUgdW5z
+aWduZWQgcmFkZW9uX2JvX2dwdV9wYWdlX2FsaWdubWVudChzdHJ1Y3QgcmFkZW9uX2JvICpibykK
+K3N0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IHJhZGVvbl9ib19ncHVfcGFnZV9hbGlnbm1lbnQo
+c3RydWN0IHJhZGVvbl9ibyAqYm8pCiB7CiAgcmV0dXJuIChiby0+dGJvLnBhZ2VfYWxpZ25tZW50
+IDw8IFBBR0VfU0hJRlQpIC8gUkFERU9OX0dQVV9QQUdFX1NJWkU7CiB9CkBAIC0xODksNyArMTg5
+LDcgQEAgc3RhdGljIGlubGluZSB2b2lkICpyYWRlb25fc2FfYm9fY3B1X2FkZHIoc3RydWN0IGRy
+bV9zdWJhbGxvYyAqc2FfYm8pCiAKIGV4dGVybiBpbnQgcmFkZW9uX3NhX2JvX21hbmFnZXJfaW5p
+dChzdHJ1Y3QgcmFkZW9uX2RldmljZSAqcmRldiwKICAgICAgICAgIHN0cnVjdCByYWRlb25fc2Ff
+bWFuYWdlciAqc2FfbWFuYWdlciwKLSAgICAgICAgIHVuc2lnbmVkIHNpemUsIHUzMiBhbGlnbiwg
+dTMyIGRvbWFpbiwKKyAgICAgICAgIHVuc2lnbmVkIGludCBzaXplLCB1MzIgYWxpZ24sIHUzMiBk
+b21haW4sCiAgICAgICAgICB1MzIgZmxhZ3MpOwogZXh0ZXJuIHZvaWQgcmFkZW9uX3NhX2JvX21h
+bmFnZXJfZmluaShzdHJ1Y3QgcmFkZW9uX2RldmljZSAqcmRldiwKICAgICAgICAgICBzdHJ1Y3Qg
+cmFkZW9uX3NhX21hbmFnZXIgKnNhX21hbmFnZXIpOwotLSAKMi4xNy4xCgo=
