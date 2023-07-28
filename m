@@ -2,249 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF97767665
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CBA767669
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 21:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjG1Tbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 15:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        id S231946AbjG1TeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 15:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234254AbjG1Tbo (ORCPT
+        with ESMTP id S229830AbjG1TeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 15:31:44 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A163268B;
-        Fri, 28 Jul 2023 12:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690572689; x=1722108689;
-  h=subject:from:to:cc:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZmjmGLkvlIjh8KgnWd4vxpMs4lTuf4Wk7sbNKNMFp8U=;
-  b=WTPuKzK5XobA6Sm+c1I2DA0Ff/Ssu2SMO+MSAgrAosreBiIJ6r6l6qn+
-   NWNYzIy8vylJU3LyQ2l3+rFunizuyWAXJDKE4JtEiNE0qQVkk7As0MZKY
-   ETE3/+voU1ujHKhkCkTVuH+MPTpohdGM7m7G60n9Fx3xKy4MhirpO4v1N
-   R91S96ijr9eUh8Yg/shnGiH5N4M7C3OfFFzEsOd6P3yqwZ3mRN45T4OVK
-   /2WgxrXo93HQGZmm6M1Nx3usIUzHy9tBFFLSRCS6UrZwykg5A9JKMLw4t
-   YOdm/YBUplC1oKzJjZkVHbbossCrDwVSF4x6dfcSBKCkUVMgFUDK4EX0f
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="348958904"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="348958904"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 12:31:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="797529767"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="797529767"
-Received: from cheehong-laptop.gar.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.212.158.179])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 12:31:16 -0700
-Subject: [PATCH 4/4] virt: sevguest: Add TSM key support for SNP_{GET,
- GET_EXT}_REPORT
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     dhowells@redhat.com
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 28 Jul 2023 12:31:15 -0700
-Message-ID: <169057267580.180586.15710177655506555147.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        Fri, 28 Jul 2023 15:34:20 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E97E69;
+        Fri, 28 Jul 2023 12:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fPenveROvmLP9xK4bVQXMQSFpU0bLGq9l0utMcWGrfM=; b=S3P1XhiNI7tuydMrFHMGOtysw4
+        y7VxJlfdAExXJizqj4Qwc25CAaVdYRwdYTPeALneag129u+mW6NnjT+T7k+1BVbMz+6GnQ6+zyvVC
+        5D/9nWvpNBg6jeMWlTkQqS1v1Vjh6m0kkwvLLrcDyceBa4zN8zpSuc+kjysseEjfRfV+FRPavTh3I
+        2bEi9qFHbGOxrV/B3SdL+Wi8gKML0mDxdC/hgbe7PHi4k2/FvVElp9vrZNON7d8E+42y6XEfwhOfh
+        Z+s9pckqRxtpCUryeXfQx6shKLGrkvw7ZIZ02ie2f7et1TgNMLqrVWXt/zXpXur+ZGbxJDiZM4Cza
+        KjzCUZCQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47138)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qPTDb-0007kx-2V;
+        Fri, 28 Jul 2023 20:33:43 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qPTDW-0005B7-3J; Fri, 28 Jul 2023 20:33:38 +0100
+Date:   Fri, 28 Jul 2023 20:33:38 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, imx@lists.linux.dev
+Subject: Re: [PATCH v2 net 2/2] net: stmmac: dwmac-imx: pause the TXC clock
+ in fixed-link
+Message-ID: <ZMQYEs9gULZmmijV@shell.armlinux.org.uk>
+References: <20230727152503.2199550-1-shenwei.wang@nxp.com>
+ <20230727152503.2199550-3-shenwei.wang@nxp.com>
+ <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
+ <ZMPdKyOtpZKEMLsO@shell.armlinux.org.uk>
+ <20230728153611.GH21718@willie-the-truck>
+ <ZMPs+sOIzWR0LmrP@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMPs+sOIzWR0LmrP@lizhi-Precision-Tower-5810>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sevguest driver was a first mover in the confidential computing
-space. As a first mover that afforded some leeway to build the driver
-without concern for common infrastructure.
+On Fri, Jul 28, 2023 at 12:29:46PM -0400, Frank Li wrote:
+> On Fri, Jul 28, 2023 at 04:36:12PM +0100, Will Deacon wrote:
+> > Yes, I don't think wmb() is the right thing here. If you need to ensure
+> > that the write to MAC_CTRL_REG has taken effect, then you'll need to go
+> > through some device-specific sequence which probably involves reading
+> > something back. If you just need things to arrive in order eventually,
+> > the memory type already gives you that.
+> > 
+> > It's also worth pointing out that udelay() isn't necessarily ordered wrt
+> > MMIO writes, so that usleep_range() might need some help as well.
+> 
+> Hi Deacon:
+> 
+> Does it means below pattern will be problem?
+> 
+> 1.writel()
+> 2.udelay()
+> 3.writel()
 
-Now that sevguest is no longer a singleton [1] the common operation of
-building and transmitting attestation report blobs can / should be made
-common. In this model the so called "TSM-provider" implementations can
-share a common envelope ABI even if the contents of that envelope remain
-vendor-specific. When / if the industry agrees on an attestation record
-format, that definition can also fit in the same ABI. In the meantime
-the kernel's maintenance burden is reduced and collaboration on the
-commons is increased.
+Yes, it can be a problem - because the first write may take a while
+to hit the hardware. It's been this way ever since PCI became a thing,
+even on x86 hardware.
 
-Convert sevguest to use TSM keys to retrieve the blobs that the
-SNP_{GET,GET_EXT}_REPORT ioctls produce. The flow for retrieving the
-SNP_GET_REPORT blob via the keyctl utility would be:
+PCI posting rules are that writes can be posted into the various
+bridges in the bus structure and forwarded on at some point later.
+However, reads are not allowed to bypass writes - which means that if
+one reads from a PCI device, the preceeding writes need to be flushed
+out of the bridges _in the path to the device being read_.
 
-    dd if=/dev/urandom of=pubkey bs=1 count=64
-    keyctl add tsm tsm_test "auth $(xxd -p -c 0 < pubkey) privlevel=2" @u
-    keyctl print $key_id | awk '{ print $3 }' | xxd -p -c 0 -r | hexdump -C
+So, if we take an example and apply it to PCI:
 
-...while the SNP_GET_EXT_REPORT flow adds the "format=extended" option
-to the request flow:
+	writel()
+	udelay(100)
+	writel()
+	readl()
 
-    keyctl add tsm tsm_test "auth $(xxd -p -c 0 < pubkey) privlevel=2 format=extended" @u
+The device could well see nothing for a while, and then two consecutive
+writes and a read in quick succession.
 
-The output format from 'keyctl print' is:
+> It may not wait enough time between 1 and 3. I think the above pattern
+> is quite common in driver code.  I am not sure if usleep_range involve
+> MMIO to get current counter, ARM may use cp15 to get local timer counter.
 
-    <pubkey blob> <auth blob desc[:format]> <auth blob>
+There are no guarantees, even on x86, that udelay() offers anything to
+space device writes apart.
 
-...where the blobs are hex encoded and the descriptor string is either
-"sev" or "sev:extended" in this case.
+If this pattern is popular in drivers, and it's critical to the
+drivers operation, then it's technically buggy - and it's been that way
+for at least a couple of decades! One might get away with it (maybe the
+hardware isn't delaying the writes?) but the kernel has never
+guaranteed that writel(), udelay(), writel() will space the two writes
+apart by the specified delay.
 
-Note, the Keys subsystem frontend for the functionality that
-SNP_GET_DERIVED_KEY represents is saved for follow-on work that likely
-needs to become a new trusted-keys type. The old ioctls can be lazily
-deprecated, the main motivation of this effort is to stop the
-proliferation of new ioctls, and to increase cross-vendor colloboration.
-
-Note, only compile-tested.
-
-Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Dionna Glaze <dionnaglaze@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/virt/coco/sev-guest/Kconfig     |    2 +
- drivers/virt/coco/sev-guest/sev-guest.c |   87 +++++++++++++++++++++++++++++++
- 2 files changed, 89 insertions(+)
-
-diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-index da2d7ca531f0..bce43d4639ce 100644
---- a/drivers/virt/coco/sev-guest/Kconfig
-+++ b/drivers/virt/coco/sev-guest/Kconfig
-@@ -2,9 +2,11 @@ config SEV_GUEST
- 	tristate "AMD SEV Guest driver"
- 	default m
- 	depends on AMD_MEM_ENCRYPT
-+	depends on KEYS
- 	select CRYPTO
- 	select CRYPTO_AEAD2
- 	select CRYPTO_GCM
-+	select TSM_KEYS
- 	help
- 	  SEV-SNP firmware provides the guest a mechanism to communicate with
- 	  the PSP without risk from a malicious hypervisor who wishes to read,
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index f48c4764a7a2..2bdca268272d 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -21,6 +21,7 @@
- #include <linux/psp-sev.h>
- #include <uapi/linux/sev-guest.h>
- #include <uapi/linux/psp-sev.h>
-+#include <keys/tsm.h>
- 
- #include <asm/svm.h>
- #include <asm/sev.h>
-@@ -769,6 +770,84 @@ static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno
- 	return key;
- }
- 
-+static int sev_auth_new(struct tsm_key_payload *t, void *provider_data)
-+{
-+	struct snp_guest_dev *snp_dev = provider_data;
-+	const int report_size = SZ_16K;
-+	const int ext_size =
-+		PAGE_ALIGN_DOWN(TSM_DATA_MAX - report_size - sizeof(*t));
-+	int ret;
-+
-+	if (t->pubkey_len != 64)
-+		return -EINVAL;
-+
-+	if (t->auth_blob_format[0] &&
-+	    strcmp(t->auth_blob_format, "extended") != 0)
-+		return -EINVAL;
-+
-+	if (t->auth_blob_format[0]) {
-+		u8 *buf __free(kvfree) =
-+			kvzalloc(report_size + ext_size, GFP_KERNEL);
-+
-+		struct snp_ext_report_req req = {
-+			.data = { .vmpl = t->privlevel },
-+			.certs_address = (__u64)buf + report_size,
-+			.certs_len = ext_size,
-+		};
-+		memcpy(&req.data.user_data, t->pubkey, 64);
-+
-+		struct snp_guest_request_ioctl input = {
-+			.msg_version = 1,
-+			.req_data = (__u64) &req,
-+			.resp_data = (__u64) buf,
-+		};
-+
-+		ret = get_ext_report(snp_dev, &input, SNP_KARG);
-+		if (ret)
-+			return ret;
-+
-+		no_free_ptr(buf);
-+		t->auth_blob = buf;
-+		t->auth_blob_len = report_size + ext_size;
-+		t->auth_blob_desc = "sev";
-+	} else {
-+		u8 *buf __free(kvfree) = kvzalloc(report_size, GFP_KERNEL);
-+
-+		struct snp_report_req req = {
-+			.vmpl = t->privlevel,
-+		};
-+		memcpy(&req.user_data, t->pubkey, 64);
-+
-+		struct snp_guest_request_ioctl input = {
-+			.msg_version = 1,
-+			.req_data = (__u64) &req,
-+			.resp_data = (__u64) buf,
-+		};
-+
-+		ret = get_report(snp_dev, &input, SNP_KARG);
-+		if (ret)
-+			return ret;
-+
-+		no_free_ptr(buf);
-+		t->auth_blob = buf;
-+		t->auth_blob_len = report_size;
-+		t->auth_blob_desc = "sev";
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct tsm_key_ops sev_tsm_ops = {
-+	.name = KBUILD_MODNAME,
-+	.module = THIS_MODULE,
-+	.auth_new = sev_auth_new,
-+};
-+
-+static void unregister_sev_tsm(void *data)
-+{
-+	unregister_tsm_provider(&sev_tsm_ops);
-+}
-+
- static int __init sev_guest_probe(struct platform_device *pdev)
- {
- 	struct snp_secrets_page_layout *layout;
-@@ -842,6 +921,14 @@ static int __init sev_guest_probe(struct platform_device *pdev)
- 	snp_dev->input.resp_gpa = __pa(snp_dev->response);
- 	snp_dev->input.data_gpa = __pa(snp_dev->certs_data);
- 
-+	ret = register_tsm_provider(&sev_tsm_ops, snp_dev);
-+	if (ret)
-+		goto e_free_cert_data;
-+
-+	ret = devm_add_action_or_reset(&pdev->dev, unregister_sev_tsm, NULL);
-+	if (ret)
-+		goto e_free_cert_data;
-+
- 	ret =  misc_register(misc);
- 	if (ret)
- 		goto e_free_cert_data;
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
