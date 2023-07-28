@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6597766B5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3BA766B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 13:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236133AbjG1LH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 07:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S236123AbjG1LGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 07:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235025AbjG1LHZ (ORCPT
+        with ESMTP id S234277AbjG1LGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 07:07:25 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7BC2271D;
-        Fri, 28 Jul 2023 04:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690542444; x=1722078444;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Aka8gvuYwnBE1qjG5Cx27//2rg7/9tsuBUh8r9GeeDU=;
-  b=1Kfzbrru1N55O5j/yQvvKEQyQcgET5Jycy/5qjla6r+kJy1jL5XBYcui
-   nuS+R+NrUFcQR8q9UwJxgoCXUWgpcVJl7mBLQ63JWiJzleRP22ol1TUE9
-   4Ell5CZuSfeGvirsVlJPYAPJW9XjG/ECDwtpJBcM31JPtPNvEqDjKdcCC
-   00SqKtJ3u/boypd3UnoxbJryyfMkR//9M3uekEujZPkT8wyCpHa5L+Hjx
-   T46OBHGmf83QWpAH9HCZO8UzCePvD2rCy/NU1LauYO2WzzARn4I1Hk9ll
-   Y2NLvgrB/J0E3xsRYruPLjebJqU8SKPpulVKrP5111k0jqvFBQSgEUfaC
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
-   d="asc'?scan'208";a="226626857"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2023 04:07:13 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 28 Jul 2023 04:07:12 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 28 Jul 2023 04:07:10 -0700
+        Fri, 28 Jul 2023 07:06:40 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B61D2703
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:06:39 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so21895965e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 04:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690542398; x=1691147198;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CU70Eh2OqmXn/mXGJvsy6fLIYE8In/MkQR/tQEWkQOM=;
+        b=qc+LVsKsC9fZ7c+Rtm+B2SsFYCOiBYG5PWTpso7gwBhW+WfgE5FpsPvkjpvfFHSgFP
+         StwtdmRslvH+8jrCQN8cxve8M3slE8/gQzVRrvDpdDe6+Opb1KHGXSeyCqVcK6BRsDcr
+         l7X586fVfKFo2JKJeIGJIiiWduAhFhfe5vIY2ubTBAKrjg9BxrtNe7T5sxSfYWHg/UrV
+         kgEmRQB3wj5p66rxdWRvFmSMk0KrbHQyK7QPSSAamjhP6m1Snkh6Hi2upAHmaGuOZ5gq
+         /XhqobN4OCxcEPbfQSWZkLnmkGrMq01Ov+1q9i2Yl+zYniaL/2EjPgfP+2LUe+2J8IcY
+         +qlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690542398; x=1691147198;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CU70Eh2OqmXn/mXGJvsy6fLIYE8In/MkQR/tQEWkQOM=;
+        b=IaY8lb8nvM/SapDNRUAa6xtABYlzDBHx6/Mh8AMgOfewav5H6WQpeX1Bwj9CtAotpH
+         Hluu4M6Pm5IjoFVutKenhwdvPXd/dLzlAMNN0NU8HZ7MTLfF21Xj7tkJ0E1Dk5kA6jkk
+         tASC32ZFrVI0NhyjB3i9kUVHHciI7fQCumeeSia+PaNGKEyXjOv8eXo1wLBUSyo9LMpL
+         Q8QSNqGUAhOq7UbgeFvPjHQn4dLjcj8ImePU5cZZAjmmj796Jksj8NPhvBFw5CtyjNYI
+         M7ahaIYUgfU287cUacWMdbHbN+TIi0LvEG1qxvx3pzBmKBO35DcUqNklpD4RWmwOqQmF
+         uPpg==
+X-Gm-Message-State: ABy/qLZ8ZOfK1TyC5LACH38dIfU4M0icwSw1RPo+5BYomn3Gxd44xEpG
+        E+jDt67ByOCqtvGZK1Z+x+vvRQ==
+X-Google-Smtp-Source: APBJJlHjVByBvBfppyeBdQWe2dS7fGbuNTvvMqTHXVJ0Cu9SAu5uwxXYOY65e950xrmaJkwlvIO39A==
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e643:1225 with SMTP id y4-20020a05600c20c400b003fbe6431225mr1636663wmm.13.1690542397797;
+        Fri, 28 Jul 2023 04:06:37 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.48])
+        by smtp.gmail.com with ESMTPSA id n5-20020a7bc5c5000000b003fbe4cecc3bsm6831870wmk.16.2023.07.28.04.06.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 04:06:37 -0700 (PDT)
+Message-ID: <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
 Date:   Fri, 28 Jul 2023 12:06:35 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Eric Lin <eric.lin@sifive.com>
-CC:     Conor Dooley <conor@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <zong.li@sifive.com>,
-        <greentime.hu@sifive.com>, <vincent.chen@sifive.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-Message-ID: <20230728-corrosive-crown-54dfd6dd3919@wendy>
-References: <20230720135125.21240-1-eric.lin@sifive.com>
- <20230720135125.21240-2-eric.lin@sifive.com>
- <20230720-slept-guru-216e2803061e@spud>
- <20230728-facedown-husked-9813fa79d9a0@wendy>
- <CAPqJEFrObCSEXx+qTOp_JY3m5Ano59x=U4fFCBJ32ufLUx+6PA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Yr02wk+FfM9y0tjy"
-Content-Disposition: inline
-In-Reply-To: <CAPqJEFrObCSEXx+qTOp_JY3m5Ano59x=U4fFCBJ32ufLUx+6PA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 20/50] dt-bindings: atmel-nand: add
+ microchip,sam9x7-pmecc
+Content-Language: en-US
+To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230728102636.266309-1-varshini.rajendran@microchip.com>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230728102636.266309-1-varshini.rajendran@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Yr02wk+FfM9y0tjy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 28, 2023 at 04:24:08PM +0800, Eric Lin wrote:
-> On Fri, Jul 28, 2023 at 3:06=E2=80=AFPM Conor Dooley <conor.dooley@microc=
-hip.com> wrote:
-> > On Thu, Jul 20, 2023 at 06:10:51PM +0100, Conor Dooley wrote:
-> > > On Thu, Jul 20, 2023 at 09:51:19PM +0800, Eric Lin wrote:
 
-> > > > +description:
-> > > > +  The SiFive Private L2 Cache Controller is per core and
-> > > > +  communicates with both the upstream L1 caches and
-> > > > +  downstream L3 cache or memory, enabling a high-performance
-> > > > +  cache subsystem.
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: /schemas/cache-controller.yaml#
-> > > > +
-> > >
-> > > I'm pretty sure that I pointed out last time around that you need to =
-add
-> > > something like in the ccache driver:
-> > >
-> > > select:
-> > >   properties:
-> > >     compatible:
-> > >       contains:
-> > >         enum:
-> > >           - sifive,ccache0
-> > >           - sifive,fu540-c000-ccache
-> > >           - sifive,fu740-c000-ccache
-> > >
-> > > otherwise this binding will be used for anything containing "cache" in
-> > > the dt-binding.
-> > > For this binding, I think that the following is sufficient:
-> > >
-> > > select:
-> > >   properties:
-> > >     compatible:
-> > >       contains:
-> > >           const: sifive,pl2cache1
-> > >
->=20
-> Sorry, I misunderstood your meaning.
-> To be honest, I'm not quite familiar with the usage of the select propert=
-y.
-> When should we use the select property?
-> May I ask, is there a document to detail introduce each property and
-> its usage like the device-tree spec?
-> I think it would be very helpful for beginners writing correct
-> dt-binding and it can save much reviewers time.
+On 7/28/23 11:26, Varshini Rajendran wrote:
+> Add microchip,sam9x7-pmecc to DT bindings documentation.
+> 
 
-You need this select because otherwise this binding will match against
-every other user of "cache" in the tree. It's explained here:
-https://docs.kernel.org/devicetree/bindings/writing-schema.html
+Why? What's the underlying problem that motivated you do this patch?
 
-Thanks,
-Conor.
-
---Yr02wk+FfM9y0tjy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMOhOwAKCRB4tDGHoIJi
-0gAsAP9n7SLd/UwEsj+M3d9jv2unEvtzM1+jOnjUIu5bDMSlkgD/f7qD0m5FiV5D
-klvEB4+xPiMifa296wZGHkTM5YhzxAc=
-=IuWE
------END PGP SIGNATURE-----
-
---Yr02wk+FfM9y0tjy--
+> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/atmel-nand.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index 50645828ac20..4598930851d9 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -56,6 +56,7 @@ Required properties:
+>  	"atmel,sama5d4-pmecc"
+>  	"atmel,sama5d2-pmecc"
+>  	"microchip,sam9x60-pmecc"
+> +	"microchip,sam9x7-pmecc", "atmel,at91sam9g45-pmecc"
+>  - reg: should contain 2 register ranges. The first one is pointing to the PMECC
+>         block, and the second one to the PMECC_ERRLOC block.
+>  
