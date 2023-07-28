@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DC3766B2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751D0766B27
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 12:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbjG1K7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 06:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S236080AbjG1K6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 06:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236087AbjG1K7H (ORCPT
+        with ESMTP id S233775AbjG1K6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 06:59:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C909A2701;
-        Fri, 28 Jul 2023 03:59:06 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe0eb0ca75so3468115e87.2;
-        Fri, 28 Jul 2023 03:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690541945; x=1691146745;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bFsY8/ZjjU7LwHHb+uRNiN1oriLKCvMdQRblo9hKtwI=;
-        b=mSoO2RBLZ3V69g4yjzRKp6C+BjpK019a/acfMnMuGovyLL1pQbGVJeXQMhQ8MK5b89
-         EBnWdmtyjiVgXpCFGzCbLJBX0nY5tinBn6y3jmpLj+yxOMwyvZ6GdGektEy3TePpvRqi
-         AwxwXp0F7JBLTV+MGi0EvXeaNmMoJxRT2DhsHcs8fJAjpwUprUw5Z2ZywuTJ2rA7KxbR
-         AOGIgsmD5iG5UpKJ1N7e8LhBpHEsZ7WorTdnJu0rXy5NWO7TEadJjXSz3vCGtwGSn2lu
-         n47SgkW3FM3cWrQfZ+c8YlHLS7DRSlBTC3CczS0xm7RM9C6HRNA5/Cpk52kA97cxSIAf
-         LflQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690541945; x=1691146745;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bFsY8/ZjjU7LwHHb+uRNiN1oriLKCvMdQRblo9hKtwI=;
-        b=LpGMcEotOXpx0bAs0iuTKb3sMSky2sUDFqLSgwVXVCAK1PHyf3+D25JIAtnOE//eGB
-         5a/6CHVemf+b/wYfTcwDKJ6WBUWWLJ9P4lf0YBYpxMAQDKK2B+32hx1iYicGeXnjKghN
-         xsTnnIUsLXRjxyQ9dJ23kPpjHdgXDapo7epSaHYbIHlQP2jl1ulOtsbTTsoaB/DEwmQY
-         XqYegG6/7+5qJHqj+GIjcBLHIwmNpIoCgWALjgWqeVa/QlqXcAwLrnESqGvRV5wnvvpJ
-         Xm4pP2U5+xrocvJUYnTr89B8GbWMmbeYHXLbDlvlHZ8K9TpJ26PA5FsWlCtZafB+y2qv
-         ol1Q==
-X-Gm-Message-State: ABy/qLbNF8rstnGGmqaK4hbKbZUfXwkbEkGEE7kimPEJZbDUyGISSijA
-        J8HrI0ifj/MGEOpBEqWiQOo=
-X-Google-Smtp-Source: APBJJlGblw/0Qc18d73UPymiWqhuNkPJzTof8WfS6SiIvzeqqxcJbuCmijtMQN3rPEGKUdV11/CqpA==
-X-Received: by 2002:a05:6512:ba0:b0:4fb:8bad:1cdf with SMTP id b32-20020a0565120ba000b004fb8bad1cdfmr1856183lfv.42.1690541944666;
-        Fri, 28 Jul 2023 03:59:04 -0700 (PDT)
-Received: from WRO1-LDL-P90114.synapse.com ([2a02:a319:a140:2280:be02:6cc6:d8eb:a2a6])
-        by smtp.gmail.com with ESMTPSA id e17-20020a056512091100b004fce9e8c390sm767872lft.63.2023.07.28.03.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 03:59:03 -0700 (PDT)
-From:   Krzysztof Pawlaczyk <krzpaw@gmail.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Cc:     Krzysztof Pawlaczyk <krzpaw@gmail.com>
-Subject: [PATCH] docs: cgroup-v1: replace dead CONFIG_MEM_RES_CTRL_SWAP symbol
-Date:   Fri, 28 Jul 2023 12:57:23 +0200
-Message-Id: <20230728105723.251892-1-krzpaw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 28 Jul 2023 06:58:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48BF26BC;
+        Fri, 28 Jul 2023 03:58:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7DD40620D2;
+        Fri, 28 Jul 2023 10:58:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E165C433C8;
+        Fri, 28 Jul 2023 10:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690541911;
+        bh=+wxnkCG035cpz9797wtipinXz8iWGwKy9GAM68TlIKw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=mzld1Yt5Hznwt0XDf12iVnvQb0PDvvB6RRFiWtX8s67N+7jh7+fgq+EkkZl8fSGrl
+         H8yaaelyf69kNAJCSqP3O39wj/AjD5FWDCYDZzGPAjf/SV8mflxrm2fOsL/zC0TPk7
+         8CtJ48UcXMl06fA7CKU8x3uZVzMp8HbGSZ1SHo4eZQpMWDfM0oOC7mStangOxIjyyN
+         RSf9o8w0n3c8kO7NM3CFpufcYCAURRH+IpFomStcW8PvBdb9DiuyMUS+aDEjsOqjqL
+         J//KFJTyj5aLuvJao0JDqJZegAvT7dh3XYTjT4mOe4FnoqS6GcBsv5zAFF1yaDXvyx
+         v11HY139s/mIA==
+From:   Lee Jones <lee@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-leds@vger.kernel.org
+In-Reply-To: <560b8f140c19a7da40f5e9540c3ef312969b0dc4.1690057595.git.christophe.jaillet@wanadoo.fr>
+References: <560b8f140c19a7da40f5e9540c3ef312969b0dc4.1690057595.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: (subset) [PATCH] leds: ns2: Slightly simplify a memory
+ allocation
+Message-Id: <169054191038.338256.14267674740250661120.b4-ty@kernel.org>
+Date:   Fri, 28 Jul 2023 11:58:30 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e55b9f96860f ("mm: memcontrol: drop dead CONFIG_MEMCG_SWAP
-config symbol") removed MEMCG_SWAP as it was just a shorthand for
-CONFIG_MEMCG && CONFIG_SWAP.
+On Sat, 22 Jul 2023 22:26:49 +0200, Christophe JAILLET wrote:
+> Use devm_kcalloc() instead of devm_kzalloc()+array_size().
+> 
+> 
 
-The commit also adjusted the documentation but missed reference to
-CONFIG_MEM_RES_CTRL_SWAP, which was the previous name of
-CONFIG_MEMCG_SWAP before renaming in commit c255a458055e ("memcg: rename
-config variables").
+Applied, thanks!
 
-Update the reference to the current state.
+[1/1] leds: ns2: Slightly simplify a memory allocation
+      commit: c8a039436525072af7e77f540d21f0d312fc7c38
 
-Signed-off-by: Krzysztof Pawlaczyk <krzpaw@gmail.com>
----
- Documentation/admin-guide/cgroup-v1/memcg_test.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/memcg_test.rst b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-index a402359abb99..1f128458ddea 100644
---- a/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
-@@ -62,7 +62,7 @@ Please note that implementation details can be changed.
- 
- 	At cancel(), simply usage -= PAGE_SIZE.
- 
--Under below explanation, we assume CONFIG_MEM_RES_CTRL_SWAP=y.
-+Under below explanation, we assume CONFIG_SWAP=y.
- 
- 4. Anonymous
- ============
--- 
-2.25.1
+--
+Lee Jones [李琼斯]
 
