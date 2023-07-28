@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 409D776785D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FE4767867
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 00:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbjG1WEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 18:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        id S231767AbjG1WOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 18:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjG1WEb (ORCPT
+        with ESMTP id S229825AbjG1WOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 18:04:31 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDC72D5F;
-        Fri, 28 Jul 2023 15:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hdyXHCNmm6/5wN+6xDZf0F3DJhdGMtE6XIr7LH2nzps=; b=az3KeLxLnSrbQBwqv9/MzZharB
-        XC/CzNA7Lp/jBX3ELKZoMfPLCFD8prlAFh1YU6kTTR2u17rl3JCqKw+pZowYM57qF6CPwb00aYwbX
-        eBlOmmPr3eFJZvJ3MNy7wcBD1eLVBS3i3DtUJ6AGEt73k06W+rlctva3nopCF/GRvmg/r8r5tbF7O
-        C32CVvNlLVubSVgvWVqJMelwfY8fE7Qt5yAo/bwDQe3SH7hyQ8VuLBLRIOfhU9Y5qwznNbklKqYBC
-        W2pdV/Qoi7PugEUAq/+LeaTyGX125ueR/+JE2wvqq6Ku1Y6Jh+zFpOm1GQ5vj30Dzwphepn9MNOWV
-        SueCznBA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPVZS-008Veg-2p;
-        Fri, 28 Jul 2023 22:04:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6A18030039F;
-        Sat, 29 Jul 2023 00:04:26 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5144C2C973624; Sat, 29 Jul 2023 00:04:26 +0200 (CEST)
-Date:   Sat, 29 Jul 2023 00:04:26 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
+        Fri, 28 Jul 2023 18:14:31 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2AC448D
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:14:30 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-687087d8ddaso1574760b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1690582469; x=1691187269;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j23ImFvrdRCadrPSwwknJnJ5y4yBBTyt7l0nVVVM2Yc=;
+        b=ZtiNC4ej7OZeywn8wHEAqgDTQCL96l3JSg/+ffzCXaHNuNTx//E5tRxv+/5LyUCmzy
+         wJU7VJ1iIxDjSGiYmpFU6nsZJLAX9pZspnX9lclWTUB+5LrMVyrOHTTcH7n9g0ri1s6/
+         jxQOuM+oNZ2mdhzAwawrFQ9KDOH6pNdZsBMXiJbfKH2lCh7pATaIgYWj96/7at6d67Va
+         mRmHHE1OyMNNCbopzrhaqGthSM5xveatfXj9L6soKQqTrUS+/DH4oq1w4/EnW2qpPV1M
+         Jdy66HRsCu5/ykHeyesJo9rLKHxuC2ZI1slvAXgyW67g1fPexWbnVuxbXMH7GbD4QMwG
+         mmUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690582469; x=1691187269;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j23ImFvrdRCadrPSwwknJnJ5y4yBBTyt7l0nVVVM2Yc=;
+        b=eKyCaDmsyce0qkVjj/DeYEsLIVjAbJFxs8923SkgO54I02Wpe9Trm0MF+szbmlCLTL
+         aggPtDx/EFh4XncDVTu6qvdzWiKoTuMEFiQUmpETB5Bb+xsW4qrWt8Nv42pS1F5sWQN6
+         4Gm6pWpFrsusNC7FOZ8shxNaBZ8LaM7xLfnoZn0O4DUEgsuNLGZ0RxnGtD2NFSILmwvC
+         CEJOwHtVp34O2OP/L7D9XjT4Rdw3ZUHU9jBWauZfKbC6muzxQfp0nnBmRz7QfX48dFSV
+         E9nQbHavCiw2NRyvipYUlhsD4lzLXW9EtAPmbSPNNkvMvVP3J+opfvOwvr3Cgus3CRIc
+         r97A==
+X-Gm-Message-State: ABy/qLYZ4ijuzUra0vmsMXdh4upH6HxJp+vFy5HYhCPdhMRfBK2VN0XM
+        gzZGB6IZIPBiEvC4IJrOoL/1IA==
+X-Google-Smtp-Source: APBJJlF0fafCFeexldp3nrIcTl/TKK4y9sr2ROkSLVlVpnM5bPmorNZnR4SuXn5KRsO7VBS9InuRKQ==
+X-Received: by 2002:a17:902:988e:b0:1b2:1a79:147d with SMTP id s14-20020a170902988e00b001b21a79147dmr3058566plp.2.1690582469499;
+        Fri, 28 Jul 2023 15:14:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id jl21-20020a170903135500b001b531e8a000sm4056368plb.157.2023.07.28.15.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 15:14:28 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qPVj8-001vv5-5d;
+        Fri, 28 Jul 2023 19:14:26 -0300
+Date:   Fri, 28 Jul 2023 19:14:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 10/20] jump_label,module: Don't alloc
- static_key_mod for __ro_after_init keys
-Message-ID: <20230728220426.GB3934165@hirez.programming.kicks-ass.net>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-11-vschneid@redhat.com>
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+Message-ID: <ZMQ9wuSa3Sp3sVvE@ziepe.ca>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <ZMQZfn/hUURmfqWN@x1n>
+ <CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com>
+ <e74b735e-56c8-8e62-976f-f448f7d4370c@redhat.com>
+ <CAHk-=wgG1kfPR6vtA2W8DMFOSSVMOhKz1_w5bwUn4_QxyYHnTA@mail.gmail.com>
+ <69a5f457-63b6-2d4f-e5c0-4b3de1e6c9f1@redhat.com>
+ <ZMQxNzDcYTQRjWNh@x1n>
+ <22262495-c92c-20fa-dddf-eee4ce635b12@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230720163056.2564824-11-vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <22262495-c92c-20fa-dddf-eee4ce635b12@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 05:30:46PM +0100, Valentin Schneider wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> When a static_key is marked ro_after_init, its state will never change
-> (after init), therefore jump_label_update() will never need to iterate
-> the entries, and thus module load won't actually need to track this --
-> avoiding the static_key::next write.
-> 
-> Therefore, mark these keys such that jump_label_add_module() might
-> recognise them and avoid the modification.
-> 
-> Use the special state: 'static_key_linked(key) && !static_key_mod(key)'
-> to denote such keys.
-> 
-> Link: http://lore.kernel.org/r/20230705204142.GB2813335@hirez.programming.kicks-ass.net
-> NOT-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> ---
-> @Peter: I've barely touched this patch, it's just been writing a comment
-> and fixing benign compilation issues, so credit's all yours really!
+On Fri, Jul 28, 2023 at 11:31:49PM +0200, David Hildenbrand wrote:
+> * vfio triggers FOLL_PIN|FOLL_LONGTERM from a random QEMU thread.
+>   Where should we migrate that page to? Would it actually be counter-
+>   productive to migrate it to the NUMA node of the setup thread? The
+>   longterm pin will turn the page unmovable, yes, but where to migrate
+>   it to?
 
-Ah, it works? Excellent! You can remove the NOT from the SoB then ;-)
+For VFIO & KVM you actively don't get any kind of numa balancing or
+awareness. In this case qemu should probably strive to put the memory
+on the numa node of the majorty of CPUs early on because it doesn't
+get another shot at it.
+
+In other cases it depends quite alot. Eg DPDK might want its VFIO
+buffers to NUMA'd to the node that is close to the device, not the
+CPU. Or vice versa. There is alot of micro sensitivity here at high
+data rates. I think people today manually tune this by deliberately
+allocating the memory to specific numas and then GUP should just leave
+it alone.
+
+FWIW, I'm reading this thread and I have no idea what the special
+semantic is KVM needs from GUP, so I'm all for better documentation on
+the GUP flag :)
+
+Jason
