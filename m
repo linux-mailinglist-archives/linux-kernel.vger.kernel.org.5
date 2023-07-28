@@ -2,215 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02206766412
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BA5766414
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjG1GVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        id S233543AbjG1GWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233406AbjG1GVf (ORCPT
+        with ESMTP id S232782AbjG1GWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:21:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5B13A84;
-        Thu, 27 Jul 2023 23:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690525285; x=1722061285;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ssi/D5+PmJeo42VoKYLcRNlCXXAReykabokkZZS9IQQ=;
-  b=VRv5hPvLvpOgy+la3GdxXN2D04W31neigyD5E5mY00dJr3dId9vbtG8q
-   jKlfuDBtGC9izCLe6K3KXbaw5/bTCDNUJbGfdcd+bkxFGvJmeek3UPvbz
-   5Zfv+h/TCgvQo5SiQUfqxQIIc0DCUE+ad2Qp2sOy/OyAVAYqlfeKixB5g
-   +oXh20cz6KPUeiati4TIOfhL7xvH34Cxq7YLAcpJ/6rzzbxYMdhsGX+jg
-   A3tgkV/eItsMApArtvs/EIH9FatJb9Z3OYcOC+hEHLe1T8IljsAhym6ok
-   CX1KvUrqKrWZooBxT1ePpiJNV3ymKKWZ9Yg6rR4l5G3pHv1/n2TB07qRS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="454880690"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="454880690"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 23:21:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="727350987"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="727350987"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga002.jf.intel.com with ESMTP; 27 Jul 2023 23:21:24 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 27 Jul 2023 23:21:24 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 27 Jul 2023 23:21:24 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 27 Jul 2023 23:21:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NOOaWztaJCccgPj9dcZ6gcFChhq49XjgRcsw5lxgy+kmxb9fNqgJKjAMnx5yRLcEqEj10rJVley1pu3kePJJypwqxQEkDCXOtxoSTs9+AqkfUeWk2Na+7w++E4VQhnktbBSLKZGoCc+Mxyw857gX0nUcescXhJ4itcJL9yCbj7+Txyn61N4f69628pYJGqZzF+vjHg60s6FokhHSUxI60azSnLQnn47RzHR97nNgE1E9xbBi+rjRxo25GmHmnaw4ih6K8KZqaF5rs2T7QFAZlFhJcDCpi8bvs1RqC7dsAIkz521aIu2ilTLIl/Yv2UN3xiNciEUr9C9mfEQPy+7Dig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ssi/D5+PmJeo42VoKYLcRNlCXXAReykabokkZZS9IQQ=;
- b=BDlyjK7AhtFnNjcZ+3fdgAL/Epn9Elwo9pKdUwY2wWF5uwVfS8r3sVCmHaSgXJoIYBxu2pF7Fhk2uVR+PllqpPQSdskY2rJwVY/osOlqIUhKfuqKojYe5ZP6aTkAceR5zKJ5ArcFSOCtET/PJ2O4MkKzANApKxGOGm2FCWmwb5ZPd/26lxzOzhbXTM/0gD93UXnpQ81b/Z3dmzEJGyQ5otAd5S06A/RgojtJvhIcIMX2o8elLUbF3BJpsyPsEmeHpRn7Se3iVlcOQmSapWH3/wH0JtlB1k1px/Mal1Z568Y9rThDZ+A4wGfsmBOw9sfMLlYdpZ+hHSZRX8uA7fqkdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH8PR11MB6563.namprd11.prod.outlook.com (2603:10b6:510:1c2::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 06:20:56 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::8b87:d7d:f095:e3f9]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::8b87:d7d:f095:e3f9%6]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 06:20:56 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "farman@linux.ibm.com" <farman@linux.ibm.com>
-Subject: RE: [PATCH v8 2/4] iommufd: Add iommufd_access_replace() API
-Thread-Topic: [PATCH v8 2/4] iommufd: Add iommufd_access_replace() API
-Thread-Index: AQHZvme4Wz9PfkBkx0y7nT6tapgWUK/MHpWAgABqOQCAAC5lgIAAOKCAgACX8oCAAHWfAIAAkFtwgAARhACAABT/MA==
-Date:   Fri, 28 Jul 2023 06:20:56 +0000
-Message-ID: <BN9PR11MB52764347180F8166910819FB8C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <cover.1690226015.git.nicolinc@nvidia.com>
- <5dfe3e9a9d511919cb105459ca9d96f013daadb4.1690226015.git.nicolinc@nvidia.com>
- <ZMEt+SMFBMKT3AoT@nvidia.com> <ZMGHFI4KB4XTG9EH@Asurada-Nvidia>
- <ZMGt/4CCCmUB85HX@nvidia.com> <ZMHdfycdAdmqB2VB@Asurada-Nvidia>
- <ZMJc9elDILpHaKP6@nvidia.com> <ZMK/oN6EUdQnKd6i@Asurada-Nvidia>
- <BN9PR11MB527691E9B421682C7B88AFD68C06A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZMNHarPX7yA+VTdT@Asurada-Nvidia>
-In-Reply-To: <ZMNHarPX7yA+VTdT@Asurada-Nvidia>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH8PR11MB6563:EE_
-x-ms-office365-filtering-correlation-id: 8e6017cb-2b39-4796-7c4f-08db8f32cd77
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5rIxP0GOL2e0QzsavnMPywOJE4r5DzE1MkxYJr8+adtD3yCyRZmacErIxTB/kZhsfrQiFykjw7rmmv8pxObCWEIRuRpxwk/FvQWaxQXU12fZTKFglFlSzpr8Oov3488JFYug+qOAnheeGmAFeWwmux8f0pM3QL3AkoBTqu2LUwN0Y7QcNwYWXi6UaJxAaNBSTWG50mZsMIfF8JMGuTIXF7BK2VSyM+D+1QQ0VdF8TSwL24YXWbIaCSb5rKCLS8BPiaMt+0E3tPIBGMjTAnclpL9CTCyib1cfrHJnOtPxJ3JTq0XoRUJCk9VLKwEmz4eoisIVqsQccxBylFJH4wcYZp/jlXIyzfJstyLVNkriFA+lCbhwQILNVNMtPULJtiiwhThe7DhJgKjbcMVarpz+FyB9+oAdUPwdGxAnVWNysS0VBY5XcijwVdMP55DGBG6px3n1S6uV5Nf2gGAQ0gJL8h/g56SuoUh1dt57sFk7wgZKeNdNkBXsFOMF+29FRveHxcVSNe8cDX3XC5eJMHbM7GePFRMWeP8M5WSDqhoNfif+uISYcPybA5v11LfgDMqxV0MbcQ8V4KPP7k86IcrZvjVEDWKLdafsJ/8tWS1A9C3gaRlRL7Ok+hNu7oFuZtEp
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(376002)(346002)(366004)(136003)(451199021)(5660300002)(41300700001)(26005)(71200400001)(38100700002)(9686003)(86362001)(478600001)(4326008)(6916009)(8676002)(8936002)(76116006)(66946007)(66556008)(316002)(66446008)(186003)(66476007)(33656002)(64756008)(6506007)(122000001)(2906002)(83380400001)(54906003)(82960400001)(52536014)(7416002)(55016003)(38070700005)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tGrYaNzkzqhKslifxib+KEi04F3EM335cNygrCeqtHcCXM8zy69fiKLyE+eB?=
- =?us-ascii?Q?ETYx2s+EYJGDy+QIOyLPbEQQfb3KuvC/DXAyyt3k/n9g9/soWrgrTTD+TZMd?=
- =?us-ascii?Q?FDHMq/AVrZMeW9UgYapwIitKYfIpexMCg9Ub2bGl78MgRUJMBnNawOBJTIPj?=
- =?us-ascii?Q?D0RVrIUEdxGjxoPe09gMmvmYMG5nTJJUPkvo2jyjnpmOfx0uXrsdI24HwOH3?=
- =?us-ascii?Q?XHkEVaaqH3lcWr3O22YrY2nMSskXKOWknIcBkoTrFf8RrAG8cPgxWuTZwHAS?=
- =?us-ascii?Q?JSDZDxfJzx0jQPQUXBeySENYtSthPMdc+79+wVohaJ+EWq+ylmBfx/DUhsWZ?=
- =?us-ascii?Q?otEw+rMQ6burQsEb3egXzFvBECuL65Hphdvb5v/N+9yBsNTrsvJp8FTQ9n5G?=
- =?us-ascii?Q?BNVreXRkwMnVzBU3hD37ffAYQ487kFWtCTbjohINW0y/9gwHK6FLWp30LBqk?=
- =?us-ascii?Q?l4RFqglEKXHQwdBbApYnQEr68of5AzlnwcrFgtHUFnI+nxGIzNOlpEdCi/qk?=
- =?us-ascii?Q?7QN4iSBXzdzkPx1aICM+oZbIGBDZyGbVC/FW3FdgReRVMfXLIrwhEz4iIVXr?=
- =?us-ascii?Q?OD+QeosKbQ6DiOINh0Buf7oLrMLI7PAF4Ed14taA+h2ajGnRiZSO1BbsLNO6?=
- =?us-ascii?Q?dZFMTm3DTFT9M0uNQQKFs1T3SFkREg7cyT0A1SyqOAYOHtIvMS5qF39GojF0?=
- =?us-ascii?Q?Q8btE8O5Kc6bP0UWDZnUB7ya/JIG9851RHBeoh5NhSlgry81TlReKoF3V1kA?=
- =?us-ascii?Q?r8C8z+169l1UHc3hZZp66TD1S9HLHBPS70RZznk8TSgtAMnMtkg6rRAQc5bj?=
- =?us-ascii?Q?f4vn+geRXrsaz/RtDDypEqwuLta+hv45Fj6UQlclGCktehdr0mckB2eQ7FR0?=
- =?us-ascii?Q?6KdEnVehUY5Z4Vl0DshIH5VCxXmu6tBk3zcoEFPY2Xo8T0y44la/fYp6WHNO?=
- =?us-ascii?Q?pycjSds1V46O6x1k7U6Olnp7GIc8aA8jVOZq0moRhzFuoBJfFkcLnoSKc6qs?=
- =?us-ascii?Q?nVq5aubPad8lB3cwAL6ihQvwFIMcr0aT0pn+KtudtGDW4gPrqKgFUj+3AXOs?=
- =?us-ascii?Q?LF8SOVTDSiLvWU13OSGIKFyxD2g5Xm+yC+U4woyQw6snEJqMfGp6XP7NQo51?=
- =?us-ascii?Q?3toJS9FEwSV2sYWguNr+cS3T0WEUFFycuyhX/5QRxh28gPxBJ7N8nmib2aOI?=
- =?us-ascii?Q?xbQ+wkce1QN3Wvy8Cz30NKX+95DUkU3EwACb9WlFts7w3lZHYGeWGrKomfkI?=
- =?us-ascii?Q?xIi+t2pH+j+cfKu5FbcVvWpycTfZjeRMlrmhbG3VPU4lzFddiJ90lwTTr3us?=
- =?us-ascii?Q?+qf5JKFXyOxWG6X3g8xDdMFOBdwIIGHo77pwm/Icq8nzPVfszLDgfoYX8WOw?=
- =?us-ascii?Q?3Py2IAaNh7SIe073bU/fSaOuFXfIBlMbNmJAl7xK3RYL/QqhV1bqO6Iu/2rr?=
- =?us-ascii?Q?fa5z8HUW6tmEPah5SzgpHsnayrnH7h6iDNfI6q5JerHMuqxVSY+u2iye4xAq?=
- =?us-ascii?Q?1NUCUnV43dQwEANM8MvGnpEdoMXG0QFP7to0GHez6qgSHw8h8txa8g/Rjo6u?=
- =?us-ascii?Q?5U863XZEEAbOhzoqBtwL+oSzP8AkqMJ3nYMX78GF?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 28 Jul 2023 02:22:33 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD0013D;
+        Thu, 27 Jul 2023 23:22:32 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31768ce2e81so1832209f8f.1;
+        Thu, 27 Jul 2023 23:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690525350; x=1691130150;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5AXK0Ni3D8/7s0A80t4cTIWv2xD52KLhJj4n6BOIgqE=;
+        b=eV6CAthNEL7hgH6desoxudrSYZbnBC/Q6RMzgg6rzNJMOx7aZRSA57S4gZqOu+rh29
+         tqJ9utpnLxqA/a/VIn7ZmUdNFhUM2cLP3VCv69D/6DkM+BDkEPmfDhJca1RVCj6vMz4Q
+         OOSLDf+IBQu2Aa5XKWDlQ9Y1gPhfxJM4rpo1sb03Bp4OALqpWWCQ16fOb305Ty8zucvB
+         rPMY3CdG2lqysd5MIDFLcBtIUOrdurLQ6A7vaiUqxNO1qp2rp+Ztkt+lJuBr6Vy8ZfWh
+         GBOZ/A0OZZudaoErDAwnkIPpWoR0ZxwLzIhyyFWIe+RHkIAZYy0GZfETaTgoCiSXhTnB
+         PlTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690525350; x=1691130150;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5AXK0Ni3D8/7s0A80t4cTIWv2xD52KLhJj4n6BOIgqE=;
+        b=IC4TWkjEbcFw4ljInWq/b5+3vuTOFiCMqfmCKybQJQAelC/+V087mTMf4Z/u6a4Wea
+         shVw82adLKED2byAuQ7fltDVEtZtQr/h/4C16ynUUk3ZT8yXzxutX+f/yZnjCjzwm8En
+         H6ZWkGz06jhswvaPAFLtxoLqxtGP4S65UE9EKFbzVVlhE/HYycV2e4vEUA8BuCpIJfmi
+         +hE4bcGI5gC+LkwLbj1qPcgS3ryqckEjMWtUQZKMohZOGiYt7IJq0n/17KuOiykwxpaB
+         PBWMuQ088ZFpHIRiVzHwqbHgh0kVrTsMn/9nyV2kRCepOAoxLcj4aMFiXq561THL0p6S
+         4isQ==
+X-Gm-Message-State: ABy/qLbyxZ4P2LlUhEgnk7OqjEtlKnlZ2trc8JfBlVqS2SPcGFpoAezG
+        9YfXfxMWdVFds6qgh/v4xz1whxk+Sk76qg==
+X-Google-Smtp-Source: APBJJlFTDm+O4jPKZ1QEtORAuSSXOUSXhXzmBL0hGdWwpffR9/7DWNRdCtim5K52OVVDHjCXzzheQA==
+X-Received: by 2002:a5d:5312:0:b0:313:ee73:cc9a with SMTP id e18-20020a5d5312000000b00313ee73cc9amr882516wrv.70.1690525349996;
+        Thu, 27 Jul 2023 23:22:29 -0700 (PDT)
+Received: from torreasustufgamingpro (209.pool90-77-130.dynamic.orange.es. [90.77.130.209])
+        by smtp.gmail.com with ESMTPSA id bf10-20020a0560001cca00b0031432f1528csm3930939wrb.45.2023.07.27.23.22.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jul 2023 23:22:29 -0700 (PDT)
+From:   =?utf-8?Q?Oscar_Megia_L=C3=B3pez?= <megia.oscar@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Contributing subsequent patch versions
+References: <877cqlmdpg.fsf@gmail.com>
+        <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
+Date:   Fri, 28 Jul 2023 08:22:22 +0200
+In-Reply-To: <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de> (Markus Elfring's
+        message of "Thu, 27 Jul 2023 21:40:59 +0200")
+Message-ID: <877cqk5zdt.fsf@gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e6017cb-2b39-4796-7c4f-08db8f32cd77
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2023 06:20:56.1025
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7nk5N//OhUIRlHmS3J7PrI2JReaekxEpxhCrMwq/x0WuLJZ43IoqlJ8Wu7OOp46OfU+O1hLzmYkfNvyISyASZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6563
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Nicolin Chen <nicolinc@nvidia.com>
-> Sent: Friday, July 28, 2023 12:43 PM
->=20
-> On Fri, Jul 28, 2023 at 03:45:39AM +0000, Tian, Kevin wrote:
-> > > From: Nicolin Chen <nicolinc@nvidia.com>
-> > > Sent: Friday, July 28, 2023 3:04 AM
-> > >
-> > > On Thu, Jul 27, 2023 at 09:03:01AM -0300, Jason Gunthorpe wrote:
-> > > > On Wed, Jul 26, 2023 at 07:59:11PM -0700, Nicolin Chen wrote:
-> > > >
-> > > > > I just realized that either my v8 or your version calls unmap()
-> > > > > first at the entire cur_ioas. So, there seems to be no point in
-> > > > > doing that fallback re-add routine since the cur_ioas isn't the
-> > > > > same, which I don't feel quite right...
-> > > >
-> > > > The point is to restore the access back to how it should be on fail=
-ure
-> > > > so future use of the accesss still does the right thing.
-> > > >
-> > > > We already have built into this a certain non-atomicity for mdevs,
-> > > > they can see a pin failure during replace if they race an access
-> > > > during this unmap window. This is similar to the real HW iommu's
-> > > > without atomic replace.
-> > >
-> > > I was concerned about, after the replace, mdev losing all the
-> > > mappings due to the unmap() call, which means the fallback is
-> > > not really a status quo. Do you mean that they could pin those
-> > > lost mappings back?
-> >
-> > None of mdev drivers does that.
-> >
-> > but we need think about the actual usage. I don't think the user
-> > can request ioas change w/o actually reconfiguring the mdev
-> > device. Presumably the latter could lead to reconstructure of pinned
-> > pages.
->=20
-> I can understand that the user should reconfigure the IOAS on
-> success. Yet, should we expect it to reconfigure on a failure
-> also?
->=20
+Markus Elfring <Markus.Elfring@web.de> writes:
 
-I thought the user will likely stop the device before changing IOAS
-and then re-enable device DMA afterwards. If that is the typical
-flow then no matter this replace request succeeds or fails the
-re-enabling sequence should lead to the addition of pinned pages
-back to the current IOAS.
+>> I have submitted a patch to linux-ext4 at vger.kernel.org mailing list
+>> and they have responded with whatever changes they think are necessary.
+>
+> Do you refer to your change approach =E2=80=9Ce2fsck: Add percent to files
+> and blocks feature=E2=80=9D (from 2023-04-23) here?
+> https://lore.kernel.org/linux-ext4/20230423082349.53474-2-megia.oscar@gma=
+il.com/
+>
 
-But this does imply inconsistent behavior between success and failure.
-Not sure whether it's worth a fix e.g. introducing another notifier for
-mdev drivers to re-pin...
+Yes
+
+>
+>> Can someone help me by telling me the steps I need to take to send v2?
+>> I don't know where ask it.
+>
+> Did you become more familiar with available development documentation
+> and further information sources?
+
+Yes, I read
+https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+yesterday and more online documentation and I didn't find any describing the
+correct way to send next patch version.
+
+Today I found this
+https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+but I still have some doubts.
+
+>
+>
+>> Do I have to create a new branch?
+>
+> Probably, yes.
+>
+> You can manage as many topic or development branches as needed,
+> can't you?
+
+Yes, I know, but I want to know how an expert programmer send
+next version (create new branch for each patch's version?, create new
+directory outgoing for each patch's version?, run git pull on patch's
+branch?, add --in-reply-to=3D to previous patch's version email?
+=C2=BFcover letter or 1/1?, etc.).
+
+>
+> See also:
+> https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell
+>
+>
+>> Do I have to do a git pull on the patch branch before the changes?
+>
+> You can recheck if your development basis is still recent enough
+> for your ideas.
+>
+
+Yesterday I did git pull on patch develop branch, commit v2 changes and I g=
+ot this error:
+
+$ LC_ALL=3DC git format-patch --base=3Dauto --in-reply-to=3D20230423082349.=
+53474-1-megia.oscar@gmail.com --cover-letter -o outgoing/ master
+fatal: base commit should be the ancestor of revision list
+
+I searched on the internet and found no solution.
+
+That's why I asked about how send patch version v2. This command is similar
+than v1 (only added --in-reply-to=3D because I read it on the internet to s=
+end
+next versions).
+
+>
+>> Do I have to to commit the changes before running
+>> git format-patch =E2=80=A6
+>
+> Yes, of course.
+>
+> See also:
+> https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#=
+_project_over_email
+>
+
+I asked this because the above error.
+
+>
+>> Please, is my first time to send a patch version's v2 and I didn't find
+>> any place where explain step by step how to do it.
+>
+> Is the guidance usable by the document =E2=80=9CSubmitting patches:
+> the essential guide to getting your code into the kernel=E2=80=9D?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?h=3Dv6.5-rc3#n3
+>
+>
+
+As I said before, I read this web page and much more,
+but I didn't find the correct steps to submit next version.
+
+I can do this on my way, but sure that I will make mistakes
+(I'm not perfect and is my first time) and I don't want to disturb mantaine=
+rs.
+
+I search on e2fsprogs repository directory and I didn't find
+any information about how send next patch's version.
+
+I'm sure that this help to send next versions will be also good for all
+newbies.
+
+Here https://ext4.wiki.kernel.org/index.php/Ext4_Contributing I found
+enought information to send first patch, but not for next version. The
+page is quite old (2014) and I cannot contact with Djwong user.
+
+>> I tried several steps, but I get errors or resend v1 patch too.
+>
+> Learning approaches will evolve as usual.
+>
+
+I create new branch and reseted to my v1 patch's commit and commited v2
+changes. And when I ran:
+
+$ git format-patch --base=3Dauto --in-reply-to=3D20230423082349.53474-1-meg=
+ia.oscar@gmail.com --cover-letter -o outgoing/ master=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+outgoing/0000-cover-letter.patch=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+outgoing/0001-e2fsck-Add-percent-to-files-and-blocks-feature.patch
+outgoing/0002-e2fsck-Add-percent-to-files-and-blocks-feature.patch=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20
+$
+
+It didn't return previous error and also saved the previous patch and
+I don't know if is correct to send previous patch's version.
+I didn't see any v2 on ext4 maillist
+https://www.spinics.net/lists/linux-ext4/maillist.html
+sending previous version.
+
+So I doubt I'm doing it correctly because git send-email will send
+previous patch that I sent. I can delete this file but for me is not
+correct way.
+
+As I said before, if one of the lines I have changed has been changed
+later, it would tell the maintainer that there is a conflict and
+I don't want send wrong patch to maintaners.
+
+I think it would be good to document how to send the next versions of
+the patch. I am facing different problems and doubts, but I imagine that
+the same will happen to other newbies like me.
+
+I would like to have detailed documentation that tells me the correct
+way to send the following versions of the patch. When there was no
+internet you used to read the manuals when you wanted to learn new
+things. Without manuals it is almost impossible to do something new
+correctly without making serious mistakes. I learned MSX BASIC,
+assembler, Turbo Pascal, Delphi, C, C++, linux, etc. reading manuals.
+
+How am I going to learn without manuals?
+
+It is beyond my imagination to read the mind of the one who created
+those languages or OS. There are instructions that can be guessed,
+but others cannot. Everything I have learned has been with manuals.
+
+The same to send the following versions of the patch. If there isn't a
+manual that says how to do it, I can try and I'm sure I'll make mistakes.
+I send the patch and they don't accept it because it has errors, I try
+again and I send it again with other errors and they won't accept it
+because it has other errors, like this until all the maintainers block
+me (with good reason).
+
+I know you are very busy, so I offer to add this to the documentation
+(for newbies) if someone tells me the correct steps in any case (if the
+same lines have been modified since the previous version, if a link
+needs to be added to the previous version(s) or if all versions are
+shipped each time, etc.). I need all the steps to follow with the
+example commands.
+
+What I want is that nobody bothers you like me again, and if it bothers
+you, you will only have to send them the link with the documentation
+that I will create.
+
+> Regards,
+> Markus
+
+--=20
+Regards
+Oscar Megia L=C3=B3pez
