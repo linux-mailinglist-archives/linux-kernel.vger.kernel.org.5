@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0BE76713B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA47476713C
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236660AbjG1Pzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S237497AbjG1Pz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235747AbjG1Pza (ORCPT
+        with ESMTP id S235536AbjG1Pza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 11:55:30 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E11F4483;
-        Fri, 28 Jul 2023 08:55:18 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b703a0453fso35210931fa.3;
-        Fri, 28 Jul 2023 08:55:18 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AB444B5;
+        Fri, 28 Jul 2023 08:55:19 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so7332524a12.1;
+        Fri, 28 Jul 2023 08:55:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1690559716; x=1691164516;
+        d=googlemail.com; s=20221208; t=1690559717; x=1691164517;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/rYsK0kNMxGjYfUlP6jXFUwqPwtrROBmYtzMufSE/LU=;
-        b=cCv4j1x9LDD/oh2RJBveQ5h/SYR4mJpS7bFKmnTUDY9mMkXp8dXT5k9j6Ki9KXRv56
-         poIT6CqFn47rjK1p7wb/24bE4U+3+1QqYpmK/A8Nmau3pTmoGelqJkrWp1G5Pf8cY+K7
-         F++sZe8yzD25YVqz72wF0eOkCt//8o8B187z68iMovnQ/BSLtoGlvHAHXDJVNvrrrV9j
-         0uTYhj8/s320Zf/xvmA4k76N9Nwdh4LLA087uf6bvYmwf+wcSWQfHr4iz5vgjrHsY3ov
-         2mdlSLuVlrWMQfEwaeaGWHy7EQpz1dOFV6Fgx7kCztMUzAvvQlyAdt8SSYMAmYeOxcNJ
-         vF8A==
+        bh=PpdC41+Bf2kU2Tf09u02Pdp+KuYiOkl5+Sf1RWH1VHM=;
+        b=NKiQ0jkjkVDzHrPPfVGjhRPKwcRldGhM6uAhpkqxvwOGhCgzSsbZoZhu5PLrvK+4Uy
+         QQbRpCIMvlSqIH0J3FhPj3wLansioW2hoxGalrXM3e03tuu3zx46gqI7cAImLGQxIMeS
+         aparSlLN7xRmAeJtm76amSjRM3lefEbYnpVPpHN5i3GwxIBGoADLs77Pc5afBJh6XwcY
+         MUb7bsc+w+tE65Y25FwWqD30PXC/LQYdMo6ZomSxCqBlLDlHBAvwFS5Cz2B37b0gt4Wq
+         HnRlP5fLueetmeBn6FfIpoemu+XqGJ85WOJQhp/CaozpasrUPyChlFvWEx31SyCHOVIr
+         0KYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690559716; x=1691164516;
+        d=1e100.net; s=20221208; t=1690559717; x=1691164517;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/rYsK0kNMxGjYfUlP6jXFUwqPwtrROBmYtzMufSE/LU=;
-        b=IVr4dN9mBIvGoaYpwtth5Gp5Qs6pWhMx6tOlm+OAaOSqTSRUjd1q6vc4hXVtJqWu9L
-         vc+gCXjRN1jku1wiXx+zn7KzUq5hwgTJ91xfzEhQ5RZfID+Kv0vlh14YhjAtHLgxRcz9
-         2IWoZVatDpbv3DRRCwLqa/Zh/yQSL6z3KPezftdOex+g8JizafIPCa9OIxmnqxTtfUU9
-         XFSjSUYqaFG6Klis3/vKH7vYfy0ao5IfHzy6PZnLJu9GzloieYyG88X8G0UGbO1//M9T
-         lX8vkPJSgSrH1VpWems5b0ZmHtQff3JLjz7CsnwwOKQ3ckexCF6VfkcgqPmVVEI76//L
-         CB1g==
-X-Gm-Message-State: ABy/qLYjQ0bC3KS11g5kit1M3R9ZChW4ptD6pRgMowbooK6TBECvS+PK
-        gishxWO9R/JhVanrBem+TeWABiTazgEffyIBvCY=
-X-Google-Smtp-Source: APBJJlGSZLLbQo9G1/zn7+V8lJgT217NYhWT410jIWNQdqPMaRVgsqfreAm7ZaIgNKobAHKTWkTRmA==
-X-Received: by 2002:a2e:8e81:0:b0:2b9:4492:1226 with SMTP id z1-20020a2e8e81000000b002b944921226mr2325461ljk.11.1690559716318;
-        Fri, 28 Jul 2023 08:55:16 -0700 (PDT)
+        bh=PpdC41+Bf2kU2Tf09u02Pdp+KuYiOkl5+Sf1RWH1VHM=;
+        b=aNOHr/7Cqf1q6eGQ/L8U6uSL0PMvg866VINX+SaxNO/ouswJliUSW6PSstTfy3wHnx
+         B/AWCOcr3DImQl5T09jUB3StN6iitbUBgKXqIZGqWtuxTZ4acmatm1PvOfvAuQ+Ivjq5
+         C9nTujhW6sxTzGM9VjdDe1mu/ln9d4HYY+OLQaYAGkGvNQPXw1E2cygMlAzJaPz2WRXb
+         WxtBmwyu/4Rtf9b0KVX+t9Q1HXaj1J7V21khvAfv9b6AeBunINsHFyMMiOc5bleC+A+z
+         ZqGtDTXbSVZul/zlljBt2d+Eav0idyRiVJKhF5aw1+XmCj8yMu8taZzQctxR8Dfp6CMO
+         HL1Q==
+X-Gm-Message-State: ABy/qLYyx+6w3N9aOxxtaEpNgebDH87fyudaFzFCq7+f4EyazIzvLLqd
+        EwfcBcqqsKpVDcFG6N6hMrL0kEdi2v163+GB
+X-Google-Smtp-Source: APBJJlEwirtYX2paxLrqjb1Vl3X7IY3qqxJrdGPWFwmZTaZkZ1KekvCci5Xme1v3jfl9+jGcMEl9LQ==
+X-Received: by 2002:a17:906:5a4f:b0:997:e7d0:e26d with SMTP id my15-20020a1709065a4f00b00997e7d0e26dmr3540076ejc.4.1690559717409;
+        Fri, 28 Jul 2023 08:55:17 -0700 (PDT)
 Received: from debian_development.DebianHome (dynamic-077-000-157-016.77.0.pool.telefonica.de. [77.0.157.16])
-        by smtp.gmail.com with ESMTPSA id f5-20020a1709064dc500b0098669cc16b2sm2198345ejw.83.2023.07.28.08.55.15
+        by smtp.gmail.com with ESMTPSA id f5-20020a1709064dc500b0098669cc16b2sm2198345ejw.83.2023.07.28.08.55.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 08:55:15 -0700 (PDT)
+        Fri, 28 Jul 2023 08:55:17 -0700 (PDT)
 From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
 To:     selinux@vger.kernel.org
 Cc:     Paul Moore <paul@paul-moore.com>,
         Stephen Smalley <stephen.smalley.work@gmail.com>,
         Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Xiu Jianfeng <xiujianfeng@huaweicloud.com>,
-        "GONG, Ruiqi" <gongruiqi1@huawei.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/9] selinux: avoid implicit conversions in services code
-Date:   Fri, 28 Jul 2023 17:54:56 +0200
-Message-Id: <20230728155501.39632-5-cgzones@googlemail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 7/9] selinux: avoid implicit conversions in selinuxfs code
+Date:   Fri, 28 Jul 2023 17:54:57 +0200
+Message-Id: <20230728155501.39632-6-cgzones@googlemail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230728155501.39632-1-cgzones@googlemail.com>
 References: <20230728155501.39632-1-cgzones@googlemail.com>
@@ -78,167 +75,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use u32 as the output parameter type in security_get_classes() and
-security_get_permissions(), based on the type of the symtab nprim
-member.
+Use umode_t as parameter type for sel_make_inode(), which assigns the
+value to the member i_mode of struct inode.
 
-Declare the read-only class string parameter of
-security_get_permissions() const.
-
-Avoid several implicit conversions by using the identical type for the
-destination.
-
-Use the type identical to the source for local variables.
+Use identical type for loop iterator.
 
 Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
 v2: avoid declarations in init-clauses of for loops
 ---
- security/selinux/include/security.h |  4 ++--
- security/selinux/selinuxfs.c        |  7 ++++---
- security/selinux/ss/services.c      | 23 ++++++++++++-----------
- 3 files changed, 18 insertions(+), 16 deletions(-)
+ security/selinux/selinuxfs.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index 668e393a9709..074d439fe9ad 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -312,9 +312,9 @@ int security_net_peersid_resolve(u32 nlbl_sid, u32 nlbl_type,
- 				 u32 *peer_sid);
- 
- int security_get_classes(struct selinux_policy *policy,
--			 char ***classes, int *nclasses);
-+			 char ***classes, u32 *nclasses);
- int security_get_permissions(struct selinux_policy *policy,
--			     char *class, char ***perms, int *nperms);
-+			     const char *class, char ***perms, u32 *nperms);
- int security_get_reject_unknown(void);
- int security_get_allow_unknown(void);
- 
 diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
-index f79e96f0f221..b969e87fd870 100644
+index b969e87fd870..7d7931d1758e 100644
 --- a/security/selinux/selinuxfs.c
 +++ b/security/selinux/selinuxfs.c
-@@ -1798,7 +1798,8 @@ static int sel_make_perm_files(struct selinux_policy *newpolicy,
- 			char *objclass, int classvalue,
- 			struct dentry *dir)
+@@ -97,7 +97,7 @@ static int selinux_fs_info_create(struct super_block *sb)
+ static void selinux_fs_info_free(struct super_block *sb)
  {
--	int i, rc, nperms;
-+	u32 i, nperms;
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
++	unsigned int i;
+ 
+ 	if (fsi) {
+ 		for (i = 0; i < fsi->bool_num; i++)
+@@ -1075,8 +1075,8 @@ static ssize_t sel_write_user(struct file *file, char *buf, size_t size)
+ 	u32 sid, *sids = NULL;
+ 	ssize_t length;
+ 	char *newcon;
+-	int i, rc;
+-	u32 len, nsids;
 +	int rc;
- 	char **perms;
++	u32 i, len, nsids;
  
- 	rc = security_get_permissions(newpolicy, objclass, &perms, &nperms);
-@@ -1868,8 +1869,8 @@ static int sel_make_classes(struct selinux_policy *newpolicy,
- 			    struct dentry *class_dir,
- 			    unsigned long *last_class_ino)
- {
--
--	int rc, nclasses, i;
-+	u32 i, nclasses;
-+	int rc;
- 	char **classes;
- 
- 	rc = security_get_classes(newpolicy, &classes, &nclasses);
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index cf4b87ec4a0e..3a03243f52e7 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -856,7 +856,7 @@ int security_bounded_transition(u32 old_sid, u32 new_sid)
- 	struct sidtab *sidtab;
- 	struct sidtab_entry *old_entry, *new_entry;
- 	struct type_datum *type;
--	int index;
-+	u32 index;
- 	int rc;
- 
- 	if (!selinux_initialized())
-@@ -1511,7 +1511,7 @@ static int security_context_to_sid_core(const char *scontext, u32 scontext_len,
- 		return -ENOMEM;
- 
- 	if (!selinux_initialized()) {
--		int i;
-+		u32 i;
- 
- 		for (i = 1; i < SECINITSID_NUM; i++) {
- 			const char *s = initial_sid_to_string[i];
-@@ -2821,7 +2821,6 @@ static inline int __security_genfs_sid(struct selinux_policy *policy,
- {
- 	struct policydb *policydb = &policy->policydb;
- 	struct sidtab *sidtab = policy->sidtab;
--	int len;
- 	u16 sclass;
- 	struct genfs *genfs;
- 	struct ocontext *c;
-@@ -2843,7 +2842,7 @@ static inline int __security_genfs_sid(struct selinux_policy *policy,
- 		return -ENOENT;
- 
- 	for (c = genfs->head; c; c = c->next) {
--		len = strlen(c->u.name);
-+		size_t len = strlen(c->u.name);
- 		if ((!c->v.sclass || sclass == c->v.sclass) &&
- 		    (strncmp(c->u.name, path, len) == 0))
- 			break;
-@@ -3331,7 +3330,7 @@ static int get_classes_callback(void *k, void *d, void *args)
- {
- 	struct class_datum *datum = d;
- 	char *name = k, **classes = args;
--	int value = datum->value - 1;
-+	u32 value = datum->value - 1;
- 
- 	classes[value] = kstrdup(name, GFP_ATOMIC);
- 	if (!classes[value])
-@@ -3341,7 +3340,7 @@ static int get_classes_callback(void *k, void *d, void *args)
+ 	length = avc_has_perm(current_sid(), SECINITSID_SECURITY,
+ 			      SECCLASS_SECURITY, SECURITY__COMPUTE_USER,
+@@ -1192,7 +1192,7 @@ static ssize_t sel_write_member(struct file *file, char *buf, size_t size)
+ 	return length;
  }
  
- int security_get_classes(struct selinux_policy *policy,
--			 char ***classes, int *nclasses)
-+			 char ***classes, u32 *nclasses)
+-static struct inode *sel_make_inode(struct super_block *sb, int mode)
++static struct inode *sel_make_inode(struct super_block *sb, umode_t mode)
  {
- 	struct policydb *policydb;
- 	int rc;
-@@ -3357,7 +3356,8 @@ int security_get_classes(struct selinux_policy *policy,
- 	rc = hashtab_map(&policydb->p_classes.table, get_classes_callback,
- 			 *classes);
- 	if (rc) {
--		int i;
-+		u32 i;
-+
- 		for (i = 0; i < *nclasses; i++)
- 			kfree((*classes)[i]);
- 		kfree(*classes);
-@@ -3371,7 +3371,7 @@ static int get_permissions_callback(void *k, void *d, void *args)
- {
- 	struct perm_datum *datum = d;
- 	char *name = k, **perms = args;
--	int value = datum->value - 1;
-+	u32 value = datum->value - 1;
+ 	struct inode *ret = new_inode(sb);
  
- 	perms[value] = kstrdup(name, GFP_ATOMIC);
- 	if (!perms[value])
-@@ -3381,10 +3381,11 @@ static int get_permissions_callback(void *k, void *d, void *args)
- }
- 
- int security_get_permissions(struct selinux_policy *policy,
--			     char *class, char ***perms, int *nperms)
-+			     const char *class, char ***perms, u32 *nperms)
+@@ -1613,7 +1613,6 @@ static int sel_make_avc_files(struct dentry *dir)
  {
- 	struct policydb *policydb;
--	int rc, i;
+ 	struct super_block *sb = dir->d_sb;
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
+ 	static const struct tree_descr files[] = {
+ 		{ "cache_threshold",
+ 		  &sel_avc_cache_threshold_ops, S_IRUGO|S_IWUSR },
+@@ -1623,7 +1622,7 @@ static int sel_make_avc_files(struct dentry *dir)
+ #endif
+ 	};
+ 
+-	for (i = 0; i < ARRAY_SIZE(files); i++) {
++	for (u32 i = 0; i < ARRAY_SIZE(files); i++) {
+ 		struct inode *inode;
+ 		struct dentry *dentry;
+ 
+@@ -1649,7 +1648,7 @@ static int sel_make_ss_files(struct dentry *dir)
+ {
+ 	struct super_block *sb = dir->d_sb;
+ 	struct selinux_fs_info *fsi = sb->s_fs_info;
+-	int i;
 +	u32 i;
-+	int rc;
- 	struct class_datum *match;
+ 	static const struct tree_descr files[] = {
+ 		{ "sidtab_hash_stats", &sel_sidtab_hash_stats_ops, S_IRUGO },
+ 	};
+@@ -1700,7 +1699,7 @@ static const struct file_operations sel_initcon_ops = {
  
- 	policydb = &policy->policydb;
-@@ -3599,7 +3600,7 @@ int selinux_audit_rule_init(u32 field, u32 op, char *rulestr, void **vrule)
- /* Check to see if the rule contains any selinux fields */
- int selinux_audit_rule_known(struct audit_krule *rule)
+ static int sel_make_initcon_files(struct dentry *dir)
  {
 -	int i;
 +	u32 i;
  
- 	for (i = 0; i < rule->field_count; i++) {
- 		struct audit_field *f = &rule->fields[i];
+ 	for (i = 1; i <= SECINITSID_NUM; i++) {
+ 		struct inode *inode;
 -- 
 2.40.1
 
