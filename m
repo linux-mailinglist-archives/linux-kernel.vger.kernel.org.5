@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B75767221
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D13676722E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbjG1Qmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S233999AbjG1Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232982AbjG1Qmr (ORCPT
+        with ESMTP id S233429AbjG1Qmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:42:47 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBFA173F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:43 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-785ccd731a7so26646739f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:43 -0700 (PDT)
+        Fri, 28 Jul 2023 12:42:49 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AA53C01
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:44 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-780c89d1998so33117839f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:42:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562562; x=1691167362;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690562563; x=1691167363;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zKpdtSS0oh3kDYJZ6F3Ca88AdtI49+W/nTkRsVyM1Ag=;
-        b=zGoEYSJZYOD4AuwgEazidpIZwFo55y4OjaJiMaXAFFHq3iGLUh6WtqT6+T0597AiIH
-         iM4ad5dZSzqSmj5Ycw0/cAhAzOR2HYX3ABHE9LA/9M133adNJ2o9B2FcpGA9BNg9Za/M
-         1zDTorroC8j+40qoe0G0UXaXZONGtOAONO7I49IT8gw37YYYSMmGUevAOzb/klC53eO2
-         3df5poDz8gYK/wFg/IhwQ9blj3CGXAwc4OVuUe5s5IM2Vs9Bl7OF3rIMw3no4MpuyNRq
-         HFgJ0YFREspmzzaJx5p6rcaZZ/at3qcoDvFUFzlLXjw/acoOJLVNof2pkkIvV06PiuTr
-         ukLg==
+        bh=YUJiOK1ym7lvCvvQLvWy2I//CZyKSdCVkDmBm3xzfUg=;
+        b=2uarFxq6l4LF0iYUmrIR5R6ld0C1sNTQloeFP9NZniGqCpXDfNqN4kdzp/v9lF71rn
+         Cc6pIudy/N5dwUpMAUkOrYWVqlv5x8QGrmAVBfLP4bCrWLEZVk2Ci8dtsp5QhN5QIX86
+         KvfKq8uqWqElwGg917IDsdSfuAOPtp6iab9ti6lD3ZYupxuX5lFMNcz7xrz0pH43pMLt
+         0aLjkSR1CxXmgDjVh95jyJJApBy5x4LCsyMIOZJr6VC9HFTSt+0s+fsD05lHJAPm/InS
+         RDEN0jkwXwiMajW+0Z2mpJdFp7yFOrBrGq+R5UaUQAxORXizXlLHqnTGnis+lHa0keSb
+         FD0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690562562; x=1691167362;
+        d=1e100.net; s=20221208; t=1690562563; x=1691167363;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zKpdtSS0oh3kDYJZ6F3Ca88AdtI49+W/nTkRsVyM1Ag=;
-        b=Dy6yZ623n7Uggf/iqJYsUl6I8vO4PJb4ka18bfI0uiIoRIjIhOqHgUpLB4ftigN8DO
-         xFoK6YTlCFbKKjzhMv+b7YdeC0Yo/r1cHWCxLJ2yUlTVDsq8vzla2VfqckKPFKbFS7V+
-         6vYfwZWJOOQWHFh7bZleJgsZ7Z7YDA2Nui3IxF1bPfWicgu6fkw5ag94bIXmlUYWiN5U
-         KNVVOT2GGB6yqVUthiPWlX4/Ts8+SiOROCssH/4xcwKup+aSWS1Cppoh1ozGKDQy35M9
-         5/29gO6N1jWveni4zeR1Kp2AFnT2wC4vUdqaptnhwHciyJSWiqXm56ywn1JyP3d54rsW
-         QHHw==
-X-Gm-Message-State: ABy/qLYOA/4R8/VubruE/w6VWdnAp/SqyOLxs03NDXs0kXKe4W4GJFOY
-        TC0dl95KeQHqLHmh+Ayy0X8hJA==
-X-Google-Smtp-Source: APBJJlEKPytW+OfDQhSyWzVRtAXpOYmeOF6DrcyBdt7ZoQAE4hMFG+ra7sFcdN6pXD1t9vvAltlP4Q==
-X-Received: by 2002:a05:6602:3d5:b0:780:d65c:d78f with SMTP id g21-20020a05660203d500b00780d65cd78fmr98287iov.2.1690562562667;
-        Fri, 28 Jul 2023 09:42:42 -0700 (PDT)
+        bh=YUJiOK1ym7lvCvvQLvWy2I//CZyKSdCVkDmBm3xzfUg=;
+        b=ZiLCV8FFmSFxPNM0WtSxgV4/g8c51AOOPk3SXaIy+Ir1qSYq9HWWUU4HkwTl960Xs7
+         lK9EMXlJrHijMCEifaHtB5WLvYOFqJx7q6Xlg/Ieuy/ldCx1h3JWTorFDTc4ia8F6ewn
+         Skg31IGxnyDYHLtRNJ9Sz4pvVZW24Kg0abQ11Ny6o1rWhbXBO9Mcvqb1uXcc4cNmVUiu
+         Duv3H97rt5XsrehbMZ9Hutvro4+oFR9/xhGsl4aIzuoiy1DDRvdIA7An1OJXQoejbPf5
+         D1H0FQpN+UOF+zTjhByyZeEEwA7++FSb8sRyVcPmYebgml/ot9X74Z7ChpEtpFrMCumh
+         BX9Q==
+X-Gm-Message-State: ABy/qLanQbajzeUCmsvCzk7th4rYXXaQzybUDXBktWE0w2Sfz8G52Xrb
+        2bAJehT5H6OJaaEFMExYcLzQ/A==
+X-Google-Smtp-Source: APBJJlE88bgunU1WjkIMMX4CA1hQsAfuvNstXEByPL7kx/sEII7LwtjlzTa4DLb/i/AzmM+CuAmCvQ==
+X-Received: by 2002:a6b:c30f:0:b0:783:6e76:6bc7 with SMTP id t15-20020a6bc30f000000b007836e766bc7mr60982iof.2.1690562563452;
+        Fri, 28 Jul 2023 09:42:43 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
         by smtp.gmail.com with ESMTPSA id b2-20020a029a02000000b0042b37dda71asm1158808jal.136.2023.07.28.09.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 09:42:42 -0700 (PDT)
+        Fri, 28 Jul 2023 09:42:43 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, andres@anarazel.de, tglx@linutronix.de,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 04/12] futex: Validate futex value against futex size
-Date:   Fri, 28 Jul 2023 10:42:27 -0600
-Message-Id: <20230728164235.1318118-5-axboe@kernel.dk>
+Subject: [PATCH 05/12] futex: move FUTEX2_MASK to futex.h
+Date:   Fri, 28 Jul 2023 10:42:28 -0600
+Message-Id: <20230728164235.1318118-6-axboe@kernel.dk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230728164235.1318118-1-axboe@kernel.dk>
 References: <20230728164235.1318118-1-axboe@kernel.dk>
@@ -64,61 +64,49 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+We need this for validating the futex2 flags outside of the normal
+futex syscalls.
 
-Ensure the futex value fits in the given futex size. Since this adds a
-constraint to an existing syscall, it might possibly change behaviour.
-
-Currently the value would be truncated to a u32 and any high bits
-would get silently lost.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- kernel/futex/futex.h    | 8 ++++++++
- kernel/futex/syscalls.c | 3 +++
- 2 files changed, 11 insertions(+)
+ kernel/futex/futex.h    | 2 ++
+ kernel/futex/syscalls.c | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-index c0e04599904a..d0a43d751e30 100644
+index d0a43d751e30..2f8deaabc9bc 100644
 --- a/kernel/futex/futex.h
 +++ b/kernel/futex/futex.h
-@@ -86,6 +86,14 @@ static inline unsigned int futex_size(unsigned int flags)
- 	return 1 << size; /* {0,1,2,3} -> {1,2,4,8} */
+@@ -51,6 +51,8 @@ static inline unsigned int futex_to_flags(unsigned int op)
+ 	return flags;
  }
  
-+static inline bool futex_validate_input(unsigned int flags, u64 val)
-+{
-+	int bits = 8 * futex_size(flags);
-+	if (bits < 64 && (val >> bits))
-+		return false;
-+	return true;
-+}
++#define FUTEX2_MASK (FUTEX2_64 | FUTEX2_PRIVATE)
 +
- #ifdef CONFIG_FAIL_FUTEX
- extern bool should_fail_futex(bool fshared);
- #else
+ /* FUTEX2_ to FLAGS_ */
+ static inline unsigned int futex2_to_flags(unsigned int flags2)
+ {
 diff --git a/kernel/futex/syscalls.c b/kernel/futex/syscalls.c
-index 36824b64219a..d2b2bcf2a665 100644
+index d2b2bcf2a665..221c49797de9 100644
 --- a/kernel/futex/syscalls.c
 +++ b/kernel/futex/syscalls.c
-@@ -209,6 +209,9 @@ static int futex_parse_waitv(struct futex_vector *futexv,
- 		if (!futex_flags_valid(flags))
- 			return -EINVAL;
+@@ -179,8 +179,6 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+ 	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
+ }
  
-+		if (!futex_validate_input(flags, aux.val))
-+			return -EINVAL;
-+
- 		futexv[i].w.flags = flags;
- 		futexv[i].w.val = aux.val;
- 		futexv[i].w.uaddr = aux.uaddr;
+-#define FUTEX2_MASK (FUTEX2_64 | FUTEX2_PRIVATE)
+-
+ /**
+  * futex_parse_waitv - Parse a waitv array from userspace
+  * @futexv:	Kernel side list of waiters to be filled
 -- 
 2.40.1
 
