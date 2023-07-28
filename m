@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4E0766819
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2808B76681A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbjG1JDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
+        id S234493AbjG1JEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235195AbjG1JCy (ORCPT
+        with ESMTP id S230128AbjG1JD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:02:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D24EC;
-        Fri, 28 Jul 2023 02:02:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5262662085;
-        Fri, 28 Jul 2023 09:02:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 202C2C433C8;
-        Fri, 28 Jul 2023 09:02:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690534972;
-        bh=F4MlZOcBpEKK00nFvTALje1M7bOaW3WRhlZHcwt1nao=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=t2sdqRkzZxjRGaZIzB/6N1dB4o3jIjD2eeKwFqjErhzXlraIdfxNGpnWTroScTPZY
-         IhjYz9QULSkJsnlSvZ9MAcHjiCA2O1g8x5B75tc8AFyqT5aH9Fn2seZKDSCe0BZiHI
-         pbCvUAIbFbfZYxPtXP0qdpymnATRcLRov6FoscGht+jP138WQvY3Ggx7xFWfA84bQg
-         29YtZlWRz/yEuSmoEJLC3lblPnMvHRz5n82miq+Pjtpifxb3RZ2fsZ4Hx/75WphGee
-         Jel02Ldy4v+cHIYQVXZFf2FsN65n90I7lofstPrgI6nYHElloeeOYsXl8HUeYLjuFG
-         PHlw+2r3tV+Vg==
-From:   Lee Jones <lee@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Riku Voipio <riku.voipio@iki.fi>, Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230714174651.4058753-1-robh@kernel.org>
-References: <20230714174651.4058753-1-robh@kernel.org>
-Subject: Re: (subset) [PATCH] leds: Explicitly include correct DT includes
-Message-Id: <169053497081.290679.18222053479750049432.b4-ty@kernel.org>
-Date:   Fri, 28 Jul 2023 10:02:50 +0100
+        Fri, 28 Jul 2023 05:03:59 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB77197
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:03:58 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:12b0:7b7e:d1ff:7873])
+        by michel.telenet-ops.be with bizsmtp
+        id SZ3v2A0070d1nm806Z3voj; Fri, 28 Jul 2023 11:03:57 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qPJNt-002lhW-Uw;
+        Fri, 28 Jul 2023 11:03:55 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qPJO7-00AnzN-2F;
+        Fri, 28 Jul 2023 11:03:55 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sui Jingfeng <suijingfeng@loongson.cn>
+Subject: [PATCH v2] drm/atomic-helper: Update reference to drm_crtc_force_disable_all()
+Date:   Fri, 28 Jul 2023 11:03:53 +0200
+Message-Id: <b8c9c1a8a05dbf0be8e8be98cfdeafa9cecd8cef.1690535002.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 11:46:50 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> [...]
+drm_crtc_force_disable_all() was renamed to
+drm_helper_force_disable_all(), but one reference was not updated.
 
-Applied, thanks!
+Fixes: c2d88e06bcb98540 ("drm: Move the legacy kms disable_all helper to crtc helpers")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+v2:
+  - Add Reviewed-by.
+---
+ drivers/gpu/drm/drm_atomic_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1/1] leds: Explicitly include correct DT includes
-      commit: 3192f141240336dd6d7675ff374757006fed1916
-
---
-Lee Jones [李琼斯]
+diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+index 41b8066f61fff4be..292e38eb621806a0 100644
+--- a/drivers/gpu/drm/drm_atomic_helper.c
++++ b/drivers/gpu/drm/drm_atomic_helper.c
+@@ -3332,7 +3332,7 @@ EXPORT_SYMBOL(drm_atomic_helper_disable_all);
+  * that also takes a snapshot of the modeset state to be restored on resume.
+  *
+  * This is just a convenience wrapper around drm_atomic_helper_disable_all(),
+- * and it is the atomic version of drm_crtc_force_disable_all().
++ * and it is the atomic version of drm_helper_force_disable_all().
+  */
+ void drm_atomic_helper_shutdown(struct drm_device *dev)
+ {
+-- 
+2.34.1
 
