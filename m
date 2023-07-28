@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D90766774
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCFC766775
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbjG1InU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
+        id S233853AbjG1InY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235092AbjG1InQ (ORCPT
+        with ESMTP id S235002AbjG1InI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:43:16 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10892113
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:43:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b74209fb60so28420561fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:43:12 -0700 (PDT)
+        Fri, 28 Jul 2023 04:43:08 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBC32113
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:43:07 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3177f520802so1182072f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1690533791; x=1691138591;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LWjFeLGkUfqQT1ZgNsfv5JPCUcMwsFRiww/cZdMA43A=;
-        b=hpENeGp9eq7S67ZijD/HCQx0L1pk8okZm5GWrI77lovgXqvX7nFXB1v/07COp0l3x+
-         PofQnb7NLQLHuRWzD40W9pOnsV9nzaJ5hUv2Q9J5N2CidAT7NojJQeGfkqGCkqoMlN2U
-         SBjYf0o2AKPy7VZYaBmDitd06U1VrDuHUkinQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690533791; x=1691138591;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1690533785; x=1691138585;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LWjFeLGkUfqQT1ZgNsfv5JPCUcMwsFRiww/cZdMA43A=;
-        b=DAXbfl0htMsGuPc60iMi9Lc4tgCnrybv+GIl0tYStRuKMJyRUGyPvKzWqkJSRwFpY4
-         E8+GT6f8U267mpUk7+Zg6wQw4ObjgF/TP72tuONnMdggrEwrCXsiYwAEv5k69ACVwbPl
-         4areDfNLRcJh5lgJKCBrXeIH87hWihKco5xUy1pnorJJmcNyIJFxn7oBaDA/zVn/J6ew
-         wUDze0YRhssO2Pohq4GJmjQ7tchMNHtrf2nCbvxeROMVqqcM5CdvRaMYO3Gfw8oKGWwa
-         jn+uvMXsUfhLAa5uzbxRxekONy9ABwmymNu9yoS5HBuS2VYSwpwiomcFaQYDg8p0Nncc
-         aDeg==
-X-Gm-Message-State: ABy/qLYr1oZFOT7FpA3pS9o0mneK5X1qoHBVzDyTqQn1gHGdA6wErD8H
-        M5EHGmt/tx2zkUwSTfWaGIiSEoXOzw+bsaHTV1wXAA==
-X-Google-Smtp-Source: APBJJlEcxx+o+5IfVhGHoFcrSdtkzlah3RjlDH62GbqNA6s/70iAKtdHwcYrJ3OX73GsKcHFaTvJJ2+/EW6Ch1UBVO8=
-X-Received: by 2002:a2e:9bc3:0:b0:2b6:cd12:24f7 with SMTP id
- w3-20020a2e9bc3000000b002b6cd1224f7mr1151140ljj.44.1690533791076; Fri, 28 Jul
- 2023 01:43:11 -0700 (PDT)
+        bh=XefDwdmJhmIgEl/194PiKJwS8r6L9nv+FRGjWnfya3Y=;
+        b=vFykQt4F4DBoPtCwar7sh+TG8+xkGD/5SYh6TFyAamxQKaRxIg97BpncyOQkJhH7Ay
+         MLMsbMqDPNn6rixw/ak10xnhiUINbviBE3cXVWpFPowjc0e8TOn9vPuHgNMVDlTkFODZ
+         gUi7j9xsfNhItlpUalecUasUR+uitk5UfEZOQBhxGSe74ZRCUBRJMkG1MrpYptocdYnT
+         STHUmm916Uj75NysvtvyC3kI+4Q3qhVQ3bwwdOhmGrGwDwQzSpYgyX1dXSrrUO7YpCEq
+         dTyqFRHLi8n8VlnOzzI9Iod8lISHUoYuFC+Rx5vboYbbLD9Wy1MURU4XtMVBnhRniDsG
+         NIXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690533785; x=1691138585;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XefDwdmJhmIgEl/194PiKJwS8r6L9nv+FRGjWnfya3Y=;
+        b=UeD8XLqw8VcfFx9KJ3nN35bSxzbLrpOyqHHcHaaCtwjKBAEpYAlEAgOZT2NNRjw1M/
+         F5xn/rcjzTZgmS0cQXi4l/Odx4o06iu1EZfYxZepJarfa8e2HW2G/9S7W/MqZnyXbSA9
+         124MCX22lCS8l0/b5GheThaMkd4fyZ+1TnTsIEZrKHmYwF/ieMFnKKmubzxRoJT8WpjA
+         zAnfa/lu9llJ+odGbWe4TTpQkks+GI6sUIIfGxcqvf1/0uC4yltdDsecgpRhfSSyTVUk
+         +SLt2sTW1rbR/McFAkQR4HXsYVIMfzg/MWTmG4breTa7xl7uKC96wcLR5LUExHMQHR+T
+         FcIQ==
+X-Gm-Message-State: ABy/qLbzrlys89zsIfoavFGj8Bq0T9o5l3U7CBZ/tG04H/fMWylF9kqa
+        kRZfim/MfHNKsmCrHN+Tom2WyQ==
+X-Google-Smtp-Source: APBJJlGU2TyMSosKi4c1lWqcsdN/7KrKPB/3haS5mBuYm6KPItpsqP0bVmnyXY6u+6XJjGMUv+FJbw==
+X-Received: by 2002:a05:6000:114b:b0:313:f38d:555f with SMTP id d11-20020a056000114b00b00313f38d555fmr1249530wrx.24.1690533785567;
+        Fri, 28 Jul 2023 01:43:05 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id g18-20020a5d6992000000b0031134bcdacdsm4183461wru.42.2023.07.28.01.43.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 01:43:05 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Sebastian Reichel <sre@kernel.org>, Lee Jones <lee@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] MAINTAINERS: mfd: Un-support Maxim and Samsung PMIC drivers
+Date:   Fri, 28 Jul 2023 10:43:01 +0200
+Message-Id: <169053368548.11881.1252357994598966736.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230714050313.8424-1-krzysztof.kozlowski@linaro.org>
+References: <20230714050313.8424-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-References: <20230726105953.843-1-jaco@uls.co.za> <b5255112-922f-b965-398e-38b9f5fb4892@fastmail.fm>
- <7d762c95-e4ca-d612-f70f-64789d4624cf@uls.co.za> <0731f4b9-cd4e-2cb3-43ba-c74d238b824f@fastmail.fm>
- <831e5a03-7126-3d45-2137-49c1a25769df@spawn.link> <27875beb-bd1c-0087-ac4c-420a9d92a5a9@uls.co.za>
- <CAJfpegtaxHu2RCqStSFyGzEUrQx-cpuQaCCxiB-F6YmBEvNiJw@mail.gmail.com> <21fff874-d4ed-1781-32a6-06f154a4bc99@fastmail.fm>
-In-Reply-To: <21fff874-d4ed-1781-32a6-06f154a4bc99@fastmail.fm>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 28 Jul 2023 10:42:59 +0200
-Message-ID: <CAJfpegvAZ-A09VKMcKJF1NMcgMf7Jq6yoCQR8ixh2eme6LkOjw@mail.gmail.com>
-Subject: Re: [PATCH] fuse: enable larger read buffers for readdir.
-To:     Bernd Schubert <bernd.schubert@fastmail.fm>
-Cc:     Jaco Kroon <jaco@uls.co.za>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -68,46 +76,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 at 21:43, Bernd Schubert <bernd.schubert@fastmail.fm> wrote:
->
->
->
-> On 7/27/23 21:21, Miklos Szeredi wrote:
-> > On Wed, 26 Jul 2023 at 20:40, Jaco Kroon <jaco@uls.co.za> wrote:
-> >
-> >> Will look into FUSE_INIT.  The FUSE_INIT as I understand from what I've
-> >> read has some expansion constraints or the structure is somehow
-> >> negotiated.  Older clients in other words that's not aware of the option
-> >> will follow some default.  For backwards compatibility that default
-> >> should probably be 1 page.  For performance reasons it makes sense that
-> >> this limit be larger.
-> >
-> > Yes, might need this for backward compatibility.  But perhaps a
-> > feature flag is enough and the readdir buf can be limited to
-> > fc->max_read.
->
-> fc->max_read is set by default to ~0 and only set to something else when
-> the max_read mount option is given? So typically that is a large value
-> (UINT_MAX)?
 
-That's fine.  It probably still makes sense to limit it to 128k, but
-with the ctx->count patch it would be naturally limited by the size of
-the userspace buffer.  There's really no downside to enabling a large
-buffer, other than an unlikely regression in userspace.    If server
-wants to return less entries, it still can.  Unlike plain reads,
-filling the buffer to the fullest extent isn't required for readdir.
+On Fri, 14 Jul 2023 07:03:13 +0200, Krzysztof Kozlowski wrote:
+> Since few years no one is really paid to support drivers for: Maxim
+> MUICs/PMICs for Exynos based boards and Samsung PMICs.  Correct the
+> status to keep them as maintained.
+> 
+> 
 
-So the buffer size calculation can be somthing like:
+Hi Lee,
 
-init:
-#define FUSE_READDIR_MAX (128*1024)
-fc->max_readdir = PAGE_SIZE;
-if (flags & FUSE_LARGE_READDIR)
-   fc->max_readdir = min(fc->max_read, FUSE_READDIR_MAX);
+I sent it around two weeks ago. It wasn't picked up, so maybe everyone expects
+me to take it via Samsung SoC... so I took it.
 
-[...]
-readdir:
-   bufsize = min(fc->max_readdir, max(ctx->count, PAGE_SIZE));
+I hope it is okay, if not, let me know and I will drop it.
 
-Thanks,
-Miklos
+Applied, thanks!
+
+[1/1] MAINTAINERS: mfd: Un-support Maxim and Samsung PMIC drivers
+      https://git.kernel.org/krzk/linux/c/eecff3319287179032600eeec5fa357a53ae0fe1
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
