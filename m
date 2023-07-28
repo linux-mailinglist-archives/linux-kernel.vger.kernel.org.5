@@ -2,302 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE974766822
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8040D766848
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 11:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbjG1JGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 05:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
+        id S235315AbjG1JHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 05:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233673AbjG1JGH (ORCPT
+        with ESMTP id S235311AbjG1JGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 05:06:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD0597;
-        Fri, 28 Jul 2023 02:06:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 368AF62089;
-        Fri, 28 Jul 2023 09:06:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC696C433C7;
-        Fri, 28 Jul 2023 09:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690535165;
-        bh=QptmNRGvAVVleAso7CRWA+pdBZnB6YfYc/hh8lqFVEg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DOJl4Z0NpkPprlbM3MBP52rD9J6ljQh5TZFxPUiJ8GGimcb91TLUTikpwPRUtoe5A
-         j52ocLqmJtDveSZQrZX/WNRYxA9HRPF7GjrUVu3k7dzWQvCaZejgxGRki25jbtGkOY
-         tbg1tg5MfLMedYA3ZLqTQ4IFliV+Xj3BLxV3h89QU7bCCLWJsxufzZ8Ju046DHvTLs
-         K9d2Xkh+Ckfs1kGF01nNypehgP5I2XFzkH9AX3ULJlHQs37OYFJvdfVEgoVXGD3o6U
-         gMjclmR8ImazZACWOioQ4b+IbVhdTsmvRAGIWc4qXZ+kKcI8r3dBFUiQPoVy/0DZCO
-         G9aUu66J9YNQA==
-Date:   Fri, 28 Jul 2023 11:05:56 +0200
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     lorenzo.pieralisi@arm.com, manivannan.sadhasivam@linaro.org,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        gustavo.pimentel@synopsys.com, helgaas@kernel.org,
-        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mani@kernel.org, minghuan.lian@nxp.com, mingkai.hu@nxp.com,
-        robh+dt@kernel.org, roy.zang@nxp.com, shawnguo@kernel.org,
-        zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v5 1/2] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <ZMOE9PJ//y1ClpU+@lpieralisi>
-References: <20230724215830.2253112-1-Frank.Li@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724215830.2253112-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 05:06:55 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E949F273D
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 02:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690535207; x=1722071207;
+  h=date:from:to:cc:subject:message-id;
+  bh=DyZ2H0hrOVBqQroaR55JR9H9MAkoiwwAQ3xLXdWbjCg=;
+  b=ZYN4JADC0Mw+Gaboyk+CjJcQAA4SOQqGr5sOrfQIgFUFrgnq5J68YimQ
+   8fy9zp8RYp/qjq6xw4vGrwKLN5KHt8mX4DlK+ngZF4ugts7QUfgDnBWLb
+   Oyi7iYePB4SkPUESHXXQXLmkaZsRma/DuT3U5AmTiZkvG1JnWLr+GsmR7
+   tD/JHMI8VwwtrRkOuw6x8jQfcpSsVyhW9vjipT3/v+UmRtnmuBBrU/aBV
+   CWe+x9bZArkz169rC0eKTjh/2SfMPx2at0ao0GcVZ8pHCXmWbI21zvke3
+   fX3IWFknFge1gjaSYfDYPtpyy5hLy05iuGXkOsZXUK3AdTRueXr8GKcH3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="434831514"
+X-IronPort-AV: E=Sophos;i="6.01,237,1684825200"; 
+   d="scan'208";a="434831514"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 02:06:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="762534673"
+X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
+   d="scan'208";a="762534673"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2023 02:06:46 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPJQr-00033M-0z;
+        Fri, 28 Jul 2023 09:06:45 +0000
+Date:   Fri, 28 Jul 2023 17:06:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ b6736f287910cdd07dd8ba531987b2a5b16b31b0
+Message-ID: <202307281700.EciAC7r5-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 05:58:29PM -0400, Frank Li wrote:
-> Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
-> Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: b6736f287910cdd07dd8ba531987b2a5b16b31b0  Revert "checkpatch: Error out if deprecated RCU API used"
 
-Commit logs should not use the past tense but the present tense.
+elapsed time: 728m
 
-eg s/Introduced/Introduce
+configs tested: 132
+configs skipped: 11
 
-Furthermore, read this post from Bjorn and follow it to the letter
-please:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r005-20230727   gcc  
+alpha                randconfig-r012-20230727   gcc  
+alpha                randconfig-r014-20230727   gcc  
+alpha                randconfig-r022-20230727   gcc  
+alpha                randconfig-r024-20230727   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230727   gcc  
+arc                  randconfig-r021-20230727   gcc  
+arc                  randconfig-r025-20230727   gcc  
+arc                  randconfig-r043-20230727   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                     am200epdkit_defconfig   clang
+arm                                 defconfig   gcc  
+arm                           imxrt_defconfig   gcc  
+arm                  randconfig-r032-20230727   gcc  
+arm                  randconfig-r046-20230727   clang
+arm                       versatile_defconfig   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r006-20230727   clang
+csky                                defconfig   gcc  
+csky                 randconfig-r011-20230727   gcc  
+csky                 randconfig-r021-20230727   gcc  
+csky                 randconfig-r035-20230727   gcc  
+hexagon              randconfig-r041-20230727   clang
+hexagon              randconfig-r045-20230727   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230727   clang
+i386         buildonly-randconfig-r005-20230727   clang
+i386         buildonly-randconfig-r006-20230727   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230727   clang
+i386                 randconfig-i002-20230727   clang
+i386                 randconfig-i003-20230727   clang
+i386                 randconfig-i004-20230727   clang
+i386                 randconfig-i005-20230727   clang
+i386                 randconfig-i006-20230727   clang
+i386                 randconfig-i011-20230727   gcc  
+i386                 randconfig-i012-20230727   gcc  
+i386                 randconfig-i013-20230727   gcc  
+i386                 randconfig-i014-20230727   gcc  
+i386                 randconfig-i015-20230727   gcc  
+i386                 randconfig-i016-20230727   gcc  
+i386                 randconfig-r012-20230727   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r014-20230727   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze           randconfig-r011-20230727   gcc  
+microblaze           randconfig-r013-20230727   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           gcw0_defconfig   gcc  
+mips                           ip27_defconfig   clang
+mips                 randconfig-r025-20230727   clang
+mips                 randconfig-r034-20230727   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r005-20230727   gcc  
+nios2                randconfig-r023-20230727   gcc  
+nios2                randconfig-r024-20230727   gcc  
+openrisc             randconfig-r001-20230727   gcc  
+openrisc             randconfig-r026-20230727   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r035-20230727   gcc  
+parisc               randconfig-r036-20230727   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                     kilauea_defconfig   clang
+powerpc                     rainier_defconfig   gcc  
+powerpc                    socrates_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r016-20230727   gcc  
+riscv                randconfig-r042-20230727   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r032-20230727   clang
+s390                 randconfig-r044-20230727   gcc  
+sh                               allmodconfig   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r001-20230727   gcc  
+sparc                randconfig-r003-20230727   gcc  
+sparc                randconfig-r026-20230727   gcc  
+sparc                randconfig-r031-20230727   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230727   clang
+x86_64       buildonly-randconfig-r002-20230727   clang
+x86_64       buildonly-randconfig-r003-20230727   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230727   gcc  
+x86_64               randconfig-x002-20230727   gcc  
+x86_64               randconfig-x003-20230727   gcc  
+x86_64               randconfig-x004-20230727   gcc  
+x86_64               randconfig-x005-20230727   gcc  
+x86_64               randconfig-x006-20230727   gcc  
+x86_64               randconfig-x011-20230727   clang
+x86_64               randconfig-x012-20230727   clang
+x86_64               randconfig-x013-20230727   clang
+x86_64               randconfig-x014-20230727   clang
+x86_64               randconfig-x015-20230727   clang
+x86_64               randconfig-x016-20230727   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r004-20230727   gcc  
+xtensa               randconfig-r033-20230727   gcc  
+xtensa               randconfig-r034-20230727   gcc  
 
-> 
-> Typical L2 entry workflow:
-> 
-> 1. Transmit PME turn off signal to PCI devices and wait for PME_To_Ack.
-> 2. Await link entering L2_IDLE state.
-> 3. Transition Root complex to D3 state.
-> 
-> Typical L2 exit workflow:
-> 
-> 1. Transition Root complex to D0 state.
-> 2. Issue exit from L2 command.
-> 3. Reinitialize PCI host.
-> 4. Wait for link to become active.
-
-This does not explain what the patch does and why it does it.
-
-Are you describing the L2 entry/exit as implemented in the code ?
-
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
-> Change from v4 to v5:
-> - Closes: https://lore.kernel.org/oe-kbuild-all/202307211904.zExw4Q8H-lkp@intel.com/
-> Change from v3 to v4:
-> - change according to Manivannan's comments.
-
-I shall wait for Mani's comments on this series since he reviewed the
-previous one.
-
-Thanks,
-Lorenzo
-
->   I hope I have not missed anything. quite long discuss thread
-> Change from v2 to v3:
-> - Basic rewrite whole patch according rob herry suggestion.
->   put common function into dwc, so more soc can share the same logic.
-> 
->  .../pci/controller/dwc/pcie-designware-host.c | 95 +++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-designware.h  | 28 ++++++
->  2 files changed, 123 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 9952057c8819..031e1f9c0d0c 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -8,6 +8,7 @@
->   * Author: Jingoo Han <jg1.han@samsung.com>
->   */
->  
-> +#include <linux/iopoll.h>
->  #include <linux/irqchip/chained_irq.h>
->  #include <linux/irqdomain.h>
->  #include <linux/msi.h>
-> @@ -807,3 +808,97 @@ int dw_pcie_setup_rc(struct dw_pcie_rp *pp)
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_setup_rc);
-> +
-> +/*
-> + * This resemble the pci_set_power_state() interfaces, but these are for
-> + * configuring host controllers, which are bridges *to* PCI devices but
-> + * are not PCI devices themselves.
-> + */
-> +static void dw_pcie_set_dstate(struct dw_pcie *pci, pci_power_t dstate)
-> +{
-> +	u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_PM);
-> +	u16 val;
-> +
-> +	val = dw_pcie_readw_dbi(pci, offset + PCI_PM_CTRL);
-> +	val &= ~PCI_PM_CTRL_STATE_MASK;
-> +	val |= ((u16 __force)dstate) & PCI_PM_CTRL_STATE_MASK;
-> +	dw_pcie_writew_dbi(pci, offset + PCI_PM_CTRL, val);
-> +}
-> +
-> +int dw_pcie_suspend_noirq(struct dw_pcie *pci)
-> +{
-> +	u8 offset;
-> +	u32 val;
-> +	int ret;
-> +
-> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +	/*
-> +	 * If L1.1\L1.2 enable, devices (such as NVME) want short
-> +	 * resume latency, controller will not enter L2
-> +	 */
-> +	if (dw_pcie_readw_dbi(pci, offset + PCI_EXP_LNKCTL) & PCI_EXP_LNKCTL_ASPM_L1)
-> +		return 0;
-> +
-> +	if (dw_pcie_get_ltssm(pci) <= DW_PCIE_LTSSM_DETECT_ACT)
-> +		return 0;
-> +
-> +	if (!pci->pp.ops->pme_turn_off)
-> +		return -EINVAL;
-> +
-> +	pci->pp.ops->pme_turn_off(&pci->pp);
-> +
-> +	/*
-> +	 * PCI Express Base Specification Rev 4.0
-> +	 * 5.3.3.2.1 PME Synchronization
-> +	 * Recommand 1ms to 10ms timeout to check L2 ready
-> +	 */
-> +	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
-> +				100, 10000, false, pci);
-> +	if (ret) {
-> +		dev_err(pci->dev, "PCIe link enter L2 timeout! ltssm = 0x%x\n", val);
-> +		return ret;
-> +	}
-> +
-> +	dw_pcie_set_dstate(pci, PCI_D3hot);
-> +
-> +	pci->suspended = true;
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dw_pcie_suspend_noirq);
-> +
-> +int dw_pcie_resume_noirq(struct dw_pcie *pci)
-> +{
-> +	int ret;
-> +
-> +	if (!pci->suspended)
-> +		return 0;
-> +
-> +	pci->suspended = false;
-> +
-> +	dw_pcie_set_dstate(pci, PCI_D0);
-> +
-> +	if (!pci->pp.ops->exit_from_l2)
-> +		return -EINVAL;
-> +
-> +	pci->pp.ops->exit_from_l2(&pci->pp);
-> +
-> +	ret = pci->pp.ops->host_init(&pci->pp);
-> +	if (ret) {
-> +		dev_err(pci->dev, "Host init failed! ret = 0x%x\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	dw_pcie_setup_rc(&pci->pp);
-> +
-> +	ret = dw_pcie_start_link(pci);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = dw_pcie_wait_for_link(pci);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(dw_pcie_resume_noirq);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 79713ce075cc..effb07a506e4 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -288,10 +288,21 @@ enum dw_pcie_core_rst {
->  	DW_PCIE_NUM_CORE_RSTS
->  };
->  
-> +enum dw_pcie_ltssm {
-> +	DW_PCIE_LTSSM_UNKNOWN = 0xFFFFFFFF,
-> +	/* Need align PCIE_PORT_DEBUG0 bit0:5 */
-> +	DW_PCIE_LTSSM_DETECT_QUIET = 0x0,
-> +	DW_PCIE_LTSSM_DETECT_ACT = 0x1,
-> +	DW_PCIE_LTSSM_L0 = 0x11,
-> +	DW_PCIE_LTSSM_L2_IDLE = 0x15,
-> +};
-> +
->  struct dw_pcie_host_ops {
->  	int (*host_init)(struct dw_pcie_rp *pp);
->  	void (*host_deinit)(struct dw_pcie_rp *pp);
->  	int (*msi_host_init)(struct dw_pcie_rp *pp);
-> +	void (*pme_turn_off)(struct dw_pcie_rp *pp);
-> +	void (*exit_from_l2)(struct dw_pcie_rp *pp);
->  };
->  
->  struct dw_pcie_rp {
-> @@ -364,6 +375,7 @@ struct dw_pcie_ops {
->  	void    (*write_dbi2)(struct dw_pcie *pcie, void __iomem *base, u32 reg,
->  			      size_t size, u32 val);
->  	int	(*link_up)(struct dw_pcie *pcie);
-> +	enum dw_pcie_ltssm (*get_ltssm)(struct dw_pcie *pcie);
->  	int	(*start_link)(struct dw_pcie *pcie);
->  	void	(*stop_link)(struct dw_pcie *pcie);
->  };
-> @@ -393,6 +405,7 @@ struct dw_pcie {
->  	struct reset_control_bulk_data	app_rsts[DW_PCIE_NUM_APP_RSTS];
->  	struct reset_control_bulk_data	core_rsts[DW_PCIE_NUM_CORE_RSTS];
->  	struct gpio_desc		*pe_rst;
-> +	bool			suspended;
->  };
->  
->  #define to_dw_pcie_from_pp(port) container_of((port), struct dw_pcie, pp)
-> @@ -430,6 +443,9 @@ void dw_pcie_iatu_detect(struct dw_pcie *pci);
->  int dw_pcie_edma_detect(struct dw_pcie *pci);
->  void dw_pcie_edma_remove(struct dw_pcie *pci);
->  
-> +int dw_pcie_suspend_noirq(struct dw_pcie *pci);
-> +int dw_pcie_resume_noirq(struct dw_pcie *pci);
-> +
->  static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
->  {
->  	dw_pcie_write_dbi(pci, reg, 0x4, val);
-> @@ -501,6 +517,18 @@ static inline void dw_pcie_stop_link(struct dw_pcie *pci)
->  		pci->ops->stop_link(pci);
->  }
->  
-> +static inline enum dw_pcie_ltssm dw_pcie_get_ltssm(struct dw_pcie *pci)
-> +{
-> +	u32 val;
-> +
-> +	if (pci->ops && pci->ops->get_ltssm)
-> +		return pci->ops->get_ltssm(pci);
-> +
-> +	val = dw_pcie_readl_dbi(pci, PCIE_PORT_DEBUG0);
-> +
-> +	return (enum dw_pcie_ltssm)FIELD_GET(PORT_LOGIC_LTSSM_STATE_MASK, val);
-> +}
-> +
->  #ifdef CONFIG_PCIE_DW_HOST
->  irqreturn_t dw_handle_msi_irq(struct dw_pcie_rp *pp);
->  int dw_pcie_setup_rc(struct dw_pcie_rp *pp);
-> -- 
-> 2.34.1
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
