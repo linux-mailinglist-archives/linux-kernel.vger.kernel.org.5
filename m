@@ -2,221 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D814767722
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8057F767728
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjG1Ujk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
+        id S230043AbjG1Ulo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjG1Ujh (ORCPT
+        with ESMTP id S229873AbjG1Ull (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:39:37 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E9E4F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690576776; x=1722112776;
-  h=date:from:to:cc:subject:message-id;
-  bh=rua/oj2RgW2E1QNFjDtL7Qfi54WIEJ0HxSGFERjvwB8=;
-  b=FIqs7cwGrt1saiE8Ceobon9Fz3kfuc+bdXMgoVWUG8QzSqnWJP6dOEUD
-   tbirezB6h8KJhzNtZ3bbFsA+6ui/xEvHHtkYuho7D6P1ts9dFuwy/iddI
-   jssK28Pvs7bj31xWLA/AR4aVdf7XDFpyUKWIe4zGl9Z0QrD5+Huoj7k7c
-   lKseRYc759NsoIeizYRYRIPkvCNfso9MIXTfeGQxM82CTQ/w+JdrARdXi
-   cTrfzFXoSUG55SNlolTbSzDXD8ou1EiR+ZZ6mMWbYpXzx5euSDK4Fjfcd
-   KlDX9tK2jfyc7FyWAioOK8hgIEwF1vK1n3tEpNcY4a0gIYbmrga8SGXCC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="358707305"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="358707305"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 13:39:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="870974173"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2023 13:39:36 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPUFJ-0003Z3-30;
-        Fri, 28 Jul 2023 20:39:33 +0000
-Date:   Sat, 29 Jul 2023 04:39:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- d7114f83ee051dfeac82546d7ba03d74f8b92af3
-Message-ID: <202307290425.i3PqxYnl-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 28 Jul 2023 16:41:41 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663C7422B
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:40 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe11652b64so4465469e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690576898; x=1691181698;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1o44kCiViu9poWK+pr269ZTRZv94Q/szYxEaIBZbPhc=;
+        b=PWaHtGPoN5IQlEquCn4tZQ9Xaw8HZBNIeKlodAQFA9UjMmPbEx4Zvik+rmvi3Xl2z1
+         Xbj/BWXP+kirOWjWdBCB8SRhKojOTkZeB3KyV9xtbK5YO/ezCWaWvVVNtjpX7o7fsouj
+         AeL8LN4YTxu9oul07qxtWCCQ2Ob9TTv02Xb4o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690576898; x=1691181698;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1o44kCiViu9poWK+pr269ZTRZv94Q/szYxEaIBZbPhc=;
+        b=iOQjhOZ2qWul/emWH9WkM7XL3liIbaBHQdTIqvV3+Z9ielOOO5ArNzVBrAA+41QWTh
+         40EhBLewYK1h8BaQ+VwL7k7EqVKWwxx+Sbyfc9SZaj4T+/PNYyWX8gnzCGpkemSuYwjv
+         8QGyA0HHXHVnGtIxRB4FyHP6elcTsmHZ0JAqd9fduPU/VdKJkKp5662vJQl+zIWYLTR7
+         aN0u6FrVZpImd+uinUpt59inIiBHjrvNThkyt7Q+LqSKv7CIcXCGvMW2usPH/JpE1Cjd
+         5bfXLXfsmOnDoW4hLbgAaed7V//5EzNwEKVzAGwkjVUELmMLItA453uTLvR22x30e0C6
+         wH2Q==
+X-Gm-Message-State: ABy/qLaDUi22NDK/5H+Y/WBhKWNIWvHbE5L1Ru0CtBbaSGD6S0pnPiyi
+        ybVFy38TM1nEI3rdAg5PE7HkHXiMfgVmen736fhVXsxh
+X-Google-Smtp-Source: APBJJlFMl4CJmTIRbuMcU7i059vIC8DUzUJzoa+QKEVAyLMbtOkMfyA45JnqvVFPWO8Q1iIJqVfSCw==
+X-Received: by 2002:a05:6512:202e:b0:4f8:6abe:5249 with SMTP id s14-20020a056512202e00b004f86abe5249mr2147394lfs.3.1690576898444;
+        Fri, 28 Jul 2023 13:41:38 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id t9-20020a19ad09000000b004fe26362d48sm145854lfc.75.2023.07.28.13.41.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 13:41:37 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4fe1c285690so3103858e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:41:37 -0700 (PDT)
+X-Received: by 2002:a05:6512:61c:b0:4fb:90c6:c31a with SMTP id
+ b28-20020a056512061c00b004fb90c6c31amr2404424lfe.14.1690576896802; Fri, 28
+ Jul 2023 13:41:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230727183805.69c36d6e@g14> <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
+ <20230727193949.55c18805@g14> <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+ <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com> <20230727200527.4080c595@g14>
+In-Reply-To: <20230727200527.4080c595@g14>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 28 Jul 2023 13:41:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+Message-ID: <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+To:     Daniil Stas <daniil.stas@posteo.net>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        jarkko@kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: d7114f83ee051dfeac82546d7ba03d74f8b92af3  x86/smpboot: Change smp_store_boot_cpu_info() to static
+On Thu, 27 Jul 2023 at 10:05, Daniil Stas <daniil.stas@posteo.net> wrote:
+>
+> Here is the bug report I created:
+> https://bugzilla.kernel.org/show_bug.cgi?id=217719
 
-elapsed time: 728m
+Let's just disable the stupid fTPM hwrnd thing.
 
-configs tested: 144
-configs skipped: 92
+Maybe use it for the boot-time "gather entropy from different
+sources", but clearly it should *not* be used at runtime.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Why would anybody use that crud when any machine that has it
+supposedly fixed (which apparently didn't turn out to be true after
+all) would also have the CPU rdrand instruction that doesn't have the
+problem?
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r013-20230728   gcc  
-alpha                randconfig-r033-20230728   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                 nsimosci_hs_smp_defconfig   gcc  
-arc                  randconfig-r014-20230728   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          sp7021_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r011-20230728   gcc  
-hexagon              randconfig-r041-20230728   clang
-hexagon              randconfig-r045-20230728   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230727   clang
-i386         buildonly-randconfig-r004-20230728   gcc  
-i386         buildonly-randconfig-r005-20230727   clang
-i386         buildonly-randconfig-r005-20230728   gcc  
-i386         buildonly-randconfig-r006-20230727   clang
-i386         buildonly-randconfig-r006-20230728   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230728   gcc  
-i386                 randconfig-i002-20230728   gcc  
-i386                 randconfig-i003-20230728   gcc  
-i386                 randconfig-i004-20230728   gcc  
-i386                 randconfig-i005-20230728   gcc  
-i386                 randconfig-i006-20230728   gcc  
-i386                 randconfig-i011-20230727   gcc  
-i386                 randconfig-i011-20230728   clang
-i386                 randconfig-i012-20230727   gcc  
-i386                 randconfig-i012-20230728   clang
-i386                 randconfig-i013-20230727   gcc  
-i386                 randconfig-i013-20230728   clang
-i386                 randconfig-i014-20230727   gcc  
-i386                 randconfig-i014-20230728   clang
-i386                 randconfig-i015-20230727   gcc  
-i386                 randconfig-i015-20230728   clang
-i386                 randconfig-i016-20230727   gcc  
-i386                 randconfig-i016-20230728   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r003-20230728   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r002-20230728   gcc  
-m68k                 randconfig-r035-20230728   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze           randconfig-r001-20230728   gcc  
-microblaze           randconfig-r006-20230728   gcc  
-microblaze           randconfig-r013-20230728   gcc  
-microblaze           randconfig-r032-20230728   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                            gpr_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r005-20230728   gcc  
-nios2                randconfig-r015-20230728   gcc  
-openrisc             randconfig-r001-20230728   gcc  
-openrisc             randconfig-r002-20230728   gcc  
-openrisc             randconfig-r003-20230728   gcc  
-openrisc             randconfig-r005-20230728   gcc  
-openrisc             randconfig-r016-20230728   gcc  
-openrisc             randconfig-r032-20230728   gcc  
-openrisc             randconfig-r035-20230728   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r031-20230728   gcc  
-parisc64                            defconfig   gcc  
-powerpc                      acadia_defconfig   clang
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                 linkstation_defconfig   gcc  
-powerpc               mpc834x_itxgp_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r004-20230728   gcc  
-riscv                randconfig-r031-20230728   gcc  
-riscv                randconfig-r042-20230728   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r004-20230728   gcc  
-s390                 randconfig-r044-20230728   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r015-20230728   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sparc                            alldefconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230727   clang
-x86_64       buildonly-randconfig-r001-20230728   gcc  
-x86_64       buildonly-randconfig-r002-20230727   clang
-x86_64       buildonly-randconfig-r002-20230728   gcc  
-x86_64       buildonly-randconfig-r003-20230727   clang
-x86_64       buildonly-randconfig-r003-20230728   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r034-20230728   gcc  
-x86_64               randconfig-x001-20230727   gcc  
-x86_64               randconfig-x001-20230728   clang
-x86_64               randconfig-x002-20230727   gcc  
-x86_64               randconfig-x002-20230728   clang
-x86_64               randconfig-x003-20230727   gcc  
-x86_64               randconfig-x003-20230728   clang
-x86_64               randconfig-x004-20230727   gcc  
-x86_64               randconfig-x004-20230728   clang
-x86_64               randconfig-x005-20230727   gcc  
-x86_64               randconfig-x005-20230728   clang
-x86_64               randconfig-x006-20230727   gcc  
-x86_64               randconfig-x006-20230728   clang
-x86_64               randconfig-x011-20230727   clang
-x86_64               randconfig-x011-20230728   gcc  
-x86_64               randconfig-x012-20230727   clang
-x86_64               randconfig-x012-20230728   gcc  
-x86_64               randconfig-x013-20230727   clang
-x86_64               randconfig-x013-20230728   gcc  
-x86_64               randconfig-x014-20230727   clang
-x86_64               randconfig-x014-20230728   gcc  
-x86_64               randconfig-x015-20230727   clang
-x86_64               randconfig-x015-20230728   gcc  
-x86_64               randconfig-x016-20230727   clang
-x86_64               randconfig-x016-20230728   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+If you don't trust the CPU rdrand implementation (and that has had
+bugs too - see clear_rdrand_cpuid_bit() and x86_init_rdrand()), why
+would you trust the fTPM version that has caused even *more* problems?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So I don't see any downside to just saying "that fTPM thing is not
+working". Even if it ends up working in the future, there are
+alternatives that aren't any worse.
+
+                 Linus
