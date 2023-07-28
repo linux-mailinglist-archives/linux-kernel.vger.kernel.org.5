@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4597678D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3840E7678D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 01:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbjG1XNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 19:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
+        id S235506AbjG1XOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 19:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbjG1XNI (ORCPT
+        with ESMTP id S230221AbjG1XOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 19:13:08 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2E32D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:13:07 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-3476c902f2aso11086125ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690585986; x=1691190786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0kzrIJ251du81UfGiykQe5BbFvGz2DnLNtmPFif5pQc=;
-        b=F5JhxuOg0t6nSaWRZ0Qoxa1+19UT+pU1GVEWloFYpPLgkZCMFw4ZFWqg3RGKAtu0Uh
-         cZSe6Xpa4gXqg91l3BwK0+IgJSbG4BmM2mXGafIeiZ8jJd64uow6RjqQGErsbTwWQIqz
-         1F+PIyRqmrE3J8iEOrwo4f+vKXsYb5DjElYko=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690585986; x=1691190786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0kzrIJ251du81UfGiykQe5BbFvGz2DnLNtmPFif5pQc=;
-        b=Pvo/SzX4c6d4lg15xFprqYRQBxn/mErXH9m0bJWGk2jkH/PLrZzSea3R/yz4O6rbRE
-         AjBkdnRFWT0ONKWcclT6Tx3zJTAmvc7KcqdONkoRygUdoKwNuF+JF9p7VDJl41N8m7xj
-         PE0pG9a4rp0nHve3x4jRLqN8ufNWSlByfqPfc3p0kWrny/J9LQc8T+bXufS1Tby7e0US
-         57pXC2L8zCu//upV/RDklhgoUiJRil1QiDfaNjmYtnJ3UPTY7fZhtlWihJlD5O/BaL4j
-         YhUYlxNBm/v/81nvoAkS5B3U559bpJHIhlqmHE6ckkzH8A9lr/gzkM492JSTiUPy4oSa
-         VtAQ==
-X-Gm-Message-State: ABy/qLZoz9XFoGEK2nvAlg3beCCVoiffHHdWj+qmzgeWAKkzigiIZWGr
-        XnsKwI5bRqDBMoSd54gpEnnHXw==
-X-Google-Smtp-Source: APBJJlGp+VAU42/jjtVrG/JebIxQW4FqEwxLhz2/RKZYxoJFCuMA+G4uVC0b6L5NeOC00BTpY7H0Rw==
-X-Received: by 2002:a05:6e02:1aa4:b0:345:a319:ba83 with SMTP id l4-20020a056e021aa400b00345a319ba83mr1123261ilv.29.1690585986517;
-        Fri, 28 Jul 2023 16:13:06 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e14-20020a17090301ce00b001bba373919bsm4082542plh.261.2023.07.28.16.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 16:13:06 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] wifi: ray_cs: Replace 1-element array with flexible array
-Date:   Fri, 28 Jul 2023 16:13:02 -0700
-Message-Id: <20230728231245.never.309-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 28 Jul 2023 19:14:52 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF8B2D7D
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 16:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690586091; x=1722122091;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fLe4Ct711d/Zn0z3CT2OW6j2I1oNFAQYdsbRkTnNbnQ=;
+  b=W4rTl1rO6VtcJ6Dy1luPOzkqWI3DLWs9NBneAedF9MaiqTZjePZyF8uT
+   eOrEW+tCzh6oRuG18F/Pxwon8jHjo5WaGegDBMI5kl0y5qE+6CxDPOa3o
+   fIc39MNc8zgyZXgXMgxuvpoh2cUKRz2BFPBDIZNZUPHT+88W72KheOP1S
+   dq9sFFdLFxhYk/yn7yXHCsmCOeB+e81WYaPz/Uea/kZ6S7JcmxnS6uNdj
+   SvQ4Sg8TE/7wQEkNf7sULG6cjVEX09ms0+sXuK1Js39eHA0391HFeLIs/
+   gcq/d2pJQn0xNeVn7wSSUX4XPPB6usILhSgtoDAFworA6IwX90Jy0CSYE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="372334225"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="372334225"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:14:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="762735849"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="762735849"
+Received: from rhedaoo-mobl1.amr.corp.intel.com (HELO desk) ([10.252.141.89])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 16:14:50 -0700
+Date:   Fri, 28 Jul 2023 16:14:25 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/cpu/amd: Report zenbleed in sysfs
+Message-ID: <20230728231425.mku5wnsgfzx2kyeo@desk>
+References: <20230727075446.1749969-1-nik.borisov@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2098; i=keescook@chromium.org;
- h=from:subject:message-id; bh=D2CtAwl6CXqSqxRaLIFkwjFO+IpDh8k7U4uCnRppIQc=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBkxEt+LTcBY3bSQZBCTXAzRH9AadW88Qvphq0+C
- YXJpdqK4H2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZMRLfgAKCRCJcvTf3G3A
- JnEYEACV0z75qof/EEz1U0UD95mEszMnH2IuR2rQZ74usHlFt6IzIwRFnZ2cM6UL4WJdNADtOKa
- 3uhcp9GFb1pJ1QC0ZBpTanzH5aOAUD3Lj/kFBC+sVjJTKwug0ScKCYAdL7wb7mTLePi6FXR68rE
- RTx7NwZ0yc2pSYva8LAIQrtyKgKXNPPuf+egh0Yv121pj0icfN1lcDMYYBsFwwtz4pymN7aaGzH
- 5d8JGzbBHfyBRoSdl3FRG9m6c4BrG2IpSZj2i5T4DgHKofDg1K60fyD1h/V8B2Sqhhx05qXpvVN
- krkuxUvUqLtdfznPDrO4Eq9oUsuTVYTlTxfxibcmrfdwsbTwfioD2yeQjRaLRIzPJwc1IXB4Va9
- 4jH2wxpEayWDxJH0yunsKc8K6BWflAYl9qNVdse9qcsqk77Ph9d++zPXvbM+45OzuTePPzbLQvo
- gY3IcAh52lnpuuogdAJPXKo/NVZwN/Au21r1AsRHkTDeqMLWoqK01DY/nVFUTi0QnXTI/R3zRet
- qed7hsUR9BxF7ToL2Qv/G6pgAaJwEDpM5xGaBaCW/Qch25fj4niq+cr9r881bRP3siG3G74x2GV
- 9YIkpt/vlqsKvs8NLuaeJmZC0AxntJ9bkwc9dwq1W6Tbh3iD/IWdT8/zv7qs2wcDulW3Ro/Cw1u
- demr381 Bj7egpAw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727075446.1749969-1-nik.borisov@suse.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The trailing array member of struct tx_buf was defined as a 1-element
-array, but used as a flexible array. This was resulting in build warnings:
+On Thu, Jul 27, 2023 at 10:54:46AM +0300, Nikolay Borisov wrote:
+> Initial submission of Zenbleed fix omitted reporting the bug in sysfs.
+> There's no reason why it shouldn't be reported so let's add it among
+> the other vulnerabilities.
+> 
+> Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
+> ---
+>  .../ABI/testing/sysfs-devices-system-cpu          |  1 +
+>  arch/x86/kernel/cpu/amd.c                         | 15 +++++++++++++++
+>  drivers/base/cpu.c                                |  8 ++++++++
+>  include/linux/cpu.h                               |  2 ++
+>  4 files changed, 26 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> index ecd585ca2d50..30bb4196e451 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+> @@ -524,6 +524,7 @@ What:		/sys/devices/system/cpu/vulnerabilities
+>  		/sys/devices/system/cpu/vulnerabilities/itlb_multihit
+>  		/sys/devices/system/cpu/vulnerabilities/mmio_stale_data
+>  		/sys/devices/system/cpu/vulnerabilities/retbleed
+> +		/sys/devices/system/cpu/vulnerabilities/zenbleed
+>  Date:		January 2018
+>  Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+>  Description:	Information about CPU vulnerabilities
+> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+> index 26ad7ca423e7..3ab9745eafc5 100644
+> --- a/arch/x86/kernel/cpu/amd.c
+> +++ b/arch/x86/kernel/cpu/amd.c
+> @@ -1279,6 +1279,21 @@ u32 amd_get_highest_perf(void)
+>  }
+>  EXPORT_SYMBOL_GPL(amd_get_highest_perf);
+>  
+> +ssize_t cpu_show_zenbleed(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +
 
-    In function 'fortify_memset_chk',
-        inlined from 'memset_io' at /kisskb/src/arch/mips/include/asm/io.h:486:2,
-        inlined from 'build_auth_frame' at /kisskb/src/drivers/net/wireless/legacy/ray_cs.c:2697:2:
-    /kisskb/src/include/linux/fortify-string.h:493:25: error: call to '__write_overflow_field' declared with attribute warning:
-detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-      493 |                         __write_overflow_field(p_size_field, size);
-          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Extra newline.
 
-Replace it with an actual flexible array. Binary difference comparison
-shows a single change in output:
+> +	if (!cpu_has_amd_erratum(&boot_cpu_data, amd_zenbleed) ||
+> +	    !boot_cpu_has(X86_FEATURE_AVX) ||
+> +	    boot_cpu_has(X86_FEATURE_HYPERVISOR))
+> +		return sysfs_emit(buf, "Not affected\n");
+> +
+> +	if (!cpu_has_zenbleed_microcode()) {
 
-│  drivers/net/wireless/legacy/ray_cs.c:883
-│       lea    0x1c(%rbp),%r13d
-│ -     cmp    $0x7c3,%r13d
-│ +     cmp    $0x7c4,%r13d
+For readability this can check of microcode present case, and drop the
+NOT operator.
 
-This is from:
+> +		return sysfs_emit(buf, "Mitigation: Chickenbit\n");
 
-        if (len + TX_HEADER_LENGTH > TX_BUF_SIZE) {
+Shouldn't this be checking if the chicken bit is set? And if its not set
+then report "Vulnerable".
 
-specifically:
+But, looking at zenbleed_check() it appear that the chicken bit for
+zenbleed will always be present, and it will always be set if microcode
+is not present.
 
- #define TX_BUF_SIZE (2048 - sizeof(struct tx_msg))
-
-This appears to have been originally buggy, so the change is correct.
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/all/88f83d73-781d-bdc-126-aa629cb368c@linux-m68k.org
-Cc: Kalle Valo <kvalo@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/wireless/legacy/rayctl.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/legacy/rayctl.h b/drivers/net/wireless/legacy/rayctl.h
-index 2b0f332043d7..1f3bde8ac73d 100644
---- a/drivers/net/wireless/legacy/rayctl.h
-+++ b/drivers/net/wireless/legacy/rayctl.h
-@@ -577,7 +577,7 @@ struct tx_msg {
-     struct tib_structure tib;
-     struct phy_header phy;
-     struct mac_header mac;
--    UCHAR  var[1];
-+    UCHAR  var[];
- };
- 
- /****** ECF Receive Control Structure (RCS) Area at Shared RAM offset 0x0800  */
--- 
-2.34.1
-
+> +	} else {
+> +		return sysfs_emit(buf, "Mitigation: Microcode\n");
+> +	}
+> +}
