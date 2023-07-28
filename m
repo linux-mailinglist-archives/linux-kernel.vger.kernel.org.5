@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5922B767022
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BAB767029
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbjG1PH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        id S236338AbjG1PJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjG1PHX (ORCPT
+        with ESMTP id S229610AbjG1PI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:07:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA77C35A3;
-        Fri, 28 Jul 2023 08:07:22 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 17:07:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690556841;
+        Fri, 28 Jul 2023 11:08:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3790F2D60
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690556890;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O2+wYfg2qc/dbl2pgvjkp5a1AYZnnmGamTG/T/UMqAg=;
-        b=biJli4etcT7aONa6IYmphL4wUoVahSXfpSltitzbI83XpZnWBIoZgisHH1J/b7dKj1hCvy
-        +1uuXs72Uy3hhsTfR0XqDi3yQ6v/75NnStY1mM9GUzkWuAV2BQigDd/c7HnimkuZmX2Ndi
-        XY0w8CQc7sYvIHkK+xmCGS/h2t2WOeG823poStHJaICIc6ko8ID5//1wxEvoNZTQy05kEz
-        RvEU/oII2yKw19EBsuaOIjGY/yhtLmQNn5cqQEQzhEPNHJ15cJvnKQXpDT/GDAoHAdAYIG
-        g4VpbX8/iT5NyG3Y/qerFM6FZpBP+T4bB8vy8Y27krx8g6tufCPyK1Gtnboh8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690556841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O2+wYfg2qc/dbl2pgvjkp5a1AYZnnmGamTG/T/UMqAg=;
-        b=JzHT8tRW/hrS6muMmXIMQRfpN62WVAsKIar1aWM8+cr3TFCsZwljmod41RuUn9blT+eqeP
-        qc/K66O0SB/lhGAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Marco Elver <elver@google.com>, linux-rt-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        ThomasGleixner <tglx@linutronix.de>
-Subject: Re: 'perf test sigtrap' failing on PREEMPT_RT_FULL
-Message-ID: <20230728150718.8odZX-jD@linutronix.de>
-References: <ZMAtZ2t43GXoF6tM@kernel.org>
- <e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de>
+        bh=gRr5BONVtbzWtpOSxfQuykokzlwKEf5LYOHHxadZPWA=;
+        b=Wh6JB1/DOIXm5pnaO0Bvkdmtl5IYTTiwVe+3l7Ebgur7nRSkh296o2PW6Vv48aPq+X/xSi
+        SycDtQjqdHlSt45JPBMdz0aqBEycDfGQAKRUEHWNK/aAIO5CNm4GT1JLYcuagYoUYE2WA/
+        2QuY9eY5doBMit606ETi8x6jrai7nRY=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-609-shdmBQZJMuOSuqzcVntx6w-1; Fri, 28 Jul 2023 11:08:09 -0400
+X-MC-Unique: shdmBQZJMuOSuqzcVntx6w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31455dcc30eso1394851f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690556888; x=1691161688;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gRr5BONVtbzWtpOSxfQuykokzlwKEf5LYOHHxadZPWA=;
+        b=a/Fy2Ygrli8WrnS/0zUdC9hRlLqASgCxVyRbHWXoc1NS3aZCsBSBeZGe4Kl2S/Sl3Q
+         EWjno3rtAXN1HV8hezEB4n+li8CXyW1IyLMJbwgUH8VSPn/fzZUaCMmgMZjHYj8s+GW2
+         knMs0kKMjrIlcP/KXPGLf/qz9dT06jBOLaZAL7l6hPtq0LgKIIYsSGD9MNWWIvgNH/dd
+         Izf24plvd4N/VK/3saYVXNaxnj8hXI2iLxWobYwiuPZRwBS9UYoR0dmmgF54ColcgzMj
+         LHsSshhP8C3T8MYMf9OUeQSDkTfRRanzOL/QiC2NwlzBkHR0z7yuoGBBi7pk0U3EEDZB
+         Aayw==
+X-Gm-Message-State: ABy/qLZhgz26rkj8nF9dcKWgbBN/5aBejjGMpAqRksbsxBjC7U0C9438
+        BsJP5zqvPOLEHQnD7E8AVPqIxFhykwkTbKlrJtZKNEc0rz+/Q1kbMF+sRvZD0nIMTvN/XtT15kp
+        lMx+IGwxlMzLiz26Ro9wzn0gR
+X-Received: by 2002:a5d:658a:0:b0:314:1416:3be3 with SMTP id q10-20020a5d658a000000b0031414163be3mr2119900wru.70.1690556887870;
+        Fri, 28 Jul 2023 08:08:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHDQpKetLM+AJNeRN4DNiG6HRo9Vh1XlHIRHofIKZCzScYmXNlC46bR+kl3uHUWrSGWoAz78A==
+X-Received: by 2002:a5d:658a:0:b0:314:1416:3be3 with SMTP id q10-20020a5d658a000000b0031414163be3mr2119878wru.70.1690556887518;
+        Fri, 28 Jul 2023 08:08:07 -0700 (PDT)
+Received: from [192.168.1.67] (198.red-88-3-59.dynamicip.rima-tde.net. [88.3.59.198])
+        by smtp.gmail.com with ESMTPSA id l7-20020adfe587000000b00314172ba213sm4991169wrm.108.2023.07.28.08.08.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 08:08:07 -0700 (PDT)
+Message-ID: <88eff25c-0849-118d-de1e-6ac7f59c9fd4@redhat.com>
+Date:   Fri, 28 Jul 2023 17:08:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [ovs-dev] [PATCH v2 net-next 4/5] selftests: openvswitch: add
+ basic ct test case parsing
+Content-Language: en-US
+To:     Aaron Conole <aconole@redhat.com>, netdev@vger.kernel.org
+Cc:     dev@openvswitch.org, linux-kernel@vger.kernel.org,
+        Ilya Maximets <i.maximets@ovn.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kselftest@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20230728115940.578658-1-aconole@redhat.com>
+ <20230728115940.578658-5-aconole@redhat.com>
+From:   Adrian Moreno <amorenoz@redhat.com>
+In-Reply-To: <20230728115940.578658-5-aconole@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,21 +88,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-26 08:10:45 [+0200], Mike Galbraith wrote:
-> > [=C2=A0=C2=A0 52.848925] BUG: scheduling while atomic: perf/6549/0x0000=
-0002
->=20
-> Had bf9ad37dc8a not been reverted due to insufficient beauty, you could
-> trivially make the sigtrap test a happy camper (wart tested in tip-rt).
 
-Thank you for the pointer Mike.
 
-I guess we need this preempt_disable_notrace() in perf_pending_task()
-due to context accounting in get_recursion_context(). Would a
-migrate_disable() be sufficient or could we send the signal outside of
-the preempt-disabled block?
+On 7/28/23 13:59, Aaron Conole wrote:
+> Forwarding via ct() action is an important use case for openvswitch, but
+> generally would require using a full ovs-vswitchd to get working. Add a
+> ct action parser for basic ct test case.
+> 
+> Signed-off-by: Aaron Conole <aconole@redhat.com>
 
-This is also used in perf_pending_irq() and on PREEMPT_RT this is
-invoked from softirq context which is preemptible.
+Reviewed-by: Adrian Moreno <amorenoz@redhat.com>
 
-Sebastian
+> ---
+> NOTE: 3 lines flag the line-length checkpatch warning, but there didnt
+>        seem to be a really good way of breaking the lines smaller.
+> 
+>   .../selftests/net/openvswitch/openvswitch.sh  | 68 +++++++++++++++++++
+>   .../selftests/net/openvswitch/ovs-dpctl.py    | 39 +++++++++++
+>   2 files changed, 107 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> index 5d60a9466dab..40a66c72af0f 100755
+> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+> @@ -12,6 +12,7 @@ TRACING=0
+>   
+>   tests="
+>   	arp_ping				eth-arp: Basic arp ping between two NS
+> +	ct_connect_v4				ip4-ct-xon: Basic ipv4 tcp connection using ct
+>   	connect_v4				ip4-xon: Basic ipv4 ping between two NS
+>   	netlink_checks				ovsnl: validate netlink attrs and settings
+>   	upcall_interfaces			ovs: test the upcall interfaces"
+> @@ -193,6 +194,73 @@ test_arp_ping () {
+>   	return 0
+>   }
+>   
+> +# ct_connect_v4 test
+> +#  - client has 1500 byte MTU
+> +#  - server has 1500 byte MTU
+> +#  - use ICMP to ping in each direction
+> +#  - only allow CT state stuff to pass through new in c -> s
+> +test_ct_connect_v4 () {
+> +
+> +	which nc >/dev/null 2>/dev/null || return $ksft_skip
+> +
+> +	sbx_add "test_ct_connect_v4" || return $?
+> +
+> +	ovs_add_dp "test_ct_connect_v4" ct4 || return 1
+> +	info "create namespaces"
+> +	for ns in client server; do
+> +		ovs_add_netns_and_veths "test_ct_connect_v4" "ct4" "$ns" \
+> +		    "${ns:0:1}0" "${ns:0:1}1" || return 1
+> +	done
+> +
+> +	ip netns exec client ip addr add 172.31.110.10/24 dev c1
+> +	ip netns exec client ip link set c1 up
+> +	ip netns exec server ip addr add 172.31.110.20/24 dev s1
+> +	ip netns exec server ip link set s1 up
+> +
+> +	# Add forwarding for ARP and ip packets - completely wildcarded
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		'in_port(1),eth(),eth_type(0x0806),arp()' '2' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		'in_port(2),eth(),eth_type(0x0806),arp()' '1' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		     'ct_state(-trk),eth(),eth_type(0x0800),ipv4()' \
+> +		     'ct(commit),recirc(0x1)' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		     'recirc_id(0x1),ct_state(+trk+new),in_port(1),eth(),eth_type(0x0800),ipv4(src=172.31.110.10)' \
+> +		     '2' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		     'recirc_id(0x1),ct_state(+trk+est),in_port(1),eth(),eth_type(0x0800),ipv4(src=172.31.110.10)' \
+> +		     '2' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		     'recirc_id(0x1),ct_state(+trk+est),in_port(2),eth(),eth_type(0x0800),ipv4(dst=172.31.110.10)' \
+> +		     '1' || return 1
+> +	ovs_add_flow "test_ct_connect_v4" ct4 \
+> +		     'recirc_id(0x1),ct_state(+trk+inv),eth(),eth_type(0x0800),ipv4()' 'drop' || \
+> +		     return 1
+> +
+> +	# do a ping
+> +	ovs_sbx "test_ct_connect_v4" ip netns exec client ping 172.31.110.20 -c 3 || return 1
+> +
+> +	# create an echo server in 'server'
+> +	echo "server" | \
+> +		ovs_netns_spawn_daemon "test_ct_connect_v4" "server" \
+> +				nc -lvnp 4443
+> +	ovs_sbx "test_ct_connect_v4" ip netns exec client nc -i 1 -zv 172.31.110.20 4443 || return 1
+> +
+> +	# Now test in the other direction (should fail)
+> +	echo "client" | \
+> +		ovs_netns_spawn_daemon "test_ct_connect_v4" "client" \
+> +				nc -lvnp 4443
+> +	ovs_sbx "test_ct_connect_v4" ip netns exec client nc -i 1 -zv 172.31.110.10 4443
+> +	if [ $? == 0 ]; then
+> +	   info "ct connect to client was successful"
+> +	   return 1
+> +	fi
+> +
+> +	info "done..."
+> +	return 0
+> +}
+> +
+>   # connect_v4 test
+>   #  - client has 1500 byte MTU
+>   #  - server has 1500 byte MTU
+> diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> index 2b869e89c51d..6e258ab9e635 100644
+> --- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> +++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+> @@ -62,6 +62,15 @@ def macstr(mac):
+>       return outstr
+>   
+>   
+> +def strcspn(str1, str2):
+> +    tot = 0
+> +    for char in str1:
+> +        if str2.find(char) != -1:
+> +            return tot
+> +        tot += 1
+> +    return tot
+> +
+> +
+>   def strspn(str1, str2):
+>       tot = 0
+>       for char in str1:
+> @@ -496,6 +505,36 @@ class ovsactions(nla):
+>                       actstr = actstr[strspn(actstr, ", ") :]
+>                       parsed = True
+>   
+> +            if parse_starts_block(actstr, "ct(", False):
+> +                actstr = actstr[len("ct(") :]
+> +                ctact = ovsactions.ctact()
+> +
+> +                for scan in (
+> +                    ("commit", "OVS_CT_ATTR_COMMIT", None),
+> +                    ("force_commit", "OVS_CT_ATTR_FORCE_COMMIT", None),
+> +                    ("zone", "OVS_CT_ATTR_ZONE", int),
+> +                    ("mark", "OVS_CT_ATTR_MARK", int),
+> +                    ("helper", "OVS_CT_ATTR_HELPER", lambda x, y: str(x)),
+> +                    ("timeout", "OVS_CT_ATTR_TIMEOUT", lambda x, y: str(x)),
+> +                ):
+> +                    if actstr.startswith(scan[0]):
+> +                        actstr = actstr[len(scan[0]) :]
+> +                        if scan[2] is not None:
+> +                            if actstr[0] != "=":
+> +                                raise ValueError("Invalid ct attr")
+> +                            actstr = actstr[1:]
+> +                            pos = strcspn(actstr, ",)")
+> +                            datum = scan[2](actstr[:pos], 0)
+> +                            ctact["attrs"].append([scan[1], datum])
+> +                            actstr = actstr[pos:]
+> +                        else:
+> +                            ctact["attrs"].append([scan[1], None])
+> +                        actstr = actstr[strspn(actstr, ", ") :]
+> +
+> +                self["attrs"].append(["OVS_ACTION_ATTR_CT", ctact])
+> +                parsed = True
+> +
+> +            actstr = actstr[strspn(actstr, "), ") :]
+>               if not parsed:
+>                   raise ValueError("Action str: '%s' not supported" % actstr)
+>   
+
+-- 
+Adrián Moreno
+
