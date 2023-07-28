@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B98766E00
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1240D766E03
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbjG1NWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        id S236343AbjG1NW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbjG1NWD (ORCPT
+        with ESMTP id S236230AbjG1NWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:22:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D6A19BF;
-        Fri, 28 Jul 2023 06:22:02 -0700 (PDT)
+        Fri, 28 Jul 2023 09:22:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4303B1FC8;
+        Fri, 28 Jul 2023 06:22:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F180962111;
-        Fri, 28 Jul 2023 13:22:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E324DC433C8;
-        Fri, 28 Jul 2023 13:22:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE2AF62139;
+        Fri, 28 Jul 2023 13:22:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD2BC433C8;
+        Fri, 28 Jul 2023 13:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690550521;
-        bh=BWNdvlVBxmTX4HBWkWikwKLite/l018JUea+q9vpOSQ=;
-        h=From:Date:Subject:To:Cc:From;
-        b=kYddY89bwLAsJQiGEn5hhVv85YkfB+CGBmvDTiEJTSkdA/3X8O+cqMTqaieD+nDj4
-         KZnMv9ZKIZabaeqvqNDJfUpHChEkybeyP5o5UHI6Lib9qVjaVdX3+kuIo8U1S5d3TN
-         54YtON/Mdwu1ZZnQP1wbNEv89PHHVJUmxE3hTcMJBerCetDhsxK8ER0ojlVMG0hGrR
-         r9ybvsUbCB6fdZd8yWXAq6SVbVUVay2gBhYZJtZPvS52xDAckHQyfwIiEGW5Ax1Vbg
-         PzZPdMDsRU24fTZjpsd0iBhZlfEKW1jf4rK7/KK4SvbA5Y9SJ60SSMHO1msNOk3ajZ
-         y/On6r8CFbW2A==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Fri, 28 Jul 2023 09:21:37 -0400
-Subject: [PATCH] fs: compare truncated timestamps in current_mgtime
+        s=k20201202; t=1690550543;
+        bh=W/bcRxC7HKPq+WV1f0L7wqNL6qKipJr/pW8p28YHdiw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WRfiWNezqz7bKg30pZXD9X14kxEezE9wiYwkdXSnfB9e+W2dalsxwO+Ip8ZQuQ4kI
+         49CdbPIsyF8p+LM4O80t51G+DEGUm8blJxgq8PTJsh/LGn/lN28HdcE3PM/U9TfJ2+
+         dBcI+nCVLbcN38q9DDzvYOcCcjUxVlp77CpntqV8yxVWTBgozAzX/YpQLpCPnrJlz5
+         cMzM2yTUOo47ItovedppYQM4XN6YXyRNnihXTUxD2QNB2Mh5/SWATuzDw/pLSEijwL
+         CQaZuhmta93WbqOlceD4iFd6vElUnKsoNOdEJI1vw9Qh263vGKqEH3r6rFufzRUtQw
+         MII83kK+lAC3g==
+Date:   Fri, 28 Jul 2023 14:22:17 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Besar Wicaksono <bwicaksono@nvidia.com>, suzuki.poulose@arm.com
+Cc:     robin.murphy@arm.com, ilkka@os.amperecomputing.com,
+        catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, treding@nvidia.com,
+        jonathanh@nvidia.com, vsethi@nvidia.com, rwiley@nvidia.com,
+        efunsten@nvidia.com
+Subject: Re: [PATCH v5] perf: arm_cspmu: Separate Arm and vendor module
+Message-ID: <20230728132216.GA21394@willie-the-truck>
+References: <20230705104745.52255-1-bwicaksono@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230728-mgctime-v1-1-5b0ddc5df08e@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAODAw2QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDcyML3dz05JLM3FRd01SD1GSDVAvLJAMTJaDqgqLUtMwKsEnRsbW1ALW
- sMS9ZAAAA
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2038; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=BWNdvlVBxmTX4HBWkWikwKLite/l018JUea+q9vpOSQ=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkw8D4pJpahgkJEeHFHsp7WsETMNpKt8cmCmLD4
- lPCyeqLnkCJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZMPA+AAKCRAADmhBGVaC
- Fbp4D/0X9Sp659D5Gk0EPTxpKwy/cyKLhgFyxaBzwDzmC10iZc2wUZaFJr1vJek24dsGIVwQG6o
- eNTMPNx5XhZw5jWqnMJj21ovegpjRC36bd6F4jgIfHTvlizeAQqHKgdL+IYT+2c4wfaMoDwrDKR
- vlUPL8mNrEKa/pwxk1GPg8BFfbQoJARLLgfQVo0I8bKAtGxPzEVD/yRAVnPQHTIl1RPktax9BFr
- vAyc6r0dsRYIyBXikuWoqFqj6ISdjpkI3xlOLdZd2cvYO4LbaXM9Qj557rX3DUKHdszLs/P5BAy
- jElWM9LwJD0CPl7kG200wKV391b7eC1MNV8ochZB67v/2hU5NSCQmZAgv7qp0rCfXJa7rgDALMk
- IdrFPLJJtRxPAdj/oIJyLwuO4qI6MheuMM9cKfmUBXrp+4X3vlTWDSYmkGfZ6Xjks5qKSQDquHH
- JrL1S+t+2dAXC82MBO+XFv0baCr4JVMtewklsccXw0iH1VbmmUeU4Onn+tSfLbIIElCV4Ni9erS
- BdREuq3Xs/cdnitOqYQidCn+DVVyaqnUVL7oIU1QQ/UbnmLAswYNOBZIPxRl+DSSZeiTuDjS/gy
- NH+QY9IgI+1Rj5E5jIgK1runNp2244/w4J0UFmwYPS8lgonRvHbvhFdbSEwfth2wUcPOJNzY2Bd
- 8GDGTrsApahU+/Q==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230705104745.52255-1-bwicaksono@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,72 +60,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-current_mgtime compares the ctime (which has already been truncated) to
-the value from ktime_get_coarse_real_ts64 (which has not). All of the
-existing filesystems that enable mgtime have 1ns granularity, so this is
-not a problem today, but it is more correct to compare truncated
-timestamps instead.
+On Wed, Jul 05, 2023 at 05:47:45AM -0500, Besar Wicaksono wrote:
+> Arm Coresight PMU driver consists of main standard code and
+> vendor backend code. Both are currently built as a single module.
+> This patch adds vendor registration API to separate the two to
+> keep things modular. The main driver requests each known backend
+> module during initialization and defer device binding process.
+> The backend module then registers an init callback to the main
+> driver and continue the device driver binding process.
+> 
+> Signed-off-by: Besar Wicaksono <bwicaksono@nvidia.com>
+> ---
+> 
+> Changes from v4:
+>  * Fix warning reported by kernel test robot
+> v4: https://lore.kernel.org/linux-arm-kernel/20230620041438.32514-1-bwicaksono@nvidia.com/T/#u
 
-Do the truncate earlier, so we're comparing like things.
+One minor comment below, but this mostly looks good to me. I'd like Suzuki's
+Ack before I queue it, though.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/inode.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+> +	/* Load implementer module and initialize the callbacks. */
+> +	if (match) {
+> +		mutex_lock(&arm_cspmu_lock);
+> +
+> +		if (match->impl_init_ops) {
+> +			if (try_module_get(match->module)) {
+> +				cspmu->impl.match = match;
+> +				ret = match->impl_init_ops(cspmu);
+> +				module_put(match->module);
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 369621e7faf5..8199d0e02cce 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2097,28 +2097,28 @@ EXPORT_SYMBOL(file_remove_privs);
-  */
- static struct timespec64 current_mgtime(struct inode *inode)
- {
--	struct timespec64 now;
-+	struct timespec64 now, ctime;
- 	atomic_long_t *pnsec = (atomic_long_t *)&inode->__i_ctime.tv_nsec;
- 	long nsec = atomic_long_read(pnsec);
- 
- 	if (nsec & I_CTIME_QUERIED) {
- 		ktime_get_real_ts64(&now);
--	} else {
--		struct timespec64 ctime;
-+		return timestamp_truncate(now, inode);
-+	}
- 
--		ktime_get_coarse_real_ts64(&now);
-+	ktime_get_coarse_real_ts64(&now);
-+	now = timestamp_truncate(now, inode);
- 
--		/*
--		 * If we've recently fetched a fine-grained timestamp
--		 * then the coarse-grained one may still be earlier than the
--		 * existing one. Just keep the existing ctime if so.
--		 */
--		ctime = inode_get_ctime(inode);
--		if (timespec64_compare(&ctime, &now) > 0)
--			now = ctime;
--	}
-+	/*
-+	 * If we've recently fetched a fine-grained timestamp
-+	 * then the coarse-grained one may still be earlier than the
-+	 * existing ctime. Just keep the existing value if so.
-+	 */
-+	ctime = inode_get_ctime(inode);
-+	if (timespec64_compare(&ctime, &now) > 0)
-+		now = ctime;
- 
--	return timestamp_truncate(now, inode);
-+	return now;
- }
- 
- /**
+Why is it safe to drop the module reference here? If I'm understanding the
+flow correctly, ->impl_init_ops() will populate more function pointers
+in the cspmu->impl.ops structure, and we don't appear to take a module
+reference when calling those.
 
----
-base-commit: 4ce0966ed7c04881c5f352e0bb53af9b38f94253
-change-id: 20230728-mgctime-5e0ec0e89b04
+What happens if the backend module is unloaded while the core module
+is executed those functions?
 
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+Cheers,
 
+Will
