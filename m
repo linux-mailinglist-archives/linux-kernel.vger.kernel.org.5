@@ -2,103 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4F67664A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557AB7664AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjG1HAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S232749AbjG1HC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbjG1HAU (ORCPT
+        with ESMTP id S230385AbjG1HC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:00:20 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25D935A5;
-        Fri, 28 Jul 2023 00:00:13 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-563f8e8a53dso1053905a12.3;
-        Fri, 28 Jul 2023 00:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690527613; x=1691132413;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=csffeR+oPJ4r1BFCRv18Ji1lYkr66TeUyNN6VXBOA5k=;
-        b=bRLx7EBYf2U/nH8+u7oRWuawRuAyUzkXbwowllN+/5tlGx22+wcqAfwqnLf6zyOJFT
-         aEB0LmSqIHbOI5lh5OaOyP58iVFGwoGiC6u9jCaxhKwNA7EkkrdrSPHJzOBeYRKgGvQQ
-         rR99TNGh+oqu74wFG70rdejgZdL98JInkuARS3eKs5FvfZVY+PcS3W8q/HR+6C2j35Yh
-         6Xi59KPlnLgmlc1xc8yfkn7TgINdqoqTShBzyKWD5evH6gLgsM9qDw8JYoxyq5SAeYqP
-         ZxNLgPQqQq7mGC0dmx10/LJnQT8/7Cv7WEBpSsZN9hv8o8pI8q4zXG5PHI9A/esxIIfx
-         et+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690527613; x=1691132413;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=csffeR+oPJ4r1BFCRv18Ji1lYkr66TeUyNN6VXBOA5k=;
-        b=ikIboOfaDS42FCJ/JZ1pyyhyazNF+nWv6CaLA6f5Si8apSDNh2XN5I0wNVtEYbzsZ1
-         iwgfvwUZvES6mIoo63jw7yOCsoYzB9CaOakyvRIkfcAd6/7t6u1H9U9D3TxuFFy6KhAp
-         vw72o946Gt2gukWn27v2V8WBSe4sEB6yOI7rRMQJSziXgoYNf6L1w0yqIgl+hyKwtWfh
-         EajF8Dl22eK96rFk1WWyZfxPO3oxtl2jB8cGVMIGP8z4FVv3nVgjqPBFZ1V2weswQCcS
-         hBLwORlq9k5SDmg1M7skhYw9eAO2m2LOGGtkf36Kv6E4csnEL6mrd8Ky/4bqBnucuSQJ
-         VXKw==
-X-Gm-Message-State: ABy/qLYIx2RzwlvLGfHQICn2XYDn8YiRCVGC06BsMXBLlsf1gwxckODO
-        GU2E2UA/ry0UeKKnRdASfIE=
-X-Google-Smtp-Source: APBJJlHQFId3j9XY4axmj92fg1mRTYT3ZW0i6+fQ9XtygsZgZwiS7I1U8crPutn4LhBlrp3d2H13DA==
-X-Received: by 2002:a17:90a:bf0a:b0:268:5558:de4c with SMTP id c10-20020a17090abf0a00b002685558de4cmr803408pjs.38.1690527613159;
-        Fri, 28 Jul 2023 00:00:13 -0700 (PDT)
-Received: from [192.168.0.104] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id fw3-20020a17090b128300b00262ca945cecsm3642658pjb.54.2023.07.28.00.00.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 00:00:12 -0700 (PDT)
-Message-ID: <849bdcfb-b70f-5212-58f7-71e2da25c5ed@gmail.com>
-Date:   Fri, 28 Jul 2023 14:00:05 +0700
+        Fri, 28 Jul 2023 03:02:27 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA614198A
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:02:25 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36S57RII010707;
+        Fri, 28 Jul 2023 07:02:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Z2g6bzyfpZCzCp33w3yLlCiXyUWfr6VgzHUl9tHSEqA=;
+ b=GlZg2p840aVlKGM7VQByIx3w2CcTBnsGmgRBDj4gDg9sDoh9TqYLC2ggfOp7u85eQPWj
+ Fd9wHhSmL0iC0GeqfJiuymMNuwP1Wrl4XNLzx2zUz8EA7kX0R7M5yXP+9iJoARr8U7a/
+ qswCnfeJXebzV/m7UZLSfXZWkRGR25m7C3Mgi7/IwUW/V7WO8u9Qt7s7cU9+3SvzCziy
+ dv7TJWmfGbeKXNEB0Q4IjtXxd0M6EjtzMO7bLI4cbsCW3BwPMp1voXVdaXDoLHVjtaDr
+ i19f3A6w5FUbCUi4nDkDBOIU8KEbru7V8o2ybdtwLUbrHtzOE2YMBr9HnlRGj80C0MDL Cg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s3ufushnd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 07:02:18 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36S72BfK010198
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 07:02:11 GMT
+Received: from hu-ajainp-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 28 Jul 2023 00:01:44 -0700
+From:   Anvesh Jain P <quic_ajainp@quicinc.com>
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     Venkata Rao Kakani <quic_vkakani@quicinc.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        Anvesh Jain P <quic_ajainp@quicinc.com>
+Subject: [PATCH] virtio_mmio: add suspend and resume calls for virtio_mmio devices
+Date:   Fri, 28 Jul 2023 12:31:27 +0530
+Message-ID: <20230728070127.18452-1-quic_ajainp@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: Fwd: XPS 17 9730 runs significantly warmer on Kernel 6.5-rc3
- compared to Kernel 6.4.3
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Goran <goran.brkuljan@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Power Management <linux-pm@vger.kernel.org>
-References: <4aaf1d3d-2ab7-2d3a-f597-a1741bf699d6@gmail.com>
- <ZMMaYLcc5G4KSVyf@debian.me>
-In-Reply-To: <ZMMaYLcc5G4KSVyf@debian.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: B3DUN0y8o7FizMQRk7MOcdUWt84lLKzo
+X-Proofpoint-ORIG-GUID: B3DUN0y8o7FizMQRk7MOcdUWt84lLKzo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ clxscore=1011 priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280062
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 08:31, Bagas Sanjaya wrote:
-> Oops, I accidentally duped this. My email client was stuck sending it
-> (but got delivered anyway), thus:
-> 
-> #regzbot dup-of: https://lore.kernel.org/regressions/107f05b8-0104-501c-130c-4f89f3f8a628@gmail.com/
-> 
+Handle suspend and resume calls for virtio mmio devices from
+PM core. Expose these notifications to virtio drivers that can quiesce and
+resume vq operations. Update virtio pm ops to handle freeze& restore and
+suspend & resume callbacks separately.
 
-And to clean regzbot up:
+Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
+---
+ drivers/virtio/virtio.c      | 112 +++++++++++++++++++++++++++++++++++
+ drivers/virtio/virtio_mmio.c |  50 +++++++++++++++-
+ include/linux/virtio.h       |  12 ++++
+ 3 files changed, 173 insertions(+), 1 deletion(-)
 
-#regzbot invalid: accidental duplicate
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 3893dc29eb26..c6f25a267600 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -551,6 +551,118 @@ int virtio_device_restore(struct virtio_device *dev)
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(virtio_device_restore);
++
++int virtio_device_suspend(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++
++	virtio_config_disable(dev);
++
++	dev->failed = dev->config->get_status(dev) & VIRTIO_CONFIG_S_FAILED;
++
++	if (drv && drv->suspend)
++		return drv->suspend(dev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(virtio_device_suspend);
++
++int virtio_device_resume(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++	int ret;
++
++	if (drv && drv->resume) {
++		ret = drv->resume(dev);
++		if (ret)
++			goto err;
++
++		if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIVER_OK))
++			virtio_device_ready(dev);
++
++		virtio_config_enable(dev);
++	}
++
++	return 0;
++err:
++	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(virtio_device_resume);
++
++int virtio_device_suspend_late(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++
++	virtio_config_disable(dev);
++
++	dev->failed = dev->config->get_status(dev) & VIRTIO_CONFIG_S_FAILED;
++
++	if (drv && drv->suspend_late)
++		return drv->suspend_late(dev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(virtio_device_suspend_late);
++
++int virtio_device_resume_early(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++	int ret;
++
++	if (drv && drv->resume_early) {
++		ret = drv->resume_early(dev);
++		if (ret)
++			goto err;
++		if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIVER_OK))
++			virtio_device_ready(dev);
++
++		virtio_config_enable(dev);
++	}
++
++	return 0;
++err:
++	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(virtio_device_resume_early);
++
++int virtio_device_suspend_noirq(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++
++	virtio_config_disable(dev);
++
++	dev->failed = dev->config->get_status(dev) & VIRTIO_CONFIG_S_FAILED;
++
++	if (drv && drv->suspend_noirq)
++		return drv->suspend_noirq(dev);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(virtio_device_suspend_noirq);
++
++int virtio_device_resume_noirq(struct virtio_device *dev)
++{
++	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
++	int ret;
++
++	if (drv && drv->resume_noirq) {
++		ret = drv->resume_noirq(dev);
++		if (ret)
++			goto err;
++		if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIVER_OK))
++			virtio_device_ready(dev);
++
++		virtio_config_enable(dev);
++	}
++
++	return 0;
++err:
++	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(virtio_device_resume_noirq);
+ #endif
+ 
+ static int virtio_init(void)
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index a46a4a29e929..9385c7e65da9 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -596,9 +596,57 @@ static int virtio_mmio_restore(struct device *dev)
+ 
+ 	return virtio_device_restore(&vm_dev->vdev);
+ }
++static int virtio_mmio_suspend(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_suspend(&vm_dev->vdev);
++}
++
++static int virtio_mmio_resume(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_resume(&vm_dev->vdev);
++}
++
++static int virtio_mmio_suspend_late(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_suspend_late(&vm_dev->vdev);
++}
++
++static int virtio_mmio_resume_early(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_resume_early(&vm_dev->vdev);
++}
++
++static int virtio_mmio_suspend_noirq(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_suspend_noirq(&vm_dev->vdev);
++}
++
++static int virtio_mmio_resume_noirq(struct device *dev)
++{
++       struct virtio_mmio_device *vm_dev = dev_get_drvdata(dev);
++
++       return virtio_device_resume_noirq(&vm_dev->vdev);
++}
+ 
+ static const struct dev_pm_ops virtio_mmio_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(virtio_mmio_freeze, virtio_mmio_restore)
++       .freeze         = virtio_mmio_freeze,
++       .restore        = virtio_mmio_restore,
++       .suspend        = virtio_mmio_suspend,
++       .resume         = virtio_mmio_resume,
++       .suspend_late   = virtio_mmio_suspend_late,
++       .resume_early   = virtio_mmio_resume_early,
++       .suspend_noirq  = virtio_mmio_suspend_noirq,
++       .resume_noirq   = virtio_mmio_resume_noirq,
+ };
+ #endif
+ 
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index de6041deee37..e88b321408e9 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -145,6 +145,12 @@ void virtio_config_changed(struct virtio_device *dev);
+ #ifdef CONFIG_PM_SLEEP
+ int virtio_device_freeze(struct virtio_device *dev);
+ int virtio_device_restore(struct virtio_device *dev);
++int virtio_device_suspend(struct virtio_device *dev);
++int virtio_device_resume(struct virtio_device *dev);
++int virtio_device_suspend_late(struct virtio_device *dev);
++int virtio_device_resume_early(struct virtio_device *dev);
++int virtio_device_suspend_noirq(struct virtio_device *dev);
++int virtio_device_resume_noirq(struct virtio_device *dev);
+ #endif
+ void virtio_reset_device(struct virtio_device *dev);
+ 
+@@ -187,6 +193,12 @@ struct virtio_driver {
+ #ifdef CONFIG_PM
+ 	int (*freeze)(struct virtio_device *dev);
+ 	int (*restore)(struct virtio_device *dev);
++	int (*suspend)(struct virtio_device *dev);
++	int (*resume)(struct virtio_device *dev);
++	int (*suspend_late)(struct virtio_device *dev);
++	int (*resume_early)(struct virtio_device *dev);
++	int (*suspend_noirq)(struct virtio_device *dev);
++	int (*resume_noirq)(struct virtio_device *dev);
+ #endif
+ };
+ 
 
-Please ignore this thread, and instead follow up the original
-forwarded report at [1].
-
-Sorry for inconvenience.
-
-[1]: https://lore.kernel.org/lkml/107f05b8-0104-501c-130c-4f89f3f8a628@gmail.com/
-
+base-commit: 3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
 -- 
-An old man doll... just what I always wanted! - Clara
+2.17.1
 
