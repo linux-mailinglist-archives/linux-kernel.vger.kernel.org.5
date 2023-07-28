@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F3F76643F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3407F766440
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjG1Ge7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S232659AbjG1GfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbjG1Ges (ORCPT
+        with ESMTP id S232807AbjG1Gey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:34:48 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBE74200
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:34:25 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fdfefdf5abso2981688e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:34:25 -0700 (PDT)
+        Fri, 28 Jul 2023 02:34:54 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8184216
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:34:26 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5227799c224so2235477a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 23:34:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1690526063; x=1691130863;
+        d=amarulasolutions.com; s=google; t=1690526064; x=1691130864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kSb7V+l5INAZZY1BiIqNw95KAR1Jhg86zX4iEYTQuGQ=;
-        b=YD4Cp6NO75tumNAqCVjMej9Rug0LbmNWvceQr0SzbwAKu2Nygozw4URutDcKKYfext
-         DusewMKsW8+lLIjRK0r++OK7/20chp1hOy3DcfnF0h7ZXU9l5SJiXO8SroYMZ0xNXUri
-         JT2QOSm017MWFpT6zSsy3Qzr1/5s69EccMGEA=
+        bh=PU0Mm1LqR6Sd23PVyNdW/l5iyuu7GETQ6ileDMCjS3c=;
+        b=MAL6quypMmxcdDXDyIfmE1EcLbwuJ+ytTfEPqf4tf2CkR3L1x2Woz+D5VrdldmYxab
+         K5cbUlRFdGK3UNWSFMG21W8lQWJkXn8OZB+xIR+7JvpjEFm2CCerjyrRKZAuWh/GWcPo
+         cvtF2r+VnMGdKDo5iNmJYwGOrAG2JRigeXFfI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690526063; x=1691130863;
+        d=1e100.net; s=20221208; t=1690526064; x=1691130864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kSb7V+l5INAZZY1BiIqNw95KAR1Jhg86zX4iEYTQuGQ=;
-        b=MC9hGyXCGu9AkmmfUyugXDWImzKjB4vLXWwgu+7xzOZ4UX3RRe8DQ8poyBrGxk2Kwq
-         S7Rrm5uId/l1Vo2ahVrV/KzaiQpy3i99ERM8/cFOLRd+kIseE6/N4BpPaxN2m0j+F+fb
-         Y5zkvWvWhvRQLI4UYe5b/uHXyrnyZZqmyVyAbTHlwc4OuAEGWGrJ3jx/2G6ZdIuRRQ0f
-         2rWh1odsbIUdcpWMJ+X3dETajlFyInsU1Zp48Z9I4pKLbcpnPrTUSHEYsQJiDtEMLX4K
-         QtKp+JqD4P71ao8Da+oKifWqSmqeGfSPqLuY0Cp9tJj9aQLx5/rn33mY+LSS+XK6TdKM
-         dYgw==
-X-Gm-Message-State: ABy/qLbOaEQ5vH9SJL8DhTJZZ/lzZ1SFAAitvSaMrdLN16af53R3divw
-        PTfPDQShrCSHrN6ocb+UeVLm/3WxG/NxXbMpG9o=
-X-Google-Smtp-Source: APBJJlEOqWif6a+SBSBCiAAO7oieIt/NQUYY623dGOgj4qHsxvy+5BMXSEmHibFtUpg/cSz5KRNRHQ==
-X-Received: by 2002:a05:6512:4007:b0:4fb:829b:196e with SMTP id br7-20020a056512400700b004fb829b196emr1042929lfb.2.1690526063051;
-        Thu, 27 Jul 2023 23:34:23 -0700 (PDT)
+        bh=PU0Mm1LqR6Sd23PVyNdW/l5iyuu7GETQ6ileDMCjS3c=;
+        b=iY1X3lBsDlEZNzN/s+0q974/DI+3bohRauWibn7a/wc0w/HrSz3hC2d099FCnnm3Z9
+         F8j6FQ5jNeCZ6cxuA3kfFu5v7+HoP/ztfxA1rKCJ43tdLulgNb7jwVyEHylTjJ8xwV1i
+         VSXJrtVJ9PuTE42FrDIwGsISFufIgzXNNO+MxZAMoZG/d3/HXSSFcVfli2znjq4XDiWD
+         SpzHZvzjO5aXxGuWuF1Zc3uRwCEzNJZiBRFZZ0G0T22PiWDv/4ZDBX21qc6ewHuWqv2k
+         aPkqMBKuj54zrbOHVzdu81G+QOm/GaLlChbE+YTFE0Zvi/3dqpuc2D3u1kkdlBJ9zyys
+         fs7A==
+X-Gm-Message-State: ABy/qLbC8XA7wSBLoJx0cUeyhZ8hlr1BhgbeK3j4VaTrIdl22VXZy2h9
+        L364BTyAJkcVKyVw8Mzuw3dXMAHPCzGUTMt6YJU=
+X-Google-Smtp-Source: APBJJlEwVS10HgWPALySQfhw1BUCzGHABzjXnfKJaWlGokty4ZOXpOwaA7BlcsIIEnAynXI76Qm70g==
+X-Received: by 2002:a05:6402:296:b0:51e:34d5:a23f with SMTP id l22-20020a056402029600b0051e34d5a23fmr1074950edv.23.1690526064620;
+        Thu, 27 Jul 2023 23:34:24 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-95-232-62-70.retail.telecomitalia.it. [95.232.62.70])
-        by smtp.gmail.com with ESMTPSA id n21-20020aa7d055000000b0051e26c7a154sm1425057edo.18.2023.07.27.23.34.21
+        by smtp.gmail.com with ESMTPSA id n21-20020aa7d055000000b0051e26c7a154sm1425057edo.18.2023.07.27.23.34.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jul 2023 23:34:22 -0700 (PDT)
+        Thu, 27 Jul 2023 23:34:24 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     michael@amarulasolutions.com,
@@ -61,9 +61,9 @@ Cc:     michael@amarulasolutions.com,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v7 1/3] ARM: dts: stm32: add ltdc support on stm32f746 MCU
-Date:   Fri, 28 Jul 2023 08:34:14 +0200
-Message-Id: <20230728063417.2980091-2-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v7 2/3] ARM: dts: stm32: add pin map for LTDC on stm32f7
+Date:   Fri, 28 Jul 2023 08:34:15 +0200
+Message-Id: <20230728063417.2980091-3-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230728063417.2980091-1-dario.binacchi@amarulasolutions.com>
 References: <20230728063417.2980091-1-dario.binacchi@amarulasolutions.com>
@@ -73,14 +73,15 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LTDC (Lcd-tft Display Controller) support.
+Add pin configurations for using LTDC (LCD-tft Display Controller) on
+stm32f746-disco board.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 Reviewed-by: Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>
@@ -91,30 +92,58 @@ Changes in v7:
 - Add 'Reviewed-by' tag I forgot in v6.
   https://lore.kernel.org/linux-arm-kernel/20230629083726.84910-1-dario.binacchi@amarulasolutions.com/T/
 
- arch/arm/boot/dts/st/stm32f746.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Changes in v3:
+- rename ltdc-pins-a-0 to ltdc-0.
 
-diff --git a/arch/arm/boot/dts/st/stm32f746.dtsi b/arch/arm/boot/dts/st/stm32f746.dtsi
-index d1802efd067c..36eda1562e83 100644
---- a/arch/arm/boot/dts/st/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/st/stm32f746.dtsi
-@@ -507,6 +507,16 @@ pwm {
+ arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 35 +++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
+index 9f65403295ca..36dad40dd0c7 100644
+--- a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
+@@ -365,6 +365,41 @@ pins2 {
+ 					bias-pull-up;
+ 				};
  			};
- 		};
- 
-+		ltdc: display-controller@40016800 {
-+			compatible = "st,stm32-ltdc";
-+			reg = <0x40016800 0x200>;
-+			interrupts = <88>, <89>;
-+			resets = <&rcc STM32F7_APB2_RESET(LTDC)>;
-+			clocks = <&rcc 1 CLK_LCD>;
-+			clock-names = "lcd";
-+			status = "disabled";
-+		};
 +
- 		pwrcfg: power-config@40007000 {
- 			compatible = "st,stm32-power-config", "syscon";
- 			reg = <0x40007000 0x400>;
++
++			ltdc_pins_a: ltdc-0 {
++				pins {
++					pinmux = <STM32_PINMUX('E', 4, AF14)>, /* LCD_B0 */
++						 <STM32_PINMUX('G',12, AF9)>,  /* LCD_B4 */
++						 <STM32_PINMUX('I', 9, AF14)>, /* LCD_VSYNC */
++						 <STM32_PINMUX('I',10, AF14)>, /* LCD_HSYNC */
++						 <STM32_PINMUX('I',14, AF14)>, /* LCD_CLK */
++						 <STM32_PINMUX('I',15, AF14)>, /* LCD_R0 */
++						 <STM32_PINMUX('J', 0, AF14)>, /* LCD_R1 */
++						 <STM32_PINMUX('J', 1, AF14)>, /* LCD_R2 */
++						 <STM32_PINMUX('J', 2, AF14)>, /* LCD_R3 */
++						 <STM32_PINMUX('J', 3, AF14)>, /* LCD_R4 */
++						 <STM32_PINMUX('J', 4, AF14)>, /* LCD_R5 */
++						 <STM32_PINMUX('J', 5, AF14)>, /* LCD_R6 */
++						 <STM32_PINMUX('J', 6, AF14)>, /* LCD_R7 */
++						 <STM32_PINMUX('J', 7, AF14)>, /* LCD_G0 */
++						 <STM32_PINMUX('J', 8, AF14)>, /* LCD_G1 */
++						 <STM32_PINMUX('J', 9, AF14)>, /* LCD_G2 */
++						 <STM32_PINMUX('J',10, AF14)>, /* LCD_G3 */
++						 <STM32_PINMUX('J',11, AF14)>, /* LCD_G4 */
++						 <STM32_PINMUX('J',13, AF14)>, /* LCD_B1 */
++						 <STM32_PINMUX('J',14, AF14)>, /* LCD_B2 */
++						 <STM32_PINMUX('J',15, AF14)>, /* LCD_B3 */
++						 <STM32_PINMUX('K', 0, AF14)>, /* LCD_G5 */
++						 <STM32_PINMUX('K', 1, AF14)>, /* LCD_G6 */
++						 <STM32_PINMUX('K', 2, AF14)>, /* LCD_G7 */
++						 <STM32_PINMUX('K', 4, AF14)>, /* LCD_B5 */
++						 <STM32_PINMUX('K', 5, AF14)>, /* LCD_B6 */
++						 <STM32_PINMUX('K', 6, AF14)>, /* LCD_B7 */
++						 <STM32_PINMUX('K', 7, AF14)>; /* LCD_DE */
++					slew-rate = <2>;
++				};
++			};
+ 		};
+ 	};
+ };
 -- 
 2.34.1
 
