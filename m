@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4B6766D84
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB02766D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbjG1MnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
+        id S233849AbjG1MoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236690AbjG1MnP (ORCPT
+        with ESMTP id S232861AbjG1MoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:43:15 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B16E78
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:43:09 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-986d8332f50so288306566b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:43:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690548188; x=1691152988;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+iuqBx3ekrCVidOhllN+DMVt0RJH/HxgzRnhtmgkRk=;
-        b=jhmZ6nb9rdRM74KE1d31aXbj9qY8QbNw1AW+onH8CMQiI2u5oxP8VsyI4wwSTzGLe6
-         R3GDJPe/khDxiPOu1MhaISrik2ADMdy5KvuoCmbNJn2h4BxPQxVEiVu4LmMlB9hw4QXw
-         vsUXhFtiLD2GdDYVpz5Ej2YwGhCvwzTxBs3c4oyaXSM2nnJFaw1xPEms+R1xvOz3QFFt
-         y1vjypb5JkUfgjbMNh+MiXQ8qbI8r9+nv3jCm+O+QxKCwn2BXPq0nHfX9Z/WnB00IW/9
-         xlNgwBsJZ9Z/Dc/LkrCpi8filvPTGk/qL5NZFzbOTCauPURkqSXUw1fiSpUdSYRmJIyr
-         GYBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690548188; x=1691152988;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z+iuqBx3ekrCVidOhllN+DMVt0RJH/HxgzRnhtmgkRk=;
-        b=lFfzCYPduDH7UymwJI2pi2JL1foWBCBx7rKY4ACD446vCwRnyulWSWBd4+BJkRFuOJ
-         Uy/caiNwKmL8TvJALov5tRFkxsBlzjzjveFJjynaHVy/guqGN8Wo5OyTLJ/q5FTYZFLw
-         r0CmGQNs8oZt/C5YTZVkIxoxIhv6tkBQLBI+bgB21759pwoXrRLOwLy8mYraBFqddYdu
-         +9I8uEDyjsKeADld48p3hezvcg2rryv2rbkVH+CUPDeAVj6FtwHuoz7bjh0LHhXr4+LZ
-         hmBC0m5wVWE725Ekc4AYgzzqPmeH0lH1bcn3TFIQGwnQGA47sy2MwrUx4Q8qDwqWmm+7
-         z74Q==
-X-Gm-Message-State: ABy/qLbP5+9ukBzNgU/1j18VyG96euMx+Rn9bI8/j9FSvC+P4nPYJTbt
-        1HBTMw8OpIbp75Fxz4TBjqqrxA==
-X-Google-Smtp-Source: APBJJlFTIFM47y2zWx3yLO6+5yOItfReFp8Cvo1mAkBhk2WY4PAX7iOKwaIW3APeJuYx6lE7g+AJng==
-X-Received: by 2002:a17:906:101e:b0:987:47b3:6e34 with SMTP id 30-20020a170906101e00b0098747b36e34mr1730208ejm.67.1690548188345;
-        Fri, 28 Jul 2023 05:43:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id o13-20020a1709061b0d00b0099bcb44493fsm2026617ejg.147.2023.07.28.05.43.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 05:43:07 -0700 (PDT)
-Message-ID: <ae317334-e3f0-f6b7-0477-c10cf10ca2c7@linaro.org>
-Date:   Fri, 28 Jul 2023 14:43:06 +0200
+        Fri, 28 Jul 2023 08:44:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227E6187
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:44:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9FCFE62130
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 12:44:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B50F4C433C7;
+        Fri, 28 Jul 2023 12:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690548260;
+        bh=v8YrvVoPuUgOyELF1X35nwd/jvp6+wC1gtdJPz4y+Qs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AtmW0C+sKb5EwCUN9lzSQxju06CENccgDK7vn+k/9oE8TEYvKtwlqIC4kcEhvTbZY
+         UFYAJgHp8WwFvGxUctY7UOWhV1ZKQc4mJQvI2LA3Ul8bhd33KedOMJI7pOiHNyWOv+
+         UIUh9zD8gj0THO7auxLeWbHPK5Yer3ye1dsb+anJq8Raa9/o7YxrF2ZjO2cAD0viZf
+         f28H4YZzJVwmpduYHcM99AHY7Wp2NIsozV+frM3EgTIdipIJafDLi6kKUALefSPhR+
+         lHzWdEEASTnL1GCcANUwomvqy1MttSue9OIhVgkzguWncL0rv3s9+4CISCgTJ1rGCq
+         oXcf1DCZk+Pkg==
+Date:   Fri, 28 Jul 2023 13:44:13 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Jann Horn <jannh@google.com>, paulmck@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>
+Subject: Re: [PATCH 0/2] fix vma->anon_vma check for per-VMA locking; fix
+ anon_vma memory ordering
+Message-ID: <20230728124412.GA21303@willie-the-truck>
+References: <BCDEA397-AA7A-4FDE-8046-C68625CDE166@joelfernandes.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 12/50] dt-bindings: dmaengine: at_xdmac: add compatible
- with microchip,sam9x7
-Content-Language: en-US
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
-        vkoul@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230728102451.265869-1-varshini.rajendran@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230728102451.265869-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BCDEA397-AA7A-4FDE-8046-C68625CDE166@joelfernandes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 12:24, Varshini Rajendran wrote:
-> Add compatible for sam9x7.
+On Thu, Jul 27, 2023 at 12:34:44PM -0400, Joel Fernandes wrote:
+> > On Jul 27, 2023, at 10:57 AM, Will Deacon <will@kernel.org> wrote:
+> > ﻿On Thu, Jul 27, 2023 at 04:39:34PM +0200, Jann Horn wrote:
+> >> if (READ_ONCE(vma->anon_vma) != NULL) {
+> >>  // we now know that vma->anon_vma cannot change anymore
+> >> 
+> >>  // access the same memory location again with a plain load
+> >>  struct anon_vma *a = vma->anon_vma;
+> >> 
+> >>  // this needs to be address-dependency-ordered against one of
+> >>  // the loads from vma->anon_vma
+> >>  struct anon_vma *root = a->root;
+> >> }
+> >> 
+> >> 
+> >> Is this fine? If it is not fine just because the compiler might
+> >> reorder the plain load of vma->anon_vma before the READ_ONCE() load,
+> >> would it be fine after adding a barrier() directly after the
+> >> READ_ONCE()?
+> > 
+> > I'm _very_ wary of mixing READ_ONCE() and plain loads to the same variable,
+> > as I've run into cases where you have sequences such as:
+> > 
+> >    // Assume *ptr is initially 0 and somebody else writes it to 1
+> >    // concurrently
+> > 
+> >    foo = *ptr;
+> >    bar = READ_ONCE(*ptr);
+> >    baz = *ptr;
+> > 
+> > and you can get foo == baz == 0 but bar == 1 because the compiler only
+> > ends up reading from memory twice.
+> > 
+> > That was the root cause behind f069faba6887 ("arm64: mm: Use READ_ONCE
+> > when dereferencing pointer to pte table"), which was very unpleasant to
+> > debug.
 > 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  Documentation/devicetree/bindings/dma/atmel-xdma.txt | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Will, Unless I am missing something fundamental, this case is different though.
+> This case does not care about fewer reads. As long as the first read is volatile, the subsequent loads (even plain)
+> should work fine, no?
+> I am not seeing how the compiler can screw that up, so please do enlighten :).
 
+I guess the thing I'm worried about is if there is some previous read of
+'vma->anon_vma' which didn't use READ_ONCE() and the compiler kept the
+result around in a register. In that case, 'a' could be NULL, even if
+the READ_ONCE(vma->anon_vma) returned non-NULL.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The crux of the issue is that the compiler can break read-after-read
+ordering if you don't use READ_ONCE() consistently. Sadly, judging by
+the other part of the thread from Nadav, it's fiddly to fix this without
+wrecking the codegen.
 
-Best regards,
-Krzysztof
-
+Will
