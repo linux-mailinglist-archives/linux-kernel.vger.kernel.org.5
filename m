@@ -2,185 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653F9767010
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DA476701E
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbjG1PDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        id S236426AbjG1PGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbjG1PDW (ORCPT
+        with ESMTP id S233791AbjG1PGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:03:22 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2076.outbound.protection.outlook.com [40.107.20.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381572115;
-        Fri, 28 Jul 2023 08:03:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWeD4fI3Ds/QZSnddyJuSkxhA/13uoTPoevzRiquX7dXE2Tx6q0sifVyCPO1QXa5T6Acnu7cCY74a5yUOwU9oKJBf+Wff4OycRij9IzA8YCX1D3v4ZFrLezuxj9A0qczGuASHnr7r64kD+99VfWN8YXVsDeO+pmyAL0RsdjbAuefJIhc472eY180K2KzpdNIHHnBBMFO07u6LoxPwsqPP6fADprMz8B/LzgvQGCy5bm9us5aVqEKMi+fTbTawklpX8B6o2ttG8j41Z3qPlvQPQoYEzGoeM7DNmWFwi4dNtQvAgcOoajqulyoQBo9Q//6baaSa26PR678E9CXcmWRfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UOvnMV8bImL7iRcsFHQTplVUVKC0ZtOR8fUOBqieoeY=;
- b=nMRP73t2jcjya+S/AgABX8tknq6u6iOkw6CxS83XkiZSqCpvYMx3PTyzIyi1DUMbWbEkHpPHVY2ZQv0+3nJb9FS6T0uKEekInIaDYmUCauBmCFQq65NXcnZw8vzLmYw0vJdPQSL4sr4W/xKaHnT6pkUUEEikK5iUmVrRPALVhy+KOqw1j4734cmpvnyOhzs4iLKhHxWbssc39vIQnc/oLXolbHquDFj0w82VC1f3vdEpN63dKBwGz19E5cSG5WnV1l8dNH6zms8zmdWgkdpFNQz/Z6ovpmo52+5jVpoNARhzx0/gCLFFMzhVgaYrhfN/R4IuhpVL08OPkt82pd3k9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UOvnMV8bImL7iRcsFHQTplVUVKC0ZtOR8fUOBqieoeY=;
- b=VCVcDeg1Yxk62hevzNZ74oWRDCa8CxHxbaw4MTUyHzuqZUKXpB7fSaouj7W2eF4hZYuDWnE6H8z+owyAnYObrJ8wxtjbnrUj5iNBK8JRj5YPBVNABLCXhqH4rzrsAKZDGhBDgy3LEYobUNpvIbST57+2SK+JdQ0Hv6yospSc7jk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DB9PR04MB8091.eurprd04.prod.outlook.com (2603:10a6:10:245::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 15:03:18 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 15:03:18 +0000
-Date:   Fri, 28 Jul 2023 11:02:59 -0400
-From:   Frank Li <Frank.li@nxp.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     lorenzo.pieralisi@arm.com, manivannan.sadhasivam@linaro.org,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        gustavo.pimentel@synopsys.com, helgaas@kernel.org,
-        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mani@kernel.org, minghuan.lian@nxp.com, mingkai.hu@nxp.com,
-        robh+dt@kernel.org, roy.zang@nxp.com, shawnguo@kernel.org,
-        zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v5 1/2] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <ZMPYo0AtN6peiOMR@lizhi-Precision-Tower-5810>
-References: <20230724215830.2253112-1-Frank.Li@nxp.com>
- <ZMOE9PJ//y1ClpU+@lpieralisi>
+        Fri, 28 Jul 2023 11:06:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C432035B6
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:06:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4968762174
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 15:06:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DD53C433C7;
+        Fri, 28 Jul 2023 15:06:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690556779;
+        bh=7y4hzP6vJqpTva+r7AnqXZl9OPsfZosUFbaU/iF84wQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=up0kGsazxmcXACUeeQ0xvZ2ONzNolMwL9h5yhFkW182xcIvXqOsD48bofL6ms4M3Q
+         UuWRJnWet7vLEsGegXBdkijgxbbNULqDeT4UsIQiAQyVz6nVedGn6TNEzF/4F6LJWU
+         gd1xai53OGXBZI3Ts5og8VPD+S3QhTzIQZj4GeFBttRzlMlRSLsTK08szF/M5rsOwL
+         Ecl053XYShAasJmSObTlpPy2B5h6XBlPE7rm2n6uJSqCWvh0JW44WK2KynNDGYRZPU
+         uwkW7Bl3qTBXrFN9D8IZwmMuyIlMfTBJqInoAh2MtuSfgAGjP72PPt0QcPRa8LfDgO
+         eBpR7Jv8Aewcg==
+Date:   Fri, 28 Jul 2023 16:06:14 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3] perf/arm-dmc620: Fix
+ dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Message-ID: <20230728150614.GF21718@willie-the-truck>
+References: <20230722031729.3913953-1-longman@redhat.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMOE9PJ//y1ClpU+@lpieralisi>
-X-ClientProxiedBy: BY5PR04CA0024.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::34) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DB9PR04MB8091:EE_
-X-MS-Office365-Filtering-Correlation-Id: fdf102db-31f4-44f8-b110-08db8f7bc6a0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cbso3FUO692R/Y+919AIhTVeixeeiCxZwDtWPC8FILmKL7ax4GYRag5/nrNad3qeyxodbzPjYbU+3HDOu43rzltGVuENtbl0rUNCbtTWIqZFHMl0yKAq74AeWMKP1q6YhoqA75CpLWhnBRkKjRkMl2bD6BFhpIMxo2vSd2eOifT2KZkBxazhu8/e/JHq5CQD2Ye6DQeec0ua1QNDs1W/jkzmKe2L8idE9V1dZYx6zA8ETUMe1+j+25n4yLiw8zadFVOV+mgzdqMUWH30SF1bZ/EDD8qT19nMelNWLLA1QSvM+Fpe7fisKn/I3FXa/u8RvqksAeZ4WynEvqR5vbHgCUpA7ZLB2X0CwHUsTUlPXA3U1HI7jDcBMiCNfeBI5gwbKsE3R980b4bmXN3/XUjG+th4XzKjYn8+s2wkgPTgIm+XK2ffg8MTPrM91NFmrMkaZDwa9OGNGbFE8SFdXDFyEHH04pIIlijC7pkXa5ilpQetoZSA5tMj/qYibXgvLn6LtFtjCU/ZEouTcRsKx9x1+nh+/uVZ5FQf22hT5GG40dGTsFL6LPsXmv1QvhbELtkTOhtmEIEx6RCiD8YPFOmiDa4tIBKAV/dNe+NjhMxoPag=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(366004)(136003)(346002)(376002)(396003)(39860400002)(451199021)(316002)(2906002)(8936002)(8676002)(5660300002)(7416002)(33716001)(41300700001)(15650500001)(86362001)(6486002)(6666004)(52116002)(26005)(6506007)(186003)(9686003)(478600001)(966005)(66946007)(66556008)(83380400001)(6512007)(38350700002)(38100700002)(66476007)(4326008)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BPSv8wPxOpln8htAzPvD7NwO6ThNL3BbjrOq8qdk2x8XMxRog8aBbKSb4OZh?=
- =?us-ascii?Q?lOxZSEQh3RLI/oMwv0kUXR5XX7lGMLgQLg587Ogwba18QaRerx+IijXojnZX?=
- =?us-ascii?Q?6WPcEYCCtEucjX1RBXpI4/ynYYxth5gPaiSziCAss5lye2W7F8LkzTLbybZI?=
- =?us-ascii?Q?mwd0O2QHayWac/KKjumcTqrZLV+XNq+W9jesA6KmPy+iW5Sse+i1OYxvVkY/?=
- =?us-ascii?Q?ChtF3RNsMOLITvgh7PhQ0zt/ggozzg63JlOMPoNiEi0n5hM9xsqtdMdgZO1J?=
- =?us-ascii?Q?CSMIRBIUdWcjAEmvAMzhzVz3e22Ddasl20x+Fr73MeX+cBhJi/3XVx0uw+Zg?=
- =?us-ascii?Q?aNpENt/nOLqgvOHyI6anczACAm2FPHH9ZvFm6sYVFpkT/onz9+ysY1NmXMNv?=
- =?us-ascii?Q?ynqJMkC/H5PYWzVrKpO97gvSBbaMh1vJZxeBrhhIMrE4Ws8To5i8jwqkHTBL?=
- =?us-ascii?Q?gcBBNXsMWH0xn0+y1XSH9SowbaKiWUcWISIo19saQAwXiBOr7Vqj4WmHjms5?=
- =?us-ascii?Q?+fpD76OOtKo3BANg+ML3jjaKnLKUfIctflRvwxtqvW378BAPHA8hgNt8Bs9J?=
- =?us-ascii?Q?BuWmOY2saZRSbl9QWYHW72YllQPabnAEJ7/fU8POJwtKFbimc8boDZeK/Dee?=
- =?us-ascii?Q?Y8Ov80jHaQfyVRcCnnWmgAUx0L51/PK0gSdDgw3EZp97nLZIaZoyTcA0/uCk?=
- =?us-ascii?Q?us1KAaCIGAUZ0RZjAosAHDrfy2UYlmlq8xomIRUt4+gtnNJyyv9FW7wATYEx?=
- =?us-ascii?Q?wJsWU9hldCDRHmb/lizoRkTsJDyLkiRz7Htvyoqjzu2dvaQsPt1qFWmkRlc7?=
- =?us-ascii?Q?qnrJABZ/2SLAJdZNrGMMcyXRaLP+JqYuV+c7HuaEce58t/qZAZ04kW8HkEvX?=
- =?us-ascii?Q?CLaFwAFqAFsTmVB2pD2r0bG6oUxpt2x/xgXHnnkhOojcoiYlzrsQk5I/9l1i?=
- =?us-ascii?Q?01JLDrsv8oNlIFWo9lSdQqDJ2+BwV9+/MkfbXfdzHPq/x24AYDWe+5nE8wjB?=
- =?us-ascii?Q?C6ZQrAWOVeEb7KpF4UX/vzWjm2PzYwJnyDOz4DwMSUTN9xFNFD4XY15Q5u5C?=
- =?us-ascii?Q?ZntPo/BvkxXYgmPd9N4Vcb+UZFbQQTX6GjYDWPpx6o9VRvwnWa4o+K3vYs2k?=
- =?us-ascii?Q?Hg1g2T9q8uMtS5OQnDNdkDRovuBmtS+2b69aBiezGO/hu7dhNS+qaceQTOLo?=
- =?us-ascii?Q?3OuKuc51w2TSumL6yGS8BhcwlICm0iGhNn9WDepE9dwoLpntK0+qkawMnuYw?=
- =?us-ascii?Q?dqprOM/E1CLXEK4sqNEviq+Jf0lBNYQE4ijXIfSlD9fpcSWHoq5D0SOkQNcW?=
- =?us-ascii?Q?JUD18PBApfmaARHTRln9ZIymp1pfNcvxAShbE74oswWJL+htM4/cR8FU+D+p?=
- =?us-ascii?Q?C1Rh9GtzgakyNrd01fQgDngv2Jn4WzVnYPPlHy5ZWGMbEZzpuNmJCkNUXPhc?=
- =?us-ascii?Q?B8G+34sfMkTlQEgr+Nutqahco7DRBpM8a5cRuhsG0lWE7p0kv+NO1BQCSvwI?=
- =?us-ascii?Q?fBCR/01TmmwwHNqpAsDj20mDT69IgpiB90I1wq4twaAui3mMO4GM/6B8Ok2B?=
- =?us-ascii?Q?wJcNQvGAtO9ablJ0c8c=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdf102db-31f4-44f8-b110-08db8f7bc6a0
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 15:03:18.1245
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zc/xSbtxtBYCwlEYnelunGsrEqPrzq+5CiBOwPJKV4Gy3hE/FReq+5+tjexNTKm5q6DNmA8r05IB4H6hH595BA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8091
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230722031729.3913953-1-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 11:05:56AM +0200, Lorenzo Pieralisi wrote:
-> On Mon, Jul 24, 2023 at 05:58:29PM -0400, Frank Li wrote:
-> > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
-> > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+On Fri, Jul 21, 2023 at 11:17:28PM -0400, Waiman Long wrote:
+> The following circular locking dependency was reported when running
+> cpus online/offline test on an arm64 system.
 > 
-> Commit logs should not use the past tense but the present tense.
+> [   84.195923] Chain exists of:
+>                  dmc620_pmu_irqs_lock --> cpu_hotplug_lock --> cpuhp_state-down
 > 
-> eg s/Introduced/Introduce
+> [   84.207305]  Possible unsafe locking scenario:
 > 
-> Furthermore, read this post from Bjorn and follow it to the letter
-> please:
+> [   84.213212]        CPU0                    CPU1
+> [   84.217729]        ----                    ----
+> [   84.222247]   lock(cpuhp_state-down);
+> [   84.225899]                                lock(cpu_hotplug_lock);
+> [   84.232068]                                lock(cpuhp_state-down);
+> [   84.238237]   lock(dmc620_pmu_irqs_lock);
+> [   84.242236]
+>                 *** DEADLOCK ***
 > 
-> https://lore.kernel.org/linux-pci/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> The problematic locking order seems to be
 > 
-> > 
-> > Typical L2 entry workflow:
-> > 
-> > 1. Transmit PME turn off signal to PCI devices and wait for PME_To_Ack.
-> > 2. Await link entering L2_IDLE state.
-> > 3. Transition Root complex to D3 state.
-> > 
-> > Typical L2 exit workflow:
-> > 
-> > 1. Transition Root complex to D0 state.
-> > 2. Issue exit from L2 command.
-> > 3. Reinitialize PCI host.
-> > 4. Wait for link to become active.
+> 	lock(dmc620_pmu_irqs_lock) --> lock(cpu_hotplug_lock)
 > 
-> This does not explain what the patch does and why it does it.
+> This locking order happens when dmc620_pmu_get_irq() is called from
+> dmc620_pmu_device_probe(). Since dmc620_pmu_irqs_lock is used for
+> protecting the dmc620_pmu_irqs structure only, we don't actually need
+> to hold the lock when adding a new instance to the CPU hotplug subsystem.
 > 
-> Are you describing the L2 entry/exit as implemented in the code ?
-Yes.
-
-How about below commit message:
-
-Introduce helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
-
-Add callback .pme_turn_off and .exit_from_l2 for platform specific PME
-handle.
-
-Add common dw_pcie_suspend(resume)_noirq() API to avoid duplicated code
-in dwc pci host controller platform driver.
-
-Typical L2 entry workflow/dw_pcie_suspend_noirq()
-
-1. Transmit PME turn off signal to PCI devices and wait for PME_To_Ack.
-2. Await link entering L2_IDLE state.
-3. Transition Root complex to D3 state.
-
-Typical L2 exit workflow/dw_pcie_resume_noirq()
-
-1. Transition Root complex to D0 state.
-2. Issue exit from L2 command.
-3. Reinitialize PCI host.
-4. Wait for link to become active.
-
-Frank
-
+> Fix this possible deadlock scenario by releasing the lock before
+> calling cpuhp_state_add_instance_nocalls() and reacquiring it afterward.
+> To avoid the possibility of 2 racing dmc620_pmu_get_irq() calls inserting
+> duplicated dmc620_pmu_irq structures with the same irq number, a dummy
+> entry is inserted before releasing the lock which will block a competing
+> thread from inserting another irq structure of the same irq number.
 > 
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > Change from v4 to v5:
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  drivers/perf/arm_dmc620_pmu.c | 28 ++++++++++++++++++++++------
+>  1 file changed, 22 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+> index 9d0f01c4455a..7cafd4dd4522 100644
+> --- a/drivers/perf/arm_dmc620_pmu.c
+> +++ b/drivers/perf/arm_dmc620_pmu.c
+> @@ -76,6 +76,7 @@ struct dmc620_pmu_irq {
+>  	refcount_t refcount;
+>  	unsigned int irq_num;
+>  	unsigned int cpu;
+> +	unsigned int valid;
+>  };
+>  
+>  struct dmc620_pmu {
+> @@ -423,9 +424,14 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+>  	struct dmc620_pmu_irq *irq;
+>  	int ret;
+>  
+> -	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+> -		if (irq->irq_num == irq_num && refcount_inc_not_zero(&irq->refcount))
+> +	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node) {
+> +		if (irq->irq_num != irq_num)
+> +			continue;
+> +		if (!irq->valid)
+> +			return ERR_PTR(-EAGAIN);	/* Try again later */
+
+It looks like this can bubble up to the probe() routine. Does the driver
+core handle -EAGAIN coming back from a probe routine?
+
+> +		if (refcount_inc_not_zero(&irq->refcount))
+>  			return irq;
+> +	}
+>  
+>  	irq = kzalloc(sizeof(*irq), GFP_KERNEL);
+>  	if (!irq)
+> @@ -447,13 +453,23 @@ static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+>  	if (ret)
+>  		goto out_free_irq;
+>  
+> -	ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, &irq->node);
+> -	if (ret)
+> -		goto out_free_irq;
+> -
+>  	irq->irq_num = irq_num;
+>  	list_add(&irq->irqs_node, &dmc620_pmu_irqs);
+>  
+> +	/*
+> +	 * Release dmc620_pmu_irqs_lock before calling
+> +	 * cpuhp_state_add_instance_nocalls() and reacquire it afterward.
+> +	 */
+> +	mutex_unlock(&dmc620_pmu_irqs_lock);
+> +	ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, &irq->node);
+> +	mutex_lock(&dmc620_pmu_irqs_lock);
+> +
+> +	if (ret) {
+> +		list_del(&irq->irqs_node);
+> +		goto out_free_irq;
+> +	}
+> +
+> +	irq->valid = true;
+
+Do you actually need a new flag here, or could we use a refcount of zero
+to indicate that the irq descriptor is still being constructed?
+
+Will
