@@ -2,224 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ACF7666CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6206C7666DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 10:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbjG1IT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 04:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S234902AbjG1IUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 04:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjG1ITJ (ORCPT
+        with ESMTP id S234842AbjG1ITo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 04:19:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D847E1BC6;
-        Fri, 28 Jul 2023 01:19:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 634A062046;
-        Fri, 28 Jul 2023 08:19:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BCACC433C8;
-        Fri, 28 Jul 2023 08:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690532341;
-        bh=fi+a2t7tNdwyL0bBeVh7ZcTqwoG6vf1Wbk6bUaq+pLc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=AtjGgYEAp+/8NgBK9Vt9i/NstWExo712ZM4PRxLAXz+yMXci14VaBM555GppP8SWM
-         nSnm8b+KUfTZcEeZEg69EpQqnbfKRCiU0D65eygmQSlyyDWFZFWuT+Iy37SmWFCneN
-         xlsHeRiip7ODldMLdmA6E1goHgoLp+zKTqSRAIdG7u0oKUe7O2butxJ3paF/d05tVN
-         xzjARnEXcifNHk7SdOG+IAFPW/8xdtzKjXYL9rw7J4R4QL051WLdwaUiyHgIInzqqu
-         GOqqKjgolWMNzTojYe+LTdEttPWoEcR4PSU0Z4MCpu2ilkrwLYpf0ECDZCsOitNjQs
-         9jvMF3qAmrzLA==
-Message-ID: <7dea9abf-4ab4-55ec-5a00-829840b221c2@kernel.org>
-Date:   Fri, 28 Jul 2023 10:18:53 +0200
+        Fri, 28 Jul 2023 04:19:44 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA283C11
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:19:15 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6748a616e17so437604b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 01:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690532355; x=1691137155;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0Vz5i3f1KwBqEHtOj3kkD+u+idA4hMEDLOXYQ/Zmb7I=;
+        b=L2+elQ31DoTndDMbULUpYhAiCoRfDRGWwRsLhePlw7WW3kXFI6RoGNteAO7MNCCxPK
+         FYWrT0NCxgniYdOvtk354oC7lAaEYLaI5+6nbBgCsJS7Z9F7PQNW+ZUGwlLgRq4XIWCd
+         IlyzJlPUeNX37jF32KJvYLJePzYsZ7ze/fbSuG8EqYw256JXY3KCKzS1wluS9KcnHJgS
+         wVJn5VLovDZDoJav6s/8z2Nev3fZMa4BKzS6r7L/dPmXUhh82k37p3M1JnHGLMc145hK
+         MLBcl9i8u/Uj6MSDKzSJ+fdKEdHQ4PpsFlNhyTOhfKom9VA3y6JlxMc/+2lHqKKi6hTK
+         U83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690532355; x=1691137155;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Vz5i3f1KwBqEHtOj3kkD+u+idA4hMEDLOXYQ/Zmb7I=;
+        b=NpzH9ZgwoAkzU8xlwbT2MkLM81RSZ40dBnpzCjAYbZccKbqEkq1hf+iLYEZem8GUyO
+         /XlJseOFZukpWAWCpPDvFIF0Y50CpcgBuzPRMByGrV9tDUYQ1nKQDLy64i9ND8LCcgWz
+         bBiR9NY6DWrV/+xJ9hUqU47SV7xuAzH61XOadFYTnojyflwa9o/kbrR6Rz10pg0+p21S
+         ckBaAwiUfSJ7AojRhnty4mydiqDmAfHnZvRBaASGuKDF42ikUx+YgbzlamIibJURbby+
+         9vlOBfEB1EcG/u2bmmHhLiJo2w4w7pJ3ZYM7nJBZojIpIqAQdKUiSRy8en+hp5umKUFj
+         8Qdw==
+X-Gm-Message-State: ABy/qLZsEEgFTxKQKNCMpJ6+9f37xIdc9ZvMmmoTv0GPL9zh0kMUirvD
+        3tQT2bsOOQJEhtQY6wxb1AUbiQ==
+X-Google-Smtp-Source: APBJJlFUUUMvBrf6ibd1LKjgOpEN2XEkSNdXdEqaA3c50PeJDSflhjqiMTE27IMY1LDD8QpZTvY8yg==
+X-Received: by 2002:a05:6a21:329f:b0:134:76d6:7f7 with SMTP id yt31-20020a056a21329f00b0013476d607f7mr2068612pzb.4.1690532355159;
+        Fri, 28 Jul 2023 01:19:15 -0700 (PDT)
+Received: from [10.70.252.135] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id j63-20020a638b42000000b005637030d00csm2862658pge.30.2023.07.28.01.19.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 01:19:14 -0700 (PDT)
+Message-ID: <99d0958d-8446-6fe9-a0fb-f562cb04c7c8@bytedance.com>
+Date:   Fri, 28 Jul 2023 16:19:01 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] media: dt-bindings: imx519: Add IMX519 DT bindings
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.12.0
+Subject: Re: [PATCH v3 04/49] mm: shrinker: remove redundant shrinker_rwsem in
+ debugfs operations
 Content-Language: en-US
-To:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jackson <lee.jackson@arducam.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Mikhail Rudenko <mike.rudenko@gmail.com>,
-        kieran.bingham@ideasonboard.com,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        jacopo.mondi@ideasonboard.com
-References: <20230727154108.308320-1-umang.jain@ideasonboard.com>
- <20230727154108.308320-2-umang.jain@ideasonboard.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230727154108.308320-2-umang.jain@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+References: <20230727080502.77895-1-zhengqi.arch@bytedance.com>
+ <20230727080502.77895-5-zhengqi.arch@bytedance.com>
+ <ZMN4mjsF1QEsvW7D@corigine.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZMN4mjsF1QEsvW7D@corigine.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/2023 17:41, Umang Jain wrote:
-> From: Lee Jackson <lee.jackson@arducam.com>
+Hi Simon,
+
+On 2023/7/28 16:13, Simon Horman wrote:
+> On Thu, Jul 27, 2023 at 04:04:17PM +0800, Qi Zheng wrote:
+>> The debugfs_remove_recursive() will wait for debugfs_file_put() to return,
+>> so the shrinker will not be freed when doing debugfs operations (such as
+>> shrinker_debugfs_count_show() and shrinker_debugfs_scan_write()), so there
+>> is no need to hold shrinker_rwsem during debugfs operations.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+>> ---
+>>   mm/shrinker_debug.c | 14 --------------
+>>   1 file changed, 14 deletions(-)
+>>
+>> diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
+>> index 3ab53fad8876..f1becfd45853 100644
+>> --- a/mm/shrinker_debug.c
+>> +++ b/mm/shrinker_debug.c
+>> @@ -55,11 +55,6 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
+>>   	if (!count_per_node)
+>>   		return -ENOMEM;
+>>   
+>> -	ret = down_read_killable(&shrinker_rwsem);
+>> -	if (ret) {
+>> -		kfree(count_per_node);
+>> -		return ret;
+>> -	}
+>>   	rcu_read_lock();
 > 
-> Add YAML device tree binding documentation for IMX519 CMOS
-> image sensor.
+> Hi Qi Zheng,
+> 
+> As can be seen in the next hunk, this function returns 'ret'.
+> However, with this change 'ret' is uninitialised unless
+> signal_pending() returns non-zero in the while loop below.
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC (and consider --no-git-fallback argument). It might
-happen, that command when run on an older kernel, gives you outdated
-entries. Therefore please be sure you base your patches on recent Linux
-kernel.
+Thanks for your feedback, the 'ret' should be initialized to 0,
+will fix it.
+
+Thanks,
+Qi
 
 > 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->  .../bindings/media/i2c/sony,imx519.yaml       | 113 ++++++++++++++++++
-
-A nit, subject: drop second/last, redundant "DT bindings". The
-"dt-bindings" prefix is already stating that these are bindings.
-
->  1 file changed, 113 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
+> This is flagged in a clan-16 W=1 build.
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
-> new file mode 100644
-> index 000000000000..6f38b09890d2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
-> @@ -0,0 +1,113 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/imx519.yaml#
-
-Please test.
-
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sony 1/2.5-Inch 16Mpixel CMOS Digital Image Sensor
-> +
-> +maintainers:
-> +  - Lee Jackson <lee.jackson@arducam.com>
-> +
-> +description: |-
-> +  The Sony IMX519 is a 1/2.5-inch CMOS active pixel digital image sensor
-> +  with an active array size of 4656H x 3496V. It is programmable through
-> +  I2C interface. The I2C address is fixed to 0x1A as per sensor data sheet.
-> +  Image data is sent through MIPI CSI-2, which is configured as either 2 or
-> +  4 data lanes.
-> +
-> +properties:
-> +  compatible:
-> +    const: sony,imx519
-> +
-> +  reg:
-> +    description: I2C device address
-
-Drop description, it's obvious.
-
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  VDIG-supply:
-
-lowercase
-
-> +    description:
-> +      Digital I/O voltage supply, 1.05 volts
-> +
-> +  VANA-supply:
-
-lowercase
-
-> +    description:
-> +      Analog voltage supply, 2.8 volts
-> +
-> +  VDDL-supply:
-
-lowercase
-
-> +    description:
-> +      Digital core voltage supply, 1.8 volts
-> +
-> +  reset-gpios:
-> +    description: |-
-> +      Reference to the GPIO connected to the xclr pin, if any.
-> +      Must be released (set high) after all supplies and INCK are applied.
-> +
-> +  # See ../video-interfaces.txt for more details
-> +  port:
-
-That's not how this is done. Open existing bindings, e.g. imx219, 258 or
-any other and look. Please, do not write patches entirely different than
-all other drivers/bindings. There is a reason why some things work but
-other don't
-
-> +    type: object
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +        properties:
-> +          data-lanes:
-> +            description: |-
-> +              The sensor supports either two-lane, or four-lane operation.
-> +              For two-lane operation the property must be set to <1 2>.
-> +            items:
-> +              - const: 1
-> +              - const: 2
-> +
-> +          clock-noncontinuous:
-> +            type: boolean
-> +            description: |-
-> +              MIPI CSI-2 clock is non-continuous if this property is present,
-> +              otherwise it's continuous.
-> +
-> +          link-frequencies:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint64-array
-> +            description:
-> +              Allowed data bus frequencies.
-> +
-> +        required:
-> +          - link-frequencies
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - VANA-supply
-> +  - VDIG-supply
-> +  - VDDL-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c0 {
-
-i2c
-
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        imx519: sensor@1a {
-
-drop the label imx519.
-
-Best regards,
-Krzysztof
-
+>   mm/shrinker_debug.c:87:11: warning: variable 'ret' is used uninitialized whenever 'do' loop exits because its condition is false [-Wsometimes-uninitialized]
+>           } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+>                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   mm/shrinker_debug.c:92:9: note: uninitialized use occurs here
+>           return ret;
+>                  ^~~
+>   mm/shrinker_debug.c:87:11: note: remove the condition if it is always true
+>           } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+>                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>                    1
+>   mm/shrinker_debug.c:77:7: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+>                   if (!memcg_aware) {
+>                       ^~~~~~~~~~~~
+>   mm/shrinker_debug.c:92:9: note: uninitialized use occurs here
+>           return ret;
+>                  ^~~
+>   mm/shrinker_debug.c:77:3: note: remove the 'if' if its condition is always false
+>                   if (!memcg_aware) {
+>                   ^~~~~~~~~~~~~~~~~~~
+>   mm/shrinker_debug.c:52:9: note: initialize the variable 'ret' to silence this warning
+>           int ret, nid;
+>                  ^
+>                   = 0
+> 
+>>   
+>>   	memcg_aware = shrinker->flags & SHRINKER_MEMCG_AWARE;
+>> @@ -92,7 +87,6 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
+>>   	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+>>   
+>>   	rcu_read_unlock();
+>> -	up_read(&shrinker_rwsem);
+>>   
+>>   	kfree(count_per_node);
+>>   	return ret;
+> 
+> ...
