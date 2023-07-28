@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6492876646E
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A101776646A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 08:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233251AbjG1Grd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 02:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S233298AbjG1Gqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 02:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbjG1GrZ (ORCPT
+        with ESMTP id S233094AbjG1Gqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 02:47:25 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A773AA8;
-        Thu, 27 Jul 2023 23:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690526837; x=1722062837;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YtvQho51fiUQiVv7pUWMWChlYR1zLZ8AT/WHvdmM9Ww=;
-  b=BQJR08sEg2G448F9BOcQezoCgr3+gNHLc2lf4FPWNQkmuSdpYuMi2ut0
-   XfoKiF7cBdDG5YJMeutUcifjxIdqEk7KJQROUQFEx65FicTbFAB68JqrP
-   N432SUsallebmQmNyAr++jVZpyLd1drp+gnIJ9QOnhnPaxEE1kDmEMOIJ
-   uPjBFPGOhBIJi3Pk4wLPu/tCIDJozY54PkqOHZ1kr3LFIA4bA6uA0vqLb
-   GuwPcDcRoT04weAOL/sah2C5Bx8tm5WQjyv/b8n/S/efrE+BP1vvHLx36
-   UICPJLWhq+c8pEizjt4zo9Trutd3NE9mVnRDoIz25pyb0o4+jEYl5fVyA
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="asc'?scan'208";a="227024283"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2023 23:47:16 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 27 Jul 2023 23:47:13 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 27 Jul 2023 23:47:11 -0700
-Date:   Fri, 28 Jul 2023 07:46:36 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Eric Lin <eric.lin@sifive.com>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <zong.li@sifive.com>, <greentime.hu@sifive.com>,
-        <vincent.chen@sifive.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-Message-ID: <20230728-penpal-prelude-29a952c03827@wendy>
-References: <20230720135125.21240-1-eric.lin@sifive.com>
- <20230720135125.21240-2-eric.lin@sifive.com>
- <cbf0a8fd-3479-1684-fe90-81f2159804ef@linaro.org>
- <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
+        Fri, 28 Jul 2023 02:46:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CD93588;
+        Thu, 27 Jul 2023 23:46:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0EB851F8A4;
+        Fri, 28 Jul 2023 06:46:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690526803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S5giWyTtDSEtQi4DuN3fhPiwQDgrsnA/JVYekHS77BM=;
+        b=TuKomdKprX/dXy6LnQsmLi4pdePyGUA9YUZ/lkylC2nTDmu3d2vuJUUOX3Lhm75Ir2zr20
+        c2GzyFmGJmH9pRurEZNJibeJDpQaPuKSDtbYHun7N3OTGiwxDgeQOsOHYw0b0H5BMl4V+7
+        3B9CAVdQQtsCxzx6VEddm7zLHkC7CBc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690526803;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S5giWyTtDSEtQi4DuN3fhPiwQDgrsnA/JVYekHS77BM=;
+        b=vIeNRmLWyLkE+kz4IiPq/HPCVYiMYqLwabVHnbSigZ/gVVho9Q3eTx7eykScgN/Y/R36Zj
+        4rRvJTnwADSfWQBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F390B133F7;
+        Fri, 28 Jul 2023 06:46:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bfSQOlJkw2QVNQAAMHmgww
+        (envelope-from <dwagner@suse.de>); Fri, 28 Jul 2023 06:46:42 +0000
+Date:   Fri, 28 Jul 2023 08:46:42 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>
+Subject: Re: [PATCH blktests v1 01/11] nvme/{003,004,005,013,046,049}: Group
+ all variables declarations
+Message-ID: <mg3z32g6kzxhlazrq6akjdm3ggbdqswz4jfeetazwuzcdfrfug@63a7rd47q32v>
+References: <20230726124644.12619-1-dwagner@suse.de>
+ <20230726124644.12619-2-dwagner@suse.de>
+ <7e4f6c51-43f4-c039-07bc-6724748a1d3e@acm.org>
+ <kya2ayzcgz7iemknkx6xuef4m37f2ms7rt3uxamtxr2w7zbwfc@onladguxa7bk>
+ <c3bff0d9-957a-fbb7-a433-4cab457c62bf@acm.org>
+ <ky32xyzyii2c5fr7kknyx5z6fikvh674v4sw2s4yux52l4vu7w@4nqmrmyxkwmw>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DkvLLUDHEo/ixRke"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPqJEFr5h+5+F4TdNuRMaWsrmeedbfGgbgd9wh8sUUQsj2Pw-A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <ky32xyzyii2c5fr7kknyx5z6fikvh674v4sw2s4yux52l4vu7w@4nqmrmyxkwmw>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,60 +82,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---DkvLLUDHEo/ixRke
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 28, 2023 at 05:06:34AM +0000, Shinichiro Kawasaki wrote:
+> On Jul 27, 2023 / 08:18, Bart Van Assche wrote:
+> > On 7/27/23 00:11, Daniel Wagner wrote:
+> > > On Wed, Jul 26, 2023 at 07:54:24AM -0700, Bart Van Assche wrote:
+> > > > On 7/26/23 05:46, Daniel Wagner wrote:
+> > > > > Group all variable declarations together at the beginning of the
+> > > > > function.
+> > > > 
+> > > > An explanation of why this change has been proposed is missing from the
+> > > > patch description.
+> > > 
+> > > Sure, I'll add one. The coding style to declare all local variables at the
+> > > beginning of the function.
+> > 
+> > Isn't declaring local variables just before their first use a better style?
+> 
+> IMO both styles have pros and cons. Declarations at "beginning of functions"
+> helps to understand what the function uses as its local data (pros), but the
+> declaration and the usage are separated and makes it difficult to understand
+> (cons). Declarations at "just before first use" have the opposite pros and cons.
+> This style is easier to read especially when a function is rather long.
 
-On Fri, Jul 28, 2023 at 02:01:28PM +0800, Eric Lin wrote:
-> Hi Krzysztof,
->=20
-> On Fri, Jul 21, 2023 at 4:35=E2=80=AFPM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 20/07/2023 15:51, Eric Lin wrote:
-> > > This add YAML DT binding documentation for SiFive Private L2
-> > > cache controller
-> > >
-> > > Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> > > Reviewed-by: Zong Li <zong.li@sifive.com>
-> > > Reviewed-by: Nick Hu <nick.hu@sifive.com>
-> >
-> >
-> > ...
-> >
-> > > +properties:
-> > > +  compatible:
-> > > +    items:
-> > > +      - const: sifive,pl2cache1
-> >
-> > I still have doubts that it is not used in any SoC. This is what you
-> > said last time: "is not part of any SoC."
-> > If not part of any SoC, then where is it? Why are you adding it to the
-> > kernel?
-> >
->=20
-> Sorry for the late reply. I didn't describe it clearly last time.
-> Currently, we have two hardware versions of pl2cache: pl2cache0 and pl2ca=
-che1.
-> The pl2cache0 is used in unmatched board SoC.
+FWIW, if I keep going with the refactoring (providing helper function to
+setup/cleanpup the complete target in one step), most of the tests will be very
+short. Thus there are far less variables to declare anyway.
 
-Wait a second, does the fu740 on the unmatched not have a ccache as
-it's L2 cache?
+> In the past, I preferred declarations at the beginning functions and requested
+> it in my review comments [1], but I learned that this guide is not so widely
+> applied: xfstests scripts, or even blktests 'check' scripts have declarations in
+> the middle of the functions. So I think both styles are okay at this moment.
 
-> The pl2cache1 is
-> utilized in our internal FPGA platform for evaluation; it's our core
-> IP.
+Okay, I wasn't aware of this.
 
---DkvLLUDHEo/ixRke
-Content-Type: application/pgp-signature; name="signature.asc"
+>   [1] https://github.com/osandov/blktests/pull/99
+> 
+> More importantly, this discussion maybe going towards "too strict" guidelines,
+> which will discourage contributions. Similar topic is [[ ]] vs [ ]. Once I was
+> requesting strictly to use [[ ]], but it did not seem productive. Now I no
+> longer request to replace [ ] with [[ ]]. In same manner, I suggest not to be
+> strict on the local variable declaration position either.
+> 
+> As for this patch, it is not required to follow guidelines. Does it make
+> Daniel's refactoring work easier? If so, I guess it will be valuable.
 
------BEGIN PGP SIGNATURE-----
+IMO, this is the case, because you can way easier identify odd balls in the
+large bulk changes where I have to touch almost all tests cases for a change.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMNkSQAKCRB4tDGHoIJi
-0n12AP4h2vY+IY4Xw3D7EqF9UHWzxcPq70z+ADbj7pY81bxvgAD/eTAguxDbLB8q
-4QcYSxEmzDs/Mr2qOF0gN0xCG6+3KwQ=
-=Vu0G
------END PGP SIGNATURE-----
-
---DkvLLUDHEo/ixRke--
+So ideally, after these refactoring most of the tests will be shorter. Thinking
+about this, I could first introduce these helpers and update the callsides.
+Though I find this harder to review because all the tests look slightly
+different. But hey there are more one road to reach Rome. I suspect this
+approach would reduce the code churn a bit. Anyway, let me know what you prefer.
