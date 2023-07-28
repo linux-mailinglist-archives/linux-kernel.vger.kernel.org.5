@@ -2,422 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51710766FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89576766FC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237116AbjG1Or1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        id S237168AbjG1Orf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 10:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236415AbjG1OrZ (ORCPT
+        with ESMTP id S237156AbjG1Ora (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:47:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCB44209
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:47:18 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6C119218BB;
-        Fri, 28 Jul 2023 14:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690555637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BN4Hj8me7np93Ru/9pWphgsSs8InjaAU5cjPnqKklyc=;
-        b=HLj/1C6o/ii92t3N5jNSeQpyBGHTuQc0suwGRC+nRweHVGho8gwu9k5XCAI7kv3Ch8cDh+
-        zUc5koriMqBhXzOoqHoSBhZPyYaK/NUzCFS9MQHPB3ZYPT0Tm6oZPsGLKMOqzgSNfGmg6b
-        fZcoKqSsZTZA4MM9X8xrG4/2vH/ah58=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 017D92C142;
-        Fri, 28 Jul 2023 14:47:16 +0000 (UTC)
-Date:   Fri, 28 Jul 2023 16:47:13 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v2 1/8] printk: Add non-BKL (nbcon) console basic
- infrastructure
-Message-ID: <ZMPU8YPHzJ8Q2V9W@alley>
-References: <20230728000233.50887-1-john.ogness@linutronix.de>
- <20230728000233.50887-2-john.ogness@linutronix.de>
+        Fri, 28 Jul 2023 10:47:30 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEE5421C;
+        Fri, 28 Jul 2023 07:47:22 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686b879f605so1543416b3a.1;
+        Fri, 28 Jul 2023 07:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690555642; x=1691160442;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=QACIBEcV1r2Mkf1JqDfdoATefDObW7+anJzfPY99Gis=;
+        b=GTGsF003YcxUNIrHANoxXK2ROnhxjXUsKCs9Z9jSXRl3noutQ3mFPnO1mL59Whzi/3
+         NNbPiOPyKXVgl3uinHxK8Az3NdLeq0QfYk7i5eFVnm6K1GtTn8UZYj0XgtN55xXveVM6
+         ZLz7JzyKLxaZLaxK27dq5yxuNHiezZ6UifRowCGPeIOKOGVWPV+RCvAK5ybbEagqRWH8
+         1iIx+Q76u+QS+aXJV2pJb5tRmKwdEOkEUNWEnsoZQOR835/BYA5HullATumi57NzaAEM
+         DNo2/gxJd84ZqDlnFMD50xuj+GdzRG3Py9CAqOHLBE4SRip/xBqj7ayBM8MS8sdQPiKs
+         /tdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690555642; x=1691160442;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QACIBEcV1r2Mkf1JqDfdoATefDObW7+anJzfPY99Gis=;
+        b=ibyqxJ9mZIF/xjVUuhqosWTG5CWyFthG6LuuMikeZaJxY1g6PwS9HvRKsiIpqxZnB2
+         eFXA5/JE1e8uP/GgFxL0H5Sr46LxS9Qfl07DNB5p5QWt2HjYo6d+aM8l7Ph4pAK0tDTe
+         VRmyAZTie2iwjUO9/AUFop3tcerODXEbeyi8TQndVc+toJLnCnT10zIy+Fhj3aD1VPWy
+         iiPbro80A2SzYv36tKl7VQYS6lQzBgbE855tIfqfTRbUVgfkpmyLY/patvFgHPACN8+f
+         sLm8B2SXnnskQpAqe4zFC4gZQeVky89w47DMlicJnibNlzTqsZjJeiPmT/O9wikQ+xhu
+         AE+g==
+X-Gm-Message-State: ABy/qLavjwVjEKYqgGhc6YTrGHUC3qOYRV9EtpDR2U0IhCYqaEn25JvH
+        r7n6gzBmUxK5iehm88XlFmo=
+X-Google-Smtp-Source: APBJJlHHOzMz4IVNTKgOdtU38ZVCABRqOaV+Z3PvDEbedYM+li2BTliHj7nOKFNighRtOxMW0COmKw==
+X-Received: by 2002:a05:6a00:2d84:b0:66a:613f:87e1 with SMTP id fb4-20020a056a002d8400b0066a613f87e1mr2036078pfb.8.1690555642070;
+        Fri, 28 Jul 2023 07:47:22 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x1-20020aa784c1000000b006827c26f147sm3299575pfn.138.2023.07.28.07.47.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 07:47:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <849c86ac-6f24-828f-664b-a3c209056072@roeck-us.net>
+Date:   Fri, 28 Jul 2023 07:47:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728000233.50887-2-john.ogness@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 2/2] usb: typec: qcom-pmic-typec: register drm_bridge
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230728110942.485358-1-dmitry.baryshkov@linaro.org>
+ <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230728110942.485358-3-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2023-07-28 02:08:26, John Ogness wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On 7/28/23 04:09, Dmitry Baryshkov wrote:
+> The current approach to handling DP on bridge-enabled platforms requires
+> a chain of DP bridges up to the USB-C connector. Register a last DRM
+> bridge for such chain.
 > 
-> The current console/printk subsystem is protected by a Big Kernel Lock,
-> (aka console_lock) which has ill defined semantics and is more or less
-> stateless. This puts severe limitations on the console subsystem and
-> makes forced takeover and output in emergency and panic situations a
-> fragile endeavour that is based on try and pray.
+> Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>   drivers/usb/typec/tcpm/Kconfig                |  1 +
+>   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 35 +++++++++++++++++++
+>   2 files changed, 36 insertions(+)
 > 
-> The goal of non-BKL (nbcon) consoles is to break out of the console lock
-> jail and to provide a new infrastructure that avoids the pitfalls and
-> allows console drivers to be gradually converted over.
-> 
-> The proposed infrastructure aims for the following properties:
-> 
->   - Per console locking instead of global locking
->   - Per console state that allows to make informed decisions
->   - Stateful handover and takeover
-> 
-> As a first step, state is added to struct console. The per console state
-> is an atomic_t using a 32bit bit field.
-> 
-> Reserve state bits, which will be populated later in the series. Wire
-> it up into the console register/unregister functionality and exclude
-> such consoles from being handled in the legacy console mechanisms. Since
-> the nbcon consoles will not depend on the console lock/unlock dance
-> for printing, only perform said dance if a legacy console is registered.
-> 
-> The decision to use a bitfield was made as using a plain u32 with
-> mask/shift operations turned out to result in uncomprehensible code.
-
-The is nice explanation for adding the CON_NBCON, struct nbcon_state,
-nbcon_init(), nbcon_cleanup() and the API for setting nbcon_state.
-
-> Note that nbcon consoles are not able to print simultaneously with boot
-> consoles because it is not possible to know if they are using the same
-> hardware. For this reason, nbcon consoles are handled as legacy consoles
-> as long as a boot console is registered.
-
-But the patch does many more "unclear" things and only some are explained
-by the above paragraph.
-
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -442,6 +442,26 @@ static int console_msg_format = MSG_FORMAT_DEFAULT;
->  /* syslog_lock protects syslog_* variables and write access to clear_seq. */
->  static DEFINE_MUTEX(syslog_lock);
->  
-> +/*
-> + * Specifies if a legacy console is registered. See serialized_printing
-> + * for details.
-> + */
-> +bool have_legacy_console;
+> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
+> index 5d393f520fc2..0b2993fef564 100644
+> --- a/drivers/usb/typec/tcpm/Kconfig
+> +++ b/drivers/usb/typec/tcpm/Kconfig
+> @@ -79,6 +79,7 @@ config TYPEC_WCOVE
+>   config TYPEC_QCOM_PMIC
+>   	tristate "Qualcomm PMIC USB Type-C Port Controller Manager driver"
+>   	depends on ARCH_QCOM || COMPILE_TEST
+> +	depends on DRM || DRM=n
+>   	help
+>   	  A Type-C port and Power Delivery driver which aggregates two
+>   	  discrete pieces of silicon in the PM8150b PMIC block: the
+> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> index af44ee4e6e86..0ea7cc656089 100644
+> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> @@ -17,6 +17,9 @@
+>   #include <linux/usb/role.h>
+>   #include <linux/usb/tcpm.h>
+>   #include <linux/usb/typec_mux.h>
 > +
-> +/*
-> + * Specifies if a boot console is registered. See serialized_printing
-> + * for details.
-> + */
-> +bool have_boot_console;
+> +#include <drm/drm_bridge.h>
 > +
-> +/*
-> + * Specifies if the console lock/unlock dance is needed for console
-> + * printing. If @have_boot_console is true, the nbcon consoles will
-> + * be printed serially along with the legacy consoles because nbcon
-> + * consoles cannot print simultaneously with boot consoles.
-> + */
-> +#define serialized_printing (have_legacy_console || have_boot_console)
+>   #include "qcom_pmic_typec_pdphy.h"
+>   #include "qcom_pmic_typec_port.h"
+>   
+> @@ -33,6 +36,7 @@ struct pmic_typec {
+>   	struct pmic_typec_port	*pmic_typec_port;
+>   	bool			vbus_enabled;
+>   	struct mutex		lock;		/* VBUS state serialization */
+> +	struct drm_bridge	bridge;
+>   };
+>   
+>   #define tcpc_to_tcpm(_tcpc_) container_of(_tcpc_, struct pmic_typec, tcpc)
+> @@ -146,6 +150,33 @@ static int qcom_pmic_typec_init(struct tcpc_dev *tcpc)
+>   	return 0;
+>   }
+>   
+> +#ifdef CONFIG_DRM
 
-"serialized_printing" is a bit ambiguous name. We need serialized
-printing also in panic(), ...
+Sorry for not noticing earlier. This needs to be "#if IS_ENABLED(CONFIG_DRM)"
+or otherwise would not catch DRM=m situations.
 
-What about?
-
-#define have_serialized_console (have_legacy_console || have_boot_console)
-
-Or maybe have just this one variable.
-
+> +static int qcom_pmic_typec_attach(struct drm_bridge *bridge,
+> +				     enum drm_bridge_attach_flags flags)
+> +{
+> +	return flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR ? 0 : -EINVAL;
+> +}
 > +
->  #ifdef CONFIG_PRINTK
->  DECLARE_WAIT_QUEUE_HEAD(log_wait);
->  /* All 3 protected by @syslog_lock. */
-> @@ -2286,7 +2306,7 @@ asmlinkage int vprintk_emit(int facility, int level,
->  	printed_len = vprintk_store(facility, level, dev_info, fmt, args);
->  
->  	/* If called from the scheduler, we can not call up(). */
-> -	if (!in_sched) {
-> +	if (!in_sched && serialized_printing) {
->  		/*
->  		 * The caller may be holding system-critical or
->  		 * timing-sensitive locks. Disable preemption during
-> @@ -2603,7 +2623,7 @@ void resume_console(void)
->   */
->  static int console_cpu_notify(unsigned int cpu)
->  {
-> -	if (!cpuhp_tasks_frozen) {
-> +	if (!cpuhp_tasks_frozen && serialized_printing) {
-
-It would be worth adding a comment why this does something only when
-serialized_printing is set.
-
-My understanding is that others will be handled by the respective
-kthreads which are not blocked by a hotplug of particular CPU.
-
-
->  		/* If trylock fails, someone else is doing the printing */
->  		if (console_trylock())
->  			console_unlock();
-> @@ -2955,8 +2975,17 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
->  
->  		cookie = console_srcu_read_lock();
->  		for_each_console_srcu(con) {
-> +			short flags = console_srcu_read_flags(con);
->  			bool progress;
->  
-> +			/*
-> +			 * console_flush_all() is only for legacy consoles,
-> +			 * unless a boot console is registered. See
-> +			 * serialized_printing for details.
-> +			 */
-> +			if ((flags & CON_NBCON) && !have_boot_console)
-> +				continue;
-
-This makes sense when console_flush_all() is called from
-console_unlock() but not when it is called from console_init_seq().
-
-Well, it is fine even in console_init_seq() because it is used there
-only when there are boot consoles. Except that it checks "bootcon_registered"
-instead of "have_boot_console". So that it is far from clear.
-
-I suggest to:
-
-   + Update console_flush_all() description. Mention that it flushes
-     only serialized consoles
-
-   + Add a comment into console_init_seq() about that flushing only
-     serialized consoles is enough. All consoles are serialized
-     when there is a boot console registered.
-
-   + (Optional) Rename console_flush_all() to console_flush_all_serialized()
-     to make it more clear. But the updated comment might be enough.
-
-   + (Future) Get rid of @bootcon_registered. It seems that
-     "have_boot_console" would be enough. Well, it should be
-     done in a separate patch and could be done later.
-
+> +static const struct drm_bridge_funcs qcom_pmic_typec_bridge_funcs = {
+> +	.attach = qcom_pmic_typec_attach,
+> +};
 > +
->  			if (!console_is_usable(con))
->  				continue;
->  			any_usable = true;
-> @@ -3075,6 +3104,9 @@ void console_unblank(void)
->  	struct console *c;
->  	int cookie;
->  
-> +	if (!serialized_printing)
-> +		return;
-
-This looks strange. Even nbcon might need to get unblanked.
-
-I guess that you do this because you want to avoid taking
-console_lock() in the panic() when there are not consoles
-which would implement unblank().
-
-But we actually handled this a better way in a previous patch, see
-https://lore.kernel.org/r/20230717194607.145135-3-john.ogness@linutronix.de
-
-So, I would remove this hunk.
-
+> +static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+> +{
+> +	tcpm->bridge.funcs = &qcom_pmic_typec_bridge_funcs;
+> +	tcpm->bridge.of_node = of_get_child_by_name(tcpm->dev->of_node, "connector");
+> +	tcpm->bridge.ops = DRM_BRIDGE_OP_HPD;
+> +	tcpm->bridge.type = DRM_MODE_CONNECTOR_DisplayPort;
 > +
->  	/*
->  	 * First check if there are any consoles implementing the unblank()
->  	 * callback. If not, there is no reason to continue and take the
-> @@ -3142,6 +3174,9 @@ void console_flush_on_panic(enum con_flush_mode mode)
->  	bool handover;
->  	u64 next_seq;
->  
-> +	if (!serialized_printing)
-> +		return;
-
-Honestly, this does not make much sense. console_flush_on_panic()
-should try to flush all consoles. The kthreads do not work
-in panic().
-
-I guess that the motivation is the same as in console_unblank().
-Note that console_lock() has already been removed, see
-https://lore.kernel.org/all/20230717194607.145135-5-john.ogness@linutronix.de/
-
-I would remove this hunk as well. Or it would deserve some explanation.
-
+> +	return devm_drm_bridge_add(tcpm->dev, &tcpm->bridge);
+> +}
+> +#else
+> +static int qcom_pmic_typec_init_drm(struct pmic_typec *tcpm)
+> +{
+> +	return 0;
+> +}
+> +#endif
 > +
->  	/*
->  	 * Ignore the console lock and flush out the messages. Attempting a
->  	 * trylock would not be useful because:
-> @@ -3486,6 +3522,15 @@ void register_console(struct console *newcon)
->  	newcon->dropped = 0;
->  	console_init_seq(newcon, bootcon_registered);
->  
-> +	if (!(newcon->flags & CON_NBCON)) {
-> +		have_legacy_console = true;
-> +	} else if (!nbcon_init(newcon)) {
-> +		goto unlock;
-
-In case of err, we should revert the changes done above:
-
-  + clear CONSOLE_ENABLED and CON_CONSDEV flags
-  + call newcon->exit() as a counter part to newcon->setup()
-
-> +	}
+>   static int qcom_pmic_typec_probe(struct platform_device *pdev)
+>   {
+>   	struct pmic_typec *tcpm;
+> @@ -208,6 +239,10 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+>   	mutex_init(&tcpm->lock);
+>   	platform_set_drvdata(pdev, tcpm);
+>   
+> +	ret = qcom_pmic_typec_init_drm(tcpm);
+> +	if (ret)
+> +		return ret;
 > +
-> +	if (newcon->flags & CON_BOOT)
-> +		have_boot_console = true;
-> +
->  	/*
->  	 * Put this console in the list - keep the
->  	 * preferred driver at the head of the list.
-> @@ -3577,11 +3625,34 @@ static int unregister_console_locked(struct console *console)
->  	 */
->  	synchronize_srcu(&console_srcu);
->  
-> +	if (console->flags & CON_NBCON)
-> +		nbcon_cleanup(console);
-> +
->  	console_sysfs_notify();
->  
->  	if (console->exit)
->  		res = console->exit(console);
->  
-> +	/*
-> +	 * If the current console was a boot and/or legacy console, the
-> +	 * related global flags might need to be updated.
-> +	 */
-> +	if (is_boot_con || is_legacy_con) {
-> +		bool found_boot_con = false;
-> +		bool found_legacy_con = false;
-> +
-> +		for_each_console(c) {
-> +			if (c->flags & CON_BOOT)
-> +				found_boot_con = true;
-> +			if (!(c->flags & CON_NBCON))
-> +				found_legacy_con = true;
-> +		}
-> +		if (!found_boot_con)
-> +			have_boot_console = false;
-> +		if (!found_legacy_con)
-> +			have_legacy_console = false;
-> +	}
+>   	tcpm->tcpc.fwnode = device_get_named_child_node(tcpm->dev, "connector");
+>   	if (!tcpm->tcpc.fwnode)
+>   		return -EINVAL;
 
-Just thinking loudly:
-
-This is a bit racy in situations where this value is checked
-without the console_list_lock, e.g. in vprintk_emit().
-
-I think that it is actually OK because they are only setting "false".
-As a result, other code might try to flush the consoles the serialized
-way even when not really needed.
-
-I think that it is a race which we could ignore. The chance is
-super-small that it might hit us in the future. (Famous last words :-)
-
-
-> +
->  	return res;
->  }
->  
-> @@ -3730,6 +3801,7 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
->  	struct console *c;
->  	u64 last_diff = 0;
->  	u64 printk_seq;
-> +	bool locked;
->  	int cookie;
->  	u64 diff;
->  	u64 seq;
-> @@ -3739,13 +3811,17 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
->  	seq = prb_next_seq(prb);
->  
->  	for (;;) {
-> +		locked = false;
->  		diff = 0;
->  
-> -		/*
-> -		 * Hold the console_lock to guarantee safe access to
-> -		 * console->seq.
-> -		 */
-> -		console_lock();
-> +		if (serialized_printing) {
-> +			/*
-> +			 * Hold the console_lock to guarantee safe access to
-> +			 * console->seq.
-> +			 */
-> +			console_lock();
-> +			locked = true;
-> +		}
->  
->  		cookie = console_srcu_read_lock();
->  		for_each_console_srcu(c) {
-> @@ -3758,7 +3834,12 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
->  			 */
->  			if (!console_is_usable(c))
->  				continue;
-> -			printk_seq = c->seq;
-> +
-> +			if (locked)
-> +				printk_seq = c->seq;
-> +			else
-> +				continue;
-
-This is strange. It basically means that __pr_flush() is a NOP when
-serialized_printing is false.
-
-We should optimize the console_lock() handling after we implement
-the path for nbcons.
-
-In each case, we should not skip any usable console here.
-
-> +
->  			if (printk_seq < seq)
->  				diff += seq - printk_seq;
->  		}
-> @@ -3767,7 +3848,8 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
->  		if (diff != last_diff && reset_on_progress)
->  			remaining = timeout_ms;
->  
-> -		console_unlock();
-> +		if (locked)
-> +			console_unlock();
->  
->  		/* Note: @diff is 0 if there are no usable consoles. */
->  		if (diff == 0 || remaining == 0)
-> @@ -3893,7 +3975,11 @@ void defer_console_output(void)
->  	 * New messages may have been added directly to the ringbuffer
->  	 * using vprintk_store(), so wake any waiters as well.
->  	 */
-> -	__wake_up_klogd(PRINTK_PENDING_WAKEUP | PRINTK_PENDING_OUTPUT);
-> +	int val = PRINTK_PENDING_WAKEUP;
-> +
-> +	if (serialized_printing)
-> +		val |= PRINTK_PENDING_OUTPUT;
-> +	__wake_up_klogd(val);
-
-This would deserve an explanation why PRINTK_PENDING_WAKEUP is enough.
-
-I know that it is because it will be done by kthreads. But I know it
-only because I know the wide context, plans, ...
-
->  }
->  
->  void printk_trigger_flush(void)
-
-I would prefer if we split this patch into two:
-
-  + 1st adding the nbcon_state-related API and logic
-  + 2nd adding have_serialized_console and related stuff
-
-The various cases where the have_{legacy,boot,serialized}_console variables are
-set/used would deserve some explanation. At least, we should
-mention that they will be handled by a kthread. Some hunks might be even
-be better moved to a patch adding the alternative code path for
-threaded/atomic consoles.
-
-Best Regards,
-Petr
-
-PS: I am sorry that I did not comment this in v1. Everything was new
-    at that time. And this somehow fallen through cracks.
