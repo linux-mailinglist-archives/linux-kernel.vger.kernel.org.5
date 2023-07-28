@@ -2,197 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6639E766393
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6C1766396
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 07:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjG1FLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 01:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S232699AbjG1FTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 01:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbjG1FLE (ORCPT
+        with ESMTP id S229817AbjG1FTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 01:11:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF343AB3;
-        Thu, 27 Jul 2023 22:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690521032; x=1722057032;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Tp8Y+kaJ7OLufB2ByMRaPwwLhVVjxBYCOuhdA7q99n0=;
-  b=BA1HQECYc7T//eArPjJs0DD4lP/QLc0p1j/DhiFypQtNx7ux/E5V1aPQ
-   J4YE5HRdbGfTS2yo2cpUL+vD78MejUD/nXZEYMbWqojhOTPh6+2pWX725
-   AlejEajns3Bv3OkKzL4U9ZqxAYgtqImj6QS/Tb6ta9T8e96e3BWCJiSso
-   0/4Rp008tsuhD6rmnl0xL5zaMZb6xOpKM+sJ+NqGR66EofkBBTtF+u5lK
-   4Y+dTDMsMrhalHT2/9SEKG4E/Gss6hTb51WiJL1kPYrsd2gbcYNd/MwJ6
-   eoYXq4f9ZcZQaJZER4uiwO5DhOHVW05lKG9ms4Zh9ejZp987qEe9dIhI7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="365967758"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="365967758"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2023 22:10:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10784"; a="757008475"
-X-IronPort-AV: E=Sophos;i="6.01,236,1684825200"; 
-   d="scan'208";a="757008475"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orsmga008.jf.intel.com with ESMTP; 27 Jul 2023 22:10:24 -0700
-From:   Haitao Huang <haitao.huang@linux.intel.com>
-To:     dave.hansen@linux.intel.com, kai.huang@intel.com,
-        reinette.chatre@intel.com, jarkko@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     dave.hansen@intel.com, kristen@linux.intel.com, seanjc@google.com,
-        stable@vger.kernel.org, sohil.mehta@intel.com
-Subject: [PATCH v6] x86/sgx: Resolves SECS reclaim vs. page fault for EAUG race
-Date:   Thu, 27 Jul 2023 22:10:24 -0700
-Message-Id: <20230728051024.33063-1-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: 6ccb705bc4345420e6c730245f871ba1d9413203.camel@intel.com
-References: 
+        Fri, 28 Jul 2023 01:19:04 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4694430D4
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:19:03 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-55e1ae72dceso1217800eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 27 Jul 2023 22:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690521542; x=1691126342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dA4h1wXuO+RqiKn56Fbjhd22WJLs7KDtxnH5lEYDThw=;
+        b=rCCGFQOaheftq0HBV0LLW8L+L/v6ll8/foJApxGYX++40jda1h5c0MWTF5uv35NOCF
+         yaH9NHb3PZpu3nzpkBd3mt1WnPtZ9z3ydmeagEC8cU1Hfk8th+iT9nfxFuTWfKWNMdq8
+         n8wnb1rM3D6J0b3bhLL4G4KA3L8KDqw1kOgvKizfcveQ1uA1cuV2lFWT2zG67WZr6YEU
+         ng2su2EY9hqNPdMBPtdMPPSk0j8ev6ZR+5zcP8/HacSMRejTg4ZwLEfDbEunGix1l0YX
+         DndlAnMka4ykXJbXYC7WjlDVBN+bD7cZ0CXFDvOTrx37mCops+MAyXcQT3agmOs2Veow
+         PzwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690521542; x=1691126342;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dA4h1wXuO+RqiKn56Fbjhd22WJLs7KDtxnH5lEYDThw=;
+        b=SDSHpzj8nF40Qjl3qw4z+f6ECszcTn0vucnAD+lLMMn+d98RpIPg/SiJqDDSWVv5Aa
+         pJH/YOT16AEnzIC57U2kwhxH2vhP2dNJxtGerdcO6yFaC7sSlX+dKG2CANiARg8irCW6
+         Uk9tNZwrAuzKV2TWWLEm/bGPr9sAp+nJaSzyShSVFcGYUKuK/zFsmkGAX/nlRxXUUEWv
+         yPBrttZzIGrmujbj8gzbZ55uQCPxZC0AkOy/twb4nEYrYLDsyP0mKnd3V8K0HBFGYQJO
+         UDJhd6taAoIuoZMXplqXCfdWk8kpVpblscVpn27/+IJ37zoCaxtmTUHMZfnq1u/JTauL
+         ij4Q==
+X-Gm-Message-State: ABy/qLbWcynjHLdXx5x+u98JZqG/mkk/PoMjGKDn+B6cvBJf2AbSpA/B
+        8Re/lq1FsQTVYazetprQmbelril1Jrw+oFrVrlX6/pQHyZDfrmp4jDo=
+X-Google-Smtp-Source: APBJJlHSydpCNCH72+CyJD9Ih+I/nhI+XXfo842aQixN2GlXK2CsCxImcW2/Puw6DSs7Cz69xxqmvHQF4lkXRvRAEfA=
+X-Received: by 2002:a05:6808:f05:b0:3a0:5ee3:ea67 with SMTP id
+ m5-20020a0568080f0500b003a05ee3ea67mr2125638oiw.16.1690521542545; Thu, 27 Jul
+ 2023 22:19:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1689792825.git.tjeznach@rivosinc.com> <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
+ <5b8fd18e-8dfa-96bf-cdd4-4498b1d15ab9@ics.forth.gr> <CAH2o1u7uAuXsD6+6Dvam4kzQuUj8s98G0sR26_-q31wvSUYZNA@mail.gmail.com>
+ <CANXhq0rz1J+0t9M-e5NY015HhDT1Yy024_-Uan9CSJ4rMqtyng@mail.gmail.com>
+In-Reply-To: <CANXhq0rz1J+0t9M-e5NY015HhDT1Yy024_-Uan9CSJ4rMqtyng@mail.gmail.com>
+From:   Tomasz Jeznach <tjeznach@rivosinc.com>
+Date:   Fri, 28 Jul 2023 07:18:51 +0200
+Message-ID: <CAH2o1u6TaQ2PLcKRuSpcqh4Q5qUriimSZ1hmmy=37R2378NCUA@mail.gmail.com>
+Subject: Re: [PATCH 06/11] RISC-V: drivers/iommu/riscv: Add command, fault,
+ page-req queues
+To:     Zong Li <zong.li@sifive.com>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SGX EPC reclaimer (ksgxd) may reclaim the SECS EPC page for an
-enclave and set secs.epc_page to NULL. The SECS page is used for EAUG
-and ELDU in the SGX page fault handler. However, the NULL check for
-secs.epc_page is only done for ELDU, not EAUG before being used.
+On Mon, Jul 24, 2023 at 11:47=E2=80=AFAM Zong Li <zong.li@sifive.com> wrote=
+:
+>
+> On Fri, Jul 21, 2023 at 2:00=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosinc=
+.com> wrote:
+> >
+> > On Wed, Jul 19, 2023 at 8:12=E2=80=AFPM Nick Kossifidis <mick@ics.forth=
+.gr> wrote:
+> > >
+> > > Hello Tomasz,
+> > >
+> > > On 7/19/23 22:33, Tomasz Jeznach wrote:
+> > > > Enables message or wire signal interrupts for PCIe and platforms de=
+vices.
+> > > >
+> > >
+> > > The description doesn't match the subject nor the patch content (we
+> > > don't jus enable interrupts, we also init the queues).
+> > >
+> > > > +     /* Parse Queue lengts */
+> > > > +     ret =3D of_property_read_u32(pdev->dev.of_node, "cmdq_len", &=
+iommu->cmdq_len);
+> > > > +     if (!ret)
+> > > > +             dev_info(dev, "command queue length set to %i\n", iom=
+mu->cmdq_len);
+> > > > +
+> > > > +     ret =3D of_property_read_u32(pdev->dev.of_node, "fltq_len", &=
+iommu->fltq_len);
+> > > > +     if (!ret)
+> > > > +             dev_info(dev, "fault/event queue length set to %i\n",=
+ iommu->fltq_len);
+> > > > +
+> > > > +     ret =3D of_property_read_u32(pdev->dev.of_node, "priq_len", &=
+iommu->priq_len);
+> > > > +     if (!ret)
+> > > > +             dev_info(dev, "page request queue length set to %i\n"=
+, iommu->priq_len);
+> > > > +
+> > > >       dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+> > > >
+> > >
+> > > We need to add those to the device tree binding doc (or throw them aw=
+ay,
+> > > I thought it would be better to have them as part of the device
+> > > desciption than a module parameter).
+> > >
+> >
+> > We can add them as an optional fields to DT.
+> > Alternatively, I've been looking into an option to auto-scale CQ/PQ
+> > based on number of attached devices, but this gets trickier for
+> > hot-pluggable systems. I've added module parameters as a bare-minimum,
+> > but still looking for better solutions.
+> >
+> > >
+> > > > +static irqreturn_t riscv_iommu_priq_irq_check(int irq, void *data)=
+;
+> > > > +static irqreturn_t riscv_iommu_priq_process(int irq, void *data);
+> > > > +
+> > >
+> > > > +     case RISCV_IOMMU_PAGE_REQUEST_QUEUE:
+> > > > +             q =3D &iommu->priq;
+> > > > +             q->len =3D sizeof(struct riscv_iommu_pq_record);
+> > > > +             count =3D iommu->priq_len;
+> > > > +             irq =3D iommu->irq_priq;
+> > > > +             irq_check =3D riscv_iommu_priq_irq_check;
+> > > > +             irq_process =3D riscv_iommu_priq_process;
+> > > > +             q->qbr =3D RISCV_IOMMU_REG_PQB;
+> > > > +             q->qcr =3D RISCV_IOMMU_REG_PQCSR;
+> > > > +             name =3D "priq";
+> > > > +             break;
+> > >
+> > >
+> > > It makes more sense to add the code for the page request queue in the
+> > > patch that adds ATS/PRI support IMHO. This comment also applies to it=
+s
+> > > interrupt handlers below.
+> > >
+> >
+> > ack. will do.
+> >
+> > >
+> > > > +static inline void riscv_iommu_cmd_inval_set_addr(struct riscv_iom=
+mu_command *cmd,
+> > > > +                                               u64 addr)
+> > > > +{
+> > > > +     cmd->dword0 |=3D RISCV_IOMMU_CMD_IOTINVAL_AV;
+> > > > +     cmd->dword1 =3D addr;
+> > > > +}
+> > > > +
+> > >
+> > > This needs to be (addr >> 2) to match the spec, same as in the iofenc=
+e
+> > > command.
+> > >
+> >
+> > oops. Thanks!
+> >
+>
+> I think it should be (addr >> 12) according to the spec.
+>
 
-Fix this by doing the same NULL check and reloading of the SECS page as
-needed for both EAUG and ELDU.
+My reading of the spec '3.1.1. IOMMU Page-Table cache invalidation commands=
+'
+is that it is a 4k page aligned address packed at dword1[61:10], so
+effectively shifted by 2 bits.
 
-The SECS page holds global enclave metadata. It can only be reclaimed
-when there are no other enclave pages remaining. At that point,
-virtually nothing can be done with the enclave until the SECS page is
-paged back in.
+regards,
+- Tomasz
 
-An enclave can not run nor generate page faults without a resident SECS
-page. But it is still possible for a #PF for a non-SECS page to race
-with paging out the SECS page: when the last resident non-SECS page A
-triggers a #PF in a non-resident page B, and then page A and the SECS
-both are paged out before the #PF on B is handled.
-
-Hitting this bug requires that race triggered with a #PF for EAUG.
-Following is a trace when it happens.
-
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-RIP: 0010:sgx_encl_eaug_page+0xc7/0x210
-Call Trace:
- ? __kmem_cache_alloc_node+0x16a/0x440
- ? xa_load+0x6e/0xa0
- sgx_vma_fault+0x119/0x230
- __do_fault+0x36/0x140
- do_fault+0x12f/0x400
- __handle_mm_fault+0x728/0x1110
- handle_mm_fault+0x105/0x310
- do_user_addr_fault+0x1ee/0x750
- ? __this_cpu_preempt_check+0x13/0x20
- exc_page_fault+0x76/0x180
- asm_exc_page_fault+0x27/0x30
-
-Fixes: 5a90d2c3f5ef ("x86/sgx: Support adding of pages to an initialized enclave")
-Cc: stable@vger.kernel.org # v6.0+
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
----
-v6:
-- Removed 'Under heavy load' as it is not the required condition though
-it makes the bug more likely happen. (Kai)
-- Added mentioning of the NULL check and reloading already done for ELDU (Kai)
-- Added Reviewed-by (Kai)
-
-v5:
-- Trimmed trace and added Acked-by (Reinette)
-
-v4:
-- Refined the title (Kai, Dave)
-- Added a trace to commit meesage (Kai)
-- Added a few details for the race.
-
-v3:
-- Added comments on sgx_encl_load_secs(). (Dave)
-- Added theory of the race condition to hit the bug. (Dave)
-- Added Reviewed-by, and applicable stable release. (Jarkko)
-
-v2:
-- Fixes for style, commit message (Jarkko, Kai)
-- Removed unneeded WARN_ON (Kai)
----
- arch/x86/kernel/cpu/sgx/encl.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 91fa70e51004..279148e72459 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -235,6 +235,21 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 	return epc_page;
- }
- 
-+/*
-+ * Ensure the SECS page is not swapped out.  Must be called with encl->lock
-+ * to protect the enclave states including SECS and ensure the SECS page is
-+ * not swapped out again while being used.
-+ */
-+static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
-+{
-+	struct sgx_epc_page *epc_page = encl->secs.epc_page;
-+
-+	if (!epc_page)
-+		epc_page = sgx_encl_eldu(&encl->secs, NULL);
-+
-+	return epc_page;
-+}
-+
- static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 						  struct sgx_encl_page *entry)
- {
-@@ -248,11 +263,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 		return entry;
- 	}
- 
--	if (!(encl->secs.epc_page)) {
--		epc_page = sgx_encl_eldu(&encl->secs, NULL);
--		if (IS_ERR(epc_page))
--			return ERR_CAST(epc_page);
--	}
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page))
-+		return ERR_CAST(epc_page);
- 
- 	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
- 	if (IS_ERR(epc_page))
-@@ -339,6 +352,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 
- 	mutex_lock(&encl->lock);
- 
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page)) {
-+		if (PTR_ERR(epc_page) == -EBUSY)
-+			vmret = VM_FAULT_NOPAGE;
-+		goto err_out_unlock;
-+	}
-+
- 	epc_page = sgx_alloc_epc_page(encl_page, false);
- 	if (IS_ERR(epc_page)) {
- 		if (PTR_ERR(epc_page) == -EBUSY)
-
-base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
--- 
-2.25.1
-
+> > > Regards,
+> > > Nick
+> > >
+> >
+> > regards,
+> > - Tomasz
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
