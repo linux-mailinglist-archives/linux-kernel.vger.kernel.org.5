@@ -2,104 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17B0767149
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C224776714F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbjG1P6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 11:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
+        id S236341AbjG1P7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 11:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236616AbjG1P63 (ORCPT
+        with ESMTP id S234529AbjG1P7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 11:58:29 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1A24236
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:58:26 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-307d20548adso2295700f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 08:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690559905; x=1691164705;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d7fcq9Wxv4AEPI5+GHtEeD9t936v+W4TRrWVcahSl6o=;
-        b=twbZD6p5UVZ1hHG2O91qvAxiqy6Y+GYYkkoCpYIZJMvQMygyjgsPtFbGmNaDx7pcJt
-         CuIcSNx5GwX6pX5ewFUzTSeQNslrtVUAl1N09pdmKZ29DYeQXKsm1k5nF1iPjegQKQoU
-         ISw8hOMq8pKoUJOiDTHxL/YV9dmNDzKXA2wbt3BLA7ocmZwPubT7ATyxCQUVFHQa5vh5
-         tqFtcJbvTBGF4uiybSAUalGfJu1p+E0WmFjOyEcgaZBo1HSQm+NHi1E9+xrX10UNOk0G
-         cTexK7g39KXh5QqwSf+MOUl4FIfNGd1mu2muZbDmEeF+OVHCyJrq4Y8vIGkv8X3B/sgR
-         KdOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690559905; x=1691164705;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d7fcq9Wxv4AEPI5+GHtEeD9t936v+W4TRrWVcahSl6o=;
-        b=jsWck00ktq8sXpIwpL8AnPCHEmlSlUOcy8DEUxU0hmUTmgeHpmOvxchgTc0jADgEMI
-         7RmsqfEN5SWDS8m3SJuRY1yC9cWxhP0pfDU3F4ubC9GAHsNnIvwYtI3JXJUTa1nTGG2g
-         hIuvxG/pmDnkbWXTK1/RKROpfHfxgfBwfivWJbYcYe8HCeJt+lDyPNTiBMXtGvqP5jyc
-         +VL5/UUTXcV3qV5DtHteZDLb9uGdZlTNlIzXN4FsU0W8IP+F41nZ/9vRwKgf+t1AiKOx
-         rYyfEDgVZfP58as1FVuMht9gEgvFQEqTBaHSjYUDMAMTZCtMDLqGD315qUtCI2vKmo1W
-         fJ1g==
-X-Gm-Message-State: ABy/qLaFqmg9gyICDQ8dhENFW9MpFQtmqYhI/if/AE4YHBdVrWBPK/ib
-        KrJC5lgHXfq5DNkkRxL8Vc328A==
-X-Google-Smtp-Source: APBJJlF+T6NU2JDjjWZC3+SoMRZuFtVWX99/lY4GVDwkIqqKW8Ib9apLj6yZi8qtvwhpUjgsk57Z8g==
-X-Received: by 2002:a5d:50cf:0:b0:317:5b1b:1a40 with SMTP id f15-20020a5d50cf000000b003175b1b1a40mr2131659wrt.49.1690559905279;
-        Fri, 28 Jul 2023 08:58:25 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b003063a92bbf5sm5199752wrm.70.2023.07.28.08.58.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 08:58:24 -0700 (PDT)
-Message-ID: <f31de68f-e64b-2b1d-7fbc-6bf7f94347af@linaro.org>
-Date:   Fri, 28 Jul 2023 16:58:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 18/33] iris: vidc: hfi: add Host Firmware Interface (HFI)
-Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-19-git-send-email-quic_vgarodia@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <1690550624-14642-19-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 11:59:50 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD9E110;
+        Fri, 28 Jul 2023 08:59:48 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 42D155C00BE;
+        Fri, 28 Jul 2023 11:59:45 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 28 Jul 2023 11:59:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690559985; x=1690646385; bh=qe
+        prRb5ewEtA801/sByp5QkC5fP6Mty2WClCI4vUDyY=; b=GQgIcy4Pj5IML3N/U+
+        muKPT/yi2mD0T9FSsMKqUPLjbTKA/2rj9ALRX8jCqneWSJM36GXeopCXKNSVXBzq
+        Nu2zUEJCHDPQ2O2/yx0yWPHy4ikGSfMT3VXOZSCwEY46P/UNAjDSsac4bXlkHvNE
+        MNXQ9hwmYVAHtkRmF7MiHR/rXa3HiG/KdOSusFIMeTClTXrrgaayaL4L0DO9izQm
+        vJA7XKrN74xm4y2qXGDjrq06Rn7+OfRPYXIYyyk6eQxrhv9669kTMu0q74z37Pzf
+        n6dVzAyANj4suvYmcNIys2HmTUeNl7EeZ4sI3JcxCnY3ZsP85mBEnWmSYaRNxIOI
+        mGYg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690559985; x=1690646385; bh=qeprRb5ewEtA8
+        01/sByp5QkC5fP6Mty2WClCI4vUDyY=; b=fqd+s0ENlYsKTRcjseNDnt5Za3Fxp
+        r+wf+9KV/9zCpAPXpDD0r9bKp2LsJY8PGLgeHZ1crURsURghk4PFGfioDGq14SRX
+        q0fcHkLQaHjvMqYpddp+xdbJlN7i1uUyC8FzigDrWahYAqVUD/b3Ej2aDDbPgfmz
+        1eYOfhZuRucmnbgNsReFyniIlwwvsBykugsbWzjeC+FO3bReIvZGR6Ypj/yLXUVa
+        UHvyB4ebn5p5j8xRpUiKJ6EVEjZ31qNWW2Vu1skcH0eiqkhlNAx7clHh2bo+INlp
+        +ZyP/PO+eRjJ1qUD1BPlpy91/kEYFfUUNPZcb45JcKe9Pey6v2ckoaTZA==
+X-ME-Sender: <xms:8OXDZAWfjZKaeFGK9DxQo2r5IelHq7-EXGnliym7ZC1j0MlCEdYLaQ>
+    <xme:8OXDZElPvdmk2uyEBiHAEMKvcC5N9mgZk-OMx4OEM4yXiaRVf2WR-SKuH87Ejcu92
+    ROd7yiIKJGLnZONJ5g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieeigdelvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:8OXDZEawgidolfxWA1zuJA-NjZvZ9DTXiwcUqy3Y-b0GAasNoQR5bQ>
+    <xmx:8OXDZPVdb7bc06N5Jc4FRQ6c2jY8Jeh_G3C0My5ieDI_mVqo3YQAmQ>
+    <xmx:8OXDZKnj9Auv7CKFQuB0xS406pKEqQj2t1HnjDKNJ6hPOT204DObKA>
+    <xmx:8eXDZNGgebKPDnDW7VjiBpIHriNK8L5WWfqVUbRBa6skv3tyx9m_-Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F3CC1B60089; Fri, 28 Jul 2023 11:59:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <0808604b-a26e-43b8-83da-2c3dc12446d2@app.fastmail.com>
+In-Reply-To: <20230517154525.ljoamjlfhpejtizm@viti.kaiser.cx>
+References: <20230516153109.514251-1-arnd@kernel.org>
+ <20230516153109.514251-6-arnd@kernel.org>
+ <CAOMZO5B0stW2X6YqPTTKDpCOAzPDvm=4HT8jfBAgbTy11gnKgg@mail.gmail.com>
+ <4e026f08-d733-4b01-ab47-e921d041e74e@app.fastmail.com>
+ <20230517154525.ljoamjlfhpejtizm@viti.kaiser.cx>
+Date:   Fri, 28 Jul 2023 17:59:20 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Martin Kaiser" <martin@kaiser.cx>
+Cc:     "Fabio Estevam" <festevam@gmail.com>,
+        "Arnd Bergmann" <arnd@kernel.org>, soc@kernel.org,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Bartosz Golaszewski" <brgl@bgdev.pl>,
+        "Hartley Sweeten" <hsweeten@visionengravers.com>,
+        "Alexander Sverdlin" <alexander.sverdlin@gmail.com>,
+        "Andre Przywara" <andre.przywara@arm.com>,
+        "Shawn Guo" <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        "Vladimir Zapolskiy" <vz@mleia.com>,
+        "Aaro Koskinen" <aaro.koskinen@iki.fi>,
+        "Janusz Krzysztofik" <jmkrzyszt@gmail.com>,
+        "Tony Lindgren" <tony@atomide.com>, "Andrew Lunn" <andrew@lunn.ch>,
+        "Sebastian Hesselbarth" <sebastian.hesselbarth@gmail.com>,
+        "Gregory Clement" <gregory.clement@bootlin.com>,
+        "Daniel Mack" <daniel@zonque.org>,
+        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        "Robert Jarzmik" <robert.jarzmik@free.fr>,
+        "Viresh Kumar" <vireshk@kernel.org>,
+        "Shiraz Hashim" <shiraz.linux.kernel@gmail.com>,
+        "Sudeep Holla" <sudeep.holla@arm.com>,
+        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Alan Stern" <stern@rowland.harvard.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        linux-clk@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 05/13] ARM: imx: remove unused mx25_revision()
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 14:23, Vikash Garodia wrote:
-> +	rc = hfi_packet_sys_intraframe_powercollapse(core, core->packet,
-> +						     core->packet_size, enable);
-> +	if (rc)
-> +		return rc;
+On Wed, May 17, 2023, at 17:45, Martin Kaiser wrote:
+> Thus wrote Arnd Bergmann (arnd@arndb.de):
+>
+>> I think either way is ok to address the warning. If we wanted to do this
+>> properly, the mx{25,27,31,35,5}_revision functions could all be removed
+>> and the logic hooked up to imx_set_soc_revision() in the same way that
+>> they already use mxc_set_cpu_type() for drivers/soc/imx/soc-imx.c.
+>
+>> I'll leave it up to you, if you want to merge Martin's patches or
+>> a replacement for the soc-imx driver through the imx tree for 6.5,
+>> I'll drop my patch from this series, otherwise I'll keep it for now
+>> and we can still do it better at later point.
+>
+> I suggest we merge my patches for imx25 first and then clean up all the
+> older imx families to use the common functions.
+>
+> I've just rebased the patches against today's linux-next. My understanding
+> is that they have to go through the clk tree.
 
-I'm 99.9999999999 % sure this is misnamed.
+This never happened, right? I see that mx25_revision() is still in the
+tree without any users, so I can't easily turn on the warning by default
+yet. Should I just go ahead and remove it for 5.6, or do you expect to
+have your patch ready in time for the merge window?
 
-"Inter" means in-between two things.
-"Intra" means inside of one thing.
-
-So "intraframe" means inside of one frame "interframe" would mean power 
-collapsing in-between two frames, which is what I think this does.
-
-And I'd still rather be adding inter-frame power-collapse to as many 
-different versions of the existing silicon and new silicon as opposed to 
-segregating it off in a new driver.
-
-I'm assuming that more than sm8550 supports it since @ the end of the 
-day this is a firmware feature to power-collapse during an active 
-session when we aren't busy.
-
----
-bod
+       Arnd
