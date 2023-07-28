@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F007A766ED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C595A766EDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 15:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236260AbjG1Nxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 09:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
+        id S236845AbjG1Nyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 09:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjG1Nxo (ORCPT
+        with ESMTP id S236357AbjG1Nyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 09:53:44 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A784BDB
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:53:42 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso1900363276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 06:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690552422; x=1691157222;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+J6kwTJsFkDX/akCe0Kyav4Ctw8RgrMFq9IKI8LH3rU=;
-        b=AfGejJ2zG81nEj5vxrgyIE/0vNuc3UKH3VK0k33HZgppeAPeRusn2oYdzhr0FEK1zy
-         GIuOlWBOvDNROWcWTuk3SXDDSEAPYF5m+oi9LXEior8/BhNtoJzBbvvw52tZVZDntwM6
-         kDA3lGf8AHvOL/0NAhrFsIeLAje4s0M/rXHVrphJVFoS2JT+0WCq3QgPFJ/yVBt4175f
-         G+oSTEwG+jB/Ln+IGKw9ezMgpXUF0CE1V1ZhC4WJKPdRDPJMzfm/c+qAibmSt0X+4p8q
-         HsCnwib4e/U75+umYV+lZUdce/b5XcePnkBZyFyCI2HQplp2TMbkQnLQAF9UXwnnpsyM
-         Wjqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690552422; x=1691157222;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+J6kwTJsFkDX/akCe0Kyav4Ctw8RgrMFq9IKI8LH3rU=;
-        b=epfkMlZbttOwakD3kwxXV0XLIrqUeyUYSmju8qkilL1BqUylcZSaJYYf0sLPDSJ9JG
-         BQqaM5skS0I3ObXz58lWFs+C2P5r2OJPceQ+GU7xMG3O6Di5SLvFh1kTT/Hs4FWEkytw
-         hajYdDsbxhAPPS3JZcY4pxieUsj9gZq2tO1VL1pabc3uNH7b2TyoC2Xe6tlDcNxbATJ4
-         2KAR6P/vRvN/ZCLJ/Pjdo4MR6A6vwjQnjBPKjnd9+UeAub9NLLGcHXSJZr3n3sJMPEuK
-         /DJVh8gNz+s5i78fCvsIiBCgrmvaqb6UkB7zvfg5qllANaoC2aVDMU6FzNBo/7vBAet3
-         XrbQ==
-X-Gm-Message-State: ABy/qLZ++YeGmq9bP2rCVSoqsg8XkjYhpEQbN1wv6HyR1rt/E4oNIRwI
-        8CYE4RehHNn61cGSiuDh8qYbrbD2eIXUQGRnUz9+CA==
-X-Google-Smtp-Source: APBJJlF2d3xK3sg+/6K4TnCA5oLube1UGdmEuzZz7RxKgPSrEJuOf8//6B1N/CRO8ojAIYosmEKuBaRon4XkWVtVN6g=
-X-Received: by 2002:a25:40c8:0:b0:d1a:6ea4:474d with SMTP id
- n191-20020a2540c8000000b00d1a6ea4474dmr1594515yba.53.1690552421647; Fri, 28
- Jul 2023 06:53:41 -0700 (PDT)
+        Fri, 28 Jul 2023 09:54:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCA2DB;
+        Fri, 28 Jul 2023 06:54:39 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SDTsnb029491;
+        Fri, 28 Jul 2023 13:54:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cUbZNwgkhLbcjo6iICAjiDjPRxWlHzzIVGzYr7g2vzw=;
+ b=Lyv0m/EoroRiOclTDIkv0UDrL+/si1D7C2aSWaodLImctui5kHhw8uRw48wcNTunOmrg
+ t69mBetaU+T99QilbdpShc8VKQCnmdj13wKagYYjEoFXrGfvfnjsXyGi0Vz0O0raaqpB
+ R/ffLD9Une0vLmChsMkbX6Va+w5k9TmsBEOaOkRgFYtchyLBoiaZelnS7Yx1/NC94fUr
+ 5TFxyCdeG7k1UVd9uZvVguzqHKstuouVJPFG8z+CbJc1pIQIG8GdWkzHPRi3OJkS1r1D
+ xOGtvQ91m6l7LHk011ZDFEvk7FO2g+aM1lPE9QzkxSzzg2BuuRRtPvGmRWy57n4TjUEp lQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4e2704js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 13:54:35 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SDsYOf001485
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 13:54:34 GMT
+Received: from [10.214.230.142] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
+ 2023 06:54:31 -0700
+Message-ID: <2b870e62-9b74-7eae-7e91-eae26361b1e6@quicinc.com>
+Date:   Fri, 28 Jul 2023 19:24:28 +0530
 MIME-Version: 1.0
-References: <c1c9a74a-bc5b-15ea-e5d2-8ec34bc921d@google.com> <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com>
-In-Reply-To: <2929bfd-9893-a374-e463-4c3127ff9b9d@google.com>
-From:   Yongqin Liu <yongqin.liu@linaro.org>
-Date:   Fri, 28 Jul 2023 21:53:29 +0800
-Message-ID: <CAMSo37X5GzFmqNAtABuibmMAF7t=_5SYCipMPZ-TB+uEMYkSUA@mail.gmail.com>
-Subject: Re: [PATCH v2 04/32] mm/pgtable: allow pte_offset_map[_lock]() to fail
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v5 1/2] dt-bindings: nvmem: sec-qfprom: Add bindings for
+ secure qfprom
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
+ <20230724083849.8277-2-quic_kbajaj@quicinc.com>
+ <20230726164039.GA1558299-robh@kernel.org>
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+In-Reply-To: <20230726164039.GA1558299-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JdFMoo5rfHgGB1QDuY6KLc2JHF95vDFa
+X-Proofpoint-ORIG-GUID: JdFMoo5rfHgGB1QDuY6KLc2JHF95vDFa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 adultscore=0 spamscore=0 mlxscore=0
+ impostorscore=0 clxscore=1011 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307280128
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,241 +85,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Hugh
-
-It seems this change makes pte_offset_map_lock not possible to be
-called in out of tree modules,
-otherwise it will report error like this:
-        ERROR: modpost: "__pte_offset_map_lock"
-[../omap-modules/android-mainline/pvr/pvrsrvkm.ko] undefined!
-
-Not sure if you have any idea about it, and any suggestions on how to
-resolve it?
-
-Thanks,
-Yongqin Liu
-
-On Fri, 9 Jun 2023 at 09:10, Hugh Dickins <hughd@google.com> wrote:
->
-> Make pte_offset_map() a wrapper for __pte_offset_map() (optionally
-> outputs pmdval), pte_offset_map_lock() a sparse __cond_lock wrapper for
-> __pte_offset_map_lock(): those __funcs added in mm/pgtable-generic.c.
->
-> __pte_offset_map() do pmdval validation (including pmd_clear_bad()
-> when pmd_bad()), returning NULL if pmdval is not for a page table.
-> __pte_offset_map_lock() verify pmdval unchanged after getting the
-> lock, trying again if it changed.
->
-> No #ifdef CONFIG_TRANSPARENT_HUGEPAGE around them: that could be done
-> to cover the imminent case, but we expect to generalize it later, and
-> it makes a mess of where to do the pmd_bad() clearing.
->
-> Add pte_offset_map_nolock(): outputs ptl like pte_offset_map_lock(),
-> without actually taking the lock.  This will be preferred to open uses of
-> pte_lockptr(), because (when split ptlock is in page table's struct page)
-> it points to the right lock for the returned pte pointer, even if *pmd
-> gets changed racily afterwards.
->
-> Update corresponding Documentation.
->
-> Do not add the anticipated rcu_read_lock() and rcu_read_unlock()s yet:
-> they have to wait until all architectures are balancing pte_offset_map()s
-> with pte_unmap()s (as in the arch series posted earlier).  But comment
-> where they will go, so that it's easy to add them for experiments.  And
-> only when those are in place can transient racy failure cases be enabled.
-> Add more safety for the PAE mismatched pmd_low pmd_high case at that time.
->
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> ---
->  Documentation/mm/split_page_table_lock.rst | 17 ++++---
->  include/linux/mm.h                         | 27 +++++++----
->  include/linux/pgtable.h                    | 22 ++++++---
->  mm/pgtable-generic.c                       | 56 ++++++++++++++++++++++
->  4 files changed, 101 insertions(+), 21 deletions(-)
->
-> diff --git a/Documentation/mm/split_page_table_lock.rst b/Documentation/mm/split_page_table_lock.rst
-> index 50ee0dfc95be..a834fad9de12 100644
-> --- a/Documentation/mm/split_page_table_lock.rst
-> +++ b/Documentation/mm/split_page_table_lock.rst
-> @@ -14,15 +14,20 @@ tables. Access to higher level tables protected by mm->page_table_lock.
->  There are helpers to lock/unlock a table and other accessor functions:
->
->   - pte_offset_map_lock()
-> -       maps pte and takes PTE table lock, returns pointer to the taken
-> -       lock;
-> +       maps PTE and takes PTE table lock, returns pointer to PTE with
-> +       pointer to its PTE table lock, or returns NULL if no PTE table;
-> + - pte_offset_map_nolock()
-> +       maps PTE, returns pointer to PTE with pointer to its PTE table
-> +       lock (not taken), or returns NULL if no PTE table;
-> + - pte_offset_map()
-> +       maps PTE, returns pointer to PTE, or returns NULL if no PTE table;
-> + - pte_unmap()
-> +       unmaps PTE table;
->   - pte_unmap_unlock()
->         unlocks and unmaps PTE table;
->   - pte_alloc_map_lock()
-> -       allocates PTE table if needed and take the lock, returns pointer
-> -       to taken lock or NULL if allocation failed;
-> - - pte_lockptr()
-> -       returns pointer to PTE table lock;
-> +       allocates PTE table if needed and takes its lock, returns pointer to
-> +       PTE with pointer to its lock, or returns NULL if allocation failed;
->   - pmd_lock()
->         takes PMD table lock, returns pointer to taken lock;
->   - pmd_lockptr()
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 27ce77080c79..3c2e56980853 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2787,14 +2787,25 @@ static inline void pgtable_pte_page_dtor(struct page *page)
->         dec_lruvec_page_state(page, NR_PAGETABLE);
->  }
->
-> -#define pte_offset_map_lock(mm, pmd, address, ptlp)    \
-> -({                                                     \
-> -       spinlock_t *__ptl = pte_lockptr(mm, pmd);       \
-> -       pte_t *__pte = pte_offset_map(pmd, address);    \
-> -       *(ptlp) = __ptl;                                \
-> -       spin_lock(__ptl);                               \
-> -       __pte;                                          \
-> -})
-> +pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp);
-> +static inline pte_t *pte_offset_map(pmd_t *pmd, unsigned long addr)
-> +{
-> +       return __pte_offset_map(pmd, addr, NULL);
-> +}
-> +
-> +pte_t *__pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
-> +                       unsigned long addr, spinlock_t **ptlp);
-> +static inline pte_t *pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
-> +                       unsigned long addr, spinlock_t **ptlp)
-> +{
-> +       pte_t *pte;
-> +
-> +       __cond_lock(*ptlp, pte = __pte_offset_map_lock(mm, pmd, addr, ptlp));
-> +       return pte;
-> +}
-> +
-> +pte_t *pte_offset_map_nolock(struct mm_struct *mm, pmd_t *pmd,
-> +                       unsigned long addr, spinlock_t **ptlp);
->
->  #define pte_unmap_unlock(pte, ptl)     do {            \
->         spin_unlock(ptl);                               \
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 94235ff2706e..3fabbb018557 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -94,14 +94,22 @@ static inline pte_t *pte_offset_kernel(pmd_t *pmd, unsigned long address)
->  #define pte_offset_kernel pte_offset_kernel
->  #endif
->
-> -#if defined(CONFIG_HIGHPTE)
-> -#define pte_offset_map(dir, address)                           \
-> -       ((pte_t *)kmap_local_page(pmd_page(*(dir))) +           \
-> -        pte_index((address)))
-> -#define pte_unmap(pte) kunmap_local((pte))
-> +#ifdef CONFIG_HIGHPTE
-> +#define __pte_map(pmd, address) \
-> +       ((pte_t *)kmap_local_page(pmd_page(*(pmd))) + pte_index((address)))
-> +#define pte_unmap(pte) do {    \
-> +       kunmap_local((pte));    \
-> +       /* rcu_read_unlock() to be added later */       \
-> +} while (0)
->  #else
-> -#define pte_offset_map(dir, address)   pte_offset_kernel((dir), (address))
-> -#define pte_unmap(pte) ((void)(pte))   /* NOP */
-> +static inline pte_t *__pte_map(pmd_t *pmd, unsigned long address)
-> +{
-> +       return pte_offset_kernel(pmd, address);
-> +}
-> +static inline void pte_unmap(pte_t *pte)
-> +{
-> +       /* rcu_read_unlock() to be added later */
-> +}
->  #endif
->
->  /* Find an entry in the second-level page table.. */
-> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-> index d2fc52bffafc..c7ab18a5fb77 100644
-> --- a/mm/pgtable-generic.c
-> +++ b/mm/pgtable-generic.c
-> @@ -10,6 +10,8 @@
->  #include <linux/pagemap.h>
->  #include <linux/hugetlb.h>
->  #include <linux/pgtable.h>
-> +#include <linux/swap.h>
-> +#include <linux/swapops.h>
->  #include <linux/mm_inline.h>
->  #include <asm/tlb.h>
->
-> @@ -229,3 +231,57 @@ pmd_t pmdp_collapse_flush(struct vm_area_struct *vma, unsigned long address,
->  }
->  #endif
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> +
-> +pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp)
-> +{
-> +       pmd_t pmdval;
-> +
-> +       /* rcu_read_lock() to be added later */
-> +       pmdval = pmdp_get_lockless(pmd);
-> +       if (pmdvalp)
-> +               *pmdvalp = pmdval;
-> +       if (unlikely(pmd_none(pmdval) || is_pmd_migration_entry(pmdval)))
-> +               goto nomap;
-> +       if (unlikely(pmd_trans_huge(pmdval) || pmd_devmap(pmdval)))
-> +               goto nomap;
-> +       if (unlikely(pmd_bad(pmdval))) {
-> +               pmd_clear_bad(pmd);
-> +               goto nomap;
-> +       }
-> +       return __pte_map(&pmdval, addr);
-> +nomap:
-> +       /* rcu_read_unlock() to be added later */
-> +       return NULL;
-> +}
-> +
-> +pte_t *pte_offset_map_nolock(struct mm_struct *mm, pmd_t *pmd,
-> +                            unsigned long addr, spinlock_t **ptlp)
-> +{
-> +       pmd_t pmdval;
-> +       pte_t *pte;
-> +
-> +       pte = __pte_offset_map(pmd, addr, &pmdval);
-> +       if (likely(pte))
-> +               *ptlp = pte_lockptr(mm, &pmdval);
-> +       return pte;
-> +}
-> +
-> +pte_t *__pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
-> +                            unsigned long addr, spinlock_t **ptlp)
-> +{
-> +       spinlock_t *ptl;
-> +       pmd_t pmdval;
-> +       pte_t *pte;
-> +again:
-> +       pte = __pte_offset_map(pmd, addr, &pmdval);
-> +       if (unlikely(!pte))
-> +               return pte;
-> +       ptl = pte_lockptr(mm, &pmdval);
-> +       spin_lock(ptl);
-> +       if (likely(pmd_same(pmdval, pmdp_get_lockless(pmd)))) {
-> +               *ptlp = ptl;
-> +               return pte;
-> +       }
-> +       pte_unmap_unlock(pte, ptl);
-> +       goto again;
-> +}
-> --
-> 2.35.3
->
 
 
--- 
-Best Regards,
-Yongqin Liu
----------------------------------------------------------------
-#mailing list
-linaro-android@lists.linaro.org
-http://lists.linaro.org/mailman/listinfo/linaro-android
+On 7/26/2023 10:10 PM, Rob Herring wrote:
+> On Mon, Jul 24, 2023 at 02:08:48PM +0530, Komal Bajaj wrote:
+>> This patch adds bindings for secure qfprom found in QCOM SOCs.
+>> Secure QFPROM driver is based on simple nvmem framework.
+>>
+>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+>> ---
+>>   .../bindings/nvmem/qcom,sec-qfprom.yaml       | 58 +++++++++++++++++++
+>>   1 file changed, 58 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+>> new file mode 100644
+>> index 000000000000..1425ced36fdf
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+>> @@ -0,0 +1,58 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/nvmem/qcom,sec-qfprom.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Technologies Inc, Secure QFPROM Efuse
+>> +
+>> +maintainers:
+>> +  - Komal Bajaj <quic_kbajaj@quicinc.com>
+>> +
+>> +description: |
+> Don't need '|'
+
+Okay, will drop this.
+Just a doubt here, when do we use this '|' symbol, I
+
+  thought we will use this when
+we have multi-line description/value.
+
+>
+>> +  For some of the Qualcomm SoC's, it is possible that
+>> +  the qfprom region is protected from non-secure access.
+>> +  In such situations, linux will have to use secure calls
+> s/linux/the OS/
+
+Will do it.
+
+>
+>> +  to read the region.
+> Wrap lines at 80
+>
+> The wording for this is strange. Only sometimes for this binding do
+> secure calls have to be used? If you are using secure calls, does that
+> mean the 'reg' address is not directly accessible.
+
+For this binding, we will always use secure calls because the 'reg' 
+address is not directly
+accessible to the OS.
+
+Thanks
+Komal
+
+>
+>> +
+>> +allOf:
+>> +  - $ref: nvmem.yaml#
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - qcom,qdu1000-sec-qfprom
+>> +      - const: qcom,sec-qfprom
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: The secure qfprom corrected region.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +unevaluatedProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/qcom,gcc-sc7180.h>
+>> +
+>> +    soc {
+>> +      #address-cells = <2>;
+>> +      #size-cells = <2>;
+>> +
+>> +      efuse@221c8000 {
+>> +        compatible = "qcom,qdu1000-sec-qfprom", "qcom,sec-qfprom";
+>> +        reg = <0 0x221c8000 0 0x1000>;
+>> +        #address-cells = <1>;
+>> +        #size-cells = <1>;
+>> +
+>> +        multi_chan_ddr: multi-chan-ddr@12b {
+>> +          reg = <0x12b 0x1>;
+>> +          bits = <0 2>;
+>> +        };
+>> +      };
+>> +    };
+>> +
+>> --
+>> 2.40.1
+>>
+
