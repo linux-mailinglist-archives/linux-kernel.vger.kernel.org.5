@@ -2,276 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEF6766FCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DAF766FCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 16:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbjG1OtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 10:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
+        id S237253AbjG1Otg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 28 Jul 2023 10:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237232AbjG1Os7 (ORCPT
+        with ESMTP id S237205AbjG1Otf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 10:48:59 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2054.outbound.protection.outlook.com [40.107.6.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A155F12D;
-        Fri, 28 Jul 2023 07:48:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SPQv9PP+VWC2HwtykGy+oBozEj+BLxoQcMZ3icUTQVC5CrPt8J8F8JWqu+qw5LZJzVbgGtk8/T5UF/xju9uOnP2pphKaJVNCXWu8E07XyYUtEEySRpyWIKeKW6H9GUm9hSk60Z9iZOZrOUPFAJcxF3HRG4H7EvJ+5vBg9rqTNL9R5g9ZyYsFmGSEaw34pDyVARFgHgCFbFgkzhDgasPzyCh4mMjODC8veGB+tVFW+8D+G5Kgy0PuM5Z3X3oooig44ObNQ7O2VkUmsJLgNa1cB0ivH3NlDh013qhSOjgc6TZjBAP/PDg4mJckLy4UfpO2Z2KeYX4NQ8s7AikzmnEZuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r6RF/4KPdw/u7XzZGhMhPzNqFA1dY8mcIrqqGRXJb0c=;
- b=Iu1fe1Qsu52RLWaQYvFfml1f7sY6l4BYxQbI0NyYiMEOLHRhGIHWxjbARqngDG9bf6vA9+r9/pJcJU5k21q6yECphOeHN3NALMyNeglOs39DDm4h0r/3OVmTc3IEGnUIMT910dV5YL510G3gNqHN3fF5pr/A9X6IV3n8twfUl2bn4aXS7rAEUO5DeIATH9NYlEF797k4FeDbHMks0v9UI9YyRG79tjxXoT77iqJ9UYT78ApeipPi0zkHaI+6UXQyoNevaQAZ/iQP2mZBTLQX3z1AEB4fo4CFaBvAKM4z378tnAG6Z52bD/G/t9DL4g42BfR1km0EvvVO9yj4wVN06A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r6RF/4KPdw/u7XzZGhMhPzNqFA1dY8mcIrqqGRXJb0c=;
- b=Iq63m73o/uHYbmS58sHW8eDg8n/Gj5WagC275D0ZUosB1PK2h3SkPk+iEg/rddr1RZg9R0wxrW13/g6ZrX36QRlTaST1d/jlLnzCN4OCC5ZAtV4cositXyudKVczIOjyAiBsb2ZxBkVQW8wiqnGzRXYRTlMlVU+Z6wTPmUilagvof04rPIfj4PQBnKyn2FL7HdziTk4yLosKYZZeJ7mT8zwSCQ1GcoAByXcjI5DYpzCm1BOT3sHCZHT/NRJgrp1SblDg3PyDTN3R8AA6z4QCkEP3yKW6tflBAzLbHrtRwMDunZqic7befVH/DJhmTcophfDWRpGeCSeRvYf+grHT2w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
- by AM9PR04MB8194.eurprd04.prod.outlook.com (2603:10a6:20b:3e6::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
- 2023 14:48:55 +0000
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::8647:4673:b19:acc2]) by DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::8647:4673:b19:acc2%4]) with mapi id 15.20.6631.026; Fri, 28 Jul 2023
- 14:48:55 +0000
-Date:   Fri, 28 Jul 2023 22:48:42 +0800
-From:   joeyli <jlee@suse.com>
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: hci_event: Ignore NULL link key
-Message-ID: <20230728144842.GA14791@linux-l9pv.suse>
-References: <20230718034337.23502-1-jlee@suse.com>
- <CABBYNZJ97UMyZ7yX1YAGbuU4XwNDdoFewKNwbd=51_L9aNrrCQ@mail.gmail.com>
- <20230719154918.GJ14791@linux-l9pv.suse>
- <CABBYNZLKJTKwBeypHbwm1r2CnqY+S2pY6dLYri+Z-otEx-UQ6A@mail.gmail.com>
- <CABBYNZJZisYm0Vgfzd8F2ge9RPJvUYBVGpj-4iySerT_wUTJNA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABBYNZJZisYm0Vgfzd8F2ge9RPJvUYBVGpj-4iySerT_wUTJNA@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-ClientProxiedBy: TYCP286CA0268.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:455::13) To DB8PR04MB7164.eurprd04.prod.outlook.com
- (2603:10a6:10:129::23)
+        Fri, 28 Jul 2023 10:49:35 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF984223
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:49:25 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-279-wd_H8kTaOxKGVp4P072Ltw-1; Fri, 28 Jul 2023 15:49:23 +0100
+X-MC-Unique: wd_H8kTaOxKGVp4P072Ltw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 28 Jul
+ 2023 15:49:21 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 28 Jul 2023 15:49:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+Subject: [PATCH next v2 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v2 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnBYpzPaU8xn3sHSt6Pu4fh9gr7DQ==
+Date:   Fri, 28 Jul 2023 14:49:21 +0000
+Message-ID: <bde3d2dc933848bbaceeb9b7102f6f4c@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|AM9PR04MB8194:EE_
-X-MS-Office365-Filtering-Correlation-Id: 841bdf1e-e3a8-4bff-dbc5-08db8f79c439
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rDP/mk9JopwjYASGq5FwqGyn6vBQ+ZB5As8A/3/tdJf4Wpz7/ixzzyqM/e9dnBHji7A84SfipkLIj/YfxtYFClpyFRpPdrH3Nue+fwiVkfN2nH0ik2nPhYk4lREvsmWWG4cfLZpifgzAyLNAVUFoe15BmoJEFKN91PB3wdrFk5LQC6HK7TZlPNSyydS8fBfN4PJnPelY6woctW+WEwBJYw4mGhNbTlu+7FbLWao0VRpM4pPZXmElde0h3A2De5Yi42uW3ZxxLtdSCCtkn2EPEpgfAKrm27gKveUc974kG/fBgPE05V4tVqOhM8zuPP6KqG8/nOXsihL0KxUK3iavxkedxXSCf+NSx3TNG6KayPRvmFU1n9TTzObuiLQS/ud1uHmTP77IJTaC0HeLck3izFPP/HwJl87CqC9mugWtIR4v6AWjoMK4AjiTrX51ilhsQe7DaHgJlVCM5fspadoLcyiqZQKo99RmtkBd7IPAG3vM9FgRvbXXywKIHOehNcfix9yra15/v438QjAWT7sB5eHYi9l7zwdJsOrFr+gG5FAMsjTn2D56fI20Pe9ePwY5At3gea68rk/cyIztQzSAkNMN5Yh2q+wPpJgncyKbM58=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(396003)(39860400002)(366004)(346002)(451199021)(478600001)(6666004)(966005)(6486002)(54906003)(6512007)(9686003)(83380400001)(33656002)(86362001)(36756003)(2906002)(66946007)(53546011)(66556008)(66476007)(186003)(1076003)(6916009)(6506007)(26005)(38100700002)(316002)(8936002)(5660300002)(41300700001)(8676002)(4326008)(43062005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ykc3Mm44U3RYenVTaEZpdEY4THJNZ0E3YzAzb1JYNmZ0WWNIT2ZHeEoxeWJS?=
- =?utf-8?B?NDlQRVRlZXBDRnVVMUVmVFRrZTZtdWR5dC9zYVNoK1VCWmN5WXpiTlRQYTZo?=
- =?utf-8?B?bEY0ZXBPcTJJQ0dNdEo3NGxTVUJ0UWlzcnZMc081QmRKQlQ0djZnRFFyMm9p?=
- =?utf-8?B?YlNVQlhudlVkZlczSlp0UFI4N1lZREk0blBlL2JZa25SdjhaUTB1d01kQzlk?=
- =?utf-8?B?anVHU1B5NjJqQkJBbnREQ0EyTzRPMHIreGM0UGcvOVVRdVU2cy9wWExoekQz?=
- =?utf-8?B?TnJINjFYVXBlODlFQTlKTVY4ZFNQbTJFUTc4WWhTZGpMeS8zUFBIVVhNMHBy?=
- =?utf-8?B?YnlKd1RKSEx6QlVqUWRXcjJoWkMrWGMrQmJpa29JVGtDMUQ5RGdiSlFDVVNQ?=
- =?utf-8?B?Y3lmYkY1TWkwNThncWV0clNzaCt0dlhOdVo5V0lsMGV5M0k2RzMrOWhRWHY1?=
- =?utf-8?B?U3VLczlwUVk4KzB2azhHekMrQnM5a2RsdGlCcENRNHJZRGUzclhMOGtOb05o?=
- =?utf-8?B?M3BBN3pxdjFKbmxhQWdDSUNBcjdmMWhRRmpseVhsWkJwSExkYUNSVStDSTNE?=
- =?utf-8?B?aTVaOUVaUmVqbFRxL1JnVUN4cGFKc1pmcFpwbHVaUllKVzhOWmVhWEZmd0ox?=
- =?utf-8?B?NE90ZTN6dzUrS0g1VnY1NXIyVzRqdk4zVEFma1dnWUdkdFljME5HR3VUcTFp?=
- =?utf-8?B?dzVjQ2xyV29adEdLK3JLOUNDSlFzQ0ExTkt6N3Z4K1EyQVhNWElsRlRsMlVG?=
- =?utf-8?B?c3dzUTdaNUhSdldHRUFRTFgyN0E2cllOMUlvei9mSkdNZXMyOUpNdmM5bThn?=
- =?utf-8?B?TzRJb1g0ZTJuNy9YazZLeStNQy9MVnA5WlRjZHNGSGtBWGI4RExaUWZNZTdY?=
- =?utf-8?B?QitQVjdFeUl0OUw3d1dzREJ3RGc0S1pDUTM3T3RrSDU3VFlQS1Q3WVNGcy9u?=
- =?utf-8?B?T2VQMTJOOEVLWmh2bnZzWGk2S2MzVUVreVBKWGNqQW85RythSDdnNkJmc0wv?=
- =?utf-8?B?eDNiU1FlVkQvNklSOGlzb0tBTm14MkdoVUExcG01WXoyZXhFbENPbjU5d2dY?=
- =?utf-8?B?U1cycUl2VGc5WVluN2pjU1h3RitkWlJvam5DWDJETHNKNjVud2luaEViUHZJ?=
- =?utf-8?B?VTIyZzRUVUYwYXhEVjJoU3g1RWozVEV6MGJVWThEVFZ0M3dmKzU2SGtGN3JM?=
- =?utf-8?B?QzYyRkpxcnVHWHZFM1lMb3EvQnJtdVRXem1Hbk1SbG1tWjUyYUl6WFU3S1pK?=
- =?utf-8?B?V3VITmV5R3F3ZzVTYkh2bitOdTF3cm1wOTRyTmt0Y2QvejMrMXZjV3F2ZDZ0?=
- =?utf-8?B?ZVNrc3E4N3hTTW01dG4vb3dmTExzemp3QUF1MUxJbmZibTg3aHVOZkpiSER1?=
- =?utf-8?B?elEzN0xKN0pFMEI0WjFhYVplK3pqN3QzZWxqcDZ6TlFjQm5zNGhQU0NHaWt5?=
- =?utf-8?B?WjJiYVRlZUtxN0pTUU1nWS95Q1JYNGlLeFpEYjJxQ3NVV2wzUzJ4aWhtbG5Q?=
- =?utf-8?B?UVVQSnM1M1FDdDQ3WFJ5ME9QSFF6TE92MkZZZGtqSlN6cjV4SkhPYnJkSVhs?=
- =?utf-8?B?eGlTNEdielBPYTZSZWxhYnhvbCtIN2I4K0lOYjRRclR4eUk3YVh0SHFndEJm?=
- =?utf-8?B?Z1lncFhBN1hEYk5kTWJuZkF4SEw1ZHRFaFZkOG9kZTI3UGk0MmV2RVFFZ254?=
- =?utf-8?B?azVVQjdjQ1lsMHpwVEZVaURTdlQrZkxjdzZJVVFjZlplMVE0b2NPQTNWWWh4?=
- =?utf-8?B?Ti9sNTZxVTMwazZocVE4Rk01RzVGTUU3L29INVJBYS9nUXFCaHZ4bWM4Y0py?=
- =?utf-8?B?akhYU0twVkxhZDZBSjZKVFc5NEw2bUVWMDJTNXFRSVFLaHR3aDNkdHV6RFll?=
- =?utf-8?B?U2dteE5lMERCeDhxK3FvWUhqUmNER2xBRy8zRnNZRkoyTWJobUhsUlNKM3V6?=
- =?utf-8?B?UGNpWkhYZGkycXlWVjZMbGNIZHFvUGhsQmJ1TFZqWE9NU3ppSUJaKzJnRVZC?=
- =?utf-8?B?MldNL1pZKzhUMC8zSWxXNkJwU0tCck1TeEYzU2xpUy9NY1RpTWEwVk5Hallx?=
- =?utf-8?B?VE5iUDdZTk82WGV6RXAwOGUwc2Noc3ZzVjA0VURBQTVxZ0dYY3ZMRVFTcThq?=
- =?utf-8?Q?vTs8=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 841bdf1e-e3a8-4bff-dbc5-08db8f79c439
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 14:48:55.1266
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yLDEv1cLSgndqlpE7Qc/nvOZvajAzjpHD+ZiWCSRTLqzdS/uambkqvF+V0gXax3o
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8194
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz Augusto von Dentz,
+The min() (etc) functions in minmax.h require that the arguments have
+exactly the same types. This was probably added after an 'accident'
+where a negative value got converted to a large unsigned value.
 
-On Thu, Jul 27, 2023 at 03:29:42PM -0700, Luiz Augusto von Dentz wrote:
-> Hi Joeyli,
-> 
-> On Wed, Jul 19, 2023 at 5:25 PM Luiz Augusto von Dentz
-> <luiz.dentz@gmail.com> wrote:
-> >
-> > Hi Joeyli,
-> >
-> > On Wed, Jul 19, 2023 at 8:49 AM joeyli <jlee@suse.com> wrote:
-> > >
-> > > Hi Luiz Augusto von Dentz,
-> > >
-> > > On Tue, Jul 18, 2023 at 10:22:26AM -0700, Luiz Augusto von Dentz wrote:
-> > > > Hi Chun-Yi,
-> > > >
-> > > > On Mon, Jul 17, 2023 at 8:43 PM Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
-> > > > >
-> > > > > This change is used to relieve CVE-2020-26555. The description of the
-> > > > > CVE:
-> > > > >
-> > > > > Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specification
-> > > > > 1.0B through 5.2 may permit an unauthenticated nearby device to spoof
-> > > > > the BD_ADDR of the peer device to complete pairing without knowledge
-> > > > > of the PIN. [1]
-> > > >
-> > > > Btw, it is probably worth mentioning that in BR/EDR the key generation
-> > > > is actually handled in the controller, below HCI.
-> > > >
-> > >
-> > > Yes, the key generation be handled by link manager. I will mention it
-> > > in patch description.
-> > >
-> > > > > The detail of this attack is in IEEE paper:
-> > > > > BlueMirror: Reflections on Bluetooth Pairing and Provisioning Protocols
-> > > > > [2]
-> > > > >
-> > > > > It's a reflection attack. Base on the paper, attacker can induce the
-> > > > > attacked target to generate null link key (zero key) without PIN code.
-> > > > >
-> > > > > We can ignore null link key in the handler of "Link Key Notification
-> > > > > event" to relieve the attack. A similar implementation also shows in
-> > > > > btstack project. [3]
-> > > >
-> > > > Perhaps we could clarify this statement by stating that if we ignore
-> > > > the link key it means the stack will not consider the device is bonded
-> > > > and will not persist the link key, that said the controller will still
-> > > > consider it as paired, so I perhaps we should go one step forward and
-> > > > disconnect if we detect such a key is being used.
-> > > >
-> > >
-> > > I am new on bluetooth field. Did you mean like this patch? Sending
-> > > HCI_Disconnect when we found zero link key?
-> > >
-> > > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > > index ff0c331f53d6..3482031cbbb8 100644
-> > > --- a/net/bluetooth/hci_event.c
-> > > +++ b/net/bluetooth/hci_event.c
-> > > @@ -4698,6 +4700,15 @@ static void hci_link_key_notify_evt(struct hci_dev *hdev, void *data,
-> > >         if (!conn)
-> > >                 goto unlock;
-> > >
-> > > +       /* Ignore NULL link key against CVE-2020-26555 */
-> > > +       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
-> > > +               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pMR", &ev->bdaddr);
-> > > +               hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
-> > > +               hci_conn_drop(conn);
-> > > +               goto unlock;
-> > > +       }
-> >
-> > Yeah, something like that should do it, btw I hope you are testing
-> > these changes do actually work properly, even better if you could
-> > introduce a test into the likes of mgmt-tester to generate a ZERO_KEY
-> > so we are not caught by surprise if something doesn't quite work as
-> > expected, or some change cause a regression where this key is accepted
-> > again.
-> 
-> Are you still planning on updating these changes so we can apply it?
->
+However when the type check fails, rather than look at the types and
+fix the type of a variable/constant, everyone seems to jump on min_t().
+In reality min_t() ought to be rare - when something unusual is being
+done, not normality.
+If the wrong type is picked (and it is far too easy to pick the type
+of the result instead of the larger input) then significant bits can
+get discarded.
+Pretty much the worst example is in the derfved clamp_val(), consider:
+	unsigned char x = 200u;
+	y = clamp_val(x, 10u, 300u);
 
-Sorry for my delay! I am stucking at other stuff.
+I also suspect that many of the min_t(u16, ...) are actually wrong.
+For example copy_data() in printk_ringbuffer.c contains:
+	data_size = min_t(u16, buf_size, len);
+Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
+(can you prove that doesn't happen?) and no data is returned.
 
-I will improve the patch and send new version again.
+The only reason that most of the min_t() are 'fine' is that pretty
+much all the value in the kernel are between 0 and INT_MAX.
 
-THanks a lot!
-Joey Lee
- 
-> > >         hci_conn_hold(conn);
-> > >         conn->disc_timeout = HCI_DISCONN_TIMEOUT;
-> > >         hci_conn_drop(conn);
-> > >
-> > >
-> > > Is there anything I'm missing? Thanks a lot!
-> > >
-> > > > > v2:
-> > > > > - Used Link: tag instead of Closes:
-> > > > > - Used bt_dev_dbg instead of BT_DBG
-> > > > > - Added Fixes: tag
-> > > > >
-> > > > > Fixes: 55ed8ca10f35 ("Bluetooth: Implement link key handling for the management interface")
-> > > > > Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-26555 [1]
-> > > > > Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#authors [2]
-> > > > > Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3722 [3]
-> > > > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> > > > > ---
-> > > > >  net/bluetooth/hci_event.c | 6 ++++++
-> > > > >  1 file changed, 6 insertions(+)
-> > > > >
-> > > > > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > > > > index 95816a938cea..ff0c331f53d6 100644
-> > > > > --- a/net/bluetooth/hci_event.c
-> > > > > +++ b/net/bluetooth/hci_event.c
-> > > > > @@ -4684,6 +4684,12 @@ static void hci_link_key_notify_evt(struct hci_dev *hdev, void *data,
-> > > > >         bool persistent;
-> > > > >         u8 pin_len = 0;
-> > > > >
-> > > > > +       /* Ignore NULL link key against CVE-2020-26555 */
-> > > > > +       if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
-> > > > > +               bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pMR", &ev->bdaddr);
-> > > > > +               return;
-> > > > > +       }
-> > > > > +
-> > > > >         bt_dev_dbg(hdev, "");
-> > > > >
-> > > > >         hci_dev_lock(hdev);
-> > > > > --
-> > > > > 2.35.3
-> > > > >
-> > >
-> > > Thanks a lot!
-> > > Joey Lee
-> >
-> >
-> >
-> > --
-> > Luiz Augusto von Dentz
-> 
-> 
-> 
-> -- 
-> Luiz Augusto von Dentz
+Patch 1 adds min_unsigned(), this uses integer promotions to convert
+both arguments to 'unsigned long long'. It can be used to compare a
+signed type that is known to contain a non-negative value with an
+unsigned type. The compiler typically optimises it all away.
+Added first so that it can be referred to in patch 2.
+
+Patch 2 replaces the 'same type' check with a 'same signedness' one.
+This makes min(unsigned_int_var, sizeof()) be ok.
+The error message is also improved and will contain the expanded
+form of both arguments (useful for seeing how constants are defined).
+
+Patch 3 just fixes some whitespace.
+
+Patch 4 allows comparisons of 'unsigned char' and 'unsigned short'
+to signed types. The integer promotion rules convert them both
+to 'signed int' prior to the comparison so they can never cause
+a negative value be converted to a large positive one.
+
+Patch 5 is slightly more contentious (Linus may not like it!)
+effectively adds an (int) cast to all constants between 0 and MAX_INT.
+This makes min(signed_int_var, sizeof()) be ok.
+
+With all the patches applied pretty much all the min_t() could be
+replaced by min(), and most of the rest by min_unsigned().
+However they all need careful inspection due to code like:
+	sz = min_t(unsigned char, sz - 1, LIM - 1) + 1;
+which converts 0 to LIM.
+
+v2 Fixes some issues found by the kernel build robot.
+No functional changes.
+
+David Laight (5):
+  Add min_unsigned(a, b) and max_unsigned(a, b)
+  Allow min()/max()/clamp() if the arguments have the same signedness.
+  Fix indentation of __cmp_once() and __clamp_once()
+  Allow comparisons of 'int' against 'unsigned char/short'.
+  Relax check to allow comparison between int and small unsigned
+    constants.
+
+ include/linux/minmax.h | 98 ++++++++++++++++++++++++++----------------
+ 1 file changed, 61 insertions(+), 37 deletions(-)
+
+-- 
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
