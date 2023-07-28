@@ -2,518 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E3276735F
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B235F767320
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 19:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjG1R3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 13:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S230031AbjG1RUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 13:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjG1R3c (ORCPT
+        with ESMTP id S229624AbjG1RUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 13:29:32 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A103A84;
-        Fri, 28 Jul 2023 10:29:29 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 77D9B423F0;
-        Fri, 28 Jul 2023 22:20:27 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1690564827; bh=pcjKRFTs5nOJ52/6o9Fvc8PR7jBs4ler3rghgLS7EQE=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=QGcVNtqHevWya22SJy6ww9ThmBh/TD4+ZljNd3zWKOB/gNtL1zuWwIc7/nPtpygq9
-         w4guAa09eUBLhxiQ1d87VzMXyEF+lpGA5CP0FFXPuzjNvj5hSEDpDH7ktsCT5kaisQ
-         KBXuxfN8oijgsU8Drog5Fy6m4ABiooaELCad+UTi4sNHmFt4bdy59movf3dEgfl55Z
-         MW9vC8iPVx8HTq5cx5t406loNSifz8ThtqIvZZAf7reEMpMTG99oztYv8BiwgwVRnp
-         H+xUwrvBjbekw4ssaT/4Uou2zu9nVqQqWH0z6stFU/HoZYrym1kmxV3fIaTEX1LL7I
-         EaoFuJtvoD2YA==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Fri, 28 Jul 2023 22:19:33 +0500
-Subject: [PATCH 4/4] power: supply: Add driver for pm8916 lbc
+        Fri, 28 Jul 2023 13:20:08 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111B13A81;
+        Fri, 28 Jul 2023 10:20:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IVLiuRUGxo8zcrfobJlbifkQknegE5MKACQIivNJvEzzMfku6mHuah8ODyAiK8bWVv92pM6Q3v6SM5UPYwjdjo4uwFEE8HwRK/NSShCyAkY3RJRY+otqd/mNk4TOkK535jPLpLgizDAbXG3fWzNlwj3IBQWk0DfpKS18I/pjDmxhikgD2iprNjZ5BGGkkFN34qXxJCC/H5+5fFs6+wdQIXT9LQAoVW2yH1gmeXgUeeV3RIuF/Emkt5ewrpxCI5B7jD6ylx/vrdPGQW1n0B7oID4yb+peRCPuUTdGALU131/0MdoU7v4a6zJt0DEo2N6gEojlRaKw/VFN5laRWgviHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
+ b=YzyrHBW0euBkAxXgBcIPF/FJZajKSq7CmynV/nZamkNY99QpFur+AbVpZXdQ18GQIAbzGnbUM1GasdXQGYhm++xALN/F9WUsWAIbbw3h21L6FT34pfccWJr+kzQQSoFSYoSNcX2t9j0ddQCEa1T5OJqhQJ+0VPB4O1O1bEE6cefJHXjI+lDb/ACsfhsfZ7rY21dDtFTfLjg06ZlriX517wRZQJAKhOiPz+Y1eZhl1kAqi2SbQCYf54mA7/w53wgme6WkHnlo6AqVhNwWyXiuMWGOPqfgJCf49VSDzaarR0ljuY/jjDxaFDNW0BZ/E9KwmP0gg2fuyFHx1930IWXzgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JsQ3Wj4IegLGfYp83/8UeU/kJXCVWeck5aXmwz6/aSg=;
+ b=P4SMeLDEA/uQiH5lFSi3jrZQbCH/F/uGfS8ZsO7jWkiwLBhz0Hn0GxONwXgRl/Sh1y0EIIZWU+AQRMzUuzZGMWfMgHAcovDV/ero1DvufFPZ2+U/dsQlGiJ3k1e4vM63E+c7yzx7aoDgyg3xjYVHGzy5bFmWRygLmr52+r1/XZ4=
+Received: from MW4PR03CA0157.namprd03.prod.outlook.com (2603:10b6:303:8d::12)
+ by DM4PR12MB6063.namprd12.prod.outlook.com (2603:10b6:8:b1::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Fri, 28 Jul
+ 2023 17:20:03 +0000
+Received: from CO1PEPF000044EE.namprd05.prod.outlook.com
+ (2603:10b6:303:8d:cafe::5b) by MW4PR03CA0157.outlook.office365.com
+ (2603:10b6:303:8d::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29 via Frontend
+ Transport; Fri, 28 Jul 2023 17:20:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044EE.mail.protection.outlook.com (10.167.241.68) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6631.22 via Frontend Transport; Fri, 28 Jul 2023 17:20:03 +0000
+Received: from BLR-PF38F8CF.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 28 Jul
+ 2023 12:19:58 -0500
+From:   Ayush Jain <ayush.jain3@amd.com>
+To:     <akpm@linux-foundation.org>, <shuah@kernel.org>,
+        <pasha.tatashin@soleen.com>, <zhansayabagdaulet@gmail.com>,
+        <tyhicks@linux.microsoft.com>, <shr@devkernel.io>,
+        <raghavendra.kt@amd.com>
+CC:     <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Narasimhan.V@amd.com>,
+        <Santosh.Shukla@amd.com>, Ayush Jain <ayush.jain3@amd.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v2 2/2] selftests: mm: add KSM_MERGE_TIME tests
+Date:   Fri, 28 Jul 2023 22:49:42 +0530
+Message-ID: <20230728171942.4683-1-ayush.jain3@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230728163952.4634-1-ayush.jain3@amd.com>
+References: <20230728163952.4634-1-ayush.jain3@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230728-pm8916-bms-lbc-v1-4-56da32467487@trvn.ru>
-References: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
-In-Reply-To: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13817; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=pcjKRFTs5nOJ52/6o9Fvc8PR7jBs4ler3rghgLS7EQE=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBkw/jQpBBo54JXJbkUwJIxGGYlAlMr2reUTyvoC
- 0fOHO5FpmKJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZMP40AAKCRBDHOzuKBm/
- dUIXD/4k37bKxYiue+HlSxr6nuRiUXB7N2oSs4XyN+o4tp9LVMtV5CAPu9IwWaWq2lUWUxYWPEF
- vf8T8NioyIy3tFukAoB5Ikk65cgArhn119RCtB5fO8VLu6JJGsFpmTZBD5R0FEd4HLhl7fB2rZv
- 4ioIv4Ca0y6yxZZYSyMnYGNGwLawUQ6D9rEHdW/Rf3QVQ3C4B1aOBOaBr0RG3yC27pp552aXdVU
- MZKqhvAWxIus7N9i8RFPa0N55t0LFLhL7zfoalfF4IUaHsbJJGU7dEheGJM0XJYC8uv/nGuAza4
- ZMwWHmXaOWW9jIDQbA0/DSwjVcWJG0ZUFSCi9o5AtrO1xjJsP3/y5Wz5a+pZlmUA+eY/UWcQ2+i
- TakDn0kXsJup2bOP1xJWobFis2zEW+ImwVbvmw72Ac15wd7pVQA9GnGW4naUDJqDo/+RPzicSTg
- ohN3d87YlfN+f7Bfc1crcs21LJ3TsUc1SfAuzv4sBe7K4z9YIzrzPJmWJ2uCrtbcKoYSzBGULfC
- urT4JnA/xT4vO+zcESompg0b6PXZGn8t6OAguX66okGP7ch+/UxUC9asmkxIPgfojZVril/2Mod
- seV6jy+hMCRg62LHYK/7LgO9XdffKjgeRZbGGjJ7McHCYR8tQKV6nmE0+2c+eWAo26GeX5xMgut
- UFfemwrCVcI2TSQ==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044EE:EE_|DM4PR12MB6063:EE_
+X-MS-Office365-Filtering-Correlation-Id: e446e773-07fa-49d8-51cd-08db8f8ee15b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rv7xQD2Cxx291vpIq/v9YNAJnnWeloFjpYG2VdDH5wy7OuNdYQQ01EQFC2zUDQjPTueQy393NyyBcqiCVojcCOkefHDSy0iB3gB9JH681VbMYgGg36620uYuMBwsSfR9AHUDmCaBmzh9Ifs/N1Op33UhiahbY60+H4VKoy0Ds+fQjVeMeSO4Jv6+Mgg8+TbaI2YKgIYfsTwNyZrGLWcCU0LdWHT4Xat1Gpr8SOY9/0IONxY7j9wdtqX86BsO0WWIahAiNJn4jY0ngj2tDnvARgy77bi/C9NRAZTTmByuoCFgwmazzHxuXDXl0MLM0vVw5xg63oeKEU1r83GKkOEMnO2lN3fSSg9ZZM38I+PZ+7/G/j+Szl0aKuU8z+QtfBfvGyn+HlSO7Evfa8tqfk/ys1Z4VtwemnFYtmBeRvsGPxhF19AjN4/JVS3sSF2Quiaf97NQfe+y1aAlOHClkU1C9xTAqDu/LS97LZ8+8AyxdNq2+NjbKoxtNsyMBU7wrJMEzbghZPS+7GAxnPrqBrLBxUo10Fdw2Pb6OeR+u+zReSxFNQevvNMTmK9zEB862fHdO64f8nofZqE0FVerMyuI6q+DArcLE462pWB1d4r7jJnjgVYRSyBpHXl9sUqh4wMiORP50G9zsbCg9+Kzkfs2xx9MUitdvmvWJzFI2PVH34SVcNV7sUg6FDL1UpAu91GDyEK82SMQiLK95RHG7VtIA69jlWVBt741/nS2Qaapk2oh8/V3rJXOjfICRsQjVH5KQKds8q6BerIcn4WV7g6SGA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(396003)(136003)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(81166007)(316002)(8676002)(47076005)(110136005)(478600001)(54906003)(86362001)(70586007)(70206006)(5660300002)(6636002)(4326008)(356005)(40480700001)(1076003)(82740400003)(336012)(7696005)(40460700003)(26005)(6666004)(186003)(7416002)(8936002)(2906002)(2616005)(41300700001)(16526019)(426003)(36756003)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2023 17:20:03.0637
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e446e773-07fa-49d8-51cd-08db8f8ee15b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044EE.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6063
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm8916 LBC is a Linear Battery Charger hardware block in pm8916 PMIC.
+add KSM_MERGE_TIME and KSM_MERGE_TIME_HUGE_PAGES tests with
+size of 100.
 
-This block implements simple CC/CV charging for Li-Po batteries.
-The hardware has internal state machine to switch between modes and
-works mostly autonomously, only needing the limits and targets to be
-set to operate.
+./run_vmtests.sh -t ksm
+-----------------------------
+running ./ksm_tests -H -s 100
+-----------------------------
+Number of normal pages:    0
+Number of huge pages:    50
+Total size:    100 MiB
+Total time:    0.399844662 s
+Average speed:  250.097 MiB/s
+[PASS]
+-----------------------------
+running ./ksm_tests -P -s 100
+-----------------------------
+Total size:    100 MiB
+Total time:    0.451931496 s
+Average speed:  221.272 MiB/s
+[PASS]
 
-This driver allows setting limits and enabling the LBC block, monitoring
-it's state.
-
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+Signed-off-by: Ayush Jain <ayush.jain3@amd.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/power/supply/Kconfig      |  11 ++
- drivers/power/supply/Makefile     |   1 +
- drivers/power/supply/pm8916_lbc.c | 385 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 397 insertions(+)
+v1 -> v2
+collect Reviewed-by from David
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index e93a5a4d03e2..a2ea249a57c6 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -640,6 +640,17 @@ config BATTERY_PM8916_BMS_VM
- 	  To compile this driver as module, choose M here: the
- 	  module will be called pm8916_bms_vm.
+ tools/testing/selftests/mm/run_vmtests.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 3f26f6e15b2a..ca3738e042c2 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -262,6 +262,10 @@ CATEGORY="madv_populate" run_test ./madv_populate
  
-+config CHARGER_PM8916_LBC
-+	tristate "Qualcomm PM8916 Linear Battery Charger support"
-+	depends on MFD_SPMI_PMIC || COMPILE_TEST
-+	help
-+	  Say Y here to add support for Linear Battery Charger block
-+	  found in some Qualcomm PMICs such as PM8916. This hardware
-+	  blokc provides simple CC/CV battery charger.
-+
-+	  To compile this driver as module, choose M here: the
-+	  module will be called pm8916_lbc.
-+
- config CHARGER_BQ2415X
- 	tristate "TI BQ2415x battery charger driver"
- 	depends on I2C
-diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-index fdf7916f80ed..e4bd9eb1261b 100644
---- a/drivers/power/supply/Makefile
-+++ b/drivers/power/supply/Makefile
-@@ -85,6 +85,7 @@ obj-$(CONFIG_CHARGER_MT6360)	+= mt6360_charger.o
- obj-$(CONFIG_CHARGER_MT6370)	+= mt6370-charger.o
- obj-$(CONFIG_CHARGER_QCOM_SMBB)	+= qcom_smbb.o
- obj-$(CONFIG_BATTERY_PM8916_BMS_VM)	+= pm8916_bms_vm.o
-+obj-$(CONFIG_CHARGER_PM8916_LBC)	+= pm8916_lbc.o
- obj-$(CONFIG_CHARGER_BQ2415X)	+= bq2415x_charger.o
- obj-$(CONFIG_CHARGER_BQ24190)	+= bq24190_charger.o
- obj-$(CONFIG_CHARGER_BQ24257)	+= bq24257_charger.o
-diff --git a/drivers/power/supply/pm8916_lbc.c b/drivers/power/supply/pm8916_lbc.c
-new file mode 100644
-index 000000000000..800ca3ff6d60
---- /dev/null
-+++ b/drivers/power/supply/pm8916_lbc.c
-@@ -0,0 +1,385 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Nikita Travkin <nikita@trvn.ru>
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/power_supply.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/extcon-provider.h>
-+
-+/* Two bytes: type + subtype */
-+#define PM8916_PERPH_TYPE 0x04
-+#define PM8916_LBC_CHGR_TYPE 0x1502
-+#define PM8916_LBC_BAT_IF_TYPE 0x1602
-+#define PM8916_LBC_USB_TYPE 0x1702
-+#define PM8916_LBC_MISC_TYPE 0x1802
-+
-+#define PM8916_LBC_CHGR_CHG_OPTION 0x08
-+#define PM8916_LBC_CHGR_PMIC_CHARGER BIT(7)
-+
-+#define PM8916_LBC_CHGR_CHG_STATUS 0x09
-+
-+#define PM8916_INT_RT_STS 0x10
-+
-+#define PM8916_LBC_USB_USBIN_VALID BIT(1)
-+
-+#define PM8916_LBC_CHGR_VDD_MAX 0x40
-+#define PM8916_LBC_CHGR_VDD_SAFE 0x41
-+#define PM8916_LBC_CHGR_IBAT_MAX 0x44
-+#define PM8916_LBC_CHGR_IBAT_SAFE 0x45
-+
-+#define PM8916_LBC_CHGR_TCHG_MAX_EN 0x60
-+#define PM8916_LBC_CHGR_TCHG_MAX_ENABLED BIT(7)
-+#define PM8916_LBC_CHGR_TCHG_MAX 0x61
-+
-+#define PM8916_LBC_CHGR_CHG_CTRL 0x49
-+#define PM8916_LBC_CHGR_CHG_EN BIT(7)
-+#define PM8916_LBC_CHGR_PSTG_EN BIT(5)
-+
-+#define PM8916_LBC_CHGR_MIN_CURRENT 90000
-+#define PM8916_LBC_CHGR_MAX_CURRENT 1440000
-+
-+#define PM8916_LBC_CHGR_MIN_VOLTAGE 4000000
-+#define PM8916_LBC_CHGR_MAX_VOLTAGE 4775000
-+#define PM8916_LBC_CHGR_VOLTAGE_STEP 25000
-+
-+#define PM8916_LBC_CHGR_MIN_TIME 4
-+#define PM8916_LBC_CHGR_MAX_TIME 256
-+
-+struct pm8916_lbc_charger {
-+	struct device *dev;
-+	struct extcon_dev *edev;
-+	struct power_supply *charger;
-+	struct power_supply_battery_info *info;
-+	struct regmap *regmap;
-+	unsigned int reg[4];
-+	bool online;
-+	unsigned int charge_voltage_max;
-+	unsigned int charge_voltage_safe;
-+	unsigned int charge_current_max;
-+	unsigned int charge_current_safe;
-+};
-+
-+static const unsigned int pm8916_lbc_charger_cable[] = {
-+	EXTCON_USB,
-+	EXTCON_NONE,
-+};
-+
-+enum {
-+	LBC_CHGR = 0,
-+	LBC_BAT_IF,
-+	LBC_USB,
-+	LBC_MISC,
-+};
-+
-+static int pm8916_lbc_charger_configure(struct pm8916_lbc_charger *chg)
-+{
-+	int ret = 0;
-+	unsigned int tmp;
-+
-+	chg->charge_voltage_max = clamp_t(u32, chg->charge_voltage_max,
-+					  PM8916_LBC_CHGR_MIN_VOLTAGE, chg->charge_voltage_safe);
-+
-+	tmp = chg->charge_voltage_max - PM8916_LBC_CHGR_MIN_VOLTAGE;
-+	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
-+	chg->charge_voltage_max = PM8916_LBC_CHGR_MIN_VOLTAGE + tmp * PM8916_LBC_CHGR_VOLTAGE_STEP;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_MAX, tmp);
-+	if (ret)
-+		goto error;
-+
-+	chg->charge_current_max = min(chg->charge_current_max, chg->charge_current_safe);
-+
-+	tmp = clamp_t(u32, chg->charge_current_max,
-+		      PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
-+
-+	tmp = chg->charge_current_max / PM8916_LBC_CHGR_MIN_CURRENT - 1;
-+	chg->charge_current_max = (tmp + 1) * PM8916_LBC_CHGR_MIN_CURRENT;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_MAX, tmp);
-+	if (ret)
-+		goto error;
-+
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_CTRL,
-+			   PM8916_LBC_CHGR_CHG_EN | PM8916_LBC_CHGR_PSTG_EN);
-+	if (ret)
-+		goto error;
-+
-+	return ret;
-+
-+error:
-+	dev_err(chg->dev, "Failed to configure charging: %pe\n", ERR_PTR(ret));
-+	return ret;
-+}
-+
-+static int pm8916_lbc_charger_get_property(struct power_supply *psy,
-+					   enum power_supply_property psp,
-+					   union power_supply_propval *val)
-+{
-+	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
-+	int ret = 0;
-+	unsigned int tmp;
-+
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_ONLINE:
-+		val->intval = chg->online;
-+		return 0;
-+
-+	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-+		val->intval = chg->charge_voltage_max;
-+		return 0;
-+
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		val->intval = chg->charge_current_max;
-+		return 0;
-+
-+	default:
-+		return -EINVAL;
-+	};
-+}
-+
-+static int pm8916_lbc_charger_set_property(struct power_supply *psy,
-+					   enum power_supply_property prop,
-+					   const union power_supply_propval *val)
-+{
-+	struct pm8916_lbc_charger *chg = power_supply_get_drvdata(psy);
-+
-+	switch (prop) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		chg->charge_current_max = val->intval;
-+		return pm8916_lbc_charger_configure(chg);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int pm8916_lbc_charger_property_is_writeable(struct power_supply *psy,
-+						    enum power_supply_property psp)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static enum power_supply_property pm8916_lbc_charger_properties[] = {
-+	POWER_SUPPLY_PROP_ONLINE,
-+	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
-+	POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT,
-+};
-+
-+static irqreturn_t pm8916_lbc_charger_state_changed_irq(int irq, void *data)
-+{
-+	struct pm8916_lbc_charger *chg = data;
-+	unsigned int tmp;
-+	int ret;
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
-+	if (ret)
-+		return IRQ_HANDLED;
-+
-+	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
-+	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
-+
-+	power_supply_changed(chg->charger);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int pm8916_lbc_charger_probe_dt(struct pm8916_lbc_charger *chg)
-+{
-+	struct device *dev = chg->dev;
-+	struct device_node *np = dev->of_node;
-+	int ret = 0;
-+	unsigned int tmp;
-+
-+	ret = of_property_read_u32(np, "qcom,fast-charge-safe-voltage", &chg->charge_voltage_safe);
-+	if (ret)
-+		return ret;
-+	if (chg->charge_voltage_safe < PM8916_LBC_CHGR_MIN_VOLTAGE)
-+		return -EINVAL;
-+
-+	chg->charge_voltage_safe = clamp_t(u32, chg->charge_voltage_safe,
-+					PM8916_LBC_CHGR_MIN_VOLTAGE, PM8916_LBC_CHGR_MAX_VOLTAGE);
-+
-+	tmp = chg->charge_voltage_safe - PM8916_LBC_CHGR_MIN_VOLTAGE;
-+	tmp /= PM8916_LBC_CHGR_VOLTAGE_STEP;
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_VDD_SAFE, tmp);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_property_read_u32(np, "qcom,fast-charge-safe-current", &chg->charge_current_safe);
-+	if (ret)
-+		return ret;
-+	if (chg->charge_current_safe < PM8916_LBC_CHGR_MIN_CURRENT)
-+		return -EINVAL;
-+
-+	chg->charge_current_safe = clamp_t(u32, chg->charge_current_safe,
-+					PM8916_LBC_CHGR_MIN_CURRENT, PM8916_LBC_CHGR_MAX_CURRENT);
-+
-+	chg->charge_current_max = chg->charge_current_safe;
-+
-+	tmp = chg->charge_current_safe / PM8916_LBC_CHGR_MIN_CURRENT - 1;
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_IBAT_SAFE, tmp);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable charger timeout. */
-+	ret = regmap_write(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_TCHG_MAX_EN, 0x00);
-+	if (ret)
-+		return ret;
-+
-+	return ret;
-+}
-+
-+static const struct power_supply_desc pm8916_lbc_charger_psy_desc = {
-+	.name = "pm8916-lbc-chgr",
-+	.type = POWER_SUPPLY_TYPE_USB,
-+	.properties = pm8916_lbc_charger_properties,
-+	.num_properties = ARRAY_SIZE(pm8916_lbc_charger_properties),
-+	.get_property = pm8916_lbc_charger_get_property,
-+	.set_property = pm8916_lbc_charger_set_property,
-+	.property_is_writeable = pm8916_lbc_charger_property_is_writeable,
-+};
-+
-+static int pm8916_lbc_charger_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct pm8916_lbc_charger *chg;
-+	struct power_supply_config psy_cfg = {};
-+	int ret, len, irq;
-+	unsigned int tmp;
-+
-+	chg = devm_kzalloc(dev, sizeof(*chg), GFP_KERNEL);
-+	if (!chg)
-+		return -ENOMEM;
-+
-+	chg->dev = dev;
-+
-+	chg->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!chg->regmap)
-+		return -ENODEV;
-+
-+	len = of_property_count_u32_elems(dev->of_node, "reg");
-+	if (len < 0)
-+		return len;
-+	if (len != 4)
-+		return dev_err_probe(dev, -EINVAL,
-+				     "Wrong amount of reg values: %d (4 expected)\n", len);
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	ret = devm_request_threaded_irq(dev, irq, NULL, pm8916_lbc_charger_state_changed_irq,
-+					IRQF_ONESHOT, "pm8916_lbc", chg);
-+	if (ret)
-+		return ret;
-+
-+	ret = of_property_read_u32_array(dev->of_node, "reg", chg->reg, len);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_CHGR_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_BAT_IF] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_BAT_IF_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_USB] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_USB_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_bulk_read(chg->regmap, chg->reg[LBC_MISC] + PM8916_PERPH_TYPE, &tmp, 2);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_MISC_TYPE)
-+		goto type_error;
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_CHGR] + PM8916_LBC_CHGR_CHG_OPTION, &tmp);
-+	if (ret)
-+		goto comm_error;
-+	if (tmp != PM8916_LBC_CHGR_PMIC_CHARGER)
-+		dev_err_probe(dev, -ENODEV, "The system is using an external charger\n");
-+
-+	ret = pm8916_lbc_charger_probe_dt(chg);
-+	if (ret)
-+		dev_err_probe(dev, ret, "Error while parsing device tree\n");
-+
-+	psy_cfg.drv_data = chg;
-+	psy_cfg.of_node = dev->of_node;
-+
-+	chg->charger = devm_power_supply_register(dev, &pm8916_lbc_charger_psy_desc, &psy_cfg);
-+	if (IS_ERR(chg->charger))
-+		return dev_err_probe(dev, PTR_ERR(chg->charger), "Unable to register charger\n");
-+
-+	ret = power_supply_get_battery_info(chg->charger, &chg->info);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Unable to get battery info\n");
-+
-+	chg->edev = devm_extcon_dev_allocate(dev, pm8916_lbc_charger_cable);
-+	if (IS_ERR(chg->edev))
-+		return PTR_ERR(chg->edev);
-+
-+	ret = devm_extcon_dev_register(dev, chg->edev);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "failed to register extcon device\n");
-+
-+	ret = regmap_read(chg->regmap, chg->reg[LBC_USB] + PM8916_INT_RT_STS, &tmp);
-+	if (ret)
-+		goto comm_error;
-+
-+	chg->online = !!(tmp & PM8916_LBC_USB_USBIN_VALID);
-+	extcon_set_state_sync(chg->edev, EXTCON_USB, chg->online);
-+
-+	chg->charge_voltage_max = chg->info->voltage_max_design_uv;
-+	ret = pm8916_lbc_charger_configure(chg);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+
-+comm_error:
-+	return dev_err_probe(dev, ret, "Unable to communicate with device\n");
-+
-+type_error:
-+	return dev_err_probe(dev, -ENODEV, "Device reported wrong type: 0x%X\n", tmp);
-+}
-+
-+static const struct of_device_id pm8916_lbc_charger_of_match[] = {
-+	{ .compatible = "qcom,pm8916-lbc", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, pm8916_lbc_charger_of_match);
-+
-+static struct platform_driver pm8916_lbc_charger_driver = {
-+	.driver = {
-+		.name = "pm8916-lbc",
-+		.of_match_table = of_match_ptr(pm8916_lbc_charger_of_match),
-+	},
-+	.probe = pm8916_lbc_charger_probe,
-+};
-+module_platform_driver(pm8916_lbc_charger_driver);
-+
-+MODULE_DESCRIPTION("pm8916 LBC driver");
-+MODULE_AUTHOR("Nikita Travkin <nikita@trvn.ru>");
-+MODULE_LICENSE("GPL");
-
+ CATEGORY="memfd_secret" run_test ./memfd_secret
+ 
++# KSM KSM_MERGE_TIME_HUGE_PAGES test with size of 100
++CATEGORY="ksm" run_test ./ksm_tests -H -s 100
++# KSM KSM_MERGE_TIME test with size of 100
++CATEGORY="ksm" run_test ./ksm_tests -P -s 100
+ # KSM MADV_MERGEABLE test with 10 identical pages
+ CATEGORY="ksm" run_test ./ksm_tests -M -p 10
+ # KSM unmerge test
 -- 
-2.41.0
+2.34.1
 
