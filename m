@@ -2,479 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A619767739
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9BA76773D
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 22:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjG1Uuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 16:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S229934AbjG1UwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 16:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjG1Uus (ORCPT
+        with ESMTP id S229511AbjG1UwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 16:50:48 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC31422B;
-        Fri, 28 Jul 2023 13:50:44 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-783698a37beso109506439f.0;
-        Fri, 28 Jul 2023 13:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690577443; x=1691182243;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hj9wHLh/iek/aBa0XZOZmqb3Sqdg6Q0wR0GPCTNrLg0=;
-        b=Th7Q/BTFzaUim3vPNoZNiyqzoqnERpZtiq3IdEpaSTMCldzsvq5vULTd+8P1umY3WU
-         YSEiV27l68PM3uRXrA+Nhz5AljAO0CqI7mi+CqVysRcBWIpE504aaJSPkDx+75JEy7wX
-         LWYcaELqwnwC2ZXJEycaOip/m6XrxA9nmKsmObLgKucqvLIU+JiSFTc3gB63t3cccyt8
-         en2a1v5VT2U7wkK8aTVK4zNwx1tF8MBtQoCs1pzgu2zxNp53ofno69qJjuxZUIU3rhuV
-         E9/I3J0dNcTdPf5HoDI+1+uC8s8zRXMrvDDP+xRjw03HbSx9MoFJx3tO2plks9R/O4NH
-         htjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690577443; x=1691182243;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hj9wHLh/iek/aBa0XZOZmqb3Sqdg6Q0wR0GPCTNrLg0=;
-        b=H7tKIIY7EH538S7N/6latnx60GKjdJqPEp8FqbAok8byxtAQclu6rkEoZjoV4aaWha
-         b8lv+S+YQknaOFN5DiKMf1T5DrE+FAVttL/NshoQpEP4JFdL9LaKjYP0isy/hQYCiOlQ
-         fDYpTi8GqdBg1E/QlXaZIRAx3BFLy3WUcUWbo7EISzIf7jk6wElwnAjNJY7ZN+Kb5ezl
-         nyix54bAZpIm2dMMGlN1dKWrjeuozemm84ObzjuFM8R4yZgpwIhhUMAiOhpKH0Zj7kPS
-         SUVturM3Fm0gTUnH10dqJqKBjTvvLzhVb2WXdiC0dxPoAPehVP2m0qiEpKOZbjv6Idbd
-         mAAQ==
-X-Gm-Message-State: ABy/qLav3RpXn9vTSoijCZqRk/quUYJuNeEtefu5FN0nYTnWwOJ8IIXC
-        eGe7hGaUNKKqWod6nQpePMA=
-X-Google-Smtp-Source: APBJJlFjeHzVc3cvxPud1zwRaV1Y/aaQeAMOI+V/AnIDAXQqoSpqeSlOhpZj/AIqXSlvT3qN74PhLg==
-X-Received: by 2002:a05:6e02:12e9:b0:348:f152:e041 with SMTP id l9-20020a056e0212e900b00348f152e041mr998762iln.2.1690577438741;
-        Fri, 28 Jul 2023 13:50:38 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id gs14-20020a0566382d8e00b0042bb03d3a2esm1292175jab.96.2023.07.28.13.50.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 13:50:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <ca7652ee-b5c9-2dd8-06ca-cbb5d5ef8751@roeck-us.net>
-Date:   Fri, 28 Jul 2023 13:50:36 -0700
+        Fri, 28 Jul 2023 16:52:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6196430D3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 13:52:03 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690577521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/uIvs3zEzm8vzx+799L/PLXub+P8a23kCaLRnWmqz/E=;
+        b=w6dDhRHJHK2GuTmjni9s+0eMYRTJ0UBVN40GzF3Ir9NcSqcCkg+JOFyIy0ZwbgA5a2y24L
+        y22sYIwTAuMKDqGh2xWXgwErSORsTOLM0BpwyvMS0nqYBevDsaL3V9ahh4HsAiu/3ezFcF
+        uZoQuGkyVwdpAV/Qx7kSzW0v6inmRfYKrJouoJ4t0zBT6RrR5qV0CeHEk3Y4trcJhDDT2F
+        Y5qzmLFk5m8ZwHhIL3/C6FzI55JN8VEV+eiePbxdRfB3+OJCOAYhH3XhMuZwUkwmeNbj4w
+        hQHC9JggYUid3kPYIcIrEiJZxzohS/12R8ogcpKOQ5hyeTqLdih1nn2m9pU+iA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690577521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/uIvs3zEzm8vzx+799L/PLXub+P8a23kCaLRnWmqz/E=;
+        b=jqvI4K5PAUSDAI70d+GqE8AtFiDQb61iMUfEItnUCqwDXkr2gypWYo52FwL42vI8ikxvvl
+        5p/hpnIpq+PVWeBA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 1/8] printk: Add non-BKL (nbcon) console basic
+ infrastructure
+In-Reply-To: <ZMPU8YPHzJ8Q2V9W@alley>
+References: <20230728000233.50887-1-john.ogness@linutronix.de>
+ <20230728000233.50887-2-john.ogness@linutronix.de>
+ <ZMPU8YPHzJ8Q2V9W@alley>
+Date:   Fri, 28 Jul 2023 22:57:58 +0206
+Message-ID: <87o7jv92tt.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] watchdog: Enable COMPILE_TEST for more drivers
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <20230728195022.1198555-1-robh@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230728195022.1198555-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 12:50, Rob Herring wrote:
-> There's quite a few watchdog drivers which are easily enabled for
-> COMPILE_TEST, so let's enable them.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Passed allyesconfig builds on arm, arm64, x86, riscv, powerpc, sparc
+Hi Petr,
 
-Last time I tried this we ended up having to revert most of them.
-Let's see if this time is different.
+On 2023-07-28, Petr Mladek <pmladek@suse.com> wrote:
+> The is nice explanation for adding the CON_NBCON, struct nbcon_state,
+> nbcon_init(), nbcon_cleanup() and the API for setting nbcon_state.
+>
+>> Note that nbcon consoles are not able to print simultaneously with
+>> boot consoles because it is not possible to know if they are using
+>> the same hardware. For this reason, nbcon consoles are handled as
+>> legacy consoles as long as a boot console is registered.
+>
+> But the patch does many more "unclear" things and only some are
+> explained by the above paragraph.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+I must admit that this first patch is tricky. I am wiring up printk.c
+for nbcon consoles (consoles that will have threaded printing and their
+own synchronized atomic printing), yet those pieces are not there
+yet. So you end up with a lot of code paths where it seems like there
+are strange NOP paths added.
 
-> ---
->   drivers/watchdog/Kconfig         | 80 ++++++++++++++++----------------
->   drivers/watchdog/loongson1_wdt.c |  1 +
->   2 files changed, 41 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index ee97d89dfc11..ce293378e548 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -307,7 +307,7 @@ config XILINX_WATCHDOG
->   config XILINX_WINDOW_WATCHDOG
->   	tristate "Xilinx window watchdog timer"
->   	depends on HAS_IOMEM
-> -	depends on ARM64
-> +	depends on ARM64 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  Window watchdog driver for the versal_wwdt IP core.
-> @@ -343,7 +343,7 @@ config RAVE_SP_WATCHDOG
->   
->   config MLX_WDT
->   	tristate "Mellanox Watchdog"
-> -	depends on MELLANOX_PLATFORM
-> +	depends on MELLANOX_PLATFORM || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	select REGMAP
->   	help
-> @@ -493,7 +493,7 @@ config FTWDT010_WATCHDOG
->   
->   config IXP4XX_WATCHDOG
->   	tristate "IXP4xx Watchdog"
-> -	depends on ARCH_IXP4XX
-> +	depends on ARCH_IXP4XX || (ARM && COMPILE_TEST)
->   	select WATCHDOG_CORE
->   	help
->   	  Say Y here if to include support for the watchdog timer
-> @@ -529,7 +529,7 @@ config S3C2410_WATCHDOG
->   
->   config SA1100_WATCHDOG
->   	tristate "SA1100/PXA2xx watchdog"
-> -	depends on ARCH_SA1100 || ARCH_PXA
-> +	depends on ARCH_SA1100 || ARCH_PXA || COMPILE_TEST
->   	help
->   	  Watchdog timer embedded into SA11x0 and PXA2xx chips. This will
->   	  reboot your system when timeout is reached.
-> @@ -720,7 +720,7 @@ config IMX2_WDT
->   config IMX_SC_WDT
->   	tristate "IMX SC Watchdog"
->   	depends on HAVE_ARM_SMCCC
-> -	depends on IMX_SCU
-> +	depends on IMX_SCU || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the system controller watchdog
-> @@ -931,7 +931,7 @@ config ASPEED_WATCHDOG
->   
->   config STM32_WATCHDOG
->   	tristate "STM32 Independent WatchDoG (IWDG) support"
-> -	depends on ARCH_STM32
-> +	depends on ARCH_STM32 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	default y
->   	help
-> @@ -1065,7 +1065,7 @@ config ACQUIRE_WDT
->   
->   config ADVANTECH_WDT
->   	tristate "Advantech SBC Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  If you are configuring a Linux kernel for the Advantech single-board
->   	  computer, say `Y' here to support its built-in watchdog timer
-> @@ -1074,14 +1074,14 @@ config ADVANTECH_WDT
->   
->   config ADVANTECH_EC_WDT
->   	tristate "Advantech Embedded Controller Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   		This driver supports Advantech products with ITE based Embedded Controller.
->   		It does not support Advantech products with other ECs or without EC.
->   
->   config ALIM1535_WDT
->   	tristate "ALi M1535 PMU Watchdog Timer"
-> -	depends on X86 && PCI
-> +	depends on (X86 || COMPILE_TEST) && PCI
->   	help
->   	  This is the driver for the hardware watchdog on the ALi M1535 PMU.
->   
-> @@ -1105,7 +1105,7 @@ config ALIM7101_WDT
->   
->   config EBC_C384_WDT
->   	tristate "WinSystems EBC-C384 Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select ISA_BUS_API
->   	select WATCHDOG_CORE
->   	help
-> @@ -1115,7 +1115,7 @@ config EBC_C384_WDT
->   
->   config EXAR_WDT
->   	tristate "Exar Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  Enables watchdog timer support for the watchdog timer present
-> @@ -1126,7 +1126,7 @@ config EXAR_WDT
->   
->   config F71808E_WDT
->   	tristate "Fintek F718xx, F818xx Super I/O Watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the hardware watchdog on the Fintek F71808E,
-> @@ -1138,7 +1138,7 @@ config F71808E_WDT
->   
->   config SP5100_TCO
->   	tristate "AMD/ATI SP5100 TCO Timer/Watchdog"
-> -	depends on X86 && PCI
-> +	depends on (X86 || COMPILE_TEST) && PCI
->   	select WATCHDOG_CORE
->   	help
->   	  Hardware watchdog driver for the AMD/ATI SP5100 chipset. The TCO
-> @@ -1177,7 +1177,7 @@ config SC520_WDT
->   
->   config SBC_FITPC2_WATCHDOG
->   	tristate "Compulab SBC-FITPC2 watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the built-in watchdog timer on the fit-PC2,
->   	  fit-PC2i, CM-iAM single-board computers made by Compulab.
-> @@ -1202,7 +1202,7 @@ config SBC_FITPC2_WATCHDOG
->   
->   config EUROTECH_WDT
->   	tristate "Eurotech CPU-1220/1410 Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  Enable support for the watchdog timer on the Eurotech CPU-1220 and
->   	  CPU-1410 cards.  These are PC/104 SBCs. Spec sheets and product
-> @@ -1210,7 +1210,7 @@ config EUROTECH_WDT
->   
->   config IB700_WDT
->   	tristate "IB700 SBC Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog on the IB700 Single
->   	  Board Computer produced by TMC Technology (www.tmc-uk.com). This
-> @@ -1227,7 +1227,7 @@ config IB700_WDT
->   
->   config IBMASR
->   	tristate "IBM Automatic Server Restart"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the IBM Automatic Server Restart watchdog
->   	  timer built-in into some eServer xSeries machines.
-> @@ -1237,7 +1237,7 @@ config IBMASR
->   
->   config WAFER_WDT
->   	tristate "ICP Single Board Computer Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is a driver for the hardware watchdog on the ICP Single
->   	  Board Computer. This driver is working on (at least) the following
-> @@ -1259,7 +1259,7 @@ config I6300ESB_WDT
->   
->   config IE6XX_WDT
->   	tristate "Intel Atom E6xx Watchdog"
-> -	depends on X86 && PCI
-> +	depends on (X86 || COMPILE_TEST) && PCI
->   	select WATCHDOG_CORE
->   	select MFD_CORE
->   	select LPC_SCH
-> @@ -1319,7 +1319,7 @@ config ITCO_VENDOR_SUPPORT
->   
->   config IT8712F_WDT
->   	tristate "IT8712F (Smart Guardian) Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the built-in watchdog timer on the IT8712F
->   	  Super I/0 chipset used on many motherboards.
-> @@ -1332,7 +1332,7 @@ config IT8712F_WDT
->   
->   config IT87_WDT
->   	tristate "IT87 Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the hardware watchdog on the ITE IT8607,
-> @@ -1350,7 +1350,7 @@ config IT87_WDT
->   config HP_WATCHDOG
->   	tristate "HP ProLiant iLO2+ Hardware Watchdog Timer"
->   	select WATCHDOG_CORE
-> -	depends on (ARM64 || X86) && PCI
-> +	depends on (ARM64 || X86 || COMPILE_TEST) && PCI
->   	help
->   	  A software monitoring watchdog and NMI handling driver. This driver
->   	  will detect lockups and provide a stack trace. This is a driver that
-> @@ -1380,7 +1380,7 @@ config KEMPLD_WDT
->   
->   config SC1200_WDT
->   	tristate "National Semiconductor PC87307/PC97307 (ala SC1200) Watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is a driver for National Semiconductor PC87307/PC97307 hardware
->   	  watchdog cards as found on the SC1200. This watchdog is mainly used
-> @@ -1403,7 +1403,7 @@ config SCx200_WDT
->   
->   config PC87413_WDT
->   	tristate "NS PC87413 watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog on the PC87413 chipset
->   	  This watchdog simply watches your kernel to make sure it doesn't
-> @@ -1417,7 +1417,7 @@ config PC87413_WDT
->   
->   config NV_TCO
->   	tristate "nVidia TCO Timer/Watchdog"
-> -	depends on X86 && PCI
-> +	depends on (X86 || COMPILE_TEST) && PCI
->   	help
->   	  Hardware driver for the TCO timer built into the nVidia Hub family
->   	  (such as the MCP51).  The TCO (Total Cost of Ownership) timer is a
-> @@ -1446,7 +1446,7 @@ config RDC321X_WDT
->   
->   config 60XX_WDT
->   	tristate "SBC-60XX Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This driver can be used with the watchdog timer found on some
->   	  single board computers, namely the 6010 PII based computer.
-> @@ -1486,7 +1486,7 @@ config SBC7240_WDT
->   
->   config CPU5_WDT
->   	tristate "SMA CPU5 Watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  TBD.
->   	  To compile this driver as a module, choose M here: the
-> @@ -1494,7 +1494,7 @@ config CPU5_WDT
->   
->   config SMSC_SCH311X_WDT
->   	tristate "SMSC SCH311X Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog timer on the
->   	  SMSC SCH3112, SCH3114 and SCH3116 Super IO chipset
-> @@ -1506,7 +1506,7 @@ config SMSC_SCH311X_WDT
->   
->   config SMSC37B787_WDT
->   	tristate "Winbond SMsC37B787 Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog component on the
->   	  Winbond SMsC37B787 chipset as used on the NetRunner Mainboard
-> @@ -1526,7 +1526,7 @@ config SMSC37B787_WDT
->   
->   config TQMX86_WDT
->   	tristate "TQ-Systems TQMX86 Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the hardware watchdog timer in the TQMX86 IO
-> @@ -1539,7 +1539,7 @@ config TQMX86_WDT
->   
->   config VIA_WDT
->   	tristate "VIA Watchdog Timer"
-> -	depends on X86 && PCI
-> +	depends on (X86 || COMPILE_TEST) && PCI
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the hardware watchdog timer on VIA
-> @@ -1552,7 +1552,7 @@ config VIA_WDT
->   
->   config W83627HF_WDT
->   	tristate "Watchdog timer for W83627HF/W83627DHG and compatibles"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  This is the driver for the hardware watchdog on the following
-> @@ -1582,7 +1582,7 @@ config W83627HF_WDT
->   
->   config W83877F_WDT
->   	tristate "W83877F (EMACS) Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog on the W83877F chipset
->   	  as used in EMACS PC-104 motherboards (and likely others).  This
-> @@ -1597,7 +1597,7 @@ config W83877F_WDT
->   
->   config W83977F_WDT
->   	tristate "W83977F (PCM-5335) Watchdog Timer"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the hardware watchdog on the W83977F I/O chip
->   	  as used in AAEON's PCM-5335 SBC (and likely others).  This
-> @@ -1610,7 +1610,7 @@ config W83977F_WDT
->   
->   config MACHZ_WDT
->   	tristate "ZF MachZ Watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  If you are using a ZF Micro MachZ processor, say Y here, otherwise
->   	  N.  This is the driver for the watchdog timer built-in on that
-> @@ -1623,7 +1623,7 @@ config MACHZ_WDT
->   
->   config SBC_EPX_C3_WATCHDOG
->   	tristate "Winsystems SBC EPX-C3 watchdog"
-> -	depends on X86
-> +	depends on X86 || COMPILE_TEST
->   	help
->   	  This is the driver for the built-in watchdog timer on the EPX-C3
->   	  Single-board computer made by Winsystems, Inc.
-> @@ -1738,7 +1738,7 @@ config INDYDOG
->   
->   config JZ4740_WDT
->   	tristate "Ingenic jz4740 SoC hardware watchdog"
-> -	depends on MIPS
-> +	depends on MIPS || COMPILE_TEST
->   	depends on COMMON_CLK
->   	select WATCHDOG_CORE
->   	select MFD_SYSCON
-> @@ -1822,7 +1822,7 @@ config BCM_KONA_WDT
->   
->   config BCM_KONA_WDT_DEBUG
->   	bool "DEBUGFS support for BCM Kona Watchdog"
-> -	depends on BCM_KONA_WDT
-> +	depends on BCM_KONA_WDT || COMPILE_TEST
->   	help
->   	  If enabled, adds /sys/kernel/debug/bcm_kona_wdt/info which provides
->   	  access to the driver's internal data structures as well as watchdog
-> @@ -1863,7 +1863,7 @@ config LANTIQ_WDT
->   
->   config LOONGSON1_WDT
->   	tristate "Loongson1 SoC hardware watchdog"
-> -	depends on MACH_LOONGSON32
-> +	depends on MACH_LOONGSON32 || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  Hardware driver for the Loongson1 SoC Watchdog Timer.
-> @@ -1877,7 +1877,7 @@ config RALINK_WDT
->   
->   config GXP_WATCHDOG
->   	tristate "HPE GXP watchdog support"
-> -	depends on ARCH_HPE_GXP
-> +	depends on ARCH_HPE_GXP || COMPILE_TEST
->   	select WATCHDOG_CORE
->   	help
->   	  Say Y here to include support for the watchdog timer
-> diff --git a/drivers/watchdog/loongson1_wdt.c b/drivers/watchdog/loongson1_wdt.c
-> index 4ac7810a314d..0587ff44d3a1 100644
-> --- a/drivers/watchdog/loongson1_wdt.c
-> +++ b/drivers/watchdog/loongson1_wdt.c
-> @@ -4,6 +4,7 @@
->    */
->   
->   #include <linux/clk.h>
-> +#include <linux/io.h>
->   #include <linux/module.h>
->   #include <linux/of.h>
->   #include <linux/platform_device.h>
+However, it is important to understand that those new paths will never
+be taken until actual nbcon consoles exist, which won't be until the end
+of the rework. The motivation for adding the new paths now is to
+demonstrate that we are not breaking any of the legacy stuff.
 
+Would it be a better approach to fully implement nbcon consoles and then
+as a final step wire it into printk.c? That is how we integrated the
+ringbuffer. (Spoiler alert: At the end of the email I decide that this
+is also the way I want to go for nbcon consoles.)
+
+>> +/*
+>> + * Specifies if the console lock/unlock dance is needed for console
+>> + * printing. If @have_boot_console is true, the nbcon consoles will
+>> + * be printed serially along with the legacy consoles because nbcon
+>> + * consoles cannot print simultaneously with boot consoles.
+>> + */
+>> +#define serialized_printing (have_legacy_console || have_boot_console)
+>
+> "serialized_printing" is a bit ambiguous name. We need serialized
+> printing also in panic(), ...
+>
+> What about?
+>
+> #define have_serialized_console (have_legacy_console || have_boot_console)
+
+This macro is not about having a serialized console. The first sentence
+in the comment describes it best. It is just to signal if we need to do
+the console lock/unlock dance to generate console output.
+
+Something like "need_bkl_dance" would be a better name, but it doesn't
+sound very technical.
+
+>> @@ -2603,7 +2623,7 @@ void resume_console(void)
+>>   */
+>>  static int console_cpu_notify(unsigned int cpu)
+>>  {
+>> -	if (!cpuhp_tasks_frozen) {
+>> +	if (!cpuhp_tasks_frozen && serialized_printing) {
+>
+> It would be worth adding a comment why this does something only when
+> serialized_printing is set.
+
+OK.
+
+> My understanding is that others will be handled by the respective
+> kthreads which are not blocked by a hotplug of particular CPU.
+
+Correct. This function is only important when the bkl dance is needed
+(which is also the only thing this function does).
+
+>> @@ -2955,8 +2975,17 @@ static bool console_flush_all(bool do_cond_resched, u64 *next_seq, bool *handove
+>>  
+>>  		cookie = console_srcu_read_lock();
+>>  		for_each_console_srcu(con) {
+>> +			short flags = console_srcu_read_flags(con);
+>>  			bool progress;
+>>  
+>> +			/*
+>> +			 * console_flush_all() is only for legacy consoles,
+>> +			 * unless a boot console is registered. See
+>> +			 * serialized_printing for details.
+>> +			 */
+>> +			if ((flags & CON_NBCON) && !have_boot_console)
+>> +				continue;
+>
+> I suggest to:
+>
+>    + Update console_flush_all() description. Mention that it flushes
+>      only serialized consoles
+
+Agreed. It is only responsible for bkl dance flushing.
+
+>    + Add a comment into console_init_seq() about that flushing only
+>      serialized consoles is enough. All consoles are serialized
+>      when there is a boot console registered.
+
+OK.
+
+>    + (Optional) Rename console_flush_all() to console_flush_all_serialized()
+>      to make it more clear. But the updated comment might be enough.
+
+I guess "serialized" is not really a good name. I'll think about
+this. But I agree that it should no longer be called
+console_flush_all().
+
+>    + (Future) Get rid of @bootcon_registered. It seems that
+>      "have_boot_console" would be enough. Well, it should be
+>      done in a separate patch and could be done later.
+
+Agreed. I will add a patch for this.
+
+>> @@ -3075,6 +3104,9 @@ void console_unblank(void)
+>>  	struct console *c;
+>>  	int cookie;
+>>  
+>> +	if (!serialized_printing)
+>> +		return;
+>
+> This looks strange. Even nbcon might need to get unblanked.
+
+Honestly, I never thought that an nbcon console would implement
+unblank. I suppose the unblank() callback for nbcon consoles will have
+the requirement that it cannot assume it is not also within its write
+callbacks.
+
+> But we actually handled this a better way in a previous patch, see
+> https://lore.kernel.org/r/20230717194607.145135-3-john.ogness@linutronix.de
+
+I will change it so that nbcon consoles are also allowed to implement
+unblank.
+
+>> @@ -3142,6 +3174,9 @@ void console_flush_on_panic(enum con_flush_mode mode)
+>>  	bool handover;
+>>  	u64 next_seq;
+>>  
+>> +	if (!serialized_printing)
+>> +		return;
+>
+> Honestly, this does not make much sense. console_flush_on_panic()
+> should try to flush all consoles. The kthreads do not work
+> in panic().
+
+The atomic console flushing will appear above this statement. But with
+this first patch that infrastructure is not in place yet. Keep in mind
+that after this patch @serialized_printing will _always_ be true. The
+series will gradually insert additional nbcon pieces.
+
+>> @@ -3486,6 +3522,15 @@ void register_console(struct console *newcon)
+>>  	newcon->dropped = 0;
+>>  	console_init_seq(newcon, bootcon_registered);
+>>  
+>> +	if (!(newcon->flags & CON_NBCON)) {
+>> +		have_legacy_console = true;
+>> +	} else if (!nbcon_init(newcon)) {
+>> +		goto unlock;
+>
+> In case of err, we should revert the changes done above:
+>
+>   + clear CONSOLE_ENABLED and CON_CONSDEV flags
+>   + call newcon->exit() as a counter part to newcon->setup()
+
+Agreed. That is a bit ugly. Perhaps I will split nbcon_init() into 2
+pieces. The part that can fail (memory allocation) can happen before
+@newcon is touched. And the part that will always succeed (initializing
+structures and setting the sequence number) can happen here.
+
+>> @@ -3577,11 +3625,34 @@ static int unregister_console_locked(struct console *console)
+>>  	 */
+>>  	synchronize_srcu(&console_srcu);
+>>  
+>> +	if (console->flags & CON_NBCON)
+>> +		nbcon_cleanup(console);
+>> +
+>>  	console_sysfs_notify();
+>>  
+>>  	if (console->exit)
+>>  		res = console->exit(console);
+>>  
+>> +	/*
+>> +	 * If the current console was a boot and/or legacy console, the
+>> +	 * related global flags might need to be updated.
+>> +	 */
+>> +	if (is_boot_con || is_legacy_con) {
+>> +		bool found_boot_con = false;
+>> +		bool found_legacy_con = false;
+>> +
+>> +		for_each_console(c) {
+>> +			if (c->flags & CON_BOOT)
+>> +				found_boot_con = true;
+>> +			if (!(c->flags & CON_NBCON))
+>> +				found_legacy_con = true;
+>> +		}
+>> +		if (!found_boot_con)
+>> +			have_boot_console = false;
+>> +		if (!found_legacy_con)
+>> +			have_legacy_console = false;
+>> +	}
+>
+> This is a bit racy in situations where this value is checked
+> without the console_list_lock, e.g. in vprintk_emit().
+
+You are correct. I can move this above the synchronize_srcu(), then
+there are no races because the variables are checked under the
+console_srcu_read_lock. The kthreads won't be started until after the
+synchronize_srcu(). (Although it wouldn't be an issue anyway if an nbcon
+is simultaneously accessed from a console_unlock context and a kthread
+context. nbcon consoles do not require any serialization.)
+
+>> @@ -3739,13 +3811,17 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+>>  	seq = prb_next_seq(prb);
+>>  
+>>  	for (;;) {
+>> +		locked = false;
+>>  		diff = 0;
+>>  
+>> -		/*
+>> -		 * Hold the console_lock to guarantee safe access to
+>> -		 * console->seq.
+>> -		 */
+>> -		console_lock();
+>> +		if (serialized_printing) {
+>> +			/*
+>> +			 * Hold the console_lock to guarantee safe access to
+>> +			 * console->seq.
+>> +			 */
+>> +			console_lock();
+>> +			locked = true;
+>> +		}
+>>  
+>>  		cookie = console_srcu_read_lock();
+>>  		for_each_console_srcu(c) {
+>> @@ -3758,7 +3834,12 @@ static bool __pr_flush(struct console *con, int timeout_ms, bool reset_on_progre
+>>  			 */
+>>  			if (!console_is_usable(c))
+>>  				continue;
+>> -			printk_seq = c->seq;
+>> +
+>> +			if (locked)
+>> +				printk_seq = c->seq;
+>> +			else
+>> +				continue;
+>
+> This is strange. It basically means that __pr_flush() is a NOP when
+> serialized_printing is false.
+
+But at this point in the rework @serialized_printing can never be
+false. The important thing at this point is that we are not breaking the
+legacy consoles. When @serialized_printing is true, everything works as
+before.
+
+>> @@ -3893,7 +3975,11 @@ void defer_console_output(void)
+>>  	 * New messages may have been added directly to the ringbuffer
+>>  	 * using vprintk_store(), so wake any waiters as well.
+>>  	 */
+>> -	__wake_up_klogd(PRINTK_PENDING_WAKEUP | PRINTK_PENDING_OUTPUT);
+>> +	int val = PRINTK_PENDING_WAKEUP;
+>> +
+>> +	if (serialized_printing)
+>> +		val |= PRINTK_PENDING_OUTPUT;
+>> +	__wake_up_klogd(val);
+>
+> This would deserve an explanation why PRINTK_PENDING_WAKEUP is enough.
+>
+> I know that it is because it will be done by kthreads. But I know it
+> only because I know the wide context, plans, ...
+
+Right.
+
+> I would prefer if we split this patch into two:
+>
+>   + 1st adding the nbcon_state-related API and logic
+>   + 2nd adding have_serialized_console and related stuff
+>
+> The various cases where the have_{legacy,boot,serialized}_console
+> variables are set/used would deserve some explanation. At least, we
+> should mention that they will be handled by a kthread. Some hunks
+> might be even be better moved to a patch adding the alternative code
+> path for threaded/atomic consoles.
+
+Then perhaps I will remove all changes to printk.c until the end of the
+rework. Only necessary minor changes due to shared code (like making
+shared functions in printk.c non-static) would be made.
+
+This has the advantage that when I do modify printk.c, I could
+immediately add all explanations about the nbcon threaded and atomic
+paths and they would make sense because you would see the threaded and
+atomic functions being called in those paths.
+
+Taking PREEMPT_RT as an example, the current total remaining rework
+diffstat (including this series) for printk.c is:
+
+ kernel/printk/printk.c |  419 ++++++++++++++++++++++++-------
+ 1 file changed, 329 insertions(+), 90 deletions(-)
+
+And probably that could be split into several patches.
+
+For v3 I will only touch printk.c to expose shared code. (But your
+comments are still important because you pointed out several things that
+need to be different when I do get around to modifying printk.c.)
+
+John
