@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 864CA767775
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ECF76777A
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 23:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjG1VMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 17:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        id S233618AbjG1VOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 17:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjG1VMa (ORCPT
+        with ESMTP id S229944AbjG1VOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 17:12:30 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2369449E;
-        Fri, 28 Jul 2023 14:12:28 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36SLCHgO040036;
-        Fri, 28 Jul 2023 16:12:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690578737;
-        bh=A4KSrBCg00/JTvtgrv/CyVR6maJap0Me7hc/x8KElwU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=JaXc6HJnz6ZrwqnmGtaiD4CXh27xv/DxmaV9/N6uFExV0QcpqvYhg88uzrh+JiOBo
-         K/MNCkaRrMN/eEWkwFYIi+Nc/YRTns+79tQZxKdPFQblC6PRwULERHA3CgNwv3Od8B
-         yI7RKvB6UewWgMJzukFW+x0m5rnNv5Gpj9lg15Bc=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36SLCHNh031392
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 28 Jul 2023 16:12:17 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 28
- Jul 2023 16:12:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 28 Jul 2023 16:12:17 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36SLCHue067345;
-        Fri, 28 Jul 2023 16:12:17 -0500
-Date:   Fri, 28 Jul 2023 16:12:17 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jayesh Choudhary <j-choudhary@ti.com>
-CC:     <vigneshr@ti.com>, <s-vadapalli@ti.com>, <afd@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <rogerq@kernel.org>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 0/4] Add peripherals for J784S4
-Message-ID: <20230728211217.mipwoira57g7dcc6@moody>
-References: <20230728050859.7370-1-j-choudhary@ti.com>
+        Fri, 28 Jul 2023 17:14:38 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE624237
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:14:35 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26837895fbbso1847429a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 14:14:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690578875; x=1691183675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ihhjQ015ULBeLHlsfdra97mpsg2Vdyuop1Qw9sUpXRo=;
+        b=YKTfrAu5cda6Hprzk5VLtLJ9seMWwKUBsHuPfS7QeYveEDsRT9YbfTenV2POOX+u/A
+         i3EZqODzxV9KJ6lMlGl6sUb8CMArJTYDnZrnA+2mo823uyRd9e4u4CMTBOolSQwMh27j
+         ok9XnpsU0iH7kLzkuObcvcpn7braC14x8ORgI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690578875; x=1691183675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ihhjQ015ULBeLHlsfdra97mpsg2Vdyuop1Qw9sUpXRo=;
+        b=ZdJkD1Lyfp+mTk7fCp481O+QGHiQL85/OtzoRClR8fNZVqVf8/6ZEWUp7EP2f0k7wQ
+         UxEmgnHg81gBuz32YJ8/u9Q7E+kBDQWXa4Qicz/T74Y9tncMy1fAxsMaQoSEaw4zX//w
+         LS9fquoDNO9AXS/JoDtUGFtV3+qeXGA47uhVXkM9zqZVasgBeR3qs+5H/4XSBKscK/Jz
+         kuC8glOkC9Zgp06bO3BC4BneEooE1vxFsrtX7zihGrvaSQbzxRnhzTuWUvx/WeMN933D
+         GUmqizU46YXZoX3l/Nff9hxx2QomwONCLZ7vhl3Apsxid1A+TB2jT97q+1wrkUtZqlR1
+         jZWA==
+X-Gm-Message-State: ABy/qLZsNxoyDq/ie93Bc88XiCduoBs61V998QROj8fOZaW/WsntixZT
+        95SCpiTXU9QQrZexOtZiQdXWrWmC2hwPply2hOWsHg==
+X-Google-Smtp-Source: APBJJlFcl3YqaMIBj+CnnYODhnukpUqOI9hBHtsgGI2hOks0pyAdr/xfVsUBA+2Ff6uXmcdr1p3gsf/OiHaBif/tUVU=
+X-Received: by 2002:a17:90a:a109:b0:268:5c3b:6f37 with SMTP id
+ s9-20020a17090aa10900b002685c3b6f37mr2814972pjp.0.1690578875380; Fri, 28 Jul
+ 2023 14:14:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230728050859.7370-1-j-choudhary@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1690432469-14803-1-git-send-email-quic_vgarodia@quicinc.com> <1690432469-14803-4-git-send-email-quic_vgarodia@quicinc.com>
+In-Reply-To: <1690432469-14803-4-git-send-email-quic_vgarodia@quicinc.com>
+From:   Nathan Hebert <nhebert@chromium.org>
+Date:   Fri, 28 Jul 2023 14:14:24 -0700
+Message-ID: <CANHAJhGpdHLnU0d5H2xKJtE-F8fj7ge9+OkKG6Q=h_WtSRa1qQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] venus: hfi: add checks to handle capabilities from firmware
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>
+Cc:     stanimir.k.varbanov@gmail.com, bryan.odonoghue@linaro.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mchehab@kernel.org, hans.verkuil@cisco.com, tfiga@chromium.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10:38-20230728, Jayesh Choudhary wrote:
-> This series adds support for:
-> - SERDES, WIZ DT nodes, Serdes lane control mux
-> - DSS and DisplayPort-0 nodes
-> 
-> This support DEPENDS upon another series which was introduced as part
-> of discussion in v5. That series[1] moves the ti-serdes headers file
-> from bindings to "arch/arm64/boot/dts/ti". (That series is merged in
-> linux-next tree)
-> 
-> Changelog v6->v7:
-> - change compatible for scm_conf to 'simple-bus'
-> - drop main_cpsw node due to driver dependency on [2]
-> 
-> Changelog v5->v6:
-> - Change header file according to [1].
-> - Add idle-state property in serdes_ln_ctrl node.
-> - Fix dtbs_check warning due to clock-frequency property in serdes_refclk
->   node by disabling the node in main.dtsi and enabling it in board file
->   when the clock-frequency node is actually added.
-> 
-> Changelog v4->v5:
-> - rebased the patches on linux-next tip.
-> 
-> Changelog v3->v4:
-> - add reg property to serdes_ln_ctrl and fix the node name again to
->   get rid of dtbs_check error.
-> - reorder reg, reg-names and ranges property for main_cpsw1.
-> - correct the order for clocks in serdes_wiz nodes to fix dtbs_check
->   warnings.
-> - fix indentation in reg, reg-names and clock property for dss node.
-> - add comments for the reg type in dss registers.
-> 
-> Changelog v3->v2:
-> - fix dtc warnings for 'scm_conf' and 'serdes_ln_ctrl' nodes
->   (Checked all the changes of the series with W=12 option during build)
-> - added clock-frequency for serdes_refclk along with other EVM changes
->   This refclk is being used by all the instances of serdes_wiz which
->   are disabled by default. So configuring refclk when the serdes nodes
->   are used for the first time is okay.
-> 
-> Changelog v1->v2:
-> - Moved J784S4 EVM changes together to the last patch
->   (Suggested by Andrew)
-> 
-> v5 patch link:
-> <https://lore.kernel.org/all/20230721132029.123881-1-j-choudhary@ti.com/>
-> 
-> [1]: <https://lore.kernel.org/all/20230721125732.122421-1-j-choudhary@ti.com/>
-> [2]: <https://lore.kernel.org/all/20230605154153.24025-1-afd@ti.com/>
-> 
-> Rahul T R (2):
->   arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
->   arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
-> 
+On Wed, Jul 26, 2023 at 9:35=E2=80=AFPM Vikash Garodia
+<quic_vgarodia@quicinc.com> wrote:
+>
+> The hfi parser, parses the capabilities received from venus firmware and
+> copies them to core capabilities. Consider below api, for example,
+> fill_caps - In this api, caps in core structure gets updated with the
+> number of capabilities received in firmware data payload. If the same api
+> is called multiple times, there is a possibility of copying beyond the ma=
+x
+> allocated size in core caps.
+> Similar possibilities in fill_raw_fmts and fill_profile_level functions.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 1a73374a04e5 ("media: venus: hfi_parser: add common capability par=
+ser")
+> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> ---
+>  drivers/media/platform/qcom/venus/hfi_parser.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c b/drivers/med=
+ia/platform/qcom/venus/hfi_parser.c
+> index 6cf74b2..ec73cac 100644
+> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
+> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
+> @@ -86,6 +86,9 @@ static void fill_profile_level(struct hfi_plat_caps *ca=
+p, const void *data,
+>  {
+>         const struct hfi_profile_level *pl =3D data;
+>
+> +       if (cap->num_pl > HFI_MAX_PROFILE_COUNT)
+> +               return;
+> +
+This check does not fully prevent out of bounds writes. Should the
+return condition be on |cap->num_pl + num > HFI_MAX_PROFILE_COUNT|, so
+the last byte won't be written past the end of the array?
 
-Could you enable AM69-SK as well? is there anything stopping it being part of the series?
+Similarly for the patches to |fill_caps| and |fill_raw_fmts|.
+>         memcpy(&cap->pl[cap->num_pl], pl, num * sizeof(*pl));
+>         cap->num_pl +=3D num;
+>  }
+> @@ -111,6 +114,9 @@ fill_caps(struct hfi_plat_caps *cap, const void *data=
+, unsigned int num)
+>  {
+>         const struct hfi_capability *caps =3D data;
+>
+> +       if (cap->num_caps > MAX_CAP_ENTRIES)
+> +               return;
+> +
+>         memcpy(&cap->caps[cap->num_caps], caps, num * sizeof(*caps));
+>         cap->num_caps +=3D num;
+>  }
+> @@ -137,6 +143,9 @@ static void fill_raw_fmts(struct hfi_plat_caps *cap, =
+const void *fmts,
+>  {
+>         const struct raw_formats *formats =3D fmts;
+>
+> +       if (cap->num_fmts > MAX_FMT_ENTRIES)
+> +               return;
+> +
+>         memcpy(&cap->fmts[cap->num_fmts], formats, num_fmts * sizeof(*for=
+mats));
+>         cap->num_fmts +=3D num_fmts;
+>  }
+> @@ -159,6 +168,9 @@ parse_raw_formats(struct venus_core *core, u32 codecs=
+, u32 domain, void *data)
+>                 rawfmts[i].buftype =3D fmt->buffer_type;
+>                 i++;
+>
+> +               if (i >=3D MAX_FMT_ENTRIES)
+> +                       return;
+> +
+>                 if (pinfo->num_planes > MAX_PLANES)
+>                         break;
+>
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum=
+,
+> a Linux Foundation Collaborative Project
+>
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Best regards,
+Nathan Hebert
