@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC2E76724D
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDDE76724F
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 18:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234321AbjG1QpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 12:45:23 -0400
+        id S233995AbjG1Qpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 12:45:53 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235566AbjG1Qoc (ORCPT
+        with ESMTP id S235176AbjG1QpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 12:44:32 -0400
+        Fri, 28 Jul 2023 12:45:16 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF69F4C13
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9108A4EC3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 09:43:54 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD43CD75;
-        Fri, 28 Jul 2023 09:44:30 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4FD21570;
+        Fri, 28 Jul 2023 09:44:33 -0700 (PDT)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1286D3F844;
-        Fri, 28 Jul 2023 09:43:44 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A62D3F67D;
+        Fri, 28 Jul 2023 09:43:47 -0700 (PDT)
 From:   James Morse <james.morse@arm.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org
 Cc:     Fenghua Yu <fenghua.yu@intel.com>,
@@ -38,9 +38,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Jamie Iles <quic_jiles@quicinc.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com
-Subject: [PATCH v5 10/24] tick/nohz: Move tick_nohz_full_mask declaration outside the #ifdef
-Date:   Fri, 28 Jul 2023 16:42:40 +0000
-Message-Id: <20230728164254.27562-11-james.morse@arm.com>
+Subject: [PATCH v5 11/24] x86/resctrl: Add cpumask_any_housekeeping() for limbo/overflow
+Date:   Fri, 28 Jul 2023 16:42:41 +0000
+Message-Id: <20230728164254.27562-12-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230728164254.27562-1-james.morse@arm.com>
 References: <20230728164254.27562-1-james.morse@arm.com>
@@ -55,50 +55,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tick_nohz_full_mask lists the CPUs that are nohz_full. This is only
-needed when CONFIG_NO_HZ_FULL is defined. tick_nohz_full_cpu() allows
-a specific CPU to be tested against the mask, and evaluates to false
-when CONFIG_NO_HZ_FULL is not defined.
+The limbo and overflow code picks a CPU to use from the domain's list
+of online CPUs. Work is then scheduled on these CPUs to maintain
+the limbo list and any counters that may overflow.
 
-The resctrl code needs to pick a CPU to run some work on, a new helper
-prefers housekeeping CPUs by examining the tick_nohz_full_mask. Hiding
-the declaration behind #ifdef CONFIG_NO_HZ_FULL forces all the users to
-be behind an ifdef too.
+cpumask_any() may pick a CPU that is marked nohz_full, which will
+either penalise the work that CPU was dedicated to, or delay the
+processing of limbo list or counters that may overflow. Perhaps
+indefinitely. Delaying the overflow handling will skew the bandwidth
+values calculated by mba_sc, which expects to be called once a second.
 
-Move the tick_nohz_full_mask declaration, this lets callers drop the
-ifdef, and guard access to tick_nohz_full_mask with IS_ENABLED() or
-something like tick_nohz_full_cpu().
-
-The definition does not need to be moved as any callers should be
-removed at compile time unless CONFIG_NO_HZ_FULL is defined.
+Add cpumask_any_housekeeping() as a replacement for cpumask_any()
+that prefers housekeeping CPUs. This helper will still return
+a nohz_full CPU if that is the only option. The CPU to use is
+re-evaluated each time the limbo/overflow work runs. This ensures
+the work will move off a nohz_full CPU once a housekeeping CPU is
+available.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 ---
- include/linux/tick.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Changes since v3:
+ * typos fixed
 
-diff --git a/include/linux/tick.h b/include/linux/tick.h
-index 9459fef5b857..65af90ca409a 100644
---- a/include/linux/tick.h
-+++ b/include/linux/tick.h
-@@ -174,9 +174,16 @@ static inline u64 get_cpu_iowait_time_us(int cpu, u64 *unused) { return -1; }
- static inline void tick_nohz_idle_stop_tick_protected(void) { }
- #endif /* !CONFIG_NO_HZ_COMMON */
+Changes since v4:
+ * Made temporary variables unsigned
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 23 +++++++++++++++++++++++
+ arch/x86/kernel/cpu/resctrl/monitor.c  | 17 ++++++++++++-----
+ 2 files changed, 35 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 7c2a1c235480..a32d307292a1 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -7,6 +7,7 @@
+ #include <linux/kernfs.h>
+ #include <linux/fs_context.h>
+ #include <linux/jump_label.h>
++#include <linux/tick.h>
+ #include <asm/resctrl.h>
  
-+/*
-+ * Mask of CPUs that are nohz_full.
+ #define L3_QOS_CDP_ENABLE		0x01ULL
+@@ -55,6 +56,28 @@
+ /* Max event bits supported */
+ #define MAX_EVT_CONFIG_BITS		GENMASK(6, 0)
+ 
++/**
++ * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
++ *			        aren't marked nohz_full
++ * @mask:	The mask to pick a CPU from.
 + *
-+ * Users should be guarded by CONFIG_NO_HZ_FULL or a tick_nohz_full_cpu()
-+ * check.
++ * Returns a CPU in @mask. If there are housekeeping CPUs that don't use
++ * nohz_full, these are preferred.
 + */
-+extern cpumask_var_t tick_nohz_full_mask;
++static inline unsigned int cpumask_any_housekeeping(const struct cpumask *mask)
++{
++	unsigned int cpu, hk_cpu;
 +
- #ifdef CONFIG_NO_HZ_FULL
- extern bool tick_nohz_full_running;
--extern cpumask_var_t tick_nohz_full_mask;
- 
- static inline bool tick_nohz_full_enabled(void)
++	cpu = cpumask_any(mask);
++	if (tick_nohz_full_cpu(cpu)) {
++		hk_cpu = cpumask_nth_andnot(0, mask, tick_nohz_full_mask);
++		if (hk_cpu < nr_cpu_ids)
++			cpu = hk_cpu;
++	}
++
++	return cpu;
++}
++
+ struct rdt_fs_context {
+ 	struct kernfs_fs_context	kfc;
+ 	bool				enable_cdpl2;
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index c268aa5925c7..f0670795b446 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -767,9 +767,9 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
+ void cqm_handle_limbo(struct work_struct *work)
  {
+ 	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
+-	int cpu = smp_processor_id();
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *d;
++	int cpu;
+ 
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+@@ -778,8 +778,10 @@ void cqm_handle_limbo(struct work_struct *work)
+ 
+ 	__check_limbo(d, false);
+ 
+-	if (has_busy_rmid(d))
++	if (has_busy_rmid(d)) {
++		cpu = cpumask_any_housekeeping(&d->cpu_mask);
+ 		schedule_delayed_work_on(cpu, &d->cqm_limbo, delay);
++	}
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
+ }
+@@ -789,7 +791,7 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms)
+ 	unsigned long delay = msecs_to_jiffies(delay_ms);
+ 	int cpu;
+ 
+-	cpu = cpumask_any(&dom->cpu_mask);
++	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+ 	dom->cqm_work_cpu = cpu;
+ 
+ 	schedule_delayed_work_on(cpu, &dom->cqm_limbo, delay);
+@@ -799,10 +801,10 @@ void mbm_handle_overflow(struct work_struct *work)
+ {
+ 	unsigned long delay = msecs_to_jiffies(MBM_OVERFLOW_INTERVAL);
+ 	struct rdtgroup *prgrp, *crgrp;
+-	int cpu = smp_processor_id();
+ 	struct list_head *head;
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *d;
++	int cpu;
+ 
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+@@ -823,6 +825,11 @@ void mbm_handle_overflow(struct work_struct *work)
+ 			update_mba_bw(prgrp, d);
+ 	}
+ 
++	/*
++	 * Re-check for housekeeping CPUs. This allows the overflow handler to
++	 * move off a nohz_full CPU quickly.
++	 */
++	cpu = cpumask_any_housekeeping(&d->cpu_mask);
+ 	schedule_delayed_work_on(cpu, &d->mbm_over, delay);
+ 
+ out_unlock:
+@@ -836,7 +843,7 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+ 
+ 	if (!static_branch_likely(&rdt_mon_enable_key))
+ 		return;
+-	cpu = cpumask_any(&dom->cpu_mask);
++	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+ 	dom->mbm_work_cpu = cpu;
+ 	schedule_delayed_work_on(cpu, &dom->mbm_over, delay);
+ }
 -- 
 2.39.2
 
