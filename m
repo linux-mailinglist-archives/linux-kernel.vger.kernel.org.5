@@ -2,97 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D080766C8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7131B766C90
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 14:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbjG1MJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 08:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        id S234700AbjG1MMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 08:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233609AbjG1MJc (ORCPT
+        with ESMTP id S233512AbjG1MMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 08:09:32 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF1010EC
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:09:31 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe0c566788so3565845e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 05:09:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690546170; x=1691150970;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IgYRXxxK/5wAQI8aY9jzNcf8VXgkU89vW14ATX1K3wQ=;
-        b=Z8elz0L8CO6jiS0GIKrj0BJxeBSShxQk4TdI5eSj7rsYLqlbGRYniiUDZM9XG9LmTF
-         /6nolx7fL38gIIjvdH5Qikze+TLZkEBs0TJesCnyKOpOVDx+vx1eVZFplSc9T9N15L4v
-         qGSP9xQQhmJcOwTZvs6VM/gXkhG33T1SXmEhcjVRDa25ALuFi96KnT8/O2HN02lFf35D
-         KvgeuPo1G77msVA0iJ1MXm36WDo0iKzUtuUrHAHzXDqtVEMJB+XSpUCfwPryHj/wyWml
-         akRbGx2TkYeRzLV/4l9ZQwk9I5u5ZytBQ6Dmc9EcWE3NpQXn9gRMMg1ebhDQaeIk58lz
-         G86Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690546170; x=1691150970;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IgYRXxxK/5wAQI8aY9jzNcf8VXgkU89vW14ATX1K3wQ=;
-        b=Wb+asBBeJ9gE/vaN3F8cfaL1ZYYoJW2m7AJX+NHyT/l5DVTqf1SnBmAPs51Jry3+gG
-         IHy/CBDiGV3wJyOXEUcsm+3TVG9ODWFNiDguDfuSYROzGOQB67fjjzIeyvBmZJguFN9l
-         bffcKyW7CnBdkmjUy+tcy/N5WLt/1giI6ekya64amUBdT+S72A1ZNWfaKK634+vVpPbw
-         NMlAQmW6dtqBs6n6oiYzT9vx6wxGgHPFkNNl7xq2GVLJwkElZuHY+EDNckzDWGtedCkq
-         hp+2B7PwaIIGNBL96OcPnze+jZwgtXKMGIK9YLmED659x6WUBnfnQfAVxwmwfE5J2ikG
-         aHvA==
-X-Gm-Message-State: ABy/qLaL8wt+OKuxQT88miJ2B8whM9XEtotO4KMBFKacO0RqiVJiVhMh
-        C2ocvB33MnZ+wG7+y4ZRD6M=
-X-Google-Smtp-Source: APBJJlHZDmLmzYtmm3fRpWLY8dRjc7TguZZPZHSFI1d1nHs3cRqMKxKTnkXIDty9Jqal6AqlqwmLww==
-X-Received: by 2002:ac2:5b1d:0:b0:4fd:d1df:9bda with SMTP id v29-20020ac25b1d000000b004fdd1df9bdamr1537060lfn.42.1690546169831;
-        Fri, 28 Jul 2023 05:09:29 -0700 (PDT)
-Received: from ramazan-pc.synapse.com (d98-21.icpnet.pl. [77.65.98.21])
-        by smtp.gmail.com with ESMTPSA id d28-20020ac2545c000000b004fb8f4df9bdsm792300lfn.226.2023.07.28.05.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 05:09:29 -0700 (PDT)
-From:   Ramazan Safiullin <ram.safiullin2001@gmail.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ramazan Safiullin <ram.safiullin2001@gmail.com>
-Subject: [PATCH] MAINTAINERS: add documentation to PSI section
-Date:   Fri, 28 Jul 2023 14:09:09 +0200
-Message-Id: <20230728120909.234244-1-ram.safiullin2001@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 08:12:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB312686;
+        Fri, 28 Jul 2023 05:12:45 -0700 (PDT)
+Message-ID: <20230728105650.565799744@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690546362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=kpBOwKlqwb1XdE53agPQsThLBD7jSLVlQL/AIwN2igI=;
+        b=kvJ2NkMsyvOj8sVkvCyve2x/YId5ocoexRSrji+7SZojTI499+iG8CIChuyiIoSe/xiNZZ
+        91wcgfwfsgoHi4XXd4Tvl9Kz6CsgXN9ORdo+PQMSmJCwyBI8So41UVLPq+a+rKxKgUzmNz
+        s/xnYlgrDlOVapxHqDF37YdcDpQnjff3+EcEU9ZyJQVSGIvKXOQUf6PMXNCVk6RRy7tt8O
+        rJ8tYVlcxbY2QgP0VTXMTn16Pz0WGIFxz9GhtT1njktRB/dgvLBgf4ERcwT7GI0dZ7yHZH
+        AUovWsEneeCS258Y/4H3uD+UdKRbj3tm3WwROhI6hA67IVkaM5fv8jEkrj+SLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690546362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=kpBOwKlqwb1XdE53agPQsThLBD7jSLVlQL/AIwN2igI=;
+        b=9zjv0UN9a0emaZKnIwSq3lSkXNicjb7rqmDR0H+3o6ud5iQkkJwhHFpST3atW2GLL9Z5BK
+        QCvax6mVtSnwzlBg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: [patch v2 00/38] x86/cpu: Rework the topology evaluation
+Date:   Fri, 28 Jul 2023 14:12:42 +0200 (CEST)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While creating a patch for the psi documentation I noticed that
-MAINTENERS was missing an entry in psi.
+Hi!
 
-Add entry for psi documentation.
+This is the follow up to V1:
 
-Signed-off-by: Ramazan Safiullin <ram.safiullin2001@gmail.com>
+  https://lore.kernel.org/lkml/20230724155329.474037902@linutronix.de
+
+which addresses the review feedback and some minor fallout I observed in my
+testing of the work based on top.
+
+TLDR:
+
+This reworks the way how topology information is evaluated via CPUID
+in preparation for a larger topology management overhaul to address
+shortcomings of the current code vs. hybrid systems and systems which make
+use of the extended topology domains in leaf 0x1f. Aside of that it's an
+overdue spring cleaning to get rid of accumulated layers of duct tape and
+haywire.
+
+What changed vs. V1:
+
+  - Fixed an issue vs. the logical die/pkg management as the current
+    code (ab)uses cpuinfo for persistant storage.
+
+  - Consolidated APIC ID usage on u32 and ditched the u16 limitation
+
+  - Addressed the review feedback from Peter and Arjan
+
+  - Added a new patch which gets rid of XENPV fiddling in the cpuinfo
+    state. That needs some testing on XENPV obviously. The relevant
+    patches are #22 and #37
+
+I did not pick up any of the tested by tags yet. I hope people can run it
+once more. Neither did I add the Ack from Peter.
+
+The series is based on the APIC cleanup series:
+
+  https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de
+
+and also available on top of that from git:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v2
+
+Thanks,
+
+	tglx
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a5c16bb92fe2..2da6643b9488 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17103,6 +17103,7 @@ PRESSURE STALL INFORMATION (PSI)
- M:	Johannes Weiner <hannes@cmpxchg.org>
- M:	Suren Baghdasaryan <surenb@google.com>
- S:	Maintained
-+F:	Documentation/accounting/psi.rst
- F:	include/linux/psi*
- F:	kernel/sched/psi.c
- 
--- 
-2.25.1
+ Documentation/arch/x86/topology.rst       |   12 -
+ a/arch/x86/kernel/cpu/topology.c          |  168 ---------------------
+ arch/x86/events/amd/core.c                |    2 
+ arch/x86/events/amd/uncore.c              |    2 
+ arch/x86/events/intel/uncore.c            |    2 
+ arch/x86/hyperv/hv_vtl.c                  |    2 
+ arch/x86/include/asm/apic.h               |   32 +---
+ arch/x86/include/asm/cacheinfo.h          |    3 
+ arch/x86/include/asm/cpuid.h              |   32 ++++
+ arch/x86/include/asm/mpspec.h             |    2 
+ arch/x86/include/asm/processor.h          |   60 +++++--
+ arch/x86/include/asm/smp.h                |    4 
+ arch/x86/include/asm/topology.h           |   51 +++++-
+ arch/x86/include/asm/x86_init.h           |    2 
+ arch/x86/kernel/acpi/boot.c               |    4 
+ arch/x86/kernel/amd_nb.c                  |    8 -
+ arch/x86/kernel/apic/apic.c               |   14 -
+ arch/x86/kernel/apic/apic_common.c        |    4 
+ arch/x86/kernel/apic/apic_flat_64.c       |   13 -
+ arch/x86/kernel/apic/apic_noop.c          |    9 -
+ arch/x86/kernel/apic/apic_numachip.c      |   21 --
+ arch/x86/kernel/apic/bigsmp_32.c          |   10 -
+ arch/x86/kernel/apic/local.h              |    6 
+ arch/x86/kernel/apic/probe_32.c           |   10 -
+ arch/x86/kernel/apic/x2apic_cluster.c     |    1 
+ arch/x86/kernel/apic/x2apic_phys.c        |   10 -
+ arch/x86/kernel/apic/x2apic_uv_x.c        |   67 +-------
+ arch/x86/kernel/cpu/Makefile              |    5 
+ arch/x86/kernel/cpu/amd.c                 |  156 --------------------
+ arch/x86/kernel/cpu/cacheinfo.c           |   51 ++----
+ arch/x86/kernel/cpu/centaur.c             |    4 
+ arch/x86/kernel/cpu/common.c              |  111 +-------------
+ arch/x86/kernel/cpu/cpu.h                 |   14 +
+ arch/x86/kernel/cpu/hygon.c               |  133 -----------------
+ arch/x86/kernel/cpu/intel.c               |   38 ----
+ arch/x86/kernel/cpu/mce/amd.c             |    4 
+ arch/x86/kernel/cpu/mce/apei.c            |    4 
+ arch/x86/kernel/cpu/mce/core.c            |    4 
+ arch/x86/kernel/cpu/mce/inject.c          |    7 
+ arch/x86/kernel/cpu/proc.c                |    8 -
+ arch/x86/kernel/cpu/zhaoxin.c             |   18 --
+ arch/x86/kernel/kvm.c                     |    6 
+ arch/x86/kernel/sev.c                     |    2 
+ arch/x86/kernel/smpboot.c                 |   97 +++++++-----
+ arch/x86/kernel/vsmp_64.c                 |   13 -
+ arch/x86/mm/amdtopology.c                 |   35 ++--
+ arch/x86/mm/numa.c                        |    4 
+ arch/x86/xen/apic.c                       |   14 -
+ arch/x86/xen/smp_pv.c                     |    3 
+ b/arch/x86/kernel/cpu/debugfs.c           |   97 ++++++++++++
+ b/arch/x86/kernel/cpu/topology.h          |   51 ++++++
+ b/arch/x86/kernel/cpu/topology_amd.c      |  179 +++++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_common.c   |  233 ++++++++++++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_ext.c      |  136 +++++++++++++++++
+ drivers/edac/amd64_edac.c                 |    4 
+ drivers/edac/mce_amd.c                    |    4 
+ drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 
+ drivers/hwmon/fam15h_power.c              |    7 
+ drivers/scsi/lpfc/lpfc_init.c             |    8 -
+ drivers/virt/acrn/hsm.c                   |    2 
+ 60 files changed, 1049 insertions(+), 956 deletions(-)
 
