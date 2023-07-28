@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DD3767434
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877D3767445
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 20:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbjG1SH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 14:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S235724AbjG1SKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 14:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbjG1SH0 (ORCPT
+        with ESMTP id S235711AbjG1SKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 14:07:26 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1F23C1F
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-563f752774fso1369853a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690567642; x=1691172442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
-        b=bthRLJgmCvjOnYvWo+2qon30TpingFUg2Fsc6mWV841J6V//QLFLhA/3pFUZ3RWjjp
-         lvqPYA00NNy/7rUAp+SRbT6DXYQV9P2xYvt6Fw87chrCyM0dslS+R/6hc5wlsGx04nxH
-         0m+HjUzgJ46oDMGQuIwdEtvGiOlhwqQO7dlBEa8W8NizZqJBs/5UmVIm7NdU+q4u2kwT
-         Ig/XvZWu743pJjwIQVwK0TnKLi848DKrm8Rcsm7V8TXDR7pyX+R3tOBiI8YtrQRupbSq
-         VYHkCSyOu+v4UnQfxGoiP/bFyUwxKmqJjciC1srz6+GGr7OHRgKVsqbjV3O/RlK8YIV7
-         7yGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690567642; x=1691172442;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0j1xWKyarV49sAVolaI4AB1ZfYUgMNGUimAsLLV4Mug=;
-        b=ACiNrmYYCnULyjtnodoooxDy82n2nBE4aiLfC4Al67jhLTZcaOpuVetAU13Z9JwUxv
-         USRBLhiF63+AGQYsn7+YgyB+KN2dLHScGp+EDX1Nsz2Cgv9gt5UKOFIe30ybIeZ1brFq
-         ij55BA+FMX64kOSFcZW0ws9kkwBaHNk5QGgzGyw8Y1DH4gNnoFnJPqPQHiUMIzh2E1Xu
-         TtMwLNtSwH47jom15LdykPsSSsa1m4URgIz6+wdkmbcUzV9dwwhEGfILtKziMwvUx373
-         jm5oDadtY02m6MJXISm51do0FfpYR2p0+JK9whDNf05HEPhk9pcFnYhWOYR5PRfYMy6K
-         gcZw==
-X-Gm-Message-State: ABy/qLbpEOgkDXNDnT1plCqNrMKT9xZgW5PXFN/UrhptRH4mmUhllgp1
-        uqEC97y7IUq5ROa0de2FawnagM0wljzdyuep7biO5g==
-X-Google-Smtp-Source: APBJJlHgwJ3A+UmtsOH2HeGY6HcpJx29kymYLleOv2cjpggHGfecNjMbkiZLUi0kBVGPqDLYF511j6F7xC4+th4qRMQ=
-X-Received: by 2002:a17:90b:8c4:b0:268:23d7:21c with SMTP id
- ds4-20020a17090b08c400b0026823d7021cmr2007489pjb.30.1690567641609; Fri, 28
- Jul 2023 11:07:21 -0700 (PDT)
+        Fri, 28 Jul 2023 14:10:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E044BE
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 11:09:47 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36SHL8VH022569;
+        Fri, 28 Jul 2023 18:09:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=MiNih1TreF2bQ84DR5ZYkbhz39CI8jbZhgMSwNvh2mI=;
+ b=paurwDYT+4t4xkgJyao4rlCHxsnFnYWhROz/3k8TzbKzc9bug2aFHLNUeigJcC2K2hRc
+ LHXsEQO2M9LCerqgS/HsFH9/MPCqmdGWa6xrquATlEpJZHE3TRKss606L5DvIZs66rh/
+ l/qCqvdjfJQ9S5PrEy36nxpUzg499uUlejDzK2nd3AI1kMuPEO8A0YHort3y36/EpELS
+ xkGsWoGiFZhIqHOzAw2lUZQifpf6WiVkqUbv7kkGTcn+UjUHUJ09ypZB6kLDDm0uafc2
+ uajS52hamZv8rvJAE/MPAW45GzlV9QGoXcHHToMpD6EkJut760dtjCXNOvQPYrT5al89 3w== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4j0g0356-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 18:09:25 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36SI9NG6022496
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 28 Jul 2023 18:09:24 GMT
+Received: from blr-ubuntu-498.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 28 Jul 2023 11:09:20 -0700
+From:   Pintu Kumar <quic_pintu@quicinc.com>
+To:     <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <hch@lst.de>, <m.szyprowski@samsung.com>,
+        <robin.murphy@arm.com>, <iommu@lists.linux.dev>
+CC:     <quic_pintu@quicinc.com>, <pintu.ping@gmail.com>
+Subject: [PATCH] dma-contiguous: define proper name for global cma region
+Date:   Fri, 28 Jul 2023 23:38:13 +0530
+Message-ID: <1690567693-22082-1-git-send-email-quic_pintu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20230724142237.358769-1-leitao@debian.org> <20230724142237.358769-3-leitao@debian.org>
- <ZL61cIrQuo92Xzbu@google.com> <ZL+VfRiJQqrrLe/9@gmail.com>
- <ZMAAMKTaKSIKi1RW@google.com> <ZMP07KtOeJ09ejAd@gmail.com>
-In-Reply-To: <ZMP07KtOeJ09ejAd@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 28 Jul 2023 11:07:10 -0700
-Message-ID: <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-To:     Breno Leitao <leitao@debian.org>
-Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
-        ast@kernel.org, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cgVwNJ-yHOn6m5eNHYQPWeBb3RDzPQkv
+X-Proofpoint-ORIG-GUID: cgVwNJ-yHOn6m5eNHYQPWeBb3RDzPQkv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=737 mlxscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307280164
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 10:03=E2=80=AFAM Breno Leitao <leitao@debian.org> w=
-rote:
->
-> Hello Stanislav,
->
-> On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
-> > On 07/25, Breno Leitao wrote:
-> > > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
-> > > > On 07/24, Breno Leitao wrote:
-> > > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), =
-where
-> > > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastruct=
-ure,
-> > > > > where a sockptr_t is either userspace or kernel space, and handle=
-d as
-> > > > > such.
-> > > > >
-> > > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockop=
-t().
-> > > >
-> > > > We probably need to also have bpf bits in the new
-> > > > io_uring_cmd_getsockopt?
-> > >
-> > > It might be interesting to have the BPF hook for this function as
-> > > well, but I would like to do it in a following patch, so, I can
-> > > experiment with it better, if that is OK.
->
-> I spent smoe time looking at the problem, and I understand we want to
-> call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
-> io_uring_cmd_{g,s}etsockopt().
->
-> Per the previous conversation with Williem,
-> io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void _=
-_user
-> *optval), and optlen as a kernel integer (it comes as from the io_uring
-> SQE), such as:
->
->         void __user *optval =3D u64_to_user_ptr(READ_ONCE(cmd->sqe->optva=
-l));
->         int optlen =3D READ_ONCE(cmd->sqe->optlen);
->
-> Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
-> __cgroup_bpf_run_filter_getsockopt() which expects userpointer for
-> optlen and optval.
->
-> At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
-> pointers for both optlen and optval.
->
-> In this current patchset, it has user pointer for optval and kernel value
-> for optlen. I.e., a third combination.  So, none of the functions would
-> work properly, and we probably do not want to create another function.
->
-> I am wondering if it is a good idea to move
-> __cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
-> able to adapt to any combination.
+The current global cma region name defined as "reserved"
+which is misleading, creates confusion and too generic.
 
-Yeah, I think it makes sense. However, note that the intent of that
-optlen being a __user pointer is to possibly write some (updated)
-value back into the userspace.
-Presumably, you'll pass that updated optlen into some io_uring
-completion queue? (maybe a stupid question, not super familiar with
-io_uring)
+Also, the default cma allocation happens from global cma region,
+so, if one has to figure out all allocations happening from
+global cma region, this seems easier.
 
-> Any feedback is appreciate.
-> Thanks!
+Thus, change the name from "reserved" to "global-cma-region".
+
+Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+Signed-off-by: Pintu Agarwal <pintu.ping@gmail.com>
+---
+ kernel/dma/contiguous.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/dma/contiguous.c b/kernel/dma/contiguous.c
+index 26a8e53..4628b62 100644
+--- a/kernel/dma/contiguous.c
++++ b/kernel/dma/contiguous.c
+@@ -237,7 +237,7 @@ int __init dma_contiguous_reserve_area(phys_addr_t size, phys_addr_t base,
+ 	int ret;
+ 
+ 	ret = cma_declare_contiguous(base, size, limit, 0, 0, fixed,
+-					"reserved", res_cma);
++					"global-cma-region", res_cma);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.7.4
+
