@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DB07665D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E197665D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 28 Jul 2023 09:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbjG1Hz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 03:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S234498AbjG1Hzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 03:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjG1Hz1 (ORCPT
+        with ESMTP id S234493AbjG1Hzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 03:55:27 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987E2173F;
-        Fri, 28 Jul 2023 00:55:22 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 810B05C00AF;
-        Fri, 28 Jul 2023 03:55:19 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute6.internal (MEProxy); Fri, 28 Jul 2023 03:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=readahead.eu; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1690530919; x=1690617319; bh=XVoKzIZsKS3ZCP8rUUytIx3YBhBabFVdsfQ
-        LR4c+1Us=; b=ZwgwJ+BxR5QMmxbkfmsXE5rzJHGLOUN73LJwpukRXw4W7jWzVdk
-        MCAZcTiDk5OnV3OaiQAx5lHhDUPdl6yHDHlz4O1vmy7prHo3KnppZ3x4aTTE5SIy
-        jA+UFZKZwfukWEN5iAMKMDgmaYK6j8so/delo6E5SbAwMfenNwVNLsl0IrR615Eh
-        Mw2uP4OGpHlO+bdcBJ9VlP6D6PgElYTKccAUQe87r8EzeRR77PPqlQhq+6mSULBn
-        pEGNWE9svcYY+ykdn7Vr/63MmmD5gp67NsHE7HJPbT14AIGF2rp+mdkPbvsw/OVm
-        zMHkcAw1FrUi2QA/3K7i/AKDAT5W5k7AfDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690530919; x=1690617319; bh=XVoKzIZsKS3ZCP8rUUytIx3YBhBabFVdsfQ
-        LR4c+1Us=; b=ohOYPS3kWkf/3ikd4qcOvqZgIwrcayBI4xEtM66/VY1OuJuIrm1
-        95rjTz+hySiLj1QotTNFzuUwvnH5QoLh2h9LViYJOWN+ATMpy/IU5aGxTtceBwDm
-        nfR1z179oBC+hKJjEtvF9KezlU5TJMCIRlCqT1YOlO8A/aE0M6obznfF5FE1CGaB
-        ieud7VpLjGe+ZksRsaaoCPYR8u6uZ6Ep9DKqZfBdktyXkbZTBnE2G1ZPFs7AmREI
-        cEuPV2BVFkH0ddCnpBjWLejP7IjqrQwO9q9X1jS6ZyL0VcF4EOQMNP39FLjOSooa
-        0T8WCd20iq1IOhEfWUc2kLEZoztTg49CaJQ==
-X-ME-Sender: <xms:Z3TDZNEIPgKFOrprLtEZB-UU3Ea6dGK0BzszKSsJSy4fOTgo_Zl8Ag>
-    <xme:Z3TDZCWj91Z2iTRF7HBWfyCfA0zumGqzTzVeZ8quplnaKBXG7EqrAzOz5U5rmt7GS
-    yqRRcF9vgmmHyR7H80>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieehgdduvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdff
-    rghvihguucfthhgvihhnshgsvghrghdfuceouggrvhhiugesrhgvrggurghhvggrugdrvg
-    huqeenucggtffrrghtthgvrhhnpeejgeeutdeufedtjeffvdfghfdvvdetteejfedtieff
-    keduffeiheeijeehvdekteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegurghvihgusehrvggruggrhhgvrggurdgvuh
-X-ME-Proxy: <xmx:Z3TDZPIMgPdkJQRW67ZAX9_05wDRPcyBPuFAhX9ep19GvLcMs43IFg>
-    <xmx:Z3TDZDFbIn0Dafsel2URN60upAIhrBKX07ZWcWunSzHLsiVeEqQj_w>
-    <xmx:Z3TDZDWe_vBaICHWY674A1cOnc6Oni5doZpGotE8I3Z5eWZO1n8QXQ>
-    <xmx:Z3TDZJe1-oFCoerzhx8cIi3vMNFlyf4FARLtfUTvS72kIaPnkzktEA>
-Feedback-ID: id2994666:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 28A0C1700089; Fri, 28 Jul 2023 03:55:19 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+        Fri, 28 Jul 2023 03:55:43 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3636730EA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 00:55:41 -0700 (PDT)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230728075539epoutp04c5c6f4c1bdafe5c75759c0313e3f9a77~1_O6ziZgI2198621986epoutp04D
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 07:55:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230728075539epoutp04c5c6f4c1bdafe5c75759c0313e3f9a77~1_O6ziZgI2198621986epoutp04D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1690530939;
+        bh=yUpcGFL91ifhUTlYDbflLFZWGIFU3cqbPQ0gntPnnws=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=sEm+KUr0/EH2VM/Vba+UHITaNHG6jgJePErXX/O5ZP2jaePAccdYNVAXGF7ChmEia
+         l+H10U1COujtbnYqsgTaEDJQjCKSnvt3VGFKPCXSzyOmuVXEFyKbyGcWSvIlCGjFjj
+         nqvHZzhGMPSu5QbOAMGhhfxH1SlIktTuPfseJqhk=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20230728075538epcas2p4eb05711ca66a592463cce43b3f885deb~1_O6MzqiS2694026940epcas2p4E;
+        Fri, 28 Jul 2023 07:55:38 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.92]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4RC0LL0ZZJz4x9QK; Fri, 28 Jul
+        2023 07:55:38 +0000 (GMT)
+X-AuditID: b6c32a43-2f3ff7000001d7ef-8e-64c3747909ff
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7E.D1.55279.97473C46; Fri, 28 Jul 2023 16:55:37 +0900 (KST)
 Mime-Version: 1.0
-Message-Id: <fb464cbf-04c4-4346-a96b-e0b2ab804e16@app.fastmail.com>
-In-Reply-To: <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
-References: <20230714114753.170814-1-david@readahead.eu>
- <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
-Date:   Fri, 28 Jul 2023 09:54:57 +0200
-From:   "David Rheinsberg" <david@readahead.eu>
-To:     "Jeff Xu" <jeffxu@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Daniel Verkamp" <dverkamp@chromium.org>, linux-mm@kvack.org,
-        "Peter Xu" <peterx@redhat.com>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] memfd: support MFD_NOEXEC alongside MFD_EXEC
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Subject: [PATCH 0/2] multi-page bvec configuration for integrity payload
+Reply-To: j-young.choi@samsung.com
+Sender: Jinyoung Choi <j-young.choi@samsung.com>
+From:   Jinyoung Choi <j-young.choi@samsung.com>
+To:     "hch@lst.de" <hch@lst.de>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63@epcms2p1>
+Date:   Fri, 28 Jul 2023 16:55:37 +0900
+X-CMS-MailID: 20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmqW5lyeEUg2fNlhar7/azWcy6/ZrF
+        4uUhTYuVq48yWfT2b2WzmHToGqPF3lvaFpd3zWGzWH78H5PFutfvWRy4PM7f28jicflsqcem
+        VZ1sHrtvNrB5fHx6i8Wjb8sqRo/Pm+Q82g90MwVwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7
+        x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gBdqKRQlphTChQKSCwuVtK3synKLy1JVcjILy6x
+        VUotSMkpMC/QK07MLS7NS9fLSy2xMjQwMDIFKkzIztg6tZu14JJQxZ6jig2MP/i6GDk5JARM
+        JP7372LuYuTiEBLYwShxdvN+1i5GDg5eAUGJvzuEQWqEBTwktj04xwxiCwkoSZxbM4sRIm4g
+        0XK7jQXEZhPQk9jxfDc7yBwRgQnMEps33WaGWMArMaP9KQuELS2xfflWRghbQ+LHsl6oGlGJ
+        m6vfssPY74/Nh6oRkWi9dxaqRlDiwc/dUHFJiUOHvrKB3CkhkC+x4UAgRLhGou3Xe6hyfYlr
+        HRvB1vIK+EpsmjcNrJVFQFVi9o6TrBA1LhIr2nvA4swC8hLb385hBhnJLKApsX6XPsR0ZYkj
+        t1ggKvgkOg7/ZYd5qmHjb6zsHfOeMEG0qkksajKCCMtIfD08H6rEQ2LJrfmMExgVZyGCeRaS
+        E2YhnLCAkXkVo1hqQXFuemqyUYEhPGKT83M3MYITqpbzDsYr8//pHWJk4mA8xCjBwawkwnsq
+        4FCKEG9KYmVValF+fFFpTmrxIUZToOcnMkuJJucDU3peSbyhiaWBiZmZobmRqYG5kjjvvda5
+        KUIC6YklqdmpqQWpRTB9TBycUg1MM0+YfNK67aCWlHBop8qVFZem5T5UjZsitWjjkyNdNq8k
+        D834Y9ga9nV19pqby45kzFNnWbOpXs/7weHct6sONOyQ4rhs4VCzziXr1bz4pcaK+6PnLn3r
+        skhQesp9c661kUuUlgl/We03eUmZ1rrWBYKv5Ja/2af9NdHb8v4B77PP/b6WfpzRa/Brxpye
+        JJ2btoEvtwvyW5/8v02Hf1248ZQ3uw96FKzxZLL0n9Bkunbprw1n0zfwO7jMZZt4MFaFR2hp
+        ikvv8d3vBXqi+mfauMyQXrTR/szfvWZz7xqdy0tmntb90HDJFE7eaMfjc/c4FF09eM64NzF9
+        Bz+Hi8iykNK9lj+Ea46+3zrR0FJy8UMlluKMREMt5qLiRABojWzqMQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63
+References: <CGME20230728075537epcms2p194154023a4cdbe37c0346ef1102d1d63@epcms2p1>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,139 +99,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+In the case of NVMe, it has an integrity payload consisting of one segment.
+So, rather than configuring SG_LIST, it was changed by direct DMA mapping.
 
-On Tue, Jul 18, 2023, at 9:03 PM, Jeff Xu wrote:
-> Hi David
->
-> Thanks email and patch for discussion.
->
-> On Fri, Jul 14, 2023 at 4:48=E2=80=AFAM David Rheinsberg <david@readah=
-ead.eu> wrote:
->>
->> Add a new flag for memfd_create() called MFD_NOEXEC, which has the
->> opposite effect as MFD_EXEC (i.e., it strips the executable bits from
->> the inode file mode).
->>
-> I previously thought about having the symmetric flags, such as
-> MFD_NOEXEC/MFD_EXEC/MFD_NOEXEC_SEAL/MFD_EXEC_SEAL, but decided against
-> it. The app shall decide beforehand what the memfd is created for, if
-> it is no-executable, then it should be sealed, such that it can't be
-> chmod to enable "X" bit.
+The page-merge is not performed for the struct bio_vec when creating 
+a integrity payload in block.
+As a result, when creating an integrity paylaod beyond one page, each 
+struct bio_vec is generated, and its bv_len does not exceed the PAGESIZE.
 
-My point is, an application might decide to *not* seal a property, becau=
-se it knows it has to change it later on. But it might still want to dis=
-able the executable bit initially, so to avoid having executable pages a=
-round that can be exploited.
+To solve it, bio_integrity_add_page() should just add to the existing 
+bvec, similar to bio_add_page() and friends. 
+As the bip configuration changed, the code related to sg_list was
+also modified.
 
->> The default mode for memfd_create() has historically been to use 0777=
- as
->> file modes. The new `MFD_EXEC` flag has now made this explicit, paving
->> the way to reduce the default to 0666 and thus dropping the executable
->> bits for security reasons. Additionally, the `MFD_NOEXEC_SEAL` flag h=
-as
->> been added which allows this without changing the default right now.
->>
->> Unfortunately, `MFD_NOEXEC_SEAL` enforces `MFD_ALLOW_SEALING` and
->> `F_SEAL_EXEC`, with no alternatives available. This leads to multiple
->> issues:
->>
->>  * Applications that do not want to allow sealing either have to use
->>    `MFD_EXEC` (which we don't want, unless they actually need the
->>    executable bits), or they must add `F_SEAL_SEAL` immediately on
->>    return of memfd_create(2) with `MFD_NOEXEC_SEAL`, since this
->>    implicitly enables sealing.
->>
->>    Note that we explicitly added `MFD_ALLOW_SEALING` when creating
->>    memfd_create(2), because enabling seals on existing users of shmem
->>    without them knowing about it can easily introduce DoS scenarios.
->
-> The application that doesn't want MFD_NOEXEC_SEAL can use MFD_EXEC,
-> the kernel won't add MFD_ALLOW_SEALING implicitly. MFD_EXEC makes the
-> kernel behave the same as before, this is also  why sysctl
-> vm.memfd_noexec=3D0 can work seamlessly.
->
->>   It
->>    is unclear why `MFD_NOEXEC_SEAL` was designed to enable seals, and
->>    this is especially dangerous with `MEMFD_NOEXEC_SCOPE_NOEXEC_SEAL`
->>    set via sysctl, since it will silently enable sealing on every mem=
-fd
->>    created.
->>
-> Without sealing, chmod(2) can modify the mfd to be executable, that is
-> the consideration that MFD_NOEXEC is not provided as an option.
-> Indeed, current design is "biased" towards promoting MFD_NOEXEC_SEAL
-> as the safest approach, and try to avoid the pitfall that dev
-> accidently uses "MFD_NOEXEC" without realizing it can still be
-> chmod().
+(ref: https://lore.kernel.org/linux-nvme/yq18rewbmay.fsf@ca-mkp.ca.oracle.com/T/#t)
 
-I think I didn't get my point across. Imagine an application that does *=
-NOT* use sealing, but uses memfds. This application shares memfds with u=
-ntrusted clients, and does this in a safe way (SIGBUS protected). Everyt=
-hing works fine, unless someone decides to enable `vm.memfd_noexec=3D2`.=
- Suddenly, the memfd will have sealing enabled *without* the application=
- ever requesting this. Now any untrusted client that got the memfd can a=
-dd seals to the memfd, even though the creator of the memfd did not enab=
-le sealing. This client can now seal WRITES on the memfd, even though it=
- really should not be able to do that.
 
-(This is not an hypothetical setup, we have such setups for data sharing=
- already)
+Tested like this:
 
-Thus, setting the security-option `memfd_noexec` *breaks* applications, =
-because it enables sealing. If `MFD_NOEXEC_SEAL` would *not* imply `MFD_=
-ALLOW_SEALING`, this would not be an issue. IOW, why does =C2=B4MFD_NOEX=
-EC_SEAL` clear `F_SEAL_SEAL` even if `MFD_ALLOW_SEALING` is not set?
+- Format (support pi)
+$ sudo nvme format /dev/nvme2n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
 
->>  * Applications that do not want `MFD_EXEC`, but rely on
->>    `F_GET_SEALS` to *NOT* return `F_SEAL_EXEC` have no way of achievi=
-ng
->>    this other than using `MFD_EXEC` and clearing the executable bits
->>    manually via fchmod(2). Using `MFD_NOEXEC_SEAL` will set
->>    `F_SEAL_EXEC` and thus break existing code that hard-codes the
->>    seal-set.
->>
->>    This is already an issue when sending log-memfds to systemd-journa=
-ld
->>    today, which verifies the seal-set of the received FD and fails if
->>    unknown seals are set. Hence, you have to use `MFD_EXEC` when
->>    creating memfds for this purpose, even though you really do not ne=
-ed
->>    the executable bits set.
->>
->>  * Applications that want to enable the executable bit later on,
->>    currently have no way to create the memfd without it. They have to
->>    clear the bits immediately after creating it via fchmod(2), or just
->>    leave them set.
->>
-> Is it OK to do what you want in two steps ? What is the concern there =
-? i.e.
-> memfd_create(MFD_EXEC), then chmod to remove the "X" bit.
->
-> I imagine this is probably already what the application does for
-> creating no-executable mfd before my patch, i.e.:
-> memfd_create(), then chmod() to remove "X" to remove "X" bit.
+- Run FIO
+[global]
+ioengine=libaio
+group_reporting
 
-Yes, correct, this is not a technical issue, but rather an API issue. I =
-don't think most memfd-users are aware that their inode has the executab=
-le bit set, and they likely don't want it. But for backwards-compatibili=
-ty reasons (as noted above), they cannot use `MFD_NOEXEC_SEAL`. Hence, w=
-e have to make them explicitly request an executable memfd via `MFD_EXEC=
-` now, even though they clearly do not want this. And then we have to ad=
-d code to drop the executable immediately afterwards.
+[job]
+bs=512k
+iodepth=256
+rw=write
+numjobs=8
+direct=1
+runtime=10s
+filename=/dev/nvme2n1
 
-It don't understand why we don't add out `MFD_NOEXEC` and thus make it a=
- lot easier to patch existing applications? And we make it explicit that=
- these applications don't care for the executable-bit, rather than forci=
-ng them to request the executable bit just to drop it immediately.
+- Result
+...
+[   93.496218] nvme2n1: I/O Cmd(0x1) @ LBA 62464, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.496227] protection error, dev nvme2n1, sector 62464 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.538788] nvme2n1: I/O Cmd(0x1) @ LBA 6144, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.538798] protection error, dev nvme2n1, sector 6144 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.566231] nvme2n1: I/O Cmd(0x1) @ LBA 124928, 1024 blocks, I/O Error (sct 0x0 / sc 0x4)
+[   93.566241] I/O error, dev nvme2n1, sector 124928 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694147] nvme2n1: I/O Cmd(0x1) @ LBA 64512, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694155] protection error, dev nvme2n1, sector 64512 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694299] nvme2n1: I/O Cmd(0x1) @ LBA 5120, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694305] protection error, dev nvme2n1, sector 5120 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+...
 
-The downside of `MFD_NOEXEC` is that it might be picked over `MFD_NOEXEC=
-_SEAL` by uneducated users, thus reduce security. But right now, the alt=
-ernative is that existing code picks `MFD_EXEC` instead and never clears=
- the executable bit, because it is a hassle to do so.
+Jinyoung Choi (2):
+  block: make bvec_try_merge_hw_page() non-static
+  bio-integrity: create multi-page bvecs in bio_integrity_add_page()
 
-Or is there another reason *not* to include `MFD_NOEXEC`? I am not sure =
-I understand fully why you fight it so vehemently?
+ block/bio-integrity.c | 50 ++++++++++++++++++++++++-------------------
+ block/bio.c           |  2 +-
+ block/blk.h           |  4 ++++
+ 3 files changed, 33 insertions(+), 23 deletions(-)
 
-Thanks
-David
+-- 
+2.34.1
