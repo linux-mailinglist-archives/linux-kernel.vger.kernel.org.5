@@ -2,208 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484AD767994
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE470767999
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjG2Act (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
+        id S231915AbjG2Ad3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG2Acq (ORCPT
+        with ESMTP id S230081AbjG2Ad0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:32:46 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422EF30F9
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:32:44 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-785d3a53ed6so30375739f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:32:44 -0700 (PDT)
+        Fri, 28 Jul 2023 20:33:26 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30EE30DA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:33:24 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-55adfa61199so1891290a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690590763; x=1691195563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MezeuiLBEOiNwGr6mc8OEFUZjD210CTEaCKxvSl/02s=;
-        b=UhjoldLRSI3zIiYaM9p2F6FpkgWOVeTVt8nb13ht3+/KQdcoOBaHvfcv1HLgcG5FxT
-         yXZKK+5PScPz79elmC8w5c7FLw29TxOortbQajsuDpPTOa2FQU7mrDjdq+wi9qeTjnfD
-         Z7fWFR+wCRhdLc+Ss1wPtwF1v3Xfr3kiURxAc=
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690590804; x=1691195604;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ahyJuXZ5mL1EHkAmnBhtpjxq5pGjH0m9c44cFqu9RR8=;
+        b=xpUdgokS5I3D2dS83HRiHhZiG56m5FAIJgE/jlbqlE+gYcIRkpxvSi/pZSlUi7sy2z
+         bnqqAIfSeRVJ95s1lcZAuogwJigMtlZdlSs+YHeoYBnYTHfZR6Zk4ahWvPG1AaLULQhY
+         gO+eJNi8wd3w5WbQ9DO9D/sOeD3bA9T5kHZwOM7wmJcQvePox0iYtRM8wYAC7n/dDaqK
+         X7P0sDk/dcUAgQAqq7D+U55LcixXdO1mjn96aqshgDPBbaKb46v56++fUbVWhXcdTM5a
+         esvqsFXNPN843wzsRhz3BzbNQN9oUX4Gbmjl8FepRs+P4u+4Q+dnrBblDHu1hpf9MbwM
+         y3zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690590763; x=1691195563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MezeuiLBEOiNwGr6mc8OEFUZjD210CTEaCKxvSl/02s=;
-        b=ZdaC+7x198vBEDHjCopp0bRyG2ylF5RcSvgmrzXGBIN2U4FQ/PSJ+fu+jr1NpHsZ4W
-         lVQv7Gi7hRmewHLe9e/iSDwTI/ZfEP+t38TCTe4355XJT45Qnmcx0b3qX89VJKF/klf4
-         LOt+jc7jX+DdGHEX1r8XOyWy0zXX5V2GIcwGuT0bQOd+td5RfGjUPMq+R60SB/R5zGe6
-         p2uwaQZzgb9KmxDM01n41Lmra2h7mXSAjM4yVYemEjz72DJcIGOZKPfqiHfntK/aSftY
-         3leVIal4afVd++Wd/PICj68yzxvK3gxOHvyoxL53mayp1qouO+8MK0+ES+PQGpDte3HG
-         O2eQ==
-X-Gm-Message-State: ABy/qLbs9GUTlk5H8XYZybHIfyOGCF76PW4wwvUKUbFuTFLscDxAWgoN
-        HV72X7FN53Q8tVJm5sJN24/CkSTinF/Lftawa4pX1A==
-X-Google-Smtp-Source: APBJJlGeUQeupNYE1Duri1xyVlwYTRT4rlJMoCFWa7y1Av5Zgtc/RJHSrcC/9wBP59HSsFs5HIKQ9w==
-X-Received: by 2002:a6b:5d02:0:b0:783:6ec1:65f6 with SMTP id r2-20020a6b5d02000000b007836ec165f6mr972706iob.1.1690590763584;
-        Fri, 28 Jul 2023 17:32:43 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id v7-20020a5ec207000000b0078680780694sm1482768iop.34.2023.07.28.17.32.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 28 Jul 2023 17:32:43 -0700 (PDT)
-Message-ID: <1e3d6e78-9b74-1da0-cb33-7caea5ce7a3a@linuxfoundation.org>
-Date:   Fri, 28 Jul 2023 18:32:42 -0600
+        d=1e100.net; s=20221208; t=1690590804; x=1691195604;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ahyJuXZ5mL1EHkAmnBhtpjxq5pGjH0m9c44cFqu9RR8=;
+        b=ZBb5fSEP+fykYIm5EBkT4CND9ghWRCHTPr5GDYSREXlvU6g6L0e8IQtG06KzpZQthb
+         yFSsguP4J/nikBv6d2U10VTG2eggHRj4iHdlT53h9gbI8j1pmjehI0Y6dZRl2xfn45Oy
+         1eAyEvpdftp44qF59XpxjX+Q4BdkXRKUY8b15u2HisUhM7IvZrQnVFOnHFLYrycExX3p
+         64E6wKvBm/LkgFjE7fjNsqbKQMOO5URTM//+trttB/EIwnRXmSxHRy072APjIVNEtVFe
+         ntfkXIhntGrvh4oDNGYf0epBk+rYSR4BKXPPWk2I7K+KS1pfu4qoT8vARha3+Pp9nIJB
+         8iLw==
+X-Gm-Message-State: ABy/qLYBmUR4MtevZROArMwDBEVjIWLkIazn1BN/+rxkNg6N2edG1Ra6
+        CTZDT1gPAtAgDAfZsb8UEAFfyQ==
+X-Google-Smtp-Source: APBJJlFS9zLP1c6phrba+UHvupDG9E3d4F06JGpS2iM7oXYYOuggQ3ope9iTdf44U6BdBCqfanr6PA==
+X-Received: by 2002:a17:902:9a06:b0:1bb:edd5:4644 with SMTP id v6-20020a1709029a0600b001bbedd54644mr2869632plp.68.1690590804391;
+        Fri, 28 Jul 2023 17:33:24 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:f680:ab2e:71c2:3a28:319c])
+        by smtp.gmail.com with ESMTPSA id s13-20020a170902ea0d00b001b9be3b94e5sm4140174plg.303.2023.07.28.17.33.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jul 2023 17:33:24 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 17:33:22 -0700
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     guoren@kernel.org
+Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, falcon@tinylab.org,
+        bjorn@kernel.org, conor.dooley@microchip.com,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, stable@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V2 0/2] riscv: stack: Fixup independent softirq/irq stack
+ for CONFIG_FRAME_POINTER=n
+Message-ID: <ZMReUsAVmwcDwEhe@x1>
+References: <20230716001506.3506041-1-guoren@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
- error paths to skip
-Content-Language: en-US
-To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1690564372.git.skhan@linuxfoundation.org>
- <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
- <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
- <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
- <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
- <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
- <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
- <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
- <84048d13-9311-36f6-9eb4-8169952580d7@linuxfoundation.org>
- <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
- <8c92599f-fcb4-3aba-f367-17abd9b52451@linuxfoundation.org>
- <C3669401-536A-4CB0-80E0-5CCF2DCC36D3@oracle.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <C3669401-536A-4CB0-80E0-5CCF2DCC36D3@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230716001506.3506041-1-guoren@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 18:19, Anjali Kulkarni wrote:
+On Sat, Jul 15, 2023 at 08:15:04PM -0400, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> The independent softirq/irq stack uses s0 to save & restore sp, but s0
+> would be corrupted when CONFIG_FRAME_POINTER=n. So add s0 in the clobber
+> list to fix the problem.
+> 
+> <+0>:     addi    sp,sp,-32
+> <+2>:     sd      s0,16(sp)
+> <+4>:     sd      s1,8(sp)
+> <+6>:     sd      ra,24(sp)
+> <+8>:     sd      s2,0(sp)
+> <+10>:    mv      s0,a0		--> compiler allocate s0 for a0 when CONFIG_FRAME_POINTER=n
+> <+12>:    jal     ra,0xffffffff800bc0ce <irqentry_enter>
+> <+16>:    ld      a5,56(tp) # 0x38
+> <+20>:    lui     a4,0x4
+> <+22>:    mv      s1,a0
+> <+24>:    xor     a5,a5,sp
+> <+28>:    bgeu    a5,a4,0xffffffff800bc092 <do_irq+88>
+> <+32>:    auipc   s2,0x5d
+> <+36>:    ld      s2,1118(s2) # 0xffffffff801194b8 <irq_stack_ptr>
+> <+40>:    add     s2,s2,a4
+> <+42>:    addi    sp,sp,-8
+> <+44>:    sd      ra,0(sp)
+> <+46>:    addi    sp,sp,-8
+> <+48>:    sd      s0,0(sp)
+> <+50>:    addi    s0,sp,16	--> our code clobber the s0
+> <+52>:    mv      sp,s2
+> <+54>:    mv      a0,s0		--> a0 got wrong value for handle_riscv_irq 
+> <+56>:    jal     ra,0xffffffff800bbb3a <handle_riscv_irq>
+> 
+> Changelog:
+> V2
+>  - Fixup compile error with CONFIG_FRAME_POINTER=y
+>  - FIxup stable@vger.kernel.org tag
+> 
+> Guo Ren (2):
+>   riscv: stack: Fixup independent irq stack for CONFIG_FRAME_POINTER=n
+>   riscv: stack: Fixup independent softirq stack for
+>     CONFIG_FRAME_POINTER=n
+> 
+>  arch/riscv/kernel/irq.c   | 3 +++
+>  arch/riscv/kernel/traps.c | 3 +++
+>  2 files changed, 6 insertions(+)
+> 
+> -- 
+> 2.36.1
 > 
 > 
->> On Jul 28, 2023, at 4:00 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 7/28/23 16:40, Anjali Kulkarni wrote:
->>>> On Jul 28, 2023, at 3:25 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>
->>>> On 7/28/23 15:59, Anjali Kulkarni wrote:
->>>>>> On Jul 28, 2023, at 2:41 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>>
->>>>>> On 7/28/23 15:21, Anjali Kulkarni wrote:
->>>>>>>> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>>>>
->>>>>>>> On 7/28/23 13:06, Shuah Khan wrote:
->>>>>>>>> On 7/28/23 12:10, Anjali Kulkarni wrote:
->>>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>>>>>>>>>
->>>>>>>>>>> proc_filter test requires root privileges. Add root privilege check
->>>>>>>>>>> and skip the test. Also fix argument parsing paths to skip in their
->>>>>>>>>>> error legs.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>>>>>>>> ---
->>>>>>>>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
->>>>>>>>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
->>>>>>>>>>> --- a/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
->>>>>>>>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
->>>>>>>>>>>
->>>>>>>>>>> if (argc > 2) {
->>>>>>>>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
->>>>>>>>>>> - exit(1);
->>>>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>>>> }
->>>>>>>>>>>
->>>>>>>>>>> if (argc == 2) {
->>>>>>>>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
->>>>>>>>>>> filter = 1;
->>>>>>>>>>> } else {
->>>>>>>>>>> printf("Valid option : -f (for filter feature)\n");
->>>>>>>>>>> - exit(1);
->>>>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>>>> }
->>>>>>>>>>> }
->>>>>>>>>>>
->>>>>>>>>>> + if (geteuid()) {
->>>>>>>>>>> + printf("Connector test requires root privileges.\n");
->>>>>>>>>>> + exit(KSFT_SKIP);
->>>>>>>>>>> + }
->>>>>>>>>>> +
->>>>>>>>>>
->>>>>>>>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
->>>>>>>>>>
->>>>>>>>> It failed for me when I ran it saying it requires root privileges.
->>>>>>>>> I had to run it as root.
->>>>>>>>
->>>>>>>> The following is what I see when I run the test as non-root
->>>>>>>> user:
->>>>>>>>
->>>>>>>> bind failed: Operation not permitted
->>>>>>>>
->>>>>>> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
->>>>>>> So this check for root needs to be removed.
->>>>>>
->>>>>> I will send v2 for this patch without root check. I should have
->>>>>> split the argument error paths and root check anyway.
->>>>>>
->>>>>> However, what is strange is if the test run by root, bind() doesn't fail.
->>>>>> This doesn't make sense to me based on what you said about bind() fails
->>>>>> if kernel doesn't support the new feature.
->>>>>>
->>>>> I didn’t say that - part of the changes introduced by the patches is to remove the root check and add some features on top of existing code.
->>>>
->>>> Okay. So what should happen if a root user runs this test on a kernel
->>>> that doesn't have the kernel patches submitted with this selftest
->>>> installed on it?
->>>>
->>> It will default to the behavior previous to my changes - that is it will report all events as opposed to a subset of events (which is the new feature added by my change)
->>
->> Okay. Sorry I am unable to follow this explanation. This test has just
->> been added in commit 73a29531f45fed6423144057d7a844aae46dad9d
-> 
-> Yes, the test has been added just now, but it also tests kernels previous to the new feature addition. So it is adding a selftest to kernels previous to this commit.
-> That is, the connector module in kernel (before my changes) was sending to a listener user process messages for all process events - fork, exit, exec etc. This was only being done if the user process was run as root.
-> With my changes, we add filtering based on an option added by user, which filters based on input and gives back to the user only fork, or only exit, or a combination of those. This is a new feature added. In addition to this filtering, we have also made the change to allow user process to be non-root when receiving these messages.
-> 
->>
->> Can you please look at the usage for this test:
->>
->> - What should happen when kernel without filtering is run as
->> root or non-root
-> 
-> By kernel without filtering you mean a kernel without my patches? In that case, it should run only as root - non-root should fail. In this case, it falls back to default behavior before my change, where listener user process gets all messages related to process events. I have not tested this a lot, I am working on testing this on a kernel without my changes.
-> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Then you definitely need better messages when bind() fails
-on kernels without the feature. It has to be clear to the
-user why the test is exiting without running.
+Tested-by: Drew Fustini <dfustini@baylibre.com>
 
-So this is what is needed:
-- Check if the test can be run as non-root (whatever that means)
-- It is still not clear to me if bind() fails does that mean the
-   kernel doesn't doesn't support the new feature.
+Xi Ruoyao noticed that the mainline kernel crashed when using a kernel
+config with CONFIG_FRAME_POINTER=n. I was able to reproduce this [1].
+Emil suggested I trying this patche series. I can confirm that this
+resolves the kernel crash on the Sipeed Lichee Pi4a [2].
 
-Since this test essentially behaves differently when the feature
-is supported vs. not. So it has to behave consistently somehow
-checking for the feature and report correctly.
+Thanks,
+Drew
 
-thanks,
--- Shuah
-
-
+[1] https://lore.kernel.org/linux-riscv/ZMNojqwLxcG8FcHN@x1/
+[2] https://lore.kernel.org/linux-riscv/ZMQAqUfb0y%2FigQs2@x1/
