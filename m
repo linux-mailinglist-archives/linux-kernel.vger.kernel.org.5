@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAF9767A14
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E02B767A17
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236943AbjG2AtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S236792AbjG2AtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236672AbjG2As4 (ORCPT
+        with ESMTP id S236714AbjG2As4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 28 Jul 2023 20:48:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DD611D
+Received: from mail-ot1-x349.google.com (mail-ot1-x349.google.com [IPv6:2607:f8b0:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13D444B7
         for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:22 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58473c4f629so21093577b3.1
+Received: by mail-ot1-x349.google.com with SMTP id 46e09a7af769-6bb1755ee51so5926206a34.1
         for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690591648; x=1691196448;
+        d=google.com; s=20221208; t=1690591650; x=1691196450;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=zPxDuw7GeJQotzB/CPJITWYq84dGkPo6Sdy7hiPXZfA=;
-        b=tfJreDiVdxqrWTn17eDz9CQ1prR4OaY8R72gsdHx5b0HfSm06muHlq6/VU8VmbJ/69
-         QTkeIaV9d0VbA+DjT9ug4lgckuxEQEmnyA+gGWYj4GDEnhCs1swodjbX/M0Sd1+mLAGP
-         GjD90stCM9Q8l2RXDOAZpahBB9xD2Os888pcdmciu7sBhKYpsuMILtmlSIRHv8S5ZG45
-         umHo9TXIvRmOMlFEzXsGR045vYHfeinM2oRiITQfJst61DZLkVDEDnSYdeejwQmFgwcH
-         IO9UnRimsDRL2mV/XKV1dI5RJZjxAvUXRoEO3btpR/9vV1d3JeH3R4Hlc5949Es//XYU
-         pPJw==
+        bh=8LvdkVE4wBNN35/JnHy3xytlSvey6H90m9oi4YFPLDo=;
+        b=Xc76+6yvCGka7zXqrgagphiv30oVLLs/qSSA+I9HZuQQnkJiG+4uQMeqGskUEw7qOg
+         mMN2Rixx7sMQK8fGN7SPXhO38QjA2hLMOnD+Plxz3CxOFo0UNqW8pUiMjlPs8n8FUbBA
+         yl8xYlqquhCH6XqSTy8ocqobtZfbz2sgwc8u7sTPWcC8rPO0pgMrclkdtnUdEFceSWk+
+         jH5xNuLI68LWJIUQBwwFkia9uG+ofyi0EGZb+/qHXpcEqsq1oPbFn3hESOVj40tH7USP
+         5dbwgoPlGotJw1Vymep9GIa5oVDGAcI1rG1vXFwgeLSwHkxu6Du67wzoLc0CF0/6D1Oj
+         1P3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591648; x=1691196448;
+        d=1e100.net; s=20221208; t=1690591650; x=1691196450;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zPxDuw7GeJQotzB/CPJITWYq84dGkPo6Sdy7hiPXZfA=;
-        b=U9hnwbnSLsb447WxN/zgnE2bJSZWxOho13/FRbl/SgVHHbAKHg0cCXEzAFPRdUIZRD
-         DrYn3AYLg9mITgGCbqYO2RkwdYb8Bj7WDMXo0+vRp7Frhm6Dxbvy2ertr30LwLX0eNzb
-         ojK/mIJyS3s8Zxsba/HHAkDRdaXKsR4GVmk73jafujQC3bNsbw3lClf1JDSfru7vI1xv
-         2Z6TKcmORjhWEe9GJYjd9M2YE22NofQxpetp/JCmcruuQWr64TvG1vzkJb7rOgeGM7QX
-         Y5c4wu/Mi6PUXnI64X4u3KY+7l1DhkPRtBMeCI9oG01uNT1vkizUjHfC0VKrSpJIwOzm
-         YWDg==
-X-Gm-Message-State: ABy/qLbLSPUDAaOPpdT3jfJ/gB4sradjDr0SF3Cu+XmZz7j3JVHwhIUN
-        jTGQkSIEAa+gYWJNRNdi5xCPuM4fo4c=
-X-Google-Smtp-Source: APBJJlH5CMrCcIbJEX3F3Vv06Tdao406OfSUM981PUaHzDHpUx0xmQUNwcMXKWHraA+hv5ypdYYbC4WaYcI=
+        bh=8LvdkVE4wBNN35/JnHy3xytlSvey6H90m9oi4YFPLDo=;
+        b=XpxUx/SRUbSoCujjp4aLlX8uYfLAqAj7RuEdt0m7g3EoPUUMIBgqjHjE+gl+3brDCC
+         bQgb/D/wklLgQDYY4PpPD03NQ6FI7MDAjIVQsaaKzLABcsuEi98eDaecvBLLyHrA4UkI
+         0Imuf8N7aucdNj0sBdMkaGlcjwCoIEwJg9KQgZJDzdOpmLXltPmoCeet0bLFmE1/ff/N
+         PhLpag1gRN+9WGDsrm8gI3AKVnrWj+oR+d6PHy8HUUZ62FS86qPC9/iTw4Job1tj7Qtm
+         V//kwA5lNKsA0UQA7AENphvryR0lEpoMVqmHLFMFMg3Ez8VMh0ubtjrMTp5bLjRoQfqW
+         Bimw==
+X-Gm-Message-State: ABy/qLYtm11FJZsTeE0OaXt8qm4BzyLqYXLyN/O572/y68D+7Oc03aK3
+        u7ldo+QSBRwNxlU/WPzTNVAYTanJf88=
+X-Google-Smtp-Source: APBJJlEgEWe6CBtugf7jr5Pm8RXi3H/4jF3adEPPWz1+z90JK7zDxBgAu0zq+D5YTM9Rek+mDeqN8MvUUWU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4304:0:b0:565:a42c:79fe with SMTP id
- q4-20020a814304000000b00565a42c79femr24190ywa.1.1690591648271; Fri, 28 Jul
- 2023 17:47:28 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6830:909:b0:6b7:528c:d8bf with SMTP id
+ v9-20020a056830090900b006b7528cd8bfmr12891485ott.0.1690591650032; Fri, 28 Jul
+ 2023 17:47:30 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 17:47:12 -0700
+Date:   Fri, 28 Jul 2023 17:47:13 -0700
 In-Reply-To: <20230729004722.1056172-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729004722.1056172-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729004722.1056172-3-seanjc@google.com>
-Subject: [PATCH v3 02/12] KVM: x86/mmu: Delete rmap_printk() and all its usage
+Message-ID: <20230729004722.1056172-4-seanjc@google.com>
+Subject: [PATCH v3 03/12] KVM: x86/mmu: Delete the "dbg" module param
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -73,109 +73,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete rmap_printk() so that MMU_WARN_ON() and MMU_DEBUG can be morphed
-into something that can be regularly enabled for debug kernels.  The
-information provided by rmap_printk() isn't all that useful now that the
-rmap and unsync code is mature, as the prints are simultaneously too
-verbose (_lots_ of message) and yet not verbose enough to be helpful for
-debug (most instances print just the SPTE pointer/value, which is rarely
-sufficient to root cause anything but trivial bugs).
-
-Alternatively, rmap_printk() could be reworked to into tracepoints, but
-it's not clear there is a real need as rmap bugs rarely escape initial
-development, and when bugs do escape to production, they are often edge
-cases and/or reside in code that isn't directly related to the rmaps.
-In other words, the problems with rmap_printk() being unhelpful also apply
-to tracepoints.  And deleting rmap_printk() doesn't preclude adding
-tracepoints in the future.
+Delete KVM's "dbg" module param now that its usage in KVM is gone (it
+used to guard pgprintk() and rmap_printk()).
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 12 ------------
- arch/x86/kvm/mmu/mmu_internal.h |  2 --
- 2 files changed, 14 deletions(-)
+ arch/x86/kvm/mmu/mmu.c          | 5 -----
+ arch/x86/kvm/mmu/mmu_internal.h | 2 --
+ 2 files changed, 7 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index bc24d430db6e..8e36e07719bf 100644
+index 8e36e07719bf..b16092d71d3f 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -941,10 +941,8 @@ static int pte_list_add(struct kvm_mmu_memory_cache *cache, u64 *spte,
- 	int count = 0;
+@@ -115,11 +115,6 @@ static int max_huge_page_level __read_mostly;
+ static int tdp_root_level __read_mostly;
+ static int max_tdp_level __read_mostly;
  
- 	if (!rmap_head->val) {
--		rmap_printk("%p %llx 0->1\n", spte, *spte);
- 		rmap_head->val = (unsigned long)spte;
- 	} else if (!(rmap_head->val & 1)) {
--		rmap_printk("%p %llx 1->many\n", spte, *spte);
- 		desc = kvm_mmu_memory_cache_alloc(cache);
- 		desc->sptes[0] = (u64 *)rmap_head->val;
- 		desc->sptes[1] = spte;
-@@ -953,7 +951,6 @@ static int pte_list_add(struct kvm_mmu_memory_cache *cache, u64 *spte,
- 		rmap_head->val = (unsigned long)desc | 1;
- 		++count;
- 	} else {
--		rmap_printk("%p %llx many->many\n", spte, *spte);
- 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
- 		count = desc->tail_count + desc->spte_count;
- 
-@@ -1018,14 +1015,12 @@ static void pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
- 		pr_err("%s: %p 0->BUG\n", __func__, spte);
- 		BUG();
- 	} else if (!(rmap_head->val & 1)) {
--		rmap_printk("%p 1->0\n", spte);
- 		if ((u64 *)rmap_head->val != spte) {
- 			pr_err("%s:  %p 1->BUG\n", __func__, spte);
- 			BUG();
- 		}
- 		rmap_head->val = 0;
- 	} else {
--		rmap_printk("%p many->many\n", spte);
- 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
- 		while (desc) {
- 			for (i = 0; i < desc->spte_count; ++i) {
-@@ -1241,8 +1236,6 @@ static bool spte_write_protect(u64 *sptep, bool pt_protect)
- 	    !(pt_protect && is_mmu_writable_spte(spte)))
- 		return false;
- 
--	rmap_printk("spte %p %llx\n", sptep, *sptep);
+-#ifdef MMU_DEBUG
+-bool dbg = 0;
+-module_param(dbg, bool, 0644);
+-#endif
 -
- 	if (pt_protect)
- 		spte &= ~shadow_mmu_writable_mask;
- 	spte = spte & ~PT_WRITABLE_MASK;
-@@ -1267,8 +1260,6 @@ static bool spte_clear_dirty(u64 *sptep)
- {
- 	u64 spte = *sptep;
+ #define PTE_PREFETCH_NUM		8
  
--	rmap_printk("spte %p %llx\n", sptep, *sptep);
--
- 	MMU_WARN_ON(!spte_ad_enabled(spte));
- 	spte &= ~shadow_dirty_mask;
- 	return mmu_spte_update(sptep, spte);
-@@ -1480,9 +1471,6 @@ static bool kvm_set_pte_rmap(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- restart:
- 	for_each_rmap_spte(rmap_head, &iter, sptep) {
--		rmap_printk("spte %p %llx gfn %llx (%d)\n",
--			    sptep, *sptep, gfn, level);
--
- 		need_flush = true;
- 
- 		if (pte_write(pte)) {
+ #include <trace/events/kvm.h>
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 4f1e4b327f40..9c9dd9340c63 100644
+index 9c9dd9340c63..9ea80e4d463c 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -11,10 +11,8 @@
- #ifdef MMU_DEBUG
- extern bool dbg;
+@@ -9,8 +9,6 @@
+ #undef MMU_DEBUG
  
--#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
+ #ifdef MMU_DEBUG
+-extern bool dbg;
+-
  #define MMU_WARN_ON(x) WARN_ON(x)
  #else
--#define rmap_printk(x...) do { } while (0)
  #define MMU_WARN_ON(x) do { } while (0)
- #endif
- 
 -- 
 2.41.0.487.g6d72f3e995-goog
 
