@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBEC768139
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8419076813D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjG2TJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 15:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        id S229890AbjG2TLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 15:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjG2TJw (ORCPT
+        with ESMTP id S229655AbjG2TK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:09:52 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211E2696
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:09:50 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686efa1804eso2362145b3a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1690657790; x=1691262590;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NQVKecxzaLTrR3Ye1xYfH6ooI3nAezhojIch+SfrkzU=;
-        b=CQUgVi+d6HSVGlR5roN/0RlP7797ndqR6cxnL06/IM+phCkvixdNa14FOiEEYLcdyo
-         zVUYhrTuymyldzR6R7IRx+83MJk3GqD/X9VA3C9uyryXnQBhPg+x3Tn7RBHRhFAc8Dp9
-         162elLlPSOEs5FS3qY5HWCSRhTvV2RbH8yn1frwQJ+GFQIkp3RyCzb3G4SL6ofS8Sy8Z
-         xSSXLEnaeHdoPDShNGQmzqeJ0dpmr9H8SXjz90Hmg8aWBVWb1VFUNjiqpM2l+2cK3vcD
-         N/vGy3ftC1GQ8Qq/B6KOx42N2HheFeeKACrKDF6IMT3cEfL2hZUljX80PVJ9Uv39Mqnp
-         WljA==
+        Sat, 29 Jul 2023 15:10:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C223A9C
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690657805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YOCFbmaqJDliMmq4qRXmQzpcNBbZ0rghMQxEBFeZeig=;
+        b=JEXB2HrUkMgCyeFCzoeQ5LcomrPt1WYJyQMBmhgpUnN6b5jBHpvYXNi2dCZjFTl1wLJlXX
+        nd4/8gIYNqPwHNu6+XoQ3wIqO6DN/dv0coPGs6eWkPdwAjWR7hK9o9kjuLtKPYZ6jhtatU
+        xuJhTDZB+AFuXBgTeCtUFQEQwJlWhmg=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-55-MwghXI0WNUSvM4xjQdX1YA-1; Sat, 29 Jul 2023 15:10:03 -0400
+X-MC-Unique: MwghXI0WNUSvM4xjQdX1YA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fd2778f5e4so17100015e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:10:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690657790; x=1691262590;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NQVKecxzaLTrR3Ye1xYfH6ooI3nAezhojIch+SfrkzU=;
-        b=gNLtznQ/VuUwMrWKsVwhHyx9KarVeOTBC/y7KDPQU11VsBb4C7rEj5qYmDu2DqOZes
-         o3UVPOYwHl/syiN8LFwPf0UUYsvcnr0HUU8ZrYhnzlMHRm+IJGrdjCeYl2fd4e9fCITR
-         uxA+zMGuj7YV/y13rZkBWKYATNBUiUytr9SUWEZ4t/9UnHQWeMYJJTb8Tq8/Oo6SxVLq
-         ceJ4aWL3cNFCkalN2WJBKgg0SDXKEpIveDyNOAtcNy6IGJtk4Ub4LtimpmD1ZWM5JoiG
-         vlimmA0R/zyKoYAVXxyYUd9xVfT4+Htc8172eYrw5dFXtMtD24YYeB4rveiYESlQUMdY
-         gA+w==
-X-Gm-Message-State: ABy/qLb+W3YGc4imULwhzmaaTI83Cq/KEqoGla4NszNW3uT03fvuFb9S
-        68GCgRY7RSOtLR0n/EJCSHk35Q1l6WvO2yaueso=
-X-Google-Smtp-Source: APBJJlF4hlTB4xSrBbtSNP/nSEg8xMlW1jQtc40MNVrEWg7D4e4WqeUyKSs/xQQzaizwqHyefmCDyg==
-X-Received: by 2002:a05:6a21:4988:b0:12d:f1ac:e2cd with SMTP id ax8-20020a056a21498800b0012df1ace2cdmr5192198pzc.32.1690657789895;
-        Sat, 29 Jul 2023 12:09:49 -0700 (PDT)
-Received: from smtpclient.apple (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id x18-20020aa793b2000000b0067a50223e3bsm5000483pff.111.2023.07.29.12.09.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Jul 2023 12:09:49 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] ext4: Fix rec_len verify error
-Date:   Sat, 29 Jul 2023 13:09:38 -0600
-Message-Id: <8B200C7E-F6D1-4395-9776-4B521319CD8F@dilger.ca>
-References: <20230729061357.1702891-1-zhangshida@kylinos.cn>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-kernel@vger.kernel.org, zhangshida@kylinos.cn
-In-Reply-To: <20230729061357.1702891-1-zhangshida@kylinos.cn>
-To:     zhangshida <starzhangzsd@gmail.com>
-X-Mailer: iPhone Mail (20F75)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        d=1e100.net; s=20221208; t=1690657802; x=1691262602;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YOCFbmaqJDliMmq4qRXmQzpcNBbZ0rghMQxEBFeZeig=;
+        b=J16QYNIPF/8OhFj8tmFO+IlqcLp9rZUBGKr1AUWOwG/rT/4Z5tgPoWV6M2bvmi7Q7K
+         u2YWmQ6El9KFJe8FiLxntl648TIhbaRLskt+XNGCNNXnlPj+TUNSI9v17w7R6oXbNAFA
+         JsUcyxgBRgnSUXM2KzF4jAf44WnhjIL9bGeEW+FWI8XOblhBpUKLF9Gk3ZHacjVfJs8s
+         fWBjbBxb0lwMH7KO4iP+yyVKupdODG8/xCenAQtPOlKZMVuC5BfY3rGBgGKooF85be6Z
+         I4d/p8Qh9HVYL2eQ/v6bCSrtjbcE8UYOY3e1j8CakQa885bmke4J97kHGheYTp3+V2Dt
+         0Kag==
+X-Gm-Message-State: ABy/qLadkzU6k3YSnAwboUMpn5TTqkFeJ8pFtUaUiLPr5euytvw05bdX
+        1Drs4C+nZFcPNNg5U8NeYw0fgx7LuSjz45+pvB4iPLuiu5vxteNWa0+YXL9ZNlFWAIZajeaHUbO
+        ZZ3hh1hJBzLCtAXR4dSa43Egg
+X-Received: by 2002:a05:600c:22c6:b0:3fc:1a6:79a9 with SMTP id 6-20020a05600c22c600b003fc01a679a9mr4764485wmg.16.1690657802669;
+        Sat, 29 Jul 2023 12:10:02 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHLhWwdb9e5stl9mtFYazDKO5IGT18IwiQdgIdt9oSkXWPDup+CMG32gUcSUxlzRYbRdSzBsA==
+X-Received: by 2002:a05:600c:22c6:b0:3fc:1a6:79a9 with SMTP id 6-20020a05600c22c600b003fc01a679a9mr4764469wmg.16.1690657802420;
+        Sat, 29 Jul 2023 12:10:02 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id x20-20020a1c7c14000000b003fc01f7b415sm9897722wmc.39.2023.07.29.12.10.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jul 2023 12:10:02 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org
+Cc:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm: Spelling s/sempahore/semaphore/
+In-Reply-To: <8b0542c12a2427f34a792c41ac2d2a2922874bfa.1689600102.git.geert+renesas@glider.be>
+References: <8b0542c12a2427f34a792c41ac2d2a2922874bfa.1689600102.git.geert+renesas@glider.be>
+Date:   Sat, 29 Jul 2023 21:10:01 +0200
+Message-ID: <877cqiy1o6.fsf@minerva.mail-host-address-is-not-set>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,77 +80,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 29, 2023, at 00:14, zhangshida <starzhangzsd@gmail.com> wrote:
->=20
-> =EF=BB=BFFrom: Shida Zhang <zhangshida@kylinos.cn>
->=20
-> with the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 millon files were directly created
-> under a directory:
->=20
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: d=
-ir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxx=
-x: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxx=
-xx: Directory index failed checksum
->=20
-> when enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to blocksize 65536, i.e. 0x10000.
->=20
-> But it is not the same condition when blocksize equals to 4k.
-> when enough files are created, the fake_dirent->reclen will be 0x1000.
-> it equals to blocksize 4k, i.e. 0x1000.
->=20
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k. To address this, a special condition
-> was introduced to handle it properly.
->=20
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+Geert Uytterhoeven <geert+renesas@glider.be> writes:
+
+> Fix misspellings of "semaphore".
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 > ---
-> fs/ext4/namei.c | 3 +++
-> 1 file changed, 3 insertions(+)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..a422cff25216 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -458,6 +458,9 @@ static struct dx_countlimit *get_dx_countlimit(struct i=
-node *inode,
->            root->info_length !=3D sizeof(struct dx_root_info))
->            return NULL;
->        count_offset =3D 32;
-> +    } else if ((EXT4_BLOCK_SIZE(inode->i_sb) =3D=3D 65536)
-> +        && (le16_to_cpu(dirent->rec_len) =3D=3D 65535)) {
-> +        count_offset =3D 8;
+> v2:
+>   - Add Reviewed-by.
+> ---
 
-This should be moved up to the first if-block that is checking the block siz=
-e:=20
+Pushed to drm-misc (drm-misc-next). Thanks!
 
-=00=00=00=00=00=00=00=00        if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4=
-_BLOCK_SIZE(inode->i_sb) ||
-             (le16_to_cpu(dirent->rec_len) =3D=3D 65535 &&
-              EXT4_BLOCK_SIZE(inode->i_sb) >=3D 65536))
-=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00                count_offset=
- =3D 8;
+-- 
+Best regards,
 
-since this is really the same case.=20
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-Ecen better would be to use ext4_rec_len_from_disk() to check the
-length so that it keeps this large PAGE_SIZE logic in one place, and
-does not add overhead on systems with smaller PAGE_SIZE:
-
-        int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
-
-        if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blocks=
-ize)
-                count_offset =3D 8;
-
-Cheers, Andreas
-
->    } else
->        return NULL;
->=20
-> --=20
-> 2.27.0
->=20
