@@ -2,49 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14970767C0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 06:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772C7767C26
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 06:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbjG2EL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 00:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
+        id S233208AbjG2EhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 00:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG2EL0 (ORCPT
+        with ESMTP id S229685AbjG2EhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 00:11:26 -0400
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C248949D5;
-        Fri, 28 Jul 2023 21:11:23 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 04:11:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1690603880; x=1690863080;
-        bh=EBpMQWlTo21HVtOIF3xmBwvt2Rt/ADgtf1OJ1f2tpVg=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=N3MrYlJz9wYFE7YG5NrpA58ljxcqa6gggTj2YGlG5y5Mr4EqZsyKYo8O3BLvYDQOC
-         WRtkAeDjZfNJ6zWrryreYnWkawFLJRh/KCZ5S6j9Pj7kqYvf2U5LF7x0bDnUmL29F/
-         7nRktJM4/jfo+fwBIO9itbZEcLTgWTJF+jRzwrybfoP4uuzPbUUtPK/Tmbba4celtH
-         Ve77EnvLlgAu7i7gbhPbhUBlcl51keh5qVKDkKe1gQIVhspbfBEBJHbQcYmz/l57pN
-         xTFgvatFdaxPHp845uXSsnbIe04gT8OEfzOGyMynAsNb1G69Z5h8/Ow9b1GpiVTYru
-         v2WCYWea+mTVg==
-To:     Alice Ryhl <aliceryhl@google.com>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     alex.gaynor@gmail.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, nmi@metaspace.dk, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
-Subject: Re: [PATCH v2 09/12] rust: init: implement Zeroable for Opaque<T>
-Message-ID: <18653bf6-c177-ab14-d026-2d2b5c2bbac3@proton.me>
-In-Reply-To: <20230725115759.424300-1-aliceryhl@google.com>
-References: <16fb9977-2efc-2412-e906-3d320e37c45c@proton.me> <20230725115759.424300-1-aliceryhl@google.com>
-Feedback-ID: 71780778:user:proton
+        Sat, 29 Jul 2023 00:37:13 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F4344BB;
+        Fri, 28 Jul 2023 21:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690605431; x=1722141431;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JKrVpxqY+0XkwkxhHP0wveZd6Ls3koVT52X+k7YompA=;
+  b=hoN/rB1HVvJXG3S912zct1310zZ21A9cFzPAkMse3AbYgkt5W3XEmlPZ
+   mBu3RzqpyPb52Z5trFYtm87Jcq4untnaPhfg1/TcYb5VnTysHba+Bu9RF
+   Dk+sOeTFyt9OGHK7tM2f8XvBZMOK9kD7PqxveVjr+udJ2GIsKRBKkAinx
+   IC9PI1SRpozRMjgWq8nreLBP2QbZR54UUphHu4WRvT3LVyh62A7EnELMV
+   du/pMIUv9zFzL5jEbHR07GtGy53cB+15uIgVJoRALva9VqqErc3kc4n6U
+   jzrGWfB77AJucY9smySRIFsAt7jcuEBn+wMgjASSjpgNFDml47exdL5Ap
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="358761406"
+X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
+   d="scan'208";a="358761406"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 21:37:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="817728373"
+X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
+   d="scan'208";a="817728373"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2023 21:37:08 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPbhT-0003pT-24;
+        Sat, 29 Jul 2023 04:37:07 +0000
+Date:   Sat, 29 Jul 2023 12:36:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stanley Chang <stanley_chang@realtek.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Stanley Chang <stanley_chang@realtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
+ layer driver
+Message-ID: <202307291202.NBP2coNC-lkp@intel.com>
+References: <20230728035318.18741-1-stanley_chang@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728035318.18741-1-stanley_chang@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,89 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.07.23 13:57, Alice Ryhl wrote:
-> Benno Lossin <benno.lossin@proton.me> writes:
->> On 20.07.23 15:34, Alice Ryhl wrote:
->>> Benno Lossin <benno.lossin@proton.me> writes:
->>>> Since `Opaque<T>` contains a `MaybeUninit<T>`, all bytes zero is a val=
-id
->>>> bit pattern for that type.
->>>>
->>>> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
->>>> ---
->>>>    ///
->>>>    /// This is meant to be used with FFI objects that are never interp=
-reted by Rust code.
->>>>    #[repr(transparent)]
->>>> +#[derive(Zeroable)]
->>>>    pub struct Opaque<T> {
->>>>        value: UnsafeCell<MaybeUninit<T>>,
->>>>        _pin: PhantomPinned,
->>>>    }
->>>
->>> Does this actually work? I don't think we implement Zeroable for
->>> UnsafeCell.
->>
->> Good catch, this does compile, but only because the current
->> implementation of the derive expands to (modulo correct paths):
->> ```
->> impl<T> Zeroable for Opaque<T>
->> where
->>       UnsafeCell<MaybeUninit<T>>: Zeroable,
->>       PhantomPinned: Zeroable,
->> {}
->> ```
->> This implementation is of course useless, since `UnsafeCell` is never
->> `Zeroable` at the moment. We could of course implement that and then thi=
-s
->> should work, but the question is if this is actually the desired output =
-in
->> general. I thought before that this would be a good idea, but I forgot t=
-hat
->> if the bounds are never satisfied it would silently compile.
->>
->> Do you think that we should have this expanded output instead?
->> ```
->> impl<T: Zeroable> Zeroable for Foo<T> {}
->> const _: () =3D {
->>       fn assert_zeroable<T: Zeroable>() {}
->>       fn ensure_zeroable<T: Zeroable>() {
->>           assert_zeroable::<Field1>();
->>           assert_zeroable::<Field2>();
->>       }
->> };
->> ```
->> If the input was
->> ```
->> #[derive(Zeroable)]
->> struct Foo<T> {
->>       field1: Field1,
->>       field2: Field2,
->> }
->> ```
->=20
-> Yeah. The way that these macros usually expand is by adding `where T:
-> Zeroable` to the impl for each generic parameter, and failing
-> compilation if that is not enough to ensure that all of the fields are
-> `Zeroable`.
->=20
-> You might want to consider this expansion instead:
-> ```
-> impl<T: Zeroable> Zeroable for Foo<T> {}
-> const _: () =3D {
->       fn assert_zeroable<T: Zeroable>(arg: &T) {}
->       fn ensure_zeroable<T: Zeroable>(arg: &Foo<T>) {
->           assert_zeroable(&arg.field1);
->           assert_zeroable(&arg.field2);
->       }
-> };
-> ```
+Hi Stanley,
 
-Is there a specific reason you think that I should us references here
-instead of the expansion from above (where I just use the types and
-not the fields themselves)?
+kernel test robot noticed the following build errors:
 
---=20
-Cheers,
-Benno
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on usb/usb-next usb/usb-linus linus/master v6.5-rc3 next-20230728]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Stanley-Chang/doc-dt-bindings-usb-realtek-dwc3-Add-Realtek-DHC-RTD-SoC-DWC3-USB/20230728-115507
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20230728035318.18741-1-stanley_chang%40realtek.com
+patch subject: [PATCH v1 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver
+config: x86_64-randconfig-r072-20230728 (https://download.01.org/0day-ci/archive/20230729/202307291202.NBP2coNC-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307291202.NBP2coNC-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307291202.NBP2coNC-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: vmlinux.o: in function `dwc3_rtk_remove_role_switch':
+>> drivers/usb/dwc3/dwc3-rtk.c:196: undefined reference to `usb_role_switch_unregister'
+
+
+vim +196 drivers/usb/dwc3/dwc3-rtk.c
+
+   192	
+   193	static int dwc3_rtk_remove_role_switch(struct dwc3_rtk *rtk)
+   194	{
+   195		if (rtk->role_switch)
+ > 196			usb_role_switch_unregister(rtk->role_switch);
+   197	
+   198		rtk->role_switch = NULL;
+   199	
+   200		return 0;
+   201	}
+   202	#else
+   203	#define dwc3_rtk_setup_role_switch(x) 0
+   204	#define dwc3_rtk_remove_role_switch(x) 0
+   205	#endif
+   206	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
