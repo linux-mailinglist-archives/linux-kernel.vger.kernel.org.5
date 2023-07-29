@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8CB767F7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B625767F7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjG2Nnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
+        id S230323AbjG2Nns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG2Nnm (ORCPT
+        with ESMTP id S230251AbjG2Nnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:43:42 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA1CCA;
-        Sat, 29 Jul 2023 06:43:42 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso2225535b3a.3;
-        Sat, 29 Jul 2023 06:43:42 -0700 (PDT)
+        Sat, 29 Jul 2023 09:43:45 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E40CA;
+        Sat, 29 Jul 2023 06:43:44 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so1875697b3a.1;
+        Sat, 29 Jul 2023 06:43:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638221; x=1691243021;
+        d=gmail.com; s=20221208; t=1690638224; x=1691243024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B7A5wSsDhI3tPDg2Zhs0lCCHvGH1hBcKwDXt+QlBQO8=;
-        b=U6FVngLbFRNIdhiWnSyKQHg1BsmRAlHrq9cBCjWyr36diNFOTipDcZ6EMxh1WWZl05
-         eVHkVDPsLw1LY988WZOvNcvL7IRbY8OFrJvghapJfUfcyEv28gh7sKFCgXyioikMg5xv
-         rP1s7FwoW8+T1/C4oLPALIHPfqvYhLjE5ZsI6sqsXRaQknHkxTLphYjLIuyFXDAT+Ynl
-         2xxA2HeGXHOnqozS88QbZo6plZKZ/naoNqQiF/LO7eQVHMc1Y4HBuO/kk9kqCt3zqMVD
-         hKyeK5oCAkcxJCDUdDrzP5axY0PMbqH2YFYIX+g5jZsoJRpYGBF4KiuR89cG6ncrijR4
-         fi0A==
+        bh=ciRtavySnNRvWTW6m7wEJWbFm9H9lBrob3UvT53cbMk=;
+        b=nQppanP04bpL78aHtwk1eGvNfRWZnpKI/wcyk/hpyZilHwhTYZ/Mp3bsffodBPnY/m
+         QwAZ4xIlBDpFY68+f1thPtpcaQk5lqoUX0qZ/rKhGHGzuogHZ1McSYpaRbL4f4Fg2NLE
+         CESDbuzG1wzM0sW4BCJYmjdPalpPugdKxYxL8EuMSC4oT2DJHxNT5ZcWtJekXtqhMuVD
+         C2tbh67s5vfg2M8AwJZfukSw5fPWhZmfY9Twjiz5dDobR7L5qjd7jETfNRCG3m20/2Um
+         Iyx8785xGqCAXTL5p9FZl7RIYK1Jy5G3vRedE4kcVNUm/SeaeioPQRs7mHoSWym/dVMX
+         l2BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638221; x=1691243021;
+        d=1e100.net; s=20221208; t=1690638224; x=1691243024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B7A5wSsDhI3tPDg2Zhs0lCCHvGH1hBcKwDXt+QlBQO8=;
-        b=A7dFON3CWdiuasImNdRuLotnb6QJA7Dlr309YRnyy2llCCQ8KgPZkiVx1NUkmzVkXL
-         Z95HznpYpZDsBWxU08at03AiPnYLeYtQChYKnq5M9S1Td+l9ANTN+2hNMw2GjGjtQMUC
-         LUYfvtwV7XDFDvE6yiSItY2mxX+zzG4Xun03IKFE7598/zzt5hyvhmlddCViYIWxnlbn
-         Kg3ky5/Womv7jiVsomjAEhyZmXYBycOJJENfzAWuFJGXMRL2YsroW8pIZJuLX03I4ELB
-         ys1SClKcBjPeTOCeehAGZrt+5CDZIaO6zVGYR3vHS0tapNd6alc2J28sJbmuxcOuYbZv
-         waOQ==
-X-Gm-Message-State: ABy/qLa0IS4mNyqdmQo3VD/6vN0i4078ZebyuzHxlmEZBEzi/7jd8HfC
-        6C/jrSg0iy9IZmNmSC2y/LsBtHNChStI5w==
-X-Google-Smtp-Source: APBJJlHcwMef/WGA2AmKHcbNB87hUr5x8z+OobB+C05D/s7quNFYkHUqQHa8dPTYFJOW1P5IeeZCvA==
-X-Received: by 2002:a05:6a00:843:b0:67a:9208:87a with SMTP id q3-20020a056a00084300b0067a9208087amr5700074pfk.23.1690638220889;
-        Sat, 29 Jul 2023 06:43:40 -0700 (PDT)
+        bh=ciRtavySnNRvWTW6m7wEJWbFm9H9lBrob3UvT53cbMk=;
+        b=UA4rX+8D43m42g7qA0cp8jmct/yqCGP2Z6AdytjSZ1o6Uh8Xci/xt4rljA8it8O1yZ
+         eMF29vPOgFrkn76jHURO9q1dkJ7c4eWZ1Vifa5JyS3l17nP8nqsd2B3qaonrjjf/2Q4F
+         v+l5EXMrq6jr1S7qVjxT32GiVa0baseJdxpYUuwjE8nudmlIKm1fIqCFtGy272k+LfSm
+         19yvljWfQuJT5nmGvs5vWvEKoX4hkGLyMzoHIBVt+0rIwFWnb6xqBVGUnmrpEpGdHeg4
+         RQSz3sE7NfBJJTAEyDGRsSvkDQvjHWIWQWVGY6ey+/Gnf39HNHD5YMqr7A103DKLxeN9
+         bKNg==
+X-Gm-Message-State: ABy/qLYA/N/uWvtmhv43SSZg5cQE4ZE+Vsr/9B6+gDth+NbHNSqDOrLL
+        ctZEDgSwexdv3nFD0esaey7FD0520hAojg==
+X-Google-Smtp-Source: APBJJlF40wdlIg/tigMeWMnK/tFt1/h8qhJAN6iwnB3fddXB2wcs4Vp9DN2T4rSME4rncXtJORk+yg==
+X-Received: by 2002:a05:6a00:17a8:b0:64d:42b9:6895 with SMTP id s40-20020a056a0017a800b0064d42b96895mr6959015pfg.5.1690638223992;
+        Sat, 29 Jul 2023 06:43:43 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.38
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:43:40 -0700 (PDT)
+        Sat, 29 Jul 2023 06:43:43 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 01/17] MIPS: loongson32: Get the system type from DT
-Date:   Sat, 29 Jul 2023 21:43:02 +0800
-Message-Id: <20230729134318.1694467-2-keguang.zhang@gmail.com>
+Subject: [PATCH 02/17] MIPS: Modify the Loongson1 PRID_REV
+Date:   Sat, 29 Jul 2023 21:43:03 +0800
+Message-Id: <20230729134318.1694467-3-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
@@ -76,102 +76,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get the system type from devicetree.
-And update the copyright accordingly.
-
-In addition, the system type belongs to proc info.
-So rename setup.c to proc.c.
+Because LS1B and LS1C share the same PRID,
+it's reasonable to rename their PRID_REVs to PRID_REV_LOONGSON1.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- arch/mips/loongson32/Makefile        |  1 +
- arch/mips/loongson32/common/Makefile |  2 +-
- arch/mips/loongson32/common/setup.c  | 26 --------------------------
- arch/mips/loongson32/proc.c          | 20 ++++++++++++++++++++
- 4 files changed, 22 insertions(+), 27 deletions(-)
- delete mode 100644 arch/mips/loongson32/common/setup.c
- create mode 100644 arch/mips/loongson32/proc.c
+ arch/mips/include/asm/cpu.h  | 3 +--
+ arch/mips/kernel/cpu-probe.c | 6 +++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/loongson32/Makefile b/arch/mips/loongson32/Makefile
-index ba10954b4b21..c3881af369e9 100644
---- a/arch/mips/loongson32/Makefile
-+++ b/arch/mips/loongson32/Makefile
-@@ -3,6 +3,7 @@
- # Common code for all Loongson 1 based systems
- #
+diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
+index ecb9854cb432..4163b22c0a9a 100644
+--- a/arch/mips/include/asm/cpu.h
++++ b/arch/mips/include/asm/cpu.h
+@@ -248,8 +248,7 @@
+ #define PRID_REV_VR4181A		0x0070	/* Same as VR4122 */
+ #define PRID_REV_VR4130			0x0080
+ #define PRID_REV_34K_V1_0_2		0x0022
+-#define PRID_REV_LOONGSON1B		0x0020
+-#define PRID_REV_LOONGSON1C		0x0020	/* Same as Loongson-1B */
++#define PRID_REV_LOONGSON1		0x0020
+ #define PRID_REV_LOONGSON2E		0x0002
+ #define PRID_REV_LOONGSON2F		0x0003
+ #define PRID_REV_LOONGSON2K_R1_0	0x0000
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index b406d8bfb15a..a5ec05f719ab 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1287,14 +1287,14 @@ static inline void cpu_probe_legacy(struct cpuinfo_mips *c, unsigned int cpu)
+ 		set_cpu_asid_mask(c, MIPS_ENTRYHI_ASID);
+ 		c->writecombine = _CACHE_UNCACHED_ACCELERATED;
+ 		break;
+-	case PRID_IMP_LOONGSON_32:  /* Loongson-1 */
++	case PRID_IMP_LOONGSON_32:
+ 		decode_configs(c);
  
-+obj-$(CONFIG_MACH_LOONGSON32) += proc.o
- obj-$(CONFIG_MACH_LOONGSON32) += common/
+ 		c->cputype = CPU_LOONGSON32;
  
- #
-diff --git a/arch/mips/loongson32/common/Makefile b/arch/mips/loongson32/common/Makefile
-index f3950d308187..b44527b1a178 100644
---- a/arch/mips/loongson32/common/Makefile
-+++ b/arch/mips/loongson32/common/Makefile
-@@ -3,4 +3,4 @@
- # Makefile for common code of loongson1 based machines.
- #
+ 		switch (c->processor_id & PRID_REV_MASK) {
+-		case PRID_REV_LOONGSON1B:
+-			__cpu_name[cpu] = "Loongson 1B";
++		case PRID_REV_LOONGSON1:
++			__cpu_name[cpu] = "ICT Loongson-1";
+ 			break;
+ 		}
  
--obj-y	+= time.o irq.o platform.o prom.o setup.o
-+obj-y	+= time.o irq.o platform.o prom.o
-diff --git a/arch/mips/loongson32/common/setup.c b/arch/mips/loongson32/common/setup.c
-deleted file mode 100644
-index 4733fe037176..000000000000
---- a/arch/mips/loongson32/common/setup.c
-+++ /dev/null
-@@ -1,26 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (c) 2011 Zhang, Keguang <keguang.zhang@gmail.com>
-- */
--
--#include <linux/io.h>
--#include <linux/init.h>
--#include <linux/smp.h>
--#include <asm/cpu-info.h>
--#include <asm/bootinfo.h>
--
--const char *get_system_type(void)
--{
--	unsigned int processor_id = (&current_cpu_data)->processor_id;
--
--	switch (processor_id & PRID_REV_MASK) {
--	case PRID_REV_LOONGSON1B:
--#if defined(CONFIG_LOONGSON1_LS1B)
--		return "LOONGSON LS1B";
--#elif defined(CONFIG_LOONGSON1_LS1C)
--		return "LOONGSON LS1C";
--#endif
--	default:
--		return "LOONGSON (unknown)";
--	}
--}
-diff --git a/arch/mips/loongson32/proc.c b/arch/mips/loongson32/proc.c
-new file mode 100644
-index 000000000000..1ea54346b3d4
---- /dev/null
-+++ b/arch/mips/loongson32/proc.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+#include <linux/of.h>
-+
-+#include <asm/bootinfo.h>
-+
-+const char *get_system_type(void)
-+{
-+	const char *str;
-+	int err;
-+
-+	err = of_property_read_string_index(of_root, "compatible", 1, &str);
-+	if (!err)
-+		return str;
-+
-+	return "Unknown";
-+}
 -- 
 2.39.2
 
