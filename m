@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8523C767E38
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C62767E39
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjG2KdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 06:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S230331AbjG2Kep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 06:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjG2KdG (ORCPT
+        with ESMTP id S229500AbjG2Ken (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 06:33:06 -0400
+        Sat, 29 Jul 2023 06:34:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73901AB;
-        Sat, 29 Jul 2023 03:33:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43D91AB
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 03:34:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67B0860B82;
-        Sat, 29 Jul 2023 10:33:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCDA7C433CC;
-        Sat, 29 Jul 2023 10:33:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40B2560A2B
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:34:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E02C433C8;
+        Sat, 29 Jul 2023 10:34:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690626784;
-        bh=rKViM9NX1GrQZ2J029oNy1RNWuLl6UeLKdOCLKRXtIo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NYdeBWQg87ZMP9BLSItrj4sSmohr1xgyOxv1g/BYpnEbeywpnSesAGtEegkbYcEdh
-         8N1trksAZNqo3metlMGK3sLIv2i8jUWQvfbf73jczXoS4dN1zTfo7VKpZiRR/xlRp5
-         8xbVPVyn+65sOkvUd7uC1wkV3Yw1jV2EmZxiMdt6XKCZWrguuJ8hsBV4Gy6TTlyXhd
-         ZPGHe3BLL8PXFz/iDkywHMkN1c/R01JUDXH1x+KzWyOhwvpeMPEuPxQBcbtuCrRovL
-         /o3vXyrooMFo/6akpx2vQ8A3LV8BAqkEaFfywOTNAOfNIWkKen7vYYHgMFNrAc0YOq
-         CMAkkwcM9/1Vg==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo1639610e87.2;
-        Sat, 29 Jul 2023 03:33:04 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZ7hOmAFNUuJJgX3MYdQUVhSYigjpYIkqzgBm5kece3+USz3U5z
-        EQ7CLczKsEqz9uSkWuO0NcStphFrhOoWBX5cHNc=
-X-Google-Smtp-Source: APBJJlGeYb8hNy/oFr34uGXpmibjsARwkGDXhWuL5vf6q6/6EGpONGXt7KE18g1UWMPfQfNjEFd/fv4w/7as5tTqYDA=
-X-Received: by 2002:a05:6512:2391:b0:4f8:6e6e:4100 with SMTP id
- c17-20020a056512239100b004f86e6e4100mr4600338lfv.52.1690626782624; Sat, 29
- Jul 2023 03:33:02 -0700 (PDT)
+        s=k20201202; t=1690626881;
+        bh=5mvU38WFmD6aiPJH00I1q1misTN6TeP/eYb46wUKo/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o3JDPlsAa7XqHqEJen3RNbtENp7NwAiMUE3LDSbwrPSkIBQ89NOt2R7wxsFObMyQE
+         oAWzYxtMIFIxk7/aySsmFpUQEdmkOgZbIoYFCPzBQRGEBma0GXMQipgTT3V8JSDGHH
+         hgpkqnhHTwfcV2hAwjSNLSI2bn5l6Vy0p6vHHUJzFd0h5Xu6dpQcOAz+pkO3bNlkQW
+         FLMC7Pvh3YuaOz3saTKs56/BUm0QLwG3PPAHKkYdU7/gI+bbRuhxKbuHiT9v8U1US4
+         hqP9pQcvcJutKn9rjKtvhPhMfheT46KjEhl32JuoIQmUslPFwza0urCQif8N+fjfmL
+         tbRCfRzssX9mQ==
+Date:   Sat, 29 Jul 2023 11:34:38 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] riscv: enable DEBUG_FORCE_FUNCTION_ALIGN_64B
+Message-ID: <20230729-shucking-slang-370c6baa358e@spud>
+References: <20230727160356.3874-1-jszhang@kernel.org>
 MIME-Version: 1.0
-References: <20230708092153.1418570-1-yukuai1@huaweicloud.com>
-In-Reply-To: <20230708092153.1418570-1-yukuai1@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Sat, 29 Jul 2023 18:32:49 +0800
-X-Gmail-Original-Message-ID: <CAPhsuW5cBipY=JT8nRvJptyU9uePVYgqQ5ZaTtL7KnNO97K9BQ@mail.gmail.com>
-Message-ID: <CAPhsuW5cBipY=JT8nRvJptyU9uePVYgqQ5ZaTtL7KnNO97K9BQ@mail.gmail.com>
-Subject: Re: [PATCH -next v2 0/3] dm-raid: minor fixes
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     pmenzel@molgen.mpg.de, agk@redhat.com, snitzer@kernel.org,
-        dm-devel@redhat.com, heinzm@redhat.com, neilb@suse.de,
-        jbrassow@redhat.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LxHC1VpAZFy1zAHq"
+Content-Disposition: inline
+In-Reply-To: <20230727160356.3874-1-jszhang@kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -67,32 +58,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 8, 2023 at 5:23=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
-ote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Changes in v2:
->  - improve title and commit message for patch 2
->
-> This patchset fix two straightforward and easy problems that is found by
-> code review, please consider it for the next merge window.
->
-> Yu Kuai (3):
->   md/dm-raid: fix that 'reconfig_mutex' is not released from error path
->     in raid_ctr()
->   md/dm-raid: clean up multiple equivalent goto tags from raid_ctr()
->   md/dm-raid: protect md_stop() with 'reconfig_mutex'
 
-For the set:
+--LxHC1VpAZFy1zAHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Song Liu <song@kernel.org>
+Hey,
 
->
->  drivers/md/dm-raid.c | 20 +++++++++-----------
->  drivers/md/md.c      |  2 ++
->  2 files changed, 11 insertions(+), 11 deletions(-)
->
-> --
-> 2.39.2
->
+On Fri, Jul 28, 2023 at 12:03:56AM +0800, Jisheng Zhang wrote:
+> Allow to force all function address 64B aligned as it is possible for
+> other architectures. This may be useful when verify if performance
+> bump is caused by function alignment changes.
+>=20
+> Before commit 1bf18da62106 ("lib/Kconfig.debug: add ARCH dependency
+> for FUNCTION_ALIGN option"), riscv supports enabling the
+> DEBUG_FORCE_FUNCTION_ALIGN_64B option, but after that commit, each
+> arch needs to claim the support explicitly. I tried the config file in
+> [1] for both RV64 and RV32, I can't reproduce the build error as [1],
+> there is no reason for not allowing to enforce this function alignment.
+>=20
+> Link: https://lore.kernel.org/lkml/202202271612.W32UJAj2-lkp@intel.com/ [=
+1]
+
+This is a CSKY randconfig, is there any particular reason that running
+that randconfig (over a year later) and on a different architecture
+would trigger whatever the condition was?
+
+The original commit here seems far too penal - why was it not just
+disabled on CSKY??? I tried looking a bit on lore, but didn't see
+anything explaining the subset of supported archs they picked.
+I did see Guo Ren wondering if rv32 would be similarly problematic - but
+since this is something likely to just trip up randconfigs, I think we
+should go for it and if rv32 becomes a problem, restrict this to 64-bit.
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  lib/Kconfig.debug | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index fbc89baf7de6..39ffd218e960 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -502,7 +502,7 @@ config SECTION_MISMATCH_WARN_ONLY
+> =20
+>  config DEBUG_FORCE_FUNCTION_ALIGN_64B
+>  	bool "Force all function address 64B aligned"
+> -	depends on EXPERT && (X86_64 || ARM64 || PPC32 || PPC64 || ARC || S390)
+> +	depends on EXPERT && (X86_64 || ARM64 || PPC32 || PPC64 || ARC || RISCV=
+ || S390)
+>  	select FUNCTION_ALIGNMENT_64B
+>  	help
+>  	  There are cases that a commit from one domain changes the function
+> --=20
+> 2.40.1
+>=20
+
+--LxHC1VpAZFy1zAHq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMTrPQAKCRB4tDGHoIJi
+0iGdAQDyN75O2rQ1WW8cAOtDv2dka5BxnhOAnhZQPU4T3q4cpgD+LfZKzuDdbrub
+ytNDwsKc2dgDCxjr1N0tLkggxyp44ws=
+=mi/7
+-----END PGP SIGNATURE-----
+
+--LxHC1VpAZFy1zAHq--
