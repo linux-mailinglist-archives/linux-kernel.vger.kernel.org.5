@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4B47679DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570F47679DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbjG2AkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
+        id S236382AbjG2AkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236028AbjG2Ai4 (ORCPT
+        with ESMTP id S236680AbjG2AjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:38:56 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3160049EF
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:38:04 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5704995f964so29133177b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:38:04 -0700 (PDT)
+        Fri, 28 Jul 2023 20:39:22 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7146E55BD
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:38:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d06d36b49f9so2532459276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690591054; x=1691195854;
+        d=google.com; s=20221208; t=1690591056; x=1691195856;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=HaBkctuCpzeNsmYq2ZMyhzuleSw3w1r0yLS5/ARfwFU=;
-        b=0BjQf8mxVqLf9olUxXGMC1K/Q8Umy+UDlIwiZvN5AhzF5GaReKUy2Smdqy+iC5mqmM
-         ddDy5dpIo98KTcMschBba1bUW0oSSa5ow8PFtOdZWlvKFfDHrcvUc/hSjwq40Te0l75V
-         Jeo8+Q6V4F9oYBmvmUeWeDX3lXivT5TjTHwjtbtfK2clS4pfKJuUWfRg4l8sqNbXSV/C
-         G1DPyKNYjO22H4sI7oX2eTOF8JqH+iK8F/uA89XJwOSL2AkvzC/C6/GN8GBo7JvDLMkM
-         CWDHxcTfxWUbMrn4oFs1vnjHlFD3MOa0DBObIs3gjiXioSIH1IiFBp0AUYsF6OdcW031
-         WYOg==
+        bh=A8aQo92BGEsQWkSMM0MIWBDLRqK5BVyNdFuue+2u5/k=;
+        b=rHAAon41DFnQeXUebX2OJqNtyuIqCjw/zv/LEFTrP6sKfuqbWQWy9vTAeDC9baKzkM
+         InL2pbSWIvgmJo1PFc5PkZ9IssaPyWA6beQKHDlATRaITOhgmWiIi4Yc6QNojT4gim2g
+         VHEcBgumeC+dZAbxD6aD3GbVFZzVhTveam9/0HVj8PAwwacp6sj79h3MRWTWHVGts8EH
+         qeFgp3tJXVbDG7wMwDPRbM2LiNJJ9L5W/iXasZCfE08XzD2USXpqlYmrhqXhXY8U8Dxh
+         QtEieDJoOJzHX5jn1vKb8EIGVG6faLPinZHl9nkvORH8R4TaxZmBVa2qWsf+mhcEmiq1
+         bkug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591054; x=1691195854;
+        d=1e100.net; s=20221208; t=1690591056; x=1691195856;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HaBkctuCpzeNsmYq2ZMyhzuleSw3w1r0yLS5/ARfwFU=;
-        b=FqxSMUzMoYvbjfadZarWmK8bCjeRL9xDD+JVs5KUDXqyJpQr47RanEB8FVpp8nNu/h
-         LbVCfcRYdsY2iApJuAIihXU2ZC53hlBFV0ECnuOoLXwbCqlbQl0JOvmogxdZOz+B0ZUZ
-         ju5PA3ufDHGHKTh8dQFqKltT/Ovq5cy3yoQ0Dc3LPqPrm1CG7n6g7WTgyPg90FXf68c1
-         /9fUl6FWQT2Hb4Tmth3L1Df7LEsx0CZbyPiqwwm+HdWlHR/RciYW5Ah5R0UQeIIybDco
-         Niw7FlXdfC3SxP/C45SBAqR8lTBi9Mgs0P9CzMc0wvTHSQEWM2LuEe9VjdJcgIMgvywa
-         ls8g==
-X-Gm-Message-State: ABy/qLY5XeeSl35fm/B5Fu2vU1H8H14+nOFV1y1sydrumWLRCORKJIBR
-        TdVCDLcGxfJE2xHs1zkivNyK0MGAGJ4=
-X-Google-Smtp-Source: APBJJlGJseaUzNmHDQp72UkoB0v5EChLeNnkGTMKsOKAgx227d/kK9tEZTDaSnghq3o8QtMG4vQKRKA0Bx0=
+        bh=A8aQo92BGEsQWkSMM0MIWBDLRqK5BVyNdFuue+2u5/k=;
+        b=TnHlLon2N5NGwl5KdMSHSYFLma/UIbMn9n2CkJ067qPPTAYe3gho7WZoSS5VhzccRh
+         uF1gTBcnVd+56fLP0ymC0xYkDbp/O9XDMkzpkD6QpC5iBpoRq21oBimUqq0vW1GbP4hL
+         NlT7t/OThSj6sgH3oBp05EcYgry8CvK7cuW8sAAiY2tmXDKyNc+wUVj4I6DAZMT5LMgY
+         r4ePJafEc6ueFjpIqleGrYkEpC9YoktzkDTh6Qjx6xRI/1A8rTrPueBfXXX7qT6/6SFD
+         ysFPU99LgKwcUkEd3XZq6XIkK4G9unOvL1gLkg1eNDWWBGJ7sb6bOspwnonN+XlceqV6
+         9wXA==
+X-Gm-Message-State: ABy/qLaP9W85916SCdisF7v0W95WktJneNxrWixYolI+A1+bq7o2neRj
+        v51wChcX7m4bB+duoiTTLuoodHHklww=
+X-Google-Smtp-Source: APBJJlEJnPZI81sdISJjMNXK9i+0b+uyCp/hlcuf7GAPKJmfjcAxHXQ0DG6ODxl42Zjvl3eTSQ7DFBljZzk=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae68:0:b0:577:3b0c:5b85 with SMTP id
- g40-20020a81ae68000000b005773b0c5b85mr25198ywk.0.1690591054389; Fri, 28 Jul
- 2023 17:37:34 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:29c2:0:b0:d16:89fe:52cd with SMTP id
+ p185-20020a2529c2000000b00d1689fe52cdmr17553ybp.11.1690591056277; Fri, 28 Jul
+ 2023 17:37:36 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 17:36:34 -0700
+Date:   Fri, 28 Jul 2023 17:36:35 -0700
 In-Reply-To: <20230729003643.1053367-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729003643.1053367-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729003643.1053367-26-seanjc@google.com>
-Subject: [PATCH v4 25/34] KVM: selftests: Convert x86's nested exceptions test
- to printf guest asserts
+Message-ID: <20230729003643.1053367-27-seanjc@google.com>
+Subject: [PATCH v4 26/34] KVM: selftests: Convert x86's set BSP ID test to
+ printf style guest asserts
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -79,37 +79,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert x86's nested exceptions test to printf-based guest asserts, and
-use REPORT_GUEST_ASSERT() instead of TEST_FAIL() so that output is
-formatted correctly.
+Convert the set_boot_cpu_id test to use printf-based guest asserts,
+specifically the EQ and NE variants.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c b/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
-index 5f074a6da90c..4a29f59a76be 100644
---- a/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
-@@ -1,4 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c b/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
+index b25d7556b638..abb3f26d3ce0 100644
+--- a/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
++++ b/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
+@@ -4,6 +4,8 @@
+  *
+  * Copyright (C) 2020, Red Hat, Inc.
+  */
 +#define USE_GUEST_ASSERT_PRINTF 1
 +
- #define _GNU_SOURCE /* for program_invocation_short_name */
+ #define _GNU_SOURCE /* for program_invocation_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+@@ -20,7 +22,7 @@ static void guest_bsp_vcpu(void *arg)
+ {
+ 	GUEST_SYNC(1);
  
- #include "test_util.h"
-@@ -180,9 +182,7 @@ static void assert_ucall_vector(struct kvm_vcpu *vcpu, int vector)
- 			    "Expected L2 to ask for %d, L2 says it's done", vector);
- 		break;
- 	case UCALL_ABORT:
--		TEST_FAIL("%s at %s:%ld (0x%lx != 0x%lx)",
--			  (const char *)uc.args[0], __FILE__, uc.args[1],
--			  uc.args[2], uc.args[3]);
-+		REPORT_GUEST_ASSERT(uc);
- 		break;
- 	default:
- 		TEST_FAIL("Expected L2 to ask for %d, got unexpected ucall %lu", vector, uc.cmd);
+-	GUEST_ASSERT(get_bsp_flag() != 0);
++	GUEST_ASSERT_NE(get_bsp_flag(), 0);
+ 
+ 	GUEST_DONE();
+ }
+@@ -29,7 +31,7 @@ static void guest_not_bsp_vcpu(void *arg)
+ {
+ 	GUEST_SYNC(1);
+ 
+-	GUEST_ASSERT(get_bsp_flag() == 0);
++	GUEST_ASSERT_EQ(get_bsp_flag(), 0);
+ 
+ 	GUEST_DONE();
+ }
+@@ -65,7 +67,7 @@ static void run_vcpu(struct kvm_vcpu *vcpu)
+ 					stage);
+ 			break;
+ 		case UCALL_ABORT:
+-			REPORT_GUEST_ASSERT_2(uc, "values: %#lx, %#lx");
++			REPORT_GUEST_ASSERT(uc);
+ 		default:
+ 			TEST_ASSERT(false, "Unexpected exit: %s",
+ 				    exit_reason_str(vcpu->run->exit_reason));
 -- 
 2.41.0.487.g6d72f3e995-goog
 
