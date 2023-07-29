@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D24DB767F30
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40406767F34
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjG2MhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 08:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S231714AbjG2Mj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 08:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjG2MhA (ORCPT
+        with ESMTP id S229843AbjG2Mj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 08:37:00 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454523AB9;
-        Sat, 29 Jul 2023 05:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1690634216; bh=cPI6LIWuZjuB2o2aZA/SkL/WLC8y7hZUU6IJgq71yy8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EGqoxsi4EhhnSJ3FMbJc8JNptu8bfGKxTW2Cl8+C5+YVb4dKmoW68pKpEW5pWdWva
-         21UCiKgesCS1+G2p7uefSjsP2OulgVBZreMLDiyCbuCMJvha1AyhEB+YTa/Ud/RQ7h
-         qKFZ0iUQV94AF3u/2FHTmmkIw8gYSANoqcUGeUq4=
-Date:   Sat, 29 Jul 2023 14:36:55 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     w@1wt.eu, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] selftests/nolibc: add extra configs customize
- support
-Message-ID: <74f6a3b5-666c-41e9-a3d5-0ed5457f20f5@t-8ch.de>
-References: <cover.1690468707.git.falcon@tinylab.org>
- <8e9e5ac6283c6ec2ecf10a70ce55b219028497c1.1690468707.git.falcon@tinylab.org>
+        Sat, 29 Jul 2023 08:39:56 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D344DE5B
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 05:39:54 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fde57684d7so29598525e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 05:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690634393; x=1691239193;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KYLF8GkDnhTx5rUfgByMfMBOvyYSMEjkN30gboXrHaY=;
+        b=afmlzFkuBPFXsqfNcaQWZjaZwH9WaJjEP7GTgFvksOp40iWz5zsMMYoVOKxBuyQmB2
+         XTsoWdQkgUnrM7SDlRvERmMvpP4sqBMC0+J9N5eqVTv7jEAmtKhJGyceDFye8DZgFwpd
+         4xNXFyijEGdagPvRaTHJgK32pt4YZrREY3SjzKXoR4/MlN4hsAoe50JipjRWbDG8STib
+         vtTVu7N1E7sePM7KbktXkI6E0pY/+PbrFInBO11NfVfMq4yTo+cN9qVdn12RVdJvSpIJ
+         mZRUL3UKITEd7Ci/j1fZ/MtFR4pxDXUN12freYQyLYc/thoWKEMf6017iYT7IWr12bQM
+         sRCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690634393; x=1691239193;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KYLF8GkDnhTx5rUfgByMfMBOvyYSMEjkN30gboXrHaY=;
+        b=g2uVtkxDfukO59FDCKnYSq/R0A/VZ9mZR2B4rZshXgNjq25i5JO5cX5a31LGzbBRZo
+         cMOeb8BQl7qy+ubC5FS8SSl7uMtMTO0bK/dfFbBuY5KX+35fiMLPdyLpO6Wqy9lZXOu2
+         QwuGOwyCMrg9+/Y1AvmRX19rZjdC3Ew3FOxAFzee8mz4dUoEdYs/xz/j9nNenYORaLud
+         Cc+DlhFPquFRrufrHt1pnx/lC+vo10Zws+ZJdRwJVV6espPJgUwpMQaL2Gia12Dn1bsv
+         kHx+9DoJNRdkxvJqu0u8BwdpV97us2r+CDPXz6SEwsmxxZ/rotN1umUvqumej6+JqpR5
+         dYkQ==
+X-Gm-Message-State: ABy/qLY/DHbnCX62RwnLkgDLLwHHLnbjhEbJtR31XbmzkaKRCiBSwRMD
+        wzyQKMC238uwTBfJQa/qrEmSwQ==
+X-Google-Smtp-Source: APBJJlGIfCQfZ3VGJfA5hhRjITx/VVf16FmUlqbHwGKxS5JDxe5bjR4RGkAzarVbIHA1pZvTv7dPiQ==
+X-Received: by 2002:a1c:ed0d:0:b0:3fb:dd5d:76b with SMTP id l13-20020a1ced0d000000b003fbdd5d076bmr3546151wmh.7.1690634392660;
+        Sat, 29 Jul 2023 05:39:52 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id k17-20020adfe8d1000000b003143867d2ebsm7360123wrn.63.2023.07.29.05.39.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Jul 2023 05:39:52 -0700 (PDT)
+Message-ID: <deb24fd5-6760-4e3c-f6b6-444cee689bd4@linaro.org>
+Date:   Sat, 29 Jul 2023 13:39:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8e9e5ac6283c6ec2ecf10a70ce55b219028497c1.1690468707.git.falcon@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] clk: qcom: gcc-sm8250: Fix gcc_sdcc2_apps_clk_src
+Content-Language: en-US
+To:     Patrick Whewell <patrick.whewell@sightlineapplications.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        William Gray <william.gray@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230728191423.13837-1-patrick.whewell@sightlineapplications.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230728191423.13837-1-patrick.whewell@sightlineapplications.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-27 23:02:02+0800, Zhangjin Wu wrote:
-> The default DEFCONFIG_<ARCH> may not always work for all architectures,
-> some architectures require to add extra kernel config options, this
-> allows to add extra options in the defconfig target.
+On 28/07/2023 20:14, Patrick Whewell wrote:
+> Set .flags = CLK_OPS_PARENT_ENABLE to fix "gcc_sdcc2_apps_clk_src: rcg
+> didn't update its configuration" error.
 > 
-> Based on the .config generated from DEFCONFIG_<ARCH>, It allows to
-> customize extra kernel config options via both the common common.config
-> and the architecture specific <ARCH>.config, at last trigger
-> 'allnoconfig' to let them take effect with missing config options as
-> disabled.
-> 
-> The scripts/kconfig/merge_config.sh tool is used to merge the extra
-> config files.
-> 
-> Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
-> Link: https://lore.kernel.org/lkml/67eb70d4-c9ff-4afc-bac7-7f36cc2c81bc@t-8ch.de/
-> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> Signed-off-by: Patrick Whewell <patrick.whewell@sightlineapplications.com>
+> Fixes: 3e5770921a88 ("clk: qcom: gcc: Add global clock controller driver for SM8250")
 > ---
->  tools/testing/selftests/nolibc/Makefile | 5 +++++
->  1 file changed, 5 insertions(+)
+>   drivers/clk/qcom/gcc-sm8250.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> index f42adef87e12..9576f1a0a98d 100644
-> --- a/tools/testing/selftests/nolibc/Makefile
-> +++ b/tools/testing/selftests/nolibc/Makefile
-> @@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
->  DEFCONFIG_loongarch  = defconfig
->  DEFCONFIG            = $(DEFCONFIG_$(ARCH))
->  
-> +# extra kernel config files under configs/, include common + architecture specific
-> +EXTCONFIG            = common.config $(ARCH).config
+> diff --git a/drivers/clk/qcom/gcc-sm8250.c b/drivers/clk/qcom/gcc-sm8250.c
+> index b6cf4bc88d4d..d3c75bb55946 100644
+> --- a/drivers/clk/qcom/gcc-sm8250.c
+> +++ b/drivers/clk/qcom/gcc-sm8250.c
+> @@ -721,6 +721,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
+>   		.name = "gcc_sdcc2_apps_clk_src",
+>   		.parent_data = gcc_parent_data_4,
+>   		.num_parents = ARRAY_SIZE(gcc_parent_data_4),
+> +		.flags = CLK_OPS_PARENT_ENABLE,
+>   		.ops = &clk_rcg2_floor_ops,
+>   	},
+>   };
 
-As this series seems to need a respin anyways:
-
-extconfig means "extended config", correct?
-That is fairly nondescript.
-
-I would prefer something like "NOLIBC_TEST_CONFIG" and something like
-"make nolibctestconfig" to make an existing config ready for
-nolibc-test.
-
-> +
->  # optional tests to run (default = all)
->  TEST =
->  
-> @@ -161,6 +164,8 @@ initramfs: nolibc-test
->  
->  defconfig:
->  	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-> +	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTCONFIG),$(wildcard $(CURDIR)/configs/$c))
-> +	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
->  
->  kernel: initramfs
->  	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) $(IMAGE_NAME) CONFIG_INITRAMFS_SOURCE=$(CURDIR)/initramfs
-> -- 
-> 2.25.1
-> 
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
