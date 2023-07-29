@@ -2,129 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D6B768172
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4FE768176
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjG2TdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 15:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        id S229902AbjG2Tes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 15:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjG2TdQ (ORCPT
+        with ESMTP id S229578AbjG2Teq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:33:16 -0400
+        Sat, 29 Jul 2023 15:34:46 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B0FCE
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:33:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A99CE;
+        Sat, 29 Jul 2023 12:34:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 636396069B
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 19:33:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 526BBC433C8;
-        Sat, 29 Jul 2023 19:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690659194;
-        bh=WoTBW2RInEWVN7BYf6Qj0vtLh2X+0pwyjuY2u3J4390=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uYVNNPMJrTg64eF+spfl+vwH4skqcYBOMk3kuSR/lkoXEOfQshJTY+Ll8rstVQCGY
-         AMDTrcQJtLS7P0E80EGyejLSXk19zLdxLx0+QWQ4u3go90th3fXTp7H9tiFCsNprpB
-         hYH89px4tQw2QA9jR1pS+wGFeA2T/T6D/uoJJ1vEohY2S1O7+EMJcTrZ4AtLKSXKO+
-         jQefcmW/Vb4zma6pOOOpE0fFEs4XJo+ArEEv0efr33bbA2Ixqkv6ECKff5KamFAQ5l
-         Vm0eCIvzIfArwrApqSAQCu/XHOV0DL9KFIetjGumiTu1zc1Z84Jqqn8fOKGXvbFKDj
-         6ulLV+FQfbyDg==
-Date:   Sat, 29 Jul 2023 12:33:12 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     =?utf-8?B?5a2Z5YaJ?= <sunran001@208suo.com>,
-        airlied <airlied@gmail.com>, daniel <daniel@ffwll.ch>,
-        "alexander.deucher" <alexander.deucher@amd.com>,
-        amd-gfx <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/radeon: Prefer 'unsigned int' to bare use of
- 'unsigned'
-Message-ID: <20230729193312.GA2844869@dev-arch.thelio-3990X>
-References: <3a4bebc5-79fb-4799-8743-14a0dde97a4f.sunran001@208suo.com>
- <ZMUeNehNb52Qu/Cp@debian.me>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B102C601D6;
+        Sat, 29 Jul 2023 19:34:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27432C433C8;
+        Sat, 29 Jul 2023 19:34:38 +0000 (UTC)
+Date:   Sat, 29 Jul 2023 15:34:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 05/20] tracing/filters: Optimise cpumask vs
+ cpumask filtering when user mask is a single CPU
+Message-ID: <20230729153436.1e07bfa6@rorschach.local.home>
+In-Reply-To: <20230720163056.2564824-6-vschneid@redhat.com>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+        <20230720163056.2564824-6-vschneid@redhat.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMUeNehNb52Qu/Cp@debian.me>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 09:12:05PM +0700, Bagas Sanjaya wrote:
-> On Fri, Jul 28, 2023 at 10:35:19PM +0800, 孙冉 wrote:
-> > WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-> > 
-> > Signed-off-by: Ran Sun <sunran001@208suo.com>
-> 
-> Your From: address != SoB identity
+On Thu, 20 Jul 2023 17:30:41 +0100
+Valentin Schneider <vschneid@redhat.com> wrote:
 
-While the comment below is a completely valid complaint, I think this
-comment is being rather pedantic. Google Translate will tell you that
-孙冉 is Sun Ran, so while the name does not strictly match, it is
-clearly the same...
+>  		/* Move along */
+>  		i++;
+> +
+> +		/*
+> +		 * Optimisation: if the user-provided mask has a weight of one
+> +		 * then we can treat it as a scalar input.
+> +		 */
+> +		single = cpumask_weight(pred->mask) == 1;
+> +		if (single && field->filter_type == FILTER_CPUMASK) {
+> +			pred->val = cpumask_first(pred->mask);
+> +			kfree(pred->mask);
 
-> > ---
-> >  drivers/gpu/drm/radeon/radeon_object.h | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/radeon/radeon_object.h b/drivers/gpu/drm/radeon/radeon_object.h
-> > index 39cc87a59a9a..9b55a7103cfd 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_object.h
-> > +++ b/drivers/gpu/drm/radeon/radeon_object.h
-> > @@ -37,7 +37,7 @@
-> >   *
-> >   * Returns corresponding domain of the ttm mem_type
-> >   */
-> > -static inline unsigned radeon_mem_type_to_domain(u32 mem_type)
-> > +static inline unsigned int radeon_mem_type_to_domain(u32 mem_type)
-> >  {
-> >   switch (mem_type) {
-> >   case TTM_PL_VRAM:
-> > @@ -112,12 +112,12 @@ static inline unsigned long radeon_bo_size(struct radeon_bo *bo)
-> >   return bo->tbo.base.size;
-> >  }
-> >  
-> > -static inline unsigned radeon_bo_ngpu_pages(struct radeon_bo *bo)
-> > +static inline unsigned int radeon_bo_ngpu_pages(struct radeon_bo *bo)
-> >  {
-> >   return bo->tbo.base.size / RADEON_GPU_PAGE_SIZE;
-> >  }
-> >  
-> > -static inline unsigned radeon_bo_gpu_page_alignment(struct radeon_bo *bo)
-> > +static inline unsigned int radeon_bo_gpu_page_alignment(struct radeon_bo *bo)
-> >  {
-> >   return (bo->tbo.page_alignment << PAGE_SHIFT) / RADEON_GPU_PAGE_SIZE;
-> >  }
-> > @@ -189,7 +189,7 @@ static inline void *radeon_sa_bo_cpu_addr(struct drm_suballoc *sa_bo)
-> >  
-> >  extern int radeon_sa_bo_manager_init(struct radeon_device *rdev,
-> >           struct radeon_sa_manager *sa_manager,
-> > -         unsigned size, u32 align, u32 domain,
-> > +         unsigned int size, u32 align, u32 domain,
-> >           u32 flags);
-> >  extern void radeon_sa_bo_manager_fini(struct radeon_device *rdev,
-> >            struct radeon_sa_manager *sa_manager);
-> 
-> The patch is whitespace-corrupted. Use git-send-email(1) to submit patches.
-> Also, your patch is also MIME-encoded, hence the corruption.
-> 
-> To Alex: Please don't apply this patch due to reasons above.
-> 
-> Thanks.
-> 
-> -- 
-> An old man doll... just what I always wanted! - Clara
+Don't we need:
+			pred->mask = NULL;
 
+here, or the free_predicate() will cause a double free?
 
+-- Steve
+
+> +		}
+> +
