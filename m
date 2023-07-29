@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEA676802D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43BF7768031
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjG2O4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 10:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
+        id S231288AbjG2O6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 10:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjG2O4p (ORCPT
+        with ESMTP id S229897AbjG2O6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 10:56:45 -0400
+        Sat, 29 Jul 2023 10:58:03 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796C535B6
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 07:56:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F87335B6
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 07:57:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690642559;
+        s=mimecast20190719; t=1690642638;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cyh9GNwkSeiWX8VVWJet6cmrStrv1Y1BhHYKMAKCy08=;
-        b=ZpDH7dcoZVhpcBi+fBKIHPoPsqKm/sFNO4IJfypVUMkpOvaMtqQaLjnWnr0OUKRkCnff3j
-        X4c/0bTE0/+dZyZ5ddAY7VVyPjIp8XSkqltlfZsu28KOax05/lvTPd5iVylwGOXpuTwSKG
-        TZCZM7HTZEGMbmrXY4pra1UmZctIZS4=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-211-RnNOXM-aO92w7nOuxRPItg-1; Sat, 29 Jul 2023 10:55:58 -0400
-X-MC-Unique: RnNOXM-aO92w7nOuxRPItg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        bh=gBJhzy7LmnD6APAR45BuDH9aOjTqMcLkp+ipwdaJHbY=;
+        b=G6tUYqiOiH/2KtMJwVur0xDni2aoDABenDSjB2CLJyouK3ThVupctvycZ3ACebgOOGMe2u
+        dCWe3otHtMWAaa6R54fNZ1WLVsh5kIB6wEI1OFDdn7Lzh5tl0AKSbH90gKGWBcKw3ag3BO
+        vSd8XFm+G/qsFP8ka+YbHUeTtfFG190=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-413-Uh2YmgxvMkaB1wVAWzQm6w-1; Sat, 29 Jul 2023 10:57:16 -0400
+X-MC-Unique: Uh2YmgxvMkaB1wVAWzQm6w-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A15331C04320;
-        Sat, 29 Jul 2023 14:55:57 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EF23A858F1E;
+        Sat, 29 Jul 2023 14:57:15 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 29F33400F36;
-        Sat, 29 Jul 2023 14:55:57 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B3695492B02;
+        Sat, 29 Jul 2023 14:57:15 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Su Hui <suhui@nfschina.com>
-Subject: Re: [PATCH 0/2] KVM: VMX: Make VMREAD error trampoline noinstr friendly
-Date:   Sat, 29 Jul 2023 10:55:15 -0400
-Message-Id: <20230729145515.2690054-1-pbonzini@redhat.com>
-In-Reply-To: <20230721235637.2345403-1-seanjc@google.com>
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH] KVM: VMX: Drop manual TLB flush when migrating vmcs.APIC_ACCESS_ADDR
+Date:   Sat, 29 Jul 2023 10:56:46 -0400
+Message-Id: <20230729145645.2690090-1-pbonzini@redhat.com>
+In-Reply-To: <20230721233858.2343941-1-seanjc@google.com>
 References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -60,7 +61,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Queued, thanks.
+> In other words, KVM does flush in this case, it just does so earlier
+> on while handling the page migration.
+
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+
+but not 6.5 material, so I'm leaving this to you.
 
 Paolo
 
