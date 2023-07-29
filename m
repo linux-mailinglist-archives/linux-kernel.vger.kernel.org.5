@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1A1767E62
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3EB767E65
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjG2LAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 07:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        id S231403AbjG2LBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbjG2LAQ (ORCPT
+        with ESMTP id S229895AbjG2LBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 07:00:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F86E2727;
-        Sat, 29 Jul 2023 04:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1690628392; x=1691233192; i=georgmueller@gmx.net;
- bh=twRf4TMZi9E5NNBIM2ex+mG1+qx5hpiMfP5wNhXXNVs=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=V44Ip/hewjtHV58EtLzKVVP2vt99FjogX51rcQIMGR8pV1tI69pWt5FoYJyiYCjkzQpKCu+
- KoaQ6Hk5j+Nb6vixMPCLmwKIEzygOn9eKiEtPhHZfqxJXARplkNz1YzSTZ9roI7GX3EI1hE7b
- Q02ywFcmEuKUjRffnVIEH2NELCCMQEwCUVwEIrS7t/aOzHbb7nZFSTfV3XXUQ9q0djbQ1tuHM
- SLEAi7H+vMaHB3Rkt67xTdbRYV8lqbdy9ipNWZm62+J1ba8jDye9uSW5f0McAv4P9oKLkjcMQ
- sL4oBCUHB1SPjPGP4ikc/mTIDNMkad1X534sQNwW1opEv7KgsQdg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.15.55] ([109.104.34.147]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MXGrE-1qMqfe1YCM-00YiCc; Sat, 29
- Jul 2023 12:59:52 +0200
-Message-ID: <4085b352-f5e8-c0e8-42cf-7a6ecf23282f@gmx.net>
-Date:   Sat, 29 Jul 2023 12:59:50 +0200
+        Sat, 29 Jul 2023 07:01:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22CD35A8
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 04:01:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2326A60B7F
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 11:01:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36426C433C8;
+        Sat, 29 Jul 2023 11:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690628497;
+        bh=r4ub2sfb+3RGyLzoPfGridl9iQmattPqXfX7+exr16M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lGbKm1rMkfGoHjsONfO6cumIoG2Jf2qe4UP2rgQe6sDRG/jOdD/Kxr0mklt1tacfp
+         cXbPigsXbB8SsTDdNWosUXxHM2wv020pbiaVX72aIgHv+HsBczN4TVb22kItJIGWTI
+         H/LA7UYgfUbxyNHEKw7LbDxftDosNGj8zg2Q8AnM7c3IoB+jd2GSdF12UTrqzuUuuU
+         YRn+0u9j2QGiXBoTo9Fm+BnHHp6oc1C/51sAd+aIxSAMxsvt+XM46aI+KkeVOD7ZiJ
+         HfIkOOWjInK36k2T3kxTok9UIEW2viq4jeNhhXR2kT4p2xAFsAbuset+MaxswhAW+O
+         NY7MR7iQaS5Jw==
+Date:   Sat, 29 Jul 2023 13:01:32 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] net: dsa: microchip: KSZ9477 register regmap alignment
+ to 32 bit boundaries
+Message-ID: <ZMTxjP5dReD6+B3P@kernel.org>
+References: <20230727081342.3828601-1-lukma@denx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] perf probe: skip test_uprobe_from_different_cu if there
- is no gcc
-Content-Language: en-US
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230728151812.454806-2-georgmueller@gmx.net>
- <20230729093814.d48a7b4fb51fdd74ad50ba42@kernel.org>
-From:   =?UTF-8?Q?Georg_M=c3=bcller?= <georgmueller@gmx.net>
-In-Reply-To: <20230729093814.d48a7b4fb51fdd74ad50ba42@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7zgsdN/9IIYrwP1nrwUUW6u1/E/vOCO59+XBSn1MMZYpLYl+g3S
- 4ucIPIrcA5FgvAj3TRFyPzjlALyBL+ZZYpoDzcrg/qi9T2+hIudkVf19NfRkPKwlwI+Qsab
- Nd8htf00gOqj6fmtkqyxRKYh/UBloeyrBYitU+zWFsz+BjUCbYmi9ZpPa9UcAlLB/Kme6QV
- /eeC4uoK8pWmZRqSK7oLg==
-UI-OutboundReport: notjunk:1;M01:P0:S4Ja4+tS/ME=;UBlXlKdJxaVVRwJZJZlTpljPLLc
- xpA+aZqqRNlsKYhasqW8kSr7jpsdKkcDgYScCUXM7glStjF1N/BZnTPIXuSFd8fW3DBOinQT9
- cN64koOe5mavIckKYErNBm3SkGZ8vx1D4NOUpKGRbIg3Bpy7GGnCthNDywgOTaMBkkurW4Csa
- MtXBqoYbI5VAyDuc3m1xI47QPreTWcQiSJggGoJIcUkJ3x/ZhWcYI/TkLRrG6qOJYy5NQ1GE4
- lzKIMy711FKdarlQMS0Ehr+3QubR50/7gTmHxyx06NGo5JlLCmBmnFO1KkAXWKFKVB3d8kuJi
- e3jmTyfHEUJ8lWExmSabduAxGpUSqu/2Sdt/+xUmHhnz4Lr613iuq3wwp9BwsvdKAPYt8FAnF
- e5TuMSy+VBZ5smir8nJSwWgEXv4j6ahsziummmTiRgv7r8lNT1RNhh0tj8FKWHYpR25f1J0Hh
- rp1Tp26msSPfDsnZFDurO9p0z/nQcfuaKbKnINjtNsvQ3PKGioUYe0wgwtqq4ENYnps+/e6mC
- D5ep8p0bwiXXx2kuHUTS/2HUjn7YDj4RC0eurFld046kEdQaIjFH0avZ/X4svRdb15d0+VSLW
- AVr39WX5ITiuFTLMBgN2M5c8Dz7+aIY8wT5M8zVbyf4nuJDVLRCPLhRzio3MD2rvf8mbPXk6s
- uW9+SG7qPcqgZHAx23AJ1YSMVWIi4qmBeLCTd4+2+mfC7JN1J58LftVrWmB7TF77l+WmWBl7O
- IgER3T/tCHg6KDnzIL7kzTD4+uvfG3/3+Nb0+BxLZU7MMh0NS5NDDTUnTr1LlZXQU70wL1gEY
- 2NxfTwVJBSpUHvMHXVD0v59tr843+VAPYOcPfiayzqX2LTvwVFtCf+OBkaFkP6uCpSC9ktxgE
- 3Zv4H0iZdarUQDBUrpnOofT0bj9GKG8VHvU85YxfcSELfPhDGEqywMMWGApg74hzMnpWePCzE
- 7932nFElZ5vpl6aKmd8pM4uaNHE=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727081342.3828601-1-lukma@denx.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 27, 2023 at 10:13:42AM +0200, Lukasz Majewski wrote:
+> The commit (SHA1: 5c844d57aa7894154e49cf2fc648bfe2f1aefc1c) provided code
+> to apply "Module 6: Certain PHY registers must be written as pairs instead
+> of singly" errata for KSZ9477 as this chip for certain PHY registers
+> (0xN120 to 0xN13F, N=1,2,3,4,5) must be accesses as 32 bit words instead
+> of 16 or 8 bit access.
+> Otherwise, adjacent registers (no matter if reserved or not) are
+> overwritten with 0x0.
+> 
+> Without this patch some registers (e.g. 0x113c or 0x1134) required for 32
+> bit access are out of valid regmap ranges.
+> 
+> As a result, following error is observed and KSZ9477 is not properly
+> configured:
+> 
+> ksz-switch spi1.0: can't rmw 32bit reg 0x113c: -EIO
+> ksz-switch spi1.0: can't rmw 32bit reg 0x1134: -EIO
+> ksz-switch spi1.0 lan1 (uninitialized): failed to connect to PHY: -EIO
+> ksz-switch spi1.0 lan1 (uninitialized): error -5 setting up PHY for tree 0, switch 0, port 0
+> 
+> 
+> The solution is to modify regmap_reg_range to allow accesses with 4 bytes
+> boundaries.
+> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
-Am 29.07.23 um 02:38 schrieb Masami Hiramatsu (Google):
->
-> Interesting, so clang will not generate DWARF or perf probe is not able =
-to
-> handle clang generated DWARF?
->
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-clang does not accept mixed -flto and non-lto CUs and the problem is not
-reproducible by this sample code using clang if using -flto for all CUs.
-There might be (bigger?) examples where the same issue is triggered by
-clang and bigger examples (like systemd on fedora) where I ran into the
-bug, but this small example only shows the problem when using gcc and
-mixing -flto and non-lto CUs.
