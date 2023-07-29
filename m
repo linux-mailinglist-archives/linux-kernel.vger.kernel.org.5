@@ -2,193 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0FD76800E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59670768015
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbjG2O3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 10:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
+        id S231431AbjG2OiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 10:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbjG2O3l (ORCPT
+        with ESMTP id S229510AbjG2OiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 10:29:41 -0400
+        Sat, 29 Jul 2023 10:38:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A284B35A2;
-        Sat, 29 Jul 2023 07:29:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA05A8;
+        Sat, 29 Jul 2023 07:38:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FB2860C6D;
-        Sat, 29 Jul 2023 14:29:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DBCAC433C7;
-        Sat, 29 Jul 2023 14:29:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B097860C68;
+        Sat, 29 Jul 2023 14:38:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A30C433C9;
+        Sat, 29 Jul 2023 14:38:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690640974;
-        bh=cptqgmzc2MqsuyFTFU2BcvHCbSItKXjhvYX4h/bDNYA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hBh7GFKC5+Bijjx67ikbrA0bhNbcHACINAkFfi4Sc5TPplQARAktjuaHCkyZI3lF/
-         0qofJZG8P1PCmnAYvGpqy5Wijn4H1P+EJB8vLTlCRm22GvBg9E7I3UzSWayje2CejI
-         fMrGDfZSeg1uBSyU7nmk2w+ZE7cQcmFgUX+rFUEo9pnpEztK6KF61tPsvsO7nj9ts3
-         K/KWPcWNMbx/ozRx2v9W62OtglY+jDjjqpCRava0kTcdbpytTwx81RuftFgyv8uYpY
-         XRop07KJ1Pim+c++hILTKFd3xD+QLWB9oKmU7fDKixV6Ttai8UpiKbryK69tm/A/YC
-         nrUAdXHIMIsOg==
-Date:   Sat, 29 Jul 2023 23:29:29 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     akpm@linux-foundation.org, adobriyan@gmail.com, arnd@kernel.org,
-        ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
- boot loader arguments
-Message-Id: <20230729232929.a3e962f46c16973031bb466c@kernel.org>
-In-Reply-To: <20230728033701.817094-1-paulmck@kernel.org>
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
-        <20230728033701.817094-1-paulmck@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1690641500;
+        bh=vtWsqKGXBtO/1q4tL+rXkzYaevQSYzf89qO8jTqbrC4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=r4R8iXlrXje1MsaRytB+OZuXp3YStlS5JXZp3VQmqNDR3riil7B8ZX7IhyCGxvZZP
+         acAjWZ98luBVkiCyV/0hehf5vnTjxu191BN2KLTOuyDWbPK/XY+Wte2Kjm8IsEhM7+
+         7D45b/Q+DKvyeSBmzg8RZmi3VjSErcGCiPqiB+avzeBZramPivgoOcSm5FSdEfFbrC
+         ZU/xMAxY0D62OWD+lTixW19H1vhMW1FqfrqWzZbqo7iSg5MQu+BPLeNgAgf/cL86SF
+         P/ZISwPIf3dFrrKjtOoJlBdPv3a1u8AtzwyQy8FSIeKvYaJJvmYhFxAtcEPTpmEbz5
+         2QQn37XoitM2w==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: [PATCH 1/2] kbuild: deb-pkg: use Debian compliant shebang for debian/rules
+Date:   Sat, 29 Jul 2023 23:38:13 +0900
+Message-Id: <20230729143814.1509196-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Debian Policy "4.9. Main building script: debian/rules" requires
+"debian/rules must start with the line #!/usr/bin/make -f". [1]
 
-On Thu, 27 Jul 2023 20:37:00 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+Currently, Kbuild does not follow this policy.
 
-> In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
-> show all kernel boot parameters, both those supplied by the boot loader
-> and those embedded in the kernel image.  This works well for those who
-> just want to see all of the kernel boot parameters, but is not helpful to
-> those who need to see only those parameters supplied by the boot loader.
-> This is especially important when these parameters are presented to the
-> boot loader by automation that might gather them from diverse sources.
-> 
-> Therefore, provide a /proc/cmdline_load file that shows only those kernel
-> boot parameters supplied by the boot loader.
+When Kbuild generates debian/rules, "#!$(command -v $MAKE) -f" is
+expanded by shell. The result may not be "#!/usr/bin/make -f".
 
-If I understand correctly, /proc/cmdline_load is something like
-/proc/cmdline_load - `/proc/bootconfig | grep ^kernel\\.`.
+There was a reason to opt out the Debian policy.
 
-BTW, what about CONFIG_CMDLINE? We already have that Kconfig and it is also
-merged with the command line specified by boot loader. Should we also
-expose that? (when CONFIG_CMDLINE_OVERRIDE=y, we don't need it because
-cmdline is always overridden by the CONFIG_CMDLINE) Unfortunatelly, this
-option is implemented in each arch init, so we have to change all of them...
+If you run '/path/to/my/custom/make deb-pkg', debian/rules must also be
+invoked by the same Make program. If #!/usr/bin/make were hard-coded in
+debian/rules, the sub-make would be executed by a possibly different
+Make version.
 
-Thank you,
+This is problematic due to the MAKEFLAGS incompatibility, especially the
+job server flag. Old Make versions used --jobserver-fds to propagate job
+server file descriptors, but Make >= 4.2 uses --jobserver-auth. The flag
+disagreement between the parent and the child Make would result in a
+process fork explosion.
 
-> 
-> Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
-> it makes sense to put it in the same place that /proc/cmdline is located.
-> 
-> [ sfr: Apply kernel test robot feedback. ]
-> 
-> Co-developed-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: <linux-fsdevel@vger.kernel.org>
-> ---
->  fs/proc/cmdline.c    | 13 +++++++++++++
->  include/linux/init.h |  3 ++-
->  init/main.c          |  2 +-
->  3 files changed, 16 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/proc/cmdline.c b/fs/proc/cmdline.c
-> index a6f76121955f..1d0ef9d2949d 100644
-> --- a/fs/proc/cmdline.c
-> +++ b/fs/proc/cmdline.c
-> @@ -3,6 +3,7 @@
->  #include <linux/init.h>
->  #include <linux/proc_fs.h>
->  #include <linux/seq_file.h>
-> +#include <asm/setup.h>
->  #include "internal.h"
->  
->  static int cmdline_proc_show(struct seq_file *m, void *v)
-> @@ -12,6 +13,13 @@ static int cmdline_proc_show(struct seq_file *m, void *v)
->  	return 0;
->  }
->  
-> +static int cmdline_load_proc_show(struct seq_file *m, void *v)
-> +{
-> +	seq_puts(m, boot_command_line);
-> +	seq_putc(m, '\n');
-> +	return 0;
-> +}
-> +
->  static int __init proc_cmdline_init(void)
->  {
->  	struct proc_dir_entry *pde;
-> @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
->  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
->  	pde_make_permanent(pde);
->  	pde->size = saved_command_line_len + 1;
-> +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
-> +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
-> +		pde_make_permanent(pde);
-> +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
-> +	}
->  	return 0;
->  }
->  fs_initcall(proc_cmdline_init);
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 266c3e1640d4..29e75bbe7984 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -112,6 +112,7 @@
->  #define __REFCONST       .section       ".ref.rodata", "a"
->  
->  #ifndef __ASSEMBLY__
-> +
->  /*
->   * Used for initialization calls..
->   */
-> @@ -143,7 +144,7 @@ struct file_system_type;
->  
->  /* Defined in init/main.c */
->  extern int do_one_initcall(initcall_t fn);
-> -extern char __initdata boot_command_line[];
-> +extern char boot_command_line[];
+However, having a non-standard path in the shebang causes another issue;
+the generated source package is not portable as such a path does not
+exist in other build environments.
 
-FYI, boot_command_line[] is mixture of built-in cmdline string with
-bootloader cmdline string.
+This commit solves those conflicting demands.
 
->  extern char *saved_command_line;
->  extern unsigned int saved_command_line_len;
->  extern unsigned int reset_devices;
-> diff --git a/init/main.c b/init/main.c
-> index ad920fac325c..2121685c479a 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
->  void (*__initdata late_time_init)(void);
->  
->  /* Untouched command line saved by arch-specific code. */
-> -char __initdata boot_command_line[COMMAND_LINE_SIZE];
-> +char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
->  /* Untouched saved command line (eg. for /proc) */
->  char *saved_command_line __ro_after_init;
->  unsigned int saved_command_line_len __ro_after_init;
-> -- 
-> 2.40.1
-> 
+Hard-code '#!/usr/bin/make -f' in debian/rules to create a portable and
+Debian-compliant source package.
 
+Pass '--rules-file=$(MAKE) -f debian/rules' when dpkg-buildpackage is
+invoked from Makefile so that debian/rules is executed by the same Make
+program as used to start Kbuild.
 
+[1] https://www.debian.org/doc/debian-policy/ch-source.html#main-building-script-debian-rules
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/Makefile.package | 2 +-
+ scripts/package/mkdebian | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+index 85beab0363d7..f8a948ec2c6b 100644
+--- a/scripts/Makefile.package
++++ b/scripts/Makefile.package
+@@ -148,7 +148,7 @@ deb-pkg srcdeb-pkg bindeb-pkg:
+ 	$(if $(findstring source, $(build-type)), \
+ 		--unsigned-source --compression=$(KDEB_SOURCE_COMPRESS)) \
+ 	$(if $(findstring binary, $(build-type)), \
+-		-r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch), \
++		--rules-file='$(MAKE) -f debian/rules' -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch), \
+ 		--no-check-builddeps) \
+ 	$(DPKG_FLAGS))
+ 
+diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
+index 9105abab9728..2829f5b8aea6 100755
+--- a/scripts/package/mkdebian
++++ b/scripts/package/mkdebian
+@@ -264,7 +264,7 @@ EOF
+ fi
+ 
+ cat <<EOF > debian/rules
+-#!$(command -v $MAKE) -f
++#!/usr/bin/make -f
+ 
+ srctree ?= .
+ KERNELRELEASE = ${KERNELRELEASE}
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.39.2
+
