@@ -2,270 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D90E767EFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0F9767F01
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjG2MFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 08:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S231501AbjG2MGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 08:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjG2MFT (ORCPT
+        with ESMTP id S229626AbjG2MGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 08:05:19 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7819A2681;
-        Sat, 29 Jul 2023 05:05:16 -0700 (PDT)
-X-QQ-mid: bizesmtp75t1690632305tpfow7ca
-Received: from linux-lab-host.localdomain ( [61.141.77.223])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 29 Jul 2023 20:05:04 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: ZkxZBO9qcf5TzSamM3iLzcIMmI8nzZ+P8ApbE6JgxgKC0gTgL+L4tvN+rOxxG
-        XW8zRduJjhDXEBMtJ9jDUZ/fkuOtr7EjS7kAAPLQ9hFholaQZjJpYYYk2cTg6uuy9qLRVEd
-        +wA3A/LO5DD+vjMLYZH6smiFaP0M6uac0InYKXA8IoMCzQAFKHJI3qxSAsJI8FSoPX1VIAj
-        7WzEPke6ceMqvXvw9sbodXUVUoJf9noYR0Kh02yFoh+q9TjP8abdaDJYZemfXKsyQL+/Xhr
-        HjsMGbDJD+Dwf++TzdUHWwQr4wxJyolVhPhZM6wJxMvnBi18PaH+bKOtM7A/kQYGGINPTuH
-        IoVUmzpIkFDOfcL5mii9BZISYs/5XK7M9Z1kVxoTOkZPE+Kwfs4TKV56C5zWA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 7671463311839371990
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu, thomas@t-8ch.de
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 08/12] selftests/nolibc: allow quit qemu-system when poweroff fails
-Date:   Sat, 29 Jul 2023 20:05:00 +0800
-Message-Id: <20230729120500.12663-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230729082950.GL956@1wt.eu>
-References: <20230729082950.GL956@1wt.eu>
+        Sat, 29 Jul 2023 08:06:21 -0400
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EF4212B;
+        Sat, 29 Jul 2023 05:06:19 -0700 (PDT)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id 8F322420F1;
+        Sat, 29 Jul 2023 17:06:14 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1690632376; bh=R0KZMvOhnM+yv/uaZVh6BLbdlwssU/v47ML/OJSRJ8U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AMOPdQNeI1aQCNcAU2/jrxjsKVr8sqdyskaE35fdHHV+gaWHE4f9s7O8TN5xI2ZVm
+         hNTG0DfRpJ+3j9nfLzMngThsRBuwHIPf0j7JCoiKEwImpNY3t1i6NHgqiFloVLaPH+
+         7M0BE3WyhS4oH61TqWwm0bE2ixyk6m9sQaTyTNOHl9gYCTl/Sj3N8kDBbA0arjB1Ay
+         FAM99S812cwEPTE3RPV/WNfEvO/K8oT4c25HWXZDpdf/UhTRa+9X53jRexA8yqqgoN
+         aiL8jxA67WnZnd/Su0lgpu2uVzgu4wJ4RmFeu6bpzHXZ34OK6FkuHiEh+jw0hMnjHh
+         R2oM1EJt2KWYg==
 MIME-Version: 1.0
+Date:   Sat, 29 Jul 2023 17:06:14 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: power: supply: Add pm8916 VM-BMS
+In-Reply-To: <20230729-facecloth-trembling-3311ca245505@spud>
+References: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
+ <20230728-pm8916-bms-lbc-v1-1-56da32467487@trvn.ru>
+ <20230729-facecloth-trembling-3311ca245505@spud>
+Message-ID: <25e933dc3f28fd73a9b76f172dacfdb2@trvn.ru>
+X-Sender: nikita@trvn.ru
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Jul 29, 2023 at 09:59:55AM +0200, Thomas Wei�schuh wrote:
-> > On 2023-07-28 04:30:31+0800, Zhangjin Wu wrote:
-> > > The kernel of some architectures can not poweroff qemu-system normally,
-> > > especially for tinyconfig.
-> (...)
-> > This feels fairly hacky.
+Conor Dooley писал(а) 29.07.2023 15:03:
+> On Fri, Jul 28, 2023 at 10:19:30PM +0500, Nikita Travkin wrote:
+>> Qualcomm Voltage Mode BMS is a battery monitoring block in PM8916 PMIC.
+>> Document it's DT binding.
+>>
+>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>> ---
+>>  .../bindings/power/supply/qcom,pm8916-bms-vm.yaml  | 64 ++++++++++++++++++++++
+>>  1 file changed, 64 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
+>> new file mode 100644
+>> index 000000000000..455973d46862
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
+>> @@ -0,0 +1,64 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Voltage Mode BMS
+>> +
+>> +maintainers:
+>> +  - Nikita Travkin <nikita@trvn.ru>
+>> +
+>> +description:
+>> +  Voltage Mode BMS is a hardware block found in some Qualcomm PMICs
+>> +  such as pm8916. This block performs battery voltage monitoring.
+>> +
+>> +allOf:
+>> +  - $ref: power-supply.yaml#
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: qcom,pm8916-bms-vm
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    items:
+>> +      - description: FIFO update done
 > 
-> and totally unmaintainable in the long term. It may even fail for
-> some users having localization.
->
-
-Agree very much in some degree, especially about some of the new added
-expected string, although I'm carefully choose some. but it is possible
-to restore the first version and shrink it as possible as we can.
-
-Perhaps I still not explained the background clearly, let me try again
-to describe ;-)
-
-The added more expected string are used to fill the gap when without
-output to screen (as suggested by Willy, I have dropped the "print
-running log to screen" change), quiet output is not friendly to a
-potential hang and even amplify the influence of a hang experience, but
-these more expected string did make things more complicated and worse:
-
-    TIMEOUT_CMD = t=$(QEMU_TIMEOUT); past=0; err=""; bios=0; kernel=0; init=0; test=0; poweredoff=0;                                                   \
-	bios_timeout=$$(expr $$t - 7); kernel_timeout=$$(expr $$t - 5); init_timeout=$$(expr $$t - 3); test_timeout=$$(expr $$t - 1);              \
-	echo "Running $(IMAGE_NAME) on qemu-system-$(QEMU_ARCH)";                                                                                  \
-	while [ $$t -gt 0 ]; do                                                                                                                    \
-	    sleep 1; t=$$(expr $$t - 1); past=$$(expr $$past + 1);                                                                                 \
-	    if [ $$bios -eq 0 ] && grep -E "Linux version|Kernel command line|printk: console" "$(RUN_OUT)"; then bios=1; fi;                      \
-	    if [ $$bios -eq 1 -a $$kernel -eq 0 ] && grep -E "Run .* as init process" "$(RUN_OUT)"; then kernel=1; fi;                             \
-	    if [ $$kernel -eq 1 -a $$init -eq 0 ] && grep -E "Running test" "$(RUN_OUT)"; then init=1; fi;                                         \
-	    if [ $$init -eq 1 -a $$test -eq 0 ] && grep -E "Leaving init with final status|Total number of errors" "$(RUN_OUT)"; then test=1; fi;  \
-	    if [ $$init -eq 1 ] && grep -E "Kernel panic - not syncing: Attempted to kill init" "$(RUN_OUT)"; then err="test"; sleep 1; break; fi; \
-	    if [ $$test -eq 1 ] && grep -E "reboot: System halted|reboot: Power down" "$(RUN_OUT)"; then poweredoff=1; sleep 1; break; fi;         \
-	    if [ $$past -gt $$bios_timeout -a $$bios -eq 0 ]; then err="bios"; break; fi;                                                          \
-	    if [ $$past -gt $$kernel_timeout -a $$kernel -eq 0 ]; then err="kernel"; break; fi;                                                    \
-	    if [ $$past -gt $$init_timeout -a $$init -eq 0 ]; then err="init"; break; fi;                                                          \
-	    if [ $$past -gt $$test_timeout -a $$test -eq 0 ]; then err="test"; break; fi;                                                          \
-	done;                                                                                                                                      \
-	if [ -z "$$err" -a $$poweredoff -eq 0 ]; then err="qemu-system-$(QEMU_ARCH)"; fi;                                                          \
-	if [ -n "$$err" ]; then echo "$$err may timeout, test failed"; tail -10 $(RUN_OUT); else echo "powered off, test finish"; fi;              \
-	pkill -15 qemu-system-$(QEMU_ARCH) || true
-
-The new added lines are just want to keep the console active to tell
-users the test is running at background, even there is potential hang,
-users will learn what the progress it is, but if we allow print the
-running log to screen (may still have the issues mentioned by Willy in
-another email thread), these lines can be simply removed to get a
-cleaner version.
-
-The old version didn't add such logic, beside timeout logic, it simply
-try to match the expected 'reboot: ' string, but we do need to match the
-'Kernel panic' string too to catch a crash nolibc-test case, so, a
-simplified version looks like this:
-
-    TIMEOUT_CMD = t=$(QEMU_TIMEOUT); finish=0;                                                                               \
-        echo "Running $(IMAGE_NAME) on qemu-system-$(QEMU_ARCH)";                                                            \
-	while [ $$t -gt 0 ]; do                                                                                              \
-	    sleep 1; t=$$(expr $$t - 1);                                                                                     \
-	    grep -E "reboot: System halted|reboot: Power down|Kernel panic" "$(RUN_OUT)"; then finish=1; sleep 1; break; fi; \
-	done;                                                                                                                \
-	if [ $$finish -eq 1 ]; then echo "test finish"; else echo "test timeout"; fi;                                        \
-	pkill -15 qemu-system-$(QEMU_ARCH) || true
-
-Now, the lines are not too many, and the left expected strings should be
-stable enough, do you like this one? I do expect the timeout command has
-a "-m" option like this:
-
-    timeout --foreground 10 -m "reboot: |Kernel panic" qemu-system-$(QEMU_ARCH) ...
-
-> > Before we complicated nolibc-test to handle the no-procfs case to save a
-> > few seconds building the kernel and now we have fairly big timeouts.
-
-In reality, the answer is NO to "now we have fairly big timeouts".
-
-Firstly, If there is no hang or no poweroff failure, every run will quit
-normally.
-
-Secondly, even there is a poweroff failure or kernel panic, a 'reboot: '
-line will be always printed as expected and quit normally.
-
-Thirdly, just only when there is a hang (not specific to tinyconfig),
-such as wrong bios version or missing firmware or even kernel hang with
-new changes (for example, the irqstack related riscv kernel hang I
-reported), blabla. such hangs will be detected by the fixed timeout
-value (like a watchdog).
-
-When poweroff fails on a target qemu, it still prints the 'reboot: '
-line as below, but will hang there after this line, our timeout logic
-will detect this line and tell qemu quit as a normal poweroff.
-
-    Total number of errors: 0
-    Leaving init with final status: 0
-    reboot: System halted             /* This line which be printed when reboot() issues, not depends on qemu or kernel driver */
-    ---> detecting reboot: System halted|reboot: Power down|Kernel panic - not syncing: Attempted to kill init|Rebooting ...
-    test finish                       /* Even qemu not poweroff successfully, we will kill it while the above line detected */
-    LOG: Boot run successfully.
-    Running boot-finish
-
-The oldest method I used locally is the 'timeout' command itself only,
-it is really a dead wait for a fixed timeout, the new method we used
-here to match the expected string does help a lot to simulate a always
-sucessful qemu poweroff support, no kernel and qemu dependent,
-lightweight enough.
-
-> > And a statemachine that relies on the specific strings emitted by the
-> > testsuite.
-> > 
-> > I would like to get back to something more deterministic and obvious,
-> > even at the cost of some time spent compiling the test kernels.
-> > (saying this as somebody developing on a 2016 ultrabook)
+> You don't need items: here since you only have one - const: will do.
 > 
-> Agreed!
->
 
-Is the above explaination clearer? ;-)
+Ack.
 
-Based on the kernel versions from v2.6.10 - v6.x which I have used on
-more than 7 architectures in my own Linux Lab project, the poweroff
-support of qemu + kernel is never deterministic, some versions ok, some
-versions fail, even with the defconfig, that's why an external timeout
-is always required. I used the raw timeout command + a fixed timeout
-before, but after we have this patch, I have thought about the expected
-string logic and it does help to aviod a dead fixed-time wait.
-
-> > "Since the low-level poweroff support is heavily kernel & qemu dependent"
-> > 
-> > The kernel we can control.
-> > 
-> > How common are qemus with that are missing poweroff support? 
-> > As this worked before I guess the only architecture where this could
-> > pose a problem would be ppc.
-> > 
-
-Yes, as explained above, based on the experience I have on tons of
-kernel versions of different architecture, it is really hard to make
-poweroff work as expected all the time, as the kernel and qemu changes,
-it may fail at any version randomly.
-
-Beside ppc, all of my local tinyconfig config files of every
-architecture are ready for boot and print and also of course for the
-'reboot: ' line print. but it is 'hard' to find and enable the left
-options to just further enable 'poweroff' support.
-
-Firstly, I have tried to enable some of them, but it deviates the
-tinyconfig goal, for example, x86 requires to enable both ACPI and PCI
-to just let poweroff work, so, I'm not planning to really enable them.
-
-Secondly, the time cost to just find and enable the poweroff options for
-every architecture (and even for the new nolibc portings) is huge, I
-give up after several tries, and they may fail in some future versions
-randomly, I do think we may be not really interested in fixing up such
-bugs in kernel drivers side ;-)
-
-Thirdly, as Thomas mentioned before, the wireguard test use tinyconfig
-too, just found it also gives up the poweroff support in its config
-options and it use a simple raw timeout command, but the timeout is
-really 'huge', 20m v.s. 10 seconds ;-)
-
-    grep timeout tools/testing/selftests/wireguard/qemu/Makefile
-	timeout --foreground 20m qemu-system-$(QEMU_ARCH) \
-	timeout --foreground 20m $< \
-
-> > 
-> > An alternative I would like to put up for discussion:
-> > 
-> > qemu could provide a watchdog device that is pinged by nolibc-test for
-> > each testcase.
-> > After nolibc-test is done and didn't poweroff properly the watchdog will
-> > reset the machine. ( -watchog-action poweroff ).
-> > 
-> > The disadvantages are that we would need to add watchdog drivers to the
-> > kernels and figure out the correct watchdog devices and drivers for each arch.
+>> +  interrupt-names:
+>> +    items:
+>> +      - const: fifo
 > 
-> It's an interesting idea, though at first glance it does not seem to
-> have one for PPC.
-
-Good idea, I even asked one of the QEMU maintainers whether is possible
-to add something like -boot-timeout option to QEMU and let qemu quit
-in a target timeout after start, but it may also function as a dead
-fixed-time wait.
-
-
-    qemu-system-xxx -boot-timeout <TIMEOUT>
-
-    |<-----------------<TIMEOUT>---------------------->
-                                                     
-    ^                              ^                  ^
-    qemu start                     |                  qemu timeout and quit
-                                   |
-				   power off string may be detected here
-				   and quit normally
-
+> Same here, but do you really need a name, when you have only one
+> interrupt?
 > 
-> I think I have a much simpler idea: we don't care about PPC32. I mean
-> OK it can be supported if it happens to work, we will just not include
-> it in default runs, because it will require Ctrl-C to finish, and so
-> what ? nolibc has been in the kernel for 5 years or so, nobody ever
-> cared about PPC, why should we suddenly break or complicate everything
-> just to support a sub-arch that nobody found interesting to add till
-> now?
->
 
-Yes, this timeout logic is ok to be removed from this patchset, till we
-get a better solution.
+Hm, thinking of this more, the hardware actually has more than one
+interrupt, even though this one seems to be the only really useful
+one. Would a better way forward be to list all of them (and fix
+the driver to get the value by it's name) or it would be
+acceptable to leave the names here and extend the list at a later
+date when (if ever) other interrupts are needed?
 
-> > It seems virtio-watchdog is not yet usable.
-> 
-> Then it might become an option for the future when it eventually works.
->
-
-Thanks,
-Zhangjin
+Thanks for the review!
+Nikita
 
 > Thanks,
-> Willy
+> Conor.
+> 
+>> +
+>> +  monitored-battery: true
+>> +
+>> +  power-supplies: true
+>> +
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +  - interrupt-names
+>> +  - monitored-battery
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>> +    pmic {
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +
+>> +      battery@4000 {
+>> +        compatible = "qcom,pm8916-bms-vm";
+>> +        reg = <0x4000>;
+>> +        interrupts = <0x0 0x40 4 IRQ_TYPE_EDGE_RISING>;
+>> +        interrupt-names = "fifo";
+>> +
+>> +        monitored-battery = <&battery>;
+>> +        power-supplies = <&pm8916_charger>;
+>> +      };
+>> +    };
+>>
+>> --
+>> 2.41.0
+>>
