@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5231767CED
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F77767CEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjG2Hwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 03:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
+        id S229824AbjG2Hwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 03:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjG2Hwk (ORCPT
+        with ESMTP id S229835AbjG2Hwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 03:52:40 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C6E4208
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:52:38 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5221ee3dd76so832909a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:52:38 -0700 (PDT)
+        Sat, 29 Jul 2023 03:52:49 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46693A84
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:52:45 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bd67facffso77485266b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690617157; x=1691221957;
+        d=gmail.com; s=20221208; t=1690617164; x=1691221964;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ktco/0n5t/HDVDJQ8DdZKkOO0x7lbAhQv9MKtg9SERo=;
-        b=QLo4auealrQ/TNfcwOTZ5nzxBOH1Aw3ZFwSBEyD+UD4WR9dFt3jFwhvzzqZEw+vrqD
-         dUSAdUoFqLQEwRXRY3p0TiZNcX0zaVyfupBE0N6D3ktDUNFe6FmhFJ2/kF3Nftgtohib
-         j5vMrvhVlqz40FsruiNBFJNIqQxDR3+8o5/cE4DwTh6Tu2Pq0fsWeVcI0JmVcfg+uQp9
-         ZNGiboohVpHtEkuhC/DlkAhzmT0rxaAKCOAGLY0Nsl/tfi3/1wbfcBAOjzXqAdFrDAr/
-         eKXBZS8iUJM7rwTR8y3EHYz/vqGquyuxpnbaWF7+bNUsbLnSxcHkoh44HszCI3QfuPTT
-         MpdA==
+        bh=1szKMdZwkmMXHdwn2jyX7UsMVVQqZQ9qEgjK+BqxWBI=;
+        b=eS69vhUXOsdSXZwFmG35XILBdgDz0M7uz/0odSm3CtIssI6jH9sFoq8XsReS3Md9UV
+         kmHgRTzVXFNjo8Pl6fuPxeQzQzlcIn5/DON8uHqJPdkgSqv2LEt9fonzC5McB8344+le
+         M+fHRGkI0NDH25AtvMNlbRUm4t+F7ZHPVjFKIR3lZ5BH5sAUG5KuTQBdj/qySxGP0Zm9
+         hENzd7vCcKa7nCol/WYeWfKvKXntzvpCpMc3U5wcz12OE+laCDH/Y/EBWFZw2lhHtNLU
+         nTVRK5OtBcPIfbuSbAGHJ7xBz1PKdLy2ZzSYuisGmDhiahHzkFt1q8+MofjAuspcUDVO
+         bG/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690617157; x=1691221957;
+        d=1e100.net; s=20221208; t=1690617164; x=1691221964;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ktco/0n5t/HDVDJQ8DdZKkOO0x7lbAhQv9MKtg9SERo=;
-        b=AtvQ3YtmgF44e2tQL9zQdLIVIyR7guJ4M/d9T3Mm76ZEFz/xHT0v9w0S67sBbfbPg0
-         +XwMI6FTx9YxKmDzZ6+f9TM2kVlV/OKnr3IJbMS7j2i+EQt4S78EH47EtjONmzPCmABX
-         R8wb2runFbUPICRhaWSZU4itWrWsni7hOXzJI6cESK6y2g3VZpEh537OTfoleJ0FkfKh
-         bgZZaJ6XIIGHRsnuRC61uvPvBkiBSkUeCtq9+fD1aQ9i09p4bK/P7gTwtY09sBuxhY9q
-         psmDtuGkeMAusuf0wG1tJefzNIUFqRKmV1QPHPbfL84wZnxM+tTEeTo92AKoQxcsTSjn
-         +VyQ==
-X-Gm-Message-State: ABy/qLaxv4Uup0jfUrfXkVaP/KoK9AEbPw0YzE1V++RhroAAYVKn/W2g
-        hN60TipO2N5EYIevb/sGNDA=
-X-Google-Smtp-Source: APBJJlGZILCzcfl6g9OzlFTMCyGvQlM75U3RGWYE5aOC0anDRMckkWuY44EQvBI6MuX9F/iO52cr3w==
-X-Received: by 2002:a17:906:112:b0:99b:c845:7917 with SMTP id 18-20020a170906011200b0099bc8457917mr1448447eje.4.1690617156836;
-        Sat, 29 Jul 2023 00:52:36 -0700 (PDT)
+        bh=1szKMdZwkmMXHdwn2jyX7UsMVVQqZQ9qEgjK+BqxWBI=;
+        b=Zuh6T4iKm3B/XnCZUrNthsA3rIBP2sdOgIYh0Sz/+4BUREItcQhwos2mXtrVRJRouj
+         0wma8eBH864ktD7SRHWRYnuDUjXBph3+S2UefGWNI0FlwoewHKKmD0m7b4MG/01lgnwy
+         VsmPw5f2Tg2nifVv5MCAPGju/PtMKx9oSh1dImwmrkHmukWz7OPXUj3a5JWbjuNzkov+
+         ri47uLV2ZErPtBwOLOolD17qkHOPCxdPCRgXXhKTcrUBBoJkR5oRUo9HYrTIpjW/IBrL
+         LUXdWoiiylWiBbAzcJeFdL9B8vCCDAwgIj6c4Y4QGTAxD7r0jPhZu3yb+/hujzKnhqrJ
+         Qr2Q==
+X-Gm-Message-State: ABy/qLbPTt3X5YtHDx+fGXD4nT/qXSEhTi/jIVEgIe/2V9zsfCn9LUdo
+        N3qKMue/3z1e0bHyT8yFJKk=
+X-Google-Smtp-Source: APBJJlHFgqfYGjEPpuk8F4KBojbefOXxDsu5/wnHBcsSPQsaf8kti6nZ1y7poN8nypQESxruJo0tRw==
+X-Received: by 2002:a05:6402:2708:b0:521:f2a7:d57a with SMTP id y8-20020a056402270800b00521f2a7d57amr1369926edd.2.1690617164037;
+        Sat, 29 Jul 2023 00:52:44 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p57ba2e0b.dip0.t-ipconnect.de. [87.186.46.11])
-        by smtp.gmail.com with ESMTPSA id i10-20020a170906250a00b0099304c10fd3sm2981025ejb.196.2023.07.29.00.52.36
+        by smtp.gmail.com with ESMTPSA id z17-20020a170906815100b0099bcdfff7cbsm2964854ejw.160.2023.07.29.00.52.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 00:52:36 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 09:52:34 +0200
+        Sat, 29 Jul 2023 00:52:43 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 09:52:41 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/10] staging: rtl8192e: Remove unused variable p_intb
-Message-ID: <196f555d3762bf4fa8302f19b46f1510ea68cb31.1690615475.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 02/10] staging: rtl8192e: Remove unused variable intb in
+ _rtl92e_irq()
+Message-ID: <df6efb730ba4119f00b5bcc0d760c9b1fd245235.1690615475.git.philipp.g.hortmann@gmail.com>
 References: <cover.1690615475.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,54 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused variable p_intb of rtl92e_ack_irq.
+Remove unused variable intb in _rtl92e_irq().
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 2 +-
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.h | 2 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-index 5ac6af7e3a79..5bfd84b08dd9 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-@@ -1912,7 +1912,7 @@ void rtl92e_enable_tx(struct net_device *dev)
- 		rtl92e_writel(dev, TX_DESC_BASE[i], priv->tx_ring[i].dma);
- }
- 
--void rtl92e_ack_irq(struct net_device *dev, u32 *p_inta, u32 *p_intb)
-+void rtl92e_ack_irq(struct net_device *dev, u32 *p_inta)
- {
- 	*p_inta = rtl92e_readl(dev, ISR);
- 	rtl92e_writel(dev, ISR, *p_inta);
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.h b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.h
-index fa3b71dbb091..11366fda4ec3 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.h
-@@ -13,7 +13,7 @@ bool rtl92e_is_halfn_supported_by_ap(struct net_device *dev);
- bool rtl92e_get_nmode_support_by_sec(struct net_device *dev);
- bool rtl92e_is_tx_stuck(struct net_device *dev);
- bool rtl92e_is_rx_stuck(struct net_device *dev);
--void rtl92e_ack_irq(struct net_device *dev, u32 *p_inta, u32 *p_intb);
-+void rtl92e_ack_irq(struct net_device *dev, u32 *p_inta);
- void rtl92e_enable_rx(struct net_device *dev);
- void rtl92e_enable_tx(struct net_device *dev);
- void rtl92e_enable_irq(struct net_device *dev);
 diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index aaff8d739efe..cfad170008c6 100644
+index cfad170008c6..50eb8f3494ec 100644
 --- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
 +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -1982,7 +1982,7 @@ static irqreturn_t _rtl92e_irq(int irq, void *netdev)
+@@ -1973,9 +1973,6 @@ static irqreturn_t _rtl92e_irq(int irq, void *netdev)
+ 	struct r8192_priv *priv = rtllib_priv(dev);
+ 	unsigned long flags;
+ 	u32 inta;
+-	u32 intb;
+-
+-	intb = 0;
  
- 	spin_lock_irqsave(&priv->irq_th_lock, flags);
- 
--	rtl92e_ack_irq(dev, &inta, &intb);
-+	rtl92e_ack_irq(dev, &inta);
- 
- 	if (!inta) {
- 		spin_unlock_irqrestore(&priv->irq_th_lock, flags);
+ 	if (priv->irq_enabled == 0)
+ 		goto done;
 -- 
 2.41.0
 
