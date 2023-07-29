@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2950E7680D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AD47680DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjG2RsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 13:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S229676AbjG2SAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 14:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjG2RsK (ORCPT
+        with ESMTP id S229450AbjG2SAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 13:48:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAFB2D64;
-        Sat, 29 Jul 2023 10:48:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A804360288;
-        Sat, 29 Jul 2023 17:48:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79462C433C9;
-        Sat, 29 Jul 2023 17:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690652888;
-        bh=426Plr62YIRVVd7idefnHiN/75xOXxFwgyitLpzWikI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ml2RZxAenphY2R+EU5yWpJOcmOG/MVc8GX8AsiALO21yS2ff9XnOMpyryixIJWHVS
-         MFE3y5fS98ByWyiqZlo5rdb3HDVXKG7ed3QtCn3reyw7PXw8+dXgkt62Nud0yjEuzN
-         m6khptTa5+EAxubkvi3qxNJvSeD+isKPNA4UPtMXS2ixLCQdKmlE0ayHB8arnSJR6u
-         cjGQoEih8NH3fp2vmddZnN/PsRS+hPsOXXhhLAgK53ZsdBdVDteB76HVaW8enar4bY
-         Gjv06JgSGVnYJC1Np1a0BHANcKfcvzk7pqPruEzHPy/rLP3iKDJuRqQptUyXOzNn6u
-         EIz9DX3ZGnXHg==
-Date:   Sat, 29 Jul 2023 18:48:03 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Message-ID: <20230729-chaps-coauthor-95557d86b189@spud>
-References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
- <20230726-outclass-parade-2ccea9f6688a@spud>
- <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
- <20230726-armchair-evasive-427dd245a9fe@spud>
- <20230727-briskness-sappy-e2d9e4c1ef36@spud>
- <d75ef570-c0ad-cea4-687a-d02b560aa676@iscas.ac.cn>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/xQjWBbnHuYsLKM8"
-Content-Disposition: inline
-In-Reply-To: <d75ef570-c0ad-cea4-687a-d02b560aa676@iscas.ac.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 29 Jul 2023 14:00:17 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081C9FF;
+        Sat, 29 Jul 2023 11:00:15 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1b8ad907ba4so20293395ad.0;
+        Sat, 29 Jul 2023 11:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690653614; x=1691258414;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dy7FPVTqEQtbAbgd1X4XqKyPaRp0gdtbk+50wpWYN14=;
+        b=P8XfptERNkybpZ7yCAZm+dltRI5LxUHfF12Z576i3skheC9zM97sX4Ba1ZWNiGGT9r
+         ES6uW1Kwqq5fSoOs1J+WpKCNphszMzSMo+WSZAU6k8oLhQUcjkzYp535WmAmrYRVv8n4
+         ZB39neooZ5phpAmD7jcMUGz4dlPOIX7N2L1ymx1ZXcSsfrSnZY0+2YqrsKgpnL3n+92H
+         P6E+aLLClfvLhLv3MRjkuCDi66Wp5lQYS8YJqnonikpbKii8s4+iKvWd/kJMGszJ82vK
+         1RY20YwVlJiZDgELag065PEVWReHiA2G5yf41XmmT7TfHfJZogDhMon1etzwPe331AiM
+         J59A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690653614; x=1691258414;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dy7FPVTqEQtbAbgd1X4XqKyPaRp0gdtbk+50wpWYN14=;
+        b=ZvfeFY8SIfDu55HB/X+17y1dHX2uyRWJdMIWRMt3usfwty33jL/hMesiLYEk0hbpbu
+         At9op3LzVA/ccsP46O6bdaRzmwZd5oGlT3o530a6f1ppOSSm26+P9GHzT7ixRAPKpR6g
+         xqv/6qp8jRPqNukI/+vNWTN9cxrDuxJ+COAgfjYYyCQOhcgpSPNXZvY8lOhbRv9ao8JD
+         q1RSbq/cuttAgKYzNFJdYn2II7pge7Wsb/V1cGSdsCeSe8X2xttr/tM9buAftMbNeBoB
+         ULwMi0dK1C1LtsM9uAZCfo4GRNGthDwhptnx6Tom/PesYYgmsxffjyWKDWciGb0X/tz2
+         qcnA==
+X-Gm-Message-State: ABy/qLY9HI8KDcz5tGOif+IJHkczGrj/ENfAEzwClfrxalY4s5RF29Zt
+        mjFpYbeSLdMUUODVjSG2zZ8=
+X-Google-Smtp-Source: APBJJlGrm/kR5mwJ8W866MnK+C8izB1ZNdWBKzuP/zbAY/jZsRcz0cFU6YWuBPUvN7p6NdpvhXgKQw==
+X-Received: by 2002:a17:902:b187:b0:1b8:4e69:c8f7 with SMTP id s7-20020a170902b18700b001b84e69c8f7mr4443569plr.23.1690653614299;
+        Sat, 29 Jul 2023 11:00:14 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001adf6b21c77sm5573398plx.107.2023.07.29.11.00.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jul 2023 11:00:13 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     logang@deltatee.com, vkoul@kernel.org
+Cc:     yuyunbo519@gmail.com, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, christophe.jaillet@wanadoo.fr,
+        Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH v2] dmaengine: plx_dma: Fix potential deadlock on &plxdev->ring_lock
+Date:   Sat, 29 Jul 2023 17:59:52 +0000
+Message-Id: <20230729175952.4068-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As plx_dma_process_desc() is invoked by both tasklet plx_dma_desc_task()
+under softirq context and plx_dma_tx_status() callback that executed under
+process context, the lock aquicision of &plxdev->ring_lock inside
+plx_dma_process_desc() should disable irq otherwise deadlock could happen
+if the irq preempts the execution of process context code while the lock
+is held in process context on the same CPU.
 
---/xQjWBbnHuYsLKM8
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Possible deadlock scenario:
+plx_dma_tx_status()
+    -> plx_dma_process_desc()
+    -> spin_lock(&plxdev->ring_lock)
+        <tasklet softirq>
+        -> plx_dma_desc_task()
+        -> plx_dma_process_desc()
+        -> spin_lock(&plxdev->ring_lock) (deadlock here)
 
-On Sun, Jul 30, 2023 at 01:36:49AM +0800, Mingzheng Xing wrote:
+This flaw was found by an experimental static analysis tool I am developing
+for irq-related deadlock.
 
-> I reproduced the error with gcc-12.2.0 and binutils-2.35. I tried a
-> different solution, which I think makes the logic easier. Showing
-> the new patch code:
+The lock was changed from spin_lock_bh() to spin_lock() by a previous patch
+for performance concern but unintentionally brought this potential deadlock
+problem.
 
-It is indeed simpler, neat.
+This patch reverts back to spin_lock_bh() to fix the deadlock problem.
 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 4c07b9189c86..a6fa1eed895c 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -569,25 +569,24 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
->=20
-> =A0config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-> =A0=A0=A0=A0=A0=A0=A0 def_bool y
-> -=A0=A0=A0=A0=A0=A0 # https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=
-=3Dcommit;h=3Daed44286efa8ae8717a77d94b51ac3614e2ca6dc
-> -=A0=A0=A0=A0=A0=A0 depends on AS_IS_GNU && AS_VERSION >=3D 23800
-> +=A0=A0=A0=A0=A0=A0 depends on AS_IS_GNU && AS_VERSION >=3D 23600
-> =A0=A0=A0=A0=A0=A0=A0 help
-> -=A0=A0=A0=A0=A0=A0=A0=A0 Newer binutils versions default to ISA spec ver=
-sion 20191213 which
-> -=A0=A0=A0=A0=A0=A0=A0=A0 moves some instructions from the I extension to=
- the Zicsr and Zifencei
-> -=A0=A0=A0=A0=A0=A0=A0=A0 extensions.
-> +=A0=A0=A0=A0=A0=A0=A0=A0 Binutils has supported zicsr and zifencei exten=
-sions since version 2.36,
-> +=A0=A0=A0=A0=A0=A0=A0=A0 try to adapt to the changes by using explicit z=
-icsr and zifencei via
-> +=A0=A0=A0=A0=A0=A0=A0=A0 -march.
+Fixes: 1d05a0bdb420 ("dmaengine: plx_dma: Move spin_lock_bh() to spin_lock()")
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
-This sentence no longer makes sense to me, the motivation for why we are
-doing this is lost. Please preserve the link & explanation about the
-20191213 version of the spec, adding to it the commentary about how we
-can relax the check to 2.36, since that makes our lives easier.
+Changes in v2
+- Consistently use spin_lock_bh() on &plxdev->ring_lock instead of
+spin_lock_irqsave().
+---
+ drivers/dma/plx_dma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The rest of this looks fine to me, if you resubmit I'll look at it
-further on Monday.
+diff --git a/drivers/dma/plx_dma.c b/drivers/dma/plx_dma.c
+index 34b6416c3287..7693c067a1aa 100644
+--- a/drivers/dma/plx_dma.c
++++ b/drivers/dma/plx_dma.c
+@@ -137,7 +137,7 @@ static void plx_dma_process_desc(struct plx_dma_dev *plxdev)
+ 	struct plx_dma_desc *desc;
+ 	u32 flags;
+ 
+-	spin_lock(&plxdev->ring_lock);
++	spin_lock_bh(&plxdev->ring_lock);
+ 
+ 	while (plxdev->tail != plxdev->head) {
+ 		desc = plx_dma_get_desc(plxdev, plxdev->tail);
+@@ -165,7 +165,7 @@ static void plx_dma_process_desc(struct plx_dma_dev *plxdev)
+ 		plxdev->tail++;
+ 	}
+ 
+-	spin_unlock(&plxdev->ring_lock);
++	spin_unlock_bh(&plxdev->ring_lock);
+ }
+ 
+ static void plx_dma_abort_desc(struct plx_dma_dev *plxdev)
+-- 
+2.17.1
 
---/xQjWBbnHuYsLKM8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMVQ0wAKCRB4tDGHoIJi
-0hSNAQC4nTdM3esMZyV0dCcSxV4Vouv1QrjdKIehT8d0Ekj1FgEAzV4i7k7xFRWu
-eCpwfwzJaU7gFR6zdpfx0+KDSo2Cugc=
-=UWMZ
------END PGP SIGNATURE-----
-
---/xQjWBbnHuYsLKM8--
