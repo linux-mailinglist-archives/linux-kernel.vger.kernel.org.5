@@ -2,106 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA873767C5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 07:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C711767C5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 07:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbjG2Fb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 01:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S235547AbjG2FcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 01:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjG2FbW (ORCPT
+        with ESMTP id S229602AbjG2FcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 01:31:22 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5D3449CA;
-        Fri, 28 Jul 2023 22:31:18 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36T5UHcxC025140, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36T5UHcxC025140
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Sat, 29 Jul 2023 13:30:17 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Sat, 29 Jul 2023 13:30:30 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Sat, 29 Jul 2023 13:30:29 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Sat, 29 Jul 2023 13:30:29 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        <linux-phy@lists.infradead.org>
-Subject: [PATCH usb-next] phy: realtek: usb: phy-rtk-usb2 and phy-rtk-usb3 needs USB_COMMON
-Date:   Sat, 29 Jul 2023 13:30:26 +0800
-Message-ID: <20230729053029.6226-1-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 29 Jul 2023 01:32:23 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC8D49CA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 22:32:20 -0700 (PDT)
+Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 36T5WIF7088477;
+        Sat, 29 Jul 2023 14:32:18 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
+ Sat, 29 Jul 2023 14:32:18 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 36T5V368088259
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 29 Jul 2023 14:31:03 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
+Date:   Sat, 29 Jul 2023 14:31:01 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXDAG02.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
+ in do_write_seqcount_begin_nested()
+Content-Language: en-US
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
+References: <20230623171232.892937-1-bigeasy@linutronix.de>
+ <20230623171232.892937-2-bigeasy@linutronix.de>
+ <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
+ <20230626081254.XmorFrhs@linutronix.de> <ZJmkPuqpW-wQAyNz@alley>
+ <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
+ <20230727151029.e_M9bi8N@linutronix.de>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20230727151029.e_M9bi8N@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When USB_COMMON are not enabled, phy-rtk-usb2 and phy-rtk-usb3 suffers
-a build error due to a missing usb_debug_root that is provided
-by CONFIG_USB_COMMON, so make the driver select USB_COMMON.
+On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
+> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
+>>> Anyway, please do not do this change only because of printk().
+>>> IMHO, the current ordering is more logical and the printk() problem
+>>> should be solved another way.
+>>
+>> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
+>> rejected.
+> 
+> My understanding is that this patch gets applied and your objection will
+> be noted.
 
-   or1k-linux-ld: drivers/phy/realtek/phy-rtk-usb2.o: in function `create_phy_debug_root':
->> drivers/phy/realtek/phy-rtk-usb2.c:715: undefined reference to `usb_debug_root'
->> or1k-linux-ld: drivers/phy/realtek/phy-rtk-usb2.c:715: undefined reference to `usb_debug_root'
+My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
+allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
+https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
+https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
 
-   or1k-linux-ld: drivers/phy/realtek/phy-rtk-usb3.o: in function `create_phy_debug_root':
->> drivers/phy/realtek/phy-rtk-usb3.c:349: undefined reference to `usb_debug_root'
->> or1k-linux-ld: drivers/phy/realtek/phy-rtk-usb3.c:349: undefined reference to `usb_debug_root'
+Maybe we can defer checking zonelist_update_seq till retry check like below,
+for this is really an infrequent event.
 
-Fixes: 134e6d25f6bd ("phy: realtek: usb: Add driver for the Realtek SoC USB 2.0 PHY")
-Fixed: adda6e82a7de ("phy: realtek: usb: Add driver for the Realtek SoC USB 3.0 PHY")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307290733.weSlHrGp-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202307291022.3pVeTR9z-lkp@intel.com/
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
----
- drivers/phy/realtek/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7d3460c7a480..2f7b82af2590 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3642,22 +3642,27 @@ EXPORT_SYMBOL_GPL(fs_reclaim_release);
+  * retries the allocation if zonelist changes. Writer side is protected by the
+  * embedded spin_lock.
+  */
+-static DEFINE_SEQLOCK(zonelist_update_seq);
++static unsigned int zonelist_update_seq;
+ 
+ static unsigned int zonelist_iter_begin(void)
+ {
+ 	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+-		return read_seqbegin(&zonelist_update_seq);
++		return data_race(READ_ONCE(zonelist_update_seq));
+ 
+ 	return 0;
+ }
+ 
+-static unsigned int check_retry_zonelist(unsigned int seq)
++static unsigned int check_retry_zonelist(gfp_t gfp, unsigned int seq)
+ {
+-	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
+-		return read_seqretry(&zonelist_update_seq, seq);
++	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE) && (gfp & __GFP_DIRECT_RECLAIM)) {
++		unsigned int seq2;
++
++		smp_rmb();
++		seq2 = data_race(READ_ONCE(zonelist_update_seq));
++		return unlikely(seq != seq2 || (seq2 & 1));
++	}
+ 
+-	return seq;
++	return 0;
+ }
+ 
+ /* Perform direct synchronous page reclaim */
+@@ -4146,7 +4151,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	 * a unnecessary OOM kill.
+ 	 */
+ 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
+-	    check_retry_zonelist(zonelist_iter_cookie))
++	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
+ 		goto restart;
+ 
+ 	/* Reclaim has failed us, start killing things */
+@@ -4172,7 +4177,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+ 	 * a unnecessary OOM kill.
+ 	 */
+ 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
+-	    check_retry_zonelist(zonelist_iter_cookie))
++	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
+ 		goto restart;
+ 
+ 	/*
+@@ -5136,22 +5141,12 @@ static void __build_all_zonelists(void *data)
+ 	int nid;
+ 	int __maybe_unused cpu;
+ 	pg_data_t *self = data;
++	static DEFINE_SPINLOCK(lock);
+ 	unsigned long flags;
+ 
+-	/*
+-	 * Explicitly disable this CPU's interrupts before taking seqlock
+-	 * to prevent any IRQ handler from calling into the page allocator
+-	 * (e.g. GFP_ATOMIC) that could hit zonelist_iter_begin and livelock.
+-	 */
+-	local_irq_save(flags);
+-	/*
+-	 * Explicitly disable this CPU's synchronous printk() before taking
+-	 * seqlock to prevent any printk() from trying to hold port->lock, for
+-	 * tty_insert_flip_string_and_push_buffer() on other CPU might be
+-	 * calling kmalloc(GFP_ATOMIC | __GFP_NOWARN) with port->lock held.
+-	 */
+-	printk_deferred_enter();
+-	write_seqlock(&zonelist_update_seq);
++	spin_lock_irqsave(&lock, flags);
++	data_race(zonelist_update_seq++);
++	smp_wmb();
+ 
+ #ifdef CONFIG_NUMA
+ 	memset(node_load, 0, sizeof(node_load));
+@@ -5188,9 +5183,9 @@ static void __build_all_zonelists(void *data)
+ #endif
+ 	}
+ 
+-	write_sequnlock(&zonelist_update_seq);
+-	printk_deferred_exit();
+-	local_irq_restore(flags);
++	smp_wmb();
++	data_race(zonelist_update_seq++);
++	spin_unlock_irqrestore(&lock, flags);
+ }
+ 
+ static noinline void __init
 
-diff --git a/drivers/phy/realtek/Kconfig b/drivers/phy/realtek/Kconfig
-index a5a5a71edc9c..650e20ed69af 100644
---- a/drivers/phy/realtek/Kconfig
-+++ b/drivers/phy/realtek/Kconfig
-@@ -7,6 +7,7 @@ config PHY_RTK_RTD_USB2PHY
- 	depends on USB_SUPPORT
- 	select GENERIC_PHY
- 	select USB_PHY
-+	select USB_COMMON
- 	help
- 	  Enable this to support Realtek SoC USB2 phy transceiver.
- 	  The DHC (digital home center) RTD series SoCs used the Synopsys
-@@ -18,6 +19,7 @@ config PHY_RTK_RTD_USB3PHY
- 	depends on USB_SUPPORT
- 	select GENERIC_PHY
- 	select USB_PHY
-+	select USB_COMMON
- 	help
- 	  Enable this to support Realtek SoC USB3 phy transceiver.
- 	  The DHC (digital home center) RTD series SoCs used the Synopsys
--- 
-2.34.1
 
