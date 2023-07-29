@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E33A767F78
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8CB767F7C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbjG2Nnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S230289AbjG2Nnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG2Nnj (ORCPT
+        with ESMTP id S229459AbjG2Nnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:43:39 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E033ECA;
-        Sat, 29 Jul 2023 06:43:38 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686b9920362so2219415b3a.1;
-        Sat, 29 Jul 2023 06:43:38 -0700 (PDT)
+        Sat, 29 Jul 2023 09:43:42 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA1CCA;
+        Sat, 29 Jul 2023 06:43:42 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso2225535b3a.3;
+        Sat, 29 Jul 2023 06:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638218; x=1691243018;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jbtLma1T2CR1OS6BhEpG9M60IGb1m30I8WL7RFprIGQ=;
-        b=SDcMg4mCE1YxrcJ94C4lEdIP87ty02Dnnl7hxvKP2R7H/WNzkQv57cWjHwWil4gute
-         BwLbmYqkwXZrAzQH15VPJ7ZCrK4W3MJLKVRv7mP1tUUYF2Chfye2wiwqJYw/tXYZ+W5b
-         8cMzFC8dddVWbb2nr9v3jIUbSkrmzL0XPvsGAyGQWK5mziIeq/jcjWvI0vOLCB9dZVRP
-         U4Xml5x63Hmb2stMKAaFwSS5ihu1CxfCVzOwmabRcd82cbf1hlig0jxtBwIM0CrcxJHR
-         u+IukWKRDgtLUO2XBvnv2kMF0j+c7jxMatI5cRslbhRGADaauRw0VFqK/QRsGX88lb0Y
-         2P/g==
+        d=gmail.com; s=20221208; t=1690638221; x=1691243021;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B7A5wSsDhI3tPDg2Zhs0lCCHvGH1hBcKwDXt+QlBQO8=;
+        b=U6FVngLbFRNIdhiWnSyKQHg1BsmRAlHrq9cBCjWyr36diNFOTipDcZ6EMxh1WWZl05
+         eVHkVDPsLw1LY988WZOvNcvL7IRbY8OFrJvghapJfUfcyEv28gh7sKFCgXyioikMg5xv
+         rP1s7FwoW8+T1/C4oLPALIHPfqvYhLjE5ZsI6sqsXRaQknHkxTLphYjLIuyFXDAT+Ynl
+         2xxA2HeGXHOnqozS88QbZo6plZKZ/naoNqQiF/LO7eQVHMc1Y4HBuO/kk9kqCt3zqMVD
+         hKyeK5oCAkcxJCDUdDrzP5axY0PMbqH2YFYIX+g5jZsoJRpYGBF4KiuR89cG6ncrijR4
+         fi0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638218; x=1691243018;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jbtLma1T2CR1OS6BhEpG9M60IGb1m30I8WL7RFprIGQ=;
-        b=PabvFoF1FacVvi7m8lfwAolryr+NGq4/a8ig4OmRgUHjF+fwdQJZuI8OlQOPx4Al9W
-         hIWqHkChcZfBkg27eLI6IwFJEnoXt3LAshMZXR5aalQ9YEYsTJpuTnrpTDxDktefBD8s
-         TnTCIyJ0Lu5QQsrF8MghowilFy48/P3z9j4hCijGSOr7RQXXx4biowaijGPNo6y7EGcG
-         iv7BpUdLn6Gh6iNjqPhh0LdgEM5OXJkcGoOvBHJE9rp65mFKgxwt9//OJhWXQFoQvxTa
-         Qj+xAhpR1jwcEOTx4aLKM1H4iRmnTdiyh40a9ggJYmuribfqd/lBbqjSS2gpLsNx+AFV
-         7u3g==
-X-Gm-Message-State: ABy/qLbJ3+I+gLoRwONhaJXRbmEyYkAIDdKk1O2REnBSwXo3/IZbEtpF
-        9L2Eg7/BtDOBcR8A75Pb6HLcSqc10epyPw==
-X-Google-Smtp-Source: APBJJlHOk6K173rI5KQoDx5QpI80BdhSKlXCjh4y6P8Ri7NH5wyEMXzvPGaUbUzn5eGQp8UgycI0ig==
-X-Received: by 2002:a05:6a20:7da1:b0:134:16a3:83ad with SMTP id v33-20020a056a207da100b0013416a383admr4927585pzj.57.1690638217869;
-        Sat, 29 Jul 2023 06:43:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690638221; x=1691243021;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B7A5wSsDhI3tPDg2Zhs0lCCHvGH1hBcKwDXt+QlBQO8=;
+        b=A7dFON3CWdiuasImNdRuLotnb6QJA7Dlr309YRnyy2llCCQ8KgPZkiVx1NUkmzVkXL
+         Z95HznpYpZDsBWxU08at03AiPnYLeYtQChYKnq5M9S1Td+l9ANTN+2hNMw2GjGjtQMUC
+         LUYfvtwV7XDFDvE6yiSItY2mxX+zzG4Xun03IKFE7598/zzt5hyvhmlddCViYIWxnlbn
+         Kg3ky5/Womv7jiVsomjAEhyZmXYBycOJJENfzAWuFJGXMRL2YsroW8pIZJuLX03I4ELB
+         ys1SClKcBjPeTOCeehAGZrt+5CDZIaO6zVGYR3vHS0tapNd6alc2J28sJbmuxcOuYbZv
+         waOQ==
+X-Gm-Message-State: ABy/qLa0IS4mNyqdmQo3VD/6vN0i4078ZebyuzHxlmEZBEzi/7jd8HfC
+        6C/jrSg0iy9IZmNmSC2y/LsBtHNChStI5w==
+X-Google-Smtp-Source: APBJJlHcwMef/WGA2AmKHcbNB87hUr5x8z+OobB+C05D/s7quNFYkHUqQHa8dPTYFJOW1P5IeeZCvA==
+X-Received: by 2002:a05:6a00:843:b0:67a:9208:87a with SMTP id q3-20020a056a00084300b0067a9208087amr5700074pfk.23.1690638220889;
+        Sat, 29 Jul 2023 06:43:40 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.34
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:43:37 -0700 (PDT)
+        Sat, 29 Jul 2023 06:43:40 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -57,10 +58,12 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 00/17] MIPS: loongson32: Convert all platform devices to DT
-Date:   Sat, 29 Jul 2023 21:43:01 +0800
-Message-Id: <20230729134318.1694467-1-keguang.zhang@gmail.com>
+Subject: [PATCH 01/17] MIPS: loongson32: Get the system type from DT
+Date:   Sat, 29 Jul 2023 21:43:02 +0800
+Message-Id: <20230729134318.1694467-2-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
+References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,93 +76,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert all platform devices to devicetree.
-Remove all the obsolete code of platform device.
-Adapt the common code to support devicetree.
-Update Kconfig and Makefile files accordingly.
-Update and rename the defconfig.
+Get the system type from devicetree.
+And update the copyright accordingly.
 
-Keguang Zhang (17):
-  MIPS: loongson32: Get the system type from DT
-  MIPS: Modify the Loongson1 PRID_REV
-  MIPS: dts: Add basic DT support for Loongson-1 boards
-  MIPS: loongson32: Modify Loongson-1B/1C related Kconfig options
-  MIPS: loongson32: Adapt the common code to support DT
-  MIPS: loongson32: Convert platform IRQ driver to DT
-  MIPS: loongson32: Convert UART platform device to DT
-  MIPS: loongson32: Convert Ethernet platform device to DT
-  MIPS: loongson32: Convert GPIO platform device to DT
-  MIPS: loongson32: Convert GPIO LED platform device to DT
-  MIPS: loongson32: Convert USB host platform device to DT
-  MIPS: loongson32: Convert RTC platform device to DT
-  MIPS: loongson32: Convert watchdog platform device to DT
-  mips: dts: loongson1b: Add PWM timer clocksource
-  MIPS: loongson32: Remove all the obsolete code of platform device
-  MIPS: configs: Update and rename loongson1b_defconfig
-  MIPS: configs: Update and rename loongson1c_defconfig
+In addition, the system type belongs to proc info.
+So rename setup.c to proc.c.
 
- arch/mips/Kconfig                             |  62 ++--
- arch/mips/boot/dts/Makefile                   |   1 +
- arch/mips/boot/dts/loongson/Makefile          |   3 +
- arch/mips/boot/dts/loongson/loongson1.dtsi    | 161 ++++++++++
- arch/mips/boot/dts/loongson/loongson1b.dtsi   | 201 ++++++++++++
- arch/mips/boot/dts/loongson/loongson1c.dtsi   | 144 +++++++++
- arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |  88 ++++++
- arch/mips/boot/dts/loongson/smartloong_1c.dts |  84 +++++
- ...gson1c_defconfig => lsgz_1b_dev_defconfig} |  71 ++++-
- ...on1b_defconfig => smartloong_1c_defconfig} |  70 ++++-
- arch/mips/include/asm/cpu-type.h              |   3 +-
- arch/mips/include/asm/cpu.h                   |   3 +-
- arch/mips/include/asm/mach-loongson32/dma.h   |  21 --
- arch/mips/include/asm/mach-loongson32/irq.h   | 107 -------
- .../include/asm/mach-loongson32/loongson1.h   |  50 ---
- arch/mips/include/asm/mach-loongson32/nand.h  |  26 --
- .../include/asm/mach-loongson32/platform.h    |  26 --
- .../include/asm/mach-loongson32/regs-mux.h    | 124 --------
- arch/mips/kernel/cpu-probe.c                  |   6 +-
- arch/mips/loongson32/Kconfig                  |  41 +--
- arch/mips/loongson32/Makefile                 |  14 +-
- arch/mips/loongson32/common/Makefile          |   6 -
- arch/mips/loongson32/common/irq.c             | 191 ------------
- arch/mips/loongson32/common/platform.c        | 287 ------------------
- arch/mips/loongson32/common/prom.c            |  42 ---
- arch/mips/loongson32/common/setup.c           |  26 --
- arch/mips/loongson32/common/time.c            |  23 --
- arch/mips/loongson32/init.c                   |  83 +++++
- arch/mips/loongson32/ls1b/Makefile            |   6 -
- arch/mips/loongson32/ls1b/board.c             |  57 ----
- arch/mips/loongson32/ls1c/Makefile            |   6 -
- arch/mips/loongson32/ls1c/board.c             |  23 --
- arch/mips/loongson32/proc.c                   |  20 ++
- 33 files changed, 941 insertions(+), 1135 deletions(-)
- create mode 100644 arch/mips/boot/dts/loongson/loongson1.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson1b.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson1c.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
- create mode 100644 arch/mips/boot/dts/loongson/smartloong_1c.dts
- rename arch/mips/configs/{loongson1c_defconfig => lsgz_1b_dev_defconfig} (59%)
- rename arch/mips/configs/{loongson1b_defconfig => smartloong_1c_defconfig} (59%)
- delete mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/irq.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/loongson1.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/platform.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-mux.h
- delete mode 100644 arch/mips/loongson32/common/Makefile
- delete mode 100644 arch/mips/loongson32/common/irq.c
- delete mode 100644 arch/mips/loongson32/common/platform.c
- delete mode 100644 arch/mips/loongson32/common/prom.c
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
+ arch/mips/loongson32/Makefile        |  1 +
+ arch/mips/loongson32/common/Makefile |  2 +-
+ arch/mips/loongson32/common/setup.c  | 26 --------------------------
+ arch/mips/loongson32/proc.c          | 20 ++++++++++++++++++++
+ 4 files changed, 22 insertions(+), 27 deletions(-)
  delete mode 100644 arch/mips/loongson32/common/setup.c
- delete mode 100644 arch/mips/loongson32/common/time.c
- create mode 100644 arch/mips/loongson32/init.c
- delete mode 100644 arch/mips/loongson32/ls1b/Makefile
- delete mode 100644 arch/mips/loongson32/ls1b/board.c
- delete mode 100644 arch/mips/loongson32/ls1c/Makefile
- delete mode 100644 arch/mips/loongson32/ls1c/board.c
  create mode 100644 arch/mips/loongson32/proc.c
 
-
-base-commit: f11a9967413281b49690d864795e7c5f8f8e4fda
+diff --git a/arch/mips/loongson32/Makefile b/arch/mips/loongson32/Makefile
+index ba10954b4b21..c3881af369e9 100644
+--- a/arch/mips/loongson32/Makefile
++++ b/arch/mips/loongson32/Makefile
+@@ -3,6 +3,7 @@
+ # Common code for all Loongson 1 based systems
+ #
+ 
++obj-$(CONFIG_MACH_LOONGSON32) += proc.o
+ obj-$(CONFIG_MACH_LOONGSON32) += common/
+ 
+ #
+diff --git a/arch/mips/loongson32/common/Makefile b/arch/mips/loongson32/common/Makefile
+index f3950d308187..b44527b1a178 100644
+--- a/arch/mips/loongson32/common/Makefile
++++ b/arch/mips/loongson32/common/Makefile
+@@ -3,4 +3,4 @@
+ # Makefile for common code of loongson1 based machines.
+ #
+ 
+-obj-y	+= time.o irq.o platform.o prom.o setup.o
++obj-y	+= time.o irq.o platform.o prom.o
+diff --git a/arch/mips/loongson32/common/setup.c b/arch/mips/loongson32/common/setup.c
+deleted file mode 100644
+index 4733fe037176..000000000000
+--- a/arch/mips/loongson32/common/setup.c
++++ /dev/null
+@@ -1,26 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- * Copyright (c) 2011 Zhang, Keguang <keguang.zhang@gmail.com>
+- */
+-
+-#include <linux/io.h>
+-#include <linux/init.h>
+-#include <linux/smp.h>
+-#include <asm/cpu-info.h>
+-#include <asm/bootinfo.h>
+-
+-const char *get_system_type(void)
+-{
+-	unsigned int processor_id = (&current_cpu_data)->processor_id;
+-
+-	switch (processor_id & PRID_REV_MASK) {
+-	case PRID_REV_LOONGSON1B:
+-#if defined(CONFIG_LOONGSON1_LS1B)
+-		return "LOONGSON LS1B";
+-#elif defined(CONFIG_LOONGSON1_LS1C)
+-		return "LOONGSON LS1C";
+-#endif
+-	default:
+-		return "LOONGSON (unknown)";
+-	}
+-}
+diff --git a/arch/mips/loongson32/proc.c b/arch/mips/loongson32/proc.c
+new file mode 100644
+index 000000000000..1ea54346b3d4
+--- /dev/null
++++ b/arch/mips/loongson32/proc.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
++ */
++
++#include <linux/of.h>
++
++#include <asm/bootinfo.h>
++
++const char *get_system_type(void)
++{
++	const char *str;
++	int err;
++
++	err = of_property_read_string_index(of_root, "compatible", 1, &str);
++	if (!err)
++		return str;
++
++	return "Unknown";
++}
 -- 
 2.39.2
 
