@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2181767BFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 05:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BEA767BFD
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 05:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjG2Dlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 23:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S234540AbjG2Do6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 23:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236552AbjG2Dl0 (ORCPT
+        with ESMTP id S230054AbjG2Do4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 23:41:26 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7069B46A9;
-        Fri, 28 Jul 2023 20:41:24 -0700 (PDT)
-X-UUID: c6d29b8c2dc111ee9cb5633481061a41-20230729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=TPr7sXgdlH3VNKL6uLkPjL/MuPJ8naNc1jeRgaa1pVM=;
-        b=SqqfDJ3JFnKTs1lSRXT77dIO4P5S1Cb8JLegmnQB/5fSBFJaGidaP6Baa/TCWOUTjV+qRSx2A+vQWBK01QaHRQwEtTsT0GPVsWsAI1gofrfAXaFATb8Ceu2abup2ZKHSrPHbzyWD+tS3cAOu83SDU5kI1appLTDiZNP4KGhGW40=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:09066f79-40c4-4e18-b200-8b1f8f951ad8,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:f3b7a7a0-0933-4333-8d4f-6c3c53ebd55b,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: c6d29b8c2dc111ee9cb5633481061a41-20230729
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 80973255; Sat, 29 Jul 2023 11:41:18 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Sat, 29 Jul 2023 11:41:16 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Sat, 29 Jul 2023 11:41:15 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-CC:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Steve Cho" <stevecho@chromium.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        "Mingjia Zhang" <mingjia.zhang@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v3,3/3] media: mediatek: vcodec: Add driver to support 10bit
-Date:   Sat, 29 Jul 2023 11:41:12 +0800
-Message-ID: <20230729034112.16993-4-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230729034112.16993-1-yunfei.dong@mediatek.com>
-References: <20230729034112.16993-1-yunfei.dong@mediatek.com>
+        Fri, 28 Jul 2023 23:44:56 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0CE123;
+        Fri, 28 Jul 2023 20:44:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690602295; x=1722138295;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=B1tIYUOTE5ds17iq06h6LoUQaptKxSnLkllCbTxj6xk=;
+  b=HUNqcYVb/61u460WB/6qjxyJkj3+zWEpbfTz/liGArD/UCj7VOGrVy7D
+   oGGt5pLfZHTbFijciakNmkYE+mPKBDv+wP44xzwcs9grLx0LXdzy6WkXv
+   UTMTg7f3wZw1IAeHwOjiwWjs09x+NKqJkzTMLU9t7W9xwoUp1g+JK/L9S
+   UQAcU9cf25QGJHZ/orGVT8aiqbBQHNmgaaEOhbCDTpm0M8TQ1dWxxKuKP
+   T3otV5GIzXcE/vDVTgXb5FhogqUhpwlidYQgvwmU1F3cNz3tKHzLmnYxr
+   M2+W4JF3Bs+RFkUsED4tW0kDypYeiAexVNT9aiW9RyFVZRThkTn+fKuBk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="353632110"
+X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
+   d="scan'208";a="353632110"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 20:44:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="871041149"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2023 20:44:54 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPast-0003nz-37;
+        Sat, 29 Jul 2023 03:44:51 +0000
+Date:   Sat, 29 Jul 2023 11:44:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Vincent Donnefort <vdonnefort@google.com>, rostedt@goodmis.org,
+        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, kernel-team@android.com,
+        Vincent Donnefort <vdonnefort@google.com>
+Subject: Re: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <202307291143.HTPVZOsb-lkp@intel.com>
+References: <20230728164754.460767-2-vdonnefort@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728164754.460767-2-vdonnefort@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,281 +67,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mingjia Zhang <mingjia.zhang@mediatek.com>
+Hi Vincent,
 
-Adding to support capture formats V4L2_PIX_FMT_MT2110T and
-V4L2_PIX_FMT_MT2110R for 10bit playback. Need to get the size
-of each plane again when user space setting syntax to get 10bit
-information.
+kernel test robot noticed the following build warnings:
 
-V4L2_PIX_FMT_MT2110T for AV1/VP9/HEVC.
-V4L2_PIX_FMT_MT2110R for H264.
+[auto build test WARNING on linus/master]
+[cannot apply to rostedt-trace/for-next rostedt-trace/for-next-urgent]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Mingjia Zhang <mingjia.zhang@mediatek.com>
-Co-developed-by: Yunfei Dong <yunfei.dong@mediatek.com>
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
- .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  |  22 ++-
- .../vcodec/decoder/mtk_vcodec_dec_drv.h       |   5 +
- .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 144 +++++++++++++++++-
- 3 files changed, 167 insertions(+), 4 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Donnefort/ring-buffer-Introducing-ring-buffer-mapping-functions/20230729-005300
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230728164754.460767-2-vdonnefort%40google.com
+patch subject: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping functions
+config: arm-randconfig-r046-20230728 (https://download.01.org/0day-ci/archive/20230729/202307291143.HTPVZOsb-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307291143.HTPVZOsb-lkp@intel.com/reproduce)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-index 5acb7dff18f2..91ed576d6821 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-@@ -37,7 +37,9 @@ static bool mtk_vdec_get_cap_fmt(struct mtk_vcodec_dec_ctx *ctx, int format_inde
- {
- 	const struct mtk_vcodec_dec_pdata *dec_pdata = ctx->dev->vdec_pdata;
- 	const struct mtk_video_fmt *fmt;
-+	struct mtk_q_data *q_data;
- 	int num_frame_count = 0, i;
-+	bool ret = false;
- 
- 	fmt = &dec_pdata->vdec_formats[format_index];
- 	for (i = 0; i < *dec_pdata->num_formats; i++) {
-@@ -47,10 +49,26 @@ static bool mtk_vdec_get_cap_fmt(struct mtk_vcodec_dec_ctx *ctx, int format_inde
- 		num_frame_count++;
- 	}
- 
--	if (num_frame_count == 1 || fmt->fourcc == V4L2_PIX_FMT_MM21)
-+	if (num_frame_count == 1 || (!ctx->is_10bit_bitstream && fmt->fourcc == V4L2_PIX_FMT_MM21))
- 		return true;
- 
--	return false;
-+	q_data = &ctx->q_data[MTK_Q_DATA_SRC];
-+	switch (q_data->fmt->fourcc) {
-+	case V4L2_PIX_FMT_H264_SLICE:
-+		if (ctx->is_10bit_bitstream && fmt->fourcc == V4L2_PIX_FMT_MT2110R)
-+			ret = true;
-+		break;
-+	case V4L2_PIX_FMT_VP9_FRAME:
-+	case V4L2_PIX_FMT_AV1_FRAME:
-+	case V4L2_PIX_FMT_HEVC_SLICE:
-+		if (ctx->is_10bit_bitstream && fmt->fourcc == V4L2_PIX_FMT_MT2110T)
-+			ret = true;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return ret;
- }
- 
- static struct mtk_q_data *mtk_vdec_get_q_data(struct mtk_vcodec_dec_ctx *ctx,
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-index aa49969c54c1..6c318de25a55 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-@@ -31,6 +31,7 @@ enum mtk_vdec_format_types {
- 	MTK_VDEC_FORMAT_AV1_FRAME = 0x800,
- 	MTK_VDEC_FORMAT_HEVC_FRAME = 0x1000,
- 	MTK_VCODEC_INNER_RACING = 0x20000,
-+	MTK_VDEC_IS_SUPPORT_10BIT = 0x40000,
- };
- 
- /*
-@@ -160,6 +161,8 @@ struct mtk_vcodec_dec_pdata {
-  * @hw_id: hardware index used to identify different hardware.
-  *
-  * @msg_queue: msg queue used to store lat buffer information.
-+ *
-+ * @is_10bit_bitstream: set to true if it's 10bit bitstream
-  */
- struct mtk_vcodec_dec_ctx {
- 	enum mtk_instance_type type;
-@@ -202,6 +205,8 @@ struct mtk_vcodec_dec_ctx {
- 	int hw_id;
- 
- 	struct vdec_msg_queue msg_queue;
-+
-+	bool is_10bit_bitstream;
- };
- 
- /**
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-index 99a84c7e1901..e29c9c58f3da 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-@@ -200,7 +200,7 @@ static const struct mtk_stateless_control mtk_stateless_controls[] = {
- 
- #define NUM_CTRLS ARRAY_SIZE(mtk_stateless_controls)
- 
--static struct mtk_video_fmt mtk_video_formats[7];
-+static struct mtk_video_fmt mtk_video_formats[9];
- 
- static struct mtk_video_fmt default_out_format;
- static struct mtk_video_fmt default_cap_format;
-@@ -387,6 +387,138 @@ static int mtk_vdec_flush_decoder(struct mtk_vcodec_dec_ctx *ctx)
- 	return vdec_if_decode(ctx, NULL, NULL, &res_chg);
- }
- 
-+static int mtk_vcodec_get_pic_info(struct mtk_vcodec_dec_ctx *ctx)
-+{
-+	struct mtk_q_data *q_data;
-+	int ret = 0;
-+
-+	q_data = &ctx->q_data[MTK_Q_DATA_DST];
-+	if (q_data->fmt->num_planes == 1) {
-+		mtk_v4l2_vdec_err(ctx, "[%d]Error!! 10bit mode not support one plane", ctx->id);
-+		return -EINVAL;
-+	}
-+
-+	ctx->capture_fourcc = q_data->fmt->fourcc;
-+	ret = vdec_if_get_param(ctx, GET_PARAM_PIC_INFO, &ctx->picinfo);
-+	if (ret) {
-+		mtk_v4l2_vdec_err(ctx, "[%d]Error!! Get GET_PARAM_PICTURE_INFO Fail", ctx->id);
-+		return ret;
-+	}
-+
-+	ctx->last_decoded_picinfo = ctx->picinfo;
-+
-+	q_data->sizeimage[0] = ctx->picinfo.fb_sz[0];
-+	q_data->bytesperline[0] = ctx->picinfo.buf_w * 5 / 4;
-+
-+	q_data->sizeimage[1] = ctx->picinfo.fb_sz[1];
-+	q_data->bytesperline[1] = ctx->picinfo.buf_w * 5 / 4;
-+
-+	q_data->coded_width = ctx->picinfo.buf_w;
-+	q_data->coded_height = ctx->picinfo.buf_h;
-+	mtk_v4l2_vdec_dbg(1, ctx, "[%d] wxh=%dx%d pic wxh=%dx%d sz[0]=0x%x sz[1]=0x%x",
-+			  ctx->id, ctx->picinfo.buf_w, ctx->picinfo.buf_h,
-+			  ctx->picinfo.pic_w, ctx->picinfo.pic_h,
-+			  q_data->sizeimage[0], q_data->sizeimage[1]);
-+
-+	return ret;
-+}
-+
-+static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
-+{
-+	struct mtk_vcodec_dec_ctx *ctx = ctrl_to_dec_ctx(ctrl);
-+	struct v4l2_ctrl_h264_sps *h264;
-+	struct v4l2_ctrl_hevc_sps *h265;
-+	struct v4l2_ctrl_vp9_frame *frame;
-+	struct v4l2_ctrl_av1_sequence *seq;
-+	struct v4l2_ctrl *hdr_ctrl;
-+	const struct mtk_vcodec_dec_pdata *dec_pdata = ctx->dev->vdec_pdata;
-+	const struct mtk_video_fmt *fmt;
-+	int i = 0, ret = 0;
-+
-+	hdr_ctrl = ctrl;
-+	if (!hdr_ctrl || !hdr_ctrl->p_new.p)
-+		return -EINVAL;
-+
-+	switch (hdr_ctrl->id) {
-+	case V4L2_CID_STATELESS_H264_SPS:
-+		h264 = (struct v4l2_ctrl_h264_sps *)hdr_ctrl->p_new.p;
-+
-+		if (h264->bit_depth_chroma_minus8 == 2 && h264->bit_depth_luma_minus8 == 2) {
-+			ctx->is_10bit_bitstream = true;
-+		} else if (h264->bit_depth_chroma_minus8 != 0 &&
-+			   h264->bit_depth_luma_minus8 != 0) {
-+			mtk_v4l2_vdec_err(ctx, "H264: chroma_minus8:%d, luma_minus8:%d",
-+					  h264->bit_depth_chroma_minus8,
-+					  h264->bit_depth_luma_minus8);
-+			return -EINVAL;
-+		}
-+		break;
-+	case V4L2_CID_STATELESS_HEVC_SPS:
-+		h265 = (struct v4l2_ctrl_hevc_sps *)hdr_ctrl->p_new.p;
-+
-+		if (h265->bit_depth_chroma_minus8 == 2 && h265->bit_depth_luma_minus8 == 2) {
-+			ctx->is_10bit_bitstream = true;
-+		} else if (h265->bit_depth_chroma_minus8 != 0 &&
-+			   h265->bit_depth_luma_minus8 != 0) {
-+			mtk_v4l2_vdec_err(ctx, "HEVC: chroma_minus8:%d, luma_minus8:%d",
-+					  h265->bit_depth_chroma_minus8,
-+					  h265->bit_depth_luma_minus8);
-+			return -EINVAL;
-+		}
-+		break;
-+	case V4L2_CID_STATELESS_VP9_FRAME:
-+		frame = (struct v4l2_ctrl_vp9_frame *)hdr_ctrl->p_new.p;
-+
-+		if (frame->bit_depth == 10) {
-+			ctx->is_10bit_bitstream = true;
-+		} else if (frame->bit_depth != 8) {
-+			mtk_v4l2_vdec_err(ctx, "VP9: bit_depth:%d", frame->bit_depth);
-+			return -EINVAL;
-+		}
-+		break;
-+	case V4L2_CID_STATELESS_AV1_SEQUENCE:
-+		seq = (struct v4l2_ctrl_av1_sequence *)hdr_ctrl->p_new.p;
-+
-+		if (seq->bit_depth == 10) {
-+			ctx->is_10bit_bitstream = true;
-+		} else if (seq->bit_depth != 8) {
-+			mtk_v4l2_vdec_err(ctx, "AV1: bit_depth:%d", seq->bit_depth);
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl id: 0x%x\n", hdr_ctrl->id);
-+		return ret;
-+	}
-+
-+	if (!ctx->is_10bit_bitstream)
-+		return ret;
-+
-+	for (i = 0; i < *dec_pdata->num_formats; i++) {
-+		fmt = &dec_pdata->vdec_formats[i];
-+		if (fmt->fourcc == V4L2_PIX_FMT_MT2110R &&
-+		    hdr_ctrl->id == V4L2_CID_STATELESS_H264_SPS) {
-+			ctx->q_data[MTK_Q_DATA_DST].fmt = fmt;
-+			break;
-+		}
-+
-+		if (fmt->fourcc == V4L2_PIX_FMT_MT2110T &&
-+		    (hdr_ctrl->id == V4L2_CID_STATELESS_HEVC_SPS ||
-+		    hdr_ctrl->id == V4L2_CID_STATELESS_VP9_FRAME ||
-+		    hdr_ctrl->id == V4L2_CID_STATELESS_AV1_SEQUENCE)) {
-+			ctx->q_data[MTK_Q_DATA_DST].fmt = fmt;
-+			break;
-+		}
-+	}
-+	ret = mtk_vcodec_get_pic_info(ctx);
-+
-+	return ret;
-+}
-+
-+static const struct v4l2_ctrl_ops mtk_vcodec_dec_ctrl_ops = {
-+	.s_ctrl = mtk_vdec_s_ctrl,
-+};
-+
- static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_dec_ctx *ctx)
- {
- 	unsigned int i;
-@@ -399,7 +531,7 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_dec_ctx *ctx)
- 
- 	for (i = 0; i < NUM_CTRLS; i++) {
- 		struct v4l2_ctrl_config cfg = mtk_stateless_controls[i].cfg;
--
-+		cfg.ops = &mtk_vcodec_dec_ctrl_ops;
- 		v4l2_ctrl_new_custom(&ctx->ctrl_hdl, &cfg, NULL);
- 		if (ctx->ctrl_hdl.error) {
- 			mtk_v4l2_vdec_err(ctx, "Adding control %d failed %d", i,
-@@ -466,6 +598,8 @@ static void mtk_vcodec_add_formats(unsigned int fourcc,
- 		break;
- 	case V4L2_PIX_FMT_MM21:
- 	case V4L2_PIX_FMT_MT21C:
-+	case V4L2_PIX_FMT_MT2110T:
-+	case V4L2_PIX_FMT_MT2110R:
- 		mtk_video_formats[count_formats].fourcc = fourcc;
- 		mtk_video_formats[count_formats].type = MTK_FMT_FRAME;
- 		mtk_video_formats[count_formats].num_planes = 2;
-@@ -491,6 +625,12 @@ static void mtk_vcodec_get_supported_formats(struct mtk_vcodec_dec_ctx *ctx)
- 		mtk_vcodec_add_formats(V4L2_PIX_FMT_MT21C, ctx);
- 		cap_format_count++;
- 	}
-+	if (ctx->dev->dec_capability & MTK_VDEC_IS_SUPPORT_10BIT) {
-+		mtk_vcodec_add_formats(V4L2_PIX_FMT_MT2110T, ctx);
-+		cap_format_count++;
-+		mtk_vcodec_add_formats(V4L2_PIX_FMT_MT2110R, ctx);
-+		cap_format_count++;
-+	}
- 	if (ctx->dev->dec_capability & MTK_VDEC_FORMAT_MM21) {
- 		mtk_vcodec_add_formats(V4L2_PIX_FMT_MM21, ctx);
- 		cap_format_count++;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307291143.HTPVZOsb-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from arch/arm/include/asm/page.h:193,
+                    from arch/arm/include/asm/thread_info.h:14,
+                    from include/linux/thread_info.h:60,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/arm/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:79,
+                    from include/linux/percpu.h:6,
+                    from include/linux/context_tracking_state.h:5,
+                    from include/linux/hardirq.h:5,
+                    from include/linux/interrupt.h:11,
+                    from include/linux/trace_recursion.h:5,
+                    from kernel/trace/ring_buffer.c:7:
+   kernel/trace/ring_buffer.c: In function 'rb_free_page_ids':
+>> kernel/trace/ring_buffer.c:5946:50: warning: passing argument 1 of 'virt_to_pfn' makes pointer from integer without a cast [-Wint-conversion]
+    5946 |                 virt_to_page(cpu_buffer->page_ids[i])->mapping = NULL;
+         |                              ~~~~~~~~~~~~~~~~~~~~^~~
+         |                                                  |
+         |                                                  long unsigned int
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   kernel/trace/ring_buffer.c:5946:17: note: in expansion of macro 'virt_to_page'
+    5946 |                 virt_to_page(cpu_buffer->page_ids[i])->mapping = NULL;
+         |                 ^~~~~~~~~~~~
+   In file included from arch/arm/include/asm/page.h:188:
+   arch/arm/include/asm/memory.h:296:53: note: expected 'const void *' but argument is of type 'long unsigned int'
+     296 | static inline unsigned long virt_to_pfn(const void *p)
+         |                                         ~~~~~~~~~~~~^
+   kernel/trace/ring_buffer.c: In function 'rb_free_meta_page':
+   kernel/trace/ring_buffer.c:5968:22: warning: passing argument 1 of 'virt_to_pfn' makes pointer from integer without a cast [-Wint-conversion]
+    5968 |         virt_to_page(addr)->mapping = NULL;
+         |                      ^~~~
+         |                      |
+         |                      long unsigned int
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   kernel/trace/ring_buffer.c:5968:9: note: in expansion of macro 'virt_to_page'
+    5968 |         virt_to_page(addr)->mapping = NULL;
+         |         ^~~~~~~~~~~~
+   arch/arm/include/asm/memory.h:296:53: note: expected 'const void *' but argument is of type 'long unsigned int'
+     296 | static inline unsigned long virt_to_pfn(const void *p)
+         |                                         ~~~~~~~~~~~~^
+   kernel/trace/ring_buffer.c: In function 'ring_buffer_map_fault':
+   kernel/trace/ring_buffer.c:6156:49: warning: passing argument 1 of 'virt_to_pfn' makes pointer from integer without a cast [-Wint-conversion]
+    6156 |         return virt_to_page(cpu_buffer->page_ids[pgoff]);
+         |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~
+         |                                                 |
+         |                                                 long unsigned int
+   include/asm-generic/memory_model.h:18:46: note: in definition of macro '__pfn_to_page'
+      18 | #define __pfn_to_page(pfn)      (mem_map + ((pfn) - ARCH_PFN_OFFSET))
+         |                                              ^~~
+   kernel/trace/ring_buffer.c:6156:16: note: in expansion of macro 'virt_to_page'
+    6156 |         return virt_to_page(cpu_buffer->page_ids[pgoff]);
+         |                ^~~~~~~~~~~~
+   arch/arm/include/asm/memory.h:296:53: note: expected 'const void *' but argument is of type 'long unsigned int'
+     296 | static inline unsigned long virt_to_pfn(const void *p)
+         |                                         ~~~~~~~~~~~~^
+
+
+vim +/virt_to_pfn +5946 kernel/trace/ring_buffer.c
+
+  5940	
+  5941	static void rb_free_page_ids(struct ring_buffer_per_cpu *cpu_buffer)
+  5942	{
+  5943		int i;
+  5944	
+  5945		for (i = 0; i < cpu_buffer->nr_pages + 1; i++)
+> 5946			virt_to_page(cpu_buffer->page_ids[i])->mapping = NULL;
+  5947	
+  5948		kfree(cpu_buffer->page_ids);
+  5949		cpu_buffer->page_ids = NULL;
+  5950	}
+  5951	
+
 -- 
-2.18.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
