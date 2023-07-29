@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663FE768079
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 18:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C0176807E
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 18:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjG2QHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 12:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S229584AbjG2QJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 12:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG2QHV (ORCPT
+        with ESMTP id S229379AbjG2QJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 12:07:21 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A125735A5
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 09:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kVw4LWVdll4tRDwniP1YfJ8EssxH9lR3jkgelS2E3rw=; b=BWuEoZ3zQJHxtH3J46b/qZ3PlB
-        H+ujxYi1T8tVgAD9iyx6wrfrIRvJ0U7rwQmrmheiwcjfbOBDcvvjqOaEE9RTh5BIrOZuKBBY+37Md
-        KM91qNVBRChyWPH1/WptMgZe1TLegUl31ArVB1ZMVKTppGoqrUGnsTqTFPmtM2SIOkJlgusG/yg+R
-        ixoytglBcP7pqJ/9JGcbkQ/VXgrEpAvCPuNQhIkG+5PzFS8dFIMEbJ7TCcTl7KMtAPucBdjg82llU
-        TMeI1d1jP/nyvl0nw390uNKH8mRdbeqq3BOKpyRQZCBgAP/9eZ5/MSwqy6pB3UG3VorH5inbw+9HK
-        /YSAl12w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPmTJ-009FHA-15;
-        Sat, 29 Jul 2023 16:07:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE78E3006E2;
-        Sat, 29 Jul 2023 18:07:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BD2F620CC1F2C; Sat, 29 Jul 2023 18:07:12 +0200 (CEST)
-Date:   Sat, 29 Jul 2023 18:07:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Aaron Tomlin <atomlin@atomlin.com>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, jiangshanlai@gmail.com
-Subject: Re: [RFC PATCH 1/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Message-ID: <20230729160712.GA5697@hirez.programming.kicks-ass.net>
-References: <20230729135334.566138-1-atomlin@atomlin.com>
- <20230729135334.566138-2-atomlin@atomlin.com>
+        Sat, 29 Jul 2023 12:09:27 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F6EA8;
+        Sat, 29 Jul 2023 09:09:26 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so6975011fa.1;
+        Sat, 29 Jul 2023 09:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690646965; x=1691251765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kYuOI65YzPrj3n+lLQ6cTdOtLO/GiTyHb3SVK41xJL0=;
+        b=T4NbtfL5FaqYm+mdCgKbufrc7EjCOxUovoV+JIx4PGuceIV38teYQyza+3ly+p+h7C
+         rvPSqPc91EVn7T2N9Y8zft15HndkjRj4HDiqS+J5QDjlk+oPR/8Z7+qtDyKB4lsJYXNB
+         exZD7P3iwAkglYsrN4hzBV5839nmu+5X18WzzXykh9JLsPmrrxSICcsd632u5M+l8YLX
+         cSjYztcHeR8NGAqq+cIJB5ERQns+mNFHe9yUAnn1wsN0K4EWpnG9G7mmi6SpeOJw9iGE
+         JUPG29huPwAglcGc+u8PI7OTKI3pQQNjJhGYSrL1a7zRJnsk6c+zLEb8rADuXju/Srs7
+         /Mzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690646965; x=1691251765;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kYuOI65YzPrj3n+lLQ6cTdOtLO/GiTyHb3SVK41xJL0=;
+        b=Y03d6Hv8exjTWfdDPS2YJI66hvuEYr2U2+Ajt+QCafN97AQMRDiJleOpIiPTZAaXx3
+         ufTtLmptrP/H8LQn/+/gx2gjUPar8LDhNj0E/jCU0mePGyZ4Rg4Rf9VHUuG6+D4jysYX
+         oYQNoEAxsDwJOlTsNxLClUDoxFZKFRxNkbudpQ9KBqoUpdgrfrlqOCLHs28oFmJfcrQT
+         ON1LiHujzVrRBDleo3j6j466pa6NKCyzhvIgzemUWibiUd30rNenRDK+MugE1i2dFlL/
+         YJnFAe2HazAIaJouyzBUL7Esg/SKlPtkODBE5VMrc7MetGoSGzfB6SouDqIXj6r6edoq
+         qYTg==
+X-Gm-Message-State: ABy/qLbbXM3DgdoVmsA7jtT3/mPQ9vYYWYd8it+LL6J8fGrLzEWGCrkN
+        jG2vnd7irCiZtoIwm12XHDG+HvhZ5PebUg==
+X-Google-Smtp-Source: APBJJlFUFhd+ptGTWIR2/XIehd1W1q97EaDiefhCvwjmtmYrhEAObEDy2Tstemz3GwyVG0i77H+wwQ==
+X-Received: by 2002:a2e:9150:0:b0:2b9:b27c:f727 with SMTP id q16-20020a2e9150000000b002b9b27cf727mr4056532ljg.8.1690646964408;
+        Sat, 29 Jul 2023 09:09:24 -0700 (PDT)
+Received: from xeon.. ([188.163.112.48])
+        by smtp.gmail.com with ESMTPSA id f10-20020a2ea0ca000000b002b6daa3fa2csm1346886ljm.69.2023.07.29.09.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Jul 2023 09:09:24 -0700 (PDT)
+From:   Svyatoslav Ryhel <clamor95@gmail.com>
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] GPIO-based hotplug i2c bus
+Date:   Sat, 29 Jul 2023 19:08:55 +0300
+Message-Id: <20230729160857.6332-1-clamor95@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729135334.566138-2-atomlin@atomlin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 02:53:33PM +0100, Aaron Tomlin wrote:
-> The Linux kernel does not provide a way to differentiate between a
-> kworker and a rescue kworker for user-mode.
-> From user-mode, one can establish if a task is a kworker by testing for
-> PF_WQ_WORKER in a specified task's flags bit mask (or bitmap) via
-> /proc/[PID]/stat. Indeed, one can examine /proc/[PID]/stack and search
-> for the function namely "rescuer_thread". This is only available to the
-> root user.
-> 
-> It can be useful to identify a rescue kworker since their CPU affinity
-> cannot be modified and their initial CPU assignment can be safely ignored.
-> Furthermore, a workqueue that was created with WQ_MEM_RECLAIM and
-> WQ_SYSFS the cpumask file is not applicable to the rescue kworker.
-> By design a rescue kworker should run anywhere.
-> 
-> This patch introduces PF_WQ_RESCUE_WORKER and ensures it is set and
-> cleared appropriately.
+ASUS Transformers require this driver for proper work with their dock.
+Dock is controlled by EC and its presence is detected by a GPIO.
 
-Is the implication that PF_flags are considered ABI? We've been changing
-them quite a bit over the years.
+The Transformers have a connector that's used for USB, charging or
+for attaching a keyboard (called a dock; it also has a battery and
+a touchpad). This connector probably (I don't have the means to verify
+that) has an I2C bus lines and a "detect" line (pulled low on the dock
+side) among the pins. I guess there is either no additional chip or
+a transparent bridge/buffer chip, but nothing that could be controlled
+by software. For DT this setup could be modelled like an I2C gate or
+a 2-port mux with enable joining two I2C buses (one "closer" to the
+CPU as a parent).
 
-Also, while we have a few spare bits atm, we used to be nearly out for a
-while, and I just don't think this is sane usage of them. We don't use
-PF flags just for userspace.
+In this case it's hard to tell the difference if this is real or virtual
+hardware.
+
+This patchset is a predecessor of a possible larger patchset which
+should bring support for a asus-ec, an i2c mfd device programmed by
+Asus for their Transformers tablet line. Similar approach is used in
+Microsoft Surface RT for attachable Type Cover.
+
+> What is this actually doing?
+Basically it duplicates the parent i2c bus once detection GPIO triggers
+and probes all hot-pluggable devices which are connected to it. Once
+GPIO triggers a detach signal all hot-pluggable devices are unprobed and
+bus removed.
+
+> Is the GPIO an irq line for signalling hoplugging and can be used by
+> any driver or just this one?
+It can be shared if necessary but usually all hot-pluggable devices
+are gathered in one container and are plugged simultaneously.
+
+---
+Changes from v2:
+- expanded descryption of driver implementation commit
+- expanded descryption in patchset cover
+- no changes to code or yaml from v2
+
+Changes from v1:
+- documentation changes:
+  - dropped | from description
+  - dropped nodename
+  - unified use of quotes
+  - used GPIO_ACTIVE_LOW define
+  - used phandle instead of path
+---
+
+Michał Mirosław (1):
+  i2c: Add GPIO-based hotplug gate
+
+Svyatoslav Ryhel (1):
+  dt-bindings: i2c: add binding for i2c-hotplug-gpio
+
+ .../bindings/i2c/i2c-hotplug-gpio.yaml        |  65 +++++
+ drivers/i2c/Kconfig                           |  11 +
+ drivers/i2c/Makefile                          |   1 +
+ drivers/i2c/i2c-hotplug-gpio.c                | 266 ++++++++++++++++++
+ 4 files changed, 343 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-hotplug-gpio.yaml
+ create mode 100644 drivers/i2c/i2c-hotplug-gpio.c
+
+-- 
+2.39.2
+
