@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2E7768133
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBEC768139
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjG2TJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 15:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        id S229681AbjG2TJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 15:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjG2TJJ (ORCPT
+        with ESMTP id S229655AbjG2TJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:09:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C2210C0;
-        Sat, 29 Jul 2023 12:09:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B8A60288;
-        Sat, 29 Jul 2023 19:09:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E1ADC433C7;
-        Sat, 29 Jul 2023 19:09:03 +0000 (UTC)
-Date:   Sat, 29 Jul 2023 15:09:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-Message-ID: <20230729150901.25b9ae0c@rorschach.local.home>
-In-Reply-To: <20230726194148.4jhyqqbtn3qqqqsq@treble>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
-        <20230720163056.2564824-3-vschneid@redhat.com>
-        <20230726194148.4jhyqqbtn3qqqqsq@treble>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        Sat, 29 Jul 2023 15:09:52 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7211E2696
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:09:50 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686efa1804eso2362145b3a.3
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 12:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20221208.gappssmtp.com; s=20221208; t=1690657790; x=1691262590;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NQVKecxzaLTrR3Ye1xYfH6ooI3nAezhojIch+SfrkzU=;
+        b=CQUgVi+d6HSVGlR5roN/0RlP7797ndqR6cxnL06/IM+phCkvixdNa14FOiEEYLcdyo
+         zVUYhrTuymyldzR6R7IRx+83MJk3GqD/X9VA3C9uyryXnQBhPg+x3Tn7RBHRhFAc8Dp9
+         162elLlPSOEs5FS3qY5HWCSRhTvV2RbH8yn1frwQJ+GFQIkp3RyCzb3G4SL6ofS8Sy8Z
+         xSSXLEnaeHdoPDShNGQmzqeJ0dpmr9H8SXjz90Hmg8aWBVWb1VFUNjiqpM2l+2cK3vcD
+         N/vGy3ftC1GQ8Qq/B6KOx42N2HheFeeKACrKDF6IMT3cEfL2hZUljX80PVJ9Uv39Mqnp
+         WljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690657790; x=1691262590;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NQVKecxzaLTrR3Ye1xYfH6ooI3nAezhojIch+SfrkzU=;
+        b=gNLtznQ/VuUwMrWKsVwhHyx9KarVeOTBC/y7KDPQU11VsBb4C7rEj5qYmDu2DqOZes
+         o3UVPOYwHl/syiN8LFwPf0UUYsvcnr0HUU8ZrYhnzlMHRm+IJGrdjCeYl2fd4e9fCITR
+         uxA+zMGuj7YV/y13rZkBWKYATNBUiUytr9SUWEZ4t/9UnHQWeMYJJTb8Tq8/Oo6SxVLq
+         ceJ4aWL3cNFCkalN2WJBKgg0SDXKEpIveDyNOAtcNy6IGJtk4Ub4LtimpmD1ZWM5JoiG
+         vlimmA0R/zyKoYAVXxyYUd9xVfT4+Htc8172eYrw5dFXtMtD24YYeB4rveiYESlQUMdY
+         gA+w==
+X-Gm-Message-State: ABy/qLb+W3YGc4imULwhzmaaTI83Cq/KEqoGla4NszNW3uT03fvuFb9S
+        68GCgRY7RSOtLR0n/EJCSHk35Q1l6WvO2yaueso=
+X-Google-Smtp-Source: APBJJlF4hlTB4xSrBbtSNP/nSEg8xMlW1jQtc40MNVrEWg7D4e4WqeUyKSs/xQQzaizwqHyefmCDyg==
+X-Received: by 2002:a05:6a21:4988:b0:12d:f1ac:e2cd with SMTP id ax8-20020a056a21498800b0012df1ace2cdmr5192198pzc.32.1690657789895;
+        Sat, 29 Jul 2023 12:09:49 -0700 (PDT)
+Received: from smtpclient.apple (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id x18-20020aa793b2000000b0067a50223e3bsm5000483pff.111.2023.07.29.12.09.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Jul 2023 12:09:49 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] ext4: Fix rec_len verify error
+Date:   Sat, 29 Jul 2023 13:09:38 -0600
+Message-Id: <8B200C7E-F6D1-4395-9776-4B521319CD8F@dilger.ca>
+References: <20230729061357.1702891-1-zhangshida@kylinos.cn>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-kernel@vger.kernel.org, zhangshida@kylinos.cn
+In-Reply-To: <20230729061357.1702891-1-zhangshida@kylinos.cn>
+To:     zhangshida <starzhangzsd@gmail.com>
+X-Mailer: iPhone Mail (20F75)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,62 +72,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 12:41:48 -0700
-Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+On Jul 29, 2023, at 00:14, zhangshida <starzhangzsd@gmail.com> wrote:
+>=20
+> =EF=BB=BFFrom: Shida Zhang <zhangshida@kylinos.cn>
+>=20
+> with the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> a problem occurred when more than 13 millon files were directly created
+> under a directory:
+>=20
+> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: d=
+ir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxx=
+x: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxx=
+xx: Directory index failed checksum
+>=20
+> when enough files are created, the fake_dirent->reclen will be 0xffff.
+> it doesn't equal to blocksize 65536, i.e. 0x10000.
+>=20
+> But it is not the same condition when blocksize equals to 4k.
+> when enough files are created, the fake_dirent->reclen will be 0x1000.
+> it equals to blocksize 4k, i.e. 0x1000.
+>=20
+> The problem seems to be related to the limitation of the 16-bit field
+> when the blocksize is set to 64k. To address this, a special condition
+> was introduced to handle it properly.
+>=20
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> ---
+> fs/ext4/namei.c | 3 +++
+> 1 file changed, 3 insertions(+)
+>=20
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 0caf6c730ce3..a422cff25216 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -458,6 +458,9 @@ static struct dx_countlimit *get_dx_countlimit(struct i=
+node *inode,
+>            root->info_length !=3D sizeof(struct dx_root_info))
+>            return NULL;
+>        count_offset =3D 32;
+> +    } else if ((EXT4_BLOCK_SIZE(inode->i_sb) =3D=3D 65536)
+> +        && (le16_to_cpu(dirent->rec_len) =3D=3D 65535)) {
+> +        count_offset =3D 8;
 
-> On Thu, Jul 20, 2023 at 05:30:38PM +0100, Valentin Schneider wrote:
-> >  int filter_assign_type(const char *type)
-> >  {
-> > -	if (strstr(type, "__data_loc") && strstr(type, "char"))
-> > -		return FILTER_DYN_STRING;
-> > +	if (strstr(type, "__data_loc")) {
-> > +		if (strstr(type, "char"))
-> > +			return FILTER_DYN_STRING;
-> > +		if (strstr(type, "cpumask_t"))
-> > +			return FILTER_CPUMASK;
-> > +		}  
-> 
-> The closing bracket has the wrong indentation.
-> 
-> > +		/* Copy the cpulist between { and } */
-> > +		tmp = kmalloc((i - maskstart) + 1, GFP_KERNEL);
-> > +		strscpy(tmp, str + maskstart, (i - maskstart) + 1);  
-> 
-> Need to check kmalloc() failure?  And also free tmp?
+This should be moved up to the first if-block that is checking the block siz=
+e:=20
 
-I came to state the same thing.
+=00=00=00=00=00=00=00=00        if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4=
+_BLOCK_SIZE(inode->i_sb) ||
+             (le16_to_cpu(dirent->rec_len) =3D=3D 65535 &&
+              EXT4_BLOCK_SIZE(inode->i_sb) >=3D 65536))
+=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00=00                count_offset=
+ =3D 8;
 
-Also, when you do an empty for loop:
+since this is really the same case.=20
 
-	for (; str[i] && str[i] != '}'; i++);
+Ecen better would be to use ext4_rec_len_from_disk() to check the
+length so that it keeps this large PAGE_SIZE logic in one place, and
+does not add overhead on systems with smaller PAGE_SIZE:
 
-Always put the semicolon on the next line, otherwise it is really easy
-to think that the next line is part of the for loop. That is, instead
-of the above, do:
+        int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
 
-	for (; str[i] && str[i] != '}'; i++)
-		;
+        if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blocks=
+ize)
+                count_offset =3D 8;
 
+Cheers, Andreas
 
--- Steve
-
-
-> 
-> > +
-> > +		pred->mask = kzalloc(cpumask_size(), GFP_KERNEL);
-> > +		if (!pred->mask)
-> > +			goto err_mem;
-> > +
-> > +		/* Now parse it */
-> > +		if (cpulist_parse(tmp, pred->mask)) {
-> > +			parse_error(pe, FILT_ERR_INVALID_CPULIST, pos + i);
-> > +			goto err_free;
-> > +		}
-> > +
-> > +		/* Move along */
-> > +		i++;
-> > +		if (field->filter_type == FILTER_CPUMASK)
-> > +			pred->fn_num = FILTER_PRED_FN_CPUMASK;
-> > +  
-> 
-
+>    } else
+>        return NULL;
+>=20
+> --=20
+> 2.27.0
+>=20
