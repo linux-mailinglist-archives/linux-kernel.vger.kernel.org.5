@@ -2,314 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144937680CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94B47680CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjG2RkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 13:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        id S229750AbjG2Rm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 13:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjG2RkG (ORCPT
+        with ESMTP id S229472AbjG2Rm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 13:40:06 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E3C35A5
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:40:03 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6bc807e99adso3355406a34.2
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:40:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690652402; x=1691257202;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rjxK3XV1otPT2AJW0VPhw9tTAbXB8TE45wNHUlygPOM=;
-        b=aWEquYgMwSgQ9610PPwN2YQzsqpnQ4xo7WewssTM7JZo9lOLeRwgFFdToygvYc9tZq
-         j59XSeRQWibMzd0nq3DRcKMc0Op1uG9b8Y3Y6+ZGGAGjNX4uylCTkxrNEwRczOd6qe6d
-         CtVs/KLAD7rAS+TWOYDAwsVTiDThA/E+7X8IZ5csyjPh4bgrf4oVdR9POluRnMVG0gp+
-         27Vgjy5P5gM3NiYjZiic3LgEHK+MgJ37/QV/q5t6NpeudWvYSe9mT1reWuCcjhuwltcn
-         SktprJz1hx7ENmOBRBsXZ6ZcbwSHS+pik/jdu2Iq4GozNJsKCodTyplGO01rUfCeuWgO
-         NniA==
-X-Gm-Message-State: ABy/qLYQy5/JhGLTmj6LOqnQFKAGyV9IMBEdNucGJYdPDAWqGjir8kz0
-        /WlJDIQ+5NOPk97CCoNPm7r5FGiLTMt7d7jFUxy9JVqlG6PE
-X-Google-Smtp-Source: APBJJlGSrgqXtHZN3f5gw2tH8Vy5rPREE216dDwwWzpQncvwgXnd0G7hzLrp3WUBT2hvA5+3dBeFdaI17H2xMTLNJFR12xJdWS1S
+        Sat, 29 Jul 2023 13:42:26 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286ED1BEB;
+        Sat, 29 Jul 2023 10:42:25 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36TH0Of3018761;
+        Sat, 29 Jul 2023 10:42:09 -0700
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2043.outbound.protection.outlook.com [104.47.74.43])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s504ngumm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Jul 2023 10:42:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y640B0y0TbGuBMqf/6xOYmiQoWGXGuJWQMYKQKbQSnmzg/JMM7rX2edAIiXA/xbq6mZOh2RFBT+EWKrW+bBBl3QJLQIIMQmtpIUxeUpbjAOYDZnmTfeu8dkihbgxDskjD3wT4ai20aDPUarCB3heSpnRerOjoPCCgimILbIV7RulQDS6ycK+gkil5Y6fy1248014n1iUG5EafXI6YWbfMmaUKopfaVdZ38sKY4wRbomgc/b22EpQUyFLSUiiNnHLX06z3FUORT6vdDoTWWyzjwpbLY4mDIjIgJkHUitIQ2Ous/Z9Hn4H7UuaWlXmzwFmoHRahPybwqdXpxNTUX5Cvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2pKG1UTsHhqwFqF4PcxauY2k1+cn2UFuj+QBjGJCXVA=;
+ b=LTyD032OjiMTEssZM1NEBdFmJNTCmjnjzZ15UtRY8kxMUpzAwtPKA/dbZItu2na8FDnh8YXTH4P9t2jiKuITptrsndXvQ37BlKgvJXhwWbht1ZCKJY4zryqrdbscf8NKN87lsxvjAfSypaOXBHbtAbuI8dCk/mFv3ZQOIk3LiBZ24yEnA9dsbUs7oM7YAYB63F6z9qSTJa0NJkRBd7c5f8iGmRvJVH8B4iDBC5i6qhcvkPCLNTkOLbg+jLz5UAO+PxDKHxUSpzLl17tZRtW7K5zpxMNh4awweqJPgydmIDaB2uwvQNZjTt8nm872WalmAKMR4Rq550FU9PkiQsktlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2pKG1UTsHhqwFqF4PcxauY2k1+cn2UFuj+QBjGJCXVA=;
+ b=GJABFjMEsHcjweTnVPyYNbCah6W6/PndjpY17tI3ugLy2GAGevbUmVvs56PGs9mXRgD2suwqf61wHO2N1UKmXJaaoZEXetYw67sd1o+KjoFg3Zqd11FPQ60Ux8ISc5HUcmxKEocbUFtWsZ02NNRDHIT47hvGvjZrUMFqsrHh+90=
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
+ by SN7PR18MB3968.namprd18.prod.outlook.com (2603:10b6:806:100::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Sat, 29 Jul
+ 2023 17:42:06 +0000
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::115c:adb2:aa97:d187]) by SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::115c:adb2:aa97:d187%6]) with mapi id 15.20.6631.042; Sat, 29 Jul 2023
+ 17:42:05 +0000
+From:   Suman Ghosh <sumang@marvell.com>
+To:     Simon Horman <simon.horman@corigine.com>
+CC:     Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linu Cherian <lcherian@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>
+Subject: RE: [EXT] Re: [net-next PATCH V2] octeontx2-af: Tc flower offload
+ support for inner VLAN
+Thread-Topic: [EXT] Re: [net-next PATCH V2] octeontx2-af: Tc flower offload
+ support for inner VLAN
+Thread-Index: AQHZwEkI9lBzsYVr7EiFhLyEp62aaK/Qhc8AgACBHcA=
+Date:   Sat, 29 Jul 2023 17:42:05 +0000
+Message-ID: <SJ0PR18MB52164A46E895E6A9D74815D7DB07A@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <20230727051252.2779804-1-sumang@marvell.com>
+ <ZMTitp4+oc3+/D1U@corigine.com>
+In-Reply-To: <ZMTitp4+oc3+/D1U@corigine.com>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3VtYW5nXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctMzk1Nzc4MzktMmUzNy0xMWVlLWI2ZTAtODQxNDRk?=
+ =?us-ascii?Q?ZWVhNTRjXGFtZS10ZXN0XDM5NTc3ODNiLTJlMzctMTFlZS1iNmUwLTg0MTQ0?=
+ =?us-ascii?Q?ZGVlYTU0Y2JvZHkudHh0IiBzej0iNDkzOSIgdD0iMTMzMzUxMjYxMjI1NDQx?=
+ =?us-ascii?Q?MTUzIiBoPSJSVFRDNlRXeG5VeitxNFRSa3VoL2R3OTcwdEU9IiBpZD0iIiBi?=
+ =?us-ascii?Q?bD0iMCIgYm89IjEiIGNpPSJjQUFBQUVSSFUxUlNSVUZOQ2dVQUFONFBBQUNC?=
+ =?us-ascii?Q?VjdIN1E4TFpBU0FWRTFYQlpJclZJQlVUVmNGa2l0VVpBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBSEFBQUFCdUR3QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RUFBUUVCQUFBQUk3cVRwQUNBQVFBQUFBQUFBQUFBQUo0QUFBQmhBR1FBWkFC?=
+ =?us-ascii?Q?eUFHVUFjd0J6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdNQWRRQnpBSFFBYndCdEFGOEFjQUJs?=
+ =?us-ascii?Q?QUhJQWN3QnZBRzRBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFB?=
+ =?us-ascii?Q?QUFDZUFBQUFZd0IxQUhNQWRBQnZBRzBBWHdCd0FHZ0Fid0J1QUdVQWJnQjFB?=
+ =?us-ascii?Q?RzBBWWdCbEFISUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCakFIVUFj?=
+ =?us-ascii?Q?d0IwQUc4QWJRQmZBSE1BY3dCdUFGOEFaQUJoQUhNQWFBQmZBSFlBTUFBeUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01B?=
+ =?us-ascii?Q?ZFFCekFIUUFid0J0QUY4QWN3QnpBRzRBWHdCckFHVUFlUUIzQUc4QWNnQmtB?=
+ =?us-ascii?Q?SE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFY?=
+ =?us-ascii?Q?d0J6QUhNQWJnQmZBRzRBYndCa0FHVUFiQUJwQUcwQWFRQjBBR1VBY2dCZkFI?=
+ =?us-ascii?Q?WUFNQUF5QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRzhBYlFCZkFITUFjd0J1QUY4QWN3?=
+ =?us-ascii?Q?QndBR0VBWXdCbEFGOEFkZ0F3QURJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFH?=
+ =?us-ascii?Q?UUFiQUJ3QUY4QWN3QnJBSGtBY0FCbEFGOEFZd0JvQUdFQWRBQmZBRzBBWlFC?=
+ =?us-ascii?Q?ekFITUFZUUJuQUdVQVh3QjJBREFBTWdBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWkFCc0FIQUFYd0J6QUd3?=
+ =?us-ascii?Q?QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQmxBSE1BY3dCaEFHY0FaUUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmtBR3dBY0FCZkFI?=
+ =?us-ascii?Q?UUFaUUJoQUcwQWN3QmZBRzhBYmdCbEFHUUFjZ0JwQUhZQVpRQmZBR1lBYVFC?=
+ =?us-ascii?Q?c0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
+ =?us-ascii?Q?QUFBQUFBQWdBQUFBQUFuZ0FBQUdVQWJRQmhBR2tBYkFCZkFHRUFaQUJrQUhJ?=
+ =?us-ascii?Q?QVpRQnpBSE1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFD?=
+ =?us-ascii?Q?ZUFBQUFiUUJoQUhJQWRnQmxBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhB?=
+ =?us-ascii?Q?YmdCaEFHMEFaUUJ6QUY4QVl3QnZBRzRBWmdCcEFHUUFaUUJ1QUhRQWFRQmhB?=
+ =?us-ascii?Q?R3dBWHdCaEFHd0Fid0J1QUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0Iy?=
+ =?us-ascii?Q?QUdVQWJBQmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFY?=
+ =?us-ascii?Q?d0J5QUdVQWN3QjBBSElBYVFCakFIUUFaUUJrQUY4QVlRQnNBRzhBYmdCbEFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUY4QWNBQnlB?=
+ =?us-ascii?Q?RzhBYWdCbEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFISUFaUUJ6QUhRQWNn?=
+ =?us-ascii?Q?QnBBR01BZEFCbEFHUUFYd0JvQUdVQWVBQmpBRzhBWkFCbEFITUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUNlQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUdFQWNnQnRBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-rorf: true
+x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlB?=
+ =?us-ascii?Q?QUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFad0J2QUc4QVp3QnNB?=
+ =?us-ascii?Q?R1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZ?=
+ =?us-ascii?Q?UUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBWXdCdkFH?=
+ =?us-ascii?Q?UUFaUUJ6QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJB?=
+ =?us-ascii?Q?QmZBSEFBY2dCdkFHb0FaUUJqQUhRQVh3QmpBRzhBWkFCbEFITUFYd0JrQUdr?=
+ =?us-ascii?Q?QVl3QjBBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?SUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QWNBQnlBRzhBYWdC?=
+ =?us-ascii?Q?bEFHTUFkQUJmQUc0QVlRQnRBR1VBY3dCZkFHTUFid0J1QUdZQWFRQmtBR1VB?=
+ =?us-ascii?Q?YmdCMEFHa0FZUUJzQUY4QWJRQmhBSElBZGdCbEFHd0FiQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcw?=
+ =?us-ascii?Q?QVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0Jo?=
+ =?us-ascii?Q?QUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FY?=
+ =?us-ascii?Q?d0J0QUdFQWNnQjJBR1VBYkFCc0FGOEFid0J5QUY4QVlRQnlBRzBBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFB?=
+ =?us-ascii?Q?QUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdC?=
+ =?us-ascii?Q?dUFHRUFiUUJsQUhNQVh3QmpBRzhBYmdCbUFHa0FaQUJsQUc0QWRBQnBBR0VB?=
+ =?us-ascii?Q?YkFCZkFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCdkFISUFYd0JuQUc4QWJ3Qm5B?=
+ =?us-ascii?Q?R3dBWlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdV?=
+ =?us-ascii?Q?QWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0Jm?=
+ =?us-ascii?Q?QUhJQVpRQnpBSFFBY2dCcEFHTUFkQUJsQUdRQVh3QnRBR0VBY2dCMkFHVUFi?=
+ =?us-ascii?Q?QUJzQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFB?=
+ =?us-ascii?Q?QUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QndBSElB?=
+ =?us-ascii?Q?YndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOEFjZ0JsQUhNQWRBQnlB?=
+ =?us-ascii?Q?R2tBWXdCMEFHVUFaQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3?=
+ =?us-ascii?Q?QmhBSElBYlFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
+ =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhRQVpRQnlBRzBBYVFCdUFIVUFj?=
+ =?us-ascii?Q?d0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCc0FGOEFkd0J2QUhJQVpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBIi8+PC9tZXRhPg=3D=3D?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|SN7PR18MB3968:EE_
+x-ms-office365-filtering-correlation-id: 42d6c83e-6000-4ec2-f72b-08db905b2016
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BVaK8LkkLdYwrx5gsJUv2PHXEsVZ7JsaB2Trkk+ztIjTsVUZUxFa3MpP1x71R748lACfT0hTMoJ/xBI4jqBChYIyHrdRoh8nAnrKmReGSPQVSRJHTe5YG9MHwZYNfvOUCqoBwbxUJEkXIYCl5xFxiqpwKery8oiybtkBtDnBkduavhkjsPQgQrnT+qVCSsyFUj/SwhsO4LWRiKl1nYfIyj5DfwYIQ2fqBl4K3IBObcHXssTJrLZsijWbvZyGrrZCeXNTQfkLe2c9SEGV5bvLtgHeyRdm9y6h+EnCgRj1ZD4cM4wSLC7askCPT9EFTIIYegY9rXYouGMYyOmEEzVFWaJenlxN5L6DDlv6qUOFsayI7f7NmlRGJN7VUZs4jQbfVOv9+LC1nWV5Ya1tq1bITpgorGIjUfECtqugxKq3hZ68/CewOUr4kLIP5mY80MmrparwCS16rlU6YNHWbOe/oakGqQ+41Uzvcf37WE8rAlYBwfWYdSYaIjpbM6JCNedouS7nxAwPfMvGg5XuzeGEwX8n6nBvTo8kXpI/hioThf/9CvrNZToT5Gc+Nur59YzgSIrhuMBpFbho1DyL/yJYaoitYrmx5bIO5uJOQcCdeg/HeDhhEeg4B6q1lXuHBzS/
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39850400004)(366004)(346002)(136003)(396003)(451199021)(66556008)(316002)(26005)(8936002)(41300700001)(4326008)(6916009)(8676002)(6506007)(33656002)(107886003)(55016003)(54906003)(122000001)(66946007)(478600001)(66476007)(76116006)(9686003)(64756008)(66446008)(7696005)(71200400001)(38100700002)(2906002)(38070700005)(86362001)(186003)(5660300002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?N31fp4hF6LjZ7+29LcGm0pwi9vbaZ5lXMhi+GLOazgF7FLugbw2ermmdZE+w?=
+ =?us-ascii?Q?J/YyzXErYpuQWfK83FO9t5qfy2jbIF/9GjLVEyDzmKWl/Xde729j1oM+xEzK?=
+ =?us-ascii?Q?4I4G/x1UYgMgO4PHbVaOfaqVj995gch2JhuJzVa87lplTWMkHdRVZ1bKTgFi?=
+ =?us-ascii?Q?M+RqeTYxqKdYOfpSfKEhkR2aj1lgavrYtcX/GQ2gxik2JUOZ7niw+CfVQwza?=
+ =?us-ascii?Q?8tSJEN33ccJe0dYmCt5s/nVqJ/3FhMECkLj8qH7xFicgnLvDYG4xOcL+YGMl?=
+ =?us-ascii?Q?vcAudXfBiuZuC25eCtvg1Tpyrzac+3m+BAeUYrm3T3Z9VStZUaex2E2gYdy0?=
+ =?us-ascii?Q?WJPOVzg1zZ5zhz5uraUAY2KbVQg41SlmCRil816RcRgCGthJ+lu4Iveczb0z?=
+ =?us-ascii?Q?DYnL5PCnhY5ltaYFbWdG6UDRpmkTK/VMFC0D+IDWRiqdoiaKzX+HK5USdryD?=
+ =?us-ascii?Q?yDP5dj5M/Wwuib05HwAeBdb8Rpp2fN2sYH9BOdPlNeSs3fJLsKcbWPrYApoo?=
+ =?us-ascii?Q?chuTM4SaxLFcvb9k1Vx1QFLpLygxhOe0voUCBUGI+lgpup2cWc/tlmNfXheF?=
+ =?us-ascii?Q?XQsbtndfT8ZB0/UVMm/ux/PjfQYvG0FVxGgyvIlu6X9ZaE348DIdaTcXRPwd?=
+ =?us-ascii?Q?did18tc6xkdUJSbddZICX0BitbEsWdzraIv7LHKY9Qik/5SrZ6UyH93GbCJi?=
+ =?us-ascii?Q?F/+cfijENHxr1DHEx0n/34lbQeodpwT/jkZt870wP4O8lwuZUj7yT51+tJ8A?=
+ =?us-ascii?Q?2e7RyIpuGSAMjYTtaoTApt1VX9Z2CNpfuTDNpo2ZgRQgmxJHAn8ouvnbCAV4?=
+ =?us-ascii?Q?OBsdVgnSE27fZnysMa4T+Pa/1Eww+UiCoXn4IYV0CX6WH11BuLDMQfiaOZ2Q?=
+ =?us-ascii?Q?aeFsXtN4t7IzzYlC4QSGK+rY7lSXGxf+k8DVw2hsyV3lub0tbD0JjBmVGqBs?=
+ =?us-ascii?Q?jAnFh3MJaKo36V9CnFiIuiDR5vPU/Z+Gk7e3kYBTJr1aDXJoax9TFZW+2knK?=
+ =?us-ascii?Q?fbVxaRd+E7/0n8ZNlo3+0Ulf3fauPDXfoMNadzCENrSYOkBBhICL2pocpjkb?=
+ =?us-ascii?Q?szwL62zEBjouFWvlUS3+gnk0n2hDAiMpXyqywQjiqpeNoPXamUOHDIM/aHiE?=
+ =?us-ascii?Q?BL/JLV361VCFEuwrrkMiLZU8XC8kLBaf0UVkOHz3iIr+06q3mIMrJTNYuAFh?=
+ =?us-ascii?Q?SZGdGbivOO176NzmS7yMCagfvH6I2jA4IxXMMn4O1pDBHQaRIs2n5jtiU/dR?=
+ =?us-ascii?Q?7e0/ux6FpgdO823Sf2XLqraKyK4D1vlOhDiGbSKtq18fAQkbc2FFmsZ62nIM?=
+ =?us-ascii?Q?t5rakHyN1IAkQNj2Y63sMOgBqPcASPuKGjzYjuWdEExvhecTdKMKSeU9YyP/?=
+ =?us-ascii?Q?3vKLChFPTlVUKvSHxna65Roh8jQNg5hCF1Kmntklpkry1Be+ewvJAv+3Vd4F?=
+ =?us-ascii?Q?TzyYiVAtPFd4D016rrXRyVlTVNWkKF8c4YVbm4uJnZD5N5NnqOcMDNoNt2tt?=
+ =?us-ascii?Q?E8icAnkfP2xNIcBSGnrbBpQplGGoeZ+VydBstuzfdkhP4jQk/cLPrO7ARJ5A?=
+ =?us-ascii?Q?90Eyk3FdDU/5WzdlZ8C2Bj5tJOW1QhGzYGgDVZfr?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7f0a:0:b0:6b7:45a8:a80c with SMTP id
- j10-20020a9d7f0a000000b006b745a8a80cmr6807545otq.3.1690652402744; Sat, 29 Jul
- 2023 10:40:02 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 10:40:02 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e7813b0601a3af69@google.com>
-Subject: [syzbot] [fat?] INFO: task hung in exfat_sync_fs
-From:   syzbot <syzbot+205c2644abdff9d3f9fc@syzkaller.appspotmail.com>
-To:     linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42d6c83e-6000-4ec2-f72b-08db905b2016
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2023 17:42:05.7379
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: roFL2u1EzLottwIbcMYjrKxTp+6hzmmEen7OeNTt2i6pKDb0PRadGw3E6PXAJGMgCOTcoPml87cWYTkvx3j3Rg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR18MB3968
+X-Proofpoint-ORIG-GUID: aaGWQmakshfplqlJnyr1ba3ci6YF-2SN
+X-Proofpoint-GUID: aaGWQmakshfplqlJnyr1ba3ci6YF-2SN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    57012c57536f Merge tag 'net-6.5-rc4' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1675faf9a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d10d93e1ae1f229
-dashboard link: https://syzkaller.appspot.com/bug?extid=205c2644abdff9d3f9fc
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7336195c1d93/disk-57012c57.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e7a6562e4033/vmlinux-57012c57.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7d66531ff83b/bzImage-57012c57.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+205c2644abdff9d3f9fc@syzkaller.appspotmail.com
-
-INFO: task syz-executor.0:13703 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:24584 pid:13703 ppid:20024  flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
- exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
- iterate_supers+0x12b/0x1e0 fs/super.c:744
- ksys_sync+0xdb/0x1c0 fs/sync.c:104
- __do_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0e7e87cb29
-RSP: 002b:00007f0e7f52c0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f0e7e99bf80 RCX: 00007f0e7e87cb29
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f0e7e99bf80 R15: 00007ffc7df7aba8
- </TASK>
-INFO: task syz-executor.0:13704 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:26152 pid:13704 ppid:20024  flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
- exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
- iterate_supers+0x12b/0x1e0 fs/super.c:744
- ksys_sync+0xdb/0x1c0 fs/sync.c:104
- __do_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0e7e87cb29
-RSP: 002b:00007f0e7f50b0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f0e7e99c050 RCX: 00007f0e7e87cb29
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f0e7e99c050 R15: 00007ffc7df7aba8
- </TASK>
-INFO: task syz-executor.0:13705 blocked for more than 144 seconds.
-      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:27336 pid:13705 ppid:20024  flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
- __mutex_lock kernel/locking/mutex.c:747 [inline]
- mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
- exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
- iterate_supers+0x12b/0x1e0 fs/super.c:744
- ksys_sync+0xdb/0x1c0 fs/sync.c:104
- __do_sys_sync+0xe/0x20 fs/sync.c:113
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0e7e87cb29
-RSP: 002b:00007f0e750060c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
-RAX: ffffffffffffffda RBX: 00007f0e7e99c120 RCX: 00007f0e7e87cb29
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f0e7e99c120 R15: 00007ffc7df7aba8
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8d328db0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8d329170 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/27:
- #0: ffffffff8d328be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
-2 locks held by getty/4768:
- #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015a02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
-5 locks held by kworker/u4:8/6147:
- #0: ffff8880b993bf98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:558
- #1: ffff8880b99287c8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:999
- #2: ffff8880b99295d8 (&base->lock){-.-.}-{2:2}, at: __mod_timer+0x692/0xf40 kernel/time/timer.c:1112
- #3: ffffffff922b52c0 (&obj_hash[i].lock){-.-.}-{2:2}, at: debug_object_activate+0x163/0x530 lib/debugobjects.c:717
- #4: ffffffff8d1da0a8 (text_mutex){+.+.}-{3:3}, at: arch_jump_label_transform_apply+0x12/0x30 arch/x86/kernel/jump_label.c:145
-3 locks held by syz-executor.4/5979:
-2 locks held by syz-executor.0/13703:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/13704:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/13705:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/13946:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/14038:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/14039:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by syz-executor.0/14040:
- #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
- #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
-2 locks held by dhcpcd/14047:
- #0: ffff88803d73e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1708 [inline]
- #0: ffff88803d73e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xc10 net/packet/af_packet.c:3202
- #1: ffffffff8d32e278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:293 [inline]
- #1: ffffffff8d32e278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3a3/0x890 kernel/rcu/tree_exp.h:992
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xec2/0xf00 kernel/hung_task.c:379
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
-RIP: 0000:0x0
-Code: Unable to access opcode bytes at 0xffffffffffffffd6.
-RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 4453 Comm: syslogd Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:memset_orig+0x33/0xac arch/x86/lib/memset_64.S:67
-Code: b6 ce 48 b8 01 01 01 01 01 01 01 01 48 0f af c1 41 89 f9 41 83 e1 07 75 6c 48 89 d1 48 c1 e9 06 74 35 0f 1f 44 00 00 48 ff c9 <48> 89 07 48 89 47 08 48 89 47 10 48 89 47 18 48 89 47 20 48 89 47
-RSP: 0018:ffffc90005697418 EFLAGS: 00000247
-RAX: 0000000000000000 RBX: ffff88807e278000 RCX: 0000000000000000
-RDX: 0000000000000060 RSI: 0000000000000000 RDI: ffffc90005697480
-RBP: dffffc0000000000 R08: ffffc900056974df R09: 0000000000000000
-R10: ffffc90005697480 R11: fffff52000ad2e9c R12: 0000000000000000
-R13: ffffffff817a0b80 R14: ffffc90005697480 R15: 0000000000000000
-FS:  00007f0dc2ea9380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005611df817600 CR3: 0000000028c84000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- __unwind_start+0x36/0x720 arch/x86/kernel/unwind_orc.c:688
- unwind_start arch/x86/include/asm/unwind.h:64 [inline]
- arch_stack_walk+0xdf/0x140 arch/x86/kernel/stacktrace.c:24
- stack_trace_save+0x117/0x1c0 kernel/stacktrace.c:122
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1792 [inline]
- slab_free_freelist_hook mm/slub.c:1818 [inline]
- slab_free mm/slub.c:3801 [inline]
- __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3814
- skb_kfree_head net/core/skbuff.c:894 [inline]
- skb_free_head net/core/skbuff.c:906 [inline]
- skb_release_data+0x660/0x850 net/core/skbuff.c:936
- skb_release_all net/core/skbuff.c:1002 [inline]
- __kfree_skb net/core/skbuff.c:1016 [inline]
- consume_skb+0xb3/0x150 net/core/skbuff.c:1232
- __unix_dgram_recvmsg+0xcb7/0x1260 net/unix/af_unix.c:2442
- sock_recvmsg_nosec net/socket.c:1020 [inline]
- sock_recvmsg net/socket.c:1041 [inline]
- sock_read_iter+0x3ab/0x500 net/socket.c:1107
- call_read_iter include/linux/fs.h:1865 [inline]
- new_sync_read fs/read_write.c:389 [inline]
- vfs_read+0x795/0xb00 fs/read_write.c:470
- ksys_read+0x1a0/0x2c0 fs/read_write.c:613
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0dc2ffdb6a
-Code: 00 3d 00 00 41 00 75 0d 50 48 8d 3d 2d 08 0a 00 e8 ea 7d 01 00 31 c0 e9 07 ff ff ff 64 8b 04 25 18 00 00 00 85 c0 75 1b 0f 05 <48> 3d 00 f0 ff ff 76 6c 48 8b 15 8f a2 0d 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007ffc321f7068 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f0dc2ffdb6a
-RDX: 00000000000000ff RSI: 0000558a4fb90950 RDI: 0000000000000000
-RBP: 0000558a4fb90910 R08: 0000000000000001 R09: 0000000000000000
-R10: 00007f0dc319c3a3 R11: 0000000000000246 R12: 0000558a4fb9099d
-R13: 0000558a4fb90950 R14: 0000000000000000 R15: 00007f0dc31daa80
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>>  }
+>>
+>> +static int otx2_tc_process_vlan(struct otx2_nic *nic, struct flow_msg
+>*flow_spec,
+>> +				struct flow_msg *flow_mask, struct flow_rule *rule,
+>> +				struct npc_install_flow_req *req, bool is_inner) {
+>
+>Hi Suman,
+>
+>Most of the code in this function seems to be moved from elsewhere.
+>It might make it slightly easier to review if there was a patch that
+>moved that code, then another patch that modified to support the inner
+>VLAN feature.
+[Suman] Okay Simon. I will push a patch set of 2 patches involving the sugg=
+ested changes.
+>
+>> +	struct flow_match_vlan match;
+>> +	u16 vlan_tci, vlan_tci_mask;
+>> +
+>> +	if (is_inner)
+>> +		flow_rule_match_cvlan(rule, &match);
+>> +	else
+>> +		flow_rule_match_vlan(rule, &match);
+>> +
+>> +	if ((ntohs(match.key->vlan_tpid) !=3D ETH_P_8021Q) &&
+>> +	    (ntohs(match.key->vlan_tpid) !=3D ETH_P_8021AD)) {
+>
+>I think eth_type_vlan() can be used here.
+[Suman] Ack.
+>
+>> +		netdev_err(nic->netdev, "vlan tpid 0x%x not supported\n",
+>> +			   ntohs(match.key->vlan_tpid));
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	if (!match.mask->vlan_id) {
+>> +		struct flow_action_entry *act;
+>> +		int i;
+>> +
+>> +		flow_action_for_each(i, act, &rule->action) {
+>> +			if (act->id =3D=3D FLOW_ACTION_DROP) {
+>> +				netdev_err(nic->netdev,
+>> +					   "vlan tpid 0x%x with vlan_id %d is not
+>supported for DROP rule.\n",
+>> +					   ntohs(match.key->vlan_tpid), match.key-
+>>vlan_id);
+>> +				return -EOPNOTSUPP;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +	if (match.mask->vlan_id ||
+>> +	    match.mask->vlan_dei ||
+>> +	    match.mask->vlan_priority) {
+>> +		vlan_tci =3D match.key->vlan_id |
+>> +			   match.key->vlan_dei << 12 |
+>> +			   match.key->vlan_priority << 13;
+>> +
+>> +		vlan_tci_mask =3D match.mask->vlan_id |
+>> +				match.mask->vlan_dei << 12 |
+>> +				match.mask->vlan_priority << 13;
+>> +
+>> +		if (is_inner) {
+>> +			flow_spec->vlan_itci =3D htons(vlan_tci);
+>> +			flow_mask->vlan_itci =3D htons(vlan_tci_mask);
+>> +			req->features |=3D BIT_ULL(NPC_INNER_VID);
+>> +		} else {
+>> +			flow_spec->vlan_tci =3D htons(vlan_tci);
+>> +			flow_mask->vlan_tci =3D htons(vlan_tci_mask);
+>> +			req->features |=3D BIT_ULL(NPC_OUTER_VID);
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct
+>otx2_tc_flow *node,
+>>  				struct flow_cls_offload *f,
+>>  				struct npc_install_flow_req *req) @@ -458,6 +516,7
+>@@ static int
+>> otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+>>  	      BIT(FLOW_DISSECTOR_KEY_BASIC) |
+>>  	      BIT(FLOW_DISSECTOR_KEY_ETH_ADDRS) |
+>>  	      BIT(FLOW_DISSECTOR_KEY_VLAN) |
+>> +	      BIT(FLOW_DISSECTOR_KEY_CVLAN) |
+>>  	      BIT(FLOW_DISSECTOR_KEY_IPV4_ADDRS) |
+>>  	      BIT(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
+>>  	      BIT(FLOW_DISSECTOR_KEY_PORTS) | @@ -564,47 +623,19 @@ static
+>> int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow
+>*node,
+>>  	}
+>>
+>>  	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_VLAN)) {
+>> -		struct flow_match_vlan match;
+>> -		u16 vlan_tci, vlan_tci_mask;
+>> -
+>> -		flow_rule_match_vlan(rule, &match);
+>> -
+>> -		if (ntohs(match.key->vlan_tpid) !=3D ETH_P_8021Q) {
+>> -			netdev_err(nic->netdev, "vlan tpid 0x%x not supported\n",
+>> -				   ntohs(match.key->vlan_tpid));
+>> -			return -EOPNOTSUPP;
+>> -		}
+>> +		int ret;
+>>
+>> -		if (!match.mask->vlan_id) {
+>> -			struct flow_action_entry *act;
+>> -			int i;
+>> -
+>> -			flow_action_for_each(i, act, &rule->action) {
+>> -				if (act->id =3D=3D FLOW_ACTION_DROP) {
+>> -					netdev_err(nic->netdev,
+>> -						   "vlan tpid 0x%x with vlan_id %d is not
+>supported for DROP rule.\n",
+>> -						   ntohs(match.key->vlan_tpid),
+>> -						   match.key->vlan_id);
+>> -					return -EOPNOTSUPP;
+>> -				}
+>> -			}
+>> -		}
+>> -
+>> -		if (match.mask->vlan_id ||
+>> -		    match.mask->vlan_dei ||
+>> -		    match.mask->vlan_priority) {
+>> -			vlan_tci =3D match.key->vlan_id |
+>> -				   match.key->vlan_dei << 12 |
+>> -				   match.key->vlan_priority << 13;
+>> +		ret =3D otx2_tc_process_vlan(nic, flow_spec, flow_mask, rule,
+>req, false);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>>
+>> -			vlan_tci_mask =3D match.mask->vlan_id |
+>> -					match.mask->vlan_dei << 12 |
+>> -					match.mask->vlan_priority << 13;
+>> +	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CVLAN)) {
+>> +		int ret;
+>>
+>> -			flow_spec->vlan_tci =3D htons(vlan_tci);
+>> -			flow_mask->vlan_tci =3D htons(vlan_tci_mask);
+>> -			req->features |=3D BIT_ULL(NPC_OUTER_VID);
+>> -		}
+>> +		ret =3D otx2_tc_process_vlan(nic, flow_spec, flow_mask, rule,
+>req, true);
+>> +		if (ret)
+>> +			return ret;
+>>  	}
+>>
+>>  	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IPV4_ADDRS)) {
+>> --
+>> 2.25.1
+>>
+>>
