@@ -2,67 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40362768041
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 17:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0780768043
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 17:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbjG2PFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 11:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S231789AbjG2PH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 11:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjG2PF3 (ORCPT
+        with ESMTP id S229684AbjG2PHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 11:05:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E24AD2
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 08:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690643080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cyh9GNwkSeiWX8VVWJet6cmrStrv1Y1BhHYKMAKCy08=;
-        b=XCqfsNOADtGIv2uiu+ou7H2CPLGSpu8lzVy+m7bhHM4WwsGNfCu6fA0CaG5fPwCQXceXCc
-        QlRM6WyY11z1h88lwUbsW7JsBZZIXbdG/upavzc2qbjBQgzH+pRStSAEc6i60nl2oiYSJi
-        MKp0IXP3Se3qZ9810sAEWho03x2h7gM=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-538-iLvJaf07N4qx52V4CF9LDg-1; Sat, 29 Jul 2023 11:04:38 -0400
-X-MC-Unique: iLvJaf07N4qx52V4CF9LDg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sat, 29 Jul 2023 11:07:25 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE28ED2;
+        Sat, 29 Jul 2023 08:07:20 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8CAE038035B8;
-        Sat, 29 Jul 2023 15:04:37 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60CC8140E949;
-        Sat, 29 Jul 2023 15:04:37 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+5feef0b9ee9c8e9e5689@syzkaller.appspotmail.com,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH 0/3] KVM: x86: CR0 vs. KVM_SET_SREGS and !URG
-Date:   Sat, 29 Jul 2023 11:04:36 -0400
-Message-Id: <20230729150436.2690718-1-pbonzini@redhat.com>
-In-Reply-To: <20230613203037.1968489-1-seanjc@google.com>
-References: 
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 915F3866AA;
+        Sat, 29 Jul 2023 17:07:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1690643237;
+        bh=1IMdoRv4SuV4LxSu2XB9KSAUCBJsiYb/zydT9wcVmoM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=F6qXZS+pg4o7k2obTkpt5wM5iEAHZGeTjM3856iErssCURP/6ancKKZZTqNWxzu70
+         3zCsG4SPGe1o2KUNCyDL5qbIc1wCKQ2YBuvawxk6zFKMnyTd3Mej9UsrCVMa6GPIyQ
+         Z/rKjG2rr4U7GGjbDBSmLO98LU+hwom0n2xyBQVC9wF3ULcgh+7Js7XhEPJmEP23ha
+         QpKJw7G2vnpkGyMWEQvlqkY2O/TRMgHXjFX4vGutslNfpnEFYrpmfYCCs5j7R5U42i
+         DAN6ug6Wkj+84AqXQeDY6xiIZOwhNyG97pvlVpWhuFJeE3fHt2SV1majRdMNhhd4H/
+         xzyYj4Fko1A5Q==
+Message-ID: <fd975ac8-bea4-22ae-cb5f-cbdaa3566d25@denx.de>
+Date:   Sat, 29 Jul 2023 17:07:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 13/22] Input: ili210x - use device core to create
+ driver-specific device attributes
+Content-Language: en-US
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
+ <20230729005133.1095051-13-dmitry.torokhov@gmail.com>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <20230729005133.1095051-13-dmitry.torokhov@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Queued, thanks.
+On 7/29/23 02:51, Dmitry Torokhov wrote:
+> Instead of creating driver-specific device attributes with
+> devm_device_add_group() have device core do this by setting up dev_groups
+> pointer in the driver structure.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>   drivers/input/touchscreen/ili210x.c | 15 +++++----------
+>   1 file changed, 5 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
+> index ad6828e4f2e2..31ffdc2a93f3 100644
+> --- a/drivers/input/touchscreen/ili210x.c
+> +++ b/drivers/input/touchscreen/ili210x.c
+> @@ -876,7 +876,7 @@ static ssize_t ili210x_firmware_update_store(struct device *dev,
+>   
+>   static DEVICE_ATTR(firmware_update, 0200, NULL, ili210x_firmware_update_store);
+>   
+> -static struct attribute *ili210x_attributes[] = {
+> +static struct attribute *ili210x_attrs[] = {
+>   	&dev_attr_calibrate.attr,
+>   	&dev_attr_firmware_update.attr,
+>   	&dev_attr_firmware_version.attr,
+> @@ -904,10 +904,11 @@ static umode_t ili210x_attributes_visible(struct kobject *kobj,
+>   	return attr->mode;
+>   }
+>   
+> -static const struct attribute_group ili210x_attr_group = {
+> -	.attrs = ili210x_attributes,
+> +static const struct attribute_group ili210x_group = {
+> +	.attrs = ili210x_attrs,
 
-Paolo
+Is all the renaming really necessary and relevant to this patch ?
 
+btw since I have your attention, could you also look at discussion
+[PATCH] Input: pwm-beeper - Support volume setting via sysfs
+? I've been waiting for any maintainer input for over two months now.
 
+Thanks
