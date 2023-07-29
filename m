@@ -2,201 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B24C4767946
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDE576794A
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235801AbjG2ACj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S235842AbjG2ADi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjG2ACh (ORCPT
+        with ESMTP id S229505AbjG2ADg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:02:37 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1276FE60;
-        Fri, 28 Jul 2023 17:02:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690588957; x=1722124957;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=yJ+Ku1Uptnkna/qf6C5iSo/XumWlQUPktLxCyzqI3mg=;
-  b=d3xK1EebB8JsO3IFKyAqMjW59gDt5umxZthX8cOMbCQKCSoMBD4/pQtE
-   h0lWvUoJ02+8ppFVZlpHKBTNZ/YRvXV1PcUIoLDn08h+KJiWOFveQmIzr
-   +E1/NmTwKwqvGVL8W5/vIkPy4gG3U4Y6zUkmOQ4pjWC99boTUgpSzVrBE
-   oey2RregoOF6AVca7r1HJ5R5G8CP5Prfarg4HpIjFnZ2ajkgfic09fhJQ
-   tqcAHNPU+2UveWm/A7R8qtowqHhvr+Se5iUgctCDiGX7yL9jIb5Hy4LEn
-   D5SYILOGbKWT++uRHgLZ6xlrcX6/U/R4CcmVh2IZPtJTq4A+fLadEU24e
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="366175205"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="366175205"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 17:02:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="762745785"
-X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
-   d="scan'208";a="762745785"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2023 17:02:36 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 28 Jul 2023 17:02:36 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 28 Jul 2023 17:02:36 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.176)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 28 Jul 2023 17:02:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BPmalDxFzQNHrOMvei4/NE6MoP23TPyNrL1U95oQ5UENYjHd/vhB0cKF6jAQefmCiHtDT7FjzUdPbKJkcdNBoLCad6OnmZ0difKs23UMYwK3ryNu0InfVMGFA95fSnvRvDSlgAHwk9sIFHIXTvMRa1arvpoppm7zBuIihlrG37rADq8VU3v2WoD7E8j2zgb3pw9weHNNQFuz5qsibTSI2cvU1+dMuoZR3mK8lFvUX1EfKFgTa9aZ1qYE+NanAEdLlQ3EXLEWZmJO2Bthq2Px1Ft+TFd6crA6AS556UVhpzhjOwBJVCpkD/rfgtGy0VNP7/fK2e/TA7dc+Ul/JSLnnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hCrz4t14eeTTrFZ7TiJqPbUeF87lA072n1C1uKBKP64=;
- b=K3xoL+aHyC0Rk5QivJkFh/58LiNbMI1jq98aeRJijDpFcHLHB5POJKGrVCEB69spNTyvp4UrIle4qKV4Ksb2frVbuaA5kwAhtxaX3nc4naJjsKGCtY3B5hoUDrsWAQqRsNiwkpjsI7IIdDjQrn0Dw1KCROUpP1WSC306WkxVfUmysh+Fxbj02LXxsL3KejgtxH6WSqW2C/EpvHHAm4jgX0xFKUo6l7Gx6u0tDMWVzHvL4drI8/VOjWxCR4iCGiSxCF230cdusBVJPEMzeAujmpIY4abU1vTPZfUXgLmq+OMbda3uUXOhe/FEkCqv+riTfVV1jNtZ86wLASZlMVIxUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by CO1PR11MB5010.namprd11.prod.outlook.com (2603:10b6:303:93::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Sat, 29 Jul
- 2023 00:02:33 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::d790:194b:937b:68e2]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::d790:194b:937b:68e2%2]) with mapi id 15.20.6631.026; Sat, 29 Jul 2023
- 00:02:32 +0000
-Message-ID: <633489d5-f521-91a6-0448-208eb25ff63f@intel.com>
-Date:   Fri, 28 Jul 2023 17:02:30 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-CC:     <x86@kernel.org>, Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>,
-        <linux-hwmon@vger.kernel.org>, "Jean Delvare" <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        "Russ Anderson" <russ.anderson@hpe.com>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120930.839913695@linutronix.de>
-From:   Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <20230728120930.839913695@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0135.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::20) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|CO1PR11MB5010:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc744841-66c9-42ee-e52f-08db8fc71b86
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aBO2VB8U8ze/ZGjrXw+PR1cOpSQ/7ALbwu3ll80rx6D/CcCuj7whw54g7e6X/5J1SHPb4JEJaA2eJvZv40RSGnvGyt9iM+P/DKW5fTCQYZv7lar94agDnqG4wwzHiIjUDGN3gG4mtq9YpSagSCoOhu25Iqx0gs7idBpOxZzKrOd7EhChGvpwpVK32Vlp+Ba1P4Tk/JLlXhmbeQ/fsTojA6+VVWFKzOihxYluvdjIp6AA4I04klGd0HdAtk0hNZxdpnTdVoqhX6aV//jJ67Kd/9xFGxRNxZfhkJgUMbefWNCc/hJgH0eogJ4vdABAt45nL/SVybB4vHZ6PmxgersX7nO9qojWnMF4vc1nOb1mqHeuTwner6Ted2qPq/RIeLqkWJdlYelSEXuEC5yJScktB5nJtY9kMYl1NxWLVMZ6hHL+pTzOoy8Jx1NrWkCE3UAN+k/wMStFbRR0EtyxYP/vMgd4aMyubv58Dl3PVWNBH+gb00guxt+4xhK+V6pmcViSWIax+XC8/cQfx3fTixR5NndbTYHF1986E9+dZqYiFKLQ0D3ayEqWgAE6VZB42X/35nVGVon141m3697v8wq6w9okgjnvjwcO9Hk25jk0+c2zsD9m5WfGsryuP2jH/WYr4OmefmXkj3QlgZ77POV7bA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(136003)(366004)(376002)(346002)(451199021)(6486002)(6512007)(478600001)(86362001)(8676002)(2616005)(31696002)(110136005)(44832011)(8936002)(6506007)(54906003)(5660300002)(53546011)(26005)(2906002)(4744005)(7416002)(41300700001)(36756003)(82960400001)(38100700002)(186003)(66946007)(316002)(4326008)(66556008)(66476007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eTVCRkRFV1RhWDIvU2NxNkxCaGxKeS9GY2xlOE5RMzdSQnhUbG9KZ3NLV0dT?=
- =?utf-8?B?OGwwS1drOHk2elF4cThtdG50ZkFBaFUwUUczdzVYdHo2ZDRCQzZBczd4U2lD?=
- =?utf-8?B?U0JsT003RmxYRk1vQVBNcndCL0dJMDRzek05S2FtVEhCc3c4dDRGNEdiclFh?=
- =?utf-8?B?bFJRS0g3cmZWb1FHWjc3WHJhODVnK3A2ek4rZ0xyTkYrc3orazNFMEd5eXhV?=
- =?utf-8?B?ekJoQlcyVlkvL1hOWTZZemQxdDRPWEZaZmNuVlpYNHJuaXd4T1BuYXk1czc5?=
- =?utf-8?B?c2dGZzFlUUhWaEpSUWo1eS8vNzRwRFZkTmV5eWJ4RWpRcmh2SlQzVi9OL0ph?=
- =?utf-8?B?MkpmUFBnazR4LzVsMThva01PbS9wdmVwb0xvUC84MUEyTUkwRkpFK1JyT2dX?=
- =?utf-8?B?V2J5TDdFSFRzenI0UUxaa3BoUTVlUUZ1RTVQSU0wNHJQMEVVSlZ4SDBwaEdq?=
- =?utf-8?B?dzBRdWNlbVpYSnFWT3ptNUdLaFdUUk9OSzMzWTNuZmZveFF2SGhhRWErZ0V6?=
- =?utf-8?B?UjBiTkZ4R1R2QjUrcERPeGhrUHNRcGNxWUpieFJEaVh0dlg1Y2JrbUd1MG84?=
- =?utf-8?B?NG9oS05RdEQ0UngvQS90YTE4SEZyR2lNR01WV01ZV2Q3U1lRTGxOMFNKeVRp?=
- =?utf-8?B?UUNHalBJMU1zbWx2cUNpZVNINXM3R2pHblFtK3hYdjA2NmlvRzZ3cmVTUjlT?=
- =?utf-8?B?SVA5bjducVVlUG1ReGdhaklxOERYR0swUGVBbVpWTy84VUVjL29ENjJ6T08y?=
- =?utf-8?B?MGVNdVBnTEllMVJ1ZkIwSmQ1TFpoa1NkcjhpeVhQSWFLVTRTNlhNVS9mZ0h6?=
- =?utf-8?B?bVJrenNkWFVIY3RPaTRBOFozSVBaTlkvMk5YWTdJK0lHWUdad24zRm01aWQw?=
- =?utf-8?B?cW1kclEwM09mWjBqaXlEYVh5T04yTnhjOUUzSDRJM0VKSmF5dW5KYnJ5b2ti?=
- =?utf-8?B?MUx1UjF4d1p0N1U1ODBMZGtsZDM1dE9na3phYVh3c2JFMTJwMU1iMTY1bDRo?=
- =?utf-8?B?cHAxWDc1bVYxWW40d05kclpMUkVscTQ1Vkdsa1VsakhsOC9sNjlNTjdtMHk1?=
- =?utf-8?B?TVRrM0hJNW5nd1VzQ2lGOE45M1V1QVV5M05IN1MxSHNJYmExeE4rZDE3T1VO?=
- =?utf-8?B?REN5dFpGajcwNG5lY21aMExOQTlGR3czYkdBSUdyaG9LaVgzNHpyVEVndzJ4?=
- =?utf-8?B?MnJKSGdUSjBVaXNTc21pa01majNPUURJN2tmMEE2MGhGUHZTK1N1VDR1dVE1?=
- =?utf-8?B?NUE1WElTSE9heFVFWDBMTitGWjByY3Z6WW9WYjMyZkt6K2I1UlphRXMyUWtD?=
- =?utf-8?B?bWIrN0lRSTNCZ1FURFphM1pwOXp1cG1YVG4zTHZpR2FjRW02QmpsZlgreElP?=
- =?utf-8?B?U2pmYjhnWnd6WkJPbm1icG9QbEo4SCtBMU10a01Gc2NxM1BsYkhhc3U4V29z?=
- =?utf-8?B?b0dxQXhGYnVJcGJ3MzNJV0dsRzRrMkhid2oxME9kdWl5U0s4NzZ1cnQ3Zmpj?=
- =?utf-8?B?Q0ZsOWsvQ2I1SWI4YTBMbkpsUWJERStEN29vODJZNGxOUWRVMHZxbW52L05N?=
- =?utf-8?B?VjN3a0t6Yk80RHhPeUlOcDNtWlBDd2EvWWo0eEt6WURnZ3VWNEJLM1JScE0v?=
- =?utf-8?B?VWJpTVlxR21hSXdFNjhHdzRqcVMvUk9SRFhJNGxYN0J0c3BvUCswMU82ZDZy?=
- =?utf-8?B?UVlZVnVOSFo5QVNwUXloTWViYTQvZlI0dXYvRFc3ZEhEUzVEY2RPdVVVeHJt?=
- =?utf-8?B?bWRZM0pTVlVtbUNwWVc3SmpxeWZ6R3phMXdJdnJsYjU2WEw1eHNaQW13VVJp?=
- =?utf-8?B?UmpiZVNjd281SzJVeXJtc0FkaEVCYU1zV2hyNnF2UERjTDJDOTYyc3FITVVY?=
- =?utf-8?B?ekJCQzFLazdpZk1oVWx6ZFNSRm5CT1JRd3pXSEIvK2hySVFDQkl1YXkraENj?=
- =?utf-8?B?b0kxTEFWUVo0WWtVNDhSYmpwN3JQNXRQWXNQVnlFR055dFBsbmtUeVJjTjlN?=
- =?utf-8?B?LzJDKy9BR01MMXU4bUllTUJxT3pBREc5QTM4VVd4U3htUVVhVnJYR0d1cFQy?=
- =?utf-8?B?YjRSWlVWZlpWRTJVVEVsY0F4cVZrZzRnUHVqa3hqSjR1Mms4TE93Y1NweS9o?=
- =?utf-8?Q?J3ZN9XSRc32Vni25sXfPXZ5Ft?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc744841-66c9-42ee-e52f-08db8fc71b86
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2023 00:02:32.7660
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kvQygSF/5XL5ugN3q9abmyp788i1owj3Pmx7ygRRAlKIyZENtiRIChVIjdSELwjvVQHZm2tFYkyUHtAN++pvFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5010
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 20:03:36 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9D619BA
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:03:35 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba5563cd6so17061855ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690589015; x=1691193815;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJg9MbukUkeAf25VcBnSvGPEfaUIyqqF94QJU8orhSY=;
+        b=Zp0GOXqU9vAtanM7byzLEY1ZTAuQCQrnfrak1thKcFFHMBCZO/N4KqKDBd5I3kJffW
+         Vh8ovzLtMVpv7R9tgjnJuitRPz0iowTqbSccpqb9sCrit8s8jZkHgE3EKWmaz9/YJybN
+         uhR+1LBQ/EGKFm12kofvmo1N8Or8Mhd5I9QIxgAZxJjUnAncn/OfNQ+xg9V9rSfFrTW5
+         6+gyXWvxsDfod0XUAEoSS/aCS0HqakbjGuI1/I8BU2Uy6FDW2YJ6LrCVt60GU5GehRX5
+         3Ug/sPFW2Iawha4cKCkpfEtG9Mwjo7aL2M8Rz65tztUDm7ObzFqkZ6ozvUAWJtziwaLO
+         +gKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690589015; x=1691193815;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJg9MbukUkeAf25VcBnSvGPEfaUIyqqF94QJU8orhSY=;
+        b=X2EVzPDTNsPA5oAdZaFZvlMSzpvMiQJkkjWGRlKNahSM02CcljYm8xE3X/VyTA6TuS
+         /zkylAaJVyWYtqsatxWBfUHy71hlAO1rtXnsOMJSkKsWSAbuecga/qPcBUmplS3mCW/W
+         dAgRa+JkmH3SJwDUhlIvx2CJ//pVHGMT8f0kLDtvhoqOFQRvZ7PA1+pp+WhuB0XAr/Cm
+         X54mv01hoBYLdJlvD3yduVfQ3a3TkSi6h9Euv1iwN+kYApfn1hNHdrwlLgG8niy1To0i
+         ybB+OQrjCmR32DtxvFwO5iM8KVEYzL1ZguRLuVv+oOYNQvIWX9l+IwmGRoWA5hcx9hYp
+         veMA==
+X-Gm-Message-State: ABy/qLa3zJvnxMLBTKg4WLt6lGLxHZ1efkxsUTeU7m00yIElo4c6vTjA
+        eH4yYqvuoH4iuFp4m0G4xnNuwocak+8=
+X-Google-Smtp-Source: APBJJlGy4rMQGFiWHQC+IuRONPQH0HvvNAt7asJXiFk+bZ/uVjfNOjPYVgrOl+x+eQJGyA+j61wbqvGP0DI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:c951:b0:1ae:6895:cb96 with SMTP id
+ i17-20020a170902c95100b001ae6895cb96mr12864pla.5.1690589014804; Fri, 28 Jul
+ 2023 17:03:34 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 17:03:33 -0700
+In-Reply-To: <ZMOJgnyzzUNIx+Tn@google.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-7-seanjc@google.com>
+ <ZMOJgnyzzUNIx+Tn@google.com>
+Message-ID: <ZMRXVZYaJ9wojGtS@google.com>
+Subject: Re: [RFC PATCH v11 06/29] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+From:   Sean Christopherson <seanjc@google.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/2023 5:13 AM, Thomas Gleixner wrote:
-> Topology evaluation is a complete disaster and impenetrable mess. It's
-> scattered all over the place with some vendor implementatins doing early
+On Fri, Jul 28, 2023, Quentin Perret wrote:
+> On Tuesday 18 Jul 2023 at 16:44:49 (-0700), Sean Christopherson wrote:
+> > --- a/include/uapi/linux/kvm.h
+> > +++ b/include/uapi/linux/kvm.h
+> > @@ -95,6 +95,16 @@ struct kvm_userspace_memory_region {
+> >  	__u64 userspace_addr; /* start of the userspace allocated memory */
+> >  };
+> >  
+> > +/* for KVM_SET_USER_MEMORY_REGION2 */
+> > +struct kvm_userspace_memory_region2 {
+> > +	__u32 slot;
+> > +	__u32 flags;
+> > +	__u64 guest_phys_addr;
+> > +	__u64 memory_size;
+> > +	__u64 userspace_addr;
+> > +	__u64 pad[16];
+> 
+> Should we replace that pad[16] with:
+> 
+> 	__u64 size;
+> 
+> where 'size' is the size of the structure as seen by userspace? This is
+> used in other UAPIs (see struct sched_attr for example) and is a bit
+> more robust for future extensions (e.g. an 'old' kernel can correctly
+> reject a newer version of the struct with additional fields it doesn't
+> know about if that makes sense, etc).
 
-s/implementatins/implementations
+"flags" serves that purpose, i.e. allows userspace to opt-in to having KVM actually
+consume what is currently just padding.
 
-> +static void parse_topology(struct topo_scan *tscan, bool early)
-> +{
-> +	const struct cpuinfo_topology topo_defaults = {
-> +		.cu_id			= 0xff,
-> +		.llc_id			= BAD_APICID,
-> +		.l2c_id			= BAD_APICID,
-> +	};
-> +	struct cpuinfo_x86 *c = tscan->c;
-> +	struct {
-> +		u32	unused0		: 16,
-> +			nproc		:  8,
-> +			apicid		:  8;
-> +	} ebx;
-> +
-> +	c->topo = topo_defaults;
-> +
-> +	if (fake_topology(tscan))
-> +	    return;
-> +
+The padding is there mainly to simplify kernel/KVM code, e.g. the number of bytes
+that KVM needs to copy in is static.
 
-Spaces used for indenting "return" instead of a tab.
+But now that I think more on this, I don't know why we didn't just unconditionally
+bump the size of kvm_userspace_memory_region.  We tried to play games with unions
+and overlays, but that was a mess[*].
 
+KVM would need to do multiple uaccess reads, but that's not a big deal.  Am I
+missing something, or did past us just get too clever and miss the obvious solution?
 
+[*] https://lkml.kernel.org/r/Y7xrtf9FCuYRYm1q%40google.com
