@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A019767A41
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0928767A46
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbjG2Ax3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
+        id S237071AbjG2Ax0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236348AbjG2AxM (ORCPT
+        with ESMTP id S234803AbjG2AxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:53:12 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528293C22;
-        Fri, 28 Jul 2023 17:52:46 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b9c368f4b5so24837095ad.0;
-        Fri, 28 Jul 2023 17:52:46 -0700 (PDT)
+        Fri, 28 Jul 2023 20:53:10 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39054C23;
+        Fri, 28 Jul 2023 17:52:45 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bbc7b2133fso17280855ad.1;
+        Fri, 28 Jul 2023 17:52:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690591908; x=1691196708;
+        d=gmail.com; s=20221208; t=1690591909; x=1691196709;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QcbA7VXwVFtFuTMrK9gecBZGBHC/yp4CxVuqNzuvBTk=;
-        b=ImtOLwbAdOovXTFQhxq45BStb4JK2HiBIdGmZLMbdrZtuC9LewUnM4EN5cgwSSJ2Ez
-         JY8HTNl74dtmMNy2rxiivOllpo15VNs2L6crbKtgOaEhP0vEIlzStI3v0ojDIGzm3s/4
-         0Vf88rxRi8rAyIZhpJiMOhJm/74g5pOWiUJmRbmf3ChPxhiEyZf/IQ8+bZMw682gYhM3
-         2mjKzjex4buLi1G/qjqAh9fLNJIFmqfdN10gVJlMiXBKVIIgxDKRlTX30iifvpK2RyZz
-         QyWTwpp1FIIKzgldA53LCJFURvAROwaZq4JUCOl2aD1pP9M2yKWbjSJvUvo5gtT2aUtn
-         X7Yw==
+        bh=RhjavH3Fl28NglOqou/JvG3XUomwygW/aMjIJstyA5E=;
+        b=BGAfF10nL++omXc7+bwaAOM2MreVw58HteryuBDOUweKsX/qyzYjdQF/GbSoxr8zPW
+         43RgiystT7Logz8KH4mkphXpv6EeYiNYEFixzVItFvtJz9TAZrmtq8GcyX3yGcm8u2u7
+         PUp6ga5ymIgqRSx1CsWVoJ+0BaJTcK+kKTErSCMugUrlgJ+y6ELdbuXB3V49V3wiAwte
+         hWVkdMvLS1wgWYA4A5suuj/7GXHWfvWpF3h0JcXrtDUf7QaX4wtdgL405hIdLYrhc4dt
+         +tnnS5p3Ods8pxjh/KZ+FYno6rbXv4UQfDSgG7nnWl9tZ05kiwQeEhogFxsZnDhVyJ5m
+         M/lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591908; x=1691196708;
+        d=1e100.net; s=20221208; t=1690591909; x=1691196709;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QcbA7VXwVFtFuTMrK9gecBZGBHC/yp4CxVuqNzuvBTk=;
-        b=KCRXHBfWJEEqNN9p6hNFbG8TpR+QPphnVKs/UnhXJOd7jAwci/QoZYBwmNaJy71zjX
-         n6qUEHL2lTaRKDUd7hqmu5c0SOBgc6hAkNnAXRZ4Atk/Ul6nbt3Q8lroENGaWeyCJmG1
-         aVgvEq15x4QYa79s7B9CkHDIVfRmTVsVaFtO2ShoMFr0PICD+5UbD6i+ixoMB2CeM59E
-         2waAjDKpD1qacVsM0ha8c+cHMHhGn5PI8Mxb2BaTPKPSmyjBgKDblbpIwoYRHC1Ocs1x
-         QKY9JN1eYYCO2ihHt7AIh9xRW4HgML2ipUwn6njmw4d/zifpJKC+ON05nJbRK8qzU6Vm
-         aCrw==
-X-Gm-Message-State: ABy/qLYjRgWEsSvJFoyHc3fdyfhIIhcBZ2r/SakiFtWNqKQ9Kbtnj13h
-        uWZ08HGsj9V10TNgpJL4dzs9GOG7sZA=
-X-Google-Smtp-Source: APBJJlEQ16G1vApZYvVnFvAIe0m+RfsVYTzGlpcREKUYW17v/fapKsasKWQToJReDZCmYLLN4yHvsA==
-X-Received: by 2002:a17:903:11c9:b0:1b9:d38d:f08d with SMTP id q9-20020a17090311c900b001b9d38df08dmr4130752plh.18.1690591908217;
-        Fri, 28 Jul 2023 17:51:48 -0700 (PDT)
+        bh=RhjavH3Fl28NglOqou/JvG3XUomwygW/aMjIJstyA5E=;
+        b=WhCKP99pg5UQ96EJO8vGO9igJHeqnzQ/LFA9lbdQFDhp+WJXar1qeAUA5JXbK2keB+
+         BFgNswrO4RRWYojk64If+kA7WuNk+mSoASiz/go7kwO1cib9ldj6I9Rj5LpmQ7hMvaTE
+         zYIrsO+h3CrTLvWyhc6V5L9ZkNItD/rps+ImFf2JcFxxcq0WzP7Ac2uFGGiK0cfgb8QA
+         pdDER1nBdrFw+kwYjhAyed/VPG99VaImzqY9nc2vuHN0KG/dBoYOHDutzyWYp7ZsITLU
+         0EzHBHDYmrj3SH2UUFneLYpWmQb8HclK+3baElQKBJyPALoM+KeWUIr9b4WJogfsQRea
+         OYSQ==
+X-Gm-Message-State: ABy/qLZFNeaWhhX5qnL8/Rl9Hx9l5T5pSk6GIxkUShi0cyPCWhaKKO33
+        IItioBe0JQhKAUrAnzpeyUYcf+p82Oc=
+X-Google-Smtp-Source: APBJJlHphoodiAj3ieh8++jVlnP9OkfS7Tmu+sksb9lAaNMjbljF66BCE9c8/ej1UMZRSUPyCVxUMg==
+X-Received: by 2002:a17:902:da83:b0:1b8:9b1b:ae8e with SMTP id j3-20020a170902da8300b001b89b1bae8emr3627857plx.59.1690591909145;
+        Fri, 28 Jul 2023 17:51:49 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:bc93:3749:59cc:1d5c])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.47
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 17:51:47 -0700 (PDT)
+        Fri, 28 Jul 2023 17:51:48 -0700 (PDT)
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     linux-input@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeff LaBundy <jeff@labundy.com>
-Subject: [PATCH 15/22] Input: iqs5xx - use device core to create driver-specific device attributes
-Date:   Fri, 28 Jul 2023 17:51:24 -0700
-Message-ID: <20230729005133.1095051-15-dmitry.torokhov@gmail.com>
+        JungHoon Hyun <hyunjunghoon@melfas.com>
+Subject: [PATCH 16/22] Input: melfas-mip4 - use device core to create driver-specific device attributes
+Date:   Fri, 28 Jul 2023 17:51:25 -0700
+Message-ID: <20230729005133.1095051-16-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 In-Reply-To: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
 References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
@@ -79,47 +79,47 @@ pointer in the driver structure.
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/touchscreen/iqs5xx.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/input/touchscreen/melfas_mip4.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/input/touchscreen/iqs5xx.c b/drivers/input/touchscreen/iqs5xx.c
-index b4768b66eb10..a3f4fb85bee5 100644
---- a/drivers/input/touchscreen/iqs5xx.c
-+++ b/drivers/input/touchscreen/iqs5xx.c
-@@ -974,10 +974,11 @@ static umode_t iqs5xx_attr_is_visible(struct kobject *kobj,
- 	return attr->mode;
- }
- 
--static const struct attribute_group iqs5xx_attr_group = {
-+static const struct attribute_group iqs5xx_group = {
- 	.is_visible = iqs5xx_attr_is_visible,
- 	.attrs = iqs5xx_attrs,
+diff --git a/drivers/input/touchscreen/melfas_mip4.c b/drivers/input/touchscreen/melfas_mip4.c
+index 2ac4483fbc25..aa325486f618 100644
+--- a/drivers/input/touchscreen/melfas_mip4.c
++++ b/drivers/input/touchscreen/melfas_mip4.c
+@@ -1419,10 +1419,7 @@ static struct attribute *mip4_attrs[] = {
+ 	&dev_attr_update_fw.attr,
+ 	NULL,
  };
-+__ATTRIBUTE_GROUPS(iqs5xx);
+-
+-static const struct attribute_group mip4_attr_group = {
+-	.attrs = mip4_attrs,
+-};
++ATTRIBUTE_GROUPS(mip4);
  
- static int iqs5xx_suspend(struct device *dev)
+ static int mip4_probe(struct i2c_client *client)
  {
-@@ -1053,12 +1054,6 @@ static int iqs5xx_probe(struct i2c_client *client)
+@@ -1514,13 +1511,6 @@ static int mip4_probe(struct i2c_client *client)
  		return error;
  	}
  
--	error = devm_device_add_group(&client->dev, &iqs5xx_attr_group);
+-	error = devm_device_add_group(&client->dev, &mip4_attr_group);
 -	if (error) {
--		dev_err(&client->dev, "Failed to add attributes: %d\n", error);
+-		dev_err(&client->dev,
+-			"Failed to create sysfs attribute group: %d\n", error);
 -		return error;
 -	}
 -
- 	if (iqs5xx->input) {
- 		error = input_register_device(iqs5xx->input);
- 		if (error)
-@@ -1089,6 +1084,7 @@ MODULE_DEVICE_TABLE(of, iqs5xx_of_match);
- static struct i2c_driver iqs5xx_i2c_driver = {
+ 	return 0;
+ }
+ 
+@@ -1589,6 +1579,7 @@ static struct i2c_driver mip4_driver = {
+ 	.probe = mip4_probe,
  	.driver = {
- 		.name		= "iqs5xx",
-+		.dev_groups	= iqs5xx_groups,
- 		.of_match_table	= iqs5xx_of_match,
- 		.pm		= pm_sleep_ptr(&iqs5xx_pm),
- 	},
+ 		.name = MIP4_DEVICE_NAME,
++		.dev_groups = mip4_groups,
+ 		.of_match_table = of_match_ptr(mip4_of_match),
+ 		.acpi_match_table = ACPI_PTR(mip4_acpi_match),
+ 		.pm = pm_sleep_ptr(&mip4_pm_ops),
 -- 
 2.41.0.487.g6d72f3e995-goog
 
