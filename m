@@ -2,58 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA613767E28
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA78767E2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjG2KWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 06:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S231140AbjG2KYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 06:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG2KWK (ORCPT
+        with ESMTP id S229472AbjG2KYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 06:22:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A6D4202;
-        Sat, 29 Jul 2023 03:22:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E491060B7D;
-        Sat, 29 Jul 2023 10:22:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17586C433C8;
-        Sat, 29 Jul 2023 10:22:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690626128;
-        bh=tuPIbqBr52wBKVdl98uVAm315Bxepe8VF8Jh0dVoqb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bwhY0I23bb0OBrElDNY7q4V16m1Dk1fvyOEhfxoyucmPHcRYYvQoy355fEf6vkp1y
-         SWlM2CawNSmu6LVeyHstxjcTpVkPZaeUEIeXDKlbfldqSolDua8y27o/K6Iex4n5pS
-         nqQsNPzpoXm+rk1SOIWCEb1S+oo5x3ZBUk1U2bmmHoGkjY1FQ2jKlqyVQD+D++4dZD
-         Rz996sqdPI0BacfTb8eEj6IAAkJNaVRbTrFERGp4R+NyQQPR0iAyEfyDZaLopEeyv8
-         bCtqVflq8SMtKWagzi+7RXmP7DuKmx19c6s5+bsnysXpu0UhIBKY1ARmUDiAEj591q
-         Ho7YZGgfaTYcg==
-Date:   Sat, 29 Jul 2023 11:22:03 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] watchdog: Enable COMPILE_TEST for more drivers
-Message-ID: <20230729-twerp-avert-70577ff7d952@spud>
-References: <20230728195022.1198555-1-robh@kernel.org>
+        Sat, 29 Jul 2023 06:24:35 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E9E4229;
+        Sat, 29 Jul 2023 03:24:34 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RCgYn2hGFzVjDr;
+        Sat, 29 Jul 2023 18:22:53 +0800 (CST)
+Received: from build.huawei.com (10.175.101.6) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sat, 29 Jul 2023 18:24:31 +0800
+From:   Wenchao Hao <haowenchao2@huawei.com>
+To:     John Garry <john.g.garry@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <louhongxiang@huawei.com>, Wenchao Hao <haowenchao2@huawei.com>
+Subject: [PATCH] scsi:libsas: Simplify sas_queue_reset and remove unused code
+Date:   Sat, 29 Jul 2023 18:24:51 +0800
+Message-ID: <20230729102451.2452826-1-haowenchao2@huawei.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="niFHKtW+E1+3Tf0J"
-Content-Disposition: inline
-In-Reply-To: <20230728195022.1198555-1-robh@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,34 +51,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+sas_queue_reset is always called with param "wait" set to 0, so
+remove it from this function's param list. And remove unused
+function sas_wait_eh.
 
---niFHKtW+E1+3Tf0J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+---
+ drivers/scsi/libsas/sas_scsi_host.c | 41 +++--------------------------
+ 1 file changed, 3 insertions(+), 38 deletions(-)
 
-On Fri, Jul 28, 2023 at 01:50:21PM -0600, Rob Herring wrote:
-> There's quite a few watchdog drivers which are easily enabled for
-> COMPILE_TEST, so let's enable them.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Passed allyesconfig builds on arm, arm64, x86, riscv, powerpc, sparc
+diff --git a/drivers/scsi/libsas/sas_scsi_host.c b/drivers/scsi/libsas/sas_scsi_host.c
+index 94c5f14f3c16..3f01e77eaee3 100644
+--- a/drivers/scsi/libsas/sas_scsi_host.c
++++ b/drivers/scsi/libsas/sas_scsi_host.c
+@@ -387,37 +387,7 @@ struct sas_phy *sas_get_local_phy(struct domain_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(sas_get_local_phy);
+ 
+-static void sas_wait_eh(struct domain_device *dev)
+-{
+-	struct sas_ha_struct *ha = dev->port->ha;
+-	DEFINE_WAIT(wait);
+-
+-	if (dev_is_sata(dev)) {
+-		ata_port_wait_eh(dev->sata_dev.ap);
+-		return;
+-	}
+- retry:
+-	spin_lock_irq(&ha->lock);
+-
+-	while (test_bit(SAS_DEV_EH_PENDING, &dev->state)) {
+-		prepare_to_wait(&ha->eh_wait_q, &wait, TASK_UNINTERRUPTIBLE);
+-		spin_unlock_irq(&ha->lock);
+-		schedule();
+-		spin_lock_irq(&ha->lock);
+-	}
+-	finish_wait(&ha->eh_wait_q, &wait);
+-
+-	spin_unlock_irq(&ha->lock);
+-
+-	/* make sure SCSI EH is complete */
+-	if (scsi_host_in_recovery(ha->core.shost)) {
+-		msleep(10);
+-		goto retry;
+-	}
+-}
+-
+-static int sas_queue_reset(struct domain_device *dev, int reset_type,
+-			   u64 lun, int wait)
++static int sas_queue_reset(struct domain_device *dev, int reset_type, u64 lun)
+ {
+ 	struct sas_ha_struct *ha = dev->port->ha;
+ 	int scheduled = 0, tries = 100;
+@@ -425,8 +395,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
+ 	/* ata: promote lun reset to bus reset */
+ 	if (dev_is_sata(dev)) {
+ 		sas_ata_schedule_reset(dev);
+-		if (wait)
+-			sas_ata_wait_eh(dev);
+ 		return SUCCESS;
+ 	}
+ 
+@@ -444,9 +412,6 @@ static int sas_queue_reset(struct domain_device *dev, int reset_type,
+ 		}
+ 		spin_unlock_irq(&ha->lock);
+ 
+-		if (wait)
+-			sas_wait_eh(dev);
+-
+ 		if (scheduled)
+ 			return SUCCESS;
+ 	}
+@@ -499,7 +464,7 @@ int sas_eh_device_reset_handler(struct scsi_cmnd *cmd)
+ 	struct sas_internal *i = to_sas_internal(host->transportt);
+ 
+ 	if (current != host->ehandler)
+-		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun, 0);
++		return sas_queue_reset(dev, SAS_DEV_LU_RESET, cmd->device->lun);
+ 
+ 	int_to_scsilun(cmd->device->lun, &lun);
+ 
+@@ -522,7 +487,7 @@ int sas_eh_target_reset_handler(struct scsi_cmnd *cmd)
+ 	struct sas_internal *i = to_sas_internal(host->transportt);
+ 
+ 	if (current != host->ehandler)
+-		return sas_queue_reset(dev, SAS_DEV_RESET, 0, 0);
++		return sas_queue_reset(dev, SAS_DEV_RESET, 0);
+ 
+ 	if (!i->dft->lldd_I_T_nexus_reset)
+ 		return FAILED;
+-- 
+2.32.0
 
-Doing its job I suppose, the riscv patchwork automation stuff has
-spotted one new complaint for allmodconfig:
-stm32_iwdg.c:77:19: warning: unused function 'reg_read' [-Wunused-function]
-
-
---niFHKtW+E1+3Tf0J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMToSwAKCRB4tDGHoIJi
-0hUuAQDTDOhDkjqpoQL8kgJdY0n07+K7LrUs4Nbwjsrj8p+LOQEA3agQW/XkUhV+
-5EP8xSOUmR8kGeU3oQXbtv0VPb0kkgM=
-=hMX2
------END PGP SIGNATURE-----
-
---niFHKtW+E1+3Tf0J--
