@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155EF767FAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB1F767FAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjG2Npg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S231774AbjG2Npj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjG2NpL (ORCPT
+        with ESMTP id S230317AbjG2NpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:45:11 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387AD1A5;
-        Sat, 29 Jul 2023 06:44:43 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-687087d8ddaso2046269b3a.1;
-        Sat, 29 Jul 2023 06:44:43 -0700 (PDT)
+        Sat, 29 Jul 2023 09:45:12 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DD63C0E;
+        Sat, 29 Jul 2023 06:44:45 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686f25d045cso2018548b3a.0;
+        Sat, 29 Jul 2023 06:44:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638266; x=1691243066;
+        d=gmail.com; s=20221208; t=1690638269; x=1691243069;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MUfunh2eERs79n2ZjTI80PkrC85sIH9Fa0GPgqJ3KVU=;
-        b=RCOkOKd7WXpSPH+9DUlmXq5k0k0tRUG2OIBAAW43U2Fdz8LyVIIWRlp5J3du+AM1tC
-         0yIlf7EhN5KJbIHPNo/vH63+NdDVsnQ6zWTBOPIv3d2GHisZQ66XFGHjrGhVs0V1hCHp
-         DcclMW2RYKtXwPXOCV/vRy8zjlkEE2+EcN0jDh8rGt6STYaKQXFhVKpFPzSCD26Bq2iM
-         WmREfydK/YggIsbzMrGDHdAfVt+T0XgYTfUnHyF/sNtozJy7UBB5qbxtUbE6YPLSvDmz
-         DpmyTyB3eoFoZKcVAOebFxKyOrDTxxMNQ0lzTz3Y5cR3xFkYHWPkxLXPq7wLWa3ZN6jj
-         qjWg==
+        bh=J53ceYAkm+TGfLzkSvTu2FeBVqaGLEyxxjErdRVZjqA=;
+        b=dPz+2N9HdiSs62M1j7ZncSiJf8zdGn+QcDRWau0hTFoVgZXjbmHh/krdZ0ilu+Cusc
+         TpPqzEUJHURygubWzhjUuPZncoP9FoKd7louhmlqw9XMTjOiyLLV9S9HgPghzM5hqJEL
+         tEyHR3PYJv5uf2suue6T/363ovjP8QE0jAPCy9k8Xm/wtZ3Nq7XaTFedbPiT7ZNtjkP8
+         Z/8dRgZS7rFdjUYQiSxPignqgpLqh576FFzVtYzaXxvNHY7yOF2u6WPvjeQ/RTU5WpnB
+         6Retc296xlrZYnjMyIxg3Lt8cRnEGsKFtIw0Ikpy0U8W5XWEtVwI13omGbY1I4jlEwmP
+         upGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638266; x=1691243066;
+        d=1e100.net; s=20221208; t=1690638269; x=1691243069;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MUfunh2eERs79n2ZjTI80PkrC85sIH9Fa0GPgqJ3KVU=;
-        b=NbVmjq8LHllDjcqWe1ywJnOtlTO89cxAHKKJYEEFAnAejBAmPd/P7oCg9L7B01FPMY
-         ccKlyxo2RcEDcYaUJtQj5Yw0Od23ZyHJaOT/ofwtdjNOXM3JhB+jvl6FYhRlIbcUiir6
-         9fvzf1Due4DvrJzhZZyryyXgHEUQRl1IiaO1otEF7Y9JpPN+jb2nC4ZcWlsHBo5G1fFt
-         dp7We4iaGbfEuc8+3lBVfuTVxKTv/36wdH9PlFkqy9D9KhdXETKGtwSfOYsWPKWC3phE
-         mqloS3nR+qqiNRsSz2Pvy3SF21JvzPzE4S4wqLpNmLp7wvxeeUu7EQ6zN4f2tdKUnDmZ
-         craA==
-X-Gm-Message-State: ABy/qLY5d06URUcczVEd/1JyquNlVts61ndsumCioKOOHNu43qLqalNa
-        uMcuEvki1PX4gJremcOmOaXT9wswTU2Ufw==
-X-Google-Smtp-Source: APBJJlE0iUm05Y+yHqemBK9e5DDe8ft2Ytu3rXLrdAT+VaTjtgbJ9jFnZ2hp4g1g9k9bIvoI5w/Zhw==
-X-Received: by 2002:a05:6a21:7782:b0:131:eeba:184b with SMTP id bd2-20020a056a21778200b00131eeba184bmr5175425pzc.25.1690638265784;
-        Sat, 29 Jul 2023 06:44:25 -0700 (PDT)
+        bh=J53ceYAkm+TGfLzkSvTu2FeBVqaGLEyxxjErdRVZjqA=;
+        b=IqH5l5qe8WIWmGR7CKSkiN/jLCxJKsbVP0+OhCjI8Ydw9n1uFAad1WEhzKwIiHsg5w
+         o6A+EBuyHKyBy1n9XtiJlVfCssRNc3WOXata363HpYOXstr5maOdbb1i9q9hoPFXmSHY
+         am69OCsTREUSy7GVi+Qp1jPwpXMrbT4p4XAkefpHkL5JVaJyPrtPuB8P+tA/9PUVdjMr
+         nk+YfRyU7TNDx3mhW/9juDJw2BAsCyNZH1I5zF8WzWpByVvKhVQa9f3wHqC5fUujq231
+         bLPYNGdbdvDmu7TGNhHNebYU6Eu395kCi3zithOoQI6ZPR6B8ie7wqk2UzYAG6mF1uor
+         IKvQ==
+X-Gm-Message-State: ABy/qLaRv2AKK0Vqxcbt3w3ljvY+/HNsEDD3qWY/w9bjc2no3R4wAw0j
+        DezcVwAEhgFeVGWvjNg0R2a+qMEHt6SbDg==
+X-Google-Smtp-Source: APBJJlHv+MXlj1HOPvRZYQoRjyc6m50UQSy7E+ugIjKGBBaXQDDsytx8LG+18SfsfCykPiDNR9Z/JA==
+X-Received: by 2002:a05:6a00:1ad3:b0:687:1184:5420 with SMTP id f19-20020a056a001ad300b0068711845420mr5611400pfv.0.1690638269043;
+        Sat, 29 Jul 2023 06:44:29 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.44.23
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.44.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:44:25 -0700 (PDT)
+        Sat, 29 Jul 2023 06:44:28 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 16/17] MIPS: configs: Update and rename loongson1b_defconfig
-Date:   Sat, 29 Jul 2023 21:43:17 +0800
-Message-Id: <20230729134318.1694467-17-keguang.zhang@gmail.com>
+Subject: [PATCH 17/17] MIPS: configs: Update and rename loongson1c_defconfig
+Date:   Sat, 29 Jul 2023 21:43:18 +0800
+Message-Id: <20230729134318.1694467-18-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
@@ -76,26 +76,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the loongson1b_defconfig to the board name.
+Rename the loongson1c_defconfig to the board name.
 Update the following options:
  - Enable CONFIG_SERIAL_OF_PLATFORM
  - Enable CONFIG_RTC_DRV_LOONGSON
- - Enable CONFIG_CLKSRC_LOONGSON1_PWM
  - Disable unnecessary options
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- ...gson1b_defconfig => lsgz_1b_dev_defconfig} | 70 +++++++++++++++----
- 1 file changed, 55 insertions(+), 15 deletions(-)
- rename arch/mips/configs/{loongson1b_defconfig => lsgz_1b_dev_defconfig} (59%)
+ ...on1c_defconfig => smartloong_1c_defconfig} | 71 ++++++++++++++-----
+ 1 file changed, 55 insertions(+), 16 deletions(-)
+ rename arch/mips/configs/{loongson1c_defconfig => smartloong_1c_defconfig} (59%)
 
-diff --git a/arch/mips/configs/loongson1b_defconfig b/arch/mips/configs/lsgz_1b_dev_defconfig
+diff --git a/arch/mips/configs/loongson1c_defconfig b/arch/mips/configs/smartloong_1c_defconfig
 similarity index 59%
-rename from arch/mips/configs/loongson1b_defconfig
-rename to arch/mips/configs/lsgz_1b_dev_defconfig
-index 68207b31dc20..149b6a1353c0 100644
---- a/arch/mips/configs/loongson1b_defconfig
-+++ b/arch/mips/configs/lsgz_1b_dev_defconfig
+rename from arch/mips/configs/loongson1c_defconfig
+rename to arch/mips/configs/smartloong_1c_defconfig
+index c3910a9dee9e..48296595425d 100644
+--- a/arch/mips/configs/loongson1c_defconfig
++++ b/arch/mips/configs/smartloong_1c_defconfig
 @@ -1,7 +1,6 @@
  # CONFIG_LOCALVERSION_AUTO is not set
  CONFIG_KERNEL_XZ=y
@@ -104,13 +103,15 @@ index 68207b31dc20..149b6a1353c0 100644
  CONFIG_PREEMPT=y
  CONFIG_BSD_PROCESS_ACCT=y
  CONFIG_BSD_PROCESS_ACCT_V3=y
-@@ -12,15 +11,16 @@ CONFIG_NAMESPACES=y
+@@ -12,16 +11,17 @@ CONFIG_NAMESPACES=y
  CONFIG_CC_OPTIMIZE_FOR_SIZE=y
  CONFIG_EXPERT=y
  CONFIG_PERF_EVENTS=y
 -# CONFIG_COMPAT_BRK is not set
  CONFIG_MACH_LOONGSON32=y
+-CONFIG_LOONGSON1_LS1C=y
 -# CONFIG_SECCOMP is not set
++CONFIG_MACH_SMARTLOONG_1C=y
  # CONFIG_SUSPEND is not set
 +# CONFIG_SECCOMP is not set
 +# CONFIG_GCC_PLUGINS is not set
@@ -124,7 +125,7 @@ index 68207b31dc20..149b6a1353c0 100644
  CONFIG_NET=y
  CONFIG_PACKET=y
  CONFIG_UNIX=y
-@@ -43,17 +43,50 @@ CONFIG_BLK_DEV_LOOP=y
+@@ -44,17 +44,50 @@ CONFIG_BLK_DEV_LOOP=y
  CONFIG_SCSI=m
  # CONFIG_SCSI_PROC_FS is not set
  CONFIG_BLK_DEV_SD=m
@@ -175,7 +176,7 @@ index 68207b31dc20..149b6a1353c0 100644
  # CONFIG_WLAN is not set
  CONFIG_INPUT_EVDEV=y
  # CONFIG_INPUT_KEYBOARD is not set
-@@ -63,7 +96,9 @@ CONFIG_VT_HW_CONSOLE_BINDING=y
+@@ -64,7 +97,9 @@ CONFIG_VT_HW_CONSOLE_BINDING=y
  CONFIG_LEGACY_PTY_COUNT=8
  CONFIG_SERIAL_8250=y
  CONFIG_SERIAL_8250_CONSOLE=y
@@ -185,7 +186,7 @@ index 68207b31dc20..149b6a1353c0 100644
  CONFIG_GPIOLIB=y
  CONFIG_GPIO_LOONGSON1=y
  # CONFIG_HWMON is not set
-@@ -88,15 +123,15 @@ CONFIG_LEDS_GPIO=y
+@@ -89,15 +124,14 @@ CONFIG_LEDS_GPIO=y
  CONFIG_LEDS_TRIGGERS=y
  CONFIG_LEDS_TRIGGER_HEARTBEAT=y
  CONFIG_RTC_CLASS=y
@@ -194,7 +195,6 @@ index 68207b31dc20..149b6a1353c0 100644
 +# CONFIG_VIRTIO_MENU is not set
 +# CONFIG_VHOST_MENU is not set
 +# CONFIG_MIPS_PLATFORM_DEVICES is not set
-+CONFIG_CLKSRC_LOONGSON1_PWM=y
  # CONFIG_IOMMU_SUPPORT is not set
 -CONFIG_EXT2_FS=y
 -CONFIG_EXT2_FS_XATTR=y
@@ -209,7 +209,7 @@ index 68207b31dc20..149b6a1353c0 100644
  # CONFIG_DNOTIFY is not set
  CONFIG_VFAT_FS=y
  CONFIG_PROC_KCORE=y
-@@ -109,12 +144,17 @@ CONFIG_NFS_FS=y
+@@ -110,12 +144,17 @@ CONFIG_NFS_FS=y
  CONFIG_ROOT_NFS=y
  CONFIG_NLS_CODEPAGE_437=m
  CONFIG_NLS_ISO8859_1=m
