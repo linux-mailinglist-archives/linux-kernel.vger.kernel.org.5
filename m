@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66205767AF1
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881ED767AF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237547AbjG2BgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S237575AbjG2BgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237500AbjG2Bf5 (ORCPT
+        with ESMTP id S237535AbjG2BgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:35:57 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A54B3C22
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:55 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55c79a5565aso1694072a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:54 -0700 (PDT)
+        Fri, 28 Jul 2023 21:36:02 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304183C28
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:56 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbd4f526caso20385265ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690594554; x=1691199354;
+        d=google.com; s=20221208; t=1690594556; x=1691199356;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=tz4uZaQVsPCslkoe6oa8SQY3RtzZLjpuGTuCE1x/oxo=;
-        b=rnGsAGmCsCVkvzk/4CeEhRS1uhNwHejWNQjYMUjzvZ9b23PXZzLzHQ7iKvpLO1Zm5o
-         sEcAHLrTsKB5yVIPzAw8RrH5ORymgpPHAiDM/Xt64Kov2IqERUDoqTcOGXvoUfc0u6QZ
-         X447SLnRfwc80YMR7mIfaKfWAMT5mvZyKlEiZnQwjTwDCpRahtP32ZcYRt0CvZz8E8v4
-         t+00GUoSXANKgzpGij7yjEmTxBvUqSswKC0SsnODhH6NFOjVBdboK2rHspDOAzwSQjkg
-         IDf0q+2jpzHxwTOMoB02hlRckExnus6yP9NdAAWtZPE/Leok5f6GGdwTeP7Yu3zaGG/L
-         0eGA==
+        bh=xRti94I88xI36VdJ1C9pM+DO3reoJ85WhIcKAlj3P2A=;
+        b=JzVeSbakvBsITk4WCc6SvXMXZXpKg1sKgNCLCg329z4+CwqicRWa18ItETELkleHut
+         Yv4X8wRd3Le9uqQGPUWs5BUQkj7TQJDt9Eb5fhMjb23YSABFTjI2bzN/glzKpBumIzEs
+         fTGh7mmm0I6apNNmDAUz1eyleS73AlS2QlY8+8eRKCJtqc/P/YOG5SqsNHXCud5EkzFP
+         jE1ZE8Vnryd4Dn0nEp5qJTOVH3Wyqn42CpQxKf2W0v6q+EQhwJBTSDxzWFjjb+QZElus
+         ssNGr64x9a3IHDfdFolrvWOyeULaX7kmUyN6RPwtI37uS4WYyBbIw//m00wT14Fxuhox
+         HQgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690594554; x=1691199354;
+        d=1e100.net; s=20221208; t=1690594556; x=1691199356;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tz4uZaQVsPCslkoe6oa8SQY3RtzZLjpuGTuCE1x/oxo=;
-        b=EyRkZwGpnXwiyVYrDJpN4M4TbMnGgSA/XwEyrjIG4yxs3Ygyu2RVQbUGTEC71zT+D1
-         KIo5BDPdqjxKEg1giYQQ8QAgxJKy2jydX0kkmsyd0OO6r1p5y2El0iVuvpiQvHm2JANQ
-         T9wPllMxGiofLGEUa93m86Qks57Rv6OUT8deBHvEDH3pKdEpaRh5WoFtw1m73GnuZIy3
-         2qtGx/jEn+GncFjPVgky9Nz0nvVdVSSaCQC2p0HGlooBAm2jrdyG3epvyW+XYkZ1gqEK
-         KYhw1t+hwux9z6LU1+BRqiHbdPFCHgIH1pblWqq74LJNuf8mWRxjqvVHUF2xlmZX66lS
-         zntg==
-X-Gm-Message-State: ABy/qLbdm6/2i2LbnldI4Afx+mmNPa9Z1EGV8c7v/OOegDjv+EScM5B9
-        IDJoZjgKSfqMrNJx7OEn/nbxIx1Zkbs=
-X-Google-Smtp-Source: APBJJlFTmYd3lxACjYxVtuqT/iV7PakjZr1YHFf1k1mB2XIV8e9HvgrPxsj425QqhvZ8l6epZt90DIBSddM=
+        bh=xRti94I88xI36VdJ1C9pM+DO3reoJ85WhIcKAlj3P2A=;
+        b=YZAADWzKucHEgnB9jJer+RgYJZSK3CBP0OEU+ISDP/CiQlHA3+5o1v+L/cfUzecnG/
+         2ABcf6B/JfatJSSGXROmxO34rgPbDPb4tKsRAzMqy9CbJs88G3EdE9UgkOjXOMF3CVrk
+         lFF45hLfh5SGWmDZEt3JEJLUGSRqrxNolPHlRhBv6DDV915fY4Wzt9/WDg1P55kbZ5s0
+         zc+SY98+7dkBvyzf0YU1dqbO5As+T8/y/N7hHo94yzIztEE2HFS+bok7wTNkMCLFH9Im
+         OSzZZ1c5Chq/FluQ9rnxsvjopxE/NKQOrr3gud6eIOJFmE2dq5FwGDv3SHZ96kGmasX3
+         WNJA==
+X-Gm-Message-State: ABy/qLYqvG53IhfBbOVXj33Lm1JAxnQXu1kv1iyJDwmlCNhUDfndY+wC
+        jlShCPIdAjz1Mf/hGdEHMdLzNPjhdAw=
+X-Google-Smtp-Source: APBJJlGLaYng3bx/UmtgPECyQBQ2iUlUJH1kZl0/YE/Hn7IX+/6SrxIFl/3qUim+xESr+hSwSKOan6hQzyM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e5c1:b0:1b7:edcd:8dcf with SMTP id
- u1-20020a170902e5c100b001b7edcd8dcfmr14524plf.4.1690594553462; Fri, 28 Jul
- 2023 18:35:53 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:903:230b:b0:1b9:e338:a8b7 with SMTP id
+ d11-20020a170903230b00b001b9e338a8b7mr13091plh.5.1690594556187; Fri, 28 Jul
+ 2023 18:35:56 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 18:35:11 -0700
+Date:   Fri, 28 Jul 2023 18:35:12 -0700
 In-Reply-To: <20230729013535.1070024-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729013535.1070024-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729013535.1070024-6-seanjc@google.com>
-Subject: [PATCH v4 05/29] drm/i915/gvt: Put the page reference obtained by
- KVM's gfn_to_pfn()
+Message-ID: <20230729013535.1070024-7-seanjc@google.com>
+Subject: [PATCH v4 06/29] drm/i915/gvt: Explicitly check that vGPU is attached
+ before shadowing
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -70,50 +70,94 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put the struct page reference acquired by gfn_to_pfn(), KVM's API is that
-the caller is ultimately responsible for dropping any reference.
+Move the check that a vGPU is attacked from is_2MB_gtt_possible() all the
+way up to shadow_ppgtt_mm() to avoid unnecessary work, and to make it more
+obvious that a future cleanup of is_2MB_gtt_possible() isn't introducing a
+bug.
 
-Note, kvm_release_pfn_clean() ensures the pfn is actually a refcounted
-struct page before trying to put any references.
+is_2MB_gtt_possible() has only one caller, ppgtt_populate_shadow_entry(),
+and all paths in ppgtt_populate_shadow_entry() eventually check for
+attachment by way of intel_gvt_dma_map_guest_page().
 
-Fixes: b901b252b6cf ("drm/i915/gvt: Add 2M huge gtt support")
-Reviewed-by: Yan Zhao <yan.y.zhao@intel.com>
-Tested-by: Yongwei Ma <yongwei.ma@intel.com>
+And of the paths that lead to ppgtt_populate_shadow_entry(),
+shadow_ppgtt_mm() is the only one that doesn't already check for
+INTEL_VGPU_STATUS_ACTIVE or INTEL_VGPU_STATUS_ATTACHED.
+
+  workload_thread() <= pick_next_workload() => INTEL_VGPU_STATUS_ACTIVE
+  |
+  -> dispatch_workload()
+     |
+     |-> prepare_workload()
+         |
+         -> intel_vgpu_sync_oos_pages()
+         |  |
+         |  |-> ppgtt_set_guest_page_sync()
+         |      |
+         |      |-> sync_oos_page()
+         |          |
+         |          |-> ppgtt_populate_shadow_entry()
+         |
+         |-> intel_vgpu_flush_post_shadow()
+             |
+  1:         |-> ppgtt_handle_guest_write_page_table()
+                 |
+                 |-> ppgtt_handle_guest_entry_add()
+                     |
+  2:                 | -> ppgtt_populate_spt_by_guest_entry()
+                     |    |
+                     |    |-> ppgtt_populate_spt()
+                     |        |
+                     |        |-> ppgtt_populate_shadow_entry()
+                     |            |
+                     |            |-> ppgtt_populate_spt_by_guest_entry() [see 2]
+                     |
+                     |-> ppgtt_populate_shadow_entry()
+
+  kvmgt_page_track_write()  <= KVM callback => INTEL_VGPU_STATUS_ATTACHED
+  |
+  |-> intel_vgpu_page_track_handler()
+      |
+      |-> ppgtt_write_protection_handler()
+          |
+          |-> ppgtt_handle_guest_write_page_table_bytes()
+              |
+              |-> ppgtt_handle_guest_write_page_table() [see 1]
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/gpu/drm/i915/gvt/gtt.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gvt/gtt.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
-index f30922c55a0c..5426a27c1b71 100644
+index 5426a27c1b71..2aed31b497c9 100644
 --- a/drivers/gpu/drm/i915/gvt/gtt.c
 +++ b/drivers/gpu/drm/i915/gvt/gtt.c
-@@ -1158,6 +1158,7 @@ static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
- {
- 	const struct intel_gvt_gtt_pte_ops *ops = vgpu->gvt->gtt.pte_ops;
- 	kvm_pfn_t pfn;
-+	int ret;
- 
+@@ -1163,8 +1163,6 @@ static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
  	if (!HAS_PAGE_SIZES(vgpu->gvt->gt->i915, I915_GTT_PAGE_SIZE_2M))
  		return 0;
-@@ -1171,7 +1172,9 @@ static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
- 	if (!pfn_valid(pfn))
+ 
+-	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
+-		return -EINVAL;
+ 	pfn = gfn_to_pfn(vgpu->vfio_device.kvm, ops->get_pfn(entry));
+ 	if (is_error_noslot_pfn(pfn))
  		return -EINVAL;
+@@ -1277,6 +1275,9 @@ static int ppgtt_populate_shadow_entry(struct intel_vgpu *vgpu,
+ 	if (!pte_ops->test_present(ge))
+ 		return 0;
  
--	return PageTransHuge(pfn_to_page(pfn));
-+	ret = PageTransHuge(pfn_to_page(pfn));
-+	kvm_release_pfn_clean(pfn);
-+	return ret;
- }
++	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
++		return -EINVAL;
++
+ 	gfn = pte_ops->get_pfn(ge);
  
- static int split_2MB_gtt_entry(struct intel_vgpu *vgpu,
+ 	switch (ge->type) {
 -- 
 2.41.0.487.g6d72f3e995-goog
 
