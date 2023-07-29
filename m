@@ -2,234 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C32B276808F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 18:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1A4768097
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 18:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjG2QRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 12:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        id S229667AbjG2QZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 12:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG2QRC (ORCPT
+        with ESMTP id S229526AbjG2QZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 12:17:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271C53A9A;
-        Sat, 29 Jul 2023 09:16:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0E0E60C74;
-        Sat, 29 Jul 2023 16:16:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13DAEC433C8;
-        Sat, 29 Jul 2023 16:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690647417;
-        bh=InmMnv82Rb71xb8zyMPM4nJMbzQ42zImCNwr0AM1EgM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RLnqJ0k57tZQFunzQJ770LJ6PbAKFSofjfK7SA6x407j1xulxy8mEiyq6vAjPR/qA
-         V8BlvU0gEBwkHyF/7TVLPTdjpdXFaqsxqvfBznNzEwFRJ/jq79NCha8O/cd7l6WCIe
-         aWO2vRN3iJK82RUShi4q+vt7tM0vqpsr5oqRSDqEloDvCcoJhmyHc45chN944HetiQ
-         WtzEQcS6Q1LtPp8nC2R5fbbwQyG3HMWjIi4YJ197f97tEHqi6urXQtqVmfv+P26KWA
-         tiQw4VgbyIioJqGOP92FdU2ZhA8Xl6M6aztqK3cDdsoy8lXJlnigqzxbCd5lv9XY8R
-         JXP/xZThod3XA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 970DACE0A10; Sat, 29 Jul 2023 09:16:56 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 09:16:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     akpm@linux-foundation.org, adobriyan@gmail.com, arnd@kernel.org,
-        ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
- boot loader arguments
-Message-ID: <fc4a8339-9fb0-47ef-9b6e-5f3cdde82658@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <20230728033701.817094-1-paulmck@kernel.org>
- <20230729232929.a3e962f46c16973031bb466c@kernel.org>
+        Sat, 29 Jul 2023 12:25:53 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCE73AA5;
+        Sat, 29 Jul 2023 09:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690647952; x=1722183952;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1NzDoRtMi5RDjHQthnAco1mZgSF8TrXW+AA6aSBSRkE=;
+  b=jaFkyDd7YpsgGvSu86D+ABpjvB+yWktUG9YClhN/7weGJiYS3sjiLPiQ
+   xGdRdzCam6CJP1S/uZZByRmYlE13Yi/nwm44uT+93g2hXJrfvVPcTErJW
+   ztcZkf4PKAyCbxTqhpXrTxZUfjBVTVXbCS52U/GYujFvxUshhPZ0HxVco
+   EqnexoqnxR8Z7RY8Yh9RS18Cx7bHYywJG5tnduqwiP1oES6p33kEbnffG
+   qbqPeVUmcFG0At3mG3xbucqnY4N0JfUMwduaOJewMLSelQfQP9byWcNm5
+   E4nYVixEsaZeB9/rB/fWXtabMouKHjrSImYmJOZAf6lTu7YF5fOnuMYuc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="366245712"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="366245712"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 09:25:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="901630398"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="901630398"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 29 Jul 2023 09:25:48 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPmlH-0004A7-12;
+        Sat, 29 Jul 2023 16:25:47 +0000
+Date:   Sun, 30 Jul 2023 00:24:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Atin Bainada <hi@atinb.me>, linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        netdev@vger.kernel.org
+Subject: Re: [net-next PATCH v2 5/5] net: dsa: qca8k: use dsa_for_each macro
+ instead of for loop
+Message-ID: <202307300000.UBj7WovP-lkp@intel.com>
+References: <20230729115509.32601-5-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230729232929.a3e962f46c16973031bb466c@kernel.org>
+In-Reply-To: <20230729115509.32601-5-ansuelsmth@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 11:29:29PM +0900, Masami Hiramatsu wrote:
-> Hi Paul,
-> 
-> On Thu, 27 Jul 2023 20:37:00 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
-> > show all kernel boot parameters, both those supplied by the boot loader
-> > and those embedded in the kernel image.  This works well for those who
-> > just want to see all of the kernel boot parameters, but is not helpful to
-> > those who need to see only those parameters supplied by the boot loader.
-> > This is especially important when these parameters are presented to the
-> > boot loader by automation that might gather them from diverse sources.
-> > 
-> > Therefore, provide a /proc/cmdline_load file that shows only those kernel
-> > boot parameters supplied by the boot loader.
-> 
-> If I understand correctly, /proc/cmdline_load is something like
-> /proc/cmdline_load - `/proc/bootconfig | grep ^kernel\\.`.
+Hi Christian,
 
-Yes, very much something like that.
+kernel test robot noticed the following build errors:
 
-For one use case, suppose you have a kernel that gets some boot parameters
-from the boot loader and some from bootconfig.  If you want to kexec()
-into a new kernel, you must tell kexec() what the kernel boot parameters
-are.  However, you must *not* tell kexec() about any of the current
-kernel's parameters that came from bootconfig, because those should
-instead be supplied by the new kernel being kexec()ed into.
+[auto build test ERROR on net-next/main]
 
-So you must pass in only those parameters that came from the boot loader,
-hence my proposed /proc/cmdline_load.
+url:    https://github.com/intel-lab-lkp/linux/commits/Christian-Marangi/net-dsa-qca8k-make-learning-configurable-and-keep-off-if-standalone/20230729-195747
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20230729115509.32601-5-ansuelsmth%40gmail.com
+patch subject: [net-next PATCH v2 5/5] net: dsa: qca8k: use dsa_for_each macro instead of for loop
+config: i386-randconfig-i006-20230729 (https://download.01.org/0day-ci/archive/20230730/202307300000.UBj7WovP-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230730/202307300000.UBj7WovP-lkp@intel.com/reproduce)
 
-> BTW, what about CONFIG_CMDLINE? We already have that Kconfig and it is also
-> merged with the command line specified by boot loader. Should we also
-> expose that? (when CONFIG_CMDLINE_OVERRIDE=y, we don't need it because
-> cmdline is always overridden by the CONFIG_CMDLINE) Unfortunatelly, this
-> option is implemented in each arch init, so we have to change all of them...
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307300000.UBj7WovP-lkp@intel.com/
 
-The use case is embedded systems, right?  I have no idea whether they
-have a use case requiring this.  Do those sorts of embedded systems
-use kexec()?  (I don't know of any that do, but then again, I haven't
-been looking.)
+All errors (new ones prefixed by >>):
 
-This arch init is in setup_arch(), correct?  If so, one option is to
-make start_kernel() or something that it invokes make a copy of the
-command line just before invoking setup_arch().  Full disclosure: I
-have not yet looked at all the ins and outs of CONFIG_CMDLINE, so this
-suggestion should be viewed with appropriate skepticism.
+>> drivers/net/dsa/qca/qca8k-8xxx.c:1869:28: error: use of undeclared identifier 'i'
+                   if (dsa_is_user_port(ds, i))
+                                            ^
+   1 error generated.
 
-> Thank you,
-> 
-> > 
-> > Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
-> > it makes sense to put it in the same place that /proc/cmdline is located.
-> > 
-> > [ sfr: Apply kernel test robot feedback. ]
-> > 
-> > Co-developed-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: <linux-fsdevel@vger.kernel.org>
-> > ---
-> >  fs/proc/cmdline.c    | 13 +++++++++++++
-> >  include/linux/init.h |  3 ++-
-> >  init/main.c          |  2 +-
-> >  3 files changed, 16 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/proc/cmdline.c b/fs/proc/cmdline.c
-> > index a6f76121955f..1d0ef9d2949d 100644
-> > --- a/fs/proc/cmdline.c
-> > +++ b/fs/proc/cmdline.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/init.h>
-> >  #include <linux/proc_fs.h>
-> >  #include <linux/seq_file.h>
-> > +#include <asm/setup.h>
-> >  #include "internal.h"
-> >  
-> >  static int cmdline_proc_show(struct seq_file *m, void *v)
-> > @@ -12,6 +13,13 @@ static int cmdline_proc_show(struct seq_file *m, void *v)
-> >  	return 0;
-> >  }
-> >  
-> > +static int cmdline_load_proc_show(struct seq_file *m, void *v)
-> > +{
-> > +	seq_puts(m, boot_command_line);
-> > +	seq_putc(m, '\n');
-> > +	return 0;
-> > +}
-> > +
-> >  static int __init proc_cmdline_init(void)
-> >  {
-> >  	struct proc_dir_entry *pde;
-> > @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
-> >  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
-> >  	pde_make_permanent(pde);
-> >  	pde->size = saved_command_line_len + 1;
-> > +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
-> > +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
-> > +		pde_make_permanent(pde);
-> > +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
-> > +	}
-> >  	return 0;
-> >  }
-> >  fs_initcall(proc_cmdline_init);
-> > diff --git a/include/linux/init.h b/include/linux/init.h
-> > index 266c3e1640d4..29e75bbe7984 100644
-> > --- a/include/linux/init.h
-> > +++ b/include/linux/init.h
-> > @@ -112,6 +112,7 @@
-> >  #define __REFCONST       .section       ".ref.rodata", "a"
-> >  
-> >  #ifndef __ASSEMBLY__
-> > +
-> >  /*
-> >   * Used for initialization calls..
-> >   */
-> > @@ -143,7 +144,7 @@ struct file_system_type;
-> >  
-> >  /* Defined in init/main.c */
-> >  extern int do_one_initcall(initcall_t fn);
-> > -extern char __initdata boot_command_line[];
-> > +extern char boot_command_line[];
-> 
-> FYI, boot_command_line[] is mixture of built-in cmdline string with
-> bootloader cmdline string.
 
-So if we also need to separate out the CONFIG_CMDLINE arguments, then
-/proc/cmdline_load will need to come from some string saved off before
-the CONFIG_CMDLINE processing, correct?  I would expect that to be a
-separate patch series, but if it is needed, I would be happy to look
-into setting it up, as long as I am in the area.
+vim +/i +1869 drivers/net/dsa/qca/qca8k-8xxx.c
 
-My tests indicate that boot_command_line[] doesn't contain any bootconfig
-(and opposed to CONFIG_CMDLINE) arguments, but I could easily have missed
-some other corner-case configuration.
+  1798	
+  1799	static int
+  1800	qca8k_setup(struct dsa_switch *ds)
+  1801	{
+  1802		struct qca8k_priv *priv = ds->priv;
+  1803		int cpu_port, ret, port;
+  1804		struct dsa_port *dp;
+  1805		u32 mask;
+  1806	
+  1807		cpu_port = qca8k_find_cpu_port(ds);
+  1808		if (cpu_port < 0) {
+  1809			dev_err(priv->dev, "No cpu port configured in both cpu port0 and port6");
+  1810			return cpu_port;
+  1811		}
+  1812	
+  1813		/* Parse CPU port config to be later used in phy_link mac_config */
+  1814		ret = qca8k_parse_port_config(priv);
+  1815		if (ret)
+  1816			return ret;
+  1817	
+  1818		ret = qca8k_setup_mdio_bus(priv);
+  1819		if (ret)
+  1820			return ret;
+  1821	
+  1822		ret = qca8k_setup_of_pws_reg(priv);
+  1823		if (ret)
+  1824			return ret;
+  1825	
+  1826		ret = qca8k_setup_mac_pwr_sel(priv);
+  1827		if (ret)
+  1828			return ret;
+  1829	
+  1830		ret = qca8k_setup_led_ctrl(priv);
+  1831		if (ret)
+  1832			return ret;
+  1833	
+  1834		qca8k_setup_pcs(priv, &priv->pcs_port_0, 0);
+  1835		qca8k_setup_pcs(priv, &priv->pcs_port_6, 6);
+  1836	
+  1837		/* Make sure MAC06 is disabled */
+  1838		ret = regmap_clear_bits(priv->regmap, QCA8K_REG_PORT0_PAD_CTRL,
+  1839					QCA8K_PORT0_PAD_MAC06_EXCHANGE_EN);
+  1840		if (ret) {
+  1841			dev_err(priv->dev, "failed disabling MAC06 exchange");
+  1842			return ret;
+  1843		}
+  1844	
+  1845		/* Enable CPU Port */
+  1846		ret = regmap_set_bits(priv->regmap, QCA8K_REG_GLOBAL_FW_CTRL0,
+  1847				      QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
+  1848		if (ret) {
+  1849			dev_err(priv->dev, "failed enabling CPU port");
+  1850			return ret;
+  1851		}
+  1852	
+  1853		/* Enable MIB counters */
+  1854		ret = qca8k_mib_init(priv);
+  1855		if (ret)
+  1856			dev_warn(priv->dev, "mib init failed");
+  1857	
+  1858		/* Initial setup of all ports */
+  1859		dsa_switch_for_each_port(dp, ds) {
+  1860			port = dp->index;
+  1861	
+  1862			/* Disable forwarding by default on all ports */
+  1863			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port),
+  1864					QCA8K_PORT_LOOKUP_MEMBER, 0);
+  1865			if (ret)
+  1866				return ret;
+  1867	
+  1868			/* Disable MAC by default on all user ports */
+> 1869			if (dsa_is_user_port(ds, i))
+  1870				qca8k_port_set_status(priv, port, 0);
+  1871		}
+  1872	
+  1873		/* Enable QCA header mode on all cpu ports */
+  1874		dsa_switch_for_each_cpu_port(dp, ds) {
+  1875			port = dp->index;
+  1876	
+  1877			ret = qca8k_write(priv, QCA8K_REG_PORT_HDR_CTRL(port),
+  1878					  FIELD_PREP(QCA8K_PORT_HDR_CTRL_TX_MASK, QCA8K_PORT_HDR_CTRL_ALL) |
+  1879					  FIELD_PREP(QCA8K_PORT_HDR_CTRL_RX_MASK, QCA8K_PORT_HDR_CTRL_ALL));
+  1880			if (ret) {
+  1881				dev_err(priv->dev, "failed enabling QCA header mode on port %d", port);
+  1882				return ret;
+  1883			}
+  1884		}
+  1885	
+  1886		/* Forward all unknown frames to CPU port for Linux processing
+  1887		 * Notice that in multi-cpu config only one port should be set
+  1888		 * for igmp, unknown, multicast and broadcast packet
+  1889		 */
+  1890		ret = qca8k_write(priv, QCA8K_REG_GLOBAL_FW_CTRL1,
+  1891				  FIELD_PREP(QCA8K_GLOBAL_FW_CTRL1_IGMP_DP_MASK, BIT(cpu_port)) |
+  1892				  FIELD_PREP(QCA8K_GLOBAL_FW_CTRL1_BC_DP_MASK, BIT(cpu_port)) |
+  1893				  FIELD_PREP(QCA8K_GLOBAL_FW_CTRL1_MC_DP_MASK, BIT(cpu_port)) |
+  1894				  FIELD_PREP(QCA8K_GLOBAL_FW_CTRL1_UC_DP_MASK, BIT(cpu_port)));
+  1895		if (ret)
+  1896			return ret;
+  1897	
+  1898		/* CPU port gets connected to all user ports of the switch */
+  1899		ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(cpu_port),
+  1900				QCA8K_PORT_LOOKUP_MEMBER, dsa_user_ports(ds));
+  1901		if (ret)
+  1902			return ret;
+  1903	
+  1904		/* Setup connection between CPU port & user ports
+  1905		 * Individual user ports get connected to CPU port only
+  1906		 */
+  1907		dsa_switch_for_each_user_port(dp, ds) {
+  1908			port = dp->index;
+  1909	
+  1910			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port),
+  1911					QCA8K_PORT_LOOKUP_MEMBER,
+  1912					BIT(cpu_port));
+  1913			if (ret)
+  1914				return ret;
+  1915	
+  1916			ret = regmap_clear_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(port),
+  1917						QCA8K_PORT_LOOKUP_LEARN);
+  1918			if (ret)
+  1919				return ret;
+  1920	
+  1921			/* For port based vlans to work we need to set the
+  1922			 * default egress vid
+  1923			 */
+  1924			ret = qca8k_rmw(priv, QCA8K_EGRESS_VLAN(port),
+  1925					QCA8K_EGREES_VLAN_PORT_MASK(port),
+  1926					QCA8K_EGREES_VLAN_PORT(port, QCA8K_PORT_VID_DEF));
+  1927			if (ret)
+  1928				return ret;
+  1929	
+  1930			ret = qca8k_write(priv, QCA8K_REG_PORT_VLAN_CTRL0(port),
+  1931					  QCA8K_PORT_VLAN_CVID(QCA8K_PORT_VID_DEF) |
+  1932					  QCA8K_PORT_VLAN_SVID(QCA8K_PORT_VID_DEF));
+  1933			if (ret)
+  1934				return ret;
+  1935		}
+  1936	
+  1937		/* The port 5 of the qca8337 have some problem in flood condition. The
+  1938		 * original legacy driver had some specific buffer and priority settings
+  1939		 * for the different port suggested by the QCA switch team. Add this
+  1940		 * missing settings to improve switch stability under load condition.
+  1941		 * This problem is limited to qca8337 and other qca8k switch are not affected.
+  1942		 */
+  1943		if (priv->switch_id == QCA8K_ID_QCA8337)
+  1944			dsa_switch_for_each_available_port(dp, ds)
+  1945				qca8k_setup_hol_fixup(priv, dp->index);
+  1946	
+  1947		/* Special GLOBAL_FC_THRESH value are needed for ar8327 switch */
+  1948		if (priv->switch_id == QCA8K_ID_QCA8327) {
+  1949			mask = QCA8K_GLOBAL_FC_GOL_XON_THRES(288) |
+  1950			       QCA8K_GLOBAL_FC_GOL_XOFF_THRES(496);
+  1951			qca8k_rmw(priv, QCA8K_REG_GLOBAL_FC_THRESH,
+  1952				  QCA8K_GLOBAL_FC_GOL_XON_THRES_MASK |
+  1953				  QCA8K_GLOBAL_FC_GOL_XOFF_THRES_MASK,
+  1954				  mask);
+  1955		}
+  1956	
+  1957		/* Setup our port MTUs to match power on defaults */
+  1958		ret = qca8k_write(priv, QCA8K_MAX_FRAME_SIZE, ETH_FRAME_LEN + ETH_FCS_LEN);
+  1959		if (ret)
+  1960			dev_warn(priv->dev, "failed setting MTU settings");
+  1961	
+  1962		/* Flush the FDB table */
+  1963		qca8k_fdb_flush(priv);
+  1964	
+  1965		/* Set min a max ageing value supported */
+  1966		ds->ageing_time_min = 7000;
+  1967		ds->ageing_time_max = 458745000;
+  1968	
+  1969		/* Set max number of LAGs supported */
+  1970		ds->num_lag_ids = QCA8K_NUM_LAGS;
+  1971	
+  1972		return 0;
+  1973	}
+  1974	
 
-And thank you for looking this over!
-
-							Thanx, Paul
-
-> >  extern char *saved_command_line;
-> >  extern unsigned int saved_command_line_len;
-> >  extern unsigned int reset_devices;
-> > diff --git a/init/main.c b/init/main.c
-> > index ad920fac325c..2121685c479a 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
-> >  void (*__initdata late_time_init)(void);
-> >  
-> >  /* Untouched command line saved by arch-specific code. */
-> > -char __initdata boot_command_line[COMMAND_LINE_SIZE];
-> > +char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
-> >  /* Untouched saved command line (eg. for /proc) */
-> >  char *saved_command_line __ro_after_init;
-> >  unsigned int saved_command_line_len __ro_after_init;
-> > -- 
-> > 2.40.1
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
