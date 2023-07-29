@@ -2,175 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64954767CAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 08:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651D6767CAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 08:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbjG2G7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 02:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        id S236570AbjG2G7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 02:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjG2G7D (ORCPT
+        with ESMTP id S229685AbjG2G7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 02:59:03 -0400
+        Sat, 29 Jul 2023 02:59:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7FC4211
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 23:59:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD18649EB;
+        Fri, 28 Jul 2023 23:59:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC2116068C
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 06:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C40C433C8;
-        Sat, 29 Jul 2023 06:58:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CA1660766;
+        Sat, 29 Jul 2023 06:59:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829E0C433C7;
+        Sat, 29 Jul 2023 06:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690613941;
-        bh=MQ5sX5BNVLtCUJ5SoZaQ2/ejVdHwvmb5bb41ld3hbAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TOv3AI7l4GXLDwbgcI5zIbdmjg8k8wNj1IsITudj8j6uVtJEqAAKSlzMGr/5Xr8Sn
-         MeiCoDjZe9pNSmuVZVt4g/Da1qhUZs35j3l2MVV7ly1b+rAdc9PFsfc6H6PJFLYsxS
-         2UJPj46MmitJCclymRUGkWtjybclbT5tAv3a8I76gVS5rXyFuUJ7FUW26nGfYDKdUL
-         63lHSXBkTT0dETSvyD0J8DU8fVQ1QTtmqvDSpU5jkr2Hw0BxjGsHgjHVdAMsvnE//1
-         9nXjyBqPxMqgPNHcqnDLhWoDd4H2lrHm9nn8U3FfjkRYgNXmWjwj6xsXJYodr+wQBS
-         HeHEVV/3dVD/w==
-Date:   Sat, 29 Jul 2023 09:58:22 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com
-Subject: Re: [v1 4/6] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
-Message-ID: <20230729065822.GF1901145@kernel.org>
-References: <20230727204624.1942372-1-usama.arif@bytedance.com>
- <20230727204624.1942372-5-usama.arif@bytedance.com>
+        s=k20201202; t=1690613954;
+        bh=pH61JHyCnyY9RStw/F9+va8ZXuOwbbiiebLPqill1n0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=az+FzhTyIRfsDg6cCIJSp5wA/lSM6MNsVviNmMELnJGq4g+euILuU+o86NPIcamuy
+         GOR2GFFlvzrKdj5Mv/aDJMCJ3eAz2oNEnDcYyNiM37j/SoSSSAy0nRZTBCJ4EGUQWu
+         H0CURCOOE3VGyn2RYQip0d3Aip0Tik53a7SAB/nbxS8EiicwGFs1ctbOAM28pqCYTJ
+         xVPpRzJ4Nr7kA/+4Blu+nF8k6W+2WZkHfK19fdlgn7liQ5oeCAQa45YOhagx9Ou1dW
+         +BYz/RC3nbbW/wJRrNTS47epuws2A+b6rxYeNWUa5SYiSlEaqPLUctkPI9lWD5ilYg
+         81tvVHsrIURiQ==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56368c40e8eso1962291eaf.0;
+        Fri, 28 Jul 2023 23:59:14 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYiShmAZU+PBo/wBeprX3I6jX7aDRQrbdrI8ZVoyiPbtxwYZq+f
+        0PcjYau5qXWbMNl87P7eLX8Ef5oMWRRopygk1SU=
+X-Google-Smtp-Source: APBJJlGvd3PMN7Ht1B42qUs98OQA9vQ7tJHewBRhzNp/XTPhiOuUuzFjYheFXXnNgKJ47UruW+IkvVmpvqrXwb4qvRs=
+X-Received: by 2002:a4a:3457:0:b0:566:f9ff:57f with SMTP id
+ n23-20020a4a3457000000b00566f9ff057fmr4447885oof.8.1690613953808; Fri, 28 Jul
+ 2023 23:59:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727204624.1942372-5-usama.arif@bytedance.com>
+References: <20230725105827.1119167-1-james.clark@arm.com>
+In-Reply-To: <20230725105827.1119167-1-james.clark@arm.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 29 Jul 2023 15:58:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAST1bq=oLT9spUJ3tH+f1RKjG0N_hXh+K7juaS1XgpCRQ@mail.gmail.com>
+Message-ID: <CAK7LNAST1bq=oLT9spUJ3tH+f1RKjG0N_hXh+K7juaS1XgpCRQ@mail.gmail.com>
+Subject: Re: [PATCH v2] scripts/kallsyms: Fix build failure by setting errno
+ before calling getline()
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-kbuild@vger.kernel.org, miguel.ojeda.sandonis@gmail.com,
+        linux-kernel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicolas Schier <n.schier@avm.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:46:22PM +0100, Usama Arif wrote:
-> For reserved memory regions marked with this flag,
-> reserve_bootmem_region is not called during memmap_init_reserved_pages.
-> This can be used to avoid struct page initialization for
-> regions which won't need them, for e.g. hugepages with
-> HVO enabled.
-> 
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+On Tue, Jul 25, 2023 at 7:58=E2=80=AFPM James Clark <james.clark@arm.com> w=
+rote:
+>
+> getline() returns -1 at EOF as well as on error. It also doesn't set
+> errno to 0 on success, so initialize it to 0 before using errno to check
+> for an error condition. See the paragraph here [1]:
+>
+>   For some system calls and library functions (e.g., getpriority(2)),
+>   -1 is a valid return on success. In such cases, a successful return
+>   can be distinguished from an error return by setting errno to zero
+>   before the call, and then, if the call returns a status that indicates
+>   that an error may have occurred, checking to see if errno has a
+>   nonzero value.
+>
+> Bear has a bug [2] that launches processes with errno set and causes the
+> following build failure:
+>
+>  $ bear -- make LLVM=3D1
+>  ...
+>   LD      .tmp_vmlinux.kallsyms1
+>   NM      .tmp_vmlinux.kallsyms1.syms
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>  read_symbol: Invalid argument
+>
+> [1]: https://linux.die.net/man/3/errno
+> [2]: https://github.com/rizsotto/Bear/issues/469
+>
+> Fixes: 1c975da56a6f ("scripts/kallsyms: remove KSYM_NAME_LEN_BUFFER")
+> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: James Clark <james.clark@arm.com>
+
+Applied to linux-kbuild/fixes.
+Thanks.
+
+
 > ---
->  include/linux/memblock.h |  7 +++++++
->  mm/memblock.c            | 32 ++++++++++++++++++++++++++------
->  2 files changed, 33 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-> index f71ff9f0ec81..7f9d06c08592 100644
-> --e a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -47,6 +47,7 @@ enum memblock_flags {
->  	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
->  	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
->  	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
-> +	MEMBLOCK_RSRV_NOINIT	= 0x10,	/* don't call reserve_bootmem_region for this region */
+>  scripts/kallsyms.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+> index 16c87938b316..653b92f6d4c8 100644
+> --- a/scripts/kallsyms.c
+> +++ b/scripts/kallsyms.c
+> @@ -129,6 +129,7 @@ static struct sym_entry *read_symbol(FILE *in, char *=
+*buf, size_t *buf_len)
+>         ssize_t readlen;
+>         struct sym_entry *sym;
+>
+> +       errno =3D 0;
+>         readlen =3D getline(buf, buf_len, in);
+>         if (readlen < 0) {
+>                 if (errno) {
+> --
+> 2.34.1
+>
 
-The comment should reflect what it does, not how.
 
->  };
->  
->  /**
-> @@ -125,6 +126,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
->  int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
->  int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
-> +int memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size);
-
-Please spell out reserved here.
-
->  void memblock_free_all(void);
->  void memblock_free(void *ptr, size_t size);
-> @@ -259,6 +261,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
->  	return m->flags & MEMBLOCK_NOMAP;
->  }
->  
-> +static inline bool memblock_is_noinit(struct memblock_region *m)
-> +{
-> +	return m->flags & MEMBLOCK_RSRV_NOINIT;
-> +}
-> +
->  static inline bool memblock_is_driver_managed(struct memblock_region *m)
->  {
->  	return m->flags & MEMBLOCK_DRIVER_MANAGED;
-> diff --git a/mm/memblock.c b/mm/memblock.c
-> index 4fd431d16ef2..3a15708af3b6 100644
-> --- a/mm/memblock.c
-> +++ b/mm/memblock.c
-> @@ -997,6 +997,22 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
->  	return memblock_setclr_flag(base, size, 0, MEMBLOCK_NOMAP, 0);
->  }
->  
-> +/**
-> + * memblock_rsrv_mark_noinit - Mark a reserved memory region with flag MEMBLOCK_RSRV_NOINIT.
-> + * @base: the base phys addr of the region
-> + * @size: the size of the region
-> + *
-> + * For memory regions marked with %MEMBLOCK_RSRV_NOINIT, reserve_bootmem_region
-> + * is not called during memmap_init_reserved_pages, hence struct pages are not
-> + * initialized for this region.
-
-Here as well, the part of how is much less important. Here you should
-emphasize that struct pages for MEMBLOCK_RSRV_NOINIT regions are not
-initialized.
-
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +int __init_memblock memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size)
-> +{
-> +	return memblock_setclr_flag(base, size, 1, MEMBLOCK_RSRV_NOINIT, 1);
-> +}
-> +
->  static bool should_skip_region(struct memblock_type *type,
->  			       struct memblock_region *m,
->  			       int nid, int flags)
-> @@ -2113,13 +2129,17 @@ static void __init memmap_init_reserved_pages(void)
->  		memblock_set_node(start, end, &memblock.reserved, nid);
->  	}
->  
-> -	/* initialize struct pages for the reserved regions */
-> +	/*
-> +	 * initialize struct pages for reserved regions that don't have
-> +	 * the MEMBLOCK_RSRV_NOINIT flag set
-> +	 */
->  	for_each_reserved_mem_region(region) {
-> -		nid = memblock_get_region_node(region);
-> -		start = region->base;
-> -		end = start + region->size;
-> -
-> -		reserve_bootmem_region(start, end, nid);
-> +		if (!memblock_is_noinit(region)) {
-> +			nid = memblock_get_region_node(region);
-> +			start = region->base;
-> +			end = start + region->size;
-
-Please keep the empty line here
-  
-> +			reserve_bootmem_region(start, end, nid);
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+--=20
+Best Regards
+Masahiro Yamada
