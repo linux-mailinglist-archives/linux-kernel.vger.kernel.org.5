@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4B77681BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 22:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23E27681D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 22:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjG2ULW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 16:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S229555AbjG2Uhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 16:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG2ULV (ORCPT
+        with ESMTP id S229379AbjG2Uhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 16:11:21 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCFCE7E
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 13:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690661480; x=1722197480;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UQVRhJxucWrKnCrw3aGUsQGNQTJMn89/PCfjpp1jKwI=;
-  b=WcHFUzsnpCURfXE0KRgp27xxwnMVD8oXtijqvirWeY+Tzwaka2wypcyf
-   jbCdEb+6jxxzTa98D+QUErcMKdu5Kt1+k/eskmA8I2tHsUqpdJ9/pKIQd
-   S9QM/nE3r+Go/dcHzJjXlFNioWHG1TLcjcVHRjvOsWRajeCECFgmSjffi
-   TJEbk4XU9CiiBFBgn7WO/An4BIecYsSzTxipn8elQOFzaeU1QfAY7jmDB
-   Kk4lcfNbBq+lUuOa8ISwwbDvEK3Xfvky50gWBKrLWj1LP/rYvALcjQ7GP
-   XwbC1MTwxwHkHUj9U/Aetabh/Q1d8aXK8ENHHBZ5poDCNso4Rrs8f58Px
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="358819792"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="358819792"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 13:11:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="721616216"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="721616216"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 29 Jul 2023 13:11:18 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPqHV-0004HX-2r;
-        Sat, 29 Jul 2023 20:11:17 +0000
-Date:   Sun, 30 Jul 2023 04:10:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [paulmck-rcu:dev.2023.07.26a 16/28] include/linux/init.h:149:33:
- error: expected '=', ',', ';', 'asm' or '__attribute__' before
- '__ro_after_init'
-Message-ID: <202307300438.iREjlfde-lkp@intel.com>
+        Sat, 29 Jul 2023 16:37:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC5AC7;
+        Sat, 29 Jul 2023 13:37:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A4476027E;
+        Sat, 29 Jul 2023 20:37:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B73C433C7;
+        Sat, 29 Jul 2023 20:37:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690663057;
+        bh=iMknI2mssvMpvNEEtPFsjpKnh0+OEHxOEdyJZpeCgHY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vFJySY2rk1//Bkt9H41fBKeJvOhjKt9m7pNLfcYd/YbXNoDwBUj2HavpAFun6VP8b
+         fpqIbkQKa9JyY+9FArMVz3l5JUe+ji6L2OwZA4tOjXV8DBcT53kkP+kdJN+7rnGOgJ
+         OHMq25YIkjtAIVhX71U9KccUySxnQwKh+gOANdDqlB+MqQ2dzQ9CwGpfpDGTdumfsq
+         yVynLsLCQiJ3nHfOvA3dswClNDRjCrA4gGnrJ1mf5h5HnSXLHqmKThXGFP4U9BVWgG
+         XP18+zQi8wTYIR2MG3bVK9SM43+WIrj2jk9NogyN69sz8qGzCSgQOHGmuOiqiWslzu
+         Nq/Xps6fD3aVQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] mm/damon/core: fix unitialized memory error from
+Date:   Sat, 29 Jul 2023 20:37:31 +0000
+Message-Id: <20230729203733.38949-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.07.26a
-head:   709a917710dc01798e01750ea628ece4bfc42b7b
-commit: de2f542cfbec295ac0f9b6a832d7b3ba20df391f [16/28] fs/proc: Add /proc/cmdline_load for boot loader arguments
-config: parisc64-alldefconfig (https://download.01.org/0day-ci/archive/20230730/202307300438.iREjlfde-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230730/202307300438.iREjlfde-lkp@intel.com/reproduce)
+damos_new_filter() is returning a damos_filter struct without
+initializing its ->list field.  And the users of the function uses the
+struct without initializing the field.  As a result, uninitialized
+memory access error is possible.  Actually, a kernel NULL pointer
+dereference BUG can be triggered using DAMON user-space tool, like
+below.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307300438.iREjlfde-lkp@intel.com/
+    # damo start --damos_action stat --damos_filter anon matching
+    # damo tune --damos_action stat --damos_filter anon matching --damos_filter anon nomatching
+    # dmesg
+    [...]
+    [   36.908136] BUG: kernel NULL pointer dereference, address: 0000000000000008
+    [   36.910483] #PF: supervisor write access in kernel mode
+    [   36.912238] #PF: error_code(0x0002) - not-present page
+    [   36.913415] PGD 0 P4D 0
+    [   36.913978] Oops: 0002 [#1] PREEMPT SMP PTI
+    [   36.914878] CPU: 32 PID: 1335 Comm: kdamond.0 Not tainted 6.5.0-rc3-mm-unstable-damon+ #1
+    [   36.916621] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+    [   36.919051] RIP: 0010:damos_destroy_filter (include/linux/list.h:114 include/linux/list.h:137 include/linux/list.h:148 mm/damon/core.c:345 mm/damon/core.c:355)
+    [...]
+    [   36.938247] Call Trace:
+    [   36.938721]  <TASK>
+    [...]
+    [   36.950064] ? damos_destroy_filter (include/linux/list.h:114 include/linux/list.h:137 include/linux/list.h:148 mm/damon/core.c:345 mm/damon/core.c:355)
+    [   36.950883] ? damon_sysfs_set_scheme_filters.isra.0 (mm/damon/sysfs-schemes.c:1573)
+    [   36.952019] damon_sysfs_set_schemes (mm/damon/sysfs-schemes.c:1674 mm/damon/sysfs-schemes.c:1686)
+    [   36.952875] damon_sysfs_apply_inputs (mm/damon/sysfs.c:1312 mm/damon/sysfs.c:1298)
+    [   36.953757] ? damon_pa_check_accesses (mm/damon/paddr.c:168 mm/damon/paddr.c:179)
+    [   36.954648] damon_sysfs_cmd_request_callback (mm/damon/sysfs.c:1329 mm/damon/sysfs.c:1359)
+    [...]
 
-Note: the paulmck-rcu/dev.2023.07.26a HEAD 709a917710dc01798e01750ea628ece4bfc42b7b builds fine.
-      It only hurts bisectability.
+The first patch of this patchset fixes the bug by initializing the field in
+damos_new_filter().  The second patch adds a unit test for the problem.
+Note that the second patch Cc stable@ without Fixes: tag, since it would
+be better to be ingested together for avoiding any future regression.
 
-All error/warnings (new ones prefixed by >>):
+SeongJae Park (2):
+  mm/damon/core: initialize damo_filter->list from damos_new_filter()
+  mm/damon/core-test: add a test for damos_new_filter()
 
-   In file included from arch/parisc/include/asm/alternative.h:18,
-                    from arch/parisc/include/asm/cache.h:9,
-                    from include/linux/cache.h:6,
-                    from include/linux/jiffies.h:5,
-                    from init/calibrate.c:8:
->> include/linux/init.h:149:33: error: expected '=', ',', ';', 'asm' or '__attribute__' before '__ro_after_init'
-     149 | extern char boot_command_line[] __ro_after_init;
-         |                                 ^~~~~~~~~~~~~~~
---
-   In file included from arch/parisc/include/asm/page.h:23,
-                    from include/linux/generic-radix-tree.h:39,
-                    from lib/generic-radix-tree.c:3:
->> arch/parisc/include/asm/cache.h:23: warning: "ARCH_DMA_MINALIGN" redefined
-      23 | #define ARCH_DMA_MINALIGN       L1_CACHE_BYTES
-         | 
-   In file included from include/linux/init.h:116,
-                    from arch/parisc/include/asm/alternative.h:18,
-                    from arch/parisc/include/asm/cache.h:9:
-   include/linux/cache.h:104: note: this is the location of the previous definition
-     104 | #define ARCH_DMA_MINALIGN __alignof__(unsigned long long)
-         | 
->> arch/parisc/include/asm/cache.h:25: warning: "__read_mostly" redefined
-      25 | #define __read_mostly __section(".data..read_mostly")
-         | 
-   include/linux/cache.h:28: note: this is the location of the previous definition
-      28 | #define __read_mostly
-         | 
-
-
-vim +149 include/linux/init.h
-
-   146	
-   147	/* Defined in init/main.c */
-   148	extern int do_one_initcall(initcall_t fn);
- > 149	extern char boot_command_line[] __ro_after_init;
-   150	extern char *saved_command_line;
-   151	extern unsigned int saved_command_line_len;
-   152	extern unsigned int reset_devices;
-   153	
+ mm/damon/core-test.h | 13 +++++++++++++
+ mm/damon/core.c      |  1 +
+ 2 files changed, 14 insertions(+)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
