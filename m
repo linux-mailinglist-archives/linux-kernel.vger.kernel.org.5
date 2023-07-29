@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B49D767B77
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 04:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA09767B7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 04:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbjG2CLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 22:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S230411AbjG2CWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 22:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjG2CLF (ORCPT
+        with ESMTP id S229509AbjG2CWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 22:11:05 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B284498;
-        Fri, 28 Jul 2023 19:11:03 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RCScL4QvvzVjr7;
-        Sat, 29 Jul 2023 10:09:22 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 29 Jul 2023 10:11:00 +0800
-Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event()
- helper
-To:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>,
-        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
-        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
-        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-3-yangjihong1@huawei.com>
- <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
- <993bd68c-c0ec-4960-d3b0-bd2dbda82402@huawei.com>
- <CAP-5=fXmpaKrVLifHh5H7Lf_nhNLGWFS0=CLRT2yHK5guReNGA@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <ff345f02-cebd-9e76-b15c-e07249f516f1@huawei.com>
-Date:   Sat, 29 Jul 2023 10:10:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Fri, 28 Jul 2023 22:22:06 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAC44699
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 19:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690597325; x=1722133325;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ZIJtkSFP4C1Jdyx5k7KpDlEks33oF6Mr+AuBW9d9A0U=;
+  b=WT5Oaz6oma9+x+CRE413jJHRdAPG/NujAWF8f2YhmCRfb2flI5fNjdxU
+   /SGXYdiZXYz/3Seahg6GSJKPWG6bgLAINih6ZRPXYKRhkfeweSMFFQk1l
+   4YZ8/HdsaPxbH92l3P19lsiAVbP4L9eUJOn1SJ9hrccHvJvJ03naAgUxe
+   xl4ExMh8M7pNRNS9mnFM4trlJTfYGfsdMwr7kZdaR29njqllTT7Q1l0k3
+   zRTwKnknPUBpXyUxJn8k4/7Y2FhKywzcNPJ6DgrthnwhHBf/cyGGAIDjZ
+   Nm4ST5q2bD+xvCpHkdaKMFCJGtDqsA99rPWUecL+4yln2ARScz9+Vgn4V
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="358752701"
+X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
+   d="scan'208";a="358752701"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 19:22:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="762768503"
+X-IronPort-AV: E=Sophos;i="6.01,239,1684825200"; 
+   d="scan'208";a="762768503"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 28 Jul 2023 19:21:45 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPZaS-0003l5-15;
+        Sat, 29 Jul 2023 02:21:44 +0000
+Date:   Sat, 29 Jul 2023 10:21:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: arch/mips/kernel/jump_label.c:93:6: warning: no previous prototype
+ for function 'jump_label_apply_nops'
+Message-ID: <202307291002.3EsIxC16-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXmpaKrVLifHh5H7Lf_nhNLGWFS0=CLRT2yHK5guReNGA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Ard,
 
-On 2023/7/29 0:40, Ian Rogers wrote:
-> On Thu, Jul 20, 2023 at 12:24 AM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->> Hello,
->>
->> On 2023/7/20 0:44, Ian Rogers wrote:
->>> On Fri, Jul 14, 2023 at 8:31 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
->>>> tracking to the evlist. We may need to search for the dummy event for
->>>> some settings. Therefore, add evlist__findnew_tracking_event() helper.
->>>>
->>>> evlist__findnew_tracking_event() also deal with system_wide maps if
->>>> system_wide is true.
->>>
->>> I'm wondering if we can simplify the naming in the API, we have "dummy
->>> event" which makes sense as we literally call the event "dummy",
->>> "sideband" which refers to the kind of samples/events the dummy event
->>> will record but "tracking" I think tends to get used as a verb rather
->>> than a noun. So I think evlist__findnew_tracking_event should be
->>> evlist__findnew_dummy_event.
->>>
->> Uh, from the discussion that followed, it seems that there is no
->> consensus yet...
->> If there is a clear consensus on whether to use "dummy event" or
->> "tracking event", I will change the name of the API.
->>
->> I think sideband event is equivalent to tracking event (refer
->> evsel__config(), tracking events include task, mmap, mmap2, and comm
->> sideband events, which are all sideband).
->>
->> tracking event are instances of dummy event. For example, we create
->> another dummy event to record the text poke event of ksymbol (refer perf
->> record --kcore).
->>
->> An evlist contains only one tracking event, but can contain multiple
->> dummy events.
-> 
-> Thanks for the feedback. So the tracking event is by definition the
-> first dummy event in the evlist? What is the purpose of the other
-Uh... It may not be the first dummy event, but evsel->track must be 
-true. Only one evsel in an evlist meets this condition.
+FYI, the error/warning still remains.
 
-> dummy events in this case? Perhaps we can get to an intention
-> revealing implementation something like:
-> 
-> /** The "tracking event" gathering sideband data is the first dummy
-> event in the list. */
-> struct evsel *evlist__findnew_tracking_event(struct evlist *evlist)
-> {
->     struct evsel *dummy = evlist__find_first_dummy_event(evlist);
-> 
->     if (!dummy) {
->        dummy = evlist__add_dummy(evlist);
->     }
->     return dummy;
-> }
-> 
-> But I think the key thing for me is I'm still not sure what is going
-> on when there are multiple dummy events for you, what are the other
-> dummy events for other than tracking sideband data?
-> 
-For other dummy events, perf record will open a dummy event to track 
-ksymbol text_poke when "--kcore" option is used.
-I thinks tracking ksymbol text_poke separately it needs to be processed 
-independently, go system_wide and enable immediately.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   122e7943b252fcf48b4d085dec084e24fc8bec45
+commit: fdfd42892f311e2b3695852036e5be23661dc590 jump_label: mips: move module NOP patching into arch code
+date:   1 year, 1 month ago
+config: mips-randconfig-r024-20230729 (https://download.01.org/0day-ci/archive/20230729/202307291002.3EsIxC16-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307291002.3EsIxC16-lkp@intel.com/reproduce)
 
-All of the above is my understanding, may need Adrian to confirm whether 
-it is accurate.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307291002.3EsIxC16-lkp@intel.com/
 
-Thanks,
-Yang
+All warnings (new ones prefixed by >>):
+
+>> arch/mips/kernel/jump_label.c:93:6: warning: no previous prototype for function 'jump_label_apply_nops' [-Wmissing-prototypes]
+      93 | void jump_label_apply_nops(struct module *mod)
+         |      ^
+   arch/mips/kernel/jump_label.c:93:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      93 | void jump_label_apply_nops(struct module *mod)
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +/jump_label_apply_nops +93 arch/mips/kernel/jump_label.c
+
+    91	
+    92	#ifdef CONFIG_MODULES
+  > 93	void jump_label_apply_nops(struct module *mod)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
