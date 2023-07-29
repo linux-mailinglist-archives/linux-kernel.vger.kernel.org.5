@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB26767F9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1DD767F9F
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjG2NpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S230212AbjG2NpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjG2NpC (ORCPT
+        with ESMTP id S231270AbjG2NpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:45:02 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B403C0F;
-        Sat, 29 Jul 2023 06:44:36 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so2249922b3a.0;
-        Sat, 29 Jul 2023 06:44:36 -0700 (PDT)
+        Sat, 29 Jul 2023 09:45:03 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB6944B7;
+        Sat, 29 Jul 2023 06:44:37 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686efdeabaeso2056360b3a.3;
+        Sat, 29 Jul 2023 06:44:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638248; x=1691243048;
+        d=gmail.com; s=20221208; t=1690638251; x=1691243051;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hAMZeTLVAgGBjYw/Qy9oKOGHVaZa0ru6l71KEWlh754=;
-        b=aGZ7+1O/Lm5fD/inkHAIhzdjMLy0nh6VW9eqVximCFmZafhA9X+VeREObj7125lyF7
-         0bP9PuuM9kt640YRnxkNn+cmLvJBWsWEuU5pnxbLKAnxjzyRkvqT5MuTAmlyE9iPeIP+
-         d8VKF5PYs4W+dzOHzQ3IqsgW+ymF/ITBT+2peWqB6v4ke+Hvdk7VWz9GS6WfXgqGvC+b
-         o10OWPmIbgHvbtimSqfKBB+AcQdgRoRgMxWRBbGC/bPyGVZk82iYAYKqCD1vt8dtdaYW
-         AAnd3VwKuvSqeheK7TgwULC/QmUUcMYd5tR4TPl9mCA947mM1qXV+Zz2GZhRGH6gGQuY
-         5J1w==
+        bh=OUGEXW4DwSyYOcjUa9J13P2442xDIu3qgDD1y6kZszU=;
+        b=J0qayWk0rl4r00wHsAONhn1p7jYf9BxkqQsca506iY58Ln+gjRCFO1kT/YB7+u3ML0
+         GhJPBC4MDgkyeo4uAbNFFP2HRRWZioLuVXyIMWEqPd3dvJBvQh+Hp3kj4vIbSC2fbcT4
+         AVWfQ4TrJjTsw1sqhldvwOHOWcewg1/EE1T2pQe8z0JN8bCQiBsNNGb3KMHfRkCJSO2+
+         HvbeXZ/NMWSyxd8zca38XHfjUbjTmKsEITWy/56YdHerNn/qdEUz2NMHZd+2Sy/FXYqk
+         3g9bdt534dd4AXUfmEdkxPxQeyZAse/85lCbBNot5ZSwfmzwxGBKhC7EzHda1CgBEKpu
+         JvPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638248; x=1691243048;
+        d=1e100.net; s=20221208; t=1690638251; x=1691243051;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hAMZeTLVAgGBjYw/Qy9oKOGHVaZa0ru6l71KEWlh754=;
-        b=ZNJKZSeMd6KsXJWQN4HKl8OqWDIbpwDl9stc/ZWC1yiOr9tc0p0O79z423vJ5XTCbE
-         Mvs57cyyL3Yo9HP1y1bPDZ5NejnUsRsDr+4F/oqpzb2lO2ix8reJCtDEN4IzdyEna6GA
-         ImiOnvf2lxjTe9QbSTQ30DvPAbTcRxcB48IS5OkYudq2FausvjbhzdyBYQGCyvRV8Ghn
-         O3tGh8e/aGmU51xHa+yRHAM/0DIfX3aG8NyyeEcCNHFbopjYLbw5IYLHTxS1MWFU7TZS
-         eaxp0znntTcc3ADwpR9qj1wntAt/TAEV9pH3LUI/CgE5JfqUOIFPvETEPv7kJnY0f+B3
-         d5EA==
-X-Gm-Message-State: ABy/qLbDV0gpxT+gR3sPGcvi74//XoNdxzHlO+1fEYprznN51XEWT+/U
-        whWWFcIYKAFMujxSFKcSMgpqPj5eHuyY1A==
-X-Google-Smtp-Source: APBJJlFc1j3VZl5wVQuzPpI4DwjNKg2Py7dMiE9Bn5ejPj+FooTvvz+VP6zE5Yrj3OOn91NAtD99qQ==
-X-Received: by 2002:a05:6a00:194f:b0:667:85e6:4e9 with SMTP id s15-20020a056a00194f00b0066785e604e9mr5965561pfk.24.1690638247871;
-        Sat, 29 Jul 2023 06:44:07 -0700 (PDT)
+        bh=OUGEXW4DwSyYOcjUa9J13P2442xDIu3qgDD1y6kZszU=;
+        b=BnawKom6Wq3Qiw4qopOl9XYf5aXR/rAdac2cfomlQ9H5N6hCrVRO5P8JAeFtlZy5KI
+         vLqRpE1q5VEicDVh450/mbThPVDovf87wKwTmPSHsDf5PxeitXeMDBqT3LFPFgnBs2Di
+         ZAE6Z1Ex5104CGXmJVstObHbsQpJv1/ry1Vfz7CjGIq/9+ZI0JYbzbQc72/n2y1jWqFO
+         /i+xGX99Jozf/1W8JY5rxs+NH+8f92dPY9i+kRBlrtTH+LKUsMXPJukX4o3xFBK0iaLa
+         bRyAnSOixo02l4YBNR2sHTAj65bLBC4NB05YIUsoJTavufvLXed14et+4ePgN1XllZC4
+         AeQA==
+X-Gm-Message-State: ABy/qLZeaafBD9LYySX2tU+g7novUGWU8p7DnFM+NI0iq9r3PrUqKvCx
+        wL9N2h15c4faYoV7pn+tdVBK+V8X2smfYw==
+X-Google-Smtp-Source: APBJJlELwFC4WsN9k5NA9qez+HY7cULIknTU98f01DxzkDm1q5PtXPLWoKivHqoxRaEZ4+zI1sZSxA==
+X-Received: by 2002:a05:6a00:1ac9:b0:67e:4313:811e with SMTP id f9-20020a056a001ac900b0067e4313811emr5600773pfv.0.1690638250902;
+        Sat, 29 Jul 2023 06:44:10 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.44.05
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.44.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:44:07 -0700 (PDT)
+        Sat, 29 Jul 2023 06:44:10 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 10/17] MIPS: loongson32: Convert GPIO LED platform device to DT
-Date:   Sat, 29 Jul 2023 21:43:11 +0800
-Message-Id: <20230729134318.1694467-11-keguang.zhang@gmail.com>
+Subject: [PATCH 11/17] MIPS: loongson32: Convert USB host platform device to DT
+Date:   Sat, 29 Jul 2023 21:43:12 +0800
+Message-Id: <20230729134318.1694467-12-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
@@ -76,131 +76,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add GPIO LED device nodes for Loongson-1 boards,
+Add USB host device nodes for Loongson-1 boards,
 and drop the legacy platform devices and data accordingly.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 19 +++++++++++++++
- arch/mips/boot/dts/loongson/smartloong_1c.dts | 19 +++++++++++++++
- arch/mips/loongson32/ls1b/board.c             | 23 -------------------
- 3 files changed, 38 insertions(+), 23 deletions(-)
+ arch/mips/boot/dts/loongson/loongson1b.dtsi   | 20 +++++++++++++
+ arch/mips/boot/dts/loongson/loongson1c.dtsi   | 20 +++++++++++++
+ arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |  8 +++++
+ arch/mips/boot/dts/loongson/smartloong_1c.dts |  8 +++++
+ arch/mips/loongson32/common/platform.c        | 29 -------------------
+ arch/mips/loongson32/ls1b/board.c             |  1 -
+ 6 files changed, 56 insertions(+), 30 deletions(-)
 
+diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot/dts/loongson/loongson1b.dtsi
+index 7010d3f3511b..7b4914c358df 100644
+--- a/arch/mips/boot/dts/loongson/loongson1b.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
+@@ -82,6 +82,26 @@ clkc: clock-controller@1fe78030 {
+ };
+ 
+ &ahb {
++	ehci0: usb@1fe00000 {
++		compatible = "generic-ehci";
++		reg = <0x1fe00000 0x100>;
++
++		interrupt-parent = <&intc1>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
++
++		status = "disabled";
++	};
++
++	ohci0: usb@1fe08000 {
++		compatible = "generic-ohci";
++		reg = <0x1fe08000 0x100>;
++
++		interrupt-parent = <&intc1>;
++		interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
++
++		status = "disabled";
++	};
++
+ 	gmac1: ethernet@1fe20000 {
+ 		compatible = "snps,dwmac-3.70a";
+ 		reg = <0x1fe20000 0x10000>;
+diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot/dts/loongson/loongson1c.dtsi
+index a5bc2c5093ca..7204b829c801 100644
+--- a/arch/mips/boot/dts/loongson/loongson1c.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
+@@ -66,6 +66,26 @@ gpio3: gpio@1fd010cc {
+ 
+ 		ngpios = <32>;
+ 	};
++
++	ehci0: usb@1fe20000 {
++		compatible = "generic-ehci";
++		reg = <0x1fe20000 0x100>;
++
++		interrupt-parent = <&intc1>;
++		interrupts = <0 IRQ_TYPE_LEVEL_HIGH>;
++
++		status = "disabled";
++	};
++
++	ohci0: usb@1fe28000 {
++		compatible = "generic-ohci";
++		reg = <0x1fe28000 0x100>;
++
++		interrupt-parent = <&intc1>;
++		interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
++
++		status = "disabled";
++	};
+ };
+ 
+ &gpio0 {
 diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-index a43df21f2904..8ee76ecdafbb 100644
+index 8ee76ecdafbb..71838f867f8c 100644
 --- a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
 +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-@@ -5,6 +5,8 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/gpio/gpio.h>
-+
- #include "loongson1b.dtsi"
- 
- / {
-@@ -26,6 +28,23 @@ xtal: xtal {
- 		clock-output-names = "xtal";
- 		#clock-cells = <0>;
- 	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led9 {
-+			label = "led9";
-+			gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led6 {
-+			label = "led6";
-+			gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "nand-disk";
-+		};
-+
-+	};
+@@ -55,6 +55,14 @@ &gmac1 {
+ 	status = "okay";
  };
  
- &gmac0 {
++&ehci0 {
++	status = "okay";
++};
++
++&ohci0 {
++	status = "okay";
++};
++
+ &uart0 {
+ 	status = "okay";
+ };
 diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-index 2d8f304aa2c4..96387cc814ca 100644
+index 96387cc814ca..3277770c33fe 100644
 --- a/arch/mips/boot/dts/loongson/smartloong_1c.dts
 +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-@@ -5,6 +5,8 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/gpio/gpio.h>
-+
- #include "loongson1c.dtsi"
- 
- / {
-@@ -26,6 +28,23 @@ xtal: xtal {
- 		clock-output-names = "xtal";
- 		#clock-cells = <0>;
- 	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led0 {
-+			label = "led0";
-+			gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led1 {
-+			label = "led1";
-+			gpios = <&gpio1 21 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "nand-disk";
-+		};
-+
-+	};
+@@ -51,6 +51,14 @@ &gmac0 {
+ 	status = "okay";
  };
  
- &gmac0 {
-diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
-index baadc524cc88..4cad019d655f 100644
---- a/arch/mips/loongson32/ls1b/board.c
-+++ b/arch/mips/loongson32/ls1b/board.c
-@@ -12,27 +12,6 @@
++&ehci0 {
++	status = "okay";
++};
++
++&ohci0 {
++	status = "okay";
++};
++
+ &uart0 {
+ 	status = "okay";
+ };
+diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
+index 37302bcfb9ab..3b984c805eb0 100644
+--- a/arch/mips/loongson32/common/platform.c
++++ b/arch/mips/loongson32/common/platform.c
+@@ -16,35 +16,6 @@
  #include <nand.h>
- #include <platform.h>
+ #include <irq.h>
  
--static const struct gpio_led ls1x_gpio_leds[] __initconst = {
--	{
--		.name			= "LED9",
--		.default_trigger	= "heartbeat",
--		.gpio			= 38,
--		.active_low		= 1,
--		.default_state		= LEDS_GPIO_DEFSTATE_OFF,
--	}, {
--		.name			= "LED6",
--		.default_trigger	= "nand-disk",
--		.gpio			= 39,
--		.active_low		= 1,
--		.default_state		= LEDS_GPIO_DEFSTATE_OFF,
+-/* USB EHCI */
+-static u64 ls1x_ehci_dmamask = DMA_BIT_MASK(32);
+-
+-static struct resource ls1x_ehci_resources[] = {
+-	[0] = {
+-		.start	= LS1X_EHCI_BASE,
+-		.end	= LS1X_EHCI_BASE + SZ_32K - 1,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-	[1] = {
+-		.start	= LS1X_EHCI_IRQ,
+-		.flags	= IORESOURCE_IRQ,
 -	},
 -};
 -
--static const struct gpio_led_platform_data ls1x_led_pdata __initconst = {
--	.num_leds	= ARRAY_SIZE(ls1x_gpio_leds),
--	.leds		= ls1x_gpio_leds,
+-static struct usb_ehci_pdata ls1x_ehci_pdata = {
 -};
 -
- static struct platform_device *ls1b_platform_devices[] __initdata = {
- 	&ls1x_ehci_pdev,
- 	&ls1x_rtc_pdev,
-@@ -41,8 +20,6 @@ static struct platform_device *ls1b_platform_devices[] __initdata = {
- 
- static int __init ls1b_platform_init(void)
- {
--	gpio_led_register_device(-1, &ls1x_led_pdata);
+-struct platform_device ls1x_ehci_pdev = {
+-	.name		= "ehci-platform",
+-	.id		= -1,
+-	.num_resources	= ARRAY_SIZE(ls1x_ehci_resources),
+-	.resource	= ls1x_ehci_resources,
+-	.dev		= {
+-		.dma_mask = &ls1x_ehci_dmamask,
+-		.platform_data = &ls1x_ehci_pdata,
+-	},
+-};
 -
- 	return platform_add_devices(ls1b_platform_devices,
- 				   ARRAY_SIZE(ls1b_platform_devices));
- }
+ /* Real Time Clock */
+ struct platform_device ls1x_rtc_pdev = {
+ 	.name		= "ls1x-rtc",
+diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
+index 4cad019d655f..ecc405aa9016 100644
+--- a/arch/mips/loongson32/ls1b/board.c
++++ b/arch/mips/loongson32/ls1b/board.c
+@@ -13,7 +13,6 @@
+ #include <platform.h>
+ 
+ static struct platform_device *ls1b_platform_devices[] __initdata = {
+-	&ls1x_ehci_pdev,
+ 	&ls1x_rtc_pdev,
+ 	&ls1x_wdt_pdev,
+ };
 -- 
 2.39.2
 
