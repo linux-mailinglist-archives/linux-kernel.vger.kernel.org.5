@@ -2,188 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C711767C5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 07:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A4A767C6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 07:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbjG2FcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 01:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60430 "EHLO
+        id S235717AbjG2FuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 01:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjG2FcX (ORCPT
+        with ESMTP id S229469AbjG2FuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 01:32:23 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC8D49CA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 22:32:20 -0700 (PDT)
-Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 36T5WIF7088477;
-        Sat, 29 Jul 2023 14:32:18 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
- Sat, 29 Jul 2023 14:32:18 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 36T5V368088259
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 29 Jul 2023 14:31:03 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
-Date:   Sat, 29 Jul 2023 14:31:01 +0900
+        Sat, 29 Jul 2023 01:50:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EC44B7;
+        Fri, 28 Jul 2023 22:50:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E78E5601D7;
+        Sat, 29 Jul 2023 05:50:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D22FC433C8;
+        Sat, 29 Jul 2023 05:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690609802;
+        bh=v5hGWBiTSJxlL4QxQcZ8c+IeC6bh8js9tr3aOFwSrnk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CvMw+NEc9eDF8Uj98uBteDltkmPgxWI8iAVSBxwnPxKomZg+a5/joAtcnHkQ516ke
+         QZSKWTa++L0zF4l1ldf0O3hcFCngaVpw51l0NVTxJiGsEpXaIoJTnlFYjY1Y3zLUpw
+         b20WcdLoMg8fS0zf3o30Y947+TQ1UhrfDw4RG5V0eJ6/pylDeW848AirCR5HqLbNwi
+         i5wXbl/s6OsF3iZyu/A+Eq6kayYf3RKPFurBL17WN9bNtWrye7jflcKMTD6/2P1KI3
+         tiEONlnLSGhoX/vK3wVvjvgRR7+RmZRtnGVZzxJM8ihELRcB2ml4jZHGOsr65VFyCB
+         SLqU/Ao/3LJbA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C710ECE0ADE; Fri, 28 Jul 2023 22:50:01 -0700 (PDT)
+Date:   Fri, 28 Jul 2023 22:50:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+Message-ID: <aa4ea5e3-ca5f-4a52-b6d1-375233af4f3c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
+ <99B56FC7-9474-4968-B1DD-5862572FD0BA@joelfernandes.org>
+ <a174c501-48df-404e-ae61-10ddaeb8e557@paulmck-laptop>
+ <CAEXW_YS3hK8Y5TKCPvnNC9fsbmmMvcjx2f-G4uCXX=F2WNz-HQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
- in do_write_seqcount_begin_nested()
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-References: <20230623171232.892937-1-bigeasy@linutronix.de>
- <20230623171232.892937-2-bigeasy@linutronix.de>
- <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
- <20230626081254.XmorFrhs@linutronix.de> <ZJmkPuqpW-wQAyNz@alley>
- <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
- <20230727151029.e_M9bi8N@linutronix.de>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20230727151029.e_M9bi8N@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YS3hK8Y5TKCPvnNC9fsbmmMvcjx2f-G4uCXX=F2WNz-HQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,WEIRD_PORT
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
-> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
->>> Anyway, please do not do this change only because of printk().
->>> IMHO, the current ordering is more logical and the printk() problem
->>> should be solved another way.
->>
->> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
->> rejected.
+On Fri, Jul 28, 2023 at 09:25:35PM -0400, Joel Fernandes wrote:
+> On Fri, Jul 28, 2023 at 6:58 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > > On Fri, Jul 28, 2023 at 05:17:59PM -0400, Joel Fernandes wrote:
+> > >
+> > >   On Jul 27, 2023, at 7:18 PM, Joel Fernandes <joel@joelfernandes.org>
+> > >   wrote:
+> > >
+> > > ﻿
+> > >
+> > >   On Jul 27, 2023, at 4:33 PM, Paul E. McKenney <paulmck@kernel.org>
+> > >   wrote:
+> > >
+> > >   ﻿On Thu, Jul 27, 2023 at 10:39:17AM -0700, Guenter Roeck wrote:
+> > >
+> > >   On 7/27/23 09:07, Paul E. McKenney wrote:
+> > >
+> > >   ...]
+> > >
+> > >   No. However, (unrelated) in linux-next, rcu tests sometimes result
+> > >   in apparent hangs
+> > >
+> > >   or long runtime.
+> > >
+> > >   [    0.778841] Mount-cache hash table entries: 512 (order: 0, 4096
+> > >   bytes, linear)
+> > >
+> > >   [    0.779011] Mountpoint-cache hash table entries: 512 (order: 0,
+> > >   4096 bytes, linear)
+> > >
+> > >   [    0.797998] Running RCU synchronous self tests
+> > >
+> > >   [    0.798209] Running RCU synchronous self tests
+> > >
+> > >   [    0.912368] smpboot: CPU0: AMD Opteron 63xx class CPU (family:
+> > >   0x15, model: 0x2, stepping: 0x0)
+> > >
+> > >   [    0.923398] RCU Tasks: Setting shift to 2 and lim to 1
+> > >   rcu_task_cb_adjust=1.
+> > >
+> > >   [    0.925419] Running RCU-tasks wait API self tests
+> > >
+> > >   (hangs until aborted). This is primarily with Opteron CPUs, but also
+> > >   with others such as Haswell,
+> [...]
+> > >   Building
+> > >   x86_64:q35:Icelake-Server:defconfig:preempt:smp4:net,ne2k_pci:efi:me
+> > >   m2G:virtio:cd ... running ......... passed
+> [...]
+> > >   I freely confess that I am having a hard time imagining what would
+> > >
+> > >   be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
+> > >
+> > >   I am not seeing these failures in my testing.
+> > >
+> > >   So which of the following Kconfig options is defined in your
+> > >   .config?
+> > >
+> > >   CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
+> > >
+> > >   If you have more than one of them, could you please apply this patch
+> > >
+> > >   and show me the corresponding console output from the resulting
+> > >   hang?
+> > >
+> > > FWIW, I am not able to repro this issue either. If a .config can be
+> > > shared of the problem system, I can try it out to see if it can be
+> > > reproduced on my side.
+> > >
+> > > I do see this now on 5.15 stable:
+> > >
+> > >TASKS03 ------- 3089 GPs (0.858056/s)
+> > >QEMU killed
+> > >TASKS03 no success message, 64 successful version messages
+> > >!!! PID 3309783 hung at 3781 vs. 3600 seconds
+> > >
+> > > I have not looked too closely yet. The full test artifacts are here:
+> > >
+> > > [1]Artifacts of linux-5.15.y 5.15.123 :
+> > > /tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44 [Jenkins]
+> > > [2]box.joelfernandes.org
+> > > [3]apple-touch-icon.png
+> > >
+> > > Thanks,
+> > >
+> > > - Joel
+> > >
+> > > (Apologies if the email is html, I am sending from phone).
+> >
+> > Heh.  I have a script that runs lynx.  Which isn't perfect, but usually
+> > makes things at least somewhat legible.
 > 
-> My understanding is that this patch gets applied and your objection will
-> be noted.
+> Sorry I was too optimistic about the iPhone's capabilities when it
+> came to mailing list emails.
+> Here's what I said:
+> --------------
+> I do see this now on 5.15 stable:
+> 
+> TASKS03 ------- 3089 GPs (0.858056/s)
+> QEMU killed
+> TASKS03 no success message, 64 successful version messages
+> !!! PID 3309783 hung at 3781 vs. 3600 seconds
+> 
+> Link to full logs/artifacts:
+> http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
+> ----------------
+> 
+> > This looks like the prototypical hard hang with interrupts disabled,
+> > which could be anywhere in the kernel, including RCU.  I am not seeing
+> > this.  but the usual cause when I have seen it in the past was deadlock
+> > of irq-disabled locks.  In one spectacular case, it was a timekeeping
+> > failure that messed up a CPU-hotplug operation.
+> >
+> > If this is reproducible, one trick would be to have a script look at
+> > the console.log file, and have it do something (NMI? sysrq?  something
+> > else?) to qemu if output ceased for too long.
+> >
+> > One way to do this without messing with the rcutorture scripting is to
+> > grab the qemu-cmd file from this run, and then invoke that file from your
+> > own script, possibly with suitable modifications to qemu's parameters.
+> 
+> Would it be better to have such monitoring as part of rcutorture
+> testing itself? Alternatively there is the NMI hardlockup detector
+> which I believe should also detect such cases and dump stacks.
 
-My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
-allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
-https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
-https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
+Quite possibly.  But special-casing the prototype is probably going to be
+a lot faster and easier.  If it works, then it might make a lot of sense
+to upgrade the scripting.  If it doesn't work, then quite a bit less time
+is wasted than would be by messing with the scripting from the get-go.
 
-Maybe we can defer checking zonelist_update_seq till retry check like below,
-for this is really an infrequent event.
+Also, you have the option of making qemu be interactive and manually
+triggering things, for example by checking up on the run near the end.
+Or having something handing commands to qemu.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7d3460c7a480..2f7b82af2590 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3642,22 +3642,27 @@ EXPORT_SYMBOL_GPL(fs_reclaim_release);
-  * retries the allocation if zonelist changes. Writer side is protected by the
-  * embedded spin_lock.
-  */
--static DEFINE_SEQLOCK(zonelist_update_seq);
-+static unsigned int zonelist_update_seq;
- 
- static unsigned int zonelist_iter_begin(void)
- {
- 	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
--		return read_seqbegin(&zonelist_update_seq);
-+		return data_race(READ_ONCE(zonelist_update_seq));
- 
- 	return 0;
- }
- 
--static unsigned int check_retry_zonelist(unsigned int seq)
-+static unsigned int check_retry_zonelist(gfp_t gfp, unsigned int seq)
- {
--	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE))
--		return read_seqretry(&zonelist_update_seq, seq);
-+	if (IS_ENABLED(CONFIG_MEMORY_HOTREMOVE) && (gfp & __GFP_DIRECT_RECLAIM)) {
-+		unsigned int seq2;
-+
-+		smp_rmb();
-+		seq2 = data_race(READ_ONCE(zonelist_update_seq));
-+		return unlikely(seq != seq2 || (seq2 & 1));
-+	}
- 
--	return seq;
-+	return 0;
- }
- 
- /* Perform direct synchronous page reclaim */
-@@ -4146,7 +4151,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	 * a unnecessary OOM kill.
- 	 */
- 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
--	    check_retry_zonelist(zonelist_iter_cookie))
-+	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
- 		goto restart;
- 
- 	/* Reclaim has failed us, start killing things */
-@@ -4172,7 +4177,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
- 	 * a unnecessary OOM kill.
- 	 */
- 	if (check_retry_cpuset(cpuset_mems_cookie, ac) ||
--	    check_retry_zonelist(zonelist_iter_cookie))
-+	    check_retry_zonelist(gfp_mask, zonelist_iter_cookie))
- 		goto restart;
- 
- 	/*
-@@ -5136,22 +5141,12 @@ static void __build_all_zonelists(void *data)
- 	int nid;
- 	int __maybe_unused cpu;
- 	pg_data_t *self = data;
-+	static DEFINE_SPINLOCK(lock);
- 	unsigned long flags;
- 
--	/*
--	 * Explicitly disable this CPU's interrupts before taking seqlock
--	 * to prevent any IRQ handler from calling into the page allocator
--	 * (e.g. GFP_ATOMIC) that could hit zonelist_iter_begin and livelock.
--	 */
--	local_irq_save(flags);
--	/*
--	 * Explicitly disable this CPU's synchronous printk() before taking
--	 * seqlock to prevent any printk() from trying to hold port->lock, for
--	 * tty_insert_flip_string_and_push_buffer() on other CPU might be
--	 * calling kmalloc(GFP_ATOMIC | __GFP_NOWARN) with port->lock held.
--	 */
--	printk_deferred_enter();
--	write_seqlock(&zonelist_update_seq);
-+	spin_lock_irqsave(&lock, flags);
-+	data_race(zonelist_update_seq++);
-+	smp_wmb();
- 
- #ifdef CONFIG_NUMA
- 	memset(node_load, 0, sizeof(node_load));
-@@ -5188,9 +5183,9 @@ static void __build_all_zonelists(void *data)
- #endif
- 	}
- 
--	write_sequnlock(&zonelist_update_seq);
--	printk_deferred_exit();
--	local_irq_restore(flags);
-+	smp_wmb();
-+	data_race(zonelist_update_seq++);
-+	spin_unlock_irqrestore(&lock, flags);
- }
- 
- static noinline void __init
+Either way allows much more interaction with qemu, and better
+experiementation, than could be done reasonably with the scripts.
 
+						Thanx, Paul
 
+> thanks,
+> 
+>  - Joel
+> 
+> >
+> > Thoughts?
+> >
+> >                                                         Thanx, Paul
+> >
+> > > Cheers,
+> > > - Joel
+> > >
+> > >                             Thanx, Paul
+> > >
+> > >   --------------------------------------------------------------------
+> > >   ----
+> > >
+> > >   commit 709a917710dc01798e01750ea628ece4bfc42b7b
+> > >
+> > >   Author: Paul E. McKenney <paulmck@kernel.org>
+> > >
+> > >   Date:   Thu Jul 27 13:13:46 2023 -0700
+> > >
+> > >     rcu-tasks: Add printk()s to localize boot-time self-test hang
+> > >
+> > >     Currently, rcu_tasks_initiate_self_tests() prints a message and
+> > >   then
+> > >
+> > >     initiates self tests on up to three different RCU Tasks flavors.
+> > >   If one
+> > >
+> > >     of the flavors has a grace-period hang, it is not easy to work out
+> > >   which
+> > >
+> > >     of the three hung.  This commit therefore prints a message prior
+> > >   to each
+> > >
+> > >     individual test.
+> > >
+> > >     Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > >
+> > >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > >
+> > >   diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> > >
+> > >   index 56c470a489c8..427433c90935 100644
+> > >
+> > >   --- a/kernel/rcu/tasks.h
+> > >
+> > >   +++ b/kernel/rcu/tasks.h
+> > >
+> > >   @@ -1981,20 +1981,22 @@ static void test_rcu_tasks_callback(struct
+> > >   rcu_head *rhp)
+> > >
+> > >   static void rcu_tasks_initiate_self_tests(void)
+> > >
+> > >   {
+> > >
+> > >   -    pr_info("Running RCU-tasks wait API self tests\n");
+> > >
+> > >   #ifdef CONFIG_TASKS_RCU
+> > >
+> > >   +    pr_info("Running RCU Tasks wait API self tests\n");
+> > >
+> > >     tests[0].runstart = jiffies;
+> > >
+> > >     synchronize_rcu_tasks();
+> > >
+> > >     call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
+> > >
+> > >   #endif
+> > >
+> > >   #ifdef CONFIG_TASKS_RUDE_RCU
+> > >
+> > >   +    pr_info("Running RCU Tasks Rude wait API self tests\n");
+> > >
+> > >     tests[1].runstart = jiffies;
+> > >
+> > >     synchronize_rcu_tasks_rude();
+> > >
+> > >     call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
+> > >
+> > >   #endif
+> > >
+> > >   #ifdef CONFIG_TASKS_TRACE_RCU
+> > >
+> > >   +    pr_info("Running RCU Tasks Trace wait API self tests\n");
+> > >
+> > >     tests[2].runstart = jiffies;
+> > >
+> > >     synchronize_rcu_tasks_trace();
+> > >
+> > >     call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
+> > >
+> > >References
+> > >
+> > > Visible links:
+> > > 1. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
+> > > 2. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
+> > > 3. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
+> > >
+> > > Hidden links:
+> > > 5. http://box.joelfernandes.org:9080/job/rcutorture_stable/job/linux-5.15.y/lastFailedBuild/artifact/tools/testing/selftests/rcutorture/res/2023.07.28-04.00.44/
