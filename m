@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F24BA7680FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E30768101
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjG2Se3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 14:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        id S229851AbjG2Seb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 14:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjG2SeZ (ORCPT
+        with ESMTP id S229729AbjG2SeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 29 Jul 2023 14:34:25 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706CF3580
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83CC3582
         for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 11:34:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0F556092A
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 18:34:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648C4C433CA;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D42860766
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 18:34:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E2ACC433CD;
         Sat, 29 Jul 2023 18:34:22 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qPolh-0035J1-1Q;
+        id 1qPolh-0035JZ-25;
         Sat, 29 Jul 2023 14:34:21 -0400
-Message-ID: <20230729183421.257956360@goodmis.org>
+Message-ID: <20230729183421.462537802@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 29 Jul 2023 14:33:35 -0400
+Date:   Sat, 29 Jul 2023 14:33:36 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Gaosheng Cui <cuigaosheng1@huawei.com>
-Subject: [for-linus][PATCH 2/7] ring-buffer: Fix kernel-doc warnings in ring_buffer.c
+Subject: [for-linus][PATCH 3/7] tracing/synthetic: Fix kernel-doc warnings in trace_events_synth.c
 References: <20230729183333.357029101@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,51 +51,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gaosheng Cui <cuigaosheng1@huawei.com>
 
-Fix kernel-doc warnings:
+Fix kernel-doc warning:
 
-kernel/trace/ring_buffer.c:954: warning: Function parameter or
-member 'cpu' not described in 'ring_buffer_wake_waiters'
-kernel/trace/ring_buffer.c:3383: warning: Excess function parameter
-'event' description in 'ring_buffer_unlock_commit'
-kernel/trace/ring_buffer.c:5359: warning: Excess function parameter
-'cpu' description in 'ring_buffer_reset_online_cpus'
+kernel/trace/trace_events_synth.c:1257: warning: Function parameter
+or member 'mod' not described in 'synth_event_gen_cmd_array_start'
 
-Link: https://lkml.kernel.org/r/20230724140827.1023266-2-cuigaosheng1@huawei.com
+Link: https://lkml.kernel.org/r/20230724140827.1023266-3-cuigaosheng1@huawei.com
 
 Cc: <mhiramat@kernel.org>
 Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/trace/trace_events_synth.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 46b4a3c7c3bf..52dea5dd5362 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -950,6 +950,7 @@ static void rb_wake_up_waiters(struct irq_work *work)
- /**
-  * ring_buffer_wake_waiters - wake up any waiters on this ring buffer
-  * @buffer: The ring buffer to wake waiters on
-+ * @cpu: The CPU buffer to wake waiters on
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index d6a70aff2410..dd398afc8e25 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1230,6 +1230,7 @@ EXPORT_SYMBOL_GPL(__synth_event_gen_cmd_start);
+  * synth_event_gen_cmd_array_start - Start synthetic event command from an array
+  * @cmd: A pointer to the dynevent_cmd struct representing the new event
+  * @name: The name of the synthetic event
++ * @mod: The module creating the event, NULL if not created from a module
+  * @fields: An array of type/name field descriptions
+  * @n_fields: The number of field descriptions contained in the fields array
   *
-  * In the case of a file that represents a ring buffer is closing,
-  * it is prudent to wake up any waiters that are on this.
-@@ -3375,7 +3376,6 @@ void ring_buffer_nest_end(struct trace_buffer *buffer)
- /**
-  * ring_buffer_unlock_commit - commit a reserved
-  * @buffer: The buffer to commit to
-- * @event: The event pointer to commit.
-  *
-  * This commits the data to the ring buffer, and releases any locks held.
-  *
-@@ -5358,7 +5358,6 @@ EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
- /**
-  * ring_buffer_reset_online_cpus - reset a ring buffer per CPU buffer
-  * @buffer: The ring buffer to reset a per cpu buffer of
-- * @cpu: The CPU buffer to be reset
-  */
- void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
- {
 -- 
 2.40.1
