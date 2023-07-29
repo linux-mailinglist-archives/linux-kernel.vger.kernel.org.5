@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C145E7680EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B87680F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjG2SR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 14:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S229817AbjG2SYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 14:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjG2SRY (ORCPT
+        with ESMTP id S229610AbjG2SYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 14:17:24 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2A52723;
-        Sat, 29 Jul 2023 11:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1690654641;
-        bh=h5IfinV0go2IJt6uz9MUW3cuAh/IHb80AxpLJZogiEA=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=r9ACkFQJbUkVzN2cXL4f5hHR2nJvxeh1m6dsqEk6p49m5mkyejozaDoB5abuVpTue
-         RWpUHOaHrjTshCNLUBjF3Pu4n38tdgoahXYxhPAOPlGEbKF3rzk+bCaTR/yAd6hvX3
-         /GaKZ8OaAmjYY3k9XUI6zQT1tQ2TUKXJ3UL4EeFQ=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 36D7B1281747;
-        Sat, 29 Jul 2023 14:17:21 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id cMMexv2ufveb; Sat, 29 Jul 2023 14:17:21 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1690654641;
-        bh=h5IfinV0go2IJt6uz9MUW3cuAh/IHb80AxpLJZogiEA=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=r9ACkFQJbUkVzN2cXL4f5hHR2nJvxeh1m6dsqEk6p49m5mkyejozaDoB5abuVpTue
-         RWpUHOaHrjTshCNLUBjF3Pu4n38tdgoahXYxhPAOPlGEbKF3rzk+bCaTR/yAd6hvX3
-         /GaKZ8OaAmjYY3k9XUI6zQT1tQ2TUKXJ3UL4EeFQ=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BE7A01281269;
-        Sat, 29 Jul 2023 14:17:19 -0400 (EDT)
-Message-ID: <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
-Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
- reports
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Dan Williams <dan.j.williams@intel.com>, dhowells@redhat.com
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 29 Jul 2023 14:17:18 -0400
-In-Reply-To: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Sat, 29 Jul 2023 14:24:17 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB4430DC;
+        Sat, 29 Jul 2023 11:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=SLDeV9Gd0ll0x0Hf3YTkvfpLnzT91YtzBOUBJcb/X+8=; b=3TU1y5Y8c+Axhgz66VEX8P6UcT
+        riakLfdBFGt+BWlumDp30tDKIHGECoxfpHXvr4wvx4TpC+5f25wCf8O+nmtSGPg41Aahg9AQ6PwCL
+        0iXh5nrYW/0SUYH3dA07Gro2G25TvnToaw9IStPi2glcXzQT2LIN9F4coyPmUIfStcO4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qPobf-002bUX-Ex; Sat, 29 Jul 2023 20:23:59 +0200
+Date:   Sat, 29 Jul 2023 20:23:59 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, wangpeiyang1@huawei.com,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 5/6] net: hns3: fix wrong print link down up
+Message-ID: <e7219114-774f-49d0-8985-8875fd351b60@lunn.ch>
+References: <20230728075840.4022760-1-shaojijie@huawei.com>
+ <20230728075840.4022760-6-shaojijie@huawei.com>
+ <7ce32389-550b-4beb-82b1-1b6183fdeabb@lunn.ch>
+ <2c6514a7-db97-f345-9bc4-affd4eba2dda@huawei.com>
+ <73b41fe2-12dd-4fc0-a44d-f6f94e6541fc@lunn.ch>
+ <ef5489f9-43b4-ee59-699b-3f54a30c00aa@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef5489f9-43b4-ee59-699b-3f54a30c00aa@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -76,57 +57,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-28 at 12:30 -0700, Dan Williams wrote:
-> The bulk of the justification for this patch kit is in "[PATCH 1/4]
-> keys: Introduce tsm keys". The short summary is that the current
-> approach of adding new char devs and new ioctls, for what amounts to
-> the same functionality with minor formatting differences across
-> vendors, is untenable. Common concepts and the community benefit from
-> common infrastructure.
-
-I agree with this, but ...
-
-> Use Keys to build common infrastructure for confidential computing
-> attestation report blobs, convert sevguest to use it (leaving the
-> deprecation question alone for now), and pave the way for tdx-guest
-> and the eventual risc-v equivalent to use it in lieu of new ioctls.
+>     Now i wounder if you are fixing the wrong thing. Maybe you should be
+>     fixing the PHY so it does not report up and then down? You say 'very
+>     snall intervals', which should in fact be 1 second. So is the PHY
+>     reporting link for a number of poll intervals? 1min to 10 minutes?
 > 
-> The sevguest conversion is only compile-tested.
+>               Andrew
 > 
-> This submission is To:David since he needs to sign-off on the idea of
-> a new Keys type, the rest is up to the confidential-computing driver
-> maintainers to adopt.
+> Yes, according to the log records, the phy polls every second,
+> but the link status changes take time.
+> Generally, it takes 10 seconds for the phy to detect link down,
+> but occasionally it takes several minutes to detect link down,
 
-So why is this a keys subsystem thing?  The keys in question cannot be
-used to do any key operations.  It looks like a transport layer for
-attestation reports rather than anything key like.
+What PHY driver is this?
 
-To give an analogy with the TPM: We do have a TPM interface to keys
-because it can be used for things like sealing (TPM stores a symmetric
-key) and even asymmetric operations (although TPM key support for that
-in 1.2 was just removed).  However, in direct analogy with confidential
-computing: the TPM does have an attestation interface: TPM2_Quote and
-TPM2_Certify (among others) which is deliberately *not* wired in to the
-keys subsystem because the outputs are intended for external verifiers.
+It is not so clear what should actually happen with auto-neg turned
+off. With it on, and the link going down, the PHY should react after
+about 1 second. It is not supposed to react faster than that, although
+some PHYs allow fast link down notification to be configured.
 
-If the goal is to unify the interface for transporting attestation
-reports, why not pull the attestation ioctls out of sevguest into
-something common?
+Have you checked 802.3 to see what it says about auto-neg off and link
+down detection?
 
-I also don't see in your interface where the nonce goes?  Most
-attestation reports combine the report output with a user supplied
-nonce which gets added to the report signature to defend against
-replay.
+I personally would not suppress this behaviour in the MAC
+driver. Otherwise you are going to have funny combinations of special
+cases of a feature which very few people actually use, making your
+maintenance costs higher.
 
-Finally, I can see the logic in using this to do key release, because
-the external relying entity usually wishes to transport secrets into
-the enclave, but the currently developing use case for that seems to be
-to use a confidential guest vTPM because then we can use the existing
-TPM disk key interfaces.  Inventing something completely new isn't
-going to fly because all consumers have to be updated to use it (even
-though keys is a common interface, using key payloads isn't ... plus
-the systemd TPM disk encryption key doesn't even use kernel keys, it
-unwraps in userspace).
-
-James
-
+	    Andrew
