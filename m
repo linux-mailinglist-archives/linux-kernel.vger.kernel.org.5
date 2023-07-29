@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C20767D41
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BB7767D45
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjG2Ioi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 04:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
+        id S231387AbjG2IqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 04:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjG2Iog (ORCPT
+        with ESMTP id S231317AbjG2IqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 04:44:36 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF10130;
-        Sat, 29 Jul 2023 01:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=/WBUqBKlZCcgIkihfK24/SSF4pz1v//Vy8IKpbv82rg=; b=YoH/UG4qEoY0Movq+F4o+2RRe1
-        prgXGOYaHb+43cM7KMOO/EjoCezsNGiLmRqxVqVDHmj6/Kn+qliqvpBx0eXKk2pkj4V9Uhf8lC6jQ
-        9LEW+BBchXHg8mo5Np65YPM93V9PG9SgWamRpyEj+5MX8NZ8L/FkSTc0YVzMkBJ6fGS1g/BeJLaGW
-        Uft7BTpqYEoNCkHAgsEDmMNDklRq92D/prpbSqlV+NFihwsTndLsG5C8BJCiLJcK2xdnRfxvMI1E1
-        SG+OEITFGpjUFks39TZS/MOf54lKfus7PL3HUIPoMw8DrfOSi5//cXOsP49Cc/VK/rpAdxbYSahNS
-        AfZhmxzg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPfYg-0092NC-28;
-        Sat, 29 Jul 2023 08:44:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Sat, 29 Jul 2023 04:46:02 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DF0130;
+        Sat, 29 Jul 2023 01:46:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A571F3002CE;
-        Sat, 29 Jul 2023 10:44:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 808DB202C39FE; Sat, 29 Jul 2023 10:44:17 +0200 (CEST)
-Date:   Sat, 29 Jul 2023 10:44:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     anna-maria@linutronix.de, tglx@linutronix.de, frederic@kernel.org,
-        gautham.shenoy@amd.com, linux-kernel@vger.kernel.org,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
-Message-ID: <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
-References: <20230728145515.990749537@infradead.org>
- <20230728145808.835742568@infradead.org>
- <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 451E321877;
+        Sat, 29 Jul 2023 08:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690620359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gcYU5/tW+ecPEEB3LYPQdNS3y4Aut8BuE47yfQe7UTk=;
+        b=pzRvM+Jgf+Xj8nccUrWTQ/rAB3NLJRO7HHLRujlPNQF1U0c+pqBMmVzYCrIoxCk+kBsgdf
+        iMdvBTjM+qJIcIBiSKE0Flg2fVOdqU+dmhVC68Nvq7g1MYsYF29TR9nOCJapzDkko8YPGo
+        m9lW8zBzcDYElbFqoufITHWu3VJXj/g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690620359;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gcYU5/tW+ecPEEB3LYPQdNS3y4Aut8BuE47yfQe7UTk=;
+        b=6kK5VQCTF0hR3xqwbS82R58f0HaT4g+2hgUq65vT6ifGc2P6XfxcMGsawaHB+8VoqJH2tM
+        tcCIk4Yes4NNO/CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 145B113922;
+        Sat, 29 Jul 2023 08:45:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fueHA8fRxGTpOAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 29 Jul 2023 08:45:59 +0000
+Date:   Sat, 29 Jul 2023 10:45:58 +0200
+Message-ID: <87y1izcdh5.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Lino Sanfilippo" <l.sanfilippo@kunbus.com>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for TUXEDO InfinityBook S 15/17 Gen7
+In-Reply-To: <878razdwnh.wl-tiwai@suse.de>
+References: <20230726180035.14511-1-tiwai@suse.de>
+        <CUE1URH8QI55.15YQBHZNSL2UJ@seitikki>
+        <878razdwnh.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 05:36:55PM +0200, Rafael J. Wysocki wrote:
-> On Fri, Jul 28, 2023 at 5:01 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > In order to facilitate governors that track history in idle-state
-> > buckets (TEO) making a useful decision about NOHZ, make sure we have a
-> > bucket that counts tick-and-longer.
-> >
-> > In order to be inclusive of the tick itself -- after all, if we do not
-> > disable NOHZ we'll sleep for a full tick, the actual boundary should
-> > be just short of a full tick.
-> >
-> > IOW, when registering the idle-states, add one that is always
-> > disabled, just to have a bucket.
+On Sat, 29 Jul 2023 09:06:26 +0200,
+Takashi Iwai wrote:
 > 
-> This extra bucket can be created in the governor itself, can't it?
+> On Fri, 28 Jul 2023 21:24:30 +0200,
+> Jarkko Sakkinen wrote:
+> > 
+> > On Wed Jul 26, 2023 at 6:00 PM UTC, Takashi Iwai wrote:
+> > > TUXEDO InfinityBook S 15/17 Gen7 suffers from an IRQ problem on
+> > > tpm_tis like a few other laptops.  Add an entry for the workaround.
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
+> > > Link: https://bugzilla.suse.com/show_bug.cgi?id=1213645
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > ---
+> > >  drivers/char/tpm/tpm_tis.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+> > > index cc42cf3de960..a98773ac2e55 100644
+> > > --- a/drivers/char/tpm/tpm_tis.c
+> > > +++ b/drivers/char/tpm/tpm_tis.c
+> > > @@ -162,6 +162,14 @@ static const struct dmi_system_id tpm_tis_dmi_table[] = {
+> > >  			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad L590"),
+> > >  		},
+> > >  	},
+> > > +	{
+> > > +		.callback = tpm_tis_disable_irq,
+> > > +		.ident = "TUXEDO InfinityBook S 15/17 Gen7",
+> > > +		.matches = {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "TUXEDO"),
+> > > +			DMI_MATCH(DMI_PRODUCT_NAME, "TUXEDO InfinityBook S 15/17 Gen7"),
+> > > +		},
+> > > +	},
+> > >  	{
+> > >  		.callback = tpm_tis_disable_irq,
+> > >  		.ident = "UPX-TGL",
+> > > -- 
+> > > 2.35.3
+> > 
+> > Hi does this occur with the latest linux-next and/or v6.5-rc3?
+> 
+> Not tested yet, but do you have any relevant fix except for the commit
+> 481c2d14627d ("tpm,tpm_tis: Disable interrupts after 1000 unhandled
+> IRQs")?  That commit was already tested, at least.
 
-I couldn't find a nice spot for the governor to add idle-states.
+And now it's confirmed that the problem persists with 6.5-rc3.
 
+
+thanks,
+
+Takashi
