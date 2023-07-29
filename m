@@ -2,167 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6793767EB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4832767EBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjG2L3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 07:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S231238AbjG2LhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 07:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjG2L3m (ORCPT
+        with ESMTP id S230045AbjG2LhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 07:29:42 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEC2E6F
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 04:29:34 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-317798b359aso2768827f8f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 04:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690630173; x=1691234973;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yl2EKCv4YXbcjRsX9gIcMNI5UcqTI5Buzhhnk6Ju+qU=;
-        b=P7noIDsXbNnRhgZ1Mg3Z6aypdp1IfKBXuSfbDb6P+Y4WdJIRu8DanXwPlS9AVO2hbT
-         jZ3NSkpiAR1i89IgUTyjN0WwgAo5BPK9pt+yrIN8+CvZEi/QPZCmQNhwNX0VgskvMikR
-         0yYM504A/wqMl/1wf2sPqb7JrsLSrPJoripGqlv9ePgBnR5yDVPE08vx/4GGmcOcjlr/
-         PG05+rkdkWJfPT+1ldi96YIqim1KM421qUQGQinyuPZ7GJ59f7u6cinCMtKr7Yn7nA6C
-         T2S8U1WNRMlyKUVpUvA3bq1wxPXG7xld7mWMIvZxM4k/Xd5HrE6FBng13CfT0vwlIDVx
-         /LuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690630173; x=1691234973;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yl2EKCv4YXbcjRsX9gIcMNI5UcqTI5Buzhhnk6Ju+qU=;
-        b=b4/2S1QwfiYAG8wqYaATEx3ozd1sKpx7QbI4evYYOkcnA70gwiI2CNtu6pLYR2V0YZ
-         knqzWER9WuZ55rp/itPgA05tPM/lffLu55Qac1EeeqVyaAzl99RTkTulWwtAReCg5Pvu
-         foRmEtbQllM+IFDaQ0x5aWRjFrVLEC60Gg6H7TH9STM7AHOrCllkLyHdTAY7p4QniLKO
-         YMVqm1LDG4BJfce7iQlfiN259KJ51SWTasZxpsa9wtgGbKraiS+bhPxewrj2H8I3hYzi
-         d0ft6CnRsOtzMnQ64KmkyF/pTb/cfJhQOn9Z4mHi443wJKzY2BLlW27xrPTKiu38yp3F
-         CiOA==
-X-Gm-Message-State: ABy/qLZteOwnX9pCuoUl9bMj9zh3nmn9ijG14uE7oy9Mb4bqvysLLeJC
-        CiYXNTDX1mQHrOBRyHUwi7Delg==
-X-Google-Smtp-Source: APBJJlEy4rj/lqQ6TbWxXc1ZF0trMQbNs5KXGdjrzM2nkfjDzE3xUyG1e4YjtrkMvWKeBrYRYVhf0g==
-X-Received: by 2002:adf:fa09:0:b0:317:3deb:a899 with SMTP id m9-20020adffa09000000b003173deba899mr3659091wrr.1.1690630172870;
-        Sat, 29 Jul 2023 04:29:32 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id z8-20020adfec88000000b0031773a8e5c4sm7224137wrn.37.2023.07.29.04.29.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Jul 2023 04:29:32 -0700 (PDT)
-Message-ID: <c4cc2dfa-ca3f-1d51-8a3b-a131ccc54d03@linaro.org>
-Date:   Sat, 29 Jul 2023 13:29:29 +0200
+        Sat, 29 Jul 2023 07:37:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DD5E7C;
+        Sat, 29 Jul 2023 04:37:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 959C060B8F;
+        Sat, 29 Jul 2023 11:37:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12E94C433C8;
+        Sat, 29 Jul 2023 11:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690630622;
+        bh=UayIjxHwlnAcaTvtEIYrbgAned9lO0CxfMlcQ4GbUBU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pVrYuOYZJquHZ+alKe6yJq8moufLuxRkEdHaNlLVMec0DcPfsCLLfo36YMSOXwRP9
+         5AyVQVUU6U/BmEhlZVf1D440OR9KuTQ0xtWhmj42aPxClzq9VTkOQtL5Ziu1WFKoZC
+         CVI+UpTAvuoCPgu9hv47X9XyN6ulBw9hwm7Jeu+q8RwfYgnjbK5h+iukX/K6EDPdzu
+         eJddUtxCE7klGXmTSxF7Ob2RlVNmacJaBCZGYOF2ynWYy7mDjyPPukzjPzmzxlPLB7
+         azkVMl54e1EGZs2HvTefl9khgYyAV6hoZsVEe+DwjRxOTPBtaQKmDQje4MZ5AHHIEW
+         AuWhKt+LGTfeA==
+Date:   Sat, 29 Jul 2023 12:37:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Nuno Sa <nuno.sa@analog.com>
+Subject: Re: [PATCH v3 1/4] iio: core: Use sysfs_match_string() helper
+Message-ID: <20230729123708.0b5ee75e@jic23-huawei>
+In-Reply-To: <20230724110204.46285-2-andriy.shevchenko@linux.intel.com>
+References: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
+        <20230724110204.46285-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V3 5/5] ASoC: codecs: aw88261 chip register file, Kconfig
- and Makefile
-Content-Language: en-US
-To:     wangweidong.a@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
-        rf@opensource.cirrus.com, shumingf@realtek.com,
-        ryans.lee@analog.com, 13916275206@139.com,
-        herve.codina@bootlin.com, ckeepax@opensource.cirrus.com,
-        doug@schmorgal.com, fido_max@inbox.ru, povik+lin@cutebit.org,
-        liweilei@awinic.com, yijiangtao@awinic.com, colin.i.king@gmail.com,
-        trix@redhat.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     zhangjianming@awinic.com
-References: <20230729091223.193466-1-wangweidong.a@awinic.com>
- <20230729091223.193466-6-wangweidong.a@awinic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230729091223.193466-6-wangweidong.a@awinic.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/2023 11:12, wangweidong.a@awinic.com wrote:
-> From: Weidong Wang <wangweidong.a@awinic.com>
+On Mon, 24 Jul 2023 14:02:01 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> Use sysfs_match_string() helper instead of open coded variant.
 > 
-> Mainly includes aw88261 register table, Makefile and Kconfig.
-> 
-> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+I'm not loving the match against a larger list in order to then throw
+away the ones we don't like, but I guess it is harmless and will make
+reuse easier if this ever becomes more generally useful.
+
+Hopefully it won't because no one else will think: "Let's provide
+an interface that gives userspace the option to pick from many weird
+clock choices".
+
+In case you haven't guessed, that's one decision from a long time back
+I wish I'd made differently.   2 choices would have been plenty..
+
+Applied to the togreg branch of iio.git.
+
+Thanks,
+
+Jonathan
+
 > ---
->  sound/soc/codecs/Kconfig               |  15 +
->  sound/soc/codecs/Makefile              |   3 +
->  sound/soc/codecs/aw88261/aw88261_reg.h | 374 +++++++++++++++++++++++++
->  3 files changed, 392 insertions(+)
->  create mode 100644 sound/soc/codecs/aw88261/aw88261_reg.h
+>  drivers/iio/industrialio-core.c | 71 +++++++++++++++------------------
+>  1 file changed, 32 insertions(+), 39 deletions(-)
 > 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index c2de4ee72183..1e3526812cc8 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -55,6 +55,7 @@ config SND_SOC_ALL_CODECS
->  	imply SND_SOC_ALC5632
->  	imply SND_SOC_AW8738
->  	imply SND_SOC_AW88395
-> +	imply SND_SOC_AW88261
->  	imply SND_SOC_BT_SCO
->  	imply SND_SOC_BD28623
->  	imply SND_SOC_CHV3_CODEC
-> @@ -640,6 +641,20 @@ config SND_SOC_AW88395
->  	  digital Smart K audio amplifier with an integrated 10V
->  	  smart boost convert.
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 5f337f59330c..b153adc5bc84 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1397,50 +1397,42 @@ static ssize_t label_show(struct device *dev, struct device_attribute *attr,
 >  
-> +config SND_SOC_AW88261
-> +	tristate "Soc Audio for awinic aw88261"
-> +	depends on I2C
-> +	select CRC8
-> +	select REGMAP_I2C
-> +	select GPIOLIB
-> +	select SND_SOC_AW88395_LIB
-> +	help
-> +	  This option enables support for aw88261 Smart PA.
-> +	  The awinic AW88261 is an I2S/TDM input, high efficiency
-> +	  digital Smart K audio amplifier. The output voltage of
-> +	  boost converter can be adjusted smartly according to
-> +	  the input amplitude.
+>  static DEVICE_ATTR_RO(label);
+>  
+> +static const char * const clock_names[] = {
+> +	[CLOCK_REALTIME]	 	= "realtime",
+> +	[CLOCK_MONOTONIC]	 	= "monotonic",
+> +	[CLOCK_PROCESS_CPUTIME_ID]	= "process_cputime_id",
+> +	[CLOCK_THREAD_CPUTIME_ID]	= "thread_cputime_id",
+> +	[CLOCK_MONOTONIC_RAW]	 	= "monotonic_raw",
+> +	[CLOCK_REALTIME_COARSE]	 	= "realtime_coarse",
+> +	[CLOCK_MONOTONIC_COARSE] 	= "monotonic_coarse",
+> +	[CLOCK_BOOTTIME]	 	= "boottime",
+> +	[CLOCK_REALTIME_ALARM]		= "realtime_alarm",
+> +	[CLOCK_BOOTTIME_ALARM]		= "boottime_alarm",
+> +	[CLOCK_SGI_CYCLE]		= "sgi_cycle",
+> +	[CLOCK_TAI]		 	= "tai",
+> +};
 > +
->  config SND_SOC_BD28623
->  	tristate "ROHM BD28623 CODEC"
->  	help
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index b48a9a323b84..9df43de213f0 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -49,6 +49,8 @@ snd-soc-aw8738-objs := aw8738.o
->  snd-soc-aw88395-lib-objs := aw88395/aw88395_lib.o
->  snd-soc-aw88395-objs := aw88395/aw88395.o \
->  			aw88395/aw88395_device.o
-> +snd-soc-aw88261-objs := aw88261/aw88261.o \
-> +			aw88261/aw88261_device.o
->  snd-soc-bd28623-objs := bd28623.o
->  snd-soc-bt-sco-objs := bt-sco.o
->  snd-soc-chv3-codec-objs := chv3-codec.o
-> @@ -431,6 +433,7 @@ obj-$(CONFIG_SND_SOC_ARIZONA)	+= snd-soc-arizona.o
->  obj-$(CONFIG_SND_SOC_AW8738)	+= snd-soc-aw8738.o
->  obj-$(CONFIG_SND_SOC_AW88395_LIB) += snd-soc-aw88395-lib.o
->  obj-$(CONFIG_SND_SOC_AW88395)	+=snd-soc-aw88395.o
-> +obj-$(CONFIG_SND_SOC_AW88261)	+=snd-soc-aw88261.o
->  obj-$(CONFIG_SND_SOC_BD28623)	+= snd-soc-bd28623.o
->  obj-$(CONFIG_SND_SOC_BT_SCO)	+= snd-soc-bt-sco.o
->  obj-$(CONFIG_SND_SOC_CHV3_CODEC) += snd-soc-chv3-codec.o
-> diff --git a/sound/soc/codecs/aw88261/aw88261_reg.h b/sound/soc/codecs/aw88261/aw88261_reg.h
-> new file mode 100644
-> index 000000000000..7ef128a3e6ee
-> --- /dev/null
-> +++ b/sound/soc/codecs/aw88261/aw88261_reg.h
-> @@ -0,0 +1,374 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-
-If you add the headers now, it means they are not used in any previous
-patches. Therefore drop the header - it is useless.
-
-Best regards,
-Krzysztof
+>  static ssize_t current_timestamp_clock_show(struct device *dev,
+>  					    struct device_attribute *attr,
+>  					    char *buf)
+>  {
+>  	const struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>  	const clockid_t clk = iio_device_get_clock(indio_dev);
+> -	const char *name;
+> -	ssize_t sz;
+>  
+>  	switch (clk) {
+>  	case CLOCK_REALTIME:
+> -		name = "realtime\n";
+> -		sz = sizeof("realtime\n");
+> -		break;
+>  	case CLOCK_MONOTONIC:
+> -		name = "monotonic\n";
+> -		sz = sizeof("monotonic\n");
+> -		break;
+>  	case CLOCK_MONOTONIC_RAW:
+> -		name = "monotonic_raw\n";
+> -		sz = sizeof("monotonic_raw\n");
+> -		break;
+>  	case CLOCK_REALTIME_COARSE:
+> -		name = "realtime_coarse\n";
+> -		sz = sizeof("realtime_coarse\n");
+> -		break;
+>  	case CLOCK_MONOTONIC_COARSE:
+> -		name = "monotonic_coarse\n";
+> -		sz = sizeof("monotonic_coarse\n");
+> -		break;
+>  	case CLOCK_BOOTTIME:
+> -		name = "boottime\n";
+> -		sz = sizeof("boottime\n");
+> -		break;
+>  	case CLOCK_TAI:
+> -		name = "tai\n";
+> -		sz = sizeof("tai\n");
+>  		break;
+>  	default:
+>  		BUG();
+>  	}
+>  
+> -	memcpy(buf, name, sz);
+> -	return sz;
+> +	return sysfs_emit(buf, "%s\n", clock_names[clk]);
+>  }
+>  
+>  static ssize_t current_timestamp_clock_store(struct device *dev,
+> @@ -1450,22 +1442,23 @@ static ssize_t current_timestamp_clock_store(struct device *dev,
+>  	clockid_t clk;
+>  	int ret;
+>  
+> -	if (sysfs_streq(buf, "realtime"))
+> -		clk = CLOCK_REALTIME;
+> -	else if (sysfs_streq(buf, "monotonic"))
+> -		clk = CLOCK_MONOTONIC;
+> -	else if (sysfs_streq(buf, "monotonic_raw"))
+> -		clk = CLOCK_MONOTONIC_RAW;
+> -	else if (sysfs_streq(buf, "realtime_coarse"))
+> -		clk = CLOCK_REALTIME_COARSE;
+> -	else if (sysfs_streq(buf, "monotonic_coarse"))
+> -		clk = CLOCK_MONOTONIC_COARSE;
+> -	else if (sysfs_streq(buf, "boottime"))
+> -		clk = CLOCK_BOOTTIME;
+> -	else if (sysfs_streq(buf, "tai"))
+> -		clk = CLOCK_TAI;
+> -	else
+> +	ret = sysfs_match_string(clock_names, buf);
+> +	if (ret < 0)
+> +		return ret;
+> +	clk = ret;
+> +
+> +	switch (clk) {
+> +	case CLOCK_REALTIME:
+> +	case CLOCK_MONOTONIC:
+> +	case CLOCK_MONOTONIC_RAW:
+> +	case CLOCK_REALTIME_COARSE:
+> +	case CLOCK_MONOTONIC_COARSE:
+> +	case CLOCK_BOOTTIME:
+> +	case CLOCK_TAI:
+> +		break;
+> +	default:
+>  		return -EINVAL;
+> +	}
+>  
+>  	ret = iio_device_set_clock(dev_to_iio_dev(dev), clk);
+>  	if (ret)
 
