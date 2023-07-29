@@ -2,86 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 178647680BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D23D7680C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbjG2RUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 13:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        id S229582AbjG2Rhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 13:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjG2RUX (ORCPT
+        with ESMTP id S229445AbjG2Rhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 13:20:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF071716
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:20:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D25D360C83
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 17:20:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3345EC433C8;
-        Sat, 29 Jul 2023 17:20:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690651221;
-        bh=HGCU0Wu3IHcjCDcOzH1VNDX6WUxYD5nlAGAUD7BACrw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ehkkYi0qyRBq7NpJBHNtWFeyuBPiX1vlWr2UgT/Wp7oh26OrN0CSnrewauBbyCZv9
-         a4+BELWf3/qSegXOdUoDSkk45w6LS9S4AGBfkiIRbjjmti/TU4mDzr+SB3EXdlCh8r
-         kGRiIVVCBthzx7/RcZljQYV+IaU4FkPvx0gPDD8ThDUsBNDc7l44lQnFN52eZ9Ui+i
-         n1IDHW5Rko05+jks3V3UMWmpLLaVkBSTbb9C60REDJMvwbn67kBM90hMzkcBh5dklb
-         yIltoymF9tMOBnSk1yT2Y+lTnZJqm4sjhjyyKGAt5WCU2TfiVBLLFxhE+v2wDcMgHX
-         JfgxOtOxfnZfA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 18976C43169;
-        Sat, 29 Jul 2023 17:20:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sat, 29 Jul 2023 13:37:33 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE9435A5;
+        Sat, 29 Jul 2023 10:37:30 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [111.197.209.91])
+        by APP-05 (Coremail) with SMTP id zQCowAC3vxcxTsVkKoC_Dw--.18514S2;
+        Sun, 30 Jul 2023 01:36:49 +0800 (CST)
+Message-ID: <d75ef570-c0ad-cea4-687a-d02b560aa676@iscas.ac.cn>
+Date:   Sun, 30 Jul 2023 01:36:49 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+ <20230726-outclass-parade-2ccea9f6688a@spud>
+ <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
+ <20230726-armchair-evasive-427dd245a9fe@spud>
+ <20230727-briskness-sappy-e2d9e4c1ef36@spud>
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <20230727-briskness-sappy-e2d9e4c1ef36@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/1] net: gro: fix misuse of CB in udp socket lookup
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169065122109.20073.13115022881374676943.git-patchwork-notify@kernel.org>
-Date:   Sat, 29 Jul 2023 17:20:21 +0000
-References: <20230727152503.GA32010@debian>
-In-Reply-To: <20230727152503.GA32010@debian>
-To:     Richard Gobert <richardbgobert@gmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, willemdebruijn.kernel@gmail.com,
-        dsahern@kernel.org, tom@herbertland.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gal@nvidia.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: zQCowAC3vxcxTsVkKoC_Dw--.18514S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Cr48KFW3Ary8XryUurWDCFg_yoWkGrWkpr
+        WkCr1DGry8Xr18Jr4xJw1UW34UJr15J34UJr45JF1UGrykGr1jqrykXr12gr1UJF4rtr4r
+        Ar1I9w1rZrn8AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07beAp5UUUUU=
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCggHCmTFGJdK4AAAsL
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 7/27/23 15:53, Conor Dooley wrote:
+> On Wed, Jul 26, 2023 at 08:41:55PM +0100, Conor Dooley wrote:
+>> On Thu, Jul 27, 2023 at 03:34:16AM +0800, Mingzheng Xing wrote:
+>>> On 7/27/23 02:02, Conor Dooley wrote:
+>>>> This is still broken for:
+>>>> CONFIG_CLANG_VERSION=0
+>>>> CONFIG_AS_IS_GNU=y
+>>>> CONFIG_AS_VERSION=23500
+>>>> CONFIG_LD_IS_BFD=y
+>>>> CONFIG_LD_VERSION=23500
+>>> Do you mean that these CONFIG_* will cause kernel
+>>> compilation errors when paired with certain versions of GCC?
+>>> Or perhaps I misunderstood your meaning.
+>> No, this section is generated by kconfig, although I messed up my
+>> trimming of the list & accidentally removed the gcc version, rather
+>> than the clang version. Here's the full thing:
+>>
+>> CONFIG_CC_VERSION_TEXT="riscv64-unknown-linux-gnu-gcc (g2ee5e430018) 12.2.0"
+>> CONFIG_CC_IS_GCC=y
+>> CONFIG_GCC_VERSION=120200
+>> CONFIG_CLANG_VERSION=0
+>> CONFIG_AS_IS_GNU=y
+>> CONFIG_AS_VERSION=23500
+>> CONFIG_LD_IS_BFD=y
+>> CONFIG_LD_VERSION=23500
+>> CONFIG_LLD_VERSION=0
+>> CONFIG_CC_CAN_LINK=y
+>> CONFIG_CC_CAN_LINK_STATIC=y
+>> CONFIG_CC_HAS_ASM_GOTO_OUTPUT=y
+>> CONFIG_CC_HAS_ASM_GOTO_TIED_OUTPUT=y
+>> CONFIG_CC_HAS_ASM_INLINE=y
+>> CONFIG_CC_HAS_NO_PROFILE_FN_ATTR=y
+>> CONFIG_PAHOLE_VERSION=0
+>> CONFIG_CONSTRUCTORS=y
+>> CONFIG_IRQ_WORK=y
+>> CONFIG_BUILDTIME_TABLE_SORT=y
+> I think this should sort things out for the even-older binutils case. I
+> took the opportunity to fix some grammatical issues that seem to have
+> snuck into the help text in your patch & to drop the \, since the
+> depends on fits in one line.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+hi, Conor.
 
-On Thu, 27 Jul 2023 17:25:11 +0200 you wrote:
-> GRO stack uses `udp_lib_lookup_skb` which relies on IP/IPv6 CB's info, and
-> at the GRO stage, CB holds `napi_gro_cb` info. Specifically,
-> `udp_lib_lookup_skb` tries to fetch `iff` and `flags` information from the
-> CB, to find the relevant udp tunnel socket (GENEVE/VXLAN/..). Up until a
-> patch I submitted recently [0], it worked merely by luck, due
-> to the layouts of `napi_gro_cb` and IP6CB.
-> 
-> [...]
+I reproduced the error with gcc-12.2.0 and binutils-2.35. I tried a
+different solution, which I think makes the logic easier. Showing
+the new patch code:
 
-Here is the summary with links:
-  - [v3,1/1] net: gro: fix misuse of CB in udp socket lookup
-    https://git.kernel.org/netdev/net/c/7938cd154368
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4c07b9189c86..a6fa1eed895c 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -569,25 +569,24 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
 
-You are awesome, thank you!
+  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+         def_bool y
+-       # https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
+-       depends on AS_IS_GNU && AS_VERSION >= 23800
++       depends on AS_IS_GNU && AS_VERSION >= 23600
+         help
+-         Newer binutils versions default to ISA spec version 20191213 which
+-         moves some instructions from the I extension to the Zicsr and Zifencei
+-         extensions.
++         Binutils has supported zicsr and zifencei extensions since version 2.36,
++         try to adapt to the changes by using explicit zicsr and zifencei via
++         -march. For two special cases, where clang<17 or gcc<11.1.0, we will
++         deal with them in CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
+
+  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+         def_bool y
+         depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+         # https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
+-       depends on CC_IS_CLANG && CLANG_VERSION < 170000
+-       help
+-         Certain versions of clang do not support zicsr and zifencei via -march
+-         but newer versions of binutils require it for the reasons noted in the
+-         help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+-         option causes an older ISA spec compatible with these older versions
+-         of clang to be passed to GAS, which has the same result as passing zicsr
+-         and zifencei to -march.
++       # https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
++       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
++       help
++         Certain versions of clang and GCC do not support zicsr and zifencei via
++         -march. This option causes an older ISA spec compatible with these older
++         versions of clang and GCC to be passed to GAS, which has the same result
++         as passing zicsr and zifencei to -march.
+
+  config FPU
+         bool "FPU support"
+diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/compat_vdso/Makefile
+index 189345773e7e..b86e5e2c3aea 100644
+--- a/arch/riscv/kernel/compat_vdso/Makefile
++++ b/arch/riscv/kernel/compat_vdso/Makefile
+@@ -11,7 +11,13 @@ compat_vdso-syms += flush_icache
+  COMPAT_CC := $(CC)
+  COMPAT_LD := $(LD)
+
+-COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
++# binutils 2.35 does not support the zifencei extension, but in the ISA
++# spec 20191213, G stands for IMAFD_ZICSR_ZIFENCEI.
++ifdef CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
++       COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
++else
++       COMPAT_CC_FLAGS := -march=rv32imafd -mabi=ilp32
++endif
+  COMPAT_LD_FLAGS := -melf32lriscv
+
+  # Disable attributes, as they're useless and break the build.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+2.34.1
 
+
+Here are the results of my tests:
+
+gcc          binutils       patched         no patch(test on master)
+11.4.0     2.35            ok                  ok
+11.4.0     2.36            ok                  ok
+11.4.0     2.38            ok                  ok
+
+12.2.0     2.35            ok                  error[1]
+12.2.0     2.36            ok                  error[2]
+12.2.0     2.38            ok                  ok
+
+10.5.0     2.35            ok                  ok
+10.5.0     2.36            ok                  ok
+10.5.0     2.38            ok                  error[3]
+
+11.1.0     2.35            ok                  ok
+11.1.0     2.36            ok                  ok
+11.1.0     2.38            ok                  ok
+
+11.2.0     2.35            ok                  ok
+11.2.0     2.36            ok                  ok
+11.2.0     2.38            ok                  ok
+
+[1]
+Assembler messages:
+Fatal error: -march=rv32imafd_zicsr_zifencei: Invalid or unknown z ISA extension: 'zifencei'
+make[2]: *** [arch/riscv/kernel/compat_vdso/Makefile:47: arch/riscv/kernel/compat_vdso/rt_sigreturn.o] Error 1
+
+[2]
+./arch/riscv/include/asm/vdso/gettimeofday.h: Assembler messages:
+./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
+./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
+./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
+./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
+make[2]: *** [scripts/Makefile.build:243: arch/riscv/kernel/vdso/vgettimeofday.o] Error 1
+
+[3]
+cc1: error: '-march=rv64imac_zicsr_zifencei': unsupported ISA subset 'z'
+cc1: error: ABI requires '-march=rv64'
+make[2]: *** [scripts/Makefile.build:243: scripts/mod/empty.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+cc1: error: '-march=rv64imac_zicsr_zifencei': unsupported ISA subset 'z'
+cc1: error: ABI requires '-march=rv64'
+
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index e1b66ee88323..2d0d89213c97 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -571,25 +571,27 @@ config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>   	def_bool y
+>   	# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
+>   	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
+> -	depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
+> +	depends on AS_IS_GNU
+> +	depends on (GCC_VERSION >= 120100 && AS_VERSION >= 23600) || AS_VERSION >= 23800
+
+Tests verified that explicit _ZICSR_ZIFENCEI via -march is required
+for gcc>=12.1.0, but this only happens for binutils>=2.36,
+binutils 2.35 + gcc>=12.1.0 does not need that. Considering
+binutils 2.35 together complicates things. So what do you think
+of the above new version patch?
+
+Some more info:
+- The commit[4] for patch changes.
+- binutils 2.36 supports the zifencei extension[5] and splits
+zifencei and zicsr from I[6].
+
+[4] commit 0715372a06ce ("riscv: compat: vdso: Add COMPAT_VDSO base code implementation")
+[5] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=5a1b31e1e1cee6e9f1c92abff59cdcfff0dddf30
+[6] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=729a53530e86972d1143553a415db34e6e01d5d2
+
+Thanks,
+Mingzheng.
+
+>   	help
+> -	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
+> +	  Binutils-2.38 and GCC-12.1.0 bump the default ISA spec to version
+>   	  20191213 which moves some instructions from the I extension to the
+> -	  Zicsr and Zifencei extensions.
+> +	  Zicsr and Zifencei extensions. On the other hand, Binutils prior to
+> +	  2.35 does not understand these arguments and will error if they are
+> +	  passed.
+>   
+>   config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+>   	def_bool y
+>   	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>   	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
+>   	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
+> -	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
+> -		   (CC_IS_GCC && GCC_VERSION < 110100)
+> +	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
+>   	help
+> -	  Certain versions of clang (or GCC) do not support zicsr and zifencei via
+> +	  Certain versions of clang and GCC do not support zicsr and zifencei via
+>   	  -march but newer versions of binutils require it for the reasons noted
+>   	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+>   	  option causes an older ISA spec compatible with these older versions
+> -	  of clang (or GCC) to be passed to GAS, which has the same result as
+> +	  of clang and GCC to be passed to GAS, which has the same result as
+>   	  passing zicsr and zifencei to -march.
+>   
+>   config FPU
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
