@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3103A767E47
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E43767E4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjG2KpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 06:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        id S231401AbjG2KqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 06:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjG2KpF (ORCPT
+        with ESMTP id S229500AbjG2KqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 06:45:05 -0400
+        Sat, 29 Jul 2023 06:46:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239068F;
-        Sat, 29 Jul 2023 03:45:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E8B95;
+        Sat, 29 Jul 2023 03:46:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AB62C60B75;
-        Sat, 29 Jul 2023 10:45:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18F91C433C7;
-        Sat, 29 Jul 2023 10:45:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 038BF60B7D;
+        Sat, 29 Jul 2023 10:46:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64486C433CA;
+        Sat, 29 Jul 2023 10:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690627503;
-        bh=QKrBqbolOOxaTiWGKT2BMxkYZZvn5TZqjT8KkvNIpMM=;
+        s=k20201202; t=1690627575;
+        bh=uIUPZgsmAxOZJ+qYKGSLVlFQ5D0sC53OAgZo3RHracg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DgFa1ZUUCoB3uXmxgqMIsCn4DNQLTYwZ9Hna06Khvpbx7Y3wJDWjdEnjto1Ep9X4i
-         n6XBlRZfFrQKUB/ujZbD7s5A1iJ3/GCPukISXKtrIhWtEQ7VbXejZ7C9RABRtGQMvQ
-         085Av922ZQCrR6j/VxP0CAqVZ92QEQ12erN+QM1QoSUMasJtbobwr1wOKs9hYX0H+6
-         Hpxg2PGl39tyfQWEp5J61tVrUXLFjcgIkDY+1g+pYCEMgW8CU4MS39AJmEwiWGmkM9
-         bl6BrjEB387/Pt4t4en7zmugIBRfoZ1c524+XtOUe5ldG7iq3h06dbYVBuTrH1lBQB
-         nKbOiNd/2qnKw==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2b962c226ceso43611701fa.3;
-        Sat, 29 Jul 2023 03:45:03 -0700 (PDT)
-X-Gm-Message-State: ABy/qLY23KJBA6knnGjbkVo3wP6aE8qkykmRbNEknwEzFnlNWihg3tcG
-        GED3ciOoPY6zMC+AKeIyYie0IOfw7IZPZ4Z7lgQ=
-X-Google-Smtp-Source: APBJJlE9ctJmYgNQK6Eq4nB5LJW1M5eJ/AG1pFpCz15UuA27LV8NHAJLReCyqwADLFXSvaE8lLjtr/j9SpHS+HQArcc=
-X-Received: by 2002:a2e:96cd:0:b0:2b9:d266:85ac with SMTP id
- d13-20020a2e96cd000000b002b9d26685acmr2333016ljj.48.1690627501117; Sat, 29
- Jul 2023 03:45:01 -0700 (PDT)
+        b=HDvm84GUoaRU7zCm7y/XF4JHmqGreddPG4Ml64p/4XVAkcbie/m4c/ZiV7kXnSuSp
+         jDyrCAsoGzDKU4RsWe/90ZqcFVom4AKHUSXxSzf8vRZPZ4WPezbcaRkZMjqe0oUW32
+         UPSduomp3OEKZIRauMRGUKrSh3Csfp5hGOKjgTUa6kcnugttvMSuztdDETVJ+EGEhT
+         tC0ZJ4I5cMGeJfCICfhIYYuCVe1TjWb7qGhut0ePLFrougiBQUOPDvfAAr9sJpJ8ih
+         nwGqz5O2S5ngdgH/yJhxofxpENXp0trmylEM6ELTrRL8wNHeagQnbMLncgtYZTa1hN
+         rnEja4DvjChxA==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe28f92d8eso515510e87.1;
+        Sat, 29 Jul 2023 03:46:15 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZB4jD5Vp49TlgSUHH1QV4K9tI8MfMi2nwlkmo7LsMAQj8TBKna
+        nQEnhfGTlSSL0gPzipPGavSR87cCuHR3Y9LygBw=
+X-Google-Smtp-Source: APBJJlHVDfcRslwcpWsg7VpyTtT9qutdiRBs0Bpx3o4fJiSNl/ayk27SWI/6tYnStFJTKNoID1W3o1vVku0x3PBG6GI=
+X-Received: by 2002:a19:8c57:0:b0:4fd:faa3:2352 with SMTP id
+ i23-20020a198c57000000b004fdfaa32352mr2948531lfj.14.1690627573425; Sat, 29
+ Jul 2023 03:46:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230708091727.1417894-1-yukuai1@huaweicloud.com>
-In-Reply-To: <20230708091727.1417894-1-yukuai1@huaweicloud.com>
+References: <tencent_E2C71605D88087940237AA9A44CC8D436D06@qq.com>
+ <ZK7Zy2U86znezl+a@infradead.org> <tencent_0EDE0D522DF8161358B80786820BAAA5C406@qq.com>
+In-Reply-To: <tencent_0EDE0D522DF8161358B80786820BAAA5C406@qq.com>
 From:   Song Liu <song@kernel.org>
-Date:   Sat, 29 Jul 2023 18:44:48 +0800
-X-Gmail-Original-Message-ID: <CAPhsuW4P9t6fhAg5EFvTVkf3WLQy0=NTpZ-+1fcYBn3uyn9bng@mail.gmail.com>
-Message-ID: <CAPhsuW4P9t6fhAg5EFvTVkf3WLQy0=NTpZ-+1fcYBn3uyn9bng@mail.gmail.com>
-Subject: Re: [PATCH -next v3] md/raid5-cache: fix a deadlock in r5l_exit_log()
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     logang@deltatee.com, axboe@kernel.dk, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
+Date:   Sat, 29 Jul 2023 18:46:01 +0800
+X-Gmail-Original-Message-ID: <CAPhsuW54pW7As-A1G4H+OWALUh7_a5+-zkLXghTh6_JjcWZoMQ@mail.gmail.com>
+Message-ID: <CAPhsuW54pW7As-A1G4H+OWALUh7_a5+-zkLXghTh6_JjcWZoMQ@mail.gmail.com>
+Subject: Re: [PATCH] md: fix potential OOB in multipath_remove_disk()
+To:     Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -65,70 +65,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 8, 2023 at 5:19=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
-ote:
+On Sat, Jul 15, 2023 at 5:45=E2=80=AFPM Zhang Shurong <zhang_shurong@foxmai=
+l.com> wrote:
 >
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> Commit b13015af94cf ("md/raid5-cache: Clear conf->log after finishing
-> work") introduce a new problem:
->
-> // caller hold reconfig_mutex
-> r5l_exit_log
->  flush_work(&log->disable_writeback_work)
->                         r5c_disable_writeback_async
->                          wait_event
->                           /*
->                            * conf->log is not NULL, and mddev_trylock()
->                            * will fail, wait_event() can never pass.
->                            */
->  conf->log =3D NULL
->
-> Fix this problem by setting 'config->log' to NULL before wake_up() as it
-> used to be, so that wait_event() from r5c_disable_writeback_async() can
-> exist. In the meantime, move forward md_unregister_thread() so that
-> null-ptr-deref this commit fixed can still be fixed.
->
-> Fixes: b13015af94cf ("md/raid5-cache: Clear conf->log after finishing wor=
-k")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> =E5=9C=A8 2023=E5=B9=B47=E6=9C=8813=E6=97=A5=E6=98=9F=E6=9C=9F=E5=9B=9B C=
+ST =E4=B8=8A=E5=8D=8812:50:19=EF=BC=8CChristoph Hellwig =E5=86=99=E9=81=93=
+=EF=BC=9A
+> > On Thu, Jul 13, 2023 at 12:46:05AM +0800, Zhang Shurong wrote:
+> > > If rddev->raid_disk is greater than mddev->raid_disks, there will be
+> > > an out-of-bounds in multipath_remove_disk. We have already found
+> > > similar reports as follows:
+> > >
+> > > 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+> > > 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_d=
+isk")
+> > >
+> > > Fix this bug by checking whether the "number" variable is
+> > > valid.
+> >
+> > I think it might just be time to finally dropped the deprecated md
+> > multipath code instead..
+> Should I write another patch to delete them?
 
-Applied to md-next. Thanks!
+Yes, please write a patch to delete the multipath code.
 
+Thanks,
 Song
-
-> ---
->
-> Changes in v3:
->  - Use a different solution.
->
->  drivers/md/raid5-cache.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/md/raid5-cache.c b/drivers/md/raid5-cache.c
-> index 47ba7d9e81e1..2eac4a50d99b 100644
-> --- a/drivers/md/raid5-cache.c
-> +++ b/drivers/md/raid5-cache.c
-> @@ -3168,12 +3168,15 @@ void r5l_exit_log(struct r5conf *conf)
->  {
->         struct r5l_log *log =3D conf->log;
->
-> -       /* Ensure disable_writeback_work wakes up and exits */
-> -       wake_up(&conf->mddev->sb_wait);
-> -       flush_work(&log->disable_writeback_work);
->         md_unregister_thread(&log->reclaim_thread);
->
-> +       /*
-> +        * 'reconfig_mutex' is held by caller, set 'confg->log' to NULL t=
-o
-> +        * ensure disable_writeback_work wakes up and exits.
-> +        */
->         conf->log =3D NULL;
-> +       wake_up(&conf->mddev->sb_wait);
-> +       flush_work(&log->disable_writeback_work);
->
->         mempool_exit(&log->meta_pool);
->         bioset_exit(&log->bs);
-> --
-> 2.39.2
->
