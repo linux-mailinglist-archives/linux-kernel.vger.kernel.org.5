@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76190767AA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C793A767AA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237510AbjG2BRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S236387AbjG2BRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237394AbjG2BRN (ORCPT
+        with ESMTP id S237486AbjG2BRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:17:13 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC3C44B1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:48 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bbd4f526caso20313835ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:48 -0700 (PDT)
+        Fri, 28 Jul 2023 21:17:24 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B0746A0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:56 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c6db61f7f64so2604931276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690593392; x=1691198192;
+        d=google.com; s=20221208; t=1690593394; x=1691198194;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Va/MWC5DRY46k94Uc8qLWdNEj91Xq1TuiBAGty68F8=;
-        b=yRqDe6hnQT3wYKRPtH+TorJeNAyO7rJdwfhdzAa8+zEHsyF8WvTsItjBPD+rKS0Bre
-         AWLVyXBfQ54MW4JkJ0PV5hWRO1Fxd0rFnJdzJfj+6026Wy296jACG2ypQTWOPOTxnm58
-         hc2QwMRTYw5zBjGNrKdbTgeJQRTl0AXfMn7T05nG5aiuEMzUZmIZWtCkP+omOr++FrxB
-         L7ENLl09CAGiAgDkJr/jQ27vcqMUjXRP0JP7gCAc28Rd7+WWeW9u2YkmTg8Sqqf2cTBy
-         D4BXD3n8j8znlME2TL5r/kHdBzikHOsATdn4giB+mgOwpVwUEiQ07zQ9RlC8q4nywObi
-         deTw==
+        bh=txdsA1xtp9opNpvC2N9YIeErGNCur9/2M/6XZwnPohE=;
+        b=X/UYeRCMQX8Eu9aWHhq75jQGUGL5bLyA71aOLK+Lx7A7sJ9r+Bx7QwhdNrIw4gJUdX
+         /FVtta1v5YqwQaCJonKbTtCYFJCYboHzXK7DfnJRMUgleO5LJ6nIVVq/GFjTrjM68fCa
+         7vVF2JmEDsxFnWJiki9i003iyqtuYGt5WXx95tGx5s1Sw6aF1xEWNiGtVk76Pdrx1Fna
+         91SguJH+ATnTEShAEIWEgOjRn3Gv6MOhegfUJbXNWSup4GfS+BQEHtWfUkVE07RBpnP8
+         E9UyDiIVBjb8c5GIUuXDzPRoJlmN8LSBlH8Jec4Nh0YdePtBTWyuQcVh9j70+YAtNlfn
+         YyEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690593392; x=1691198192;
+        d=1e100.net; s=20221208; t=1690593394; x=1691198194;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/Va/MWC5DRY46k94Uc8qLWdNEj91Xq1TuiBAGty68F8=;
-        b=iw/avOnQfsE3oldf3I1QPI3gdaor0qYrJ4TLXfBmDHeF14/YylY/w/ju45HKdqHlCu
-         Z1U542kKk9cvDo9AiCLl/TDIp/ZmiSfD8JFqAuPz48WyxZOBv6IAFki6nBrIt9MwLUuk
-         xtfmWXkDNkMLADw6tTlO5Dz5SEYW0qgTMlsZLwXwH6CD4qQtcvgM7e9QUIpJjFxAMGdN
-         E74aOK9G3VyNa2kPpuSLeO9nLv6nCuyC2oWtUVi3FAPKFW9luX+4Ak/Ytt/tvv3k22uB
-         p1Lb2mnJclJGmbs3RJnLypsp2cr5K4HfoVReGqWV83CpO33S6ACtnfq8sQDVrOQiqmcF
-         xUlA==
-X-Gm-Message-State: ABy/qLbFNYZSunySjFFYeJl7R4h3pMgLgJUojwcjwjNoYUDzx5NbJ8MX
-        sALeDjI9m+lhTJNzpKrOf9Ppm719XkE=
-X-Google-Smtp-Source: APBJJlFQbjjv4j0eZ7yTd6o6d4NNrnwqwn3O3h5tAwnBDxSdxiPvphArnIx6zqIUmY01tf1nqT4wuZuZFt4=
+        bh=txdsA1xtp9opNpvC2N9YIeErGNCur9/2M/6XZwnPohE=;
+        b=HoeWxinUu1b8k7ZXhz9AQb4/s8fDUIKjtgMlEK7DXiZXXsEClhjqtYJhYsVT32Oq8T
+         TifI/LYEKYt20iNlVOra/80oF+OzrEMNaP9eLpXwgbfGe8lFWeOq8OnE0zqyryJOE+fX
+         kakh7eI4lac5zqc/sppkCs0ipK4gn7K/yv5THLR+053Sa4EGC4isBfhN5Zj4L/7wZ11q
+         crGUhIJSHpFh/OCFuGAIKkwHdzJdbaQ4Ev30M977717Etf30O/cfyMgOlnEwpnvOYI60
+         a94pGbrwcSpt1gfCOd0gW5EF1GMwtSF1mijzefVfquvWpsp9HMF+Q6ZV9jfilsE6JcdZ
+         frAg==
+X-Gm-Message-State: ABy/qLazonRYDrtu7H4sJHzyHUjX/iCK4t6NT7BJzY46G/58tFWz+0kq
+        NCx2ZPh11+FWkCPxEPDxenDDQaLTdB0=
+X-Google-Smtp-Source: APBJJlHm92p3mBshzqwFy8AkJJGn2KFFOP58Bbms+0JsAktDEbZUGe75BC0IveFbL/cDfaFSFLZV+ASfxeg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c409:b0:1b8:2055:fc1f with SMTP id
- k9-20020a170902c40900b001b82055fc1fmr12348plk.2.1690593392373; Fri, 28 Jul
- 2023 18:16:32 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:e6d3:0:b0:c72:2386:7d26 with SMTP id
+ d202-20020a25e6d3000000b00c7223867d26mr18792ybh.0.1690593394398; Fri, 28 Jul
+ 2023 18:16:34 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 18:15:57 -0700
+Date:   Fri, 28 Jul 2023 18:15:58 -0700
 In-Reply-To: <20230729011608.1065019-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729011608.1065019-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729011608.1065019-11-seanjc@google.com>
-Subject: [PATCH v2 10/21] KVM: VMX: Check KVM CPU caps, not just VMX MSR
- support, for XSAVE enabling
+Message-ID: <20230729011608.1065019-12-seanjc@google.com>
+Subject: [PATCH v2 11/21] KVM: VMX: Rename XSAVES control to follow KVM's
+ preferred "ENABLE_XYZ"
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -73,31 +73,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check KVM CPU capabilities instead of raw VMX support for XSAVES when
-determining whether or not XSAVER can/should be exposed to the guest.
-Practically speaking, it's nonsensical/impossible for a CPU to support
-"enable XSAVES" without XSAVES being supported natively.  The real
-motivation for checking to kvm_cpu_cap_has() is to allow using the
-governed feature's standard check-and-set logic.
+Rename the XSAVES secondary execution control to follow KVM's preferred
+style so that XSAVES related logic can use common macros that depend on
+KVM's preferred style.
+
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/include/asm/vmx.h      | 2 +-
+ arch/x86/kvm/vmx/capabilities.h | 2 +-
+ arch/x86/kvm/vmx/hyperv.c       | 2 +-
+ arch/x86/kvm/vmx/nested.c       | 6 +++---
+ arch/x86/kvm/vmx/nested.h       | 2 +-
+ arch/x86/kvm/vmx/vmx.c          | 2 +-
+ arch/x86/kvm/vmx/vmx.h          | 2 +-
+ 7 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+index 0d02c4aafa6f..0e73616b82f3 100644
+--- a/arch/x86/include/asm/vmx.h
++++ b/arch/x86/include/asm/vmx.h
+@@ -71,7 +71,7 @@
+ #define SECONDARY_EXEC_RDSEED_EXITING		VMCS_CONTROL_BIT(RDSEED_EXITING)
+ #define SECONDARY_EXEC_ENABLE_PML               VMCS_CONTROL_BIT(PAGE_MOD_LOGGING)
+ #define SECONDARY_EXEC_PT_CONCEAL_VMX		VMCS_CONTROL_BIT(PT_CONCEAL_VMX)
+-#define SECONDARY_EXEC_XSAVES			VMCS_CONTROL_BIT(XSAVES)
++#define SECONDARY_EXEC_ENABLE_XSAVES		VMCS_CONTROL_BIT(XSAVES)
+ #define SECONDARY_EXEC_MODE_BASED_EPT_EXEC	VMCS_CONTROL_BIT(MODE_BASED_EPT_EXEC)
+ #define SECONDARY_EXEC_PT_USE_GPA		VMCS_CONTROL_BIT(PT_USE_GPA)
+ #define SECONDARY_EXEC_TSC_SCALING              VMCS_CONTROL_BIT(TSC_SCALING)
+diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+index d0abee35d7ba..41a4533f9989 100644
+--- a/arch/x86/kvm/vmx/capabilities.h
++++ b/arch/x86/kvm/vmx/capabilities.h
+@@ -252,7 +252,7 @@ static inline bool cpu_has_vmx_pml(void)
+ static inline bool cpu_has_vmx_xsaves(void)
+ {
+ 	return vmcs_config.cpu_based_2nd_exec_ctrl &
+-		SECONDARY_EXEC_XSAVES;
++		SECONDARY_EXEC_ENABLE_XSAVES;
+ }
+ 
+ static inline bool cpu_has_vmx_waitpkg(void)
+diff --git a/arch/x86/kvm/vmx/hyperv.c b/arch/x86/kvm/vmx/hyperv.c
+index 79450e1ed7cf..313b8bb5b8a7 100644
+--- a/arch/x86/kvm/vmx/hyperv.c
++++ b/arch/x86/kvm/vmx/hyperv.c
+@@ -78,7 +78,7 @@
+ 	 SECONDARY_EXEC_DESC |						\
+ 	 SECONDARY_EXEC_ENABLE_RDTSCP |					\
+ 	 SECONDARY_EXEC_ENABLE_INVPCID |				\
+-	 SECONDARY_EXEC_XSAVES |					\
++	 SECONDARY_EXEC_ENABLE_XSAVES |					\
+ 	 SECONDARY_EXEC_RDSEED_EXITING |				\
+ 	 SECONDARY_EXEC_RDRAND_EXITING |				\
+ 	 SECONDARY_EXEC_TSC_SCALING |					\
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 516391cc0d64..22e08d30baef 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -2307,7 +2307,7 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct loaded_vmcs *vmcs0
+ 				  SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE |
+ 				  SECONDARY_EXEC_ENABLE_INVPCID |
+ 				  SECONDARY_EXEC_ENABLE_RDTSCP |
+-				  SECONDARY_EXEC_XSAVES |
++				  SECONDARY_EXEC_ENABLE_XSAVES |
+ 				  SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE |
+ 				  SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY |
+ 				  SECONDARY_EXEC_APIC_REGISTER_VIRT |
+@@ -6331,7 +6331,7 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
+ 		 * If if it were, XSS would have to be checked against
+ 		 * the XSS exit bitmap in vmcs12.
+ 		 */
+-		return nested_cpu_has2(vmcs12, SECONDARY_EXEC_XSAVES);
++		return nested_cpu_has2(vmcs12, SECONDARY_EXEC_ENABLE_XSAVES);
+ 	case EXIT_REASON_UMWAIT:
+ 	case EXIT_REASON_TPAUSE:
+ 		return nested_cpu_has2(vmcs12,
+@@ -6874,7 +6874,7 @@ static void nested_vmx_setup_secondary_ctls(u32 ept_caps,
+ 		SECONDARY_EXEC_ENABLE_INVPCID |
+ 		SECONDARY_EXEC_ENABLE_VMFUNC |
+ 		SECONDARY_EXEC_RDSEED_EXITING |
+-		SECONDARY_EXEC_XSAVES |
++		SECONDARY_EXEC_ENABLE_XSAVES |
+ 		SECONDARY_EXEC_TSC_SCALING |
+ 		SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
+ 
+diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
+index 96952263b029..b4b9d51438c6 100644
+--- a/arch/x86/kvm/vmx/nested.h
++++ b/arch/x86/kvm/vmx/nested.h
+@@ -168,7 +168,7 @@ static inline int nested_cpu_has_ept(struct vmcs12 *vmcs12)
+ 
+ static inline bool nested_cpu_has_xsaves(struct vmcs12 *vmcs12)
+ {
+-	return nested_cpu_has2(vmcs12, SECONDARY_EXEC_XSAVES);
++	return nested_cpu_has2(vmcs12, SECONDARY_EXEC_ENABLE_XSAVES);
+ }
+ 
+ static inline bool nested_cpu_has_pml(struct vmcs12 *vmcs12)
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 307d73749185..e358e3fa1ced 100644
+index e358e3fa1ced..a0a47be2feed 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7718,7 +7718,7 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	 * to the guest.  XSAVES depends on CR4.OSXSAVE, and CR4.OSXSAVE can be
- 	 * set if and only if XSAVE is supported.
- 	 */
--	vcpu->arch.xsaves_enabled = cpu_has_vmx_xsaves() &&
-+	vcpu->arch.xsaves_enabled = kvm_cpu_cap_has(X86_FEATURE_XSAVES) &&
- 				    boot_cpu_has(X86_FEATURE_XSAVE) &&
- 				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
- 				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVES);
+@@ -4589,7 +4589,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
+ 
+ 	if (cpu_has_vmx_xsaves())
+ 		vmx_adjust_secondary_exec_control(vmx, &exec_control,
+-						  SECONDARY_EXEC_XSAVES,
++						  SECONDARY_EXEC_ENABLE_XSAVES,
+ 						  vcpu->arch.xsaves_enabled, false);
+ 
+ 	/*
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 32384ba38499..cde902b44d97 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -562,7 +562,7 @@ static inline u8 vmx_get_rvi(void)
+ 	 SECONDARY_EXEC_APIC_REGISTER_VIRT |				\
+ 	 SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY |				\
+ 	 SECONDARY_EXEC_SHADOW_VMCS |					\
+-	 SECONDARY_EXEC_XSAVES |					\
++	 SECONDARY_EXEC_ENABLE_XSAVES |					\
+ 	 SECONDARY_EXEC_RDSEED_EXITING |				\
+ 	 SECONDARY_EXEC_RDRAND_EXITING |				\
+ 	 SECONDARY_EXEC_ENABLE_PML |					\
 -- 
 2.41.0.487.g6d72f3e995-goog
 
