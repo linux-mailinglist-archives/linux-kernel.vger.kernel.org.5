@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2409767ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DC5767AE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237450AbjG2Bfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        id S237532AbjG2Bf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236363AbjG2Bfs (ORCPT
+        with ESMTP id S237373AbjG2Bfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:35:48 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8D2D5D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:47 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55c7bb27977so2436040a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:47 -0700 (PDT)
+        Fri, 28 Jul 2023 21:35:52 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731BC3C12
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:50 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-584139b6b03so27878337b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690594547; x=1691199347;
+        d=google.com; s=20221208; t=1690594549; x=1691199349;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXSv3END2Klqtx+yY5wHfQk5zXL7nBePduqABQQ83FM=;
-        b=xjh6WzfpEV1RIRBvrT6h0mWl/5NIXPREobuFZQi3RL9n9nfwT6WhJvboZ8uGRKYk64
-         Yt/NZx5iAq6LD2P8zJHcShyTuWnPPVAVwZ7s5UC7Ub38emeW2tPRPJWKNGPu0pOkOcRv
-         1hnqHWplD7S1lZ1bCLN8v1C7cg1OH5GJqLo1C/8fkmlsMCsLdOJhDbw0CMJSdIRvVJSd
-         eSi31mjewEiAOjxoaWcFuJKjZhphR7SfyJeyKlx97pU2Ypr8ZdeKlp1SikYc9bVLuZnN
-         FNKKGK64OIfOQQ1MnZM7dkBH/oHzh1inoFZnUulrkWaGD5+xpzezsSD+aykKUifV/NYd
-         Pk6g==
+        bh=jEX944Eq3FR7IMm0zyV2J78IA1pYMR7a1LBZmsndkp4=;
+        b=EusHJXExcAmxW94p+Y+WzpBoXgOHGapVubepNLVe1AjQFq4L5DyiXFwSfT7lAKZP2B
+         LbstAlazYFqIHYNHWE9V6nKli4q5Y0K2fyfD216QZG3evAmQp6EgzhArMOhsjP2D0ElV
+         B6qwPZ9a/i9In0E55fHIM4mb9ugp3zYDctkxuHsv6F88IcOYAE2VED+v+Lk/ZmoPYG/2
+         lkQCY3PhAbTRH+u8Ae/SnMEwzw13MNUKDcBi0qG4LXNUvbTFAvrgKXodpE6AzSf38TDQ
+         sMQJ+cT1fMFi0cUz1wu0ff5mLmSDncQAQiHhjP1MSwt+Xyt6OmHxozc9Cly/LUlxpBCN
+         YceQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690594547; x=1691199347;
+        d=1e100.net; s=20221208; t=1690594549; x=1691199349;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YXSv3END2Klqtx+yY5wHfQk5zXL7nBePduqABQQ83FM=;
-        b=TCkxq/LGAzhFmj0fngrPwmmo64yQC1He/Ue66g07ecnZMaFZ+2gkV/qY7C7zn693Z/
-         ay4HfEjgf/uJZVJ4eYAebDFvTFTYJW3RhG8nBtVbd7+fZZtbnZnRflBjCMvJ06+5/nY7
-         gtXG/jg3QbRIQgB9TnOEZ+9fIIEt0uLMWPKxCUn7655+j+OWAA+kl7w93/aykkqnV1fg
-         4GFBVrltHhkB3xptQgKHFBzWBq6fFy1BkUWeSSTBnOC+yV8/gDntR6HZYs2pxlo7MrS2
-         madkL5lx8gIzkxftYOEtEQK2Bf6ucTmn+TwmnvETySG/vROlPJmokQ7eLlXlEsojZwcg
-         KK3w==
-X-Gm-Message-State: ABy/qLaLUb0jPFuM31owiHHQQx0cYImq8m1icegDZ34dKlib7j/x+KEj
-        URSwPc7qQXTwJIjRiv/7QsIMhoe5UhQ=
-X-Google-Smtp-Source: APBJJlE04anqFJHsZ9xRSAXjata30eLPyNsuSxyxD1HAJrkEtTHP+UsU3nIWi5hxRkWaA/cKbC5UTvclk9Y=
+        bh=jEX944Eq3FR7IMm0zyV2J78IA1pYMR7a1LBZmsndkp4=;
+        b=fO3DfKCJ4T9TWX2k4HHwSnlVqw7d1GEsDZeZ0B+CUVY7hRkAPI+Ms4aej18Y38etwF
+         K7bLzWT/mAXuLY2A+laiqbpCE16VEXOG2Gqp/RBLQyPCArrJldNE06AGtI5koRl9gGYa
+         AntKFd/0dAv4+I2HDgWIQ+o4ZXGE/957ZTbIpGclMT1WCi/l5o4AX8wxqIXSUZ0JX8y4
+         Pr6AFKtgIhu7bd5m7CpLCvHoWfqoTCrHC1tb+/7OytV+RHf1eIGxw42LC+9QFNiyRuo1
+         jWf8Uy3k9I2kMxaaZ44O0OsD7/l8QaGCh+gbXaV9kiHsHSj8Wb5tCmeiBWOrXfOneyCV
+         iF0g==
+X-Gm-Message-State: ABy/qLZhmRZjFoEBq1CPvBa/Vyl7O1xAqB/5p6ZWJHccCvUwB48jo7Vb
+        rScI+4I4mjdeF4NVeQR8d/5Z/l3Svao=
+X-Google-Smtp-Source: APBJJlHaMJ266s4owvydBsGasNevM0zaMSoOGKTU1pN9RjVzgaKXC6MzhQvAdGBBorhN1PRis7f6VXl7qB0=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ce84:b0:1b8:2cee:946b with SMTP id
- f4-20020a170902ce8400b001b82cee946bmr15038plg.11.1690594546523; Fri, 28 Jul
- 2023 18:35:46 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:af03:0:b0:583:9db4:6c20 with SMTP id
+ n3-20020a81af03000000b005839db46c20mr22745ywh.1.1690594549610; Fri, 28 Jul
+ 2023 18:35:49 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 18:35:08 -0700
+Date:   Fri, 28 Jul 2023 18:35:09 -0700
 In-Reply-To: <20230729013535.1070024-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729013535.1070024-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729013535.1070024-3-seanjc@google.com>
-Subject: [PATCH v4 02/29] drm/i915/gvt: remove interface intel_gvt_is_valid_gfn
+Message-ID: <20230729013535.1070024-4-seanjc@google.com>
+Subject: [PATCH v4 03/29] drm/i915/gvt: Verify hugepages are contiguous in
+ physical address space
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -69,128 +70,43 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yan Zhao <yan.y.zhao@intel.com>
+When shadowing a GTT entry with a 2M page, verify that the pfns are
+contiguous, not just that the struct page pointers are contiguous.  The
+memory map is virtual contiguous if "CONFIG_FLATMEM=y ||
+CONFIG_SPARSEMEM_VMEMMAP=y", but not for "CONFIG_SPARSEMEM=y &&
+CONFIG_SPARSEMEM_VMEMMAP=n", so theoretically KVMGT could encounter struct
+pages that are virtually contiguous, but not physically contiguous.
 
-Currently intel_gvt_is_valid_gfn() is called in two places:
-(1) shadowing guest GGTT entry
-(2) shadowing guest PPGTT leaf entry,
-which was introduced in commit cc753fbe1ac4
-("drm/i915/gvt: validate gfn before set shadow page entry").
+In practice, this flaw is likely a non-issue as it would cause functional
+problems iff a section isn't 2M aligned _and_ is directly adjacent to
+another section with discontiguous pfns.
 
-However, now it's not necessary to call this interface any more, because
-a. GGTT partial write issue has been fixed by
-   commit bc0686ff5fad
-   ("drm/i915/gvt: support inconsecutive partial gtt entry write")
-   commit 510fe10b6180
-   ("drm/i915/gvt: fix a bug of partially write ggtt enties")
-b. PPGTT resides in normal guest RAM and we only treat 8-byte writes
-   as valid page table writes. Any invalid GPA found is regarded as
-   an error, either due to guest misbehavior/attack or bug in host
-   shadow code.
-   So,rather than do GFN pre-checking and replace invalid GFNs with
-   scratch GFN and continue silently, just remove the pre-checking and
-   abort PPGTT shadowing on error detected.
-c. GFN validity check is still performed in
-   intel_gvt_dma_map_guest_page() --> gvt_pin_guest_page().
-   It's more desirable to call VFIO interface to do both validity check
-   and mapping.
-   Calling intel_gvt_is_valid_gfn() to do GFN validity check from KVM side
-   while later mapping the GFN through VFIO interface is unnecessarily
-   fragile and confusing for unaware readers.
-
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-[sean: remove now-unused local variables]
-Acked-by: Zhi Wang <zhi.a.wang@intel.com>
 Tested-by: Yongwei Ma <yongwei.ma@intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/gpu/drm/i915/gvt/gtt.c | 36 +---------------------------------
- 1 file changed, 1 insertion(+), 35 deletions(-)
+ drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
-index 58b9b316ae46..f30922c55a0c 100644
---- a/drivers/gpu/drm/i915/gvt/gtt.c
-+++ b/drivers/gpu/drm/i915/gvt/gtt.c
-@@ -49,22 +49,6 @@
- static bool enable_out_of_sync = false;
- static int preallocated_oos_pages = 8192;
+diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+index de675d799c7d..429f0f993a13 100644
+--- a/drivers/gpu/drm/i915/gvt/kvmgt.c
++++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+@@ -161,7 +161,7 @@ static int gvt_pin_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
  
--static bool intel_gvt_is_valid_gfn(struct intel_vgpu *vgpu, unsigned long gfn)
--{
--	struct kvm *kvm = vgpu->vfio_device.kvm;
--	int idx;
--	bool ret;
--
--	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, vgpu->status))
--		return false;
--
--	idx = srcu_read_lock(&kvm->srcu);
--	ret = kvm_is_visible_gfn(kvm, gfn);
--	srcu_read_unlock(&kvm->srcu, idx);
--
--	return ret;
--}
--
- /*
-  * validate a gm address and related range size,
-  * translate it to host gm address
-@@ -1333,11 +1317,9 @@ static int ppgtt_populate_shadow_entry(struct intel_vgpu *vgpu,
- static int ppgtt_populate_spt(struct intel_vgpu_ppgtt_spt *spt)
- {
- 	struct intel_vgpu *vgpu = spt->vgpu;
--	struct intel_gvt *gvt = vgpu->gvt;
--	const struct intel_gvt_gtt_pte_ops *ops = gvt->gtt.pte_ops;
- 	struct intel_vgpu_ppgtt_spt *s;
- 	struct intel_gvt_gtt_entry se, ge;
--	unsigned long gfn, i;
-+	unsigned long i;
- 	int ret;
- 
- 	trace_spt_change(spt->vgpu->id, "born", spt,
-@@ -1354,13 +1336,6 @@ static int ppgtt_populate_spt(struct intel_vgpu_ppgtt_spt *spt)
- 			ppgtt_generate_shadow_entry(&se, s, &ge);
- 			ppgtt_set_shadow_entry(spt, &se, i);
- 		} else {
--			gfn = ops->get_pfn(&ge);
--			if (!intel_gvt_is_valid_gfn(vgpu, gfn)) {
--				ops->set_pfn(&se, gvt->gtt.scratch_mfn);
--				ppgtt_set_shadow_entry(spt, &se, i);
--				continue;
--			}
--
- 			ret = ppgtt_populate_shadow_entry(vgpu, spt, i, &ge);
- 			if (ret)
- 				goto fail;
-@@ -2335,14 +2310,6 @@ static int emulate_ggtt_mmio_write(struct intel_vgpu *vgpu, unsigned int off,
- 		m.val64 = e.val64;
- 		m.type = e.type;
- 
--		/* one PTE update may be issued in multiple writes and the
--		 * first write may not construct a valid gfn
--		 */
--		if (!intel_gvt_is_valid_gfn(vgpu, gfn)) {
--			ops->set_pfn(&m, gvt->gtt.scratch_mfn);
--			goto out;
--		}
--
- 		ret = intel_gvt_dma_map_guest_page(vgpu, gfn, PAGE_SIZE,
- 						   &dma_addr);
- 		if (ret) {
-@@ -2359,7 +2326,6 @@ static int emulate_ggtt_mmio_write(struct intel_vgpu *vgpu, unsigned int off,
- 		ops->clear_present(&m);
- 	}
- 
--out:
- 	ggtt_set_guest_entry(ggtt_mm, &e, g_gtt_index);
- 
- 	ggtt_get_host_entry(ggtt_mm, &e, g_gtt_index);
+ 		if (npage == 0)
+ 			base_page = cur_page;
+-		else if (base_page + npage != cur_page) {
++		else if (page_to_pfn(base_page) + npage != page_to_pfn(cur_page)) {
+ 			gvt_vgpu_err("The pages are not continuous\n");
+ 			ret = -EINVAL;
+ 			npage++;
 -- 
 2.41.0.487.g6d72f3e995-goog
 
