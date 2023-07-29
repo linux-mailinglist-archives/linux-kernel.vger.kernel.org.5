@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DC5767AE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D134E767AEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbjG2Bf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
+        id S237537AbjG2BgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237373AbjG2Bfw (ORCPT
+        with ESMTP id S237434AbjG2Bfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:35:52 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731BC3C12
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:50 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-584139b6b03so27878337b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:50 -0700 (PDT)
+        Fri, 28 Jul 2023 21:35:54 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4024F3C28
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:52 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583312344e7so27158607b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690594549; x=1691199349;
+        d=google.com; s=20221208; t=1690594551; x=1691199351;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=jEX944Eq3FR7IMm0zyV2J78IA1pYMR7a1LBZmsndkp4=;
-        b=EusHJXExcAmxW94p+Y+WzpBoXgOHGapVubepNLVe1AjQFq4L5DyiXFwSfT7lAKZP2B
-         LbstAlazYFqIHYNHWE9V6nKli4q5Y0K2fyfD216QZG3evAmQp6EgzhArMOhsjP2D0ElV
-         B6qwPZ9a/i9In0E55fHIM4mb9ugp3zYDctkxuHsv6F88IcOYAE2VED+v+Lk/ZmoPYG/2
-         lkQCY3PhAbTRH+u8Ae/SnMEwzw13MNUKDcBi0qG4LXNUvbTFAvrgKXodpE6AzSf38TDQ
-         sMQJ+cT1fMFi0cUz1wu0ff5mLmSDncQAQiHhjP1MSwt+Xyt6OmHxozc9Cly/LUlxpBCN
-         YceQ==
+        bh=BPHrGdmcO+kiKcILc6YcLgffMmTXNHFWJtVnnvxUR/s=;
+        b=c4f+vKRihiToZJXS5OogN8iiE6FLuUvOKkmqCmSim7pH2z/utYWPDP2oVqSVGtkG1A
+         SWNLm1/AyNWFIXSVTCeRRDtPCloczCV9BmHAm4TIQ+6TPoZlYUjmclmXhMw1bNsrwR1p
+         cGrHFdYcS1vUrAfn8uUeNQJFhlilL3d092Hzgj5z4NjaAjqGJnBiMlVL5KIqDHhaenT7
+         hpX4y8bbb2dzsC+vVyHxWZAym0YK1xIFqTSmPU3Monwr2Rr1dFQr0frCyiv8zIC9GDti
+         Rl/ECx/Fm2afb9uLhum0iHbPNOuhnO2ahivtMk6neha9ZnlXt5q7XUu243mZR+KgHPzY
+         VFcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690594549; x=1691199349;
+        d=1e100.net; s=20221208; t=1690594551; x=1691199351;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jEX944Eq3FR7IMm0zyV2J78IA1pYMR7a1LBZmsndkp4=;
-        b=fO3DfKCJ4T9TWX2k4HHwSnlVqw7d1GEsDZeZ0B+CUVY7hRkAPI+Ms4aej18Y38etwF
-         K7bLzWT/mAXuLY2A+laiqbpCE16VEXOG2Gqp/RBLQyPCArrJldNE06AGtI5koRl9gGYa
-         AntKFd/0dAv4+I2HDgWIQ+o4ZXGE/957ZTbIpGclMT1WCi/l5o4AX8wxqIXSUZ0JX8y4
-         Pr6AFKtgIhu7bd5m7CpLCvHoWfqoTCrHC1tb+/7OytV+RHf1eIGxw42LC+9QFNiyRuo1
-         jWf8Uy3k9I2kMxaaZ44O0OsD7/l8QaGCh+gbXaV9kiHsHSj8Wb5tCmeiBWOrXfOneyCV
-         iF0g==
-X-Gm-Message-State: ABy/qLZhmRZjFoEBq1CPvBa/Vyl7O1xAqB/5p6ZWJHccCvUwB48jo7Vb
-        rScI+4I4mjdeF4NVeQR8d/5Z/l3Svao=
-X-Google-Smtp-Source: APBJJlHaMJ266s4owvydBsGasNevM0zaMSoOGKTU1pN9RjVzgaKXC6MzhQvAdGBBorhN1PRis7f6VXl7qB0=
+        bh=BPHrGdmcO+kiKcILc6YcLgffMmTXNHFWJtVnnvxUR/s=;
+        b=V4ecG7A7+OFuvUndJaz61JVixyOmr4BwdoniXFHNFOJLuuU5W/utXWkleP90ezGPXC
+         QgWoR3gPRMNoBGxzmUKIBnbXKEiSuTwH/KQTSf0rwfA+nr/4TUkGc27tmaR/Edqcm1jt
+         JgEGroV8VQcFUzkTf8zy3/gpLx6seSQ8nY7K51RMauSl32KH23/ERC92b91hVV/5Kz+8
+         CKReDdxf0BQ7wO+XqSu1tCKoV92GrxPKq6JEtmumtpOJ9alg0mqHuoy+haAZFC+AY+cy
+         saBlBWYvg6HZMvJTUK0SESa/G5IiZqTwUx2AuEQASgzctrjk7m51aOTcmkNHiEMRUaAD
+         sfLQ==
+X-Gm-Message-State: ABy/qLYO/J0gQtmgNSef0G4eTVQ3F0D5Z5QcxxaDD6sOow/wgNLB4kX1
+        Pz0kso7A9vFwsQVQJ7Zmemka+Q5+aMw=
+X-Google-Smtp-Source: APBJJlHeQ90nVnue4Lo7FJ5laVqHKjVRJxh5I5aaPeVZTHL2nHfUYF5rc5PadMFBFWRwxcMrAtXFpLgqUTE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:af03:0:b0:583:9db4:6c20 with SMTP id
- n3-20020a81af03000000b005839db46c20mr22745ywh.1.1690594549610; Fri, 28 Jul
- 2023 18:35:49 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:690c:711:b0:583:591d:3d6c with SMTP id
+ bs17-20020a05690c071100b00583591d3d6cmr26031ywb.0.1690594551561; Fri, 28 Jul
+ 2023 18:35:51 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 18:35:09 -0700
+Date:   Fri, 28 Jul 2023 18:35:10 -0700
 In-Reply-To: <20230729013535.1070024-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729013535.1070024-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729013535.1070024-4-seanjc@google.com>
-Subject: [PATCH v4 03/29] drm/i915/gvt: Verify hugepages are contiguous in
- physical address space
+Message-ID: <20230729013535.1070024-5-seanjc@google.com>
+Subject: [PATCH v4 04/29] drm/i915/gvt: Don't try to unpin an empty page range
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -77,36 +76,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When shadowing a GTT entry with a 2M page, verify that the pfns are
-contiguous, not just that the struct page pointers are contiguous.  The
-memory map is virtual contiguous if "CONFIG_FLATMEM=y ||
-CONFIG_SPARSEMEM_VMEMMAP=y", but not for "CONFIG_SPARSEMEM=y &&
-CONFIG_SPARSEMEM_VMEMMAP=n", so theoretically KVMGT could encounter struct
-pages that are virtually contiguous, but not physically contiguous.
+From: Yan Zhao <yan.y.zhao@intel.com>
 
-In practice, this flaw is likely a non-issue as it would cause functional
-problems iff a section isn't 2M aligned _and_ is directly adjacent to
-another section with discontiguous pfns.
+Attempt to unpin pages in the error path of gvt_pin_guest_page() if and
+only if at least one page was successfully pinned.  Unpinning doesn't
+cause functional problems, but vfio_device_container_unpin_pages()
+rightfully warns about being asked to unpin zero pages.
 
-Tested-by: Yongwei Ma <yongwei.ma@intel.com>
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+[sean: write changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/gvt/kvmgt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-index de675d799c7d..429f0f993a13 100644
+index 429f0f993a13..0366a699baf5 100644
 --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
 +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-@@ -161,7 +161,7 @@ static int gvt_pin_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
+@@ -172,7 +172,8 @@ static int gvt_pin_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
+ 	*page = base_page;
+ 	return 0;
+ err:
+-	gvt_unpin_guest_page(vgpu, gfn, npage * PAGE_SIZE);
++	if (npage)
++		gvt_unpin_guest_page(vgpu, gfn, npage * PAGE_SIZE);
+ 	return ret;
+ }
  
- 		if (npage == 0)
- 			base_page = cur_page;
--		else if (base_page + npage != cur_page) {
-+		else if (page_to_pfn(base_page) + npage != page_to_pfn(cur_page)) {
- 			gvt_vgpu_err("The pages are not continuous\n");
- 			ret = -EINVAL;
- 			npage++;
 -- 
 2.41.0.487.g6d72f3e995-goog
 
