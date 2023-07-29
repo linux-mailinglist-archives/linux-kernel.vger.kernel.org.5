@@ -2,67 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0E6767F3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328EB767F41
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjG2Mvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 08:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        id S231769AbjG2Mvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 08:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjG2Mvc (ORCPT
+        with ESMTP id S231584AbjG2Mvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 08:51:32 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F16E6A;
-        Sat, 29 Jul 2023 05:51:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690635091; x=1722171091;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Logke5jGkCA3/7hxc2IPFDsWV1n65Ev/SRiHfDeV8Mk=;
-  b=Klb/c0Sv4zB+kwDNF2NftNL1GkCezMi/+2QMZ3sjmkz0BxsEYItwMILI
-   YeAJV2FqvMMjHsmmC0NTNTw7o0ELan4Hr5Y1VqEiIQ/RIugJ6BYmMCUqt
-   SdJ9R7LJTlB9MitAOOoWVnJik1uWUXtvQsqkBIhu8bWbEA9ftTcrZ828G
-   fu3zpdxfNF8jqI/her4nrVhAp67DK2yTRILkJn3a5dnVUoGE7Lq6lHFzX
-   zvk06Zw59GdgJ5FFsYrOySPLmd2teomOXpaSPd0oYD2hGs734hzc0P5+A
-   GypVi5lpilKHbSBMNrKweJnDKm7x5oxMXVR9U+qEofeVU+wRpTH1FkuGt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="399703152"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="399703152"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 05:51:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="757450492"
-X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
-   d="scan'208";a="757450492"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 29 Jul 2023 05:51:28 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qPjPr-00042N-1j;
-        Sat, 29 Jul 2023 12:51:27 +0000
-Date:   Sat, 29 Jul 2023 20:50:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Aleksa Savic <savicaleksa83@gmail.com>, linux-hwmon@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Aleksa Savic <savicaleksa83@gmail.com>, stable@vger.kernel.org,
-        Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (aquacomputer_d5next) Add selective 200ms delay
- after sending ctrl report
-Message-ID: <202307292011.c34ZumSF-lkp@intel.com>
-References: <20230729112732.5516-1-savicaleksa83@gmail.com>
+        Sat, 29 Jul 2023 08:51:37 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 970BBE6A;
+        Sat, 29 Jul 2023 05:51:35 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 575E22F4;
+        Sat, 29 Jul 2023 05:52:18 -0700 (PDT)
+Received: from e126311.manchester.arm.com (unknown [10.57.77.62])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C9263F67D;
+        Sat, 29 Jul 2023 05:51:33 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 13:51:25 +0100
+From:   Kajetan Puchalski <kajetan.puchalski@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v1] cpuidle: teo: Update idle duration estimate when
+ choosing shallower state
+Message-ID: <ZMULTVTo5RjclWFt@e126311.manchester.arm.com>
+References: <4506480.LvFx2qVVIh@kreacher>
+ <CAJZ5v0hnRm7Nnup3HPWedEchzLD_9w8OPkhQ0vjpR3uAL3HUoQ@mail.gmail.com>
+ <20230729090255.GD3945851@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230729112732.5516-1-savicaleksa83@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230729090255.GD3945851@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,97 +50,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aleksa,
+On Sat, Jul 29, 2023 at 11:02:55AM +0200, Peter Zijlstra wrote:
+> On Thu, Jul 27, 2023 at 10:12:56PM +0200, Rafael J. Wysocki wrote:
+> > On Thu, Jul 27, 2023 at 10:05 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > >
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > The TEO governor takes CPU utilization into account by refining idle state
+> > > selection when the utilization is above a certain threshold.  The idle state
+> > > selection is then refined by choosing an idle state shallower than the
+> > > previously selected one.
+> > >
+> > > However, when this is done, the idle duration estimate needs to be updated
+> > > so as to prevent the scheduler tick from being stopped while the candidate
+> > > idle state is shallow, which may lead to excessive energy usage if the CPU
+> > > is not interrupted quickly enough going forward.  Moreover, in case the
+> > > scheduler tick has been stopped already and the new idle duration estimate
+> > > is too small, the replacement candidate state cannot be used.
+> > >
+> > > Modify the relevant code to take the above observations into account.
+> > >
+> > > Fixes: 9ce0f7c4bc64 ("cpuidle: teo: Introduce util-awareness")
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >
+> > > @Peter: This doesn't attempt to fix the tick stopping problem, it just makes
+> > > the current behavior consistent.
+> > >
+> > > @Anna-Maria: This is likely to basically prevent the tick from being stopped
+> > > at all if the CPU utilization is above a certain threshold.  I'm wondering if
+> > > your results will be affected by it and in what way.
+> > >
+> > > ---
+> > >  drivers/cpuidle/governors/teo.c |   33 ++++++++++++++++++++++++++-------
+> > >  1 file changed, 26 insertions(+), 7 deletions(-)
+> > >
+> > > Index: linux-pm/drivers/cpuidle/governors/teo.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/cpuidle/governors/teo.c
+> > > +++ linux-pm/drivers/cpuidle/governors/teo.c
+> > > @@ -397,13 +397,22 @@ static int teo_select(struct cpuidle_dri
+> > >          * the shallowest non-polling state and exit.
+> > >          */
+> > >         if (drv->state_count < 3 && cpu_data->utilized) {
+> > > -               for (i = 0; i < drv->state_count; ++i) {
+> > > -                       if (!dev->states_usage[i].disable &&
+> > > -                           !(drv->states[i].flags & CPUIDLE_FLAG_POLLING)) {
+> > > -                               idx = i;
+> > > +               /*
+> > > +                * If state 0 is enabled and it is not a polling one, select it
+> > > +                * right away and update the idle duration estimate accordingly,
+> > > +                * unless the scheduler tick has been stopped.
+> > > +                */
+> > > +               if (!idx && !(drv->states[0].flags & CPUIDLE_FLAG_POLLING)) {
+> > > +                       s64 span_ns = teo_middle_of_bin(0, drv);
+> > > +
+> > > +                       if (teo_time_ok(span_ns)) {
+> > > +                               duration_ns = span_ns;
+> > >                                 goto end;
+> > >                         }
+> > >                 }
+> > > +               /* Assume that state 1 is not a polling one and select it. */
+> > 
+> > Well, I should also check if it is not disabled.  Will send a v2 tomorrow.
+> > 
+> > > +               idx = 1;
+> > > +               goto end;
+> > >         }
+> > >
+> > >         /*
+> > > @@ -539,10 +548,20 @@ static int teo_select(struct cpuidle_dri
+> > >
+> > >         /*
+> > >          * If the CPU is being utilized over the threshold, choose a shallower
+> > > -        * non-polling state to improve latency
+> > > +        * non-polling state to improve latency, unless the scheduler tick has
+> > > +        * been stopped already and the shallower state's target residency is
+> > > +        * not sufficiently large.
+> > >          */
+> > > -       if (cpu_data->utilized)
+> > > -               idx = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> > > +       if (cpu_data->utilized) {
+> > > +               s64 span_ns;
+> > > +
+> > > +               i = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
+> > > +               span_ns = teo_middle_of_bin(i, drv);
+> > > +               if (teo_time_ok(span_ns)) {
+> > > +                       idx = i;
+> > > +                       duration_ns = span_ns;
+> > > +               }
+> > > +       }
+> 
+> So I'm not a huge fan of that utilized thing to begin with.. that feels
+> like a hack. I think my patch 3 would achieve much the same, because if
+> busy, you'll have short idles, which will drive the hit+intercept to
+> favour low states, and voila.
 
-kernel test robot noticed the following build errors:
+Not exactly, simply relying on the hit/intercept metrics while
+functional still just amounts to pretty much guessing as it does not
+take any information about what the cpu might be doing into account
+(beyond the timer events but that's the case for both approaches).
 
-[auto build test ERROR on groeck-staging/hwmon-next]
-[also build test ERROR on linus/master v6.5-rc3 next-20230728]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Apart from the approach of "extrapolating future results from past
+mistakes" being slightly questionable to begin with it's in my view made
+even worse by the fact that the metrics are per cpu - meaning they get
+essentially invalidated when tasks get migrated between cores.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aleksa-Savic/hwmon-aquacomputer_d5next-Add-selective-200ms-delay-after-sending-ctrl-report/20230729-193038
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230729112732.5516-1-savicaleksa83%40gmail.com
-patch subject: [PATCH] hwmon: (aquacomputer_d5next) Add selective 200ms delay after sending ctrl report
-config: arm-randconfig-r005-20230729 (https://download.01.org/0day-ci/archive/20230729/202307292011.c34ZumSF-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230729/202307292011.c34ZumSF-lkp@intel.com/reproduce)
+Using just the hit/intercept metrics approach you end up bumping into
+the two scenarios below:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307292011.c34ZumSF-lkp@intel.com/
+1) workload with short idle times -> governor selects too deep states
+then adjusts to shallower idle -> -> workload changes to longer idle times
+-> governor selects too shallow then adjusts to deeper -> workload changes to
+shorter idle -> governor keeps selecting too deep states before adjusting
 
-All errors (new ones prefixed by >>):
+From looking at many traces I had this happens pretty often and we end
+up with the governor selecting deep idle while the avg util on the cpu
+is still massive and by looking at the util we could clearly tell that
+deep idle here would be a mistake. The metrics cannot avoid making that
+mistake, they need to make several of them in order to adjust. You can
+just get stuck ping-ponging between being wrong both ways.
 
-   drivers/hwmon/aquacomputer_d5next.c: In function 'aqc_send_ctrl_data':
->> drivers/hwmon/aquacomputer_d5next.c:674:17: error: implicit declaration of function 'msleep' [-Werror=implicit-function-declaration]
-     674 |                 msleep(200);
-         |                 ^~~~~~
-   cc1: some warnings being treated as errors
+2) A reasonably large task gets migrated onto a different CPU. The
+metrics on the target CPU still favour deeper idle as it wasn't doing
+anything up until the migration, the metrics on the previous CPU favour
+shallower states because of the workload having just run there. Now you
+have the target CPU selecing too deep states before it can adjust and
+the previous one selecting too shallow.
 
+With the util approach on the other hand, the change in util will be
+reflected right away so we can avoid making said mistakes on both the
+cores.
 
-vim +/msleep +674 drivers/hwmon/aquacomputer_d5next.c
+> I didn't take it out -- yet -- because I haven't had much time to
+> evaluate it.
+> 
+> Simply lowering one state at a random busy threshold is duct-tape if
+> ever I saw some.
 
-   627	
-   628	/* Expects the mutex to be locked */
-   629	static int aqc_send_ctrl_data(struct aqc_data *priv)
-   630	{
-   631		int ret;
-   632		u16 checksum;
-   633	
-   634		/* Checksum is not needed for Aquaero */
-   635		if (priv->kind != aquaero) {
-   636			/* Init and xorout value for CRC-16/USB is 0xffff */
-   637			checksum = crc16(0xffff, priv->buffer + priv->checksum_start,
-   638					 priv->checksum_length);
-   639			checksum ^= 0xffff;
-   640	
-   641			/* Place the new checksum at the end of the report */
-   642			put_unaligned_be16(checksum, priv->buffer + priv->checksum_offset);
-   643		}
-   644	
-   645		/* Send the patched up report back to the device */
-   646		ret = hid_hw_raw_request(priv->hdev, priv->ctrl_report_id, priv->buffer, priv->buffer_size,
-   647					 HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
-   648		if (ret < 0)
-   649			return ret;
-   650	
-   651		/* The official software sends this report after every change, so do it here as well */
-   652		ret = hid_hw_raw_request(priv->hdev, priv->secondary_ctrl_report_id,
-   653					 priv->secondary_ctrl_report, priv->secondary_ctrl_report_size,
-   654					 HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
-   655		if (ret < 0)
-   656			return ret;
-   657	
-   658		/*
-   659		 * Wait 200ms before returning to make sure that the device actually processed both reports
-   660		 * and saved ctrl data to memory. Otherwise, an aqc_get_ctrl_data() call made shortly after
-   661		 * may fail with -EPIPE because the device is still busy and can't provide data. This can
-   662		 * happen when userspace tools, such as fancontrol or liquidctl, write to sysfs entries in
-   663		 * quick succession.
-   664		 *
-   665		 * 200ms was found to be the sweet spot between fixing the issue and not significantly
-   666		 * prolonging the call. Quadro, Octo, D5 Next and Aquaero are currently known to be
-   667		 * affected.
-   668		 */
-   669		switch (priv->kind) {
-   670		case quadro:
-   671		case octo:
-   672		case d5next:
-   673		case aquaero:
- > 674			msleep(200);
-   675			break;
-   676		default:
-   677			break;
-   678		}
-   679	
-   680		return ret;
-   681	}
-   682	
+There might be a platform difference here, I do think it probably makes
+more sense on Arm and similar platforms where we only have 2 states to
+choose from so you use the threshold to distinguish between 'deep idle
+desirable' and 'deep idle not desirable'. It does feel slighly more
+hacky on Intel and other platforms with however many states those have
+as instead of "change scenario A to B" it ends up more like "lower
+scenario A". Doesn't make it a bad idea though, it can still be
+beneficial and bring improvements just like on Arm I think. My initial
+suggestion was to make this a separate governor for platforms and use
+cases where this makes sense.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Besides, the threshold isn't random - just empirically the level that
+worked best for the approach. As I wrote in the other thread, it might
+benefit from being tweaked depending on the platform. That's not unique
+to this patchset in any case, the kernel is full of these arbitrary
+numbers that come from "worked on the developer's machine" and not much
+else after all.
+
+I put the numbers from testing this in the original thread for the
+patchset, the util approach was consistently getting much less too deep
+sleeps than the metrics approach in all the workloads I tested to the
+point of being noticeable on both the performance and power usage plots
+for our use cases (Android mobile phone). I never advocated for this to
+be made the default but it is useful for our side of the industry so at
+the very least we should have this as an option. In my view given that
+x86 and arm do cpuidle very differently we probably should have separate
+governors instead of trying to make a one size fits all approach but
+that's a different story.
