@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CA5767A20
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439C5767A26
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237106AbjG2Atv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S237117AbjG2AuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237018AbjG2AtY (ORCPT
+        with ESMTP id S236579AbjG2At3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:49:24 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C25A44B3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:47 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba9a0da10so18241735ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:47 -0700 (PDT)
+        Fri, 28 Jul 2023 20:49:29 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC1544B2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:50 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bb98659f3cso18237405ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690591663; x=1691196463;
+        d=google.com; s=20221208; t=1690591664; x=1691196464;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=N+/CFCalnN5xPq+FJCMcppiU8/rhXPIN/0hig0msSo8=;
-        b=BH/vnXUYOHXy6b1NYhugXlcJVFxpFBACy6MHTmpwAHEsFt0Tb+2O/PuTM8uyBWxsoQ
-         cd5pWacOlW0dxtb4jtK1Afkp/SxeOcFxaSP0qJc57vUNjKs4X/qRNdaMreb7VlI+ErVC
-         2rfrkdgt3VGWiDXrrjTxqMkVSfQLkMfdiVA16UsPo8d8xVWwu50tMwFGe4TMQquS5u7N
-         HpNWkop5hN6b/L/CZilAtEUTmFhsYBWaPAkPDoTCqqjp3T6p6gv/vdQamw0Skme2wCHf
-         yDn9ZEPPIsvPqarpWNphc+E34E3RjRHHRHoZgzlk4quBE7XtiCjjBXGnN4b047a43NX6
-         CAWw==
+        bh=wQPXzO6Hsu0iSJF0dOCAsCOFxRTne/hu/L+54JaWJC0=;
+        b=xk+sw9iHBzeSkdbItPNiudL91ectUHw+VPj43a93ptNlkiVnFBWSaIzTGo+pBOZrVB
+         ZMZwVCYflhDXeIrkHf6UKFSk7SIyUbjztsAG4Mw4KJRCYnGySF3Nt3HKUeKczPqEU4zG
+         SslR1c0snG5jb8rT1lS2+NufHyLHp+wt0HthtHJpu1qRkzc6nMkJKDnij6sEUAbjCtEF
+         xE35oyH827tgDTbyWBzgzeJAkn0BQPrkDeAgl61AfpacjncbL2Nm7WLmKYPYqFiDjg9q
+         xz3BLkHqH3lpajail7UUUR1jWV+XCNuYepHBeCKE68teAVQAlpsg/L+kiDJJmlR5RdJi
+         2sMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591663; x=1691196463;
+        d=1e100.net; s=20221208; t=1690591664; x=1691196464;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N+/CFCalnN5xPq+FJCMcppiU8/rhXPIN/0hig0msSo8=;
-        b=W76yYPlx/i4wDYwcqbeZyB3ijoN/h1OS67YuWpPMUf8Vzcft/koom+WaR7owxTxXoW
-         ZkpNv9NtvGszUJQCTQbrqsUc9r+lk/w/SWJsqo0/GzcQ5io2iqZYx+9DG130tFU2jluQ
-         WqGKxhuspHejZrQn+GdUBnfw86bUXBwD2bhj+5VPF0CYLIerxmw/8LCW+5xNskjmfQ9O
-         Qz63J+2RuWCu4BYVM1OKNW/c38Plv/ZzavMn31j8WGeuiidCWmUa7ULCQwJ8jRWkMN7T
-         IqL/roT8bXCsxpokoyj1McF4oI9OBlWYhi2PfG72q0VeP22nE0boNwmwlbbSPx9g2RWe
-         BwHA==
-X-Gm-Message-State: ABy/qLbTicaytdvfGI8Xx65A5BhYd+UEMXSGXAfIESU5VrIcSzHR5/lH
-        7k8PIS7ffL7gkXA5rKEjJrXEo3fNPzQ=
-X-Google-Smtp-Source: APBJJlHTx0tMhdVdj9DHQL2qIu5IwtD1zQZTL75hc9Ut9ZxNuNOuReykzid0E2yHjV5ekXl0GYuOIbK8/6k=
+        bh=wQPXzO6Hsu0iSJF0dOCAsCOFxRTne/hu/L+54JaWJC0=;
+        b=apQBx61i2+MqrsBKJqGf8Ju1GycCJRARt98ZtKz9d1i3WKn+70YT4KGr/qUdCUvc7m
+         gGqPf5KgM7c/O2gAO4FMip6Wq6plXvEYZPE9VOB7bqsn0Mlb7YXXXppD0hVG/68cvKVr
+         ScH00Bn55s1mR9asnhkvu3xCR0QKGkjJkwg6E88oQZvJ2bxERvYZAPK12pndlL0vCTTp
+         VkvqurFSElilSg23O8hV1fZmdINTc9cTGtiMtQLcyM5LjyIpTnJ8/TD9NTpbUTApIGjN
+         /9M67r84f8cCp/7/oBOwA0cLrgXRY0SkqHT6xpLIOxWtCtHJfWHL6VjIKsZn8eeeqlEn
+         r44w==
+X-Gm-Message-State: ABy/qLakMAsYLmpOtAaFOfnp8NKZmMyJt+omkFlG3mgfRMvSuAqTx66A
+        QusSfnf8xtISB9ssffK+wkK0p68WM1M=
+X-Google-Smtp-Source: APBJJlFG4d/5bdx+xRzhQ/DaNaoyQLMCndwbopyCOGef6fROIbvq0t1FoGOW/euNMPaBYQgIxM7Z7+SLE4s=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e748:b0:1b5:61d3:dae5 with SMTP id
- p8-20020a170902e74800b001b561d3dae5mr14320plf.1.1690591663061; Fri, 28 Jul
- 2023 17:47:43 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:d4c9:b0:1bb:8c42:79f4 with SMTP id
+ o9-20020a170902d4c900b001bb8c4279f4mr11219plg.2.1690591664685; Fri, 28 Jul
+ 2023 17:47:44 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 17:47:20 -0700
+Date:   Fri, 28 Jul 2023 17:47:21 -0700
 In-Reply-To: <20230729004722.1056172-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729004722.1056172-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729004722.1056172-11-seanjc@google.com>
-Subject: [PATCH v3 10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for
- KVM_MMU_WARN_ON() stub
+Message-ID: <20230729004722.1056172-12-seanjc@google.com>
+Subject: [PATCH v3 11/12] KVM: x86/mmu: Plumb "struct kvm" all the way to pte_list_remove()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -74,29 +73,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use BUILD_BUG_ON_INVALID() instead of an empty do-while loop to stub out
-KVM_MMU_WARN_ON() when CONFIG_KVM_PROVE_MMU=n, that way _some_ build
-issues with the usage of KVM_MMU_WARN_ON() will be dected even if the
-kernel is using the stubs, e.g. basic syntax errors will be detected.
+From: Mingwei Zhang <mizhang@google.com>
 
+Plumb "struct kvm" all the way to pte_list_remove() to allow the usage of
+KVM_BUG() and/or KVM_BUG_ON().  This will allow killing only the offending
+VM instead of doing BUG() if the kernel is built with
+CONFIG_BUG_ON_DATA_CORRUPTION=n, i.e. does NOT want to BUG() if KVM's data
+structures (rmaps) appear to be corrupted.
+
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+[sean: tweak changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu_internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 40e74db6a7d5..f1ef670058e5 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -9,7 +9,7 @@
- #ifdef CONFIG_KVM_PROVE_MMU
- #define KVM_MMU_WARN_ON(x) WARN_ON_ONCE(x)
- #else
--#define KVM_MMU_WARN_ON(x) do { } while (0)
-+#define KVM_MMU_WARN_ON(x) BUILD_BUG_ON_INVALID(x)
- #endif
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 21ced900c3e9..67a25c957a16 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -965,7 +965,8 @@ static int pte_list_add(struct kvm_mmu_memory_cache *cache, u64 *spte,
+ 	return count;
+ }
  
- /* Page table builder macros common to shadow (host) PTEs and guest PTEs. */
+-static void pte_list_desc_remove_entry(struct kvm_rmap_head *rmap_head,
++static void pte_list_desc_remove_entry(struct kvm *kvm,
++				       struct kvm_rmap_head *rmap_head,
+ 				       struct pte_list_desc *desc, int i)
+ {
+ 	struct pte_list_desc *head_desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
+@@ -1001,7 +1002,8 @@ static void pte_list_desc_remove_entry(struct kvm_rmap_head *rmap_head,
+ 	mmu_free_pte_list_desc(head_desc);
+ }
+ 
+-static void pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
++static void pte_list_remove(struct kvm *kvm, u64 *spte,
++			    struct kvm_rmap_head *rmap_head)
+ {
+ 	struct pte_list_desc *desc;
+ 	int i;
+@@ -1020,7 +1022,8 @@ static void pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
+ 		while (desc) {
+ 			for (i = 0; i < desc->spte_count; ++i) {
+ 				if (desc->sptes[i] == spte) {
+-					pte_list_desc_remove_entry(rmap_head, desc, i);
++					pte_list_desc_remove_entry(kvm, rmap_head,
++								   desc, i);
+ 					return;
+ 				}
+ 			}
+@@ -1035,7 +1038,7 @@ static void kvm_zap_one_rmap_spte(struct kvm *kvm,
+ 				  struct kvm_rmap_head *rmap_head, u64 *sptep)
+ {
+ 	mmu_spte_clear_track_bits(kvm, sptep);
+-	pte_list_remove(sptep, rmap_head);
++	pte_list_remove(kvm, sptep, rmap_head);
+ }
+ 
+ /* Return true if at least one SPTE was zapped, false otherwise */
+@@ -1110,7 +1113,7 @@ static void rmap_remove(struct kvm *kvm, u64 *spte)
+ 	slot = __gfn_to_memslot(slots, gfn);
+ 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
+ 
+-	pte_list_remove(spte, rmap_head);
++	pte_list_remove(kvm, spte, rmap_head);
+ }
+ 
+ /*
+@@ -1757,16 +1760,16 @@ static void mmu_page_add_parent_pte(struct kvm_mmu_memory_cache *cache,
+ 	pte_list_add(cache, parent_pte, &sp->parent_ptes);
+ }
+ 
+-static void mmu_page_remove_parent_pte(struct kvm_mmu_page *sp,
++static void mmu_page_remove_parent_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+ 				       u64 *parent_pte)
+ {
+-	pte_list_remove(parent_pte, &sp->parent_ptes);
++	pte_list_remove(kvm, parent_pte, &sp->parent_ptes);
+ }
+ 
+-static void drop_parent_pte(struct kvm_mmu_page *sp,
++static void drop_parent_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+ 			    u64 *parent_pte)
+ {
+-	mmu_page_remove_parent_pte(sp, parent_pte);
++	mmu_page_remove_parent_pte(kvm, sp, parent_pte);
+ 	mmu_spte_clear_no_track(parent_pte);
+ }
+ 
+@@ -2481,7 +2484,7 @@ static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+ 		if (child->role.access == direct_access)
+ 			return;
+ 
+-		drop_parent_pte(child, sptep);
++		drop_parent_pte(vcpu->kvm, child, sptep);
+ 		kvm_flush_remote_tlbs_sptep(vcpu->kvm, sptep);
+ 	}
+ }
+@@ -2499,7 +2502,7 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
+ 			drop_spte(kvm, spte);
+ 		} else {
+ 			child = spte_to_child_sp(pte);
+-			drop_parent_pte(child, spte);
++			drop_parent_pte(kvm, child, spte);
+ 
+ 			/*
+ 			 * Recursively zap nested TDP SPs, parentless SPs are
+@@ -2530,13 +2533,13 @@ static int kvm_mmu_page_unlink_children(struct kvm *kvm,
+ 	return zapped;
+ }
+ 
+-static void kvm_mmu_unlink_parents(struct kvm_mmu_page *sp)
++static void kvm_mmu_unlink_parents(struct kvm *kvm, struct kvm_mmu_page *sp)
+ {
+ 	u64 *sptep;
+ 	struct rmap_iterator iter;
+ 
+ 	while ((sptep = rmap_get_first(&sp->parent_ptes, &iter)))
+-		drop_parent_pte(sp, sptep);
++		drop_parent_pte(kvm, sp, sptep);
+ }
+ 
+ static int mmu_zap_unsync_children(struct kvm *kvm,
+@@ -2575,7 +2578,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+ 	++kvm->stat.mmu_shadow_zapped;
+ 	*nr_zapped = mmu_zap_unsync_children(kvm, sp, invalid_list);
+ 	*nr_zapped += kvm_mmu_page_unlink_children(kvm, sp, invalid_list);
+-	kvm_mmu_unlink_parents(sp);
++	kvm_mmu_unlink_parents(kvm, sp);
+ 
+ 	/* Zapping children means active_mmu_pages has become unstable. */
+ 	list_unstable = *nr_zapped;
+@@ -2933,7 +2936,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+ 			u64 pte = *sptep;
+ 
+ 			child = spte_to_child_sp(pte);
+-			drop_parent_pte(child, sptep);
++			drop_parent_pte(vcpu->kvm, child, sptep);
+ 			flush = true;
+ 		} else if (pfn != spte_to_pfn(*sptep)) {
+ 			drop_spte(vcpu->kvm, sptep);
 -- 
 2.41.0.487.g6d72f3e995-goog
 
