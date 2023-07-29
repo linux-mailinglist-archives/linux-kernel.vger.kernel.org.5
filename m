@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F408C767F81
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41770767F84
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbjG2Nn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S230426AbjG2Nn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjG2Nnv (ORCPT
+        with ESMTP id S230494AbjG2Nn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:43:51 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4783ABF;
-        Sat, 29 Jul 2023 06:43:48 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686f94328a4so1612338b3a.0;
-        Sat, 29 Jul 2023 06:43:47 -0700 (PDT)
+        Sat, 29 Jul 2023 09:43:57 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DB11BEB;
+        Sat, 29 Jul 2023 06:43:51 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686f090310dso2968734b3a.0;
+        Sat, 29 Jul 2023 06:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638227; x=1691243027;
+        d=gmail.com; s=20221208; t=1690638230; x=1691243030;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s+pZDu0ZfUoQWcJ4aUyi+W5kLX2VT7frs7kndUImNys=;
-        b=q0URTwFRXQgmVgZGgnWbXnG/O1IacC0WLT01OTx+SxnzI3Jq2b8onHgrIcSP4/um4I
-         BmJg2yppLbgm4PXKfZH2O9xebHnSmOJ4cpOSdofCwSDtXmuQiGid3DoDZokOC9lNkn0C
-         2b8qo2p0Axm2b2lR8qrT/KJ/5X84XZg6fdOwa6sL8fhUpsrmAxtGu8smwXserSpbt+5V
-         +JqRtEcdRwygzuwjHOmPxMj1xuEJ6UEqyvFCB/NoU3bb44sMQ6DKQyaF6WIHUBi7DFjN
-         EfxcpxxerTiJdbsNEeQ23Z1XLp/J3tAapXnOoGsjrPNfTkCU+UcRfGAwS159R83EqgNm
-         qU6A==
+        bh=h1DfhMFTMRww/HLVW5QnIluxyDYLwP5rV6zVBM2gGyI=;
+        b=c2vMhhKZqFucbb5J14jS+EduFcSqW2S6ywpBcjOmfI0sVRy14wtS5AZQPMJAwR0jNI
+         56ouvtKvlaXJ/06BFp6iMaE0XEtvIegnD7Vx+iITRGXMXZWgVvJn07e8gL1W0azxPYSH
+         DWijcVvepls2YI7bW6SZFuL+AG4MUXQZzcsc83G8pVYk0mA8y5Qq++CqIPVboOx+Ma/v
+         tReerG/6HTUR+oXSi3+/IEMl3pAXB9W9cRDNxDJbNbpaX6a2OLcrOtaKYR2/cTFVzU1m
+         xHULjFhzPFcuGbzHj4ZqEKYKqlzUBx0bOdrslaEyMjCbh7S1uGPQo/pjvo12BUHWMVg7
+         YIZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638227; x=1691243027;
+        d=1e100.net; s=20221208; t=1690638230; x=1691243030;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=s+pZDu0ZfUoQWcJ4aUyi+W5kLX2VT7frs7kndUImNys=;
-        b=HMomLg2PaXenhmbLRu+uGuDcWLbC/v+jn/wXJGYVQTJsOzZjWWBs9Hc5ipTaJsTFwO
-         WxNGG5pgOpZfuqt9MyjW97X2AR9itNBdCBOzmUlHPCB6r7cgHlscZvt+S/xZ6y43BcRm
-         f305cdy7vtoU9EARCI2pgCR21IKfA98vHpbMCcarYq7OOtHCiPEgmr7m3wRUD3qblLHa
-         L7CjPrtcHf30yQJH5OHd8GF3uhfJAIVl+bJMOVrB91AJUSduTqTqLkTcZQ7wTp2t9VpZ
-         THvq0iWx7oPsp/u5owTlPDub4h+/RgLGV8teJg+KX/AZMKY14ufkq40JtTIOuI+HBQzz
-         MaKA==
-X-Gm-Message-State: ABy/qLbHxIOzGy8U1ntB3K6eDLAc0ffZyMGJVsTaU9FbgOnhTZQBMr70
-        W/9+YAnewSAsF2qM7uVTTngfLVNj6fpFlQ==
-X-Google-Smtp-Source: APBJJlH8D2XKsQZdPmU4yW8aGY0K+7deInvJsc7hLZXKENoe1MqeXfYhWbyDAmG819qGmKKYHU9iVA==
-X-Received: by 2002:a05:6a20:9151:b0:123:152d:d46b with SMTP id x17-20020a056a20915100b00123152dd46bmr5948900pzc.26.1690638226959;
-        Sat, 29 Jul 2023 06:43:46 -0700 (PDT)
+        bh=h1DfhMFTMRww/HLVW5QnIluxyDYLwP5rV6zVBM2gGyI=;
+        b=HGP4oOuuOqZ5mRm9Zm2cj7IdijsHuZBFE1LEo5s8anoRgMOb/odpetwQytOOZTB31o
+         5iEqqdg75r1jhTcF+Qbc4RtHfOJQRayom3NP07mPhmbYwPx2licsBqIke2qkkhNhv/20
+         kaZ1absz//6Mx24onZSL187RMfpSHly6c/YLNhH4mdPPiUjhiBHP/SE/Z+SGlrTyEAai
+         O0/oTeVM6fkAe1UZb++lSgNxdZ34N9zz2yLE8QzyfFNggMgMOb8H+Qhtla0oQvFmZy3T
+         U2W8VIu9rSH74u0Tfy82ZNc7CN1UEM+MkgZjIyTJ1lsY1/bt+m8ndp+Rhkx/MI3ksBi3
+         wOfQ==
+X-Gm-Message-State: ABy/qLbjDSdYbFMV+YpuGjGVyha30bw/vK64uV9jqGTvnag/jC76V0Ur
+        Q0MpvFYF3+Gz7Rg0ru4h6jj3MKessftyrw==
+X-Google-Smtp-Source: APBJJlEvPKp8+SzFeCQbsyNMGbqh0pc6iaKW8zqZxhtgFUBUKaiZp247xRJzxICIwTbGVu5xrulOmA==
+X-Received: by 2002:a05:6a20:be13:b0:134:2b46:797f with SMTP id ge19-20020a056a20be1300b001342b46797fmr4927586pzb.18.1690638229960;
+        Sat, 29 Jul 2023 06:43:49 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.44
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:43:46 -0700 (PDT)
+        Sat, 29 Jul 2023 06:43:49 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 03/17] MIPS: dts: Add basic DT support for Loongson-1 boards
-Date:   Sat, 29 Jul 2023 21:43:04 +0800
-Message-Id: <20230729134318.1694467-4-keguang.zhang@gmail.com>
+Subject: [PATCH 04/17] MIPS: loongson32: Modify Loongson-1B/1C related Kconfig options
+Date:   Sat, 29 Jul 2023 21:43:05 +0800
+Message-Id: <20230729134318.1694467-5-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
@@ -76,256 +76,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial devicetree for Loongson-1 boards, including
-LSGZ_1B_DEV and SMARTLOONG_1C board.
-These basic DTs contain CPU, clock and core INTC.
+CPU_LOONGSON1B and CPU_LOONGSON1C have the same GS232 core,
+so merge them into CPU_LOONGSON32.
 
+The Kconfig options selected by LOONGSON1_LS1B and LOONGSON1_LS1C
+is selected by MACH_LOONGSON32 now.
+And LOONGSON1_LS1B and LOONGSON1_LS1C will be deleted
+after all platform devices are converted to devicetree nodes.
+
+Introduce MACH_LSGZ_1B_DEV and MACH_SMARTLOONG_1C
+for the built-in DTS selection.
+
+Partialy based on the patch by Jiaxun Yang.
+
+Link: https://lore.kernel.org/all/20190411121915.8040-4-jiaxun.yang@flygoat.com/
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- arch/mips/boot/dts/Makefile                   |  1 +
- arch/mips/boot/dts/loongson/Makefile          |  3 +
- arch/mips/boot/dts/loongson/loongson1.dtsi    | 22 ++++++
- arch/mips/boot/dts/loongson/loongson1b.dtsi   | 75 +++++++++++++++++++
- arch/mips/boot/dts/loongson/loongson1c.dtsi   | 29 +++++++
- arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 25 +++++++
- arch/mips/boot/dts/loongson/smartloong_1c.dts | 25 +++++++
- 7 files changed, 180 insertions(+)
- create mode 100644 arch/mips/boot/dts/loongson/loongson1.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson1b.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson1c.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
- create mode 100644 arch/mips/boot/dts/loongson/smartloong_1c.dts
+ arch/mips/Kconfig                    | 62 ++++++++++++++--------------
+ arch/mips/boot/dts/loongson/Makefile |  4 +-
+ arch/mips/include/asm/cpu-type.h     |  3 +-
+ arch/mips/loongson32/Kconfig         | 47 ++++++++-------------
+ 4 files changed, 50 insertions(+), 66 deletions(-)
 
-diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-index 928f38a79dff..2e040b1ba97b 100644
---- a/arch/mips/boot/dts/Makefile
-+++ b/arch/mips/boot/dts/Makefile
-@@ -6,6 +6,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)	+= img
- subdir-$(CONFIG_MACH_INGENIC)		+= ingenic
- subdir-$(CONFIG_LANTIQ)			+= lantiq
- subdir-$(CONFIG_MACH_LOONGSON64)	+= loongson
-+subdir-$(CONFIG_MACH_LOONGSON32)	+= loongson
- subdir-$(CONFIG_SOC_VCOREIII)		+= mscc
- subdir-$(CONFIG_MIPS_MALTA)		+= mti
- subdir-$(CONFIG_LEGACY_BOARD_SEAD3)	+= mti
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index fc6fba925aea..754316523b24 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -466,6 +466,21 @@ config LANTIQ
+ 
+ config MACH_LOONGSON32
+ 	bool "Loongson 32-bit family of machines"
++	select USE_OF
++	select BUILTIN_DTB
++	select BOOT_ELF32
++	select CEVT_R4K
++	select CSRC_R4K
++	select COMMON_CLK
++	select DMA_NONCOHERENT
++	select IRQ_MIPS_CPU
++	select LS1X_IRQ
++	select SYS_HAS_CPU_LOONGSON32
++	select SYS_HAS_EARLY_PRINTK
++	select USE_GENERIC_EARLY_PRINTK_8250
++	select SYS_SUPPORTS_32BIT_KERNEL
++	select SYS_SUPPORTS_LITTLE_ENDIAN
++	select SYS_SUPPORTS_HIGHMEM
+ 	select SYS_SUPPORTS_ZBOOT
+ 	help
+ 	  This enables support for the Loongson-1 family of machines.
+@@ -1350,25 +1365,20 @@ config CPU_LOONGSON2F
+ 	  have a similar programming interface with FPGA northbridge used in
+ 	  Loongson2E.
+ 
+-config CPU_LOONGSON1B
+-	bool "Loongson 1B"
+-	depends on SYS_HAS_CPU_LOONGSON1B
+-	select CPU_LOONGSON32
+-	select LEDS_GPIO_REGISTER
+-	help
+-	  The Loongson 1B is a 32-bit SoC, which implements the MIPS32
+-	  Release 1 instruction set and part of the MIPS32 Release 2
+-	  instruction set.
+-
+-config CPU_LOONGSON1C
+-	bool "Loongson 1C"
+-	depends on SYS_HAS_CPU_LOONGSON1C
+-	select CPU_LOONGSON32
++config CPU_LOONGSON32
++	bool "Loongson 32-bit CPU"
++	depends on SYS_HAS_CPU_LOONGSON32
++	select CPU_MIPS32
++	select CPU_MIPSR2
++	select CPU_HAS_PREFETCH
++	select CPU_HAS_LOAD_STORE_LR
++	select CPU_SUPPORTS_32BIT_KERNEL
++	select CPU_SUPPORTS_HIGHMEM
++	select CPU_SUPPORTS_CPUFREQ
+ 	select LEDS_GPIO_REGISTER
+ 	help
+-	  The Loongson 1C is a 32-bit SoC, which implements the MIPS32
+-	  Release 1 instruction set and part of the MIPS32 Release 2
+-	  instruction set.
++	  The Loongson GS232 microarchitecture implements the MIPS32 Release 1
++	  instruction set and part of the MIPS32 Release 2 instruction set.
+ 
+ config CPU_MIPS32_R1
+ 	bool "MIPS32 Release 1"
+@@ -1764,15 +1774,6 @@ config CPU_LOONGSON2EF
+ 	select CPU_SUPPORTS_HIGHMEM
+ 	select CPU_SUPPORTS_HUGEPAGES
+ 
+-config CPU_LOONGSON32
+-	bool
+-	select CPU_MIPS32
+-	select CPU_MIPSR2
+-	select CPU_HAS_PREFETCH
+-	select CPU_SUPPORTS_32BIT_KERNEL
+-	select CPU_SUPPORTS_HIGHMEM
+-	select CPU_SUPPORTS_CPUFREQ
+-
+ config CPU_BMIPS32_3300
+ 	select SMP_UP if SMP
+ 	bool
+@@ -1810,10 +1811,7 @@ config SYS_HAS_CPU_LOONGSON2F
+ 	select CPU_SUPPORTS_CPUFREQ
+ 	select CPU_SUPPORTS_ADDRWINCFG if 64BIT
+ 
+-config SYS_HAS_CPU_LOONGSON1B
+-	bool
+-
+-config SYS_HAS_CPU_LOONGSON1C
++config SYS_HAS_CPU_LOONGSON32
+ 	bool
+ 
+ config SYS_HAS_CPU_MIPS32_R1
+@@ -2996,8 +2994,8 @@ endchoice
+ choice
+ 	prompt "Kernel command line type" if !CMDLINE_OVERRIDE
+ 	default MIPS_CMDLINE_FROM_DTB if USE_OF && !ATH79 && !MACH_INGENIC && \
+-					 !MACH_LOONGSON64 && !MIPS_MALTA && \
+-					 !CAVIUM_OCTEON_SOC
++					 !MACH_LOONGSON64 && !MACH_LOONGSON32 && \
++					 !MIPS_MALTA && !CAVIUM_OCTEON_SOC
+ 	default MIPS_CMDLINE_FROM_BOOTLOADER
+ 
+ 	config MIPS_CMDLINE_FROM_DTB
 diff --git a/arch/mips/boot/dts/loongson/Makefile b/arch/mips/boot/dts/loongson/Makefile
-index 5c6433e441ee..9d95f1351d5f 100644
+index 9d95f1351d5f..5bdeb59a6323 100644
 --- a/arch/mips/boot/dts/loongson/Makefile
 +++ b/arch/mips/boot/dts/loongson/Makefile
-@@ -6,4 +6,7 @@ dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64c_8core_rs780e.dtb
+@@ -6,7 +6,7 @@ dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64c_8core_rs780e.dtb
  dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64g_4core_ls7a.dtb
  dtb-$(CONFIG_MACH_LOONGSON64)	+= loongson64v_4core_virtio.dtb
  
-+dtb-$(CONFIG_LOONGSON1B_LSGZ_DEV)	+= lsgz_1b_dev.dtb
-+dtb-$(CONFIG_LOONGSON1C_SMARTLOONG)	+= smartloong_1c.dtb
-+
+-dtb-$(CONFIG_LOONGSON1B_LSGZ_DEV)	+= lsgz_1b_dev.dtb
+-dtb-$(CONFIG_LOONGSON1C_SMARTLOONG)	+= smartloong_1c.dtb
++dtb-$(CONFIG_MACH_LSGZ_1B_DEV)		+= lsgz_1b_dev.dtb
++dtb-$(CONFIG_MACH_SMARTLOONG_1C)	+= smartloong_1c.dtb
+ 
  obj-$(CONFIG_BUILTIN_DTB)	+= $(addsuffix .o, $(dtb-y))
-diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boot/dts/loongson/loongson1.dtsi
-new file mode 100644
-index 000000000000..a2b5c828bbbd
---- /dev/null
-+++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
+diff --git a/arch/mips/include/asm/cpu-type.h b/arch/mips/include/asm/cpu-type.h
+index a4a66bd93748..fd37a44a2f19 100644
+--- a/arch/mips/include/asm/cpu-type.h
++++ b/arch/mips/include/asm/cpu-type.h
+@@ -24,8 +24,7 @@ static inline int __pure __get_cpu_type(const int cpu_type)
+ 	case CPU_LOONGSON64:
+ #endif
+ 
+-#if defined(CONFIG_SYS_HAS_CPU_LOONGSON1B) || \
+-    defined(CONFIG_SYS_HAS_CPU_LOONGSON1C)
++#ifdef CONFIG_SYS_HAS_CPU_LOONGSON32
+ 	case CPU_LOONGSON32:
+ #endif
+ 
+diff --git a/arch/mips/loongson32/Kconfig b/arch/mips/loongson32/Kconfig
+index a7c500959577..75c1f4061700 100644
+--- a/arch/mips/loongson32/Kconfig
++++ b/arch/mips/loongson32/Kconfig
+@@ -1,38 +1,25 @@
+ # SPDX-License-Identifier: GPL-2.0
+-if MACH_LOONGSON32
+ 
+ choice
+ 	prompt "Machine Type"
++	depends on MACH_LOONGSON32
+ 
+-config LOONGSON1_LS1B
+-	bool "Loongson LS1B board"
+-	select CEVT_R4K if !MIPS_EXTERNAL_TIMER
+-	select CSRC_R4K if !MIPS_EXTERNAL_TIMER
+-	select SYS_HAS_CPU_LOONGSON1B
+-	select DMA_NONCOHERENT
+-	select BOOT_ELF32
+-	select IRQ_MIPS_CPU
+-	select SYS_SUPPORTS_32BIT_KERNEL
+-	select SYS_SUPPORTS_LITTLE_ENDIAN
+-	select SYS_SUPPORTS_HIGHMEM
+-	select SYS_HAS_EARLY_PRINTK
+-	select USE_GENERIC_EARLY_PRINTK_8250
+-	select COMMON_CLK
++config MACH_LSGZ_1B_DEV
++	bool "LSGZ 1B DEV board"
++	select LOONGSON1_LS1B
++	help
++	  Enable this to include the FDT for the LSGZ 1B DEV board.
 +
-+/dts-v1/;
++config MACH_SMARTLOONG_1C
++	bool "Smartloong 1C board"
++	select LOONGSON1_LS1C
++	help
++	  Enable this to include the FDT for the Smartloong 1C board.
+ 
+-config LOONGSON1_LS1C
+-	bool "Loongson LS1C board"
+-	select CEVT_R4K if !MIPS_EXTERNAL_TIMER
+-	select CSRC_R4K if !MIPS_EXTERNAL_TIMER
+-	select SYS_HAS_CPU_LOONGSON1C
+-	select DMA_NONCOHERENT
+-	select BOOT_ELF32
+-	select IRQ_MIPS_CPU
+-	select SYS_SUPPORTS_32BIT_KERNEL
+-	select SYS_SUPPORTS_LITTLE_ENDIAN
+-	select SYS_SUPPORTS_HIGHMEM
+-	select SYS_HAS_EARLY_PRINTK
+-	select USE_GENERIC_EARLY_PRINTK_8250
+-	select COMMON_CLK
+ endchoice
+ 
+-endif # MACH_LOONGSON32
++config LOONGSON1_LS1B
++	bool
 +
-+#include <dt-bindings/clock/loongson,ls1x-clk.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+/ {
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+
-+	cpu_intc: interrupt-controller {
-+		compatible = "mti,cpu-interrupt-controller";
-+		#address-cells = <0>;
-+
-+		interrupt-controller;
-+		#interrupt-cells = <1>;
-+	};
-+};
-diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-new file mode 100644
-index 000000000000..784ae9b6572d
---- /dev/null
-+++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+/dts-v1/;
-+#include "loongson1.dtsi"
-+
-+/ {
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu@0 {
-+			device_type = "cpu";
-+			reg = <0>;
-+			#clock-cells = <1>;
-+			clocks = <&clkc LS1X_CLKID_CPU>;
-+			operating-points-v2 = <&cpu_opp_table>;
-+		};
-+	};
-+
-+	cpu_opp_table: opp-table {
-+		compatible = "operating-points-v2";
-+		opp-shared;
-+
-+		opp-44000000 {
-+			opp-hz = /bits/ 64 <44000000>;
-+		};
-+		opp-47142000 {
-+			opp-hz = /bits/ 64 <47142000>;
-+		};
-+		opp-50769000 {
-+			opp-hz = /bits/ 64 <50769000>;
-+		};
-+		opp-55000000 {
-+			opp-hz = /bits/ 64 <55000000>;
-+		};
-+		opp-60000000 {
-+			opp-hz = /bits/ 64 <60000000>;
-+		};
-+		opp-66000000 {
-+			opp-hz = /bits/ 64 <66000000>;
-+		};
-+		opp-73333000 {
-+			opp-hz = /bits/ 64 <73333000>;
-+		};
-+		opp-82500000 {
-+			opp-hz = /bits/ 64 <82500000>;
-+		};
-+		opp-94285000 {
-+			opp-hz = /bits/ 64 <94285000>;
-+		};
-+		opp-110000000 {
-+			opp-hz = /bits/ 64 <110000000>;
-+		};
-+		opp-132000000 {
-+			opp-hz = /bits/ 64 <132000000>;
-+		};
-+		opp-165000000 {
-+			opp-hz = /bits/ 64 <165000000>;
-+		};
-+		opp-220000000 {
-+			opp-hz = /bits/ 64 <220000000>;
-+		};
-+	};
-+
-+	clkc: clock-controller@1fe78030 {
-+		compatible = "loongson,ls1b-clk";
-+		reg = <0x1fe78030 0x8>;
-+
-+		clocks = <&xtal>;
-+		#clock-cells = <1>;
-+	};
-+};
-diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-new file mode 100644
-index 000000000000..d552e1668984
---- /dev/null
-+++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+/dts-v1/;
-+#include "loongson1.dtsi"
-+
-+/ {
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu@0 {
-+			device_type = "cpu";
-+			reg = <0>;
-+			#clock-cells = <1>;
-+			clocks = <&clkc LS1X_CLKID_CPU>;
-+		};
-+	};
-+
-+	clkc: clock-controller@1fe78030 {
-+		compatible = "loongson,ls1c-clk";
-+		reg = <0x1fe78030 0x8>;
-+
-+		clocks = <&xtal>;
-+		#clock-cells = <1>;
-+	};
-+};
-diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-new file mode 100644
-index 000000000000..d12c723b0a2b
---- /dev/null
-+++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "loongson1b.dtsi"
-+
-+/ {
-+	compatible = "loongson,lsgz-1b-dev", "loongson,ls1b";
-+	model = "LSGZ_1B_DEV Board";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x4000000>;
-+	};
-+
-+	xtal: xtal {
-+		compatible = "fixed-clock";
-+		clock-frequency = <33000000>;
-+		clock-output-names = "xtal";
-+		#clock-cells = <0>;
-+	};
-+};
-diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-new file mode 100644
-index 000000000000..64e869acfd86
---- /dev/null
-+++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "loongson1c.dtsi"
-+
-+/ {
-+	compatible = "loongmasses,smartloong-1c", "loongson,ls1c";
-+	model = "Smartloong_1C Board";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x2000000>;
-+	};
-+
-+	xtal: xtal {
-+		compatible = "fixed-clock";
-+		clock-frequency = <24000000>;
-+		clock-output-names = "xtal";
-+		#clock-cells = <0>;
-+	};
-+};
++config LOONGSON1_LS1C
++	bool
 -- 
 2.39.2
 
