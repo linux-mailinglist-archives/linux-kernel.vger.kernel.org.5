@@ -2,160 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F43768105
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B8076810C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjG2Sem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 14:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S229571AbjG2Sj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 14:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjG2SeZ (ORCPT
+        with ESMTP id S229454AbjG2Sjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 14:34:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9DA30FC
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 11:34:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sat, 29 Jul 2023 14:39:55 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA10E4E;
+        Sat, 29 Jul 2023 11:39:50 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.97.66]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MDygG-1qXY5E3dEy-00A07c; Sat, 29 Jul 2023 20:38:57 +0200
+Received: from localhost.fjasle.eu (kirkenes.fjasle.eu [10.10.0.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDADF60909
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 18:34:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B3FC433D9;
-        Sat, 29 Jul 2023 18:34:23 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qPoli-0035Lo-1X;
-        Sat, 29 Jul 2023 14:34:22 -0400
-Message-ID: <20230729183422.299073875@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Sat, 29 Jul 2023 14:33:40 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [for-linus][PATCH 7/7] tracing: Fix warning in trace_buffered_event_disable()
-References: <20230729183333.357029101@goodmis.org>
+        (Client did not present a certificate)
+        by leknes.fjasle.eu (Postfix) with ESMTPS id 46E063E9EF;
+        Sat, 29 Jul 2023 20:38:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1690655932; bh=QwynynEmRUGdimf9sBFUFDIzzp27aFLDEwfNY3NpIJY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AjgHMEAyq4o9+afSwluICI/L6+3NjRKSggklRT3qGzEN+BykcvMD6bnTLpf3S0kCC
+         0mPqkLDAkFHDGn2ggHX9vr9yEaCfxGidr2D24yhDcADDvaaEGj26hVNOUVGSA54mAm
+         5+Txnqnnpy+l2vhMBUrkbWklVwz+L7Poz/ARyt1k=
+Received: by localhost.fjasle.eu (Postfix, from userid 1000)
+        id DA14C6087; Sat, 29 Jul 2023 20:38:12 +0200 (CEST)
+Date:   Sat, 29 Jul 2023 20:38:12 +0200
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] scripts/mksysmap: Factor out sed ignored symbols
+ expression into script
+Message-ID: <ZMVclGCbEK33g+2g@bergen.fjasle.eu>
+References: <20230728113415.21067-1-will@kernel.org>
+ <20230728113415.21067-3-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uEI2BuDe0NhIfEtZ"
+Content-Disposition: inline
+In-Reply-To: <20230728113415.21067-3-will@kernel.org>
+X-Operating-System: Debian GNU/Linux trixie/sid
+Jabber-ID: nicolas@jabber.no
+X-Provags-ID: V03:K1:sn1ot5ai8XeaL/89KCler/Rs3uJrE0PR1g724o0RdXoxIXUPrsX
+ MJ/WAmVaPS6kpwaZZwvZbMt91nqaNpXiDH2oMKDhFUV7Qi9X1twj5fE8P+lxxaSnZVAA2hf
+ dfz3gh2Rr/FblitVeKQRrAmxd0KRI5PoNzVMqINZ7x1Xv1KZV+GWpPq21UAdIVi6cH/VfpB
+ TGbL5luNi3EIkd3zne5aQ==
+UI-OutboundReport: notjunk:1;M01:P0:fEpoDGgtNBU=;+bZwjM/frwCqtBmHOcPYSQe61pO
+ NDS6ZDqvVmqUreyBolHdUnDDgS8pJUxv+Ztphpg9adfSHWu/3f/QELTT1mbLwswf/Zg41Yju0
+ yE6nWn4vwUoyNgDtXuOKc0U6Waz49FzCAb8ioZ0vr5n+Z2G7ijyT8PRJG7Q92+IY+TI7hc8Xs
+ /WH0sulU2QOL1i6MgnnR+YK0GppmAULEcGyVSUL6XGhWnV2L9hgtippkjgHzUA5o+1DNY5rD6
+ W7hG0F4l4PfIUu77mc/RgiaMXnsDg/i95UtcP35Hq0MD/KjCZrQV0hGIHV/BgwlDlAQ49HiVe
+ alIjbGzokjpf9bhSD/ETRDd7G8xwmAnPnFjBTQU421t6nHqfQxqN2f+BsQBpDK/3VIFCvWgw4
+ LPHoKJ0EFWNbXDFrhih4WC/fSeUToFm2GQ0zv7Den0R4cLw0dlFGRB1Qf6KsGjGsJI1XyqJCm
+ jMcYHxoCW5czCoRSaYshfeq9t0jhsCE9S0DqcOVmif2EzsWfkiwMo0892ioRW1IYqpvqyRxlT
+ ZA5L7mI/OAx34I+pQGJBrZgAVE8adogYhT+YEbFAFG+V+Vwn8aY40/55NOqOWJgmZDwHjcXW6
+ nilVKl06UZ+5G6l2oZ8pXScjLnAPvgs1RfROvd8tC/a0t7BAgUQAiNNtOF1Zy3O65EuGSd+50
+ KbaSghzHRlMiWaMb7/v+Q+a71MBOwEVwFhAiatnDB5JKUJ+w4PayOi3zrGPN1qx/OWgqqlCYT
+ MTKRUUxc9dNfyx2E3x6h2V98wyNr5VEoGXfHIjjMH1wl7tJ/5soGaTYWcLBAW3UBwJakDtMqX
+ cIV1FPufV7eVGxLDAwUYyU58N2+VrcBPqpbj18u0ZQN+vi5Xxsgi2KOT+NMzeRvcw2nWCqEYX
+ dGwP1JZv5Hw3R/A==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Yejian <zhengyejian1@huawei.com>
 
-Warning happened in trace_buffered_event_disable() at
-  WARN_ON_ONCE(!trace_buffered_event_ref)
+--uEI2BuDe0NhIfEtZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  Call Trace:
-   ? __warn+0xa5/0x1b0
-   ? trace_buffered_event_disable+0x189/0x1b0
-   __ftrace_event_enable_disable+0x19e/0x3e0
-   free_probe_data+0x3b/0xa0
-   unregister_ftrace_function_probe_func+0x6b8/0x800
-   event_enable_func+0x2f0/0x3d0
-   ftrace_process_regex.isra.0+0x12d/0x1b0
-   ftrace_filter_write+0xe6/0x140
-   vfs_write+0x1c9/0x6f0
-   [...]
+On Fri 28 Jul 2023 12:34:13 GMT, Will Deacon wrote:
+> To prepare for 'faddr2line' reusing the same ignored symbols list as
+> 'mksysmap', factor out the relevant sed expression into its own script,
+> removing the double-escapes for '$' symbols as they are no longer
+> required.
+>=20
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: linux-kbuild@vger.kernel.org
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
 
-The cause of the warning is in __ftrace_event_enable_disable(),
-trace_buffered_event_enable() was called once while
-trace_buffered_event_disable() was called twice.
-Reproduction script show as below, for analysis, see the comments:
- ```
- #!/bin/bash
+Thanks!
 
- cd /sys/kernel/tracing/
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
- # 1. Register a 'disable_event' command, then:
- #    1) SOFT_DISABLED_BIT was set;
- #    2) trace_buffered_event_enable() was called first time;
- echo 'cmdline_proc_show:disable_event:initcall:initcall_finish' > \
-     set_ftrace_filter
+>  scripts/mksysmap                | 77 +--------------------------------
+>  scripts/sysmap-ignored-syms.sed | 74 +++++++++++++++++++++++++++++++
+>  2 files changed, 75 insertions(+), 76 deletions(-)
+>  create mode 100644 scripts/sysmap-ignored-syms.sed
+>=20
+> diff --git a/scripts/mksysmap b/scripts/mksysmap
+> index 9ba1c9da0a40..a98b34363258 100755
+> --- a/scripts/mksysmap
+> +++ b/scripts/mksysmap
+> @@ -16,7 +16,7 @@
+>  # 'W' or 'w'.
+>  #
+> =20
+> -${NM} -n ${1} | sed >${2} -e "
+> +${NM} -n ${1} | sed >${2} -f $(dirname $0)/sysmap-ignored-syms.sed -e "
+>  # ----------------------------------------------------------------------=
+-----
+>  # Ignored symbol types
+>  #
+> @@ -27,81 +27,6 @@ ${NM} -n ${1} | sed >${2} -e "
+>  # w: local weak symbols
+>  / [aNUw] /d
+> =20
+> -# ----------------------------------------------------------------------=
+-----
+> -# Ignored prefixes
+> -#  (do not forget a space before each pattern)
+> -
+> -# local symbols for ARM, MIPS, etc.
+> -/ \\$/d
+> -
+> -# local labels, .LBB, .Ltmpxxx, .L__unnamed_xx, .LASANPC, etc.
+> -/ \.L/d
+> -
+> -# arm64 EFI stub namespace
+> -/ __efistub_/d
+> -
+> -# arm64 local symbols in PIE namespace
+> -/ __pi_\\$/d
+> -/ __pi_\.L/d
+> -
+> -# arm64 local symbols in non-VHE KVM namespace
+> -/ __kvm_nvhe_\\$/d
+> -/ __kvm_nvhe_\.L/d
+> -
+> -# arm64 lld
+> -/ __AArch64ADRPThunk_/d
+> -
+> -# arm lld
+> -/ __ARMV5PILongThunk_/d
+> -/ __ARMV7PILongThunk_/d
+> -/ __ThumbV7PILongThunk_/d
+> -
+> -# mips lld
+> -/ __LA25Thunk_/d
+> -/ __microLA25Thunk_/d
+> -
+> -# CFI type identifiers
+> -/ __kcfi_typeid_/d
+> -/ __kvm_nvhe___kcfi_typeid_/d
+> -/ __pi___kcfi_typeid_/d
+> -
+> -# CRC from modversions
+> -/ __crc_/d
+> -
+> -# EXPORT_SYMBOL (symbol name)
+> -/ __kstrtab_/d
+> -
+> -# EXPORT_SYMBOL (namespace)
+> -/ __kstrtabns_/d
+> -
+> -# ----------------------------------------------------------------------=
+-----
+> -# Ignored suffixes
+> -#  (do not forget '$' after each pattern)
+> -
+> -# arm
+> -/_from_arm$/d
+> -/_from_thumb$/d
+> -/_veneer$/d
+> -
+> -# ----------------------------------------------------------------------=
+-----
+> -# Ignored symbols (exact match)
+> -#  (do not forget a space before and '$' after each pattern)
+> -
+> -# for LoongArch?
+> -/ L0$/d
+> -
+> -# ppc
+> -/ _SDA_BASE_$/d
+> -/ _SDA2_BASE_$/d
+> -
+> -# ----------------------------------------------------------------------=
+-----
+> -# Ignored patterns
+> -#  (symbols that contain the pattern are ignored)
+> -
+> -# ppc stub
+> -/\.long_branch\./d
+> -/\.plt_branch\./d
+> -
+>  # ----------------------------------------------------------------------=
+-----
+>  # Ignored kallsyms symbols
+>  #
+> diff --git a/scripts/sysmap-ignored-syms.sed b/scripts/sysmap-ignored-sym=
+s.sed
+> new file mode 100644
+> index 000000000000..14b9eb2c9ed9
+> --- /dev/null
+> +++ b/scripts/sysmap-ignored-syms.sed
+> @@ -0,0 +1,74 @@
+> +# ----------------------------------------------------------------------=
+-----
+> +# Ignored prefixes
+> +#  (do not forget a space before each pattern)
+> +
+> +# local symbols for ARM, MIPS, etc.
+> +/ \$/d
+> +
+> +# local labels, .LBB, .Ltmpxxx, .L__unnamed_xx, .LASANPC, etc.
+> +/ \.L/d
+> +
+> +# arm64 EFI stub namespace
+> +/ __efistub_/d
+> +
+> +# arm64 local symbols in PIE namespace
+> +/ __pi_\$/d
+> +/ __pi_\.L/d
+> +
+> +# arm64 local symbols in non-VHE KVM namespace
+> +/ __kvm_nvhe_\$/d
+> +/ __kvm_nvhe_\.L/d
+> +
+> +# arm64 lld
+> +/ __AArch64ADRPThunk_/d
+> +
+> +# arm lld
+> +/ __ARMV5PILongThunk_/d
+> +/ __ARMV7PILongThunk_/d
+> +/ __ThumbV7PILongThunk_/d
+> +
+> +# mips lld
+> +/ __LA25Thunk_/d
+> +/ __microLA25Thunk_/d
+> +
+> +# CFI type identifiers
+> +/ __kcfi_typeid_/d
+> +/ __kvm_nvhe___kcfi_typeid_/d
+> +/ __pi___kcfi_typeid_/d
+> +
+> +# CRC from modversions
+> +/ __crc_/d
+> +
+> +# EXPORT_SYMBOL (symbol name)
+> +/ __kstrtab_/d
+> +
+> +# EXPORT_SYMBOL (namespace)
+> +/ __kstrtabns_/d
+> +
+> +# ----------------------------------------------------------------------=
+-----
+> +# Ignored suffixes
+> +#  (do not forget '$' after each pattern)
+> +
+> +# arm
+> +/_from_arm$/d
+> +/_from_thumb$/d
+> +/_veneer$/d
+> +
+> +# ----------------------------------------------------------------------=
+-----
+> +# Ignored symbols (exact match)
+> +#  (do not forget a space before and '$' after each pattern)
+> +
+> +# for LoongArch?
+> +/ L0$/d
+> +
+> +# ppc
+> +/ _SDA_BASE_$/d
+> +/ _SDA2_BASE_$/d
+> +
+> +# ----------------------------------------------------------------------=
+-----
+> +# Ignored patterns
+> +#  (symbols that contain the pattern are ignored)
+> +
+> +# ppc stub
+> +/\.long_branch\./d
+> +/\.plt_branch\./d
+> --=20
+> 2.41.0.487.g6d72f3e995-goog
 
- # 2. Enable the event registered, then:
- #    1) SOFT_DISABLED_BIT was cleared;
- #    2) trace_buffered_event_disable() was called first time;
- echo 1 > events/initcall/initcall_finish/enable
+--=20
+Nicolas Schier
+=20
+epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
+=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
+     -- frykten for herren er opphav til kunnskap --
 
- # 3. Try to call into cmdline_proc_show(), then SOFT_DISABLED_BIT was
- #    set again!!!
- cat /proc/cmdline
+--uEI2BuDe0NhIfEtZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
- # 4. Unregister the 'disable_event' command, then:
- #    1) SOFT_DISABLED_BIT was cleared again;
- #    2) trace_buffered_event_disable() was called second time!!!
- echo '!cmdline_proc_show:disable_event:initcall:initcall_finish' > \
-     set_ftrace_filter
- ```
+-----BEGIN PGP SIGNATURE-----
 
-To fix it, IIUC, we can change to call trace_buffered_event_enable() at
-fist time soft-mode enabled, and call trace_buffered_event_disable() at
-last time soft-mode disabled.
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmTFXJQACgkQB1IKcBYm
+Emk1Gw/9EYXfT0XE/B7XsUjGx3hzto6hXf9K+guZgs9r8kwPtnUqOEM1mAXmcvXS
+0bTKEAG5+m9rpv6qC8by/BJUsErQpECczjleG5g/gPMe3yiOR7UwFquVNArkO/zt
+uVaSeuHUghum6GINfk4zuhLTY7E8D2BYA/OAyHiWVN55NKU0Y6Y0TlQwydH395eo
+51vtrGOUEFvdVWpwsHBYF3FThGYN1QSSSGOQHJ4T4vramFvJ6wtjKmJksWdfs7ro
+EOA1iOriiKAI6g5DvuEZv+M7G6KG/+5VaaGVuUwgXKMHhccbJ9xXiaaNK9HkG3px
+aPDs3/UkhRAv0am99kh2e2XqrMDRqTdCfWbjcKitcFFjT9Vb49r2tiG1sQWLlSt0
+w737xFGUB0GE+GnpuFQ/DJeH61OapiznM25W6MqxhAlk/jMvGH2z27z0R4fTYymR
+FbCrMo12pIT7lAkU9mOj1WUlefXiZQev7nXlTKchCsRB4RkqnaLoyoa+GKh2itN2
+h21K785HAIMvfCVh2kYUM2OcG83JWA1Ec7+XiivfGMs/J3dhKJ/B8UPL4k/tH+SD
+X3+3PLAiS/FtedgfezCfk8jmz+6z2MwogyBgSQJx9YIkjdQGhjLoaRn/jA5rOgik
+bcZheNABglL1d8MBULMpFTsu9RbuC3rBhFLklouEPdzTEh9HPGs=
+=u62f
+-----END PGP SIGNATURE-----
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230726095804.920457-1-zhengyejian1@huawei.com
-
-Cc: <mhiramat@kernel.org>
-Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace_events.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
-
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 5d6ae4eae510..578f1f7d49a6 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -611,7 +611,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
- {
- 	struct trace_event_call *call = file->event_call;
- 	struct trace_array *tr = file->tr;
--	unsigned long file_flags = file->flags;
- 	int ret = 0;
- 	int disable;
- 
-@@ -635,6 +634,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
- 				break;
- 			disable = file->flags & EVENT_FILE_FL_SOFT_DISABLED;
- 			clear_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
-+			/* Disable use of trace_buffered_event */
-+			trace_buffered_event_disable();
- 		} else
- 			disable = !(file->flags & EVENT_FILE_FL_SOFT_MODE);
- 
-@@ -673,6 +674,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
- 			if (atomic_inc_return(&file->sm_ref) > 1)
- 				break;
- 			set_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
-+			/* Enable use of trace_buffered_event */
-+			trace_buffered_event_enable();
- 		}
- 
- 		if (!(file->flags & EVENT_FILE_FL_ENABLED)) {
-@@ -712,15 +715,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
- 		break;
- 	}
- 
--	/* Enable or disable use of trace_buffered_event */
--	if ((file_flags & EVENT_FILE_FL_SOFT_DISABLED) !=
--	    (file->flags & EVENT_FILE_FL_SOFT_DISABLED)) {
--		if (file->flags & EVENT_FILE_FL_SOFT_DISABLED)
--			trace_buffered_event_enable();
--		else
--			trace_buffered_event_disable();
--	}
--
- 	return ret;
- }
- 
--- 
-2.40.1
+--uEI2BuDe0NhIfEtZ--
