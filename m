@@ -2,211 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C91767CA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 08:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64954767CAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 08:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236498AbjG2GyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 02:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S235874AbjG2G7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 02:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236393AbjG2GyM (ORCPT
+        with ESMTP id S229685AbjG2G7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 02:54:12 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B060D49C4
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 23:54:10 -0700 (PDT)
-Received: from dggpemm500003.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RCZrz1SspzNmR9;
-        Sat, 29 Jul 2023 14:50:43 +0800 (CST)
-Received: from [10.67.145.254] (10.67.145.254) by
- dggpemm500003.china.huawei.com (7.185.36.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 29 Jul 2023 14:54:07 +0800
-Message-ID: <efe58183-5e40-0ff8-e59b-50bf25b7f4c6@hisilicon.com>
-Date:   Sat, 29 Jul 2023 14:54:06 +0800
+        Sat, 29 Jul 2023 02:59:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7FC4211
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 23:59:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC2116068C
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 06:59:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C40C433C8;
+        Sat, 29 Jul 2023 06:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690613941;
+        bh=MQ5sX5BNVLtCUJ5SoZaQ2/ejVdHwvmb5bb41ld3hbAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TOv3AI7l4GXLDwbgcI5zIbdmjg8k8wNj1IsITudj8j6uVtJEqAAKSlzMGr/5Xr8Sn
+         MeiCoDjZe9pNSmuVZVt4g/Da1qhUZs35j3l2MVV7ly1b+rAdc9PFsfc6H6PJFLYsxS
+         2UJPj46MmitJCclymRUGkWtjybclbT5tAv3a8I76gVS5rXyFuUJ7FUW26nGfYDKdUL
+         63lHSXBkTT0dETSvyD0J8DU8fVQ1QTtmqvDSpU5jkr2Hw0BxjGsHgjHVdAMsvnE//1
+         9nXjyBqPxMqgPNHcqnDLhWoDd4H2lrHm9nn8U3FfjkRYgNXmWjwj6xsXJYodr+wQBS
+         HeHEVV/3dVD/w==
+Date:   Sat, 29 Jul 2023 09:58:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com
+Subject: Re: [v1 4/6] memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+Message-ID: <20230729065822.GF1901145@kernel.org>
+References: <20230727204624.1942372-1-usama.arif@bytedance.com>
+ <20230727204624.1942372-5-usama.arif@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: [PATCH v3] irqchip: gic-v3: Extend collection table
-References: <4e62022e-aa57-d1a5-6f01-89a36a682e00@hisilicon.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "liaochang (A)" <liaochang1@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <linux-kernel@vger.kernel.org>
-From:   wangwudi <wangwudi@hisilicon.com>
-In-Reply-To: <4e62022e-aa57-d1a5-6f01-89a36a682e00@hisilicon.com>
-X-Forwarded-Message-Id: <4e62022e-aa57-d1a5-6f01-89a36a682e00@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.145.254]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500003.china.huawei.com (7.185.36.56)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727204624.1942372-5-usama.arif@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Marc,
-
-A gentle ping.
-
-Thanks,
-Wudi
-
-
-在 2023/7/7 17:04, wangwudi 写道:
+On Thu, Jul 27, 2023 at 09:46:22PM +0100, Usama Arif wrote:
+> For reserved memory regions marked with this flag,
+> reserve_bootmem_region is not called during memmap_init_reserved_pages.
+> This can be used to avoid struct page initialization for
+> regions which won't need them, for e.g. hugepages with
+> HVO enabled.
 > 
-> 
-> -----邮件原件-----
-> 发件人: wangwudi 
-> 发送时间: 2023年6月21日 18:02
-> 收件人: linux-kernel@vger.kernel.org
-> 抄送: liaochang (A) <liaochang1@huawei.com>; wangwudi <wangwudi@hisilicon.com>; Thomas Gleixner <tglx@linutronix.de>; Marc Zyngier <maz@kernel.org>
-> 主题: [PATCH v3] irqchip: gic-v3: Extend collection table
-> 
-> Only single level table is supported to the collection table, and only one page is allocated.
-> 
-> Extend collection table to support more CPUs:
-> 1. Recalculate the page number of collection table based on the number of CPUs.
-> 2. Add 2 level tables to collection table when HCC field is zero.
-> 3. Add GITS_TYPER_CIDBITS macros.
-> 
-> It is noticed in an internal simulation research:
-> - the page_size of collection table is 4 KB
-> - the entry_size of collection table is 16 Byte
-> - with 512 CPUs
-> 
-> And I don't find a have a GIC500 platform to test this path. 
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: wangwudi <wangwudi@hisilicon.com>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 > ---
+>  include/linux/memblock.h |  7 +++++++
+>  mm/memblock.c            | 32 ++++++++++++++++++++++++++------
+>  2 files changed, 33 insertions(+), 6 deletions(-)
 > 
-> ChangeLog:
-> v1-->v2:
-> 1. Support 2 level table.
-> 2. Rewrite the commit log.
-> v2-->v3
-> 1. Fixed the error when HCC is field is not zero.
-> 2. Modifiy the commit log.
-> 
->  drivers/irqchip/irq-gic-v3-its.c   | 67 +++++++++++++++++++++++++++++++-------
->  include/linux/irqchip/arm-gic-v3.h |  3 ++
->  2 files changed, 58 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 0ec2b1e1df75..c37e010fd50c 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -126,6 +126,7 @@ struct its_node {
->  #define is_v4(its)		(!!((its)->typer & GITS_TYPER_VLPIS))
->  #define is_v4_1(its)		(!!((its)->typer & GITS_TYPER_VMAPP))
->  #define device_ids(its)		(FIELD_GET(GITS_TYPER_DEVBITS, (its)->typer) + 1)
-> +#define collection_ids(its)	(FIELD_GET(GITS_TYPER_CIDBITS, (its)->typer) + 1)
+> diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+> index f71ff9f0ec81..7f9d06c08592 100644
+> --e a/include/linux/memblock.h
+> +++ b/include/linux/memblock.h
+> @@ -47,6 +47,7 @@ enum memblock_flags {
+>  	MEMBLOCK_MIRROR		= 0x2,	/* mirrored region */
+>  	MEMBLOCK_NOMAP		= 0x4,	/* don't add to kernel direct mapping */
+>  	MEMBLOCK_DRIVER_MANAGED = 0x8,	/* always detected via a driver */
+> +	MEMBLOCK_RSRV_NOINIT	= 0x10,	/* don't call reserve_bootmem_region for this region */
+
+The comment should reflect what it does, not how.
+
+>  };
 >  
->  #define ITS_ITT_ALIGN		SZ_256
->  
-> @@ -2626,6 +2627,10 @@ static int its_alloc_tables(struct its_node *its)
->  			indirect = its_parse_indirect_baser(its, baser, &order,
->  							    ITS_MAX_VPEID_BITS);
->  			break;
-> +		case GITS_BASER_TYPE_COLLECTION:
-> +			indirect = its_parse_indirect_baser(its, baser, &order,
-> +							    order_base_2(num_possible_cpus()));
-> +			break;
->  		}
->  
->  		err = its_setup_baser(its, baser, cache, shr, order, indirect); @@ -3230,18 +3235,6 @@ static void its_cpu_init_collection(struct its_node *its)
->  	its_send_invall(its, &its->collections[cpu]);  }
->  
-> -static void its_cpu_init_collections(void) -{
-> -	struct its_node *its;
-> -
-> -	raw_spin_lock(&its_lock);
-> -
-> -	list_for_each_entry(its, &its_nodes, entry)
-> -		its_cpu_init_collection(its);
-> -
-> -	raw_spin_unlock(&its_lock);
-> -}
-> -
->  static struct its_device *its_find_device(struct its_node *its, u32 dev_id)  {
->  	struct its_device *its_dev = NULL, *tmp; @@ -3316,6 +3309,56 @@ static bool its_alloc_table_entry(struct its_node *its,
->  	return true;
+>  /**
+> @@ -125,6 +126,7 @@ int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
+>  int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+>  int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+>  int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+> +int memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size);
+
+Please spell out reserved here.
+
+>  void memblock_free_all(void);
+>  void memblock_free(void *ptr, size_t size);
+> @@ -259,6 +261,11 @@ static inline bool memblock_is_nomap(struct memblock_region *m)
+>  	return m->flags & MEMBLOCK_NOMAP;
 >  }
 >  
-> +static bool its_alloc_collection_table(struct its_node *its, struct 
-> +its_baser *baser) {
-> +	int cpu = smp_processor_id();
-> +	int cpu_ids = 16;
-> +
-> +	if (its->typer & GITS_TYPER_CIL)
-> +		cpu_ids = collection_ids(its);
-> +
-> +	if (!(ilog2(cpu) < cpu_ids)) {
-> +		pr_warn("ITS: CPU%d out of Collection ID range for %dbits", cpu, cpu_ids);
-> +		return false;
-> +	}
-> +
-> +	if (!its_alloc_table_entry(its, baser, cpu)) {
-> +		pr_warn("ITS: CPU%d failed to allocate collection l2 table", cpu);
-> +		return false;
-> +	}
-> +
-> +	return true;
+> +static inline bool memblock_is_noinit(struct memblock_region *m)
+> +{
+> +	return m->flags & MEMBLOCK_RSRV_NOINIT;
 > +}
 > +
-> +static bool its_cpu_init_collections(void) {
-> +	struct its_node *its;
-> +	struct its_baser *baser;
-> +	void __iomem *base;
+>  static inline bool memblock_is_driver_managed(struct memblock_region *m)
+>  {
+>  	return m->flags & MEMBLOCK_DRIVER_MANAGED;
+> diff --git a/mm/memblock.c b/mm/memblock.c
+> index 4fd431d16ef2..3a15708af3b6 100644
+> --- a/mm/memblock.c
+> +++ b/mm/memblock.c
+> @@ -997,6 +997,22 @@ int __init_memblock memblock_clear_nomap(phys_addr_t base, phys_addr_t size)
+>  	return memblock_setclr_flag(base, size, 0, MEMBLOCK_NOMAP, 0);
+>  }
+>  
+> +/**
+> + * memblock_rsrv_mark_noinit - Mark a reserved memory region with flag MEMBLOCK_RSRV_NOINIT.
+> + * @base: the base phys addr of the region
+> + * @size: the size of the region
+> + *
+> + * For memory regions marked with %MEMBLOCK_RSRV_NOINIT, reserve_bootmem_region
+> + * is not called during memmap_init_reserved_pages, hence struct pages are not
+> + * initialized for this region.
+
+Here as well, the part of how is much less important. Here you should
+emphasize that struct pages for MEMBLOCK_RSRV_NOINIT regions are not
+initialized.
+
+> + *
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int __init_memblock memblock_rsrv_mark_noinit(phys_addr_t base, phys_addr_t size)
+> +{
+> +	return memblock_setclr_flag(base, size, 1, MEMBLOCK_RSRV_NOINIT, 1);
+> +}
 > +
-> +	raw_spin_lock(&its_lock);
-> +
-> +	list_for_each_entry(its, &its_nodes, entry) {
-> +		base = its->base;
-> +		if (!GITS_TYPER_HCC(gic_read_typer(base + GITS_TYPER))) {
-> +			baser = its_get_baser(its, GITS_BASER_TYPE_COLLECTION);
-> +			if (!baser) {
-> +				raw_spin_unlock(&its_lock);
-> +				return false;
-> +			}
-> +
-> +			if (!its_alloc_collection_table(its, baser)) {
-> +				raw_spin_unlock(&its_lock);
-> +				return false;
-> +			}
+>  static bool should_skip_region(struct memblock_type *type,
+>  			       struct memblock_region *m,
+>  			       int nid, int flags)
+> @@ -2113,13 +2129,17 @@ static void __init memmap_init_reserved_pages(void)
+>  		memblock_set_node(start, end, &memblock.reserved, nid);
+>  	}
+>  
+> -	/* initialize struct pages for the reserved regions */
+> +	/*
+> +	 * initialize struct pages for reserved regions that don't have
+> +	 * the MEMBLOCK_RSRV_NOINIT flag set
+> +	 */
+>  	for_each_reserved_mem_region(region) {
+> -		nid = memblock_get_region_node(region);
+> -		start = region->base;
+> -		end = start + region->size;
+> -
+> -		reserve_bootmem_region(start, end, nid);
+> +		if (!memblock_is_noinit(region)) {
+> +			nid = memblock_get_region_node(region);
+> +			start = region->base;
+> +			end = start + region->size;
+
+Please keep the empty line here
+  
+> +			reserve_bootmem_region(start, end, nid);
 > +		}
-> +
-> +		its_cpu_init_collection(its);
-> +	}
-> +	raw_spin_unlock(&its_lock);
-> +	return true;
-> +}
-> +
->  static bool its_alloc_device_table(struct its_node *its, u32 dev_id)  {
->  	struct its_baser *baser;
-> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-> index 728691365464..35e83da8961f 100644
-> --- a/include/linux/irqchip/arm-gic-v3.h
-> +++ b/include/linux/irqchip/arm-gic-v3.h
-> @@ -400,6 +400,9 @@
->  #define GITS_TYPER_PTA			(1UL << 19)
->  #define GITS_TYPER_HCC_SHIFT		24
->  #define GITS_TYPER_HCC(r)		(((r) >> GITS_TYPER_HCC_SHIFT) & 0xff)
-> +#define GITS_TYPER_CIDBITS_SHIFT	32
-> +#define GITS_TYPER_CIDBITS		GENMASK_ULL(35, 32)
-> +#define GITS_TYPER_CIL			(1ULL << 36)
->  #define GITS_TYPER_VMOVP		(1ULL << 37)
->  #define GITS_TYPER_VMAPP		(1ULL << 40)
->  #define GITS_TYPER_SVPET		GENMASK_ULL(42, 41)
-> --
-> 2.7.4
+>  	}
+>  }
+>  
+> -- 
+> 2.25.1
 > 
+
+-- 
+Sincerely yours,
+Mike.
