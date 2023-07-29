@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0928767A46
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1735767A43
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237071AbjG2Ax0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S229874AbjG2Axc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbjG2AxK (ORCPT
+        with ESMTP id S236519AbjG2AxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:53:10 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39054C23;
-        Fri, 28 Jul 2023 17:52:45 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bbc7b2133fso17280855ad.1;
-        Fri, 28 Jul 2023 17:52:45 -0700 (PDT)
+        Fri, 28 Jul 2023 20:53:12 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7583C07;
+        Fri, 28 Jul 2023 17:52:47 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bbf8cb694aso2558885ad.3;
+        Fri, 28 Jul 2023 17:52:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690591909; x=1691196709;
+        d=gmail.com; s=20221208; t=1690591910; x=1691196710;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RhjavH3Fl28NglOqou/JvG3XUomwygW/aMjIJstyA5E=;
-        b=BGAfF10nL++omXc7+bwaAOM2MreVw58HteryuBDOUweKsX/qyzYjdQF/GbSoxr8zPW
-         43RgiystT7Logz8KH4mkphXpv6EeYiNYEFixzVItFvtJz9TAZrmtq8GcyX3yGcm8u2u7
-         PUp6ga5ymIgqRSx1CsWVoJ+0BaJTcK+kKTErSCMugUrlgJ+y6ELdbuXB3V49V3wiAwte
-         hWVkdMvLS1wgWYA4A5suuj/7GXHWfvWpF3h0JcXrtDUf7QaX4wtdgL405hIdLYrhc4dt
-         +tnnS5p3Ods8pxjh/KZ+FYno6rbXv4UQfDSgG7nnWl9tZ05kiwQeEhogFxsZnDhVyJ5m
-         M/lg==
+        bh=AEDoSnYN8pIcJUWaBkLfUGpLv63ZtjAclUqLuL9MJWg=;
+        b=q97EfmlRSwu7PhjemxZaCZq9kEYkVcmhW57MnL9wCBgBhoK2c5WSIvW4Y0dZ2eKXDZ
+         yQUcEqiVVo8USMqplSLn+QSUlnOFnI4BsLhIqNWEwJaqP2Fw6HWOmCjqkH0MGN0QVhUX
+         80bd2oBNQ+WtVOsI1Rtm3OkDbFkmwgqaEcDGECYH2T7j/qzzHZMj3TUR1uRZBnzCgz+U
+         YrR3ThhkOl2PDgrdyhNYBhKB7HTEXwMX22HnpUAki7nEidPOOha/Wwm3tfmv1cL0ZDtM
+         r3ruX0w3bdydCJiG0n14LpCdaS9OG182Xb6ARoUJV/9nNXZ1jpWgtg4Iy5VcKaz+lI4H
+         NVOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591909; x=1691196709;
+        d=1e100.net; s=20221208; t=1690591910; x=1691196710;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RhjavH3Fl28NglOqou/JvG3XUomwygW/aMjIJstyA5E=;
-        b=WhCKP99pg5UQ96EJO8vGO9igJHeqnzQ/LFA9lbdQFDhp+WJXar1qeAUA5JXbK2keB+
-         BFgNswrO4RRWYojk64If+kA7WuNk+mSoASiz/go7kwO1cib9ldj6I9Rj5LpmQ7hMvaTE
-         zYIrsO+h3CrTLvWyhc6V5L9ZkNItD/rps+ImFf2JcFxxcq0WzP7Ac2uFGGiK0cfgb8QA
-         pdDER1nBdrFw+kwYjhAyed/VPG99VaImzqY9nc2vuHN0KG/dBoYOHDutzyWYp7ZsITLU
-         0EzHBHDYmrj3SH2UUFneLYpWmQb8HclK+3baElQKBJyPALoM+KeWUIr9b4WJogfsQRea
-         OYSQ==
-X-Gm-Message-State: ABy/qLZFNeaWhhX5qnL8/Rl9Hx9l5T5pSk6GIxkUShi0cyPCWhaKKO33
-        IItioBe0JQhKAUrAnzpeyUYcf+p82Oc=
-X-Google-Smtp-Source: APBJJlHphoodiAj3ieh8++jVlnP9OkfS7Tmu+sksb9lAaNMjbljF66BCE9c8/ej1UMZRSUPyCVxUMg==
-X-Received: by 2002:a17:902:da83:b0:1b8:9b1b:ae8e with SMTP id j3-20020a170902da8300b001b89b1bae8emr3627857plx.59.1690591909145;
+        bh=AEDoSnYN8pIcJUWaBkLfUGpLv63ZtjAclUqLuL9MJWg=;
+        b=hKk9G/U8IXdF9yeBjHKY+A4hPLzKwKigStqy0EdxubwREDFM733YN5fSiiP5BTzjMK
+         vOpDvC0vEJcBVHL/PxxWyIYFrYI9/EYv0QUg+69bm/OJLaYufffLAqlMSvWIdCbronzm
+         9WJED5WySRWl2CGo0EkERVnbEtgSTVPfEFotheulTtf4SJNFKCEeel34s6/nQe6wtQvd
+         04xevSP3ABxjfBSN1IZwWgQTB1E30hegfQBzm8ryf3/KgGqGbnQomZYDKEm/puU2Ct56
+         sHrMeFrwR++CCh7FDaAD6ABQZKU49/JGHoCcOQYnHq0WH80qsn38+J6Wa5WVbIKWgw0G
+         Ozqw==
+X-Gm-Message-State: ABy/qLZsyL6jJA3SfikyS7O+4rMPtNcT7pa/EqC6D2Iq8goLdvOv0Dza
+        XJAkkRA7R58DvDu8R2iFRee5iUOAV+A=
+X-Google-Smtp-Source: APBJJlFOKiXh5lBJIX98M2bnZulRSlTRUTQGSYlx77hItApYDn0syyDYQ7kCchQhfRa5xPUOfWaExA==
+X-Received: by 2002:a17:902:7b85:b0:1b8:33d4:77f8 with SMTP id w5-20020a1709027b8500b001b833d477f8mr3385406pll.23.1690591909917;
         Fri, 28 Jul 2023 17:51:49 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:bc93:3749:59cc:1d5c])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.48
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 17:51:48 -0700 (PDT)
+        Fri, 28 Jul 2023 17:51:49 -0700 (PDT)
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     linux-input@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        JungHoon Hyun <hyunjunghoon@melfas.com>
-Subject: [PATCH 16/22] Input: melfas-mip4 - use device core to create driver-specific device attributes
-Date:   Fri, 28 Jul 2023 17:51:25 -0700
-Message-ID: <20230729005133.1095051-16-dmitry.torokhov@gmail.com>
+        Raul E Rangel <rrangel@chromium.org>
+Subject: [PATCH 17/22] Input: raydium_i2c_ts - use device core to create driver-specific device attributes
+Date:   Fri, 28 Jul 2023 17:51:26 -0700
+Message-ID: <20230729005133.1095051-17-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 In-Reply-To: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
 References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
@@ -79,47 +79,57 @@ pointer in the driver structure.
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/touchscreen/melfas_mip4.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/input/touchscreen/raydium_i2c_ts.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/input/touchscreen/melfas_mip4.c b/drivers/input/touchscreen/melfas_mip4.c
-index 2ac4483fbc25..aa325486f618 100644
---- a/drivers/input/touchscreen/melfas_mip4.c
-+++ b/drivers/input/touchscreen/melfas_mip4.c
-@@ -1419,10 +1419,7 @@ static struct attribute *mip4_attrs[] = {
+diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+index 78dd3059d585..13c500e776f6 100644
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -1004,7 +1004,7 @@ static DEVICE_ATTR(boot_mode, S_IRUGO, raydium_i2c_boot_mode_show, NULL);
+ static DEVICE_ATTR(update_fw, S_IWUSR, NULL, raydium_i2c_update_fw_store);
+ static DEVICE_ATTR(calibrate, S_IWUSR, NULL, raydium_i2c_calibrate_store);
+ 
+-static struct attribute *raydium_i2c_attributes[] = {
++static struct attribute *raydium_i2c_attrs[] = {
  	&dev_attr_update_fw.attr,
- 	NULL,
+ 	&dev_attr_boot_mode.attr,
+ 	&dev_attr_fw_version.attr,
+@@ -1012,10 +1012,7 @@ static struct attribute *raydium_i2c_attributes[] = {
+ 	&dev_attr_calibrate.attr,
+ 	NULL
  };
 -
--static const struct attribute_group mip4_attr_group = {
--	.attrs = mip4_attrs,
+-static const struct attribute_group raydium_i2c_attribute_group = {
+-	.attrs = raydium_i2c_attributes,
 -};
-+ATTRIBUTE_GROUPS(mip4);
++ATTRIBUTE_GROUPS(raydium_i2c);
  
- static int mip4_probe(struct i2c_client *client)
+ static int raydium_i2c_power_on(struct raydium_data *ts)
  {
-@@ -1514,13 +1511,6 @@ static int mip4_probe(struct i2c_client *client)
+@@ -1174,14 +1171,6 @@ static int raydium_i2c_probe(struct i2c_client *client)
  		return error;
  	}
  
--	error = devm_device_add_group(&client->dev, &mip4_attr_group);
+-	error = devm_device_add_group(&client->dev,
+-				   &raydium_i2c_attribute_group);
 -	if (error) {
--		dev_err(&client->dev,
--			"Failed to create sysfs attribute group: %d\n", error);
+-		dev_err(&client->dev, "failed to create sysfs attributes: %d\n",
+-			error);
 -		return error;
 -	}
 -
  	return 0;
  }
  
-@@ -1589,6 +1579,7 @@ static struct i2c_driver mip4_driver = {
- 	.probe = mip4_probe,
+@@ -1265,6 +1254,7 @@ static struct i2c_driver raydium_i2c_driver = {
+ 	.id_table = raydium_i2c_id,
  	.driver = {
- 		.name = MIP4_DEVICE_NAME,
-+		.dev_groups = mip4_groups,
- 		.of_match_table = of_match_ptr(mip4_of_match),
- 		.acpi_match_table = ACPI_PTR(mip4_acpi_match),
- 		.pm = pm_sleep_ptr(&mip4_pm_ops),
+ 		.name = "raydium_ts",
++		.dev_groups = raydium_i2c_groups,
+ 		.pm = pm_sleep_ptr(&raydium_i2c_pm_ops),
+ 		.acpi_match_table = ACPI_PTR(raydium_acpi_id),
+ 		.of_match_table = of_match_ptr(raydium_of_match),
 -- 
 2.41.0.487.g6d72f3e995-goog
 
