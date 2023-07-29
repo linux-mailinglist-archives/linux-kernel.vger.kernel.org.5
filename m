@@ -2,220 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D677680EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C145E7680EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 20:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjG2SYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 14:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        id S229729AbjG2SR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 14:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjG2SYB (ORCPT
+        with ESMTP id S229450AbjG2SRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 14:24:01 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C69D30CA;
-        Sat, 29 Jul 2023 11:23:56 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.97.66]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M1JJC-1qSYgk1Hv0-002ma7; Sat, 29 Jul 2023 20:23:36 +0200
-Received: from localhost.fjasle.eu (kirkenes.fjasle.eu [10.10.0.5])
+        Sat, 29 Jul 2023 14:17:24 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2A52723;
+        Sat, 29 Jul 2023 11:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690654641;
+        bh=h5IfinV0go2IJt6uz9MUW3cuAh/IHb80AxpLJZogiEA=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=r9ACkFQJbUkVzN2cXL4f5hHR2nJvxeh1m6dsqEk6p49m5mkyejozaDoB5abuVpTue
+         RWpUHOaHrjTshCNLUBjF3Pu4n38tdgoahXYxhPAOPlGEbKF3rzk+bCaTR/yAd6hvX3
+         /GaKZ8OaAmjYY3k9XUI6zQT1tQ2TUKXJ3UL4EeFQ=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 36D7B1281747;
+        Sat, 29 Jul 2023 14:17:21 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id cMMexv2ufveb; Sat, 29 Jul 2023 14:17:21 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690654641;
+        bh=h5IfinV0go2IJt6uz9MUW3cuAh/IHb80AxpLJZogiEA=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=r9ACkFQJbUkVzN2cXL4f5hHR2nJvxeh1m6dsqEk6p49m5mkyejozaDoB5abuVpTue
+         RWpUHOaHrjTshCNLUBjF3Pu4n38tdgoahXYxhPAOPlGEbKF3rzk+bCaTR/yAd6hvX3
+         /GaKZ8OaAmjYY3k9XUI6zQT1tQ2TUKXJ3UL4EeFQ=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by leknes.fjasle.eu (Postfix) with ESMTPS id 261943E9EF;
-        Sat, 29 Jul 2023 20:16:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1690654582; bh=+v3QdKmyefi0qzTtxni1WBFP+x34Cq9eGnlfi4jJDDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hQVrsGW2Xt3aXfuZrjjekAHRzKOUs8T/LpmmrICUAdIWA/ZEVI9bh7rwGLAJs5btB
-         Eb8b3Hs9DL3x7kbyznqG4MrynbHHplP+51UuGVvpLYOGItD1KVAv75iQBYD+maBlY5
-         xHh/EzfPN5MDVdxacUExdzv8gZBj0n6cPvD2n03I=
-Received: by localhost.fjasle.eu (Postfix, from userid 1000)
-        id E8E086091; Sat, 29 Jul 2023 20:16:15 +0200 (CEST)
-Date:   Sat, 29 Jul 2023 20:16:15 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH 2/2] kbuild: deb-pkg: split debian/rules
-Message-ID: <ZMVXb008ULiyHLie@bergen.fjasle.eu>
-References: <20230729143814.1509196-1-masahiroy@kernel.org>
- <20230729143814.1509196-2-masahiroy@kernel.org>
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BE7A01281269;
+        Sat, 29 Jul 2023 14:17:19 -0400 (EDT)
+Message-ID: <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Dan Williams <dan.j.williams@intel.com>, dhowells@redhat.com
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 29 Jul 2023 14:17:18 -0400
+In-Reply-To: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QkuvX0QpVWqifrVt"
-Content-Disposition: inline
-In-Reply-To: <20230729143814.1509196-2-masahiroy@kernel.org>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
-X-Provags-ID: V03:K1:NpAcQjnOf6hIU6Bq1hbktzopMtDqPrppk9MlWnloh9ZKm53c5Vb
- 6cnfLaDboLz1qKayzfP1HCyhzbJz6Z8SQePiUPgAm1fiNiUEUzJ5lqcNSycXAcoBUYsekNT
- sQdwEJsq3iijh2DG/G6zCj2CGfEy+G9c94lo11vEkf6dE/B9/a/Q/TBDc7dAtw0QnPQ5cq9
- Yn8tiEHbTVl6pSl/waaWQ==
-UI-OutboundReport: notjunk:1;M01:P0:lW9JgpqhVO4=;GythiiaKa6AJV6XjLu+wbqOSZLL
- wSz/AsOv4OFMLq3ul6PJmw5a51kYqQI7R4b6q16PHNBy+o5mPPtcIN8uwzF63eOtjw51K99Nm
- 56QKeNGpGS9u8amGePpkW9WugqKW3l5mxIoZ7r676/2kdvxKz+bOTDx3/WKfhASgKg2AcImnM
- oGlEnMXV5+jTZHr7zOlXodLc8w/QONbyRKQPsPoalUjME6MLlOjnG7oFSBhVeGZmXjhykmvkS
- /zVlRecwyoRlfK4nhetLgEoTJcCW7EBzqHwE+wXTu7v2LwAdWxjOfKGQ+IuUrGhY4hgPnWGfB
- ZjFuitrZAygkxshAHIKvU7AYcLQuqdtiixawmsBm2v+hAxS6/hIJqv33D0bs4EkibsjHau1Re
- xI00dALpivDLE41I9CoKRsjMu0RayrQueLE4muHw8an+CmgHh0w5nByQBEDhe3svgJoWNeahn
- W+DyLnIAk/GmDFUL132ennQk550sXp1LJ1s1BMjpqoj5yaaNMVHAZxfUHMUEIPBmZo5roPNaZ
- Qn1cLsUJI4NQsITSJRKKlplwHy49f6pZz/z1GWL/8LWj1uPUf7f8TK7Q7zlvhdJ4TLQVE2qsh
- zhErq8JpHBSNAQXDITuaQf1h1wvec1ZLBJOA84wiCTenfmdBQVrzbOeRTBG/NgDxBmFvmtARt
- jSjvM2DMiveo8XkhYzmkhAzAnk+fKPDWiESrbqqR9QXV9GJ51rlT2qqbfCS98yU5ufUwrSGr8
- CH7T2nKTSqCB1CUizRqA3twkesytshPZ8mKCLqro6rSTycQk3y7izhEfFPjecBR5u+7sdUydP
- f0UALtpoks/uFje2tsH1pl6tvq2f6z6MPWfh8I0Z0TohtF0DYOqtYwt1F8JfwVdm31LMtIOQx
- +23v94pNBUa1P+g==
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2023-07-28 at 12:30 -0700, Dan Williams wrote:
+> The bulk of the justification for this patch kit is in "[PATCH 1/4]
+> keys: Introduce tsm keys". The short summary is that the current
+> approach of adding new char devs and new ioctls, for what amounts to
+> the same functionality with minor formatting differences across
+> vendors, is untenable. Common concepts and the community benefit from
+> common infrastructure.
 
---QkuvX0QpVWqifrVt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I agree with this, but ...
 
-On Sat 29 Jul 2023 23:38:14 GMT, Masahiro Yamada wrote:
-> debian/rules is generated by shell scripting, but the escape sequence
-> (\$) is unreadable.
->=20
-> debian/rules embeds only two variables (ARCH and KERNELRELEASE).
->=20
-> Split them out to debian/rules.vars, and check-in the rest of Makefile
-> code to scripts/package/debian/rules.
->=20
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->=20
->  scripts/package/debian/rules | 28 ++++++++++++++++++++++++++++
->  scripts/package/mkdebian     | 32 ++++----------------------------
->  2 files changed, 32 insertions(+), 28 deletions(-)
->  create mode 100755 scripts/package/debian/rules
->=20
-> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-> new file mode 100755
-> index 000000000000..a4e5ab5abdd9
-> --- /dev/null
-> +++ b/scripts/package/debian/rules
-> @@ -0,0 +1,28 @@
-> +#!/usr/bin/make -f
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +srctree ?=3D .
-> +
-> +include debian/rules.vars
-> +
-> +.PHONY: binary binary-indep binary-arch
-> +binary: binary-arch binary-indep
-> +binary-indep: build-indep
-> +binary-arch: build-arch
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=3D$(ARCH) \
-> +	KERNELRELEASE=3D$(KERNELRELEASE) \
-> +	run-command KBUILD_RUN_COMMAND=3D+$(srctree)/scripts/package/builddeb
-> +
-> +.PHONY: build build-indep build-arch
-> +build: build-arch build-indep
-> +build-indep:
-> +build-arch:
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=3D$(ARCH) \
-> +	KERNELRELEASE=3D$(KERNELRELEASE) \
-> +	$(shell $(srctree)/scripts/package/deb-build-option) \
-> +	olddefconfig all
-> +
-> +.PHONY: clean
-> +clean:
-> +	rm -rf debian/files debian/linux-*
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=3D${ARCH} clean
+> Use Keys to build common infrastructure for confidential computing
+> attestation report blobs, convert sevguest to use it (leaving the
+> deprecation question alone for now), and pave the way for tdx-guest
+> and the eventual risc-v equivalent to use it in lieu of new ioctls.
+> 
+> The sevguest conversion is only compile-tested.
+> 
+> This submission is To:David since he needs to sign-off on the idea of
+> a new Keys type, the rest is up to the confidential-computing driver
+> maintainers to adopt.
 
-possibly use '$(ARCH)' instead of '${ARCH}' here, too?
+So why is this a keys subsystem thing?  The keys in question cannot be
+used to do any key operations.  It looks like a transport layer for
+attestation reports rather than anything key like.
 
+To give an analogy with the TPM: We do have a TPM interface to keys
+because it can be used for things like sealing (TPM stores a symmetric
+key) and even asymmetric operations (although TPM key support for that
+in 1.2 was just removed).  However, in direct analogy with confidential
+computing: the TPM does have an attestation interface: TPM2_Quote and
+TPM2_Certify (among others) which is deliberately *not* wired in to the
+keys subsystem because the outputs are intended for external verifiers.
 
-Tested-by: Nicolas Schier <nicolas@fjasle.eu>
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+If the goal is to unify the interface for transporting attestation
+reports, why not pull the attestation ioctls out of sevguest into
+something common?
 
-> diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-> index 2829f5b8aea6..498b579c6320 100755
-> --- a/scripts/package/mkdebian
-> +++ b/scripts/package/mkdebian
-> @@ -263,35 +263,11 @@ Description: Linux kernel debugging symbols for $ve=
-rsion
->  EOF
->  fi
-> =20
-> -cat <<EOF > debian/rules
-> -#!/usr/bin/make -f
-> -
-> -srctree ?=3D .
-> +cat <<EOF > debian/rules.vars
-> +ARCH =3D ${ARCH}
->  KERNELRELEASE =3D ${KERNELRELEASE}
-> -
-> -.PHONY: clean build build-arch build-indep binary binary-arch binary-ind=
-ep
-> -
-> -build-indep:
-> -build-arch:
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=3D${ARCH} \
-> -	KERNELRELEASE=3D\$(KERNELRELEASE) \
-> -	\$(shell \$(srctree)/scripts/package/deb-build-option) \
-> -	olddefconfig all
-> -
-> -build: build-arch
-> -
-> -binary-indep:
-> -binary-arch: build-arch
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=3D${ARCH} \
-> -	KERNELRELEASE=3D\$(KERNELRELEASE) \
-> -	run-command KBUILD_RUN_COMMAND=3D+\$(srctree)/scripts/package/builddeb
-> -
-> -clean:
-> -	rm -rf debian/files debian/linux-*
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=3D${ARCH} clean
-> -
-> -binary: binary-arch
->  EOF
-> -chmod +x debian/rules
-> +
-> +cp ${srctree}/scripts/package/debian/rules debian/
-> =20
->  exit 0
-> --=20
-> 2.39.2
+I also don't see in your interface where the nonce goes?  Most
+attestation reports combine the report output with a user supplied
+nonce which gets added to the report signature to defend against
+replay.
 
---=20
-Nicolas Schier
-=20
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
+Finally, I can see the logic in using this to do key release, because
+the external relying entity usually wishes to transport secrets into
+the enclave, but the currently developing use case for that seems to be
+to use a confidential guest vTPM because then we can use the existing
+TPM disk key interfaces.  Inventing something completely new isn't
+going to fly because all consumers have to be updated to use it (even
+though keys is a common interface, using key payloads isn't ... plus
+the systemd TPM disk encryption key doesn't even use kernel keys, it
+unwraps in userspace).
 
---QkuvX0QpVWqifrVt
-Content-Type: application/pgp-signature; name="signature.asc"
+James
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmTFV28ACgkQB1IKcBYm
-EmnIkQ/7BduSX3gN7+L0G7MMt4WSSRThiZNV5uUKKOVuukNYBppdXBer4Y0/VCTa
-LD1D3lvCkvl5rTUlR9lp/J2wJKMb9zsHnV7BNPnTWxTJgHm0+dA8/5+yEIfevIqw
-t2TMlEr7zxUvRwPokZP2QtmbFLFf6wqvLZP9rC3QbPaZagdyk4eOhsg7pXH9QJsO
-O5C+4yn2hMlhbspASdDc3yOLOZlzdJr+sGXs563qBc4DtjzXUXgCknC47Cl24fH/
-ySUq8jPOQZoAD+T8kYBIZe23yIJV7usLhmRm4NC4obwlLOZ+NoRUikCPwW3jYXuc
-iMDqg67Y4fgDd2QtqHfRGmiU2SG4TRpTS4oJYsXrXGulhKRcEymqqJs6tvSVA5Kz
-qdHOy43AiEg5c6rf3WaUBocxYUNqitG+SX3Bfxrj99WJleLNtWkNcQkPmSiI0Bnp
-JnRqA80XQhFJowtA+xkMrYeNNJ8FC3HeIr/8hdDMPlKiN/S1XxylVHOcQaLDzMct
-z2tQcby3jhdtIS/axMUn4Y+WfIiQIYa1VecOMF5vuB/s35N12JMBBng9dBU7JBIc
-Vi9PvGdvLD4PG2c/dS+55hgJEFtkQIUf73UujOd6tTYvePpwqoimmdw3RR6eUyww
-zaBNk+YpDkwP42Skb2n10O5lHHttraT3kio3Z/5I/tbrzKZaWUk=
-=Ohj/
------END PGP SIGNATURE-----
-
---QkuvX0QpVWqifrVt--
