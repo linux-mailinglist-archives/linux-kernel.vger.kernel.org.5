@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56BC767F8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C143C767F90
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 15:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbjG2Noh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 09:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
+        id S231193AbjG2NpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 09:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjG2Nof (ORCPT
+        with ESMTP id S229950AbjG2No6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 09:44:35 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E193C1D;
-        Sat, 29 Jul 2023 06:44:08 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686bc261111so2269444b3a.3;
-        Sat, 29 Jul 2023 06:44:08 -0700 (PDT)
+        Sat, 29 Jul 2023 09:44:58 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116E944BD;
+        Sat, 29 Jul 2023 06:44:31 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686f090316dso2063739b3a.2;
+        Sat, 29 Jul 2023 06:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690638239; x=1691243039;
+        d=gmail.com; s=20221208; t=1690638242; x=1691243042;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vf4uoVxmxjVyFsNv7LekxyZhL/lwoeo6l/0kyaltBQg=;
-        b=cshoYCbe/aYZ0e3GG8vWNJhAuanXPGYa3ha0gHQPiJgcm5gqnVckgLFMHZZDFqOfk9
-         j8B5xFJ10FT6Y9bRSY7cqtZZrv2LNrKgsen6tejMJ+gmMCtzumLsaVSfVKZ0ErXX7mVu
-         RCDywbv/IxoczANYd0mVUFHLClIjKqNxLYJZG2HbLSaQV0ZPXNIY9XAO6sWZmkZKuo+5
-         FtxEDstJ3vYgvBpd6O2nU45W0dqJ5RHqY5VNuAiRz8rPVr44mHizd2G1xWtEeTN89NHf
-         cen8MkZBeeONxOIfBsJrks8BH9z5PzmtL3TGhwz1NGLlVMn9lho/w2pjZxvqio+u4S04
-         hSqg==
+        bh=38zxaKr+2PJFRjzMHvc1QAAsYfBhANxuRljuHPzm8a8=;
+        b=IxIVKe6M6LAqs5FmKfPwOO4i+iSV/6sfcNfWM5LDsGJsPkD9jYGQCk7IMNdab9mJhw
+         4rcd5EpWk4M3AVf2B3b1KHIGVMtESbi76uXoR4I0LL0P8f182n+Ur73dhziRpGjoy9iw
+         H9HE7jvDfhYLQDrtM0ohbZfEn60akiSZPPRWyx3gMYJl9QJO0hAGyJTGifC5z0S9hP0u
+         c22VGJaY0iWJLlY62rirpPl3KIzJhU6FRv2Hg3kOr+DytfqgLwtEjfmAJppjzL+EO+/u
+         ykcmzlCQ8KlxilwWZCeu44XwteBa1/AJjiV2VeGoe2dPqyGvWIxrfKDLWqTdmqYoVm7u
+         Mjzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690638239; x=1691243039;
+        d=1e100.net; s=20221208; t=1690638242; x=1691243042;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vf4uoVxmxjVyFsNv7LekxyZhL/lwoeo6l/0kyaltBQg=;
-        b=O/+yE0DLcAgqQywVaJ1I1dPdq+To3U9hUraa81F9nC++kmikMRmA8gRPQL0cg/y3kW
-         9Xhfw8Y/tj9QGuB1bmDbuPRWOGfPiqNRdmvYD96z2PTzruIKywpqL1RtmYeuzdavI7Vt
-         5NL3NDE8xEF6diUoH0Wx2w3QKrtdgs7rfEVKR6xcq/hm1wD/5Rdty/1RkoFsT1rZzR0b
-         dPaGiFxExJbIF45X6jx/5H0pL5X56VciOHiMUFmO9aqPi9QRPfCgLxuo6ZHivD7DV7TL
-         7bZA8q0Z86vhejTfLk1MfBP+v0+ZX3YJdkJj69JAig6zhCf5UCgDyi/0Z8Z2oAFbPVHq
-         8v6g==
-X-Gm-Message-State: ABy/qLacPhHonoi96FMhM6XRLQSTlRqEe1uszyUjsrb9qxxnHACJ9Mse
-        C/CNYpPgycEy59SBwFbCeiAfLNaSTt99Hg==
-X-Google-Smtp-Source: APBJJlFkn1cfc5bzkjWP9ow3/UbWj7TMMWEA6R+SYm6Vyt4uf7J0QS7ZEs5XMrRAr/V6R7+ufXYK0Q==
-X-Received: by 2002:a05:6a20:4299:b0:133:2fb2:917d with SMTP id o25-20020a056a20429900b001332fb2917dmr5703463pzj.5.1690638238925;
-        Sat, 29 Jul 2023 06:43:58 -0700 (PDT)
+        bh=38zxaKr+2PJFRjzMHvc1QAAsYfBhANxuRljuHPzm8a8=;
+        b=dVNBB2YFP4M35soYMSgSL2k9XfxxugfK/GR0y+oKD45ofRhaKVxtkUWejqt+EbJO5Y
+         NMiv4tXZLKdESO2bhFMhf0MbFr2wRZ3HMVHCGUlnjcSio8f+UP+MY9lvot5zcIkK7Squ
+         LUAG/6OT38272Y1p4O9LA4b2+qxsI7o5giJLmNZFNBYIphDqZuL0Vb1FGgtt5orpHDdc
+         8eYDUpsHjHHyfHaUlJtvm0jF71dLBA8n+rrxqLyJbnJr6JAI62fHUwypQYIotZv6Fbo0
+         Mf9cU4AUgfZfzUGSZEnGiqUruUKUNAklHM0QtWGd6iSnFRqLBRVBkVgaXmV5HL1FrbYd
+         tbBA==
+X-Gm-Message-State: ABy/qLbFF+FWFtbahneK4kttrBnxpSVN/zc/iDkJVBPGk8q6/Sc04iUC
+        OzoK5aB6WR6aQEgtj4y+/lBQZfCZyLaPUQ==
+X-Google-Smtp-Source: APBJJlH02HHbYQvHL1lodIMsFCNp2q69k6HGmdys1FAZK0oolVyIlr3o8BHXXFuRbLJg+JifvnHapw==
+X-Received: by 2002:a05:6a20:9195:b0:13c:988c:e885 with SMTP id v21-20020a056a20919500b0013c988ce885mr4492258pzd.56.1690638241919;
+        Sat, 29 Jul 2023 06:44:01 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.56
+        by smtp.gmail.com with ESMTPSA id x13-20020aa793ad000000b006871bea2eeesm1257166pff.34.2023.07.29.06.43.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 06:43:58 -0700 (PDT)
+        Sat, 29 Jul 2023 06:44:01 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 07/17] MIPS: loongson32: Convert UART platform device to DT
-Date:   Sat, 29 Jul 2023 21:43:08 +0800
-Message-Id: <20230729134318.1694467-8-keguang.zhang@gmail.com>
+Subject: [PATCH 08/17] MIPS: loongson32: Convert Ethernet platform device to DT
+Date:   Sat, 29 Jul 2023 21:43:09 +0800
+Message-Id: <20230729134318.1694467-9-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230729134318.1694467-1-keguang.zhang@gmail.com>
 References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
@@ -76,298 +76,369 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add UART device nodes for Loongson-1 boards,
+Add Ethernet device nodes for Loongson-1 boards,
 and drop the legacy platform devices and data accordingly.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
- arch/mips/boot/dts/loongson/loongson1.dtsi    | 54 +++++++++++++++++++
- arch/mips/boot/dts/loongson/loongson1b.dtsi   | 12 +++++
- arch/mips/boot/dts/loongson/loongson1c.dtsi   | 12 +++++
- arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 20 +++++++
- arch/mips/boot/dts/loongson/smartloong_1c.dts | 20 +++++++
- arch/mips/loongson32/common/platform.c        | 44 ---------------
- arch/mips/loongson32/ls1b/board.c             |  3 --
- arch/mips/loongson32/ls1c/board.c             |  3 --
- 8 files changed, 118 insertions(+), 50 deletions(-)
+ arch/mips/boot/dts/loongson/loongson1.dtsi    |  16 ++
+ arch/mips/boot/dts/loongson/loongson1b.dtsi   |  53 +++++++
+ arch/mips/boot/dts/loongson/loongson1c.dtsi   |  17 ++
+ arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |   8 +
+ arch/mips/boot/dts/loongson/smartloong_1c.dts |   4 +
+ arch/mips/loongson32/common/platform.c        | 146 +-----------------
+ arch/mips/loongson32/ls1b/board.c             |   2 -
+ arch/mips/loongson32/ls1c/board.c             |   1 -
+ 8 files changed, 99 insertions(+), 148 deletions(-)
 
 diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boot/dts/loongson/loongson1.dtsi
-index 711c88fd2781..c77aa2d0f66c 100644
+index c77aa2d0f66c..48bb786bbf10 100644
 --- a/arch/mips/boot/dts/loongson/loongson1.dtsi
 +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-@@ -72,4 +72,58 @@ intc3: interrupt-controller@1fd01088 {
+@@ -71,6 +71,22 @@ intc3: interrupt-controller@1fd01088 {
+ 			interrupt-parent = <&cpu_intc>;
  			interrupts = <5>;
  		};
++
++		gmac0: ethernet@1fe10000 {
++			compatible = "snps,dwmac-3.70a";
++			reg = <0x1fe10000 0x10000>;
++
++			interrupt-parent = <&intc1>;
++			interrupt-names = "macirq";
++
++			clocks = <&clkc LS1X_CLKID_AHB>;
++			clock-names = "stmmaceth";
++
++			snps,pbl = <1>;
++
++			status = "disabled";
++		};
++
  	};
-+
-+	apb: bus@1fe40000 {
-+		compatible = "simple-bus";
-+		reg = <0x1fe40000 0x40000>;
-+		ranges;
-+
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		uart0: serial@1fe40000 {
-+			compatible = "ns16550a";
-+			reg = <0x1fe40000 0x8>;
-+
-+			interrupt-parent = <&intc0>;
-+			interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&clkc LS1X_CLKID_APB>;
-+
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@1fe44000 {
-+			compatible = "ns16550a";
-+			reg = <0x1fe44000 0x8>;
-+
-+			interrupt-parent = <&intc0>;
-+
-+			clocks = <&clkc LS1X_CLKID_APB>;
-+
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@1fe48000 {
-+			compatible = "ns16550a";
-+			reg = <0x1fe48000 0x8>;
-+
-+			interrupt-parent = <&intc0>;
-+
-+			clocks = <&clkc LS1X_CLKID_APB>;
-+
-+			status = "disabled";
-+		};
-+
-+		uart3: serial@1fe4c000 {
-+			compatible = "ns16550a";
-+			reg = <0x1fe4c000 0x8>;
-+
-+			interrupt-parent = <&intc0>;
-+
-+			clocks = <&clkc LS1X_CLKID_APB>;
-+
-+			status = "disabled";
-+		};
-+	};
- };
+ 
+ 	apb: bus@1fe40000 {
 diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-index 784ae9b6572d..437a77cee163 100644
+index 437a77cee163..42b96c557660 100644
 --- a/arch/mips/boot/dts/loongson/loongson1b.dtsi
 +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-@@ -73,3 +73,15 @@ clkc: clock-controller@1fe78030 {
- 		#clock-cells = <1>;
+@@ -7,6 +7,11 @@
+ #include "loongson1.dtsi"
+ 
+ / {
++	aliases {
++		ethernet0 = &gmac0;
++		ethernet1 = &gmac1;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -74,6 +79,54 @@ clkc: clock-controller@1fe78030 {
  	};
  };
+ 
++&ahb {
++	gmac1: ethernet@1fe20000 {
++		compatible = "snps,dwmac-3.70a";
++		reg = <0x1fe20000 0x10000>;
 +
-+&uart1 {
-+	interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-parent = <&intc1>;
++		interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-names = "macirq";
++
++		clocks = <&clkc LS1X_CLKID_AHB>;
++		clock-names = "stmmaceth";
++
++		phy-handle = <&phy1>;
++		phy-mode = "mii";
++
++		snps,pbl = <1>;
++
++		status = "disabled";
++
++		mdio1 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			compatible = "snps,dwmac-mdio";
++
++			phy1: ethernet-phy@0 {
++				reg = <0x0>;
++			};
++		};
++	};
 +};
 +
-+&uart2 {
-+	interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
++&gmac0 {
++	interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
++
++	phy-handle = <&phy0>;
++	phy-mode = "mii";
++
++	mdio0 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy0: ethernet-phy@0 {
++			reg = <0x0>;
++		};
++	};
 +};
 +
-+&uart3 {
-+	interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
-+};
+ &uart1 {
+ 	interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
+ };
 diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-index 8570c4c72677..1dd575b7b2f9 100644
+index 1dd575b7b2f9..5b3e0f9280f6 100644
 --- a/arch/mips/boot/dts/loongson/loongson1c.dtsi
 +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-@@ -40,3 +40,15 @@ intc4: interrupt-controller@1fd010a0 {
- 		interrupts = <6>;
+@@ -41,6 +41,23 @@ intc4: interrupt-controller@1fd010a0 {
  	};
  };
+ 
++&gmac0 {
++	interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
 +
-+&uart1 {
-+	interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
++	phy-handle = <&phy0>;
++	phy-mode = "rmii";
++
++	mdio0 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		compatible = "snps,dwmac-mdio";
++
++		phy0: ethernet-phy@13 {
++			reg = <0x13>;
++		};
++	};
 +};
 +
-+&uart2 {
-+	interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
-+};
-+
-+&uart3 {
-+	interrupts = <29 IRQ_TYPE_LEVEL_HIGH>;
-+};
+ &uart1 {
+ 	interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
+ };
 diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-index d12c723b0a2b..89c3dfa574f7 100644
+index 89c3dfa574f7..a43df21f2904 100644
 --- a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
 +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-@@ -11,6 +11,10 @@ / {
- 	compatible = "loongson,lsgz-1b-dev", "loongson,ls1b";
- 	model = "LSGZ_1B_DEV Board";
- 
-+	chosen {
-+		bootargs = "console=ttyS2,115200";
-+	};
-+
- 	memory@0 {
- 		device_type = "memory";
- 		reg = <0x0 0x4000000>;
-@@ -23,3 +27,19 @@ xtal: xtal {
- 		#clock-cells = <0>;
+@@ -28,6 +28,14 @@ xtal: xtal {
  	};
  };
-+
-+&uart0 {
+ 
++&gmac0 {
 +	status = "okay";
 +};
 +
-+&uart1 {
++&gmac1 {
 +	status = "okay";
 +};
 +
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
+ &uart0 {
+ 	status = "okay";
+ };
 diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-index 64e869acfd86..188aab9e3685 100644
+index 188aab9e3685..2d8f304aa2c4 100644
 --- a/arch/mips/boot/dts/loongson/smartloong_1c.dts
 +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-@@ -11,6 +11,10 @@ / {
- 	compatible = "loongmasses,smartloong-1c", "loongson,ls1c";
- 	model = "Smartloong_1C Board";
- 
-+	chosen {
-+		bootargs = "console=ttyS2,115200";
-+	};
-+
- 	memory@0 {
- 		device_type = "memory";
- 		reg = <0x0 0x2000000>;
-@@ -23,3 +27,19 @@ xtal: xtal {
- 		#clock-cells = <0>;
+@@ -28,6 +28,10 @@ xtal: xtal {
  	};
  };
-+
-+&uart0 {
+ 
++&gmac0 {
 +	status = "okay";
 +};
 +
-+&uart1 {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
+ &uart0 {
+ 	status = "okay";
+ };
 diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
-index 8075590a9f83..8272b4133e25 100644
+index 8272b4133e25..817518531b9b 100644
 --- a/arch/mips/loongson32/common/platform.c
 +++ b/arch/mips/loongson32/common/platform.c
-@@ -9,7 +9,6 @@
+@@ -8,157 +8,13 @@
+ #include <linux/err.h>
  #include <linux/mtd/partitions.h>
  #include <linux/sizes.h>
- #include <linux/phy.h>
--#include <linux/serial_8250.h>
- #include <linux/stmmac.h>
+-#include <linux/phy.h>
+-#include <linux/stmmac.h>
  #include <linux/usb/ehci_pdriver.h>
  
-@@ -18,49 +17,6 @@
+ #include <platform.h>
+ #include <loongson1.h>
  #include <dma.h>
  #include <nand.h>
- 
--/* 8250/16550 compatible UART */
--#define LS1X_UART(_id)						\
--	{							\
--		.mapbase	= LS1X_UART ## _id ## _BASE,	\
--		.irq		= LS1X_UART ## _id ## _IRQ,	\
--		.iotype		= UPIO_MEM,			\
--		.flags		= UPF_IOREMAP | UPF_FIXED_TYPE, \
--		.type		= PORT_16550A,			\
--	}
 -
--static struct plat_serial8250_port ls1x_serial8250_pdata[] = {
--	LS1X_UART(0),
--	LS1X_UART(1),
--	LS1X_UART(2),
--	LS1X_UART(3),
--	{},
+-/* Synopsys Ethernet GMAC */
+-static struct stmmac_mdio_bus_data ls1x_mdio_bus_data = {
+-	.phy_mask	= 0,
 -};
 -
--struct platform_device ls1x_uart_pdev = {
--	.name		= "serial8250",
--	.id		= PLAT8250_DEV_PLATFORM,
--	.dev		= {
--		.platform_data = ls1x_serial8250_pdata,
+-static struct stmmac_dma_cfg ls1x_eth_dma_cfg = {
+-	.pbl		= 1,
+-};
+-
+-int ls1x_eth_mux_init(struct platform_device *pdev, void *priv)
+-{
+-	struct plat_stmmacenet_data *plat_dat = NULL;
+-	u32 val;
+-
+-	val = __raw_readl(LS1X_MUX_CTRL1);
+-
+-#if defined(CONFIG_LOONGSON1_LS1B)
+-	plat_dat = dev_get_platdata(&pdev->dev);
+-	if (plat_dat->bus_id) {
+-		__raw_writel(__raw_readl(LS1X_MUX_CTRL0) | GMAC1_USE_UART1 |
+-			     GMAC1_USE_UART0, LS1X_MUX_CTRL0);
+-		switch (plat_dat->phy_interface) {
+-		case PHY_INTERFACE_MODE_RGMII:
+-			val &= ~(GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
+-			break;
+-		case PHY_INTERFACE_MODE_MII:
+-			val |= (GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
+-			break;
+-		default:
+-			pr_err("unsupported mii mode %d\n",
+-			       plat_dat->phy_interface);
+-			return -ENOTSUPP;
+-		}
+-		val &= ~GMAC1_SHUT;
+-	} else {
+-		switch (plat_dat->phy_interface) {
+-		case PHY_INTERFACE_MODE_RGMII:
+-			val &= ~(GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
+-			break;
+-		case PHY_INTERFACE_MODE_MII:
+-			val |= (GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
+-			break;
+-		default:
+-			pr_err("unsupported mii mode %d\n",
+-			       plat_dat->phy_interface);
+-			return -ENOTSUPP;
+-		}
+-		val &= ~GMAC0_SHUT;
+-	}
+-	__raw_writel(val, LS1X_MUX_CTRL1);
+-#elif defined(CONFIG_LOONGSON1_LS1C)
+-	plat_dat = dev_get_platdata(&pdev->dev);
+-
+-	val &= ~PHY_INTF_SELI;
+-	if (plat_dat->phy_interface == PHY_INTERFACE_MODE_RMII)
+-		val |= 0x4 << PHY_INTF_SELI_SHIFT;
+-	__raw_writel(val, LS1X_MUX_CTRL1);
+-
+-	val = __raw_readl(LS1X_MUX_CTRL0);
+-	__raw_writel(val & (~GMAC_SHUT), LS1X_MUX_CTRL0);
+-#endif
+-
+-	return 0;
+-}
+-
+-static struct plat_stmmacenet_data ls1x_eth0_pdata = {
+-	.bus_id			= 0,
+-	.phy_addr		= -1,
+-#if defined(CONFIG_LOONGSON1_LS1B)
+-	.phy_interface		= PHY_INTERFACE_MODE_MII,
+-#elif defined(CONFIG_LOONGSON1_LS1C)
+-	.phy_interface		= PHY_INTERFACE_MODE_RMII,
+-#endif
+-	.mdio_bus_data		= &ls1x_mdio_bus_data,
+-	.dma_cfg		= &ls1x_eth_dma_cfg,
+-	.has_gmac		= 1,
+-	.tx_coe			= 1,
+-	.rx_queues_to_use	= 1,
+-	.tx_queues_to_use	= 1,
+-	.init			= ls1x_eth_mux_init,
+-};
+-
+-static struct resource ls1x_eth0_resources[] = {
+-	[0] = {
+-		.start	= LS1X_GMAC0_BASE,
+-		.end	= LS1X_GMAC0_BASE + SZ_64K - 1,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-	[1] = {
+-		.name	= "macirq",
+-		.start	= LS1X_GMAC0_IRQ,
+-		.flags	= IORESOURCE_IRQ,
 -	},
 -};
 -
--void __init ls1x_serial_set_uartclk(struct platform_device *pdev)
--{
--	struct clk *clk;
--	struct plat_serial8250_port *p;
+-struct platform_device ls1x_eth0_pdev = {
+-	.name		= "stmmaceth",
+-	.id		= 0,
+-	.num_resources	= ARRAY_SIZE(ls1x_eth0_resources),
+-	.resource	= ls1x_eth0_resources,
+-	.dev		= {
+-		.platform_data = &ls1x_eth0_pdata,
+-	},
+-};
 -
--	clk = clk_get(&pdev->dev, pdev->name);
--	if (IS_ERR(clk)) {
--		pr_err("unable to get %s clock, err=%ld",
--		       pdev->name, PTR_ERR(clk));
--		return;
--	}
--	clk_prepare_enable(clk);
+-#ifdef CONFIG_LOONGSON1_LS1B
+-static struct plat_stmmacenet_data ls1x_eth1_pdata = {
+-	.bus_id			= 1,
+-	.phy_addr		= -1,
+-	.phy_interface		= PHY_INTERFACE_MODE_MII,
+-	.mdio_bus_data		= &ls1x_mdio_bus_data,
+-	.dma_cfg		= &ls1x_eth_dma_cfg,
+-	.has_gmac		= 1,
+-	.tx_coe			= 1,
+-	.rx_queues_to_use	= 1,
+-	.tx_queues_to_use	= 1,
+-	.init			= ls1x_eth_mux_init,
+-};
 -
--	for (p = pdev->dev.platform_data; p->flags != 0; ++p)
--		p->uartclk = clk_get_rate(clk);
--}
+-static struct resource ls1x_eth1_resources[] = {
+-	[0] = {
+-		.start	= LS1X_GMAC1_BASE,
+-		.end	= LS1X_GMAC1_BASE + SZ_64K - 1,
+-		.flags	= IORESOURCE_MEM,
+-	},
+-	[1] = {
+-		.name	= "macirq",
+-		.start	= LS1X_GMAC1_IRQ,
+-		.flags	= IORESOURCE_IRQ,
+-	},
+-};
 -
- /* Synopsys Ethernet GMAC */
- static struct stmmac_mdio_bus_data ls1x_mdio_bus_data = {
- 	.phy_mask	= 0,
+-struct platform_device ls1x_eth1_pdev = {
+-	.name		= "stmmaceth",
+-	.id		= 1,
+-	.num_resources	= ARRAY_SIZE(ls1x_eth1_resources),
+-	.resource	= ls1x_eth1_resources,
+-	.dev		= {
+-		.platform_data = &ls1x_eth1_pdata,
+-	},
+-};
+-#endif	/* CONFIG_LOONGSON1_LS1B */
++#include <irq.h>
+ 
+ /* GPIO */
+ static struct resource ls1x_gpio0_resources[] = {
 diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
-index fed8d432ef20..e8290f200096 100644
+index e8290f200096..f23e4e5c96ee 100644
 --- a/arch/mips/loongson32/ls1b/board.c
 +++ b/arch/mips/loongson32/ls1b/board.c
-@@ -34,7 +34,6 @@ static const struct gpio_led_platform_data ls1x_led_pdata __initconst = {
+@@ -34,8 +34,6 @@ static const struct gpio_led_platform_data ls1x_led_pdata __initconst = {
  };
  
  static struct platform_device *ls1b_platform_devices[] __initdata = {
--	&ls1x_uart_pdev,
- 	&ls1x_eth0_pdev,
- 	&ls1x_eth1_pdev,
+-	&ls1x_eth0_pdev,
+-	&ls1x_eth1_pdev,
  	&ls1x_ehci_pdev,
-@@ -46,8 +45,6 @@ static struct platform_device *ls1b_platform_devices[] __initdata = {
- 
- static int __init ls1b_platform_init(void)
- {
--	ls1x_serial_set_uartclk(&ls1x_uart_pdev);
--
- 	gpio_led_register_device(-1, &ls1x_led_pdata);
- 
- 	return platform_add_devices(ls1b_platform_devices,
+ 	&ls1x_gpio0_pdev,
+ 	&ls1x_gpio1_pdev,
 diff --git a/arch/mips/loongson32/ls1c/board.c b/arch/mips/loongson32/ls1c/board.c
-index 9dcfe9de55b0..a7096964fb30 100644
+index a7096964fb30..29bc467fd149 100644
 --- a/arch/mips/loongson32/ls1c/board.c
 +++ b/arch/mips/loongson32/ls1c/board.c
 @@ -6,7 +6,6 @@
  #include <platform.h>
  
  static struct platform_device *ls1c_platform_devices[] __initdata = {
--	&ls1x_uart_pdev,
- 	&ls1x_eth0_pdev,
+-	&ls1x_eth0_pdev,
  	&ls1x_rtc_pdev,
  	&ls1x_wdt_pdev,
-@@ -14,8 +13,6 @@ static struct platform_device *ls1c_platform_devices[] __initdata = {
- 
- static int __init ls1c_platform_init(void)
- {
--	ls1x_serial_set_uartclk(&ls1x_uart_pdev);
--
- 	return platform_add_devices(ls1c_platform_devices,
- 				   ARRAY_SIZE(ls1c_platform_devices));
- }
+ };
 -- 
 2.39.2
 
