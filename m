@@ -2,149 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863E47680A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 18:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD0D7680AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjG2QzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 12:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        id S229721AbjG2REi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 13:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG2QzG (ORCPT
+        with ESMTP id S229697AbjG2REg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 12:55:06 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6742D54;
-        Sat, 29 Jul 2023 09:55:03 -0700 (PDT)
-X-QQ-mid: bizesmtp69t1690649693td9lhmbx
-Received: from linux-lab-host.localdomain ( [61.141.77.223])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 30 Jul 2023 00:54:52 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: pVSBwIr5Ck/hWsOQZZGD2ywSC42wKWeZyFyoFfy3Qx2xcdkDLhUYOKLvfc6gd
-        3UAbjcnYGu47bezZHMm/EpnCl0msf668Op55WVUtLxwXvJbJsHIQThUOrRmYtqAQV3bOa8z
-        Qbjxp2qLAo7t5ngoA8IMi/OxYl7br8y5zSxwH4JHd6hKZExaKUvsk5ysRyT2NflIcJLBWXM
-        BH8q2AS5JZHeWp7JcJjJsMrE3RT1tFsfWOuoXvL5tJjubEeqgFTG7gZceVsmcpLIU60EX4f
-        0gbuTAEDcrRbRy6kkPzDe5FPMXCF/PFM2TEdVv/dGvH1DxYSXB6F/KZQzdsBUwRgO+YplGY
-        7N5DTidNM0guwBwLdY=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 15089285918231050864
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v3 3/7] selftests/nolibc: add extra configs customize support
-Date:   Sun, 30 Jul 2023 00:54:45 +0800
-Message-Id: <20230729165445.88073-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230729162907.GA5219@1wt.eu>
-References: <20230729162907.GA5219@1wt.eu>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 29 Jul 2023 13:04:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D03129;
+        Sat, 29 Jul 2023 10:04:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EAC6F60917;
+        Sat, 29 Jul 2023 17:04:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AB47C433C8;
+        Sat, 29 Jul 2023 17:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690650275;
+        bh=a8AgcCcRD45MqMrA0ShR610p4UCbpkmD952pgL1ofb4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ZnpQ/avbGW7zt73h82czRQr4dD3GubVhffSqbE2zpw4AaI+2ZQ0ID4IfFwv0vrbl5
+         uVmwZrAc3zblP42KXpmrucLy7UomCyd83rZ67OnyM4DtS4+TlRLs7VPEOqvdPY7bqt
+         sMQQfgznw4zM9eH9QMdB428QQwbuNdHsCmZNURfiWCFIXUOy9A0LSE6Z3CR/zz2efk
+         j0POBEIq4j30FV0LZmUBkrf0BAQZxoPNXJyC7SionjHbMsVwuygqek0lvnAjAOLQob
+         QrvBGhMkvVrj1bYEsrJDhxwmwC/kMvIxHZPPcDmglr6ajdSHRqEhNFTHlQAwPjr4px
+         /7o4nZzEknjvA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 445DBC43169;
+        Sat, 29 Jul 2023 17:04:35 +0000 (UTC)
+Subject: Re: [GIT PULL] LoongArch fixes for v6.5-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230729031648.539276-1-chenhuacai@loongson.cn>
+References: <20230729031648.539276-1-chenhuacai@loongson.cn>
+X-PR-Tracked-List-Id: <loongarch.lists.linux.dev>
+X-PR-Tracked-Message-Id: <20230729031648.539276-1-chenhuacai@loongson.cn>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.5-1
+X-PR-Tracked-Commit-Id: 1e74ae32805b6630c78bd7fb746fbfe936fb8f86
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 12214540ad87ce824a8a791a3f063e6121ec5b66
+Message-Id: <169065027526.12635.13494935973363519311.pr-tracker-bot@kernel.org>
+Date:   Sat, 29 Jul 2023 17:04:35 +0000
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Jul 29, 2023 at 10:39:33PM +0800, Zhangjin Wu wrote:
-> > > > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> > > > index f42adef87e12..9576f1a0a98d 100644
-> > > > --- a/tools/testing/selftests/nolibc/Makefile
-> > > > +++ b/tools/testing/selftests/nolibc/Makefile
-> > > > @@ -39,6 +39,9 @@ DEFCONFIG_s390       = defconfig
-> > > >  DEFCONFIG_loongarch  = defconfig
-> > > >  DEFCONFIG            = $(DEFCONFIG_$(ARCH))
-> > > >  
-> > > > +# extra kernel config files under configs/, include common + architecture specific
-> > > > +EXTCONFIG            = common.config $(ARCH).config
-> > > 
-> > > As this series seems to need a respin anyways:
-> > > 
-> > > extconfig means "extended config", correct?
-> > > That is fairly nondescript.
-> > >
-> > 
-> > It is more about 'extra' as commented (or 'additional'), for both
-> > defconfig (may) and tinyconfig (must) require more options to make boot
-> > and print work for nolibc-test.
-> >          
-> >     defconfig ------\
-> >                      \
-> >                       \
-> >                       EXTCONFIG ----> a working .config for nolibc-test
-> >                       /
-> >                      /
-> >     tinyconfig------/
-> > 
-> > > I would prefer something like "NOLIBC_TEST_CONFIG"
-> > >
-> > 
-> > Using NOLIBC_TEST_CONFIG is ok, but with this name, do we still only put
-> > the 'additional' options there? or we simply use EXTRA_CONFIG instead?
-> > 
-> >     # extra kernel config files under configs/, include common + architecture specific
-> >     EXTRA_CONFIG       = common.config $(ARCH).config
-> 
-> Either are fine to me. The most important is to mention that these
-> configs are appended to the config during the defconfig and tinyconfig
-> targets.
->
+The pull request you sent on Sat, 29 Jul 2023 11:16:48 +0800:
 
-Ok, will update the comment to something like this:
+> git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.5-1
 
-     # extra configs/ files appended to .config during the defconfig and tinyconfig targets
-     # include common parts + architecture specific parts
-     EXTRA_CONFIG       = common.config $(ARCH).config
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/12214540ad87ce824a8a791a3f063e6121ec5b66
 
+Thank you!
 
-> Also I find it odd to use $(ARCH) here, I would have expected $(XARCH)
-> since you probably want to distinguish ppc64 from ppc for example.
->
-
-Yes, we do, but the XARCH and ARCH mmapping patch is the 4th, will
-update this to XARCH, this one is the 3th one, do we need to add this
-one after the 4th one?
-
-> > > something like "make nolibctestconfig" to make an existing config ready for
-> > > nolibc-test.
-> > 
-> > Do you mean rename 'defconfig' to 'nolibctestconfig'? or something
-> > nolibc-test-config:
-> > 
-> >     nolibc-test-config:
-> > 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) mrproper $(DEFCONFIG) prepare
-> > 	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -O "$(srctree)" -m "$(srctree)/.config" $(foreach c,$(EXTRA_CONFIG),$(wildcard $(CURDIR)/configs/$c))
-> > 	$(Q)$(MAKE) -C $(srctree) ARCH=$(ARCH) CC=$(CC) CROSS_COMPILE=$(CROSS_COMPILE) KCONFIG_ALLCONFIG="$(srctree)/.config" allnoconfig
-> > 
-> > It looks too long ;-)
-> 
-> I think that as long as we don't claim to call topdir's makefile targets
-> from this directory, we can reuse some similarly named targets which are
-> documented in "make help" and are non-ambiguous.
-
-Seems 'nolibc-test-config' is really more meaningful than 'defconfig', especially
-when we want to use tinyconfig through it?
-
-    $ make nolibc-test-config DEFCONFIG=tinyconfig
-
-> 
-> > Currently, we use 'defconfig' by default and we use 'make defconfig
-> > DEFCONFIG=tinyconfig' to switch to tinyconfig, in the next weeks, when
-> > all of the nolibc supported architectures have tinyconfig support, it is
-> > able to switch 'tinyconfig' as the default config target.
-> 
-> As long as it doesn't require to locally maintain too many options, I
-> think I'm fine with that. But we'll see.
-
-Ok.
-
-Thanks,
-Zhangjin
-
-> 
-> Willy
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
