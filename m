@@ -2,123 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E17767971
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9CE767974
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235965AbjG2AYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S235444AbjG2AZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235937AbjG2AYX (ORCPT
+        with ESMTP id S229852AbjG2AZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6762680;
-        Fri, 28 Jul 2023 17:24:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DF5262219;
-        Sat, 29 Jul 2023 00:24:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 221CAC433C7;
-        Sat, 29 Jul 2023 00:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690590260;
-        bh=LcvjFZ5wQlT1R6n8uisvWwenXjdvtew/LYTUALvrObc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k8ANMUwVHZyTxyGa3n7sz2LHzbUGdyjNE/J3IJLU9ml/Zqn6ToTj3nqSMmnWv86HE
-         ljVs22Qb90Bw9NXXmPFj9pNMI0mq0ESXP12HP1NQUg4oNm0oy2FQE11CB0NBNUd0G+
-         OewanG+lTJsH17XqdIOPY6NDhrNj+/bVoLB85cpAdgD1AUB923nedsJMnJtEMBykQS
-         vBKZA7MRLDZpu0nFrKX+91j2/g7V7BH+5Zc5MjXXDr7PLLHcemQwj9NdSemoFJUeOf
-         bNGaOXZewZpKb7A4Mupld1931Itsmi/3gwfgRyJlZkoHY1y7tmMWkfVBXjBJ/f5kgi
-         Bg9wqklNDEBrQ==
-Date:   Fri, 28 Jul 2023 17:24:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 06/10] net: ti: icssg-prueth: Add ICSSG ethernet
- driver
-Message-ID: <20230728172419.702b4ac0@kernel.org>
-In-Reply-To: <20230727112827.3977534-7-danishanwar@ti.com>
-References: <20230727112827.3977534-1-danishanwar@ti.com>
-        <20230727112827.3977534-7-danishanwar@ti.com>
+        Fri, 28 Jul 2023 20:25:39 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BAD2680
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:25:38 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id ca18e2360f4ac-7748ca56133so26401239f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1690590337; x=1691195137;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XOAz5xtt/rpwKPYtZkbSQLD2PuwkkA8Bd2vIES6kj3U=;
+        b=CYnU75nh2a8/M+OlHX2F9V0ToNhPxVs0SyPFhMR4XBQ/hBKgl6ckKsasI8WdGeH9GC
+         jplbSKuA8K2d/qJ9rK5zvAGERUPZUQGEzkW5wUhdOn/AAfP6QvYS8haAfWP0i1KEjjf0
+         Gg3Qy4EkJY91ETe9AayH3zd1/we14Uom3MRjA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690590337; x=1691195137;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XOAz5xtt/rpwKPYtZkbSQLD2PuwkkA8Bd2vIES6kj3U=;
+        b=O+WZckO9Cvuqbxmz/5aMl9B+YB5HMLUMSTG/2gIDZ+Yi1oRnbvdxhyQeVOQutmqbks
+         VGB5nbOzM+4w20NEoziU5YmmffJ8CrCnSFlNwJn6SszMrk0PTsseXkioFNAswyQ+q4H2
+         QZdLvNi+xFKFkXoicCHfO4+nMMxLPfjteDerb4R7q6WH8LZQzu+59SPl8MsIme16JkJt
+         xmDHfFaxI+ZoSXv0hiM2IAoAsILNnlktUCKaBS7nEyA6KlivMDdKPVbTtebD4oPIM0jL
+         rNnnZRqMPdbZeWEcyFaSEOTytDhwpaC9qNoJ9aGXLCK08tDShayFe7HA2rk8sg+zE+Gl
+         KQnw==
+X-Gm-Message-State: ABy/qLYO1A9O4JlK6M2eWX/1829tkYwqpOAYmTvohVOzXL6CAj1dhIU0
+        dCXppbu2gh5jow2t8Sq6Y4Jdig==
+X-Google-Smtp-Source: APBJJlHYt90mFh+OA10ERF67CbdWEGZS/hMot4gSswHxGj5wIxZNMY6GO/DppIAXHLAgqzlyYLd6XQ==
+X-Received: by 2002:a05:6602:2b91:b0:77a:ee79:652 with SMTP id r17-20020a0566022b9100b0077aee790652mr1652390iov.1.1690590337662;
+        Fri, 28 Jul 2023 17:25:37 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id o8-20020a6bcf08000000b0078702f4894asm1472457ioa.9.2023.07.28.17.25.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 17:25:37 -0700 (PDT)
+Message-ID: <1f57e767-afd6-d30b-0c3a-de41e6adb68c@linuxfoundation.org>
+Date:   Fri, 28 Jul 2023 18:25:36 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] selftests:connector: Fix input argument error paths to
+ skip
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     shuah@kernel.org, Liam.Howlett@oracle.com,
+        anjali.k.kulkarni@oracle.com, davem@davemloft.net,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230728225357.5040-1-skhan@linuxfoundation.org>
+ <20230728162144.3db7dbac@kernel.org>
+ <7b7b8acc-5db2-5e6a-e803-e054ec7e1ab0@linuxfoundation.org>
+ <20230728170505.4bbe3ea9@kernel.org>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230728170505.4bbe3ea9@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 16:58:23 +0530 MD Danish Anwar wrote:
-> +static int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
-> +				    int budget)
-> +{
-> +	struct net_device *ndev = emac->ndev;
-> +	struct cppi5_host_desc_t *desc_tx;
-> +	struct netdev_queue *netif_txq;
-> +	struct prueth_tx_chn *tx_chn;
-> +	unsigned int total_bytes = 0;
-> +	struct sk_buff *skb;
-> +	dma_addr_t desc_dma;
-> +	int res, num_tx = 0;
-> +	void **swdata;
-> +
-> +	tx_chn = &emac->tx_chns[chn];
-> +
-> +	while (budget) {
-> +		res = k3_udma_glue_pop_tx_chn(tx_chn->tx_chn, &desc_dma);
-> +		if (res == -ENODATA)
-> +			break;
+On 7/28/23 18:05, Jakub Kicinski wrote:
+> On Fri, 28 Jul 2023 17:58:01 -0600 Shuah Khan wrote:
+>>> netdev was not CCed on this or patch 3 of the previous series :S
+>>> Which is a bit odd 'cause it was CCed on patches 1 and 2 🤷️
+>>
+>> Odd. get_maintainers.pl didn't give me netdev. I added netdev
+>> and others to the first patch from the bug report.
+>>
+>> Would you like me to resend this with netdev on the cc?
+> 
+> If you don't mind that'd be quite helpful, all our local tooling
+> depends on the patch being in netdev's patchwork.
 
-You shouldn't limit the number of serviced packets to budget for Tx
-NAPI.
+I understand - same case with kselftest patches. I rely on them
+going kselftest patchwork.
 
-https://docs.kernel.org/next/networking/napi.html#driver-api
+Resent the patch.
 
-> +	skb->dev = ndev;
-> +	if (!netif_running(skb->dev)) {
-> +		dev_kfree_skb_any(skb);
-> +		return 0;
-> +	}
-
-why do you check if the interface is running?
-If a packet arrives, it means the interface is running..
-
-> +drop_free_descs:
-> +	prueth_xmit_free(tx_chn, first_desc);
-> +drop_stop_q:
-> +	netif_tx_stop_queue(netif_txq);
-
-Do not stop the queue on DMA errors. If the queue is empty nothing
-will wake it up. Queue should only be stopped based on occupancy.
-
-> +	dev_kfree_skb_any(skb);
-> +
-> +	/* error */
-> +	ndev->stats.tx_dropped++;
-> +	netdev_err(ndev, "tx: error: %d\n", ret);
-> +
-> +	return ret;
--- 
-pw-bot: cr
+thanks,
+-- Shuah
