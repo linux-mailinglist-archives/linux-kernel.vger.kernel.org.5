@@ -2,158 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D208C767CF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69141767D03
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230240AbjG2Hyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 03:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        id S230361AbjG2H60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 03:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjG2Hyh (ORCPT
+        with ESMTP id S229939AbjG2H6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 03:54:37 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D423D49ED
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:54:08 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-991f9148334so71550466b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:54:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690617235; x=1691222035;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cWNXtNWkZB1EXNrbyq7/j6lsC1SsNmw/WUGK+ol4U4=;
-        b=OP8cB46YwORbeq8DePcyMkG0DslF+lYefcJarWenP3neEwdqUPNgikMAU2QkMTDHBA
-         5lNgMpt8x00OfxhxD4bch2EUVEhGro0yi1/a8xhAvIXFbK/a9qNgGGU7Niivv1TCKpvg
-         WKY7A2m27wZngPMys4ZMQD0j/1aIhSsABSk0skhkUcjtwpRzuBsmGtW0ZId2tlOap+FA
-         5sgRAgKh8H43i3MetGvuB8744b4PsxHbugfd3j474TDLsrbzt8TOVKys1SsvUZe76C4I
-         WzeKbLdrZSoS1VLrDKWlUvrOChP3AYvkiuitG19OtxaP0RA8jYtDMlCJucg4d0+F27RJ
-         YWiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690617235; x=1691222035;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/cWNXtNWkZB1EXNrbyq7/j6lsC1SsNmw/WUGK+ol4U4=;
-        b=KbeivOeMen41LCs3xKz+hDlzYTcDDzd1Ui4RSfDAr7ZgZmmqNMPgrxAXPTzbNaMD9b
-         +e0hhZb87f81hdcFebapKmpCY1HPd89xCZyWevI4ehEisNlUwOFNeJpXXKOV81thqIwK
-         Gq3NJfc88ImODUYlL5pZMemnPry2x/MyNlnMwOJBKf4QahtSfDV+Q823808jSYa89GZf
-         UZbsS0KSAn2ZF08tCtamBZ5bd9YXq2Z708tFOeiZ2mS0pqlsjOvMvqt/XkOF/iyTXiYj
-         t2WngfUZm9XcIKUNf+5hDwCIUg4TpzL+Xqbwg5ZVuGOGzy8106FZy8PjeiHYOa1vDNbB
-         JlnQ==
-X-Gm-Message-State: ABy/qLbnp/98fzZ63zuHlb+ZAeGTBtBFjske0potspnoVbRQAH/cjL8v
-        qGcDtu6ZkwXJ/nHVGEdFaD4=
-X-Google-Smtp-Source: APBJJlEy1d3dMdMhZQIrxMTC2h/2G5mapgplcTZ5OPNc0ppw6M0covT6fayqx1AvveNGYEpq3ygd0g==
-X-Received: by 2002:a17:906:6489:b0:993:d88e:41e3 with SMTP id e9-20020a170906648900b00993d88e41e3mr1297335ejm.4.1690617235540;
-        Sat, 29 Jul 2023 00:53:55 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p57ba2e0b.dip0.t-ipconnect.de. [87.186.46.11])
-        by smtp.gmail.com with ESMTPSA id qq5-20020a17090720c500b009882e53a42csm2994460ejb.81.2023.07.29.00.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 00:53:55 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 09:53:53 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] staging: rtl8192e: Remove DefaultKey from
- rtl92e_set_swcam
-Message-ID: <9390014fe045028ac2a32ce7c9745c7cddbd4adf.1690615475.git.philipp.g.hortmann@gmail.com>
-References: <cover.1690615475.git.philipp.g.hortmann@gmail.com>
+        Sat, 29 Jul 2023 03:58:24 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E15CF3;
+        Sat, 29 Jul 2023 00:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jeX6gnaLyhsoAgNas3HST4lthFFpKYPYStpcK6Njo6g=; b=D1qdioZucg2bpafH4c1Mq9fc56
+        W5GlUEtNAw+xQd2R6YXXqCGYRCTKIhIA9R7o9ZHQaCcUiZuZnZpLN75y9m/S0FxMJPkVyR8nAxl7I
+        Uyf1LvfFCRDHCaLHAUpgUJIf5thNQUJvLMLbJOcKdVIwlQgB937aWKzNWQIJClTFEQn8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qPepr-002a1W-U6; Sat, 29 Jul 2023 09:57:59 +0200
+Date:   Sat, 29 Jul 2023 09:57:59 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, wangpeiyang1@huawei.com,
+        netdev@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 5/6] net: hns3: fix wrong print link down up
+Message-ID: <73b41fe2-12dd-4fc0-a44d-f6f94e6541fc@lunn.ch>
+References: <20230728075840.4022760-1-shaojijie@huawei.com>
+ <20230728075840.4022760-6-shaojijie@huawei.com>
+ <7ce32389-550b-4beb-82b1-1b6183fdeabb@lunn.ch>
+ <2c6514a7-db97-f345-9bc4-affd4eba2dda@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1690615475.git.philipp.g.hortmann@gmail.com>
+In-Reply-To: <2c6514a7-db97-f345-9bc4-affd4eba2dda@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function rtl92e_set_swcam() has parameter DefaultKey which is in all calls
-0. Remove dead code.
+On Sat, Jul 29, 2023 at 11:11:48AM +0800, Jijie Shao wrote:
+> Hi Andrew,
+> I understand what you mean, and sorry for my wrong description. The link
+> is not always up. If I turn auto-neg off, the link will go down finally.
+> However, there is an intervel between my operation and the link down. In
+> my experiment, it may be 1 min or evn 10 mins. The phy state is set to
+> PHY_UP immediately when I set auto-neg off. And the phy machine check the
+> state during a very small intervals. Thus, during my experiment, the phy
+> state has a followed varietion:
+> PHY_RUNNING -> PHY_UP -> PHY_RUNNING -> PHY_NOLINK.
+> 
+> We print link up/down based on phy state and link state. In aboved case,
+> It print looks like:
+> eth0 link down -- because phy state is set to PHY_UP
+> eth0 link up -- because phy state is set to PHY_RUNNING
+> eth0 link down -- because link down
+> 
+> This patch wants to fix the first two wrong print.
+> We will modify this patch description
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.c | 5 ++---
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.h | 3 +--
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c  | 8 ++++----
- 3 files changed, 7 insertions(+), 9 deletions(-)
+Now i wounder if you are fixing the wrong thing. Maybe you should be
+fixing the PHY so it does not report up and then down? You say 'very
+snall intervals', which should in fact be 1 second. So is the PHY
+reporting link for a number of poll intervals? 1min to 10 minutes?
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-index f9ddb8384752..944cc73fb2b6 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
-@@ -49,8 +49,7 @@ void rtl92e_enable_hw_security_config(struct net_device *dev)
- }
- 
- void rtl92e_set_swcam(struct net_device *dev, u8 EntryNo, u8 KeyIndex,
--		      u16 KeyType, const u8 *MacAddr, u8 DefaultKey,
--		      u32 *KeyContent)
-+		      u16 KeyType, const u8 *MacAddr, u32 *KeyContent)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	struct rtllib_device *ieee = priv->rtllib;
-@@ -62,7 +61,7 @@ void rtl92e_set_swcam(struct net_device *dev, u8 EntryNo, u8 KeyIndex,
- 	ieee->swcamtable[EntryNo].key_index = KeyIndex;
- 	ieee->swcamtable[EntryNo].key_type = KeyType;
- 	memcpy(ieee->swcamtable[EntryNo].macaddr, MacAddr, 6);
--	ieee->swcamtable[EntryNo].useDK = DefaultKey;
-+	ieee->swcamtable[EntryNo].useDK = 0;
- 	memcpy(ieee->swcamtable[EntryNo].key_buf, (u8 *)KeyContent, 16);
- }
- 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.h b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.h
-index fcfde5f6cf2f..bd33ef105107 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.h
-@@ -19,8 +19,7 @@ void rtl92e_set_key(struct net_device *dev, u8 EntryNo, u8 KeyIndex,
- 		    u16 KeyType, const u8 *MacAddr, u8 DefaultKey,
- 		    u32 *KeyContent);
- void rtl92e_set_swcam(struct net_device *dev, u8 EntryNo, u8 KeyIndex,
--		      u16 KeyType, const u8 *MacAddr, u8 DefaultKey,
--		      u32 *KeyContent);
-+		      u16 KeyType, const u8 *MacAddr, u32 *KeyContent);
- void rtl92e_cam_restore(struct net_device *dev);
- 
- #endif
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-index 644762f925b7..189798852568 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-@@ -712,7 +712,7 @@ static int _rtl92e_wx_set_enc(struct net_device *dev,
- 			rtl92e_set_key(dev, key_idx, key_idx, KEY_TYPE_WEP104,
- 				       zero_addr[key_idx], 0, hwkey);
- 			rtl92e_set_swcam(dev, key_idx, key_idx, KEY_TYPE_WEP104,
--					 zero_addr[key_idx], 0, hwkey);
-+					 zero_addr[key_idx], hwkey);
- 		} else {
- 			netdev_info(dev,
- 				    "wrong type in WEP, not WEP40 and WEP104\n");
-@@ -857,19 +857,19 @@ static int _rtl92e_wx_set_encode_ext(struct net_device *dev,
- 			if (ext->key_len == 13)
- 				ieee->pairwise_key_type = alg = KEY_TYPE_WEP104;
- 			rtl92e_set_key(dev, idx, idx, alg, zero, 0, key);
--			rtl92e_set_swcam(dev, idx, idx, alg, zero, 0, key);
-+			rtl92e_set_swcam(dev, idx, idx, alg, zero, key);
- 		} else if (group) {
- 			ieee->group_key_type = alg;
- 			rtl92e_set_key(dev, idx, idx, alg, broadcast_addr, 0,
- 				       key);
--			rtl92e_set_swcam(dev, idx, idx, alg, broadcast_addr, 0, key);
-+			rtl92e_set_swcam(dev, idx, idx, alg, broadcast_addr, key);
- 		} else {
- 			if ((ieee->pairwise_key_type == KEY_TYPE_CCMP) &&
- 			     ieee->ht_info->bCurrentHTSupport)
- 				rtl92e_writeb(dev, 0x173, 1);
- 			rtl92e_set_key(dev, 4, idx, alg,
- 				       (u8 *)ieee->ap_mac_addr, 0, key);
--			rtl92e_set_swcam(dev, 4, idx, alg, (u8 *)ieee->ap_mac_addr, 0, key);
-+			rtl92e_set_swcam(dev, 4, idx, alg, (u8 *)ieee->ap_mac_addr, key);
- 		}
- 	}
- 
--- 
-2.41.0
+	  Andrew
 
