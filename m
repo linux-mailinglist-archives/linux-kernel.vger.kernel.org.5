@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87F9768064
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 17:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD69768071
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 17:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjG2Plv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 11:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S231894AbjG2P6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 11:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjG2Plt (ORCPT
+        with ESMTP id S229468AbjG2P6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 11:41:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C37D2D71;
-        Sat, 29 Jul 2023 08:41:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDAF560C75;
-        Sat, 29 Jul 2023 15:41:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 280D1C433C7;
-        Sat, 29 Jul 2023 15:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690645307;
-        bh=gnQbp0RMH6stdptOKUe8S/aXAQhToOtVZJFSFaQElig=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qUfzp3WRPjsDOut42q/54kj4DHV+lhx3h4vCJ9DofebJb/aDWWY8uUWfCcDZyEODr
-         dOAnRt6aOCc2nmUvSnGnIPZIj05h4XTbikjEX+UpsQvbkmWYeSPDCvCe1KFAH6zBvT
-         d4zv+PFBdJCK5mADrUumt3awnbE/OEVRlDt00d6jk71QZirl4aAa9Ib2rjk1BJxxud
-         lgB721z9i2Z5K9Kw2vBHbFPpeaglAz3uu8+59YVi0TwxP+ECChSdU2f2FHWwFVtWEJ
-         9bWHKaPnEzZMPc9RuJWmrXdtWSvFSKKfyA7VjYuBbM2J8Ty45exGOogvmzAFmuVq6s
-         JxnKZ43cn0EyA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A917ACE0AD3; Sat, 29 Jul 2023 08:41:46 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 08:41:46 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     akpm@linux-foundation.org, adobriyan@gmail.com, arnd@kernel.org,
-        ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 2/2] fs/proc: Add /proc/cmdline_image for
- embedded arguments
-Message-ID: <5f3e1c5e-9456-4aa4-ae0b-6353357045d7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <20230728033701.817094-2-paulmck@kernel.org>
- <20230729232346.a09a94e5586942aeda5df188@kernel.org>
+        Sat, 29 Jul 2023 11:58:07 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344F330F3;
+        Sat, 29 Jul 2023 08:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690646286; x=1722182286;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=8B2ZXTX/T+9iJs7GisviUMJRO157mD7QeorTcPRymOo=;
+  b=Rq0ZCDG9hFb/jAVogQOAJ2+D3h1K/mHDEGKNY3uCGZO12Xe3BW65/zBW
+   WVUEnwrHHb09GnzyH7DLdnzBb6dh+i8LiEw96MRiC8rrEiyDYx5BsUKoS
+   UsGvQjEu+p3EY5jMLl5uNDJ4wlUeZDALC2AB/rB2HR1pA3hvqYPETY/0p
+   ZCkN4nVS/8KiGzRK6gVZAYgNOKengfkdtppFIhncg3qRMTevBWUNKcuoG
+   z7eqqFH1Qg4vOC4zsYu0jXVecxnQ/4O5d1v1zGPo6xueCRDCiQ0bid3YF
+   WgrBhzkvuS7gPVG/2i0TdzvPWu3THHbFfeHcI0wLo+7k9lgtAz9nXcwmL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="371471164"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="371471164"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 08:58:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="793225232"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="793225232"
+Received: from jkrzyszt-mobl2.ger.corp.intel.com ([10.213.23.199])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 08:58:02 -0700
+From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+To:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, igt-dev@lists.freedesktop.org,
+        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Subject: Re: [PATCH 3/3] kunit: Allow kunit test modules to use test filtering
+Date:   Sat, 29 Jul 2023 17:57:59 +0200
+Message-ID: <3204833.aV6nBDHxoP@jkrzyszt-mobl2.ger.corp.intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173,
+ 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <202307290124.BnnhRy8b-lkp@intel.com>
+References: <20230728154419.1810177-8-janusz.krzysztofik@linux.intel.com>
+ <202307290124.BnnhRy8b-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729232346.a09a94e5586942aeda5df188@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 11:23:46PM +0900, Masami Hiramatsu wrote:
-> Hi Paul,
-> 
-> On Thu, 27 Jul 2023 20:37:01 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will show
-> > all kernel boot parameters, both those supplied by the boot loader and
-> > those embedded in the kernel image.  This works well for those who just
-> > want to see all of the kernel boot parameters, but is not helpful to those
-> > who need to see only those parameters that were embedded into the kernel
-> > image.  This is especially important in situations where there are many
-> > kernel images for different kernel versions and kernel configurations,
-> > all of which opens the door to a great deal of human error.
-> 
-> There is /proc/bootconfig file which shows all bootconfig entries and is
-> formatted as easily filter by grep (or any other line-based commands).
-> (e.g. `grep ^kernel\\. /proc/cmdline` will filter all kernel cmdline
-> parameters in the bootconfig)
-> Could you clarify the reason why you need a dump of bootconfig file?
+On Friday, 28 July 2023 19:24:55 CEST kernel test robot wrote:
+> >> lib/kunit/executor.c:182:42: warning: declaration of 'struct suite_set' 
+will not be visible outside of this function [-Wvisibility]
+>      182 | static void kunit_exec_list_tests(struct suite_set *suite_set)
+>          |                                          ^
 
-Because I was unaware of /proc/bootconfig?  ;-)
+I've apparently broken this patch while reordering patches in the series.  
+Sorry for submitting that untested.  Please expect v2 soon.
 
-So how about if I replace this patch of mine with the following?
+Thanks,
+Janusz
 
-And thank you for pointing me at /proc/bootconfig.
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 98c43c5ef1ee..832d66d4e396 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -684,6 +684,7 @@ files are there, and which are missing.
-  File         Content
-  ============ ===============================================================
-  apm          Advanced power management info
-+ bootconfig   Kernel command line obtained from boot config	(5.5)
-  buddyinfo    Kernel memory allocator information (see text)	(2.5)
-  bus          Directory containing bus specific information
-  cmdline      Kernel command line, both from bootloader and embedded
