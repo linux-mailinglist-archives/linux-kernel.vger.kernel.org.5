@@ -2,273 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFE7767DA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 11:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBD6767DA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 11:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbjG2J0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 05:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S231451AbjG2JbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 05:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjG2J0r (ORCPT
+        with ESMTP id S229483AbjG2JbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 05:26:47 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F1B35A3;
-        Sat, 29 Jul 2023 02:26:46 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-56433b1b0e0so101484a12.0;
-        Sat, 29 Jul 2023 02:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690622806; x=1691227606;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVn67woWrYaVl+gtOIxQbSZMyVcRvQ2Gn5jYKy1xEYg=;
-        b=pmLORHA8bjhwC5vtHpEwKML5DM69V3vYTP8Td8g1J+Uatmv6YiwRZaKYFMyPRlLhB8
-         WkRfvTuIf2ToZyD0rNxPCXmzY/qRzSvFHg8a1X0gyt336gR6fUF32AieB1x0Kxf8vQYp
-         qxfg3w9hEgXgdKelv+/EmiWPQjqp7rOjBQ6pSrPfD1ziRHZ1e4J7em3Rf1D5PmwJtqZY
-         v+1+sxH2BcKv8QXhkVW340GsceENt4hu31UdLT9TBWkGiX4NTLkAfTfDzBJ7lRL10q5X
-         WGvoHOVmTFrGxUYIAUZnkVi39KznA9J1lxXNfuAT65mFe2Q3wOYxyWj0WKHpFnJotDEo
-         f1pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690622806; x=1691227606;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVn67woWrYaVl+gtOIxQbSZMyVcRvQ2Gn5jYKy1xEYg=;
-        b=DNSUvwf9cYLiznHPQU2Njtp7fdBTl4NHV3WGp+42fcFTkke66I4q4rvjmtXOs2ksdC
-         7Tdb7wYUC4Y8V402rwWsshQ8kll7lB1T3TuVYNMAlQXB1eYs8zSKZH+NOn5GA2zlNe3y
-         uNiJAkl6rlTqZ1lKpFUkXZusyr4oqwOhUoeq2zHACh++NpcXNYOfhLXUYlRH1tiXN115
-         +Xnz9iKK7uPbv9e6wt0WLiMY6Kic3jfeRrU3gBlYTM1GKo5eNwsU0x5CoHmTTpXVtly5
-         sDBmHF1rjYepG88LrLAS8rcUClYXHxK+GWY3t8f/gi5v4wPbQcbjCGcc6nEL53Ef+q94
-         oRwQ==
-X-Gm-Message-State: ABy/qLYYwuxoZOqdtqsOoX512wLYGOHqS2gbdyLWrWG9Kx9tO+iFBPOs
-        SwFtDDKfIywRYRiSV0BYgOU=
-X-Google-Smtp-Source: APBJJlHiDK3L2PVha3QdApJdUglp+JDthsx8uq//JiECYyhDA48jb468vldw3pePXL2h7XVkbBAb2w==
-X-Received: by 2002:a17:90b:4c89:b0:268:3582:a6be with SMTP id my9-20020a17090b4c8900b002683582a6bemr4145023pjb.33.1690622805660;
-        Sat, 29 Jul 2023 02:26:45 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id p16-20020a170902e75000b0019ee045a2b3sm4869161plf.308.2023.07.29.02.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 02:26:45 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        u.kleine-koenig@pengutronix.de
-Cc:     giometti@linux.it, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2] usb: host: oxu210hp-hcd: Fix potential deadlock on &oxu->mem_lock
-Date:   Sat, 29 Jul 2023 09:26:34 +0000
-Message-Id: <20230729092634.78336-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 29 Jul 2023 05:31:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C5E3A99
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 02:31:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0109602F9
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 09:31:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EEB6C433C8;
+        Sat, 29 Jul 2023 09:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690623073;
+        bh=uNJWn51j3Ncr8UkODDwXEEnnPenUL38moEnw/4FUaOE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rEHh+Jtlpp4vE7JIgCOvj+0MOKJCHFgElJnKHi6+mj95Nx/4/w+2u0I4sQlCJR+1+
+         FP7vgFGaFMIVD1ZyL1Hyw/hD44RGVAx9Ek3BXW+zaoKmYBaQHwOCcQOOll0gOGIWMR
+         SqXurqWPGu8lmyxbD6F9gSCM2louSE/gnCBwOlUUfDcPltz507s8VqNhV+rQ3VS08w
+         W1w1aboUjIX6tXB20n9nHcmnvAIkhWuxTlCJE2yq9702uvkGLZCthoY8NsyDObbMj4
+         DH6RGc0gKA87sxrmnJy1gZzsUuDEIkBiMzrY751K9uduJhAHaSDZMYdgSuJSxNmov6
+         Wn4RmhFv/wP1A==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qPgI2-000KSf-Vm;
+        Sat, 29 Jul 2023 10:31:11 +0100
+MIME-Version: 1.0
+Date:   Sat, 29 Jul 2023 10:31:10 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     wangwudi <wangwudi@hisilicon.com>
+Cc:     "liaochang (A)" <liaochang1@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] irqchip: gic-v3: Extend collection table
+In-Reply-To: <efe58183-5e40-0ff8-e59b-50bf25b7f4c6@hisilicon.com>
+References: <4e62022e-aa57-d1a5-6f01-89a36a682e00@hisilicon.com>
+ <efe58183-5e40-0ff8-e59b-50bf25b7f4c6@hisilicon.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <426a9a4042f6ea925d71d2f83f25f888@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: wangwudi@hisilicon.com, liaochang1@huawei.com, tglx@linutronix.de, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-&oxu->mem_lock is acquired by isr oxu_irq() along the below call
-chain under hardirq context.
+On 2023-07-29 07:54, wangwudi wrote:
+> Hi Marc,
+> 
+> A gentle ping.
 
-<hard interrupt>
-        -> oxu_irq()
-        -> oxu210_hcd_irq()
-        -> ehci_work()
-        -> scan_async()
-        -> qh_completions()
-        -> oxu_murb_free()
-        -> spin_lock(&oxu->mem_lock)
+Look, you keep pinging me for a patch that you haven't tested.
 
-Thus the acquisition of the lock under process context should disable
-irq, otherwise deadlock could happen if the irq happens to preempt the
-execution while the lock is held in process context on the same CPU.
+What do you think happens? This patch goes to the back of the queue
+until I find enough time to test it on a GIC500 platform.
 
-This flaw was found by an experimental static analysis tool I am developing
-for irq-related deadlock. x86_64 allmodconfig using gcc shows no new
-warning.
+It is even of a lower priority given that this doesn't fix any
+*real* issue, and is only for the purpose of your simulation with
+non-sensical parameters (16 bytes for collection entries? let's
+get real -- this only needs to be at most an affinity, for which
+4 bytes are enough).
 
-The patch fixes the potential deadlocks by using spin_lock_irqsave() on
-&oxu->mem_lock
+         M.
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> 
+> Thanks,
+> Wudi
+> 
+> 
+> 在 2023/7/7 17:04, wangwudi 写道:
+>> 
+>> 
+>> -----邮件原件-----
+>> 发件人: wangwudi
+>> 发送时间: 2023年6月21日 18:02
+>> 收件人: linux-kernel@vger.kernel.org
+>> 抄送: liaochang (A) <liaochang1@huawei.com>; wangwudi 
+>> <wangwudi@hisilicon.com>; Thomas Gleixner <tglx@linutronix.de>; Marc 
+>> Zyngier <maz@kernel.org>
+>> 主题: [PATCH v3] irqchip: gic-v3: Extend collection table
+>> 
+>> Only single level table is supported to the collection table, and only 
+>> one page is allocated.
+>> 
+>> Extend collection table to support more CPUs:
+>> 1. Recalculate the page number of collection table based on the number 
+>> of CPUs.
+>> 2. Add 2 level tables to collection table when HCC field is zero.
+>> 3. Add GITS_TYPER_CIDBITS macros.
+>> 
+>> It is noticed in an internal simulation research:
+>> - the page_size of collection table is 4 KB
+>> - the entry_size of collection table is 16 Byte
+>> - with 512 CPUs
+>> 
+>> And I don't find a have a GIC500 platform to test this path.
+>> 
+>> Cc: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Signed-off-by: wangwudi <wangwudi@hisilicon.com>
+>> ---
+>> 
+>> ChangeLog:
+>> v1-->v2:
+>> 1. Support 2 level table.
+>> 2. Rewrite the commit log.
+>> v2-->v3
+>> 1. Fixed the error when HCC is field is not zero.
+>> 2. Modifiy the commit log.
+>> 
+>>  drivers/irqchip/irq-gic-v3-its.c   | 67 
+>> +++++++++++++++++++++++++++++++-------
+>>  include/linux/irqchip/arm-gic-v3.h |  3 ++
+>>  2 files changed, 58 insertions(+), 12 deletions(-)
+>> 
+>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+>> b/drivers/irqchip/irq-gic-v3-its.c
+>> index 0ec2b1e1df75..c37e010fd50c 100644
+>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> @@ -126,6 +126,7 @@ struct its_node {
+>>  #define is_v4(its)		(!!((its)->typer & GITS_TYPER_VLPIS))
+>>  #define is_v4_1(its)		(!!((its)->typer & GITS_TYPER_VMAPP))
+>>  #define device_ids(its)		(FIELD_GET(GITS_TYPER_DEVBITS, (its)->typer) 
+>> + 1)
+>> +#define collection_ids(its)	(FIELD_GET(GITS_TYPER_CIDBITS, 
+>> (its)->typer) + 1)
+>> 
+>>  #define ITS_ITT_ALIGN		SZ_256
+>> 
+>> @@ -2626,6 +2627,10 @@ static int its_alloc_tables(struct its_node 
+>> *its)
+>>  			indirect = its_parse_indirect_baser(its, baser, &order,
+>>  							    ITS_MAX_VPEID_BITS);
+>>  			break;
+>> +		case GITS_BASER_TYPE_COLLECTION:
+>> +			indirect = its_parse_indirect_baser(its, baser, &order,
+>> +							    order_base_2(num_possible_cpus()));
+>> +			break;
+>>  		}
+>> 
+>>  		err = its_setup_baser(its, baser, cache, shr, order, indirect); @@ 
+>> -3230,18 +3235,6 @@ static void its_cpu_init_collection(struct 
+>> its_node *its)
+>>  	its_send_invall(its, &its->collections[cpu]);  }
+>> 
+>> -static void its_cpu_init_collections(void) -{
+>> -	struct its_node *its;
+>> -
+>> -	raw_spin_lock(&its_lock);
+>> -
+>> -	list_for_each_entry(its, &its_nodes, entry)
+>> -		its_cpu_init_collection(its);
+>> -
+>> -	raw_spin_unlock(&its_lock);
+>> -}
+>> -
+>>  static struct its_device *its_find_device(struct its_node *its, u32 
+>> dev_id)  {
+>>  	struct its_device *its_dev = NULL, *tmp; @@ -3316,6 +3309,56 @@ 
+>> static bool its_alloc_table_entry(struct its_node *its,
+>>  	return true;
+>>  }
+>> 
+>> +static bool its_alloc_collection_table(struct its_node *its, struct
+>> +its_baser *baser) {
+>> +	int cpu = smp_processor_id();
+>> +	int cpu_ids = 16;
+>> +
+>> +	if (its->typer & GITS_TYPER_CIL)
+>> +		cpu_ids = collection_ids(its);
+>> +
+>> +	if (!(ilog2(cpu) < cpu_ids)) {
+>> +		pr_warn("ITS: CPU%d out of Collection ID range for %dbits", cpu, 
+>> cpu_ids);
+>> +		return false;
+>> +	}
+>> +
+>> +	if (!its_alloc_table_entry(its, baser, cpu)) {
+>> +		pr_warn("ITS: CPU%d failed to allocate collection l2 table", cpu);
+>> +		return false;
+>> +	}
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +static bool its_cpu_init_collections(void) {
+>> +	struct its_node *its;
+>> +	struct its_baser *baser;
+>> +	void __iomem *base;
+>> +
+>> +	raw_spin_lock(&its_lock);
+>> +
+>> +	list_for_each_entry(its, &its_nodes, entry) {
+>> +		base = its->base;
+>> +		if (!GITS_TYPER_HCC(gic_read_typer(base + GITS_TYPER))) {
+>> +			baser = its_get_baser(its, GITS_BASER_TYPE_COLLECTION);
+>> +			if (!baser) {
+>> +				raw_spin_unlock(&its_lock);
+>> +				return false;
+>> +			}
+>> +
+>> +			if (!its_alloc_collection_table(its, baser)) {
+>> +				raw_spin_unlock(&its_lock);
+>> +				return false;
+>> +			}
+>> +		}
+>> +
+>> +		its_cpu_init_collection(its);
+>> +	}
+>> +	raw_spin_unlock(&its_lock);
+>> +	return true;
+>> +}
+>> +
+>>  static bool its_alloc_device_table(struct its_node *its, u32 dev_id)  
+>> {
+>>  	struct its_baser *baser;
+>> diff --git a/include/linux/irqchip/arm-gic-v3.h 
+>> b/include/linux/irqchip/arm-gic-v3.h
+>> index 728691365464..35e83da8961f 100644
+>> --- a/include/linux/irqchip/arm-gic-v3.h
+>> +++ b/include/linux/irqchip/arm-gic-v3.h
+>> @@ -400,6 +400,9 @@
+>>  #define GITS_TYPER_PTA			(1UL << 19)
+>>  #define GITS_TYPER_HCC_SHIFT		24
+>>  #define GITS_TYPER_HCC(r)		(((r) >> GITS_TYPER_HCC_SHIFT) & 0xff)
+>> +#define GITS_TYPER_CIDBITS_SHIFT	32
+>> +#define GITS_TYPER_CIDBITS		GENMASK_ULL(35, 32)
+>> +#define GITS_TYPER_CIL			(1ULL << 36)
+>>  #define GITS_TYPER_VMOVP		(1ULL << 37)
+>>  #define GITS_TYPER_VMAPP		(1ULL << 40)
+>>  #define GITS_TYPER_SVPET		GENMASK_ULL(42, 41)
+>> --
+>> 2.7.4
+>> 
 
-Changes in v2
-- use spin_lock_irqsave() on more potential deadlock sites of &oxu->mem_lock
----
- drivers/usb/host/oxu210hp-hcd.c | 42 ++++++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-hcd.c
-index 50c1ccabb0f5..83061204b033 100644
---- a/drivers/usb/host/oxu210hp-hcd.c
-+++ b/drivers/usb/host/oxu210hp-hcd.c
-@@ -908,6 +908,7 @@ static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
- {
- 	int n_blocks;	/* minium blocks needed to hold len */
- 	int a_blocks;	/* blocks allocated */
-+	unsigned long flags;
- 	int i, j;
- 
- 	/* Don't allocte bigger than supported */
-@@ -916,7 +917,7 @@ static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
- 		return -ENOMEM;
- 	}
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	/* Number of blocks needed to hold len */
- 	n_blocks = (len + BUFFER_SIZE - 1) / BUFFER_SIZE;
-@@ -944,14 +945,14 @@ static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
- 		qtd->qtd_buffer_len = BUFFER_SIZE * a_blocks;
- 		oxu->db_used[i] = a_blocks;
- 
--		spin_unlock(&oxu->mem_lock);
-+		spin_unlock_irqrestore(&oxu->mem_lock, flags);
- 
- 		return 0;
- 	}
- 
- 	/* Failed */
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- 
- 	return -ENOMEM;
- }
-@@ -959,8 +960,9 @@ static int oxu_buf_alloc(struct oxu_hcd *oxu, struct ehci_qtd *qtd, int len)
- static void oxu_buf_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
- {
- 	int index;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	index = (qtd->buffer - (void *) &oxu->mem->db_pool[0])
- 							 / BUFFER_SIZE;
-@@ -969,7 +971,7 @@ static void oxu_buf_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
- 	qtd->buffer_dma = 0;
- 	qtd->buffer = NULL;
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- }
- 
- static inline void ehci_qtd_init(struct ehci_qtd *qtd, dma_addr_t dma)
-@@ -985,24 +987,26 @@ static inline void ehci_qtd_init(struct ehci_qtd *qtd, dma_addr_t dma)
- static inline void oxu_qtd_free(struct oxu_hcd *oxu, struct ehci_qtd *qtd)
- {
- 	int index;
-+	unsigned long flags;
- 
- 	if (qtd->buffer)
- 		oxu_buf_free(oxu, qtd);
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	index = qtd - &oxu->mem->qtd_pool[0];
- 	oxu->qtd_used[index] = 0;
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- }
- 
- static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
- {
- 	int i;
- 	struct ehci_qtd *qtd = NULL;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	for (i = 0; i < QTD_NUM; i++)
- 		if (!oxu->qtd_used[i])
-@@ -1022,7 +1026,7 @@ static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
- 		oxu->qtd_used[i] = 1;
- 	}
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- 
- 	return qtd;
- }
-@@ -1030,13 +1034,14 @@ static struct ehci_qtd *ehci_qtd_alloc(struct oxu_hcd *oxu)
- static void oxu_qh_free(struct oxu_hcd *oxu, struct ehci_qh *qh)
- {
- 	int index;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	index = qh - &oxu->mem->qh_pool[0];
- 	oxu->qh_used[index] = 0;
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- }
- 
- static void qh_destroy(struct kref *kref)
-@@ -1058,8 +1063,9 @@ static struct ehci_qh *oxu_qh_alloc(struct oxu_hcd *oxu)
- {
- 	int i;
- 	struct ehci_qh *qh = NULL;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	for (i = 0; i < QHEAD_NUM; i++)
- 		if (!oxu->qh_used[i])
-@@ -1086,7 +1092,7 @@ static struct ehci_qh *oxu_qh_alloc(struct oxu_hcd *oxu)
- 		oxu->qh_used[i] = 1;
- 	}
- unlock:
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- 
- 	return qh;
- }
-@@ -1106,13 +1112,14 @@ static inline void qh_put(struct ehci_qh *qh)
- static void oxu_murb_free(struct oxu_hcd *oxu, struct oxu_murb *murb)
- {
- 	int index;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	index = murb - &oxu->murb_pool[0];
- 	oxu->murb_used[index] = 0;
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- }
- 
- static struct oxu_murb *oxu_murb_alloc(struct oxu_hcd *oxu)
-@@ -1120,8 +1127,9 @@ static struct oxu_murb *oxu_murb_alloc(struct oxu_hcd *oxu)
- {
- 	int i;
- 	struct oxu_murb *murb = NULL;
-+	unsigned long flags;
- 
--	spin_lock(&oxu->mem_lock);
-+	spin_lock_irqsave(&oxu->mem_lock, flags);
- 
- 	for (i = 0; i < MURB_NUM; i++)
- 		if (!oxu->murb_used[i])
-@@ -1133,7 +1141,7 @@ static struct oxu_murb *oxu_murb_alloc(struct oxu_hcd *oxu)
- 		oxu->murb_used[i] = 1;
- 	}
- 
--	spin_unlock(&oxu->mem_lock);
-+	spin_unlock_irqrestore(&oxu->mem_lock, flags);
- 
- 	return murb;
- }
 -- 
-2.17.1
-
+Jazz is not dead. It just smells funny...
