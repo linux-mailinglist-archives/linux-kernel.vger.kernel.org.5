@@ -2,198 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4832767EBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDC1767EC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 13:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbjG2LhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 07:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
+        id S231397AbjG2LjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 07:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjG2LhF (ORCPT
+        with ESMTP id S229502AbjG2LjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 07:37:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DD5E7C;
-        Sat, 29 Jul 2023 04:37:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 959C060B8F;
-        Sat, 29 Jul 2023 11:37:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12E94C433C8;
-        Sat, 29 Jul 2023 11:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690630622;
-        bh=UayIjxHwlnAcaTvtEIYrbgAned9lO0CxfMlcQ4GbUBU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pVrYuOYZJquHZ+alKe6yJq8moufLuxRkEdHaNlLVMec0DcPfsCLLfo36YMSOXwRP9
-         5AyVQVUU6U/BmEhlZVf1D440OR9KuTQ0xtWhmj42aPxClzq9VTkOQtL5Ziu1WFKoZC
-         CVI+UpTAvuoCPgu9hv47X9XyN6ulBw9hwm7Jeu+q8RwfYgnjbK5h+iukX/K6EDPdzu
-         eJddUtxCE7klGXmTSxF7Ob2RlVNmacJaBCZGYOF2ynWYy7mDjyPPukzjPzmzxlPLB7
-         azkVMl54e1EGZs2HvTefl9khgYyAV6hoZsVEe+DwjRxOTPBtaQKmDQje4MZ5AHHIEW
-         AuWhKt+LGTfeA==
-Date:   Sat, 29 Jul 2023 12:37:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v3 1/4] iio: core: Use sysfs_match_string() helper
-Message-ID: <20230729123708.0b5ee75e@jic23-huawei>
-In-Reply-To: <20230724110204.46285-2-andriy.shevchenko@linux.intel.com>
-References: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
-        <20230724110204.46285-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 29 Jul 2023 07:39:09 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE904E4B;
+        Sat, 29 Jul 2023 04:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690630748; x=1722166748;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VYVphgUxW/IZwuTVDTy1kBZK4eLOSr3761Byb5rYCFU=;
+  b=cR3cqK0eR/U+FmeteYyPajN8I9hgWFIfpOa9iGERmNcC0d4OoLpw9fBy
+   2V1IBsupQ/qhVQs3HWFbs/8XhDkK26IT+jO8IL9mNhWqPwEhuupjIzY/r
+   3+syV7UhCFq4JzM76Ms0qPiRQhooFKr11Nf/5MHLHSzTE8Lp24nJluaFG
+   EkMe2W30GY3eBydsu07NzzW47D0fzeqxGsXSkHF3kcrVeS2Afjngo9nCu
+   dzYCw+Or0KwUHj/XwsIBxQkYOVMiY4Bmyf3UQBenJHN7PRc+3+GrVD5lz
+   8eUyYx7d1NEhQAA3xfJZMio1Uk4IPUttVHAVfGSXKENGA+lIBmohljMWI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="455115504"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="455115504"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 04:39:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="797706733"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="797706733"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jul 2023 04:39:05 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPiHo-00040R-22;
+        Sat, 29 Jul 2023 11:39:04 +0000
+Date:   Sat, 29 Jul 2023 19:38:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rob Herring <robh@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] of: dynamic: Refactor action prints to not use "%pOF"
+ inside devtree_lock
+Message-ID: <202307291901.IEr9LCpd-lkp@intel.com>
+References: <20230728231950.1619073-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728231950.1619073-1-robh@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 14:02:01 +0300
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Hi Rob,
 
-> Use sysfs_match_string() helper instead of open coded variant.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-I'm not loving the match against a larger list in order to then throw
-away the ones we don't like, but I guess it is harmless and will make
-reuse easier if this ever becomes more generally useful.
+kernel test robot noticed the following build errors:
 
-Hopefully it won't because no one else will think: "Let's provide
-an interface that gives userspace the option to pick from many weird
-clock choices".
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on linus/master v6.5-rc3 next-20230728]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-In case you haven't guessed, that's one decision from a long time back
-I wish I'd made differently.   2 choices would have been plenty..
+url:    https://github.com/intel-lab-lkp/linux/commits/Rob-Herring/of-dynamic-Refactor-action-prints-to-not-use-pOF-inside-devtree_lock/20230729-072155
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/20230728231950.1619073-1-robh%40kernel.org
+patch subject: [PATCH v3] of: dynamic: Refactor action prints to not use "%pOF" inside devtree_lock
+config: i386-randconfig-i014-20230728 (https://download.01.org/0day-ci/archive/20230729/202307291901.IEr9LCpd-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230729/202307291901.IEr9LCpd-lkp@intel.com/reproduce)
 
-Applied to the togreg branch of iio.git.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307291901.IEr9LCpd-lkp@intel.com/
 
-Thanks,
+All errors (new ones prefixed by >>):
 
-Jonathan
+   drivers/of/dynamic.c:74:6: warning: no previous prototype for function 'of_changeset_action_print' [-Wmissing-prototypes]
+   void of_changeset_action_print(unsigned long action, struct device_node *np, const char *prop_name)
+        ^
+   drivers/of/dynamic.c:74:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void of_changeset_action_print(unsigned long action, struct device_node *np, const char *prop_name)
+   ^
+   static 
+>> drivers/of/dynamic.c:87:6: error: expected expression
+           if (pr_debug("notify "))
+               ^
+   include/linux/printk.h:579:2: note: expanded from macro 'pr_debug'
+           dynamic_pr_debug(fmt, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:267:2: note: expanded from macro 'dynamic_pr_debug'
+           _dynamic_func_call(fmt, __dynamic_pr_debug,             \
+           ^
+   include/linux/dynamic_debug.h:248:2: note: expanded from macro '_dynamic_func_call'
+           _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:246:2: note: expanded from macro '_dynamic_func_call_cls'
+           __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:219:58: note: expanded from macro '__dynamic_func_call_cls'
+   #define __dynamic_func_call_cls(id, cls, fmt, func, ...) do {   \
+                                                            ^
+   drivers/of/dynamic.c:571:6: error: expected expression
+           if (pr_debug("changeset: applying: cset<%p> ", ce))
+               ^
+   include/linux/printk.h:579:2: note: expanded from macro 'pr_debug'
+           dynamic_pr_debug(fmt, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:267:2: note: expanded from macro 'dynamic_pr_debug'
+           _dynamic_func_call(fmt, __dynamic_pr_debug,             \
+           ^
+   include/linux/dynamic_debug.h:248:2: note: expanded from macro '_dynamic_func_call'
+           _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:246:2: note: expanded from macro '_dynamic_func_call_cls'
+           __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+           ^
+   include/linux/dynamic_debug.h:219:58: note: expanded from macro '__dynamic_func_call_cls'
+   #define __dynamic_func_call_cls(id, cls, fmt, func, ...) do {   \
+                                                            ^
+   1 warning and 2 errors generated.
 
-> ---
->  drivers/iio/industrialio-core.c | 71 +++++++++++++++------------------
->  1 file changed, 32 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 5f337f59330c..b153adc5bc84 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1397,50 +1397,42 @@ static ssize_t label_show(struct device *dev, struct device_attribute *attr,
->  
->  static DEVICE_ATTR_RO(label);
->  
-> +static const char * const clock_names[] = {
-> +	[CLOCK_REALTIME]	 	= "realtime",
-> +	[CLOCK_MONOTONIC]	 	= "monotonic",
-> +	[CLOCK_PROCESS_CPUTIME_ID]	= "process_cputime_id",
-> +	[CLOCK_THREAD_CPUTIME_ID]	= "thread_cputime_id",
-> +	[CLOCK_MONOTONIC_RAW]	 	= "monotonic_raw",
-> +	[CLOCK_REALTIME_COARSE]	 	= "realtime_coarse",
-> +	[CLOCK_MONOTONIC_COARSE] 	= "monotonic_coarse",
-> +	[CLOCK_BOOTTIME]	 	= "boottime",
-> +	[CLOCK_REALTIME_ALARM]		= "realtime_alarm",
-> +	[CLOCK_BOOTTIME_ALARM]		= "boottime_alarm",
-> +	[CLOCK_SGI_CYCLE]		= "sgi_cycle",
-> +	[CLOCK_TAI]		 	= "tai",
-> +};
-> +
->  static ssize_t current_timestamp_clock_show(struct device *dev,
->  					    struct device_attribute *attr,
->  					    char *buf)
->  {
->  	const struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->  	const clockid_t clk = iio_device_get_clock(indio_dev);
-> -	const char *name;
-> -	ssize_t sz;
->  
->  	switch (clk) {
->  	case CLOCK_REALTIME:
-> -		name = "realtime\n";
-> -		sz = sizeof("realtime\n");
-> -		break;
->  	case CLOCK_MONOTONIC:
-> -		name = "monotonic\n";
-> -		sz = sizeof("monotonic\n");
-> -		break;
->  	case CLOCK_MONOTONIC_RAW:
-> -		name = "monotonic_raw\n";
-> -		sz = sizeof("monotonic_raw\n");
-> -		break;
->  	case CLOCK_REALTIME_COARSE:
-> -		name = "realtime_coarse\n";
-> -		sz = sizeof("realtime_coarse\n");
-> -		break;
->  	case CLOCK_MONOTONIC_COARSE:
-> -		name = "monotonic_coarse\n";
-> -		sz = sizeof("monotonic_coarse\n");
-> -		break;
->  	case CLOCK_BOOTTIME:
-> -		name = "boottime\n";
-> -		sz = sizeof("boottime\n");
-> -		break;
->  	case CLOCK_TAI:
-> -		name = "tai\n";
-> -		sz = sizeof("tai\n");
->  		break;
->  	default:
->  		BUG();
->  	}
->  
-> -	memcpy(buf, name, sz);
-> -	return sz;
-> +	return sysfs_emit(buf, "%s\n", clock_names[clk]);
->  }
->  
->  static ssize_t current_timestamp_clock_store(struct device *dev,
-> @@ -1450,22 +1442,23 @@ static ssize_t current_timestamp_clock_store(struct device *dev,
->  	clockid_t clk;
->  	int ret;
->  
-> -	if (sysfs_streq(buf, "realtime"))
-> -		clk = CLOCK_REALTIME;
-> -	else if (sysfs_streq(buf, "monotonic"))
-> -		clk = CLOCK_MONOTONIC;
-> -	else if (sysfs_streq(buf, "monotonic_raw"))
-> -		clk = CLOCK_MONOTONIC_RAW;
-> -	else if (sysfs_streq(buf, "realtime_coarse"))
-> -		clk = CLOCK_REALTIME_COARSE;
-> -	else if (sysfs_streq(buf, "monotonic_coarse"))
-> -		clk = CLOCK_MONOTONIC_COARSE;
-> -	else if (sysfs_streq(buf, "boottime"))
-> -		clk = CLOCK_BOOTTIME;
-> -	else if (sysfs_streq(buf, "tai"))
-> -		clk = CLOCK_TAI;
-> -	else
-> +	ret = sysfs_match_string(clock_names, buf);
-> +	if (ret < 0)
-> +		return ret;
-> +	clk = ret;
-> +
-> +	switch (clk) {
-> +	case CLOCK_REALTIME:
-> +	case CLOCK_MONOTONIC:
-> +	case CLOCK_MONOTONIC_RAW:
-> +	case CLOCK_REALTIME_COARSE:
-> +	case CLOCK_MONOTONIC_COARSE:
-> +	case CLOCK_BOOTTIME:
-> +	case CLOCK_TAI:
-> +		break;
-> +	default:
->  		return -EINVAL;
-> +	}
->  
->  	ret = iio_device_set_clock(dev_to_iio_dev(dev), clk);
->  	if (ret)
 
+vim +87 drivers/of/dynamic.c
+
+    81	
+    82	int of_reconfig_notify(unsigned long action, struct of_reconfig_data *p)
+    83	{
+    84		int rc;
+    85		struct of_reconfig_data *pr = p;
+    86	
+  > 87		if (pr_debug("notify "))
+    88			of_changeset_action_print(action, pr->dn, pr->prop ? pr->prop->name : NULL);
+    89	
+    90		rc = blocking_notifier_call_chain(&of_reconfig_chain, action, p);
+    91		return notifier_to_errno(rc);
+    92	}
+    93	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
