@@ -2,211 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F8A767FFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B743768002
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 16:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbjG2OTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 10:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
+        id S231573AbjG2OXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 10:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjG2OTS (ORCPT
+        with ESMTP id S229619AbjG2OXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 10:19:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D02030F3;
-        Sat, 29 Jul 2023 07:19:17 -0700 (PDT)
+        Sat, 29 Jul 2023 10:23:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD5F30F3;
+        Sat, 29 Jul 2023 07:23:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9347860C56;
-        Sat, 29 Jul 2023 14:19:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C50D9C433C7;
-        Sat, 29 Jul 2023 14:19:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE88960C0B;
+        Sat, 29 Jul 2023 14:23:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34D54C433C7;
+        Sat, 29 Jul 2023 14:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690640356;
-        bh=nk9cBmIFvArLRnDTgJYRNRbNEOLwoWaBjWmtuCH+6B0=;
+        s=k20201202; t=1690640631;
+        bh=Y6XLivR35U3l92U/t1ajfxY4CEDNQ0gQnBoe7QqWXh8=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JLYCKdzalHR32ffuwzqkv35gldrJoAy0RSyC3A6gwddxT2gN0jKhhckYdsYvQksCW
-         c4SeUKojN+MTG/swLcHN91CpBWYN7XwrZnRHar3/x4lg33IdVKmQP7jM4EZxe1LnTF
-         VgVo16fE2rSCGREFwJbFxDiNGd9u5u18MQ2KCfMgAkKVzHXK4t3RMMzyuMywR5g6F8
-         2b+QM+lnUrOrupAUZykyh/+dHMSGmm3dRC0WNtz7ygrILAklQ0vcKpfHXRRUWdE79X
-         mmy8Vg8g5wpmw3RRZy3OK98L/pWKM+88WFRLCrTalAwpjzP8Dw1ROImA3GduwpO2va
-         feB4i4flNLkHQ==
-Date:   Sat, 29 Jul 2023 15:19:21 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] drivers: iio: filter: admv8818: add bypass mode
-Message-ID: <20230729151921.654656b6@jic23-huawei>
-In-Reply-To: <20230726143331.66456-1-antoniu.miclaus@analog.com>
-References: <20230726143331.66456-1-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        b=GfFDsR6FCIuPH5YsMEwGoOk9Z43Cxejcu9K1Rs4wXJB4OoSJpUQ9QWAEiOKVMUfNO
+         L67UVJukSeLHj14g8Bgs32C3kcf41WcgYYn/SB0Bs8LmJKCcVWZ62DDKri37YJ4Unn
+         NTymznNWEHehIBeOCsuBqlk1frqI08i/H7ZxSB/IfRNeLkyxgJqVR1KDGqni5Ru5BR
+         uplW4mmnHrhOespkc9ImsDDrZ4JcuM8f9ZXoZsvS5r25YHrNyeTYEtWhkAFx+FkgNN
+         v1zsC25zOtloDns4HnI9urXrdUPbuzPBnmN79LFIkxtDTdOk9/cPGxMQ1WSM3DlX9G
+         W5zy+v6aZ4Prw==
+Date:   Sat, 29 Jul 2023 23:23:46 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     akpm@linux-foundation.org, adobriyan@gmail.com, arnd@kernel.org,
+        ndesaulniers@google.com, sfr@canb.auug.org.au,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig] 2/2] fs/proc: Add /proc/cmdline_image
+ for embedded arguments
+Message-Id: <20230729232346.a09a94e5586942aeda5df188@kernel.org>
+In-Reply-To: <20230728033701.817094-2-paulmck@kernel.org>
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+        <20230728033701.817094-2-paulmck@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 17:33:30 +0300
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+Hi Paul,
 
-> Add filter bypass mode, which bypasses the low pass filter, high pass
-> filter and disables/unregister the clock rate notifier.
-> 
-> The patch contains minimal changes in order to add the functionality.
-> 
-> It was requested by users of the driver to ease the interaction with
-> different configuration modes of the device.
+On Thu, 27 Jul 2023 20:37:01 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Hi Antoniu
+> In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will show
+> all kernel boot parameters, both those supplied by the boot loader and
+> those embedded in the kernel image.  This works well for those who just
+> want to see all of the kernel boot parameters, but is not helpful to those
+> who need to see only those parameters that were embedded into the kernel
+> image.  This is especially important in situations where there are many
+> kernel images for different kernel versions and kernel configurations,
+> all of which opens the door to a great deal of human error.
 
-I'd like to understand more about the use case for this.  My assumption
-is that you'd do this if there is appropriate signal conditioning off
-chip.  If that's the case I'd expect to see this as a device tree binding
-thing rather than exposed to userspace.
+There is /proc/bootconfig file which shows all bootconfig entries and is
+formatted as easily filter by grep (or any other line-based commands).
+(e.g. `grep ^kernel\\. /proc/cmdline` will filter all kernel cmdline
+parameters in the bootconfig)
+Could you clarify the reason why you need a dump of bootconfig file?
 
-Also, I can see that it may be useful to separately control the input and
-output filter bypassing which this doesn't enable.
-
-Hence need some use case information to decide if this is a reasonable
-addition to the userspace ABI.
-
-Other comments inline.
-
-Thanks,
-
-Jonathan
-
+Thank you,
 
 > 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> Therefore, provide a /proc/cmdline_image file that shows only those kernel
+> boot parameters that were embedded in the kernel image.  The output
+> is in boot-image format, which allows easy reconcilation against the
+> boot-config source file.
+> 
+> Why put this in /proc?  Because it is quite similar to /proc/cmdline, so
+> it makes sense to put it in the same place that /proc/cmdline is located.
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: <linux-fsdevel@vger.kernel.org>
+> 
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  drivers/iio/filter/admv8818.c | 51 ++++++++++++++++++++++++++++++++---
->  1 file changed, 48 insertions(+), 3 deletions(-)
+>  fs/proc/cmdline.c    | 12 ++++++++++++
+>  include/linux/init.h | 11 ++++++-----
+>  init/main.c          |  9 +++++++++
+>  3 files changed, 27 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/iio/filter/admv8818.c b/drivers/iio/filter/admv8818.c
-> index fe8d46cb7f1d..f0d6bb606507 100644
-> --- a/drivers/iio/filter/admv8818.c
-> +++ b/drivers/iio/filter/admv8818.c
-> @@ -78,6 +78,7 @@ enum {
->  enum {
->  	ADMV8818_AUTO_MODE,
->  	ADMV8818_MANUAL_MODE,
-> +	ADMV8818_BYPASS_MODE,
->  };
->  
->  struct admv8818_state {
-> @@ -114,7 +115,8 @@ static const struct regmap_config admv8818_regmap_config = {
->  
->  static const char * const admv8818_modes[] = {
->  	[0] = "auto",
-> -	[1] = "manual"
-> +	[1] = "manual",
-> +	[2] = "bypass"
->  };
->  
->  static int __admv8818_hpf_select(struct admv8818_state *st, u64 freq)
-> @@ -394,6 +396,36 @@ static int admv8818_reg_access(struct iio_dev *indio_dev,
->  		return regmap_write(st->regmap, reg, write_val);
+> diff --git a/fs/proc/cmdline.c b/fs/proc/cmdline.c
+> index 1d0ef9d2949d..4ab5223198cb 100644
+> --- a/fs/proc/cmdline.c
+> +++ b/fs/proc/cmdline.c
+> @@ -20,6 +20,15 @@ static int cmdline_load_proc_show(struct seq_file *m, void *v)
+>  	return 0;
 >  }
 >  
-> +static int admv8818_filter_bypass(struct admv8818_state *st)
+> +static int cmdline_image_proc_show(struct seq_file *m, void *v)
 > +{
-> +	int ret;
-> +
-> +	mutex_lock(&st->lock);
-> +
-> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_WR0_SW,
-> +				 ADMV8818_SW_IN_SET_WR0_MSK |
-> +				 ADMV8818_SW_IN_WR0_MSK |
-> +				 ADMV8818_SW_OUT_SET_WR0_MSK |
-> +				 ADMV8818_SW_OUT_WR0_MSK,
-> +				 FIELD_PREP(ADMV8818_SW_IN_SET_WR0_MSK, 1) |
-> +				 FIELD_PREP(ADMV8818_SW_IN_WR0_MSK, 0) |
-> +				 FIELD_PREP(ADMV8818_SW_OUT_SET_WR0_MSK, 1) |
-> +				 FIELD_PREP(ADMV8818_SW_OUT_WR0_MSK, 0));
-> +	if (ret)
-> +		goto exit;
-> +
-> +	ret = regmap_update_bits(st->regmap, ADMV8818_REG_WR0_FILTER,
-> +				 ADMV8818_HPF_WR0_MSK |
-> +				 ADMV8818_LPF_WR0_MSK,
-> +				 FIELD_PREP(ADMV8818_HPF_WR0_MSK, 0) |
-> +				 FIELD_PREP(ADMV8818_LPF_WR0_MSK, 0));
-> +
-> +exit:
-> +	mutex_unlock(&st->lock);
-> +
-> +	return ret;
+> +#ifdef CONFIG_BOOT_CONFIG_FORCE
+> +	seq_puts(m, saved_bootconfig_string);
+> +	seq_putc(m, '\n');
+> +#endif
+> +	return 0;
 > +}
 > +
->  static int admv8818_get_mode(struct iio_dev *indio_dev,
->  			     const struct iio_chan_spec *chan)
+>  static int __init proc_cmdline_init(void)
 >  {
-> @@ -411,7 +443,10 @@ static int admv8818_set_mode(struct iio_dev *indio_dev,
->  
->  	if (!st->clkin) {
->  		if (mode == ADMV8818_MANUAL_MODE)
-> -			return 0;
-> +			goto set_mode;
-> +
-> +		if (mode == ADMV8818_BYPASS_MODE)
-> +			goto bypass_filter;
-
-Flow wise, this is a little difficult to follow.
-I'd be tempted to just duplicate the small amount of
-handling below in the two paths that I can see end up going the code
-that configures bypass.
-
->  
->  		return -EINVAL;
+>  	struct proc_dir_entry *pde;
+> @@ -31,6 +40,9 @@ static int __init proc_cmdline_init(void)
+>  		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
+>  		pde_make_permanent(pde);
+>  		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
+> +		pde = proc_create_single("cmdline_image", 0, NULL, cmdline_image_proc_show);
+> +		pde_make_permanent(pde);
+> +		pde->size = strnlen(saved_bootconfig_string, COMMAND_LINE_SIZE) + 1;
 >  	}
-> @@ -434,8 +469,9 @@ static int admv8818_set_mode(struct iio_dev *indio_dev,
+>  	return 0;
+>  }
+> diff --git a/include/linux/init.h b/include/linux/init.h
+> index 29e75bbe7984..c075983c5015 100644
+> --- a/include/linux/init.h
+> +++ b/include/linux/init.h
+> @@ -14,7 +14,7 @@
+>  #define __noinitretpoline
+>  #endif
 >  
->  		break;
->  	case ADMV8818_MANUAL_MODE:
-> +	case ADMV8818_BYPASS_MODE:
->  		if (st->filter_mode)
-
-This was ugly in the first place as it relied on the values of the enum being 0
-and 1 (without them being specified as such).  I'd tidy this up whilst here
-as now we have 0 1 2 so it's harder to follow than before.  Just check against
-the appropriate values eg != AUTO
-
-
-
-> -			return 0;
-> +			break;
+> -/* These macros are used to mark some functions or 
+> +/* These macros are used to mark some functions or
+>   * initialized data (doesn't apply to uninitialized data)
+>   * as `initialization' functions. The kernel can take this
+>   * as hint that the function is used only during the initialization
+> @@ -22,7 +22,7 @@
+>   *
+>   * Usage:
+>   * For functions:
+> - * 
+> + *
+>   * You should add __init immediately before the function name, like:
+>   *
+>   * static void __init initme(int x, int y)
+> @@ -148,6 +148,7 @@ extern char boot_command_line[];
+>  extern char *saved_command_line;
+>  extern unsigned int saved_command_line_len;
+>  extern unsigned int reset_devices;
+> +extern char saved_bootconfig_string[];
 >  
->  		clk_disable_unprepare(st->clkin);
+>  /* used by init/main.c */
+>  void setup_arch(char **);
+> @@ -184,7 +185,7 @@ extern void (*late_time_init)(void);
+>  extern bool initcall_debug;
 >  
-> @@ -448,6 +484,15 @@ static int admv8818_set_mode(struct iio_dev *indio_dev,
->  		return -EINVAL;
+>  #endif
+> -  
+> +
+>  #ifndef MODULE
+>  
+>  #ifndef __ASSEMBLY__
+> @@ -192,8 +193,8 @@ extern bool initcall_debug;
+>  /*
+>   * initcalls are now grouped by functionality into separate
+>   * subsections. Ordering inside the subsections is determined
+> - * by link order. 
+> - * For backwards compatibility, initcall() puts the call in 
+> + * by link order.
+> + * For backwards compatibility, initcall() puts the call in
+>   * the device init subsection.
+>   *
+>   * The `id' arg to __define_initcall() is needed so that multiple initcalls
+> diff --git a/init/main.c b/init/main.c
+> index 2121685c479a..981170da0b1c 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -146,6 +146,11 @@ static char *extra_command_line;
+>  /* Extra init arguments */
+>  static char *extra_init_args;
+>  
+> +/* Untouched boot-config string */
+> +#ifdef CONFIG_BOOT_CONFIG_FORCE
+> +char saved_bootconfig_string[COMMAND_LINE_SIZE] __ro_after_init;
+> +#endif
+> +
+>  #ifdef CONFIG_BOOT_CONFIG
+>  /* Is bootconfig on command line? */
+>  static bool bootconfig_found;
+> @@ -435,6 +440,10 @@ static void __init setup_boot_config(void)
+>  		return;
 >  	}
 >  
-> +bypass_filter:
-> +	if (st->filter_mode != ADMV8818_BYPASS_MODE &&
-> +	    mode == ADMV8818_BYPASS_MODE) {
-> +		ret = admv8818_filter_bypass(st);
-
-I'd like to see this up in the switch statement even if that means duplicating
-a little more code.  Rethink this function so as to make it more
-readable than it ends up after this change.
-
-> +		if (ret)
-> +			return ret;
-> +	}
+> +#ifdef CONFIG_BOOT_CONFIG_FORCE
+> +	strncpy(saved_bootconfig_string, data, COMMAND_LINE_SIZE);
+> +#endif
 > +
-> +set_mode:
->  	st->filter_mode = mode;
->  
->  	return ret;
+>  	if (size >= XBC_DATA_MAX) {
+>  		pr_err("bootconfig size %ld greater than max size %d\n",
+>  			(long)size, XBC_DATA_MAX);
+> -- 
+> 2.40.1
+> 
 
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
