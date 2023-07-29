@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C239B767CF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D71E767CF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbjG2HyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 03:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51206 "EHLO
+        id S230296AbjG2HyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 03:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjG2Hxx (ORCPT
+        with ESMTP id S230256AbjG2HyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 03:53:53 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DB73592
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:53:38 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bded9d93dso67273066b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:53:38 -0700 (PDT)
+        Sat, 29 Jul 2023 03:54:07 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D8C49F5
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:53:48 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522a9e0e6e9so309428a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690617217; x=1691222017;
+        d=gmail.com; s=20221208; t=1690617227; x=1691222027;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vBQvA7PidF0G5yJQQDU0VXGO4IEZc5NbIaIsAqJ7tbs=;
-        b=Dp27GgGxBiNTmPkOQnVqGdr5F9RxNvkQ5/GOds9VxvAA5B77Gz/abPY0pFNhJlzKf9
-         TLMA3+pF0vDCmdEEDUR/4EcelyeSmeA2LCtoPbSqazaRX56QXynyfXyWoHkjd0L8zZXg
-         mw3qGcVhmPDKYENZo5HosFNbltgp+bqcFjj/vmVMYgv2VQ02mjWRVZABlYqGeHNNLbEA
-         Im7dYI99T6/BwX2uDWe++/uEvMzU3fKEkQEc5ZgsMzSnWdnX7+gWhziRWTNUTnlfKbgg
-         yKioxPKEa8G1dfwvTo5UFMK/d1BXKdzEUkjJl+f8UvMtxo1u5eeQvbcpIUEk1dhEmupS
-         yV0Q==
+        bh=hVWQ1qgQBZbo3g2eHf7eEhO2KwwCTOPLq8N55bF/Iys=;
+        b=ry2S7MIBiphN89rqme7WRSPfdaAdnoEu30RE/Jrl3LOfUaDLdiok5B7orZFJWzl5rP
+         N92XktACc8wSfi8qpVNaRAKLHXib+NuPQE2fJP5QTIMk832xXqN0StkFuyVhHsIq6Suz
+         Kjg7s6tXCx0mvet4eA/xhbDHYtjZW4i8n+UTvKwRCjDSiV+qG1c8cIQ85J+MVXTNqlJN
+         OMWbZ17eTkaKTSvLaPDNPM7PBZCyrY9o3+krnh7bg7yJuSiW7r8tRHE6QMxhv/h0b+vm
+         YhqaTuiaZB1ipi1yUg3G9DlyqKj1HxOLziFhfoz2MIxGmnu9InS/gZIztFe/cRgM8YOP
+         4Rog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690617217; x=1691222017;
+        d=1e100.net; s=20221208; t=1690617227; x=1691222027;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vBQvA7PidF0G5yJQQDU0VXGO4IEZc5NbIaIsAqJ7tbs=;
-        b=bZEaWiFhRFKOq/JOFQUYE9eCB47LcB3NpDGbs9fYlzaSpCXCapvIQ9mNAwnJE4H77Y
-         mi219UaBosFiArC/DioFq4ptf6aqsEqt45qPCdKYKUMThnr6jv9im6NxLO85pcdFvnVj
-         T+Mb/ZneNMYOsRyNoO8QQBOJ390cd7frsTOok1yGJAOu/ZQef9tcfc9tEAsqHC4af3+p
-         515V1/Vcnt5z11aQEgIvFfuyi5s6iJxU9nF+WjU2kCo8xxfvy4KuMZ0IFIt5JF3GJ8si
-         QNQdzOajrajJj9gbo5sUfq6JyeB01IIWEPoXJ8b6UsLYtLtw9kfwJjU5zCtNx4/M3PIa
-         7JNg==
-X-Gm-Message-State: ABy/qLYI/YgOrRhHN0HSUsV+9Oc7geCUryO2KPCLShqEog9ue40h56Wh
-        JLT70EiJ5b5v3z9Vsa+kp5I=
-X-Google-Smtp-Source: APBJJlHnz/pKlZ3uSK8sTzQwjoUEr9DWV7dXYRLLKsBz2TJlaMtBlL8BlZJMyYHQ7mFXqDLDQW6uxw==
-X-Received: by 2002:a17:906:5303:b0:99b:4670:aca9 with SMTP id h3-20020a170906530300b0099b4670aca9mr1233266ejo.1.1690617217146;
-        Sat, 29 Jul 2023 00:53:37 -0700 (PDT)
+        bh=hVWQ1qgQBZbo3g2eHf7eEhO2KwwCTOPLq8N55bF/Iys=;
+        b=iSaSsZJ0CE6wFRVjZXPhED/d+BqZGFqGk5FkTPxC/Nk9zSmINcXpRkul4zo5X/XAZ8
+         cG8UqZ9g4AJwUHNJGuUPGuvA/JH9i6PA4ZQ3QGXegkTtuEJhVxXt+qN1OLLyvjUmewjL
+         tNrehHKepgqPWFFeS7+nnFK4iA7T2it5B5cuqGVavRVLYSToyALLPd+o+zFOl25enKzK
+         ECWDuRmgpteWpnPgjegrfvz7h2B5jNdEhkGZ9AdeWL2QBpliTCo7qRIfPwITh28Mq0qF
+         B4DICs/WuYAfz/ZRDYBcEuuRia4PucJcwfS1t61jPG8HBNEY99g43K+6AkqPucg2AVs6
+         9pfg==
+X-Gm-Message-State: ABy/qLbCYA0wiNPe1Yhy1ZPXXKQIEVsy1pOi2GXzgGs7/YQ2bH8AaWyK
+        7BdPSipK1nKc3/iB3fDPr3I=
+X-Google-Smtp-Source: APBJJlEc+PkwdkqIq/G7SBlX2NW2HCabzZ3kTPcZVXqqe5S4l7PuL9tYBNb31Kn7cISVhi5Owy9NtA==
+X-Received: by 2002:a05:6402:430b:b0:521:d2fb:caa1 with SMTP id m11-20020a056402430b00b00521d2fbcaa1mr1970432edc.0.1690617226701;
+        Sat, 29 Jul 2023 00:53:46 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p57ba2e0b.dip0.t-ipconnect.de. [87.186.46.11])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170906481700b009927d4d7a6bsm2987619ejq.53.2023.07.29.00.53.36
+        by smtp.gmail.com with ESMTPSA id bf19-20020a0564021a5300b0051ded17b30bsm2633934edb.40.2023.07.29.00.53.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 00:53:36 -0700 (PDT)
-Date:   Sat, 29 Jul 2023 09:53:34 +0200
+        Sat, 29 Jul 2023 00:53:46 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 09:53:43 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/10] staging: rtl8192e: Remove is_mesh from
- rtllib_softmac_scan_syncro
-Message-ID: <9fcd1193c155ef992493af3526442fb84032166f.1690615475.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 07/10] staging: rtl8192e: Remove is_mesh from
+ rtllib_start_scan_syncro
+Message-ID: <6050a1d7764364190dda252f79d75c7cc47143de.1690615475.git.philipp.g.hortmann@gmail.com>
 References: <cover.1690615475.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,36 +71,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function rtllib_softmac_scan_syncro() has unused parameter is_mesh.
-Remove dead code.
+Function rtllib_start_scan_syncro() has parameter is_mesh which is in all
+calls 0. Remove dead code.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtllib_softmac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c   | 2 +-
+ drivers/staging/rtl8192e/rtllib.h            | 2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c    | 6 +++---
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c | 4 ++--
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 88975dc804c6..74747348b573 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -428,7 +428,7 @@ static int _rtl92e_wx_set_scan(struct net_device *dev,
+ 
+ 			ieee->ScanOperationBackupHandler(ieee->dev, SCAN_OPT_BACKUP);
+ 
+-			rtllib_start_scan_syncro(priv->rtllib, 0);
++			rtllib_start_scan_syncro(priv->rtllib);
+ 
+ 			ieee->ScanOperationBackupHandler(ieee->dev, SCAN_OPT_RESTORE);
+ 		}
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index aa8abec390ca..9603a3485868 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1887,7 +1887,7 @@ void rtllib_disassociate(struct rtllib_device *ieee);
+ void rtllib_stop_scan(struct rtllib_device *ieee);
+ bool rtllib_act_scanning(struct rtllib_device *ieee, bool sync_scan);
+ void rtllib_stop_scan_syncro(struct rtllib_device *ieee);
+-void rtllib_start_scan_syncro(struct rtllib_device *ieee, u8 is_mesh);
++void rtllib_start_scan_syncro(struct rtllib_device *ieee);
+ void rtllib_sta_ps_send_null_frame(struct rtllib_device *ieee, short pwr);
+ void rtllib_sta_ps_send_pspoll_frame(struct rtllib_device *ieee);
+ void rtllib_start_protocol(struct rtllib_device *ieee);
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 7b866b3a46ef..0e52b207942d 100644
+index 614f19603af1..7b866b3a46ef 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -478,7 +478,7 @@ static void rtllib_update_active_chan_map(struct rtllib_device *ieee)
- /* this performs syncro scan blocking the caller until all channels
-  * in the allowed channel map has been checked.
-  */
--static void rtllib_softmac_scan_syncro(struct rtllib_device *ieee, u8 is_mesh)
-+static void rtllib_softmac_scan_syncro(struct rtllib_device *ieee)
+@@ -707,7 +707,7 @@ static void rtllib_start_scan(struct rtllib_device *ieee)
+ }
+ 
+ /* called with wx_mutex held */
+-void rtllib_start_scan_syncro(struct rtllib_device *ieee, u8 is_mesh)
++void rtllib_start_scan_syncro(struct rtllib_device *ieee)
  {
- 	union iwreq_data wrqu;
- 	short ch = 0;
-@@ -715,7 +715,7 @@ void rtllib_start_scan_syncro(struct rtllib_device *ieee)
+ 	if (IS_DOT11D_ENABLE(ieee)) {
+ 		if (IS_COUNTRY_IE_VALID(ieee))
+@@ -715,7 +715,7 @@ void rtllib_start_scan_syncro(struct rtllib_device *ieee, u8 is_mesh)
  	}
  	ieee->sync_scan_hurryup = 0;
  	if (ieee->softmac_features & IEEE_SOFTMAC_SCAN)
--		rtllib_softmac_scan_syncro(ieee, 0);
-+		rtllib_softmac_scan_syncro(ieee);
+-		rtllib_softmac_scan_syncro(ieee, is_mesh);
++		rtllib_softmac_scan_syncro(ieee, 0);
  }
  EXPORT_SYMBOL(rtllib_start_scan_syncro);
  
+@@ -2500,7 +2500,7 @@ static void rtllib_start_ibss_wq(void *data)
+ 	 * associated.
+ 	 */
+ 	if (ieee->link_state == MAC80211_NOLINK)
+-		rtllib_start_scan_syncro(ieee, 0);
++		rtllib_start_scan_syncro(ieee);
+ 
+ 	/* the network definitively is not here.. create a new cell */
+ 	if (ieee->link_state == MAC80211_NOLINK) {
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+index 1a7575ab9d6d..aad91dad134c 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -310,7 +310,7 @@ void rtllib_wx_sync_scan_wq(void *data)
+ 
+ 	mutex_lock(&ieee->wx_mutex);
+ 	if (!(ieee->softmac_features & IEEE_SOFTMAC_SCAN)) {
+-		rtllib_start_scan_syncro(ieee, 0);
++		rtllib_start_scan_syncro(ieee);
+ 		goto out;
+ 	}
+ 
+@@ -339,7 +339,7 @@ void rtllib_wx_sync_scan_wq(void *data)
+ 				       HT_EXTCHNL_OFFSET_NO_EXT);
+ 	}
+ 
+-	rtllib_start_scan_syncro(ieee, 0);
++	rtllib_start_scan_syncro(ieee);
+ 
+ 	if (b40M) {
+ 		if (chan_offset == HT_EXTCHNL_OFFSET_UPPER)
 -- 
 2.41.0
 
