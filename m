@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AA7767D32
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F57767D33
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjG2Ijh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 04:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S231378AbjG2Ijk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 04:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbjG2Ij2 (ORCPT
+        with ESMTP id S231283AbjG2Ij2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 29 Jul 2023 04:39:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47FD3AB3
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 01:38:40 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E434E448A
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 01:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690619919;
+        s=mimecast20190719; t=1690619921;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tXaw8xh9/uqiELcQ6XYGjWI9gHB6EvF8rWATqtNVPNw=;
-        b=ExDxyVtKLWF9bepxhJd1qIXwHC/jx5doc9PuUWieDZY6mQOG2B9g4sFbGAQgyWcZoFK3M7
-        QXNpdmWPFDrJropbD0gH+bqQsi1Ds4TsQ+vTRRzEghZDid4FKmDhNCAmziEUXsJurSunMF
-        CKCEzzMsIqbOttVdr7pIVIVCA0zevCA=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=o8rIpeBRze9Zu+72Qm9sEpSig7svqTG6Kuh9DJYcSFE=;
+        b=OB6KvnTc7VsgJS22BjKYm+UVkvttOWJ2rQK5E2YAImOg3rDP/O9BRvu72t0venSXo84uHk
+        /aF0Mmtc0RRaPD6eCP+bIgQgwADcUo8xH4eM3c3P666M+gcLNxgtlint4nzXZ4dwhq165y
+        C/cDRbbd7v9xoGNWbjlH/Z/XH8WpGkM=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-219-Gqqt_6UAMWqMonAAkokKVg-1; Sat, 29 Jul 2023 04:38:37 -0400
-X-MC-Unique: Gqqt_6UAMWqMonAAkokKVg-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-565893ef956so4083244eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 01:38:37 -0700 (PDT)
+ us-mta-392-N9FgJUSPP0qhLCobfTOKaw-1; Sat, 29 Jul 2023 04:38:39 -0400
+X-MC-Unique: N9FgJUSPP0qhLCobfTOKaw-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3a5ab57036fso5783864b6e.3
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 01:38:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690619916; x=1691224716;
+        d=1e100.net; s=20221208; t=1690619918; x=1691224718;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tXaw8xh9/uqiELcQ6XYGjWI9gHB6EvF8rWATqtNVPNw=;
-        b=e2S7o2XR//N+WuJ1DMkedl0QG6FMqB86odNkzMtkcooJ32hw3XebzBMdZlmyw0nqD3
-         BPJKsa2gaXaQzoIX2cIW8Y4PoKNvbkZzWy72+OHsF2HyUfv/goKDV/Oi0PJCiHSbLBrA
-         tza/GZ7dA1zFvljtqYFklBGJvi6tYIeBgIMLVM6fKTQaHSYrMlAsdhfEJUeY+tqnx17m
-         kIuaMiRxmwM+sf4V8Kb41uyAHTIL8SegFh01Pan9DvgFJod+ALXzo8MBCdyfcNs9ktQW
-         I/hSwBbf6SojzRpV1kwUZ/WIBjyYrfgK+AoG6UwuQYuNe++nEAd9APypxaGhhqolcvBD
-         Ckww==
-X-Gm-Message-State: ABy/qLZ2dZ+ka12E/T5avVqvoG6NiGyxYVQWmMlEZO8/FLaXwHdrMcil
-        MkRv3b6L/BsUo/QDxECe9yrswMY4K4Y82GnDtnAOn+0uP/Fex1sx95zHi6vnrOWZJ8xcI8iJT1e
-        uT2GxmrsUy6E0KyO0/ICpflkCaB/Za2Rn
-X-Received: by 2002:a05:6808:309b:b0:3a5:ae6b:135e with SMTP id bl27-20020a056808309b00b003a5ae6b135emr5655239oib.53.1690619916684;
-        Sat, 29 Jul 2023 01:38:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFmxI05UVL41BW0bFY5niMhRBlN3Ug2o75+FrvPm/cfGRczsrKhvhswW5Oyitt0V1cDN7u7Ug==
-X-Received: by 2002:a05:6808:309b:b0:3a5:ae6b:135e with SMTP id bl27-20020a056808309b00b003a5ae6b135emr5655230oib.53.1690619916470;
-        Sat, 29 Jul 2023 01:38:36 -0700 (PDT)
+        bh=o8rIpeBRze9Zu+72Qm9sEpSig7svqTG6Kuh9DJYcSFE=;
+        b=Y2rW7570eu3xyqX0qbBsXULwQ//cV6VY8BZbL7DSV3n+DzBzibBDDQ99waRk5Zbp34
+         qrtAdKbJtVcPp122XIeoCsCG03yDnH6rD6Y5DT9XiCbj0h5yClFfQSw3l7OeHiAF9jYt
+         ywsR22NQurLhSkRIp0a8a2fCHWOCrV0re5Xt/v660XAp9zG8eYGelxmrs2hZw8+r1Iep
+         CucJX+Ncj3AGLE2+e5WLTpHChDSEJowJ0gF8OxkWnelQNS6Roe1FLxwGsqb23Em70U0g
+         Ju9XBqFvBBZoIfhZRlgma4r/BQ7M9Z7pHTtZG8kXQLkwnmU4bDka1It+jBau77sl13rD
+         XoNA==
+X-Gm-Message-State: ABy/qLYe2AKavotAAGzJOJWpoayvk8xq2YB/3V1qYQUq7Kv7nGz18mdW
+        FQbKf+GH0QBSPfj8zL1PUuelPDhsJlMGGURIpQNVhLiuEM4Clj1lGaGPHEHL8/BQGg/xxU4imcm
+        0ZDvIRJpQp5Hw7mNNs5VcVuVY
+X-Received: by 2002:a05:6808:1509:b0:3a3:6382:b67d with SMTP id u9-20020a056808150900b003a36382b67dmr5871263oiw.41.1690619918506;
+        Sat, 29 Jul 2023 01:38:38 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE72np9M7VBc9ea9R1wrVx2dR1OmQ/wiPBtvU58KUGekGEzrx+xog2FSog4LO47TmsFk4c88A==
+X-Received: by 2002:a05:6808:1509:b0:3a3:6382:b67d with SMTP id u9-20020a056808150900b003a36382b67dmr5871253oiw.41.1690619918256;
+        Sat, 29 Jul 2023 01:38:38 -0700 (PDT)
 Received: from localhost.localdomain ([2804:1b3:a801:93ca:d713:4eb3:968e:3b54])
-        by smtp.gmail.com with ESMTPSA id be24-20020a056808219800b003a3f922207asm2467184oib.1.2023.07.29.01.38.34
+        by smtp.gmail.com with ESMTPSA id be24-20020a056808219800b003a3f922207asm2467184oib.1.2023.07.29.01.38.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 01:38:36 -0700 (PDT)
+        Sat, 29 Jul 2023 01:38:37 -0700 (PDT)
 From:   Leonardo Bras <leobras@redhat.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marcelo Tosatti <mtosatti@redhat.com>,
         linux-kernel@vger.kernel.org
 Cc:     Leonardo Bras <leobras@redhat.com>
-Subject: [RFC PATCH 2/4] swap: apply new local_schedule_work_on() interface
-Date:   Sat, 29 Jul 2023 05:37:33 -0300
-Message-ID: <20230729083737.38699-4-leobras@redhat.com>
+Subject: [RFC PATCH 3/4] memcontrol: apply new local_schedule_work_on() interface
+Date:   Sat, 29 Jul 2023 05:37:34 -0300
+Message-ID: <20230729083737.38699-5-leobras@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230729083737.38699-2-leobras@redhat.com>
 References: <20230729083737.38699-2-leobras@redhat.com>
@@ -85,8 +85,7 @@ to improve performance & latency on PREEMTP_RT kernels.
 
 For functions that may be scheduled in a different cpu, replace
 local_*lock*() by local_lock_n*(), and replace schedule_work_on() by
-local_schedule_work_on(). The same happens for flush_work() and
-local_flush_work().
+local_schedule_work_on().
 
 This should bring no relevant performance impact on non-RT kernels:
 For functions that may be scheduled in a different cpu, the local_*lock's
@@ -94,66 +93,61 @@ this_cpu_ptr() becomes a per_cpu_ptr(smp_processor_id()).
 
 Signed-off-by: Leonardo Bras <leobras@redhat.com>
 ---
- mm/swap.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ mm/memcontrol.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index cd8f0150ba3a..a79f2091eae5 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -760,11 +760,11 @@ void lru_add_drain(void)
-  * the same cpu. It shouldn't be a problem in !SMP case since
-  * the core is only one and the locks will disable preemption.
-  */
--static void lru_add_and_bh_lrus_drain(void)
-+static void lru_add_and_bh_lrus_drain(int cpu)
- {
--	local_lock(&cpu_fbatches.lock);
--	lru_add_drain_cpu(smp_processor_id());
--	local_unlock(&cpu_fbatches.lock);
-+	local_lock_n(&cpu_fbatches.lock, cpu);
-+	lru_add_drain_cpu(cpu);
-+	local_unlock_n(&cpu_fbatches.lock, cpu);
- 	invalidate_bh_lrus_cpu();
- 	mlock_drain_local();
- }
-@@ -782,9 +782,9 @@ void lru_add_drain_cpu_zone(struct zone *zone)
- 
- static DEFINE_PER_CPU(struct work_struct, lru_add_drain_work);
- 
--static void lru_add_drain_per_cpu(struct work_struct *dummy)
-+static void lru_add_drain_per_cpu(struct work_struct *w)
- {
--	lru_add_and_bh_lrus_drain();
-+	lru_add_and_bh_lrus_drain(w->data.counter);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e8ca4bdcb03c..6d4fa48d75e3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2277,7 +2277,7 @@ static void drain_stock(struct memcg_stock_pcp *stock)
+ 	WRITE_ONCE(stock->cached, NULL);
  }
  
- static bool cpu_needs_drain(unsigned int cpu)
-@@ -888,13 +888,13 @@ static inline void __lru_add_drain_all(bool force_all_cpus)
+-static void drain_local_stock(struct work_struct *dummy)
++static void _drain_local_stock(int cpu)
+ {
+ 	struct memcg_stock_pcp *stock;
+ 	struct obj_cgroup *old = NULL;
+@@ -2288,18 +2288,23 @@ static void drain_local_stock(struct work_struct *dummy)
+ 	 * drain_stock races is that we always operate on local CPU stock
+ 	 * here with IRQ disabled
+ 	 */
+-	local_lock_irqsave(&memcg_stock.stock_lock, flags);
++	local_lock_irqsave_n(&memcg_stock.stock_lock, flags, cpu);
  
- 		if (cpu_needs_drain(cpu)) {
- 			INIT_WORK(work, lru_add_drain_per_cpu);
--			queue_work_on(cpu, mm_percpu_wq, work);
-+			local_queue_work_on(cpu, mm_percpu_wq, work);
- 			__cpumask_set_cpu(cpu, &has_work);
+-	stock = this_cpu_ptr(&memcg_stock);
++	stock = per_cpu_ptr(&memcg_stock, cpu);
+ 	old = drain_obj_stock(stock);
+ 	drain_stock(stock);
+ 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+ 
+-	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
++	local_unlock_irqrestore_n(&memcg_stock.stock_lock, flags, cpu);
+ 	if (old)
+ 		obj_cgroup_put(old);
+ }
+ 
++static void drain_local_stock(struct work_struct *w)
++{
++	_drain_local_stock((int)w->data.counter);
++}
++
+ /*
+  * Cache charges(val) to local per_cpu area.
+  * This will be consumed by consume_stock() function, later.
+@@ -2365,9 +2370,9 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+ 		if (flush &&
+ 		    !test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags)) {
+ 			if (cpu == curcpu)
+-				drain_local_stock(&stock->work);
++				_drain_local_stock(cpu);
+ 			else if (!cpu_is_isolated(cpu))
+-				schedule_work_on(cpu, &stock->work);
++				local_queue_work_on(cpu, system_wq, &stock->work);
  		}
  	}
- 
- 	for_each_cpu(cpu, &has_work)
--		flush_work(&per_cpu(lru_add_drain_work, cpu));
-+		local_flush_work(&per_cpu(lru_add_drain_work, cpu));
- 
- done:
- 	mutex_unlock(&lock);
-@@ -941,7 +941,7 @@ void lru_cache_disable(void)
- #ifdef CONFIG_SMP
- 	__lru_add_drain_all(true);
- #else
--	lru_add_and_bh_lrus_drain();
-+	lru_add_and_bh_lrus_drain(smp_processor_id());
- #endif
- }
- 
+ 	migrate_enable();
 -- 
 2.41.0
 
