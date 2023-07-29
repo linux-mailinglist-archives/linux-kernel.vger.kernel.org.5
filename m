@@ -2,160 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0035776798A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D239376798F
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjG2A3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        id S230371AbjG2Aas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG2A3j (ORCPT
+        with ESMTP id S229481AbjG2Aaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:29:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F098210CB;
-        Fri, 28 Jul 2023 17:29:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84F866221A;
-        Sat, 29 Jul 2023 00:29:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70385C433C7;
-        Sat, 29 Jul 2023 00:29:36 +0000 (UTC)
-Date:   Fri, 28 Jul 2023 20:29:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tracing: Fix warning in trace_buffered_event_disable()
-Message-ID: <20230728202934.0203ccb7@rorschach.local.home>
-In-Reply-To: <20230726095804.920457-1-zhengyejian1@huawei.com>
-References: <20230726095804.920457-1-zhengyejian1@huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 28 Jul 2023 20:30:46 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FB0E48;
+        Fri, 28 Jul 2023 17:30:45 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36T0QaJ3019726;
+        Sat, 29 Jul 2023 00:30:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=4ryQ4VY2iuPwio/zUiaUR4jB8wu6z2TdFVd/vX6F7v4=;
+ b=AszBDm8PXwfmrMnprkeyAR2zxd08l1omk8EwLl12wS22evqwnpOymHOez2Xt2CnONJki
+ eseDB5N/vE2Ylu3LGcOltFKu1KHZRpEwI1vJ4NKEB9wjejbX4m5Q5oyRO4eV2cyUVrxO
+ dU/PL9FozlXdP9G76+p3D7tx4JJJBHzyUrKAVyypw4BI/ad1AYfieQAVj7QTnbbxXBYj
+ SKVPf97Db84trQp5KX4LnQ3gB/IMlHTtQCQrnHik01j8TXfbWI+q1amVXEqXoGuQAzx/
+ PLBiLo9zBkardGeYhWj7FEab8zNwTjXdd+04ehiOZQMi9xCQhqbJJI8B1PjIP3iVUrgo 2Q== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4j0g0p69-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Jul 2023 00:30:40 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36T0Udxs006544
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Jul 2023 00:30:39 GMT
+Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
+ 2023 17:30:38 -0700
+Date:   Fri, 28 Jul 2023 17:30:37 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <quic_eberman@quicinc.com>, <kvalo@kernel.org>,
+        <loic.poulain@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_varada@quicinc.com>
+Subject: Re: [PATCH v4 07/11] firmware: qcom_scm: ipq5332: add msa
+ lock/unlock support
+Message-ID: <20230729003037.GA25463@quicinc.com>
+References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
+ <20230728063412.1641856-8-quic_mmanikan@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230728063412.1641856-8-quic_mmanikan@quicinc.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rgHczPV4G-qsl8fDBqaZtPgFe6lm6HnU
+X-Proofpoint-ORIG-GUID: rgHczPV4G-qsl8fDBqaZtPgFe6lm6HnU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307290002
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 17:58:04 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
-
-> Warning happened in trace_buffered_event_disable() at
->   WARN_ON_ONCE(!trace_buffered_event_ref)
+On Jul 28 2023 12:04, Manikanta Mylavarapu wrote:
+> IPQ5332 user pd remoteproc firmwares need to be locked
+> with MSA(modem secure access) features. This patch add
+> support to lock/unlock MSA features.
 > 
->   Call Trace:
->    ? __warn+0xa5/0x1b0
->    ? trace_buffered_event_disable+0x189/0x1b0
->    __ftrace_event_enable_disable+0x19e/0x3e0
->    free_probe_data+0x3b/0xa0
->    unregister_ftrace_function_probe_func+0x6b8/0x800
->    event_enable_func+0x2f0/0x3d0
->    ftrace_process_regex.isra.0+0x12d/0x1b0
->    ftrace_filter_write+0xe6/0x140
->    vfs_write+0x1c9/0x6f0
->    [...]
-> 
-> The cause of the warning is in __ftrace_event_enable_disable(),
-> trace_buffered_event_enable() was called once while
-> trace_buffered_event_disable() was called twice.
-> Reproduction script show as below, for analysis, see the comments:
->  ```
->  #!/bin/bash
-> 
->  cd /sys/kernel/tracing/
-> 
->  # 1. Register a 'disable_event' command, then:
->  #    1) SOFT_DISABLED_BIT was set;
->  #    2) trace_buffered_event_enable() was called first time;
->  echo 'cmdline_proc_show:disable_event:initcall:initcall_finish' > \
->      set_ftrace_filter
-> 
->  # 2. Enable the event registered, then:
->  #    1) SOFT_DISABLED_BIT was cleared;
->  #    2) trace_buffered_event_disable() was called first time;
->  echo 1 > events/initcall/initcall_finish/enable
-> 
->  # 3. Try to call into cmdline_proc_show(), then SOFT_DISABLED_BIT was
->  #    set again!!!
->  cat /proc/cmdline
-> 
->  # 4. Unregister the 'disable_event' command, then:
->  #    1) SOFT_DISABLED_BIT was cleared again;
->  #    2) trace_buffered_event_disable() was called second time!!!
->  echo '!cmdline_proc_show:disable_event:initcall:initcall_finish' > \
->      set_ftrace_filter
->  ```
-> 
-> To fix it, IIUC, we can change to call trace_buffered_event_enable() at
-> fist time soft-mode enabled, and call trace_buffered_event_disable() at
-> last time soft-mode disabled.
-> 
-
-This looks right. I thought I was being safe by ignoring all that crazy
-logic and just doing the compare at the end. Perhaps checking SOFT_MODE
-instead of SOFT_DISABLE was the way to go. But I think this works too.
-
--- Steve
-
-
-> Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> Signed-off-by: Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
 > ---
->  kernel/trace/trace_events.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
+> Changes in v4:
+> 	- Rebased on linux-next
 > 
-> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-> index 5d6ae4eae510..578f1f7d49a6 100644
-> --- a/kernel/trace/trace_events.c
-> +++ b/kernel/trace/trace_events.c
-> @@ -611,7 +611,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
->  {
->  	struct trace_event_call *call = file->event_call;
->  	struct trace_array *tr = file->tr;
-> -	unsigned long file_flags = file->flags;
->  	int ret = 0;
->  	int disable;
->  
-> @@ -635,6 +634,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
->  				break;
->  			disable = file->flags & EVENT_FILE_FL_SOFT_DISABLED;
->  			clear_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
-> +			/* Disable use of trace_buffered_event */
-> +			trace_buffered_event_disable();
->  		} else
->  			disable = !(file->flags & EVENT_FILE_FL_SOFT_MODE);
->  
-> @@ -673,6 +674,8 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
->  			if (atomic_inc_return(&file->sm_ref) > 1)
->  				break;
->  			set_bit(EVENT_FILE_FL_SOFT_MODE_BIT, &file->flags);
-> +			/* Enable use of trace_buffered_event */
-> +			trace_buffered_event_enable();
->  		}
->  
->  		if (!(file->flags & EVENT_FILE_FL_ENABLED)) {
-> @@ -712,15 +715,6 @@ static int __ftrace_event_enable_disable(struct trace_event_file *file,
->  		break;
->  	}
->  
-> -	/* Enable or disable use of trace_buffered_event */
-> -	if ((file_flags & EVENT_FILE_FL_SOFT_DISABLED) !=
-> -	    (file->flags & EVENT_FILE_FL_SOFT_DISABLED)) {
-> -		if (file->flags & EVENT_FILE_FL_SOFT_DISABLED)
-> -			trace_buffered_event_enable();
-> -		else
-> -			trace_buffered_event_disable();
-> -	}
-> -
->  	return ret;
+>  drivers/firmware/qcom_scm.c            | 78 ++++++++++++++++++++++++++
+>  drivers/firmware/qcom_scm.h            |  2 +
+>  include/linux/firmware/qcom/qcom_scm.h |  2 +
+>  3 files changed, 82 insertions(+)
+> 
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 3bc8c63a997f..2275cf7bc887 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -676,6 +676,84 @@ bool qcom_scm_pas_supported(u32 peripheral)
 >  }
+>  EXPORT_SYMBOL(qcom_scm_pas_supported);
 >  
+> +/**
+> + * qcom_scm_msa_lock() - Lock given peripheral firmware region as MSA
+> + *
+> + * @peripheral:	peripheral id
+> + *
+> + * Return 0 on success.
+> + */
+> +int qcom_scm_msa_lock(u32 peripheral)
+> +{
+> +	int ret;
+> +	struct qcom_scm_desc desc = {
+> +		.svc = QCOM_SCM_SVC_PIL,
+> +		.cmd = QCOM_SCM_MSA_LOCK,
+> +		.arginfo = QCOM_SCM_ARGS(1),
+> +		.args[0] = peripheral,
+> +		.owner = ARM_SMCCC_OWNER_SIP,
+> +	};
+> +	struct qcom_scm_res res;
+> +
+> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
+> +					  QCOM_SCM_MSA_LOCK))
+> +		return 0;
+> +
+> +	ret = qcom_scm_clk_enable();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = qcom_scm_bw_enable();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
+> +	qcom_scm_bw_disable();
+> +	qcom_scm_clk_disable();
+> +
+> +	return ret ? : res.result[0];
+> +}
+> +EXPORT_SYMBOL(qcom_scm_msa_lock);
 
+Could you please convert this to EXPORT_SYMBOL_GPL? 
+
+> +
+> +/**
+> + * qcom_scm_msa_unlock() - Unlock given peripheral MSA firmware region
+> + *
+> + * @peripheral:	peripheral id
+> + *
+> + * Return 0 on success.
+> + */
+> +int qcom_scm_msa_unlock(u32 peripheral)
+> +{
+> +	int ret;
+> +	struct qcom_scm_desc desc = {
+> +		.svc = QCOM_SCM_SVC_PIL,
+> +		.cmd = QCOM_SCM_MSA_UNLOCK,
+> +		.arginfo = QCOM_SCM_ARGS(1),
+> +		.args[0] = peripheral,
+> +		.owner = ARM_SMCCC_OWNER_SIP,
+> +	};
+> +	struct qcom_scm_res res;
+> +
+> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
+> +					  QCOM_SCM_MSA_UNLOCK))
+> +		return 0;
+> +
+> +	ret = qcom_scm_clk_enable();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = qcom_scm_bw_enable();
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
+> +	qcom_scm_bw_disable();
+> +	qcom_scm_clk_disable();
+> +
+> +	return ret ? : res.result[0];
+> +}
+> +EXPORT_SYMBOL(qcom_scm_msa_unlock);
+
+This one too?
+
+Reference: [1]
+The whole driver has now moved to using EXPORT_SYMBOL_GPL() now.
+
+[1] https://lore.kernel.org/lkml/19d9ac0bf79f957574ef9b3b73246ea0113cc0fd.1690503893.git.quic_gurus@quicinc.com/
+
+Thank you.
+
+Guru Das.
