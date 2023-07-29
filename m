@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FC9767A49
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F20767A40
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbjG2Axm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
+        id S237183AbjG2Axu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234281AbjG2AxN (ORCPT
+        with ESMTP id S236889AbjG2AxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:53:13 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8853C34;
-        Fri, 28 Jul 2023 17:52:49 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1b9c368f4b5so24837005ad.0;
-        Fri, 28 Jul 2023 17:52:49 -0700 (PDT)
+        Fri, 28 Jul 2023 20:53:15 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DFC3AB4;
+        Fri, 28 Jul 2023 17:52:52 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b8ad8383faso22173165ad.0;
+        Fri, 28 Jul 2023 17:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690591904; x=1691196704;
+        d=gmail.com; s=20221208; t=1690591905; x=1691196705;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W11bDslsZDrGr3Qeuq0bXM64dJbwpUwMR1R8xbGg1gA=;
-        b=dE7GU2Tco7wDRgQMqoVcBsaSAYvDFi8voSDX0grkGsEhJFBiAKcddbWd080zPj7LGQ
-         uFJHVrHiG7bpJkhPgdXChnkkhcdF32zGGQZjwH4boBlm07P0qKoe01gXih2i95CcOyWC
-         PQ6R2K4ZbCfNigBCuqN6x8kNAcd9m5rlYzoosjJeMDzu9/PszIEExyw1p5kh1l6+Cdbw
-         a5Ju6nXKqvyv/8qjo3osFuaauLsssKqXFPpLDpBe276wSx6rpWgJ0iAgX6wLTb2ePHM4
-         BFS2ARbioLhzoA1eVBOba4USgd3XmkDph03K+EgYenp26xitd8y2w9BzbKNeyWUdh10b
-         W57Q==
+        bh=xavxab7fE6BTORYI6YBoGvd5tEdjUx93KODPnqkxvR0=;
+        b=i8rRuaznTbxKDT8qIjwW6J6o2OwYbtcbaMZ74rUyPVoo2qR7fy0/0GCB+dWxaIXqjH
+         DB3YIfICmbglL0sDGqIBfhiNjmL12ZIit+vHF3Icxdb8kk1U45MhNkg5ohb/z43jwxTD
+         OXFgJBOjQEQLsGE+VZ50tnWPnASCOQjMh+GmxW02SK9UtRSzxB+ACytTonlAxUrU7azt
+         IDIYGsvSM548cfC7WW8OSvYx1Z3m+RAIQiPFOGkai3piCHvDC7Y4vCUvjVcyFbJm4ybn
+         GgEeHrKDXTdEoKiaHBgmuZKeN45ZtsDDox7BJ+NgHDy+gYMBj/uXyKeBvGmft5iH4e+f
+         C5dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591904; x=1691196704;
+        d=1e100.net; s=20221208; t=1690591905; x=1691196705;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W11bDslsZDrGr3Qeuq0bXM64dJbwpUwMR1R8xbGg1gA=;
-        b=aUZuCytLzDljLxodBX7hUT7lTOqzZLPgxuiFVrxGrkw8wG8xUdqVkv3isrTSTNXC/I
-         WG5HAZABFSDvvjxsDKtEW9R4Ybx971qA4cU82echNWUnXO11CIQc/daxUuOHL22fj03Y
-         P+V6qTxIbpmphXIsbTAQhaZZbs2PLxO5pmV6P7e8Ov4hlwVPCLtKBVYWNIGMZ3sxhdK1
-         wym5701l9TFHsUxC5TOohD8cis2jF+e9dRSFEmw6hIpwXqhxZfiKD0NXxPF2W/ZwSUEl
-         NjWnmLXQSe3YuGLEGB7MRYKk6KlbSicwchfVN0KqQpNpOC6vz/Ljc6BpXVuSlKl/0cmf
-         x4zg==
-X-Gm-Message-State: ABy/qLZd8AM/vJBLaA0K8n3c1MyHiBz7BA1ptm3rl45V2mY7CJqRh0Lw
-        iQC0BJfAaAmkTGXqRVyOBkIYYlKkyQg=
-X-Google-Smtp-Source: APBJJlFVJ6yvCHCmXe5sBsywuZZ6X1oIYSnYpGMv9CPAGq+Hc8sTqLc+MWoqmJicmVZiVUXnmQ32GA==
-X-Received: by 2002:a17:903:186:b0:1bb:9efe:b1be with SMTP id z6-20020a170903018600b001bb9efeb1bemr4148861plg.30.1690591904392;
-        Fri, 28 Jul 2023 17:51:44 -0700 (PDT)
+        bh=xavxab7fE6BTORYI6YBoGvd5tEdjUx93KODPnqkxvR0=;
+        b=RsqYngpNMsx7D7VAQi8ZDjDNaD/KB96IXNx/0efqgNAhO7ChDv+dWEIbhDxnk3doYB
+         AXJAvqKSXIesGIsEi6aF9phThsjM5BgUGzTzyi8MpNKDkGatP/UkurxfZiPoDBdFQVOe
+         VhhkNE+3yrYnVF2Y4W/g57cqTfhpOiD7c2fgiRXNHF8fdlgOSzVm6rMhNImgSm/XLRr3
+         mlsd0gJqqK232fsRyotpm5jhOOQLwvQCGfR842FqZxKVNQ//I/8Bmnm4j66KM8umqUxG
+         JmgYeCmeNz/gCNBw2DOzCTPaokdZ8HCp5oao2QwNseO4C1xkFjR7Lyug075gUpy9crMz
+         3qpQ==
+X-Gm-Message-State: ABy/qLbD6zt/EusBJmCKPhf2OMlgtQemElAoBzokvGdo11Yn2Gqw5Nic
+        8OM2f5bu3PhWo6sWaqNWLtvKpMLHMFg=
+X-Google-Smtp-Source: APBJJlEID0Ip0DtR27FJA+cMBJgZJvVSNknZqau26FLSTVwBNoZ9PsJTDQJR2UqOKVq+Gj4UIvR0Dg==
+X-Received: by 2002:a17:902:c3c1:b0:1bb:d586:d2a5 with SMTP id j1-20020a170902c3c100b001bbd586d2a5mr3191815plj.45.1690591905124;
+        Fri, 28 Jul 2023 17:51:45 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:bc93:3749:59cc:1d5c])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.43
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 28 Jul 2023 17:51:44 -0700 (PDT)
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     linux-input@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 10/22] Input: exc3000 - use device core to create driver-specific device attributes
-Date:   Fri, 28 Jul 2023 17:51:19 -0700
-Message-ID: <20230729005133.1095051-10-dmitry.torokhov@gmail.com>
+Subject: [PATCH 11/22] Input: hideep - use device core to create driver-specific device attributes
+Date:   Fri, 28 Jul 2023 17:51:20 -0700
+Message-ID: <20230729005133.1095051-11-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 In-Reply-To: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
 References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
@@ -78,51 +78,54 @@ pointer in the driver structure.
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/touchscreen/exc3000.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ drivers/input/touchscreen/hideep.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/input/touchscreen/exc3000.c b/drivers/input/touchscreen/exc3000.c
-index 4c0d99aae9e0..a4030cc9ff60 100644
---- a/drivers/input/touchscreen/exc3000.c
-+++ b/drivers/input/touchscreen/exc3000.c
-@@ -325,16 +325,13 @@ static ssize_t type_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(type);
+diff --git a/drivers/input/touchscreen/hideep.c b/drivers/input/touchscreen/hideep.c
+index 404153338df7..0f58258306bf 100644
+--- a/drivers/input/touchscreen/hideep.c
++++ b/drivers/input/touchscreen/hideep.c
+@@ -954,16 +954,13 @@ static DEVICE_ATTR(version, 0664, hideep_fw_version_show, NULL);
+ static DEVICE_ATTR(product_id, 0664, hideep_product_id_show, NULL);
+ static DEVICE_ATTR(update_fw, 0664, NULL, hideep_update_fw);
  
--static struct attribute *sysfs_attrs[] = {
-+static struct attribute *exc3000_attrs[] = {
- 	&dev_attr_fw_version.attr,
- 	&dev_attr_model.attr,
- 	&dev_attr_type.attr,
- 	NULL
+-static struct attribute *hideep_ts_sysfs_entries[] = {
++static struct attribute *hideep_ts_attrs[] = {
+ 	&dev_attr_version.attr,
+ 	&dev_attr_product_id.attr,
+ 	&dev_attr_update_fw.attr,
+ 	NULL,
  };
 -
--static struct attribute_group exc3000_attribute_group = {
--	.attrs = sysfs_attrs
+-static const struct attribute_group hideep_ts_attr_group = {
+-	.attrs = hideep_ts_sysfs_entries,
 -};
-+ATTRIBUTE_GROUPS(exc3000);
++ATTRIBUTE_GROUPS(hideep_ts);
  
- static int exc3000_probe(struct i2c_client *client)
+ static void hideep_set_work_mode(struct hideep_ts *ts)
  {
-@@ -437,10 +434,6 @@ static int exc3000_probe(struct i2c_client *client)
+@@ -1096,13 +1093,6 @@ static int hideep_probe(struct i2c_client *client)
+ 		return error;
+ 	}
  
- 	i2c_set_clientdata(client, data);
- 
--	error = devm_device_add_group(&client->dev, &exc3000_attribute_group);
--	if (error)
+-	error = devm_device_add_group(&client->dev, &hideep_ts_attr_group);
+-	if (error) {
+-		dev_err(&client->dev,
+-			"failed to add sysfs attributes: %d\n", error);
 -		return error;
+-	}
 -
  	return 0;
  }
  
-@@ -473,6 +466,7 @@ MODULE_DEVICE_TABLE(acpi, exc3000_acpi_match);
- static struct i2c_driver exc3000_driver = {
+@@ -1131,6 +1121,7 @@ MODULE_DEVICE_TABLE(of, hideep_match_table);
+ static struct i2c_driver hideep_driver = {
  	.driver = {
- 		.name	= "exc3000",
-+		.dev_groups = exc3000_groups,
- 		.of_match_table = of_match_ptr(exc3000_of_match),
- 		.acpi_match_table = ACPI_PTR(exc3000_acpi_match),
- 	},
+ 		.name			= HIDEEP_I2C_NAME,
++		.dev_groups		= hideep_ts_groups,
+ 		.of_match_table		= of_match_ptr(hideep_match_table),
+ 		.acpi_match_table	= ACPI_PTR(hideep_acpi_id),
+ 		.pm			= pm_sleep_ptr(&hideep_pm_ops),
 -- 
 2.41.0.487.g6d72f3e995-goog
 
