@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED4F768127
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5730768129
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjG2TCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 15:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        id S229379AbjG2TCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 15:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjG2TCP (ORCPT
+        with ESMTP id S229764AbjG2TC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:02:15 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF073580;
-        Sat, 29 Jul 2023 12:02:13 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99b9161b94aso485308466b.1;
-        Sat, 29 Jul 2023 12:02:12 -0700 (PDT)
+        Sat, 29 Jul 2023 15:02:28 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AD735B8;
+        Sat, 29 Jul 2023 12:02:24 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99b9421aaebso446750066b.2;
+        Sat, 29 Jul 2023 12:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1690657331; x=1691262131;
+        d=googlemail.com; s=20221208; t=1690657343; x=1691262143;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gRRM3V/fhfbk4swxDnRjXiwrMJ1xOP6GUPvikr85J0I=;
-        b=AiS1B7fs+dGM33XXRn4MrbV+dKh0ChRaqW2YQngMkIlOch1whnjCy7fVH1b7QMUoAy
-         KpLUo3jbA5/dMVYFEr6rxh7DJiDvzUrs4Wu70B3e462bFo8Pz0n1jCFnCgYMOFsskClQ
-         YzFHyLJvMD1AuIj6zpj//pFVchpTn4T+bXwlHwUqsBhM2o1InQig8ETmLSrwfvlKhBhO
-         gkcz17BcONg9oKfH5DDWHyjG6CM9BSMvVL66MX3jpBQ83d0fX+ZvLM92T2ID3kCsV2FX
-         Um3MdmQr3mssQBDYmZXzN0nayioQWdnTqkW2gpVmWAxARhH6/oTUvuOcwVMzjL5hn4WF
-         McqQ==
+        bh=mbwxOo0rYZaBf7rK29/+zBVbIyIuQuXZw1K3yD81hfw=;
+        b=qqgKsyvm1cURFa0kmIdwXTlP4iWRb4n0WSxpNHt/XPzwWMaAwrdIRW4b2QmL3loEVw
+         X8uYLYwD18cr6aq6R8+QJAuwKZirccUnOmn0Sxrb1i2dPobTOrKIzroLlTEwgGAdbpwS
+         J2am7zwSVmYTk2JnPc6hkGvM2MmTy4g0qlgsWF7G0krgyvhmlmieRBkI/iMw4dHUsYjl
+         7J4xdreUdwjdablWi7ce79vG+5rPllGMvNiMOnmNi5JJIP1i/WEFuFGbSocVQ21VXI+f
+         NXrmKzV71NQ38IraKdOmfk7UzRORBad3bxNed2QPWNEB9udPl+6LvcXYPPTZuSXDyJ+F
+         SA7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690657331; x=1691262131;
+        d=1e100.net; s=20221208; t=1690657343; x=1691262143;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gRRM3V/fhfbk4swxDnRjXiwrMJ1xOP6GUPvikr85J0I=;
-        b=G5aR+bwGwc4gkdS/DigumA0ulMJlTjnIC7PqVTfO1H57rOGsBfoZwvpAkioOGUzObh
-         fuIBqsRKQlH8LWCKW1H8LpInZIJZB0txjqh/mHaFW1fSIvcd0HH33iB+rVcZvX4DeBtG
-         8Lqa0EnZPXCLh6FAUhCbEl/2fU/D+pdv2Po9Do/ni3G3MRtrnENW/iCfNrRL6QRwQ4IY
-         hV4DXbBO8o+FC3Y/1WFIOXnu/KiixWUsnOtA5aGusvN6aTqEvJPbFS5kYiju5972Yf/n
-         GdR7Zq7m1+dA4ZLDTIxEAxnLDQ4FXBa9AgWaAIHB9l+8gleJXjem9s8bkgtACWrk6ls4
-         ACBw==
-X-Gm-Message-State: ABy/qLZ55VMNio8MBPdbDdx/aCmD/tRuc3bz+YzbDH5EQlD5x18/ybuR
-        w43vHwNiUYemlW7PWt8DtNTeHoOZXEM2YFImDd4=
-X-Google-Smtp-Source: APBJJlEXZ9ayh2OJoMb4eASEbHvDZRxUGjPivvxsURfvQuCXy+aTYhdrRqL+AAl8WxAv2JZWxF5jPwgK0RQTUVgR7A4=
-X-Received: by 2002:a17:906:73d3:b0:973:fd02:a41f with SMTP id
- n19-20020a17090673d300b00973fd02a41fmr3053590ejl.40.1690657330825; Sat, 29
- Jul 2023 12:02:10 -0700 (PDT)
+        bh=mbwxOo0rYZaBf7rK29/+zBVbIyIuQuXZw1K3yD81hfw=;
+        b=Yup+F7ZCaSHCVaIat01rtbJX7BbpuiGyeqCVjlEQp5MvCLy1fCqFtmrLNGAovR2E2v
+         9RbTgzIMhA5ObTgudS8mQfwbry/UEIl33+c3F2/gwmeTOn8flNgpV/R4mbBWsEwXrtVn
+         ko0w2jnM78+YevMVi8cn6EAvcMWTHhhL0paYsP1NyFP+HAGf+enBFeWcpNSfAfBzKqdx
+         00zVI0P4giuT/4Cb5oentbQDWsFib+QouK071dpfLFfruiIGo2YqMtHKzVUs+v3gc1RE
+         6SrqzW/NIJVa/gkNLMKDsPmYa2MJ/FudKvXOiu8D1aJGVrIFupqAPr3SQqN4QKr5Bh2L
+         Rbsw==
+X-Gm-Message-State: ABy/qLYyg8kM4hPRhMR4SpAB6KL65oq9Ou/zUm/GKVArZdWkj4g6Ms20
+        ZDGp4LQxasEW3soFg8zwWntjxANceir+5vzQ9yk=
+X-Google-Smtp-Source: APBJJlHKcmz/y1QtxHjO1aYGSheR17Kiu7PBj4dt7wZEWJJm3KSZezSQA20D0SHQZNMoiudt8fsVxA7ivGeg2xJb1UQ=
+X-Received: by 2002:a17:906:32cb:b0:99c:3b4:940f with SMTP id
+ k11-20020a17090632cb00b0099c03b4940fmr1296569ejk.27.1690657343026; Sat, 29
+ Jul 2023 12:02:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727070051.17778-1-frank.li@vivo.com> <20230727070051.17778-22-frank.li@vivo.com>
-In-Reply-To: <20230727070051.17778-22-frank.li@vivo.com>
+References: <20230727070051.17778-1-frank.li@vivo.com> <20230727070051.17778-34-frank.li@vivo.com>
+In-Reply-To: <20230727070051.17778-34-frank.li@vivo.com>
 From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 29 Jul 2023 21:01:59 +0200
-Message-ID: <CAFBinCA+xf+nOt+E-jUxW72mW_GjCL8GXPOgxkNAM5TPbJw4kg@mail.gmail.com>
-Subject: Re: [PATCH v3 22/62] mmc: meson-mx-sdhc: Convert to platform remove
+Date:   Sat, 29 Jul 2023 21:02:12 +0200
+Message-ID: <CAFBinCAXph1VS=zYTs=7A10BFKeNJ1SCyRXorTQ9rCxXjX64QA@mail.gmail.com>
+Subject: Re: [PATCH v3 34/62] mmc: meson-mx-sdio: Convert to platform remove
  callback returning void
 To:     Yangtao Li <frank.li@vivo.com>
 Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
@@ -76,7 +76,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 9:01=E2=80=AFAM Yangtao Li <frank.li@vivo.com> wrot=
+On Thu, Jul 27, 2023 at 9:02=E2=80=AFAM Yangtao Li <frank.li@vivo.com> wrot=
 e:
 >
 > The .remove() callback for a platform driver returns an int which makes
