@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53F676796E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E17767971
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235923AbjG2AYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        id S235965AbjG2AYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbjG2AYG (ORCPT
+        with ESMTP id S235937AbjG2AYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:24:06 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5956C2719
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:24:05 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-780c89d1998so36572039f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690590244; x=1691195044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HIeU+TWEJ9SHiH0PuMDlq+ijy5jWckAGkZXhCnVsnVY=;
-        b=WOgKTJT75jB4KqOF6kEnfq0vx2OflxgDsz+zH43o8dD+xHb4h3OFWUiB0EoxBuqsSz
-         poQX4LS/5mBeGowuzSOicZJ+aoc8o7CPNY1dBd+pgAi4t1Z+u9wi0/CdyrIWzv+oTiu+
-         lTcIgyEZ8PKn3xtZbbvRkJmudW9J0CSq6LsaQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690590244; x=1691195044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HIeU+TWEJ9SHiH0PuMDlq+ijy5jWckAGkZXhCnVsnVY=;
-        b=ZqA4zxRbWyLzw9TUJ0t9ORCn9pJOSrprG4QvKZl1SDHnxHgGjiEzYloa9/BKE4GmVE
-         0D+CfcW3F4refXuUNgDF+BtjDXLfvxKxPrYlpMAA0C+lWC8qJFI53zageOd3SROm7tVj
-         aCd/W8foBhsgapC+YQSYi1+QmyYanjbyWek84ifBMJd4zCqFygw0Wn4m2peWXRWBYjgh
-         +XVCkLX8Fqs8kmvH7ZksRlcX4h9OmS/cbI0fNhqCUAd7aB6HQH64DKseRqntycU2TSxW
-         Odp/xnHiyMIYWWEuVQafGaKxIQiJ/pQN91kYnwO/bMzx4Z5oYXLyjlZVK4AwzYEv6Nvp
-         O5sQ==
-X-Gm-Message-State: ABy/qLZ87qljCNihL21NSo7nr/4CCGhD1dTQr+iAQTcFxS0XIgNhtesS
-        1o0XJQEJG0wZ5ZKwQNTTn6Bclg==
-X-Google-Smtp-Source: APBJJlFxzLDh4U/zUNgrcQ2hxtYq7pJ++OjUt0NgiNKY77A+Y8REpbsUiZgaUS+PiXRaDKHdpKlpUw==
-X-Received: by 2002:a92:dc51:0:b0:346:1919:7cb1 with SMTP id x17-20020a92dc51000000b0034619197cb1mr788138ilq.2.1690590244776;
-        Fri, 28 Jul 2023 17:24:04 -0700 (PDT)
-Received: from shuah-tx13.internal ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id k25-20020a02a719000000b0042b4437d857sm1460925jam.106.2023.07.28.17.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jul 2023 17:24:04 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, Liam.Howlett@oracle.com,
-        anjali.k.kulkarni@oracle.com, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2] selftests:connector: Fix input argument error paths to skip
-Date:   Fri, 28 Jul 2023 18:24:03 -0600
-Message-Id: <20230729002403.4278-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.2
+        Fri, 28 Jul 2023 20:24:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6762680;
+        Fri, 28 Jul 2023 17:24:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DF5262219;
+        Sat, 29 Jul 2023 00:24:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 221CAC433C7;
+        Sat, 29 Jul 2023 00:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690590260;
+        bh=LcvjFZ5wQlT1R6n8uisvWwenXjdvtew/LYTUALvrObc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k8ANMUwVHZyTxyGa3n7sz2LHzbUGdyjNE/J3IJLU9ml/Zqn6ToTj3nqSMmnWv86HE
+         ljVs22Qb90Bw9NXXmPFj9pNMI0mq0ESXP12HP1NQUg4oNm0oy2FQE11CB0NBNUd0G+
+         OewanG+lTJsH17XqdIOPY6NDhrNj+/bVoLB85cpAdgD1AUB923nedsJMnJtEMBykQS
+         vBKZA7MRLDZpu0nFrKX+91j2/g7V7BH+5Zc5MjXXDr7PLLHcemQwj9NdSemoFJUeOf
+         bNGaOXZewZpKb7A4Mupld1931Itsmi/3gwfgRyJlZkoHY1y7tmMWkfVBXjBJ/f5kgi
+         Bg9wqklNDEBrQ==
+Date:   Fri, 28 Jul 2023 17:24:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v12 06/10] net: ti: icssg-prueth: Add ICSSG ethernet
+ driver
+Message-ID: <20230728172419.702b4ac0@kernel.org>
+In-Reply-To: <20230727112827.3977534-7-danishanwar@ti.com>
+References: <20230727112827.3977534-1-danishanwar@ti.com>
+        <20230727112827.3977534-7-danishanwar@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix input argument parsing paths to skip from their error legs.
-This fix helps to avoid false test failure reports without running
-the test.
+On Thu, 27 Jul 2023 16:58:23 +0530 MD Danish Anwar wrote:
+> +static int emac_tx_complete_packets(struct prueth_emac *emac, int chn,
+> +				    int budget)
+> +{
+> +	struct net_device *ndev = emac->ndev;
+> +	struct cppi5_host_desc_t *desc_tx;
+> +	struct netdev_queue *netif_txq;
+> +	struct prueth_tx_chn *tx_chn;
+> +	unsigned int total_bytes = 0;
+> +	struct sk_buff *skb;
+> +	dma_addr_t desc_dma;
+> +	int res, num_tx = 0;
+> +	void **swdata;
+> +
+> +	tx_chn = &emac->tx_chns[chn];
+> +
+> +	while (budget) {
+> +		res = k3_udma_glue_pop_tx_chn(tx_chn->tx_chn, &desc_dma);
+> +		if (res == -ENODATA)
+> +			break;
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
-v2: Removed root check based on Anjali's review comments.
-Add netdev to RESEND
+You shouldn't limit the number of serviced packets to budget for Tx
+NAPI.
 
- tools/testing/selftests/connector/proc_filter.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+https://docs.kernel.org/next/networking/napi.html#driver-api
 
-diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
-index 4fe8c6763fd8..4a825b997666 100644
---- a/tools/testing/selftests/connector/proc_filter.c
-+++ b/tools/testing/selftests/connector/proc_filter.c
-@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
- 
- 	if (argc > 2) {
- 		printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
--		exit(1);
-+		exit(KSFT_SKIP);
- 	}
- 
- 	if (argc == 2) {
-@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
- 			filter = 1;
- 		} else {
- 			printf("Valid option : -f (for filter feature)\n");
--			exit(1);
-+			exit(KSFT_SKIP);
- 		}
- 	}
- 
+> +	skb->dev = ndev;
+> +	if (!netif_running(skb->dev)) {
+> +		dev_kfree_skb_any(skb);
+> +		return 0;
+> +	}
+
+why do you check if the interface is running?
+If a packet arrives, it means the interface is running..
+
+> +drop_free_descs:
+> +	prueth_xmit_free(tx_chn, first_desc);
+> +drop_stop_q:
+> +	netif_tx_stop_queue(netif_txq);
+
+Do not stop the queue on DMA errors. If the queue is empty nothing
+will wake it up. Queue should only be stopped based on occupancy.
+
+> +	dev_kfree_skb_any(skb);
+> +
+> +	/* error */
+> +	ndev->stats.tx_dropped++;
+> +	netdev_err(ndev, "tx: error: %d\n", ret);
+> +
+> +	return ret;
 -- 
-2.39.2
-
+pw-bot: cr
