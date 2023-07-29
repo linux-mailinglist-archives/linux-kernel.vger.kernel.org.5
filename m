@@ -2,177 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F735767DFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 12:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A52767DB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 11:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjG2KD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 06:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        id S231693AbjG2Jnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 05:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG2KDZ (ORCPT
+        with ESMTP id S229753AbjG2Jnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 06:03:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3E10D0;
-        Sat, 29 Jul 2023 03:03:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD9DC60B4C;
-        Sat, 29 Jul 2023 10:03:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D93DC433C7;
-        Sat, 29 Jul 2023 10:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690625003;
-        bh=tH6HkXTj7vZyB2CKhm/BhFXDdeVpU+cmFM24rbS0SRY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gPxkJS5p+gaRFMmFalXdtbjZ0iJjbs8ZMWjuFiD+fGVzdvcis32eabdJNfagQLe9L
-         o/9zMoGT2rj3FZDQzBeX0OB7DWQE0i/xLu6UG4BOqEIPCVi3wfoVSylAq2TOGfgIv9
-         htaG0Wrfwn45qlO4dq4skEMAZAol510akGq7oaZkRcdtyv6SE6NQPLpsU4u/JwEjPi
-         X+s/nFwSoHG1tXIbMaXonJIlOsomD6WYTnyQIRDPERwivnvoFrw3qLffI+fOtq/BwW
-         aIzZWXJAhZpWPtJUdXbqDH1wrbxOeSaCS573+OlR09JDeUEcV6SqhDTmtZZyDsfxF1
-         S496Kc/HcX2OA==
-Date:   Sat, 29 Jul 2023 11:03:18 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: power: supply: Add pm8916 VM-BMS
-Message-ID: <20230729-facecloth-trembling-3311ca245505@spud>
-References: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
- <20230728-pm8916-bms-lbc-v1-1-56da32467487@trvn.ru>
+        Sat, 29 Jul 2023 05:43:39 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D3D9F
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 02:43:38 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RCfhQ00Zzz4f403R
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 17:43:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP1 (Coremail) with SMTP id cCh0CgDHMy5D38RkAQcpOQ--.25635S2;
+        Sat, 29 Jul 2023 17:43:32 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Cc:     baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
+        willy@infradead.org, david@redhat.com, shikemeng@huaweicloud.com
+Subject: [PATCH 0/5] Fixes and cleanups to compaction
+Date:   Sun, 30 Jul 2023 01:43:49 +0800
+Message-Id: <20230729174354.2239980-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2K1RO/EOfI04+Lpw"
-Content-Disposition: inline
-In-Reply-To: <20230728-pm8916-bms-lbc-v1-1-56da32467487@trvn.ru>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDHMy5D38RkAQcpOQ--.25635S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF1ktF1kuFyUCrW8uw1rZwb_yoWfJFg_uF
+        yIyF9rtF1FkFyxXFyqgw4SyFyDGFWUCr1xJasYqr4UA39Fvan3A3ZrArW3Zr13ZasrKrZx
+        Kwn5Jw10yr1avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IEw2IIxx
+        k0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK
+        6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
+        x2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all, this series contains random fixes and cleanups to free page
+isolation in compaction. This is based on another compact series[1].
+More details can be found in respective patches. Thanks!
 
---2K1RO/EOfI04+Lpw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[1] https://lore.kernel.org/all/20230728171037.2219226-1-shikemeng@huaweicloud.com/
 
-On Fri, Jul 28, 2023 at 10:19:30PM +0500, Nikita Travkin wrote:
-> Qualcomm Voltage Mode BMS is a battery monitoring block in PM8916 PMIC.
-> Document it's DT binding.
->=20
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
->  .../bindings/power/supply/qcom,pm8916-bms-vm.yaml  | 64 ++++++++++++++++=
-++++++
->  1 file changed, 64 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/power/supply/qcom,pm8916-b=
-ms-vm.yaml b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms=
--vm.yaml
-> new file mode 100644
-> index 000000000000..455973d46862
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.y=
-aml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Voltage Mode BMS
-> +
-> +maintainers:
-> +  - Nikita Travkin <nikita@trvn.ru>
-> +
-> +description:
-> +  Voltage Mode BMS is a hardware block found in some Qualcomm PMICs
-> +  such as pm8916. This block performs battery voltage monitoring.
-> +
-> +allOf:
-> +  - $ref: power-supply.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,pm8916-bms-vm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    items:
-> +      - description: FIFO update done
+Kemeng Shi (5):
+  mm/compaction: allow blockpfn outside of pageblock for high order
+    buddy page
+  mm/compaction: set compact_cached_free_pfn correctly in
+    update_pageblock_skip
+  mm/compaction: merge end_pfn boundary check in isolate_freepages_range
+  mm/compaction: remove unnecessary cursor page in
+    isolate_freepages_block
+  mm/compaction: remove unnecessary "else continue" at end of loop in
+    isolate_freepages_block
 
-You don't need items: here since you only have one - const: will do.
+ mm/compaction.c | 30 ++++++++++++++----------------
+ 1 file changed, 14 insertions(+), 16 deletions(-)
 
-> +  interrupt-names:
-> +    items:
-> +      - const: fifo
+-- 
+2.30.0
 
-Same here, but do you really need a name, when you have only one
-interrupt?
-
-Thanks,
-Conor.
-
-> +
-> +  monitored-battery: true
-> +
-> +  power-supplies: true
-> +
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-names
-> +  - monitored-battery
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    pmic {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      battery@4000 {
-> +        compatible =3D "qcom,pm8916-bms-vm";
-> +        reg =3D <0x4000>;
-> +        interrupts =3D <0x0 0x40 4 IRQ_TYPE_EDGE_RISING>;
-> +        interrupt-names =3D "fifo";
-> +
-> +        monitored-battery =3D <&battery>;
-> +        power-supplies =3D <&pm8916_charger>;
-> +      };
-> +    };
->=20
-> --=20
-> 2.41.0
->=20
-
---2K1RO/EOfI04+Lpw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMTj5gAKCRB4tDGHoIJi
-0oahAQCSwWJg7aZBvUTIur8Z4PgY71M0Ikeuhh9dGoeau6YgIQEAkzx4NAJ8HRw4
-qKmTkBUWif9t2TFV7tDbdWukQcTkbgc=
-=VZBv
------END PGP SIGNATURE-----
-
---2K1RO/EOfI04+Lpw--
