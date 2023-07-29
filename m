@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDE576794A
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977F076794D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbjG2ADi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45588 "EHLO
+        id S233850AbjG2AER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjG2ADg (ORCPT
+        with ESMTP id S231314AbjG2AEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:03:36 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9D619BA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:03:35 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba5563cd6so17061855ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:03:35 -0700 (PDT)
+        Fri, 28 Jul 2023 20:04:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ABC4231
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:04:11 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52227142a27so3308326a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:04:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690589015; x=1691193815;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJg9MbukUkeAf25VcBnSvGPEfaUIyqqF94QJU8orhSY=;
-        b=Zp0GOXqU9vAtanM7byzLEY1ZTAuQCQrnfrak1thKcFFHMBCZO/N4KqKDBd5I3kJffW
-         Vh8ovzLtMVpv7R9tgjnJuitRPz0iowTqbSccpqb9sCrit8s8jZkHgE3EKWmaz9/YJybN
-         uhR+1LBQ/EGKFm12kofvmo1N8Or8Mhd5I9QIxgAZxJjUnAncn/OfNQ+xg9V9rSfFrTW5
-         6+gyXWvxsDfod0XUAEoSS/aCS0HqakbjGuI1/I8BU2Uy6FDW2YJ6LrCVt60GU5GehRX5
-         3Ug/sPFW2Iawha4cKCkpfEtG9Mwjo7aL2M8Rz65tztUDm7ObzFqkZ6ozvUAWJtziwaLO
-         +gKQ==
+        d=linaro.org; s=google; t=1690589050; x=1691193850;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dfRG5rD0scPqsV1FykBsfcvR1VHSdVrA0sLu02AnWOM=;
+        b=eUzCyV0J1fb+2uOtbl0SEoizsUk8+EHyYPjj46asco+D7r6nKAR5UdkQWLdBTxiBNR
+         /kMUlDjX2Nx8COxm2TubVPSp8PwBvk74b0z67yuIFPL/D/Jl7Krlyzkw392cWq6g/5uX
+         +k+lFYjONRxxC52gDChAF1VqCdQmWluIid4PmDezq2IuUUfHSlM1wsb3tMBGgRRTI5PR
+         k3Fl5NkS71cYjavLyMhl5K65uVMyG/cIc1n03mDNl3KLZfYVSrgglB/AH6BW9XBHubIy
+         YuqFnwAAvYtBvBKvofZ3GF5BvXTtr+OfKs0nxO39FO5OsaqA96RQ1YvjWwTmrSwxRswK
+         RZDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690589015; x=1691193815;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rJg9MbukUkeAf25VcBnSvGPEfaUIyqqF94QJU8orhSY=;
-        b=X2EVzPDTNsPA5oAdZaFZvlMSzpvMiQJkkjWGRlKNahSM02CcljYm8xE3X/VyTA6TuS
-         /zkylAaJVyWYtqsatxWBfUHy71hlAO1rtXnsOMJSkKsWSAbuecga/qPcBUmplS3mCW/W
-         dAgRa+JkmH3SJwDUhlIvx2CJ//pVHGMT8f0kLDtvhoqOFQRvZ7PA1+pp+WhuB0XAr/Cm
-         X54mv01hoBYLdJlvD3yduVfQ3a3TkSi6h9Euv1iwN+kYApfn1hNHdrwlLgG8niy1To0i
-         ybB+OQrjCmR32DtxvFwO5iM8KVEYzL1ZguRLuVv+oOYNQvIWX9l+IwmGRoWA5hcx9hYp
-         veMA==
-X-Gm-Message-State: ABy/qLa3zJvnxMLBTKg4WLt6lGLxHZ1efkxsUTeU7m00yIElo4c6vTjA
-        eH4yYqvuoH4iuFp4m0G4xnNuwocak+8=
-X-Google-Smtp-Source: APBJJlGy4rMQGFiWHQC+IuRONPQH0HvvNAt7asJXiFk+bZ/uVjfNOjPYVgrOl+x+eQJGyA+j61wbqvGP0DI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c951:b0:1ae:6895:cb96 with SMTP id
- i17-20020a170902c95100b001ae6895cb96mr12864pla.5.1690589014804; Fri, 28 Jul
- 2023 17:03:34 -0700 (PDT)
-Date:   Fri, 28 Jul 2023 17:03:33 -0700
-In-Reply-To: <ZMOJgnyzzUNIx+Tn@google.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-7-seanjc@google.com>
- <ZMOJgnyzzUNIx+Tn@google.com>
-Message-ID: <ZMRXVZYaJ9wojGtS@google.com>
-Subject: Re: [RFC PATCH v11 06/29] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
-From:   Sean Christopherson <seanjc@google.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20221208; t=1690589050; x=1691193850;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dfRG5rD0scPqsV1FykBsfcvR1VHSdVrA0sLu02AnWOM=;
+        b=QzzdBwv+vbg4I2vTznsebvV51JRoU+aa1nEY97TCtExekSVFY7bS4UFrFAFnawUwdf
+         FD9RCXUVa6uW3Vvx9GNzNzrnJ68uZiR+cgfINHfzzRXrC6NxleWCbKtUwk3q8lBPGggY
+         AFaJVQYtZxaadSVswEMdqCIAmhORh4qmMLOdAugIGBJ09zAgo6WK644urSDRyA6tNzNj
+         ZUgSBcfFkkUwg6+mDkK5W7Cr7DEgGOMeGe/N7rAz4gdtcEdg65OCUn+5ZreFuzS+vsin
+         SN6h0O0VSYfEniAo502euk0bKd0APe8aeuqwCHhFy2OiqDuCLmPIDYsmw/mioi0HwaFw
+         PEQg==
+X-Gm-Message-State: ABy/qLa0tifwvwNMuqRzWT7TvDICVXG1GthySCv5FA7D6XD+ax0pnOi/
+        4YmVBVFkoIePU6i6ifExPQUyhg==
+X-Google-Smtp-Source: APBJJlGMAZ6zWddJfPSlsMqE6/T2h9lEEfiEuE7orHv0MziUXyZjseGTaz1a/33UmEYRkyhFTyDMzg==
+X-Received: by 2002:a17:907:7850:b0:99b:44aa:fae0 with SMTP id lb16-20020a170907785000b0099b44aafae0mr610136ejc.21.1690589050045;
+        Fri, 28 Jul 2023 17:04:10 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id i18-20020a170906115200b00992665694f7sm2587634eja.107.2023.07.28.17.04.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 17:04:09 -0700 (PDT)
+Message-ID: <de6abbcf-9c0d-f51e-b140-938f2c537f74@linaro.org>
+Date:   Sat, 29 Jul 2023 03:04:07 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v5 04/10] drm/atomic: Add pixel source to plane state
+ dump
+Content-Language: en-GB
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
+        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
+        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org
+References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
+ <20230728-solid-fill-v5-4-053dbefa909c@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230728-solid-fill-v5-4-053dbefa909c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,44 +88,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023, Quentin Perret wrote:
-> On Tuesday 18 Jul 2023 at 16:44:49 (-0700), Sean Christopherson wrote:
-> > --- a/include/uapi/linux/kvm.h
-> > +++ b/include/uapi/linux/kvm.h
-> > @@ -95,6 +95,16 @@ struct kvm_userspace_memory_region {
-> >  	__u64 userspace_addr; /* start of the userspace allocated memory */
-> >  };
-> >  
-> > +/* for KVM_SET_USER_MEMORY_REGION2 */
-> > +struct kvm_userspace_memory_region2 {
-> > +	__u32 slot;
-> > +	__u32 flags;
-> > +	__u64 guest_phys_addr;
-> > +	__u64 memory_size;
-> > +	__u64 userspace_addr;
-> > +	__u64 pad[16];
+On 28/07/2023 20:02, Jessica Zhang wrote:
+> Add pixel source to the atomic plane state dump
 > 
-> Should we replace that pad[16] with:
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> ---
+>   drivers/gpu/drm/drm_atomic.c        |  1 +
+>   drivers/gpu/drm/drm_crtc_internal.h |  2 ++
+>   drivers/gpu/drm/drm_plane.c         | 12 ++++++++++++
+>   3 files changed, 15 insertions(+)
 > 
-> 	__u64 size;
+> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+> index b4c6ffc438da..c38014abc590 100644
+> --- a/drivers/gpu/drm/drm_atomic.c
+> +++ b/drivers/gpu/drm/drm_atomic.c
+> @@ -713,6 +713,7 @@ static void drm_atomic_plane_print_state(struct drm_printer *p,
+>   
+>   	drm_printf(p, "plane[%u]: %s\n", plane->base.id, plane->name);
+>   	drm_printf(p, "\tcrtc=%s\n", state->crtc ? state->crtc->name : "(null)");
+> +	drm_printf(p, "\tpixel-source=%s\n", drm_plane_get_pixel_source_name(state->pixel_source));
+>   	drm_printf(p, "\tfb=%u\n", state->fb ? state->fb->base.id : 0);
+>   	if (state->fb)
+>   		drm_framebuffer_print_info(p, 2, state->fb);
+> diff --git a/drivers/gpu/drm/drm_crtc_internal.h b/drivers/gpu/drm/drm_crtc_internal.h
+> index 501a10edd0e1..75b59ec9f1be 100644
+> --- a/drivers/gpu/drm/drm_crtc_internal.h
+> +++ b/drivers/gpu/drm/drm_crtc_internal.h
+> @@ -38,6 +38,7 @@ enum drm_color_encoding;
+>   enum drm_color_range;
+>   enum drm_connector_force;
+>   enum drm_mode_status;
+> +enum drm_plane_pixel_source;
+>   
+>   struct drm_atomic_state;
+>   struct drm_bridge;
+> @@ -267,6 +268,7 @@ int drm_plane_check_pixel_format(struct drm_plane *plane,
+>   				 u32 format, u64 modifier);
+>   struct drm_mode_rect *
+>   __drm_plane_get_damage_clips(const struct drm_plane_state *state);
+> +const char *drm_plane_get_pixel_source_name(enum drm_plane_pixel_source pixel_source);
+>   
+>   /* drm_bridge.c */
+>   void drm_bridge_detach(struct drm_bridge *bridge);
+> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+> index f342cf15412b..4188b3491625 100644
+> --- a/drivers/gpu/drm/drm_plane.c
+> +++ b/drivers/gpu/drm/drm_plane.c
+> @@ -1487,6 +1487,18 @@ __drm_plane_get_damage_clips(const struct drm_plane_state *state)
+>   					state->fb_damage_clips->data : NULL);
+>   }
+>   
+> +const char *drm_plane_get_pixel_source_name(enum drm_plane_pixel_source pixel_source)
+> +{
+> +	switch(pixel_source) {
+> +	case DRM_PLANE_PIXEL_SOURCE_NONE:
+> +		return "NONE";
+> +	case DRM_PLANE_PIXEL_SOURCE_FB:
+> +		return "fb";
+> +	default:
+> +		return "";
+> +	}
+> +}
+
+Please use DRM_ENUM_NAME_FN instead.
+
+> +
+>   /**
+>    * drm_plane_get_damage_clips - Returns damage clips.
+>    * @state: Plane state.
 > 
-> where 'size' is the size of the structure as seen by userspace? This is
-> used in other UAPIs (see struct sched_attr for example) and is a bit
-> more robust for future extensions (e.g. an 'old' kernel can correctly
-> reject a newer version of the struct with additional fields it doesn't
-> know about if that makes sense, etc).
 
-"flags" serves that purpose, i.e. allows userspace to opt-in to having KVM actually
-consume what is currently just padding.
+-- 
+With best wishes
+Dmitry
 
-The padding is there mainly to simplify kernel/KVM code, e.g. the number of bytes
-that KVM needs to copy in is static.
-
-But now that I think more on this, I don't know why we didn't just unconditionally
-bump the size of kvm_userspace_memory_region.  We tried to play games with unions
-and overlays, but that was a mess[*].
-
-KVM would need to do multiple uaccess reads, but that's not a big deal.  Am I
-missing something, or did past us just get too clever and miss the obvious solution?
-
-[*] https://lkml.kernel.org/r/Y7xrtf9FCuYRYm1q%40google.com
