@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C229767EF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536AB767EF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 14:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjG2MAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 08:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
+        id S231722AbjG2MBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 08:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG2MAm (ORCPT
+        with ESMTP id S231334AbjG2MBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 08:00:42 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F9E1737
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 05:00:40 -0700 (PDT)
+        Sat, 29 Jul 2023 08:01:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF183C21
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 05:00:58 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2AEE8216DA;
-        Sat, 29 Jul 2023 12:00:39 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9798F1F8A3;
+        Sat, 29 Jul 2023 12:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690632039; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1690632056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Og/4urZItaDoPrqR068TFRdUJk+qNCxhcstZwekFiAg=;
-        b=QYGnugli6rutLEo+kJ+ZftYb7EXCKpsSPU7RmEy/7nYr2hO+uHW9UP8K0IDGIbj2FnSb25
-        oGBEqfRtvvIThGze/OFnXY7qL4CUtEBk5QpiL0NfwIuWB5X+xLxiFpNqfJ0DE4uLgF1thh
-        7iJMdZRc5S4EwaCE9xhNVpG9Xbu8Zeo=
+        bh=egMCYOG2uWRf43Q/bpZk0mUrDdU/hmHB0oSczsRgcao=;
+        b=fOj76iqAakewDDQVg3ERFYSUceIt7FXI6JlQ6lqVO8CyUdWR40ud7wy+cFCKChbnaVTTWe
+        z7MW6lpyDYO9CKnXZIu84EKiuJBQaQhrJEMq+wgVxj8qI0av88N04uEPa/8X62OhCYYUWP
+        MemmXjpHbJMWduN8ubdjPZQpVMoJbMw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690632039;
+        s=susede2_ed25519; t=1690632056;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Og/4urZItaDoPrqR068TFRdUJk+qNCxhcstZwekFiAg=;
-        b=QJaimAam/uW1kKz6sI4J6IlBDWgUMY0aTmoM+wWSHaXT6n593FEcE16ddZnk5QcAP+Q8Nb
-        aHA46TInyhT2i2Ag==
+        bh=egMCYOG2uWRf43Q/bpZk0mUrDdU/hmHB0oSczsRgcao=;
+        b=X11RbWgLVHaVFMDD4fs+yMbTOlkTBvvV3L7WBcl8wn9fAfvlWx62BvCqodWUbixJ6Ye9SG
+        8+NF8hp2N8kibeDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E735713596;
-        Sat, 29 Jul 2023 12:00:38 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F00013596;
+        Sat, 29 Jul 2023 12:00:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qrlrN2b/xGThewAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sat, 29 Jul 2023 12:00:38 +0000
-Date:   Sat, 29 Jul 2023 14:00:38 +0200
-Message-ID: <87mszfc4gp.wl-tiwai@suse.de>
+        id +cUlGnj/xGT+ewAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 29 Jul 2023 12:00:56 +0000
+Date:   Sat, 29 Jul 2023 14:00:55 +0200
+Message-ID: <87leezc4g8.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Justin Stitt <justinstitt@google.com>
-Cc:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, xen-devel@lists.xenproject.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ALSA: xen-front: refactor deprecated strncpy
-In-Reply-To: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
-References: <20230727-sound-xen-v1-1-89dd161351f1@google.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: bcd2000: refactor deprecated strncpy
+In-Reply-To: <20230727-sound-usb-bcd2000-v1-1-0dc73684b2f0@google.com>
+References: <20230727-sound-usb-bcd2000-v1-1-0dc73684b2f0@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -72,7 +69,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Jul 2023 23:53:24 +0200,
+On Fri, 28 Jul 2023 00:09:29 +0200,
 Justin Stitt wrote:
 > 
 > `strncpy` is deprecated for use on NUL-terminated destination strings [1].
@@ -93,17 +90,17 @@ Justin Stitt wrote:
 > implementation with `strncpy` would fill the entire destination buffer
 > with null bytes [3] while `strscpy` will leave the junk, uninitialized
 > bytes trailing after the _mandatory_ NUL-termination. So, if somehow
-> `pcm->name` or `card->driver/shortname/longname` require this
-> NUL-padding behavior then `strscpy_pad` should be used. My
-> interpretation, though, is that the aforementioned fields are just fine
-> as NUL-terminated strings. Please correct my assumptions if needed and
-> I'll send in a v2.
+> `card->driver` or `card->shortname` require this NUL-padding behavior
+> then `strscpy_pad` should be used. My interpretation, though, is that
+> the aforementioned fields are just fine as NUL-terminated strings.
+> Please correct my assumptions if needed and I'll send in a v2.
 > 
 > [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
 > [2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
 > [3]: https://linux.die.net/man/3/strncpy
 > 
 > Link: https://github.com/KSPP/linux/issues/90
+> Link: https://lore.kernel.org/r/20230727-sound-xen-v1-1-89dd161351f1@google.com (related ALSA patch)
 > Signed-off-by: Justin Stitt <justinstitt@google.com>
 
 Applied now.  Thanks.
