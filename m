@@ -2,339 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1829376820E
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 23:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA6276820C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 23:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbjG2Vu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 17:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S229588AbjG2VuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 17:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjG2VuW (ORCPT
+        with ESMTP id S229437AbjG2VuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 17:50:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E432736
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 14:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690667375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9xoC7L2bOOoVu4fgnru97jFTPx3UfbeG/oW1+7jnOPk=;
-        b=ELu93K+rYkj8lEp8bk08vwvwe4K+e4NGzYU5+4grJRu+TWo3IJct4jcteeeKB8dTKDTj5D
-        MTbBTdpnt3alfTqzKj0bemcnxTl14uRjTGKxN0Pf84hlVxPaBEY57Au4WMJIgod7NxYm9L
-        0vqUczGW7BZd1hDENlTwKUPuIcX/WD4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-662-hWbhkitSMLSaI_dUnS9x_w-1; Sat, 29 Jul 2023 17:49:30 -0400
-X-MC-Unique: hWbhkitSMLSaI_dUnS9x_w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sat, 29 Jul 2023 17:50:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630F12733;
+        Sat, 29 Jul 2023 14:50:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98B08858F1E;
-        Sat, 29 Jul 2023 21:49:29 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D50992166B25;
-        Sat, 29 Jul 2023 21:49:27 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20230718160737.52c68c73@kernel.org>
-References: <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com,
-        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DACCB60AF2;
+        Sat, 29 Jul 2023 21:50:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE68CC433C8;
+        Sat, 29 Jul 2023 21:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690667411;
+        bh=Ezthvn65lOAkT9EOruMybxawg2mE/UwoELe3RFgmO6M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=NjuMSCluKdbvbxEyxmQnlKE9wxyc7qoi8us3aPnGwWc1TYA2mEO0ilDhh2Nf2eQ8j
+         ra+PalXEHmERYbj/WrfN1OaKLPmEGf2Z61TLjKejrpGZ0Db3bKA4w1AVVBBeRvkGic
+         FZt3USMb81EhF/gxKV5qse344vQAlLhMDcKFrog5r2d6iZ+NibxL5wJjH7YIBQXGHi
+         voEZxeyRnQrm1syGkLI4y+zXun7LwE4Z1VGPg8f1Hvmshb9kGUXapJHfn1foc7FXOJ
+         7/T6ObWeOvWYNe7C9NjV5LrfSQvs5To2s6+ugxqFSHEfhh3IioumDTLDC3IuYp9onJ
+         kY5ghkl9k8sZg==
+Date:   Sat, 29 Jul 2023 16:50:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Igor Mammedov <imammedo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
+        rafael@kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
+ pci_assign_unassigned_bridge_resources() only if bus->self not NULL
+Message-ID: <20230729215009.GA820749@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <792237.1690667367.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Sat, 29 Jul 2023 22:49:27 +0100
-Message-ID: <792238.1690667367@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728113216.3140577c@imammedo.users.ipa.redhat.com>
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub, Willem,
+On Fri, Jul 28, 2023 at 11:32:16AM +0200, Igor Mammedov wrote:
+> On Thu, 27 Jul 2023 12:41:02 -0500 Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:
+> > > Commit [1] switched acpiphp hotplug to use
+> > >    pci_assign_unassigned_bridge_resources()
+> > > which depends on bridge being available, however in some cases
+> > > when acpiphp is in use, enable_slot() can get a slot without
+> > > bridge associated.
+> > >   1. legitimate case of hotplug on root bus
+> > >       (likely not exiting on real hw, but widely used in virt world)
+> > >   2. broken firmware, that sends 'Bus check' events to non
+> > >      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
+> > >      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
+> > >      without bridge assigned to it.  
+> > 
+> > Do we have evidence about the details of this non-existent root port?
+> > If we do, I think it would be interesting to include a URL to them in
+> > case there's some hole in the way we handle Bus Check events.
+> 
+> it's scattered over logs Woody has provided, here are links to
+> emails with
+>   1: lspci output
+>       https://lore.kernel.org/r/92150d8d-8a3a-d600-a996-f60a8e4c876c@gmail.com/
+> 
+> according to lscpi and dmesg there is only one root-port at 1c.0
+> which is occupied by wifi card
+> 
+> while DSTD table has more ports described, which is fine as long as
+> missing/disabled are not reported as present.
+> 
+>   2: last round of logs with debug patch /before 40613da5, with 40613da5, and after/
+>       https://lore.kernel.org/r/46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com/
+> 
+> here dmesg shows 1st correct port
+>  ACPI: \_SB_.PCI0.RP03: acpiphp_glue: Bus check in hotplug_event(): bridge: 000000000dad0b34
+> and then later on
+>  ACPI: \_SB_.PCI0.RP07: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+>  ACPI: \_SB_.PCI0.RP08: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+> which aren't recognized as bridge
 
-I think I'm going to need your help with this one.
+Thanks, that does seem a little suspect.  ACPI r6.5 sec 5.6.6 says
+that when OSPM handles a Bus Check, it should "perform a Plug and Play
+re-enumeration operation on the device tree starting from the point
+where it has been notified."
 
-> > syzbot has bisected this issue to:
-> > =
+PCI devices are enumerated by doing PCI config reads.  It would make
+sense to re-enumerate a PCI hierarchy starting with a PCI device
+that's already known to the OS, e.g., by scanning the secondary bus of
+a PCI-to-PCI bridge.
 
-> > commit 7ac7c987850c3ec617c778f7bd871804dc1c648d
-> > Author: David Howells <dhowells@redhat.com>
-> > Date:   Mon May 22 12:11:22 2023 +0000
-> > =
+I think there are two problems here:
 
-> >     udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES
-> > =
+  1) The platform shouldn't send a Bus Check notification to a PCI
+     device that doesn't exist.  How could the OS re-enumerate
+     starting there?
 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15853bc=
-aa80000
-> > start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git=
-://w..
-> > git tree:       upstream
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D17853bc=
-aa80000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D13853bcaa8=
-0000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D150188feee=
-7071a7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Df527b971b4bd=
-c8e79f9e
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12a86682=
-a80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1520ab6ca8=
-0000
-> > =
+  2) Linux runs acpiphp_hotplug_notify() for Bus Checks to
+     non-existent PCI devices when it ignore them; reasoning below.
 
-> > Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
-> > Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PA=
-GES")
-> > =
+We call acpiphp_enumerate_slots() in this path, which happens before
+any of the PCI devices on the root bus have been enumerated:
 
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bis=
-ection
+  pci_register_host_bridge
+    pcibios_add_bus(root bus)
+      acpi_pci_add_bus
+        acpiphp_enumerate_slots(pci_bus *bus)
+          acpi_walk_namespace(acpiphp_add_context)
+            acpiphp_add_context(struct acpiphp_bridge *)
+              acpi_evaluate_integer("_ADR")
+              acpiphp_init_context
+                context->hp.notify = acpiphp_hotplug_notify
 
-The issue that syzbot is triggering seems to be something to do with the
-calculations in the "if (copy <=3D 0) { ... }" chunk in __ip_append_data()=
- when
-MSG_SPLICE_PAGES is in operation.
+So now we've already looked at RP03, RP07, and RP08, and set up the
+.notify() handler for all of them.  Since we haven't scanned the bus
+yet, we don't know that RP03 exists and RP07 and RP08 do not.
 
-What seems to happen is that the test program uses sendmsg() + MSG_MORE to
-loads a UDP packet with 1406 bytes of data to the MTU size (1434) and then
-splices in 8 extra bytes.
+Per ACPI r6.5, sec 6, all these Device objects are "Augmented Device
+Descriptors":
 
-	r3 =3D socket$inet_udp(0x2, 0x2, 0x0)
-	setsockopt$sock_int(r3, 0x1, 0x6, &(0x7f0000000140)=3D0x32, 0x4)
-	bind$inet(r3, &(0x7f0000000000)=3D{0x2, 0x0, @dev=3D{0xac, 0x14, 0x14, 0x=
-15}}, 0x10)
-	connect$inet(r3, &(0x7f0000000200)=3D{0x2, 0x0, @broadcast}, 0x10)
-	sendmmsg(r3, &(0x7f0000000180)=3D[{{0x0, 0x0, 0x0}}, {{0x0, 0xfffffffffff=
-ffed3, &(0x7f0000000940)=3D[{&(0x7f00000006c0)=3D'O', 0x57e}], 0x1}}], 0x4=
-000000000003bd, 0x8800)
-	write$binfmt_misc(r1, &(0x7f0000000440)=3DANY=3D[], 0x8)
-	splice(r0, 0x0, r2, 0x0, 0x4ffe0, 0x0)
+  An Agumented [sic] Device Descriptor, which contains additional
+  device information that is not provided from the Device itself, yet
+  is needed by the Device or Bus driver in order to properly configure
+  and use the device. This type of device is enumerated by a
+  bus-specific enumeration mechanism, and OSPM uses the Address (_ADR)
+  to match the ACPI Device object in the Namespace to the device
+  discovered through bus enumeration.
 
-This results in some negative intermediate values turning up in the
-calculations - and this results in the remaining length being made longer
-from 8 to 14.
+I think that means OSPM should discover a PCI device using the PCI
+bus-specific enumeration mechanism (i.e., config reads) before it even
+looks for a corresponding ACPI Device object, and it should only set
+up .notify() for PCI devices that actually exist, so the Bus Checks on
+RP07 and RP08 would be ignored and we wouldn't even get into the path
+that causes the NULL pointer dereference:
 
-I added some printks (patch attached), resulting in the attached traceline=
-s:
+  acpi_device_hotplug
+    acpiphp_hotplug_notify              # from hp.notify
+      hotplug_event
+        bridge = context->bridge
+        case BUS_CHECK:
+          if (bridge)
+            acpiphp_check_bridge
+          else if (!SLOT_IS_GOING_AWAY)
+            enable_slot
+              bus = slot->bus           # "bus" is a root bus
+              pci_assign_unassigned_bridge_resources(bus->self)
+                bridge = bus->self      # "bridge" is NULL since
+                                        # bus->self is NULL for root buses
+                struct pci_bus *parent = bridge->subordinate
+                                        # NULL pointer dereference
 
-	=3D=3D>splice_to_socket() 7099
-	udp_sendmsg(8,8)
-	__ip_append_data(copy=3D-6,len=3D8, mtu=3D1434 skblen=3D1434 maxfl=3D1428=
-)
-	pagedlen 14 =3D 14 - 0
-	copy -6 =3D 14 - 0 - 6 - 14
-	length 8 -=3D -6 + 0
-	__ip_append_data(copy=3D1414,len=3D14, mtu=3D1434 skblen=3D20 maxfl=3D142=
-8)
-	copy=3D1414 len=3D14
-	skb_splice_from_iter(8,14)
-	__ip_append_data(copy=3D1406,len=3D6, mtu=3D1434 skblen=3D28 maxfl=3D1428=
-)
-	copy=3D1406 len=3D6
-	skb_splice_from_iter(0,6)
-	__ip_append_data(copy=3D1406,len=3D6, mtu=3D1434 skblen=3D28 maxfl=3D1428=
-)
-	copy=3D1406 len=3D6
-	skb_splice_from_iter(0,6)
-	__ip_append_data(copy=3D1406,len=3D6, mtu=3D1434 skblen=3D28 maxfl=3D1428=
-)
-	copy=3D1406 len=3D6
-	skb_splice_from_iter(0,6)
-	__ip_append_data(copy=3D1406,len=3D6, mtu=3D1434 skblen=3D28 maxfl=3D1428=
-)
-	copy=3D1406 len=3D6
-	skb_splice_from_iter(0,6)
-	copy=3D1406 len=3D6
-	skb_splice_from_iter(0,6)
-	...
+Obviously none of this helps solve the current regression.  Changing
+the .notify() setup would be a big change, it would be risky because
+it might affect dock support, and it still wouldn't fix your case 1 of
+hotplug on the root bus in a virtualized environment.
 
-'copy' gets calculated as -6 because the maxfraglen (maxfl=3D1428) is 8 by=
-tes
-less than the amount of data then in the packet (skblen=3D1434).
+> > > Issue is easy to reproduce with QEMU's 'pc' machine provides
+> > > PCI hotplug on hostbridge slots. to reproduce boot kernel at
+> > > commit [1] in VM started with followin CLI and hotplug a device:  
+> > 
+> > You mention CLI; did you mean to include a qemu command line here?
+> > Maybe it's the same thing mentioned in the 40613da52b13 commit log?
+> > I tried briefly to reproduce this using the 40613da52b13 command line
+> > but haven't quite got it going yet.  I think it would be very useful
+> > to either include it here again or point to the 40613da52b13 commit
+> > log.
+> 
+> my bad, I didn't realize that saying 'pc' machine is not sufficient.
+> 
+> minimal CLI can be (important part '-M pc -monitor stdio',
+> the rest is for making guest boot and run at tolerable speed):
+> 
+> $QEMU -M pc -m 4G -monitor stdio -cpu host --enable-kvm vm_disk_image 
+> 
+> Will you amend commit message or shall I repost with changes/Acks?
 
-'copy' gets recalculated part way down as -6 from datalen (14) - transhdrl=
-en
-(0) - fraggap (6) - pagedlen (14).
+I'll give it a shot and post it for your comments.
 
-datalen is 14 because it was length (8) + fraggap (6).
+> > > once guest OS is fully booted at qemu prompt:
+> > > 
+> > > (qemu) device_add e1000
+> > > 
+> > > it will cause NULL pointer dereference at
+> > > 
+> > >     void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge)
+> > >     {
+> > >         struct pci_bus *parent = bridge->subordinate;
 
-Inside skb_splice_from_iter(), we eventually end up in an enless loop in w=
-hich
-msg_iter.count is 0 and the length to be copied is 6.  It always returns 0
-because there's nothing to copy, and so __ip_append_data() cycles round th=
-e
-loop endlessly.
+This worked for me (after setting CONFIG_HOTPLUG_PCI_ACPI=y :)):
 
-Any suggestion as to how to fix this?
+  $ qemu-system-x86_64 -M pc -m 512M -monitor stdio -cpu host --enable-kvm -kernel arch/x86/boot/bzImage -drive format=raw,file=ubuntu.img -append "root=/dev/sda1"
+  (qemu) device_add e1000
 
-Thanks,
-David
----
+(For posterity, replacing "-monitor stdio" with "-nographic -monitor
+telnet:localhost:7001,server,nowait,nodelay" and adding
+"console=ttyS0,115200n8" to the -append made it easier to see the
+crash details.)
 
-Debug hang in pipe_release's pipe_lock
----
- fs/splice.c          |    3 +++
- net/core/skbuff.c    |    7 +++++++
- net/ipv4/ip_output.c |   24 ++++++++++++++++++++++++
- net/ipv4/udp.c       |    3 +++
- 4 files changed, 37 insertions(+)
+> > > [  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
+> > > [...]
+> > > [  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
+> > > [  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
+> > > [  612.277809]  enable_slot+0x21f/0x3e0
+> > > [  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
+> > > [  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
+> > > [  612.277827]  acpi_device_hotplug+0xbc/0x540
+> > > [  612.277834]  acpi_hotplug_work_fn+0x15/0x20
+> > > [  612.277839]  process_one_work+0x1f7/0x370
+> > > [  612.277845]  worker_thread+0x45/0x3b0
+> > > [  612.277850]  ? __pfx_worker_thread+0x10/0x10
+> > > [  612.277854]  kthread+0xdc/0x110
+> > > [  612.277860]  ? __pfx_kthread+0x10/0x10
+> > > [  612.277866]  ret_from_fork+0x28/0x40
+> > > [  612.277871]  ? __pfx_kthread+0x10/0x10
+> > > [  612.277876]  ret_from_fork_asm+0x1b/0x30
+> > > 
+> > > The issue was discovered on Dell Inspiron 7352/0W6WV0 laptop with
+> > > following sequence:
+> > >    1. suspend to RAM
+> > >    2. wake up with the same backtrace being observed:
+> > >    3. 2nd suspend to RAM attempt makes laptop freeze
+> > > 
+> > > Fix it by using __pci_bus_assign_resources() instead of
+> > > pci_assign_unassigned_bridge_resources()as we used to do
+> > > but only in case when bus doesn't have a bridge associated
+> > > with it.
+> > > 
+> > > That let us keep hotplug on root bus working like it used to be
+> > > but at the same time keeps resource reassignment usable on
+> > > root ports (and other 1st level bridges) that was fixed by [1].
+> > > 
+> > > 1)
+> > > Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
+> > > Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
+> > > Reported-by: Woody Suwalski <terraluna977@gmail.com>
+> > > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+> > > ---
+> > >  drivers/pci/hotplug/acpiphp_glue.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+> > > index 328d1e416014..3bc4e1f3efee 100644
+> > > --- a/drivers/pci/hotplug/acpiphp_glue.c
+> > > +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> > > @@ -498,6 +498,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+> > >  				acpiphp_native_scan_bridge(dev);
+> > >  		}
+> > >  	} else {
+> > > +		LIST_HEAD(add_list);
+> > >  		int max, pass;
+> > >  
+> > >  		acpiphp_rescan_slot(slot);
+> > > @@ -511,10 +512,15 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+> > >  				if (pass && dev->subordinate) {
+> > >  					check_hotplug_bridge(slot, dev);
+> > >  					pcibios_resource_survey_bus(dev->subordinate);
+> > > +					if (!bus->self)
+> > > +						__pci_bus_size_bridges(dev->subordinate, &add_list);
+> > >  				}
+> > >  			}
+> > >  		}
+> > > -		pci_assign_unassigned_bridge_resources(bus->self);
+> > > +		if (bus->self)
+> > > +			pci_assign_unassigned_bridge_resources(bus->self);
+> > > +		else
+> > > +			__pci_bus_assign_resources(bus, &add_list, NULL);
 
-diff --git a/fs/splice.c b/fs/splice.c
-index 004eb1c4ce31..9ee82b818bd6 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -801,6 +801,8 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe,=
- struct file *out,
- 	size_t spliced =3D 0;
- 	bool need_wakeup =3D false;
- =
+I really wish we didn't have such different resource assignment paths
+depending on whether the device is on a root bus or deeper in the
+hierarchy.  But we can't fix that now, so this seems like the right
+thing.
 
-+	printk("=3D=3D>splice_to_socket() %u\n", current->pid);
-+
- 	pipe_lock(pipe);
- =
+But would you be OK with this minor mod?
 
- 	while (len > 0) {
-@@ -911,6 +913,7 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe,=
- struct file *out,
- 	pipe_unlock(pipe);
- 	if (need_wakeup)
- 		wakeup_pipe_writers(pipe);
-+	printk("<=3D=3Dsplice_to_socket() =3D %zd\n", spliced ?: ret);
- 	return spliced ?: ret;
- }
- #endif
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a298992060e6..c3d60da9e3f7 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -6801,6 +6801,13 @@ ssize_t skb_splice_from_iter(struct sk_buff *skb, s=
-truct iov_iter *iter,
- 	ssize_t spliced =3D 0, ret =3D 0;
- 	unsigned int i;
- =
+      if (pci_is_root_bus(bus))
+        __pci_bus_size_bridges(dev->subordinate, &add_list);
 
-+	static int __pcount;
-+
-+	if (__pcount < 6) {
-+		printk("skb_splice_from_iter(%zu,%zd)\n", iter->count, maxsize);
-+		__pcount++;
-+	}
-+
- 	while (iter->count > 0) {
- 		ssize_t space, nr, len;
- 		size_t off;
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 6e70839257f7..8c84a7d13627 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1066,6 +1066,14 @@ static int __ip_append_data(struct sock *sk,
- 		copy =3D mtu - skb->len;
- 		if (copy < length)
- 			copy =3D maxfraglen - skb->len;
-+		if (flags & MSG_SPLICE_PAGES) {
-+			static int __pcount;
-+			if (__pcount < 6) {
-+				printk("__ip_append_data(copy=3D%d,len=3D%d, mtu=3D%d skblen=3D%d max=
-fl=3D%d)\n",
-+				       copy, length, mtu, skb->len, maxfraglen);
-+				__pcount++;
-+			}
-+		}
- 		if (copy <=3D 0) {
- 			char *data;
- 			unsigned int datalen;
-@@ -1112,6 +1120,10 @@ static int __ip_append_data(struct sock *sk,
- 			else {
- 				alloclen =3D fragheaderlen + transhdrlen;
- 				pagedlen =3D datalen - transhdrlen;
-+				if (flags & MSG_SPLICE_PAGES) {
-+					printk("pagedlen %d =3D %d - %d\n",
-+					       pagedlen, datalen, transhdrlen);
-+				}
- 			}
- =
+  ...
 
- 			alloclen +=3D alloc_extra;
-@@ -1158,6 +1170,9 @@ static int __ip_append_data(struct sock *sk,
- 			}
- =
+  if (pci_is_root_bus(bus))
+    __pci_bus_assign_resources(bus, &add_list, NULL);
+  else
+    pci_assign_unassigned_bridge_resources(bus->self);
 
- 			copy =3D datalen - transhdrlen - fraggap - pagedlen;
-+			if (flags & MSG_SPLICE_PAGES)
-+				printk("copy %d =3D %d - %d - %d - %d\n",
-+				       copy, datalen, transhdrlen, fraggap, pagedlen);
- 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fragga=
-p, skb) < 0) {
- 				err =3D -EFAULT;
- 				kfree_skb(skb);
-@@ -1165,6 +1180,8 @@ static int __ip_append_data(struct sock *sk,
- 			}
- =
+For two reasons: (1) test the same condition both places, and (2) be a
+little more explicit about the scenario (and "bus->self == NULL" also
+happens for the virtual buses added for SR-IOV).
 
- 			offset +=3D copy;
-+			if (flags & MSG_SPLICE_PAGES)
-+				printk("length %d -=3D %d + %d\n", length, copy, transhdrlen);
- 			length -=3D copy + transhdrlen;
- 			transhdrlen =3D 0;
- 			exthdrlen =3D 0;
-@@ -1192,6 +1209,13 @@ static int __ip_append_data(struct sock *sk,
- 			continue;
- 		}
- =
-
-+		if (flags & MSG_SPLICE_PAGES) {
-+			static int __qcount;
-+			if (__qcount < 6) {
-+				printk("copy=3D%d len=3D%d\n", copy, length);
-+				__qcount++;
-+			}
-+		}
- 		if (copy > length)
- 			copy =3D length;
- =
-
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 42a96b3547c9..bd3f4e62574b 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1081,6 +1081,9 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg,=
- size_t len)
- 	if (msg->msg_flags & MSG_OOB) /* Mirror BSD error message compatibility =
-*/
- 		return -EOPNOTSUPP;
- =
-
-+	if (msg->msg_flags & MSG_SPLICE_PAGES)
-+		printk("udp_sendmsg(%zx,%zx)\n", msg->msg_iter.count, len);
-+
- 	getfrag =3D is_udplite ? udplite_getfrag : ip_generic_getfrag;
- =
-
- 	fl4 =3D &inet->cork.fl.u.ip4;
-
+> > >  	}
+> > >  
+> > >  	acpiphp_sanitize_bus(bus);
+> > > -- 
+> > > 2.39.3
+> > >   
+> > 
+> 
