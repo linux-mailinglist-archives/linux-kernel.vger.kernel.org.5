@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C877E768280
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 00:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536FF768286
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 00:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjG2WR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 18:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        id S229667AbjG2WTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 18:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG2WR1 (ORCPT
+        with ESMTP id S229459AbjG2WTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 18:17:27 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230292680;
-        Sat, 29 Jul 2023 15:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1690669045; bh=5Md0jFhp2sJ0pGrekHfnvbdPswv4yRGYROCpxcISNyw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D+rotqYIOPAJoFdGZggWRqAG9l01ggLPuvwPy11NOFoJk+hXdP+fwCOb0p3cNAxX+
-         FA0rexChmizxYdpmH1T2YaehEleUxF/OLU6YOFr8AH9fuYb6UBmdNwa3MZ7oHRLW4o
-         kCXkazNJeOFhBYgViHX9ygsRzCq/JdfpCfkyVuk8=
-Date:   Sun, 30 Jul 2023 00:17:24 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Yuan Tan <tanyuan@tinylab.org>
-Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] selftests/nolibc: add testcase for pipe.
-Message-ID: <27bd9bc1-e7a5-4a81-91c9-2642feabb7ce@t-8ch.de>
-References: <cover.1690307717.git.tanyuan@tinylab.org>
- <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
+        Sat, 29 Jul 2023 18:19:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CDEE5F;
+        Sat, 29 Jul 2023 15:19:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C74D60B29;
+        Sat, 29 Jul 2023 22:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB17C433C8;
+        Sat, 29 Jul 2023 22:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690669158;
+        bh=hJ6YsESUwInT54UMXHoGOjcL1xW0mvMKXXRrjA3yRK0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GO0GDSAIgY5+Smpv5YCg9yR0+mOx/9snKdfK+Vnom1wx5sEa0aDtFk6upo3KScKkL
+         g6pvbJ44TEz+WcmNU63AOvBaBV8uK2EfLP+JyVG3+QDSTTXqrP/kN28VvlAOrpB0Vd
+         yh652SssPFQOEjq3g3yRLPYuc9lvR9XghFHhJCMn6SO+zFb+h3RPHRlt/e34mhFLzJ
+         3nBbdO1Dw4MLFYNj45wWavpypyQYWx068OMWMvxbJ+gzpABbB02d1/F0hSfzDoMAio
+         HDc281006Qo+Dz8R/duI2KQzOw3qQ3o/+NL3YxQAln1iECIcC1XG+cA6blYmPguhHi
+         ZBso+I092jJJw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1CCC6CE0BB1; Sat, 29 Jul 2023 15:19:18 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 15:19:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 5/5] rcu/tree: Remove superfluous return from void
+ call_rcu* functions
+Message-ID: <96b57ee8-0dc3-4f07-bb6c-3d7c7556deb9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230729142738.222208-1-joel@joelfernandes.org>
+ <20230729142738.222208-7-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230729142738.222208-7-joel@joelfernandes.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-25 14:01:30-0400, Yuan Tan wrote:
-> Add a testcase of pipe that child process sends message to parent process.
+On Sat, Jul 29, 2023 at 02:27:36PM +0000, Joel Fernandes (Google) wrote:
+> The return keyword is not needed here.
 > 
-> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+Odd that this is allowed.  ;-)
+
+I took 1, 2, and 5, thank you!  It would still be good to get Frederic's
+eyes on 3 and 4.
+
+							Thanx, Paul
+
 > ---
->  tools/testing/selftests/nolibc/nolibc-test.c | 34 ++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>  kernel/rcu/tree.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> index 03b1d30f5507..43ba2884fd1e 100644
-> --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> @@ -767,6 +767,39 @@ int test_mmap_munmap(void)
->  	return ret;
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cb1caefa8bd0..7c79480bfaa0 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2713,7 +2713,7 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>   */
+>  void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	return __call_rcu_common(head, func, false);
+> +	__call_rcu_common(head, func, false);
 >  }
+>  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>  #endif
+> @@ -2764,7 +2764,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>   */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	return __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> +	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
 >  
-> +int test_pipe(void)
-> +{
-> +	int pipefd[2];
-> +	char buf[32];
-> +	pid_t pid;
-> +	char *msg = "hello, nolibc";
-
-const char * const
-
-> +
-> +	if (pipe(pipefd) == -1)
-> +		return 1;
-> +
-> +	pid = fork();
-> +
-> +	switch (pid) {
-> +	case -1:
-> +		return 1;
-> +
-> +	case 0:
-> +		close(pipefd[0]);
-> +		write(pipefd[1], msg, strlen(msg));
-
-Isn't this missing to write trailing the 0 byte?
-Also check the return value.
-
-> +		close(pipefd[1]);
-
-Do we need to close the pipefds? The process is exiting anyways.
-
-> +		exit(EXIT_SUCCESS);
-> +
-> +	default:
-> +		close(pipefd[1]);
-> +		read(pipefd[0], buf, 32);
-
-Use sizeof(buf). Check return value == strlen(msg).
-
-> +		close(pipefd[0]);
-> +		wait(NULL);
-
-waitpid(pid, NULL, 0);
-
-> +
-> +		if (strcmp(buf, msg))
-> +			return 1;
-> +		return 0;
-
-return !!strcmp(buf, msg);
-
-> +	}
-> +}
->  
->  /* Run syscall tests between IDs <min> and <max>.
->   * Return 0 on success, non-zero on failure.
-> @@ -851,6 +884,7 @@ int run_syscall(int min, int max)
->  		CASE_TEST(mmap_munmap_good);  EXPECT_SYSZR(1, test_mmap_munmap()); break;
->  		CASE_TEST(open_tty);          EXPECT_SYSNE(1, tmp = open("/dev/null", 0), -1); if (tmp != -1) close(tmp); break;
->  		CASE_TEST(open_blah);         EXPECT_SYSER(1, tmp = open("/proc/self/blah", 0), -1, ENOENT); if (tmp != -1) close(tmp); break;
-> +		CASE_TEST(pipe);              EXPECT_SYSZR(1, test_pipe()); break;
->  		CASE_TEST(poll_null);         EXPECT_SYSZR(1, poll(NULL, 0, 0)); break;
->  		CASE_TEST(poll_stdout);       EXPECT_SYSNE(1, ({ struct pollfd fds = { 1, POLLOUT, 0}; poll(&fds, 1, 0); }), -1); break;
->  		CASE_TEST(poll_fault);        EXPECT_SYSER(1, poll((void *)1, 1, 0), -1, EFAULT); break;
 > -- 
-> 2.39.2
+> 2.41.0.487.g6d72f3e995-goog
 > 
