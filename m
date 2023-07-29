@@ -2,202 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D239376798F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484AD767994
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjG2Aas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S229734AbjG2Act (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG2Aaq (ORCPT
+        with ESMTP id S229481AbjG2Acq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:30:46 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FB0E48;
-        Fri, 28 Jul 2023 17:30:45 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36T0QaJ3019726;
-        Sat, 29 Jul 2023 00:30:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=4ryQ4VY2iuPwio/zUiaUR4jB8wu6z2TdFVd/vX6F7v4=;
- b=AszBDm8PXwfmrMnprkeyAR2zxd08l1omk8EwLl12wS22evqwnpOymHOez2Xt2CnONJki
- eseDB5N/vE2Ylu3LGcOltFKu1KHZRpEwI1vJ4NKEB9wjejbX4m5Q5oyRO4eV2cyUVrxO
- dU/PL9FozlXdP9G76+p3D7tx4JJJBHzyUrKAVyypw4BI/ad1AYfieQAVj7QTnbbxXBYj
- SKVPf97Db84trQp5KX4LnQ3gB/IMlHTtQCQrnHik01j8TXfbWI+q1amVXEqXoGuQAzx/
- PLBiLo9zBkardGeYhWj7FEab8zNwTjXdd+04ehiOZQMi9xCQhqbJJI8B1PjIP3iVUrgo 2Q== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4j0g0p69-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 Jul 2023 00:30:40 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36T0Udxs006544
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 29 Jul 2023 00:30:39 GMT
-Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 28 Jul
- 2023 17:30:38 -0700
-Date:   Fri, 28 Jul 2023 17:30:37 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <quic_eberman@quicinc.com>, <kvalo@kernel.org>,
-        <loic.poulain@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
-        <quic_varada@quicinc.com>
-Subject: Re: [PATCH v4 07/11] firmware: qcom_scm: ipq5332: add msa
- lock/unlock support
-Message-ID: <20230729003037.GA25463@quicinc.com>
-References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
- <20230728063412.1641856-8-quic_mmanikan@quicinc.com>
+        Fri, 28 Jul 2023 20:32:46 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422EF30F9
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:32:44 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-785d3a53ed6so30375739f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1690590763; x=1691195563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MezeuiLBEOiNwGr6mc8OEFUZjD210CTEaCKxvSl/02s=;
+        b=UhjoldLRSI3zIiYaM9p2F6FpkgWOVeTVt8nb13ht3+/KQdcoOBaHvfcv1HLgcG5FxT
+         yXZKK+5PScPz79elmC8w5c7FLw29TxOortbQajsuDpPTOa2FQU7mrDjdq+wi9qeTjnfD
+         Z7fWFR+wCRhdLc+Ss1wPtwF1v3Xfr3kiURxAc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690590763; x=1691195563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MezeuiLBEOiNwGr6mc8OEFUZjD210CTEaCKxvSl/02s=;
+        b=ZdaC+7x198vBEDHjCopp0bRyG2ylF5RcSvgmrzXGBIN2U4FQ/PSJ+fu+jr1NpHsZ4W
+         lVQv7Gi7hRmewHLe9e/iSDwTI/ZfEP+t38TCTe4355XJT45Qnmcx0b3qX89VJKF/klf4
+         LOt+jc7jX+DdGHEX1r8XOyWy0zXX5V2GIcwGuT0bQOd+td5RfGjUPMq+R60SB/R5zGe6
+         p2uwaQZzgb9KmxDM01n41Lmra2h7mXSAjM4yVYemEjz72DJcIGOZKPfqiHfntK/aSftY
+         3leVIal4afVd++Wd/PICj68yzxvK3gxOHvyoxL53mayp1qouO+8MK0+ES+PQGpDte3HG
+         O2eQ==
+X-Gm-Message-State: ABy/qLbs9GUTlk5H8XYZybHIfyOGCF76PW4wwvUKUbFuTFLscDxAWgoN
+        HV72X7FN53Q8tVJm5sJN24/CkSTinF/Lftawa4pX1A==
+X-Google-Smtp-Source: APBJJlGeUQeupNYE1Duri1xyVlwYTRT4rlJMoCFWa7y1Av5Zgtc/RJHSrcC/9wBP59HSsFs5HIKQ9w==
+X-Received: by 2002:a6b:5d02:0:b0:783:6ec1:65f6 with SMTP id r2-20020a6b5d02000000b007836ec165f6mr972706iob.1.1690590763584;
+        Fri, 28 Jul 2023 17:32:43 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id v7-20020a5ec207000000b0078680780694sm1482768iop.34.2023.07.28.17.32.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 28 Jul 2023 17:32:43 -0700 (PDT)
+Message-ID: <1e3d6e78-9b74-1da0-cb33-7caea5ce7a3a@linuxfoundation.org>
+Date:   Fri, 28 Jul 2023 18:32:42 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230728063412.1641856-8-quic_mmanikan@quicinc.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rgHczPV4G-qsl8fDBqaZtPgFe6lm6HnU
-X-Proofpoint-ORIG-GUID: rgHczPV4G-qsl8fDBqaZtPgFe6lm6HnU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 spamscore=0
- impostorscore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307290002
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH next 3/3] selftests:connector: Add root check and fix arg
+ error paths to skip
+Content-Language: en-US
+To:     Anjali Kulkarni <anjali.k.kulkarni@oracle.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1690564372.git.skhan@linuxfoundation.org>
+ <2c0ac97f9c8e6bd46b60854c136099c0dd4a09f6.1690564372.git.skhan@linuxfoundation.org>
+ <0CB227BA-69FD-447F-BE73-2482A6998F7E@oracle.com>
+ <5b283f3b-f176-7f19-5db0-1332a94a44be@linuxfoundation.org>
+ <ec809279-cc41-7e0f-a567-29400b4c34a9@linuxfoundation.org>
+ <16B47831-5F53-4BAF-B347-A1404D2ED264@oracle.com>
+ <957be0e8-2bdf-80f4-92b7-3b9070c546b3@linuxfoundation.org>
+ <3242346A-9B09-44F7-A062-8456F83372C7@oracle.com>
+ <84048d13-9311-36f6-9eb4-8169952580d7@linuxfoundation.org>
+ <AD8D16A6-63BB-4953-80BA-6410B29416D6@oracle.com>
+ <8c92599f-fcb4-3aba-f367-17abd9b52451@linuxfoundation.org>
+ <C3669401-536A-4CB0-80E0-5CCF2DCC36D3@oracle.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <C3669401-536A-4CB0-80E0-5CCF2DCC36D3@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 28 2023 12:04, Manikanta Mylavarapu wrote:
-> IPQ5332 user pd remoteproc firmwares need to be locked
-> with MSA(modem secure access) features. This patch add
-> support to lock/unlock MSA features.
+On 7/28/23 18:19, Anjali Kulkarni wrote:
 > 
-> Signed-off-by: Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
-> ---
-> Changes in v4:
-> 	- Rebased on linux-next
 > 
->  drivers/firmware/qcom_scm.c            | 78 ++++++++++++++++++++++++++
->  drivers/firmware/qcom_scm.h            |  2 +
->  include/linux/firmware/qcom/qcom_scm.h |  2 +
->  3 files changed, 82 insertions(+)
+>> On Jul 28, 2023, at 4:00 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 7/28/23 16:40, Anjali Kulkarni wrote:
+>>>> On Jul 28, 2023, at 3:25 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 7/28/23 15:59, Anjali Kulkarni wrote:
+>>>>>> On Jul 28, 2023, at 2:41 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>
+>>>>>> On 7/28/23 15:21, Anjali Kulkarni wrote:
+>>>>>>>> On Jul 28, 2023, at 12:44 PM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>>>
+>>>>>>>> On 7/28/23 13:06, Shuah Khan wrote:
+>>>>>>>>> On 7/28/23 12:10, Anjali Kulkarni wrote:
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>> On Jul 28, 2023, at 10:29 AM, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> proc_filter test requires root privileges. Add root privilege check
+>>>>>>>>>>> and skip the test. Also fix argument parsing paths to skip in their
+>>>>>>>>>>> error legs.
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>>>>>>>> ---
+>>>>>>>>>>> tools/testing/selftests/connector/proc_filter.c | 9 +++++++--
+>>>>>>>>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>>>> index 4fe8c6763fd8..7b2081b98e5c 100644
+>>>>>>>>>>> --- a/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>>>> +++ b/tools/testing/selftests/connector/proc_filter.c
+>>>>>>>>>>> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
+>>>>>>>>>>>
+>>>>>>>>>>> if (argc > 2) {
+>>>>>>>>>>> printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
+>>>>>>>>>>> - exit(1);
+>>>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>>>> }
+>>>>>>>>>>>
+>>>>>>>>>>> if (argc == 2) {
+>>>>>>>>>>> @@ -256,10 +256,15 @@ int main(int argc, char *argv[])
+>>>>>>>>>>> filter = 1;
+>>>>>>>>>>> } else {
+>>>>>>>>>>> printf("Valid option : -f (for filter feature)\n");
+>>>>>>>>>>> - exit(1);
+>>>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>>>> }
+>>>>>>>>>>> }
+>>>>>>>>>>>
+>>>>>>>>>>> + if (geteuid()) {
+>>>>>>>>>>> + printf("Connector test requires root privileges.\n");
+>>>>>>>>>>> + exit(KSFT_SKIP);
+>>>>>>>>>>> + }
+>>>>>>>>>>> +
+>>>>>>>>>>
+>>>>>>>>>> I am not sure why you have added this check? proc_filter does not need root privilege to run.
+>>>>>>>>>>
+>>>>>>>>> It failed for me when I ran it saying it requires root privileges.
+>>>>>>>>> I had to run it as root.
+>>>>>>>>
+>>>>>>>> The following is what I see when I run the test as non-root
+>>>>>>>> user:
+>>>>>>>>
+>>>>>>>> bind failed: Operation not permitted
+>>>>>>>>
+>>>>>>> Yes, that’s expected on a kernel which does not have the kernel patches submitted with this selftest installed on it.
+>>>>>>> So this check for root needs to be removed.
+>>>>>>
+>>>>>> I will send v2 for this patch without root check. I should have
+>>>>>> split the argument error paths and root check anyway.
+>>>>>>
+>>>>>> However, what is strange is if the test run by root, bind() doesn't fail.
+>>>>>> This doesn't make sense to me based on what you said about bind() fails
+>>>>>> if kernel doesn't support the new feature.
+>>>>>>
+>>>>> I didn’t say that - part of the changes introduced by the patches is to remove the root check and add some features on top of existing code.
+>>>>
+>>>> Okay. So what should happen if a root user runs this test on a kernel
+>>>> that doesn't have the kernel patches submitted with this selftest
+>>>> installed on it?
+>>>>
+>>> It will default to the behavior previous to my changes - that is it will report all events as opposed to a subset of events (which is the new feature added by my change)
+>>
+>> Okay. Sorry I am unable to follow this explanation. This test has just
+>> been added in commit 73a29531f45fed6423144057d7a844aae46dad9d
 > 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 3bc8c63a997f..2275cf7bc887 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -676,6 +676,84 @@ bool qcom_scm_pas_supported(u32 peripheral)
->  }
->  EXPORT_SYMBOL(qcom_scm_pas_supported);
->  
-> +/**
-> + * qcom_scm_msa_lock() - Lock given peripheral firmware region as MSA
-> + *
-> + * @peripheral:	peripheral id
-> + *
-> + * Return 0 on success.
-> + */
-> +int qcom_scm_msa_lock(u32 peripheral)
-> +{
-> +	int ret;
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_PIL,
-> +		.cmd = QCOM_SCM_MSA_LOCK,
-> +		.arginfo = QCOM_SCM_ARGS(1),
-> +		.args[0] = peripheral,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +	struct qcom_scm_res res;
-> +
-> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
-> +					  QCOM_SCM_MSA_LOCK))
-> +		return 0;
-> +
-> +	ret = qcom_scm_clk_enable();
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = qcom_scm_bw_enable();
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
-> +	qcom_scm_bw_disable();
-> +	qcom_scm_clk_disable();
-> +
-> +	return ret ? : res.result[0];
-> +}
-> +EXPORT_SYMBOL(qcom_scm_msa_lock);
+> Yes, the test has been added just now, but it also tests kernels previous to the new feature addition. So it is adding a selftest to kernels previous to this commit.
+> That is, the connector module in kernel (before my changes) was sending to a listener user process messages for all process events - fork, exit, exec etc. This was only being done if the user process was run as root.
+> With my changes, we add filtering based on an option added by user, which filters based on input and gives back to the user only fork, or only exit, or a combination of those. This is a new feature added. In addition to this filtering, we have also made the change to allow user process to be non-root when receiving these messages.
+> 
+>>
+>> Can you please look at the usage for this test:
+>>
+>> - What should happen when kernel without filtering is run as
+>> root or non-root
+> 
+> By kernel without filtering you mean a kernel without my patches? In that case, it should run only as root - non-root should fail. In this case, it falls back to default behavior before my change, where listener user process gets all messages related to process events. I have not tested this a lot, I am working on testing this on a kernel without my changes.
+> 
 
-Could you please convert this to EXPORT_SYMBOL_GPL? 
+Then you definitely need better messages when bind() fails
+on kernels without the feature. It has to be clear to the
+user why the test is exiting without running.
 
-> +
-> +/**
-> + * qcom_scm_msa_unlock() - Unlock given peripheral MSA firmware region
-> + *
-> + * @peripheral:	peripheral id
-> + *
-> + * Return 0 on success.
-> + */
-> +int qcom_scm_msa_unlock(u32 peripheral)
-> +{
-> +	int ret;
-> +	struct qcom_scm_desc desc = {
-> +		.svc = QCOM_SCM_SVC_PIL,
-> +		.cmd = QCOM_SCM_MSA_UNLOCK,
-> +		.arginfo = QCOM_SCM_ARGS(1),
-> +		.args[0] = peripheral,
-> +		.owner = ARM_SMCCC_OWNER_SIP,
-> +	};
-> +	struct qcom_scm_res res;
-> +
-> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
-> +					  QCOM_SCM_MSA_UNLOCK))
-> +		return 0;
-> +
-> +	ret = qcom_scm_clk_enable();
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = qcom_scm_bw_enable();
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
-> +	qcom_scm_bw_disable();
-> +	qcom_scm_clk_disable();
-> +
-> +	return ret ? : res.result[0];
-> +}
-> +EXPORT_SYMBOL(qcom_scm_msa_unlock);
+So this is what is needed:
+- Check if the test can be run as non-root (whatever that means)
+- It is still not clear to me if bind() fails does that mean the
+   kernel doesn't doesn't support the new feature.
 
-This one too?
+Since this test essentially behaves differently when the feature
+is supported vs. not. So it has to behave consistently somehow
+checking for the feature and report correctly.
 
-Reference: [1]
-The whole driver has now moved to using EXPORT_SYMBOL_GPL() now.
+thanks,
+-- Shuah
 
-[1] https://lore.kernel.org/lkml/19d9ac0bf79f957574ef9b3b73246ea0113cc0fd.1690503893.git.quic_gurus@quicinc.com/
 
-Thank you.
-
-Guru Das.
