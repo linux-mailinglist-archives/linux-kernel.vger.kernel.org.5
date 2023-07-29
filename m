@@ -2,123 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2CE7679EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC897679F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbjG2All (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S236912AbjG2Aok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236932AbjG2Al0 (ORCPT
+        with ESMTP id S236848AbjG2Ao1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:41:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD3749DD;
-        Fri, 28 Jul 2023 17:39:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D31462223;
-        Sat, 29 Jul 2023 00:38:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF58C433C7;
-        Sat, 29 Jul 2023 00:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690591099;
-        bh=6JXSUjfSrAVc9Yojm4Q1bx0HnxoRA4QH67N8+PlgllQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J+hheeEAXGjkYYCCmxnoaweRRs8KOEdXzU5nxvMwhrkGOAxqilIb/7sD2bEFVyJNO
-         grItDGNQO6mJYxviWKFCklz1n78PrW2GtTYuYVkYxMdylw8yMsKEejW9VMfQWNQaOF
-         gUt3Wlnago3a9Fl1tEwG2lQngXlD4J51YX0/tRn0u3NWctJFZ0ENyRtNZHu0u4rGUJ
-         tIvYn1FeDhnhib0491ZHKCtibe0SYqICeJvU9LC/kOwLSmxEa0H5Imyt07CcnPSgV2
-         jGDYgpEWkH2iGDLlhaji5PjAKxSTZIKh/tFiXrEWILVH++wECunjT9aMyurxQboCG4
-         C6kBQy04B29GQ==
-Date:   Sat, 29 Jul 2023 09:38:14 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Georg =?UTF-8?B?TcO8bGxlcg==?= <georgmueller@gmx.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf probe: skip test_uprobe_from_different_cu if there
- is no gcc
-Message-Id: <20230729093814.d48a7b4fb51fdd74ad50ba42@kernel.org>
-In-Reply-To: <20230728151812.454806-2-georgmueller@gmx.net>
-References: <20230728151812.454806-2-georgmueller@gmx.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 28 Jul 2023 20:44:27 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613945264
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:42:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d074da73c3eso2525606276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690591308; x=1691196108;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pFylZ7MUbxwsfgnkCbIwukJjKcbZuVflXJcOt3ffCK4=;
+        b=0b9hKMxDqRwFQQnLMcqkv8PDDG/B+EGGKIIflyXXH1ZyfSndsboeXJ+TgsSS2iwWwD
+         mZK9za+90jiszGzd793UetnAs8xekTA2T4vD5AUxgo9V3HL6L2s22bi7IHqLJj4F6nD2
+         rCVTi2QOSa1y//QAMNR9pI55a5+voH5Q75OKbx+jiIKf+60l26WlJxC/Ge3hydIgerhS
+         uit7vPqeM5/JYzJwBgmRMtGvrlUQ++fcIaRDfp4/RFoTphs+Z9MfkMGcLscWr4oktRPN
+         mWg3Y7aOpahbc8mMonn0PhHsSyXhVyZJ3jKC6IlOJRcTpdIF2gNEz1894Cw3rt+1qqE9
+         qRqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690591308; x=1691196108;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pFylZ7MUbxwsfgnkCbIwukJjKcbZuVflXJcOt3ffCK4=;
+        b=WxHSlHIPuQvgRFPctrGUrcCbC4J7xzojC9Q3PDWa+oeB520cMUo5LfhIRtZrR+FKLN
+         B6/20XSVHeNrnsfus+SJkmMSrvwvHEXOyXKtRLRV6QXHRsKfdDp+RqY10PDDideDgmx+
+         bpT1KnWXXyw5zs4dMH889/4Zp0UJduNRcGMu7xW1JQA1n0lZ/3e6dwb3xQ8jbdpfkm0s
+         4M+LSEruhIRnzz1x4BFR4dAaYyn9Rcxzh5zSFHR1clwc5sDzADndJBDaJ3DUswfWNuTb
+         IYEPzx07OGcTI1G5pxvU1bicx+CCHMWBU6f4+wAYIpVZ2xSWNFufbVjXuIY8nntizpZW
+         wrLQ==
+X-Gm-Message-State: ABy/qLY2/90vQT7I6M7c3AwgIO3pyzsD2+MvEJMob0vZSFqA78W5Izlm
+        MDcfQDTmoJEA5M31ifYC0hMrsfPYOiw=
+X-Google-Smtp-Source: APBJJlGYk/HASjtwEfhn9G1Ynkqr6kkqBYHzgw8GP9sqBMBlRYNDe9UG6jZXkz7Xk/58V5PqTY9JcKEc00E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:54f:0:b0:d16:1f54:75e1 with SMTP id
+ 76-20020a25054f000000b00d161f5475e1mr19267ybf.0.1690591308572; Fri, 28 Jul
+ 2023 17:41:48 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 28 Jul 2023 17:41:44 -0700
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230729004144.1054885-1-seanjc@google.com>
+Subject: [PATCH] KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 17:18:12 +0200
-Georg Müller <georgmueller@gmx.net> wrote:
+Wrap kvm_{gfn,hva}_range.pte in a union so that future notifier events can
+pass event specific information up and down the stack without needing to
+constantly expand and churn the APIs.  Lockless aging of SPTEs will pass
+around a bitmap, and support for memory attributes will pass around the
+new attributes for the range.
 
-> Without gcc, the test will fail.
-> 
-> On cleanup, ignore probe removal errors. Otherwise, in case of an error
-> adding the probe, the temporary directory is not removed.
+Add a "KVM_NO_ARG" placeholder to simplify handling events without an
+argument (creating a dummy union variable is midly annoying).
 
-Interesting, so clang will not generate DWARF or perf probe is not able to
-handle clang generated DWARF?
+Opportunstically drop explicit zero-initialization of the "pte" field, as
+omitting the field (now a union) has the same effect.
 
-Anyway, this looks good to me.
+Cc: Yu Zhao <yuzhao@google.com>
+Link: https://lore.kernel.org/all/CAOUHufagkd2Jk3_HrVoFFptRXM=hX2CV8f+M-dka-hJU4bP8kw@mail.gmail.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If this looks good, my thought is to squeeze it into 6.6 so that the MGLRU
+and guest_memfd() series can build on it.  Or those series could just
+include it?
 
-> 
-> Fixes: 56cbeacf1435 ("perf probe: Add test for regression introduced by switch to die_get_decl_file()")
-> Signed-off-by: Georg Müller <georgmueller@gmx.net>
-> Link: https://lore.kernel.org/r/CAP-5=fUP6UuLgRty3t2=fQsQi3k4hDMz415vWdp1x88QMvZ8ug@mail.gmail.com/
-> ---
->  tools/perf/tests/shell/test_uprobe_from_different_cu.sh | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/shell/test_uprobe_from_different_cu.sh b/tools/perf/tests/shell/test_uprobe_from_different_cu.sh
-> index 00d2e0e2e0c2..319f36ebb9a4 100755
-> --- a/tools/perf/tests/shell/test_uprobe_from_different_cu.sh
-> +++ b/tools/perf/tests/shell/test_uprobe_from_different_cu.sh
-> @@ -4,6 +4,12 @@
-> 
->  set -e
-> 
-> +# skip if there's no gcc
-> +if ! [ -x "$(command -v gcc)" ]; then
-> +        echo "failed: no gcc compiler"
-> +        exit 2
-> +fi
-> +
->  temp_dir=$(mktemp -d /tmp/perf-uprobe-different-cu-sh.XXXXXXXXXX)
-> 
->  cleanup()
-> @@ -11,7 +17,7 @@ cleanup()
->  	trap - EXIT TERM INT
->  	if [[ "${temp_dir}" =~ ^/tmp/perf-uprobe-different-cu-sh.*$ ]]; then
->  		echo "--- Cleaning up ---"
-> -		perf probe -x ${temp_dir}/testfile -d foo
-> +		perf probe -x ${temp_dir}/testfile -d foo || true
->  		rm -f "${temp_dir}/"*
->  		rmdir "${temp_dir}"
->  	fi
-> --
-> 2.41.0
-> 
+ arch/arm64/kvm/mmu.c       |  2 +-
+ arch/mips/kvm/mmu.c        |  2 +-
+ arch/riscv/kvm/mmu.c       |  2 +-
+ arch/x86/kvm/mmu/mmu.c     |  2 +-
+ arch/x86/kvm/mmu/tdp_mmu.c |  6 +++---
+ include/linux/kvm_host.h   |  6 +++++-
+ virt/kvm/kvm_main.c        | 18 +++++++++---------
+ 7 files changed, 21 insertions(+), 17 deletions(-)
 
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 6db9ef288ec3..55f03a68f1cd 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1721,7 +1721,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ 
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+-	kvm_pfn_t pfn = pte_pfn(range->pte);
++	kvm_pfn_t pfn = pte_pfn(range->arg.pte);
+ 
+ 	if (!kvm->arch.mmu.pgt)
+ 		return false;
+diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
+index e8c08988ed37..7b2ac1319d70 100644
+--- a/arch/mips/kvm/mmu.c
++++ b/arch/mips/kvm/mmu.c
+@@ -447,7 +447,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	gpa_t gpa = range->start << PAGE_SHIFT;
+-	pte_t hva_pte = range->pte;
++	pte_t hva_pte = range->arg.pte;
+ 	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
+ 	pte_t old_pte;
+ 
+diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+index f2eb47925806..857f4312b0f8 100644
+--- a/arch/riscv/kvm/mmu.c
++++ b/arch/riscv/kvm/mmu.c
+@@ -559,7 +559,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	int ret;
+-	kvm_pfn_t pfn = pte_pfn(range->pte);
++	kvm_pfn_t pfn = pte_pfn(range->arg.pte);
+ 
+ 	if (!kvm->arch.pgd)
+ 		return false;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index ec169f5c7dce..d72f2b20f430 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1588,7 +1588,7 @@ static __always_inline bool kvm_handle_gfn_range(struct kvm *kvm,
+ 	for_each_slot_rmap_range(range->slot, PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL,
+ 				 range->start, range->end - 1, &iterator)
+ 		ret |= handler(kvm, iterator.rmap, range->slot, iterator.gfn,
+-			       iterator.level, range->pte);
++			       iterator.level, range->arg.pte);
+ 
+ 	return ret;
+ }
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 512163d52194..6250bd3d20c1 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1241,7 +1241,7 @@ static bool set_spte_gfn(struct kvm *kvm, struct tdp_iter *iter,
+ 	u64 new_spte;
+ 
+ 	/* Huge pages aren't expected to be modified without first being zapped. */
+-	WARN_ON(pte_huge(range->pte) || range->start + 1 != range->end);
++	WARN_ON(pte_huge(range->arg.pte) || range->start + 1 != range->end);
+ 
+ 	if (iter->level != PG_LEVEL_4K ||
+ 	    !is_shadow_present_pte(iter->old_spte))
+@@ -1255,9 +1255,9 @@ static bool set_spte_gfn(struct kvm *kvm, struct tdp_iter *iter,
+ 	 */
+ 	tdp_mmu_iter_set_spte(kvm, iter, 0);
+ 
+-	if (!pte_write(range->pte)) {
++	if (!pte_write(range->arg.pte)) {
+ 		new_spte = kvm_mmu_changed_pte_notifier_make_spte(iter->old_spte,
+-								  pte_pfn(range->pte));
++								  pte_pfn(range->arg.pte));
+ 
+ 		tdp_mmu_iter_set_spte(kvm, iter, new_spte);
+ 	}
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 9d3ac7720da9..9125d0ab642d 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -256,11 +256,15 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
+ #endif
+ 
+ #ifdef KVM_ARCH_WANT_MMU_NOTIFIER
++union kvm_mmu_notifier_arg {
++	pte_t pte;
++};
++
+ struct kvm_gfn_range {
+ 	struct kvm_memory_slot *slot;
+ 	gfn_t start;
+ 	gfn_t end;
+-	pte_t pte;
++	union kvm_mmu_notifier_arg arg;
+ 	bool may_block;
+ };
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index dfbaafbe3a00..f84ef9399aee 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -526,7 +526,7 @@ typedef void (*on_unlock_fn_t)(struct kvm *kvm);
+ struct kvm_hva_range {
+ 	unsigned long start;
+ 	unsigned long end;
+-	pte_t pte;
++	union kvm_mmu_notifier_arg arg;
+ 	hva_handler_t handler;
+ 	on_lock_fn_t on_lock;
+ 	on_unlock_fn_t on_unlock;
+@@ -547,6 +547,8 @@ static void kvm_null_fn(void)
+ }
+ #define IS_KVM_NULL_FN(fn) ((fn) == (void *)kvm_null_fn)
+ 
++static const union kvm_mmu_notifier_arg KVM_NO_ARG;
++
+ /* Iterate over each memslot intersecting [start, last] (inclusive) range */
+ #define kvm_for_each_memslot_in_hva_range(node, slots, start, last)	     \
+ 	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+@@ -591,7 +593,7 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+ 			 * bother making these conditional (to avoid writes on
+ 			 * the second or later invocation of the handler).
+ 			 */
+-			gfn_range.pte = range->pte;
++			gfn_range.arg = range->arg;
+ 			gfn_range.may_block = range->may_block;
+ 
+ 			/*
+@@ -632,14 +634,14 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
+ 						unsigned long start,
+ 						unsigned long end,
+-						pte_t pte,
++						union kvm_mmu_notifier_arg arg,
+ 						hva_handler_t handler)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+ 	const struct kvm_hva_range range = {
+ 		.start		= start,
+ 		.end		= end,
+-		.pte		= pte,
++		.arg		= arg,
+ 		.handler	= handler,
+ 		.on_lock	= (void *)kvm_null_fn,
+ 		.on_unlock	= (void *)kvm_null_fn,
+@@ -659,7 +661,6 @@ static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn
+ 	const struct kvm_hva_range range = {
+ 		.start		= start,
+ 		.end		= end,
+-		.pte		= __pte(0),
+ 		.handler	= handler,
+ 		.on_lock	= (void *)kvm_null_fn,
+ 		.on_unlock	= (void *)kvm_null_fn,
+@@ -693,6 +694,7 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+ 					pte_t pte)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
++	const union kvm_mmu_notifier_arg arg = { .pte = pte };
+ 
+ 	trace_kvm_set_spte_hva(address);
+ 
+@@ -708,7 +710,7 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+ 	if (!READ_ONCE(kvm->mmu_invalidate_in_progress))
+ 		return;
+ 
+-	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_change_spte_gfn);
++	kvm_handle_hva_range(mn, address, address + 1, arg, kvm_change_spte_gfn);
+ }
+ 
+ void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
+@@ -747,7 +749,6 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 	const struct kvm_hva_range hva_range = {
+ 		.start		= range->start,
+ 		.end		= range->end,
+-		.pte		= __pte(0),
+ 		.handler	= kvm_unmap_gfn_range,
+ 		.on_lock	= kvm_mmu_invalidate_begin,
+ 		.on_unlock	= kvm_arch_guest_memory_reclaimed,
+@@ -812,7 +813,6 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+ 	const struct kvm_hva_range hva_range = {
+ 		.start		= range->start,
+ 		.end		= range->end,
+-		.pte		= __pte(0),
+ 		.handler	= (void *)kvm_null_fn,
+ 		.on_lock	= kvm_mmu_invalidate_end,
+ 		.on_unlock	= (void *)kvm_null_fn,
+@@ -845,7 +845,7 @@ static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+ {
+ 	trace_kvm_age_hva(start, end);
+ 
+-	return kvm_handle_hva_range(mn, start, end, __pte(0), kvm_age_gfn);
++	return kvm_handle_hva_range(mn, start, end, KVM_NO_ARG, kvm_age_gfn);
+ }
+ 
+ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
 
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.41.0.487.g6d72f3e995-goog
+
