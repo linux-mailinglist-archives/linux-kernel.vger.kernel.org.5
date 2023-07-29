@@ -2,163 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05AA767D0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B547767D11
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 10:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjG2IEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 04:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S230453AbjG2IFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 04:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjG2IE2 (ORCPT
+        with ESMTP id S229646AbjG2IFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 04:04:28 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A41E93C30;
-        Sat, 29 Jul 2023 01:04:26 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36T84ILs004323;
-        Sat, 29 Jul 2023 10:04:18 +0200
-Date:   Sat, 29 Jul 2023 10:04:18 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v2 09/14] selftests/nolibc: allow quit qemu-system when
- poweroff fails
-Message-ID: <20230729080418.GJ956@1wt.eu>
-References: <20230722130248.GK17311@1wt.eu>
- <20230725145955.37685-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725145955.37685-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sat, 29 Jul 2023 04:05:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFEE3C30
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 01:05:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C5F760A50
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 08:05:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0CECC433C8
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 08:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690617899;
+        bh=gCGqzEybAhG4L2ceSgPliqsVQDGJ+XyMbNfv/tBjtNs=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=Z6k6zVQLADvf8PGUEN0vehhe+oC2HJL97wOuiTpFkuNJfJSoh94ZZg8ZeRGHTgIUU
+         HFy0uoguca6ajb5/RMRgI4s21FNv54xDp6GXqdi5+bbQQKKVNyMPDPZ67hSNnK1JNj
+         Mn9IzykPG7qkmRVKXBUbET4JHcJD533O6KEu3vrZ8dxDDVRdbci46j2PpIIgLBhgSJ
+         lMCaP8RKKZqAQWyYr/aH7uv8XjncKdmjJUKcbUlzxGLvyOGUwMxolITGqjIyIVyfMW
+         yPxayzhYgnm5wey6h9gdydHH7b1Hs0SSH8uJ/UIASCn4Zr451Wgf0AImxkPTBAOMug
+         cUXJ9nZt7u0Yw==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id A933527C0054;
+        Sat, 29 Jul 2023 04:04:58 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Sat, 29 Jul 2023 04:04:58 -0400
+X-ME-Sender: <xms:KsjEZPNR-UhnVCqta9SHwRe1Qu5LUvZ2rXQBkwUiQwzxTopFCF8Jag>
+    <xme:KsjEZJ9Swp_dcyZGvTyqykb-js1qzBRNU8HOKmmodCWufk50VgWD6lW4iOrcnkmxM
+    10EJ5bddfB6d2uIVPo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieejgdduvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvvefutgesth
+    dtredtreertdenucfhrhhomhepfdetrhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnuges
+    khgvrhhnvghlrdhorhhgqeenucggtffrrghtthgvrhhnpedvveeigfetudegveeiledvgf
+    evuedvgfetgeefieeijeejffeggeehudegtdevheenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugdomhgvshhmthhprghuthhhphgvrh
+    hsohhnrghlihhthidquddvkeehudejtddvgedqvdekjedttddvieegqdgrrhhnugeppehk
+    vghrnhgvlhdrohhrghesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:KsjEZORf7J_p80wAvuQX30fSsYQdlTeK7NR1xwoyhTcnhRm6q1uwaQ>
+    <xmx:KsjEZDsY39gawhEX48g9Q_N9SAQr-W0Cb3ETqs-vCvDOvZyH5oeLRg>
+    <xmx:KsjEZHcXaoN7cJn0tfTH2HrLRY_wndeF5KCxRioqDE9XgqOL3k2JSg>
+    <xmx:KsjEZPHPrMW_LRbkS2i2ekcqSeRcAmahnR2bKEHqCHMO9owbv8APOA>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6DD30B60089; Sat, 29 Jul 2023 04:04:58 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <fc2b139b-909b-46d7-abbc-7ab287c9d06d@app.fastmail.com>
+In-Reply-To: <ef413a40-ddc4-4d23-bc56-23b7095ffc83@app.fastmail.com>
+References: <20230726145740.1765323-1-arnd@kernel.org>
+ <CAJF2gTTC0BTOyWH4Zod1oRQaUpS9dE-6=otfpGOPcCcffrHohQ@mail.gmail.com>
+ <ef413a40-ddc4-4d23-bc56-23b7095ffc83@app.fastmail.com>
+Date:   Sat, 29 Jul 2023 10:04:38 +0200
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Arnd Bergmann" <arnd@arndb.de>, guoren <guoren@kernel.org>
+Cc:     "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] csky: fix old style declaration in module.c
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:59:55PM +0800, Zhangjin Wu wrote:
-> > On Wed, Jul 19, 2023 at 09:27:08PM +0800, Zhangjin Wu wrote:
-> > > The kernel of some architectures can not poweroff qemu-system normally,
-> > > especially for tinyconfig.
-> > > 
-> > > Some architectures may have no kernel poweroff support, the others may
-> > > require more kernel config options and therefore slow down the
-> > > tinyconfig build and test. and also, it's very hard (and some even not
-> > > possible) to find out the exact poweroff related kernel config options
-> > > for every architecture.
-> > > 
-> > > Since the low-level poweroff support is heavily kernel & qemu dependent,
-> > > it is not that critical to both nolibc and nolibc-test, let's simply
-> > > ignore the poweroff required kernel config options for tinyconfig (and
-> > > even for defconfig) and quit qemu-system after a specified timeout or
-> > > with an expected system halt or poweroff string (these strings mean our
-> > > reboot() library routine is perfectly ok).
-> > > 
-> > > QEMU_TIMEOUT value can be configured for every architecture based on
-> > > their time cost requirement of boot+test+poweroff.
-> > > 
-> > > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > > ---
-> > >  tools/testing/selftests/nolibc/Makefile | 23 +++++++++++++++++++++--
-> > >  1 file changed, 21 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> > > index 541f3565e584..a03fab020ebe 100644
-> > > --- a/tools/testing/selftests/nolibc/Makefile
-> > > +++ b/tools/testing/selftests/nolibc/Makefile
-> > > @@ -93,6 +93,9 @@ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1
-> > >  QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-> > >  QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
-> > >  
-> > > +# QEMU_TIMEOUT: some architectures can not poweroff normally, especially for tinyconfig
-> > > +QEMU_TIMEOUT             = $(QEMU_TIMEOUT_$(XARCH))
-> > > +
-> > >  # OUTPUT is only set when run from the main makefile, otherwise
-> > >  # it defaults to this nolibc directory.
-> > >  OUTPUT ?= $(CURDIR)/
-> > > @@ -224,16 +227,32 @@ kernel: extconfig
-> > >  # common macros for qemu run/rerun targets
-> > >  QEMU_SYSTEM_RUN = qemu-system-$(QEMU_ARCH) -display none -no-reboot -kernel "$(KERNEL_IMAGE)" -serial stdio $(QEMU_ARGS)
-> > >  
-> > > +ifneq ($(QEMU_TIMEOUT),)
-> > > +TIMEOUT_CMD = t=$(QEMU_TIMEOUT); \
-> > > +	while [ $$t -gt 0 ]; do                                                       \
-> > > +	    sleep 5; t=$$(expr $$t - 5); echo "detecting power off ...";              \
-> > > +	    if grep -qE "reboot: System halted|reboot: Power down" "$(RUN_OUT)"; then \
-> > > +		pkill -9 qemu-system-$(QEMU_ARCH);                                    \
-> > > +		echo "powered off, test finish"; t=1; break;                          \
-> > > +	    fi;                                                                       \
-> > > +	done;                                                                         \
-> > > +	if [ $$t -le 0 ]; then pkill -9 qemu-system-$(QEMU_ARCH); echo "qemu-system-$(QEMU_ARCH) timeout"; fi
-> > 
-> > Please have a look at the "timeout" command whichi makes all this much
-> > simpler.
-> 
-> Yeah, I used 'timeout --forgeground' before, but it is still a dead wait
-> and it is very hard for us to configure a just right wait time.
-> 
-> If the configured wait time is short, the qemu will be killed during the
-> test or before running the test, If the configured wait time is long, we
-> will need to dead wait there even if the test is finished, although
-> during interactive running, we can press 'CTRL + A X', but for
-> background running, it is just time waste.
-> 
-> To fix up this issue, the above method used at last allow to detect the
-> output string, when the test finish and print something lines like:
-> 
->     reboot: System halted
->     reboot: Power down.
-> 
-> We will use pkill to send signal to tell qemu quit, so, it is ok for us
-> to configure a even'big' timeout, if the kernel can normally poweroff or
-> if nolibc can successfully send the poweroff syscall, the above message
-> will be detected and qemu will quit as expected, it will completely
-> avoid dead wait, the configured timeout will never happen, this is
-> comfortable.
-> 
-> The worst case is only when qemu or kernel reject to boot, for example,
-> a qemu bios missing or mismatch issue or a kernel regression or a wrong
-> kernel config option, for these cases, the real timeout logic will work
-> for us.
-> 
-> As a summary, our timeout logic here include two parts: one is
-> 'poweroff' related string detection, another is the real timeout logic. 
-> 
-> Based on current implementation, I even plan to add the test finish
-> string in the expected strings:
-> 
->     Leaving init with final status
-> 
-> And even further, when a hang detected (no normal poweroff or test
-> finish string detected), print the whole or last part of running log to
-> tell users what happens.
+On Sat, Jul 29, 2023, at 09:06, Arnd Bergmann wrote:
+> On Sat, Jul 29, 2023, at 06:59, Guo Ren wrote:
 
-Again, all of this seems ridiculously complicated for what seems to be
-a very unlikely issue. You mentioned earlier:
+> I'd like to enable a few warning options (-Wextra, -Wrestrict,
+> -Wmissing-prototypes, ...) in the Kbuild for 6.6, but the Makefile
+> changes will probably go through the Kbuild tree or linux-mm,
+> and the fixes for existing warnings can just take their normal way.
 
-  > > > The kernel of some architectures can not poweroff qemu-system
-  > > > normally, especially for tinyconfig.
+I just checked my log files again and I now see that there
+are actually a number of -Wmissing-prototype warnings as well:
 
-Till now all those I tested do power off correctly. So if the problem
-is related to one specific arch, first it should be mentioned in the
-commit message, and maybe we need to look closer why it's doing that
-instead of papering over it, and if it's caused by tinyconfig, it just
-means we need to produce a more reasonable config. But I still don't
-like the idea of causing a problem on one side, and making the other
-side totally ugly just because of the problem. The timeout solution
-should be a last resort one which clearly explains why we can't do
-differently.
+csky/kernel/signal.c:255:17: error: no previous prototype for 'do_notify_resume' [-Werror=missing-prototypes]
+csky/mm/fault.c:187:17: error: no previous prototype for 'do_page_fault' [-Werror=missing-prototypes]
+csky/kernel/traps.c:57:13: error: no previous prototype for 'trap_init' [-Werror=missing-prototypes]
+csky/kernel/traps.c:150:15: error: no previous prototype for 'do_trap_unknown' [-Werror=missing-prototypes]
+csky/kernel/traps.c:152:15: error: no previous prototype for 'do_trap_zdiv' [-Werror=missing-prototypes]
+csky/kernel/traps.c:154:15: error: no previous prototype for 'do_trap_buserr' [-Werror=missing-prototypes]
+csky/kernel/traps.c:157:17: error: no previous prototype for 'do_trap_misaligned' [-Werror=missing-prototypes]
+csky/kernel/traps.c:168:17: error: no previous prototype for 'do_trap_bkpt' [-Werror=missing-prototypes]
+csky/kernel/traps.c:187:17: error: no previous prototype for 'do_trap_illinsn' [-Werror=missing-prototypes]
+csky/kernel/traps.c:210:17: error: no previous prototype for 'do_trap_fpe' [-Werror=missing-prototypes]
+csky/kernel/traps.c:220:17: error: no previous prototype for 'do_trap_priv' [-Werror=missing-prototypes]
+csky/kernel/traps.c:230:17: error: no previous prototype for 'trap_c' [-Werror=missing-prototypes]
+csky/kernel/vdso/vgettimeofday.c:6:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
+csky/kernel/vdso/vgettimeofday.c:12:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
+csky/kernel/vdso/vgettimeofday.c:18:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
+csky/kernel/vdso/vgettimeofday.c:24:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
+csky/kernel/setup.c:104:34: error: no previous prototype for 'csky_start' [-Werror=missing-prototypes]
+csky/kernel/ptrace.c:320:16: error: no previous prototype for 'syscall_trace_enter' [-Werror=missing-prototypes]
+csky/kernel/ptrace.c:336:17: error: no previous prototype for 'syscall_trace_exit' [-Werror=missing-prototypes]
 
-Also, defconfig and tinyconfig are for people who work on nolibc. These
-ones should support working in batch mode, being called from a script
-iterating over multiple archs. For other config, we should not interfer
-with what the user does. Maybe some will consider that it's fine to run
-a test slowly on a simulated platform for example.
+I missed these as I was first looking at everything except
+-Wmissing-prototypes that I want to enable. Can you perhaps
+help out and create a fix for these yourself?
 
-Willy
+       Arnd
