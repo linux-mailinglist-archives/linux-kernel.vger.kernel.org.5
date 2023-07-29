@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DC3767A22
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CA5767A20
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbjG2Atj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S237106AbjG2Atv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:49:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236991AbjG2AtX (ORCPT
+        with ESMTP id S237018AbjG2AtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:49:23 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D75421D
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1851c52f3dso2422799276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:45 -0700 (PDT)
+        Fri, 28 Jul 2023 20:49:24 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C25A44B3
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:47 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bba9a0da10so18241735ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 17:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690591661; x=1691196461;
+        d=google.com; s=20221208; t=1690591663; x=1691196463;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=RfXXcqZt8v+vEMviQaB4ha8ro96aOmyFYUDExhL33FE=;
-        b=D+29wkyjLypapSHoJge1mpaMfPBHgyoydIEBosT6gdt3ZIvLSr9lW379+2twDS+9NN
-         x8d9jNCpmbUF5qFqVmqFdk+q9BOi6GRROVAhUNufVZHuH6xCedDb3S1GXzaf2+a6ZkYX
-         WcXffBZ+IgjsHuqASHKxYMFPAvTTogbstpNmvwdmcZfL5QGGqsYFEVkYc1tStEL2L7sv
-         dyx2fHZlILnrsMXJcxTxFXr21doH+/dcswCPHamiZcg0CTfh3gRu70ahmuRwaMmXANTi
-         8kjx7ldkDSK4tsFuKQyxCI2MgK/iVhypCHeoILCPx/DAHwGdTB54OBNagVdOVid8O9KI
-         lAUg==
+        bh=N+/CFCalnN5xPq+FJCMcppiU8/rhXPIN/0hig0msSo8=;
+        b=BH/vnXUYOHXy6b1NYhugXlcJVFxpFBACy6MHTmpwAHEsFt0Tb+2O/PuTM8uyBWxsoQ
+         cd5pWacOlW0dxtb4jtK1Afkp/SxeOcFxaSP0qJc57vUNjKs4X/qRNdaMreb7VlI+ErVC
+         2rfrkdgt3VGWiDXrrjTxqMkVSfQLkMfdiVA16UsPo8d8xVWwu50tMwFGe4TMQquS5u7N
+         HpNWkop5hN6b/L/CZilAtEUTmFhsYBWaPAkPDoTCqqjp3T6p6gv/vdQamw0Skme2wCHf
+         yDn9ZEPPIsvPqarpWNphc+E34E3RjRHHRHoZgzlk4quBE7XtiCjjBXGnN4b047a43NX6
+         CAWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591661; x=1691196461;
+        d=1e100.net; s=20221208; t=1690591663; x=1691196463;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RfXXcqZt8v+vEMviQaB4ha8ro96aOmyFYUDExhL33FE=;
-        b=T46VBhX77jS4T8hsNiWk9kDgrO4axsDjtGLSmTaHvksmnEsp+tYIqhKkytG7vTzabx
-         sG8pq/cKEnhRbrxDQjZzYBBhLzAQ9RqklMNFUPIqD38hVVomoXMLtLC0cL0HG1Nu5Cdn
-         CYPJIFr6Pd+Ar7hWKv2gqDF9X5K125zz6/kEQeNXHntTlkDmfKS7/TOP7h7M0ChXMnoS
-         EKwGKkjEFi3IIixHNtiyoUoSXBmp+WNsiEN3mwCSqWstKL6KGt2DFHMk9paJq7yWCrkV
-         ZMwFcUxkGLJQrMfvn/XkbM3eR3aHB7uipZkdGdGhjC1RystKKVi5ltAo4fcKM0T7UVj2
-         59Rw==
-X-Gm-Message-State: ABy/qLYZqKvWTDndV5p91Y7HsCj6HHY/sq3QoF/HJMwGR+t45sDrdCTm
-        Lzi++58WxucNrIIMSkJ4uVhQXEcywJs=
-X-Google-Smtp-Source: APBJJlERmrEreSp3KWVd66uKyABQJknJ32dmGyLRrH0CXCcgkp0WqemQ/bWIBdjSnDq4poF74oFl4nwqsdI=
+        bh=N+/CFCalnN5xPq+FJCMcppiU8/rhXPIN/0hig0msSo8=;
+        b=W76yYPlx/i4wDYwcqbeZyB3ijoN/h1OS67YuWpPMUf8Vzcft/koom+WaR7owxTxXoW
+         ZkpNv9NtvGszUJQCTQbrqsUc9r+lk/w/SWJsqo0/GzcQ5io2iqZYx+9DG130tFU2jluQ
+         WqGKxhuspHejZrQn+GdUBnfw86bUXBwD2bhj+5VPF0CYLIerxmw/8LCW+5xNskjmfQ9O
+         Qz63J+2RuWCu4BYVM1OKNW/c38Plv/ZzavMn31j8WGeuiidCWmUa7ULCQwJ8jRWkMN7T
+         IqL/roT8bXCsxpokoyj1McF4oI9OBlWYhi2PfG72q0VeP22nE0boNwmwlbbSPx9g2RWe
+         BwHA==
+X-Gm-Message-State: ABy/qLbTicaytdvfGI8Xx65A5BhYd+UEMXSGXAfIESU5VrIcSzHR5/lH
+        7k8PIS7ffL7gkXA5rKEjJrXEo3fNPzQ=
+X-Google-Smtp-Source: APBJJlHTx0tMhdVdj9DHQL2qIu5IwtD1zQZTL75hc9Ut9ZxNuNOuReykzid0E2yHjV5ekXl0GYuOIbK8/6k=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100f:b0:cf9:3564:33cc with SMTP id
- w15-20020a056902100f00b00cf9356433ccmr24322ybt.13.1690591660993; Fri, 28 Jul
- 2023 17:47:40 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:e748:b0:1b5:61d3:dae5 with SMTP id
+ p8-20020a170902e74800b001b561d3dae5mr14320plf.1.1690591663061; Fri, 28 Jul
+ 2023 17:47:43 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 17:47:19 -0700
+Date:   Fri, 28 Jul 2023 17:47:20 -0700
 In-Reply-To: <20230729004722.1056172-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230729004722.1056172-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729004722.1056172-10-seanjc@google.com>
-Subject: [PATCH v3 09/12] KVM: x86/mmu: Replace MMU_DEBUG with proper
- KVM_PROVE_MMU Kconfig
+Message-ID: <20230729004722.1056172-11-seanjc@google.com>
+Subject: [PATCH v3 10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for
+ KVM_MMU_WARN_ON() stub
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -74,71 +74,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace MMU_DEBUG, which requires manually modifying KVM to enable the
-macro, with a proper Kconfig, KVM_PROVE_MMU.  Now that pgprintk() and
-rmap_printk() are gone, i.e. the macro guards only KVM_MMU_WARN_ON() and
-won't flood the kernel logs, enabling the option for debug kernels is both
-desirable and feasible.
+Use BUILD_BUG_ON_INVALID() instead of an empty do-while loop to stub out
+KVM_MMU_WARN_ON() when CONFIG_KVM_PROVE_MMU=n, that way _some_ build
+issues with the usage of KVM_MMU_WARN_ON() will be dected even if the
+kernel is using the stubs, e.g. basic syntax errors will be detected.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/Kconfig            | 13 +++++++++++++
- arch/x86/kvm/mmu/mmu.c          |  2 +-
- arch/x86/kvm/mmu/mmu_internal.h |  4 +---
- 3 files changed, 15 insertions(+), 4 deletions(-)
+ arch/x86/kvm/mmu/mmu_internal.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 89ca7f4c1464..4e5a282cc518 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -138,6 +138,19 @@ config KVM_XEN
- 
- 	  If in doubt, say "N".
- 
-+config KVM_PROVE_MMU
-+	bool "Prove KVM MMU correctness"
-+	depends on DEBUG_KERNEL
-+	depends on KVM
-+	depends on EXPERT
-+	help
-+	  Enables runtime assertions in KVM's MMU that are too costly to enable
-+	  in anything remotely resembling a production environment, e.g. this
-+	  gates code that verifies a to-be-freed page table doesn't have any
-+	  present SPTEs.
-+
-+	  If in doubt, say "N".
-+
- config KVM_EXTERNAL_WRITE_TRACKING
- 	bool
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d46f77734f30..21ced900c3e9 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1695,7 +1695,7 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- 
- static void kvm_mmu_check_sptes_at_free(struct kvm_mmu_page *sp)
- {
--#ifdef MMU_DEBUG
-+#ifdef CONFIG_KVM_PROVE_MMU
- 	int i;
- 
- 	for (i = 0; i < SPTE_ENT_PER_PAGE; i++) {
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index cfe925fefa68..40e74db6a7d5 100644
+index 40e74db6a7d5..f1ef670058e5 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -6,9 +6,7 @@
- #include <linux/kvm_host.h>
- #include <asm/kvm_host.h>
- 
--#undef MMU_DEBUG
--
--#ifdef MMU_DEBUG
-+#ifdef CONFIG_KVM_PROVE_MMU
+@@ -9,7 +9,7 @@
+ #ifdef CONFIG_KVM_PROVE_MMU
  #define KVM_MMU_WARN_ON(x) WARN_ON_ONCE(x)
  #else
- #define KVM_MMU_WARN_ON(x) do { } while (0)
+-#define KVM_MMU_WARN_ON(x) do { } while (0)
++#define KVM_MMU_WARN_ON(x) BUILD_BUG_ON_INVALID(x)
+ #endif
+ 
+ /* Page table builder macros common to shadow (host) PTEs and guest PTEs. */
 -- 
 2.41.0.487.g6d72f3e995-goog
 
