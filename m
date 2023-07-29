@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D40767A2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D41767A4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 02:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbjG2AxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 20:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S236479AbjG2Axx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 20:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjG2AxF (ORCPT
+        with ESMTP id S236968AbjG2AxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 20:53:05 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066D449FE;
-        Fri, 28 Jul 2023 17:52:39 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bbc06f830aso17411795ad.0;
-        Fri, 28 Jul 2023 17:52:39 -0700 (PDT)
+        Fri, 28 Jul 2023 20:53:17 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80727449C;
+        Fri, 28 Jul 2023 17:52:54 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b8b2b60731so16004265ad.2;
+        Fri, 28 Jul 2023 17:52:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690591901; x=1691196701;
+        d=gmail.com; s=20221208; t=1690591902; x=1691196702;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6UTNSsrWWKR414OaN79464JHIccJK6ZuB40p7bHAcZ8=;
-        b=hW51BN/P4IpHkVxw8Wi6tqtee6bd7dz3hngx4W5l++mdPiioUYXOqQUqQk1TLTBuaE
-         DNw8QIShKcYJ6BQH9Gvi+RXAzAAv0jq+O+UUF3PP5Vyf6n3u1HX5D547I/dEbi0TKbfs
-         D47ScINacoknwCdBf2z2EkY8zBMj5q6vIT11AWjDWT883RdwkybMgoFG6DzrZB4tUQWe
-         wtFWasZMl0wlnzW5z+8tD6wdlo9g8MqYaUDl6gDVSIMgTt6c8U868TVSlA02nc3XfES/
-         Q2ZjXRo69KxnPdvNfnYfLhtfw4dfa9QfteH+9XnqTBOm7aK6UzkOWiHJk2CXpQQGhPIC
-         m0RA==
+        bh=BQaf9NpFPpFxvg172bFM+rU/3s6Fkcu6Hx5BLm6nRzI=;
+        b=iCO1ciZy/FKKo8yEdQy1pphZ1KJGOB9qLgdH2bZKg2CGbrCXMHwDmTIhM55tt2LvSZ
+         UOZwnSdP0kko3ZsPj/j/kisza6Blieyh+HZ+MADBbrP9WfVGiKSG0VsN8TQV4n4ToxKl
+         stkMjeeMmjjDCn3mjnzMey4hK0e63+I7UcxKxkCFPt4xxtliLb3ugUpmy7sjTIgXMV/H
+         W3wh7IqtUK8F78lxYww9jXMZr8WaipqJr00LWSVKevjwhGInvoxvHiSMYZX++MgF2Ojn
+         8DmJcZfGv8XuGSOLlZPE2OmuxwShG7JBLocUbKsmJXhuNa/Xg9tbgUluuVaDyd3pCmmu
+         NDMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690591901; x=1691196701;
+        d=1e100.net; s=20221208; t=1690591902; x=1691196702;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6UTNSsrWWKR414OaN79464JHIccJK6ZuB40p7bHAcZ8=;
-        b=TAjHCdgx77EXd3LCZxibucwrBmXb0x0Kps5s8qe4dGCljio6uVMvFzIcxwMTXvLdnt
-         +gCU29bds8lIFW09oJn8r/yv6QFW5wmk4Ds08y8dtqJLiFuWiXpnJypti1zTRLBuMIYh
-         VnQbYFRlrl8Nl+/Nyt9+0j0sJPVAOZrL12qQDCOWYKSSNVJuTBdyIEqC6vZkQL3YhrjM
-         76nAt+7R6GhWEXZYgmyiHt3bT77A9SxDp2x78/uysjsg4e6Gk3LMSY4J0BwAaDGIpLOI
-         CKtQpEILC+TMDYWShGOiPMZ8hWFIDG0iwxWOPFobGBwHTOltWEXd9yCz6xtIr020YalC
-         uHAQ==
-X-Gm-Message-State: ABy/qLZVy6VH0uGQtHJaXGcqSLe3AiOtQDfM1U8d+7L60ko8tpMxH3gn
-        iPTDhKcbkgs41Fr7coHMYw8gm97gNv4=
-X-Google-Smtp-Source: APBJJlGDfrW38jnbORBCtKu41B/I3PZ5cujziWau8w95X6AvhUUV1TCWHR8ilPc2QEiIeUyGDTeoZw==
-X-Received: by 2002:a17:903:2281:b0:1b8:c63:4b79 with SMTP id b1-20020a170903228100b001b80c634b79mr4572402plh.19.1690591901385;
-        Fri, 28 Jul 2023 17:51:41 -0700 (PDT)
+        bh=BQaf9NpFPpFxvg172bFM+rU/3s6Fkcu6Hx5BLm6nRzI=;
+        b=bGFQwTYji5PFiCI8KSkRvgSyVhj5iPkQqpmAa6t09Uvqf3RKkL2IpsW/y0z7ALzney
+         iUyg3tcmUx8ElxchJ9CGWxooSVabDEYBUeP1HPqdV+yhwQPual/SIEeLGDYcQ1UE+aRq
+         gauYiUowEx+HZN3FifTaNyJmz98I+kiD+766dzLnQqf7GqP+BOTAu7NEJK97uT0vQgY+
+         F/kjb0NsM3eb42XyNy8DY2PVcO9n1SvA3fcrNtPismegS4xTKgjOxEkbFVkxsAqv1ANt
+         FN5JWEWHbX2gTyXeYXPRM+u8T2o72JJz8xxRfUgD2F1Sk60S/XtkSkDBc6h/sp1yoFrA
+         jO4w==
+X-Gm-Message-State: ABy/qLYUNEMCZnYaGl/fkaVTD+MTovp9wpnGChi+cMVLQFcHdsp0zU8b
+        Bqr7BRlg+/LItoYebdRQ/MasnmHsVyE=
+X-Google-Smtp-Source: APBJJlE9i5igr5fbBkHSYefpwwHnG5PrQPyTV6KHoGdNa7tbXqyUdNUYn37aj2nz8/gWejwJByNDGg==
+X-Received: by 2002:a17:903:44e:b0:1bb:bc6d:457 with SMTP id iw14-20020a170903044e00b001bbbc6d0457mr2558551plb.36.1690591902140;
+        Fri, 28 Jul 2023 17:51:42 -0700 (PDT)
 Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:bc93:3749:59cc:1d5c])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.40
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902704c00b001bb97e51ab4sm4149524plt.98.2023.07.28.17.51.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 28 Jul 2023 17:51:41 -0700 (PDT)
 From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To:     linux-input@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Hennerich <michael.hennerich@analog.com>
-Subject: [PATCH 06/22] Input: ad7879 - use device core to create driver-specific device attributes
-Date:   Fri, 28 Jul 2023 17:51:15 -0700
-Message-ID: <20230729005133.1095051-6-dmitry.torokhov@gmail.com>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 07/22] Input: ads7846 - use device core to create driver-specific device attributes
+Date:   Fri, 28 Jul 2023 17:51:16 -0700
+Message-ID: <20230729005133.1095051-7-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 In-Reply-To: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
 References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
@@ -79,95 +78,56 @@ pointer in the driver structure.
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/input/touchscreen/ad7879-i2c.c |  7 ++++---
- drivers/input/touchscreen/ad7879-spi.c |  7 ++++---
- drivers/input/touchscreen/ad7879.c     | 10 ++++++----
- drivers/input/touchscreen/ad7879.h     |  3 +++
- 4 files changed, 17 insertions(+), 10 deletions(-)
+ drivers/input/touchscreen/ads7846.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/input/touchscreen/ad7879-i2c.c b/drivers/input/touchscreen/ad7879-i2c.c
-index feaa6f8b01ed..5c094ab74698 100644
---- a/drivers/input/touchscreen/ad7879-i2c.c
-+++ b/drivers/input/touchscreen/ad7879-i2c.c
-@@ -58,9 +58,10 @@ MODULE_DEVICE_TABLE(of, ad7879_i2c_dt_ids);
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index bb1058b1e7fd..5601ceb7e26b 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -628,15 +628,12 @@ static ssize_t ads7846_disable_store(struct device *dev,
  
- static struct i2c_driver ad7879_i2c_driver = {
- 	.driver = {
--		.name	= "ad7879",
--		.pm	= &ad7879_pm_ops,
--		.of_match_table = of_match_ptr(ad7879_i2c_dt_ids),
-+		.name		= "ad7879",
-+		.dev_groups	= ad7879_groups,
-+		.pm		= &ad7879_pm_ops,
-+		.of_match_table	= of_match_ptr(ad7879_i2c_dt_ids),
- 	},
- 	.probe		= ad7879_i2c_probe,
- 	.id_table	= ad7879_id,
-diff --git a/drivers/input/touchscreen/ad7879-spi.c b/drivers/input/touchscreen/ad7879-spi.c
-index 50e889846800..064968fe57cf 100644
---- a/drivers/input/touchscreen/ad7879-spi.c
-+++ b/drivers/input/touchscreen/ad7879-spi.c
-@@ -56,9 +56,10 @@ MODULE_DEVICE_TABLE(of, ad7879_spi_dt_ids);
+ static DEVICE_ATTR(disable, 0664, ads7846_disable_show, ads7846_disable_store);
  
- static struct spi_driver ad7879_spi_driver = {
- 	.driver = {
--		.name	= "ad7879",
--		.pm	= &ad7879_pm_ops,
--		.of_match_table = of_match_ptr(ad7879_spi_dt_ids),
-+		.name		= "ad7879",
-+		.dev_groups	= ad7879_groups,
-+		.pm		= &ad7879_pm_ops,
-+		.of_match_table	= of_match_ptr(ad7879_spi_dt_ids),
- 	},
- 	.probe		= ad7879_spi_probe,
+-static struct attribute *ads784x_attributes[] = {
++static struct attribute *ads784x_attrs[] = {
+ 	&dev_attr_pen_down.attr,
+ 	&dev_attr_disable.attr,
+ 	NULL,
  };
-diff --git a/drivers/input/touchscreen/ad7879.c b/drivers/input/touchscreen/ad7879.c
-index e850853328f1..e5d69bf2276e 100644
---- a/drivers/input/touchscreen/ad7879.c
-+++ b/drivers/input/touchscreen/ad7879.c
-@@ -391,6 +391,12 @@ static const struct attribute_group ad7879_attr_group = {
- 	.attrs = ad7879_attributes,
- };
+-
+-static const struct attribute_group ads784x_attr_group = {
+-	.attrs = ads784x_attributes,
+-};
++ATTRIBUTE_GROUPS(ads784x);
  
-+const struct attribute_group *ad7879_groups[] = {
-+	&ad7879_attr_group,
-+	NULL
-+};
-+EXPORT_SYMBOL_GPL(ad7879_groups);
-+
- #ifdef CONFIG_GPIOLIB
- static int ad7879_gpio_direction_input(struct gpio_chip *chip,
- 					unsigned gpio)
-@@ -612,10 +618,6 @@ int ad7879_probe(struct device *dev, struct regmap *regmap,
+ /*--------------------------------------------------------------------------*/
  
- 	__ad7879_disable(ts);
+@@ -1395,10 +1392,6 @@ static int ads7846_probe(struct spi_device *spi)
+ 	else
+ 		(void) ads7846_read12_ser(dev, READ_12BIT_SER(vaux));
  
--	err = devm_device_add_group(dev, &ad7879_attr_group);
+-	err = devm_device_add_group(dev, &ads784x_attr_group);
 -	if (err)
 -		return err;
 -
- 	err = ad7879_gpio_add(ts);
+ 	err = input_register_device(input_dev);
  	if (err)
  		return err;
-diff --git a/drivers/input/touchscreen/ad7879.h b/drivers/input/touchscreen/ad7879.h
-index ae8aa1428e56..d71a8e787290 100644
---- a/drivers/input/touchscreen/ad7879.h
-+++ b/drivers/input/touchscreen/ad7879.h
-@@ -8,11 +8,14 @@
- #ifndef _AD7879_H_
- #define _AD7879_H_
+@@ -1424,9 +1417,10 @@ static void ads7846_remove(struct spi_device *spi)
  
-+#include <linux/pm.h>
- #include <linux/types.h>
- 
-+struct attribute_group;
- struct device;
- struct regmap;
- 
-+extern const struct attribute_group *ad7879_groups[];
- extern const struct dev_pm_ops ad7879_pm_ops;
- 
- int ad7879_probe(struct device *dev, struct regmap *regmap,
+ static struct spi_driver ads7846_driver = {
+ 	.driver = {
+-		.name	= "ads7846",
+-		.pm	= pm_sleep_ptr(&ads7846_pm),
+-		.of_match_table = of_match_ptr(ads7846_dt_ids),
++		.name		= "ads7846",
++		.dev_groups	= ads784x_groups,
++		.pm		= pm_sleep_ptr(&ads7846_pm),
++		.of_match_table	= of_match_ptr(ads7846_dt_ids),
+ 	},
+ 	.probe		= ads7846_probe,
+ 	.remove		= ads7846_remove,
 -- 
 2.41.0.487.g6d72f3e995-goog
 
