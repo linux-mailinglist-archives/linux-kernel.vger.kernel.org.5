@@ -2,87 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B10F767A7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B032E767A8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236958AbjG2BKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S237137AbjG2BQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjG2BKX (ORCPT
+        with ESMTP id S231659AbjG2BQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:10:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7EB35A3;
-        Fri, 28 Jul 2023 18:10:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3551F62227;
-        Sat, 29 Jul 2023 01:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8CEF0C433CA;
-        Sat, 29 Jul 2023 01:10:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690593021;
-        bh=0bXB1gjnWbl77v7JpiMO5Sd7N2sWFuDWIVG3G+aBWvE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QY8pFa1mKlxRsEMydCMNm6a1yf/gtlpq5jwqUrnX5d8vapnceixgL9yj2DEaBmI1H
-         ggMtcoVg96n7szvYvlgxTDqMva2ObrJhm+El6V1iJO8nUJTiFrdgQhnjMAYemLzRKl
-         XmvFRrE84BYxrRkkhUrNwSU25kml0SBkQkbgOIfxrbFbuKK0YaMJTsVkVbORmaoKRw
-         HoJQMV8eDDEu4NyiQhVqF/5X/nS3CXfEnWr5Lk/l3h5W5F8topd/y0Id5QJTnPyucj
-         XW4OSKwe3TvCLL167ZaqA/Ipu5g3UBsy4Wof6EMsNX9CUQyoz/8b71zXh7Cj/nacoo
-         o44uYkCWt1UHQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A69BE1CF31;
-        Sat, 29 Jul 2023 01:10:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/2] r8152: reduce control transfer
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169059302149.26009.9262284677356277688.git-patchwork-notify@kernel.org>
-Date:   Sat, 29 Jul 2023 01:10:21 +0000
-References: <20230726030808.9093-417-nic_swsd@realtek.com>
-In-Reply-To: <20230726030808.9093-417-nic_swsd@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 21:16:14 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3BE3AA8
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:13 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-585f254c41aso4504497b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690593372; x=1691198172;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nJkpJZhQugJruq9ZGSna/diiNivrwzOkBsEj4Xcrf14=;
+        b=3jil1H5CD9WwizZiZJ5IA2BD9pbWShS/TS6cFpS6ArxZOsfmKXhUSZrAsq/cLYuygd
+         bEPFvXQRgI6MX1uxLhUPOv8mdq+Ji9kI3+yI6qlEl3xXLVi1ikhnTyWnXjAj577Wfomi
+         rE72n/3qt7uBML4Yd4I3/EV8DNVwZmJfz+d3jCH4+IY5Jhl+AWU8NHe04wWTEzxvSaSy
+         53dV5rfFQr5Gf0hpmexY89nHB07Y+gu7tPGJcG9bEKgQPwsvUR69Oeq2lAFF9iEFwdAh
+         sWlWa72ygUDmrEm+2OKA8ZAWyq54Zjh2R0V8uFE1O7e+UHlgOR8ZpuxsX/B9/KErDsMj
+         bElg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690593372; x=1691198172;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nJkpJZhQugJruq9ZGSna/diiNivrwzOkBsEj4Xcrf14=;
+        b=M03XA919pPgmxxLPlmevG86JjS6gK7a9vedOYQJ6fSoRjIZE8Pm5eBP4V6GSQDdXWD
+         5uY4ufwhDSNdYbiUAeJk5pLn99U4WHGpcn6oW6inSJDhsRTwlSUE32KVxjFGYrKj48/m
+         c9AgQtjeKMf2vAbdAlkQwX94e4+3jOfp2ygOuYyBpTH19a5qUVsTH5ulcIpqotzjQa8d
+         r07cIYZC7rC+Ta965t+xGBpDuxgHxfTQY6Ew4ufcCCvahSmjqRdfrvfjgHgllT+S00o1
+         dcuJj2YEu3eUwjHtaxH22bJ4jFiBjz1D3e/DOdlN6+k8iOd96PRgT1cCXOpZUxJKkb1c
+         cMfQ==
+X-Gm-Message-State: ABy/qLZhw2uPBL4keW/HhwvZ0LlGiYT2dt6m8mh8seFq6kcR14J4qP2l
+        1Ns67uw79WgOlVV59bdzZt9h8ZefDAU=
+X-Google-Smtp-Source: APBJJlE5y3tnSBUxwgbG35HIdFij0gOVki64ZS/mUze8Vn96kzV+ZHOPTnqEU8nYD2+QEzghV3TRCFGVFMg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:7401:0:b0:d06:cbd:1f3e with SMTP id
+ p1-20020a257401000000b00d060cbd1f3emr16966ybc.3.1690593372414; Fri, 28 Jul
+ 2023 18:16:12 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 28 Jul 2023 18:15:47 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230729011608.1065019-1-seanjc@google.com>
+Subject: [PATCH v2 00/21] KVM: x86: Add "governed" X86_FEATURE framework
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Add a framework to manage and cache KVM-governed features, i.e. CPUID
+based features that require explicit KVM enabling and/or need to be
+queried semi-frequently by KVM.  The idea originally came up in the
+context of the architectural LBRs series as a way to avoid querying
+guest CPUID in hot paths without needing a dedicated flag, but as
+evidenced by the shortlog, the most common usage is to handle the ever-
+growing list of SVM features that are exposed to L1.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+The first six patches are fixes and cleanups related to TSC scaling.
+nSVM has WARN_ONs that can be triggered by userspace at will, and the
+code is a bit crusty.  They aren't directly related to the governed
+stuff, I stumbled upon the issues they fix when staring at the patch to
+convert "TSC scaling enabled".  I included them here mainly to avoid
+code conflicts.  I'm hoping all of this can go into 6.6, e.g. so that CET
+support can build on guest_can_use(), but I can always grab the TSC
+patches for 6.6 if the governed stuff needs more time.
 
-On Wed, 26 Jul 2023 11:08:06 +0800 you wrote:
-> v2:
-> For patch #1, fix the typo of the commit message.
-> 
-> v1:
-> The two patches are used to reduce the number of control transfer when
-> access the registers in bulk.
-> 
-> [...]
+Note, I still don't like the name "governed", but no one has suggested
+anything else, let alone anything better :-)
 
-Here is the summary with links:
-  - [net-next,v2,1/2] r8152: adjust generic_ocp_write function
-    https://git.kernel.org/netdev/net-next/c/57df0fb9d511
-  - [net-next,v2,2/2] r8152: set bp in bulk
-    https://git.kernel.org/netdev/net-next/c/e5c266a61186
+v2:
+ - Add patches to clean up TSC scaling.
+ - Add a comment explaining the virtual VMLOAD/VMLAVE vs. SYSENTER on
+   Intel madness.
+ - Use a governed feature for X86_FEATURE_VMX.
+ - Incorporate KVM capabilities into the main check-and-set helper. [Chao]
 
-You are awesome, thank you!
+v1: https://lore.kernel.org/all/20230217231022.816138-1-seanjc@google.com
+
+Sean Christopherson (21):
+  KVM: nSVM: Check instead of asserting on nested TSC scaling support
+  KVM: nSVM: Load L1's TSC multiplier based on L1 state, not L2 state
+  KVM: nSVM: Use the "outer" helper for writing multiplier to
+    MSR_AMD64_TSC_RATIO
+  KVM: SVM: Clean up preemption toggling related to MSR_AMD64_TSC_RATIO
+  KVM: x86: Always write vCPU's current TSC offset/ratio in vendor hooks
+  KVM: nSVM: Skip writes to MSR_AMD64_TSC_RATIO if guest state isn't
+    loaded
+  KVM: x86: Add a framework for enabling KVM-governed x86 features
+  KVM: x86/mmu: Use KVM-governed feature framework to track "GBPAGES
+    enabled"
+  KVM: VMX: Recompute "XSAVES enabled" only after CPUID update
+  KVM: VMX: Check KVM CPU caps, not just VMX MSR support, for XSAVE
+    enabling
+  KVM: VMX: Rename XSAVES control to follow KVM's preferred "ENABLE_XYZ"
+  KVM: x86: Use KVM-governed feature framework to track "XSAVES enabled"
+  KVM: nVMX: Use KVM-governed feature framework to track "nested VMX
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "NRIPS enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "TSC scaling
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vVM{SAVE,LOAD}
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "LBRv enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "Pause Filter
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vGIF enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vNMI enabled"
+  KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
+
+ arch/x86/include/asm/kvm_host.h  | 23 ++++++++-
+ arch/x86/include/asm/vmx.h       |  2 +-
+ arch/x86/kvm/cpuid.c             | 34 ++++++++++++++
+ arch/x86/kvm/cpuid.h             | 46 ++++++++++++++++++
+ arch/x86/kvm/governed_features.h | 21 +++++++++
+ arch/x86/kvm/mmu/mmu.c           | 20 ++------
+ arch/x86/kvm/svm/nested.c        | 57 ++++++++++++----------
+ arch/x86/kvm/svm/svm.c           | 81 ++++++++++++++++++--------------
+ arch/x86/kvm/svm/svm.h           | 18 ++-----
+ arch/x86/kvm/vmx/capabilities.h  |  2 +-
+ arch/x86/kvm/vmx/hyperv.c        |  2 +-
+ arch/x86/kvm/vmx/nested.c        | 13 ++---
+ arch/x86/kvm/vmx/nested.h        |  2 +-
+ arch/x86/kvm/vmx/vmx.c           | 81 +++++++++++++++-----------------
+ arch/x86/kvm/vmx/vmx.h           |  3 +-
+ arch/x86/kvm/x86.c               |  9 ++--
+ 16 files changed, 261 insertions(+), 153 deletions(-)
+ create mode 100644 arch/x86/kvm/governed_features.h
+
+
+base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.41.0.487.g6d72f3e995-goog
 
