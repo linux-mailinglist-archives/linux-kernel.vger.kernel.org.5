@@ -2,55 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C0E767CC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ED8767CC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 09:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjG2He7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 03:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S229568AbjG2Hfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 03:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjG2He6 (ORCPT
+        with ESMTP id S229447AbjG2Hfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 03:34:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAAE101
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 00:34:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B89E9608C3
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 07:34:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D045EC433C8;
-        Sat, 29 Jul 2023 07:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690616096;
-        bh=7T7BeCkdVSU1pWl7CE1rGUMEw6xG4RHncvq3JCfjuts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QDNQ0ysNagGLvDqYwdcTd8+YIpPqaRhNv/bYRc87RK49GGpjt+EGIchucFE4r2YT3
-         mTnHlGkVc9+aXx9pqQEScJrXrh7DoyKQSvEzIz5+sPlP4j7J/jo0Vm993BqL7qpHqw
-         JJubgeHDcXf47UfQsxJfY9o8l68iK2rPYkBidPnev/0yUM0YH2gOeFh7c7i3zwHkGB
-         DtgDjI4NGDdkCuRF1HNDMMKfbIss0m05Tc5wwZQa+tENS735K4QNfPgoRJzli/2xWM
-         Rh55+avUp8bCvMPmMYWQPC7hP2DaiVPxjl4Q1UWFg0MefHNeOloAKl+qkNt2OKzJgK
-         LVa6qzu8dM+rg==
-Date:   Sat, 29 Jul 2023 10:34:16 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com
-Subject: Re: [v1 5/6] mm: move allocation of gigantic hstates to the start of
- mm_core_init
-Message-ID: <20230729073416.GG1901145@kernel.org>
-References: <20230727204624.1942372-1-usama.arif@bytedance.com>
- <20230727204624.1942372-6-usama.arif@bytedance.com>
+        Sat, 29 Jul 2023 03:35:37 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35450101;
+        Sat, 29 Jul 2023 00:35:36 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36T7VfEj003000;
+        Sat, 29 Jul 2023 07:35:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Q7EgVlIj8WWBI961jwvSr0S3u2PuA1rGpYpxCocZk+A=;
+ b=gsKFuyv+VTfoNxTMdZmwnB9n/0NDYJrDvVlX7xldot69lvnQj4KAQ1Ka9KWWq8HPgQTG
+ zgZmEnaJbgjIFCwK5LTW8LTuneiAGyr8K/zlW7wn8SZbBJPG6SXxeb4tTc32xzMweYzz
+ nYEod4Ev66I54fs7Luq6cdgn64MO7whWCTWZVEO+aKJrmx2eoy6rgYAZpbPcYYpdRJha
+ 34NEqNLxBOW4Wzvyaklw4cqz6Kb4/9hjgwDwambjHqRACW994n3J6yITVuC5Phi01AyX
+ hdIjb/fuwdKcPDQ2t6DFNYhY6eT/PHWVtJQCUTrpRwNlZNDoTXHzzxrK9XhS3E2aoYTX sg== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s4xf0857t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Jul 2023 07:35:17 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36T6KKJd026189;
+        Sat, 29 Jul 2023 07:35:16 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s0sesw7kj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 29 Jul 2023 07:35:16 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36T7ZE8m45351362
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 29 Jul 2023 07:35:14 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EFBEB20043;
+        Sat, 29 Jul 2023 07:35:13 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CA70620040;
+        Sat, 29 Jul 2023 07:35:11 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com.com (unknown [9.171.60.192])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Sat, 29 Jul 2023 07:35:11 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, disgoel@linux.ibm.com,
+        kjain@linux.ibm.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: [PATCH v4 00/10] Add sysfs interface files to hv_gpci device to expose system information
+Date:   Sat, 29 Jul 2023 13:04:45 +0530
+Message-Id: <20230729073455.7918-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727204624.1942372-6-usama.arif@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I8Wpywaubs4fkQr8LNtiWXmt0_k1PZ75
+X-Proofpoint-GUID: I8Wpywaubs4fkQr8LNtiWXmt0_k1PZ75
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 phishscore=0 clxscore=1015 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307290068
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,98 +83,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:46:23PM +0100, Usama Arif wrote:
-> Whether the initialization of tail struct pages of a hugepage
-> happens or not will become dependent on the commandline
-> parameter hugetlb_free_vmemmap in the future. Hence,
-> hugetlb_hstate_alloc_pages needs to be after command line parameters
-> are parsed and the start of mm_core_init is a good point.
-> 
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> ---
->  include/linux/hugetlb.h |  1 +
->  mm/hugetlb.c            | 18 ++++++++++--------
->  mm/mm_init.c            |  4 ++++
->  3 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ca3c8e10f24a..2b20553deef3 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -1271,4 +1271,5 @@ hugetlb_walk(struct vm_area_struct *vma, unsigned long addr, unsigned long sz)
->  	return huge_pte_offset(vma->vm_mm, addr, sz);
->  }
->  
-> +void __init hugetlb_hstate_alloc_gigantic_pages(void);
+The hcall H_GET_PERF_COUNTER_INFO can be used to get data related to
+chips, dimms and system topology, by passing different counter request
+values.
+Patchset adds sysfs files to "/sys/devices/hv_gpci/interface/"
+of hv_gpci pmu driver, which will expose system topology information
+using H_GET_PERF_COUNTER_INFO hcall. The added sysfs files are
+available for power10 and above platforms and needs root access
+to read the data.
 
-this should be in mm/internal.h with a static inline stub for !CONFIG_HUGETLBFS
+Patches 1,3,5,7,9 adds sysfs interface files to the hv_gpci
+pmu driver, to get system topology information.
 
->  #endif /* _LINUX_HUGETLB_H */
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 58cf5978bee1..c1fcf2af591a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4418,14 +4418,6 @@ static int __init hugepages_setup(char *s)
->  		}
->  	}
->  
-> -	/*
-> -	 * Global state is always initialized later in hugetlb_init.
-> -	 * But we need to allocate gigantic hstates here early to still
-> -	 * use the bootmem allocator.
-> -	 */
-> -	if (hugetlb_max_hstate && hstate_is_gigantic(parsed_hstate))
-> -		hugetlb_hstate_alloc_pages(parsed_hstate);
-> -
->  	last_mhp = mhp;
->  
->  	return 1;
-> @@ -4437,6 +4429,16 @@ static int __init hugepages_setup(char *s)
->  }
->  __setup("hugepages=", hugepages_setup);
->  
-> +void __init hugetlb_hstate_alloc_gigantic_pages(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < HUGE_MAX_HSTATE; i++) {
-> +		if (hstate_is_gigantic(&hstates[i]))
-> +			hugetlb_hstate_alloc_pages(&hstates[i]);
-> +	}
-> +}
-> +
->  /*
->   * hugepagesz command line processing
->   * A specific huge page size can only be specified once with hugepagesz.
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a1963c3322af..5585c66c3c42 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -26,6 +26,7 @@
->  #include <linux/pgtable.h>
->  #include <linux/swap.h>
->  #include <linux/cma.h>
-> +#include <linux/hugetlb.h>
->  #include "internal.h"
->  #include "slab.h"
->  #include "shuffle.h"
-> @@ -2768,6 +2769,9 @@ static void __init mem_init_print_info(void)
->   */
->  void __init mm_core_init(void)
->  {
-> +#ifdef CONFIG_HUGETLBFS
-> +	hugetlb_hstate_alloc_gigantic_pages();
-> +#endif
+List of added sysfs files:
+-> processor_bus_topology (Counter request value : 0xD0)
+-> processor_config (Counter request value : 0x90)
+-> affinity_domain_via_virtual_processor (Counter request value : 0xA0)
+-> affinity_domain_via_domain (Counter request value : 0xB0)
+-> affinity_domain_via_partition (Counter request value : 0xB1)
 
-Please add a comment why it should be called here.
+Patches 2,4,6,8,10 adds details of the newly added hv_gpci
+interface files listed above in the ABI documentation.
 
->  	/* Initializations relying on SMP setup */
->  	build_all_zonelists(NULL);
->  	page_alloc_init_cpuhp();
-> -- 
-> 2.25.1
-> 
+Patches 2,4,6,8,10 adds details of the newly added hv_gpci
+interface files listed above in the ABI documentation.
+
+Changelog:
+v3 -> v4
+-> Add Reviewed-by tag from Athira Rajeev.
+-> Correct typo by changing processor_bug_topology to processor_bus_topology
+
+v2 -> v3
+-> Make nit changes in documentation patches as suggested by Randy Dunlap.
+
+v1 -> v2
+-> Incase the HCALL fails with errors that can be resolve during runtime,
+   then only add sysinfo interface attributes to the interface_attrs
+   attribute array. Even if one of the counter request value HCALL fails,
+   don't add any sysinfo attribute to the interface_attrs attribute array.
+   Add the code changes to make sure sysinfo interface added only when all
+   the requirements met as suggested by Michael Ellerman.
+-> Make changes in documentation, adds detail of errors type
+   which can be resolved at runtime as suggested by Michael Ellerman.
+-> Add new enum and sysinfo_counter_request array to get required
+   counter request value in hv-gpci.c file.
+-> Move the macros for interface attribute array index to hv-gpci.c, as
+   these macros currently only used in hv-gpci.c file.
+
+Kajol Jain (10):
+  powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show
+    processor bus topology information
+  docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document
+    processor_bus_topology sysfs interface file
+  powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show
+    processor config information
+  docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document
+    processor_config sysfs interface file
+  powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity
+    domain via virtual processor information
+  docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document
+    affinity_domain_via_virtual_processor sysfs interface file
+  powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity
+    domain via domain information
+  docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document
+    affinity_domain_via_domain sysfs interface file
+  powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinity
+    domain via partition information
+  docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document
+    affinity_domain_via_partition sysfs interface file
+
+ .../sysfs-bus-event_source-devices-hv_gpci    | 160 +++++
+ arch/powerpc/perf/hv-gpci.c                   | 640 +++++++++++++++++-
+ 2 files changed, 798 insertions(+), 2 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.39.3
+
