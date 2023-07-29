@@ -2,119 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76504767ABA
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647AD767AC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 03:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237426AbjG2BSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 28 Jul 2023 21:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
+        id S231405AbjG2BXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 28 Jul 2023 21:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbjG2BRu (ORCPT
+        with ESMTP id S237686AbjG2BXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 28 Jul 2023 21:17:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E444EEA
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:17:23 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so2526820276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690593414; x=1691198214;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Td1GH9IlHvpXHIHUDo3By6hiD1XsWn1I7aZZNe6DB5w=;
-        b=4Af6FshVFsrgrFsPJc4IthqUvttt1ICUmFLNLWtLZE5xK3kzxiG/xG13Xua1xOPAG/
-         qsi+BpFoCzlp0VqIdOlZQTdc+VAwJpYpajeNm0aL+x2sNusxHJ/vlU7DAgRyh5rmbLaZ
-         WiAqQcKmtSK4GPhYMEy5RsN9vB29UAhXPElyy3PHh1U4dOm6r1eZgY8xnD3/RvIcv/bn
-         lxqE7kbzbGxs9WqU0pdeayYujblF5h2ScPpYWgTeS5EU3IHTWmT+NIX0KnUD0CHtrTJV
-         kLsfo4Pxhv3CCog7OEi23/z3x7p5Ec3EYwTHO7qsM2gZaKo6owxQ+L33ziSVxQGlz6qK
-         zKxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690593414; x=1691198214;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Td1GH9IlHvpXHIHUDo3By6hiD1XsWn1I7aZZNe6DB5w=;
-        b=c0goQAeB0xlgoLvcUHS0MxZ+8mjHmOgO87aH1CdPVl/us2ndgNUcxjg2zf9LMO9qjB
-         JTJkONMqD5D0UiE6Nkyqpy7lKhcQqO9sUi1xSZfjjEpMOshhZnVOCJSfOXlupzCOtGP9
-         +opqrYCs19R8vdemkAZlxlL9i3F1P3OrGDFs2piqzEcU3EexuX+rfMtZfdWkmsVfRlBc
-         Py9L4j1n++d8/fuqCymR1GEbuJSOPP88ah7vG6/t1FYsFe4bLsPtbfnAgYb+9Ag/FtTd
-         M+htVk3lYvd7bSm+RTl8bgvtWI92QviYdoscYrqXl0E9gapOq5atcx+t5M6XhvI1Wkaj
-         1ggA==
-X-Gm-Message-State: ABy/qLbtSnsp8euTTJfe3H/EjTEUddQNtr+9HcaitOa2a0EEkqJjoE3r
-        PN9aaqoCqpaWr+wVcXwPWslHTua7Dz0=
-X-Google-Smtp-Source: APBJJlFP2d5RvtjZ9pjPB+7KOrkaTgp7g+JNH10ugdM7iZq8xOgChgQ4IeHH9mcrUrSucyrbppH+IZqcT8s=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:69c7:0:b0:d07:f1ed:521a with SMTP id
- e190-20020a2569c7000000b00d07f1ed521amr17972ybc.4.1690593414398; Fri, 28 Jul
- 2023 18:16:54 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 28 Jul 2023 18:16:08 -0700
-In-Reply-To: <20230729011608.1065019-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230729011608.1065019-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
-Message-ID: <20230729011608.1065019-22-seanjc@google.com>
-Subject: [PATCH v2 21/21] KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 28 Jul 2023 21:23:13 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C7244B7
+        for <linux-kernel@vger.kernel.org>; Fri, 28 Jul 2023 18:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690593758; x=1722129758;
+  h=date:from:to:cc:subject:message-id;
+  bh=u7v08L1WuCi9ApZcZytWkwGEadUu872iCJ0kOknBQEc=;
+  b=kMYe95Hqg4RZysEBYATLioDyHulyiJwC2tO15NVngJJ12hmx/jigk+Jt
+   j4pI32XpfuT9xAErLgCb3co7N7rq0pXHlfCnHS0jvuJF3R5NQPwx+gkT3
+   pRyg+pOaTuoNCIYAWMlW+gpZ1UjMrJlV51oMl4yrlZ+1KiJs906rD+peP
+   ddNp1uDb2pLnTFumdST3XT85+6IcGPvkSXMoXK5C7O+WXfemcSRldUv4Z
+   f51LXOTF554wdgBzwXX4AWUAin0eRXX9YFmnMU0+G+2HdCBRonaSUpLJx
+   gfVZTyiKLTBC3J7DD6hjjgwCsepCDkrogt/OCP5lRzWBIzgWhxj1Fwc4R
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="353623471"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="353623471"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2023 18:22:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10785"; a="704774357"
+X-IronPort-AV: E=Sophos;i="6.01,238,1684825200"; 
+   d="scan'208";a="704774357"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 28 Jul 2023 18:22:37 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPYfE-0003jW-2X;
+        Sat, 29 Jul 2023 01:22:36 +0000
+Date:   Sat, 29 Jul 2023 09:22:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 6b04724914eb378993ca6929dbaab849dc044abb
+Message-ID: <202307290919.zEBT9EAK-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that KVM has a framework for caching guest CPUID feature flags, add
-a "rule" that IRQs must be enabled when doing guest CPUID lookups, and
-enforce the rule via a lockdep assertion.  CPUID lookups are slow, and
-within KVM, IRQs are only ever disabled in hot paths, e.g. the core run
-loop, fast page fault handling, etc.  I.e. querying guest CPUID with IRQs
-disabled, especially in the run loop, should be avoided.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 6b04724914eb378993ca6929dbaab849dc044abb  Merge branch into tip/master: 'x86/mm'
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/cpuid.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+elapsed time: 950m
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index f74d6c404551..4b14bd9c5637 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -11,6 +11,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/kvm_host.h>
-+#include "linux/lockdep.h"
- #include <linux/export.h>
- #include <linux/vmalloc.h>
- #include <linux/uaccess.h>
-@@ -84,6 +85,18 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
- 	struct kvm_cpuid_entry2 *e;
- 	int i;
- 
-+	/*
-+	 * KVM has a semi-arbitrary rule that querying the guest's CPUID model
-+	 * with IRQs disabled is disallowed.  The CPUID model can legitimately
-+	 * have over one hundred entries, i.e. the lookup is slow, and IRQs are
-+	 * typically disabled in KVM only when KVM is in a performance critical
-+	 * path, e.g. the core VM-Enter/VM-Exit run loop.  Nothing will break
-+	 * if this rule is violated, this assertion is purely to flag potential
-+	 * performance issues.  If this fires, consider moving the lookup out
-+	 * of the hotpath, e.g. by caching information during CPUID updates.
-+	 */
-+	lockdep_assert_irqs_enabled();
-+
- 	for (i = 0; i < nent; i++) {
- 		e = &entries[i];
- 
+configs tested: 145
+configs skipped: 9
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r021-20230727   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r014-20230728   gcc  
+arc                  randconfig-r043-20230727   gcc  
+arc                  randconfig-r043-20230728   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230727   clang
+arm                  randconfig-r046-20230728   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r016-20230727   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r034-20230728   gcc  
+hexagon              randconfig-r021-20230728   clang
+hexagon              randconfig-r025-20230728   clang
+hexagon              randconfig-r041-20230727   clang
+hexagon              randconfig-r041-20230728   clang
+hexagon              randconfig-r045-20230727   clang
+hexagon              randconfig-r045-20230728   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230727   clang
+i386         buildonly-randconfig-r004-20230728   gcc  
+i386         buildonly-randconfig-r005-20230728   gcc  
+i386         buildonly-randconfig-r006-20230728   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230728   gcc  
+i386                 randconfig-i002-20230728   gcc  
+i386                 randconfig-i003-20230728   gcc  
+i386                 randconfig-i004-20230728   gcc  
+i386                 randconfig-i005-20230728   gcc  
+i386                 randconfig-i006-20230728   gcc  
+i386                 randconfig-i011-20230727   gcc  
+i386                 randconfig-i011-20230728   clang
+i386                 randconfig-i012-20230727   gcc  
+i386                 randconfig-i012-20230728   clang
+i386                 randconfig-i013-20230727   gcc  
+i386                 randconfig-i013-20230728   clang
+i386                 randconfig-i014-20230727   gcc  
+i386                 randconfig-i014-20230728   clang
+i386                 randconfig-i015-20230728   clang
+i386                 randconfig-i016-20230728   clang
+i386                 randconfig-r001-20230727   clang
+i386                 randconfig-r022-20230727   gcc  
+i386                 randconfig-r032-20230727   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r003-20230728   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230728   gcc  
+m68k                 randconfig-r003-20230727   gcc  
+m68k                 randconfig-r003-20230728   gcc  
+m68k                 randconfig-r034-20230727   gcc  
+microblaze           randconfig-r001-20230728   gcc  
+microblaze           randconfig-r005-20230727   gcc  
+microblaze           randconfig-r012-20230728   gcc  
+microblaze           randconfig-r013-20230728   gcc  
+microblaze           randconfig-r025-20230727   gcc  
+microblaze           randconfig-r035-20230727   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r013-20230727   clang
+nios2                               defconfig   gcc  
+nios2                randconfig-r005-20230728   gcc  
+nios2                randconfig-r012-20230727   gcc  
+nios2                randconfig-r031-20230728   gcc  
+nios2                randconfig-r036-20230728   gcc  
+openrisc             randconfig-r002-20230728   gcc  
+openrisc             randconfig-r032-20230728   gcc  
+openrisc             randconfig-r035-20230728   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r011-20230727   gcc  
+parisc               randconfig-r011-20230728   gcc  
+parisc               randconfig-r031-20230728   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r014-20230727   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230728   gcc  
+riscv                randconfig-r005-20230728   gcc  
+riscv                randconfig-r042-20230727   gcc  
+riscv                randconfig-r042-20230728   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r026-20230728   clang
+s390                 randconfig-r044-20230727   gcc  
+s390                 randconfig-r044-20230728   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r015-20230728   gcc  
+sh                   randconfig-r024-20230727   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r031-20230727   gcc  
+sparc64              randconfig-r002-20230727   gcc  
+sparc64              randconfig-r014-20230728   gcc  
+sparc64              randconfig-r015-20230727   gcc  
+sparc64              randconfig-r033-20230727   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r004-20230727   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230727   clang
+x86_64       buildonly-randconfig-r001-20230728   gcc  
+x86_64       buildonly-randconfig-r002-20230727   clang
+x86_64       buildonly-randconfig-r002-20230728   gcc  
+x86_64       buildonly-randconfig-r003-20230727   clang
+x86_64       buildonly-randconfig-r003-20230728   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230728   clang
+x86_64               randconfig-x002-20230728   clang
+x86_64               randconfig-x003-20230727   gcc  
+x86_64               randconfig-x003-20230728   clang
+x86_64               randconfig-x004-20230728   clang
+x86_64               randconfig-x005-20230728   clang
+x86_64               randconfig-x006-20230728   clang
+x86_64               randconfig-x011-20230728   gcc  
+x86_64               randconfig-x012-20230728   gcc  
+x86_64               randconfig-x013-20230728   gcc  
+x86_64               randconfig-x014-20230728   gcc  
+x86_64               randconfig-x015-20230728   gcc  
+x86_64               randconfig-x016-20230728   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r026-20230727   gcc  
+xtensa               randconfig-r035-20230728   gcc  
+
 -- 
-2.41.0.487.g6d72f3e995-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
