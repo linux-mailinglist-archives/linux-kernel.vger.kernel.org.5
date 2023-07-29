@@ -2,120 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2105E768269
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 00:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C877E768280
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 00:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjG2WEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 18:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S229651AbjG2WR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 18:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjG2WEM (ORCPT
+        with ESMTP id S229459AbjG2WR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 18:04:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF392134
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 15:04:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 51D9E60B29
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 22:04:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 246FFC433CA;
-        Sat, 29 Jul 2023 22:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690668250;
-        bh=hZIkmpMvMxGLbBwQwkx5l+uBVt7Fp7DYNU7L1mha3QI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IM7ATPjPuurBRStKBoIymFY3w6eFeeTB5IInyxUv0ZogB4Y16tbR3278qTAc1QJhw
-         bzWHFRPU0bqXx27Q5ETkO8KFGA5PtbJDbJPoj3IqxPdW+ULsZbH332/QvBDvx+yjfP
-         G/bXrQvyiye8L9gJVgcCoKFOCBnNZ0o5hjOujAfeO0w+VjK+/FxRcWL/7uye/PEKsX
-         zp4kp7+Uik8bDBmVR2sh4yliuaeT5+40hNy+0qYRtvkRCZDsiZgyLDDT1R5b5MTwbo
-         bERGnYDKFnSvK1GXbROapjYqTGXBVF6RH9By6tJ8adUCh6uxa4k7kxeG+4GInsOu8I
-         0bbB6xOwiYjPg==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: [PATCH 2/2] rust: enable `no_mangle_with_rust_abi` Clippy lint
-Date:   Sun, 30 Jul 2023 00:03:17 +0200
-Message-ID: <20230729220317.416771-2-ojeda@kernel.org>
-In-Reply-To: <20230729220317.416771-1-ojeda@kernel.org>
-References: <20230729220317.416771-1-ojeda@kernel.org>
+        Sat, 29 Jul 2023 18:17:27 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230292680;
+        Sat, 29 Jul 2023 15:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690669045; bh=5Md0jFhp2sJ0pGrekHfnvbdPswv4yRGYROCpxcISNyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D+rotqYIOPAJoFdGZggWRqAG9l01ggLPuvwPy11NOFoJk+hXdP+fwCOb0p3cNAxX+
+         FA0rexChmizxYdpmH1T2YaehEleUxF/OLU6YOFr8AH9fuYb6UBmdNwa3MZ7oHRLW4o
+         kCXkazNJeOFhBYgViHX9ygsRzCq/JdfpCfkyVuk8=
+Date:   Sun, 30 Jul 2023 00:17:24 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Yuan Tan <tanyuan@tinylab.org>
+Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/2] selftests/nolibc: add testcase for pipe.
+Message-ID: <27bd9bc1-e7a5-4a81-91c9-2642feabb7ce@t-8ch.de>
+References: <cover.1690307717.git.tanyuan@tinylab.org>
+ <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduced in Rust 1.69.0 [1], this lint prevents forgetting to set
-the C ABI when using `#[no_mangle]` (or thinking it is implied).
+On 2023-07-25 14:01:30-0400, Yuan Tan wrote:
+> Add a testcase of pipe that child process sends message to parent process.
+> 
+> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c | 34 ++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index 03b1d30f5507..43ba2884fd1e 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -767,6 +767,39 @@ int test_mmap_munmap(void)
+>  	return ret;
+>  }
+>  
+> +int test_pipe(void)
+> +{
+> +	int pipefd[2];
+> +	char buf[32];
+> +	pid_t pid;
+> +	char *msg = "hello, nolibc";
 
-For instance, it would have prevented the issue [2] fixed by commit
-c682e4c37d2b ("rust: kernel: Mark rust_fmt_argument as extern "C"").
+const char * const
 
-    error: `#[no_mangle]` set on a function with the default (`Rust`) ABI
-      --> rust/kernel/print.rs:21:1
-       |
-    21 | / unsafe fn rust_fmt_argument(
-    22 | |     buf: *mut c_char,
-    23 | |     end: *mut c_char,
-    24 | |     ptr: *const c_void,
-    25 | | ) -> *mut c_char {
-       | |________________^
-       |
-       = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#no_mangle_with_rust_abi
-       = note: requested on the command line with `-D clippy::no-mangle-with-rust-abi`
-    help: set an ABI
-       |
-    21 | unsafe extern "C" fn rust_fmt_argument(
-       |        ++++++++++
-    help: or explicitly set the default
-       |
-    21 | unsafe extern "Rust" fn rust_fmt_argument(
-       |        +++++++++++++
+> +
+> +	if (pipe(pipefd) == -1)
+> +		return 1;
+> +
+> +	pid = fork();
+> +
+> +	switch (pid) {
+> +	case -1:
+> +		return 1;
+> +
+> +	case 0:
+> +		close(pipefd[0]);
+> +		write(pipefd[1], msg, strlen(msg));
 
-Thus enable it.
+Isn't this missing to write trailing the 0 byte?
+Also check the return value.
 
-In rare cases, we may need to use the Rust ABI even with `#[no_mangle]`
-(e.g. one case, before 1.71.0, would have been the `__rust_*`
-functions). In those cases, we would need to `#[allow(...)]` the lint,
-since using `extern "Rust"` explicitly (as the compiler suggests)
-currently gets overwritten by `rustfmt` [3].
+> +		close(pipefd[1]);
 
-Link: https://github.com/rust-lang/rust-clippy/issues/10347 [1]
-Link: https://github.com/Rust-for-Linux/linux/pull/967 [2]
-Link: https://github.com/rust-lang/rustfmt/issues/5701 [3]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
- Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Do we need to close the pipefds? The process is exiting anyways.
 
-diff --git a/Makefile b/Makefile
-index 658ec2b8aa74..93bf3eca3ead 100644
---- a/Makefile
-+++ b/Makefile
-@@ -467,6 +467,7 @@ export rust_common_flags := --edition=2021 \
- 			    -Dclippy::let_unit_value -Dclippy::mut_mut \
- 			    -Dclippy::needless_bitwise_bool \
- 			    -Dclippy::needless_continue \
-+			    -Dclippy::no_mangle_with_rust_abi \
- 			    -Wclippy::dbg_macro
- 
- KBUILD_HOSTCFLAGS   := $(KBUILD_USERHOSTCFLAGS) $(HOST_LFS_CFLAGS) $(HOSTCFLAGS)
--- 
-2.41.0
+> +		exit(EXIT_SUCCESS);
+> +
+> +	default:
+> +		close(pipefd[1]);
+> +		read(pipefd[0], buf, 32);
 
+Use sizeof(buf). Check return value == strlen(msg).
+
+> +		close(pipefd[0]);
+> +		wait(NULL);
+
+waitpid(pid, NULL, 0);
+
+> +
+> +		if (strcmp(buf, msg))
+> +			return 1;
+> +		return 0;
+
+return !!strcmp(buf, msg);
+
+> +	}
+> +}
+>  
+>  /* Run syscall tests between IDs <min> and <max>.
+>   * Return 0 on success, non-zero on failure.
+> @@ -851,6 +884,7 @@ int run_syscall(int min, int max)
+>  		CASE_TEST(mmap_munmap_good);  EXPECT_SYSZR(1, test_mmap_munmap()); break;
+>  		CASE_TEST(open_tty);          EXPECT_SYSNE(1, tmp = open("/dev/null", 0), -1); if (tmp != -1) close(tmp); break;
+>  		CASE_TEST(open_blah);         EXPECT_SYSER(1, tmp = open("/proc/self/blah", 0), -1, ENOENT); if (tmp != -1) close(tmp); break;
+> +		CASE_TEST(pipe);              EXPECT_SYSZR(1, test_pipe()); break;
+>  		CASE_TEST(poll_null);         EXPECT_SYSZR(1, poll(NULL, 0, 0)); break;
+>  		CASE_TEST(poll_stdout);       EXPECT_SYSNE(1, ({ struct pollfd fds = { 1, POLLOUT, 0}; poll(&fds, 1, 0); }), -1); break;
+>  		CASE_TEST(poll_fault);        EXPECT_SYSER(1, poll((void *)1, 1, 0), -1, EFAULT); break;
+> -- 
+> 2.39.2
+> 
