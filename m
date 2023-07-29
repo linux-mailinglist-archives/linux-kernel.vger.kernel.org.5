@@ -2,296 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D23D7680C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144937680CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 19:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbjG2Rhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 13:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        id S229706AbjG2RkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 13:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjG2Rhd (ORCPT
+        with ESMTP id S229476AbjG2RkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 13:37:33 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE9435A5;
-        Sat, 29 Jul 2023 10:37:30 -0700 (PDT)
-Received: from [192.168.0.107] (unknown [111.197.209.91])
-        by APP-05 (Coremail) with SMTP id zQCowAC3vxcxTsVkKoC_Dw--.18514S2;
-        Sun, 30 Jul 2023 01:36:49 +0800 (CST)
-Message-ID: <d75ef570-c0ad-cea4-687a-d02b560aa676@iscas.ac.cn>
-Date:   Sun, 30 Jul 2023 01:36:49 +0800
+        Sat, 29 Jul 2023 13:40:06 -0400
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E3C35A5
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:40:03 -0700 (PDT)
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6bc807e99adso3355406a34.2
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 10:40:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690652402; x=1691257202;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rjxK3XV1otPT2AJW0VPhw9tTAbXB8TE45wNHUlygPOM=;
+        b=aWEquYgMwSgQ9610PPwN2YQzsqpnQ4xo7WewssTM7JZo9lOLeRwgFFdToygvYc9tZq
+         j59XSeRQWibMzd0nq3DRcKMc0Op1uG9b8Y3Y6+ZGGAGjNX4uylCTkxrNEwRczOd6qe6d
+         CtVs/KLAD7rAS+TWOYDAwsVTiDThA/E+7X8IZ5csyjPh4bgrf4oVdR9POluRnMVG0gp+
+         27Vgjy5P5gM3NiYjZiic3LgEHK+MgJ37/QV/q5t6NpeudWvYSe9mT1reWuCcjhuwltcn
+         SktprJz1hx7ENmOBRBsXZ6ZcbwSHS+pik/jdu2Iq4GozNJsKCodTyplGO01rUfCeuWgO
+         NniA==
+X-Gm-Message-State: ABy/qLYQy5/JhGLTmj6LOqnQFKAGyV9IMBEdNucGJYdPDAWqGjir8kz0
+        /WlJDIQ+5NOPk97CCoNPm7r5FGiLTMt7d7jFUxy9JVqlG6PE
+X-Google-Smtp-Source: APBJJlGSrgqXtHZN3f5gw2tH8Vy5rPREE216dDwwWzpQncvwgXnd0G7hzLrp3WUBT2hvA5+3dBeFdaI17H2xMTLNJFR12xJdWS1S
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
- binutils
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org,
-        Guo Ren <guoren@kernel.org>
-References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
- <20230726-outclass-parade-2ccea9f6688a@spud>
- <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
- <20230726-armchair-evasive-427dd245a9fe@spud>
- <20230727-briskness-sappy-e2d9e4c1ef36@spud>
-From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Organization: ISCAS
-In-Reply-To: <20230727-briskness-sappy-e2d9e4c1ef36@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowAC3vxcxTsVkKoC_Dw--.18514S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr48KFW3Ary8XryUurWDCFg_yoWkGrWkpr
-        WkCr1DGry8Xr18Jr4xJw1UW34UJr15J34UJr45JF1UGrykGr1jqrykXr12gr1UJF4rtr4r
-        Ar1I9w1rZrn8AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07beAp5UUUUU=
-X-Originating-IP: [111.197.209.91]
-X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCggHCmTFGJdK4AAAsL
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:7f0a:0:b0:6b7:45a8:a80c with SMTP id
+ j10-20020a9d7f0a000000b006b745a8a80cmr6807545otq.3.1690652402744; Sat, 29 Jul
+ 2023 10:40:02 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 10:40:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e7813b0601a3af69@google.com>
+Subject: [syzbot] [fat?] INFO: task hung in exfat_sync_fs
+From:   syzbot <syzbot+205c2644abdff9d3f9fc@syzkaller.appspotmail.com>
+To:     linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 15:53, Conor Dooley wrote:
-> On Wed, Jul 26, 2023 at 08:41:55PM +0100, Conor Dooley wrote:
->> On Thu, Jul 27, 2023 at 03:34:16AM +0800, Mingzheng Xing wrote:
->>> On 7/27/23 02:02, Conor Dooley wrote:
->>>> This is still broken for:
->>>> CONFIG_CLANG_VERSION=0
->>>> CONFIG_AS_IS_GNU=y
->>>> CONFIG_AS_VERSION=23500
->>>> CONFIG_LD_IS_BFD=y
->>>> CONFIG_LD_VERSION=23500
->>> Do you mean that these CONFIG_* will cause kernel
->>> compilation errors when paired with certain versions of GCC?
->>> Or perhaps I misunderstood your meaning.
->> No, this section is generated by kconfig, although I messed up my
->> trimming of the list & accidentally removed the gcc version, rather
->> than the clang version. Here's the full thing:
->>
->> CONFIG_CC_VERSION_TEXT="riscv64-unknown-linux-gnu-gcc (g2ee5e430018) 12.2.0"
->> CONFIG_CC_IS_GCC=y
->> CONFIG_GCC_VERSION=120200
->> CONFIG_CLANG_VERSION=0
->> CONFIG_AS_IS_GNU=y
->> CONFIG_AS_VERSION=23500
->> CONFIG_LD_IS_BFD=y
->> CONFIG_LD_VERSION=23500
->> CONFIG_LLD_VERSION=0
->> CONFIG_CC_CAN_LINK=y
->> CONFIG_CC_CAN_LINK_STATIC=y
->> CONFIG_CC_HAS_ASM_GOTO_OUTPUT=y
->> CONFIG_CC_HAS_ASM_GOTO_TIED_OUTPUT=y
->> CONFIG_CC_HAS_ASM_INLINE=y
->> CONFIG_CC_HAS_NO_PROFILE_FN_ATTR=y
->> CONFIG_PAHOLE_VERSION=0
->> CONFIG_CONSTRUCTORS=y
->> CONFIG_IRQ_WORK=y
->> CONFIG_BUILDTIME_TABLE_SORT=y
-> I think this should sort things out for the even-older binutils case. I
-> took the opportunity to fix some grammatical issues that seem to have
-> snuck into the help text in your patch & to drop the \, since the
-> depends on fits in one line.
+Hello,
 
-hi, Conor.
+syzbot found the following issue on:
 
-I reproduced the error with gcc-12.2.0 and binutils-2.35. I tried a
-different solution, which I think makes the logic easier. Showing
-the new patch code:
+HEAD commit:    57012c57536f Merge tag 'net-6.5-rc4' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1675faf9a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5d10d93e1ae1f229
+dashboard link: https://syzkaller.appspot.com/bug?extid=205c2644abdff9d3f9fc
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4c07b9189c86..a6fa1eed895c 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -569,25 +569,24 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-         def_bool y
--       # https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
--       depends on AS_IS_GNU && AS_VERSION >= 23800
-+       depends on AS_IS_GNU && AS_VERSION >= 23600
-         help
--         Newer binutils versions default to ISA spec version 20191213 which
--         moves some instructions from the I extension to the Zicsr and Zifencei
--         extensions.
-+         Binutils has supported zicsr and zifencei extensions since version 2.36,
-+         try to adapt to the changes by using explicit zicsr and zifencei via
-+         -march. For two special cases, where clang<17 or gcc<11.1.0, we will
-+         deal with them in CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7336195c1d93/disk-57012c57.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e7a6562e4033/vmlinux-57012c57.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7d66531ff83b/bzImage-57012c57.xz
 
-  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
-         def_bool y
-         depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-         # https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
--       depends on CC_IS_CLANG && CLANG_VERSION < 170000
--       help
--         Certain versions of clang do not support zicsr and zifencei via -march
--         but newer versions of binutils require it for the reasons noted in the
--         help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
--         option causes an older ISA spec compatible with these older versions
--         of clang to be passed to GAS, which has the same result as passing zicsr
--         and zifencei to -march.
-+       # https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
-+       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
-+       help
-+         Certain versions of clang and GCC do not support zicsr and zifencei via
-+         -march. This option causes an older ISA spec compatible with these older
-+         versions of clang and GCC to be passed to GAS, which has the same result
-+         as passing zicsr and zifencei to -march.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+205c2644abdff9d3f9fc@syzkaller.appspotmail.com
 
-  config FPU
-         bool "FPU support"
-diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/compat_vdso/Makefile
-index 189345773e7e..b86e5e2c3aea 100644
---- a/arch/riscv/kernel/compat_vdso/Makefile
-+++ b/arch/riscv/kernel/compat_vdso/Makefile
-@@ -11,7 +11,13 @@ compat_vdso-syms += flush_icache
-  COMPAT_CC := $(CC)
-  COMPAT_LD := $(LD)
+INFO: task syz-executor.0:13703 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:24584 pid:13703 ppid:20024  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
+ schedule+0xc3/0x180 kernel/sched/core.c:6786
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
+ __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+ exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+ iterate_supers+0x12b/0x1e0 fs/super.c:744
+ ksys_sync+0xdb/0x1c0 fs/sync.c:104
+ __do_sys_sync+0xe/0x20 fs/sync.c:113
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0e7e87cb29
+RSP: 002b:00007f0e7f52c0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+RAX: ffffffffffffffda RBX: 00007f0e7e99bf80 RCX: 00007f0e7e87cb29
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f0e7e99bf80 R15: 00007ffc7df7aba8
+ </TASK>
+INFO: task syz-executor.0:13704 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:26152 pid:13704 ppid:20024  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
+ schedule+0xc3/0x180 kernel/sched/core.c:6786
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
+ __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+ exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+ iterate_supers+0x12b/0x1e0 fs/super.c:744
+ ksys_sync+0xdb/0x1c0 fs/sync.c:104
+ __do_sys_sync+0xe/0x20 fs/sync.c:113
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0e7e87cb29
+RSP: 002b:00007f0e7f50b0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+RAX: ffffffffffffffda RBX: 00007f0e7e99c050 RCX: 00007f0e7e87cb29
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f0e7e99c050 R15: 00007ffc7df7aba8
+ </TASK>
+INFO: task syz-executor.0:13705 blocked for more than 144 seconds.
+      Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.0  state:D stack:27336 pid:13705 ppid:20024  flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
+ schedule+0xc3/0x180 kernel/sched/core.c:6786
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
+ __mutex_lock_common+0xe33/0x2530 kernel/locking/mutex.c:679
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+ exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+ iterate_supers+0x12b/0x1e0 fs/super.c:744
+ ksys_sync+0xdb/0x1c0 fs/sync.c:104
+ __do_sys_sync+0xe/0x20 fs/sync.c:113
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0e7e87cb29
+RSP: 002b:00007f0e750060c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+RAX: ffffffffffffffda RBX: 00007f0e7e99c120 RCX: 00007f0e7e87cb29
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f0e7e8c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f0e7e99c120 R15: 00007ffc7df7aba8
+ </TASK>
 
--COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
-+# binutils 2.35 does not support the zifencei extension, but in the ISA
-+# spec 20191213, G stands for IMAFD_ZICSR_ZIFENCEI.
-+ifdef CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-+       COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
-+else
-+       COMPAT_CC_FLAGS := -march=rv32imafd -mabi=ilp32
-+endif
-  COMPAT_LD_FLAGS := -melf32lriscv
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8d328db0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8d329170 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/27:
+ #0: ffffffff8d328be0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
+2 locks held by getty/4768:
+ #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015a02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
+5 locks held by kworker/u4:8/6147:
+ #0: ffff8880b993bf98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:558
+ #1: ffff8880b99287c8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x441/0x770 kernel/sched/psi.c:999
+ #2: ffff8880b99295d8 (&base->lock){-.-.}-{2:2}, at: __mod_timer+0x692/0xf40 kernel/time/timer.c:1112
+ #3: ffffffff922b52c0 (&obj_hash[i].lock){-.-.}-{2:2}, at: debug_object_activate+0x163/0x530 lib/debugobjects.c:717
+ #4: ffffffff8d1da0a8 (text_mutex){+.+.}-{3:3}, at: arch_jump_label_transform_apply+0x12/0x30 arch/x86/kernel/jump_label.c:145
+3 locks held by syz-executor.4/5979:
+2 locks held by syz-executor.0/13703:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/13704:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/13705:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/13946:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/14038:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/14039:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by syz-executor.0/14040:
+ #0: ffff8880797680e0 (&type->s_umount_key#49){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+ #1: ffff88807976a0e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_sync_fs+0x6b/0x100 fs/exfat/super.c:65
+2 locks held by dhcpcd/14047:
+ #0: ffff88803d73e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1708 [inline]
+ #0: ffff88803d73e130 (sk_lock-AF_PACKET){+.+.}-{0:0}, at: packet_do_bind+0x32/0xc10 net/packet/af_packet.c:3202
+ #1: ffffffff8d32e278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:293 [inline]
+ #1: ffffffff8d32e278 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3a3/0x890 kernel/rcu/tree_exp.h:992
 
-  # Disable attributes, as they're useless and break the build.
--- 
-2.34.1
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xec2/0xf00 kernel/hung_task.c:379
+ kthread+0x2b8/0x350 kernel/kthread.c:389
+ ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 4453 Comm: syslogd Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:memset_orig+0x33/0xac arch/x86/lib/memset_64.S:67
+Code: b6 ce 48 b8 01 01 01 01 01 01 01 01 48 0f af c1 41 89 f9 41 83 e1 07 75 6c 48 89 d1 48 c1 e9 06 74 35 0f 1f 44 00 00 48 ff c9 <48> 89 07 48 89 47 08 48 89 47 10 48 89 47 18 48 89 47 20 48 89 47
+RSP: 0018:ffffc90005697418 EFLAGS: 00000247
+RAX: 0000000000000000 RBX: ffff88807e278000 RCX: 0000000000000000
+RDX: 0000000000000060 RSI: 0000000000000000 RDI: ffffc90005697480
+RBP: dffffc0000000000 R08: ffffc900056974df R09: 0000000000000000
+R10: ffffc90005697480 R11: fffff52000ad2e9c R12: 0000000000000000
+R13: ffffffff817a0b80 R14: ffffc90005697480 R15: 0000000000000000
+FS:  00007f0dc2ea9380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005611df817600 CR3: 0000000028c84000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ __unwind_start+0x36/0x720 arch/x86/kernel/unwind_orc.c:688
+ unwind_start arch/x86/include/asm/unwind.h:64 [inline]
+ arch_stack_walk+0xdf/0x140 arch/x86/kernel/stacktrace.c:24
+ stack_trace_save+0x117/0x1c0 kernel/stacktrace.c:122
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1792 [inline]
+ slab_free_freelist_hook mm/slub.c:1818 [inline]
+ slab_free mm/slub.c:3801 [inline]
+ __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3814
+ skb_kfree_head net/core/skbuff.c:894 [inline]
+ skb_free_head net/core/skbuff.c:906 [inline]
+ skb_release_data+0x660/0x850 net/core/skbuff.c:936
+ skb_release_all net/core/skbuff.c:1002 [inline]
+ __kfree_skb net/core/skbuff.c:1016 [inline]
+ consume_skb+0xb3/0x150 net/core/skbuff.c:1232
+ __unix_dgram_recvmsg+0xcb7/0x1260 net/unix/af_unix.c:2442
+ sock_recvmsg_nosec net/socket.c:1020 [inline]
+ sock_recvmsg net/socket.c:1041 [inline]
+ sock_read_iter+0x3ab/0x500 net/socket.c:1107
+ call_read_iter include/linux/fs.h:1865 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x795/0xb00 fs/read_write.c:470
+ ksys_read+0x1a0/0x2c0 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0dc2ffdb6a
+Code: 00 3d 00 00 41 00 75 0d 50 48 8d 3d 2d 08 0a 00 e8 ea 7d 01 00 31 c0 e9 07 ff ff ff 64 8b 04 25 18 00 00 00 85 c0 75 1b 0f 05 <48> 3d 00 f0 ff ff 76 6c 48 8b 15 8f a2 0d 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffc321f7068 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f0dc2ffdb6a
+RDX: 00000000000000ff RSI: 0000558a4fb90950 RDI: 0000000000000000
+RBP: 0000558a4fb90910 R08: 0000000000000001 R09: 0000000000000000
+R10: 00007f0dc319c3a3 R11: 0000000000000246 R12: 0000558a4fb9099d
+R13: 0000558a4fb90950 R14: 0000000000000000 R15: 00007f0dc31daa80
+ </TASK>
 
 
-Here are the results of my tests:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-gcc          binutils       patched         no patch(test on master)
-11.4.0     2.35            ok                  ok
-11.4.0     2.36            ok                  ok
-11.4.0     2.38            ok                  ok
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-12.2.0     2.35            ok                  error[1]
-12.2.0     2.36            ok                  error[2]
-12.2.0     2.38            ok                  ok
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-10.5.0     2.35            ok                  ok
-10.5.0     2.36            ok                  ok
-10.5.0     2.38            ok                  error[3]
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-11.1.0     2.35            ok                  ok
-11.1.0     2.36            ok                  ok
-11.1.0     2.38            ok                  ok
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
-11.2.0     2.35            ok                  ok
-11.2.0     2.36            ok                  ok
-11.2.0     2.38            ok                  ok
-
-[1]
-Assembler messages:
-Fatal error: -march=rv32imafd_zicsr_zifencei: Invalid or unknown z ISA extension: 'zifencei'
-make[2]: *** [arch/riscv/kernel/compat_vdso/Makefile:47: arch/riscv/kernel/compat_vdso/rt_sigreturn.o] Error 1
-
-[2]
-./arch/riscv/include/asm/vdso/gettimeofday.h: Assembler messages:
-./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
-./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
-./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
-./arch/riscv/include/asm/vdso/gettimeofday.h:79: Error: unrecognized opcode `csrr a5,0xc01'
-make[2]: *** [scripts/Makefile.build:243: arch/riscv/kernel/vdso/vgettimeofday.o] Error 1
-
-[3]
-cc1: error: '-march=rv64imac_zicsr_zifencei': unsupported ISA subset 'z'
-cc1: error: ABI requires '-march=rv64'
-make[2]: *** [scripts/Makefile.build:243: scripts/mod/empty.o] Error 1
-make[2]: *** Waiting for unfinished jobs....
-cc1: error: '-march=rv64imac_zicsr_zifencei': unsupported ISA subset 'z'
-cc1: error: ABI requires '-march=rv64'
-
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index e1b66ee88323..2d0d89213c97 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -571,25 +571,27 @@ config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->   	def_bool y
->   	# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
->   	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
-> -	depends on GCC_VERSION >= 120100 || (AS_IS_GNU && AS_VERSION >= 23800)
-> +	depends on AS_IS_GNU
-> +	depends on (GCC_VERSION >= 120100 && AS_VERSION >= 23600) || AS_VERSION >= 23800
-
-Tests verified that explicit _ZICSR_ZIFENCEI via -march is required
-for gcc>=12.1.0, but this only happens for binutils>=2.36,
-binutils 2.35 + gcc>=12.1.0 does not need that. Considering
-binutils 2.35 together complicates things. So what do you think
-of the above new version patch?
-
-Some more info:
-- The commit[4] for patch changes.
-- binutils 2.36 supports the zifencei extension[5] and splits
-zifencei and zicsr from I[6].
-
-[4] commit 0715372a06ce ("riscv: compat: vdso: Add COMPAT_VDSO base code implementation")
-[5] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=5a1b31e1e1cee6e9f1c92abff59cdcfff0dddf30
-[6] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=729a53530e86972d1143553a415db34e6e01d5d2
-
-Thanks,
-Mingzheng.
-
->   	help
-> -	  Binutils-2.38 and GCC-12.1.0 bump default ISA spec to newer version
-> +	  Binutils-2.38 and GCC-12.1.0 bump the default ISA spec to version
->   	  20191213 which moves some instructions from the I extension to the
-> -	  Zicsr and Zifencei extensions.
-> +	  Zicsr and Zifencei extensions. On the other hand, Binutils prior to
-> +	  2.35 does not understand these arguments and will error if they are
-> +	  passed.
->   
->   config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
->   	def_bool y
->   	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->   	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
->   	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
-> -	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || \
-> -		   (CC_IS_GCC && GCC_VERSION < 110100)
-> +	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
->   	help
-> -	  Certain versions of clang (or GCC) do not support zicsr and zifencei via
-> +	  Certain versions of clang and GCC do not support zicsr and zifencei via
->   	  -march but newer versions of binutils require it for the reasons noted
->   	  in the help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
->   	  option causes an older ISA spec compatible with these older versions
-> -	  of clang (or GCC) to be passed to GAS, which has the same result as
-> +	  of clang and GCC to be passed to GAS, which has the same result as
->   	  passing zicsr and zifencei to -march.
->   
->   config FPU
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
+If you want to undo deduplication, reply with:
+#syz undup
