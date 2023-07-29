@@ -2,70 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5730768129
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A1376812F
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 21:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjG2TCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 15:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
+        id S229645AbjG2TIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 15:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjG2TC2 (ORCPT
+        with ESMTP id S229541AbjG2TIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 15:02:28 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AD735B8;
-        Sat, 29 Jul 2023 12:02:24 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99b9421aaebso446750066b.2;
-        Sat, 29 Jul 2023 12:02:24 -0700 (PDT)
+        Sat, 29 Jul 2023 15:08:07 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4019A1A8;
+        Sat, 29 Jul 2023 12:08:06 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9a828c920so50283381fa.1;
+        Sat, 29 Jul 2023 12:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1690657343; x=1691262143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mbwxOo0rYZaBf7rK29/+zBVbIyIuQuXZw1K3yD81hfw=;
-        b=qqgKsyvm1cURFa0kmIdwXTlP4iWRb4n0WSxpNHt/XPzwWMaAwrdIRW4b2QmL3loEVw
-         X8uYLYwD18cr6aq6R8+QJAuwKZirccUnOmn0Sxrb1i2dPobTOrKIzroLlTEwgGAdbpwS
-         J2am7zwSVmYTk2JnPc6hkGvM2MmTy4g0qlgsWF7G0krgyvhmlmieRBkI/iMw4dHUsYjl
-         7J4xdreUdwjdablWi7ce79vG+5rPllGMvNiMOnmNi5JJIP1i/WEFuFGbSocVQ21VXI+f
-         NXrmKzV71NQ38IraKdOmfk7UzRORBad3bxNed2QPWNEB9udPl+6LvcXYPPTZuSXDyJ+F
-         SA7g==
+        d=gmail.com; s=20221208; t=1690657684; x=1691262484;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GAE2z1sqOQ4U7Z2OAsMeFxw8EZ6FViB9HKo0vEztFf0=;
+        b=CSWr4cdu86ei1TwsLLrFcabgBGbN4Hk/7zcuuBFeRHYfNbmxmCwJ7KkH9fKthmFGXm
+         7YrlLNPSXXc7iBFK7eV4AEpbvjhQVmh6CXcx/AOPzwThXcdED4PXZSMjvvG0jSGXKzlw
+         KkfAxzwnoOa7T5DM+ebPGJuFpA+WtOT7i4/fYAPaZqc5hIl4r74QJrShOkJSaDJGHojv
+         su1HF2qcIQBLiFwnheOPCwp9y068sA8TWXS735g92MgJlJJjmp7vjd1U/y3aWZ7yTZRX
+         BmFZggQuThCRLhYBE/3GSGMX1vKs7mxdhjixHf27wMQGto4g/5qGxpeD717bd5bxu9JW
+         M5GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690657343; x=1691262143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mbwxOo0rYZaBf7rK29/+zBVbIyIuQuXZw1K3yD81hfw=;
-        b=Yup+F7ZCaSHCVaIat01rtbJX7BbpuiGyeqCVjlEQp5MvCLy1fCqFtmrLNGAovR2E2v
-         9RbTgzIMhA5ObTgudS8mQfwbry/UEIl33+c3F2/gwmeTOn8flNgpV/R4mbBWsEwXrtVn
-         ko0w2jnM78+YevMVi8cn6EAvcMWTHhhL0paYsP1NyFP+HAGf+enBFeWcpNSfAfBzKqdx
-         00zVI0P4giuT/4Cb5oentbQDWsFib+QouK071dpfLFfruiIGo2YqMtHKzVUs+v3gc1RE
-         6SrqzW/NIJVa/gkNLMKDsPmYa2MJ/FudKvXOiu8D1aJGVrIFupqAPr3SQqN4QKr5Bh2L
-         Rbsw==
-X-Gm-Message-State: ABy/qLYyg8kM4hPRhMR4SpAB6KL65oq9Ou/zUm/GKVArZdWkj4g6Ms20
-        ZDGp4LQxasEW3soFg8zwWntjxANceir+5vzQ9yk=
-X-Google-Smtp-Source: APBJJlHKcmz/y1QtxHjO1aYGSheR17Kiu7PBj4dt7wZEWJJm3KSZezSQA20D0SHQZNMoiudt8fsVxA7ivGeg2xJb1UQ=
-X-Received: by 2002:a17:906:32cb:b0:99c:3b4:940f with SMTP id
- k11-20020a17090632cb00b0099c03b4940fmr1296569ejk.27.1690657343026; Sat, 29
- Jul 2023 12:02:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690657684; x=1691262484;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GAE2z1sqOQ4U7Z2OAsMeFxw8EZ6FViB9HKo0vEztFf0=;
+        b=KrQyms/QrVNyF44XHcnaRA4/aPjbDnSpHd+w+2RnSj4WLciMGOA77uvZ30vvn/tLR5
+         H67RVoYTEoJIrzC1sxIIwJ1EFNIDAUjD5N443UfJY9hGb16oKk0l3fQoUY3LGo8+3sjp
+         hBbH/18C+EBQ/PExr8Q1YyaNmN0fSRRBG1cNYkm9DIkr9ktcS49WyLdEIMNqu7wOmMNx
+         D9koQgGoxCK3jRJD3LLLPwJiL3OhostP9tDbFl4FfAvQzvpPlri9LLF8ziVuXlvwxoir
+         D5LqZRqk/l+sX8JtI4QFxrhtJTSxHjQDG0r3y7sctdC+Tv5RiBwRjQ14KwsXawOHRIa3
+         SWOg==
+X-Gm-Message-State: ABy/qLasTBbgrW4H6b5+jqHyc5gTdBYhnmjR7N/PX+MhLY9Gd93Y3sHA
+        2LWyVaswNF+wHZ5o0iwggvw5VK6OlEpPzqLTRpPPYGJf
+X-Google-Smtp-Source: APBJJlFIbpcEFeveHd1+UwMlJ0qrILLlbHDucVbw5obWOPf2eRga6waSxoqO0wWfSEGKsL0JjegeoWcUxVjP6L8Q9xg=
+X-Received: by 2002:a2e:8e81:0:b0:2b6:a3a0:5f7 with SMTP id
+ z1-20020a2e8e81000000b002b6a3a005f7mr4244396ljk.9.1690657684252; Sat, 29 Jul
+ 2023 12:08:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230727070051.17778-1-frank.li@vivo.com> <20230727070051.17778-34-frank.li@vivo.com>
-In-Reply-To: <20230727070051.17778-34-frank.li@vivo.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 29 Jul 2023 21:02:12 +0200
-Message-ID: <CAFBinCAXph1VS=zYTs=7A10BFKeNJ1SCyRXorTQ9rCxXjX64QA@mail.gmail.com>
-Subject: Re: [PATCH v3 34/62] mmc: meson-mx-sdio: Convert to platform remove
- callback returning void
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 29 Jul 2023 14:07:53 -0500
+Message-ID: <CAH2r5mvzyVsou=Avw8GjxwV5CRgEMY_4XO+JEaZLk+GF-QjyzA@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -76,20 +64,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 9:02=E2=80=AFAM Yangtao Li <frank.li@vivo.com> wrot=
-e:
->
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
->
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->
-> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Please pull the following changes since commit
+6eaae198076080886b9e7d57f4ae06fa782f90ef:
+
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
+
+are available in the Git repository at:
+
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc3-smb3-client-fixes
+
+for you to fetch changes up to a171eb5cac427fa8d084eaf5e47fbe4c0f1e279f:
+
+  cifs: add missing return value check for cifs_sb_tlink (2023-07-26
+15:41:27 -0500)
+
+----------------------------------------------------------------
+Four small SMB3 client fixes
+- two reconnect fixes (to address the case where non-default iocharset
+gets incorrectly overridden at reconnect with the default charset)
+- fix for NTLMSSP_AUTH request setting a flag incorrectly)
+- Add missing check for invalid tlink (tree connection) in ioctl
+
+----------------------------------------------------------------
+Shyam Prasad N (1):
+      cifs: add missing return value check for cifs_sb_tlink
+
+Steve French (1):
+      smb3: do not set NTLMSSP_VERSION flag for negotiate not auth request
+
+Winston Wen (2):
+      fs/nls: make load_nls() take a const parameter
+      cifs: fix charset issue in reconnection
+
+ fs/nls/nls_base.c        | 4 ++--
+ fs/smb/client/cifsglob.h | 1 +
+ fs/smb/client/cifssmb.c  | 3 +--
+ fs/smb/client/connect.c  | 5 +++++
+ fs/smb/client/ioctl.c    | 5 +++++
+ fs/smb/client/misc.c     | 1 +
+ fs/smb/client/sess.c     | 4 +++-
+ fs/smb/client/smb2pdu.c  | 3 +--
+ include/linux/nls.h      | 2 +-
+ 9 files changed, 20 insertions(+), 8 deletions(-)
+
+
+--
+Thanks,
+
+Steve
