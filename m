@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8EA7681EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 22:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10F77681F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Jul 2023 23:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjG2U7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 16:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35186 "EHLO
+        id S229610AbjG2VII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 17:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjG2U7e (ORCPT
+        with ESMTP id S229469AbjG2VIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 16:59:34 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91BF2D7D
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 13:59:32 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-583b019f1cbso33753677b3.3
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 13:59:32 -0700 (PDT)
+        Sat, 29 Jul 2023 17:08:06 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB3B1BFB
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 14:08:01 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9a2033978so48631961fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 14:08:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690664372; x=1691269172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cfzpesW+hOlC1ZUbBq1IIGj/qNDgml+8JoQuSDI0Xns=;
-        b=xfuQcnTt1k9BwayMFRabGsrbid8ZYAaCyZ+dh+p2Z9prQJaZaxqDiFhM98xtohYcfZ
-         rwNLBqRVUuGhoZLaC45Clwk/wBFS5xGgCrwTwrtaM8eY1dwR5kkHTcyn9uIVT9mlRyFE
-         mujgG4qSDflMs9+oGJjILrvHyzVTq1PksTTVzihLVrp3y/Zr00MRbbik06RAJliZrLQN
-         J8Oal6eTt7r5T6S6K4qjHv4hpFqQI26Z3GSeOE3joah0z5E3sj1RfVfpXLKOkKEuwIU7
-         GZNogMQcpJmzy2apxm3uSABoD8IJnFLEFSPW56N6c5Rkn54Ctf4sxfeiT9slRJFXVePl
-         7UiA==
+        d=linux-foundation.org; s=google; t=1690664879; x=1691269679;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=df0j41X3vQ99yevuaGGsVtpCGhFPoGbQqptBVGUtLL0=;
+        b=JVqw/E6vJ+zeQv2pJYYhFUIjN6uVQiFzEzWWuPj1ht/efyZTykgi0B5qWANXflXubc
+         rYuFLs9cRGQ2UUEvRpVI/UJ4DsVy6weySii/nzsOBxh6QVfSVCUBToxR/B4e5C7RD6+1
+         VDMi01EcOD+BijeWsjd6meXj/zrosAnsmPhvg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690664372; x=1691269172;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cfzpesW+hOlC1ZUbBq1IIGj/qNDgml+8JoQuSDI0Xns=;
-        b=Clzu1mNrRgQsLUE7838HBMeiPNPWBjg0plXU2wCHKAeug7RsGIKGv9xIqF/aDIrb5O
-         tlWh1ZpfYvz57I5MS7Mg26kCgA44SkMabJqsxcznxKossTLne0WwASd/bPL0fApnd6QX
-         kXaX/rzZOg5I+F3Xflhn2GPI5bBxhZbswje3hJMdTo3tHw0N6rGmH9iM4H6b37SpU+tl
-         dJJRh1kp/sptwES4XLQp98w2aJIRapyuwJApnOjOUYUWLgQYFpGhbxAxocrsQq1mHYMc
-         cnFmhxA2cYppUbEK/EjzUL4ZzTue3OE0IsPZ5LrksnVI9Fz+IDYpRbZKBXFJYl4NeIjD
-         fPaA==
-X-Gm-Message-State: ABy/qLZ/6Cbw+AnaIxQFBxrbroSMcfvzkApJ47W3RK6vuMRdEFG+ed6C
-        8+M6ot1sX68QIVAthWY1wHw3humP2YEPffofsjvLRg==
-X-Google-Smtp-Source: APBJJlFY851kPPLZmbl8gzO3TdOllzPpcX7gGXuGgI5liIlSowpGtr42X+Nk5GuQWyhZfyYfw6Pt2oPNgjjNDbECIzQ=
-X-Received: by 2002:a81:6c90:0:b0:583:8c5f:da11 with SMTP id
- h138-20020a816c90000000b005838c5fda11mr5581076ywc.0.1690664372059; Sat, 29
- Jul 2023 13:59:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690664879; x=1691269679;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=df0j41X3vQ99yevuaGGsVtpCGhFPoGbQqptBVGUtLL0=;
+        b=RKZqtbVrOLmMEGb3kN6LHhnHOGmiSRCmXtHHlB00go2TGdUSaQgqYjXW5o1g33vHoB
+         7srz4XmW1oFlNHJhVWXkDD5/thQ4PYkGjlyxyep4y922DOJkeapOrtkBsZWeFQTdF2LG
+         jnj0NpyipxgMJJvWacfU1vaRQyDul5bnKfvdGIQ0Y6I59jfuzapellFT3P4j92aLAM0j
+         nS9FT4AZBsKQn0HhZ8TODzyFjCf7PVJo7LfaCfvxUJ/dOVxzWmOpxBRIxEUj+1glXhZQ
+         YtnWHdr8d2jnwcncAfECANRKS8b/GLCLrXD1a201O5taORcYHUyNNcZUZHK8zFeLl7ds
+         rKkQ==
+X-Gm-Message-State: ABy/qLaT0LlSNExaT6vkMdj/5S4DTxrXPb8MArdvpxUciCl1FZsYiaxM
+        IWCIBVcpotsxQMUVG2hdwPwt3aHVSZJV1KFm/+wpjg==
+X-Google-Smtp-Source: APBJJlGoUzXmlTtqJwzQdUYHXeE0xIpnf+ts2qBAPMhUvYnLtj79yye88uSVQBbo6CisVJ9Vw2VCkQ==
+X-Received: by 2002:a2e:3807:0:b0:2b6:cff1:cd1c with SMTP id f7-20020a2e3807000000b002b6cff1cd1cmr3629633lja.34.1690664879474;
+        Sat, 29 Jul 2023 14:07:59 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id z7-20020a170906074700b0099293cdbc98sm3761840ejb.145.2023.07.29.14.07.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Jul 2023 14:07:58 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso4209394a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 14:07:58 -0700 (PDT)
+X-Received: by 2002:aa7:c393:0:b0:51e:1a51:d414 with SMTP id
+ k19-20020aa7c393000000b0051e1a51d414mr4358469edq.32.1690664878368; Sat, 29
+ Jul 2023 14:07:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-35-3d63a5f1103e@maquefel.me> <4b0f8b39-bec5-6f5d-1b98-8145e334ed94@linaro.org>
- <2c7e838ae4e49b72185626935f886d07895e8192.camel@maquefel.me>
-In-Reply-To: <2c7e838ae4e49b72185626935f886d07895e8192.camel@maquefel.me>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 29 Jul 2023 22:59:20 +0200
-Message-ID: <CACRpkdYA2MLdX5xY-rTcKyKH2eFXZyHHXcX9G-vdWT5GmChwaA@mail.gmail.com>
-Subject: Re: [PATCH v3 35/42] ARM: dts: ep93xx: add ts7250 board
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lennert Buytenhek <kernel@wantstofly.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Michael Peters <mpeters@embeddedts.com>,
-        Kris Bahnsen <kris@embeddedts.com>, devicetree@vger.kernel.org,
+References: <20230727200041.21404-1-svenjoac@gmx.de>
+In-Reply-To: <20230727200041.21404-1-svenjoac@gmx.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 29 Jul 2023 14:07:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgK9-Tx4BxYMrc0pg==mcaz3cjWF6-CBwVpM_BZAmf4JQ@mail.gmail.com>
+Message-ID: <CAHk-=wgK9-Tx4BxYMrc0pg==mcaz3cjWF6-CBwVpM_BZAmf4JQ@mail.gmail.com>
+Subject: Re: [PATCH] arch/*/configs/*defconfig: Replace AUTOFS4_FS by AUTOFS_FS
+To:     Sven Joachim <svenjoac@gmx.de>
+Cc:     Ian Kent <raven@themaw.net>, autofs@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 3:45=E2=80=AFPM Nikita Shubin <nikita.shubin@maquef=
-el.me> wrote:
+On Thu, 27 Jul 2023 at 13:01, Sven Joachim <svenjoac@gmx.de> wrote:
+>
+> Commit a2225d931f75 ("autofs: remove left-over autofs4 stubs")
+> promised the removal of the fs/autofs/Kconfig fragment for AUTOFS4_FS
+> within a couple of releases, but five years later this still has not
+> happened yet, and AUTOFS4_FS is still enabled in 63 defconfigs.
 
-> > > +       nand-controller@60000000 {
-> >
-> > Where is this address? It does not work like that. If this is part of
-> > SoC, then should be in DTSI and part of soc node. If not, then it is
-> > some other bus which needs some description. Top-level is not a bus.
-> >
->
-> It's some kind of EBI, but it doesn't need a driver it is transparent
-> on ts7250, the logic is controlled through installed CPLD.
->
-> The EBI it self is a part of the SoC through:
->
-> https://elixir.bootlin.com/linux/v6.5-rc3/source/arch/arm/mach-ep93xx/soc=
-.h#L35
->
-> EP93XX_CS0_PHYS_BASE_ASYNC to EP93XX_CS0_PHYS_BASE_SYNC.
->
-> So for ts7250 this includes:
->
-> - NAND
-> - m48t86
-> - watchdog
->
-> I don't even know how to represent it correctly, would "simple-bus"
-> with "ranges" defined suit here, so it will represent hierarchy but
-> won't do anything ?
+Ok, I ran the script, and also decided that we might as well remove
+the AUTOFS4 legacy naming stub entry by now.
 
-Check how I solved this on the IXP4xx EBI for an example:
-Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-expansion=
--bus-controller.yaml
+It has been five years, and people will have either picked up the new
+name with 'make oldconfig', or they just don't use 'make oldconfig' at
+all.
 
-Top level bus inside soc:
-arch/arm/boot/dts/intel/ixp/intel-ixp4xx.dtsi
-Example platform:
-arch/arm/boot/dts/intel/ixp/intel-ixp42x-linksys-nslu2.dts
-
-Notice chip select number in first cell.
-
-I think you want to do something similar here?
-
-Yours,
-Linus Walleij
+         Linus
