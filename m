@@ -2,157 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410547682B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 01:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC817682C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 02:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbjG2Xlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 19:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        id S229554AbjG3ARg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 20:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjG2Xlk (ORCPT
+        with ESMTP id S229445AbjG3ARd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 19:41:40 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8CF2D61;
-        Sat, 29 Jul 2023 16:41:39 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bc0a20b54so516132866b.1;
-        Sat, 29 Jul 2023 16:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690674097; x=1691278897;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0v0jLwnwzDh79wxSK826et8eo4TKKEDlYscJEeAlfEU=;
-        b=l+Nw2eJGJRlse4weN+Zg5DIXZNLaRZs5vFgzEiDdgg1NVBpJBPAP8OzwvRbggZoW9D
-         6MK/na7e5zNYF59WMdm41sY/wunXt8GSdQzyG//9j/nGqMdIe9f3ieqSRGHjnObEbs3p
-         RvwylckQKxUUNifHqKyQZvNuhVEtoDASqluSKX/cSHmrTTsrrqUSAS+QsBzgne4N29HE
-         ggliqqsd1AaVRC7CNdnz+d3ySVpggDjQR+1n+RuZS7WOQ5UkVLyh8aI3d9NI6ptsFAw3
-         ysggpwzxvF5BItqzHreMz7JvHvLs2wh3MYR4bGsyVSI0DdLdwZQn2QZ6vIZrMDD83545
-         0Mpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690674097; x=1691278897;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0v0jLwnwzDh79wxSK826et8eo4TKKEDlYscJEeAlfEU=;
-        b=R/vxykTEHd6aRjAbHtuL+7vhLKM7doqvDEnZlJd5nv7ymCG3I4jHM5023EGsJs5vZk
-         cCmqj24ai1mxkefCyISRc/B7aZ9Cg0p4hbg3Dyy1mi5dCqLTcrIlfAzQ1U60GB/5AleZ
-         PGu+2ELTlaiZoLaik7VKvPKRFcKWyVxCPIpmSuRJkJHBJtqSyj8dbLrBcVzSzcQ1m/+5
-         LoaOvo4YN7N0CmD7vxojI3VZandgPC1wNopKZgy4vaIwRwuzWY4BUX3EGK8bugNjoLsy
-         e7T1HwVWa1VlwJGsDiD/sQ55rfInwzOaTmdqAKrr2aD7lXvheO+RXbRcj88EILM3Qfzv
-         mKxQ==
-X-Gm-Message-State: ABy/qLYhoyJbxeuL/cQniPfdV2ucrvkX27vQvD7rlRXCZREJK6biAM3p
-        xzXXVus6qZca6T5+QZBMKI8=
-X-Google-Smtp-Source: APBJJlFsRKC2mTKeYT3mQLgnmZXIJXKso0YsRWIcZ7kk/uzkfjwxyoLrgvAG0n8G8PGEavbjC6R0nA==
-X-Received: by 2002:a17:907:75f0:b0:99b:ca5d:1466 with SMTP id jz16-20020a17090775f000b0099bca5d1466mr3445829ejc.66.1690674097502;
-        Sat, 29 Jul 2023 16:41:37 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id b3-20020a170906490300b0099307a5c564sm3874472ejq.55.2023.07.29.16.41.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Jul 2023 16:41:37 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id BD1B127C0054;
-        Sat, 29 Jul 2023 19:41:33 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 29 Jul 2023 19:41:33 -0400
-X-ME-Sender: <xms:q6PFZBfJszEaWWIgMPKzoTG09NTAG-nPZX72_AxEDGHizlohjdmJIg>
-    <xme:q6PFZPNkYUsosBPzW-5MS7YxAYi9MKhJg6PEKQgOnYL9-9w6qSAmX6MSb4ry40j45
-    NMffXdMbDTBfGgerg>
-X-ME-Received: <xmr:q6PFZKiljlqD6fdhUJm3Ya8xxsrar4vD2q1KWkcb8MFcCpub_9OQ5mKEHgCinw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieelgddvhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudekhffg
-    geelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:q6PFZK_kVGNeU7E628FxxXTtIiGhYvDq3paw3h6g4K1CxQt0ckrUJQ>
-    <xmx:q6PFZNtcMmBc6wSjqG6Z8Zo7TMbnloV3Mha7eid70j_qRG8ofM86rA>
-    <xmx:q6PFZJHnqDkdfpcWspvkhIU_Pxu-icg15IsvS2axG7tH_FeLQcBwhA>
-    <xmx:raPFZBBK0L7MfnWRqOqPqaqKXXAS-8febkhcrbxFfRRbXQiPBy6o8Q>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 29 Jul 2023 19:41:31 -0400 (EDT)
-Date:   Sat, 29 Jul 2023 16:40:53 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Fox Chen <foxhlchen@gmail.com>,
-        John Baublitz <john.m.baublitz@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andreas Hindborg <nmi@metaspace.dk>, stable@vger.kernel.org
-Subject: Re: [PATCH] rust: allocator: Prevents mis-aligned allocation
-Message-ID: <ZMWjhRyvsWIZal72@boqun-archlinux>
-References: <20230613164258.3831917-1-boqun.feng@gmail.com>
- <CANiq72=pb18B6NOcXF03d0ctOP8kv2dqnUeNyEuSvuDb=vs-0g@mail.gmail.com>
+        Sat, 29 Jul 2023 20:17:33 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4E5E8
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 17:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690676252; x=1722212252;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Cx6rvQi/jVxl5uR9AZN67RII3e3A44QXJOi9h6o0rao=;
+  b=aybB7RQXK9YHffV0qjGnqthVRxZ57f1jk5/RY8LqiW6c6wuwgN+I9NK5
+   fFyezvA7qbnzX0ZavefZlSCluLN4IkTDFr8P0/ZE2c9vBuB1jz5X24En5
+   WGBsHn69/M5ABRfObTwJNaLyn1YtSaQN5Gbu4XDPyy8g0aY6pUofc/N1T
+   Tj1akeljoJP/DPlYxoKWXRfUp7Bx8YTsvS/WXpwesrnvDpqgNY9uZFVWS
+   kvW+6GvYt5Htc/zBhIi1PzezMr9z4+oAALYRaSeLS6WhsNLo0915HraaS
+   MpQI/dmgQcBz6jhGQgWpVbWLymyrRokEy6lhxUNv+ePoLPGbFtHpqtqMa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="367682440"
+X-IronPort-AV: E=Sophos;i="6.01,240,1684825200"; 
+   d="scan'208";a="367682440"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2023 17:17:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="871209480"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Jul 2023 17:17:32 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qPu7l-0004Lv-1Z;
+        Sun, 30 Jul 2023 00:17:29 +0000
+Date:   Sun, 30 Jul 2023 08:16:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202307300850.Xb9OMlVI-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72=pb18B6NOcXF03d0ctOP8kv2dqnUeNyEuSvuDb=vs-0g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 04:01:03PM +0200, Miguel Ojeda wrote:
-> On Tue, Jun 13, 2023 at 6:44 PM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > Cc: stable@vger.kernel.org # v6.1+
-> 
-> Applied to `rust-next`, thanks!
-> 
-> However, should this go to stable? The actual functions being called
-> are the `__rust_*` ones (until they get removed in 1.71), no? Thus
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   12214540ad87ce824a8a791a3f063e6121ec5b66
+commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
+date:   5 weeks ago
+config: m68k-randconfig-r091-20230730 (https://download.01.org/0day-ci/archive/20230730/202307300850.Xb9OMlVI-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230730/202307300850.Xb9OMlVI-lkp@intel.com/reproduce)
 
-Interesting, I wasn't aware of the `__rust_*` "hack" here, so you are
-right, this doesn't fix the issue in stable kernels.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307300850.Xb9OMlVI-lkp@intel.com/
 
-> this is not actually fixing the actual functions being called, right?
-> 
-> If that is correct, then the fix should change the functions below,
-> perhaps adding `krealloc_with_flags()` from the other patch (it does
-> not need to be a method, by the way), and calling it with a `Layout`
-> like the generated ones do. Then I can rebase `rust-next` on top of
+sparse warnings: (new ones prefixed by >>)
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     expected void *va
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
+>> drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *va @@
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     expected void [noderef] __iomem *addr
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     got void *va
+   drivers/remoteproc/stm32_rproc.c:644:17: sparse: sparse: cast removes address space '__iomem' of expression
 
-Sounds good, however I think it'll be better if I resend this one, and
-the other one originally from Bjorn based on the introduction of
-function `krealloc_with_flags` (I will name it as `krealloc_aligned`,
-since it's a function that returns a aligned object with krealloc). 
+vim +139 drivers/remoteproc/stm32_rproc.c
 
-Thoughts?
+13140de09cc2dd Fabien Dessenne 2019-05-14  134  
+13140de09cc2dd Fabien Dessenne 2019-05-14  135  static int stm32_rproc_mem_release(struct rproc *rproc,
+13140de09cc2dd Fabien Dessenne 2019-05-14  136  				   struct rproc_mem_entry *mem)
+13140de09cc2dd Fabien Dessenne 2019-05-14  137  {
+13140de09cc2dd Fabien Dessenne 2019-05-14  138  	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
+13140de09cc2dd Fabien Dessenne 2019-05-14 @139  	iounmap(mem->va);
+13140de09cc2dd Fabien Dessenne 2019-05-14  140  
+13140de09cc2dd Fabien Dessenne 2019-05-14  141  	return 0;
+13140de09cc2dd Fabien Dessenne 2019-05-14  142  }
+13140de09cc2dd Fabien Dessenne 2019-05-14  143  
 
-Regards,
-Boqun
+:::::: The code at line 139 was first introduced by commit
+:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
 
-> the fix that adds the `krealloc_with_flags()`.
-> 
-> Cheers,
-> Miguel
+:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
+:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
