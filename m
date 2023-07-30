@@ -2,171 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0527683A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063E97683AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjG3EAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 00:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
+        id S229528AbjG3Eik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 00:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG3EAI (ORCPT
+        with ESMTP id S229379AbjG3Eif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 00:00:08 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EC7113;
-        Sat, 29 Jul 2023 21:00:06 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bb893e6365so21336785ad.2;
-        Sat, 29 Jul 2023 21:00:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690689605; x=1691294405;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AAH7kcctHGY9q7+ANxa5bVlorYyFiJpGeFYFxj8E/sQ=;
-        b=kUub4sDP5yS8kuvvBs7FUJotIVw6CXrxbwTd5U4zze+9PW3Fqcjh3DULx4HIgM8zEZ
-         IJ5oj2wF/YGTPJ2vHwzw0RVKKtd7Y/RUB5oUkP7O1egAv/m3pMD7I6IJLU4o1+cZgllL
-         4J2+q1lkfydk5+87hao6HxOdKN/m5FRC5Xw1CXqQlvozy0zDYlUW7dt4udwPP/4ifzT+
-         oAilLlsDx+VMDgq2vnl9qtuQwTG9WHQ7in14AoabRPP6fJXhfilDjg2p/xlKTr9n0Jxt
-         5OjLa1rSE0zvONJjNsMRS2VqNYyeHdIffVWXBf8VRITLZ+rVrrf5apszMIXj2WlqH7s6
-         cDIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690689605; x=1691294405;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AAH7kcctHGY9q7+ANxa5bVlorYyFiJpGeFYFxj8E/sQ=;
-        b=A91+lrR61C7+yfK8wmcoL4S43hjWa8u80qvl5AbD4jQmiALgOkh/Lls6XSupWQEprm
-         N9KfXiGQp6SKCKzdQnXt6X0iqtQlkg7UODGEwWpAwXHdW4IhqCL5ew4DV0FUZM49ZMua
-         I9xpA0wDhRLpaYXGB0WaBGhwoZCVUlfCkYgLea7HSrvQtnrBtLssXVw4yViDMdPWId5W
-         4J1RlwkouyEnrKQ+BcE/ivBeNJ7JgbcV1nCiyDfKpmpKu00Uh/o1o6t9tnWZ9q6qqxk3
-         E9U1rGHHY3W+pXpFpDp9V6JWhyUFkyX/8Vjxh/hIq5tpJM7b6Zrs7Nuqs4SAgDElu2A1
-         BI9Q==
-X-Gm-Message-State: ABy/qLb80lr5ojl2PYTx/Kzd+q8qEh3rPgrE8RiRK5w0MKjyeV7ahb10
-        CRIbpIdz/hN8qWAeBHtzcbU=
-X-Google-Smtp-Source: APBJJlE4XatKc4s8CMeQH+rvGk5qoJTBZ6cP3YOOttJNhx/ntAHN+p6q2otxn6gaq1UGPyJ+zwjYYw==
-X-Received: by 2002:a17:903:1246:b0:1b7:e86f:7631 with SMTP id u6-20020a170903124600b001b7e86f7631mr7879946plh.19.1690689605362;
-        Sat, 29 Jul 2023 21:00:05 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170902d35300b001bb9f104330sm5940212plk.240.2023.07.29.21.00.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 29 Jul 2023 21:00:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
-Date:   Sat, 29 Jul 2023 21:00:02 -0700
+        Sun, 30 Jul 2023 00:38:35 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9C690;
+        Sat, 29 Jul 2023 21:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690691905; x=1691296705; i=w_armin@gmx.de;
+ bh=BD8hFlQwsdOyFI9NzhWM+aGWhlWruJtFDzKFX/mPS20=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=Aaqs9WgUpFXoFMBasWsFu90ILhzXYU6QwBagSYceGlhk/uandX4wJREBbST9LgLJ3264OT3
+ z/OwaAkFHL/LDFEcESo6quO1LoJBMZVj6xEF+EdmhUa1zgqww5E7wg7xKsedJ3l7aFo7ONfFH
+ 0QAkMd/ufzNMb1kiIuVV/iYDKZ2kbrMCWy2rryFBXzRy/VglqgX7Ehw1aCt4J2ikpfBqkdu3A
+ zeMLPvN8r7KtkS9UfoFMdag1k+lpBPnrGXj1YO1Z/jG3oM1DGBhyN48q0Tfw0pOBuYkfYLh/t
+ xpfbAANaD7d3nyts1CG6Z3/rqVuR+CgsbRlerxOSXmx2fsUkvu2g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1N0X8u-1pcHxc3esu-00wY0N; Sun, 30 Jul 2023 06:38:24 +0200
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     hdegoede@redhat.com, markgross@kernel.org
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] platform/x86: wmi-bmof: Use device_create_bin_file()
+Date:   Sun, 30 Jul 2023 06:38:15 +0200
+Message-Id: <20230730043817.12888-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
- <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: scheduler problems in -next (was: Re: [PATCH 6.4 000/227] 6.4.7-rc1
- review)
-In-Reply-To: <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T1uTsb7y5VIVnDKiXgPZOzjWPZIpfxC4PGQkNaHPeQsAZyWqW7X
+ w/MP9O8ahGpiJZuGUQve7isw0NHtq9m+M5lDtNszJ0Kuh3octY1BBcFZevf2qsJuhPWj/tg
+ i0/fYYae5R/TYSTGNkfbMAI4TlGS2C1u3nahRvaGX5fkk9OgL2tJ+UADxwnug1R74ecPAFv
+ 80tTrhPw8SKy2KqAh9/WA==
+UI-OutboundReport: notjunk:1;M01:P0:40wm7Byt9GE=;r23/9AEoafCMS53crVWTWtqEeax
+ 7DJ/RqqW82A9oGPyemOGUki4uoWDehFSf9QsPeELIJ+CMfMWAcGZ3FwnRbvUHGT6Usl2r3pAv
+ 9kah7XVKlQCsicDYYJR/F6eggFYt3dldBuWTG4Crmu7AcNoduevAq6ybGzRy9c4p59rGDvpm3
+ siCGPDn085Ctif8CqH/X0kkEUvLsJ4uESkjak7XMinI3pAdnGsrMjYWMbqhx86qbGp7zzEh6h
+ j4g6FMlP7wS6aOP5UQugvucQQ9s1282lDqLrYAOUwy575gzuMulrZRop8HIPoy0BX4w4z8zql
+ E8obJqEngg1Ck0E+TxceGExP2j4ppkHQYrEKlYmXuzh0723l7N+MWYrvvyUk4wY4sVsmNCY19
+ bPJaKlvJWKTeqFg9Paon/xnMQ/86vVclpL7qPfta1A+IWB3OVnwEXARu4801qckQ5ZD8HT9Mn
+ gHDB6CQuOrDtGRYM3aLh1+caZQ2vKfdRDWC4GHh7zr5nhcGsdNqvNqZEzBVNyUWNawfI3NMsf
+ eMAH96ZxQILtphwaZhmWL//W23Dm+ZFAF3kIFI+xxlOKkdjocKi8NbNHEAcs47RM07pGrjCO5
+ G8hhEtTRawYn9ybwrnfuyvYyQ4OdqvX5MxpE4UnppDIJD4RLkSwviDhyNpWvMNnADoZv4+JUu
+ JAJtyGzOnwPoaMTL1z6Nbcr+6s0CEw/2VB9aHQrvEiNAiINJ4ox3BAVIgOXP4QXUqfhq5n0l/
+ j7tVU3mdv7fO2Lp52SItIMRwauq9MsEaXInGNRXJzoxzBtoA48BGyq1mSAgRcr9yaR6cT/v3c
+ YdIya9rxkLVSp2+xOYH/W6CrC1ASoT9wE+/Yf7g8G5bNRrKDc+vIbpHLweJxnzgSOVEkSATVr
+ 3QPOmCqQRNCYJOfcL5k/SgxccwBEIKiv6l3C07/LZ1R3ynwUcAOymY4CR6ksbIHHCBuinaOHm
+ GQRgCvFi00Afc1NQRUwSr/1S9IU=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/23 16:18, Joel Fernandes wrote:
+Use device_create_bin_file() instead of sysfs_create_bin_file()
+to avoid having to access the device kobject.
 
-[ ... ]
+Tested on a ASUS PRIME B650-PLUS.
 
->> I freely confess that I am having a hard time imagining what would
->> be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
->> I am not seeing these failures in my testing.
->>
->> So which of the following Kconfig options is defined in your .config?
->> CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
->>
->> If you have more than one of them, could you please apply this patch
->> and show me the corresponding console output from the resulting hang?
-> 
-> FWIW, I am not able to repro this issue either. If a .config can be shared of the problem system, I can try it out to see if it can be reproduced on my side.
-> 
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/platform/x86/wmi-bmof.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I managed to bisect the problem. See bisect log below. Bisect repeated twice.
-so it should be reliable. I don't really understand it, but the following
-reverts fix the problem. This is on top of next-20230721 because next-20230728
-crashes immediately in my tests.
+diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bm=
+of.c
+index 80137afb9753..d0516cacfcb5 100644
+=2D-- a/drivers/platform/x86/wmi-bmof.c
++++ b/drivers/platform/x86/wmi-bmof.c
+@@ -75,7 +75,7 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const=
+ void *context)
+ 	priv->bmof_bin_attr.read =3D read_bmof;
+ 	priv->bmof_bin_attr.size =3D priv->bmofdata->buffer.length;
 
-0caafe9b94ab (HEAD) Revert "sched/fair: Remove sched_feat(START_DEBIT)"
-518bdbd39fdb Revert "sched/fair: Add lag based placement"
-a011162c3e32 Revert "sched/fair: Implement an EEVDF-like scheduling policy"
-df579720bf98 Revert "sched/fair: Commit to lag based placement"
-aac459a7e738 Revert "sched/smp: Use lag to simplify cross-runqueue placement"
-8d686eb173e1 Revert "sched/fair: Commit to EEVDF"
-486474c50f95 Revert "sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice"
-79e94d67d08a Revert "sched/fair: Propagate enqueue flags into place_entity()"
-ae867bc97b71 (tag: next-20230721) Add linux-next specific files for 20230721
+-	ret =3D sysfs_create_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
++	ret =3D device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+ 	if (ret)
+ 		goto err_free;
 
-For context: x86 images (32 and 64 bit) in -next tend to hang at
+@@ -90,7 +90,7 @@ static void wmi_bmof_remove(struct wmi_device *wdev)
+ {
+ 	struct bmof_priv *priv =3D dev_get_drvdata(&wdev->dev);
 
-[    2.309323] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
-[    2.311634] Running RCU-tasks wait API self tests
+-	sysfs_remove_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
++	device_remove_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+ 	kfree(priv->bmofdata);
+ }
 
-The hang is not seen with every boot; it happens roughly about once every
-10 boot attempts. It is not CPU dependent as I initially thought.
-
-Configuration file is at http://server.roeck-us.net/qemu/x86-next/config.
-Example qemu command line:
-
-qemu-system-x86_64 -kernel arch/x86/boot/bzImage -M q35 -cpu Broadwell-noTSX -no-reboot \
-      -snapshot -device e1000,netdev=net0 -netdev user,id=net0 -m 256 \
-      -drive file=rootfs.ext2,format=raw,if=ide \
-      --append "earlycon=uart8250,io,0x3f8,9600n8 root=/dev/sda console=ttyS0" \
-      -nographic -monitor none
-
-Guenter
-
----
-# bad: [ae867bc97b713121b2a7f5fcac68378a0774739b] Add linux-next specific files for 20230721
-# good: [fdf0eaf11452d72945af31804e2a1048ee1b574c] Linux 6.5-rc2
-git bisect start 'HEAD' 'v6.5-rc2'
-# good: [f09bf8f6c8cbbff6f52523abcda88c86db72e31c] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
-git bisect good f09bf8f6c8cbbff6f52523abcda88c86db72e31c
-# good: [86374a6210aeebceb927204d80f9e65739134bc3] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
-git bisect good 86374a6210aeebceb927204d80f9e65739134bc3
-# bad: [d588c93cae9e3dff15d125e755edcba5d842f41a] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-git bisect bad d588c93cae9e3dff15d125e755edcba5d842f41a
-# good: [acadcaf8c67062ad4c1a0ad0e05bf429b04740c5] Merge branch 'for-next' of git://git.kernel.dk/linux-block.git
-git bisect good acadcaf8c67062ad4c1a0ad0e05bf429b04740c5
-# good: [2c73542f4cdc59fd23514f9e963d0b3419bd5e16] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
-git bisect good 2c73542f4cdc59fd23514f9e963d0b3419bd5e16
-# good: [be15b91155cd5a6c4ac8f46740ae62e610981b79] Merge remote-tracking branch 'spi/for-6.6' into spi-next
-git bisect good be15b91155cd5a6c4ac8f46740ae62e610981b79
-# bad: [8f4995b370a57e7ad92c0f66664d171b23234337] Merge branch into tip/master: 'sched/eevdf'
-git bisect bad 8f4995b370a57e7ad92c0f66664d171b23234337
-# bad: [99d4d26551b56f4e523dd04e4970b94aa796a64e] rbtree: Add rb_add_augmented_cached() helper
-git bisect bad 99d4d26551b56f4e523dd04e4970b94aa796a64e
-# good: [7ff1693236f5d97a939dbeb660c07671a2d57071] sched/fair: Implement prefer sibling imbalance calculation between asymmetric groups
-git bisect good 7ff1693236f5d97a939dbeb660c07671a2d57071
-# good: [48b5583719cdfbdee238f9549a6a1a47af2b0469] sched/headers: Rename task_struct::state to task_struct::__state in the comments too
-git bisect good 48b5583719cdfbdee238f9549a6a1a47af2b0469
-# good: [af4cf40470c22efa3987200fd19478199e08e103] sched/fair: Add cfs_rq::avg_vruntime
-git bisect good af4cf40470c22efa3987200fd19478199e08e103
-# bad: [86bfbb7ce4f67a88df2639198169b685668e7349] sched/fair: Add lag based placement
-git bisect bad 86bfbb7ce4f67a88df2639198169b685668e7349
-# bad: [e0c2ff903c320d3fd3c2c604dc401b3b7c0a1d13] sched/fair: Remove sched_feat(START_DEBIT)
-git bisect bad e0c2ff903c320d3fd3c2c604dc401b3b7c0a1d13
-# first bad commit: [e0c2ff903c320d3fd3c2c604dc401b3b7c0a1d13] sched/fair: Remove sched_feat(START_DEBIT)
+=2D-
+2.39.2
 
