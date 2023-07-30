@@ -2,365 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F2A768474
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 10:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903DD768476
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 10:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjG3I1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 04:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S229469AbjG3I2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 04:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjG3I13 (ORCPT
+        with ESMTP id S229681AbjG3I2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 04:27:29 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A19910FF
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:26 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52229f084beso5456370a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:26 -0700 (PDT)
+        Sun, 30 Jul 2023 04:28:40 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234231FE4
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:28:11 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bcfe28909so491270766b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690705645; x=1691310445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yd7KEXZAW7eX+hNRe4Tt2lcKQC5uzSvrHXquUEQC3kY=;
-        b=X3jcZ16BOTMFY1dukAFIkwTfr2KyBV8n5ZDI4kbF3CoGafX/TJUBMJiQkBUoVTHwCC
-         b8IbdVy80EB1kPNjI9N0wV79yQtYDCQJiwk6VBT1WAUI/EfqoShTTTiS5O7gaNRS+4/K
-         DjwbRtSC4LU0oCIgJOF1+4Bq/UyRGGkCHLyqjVHbl7DP+2QjNhH5pODah/+gDw+XHE+o
-         JyDkdCuHrggD0nya2sRBTFG8DJowgGuDrJx61PppyEhkpjC97zmWAscuUlBWG5Ab6aRK
-         W3Em69f9YrzcZO2DDzgI/BftShxtZqIpBMxxN3E5shez7j3lMQHglhwUQPTKAydC76R8
-         r9kg==
+        d=linaro.org; s=google; t=1690705666; x=1691310466;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D60VbFymTmhk33TulwzZUfrsQML4Fn7VfvjzkkAQ+Fw=;
+        b=v9LyuYPhpC6zcLchqJqp+K/pksVlx/CBkDNKjRiTnvqtKr3pmNJXzl3FHUDjuzf18E
+         9b2h1St0PpofjI++XeuayZCfHG0TDgEsZIE6DPoQeVeuPyj16CpLCQqWeBS5HByjtv8z
+         sZP5LqylaJZTUptNhODkx0aw1jfyJN64TzQCVxQp0a6XYhEq6I4jjbBNI+MDOAv+vaU4
+         0bOzSJFO4PhEobSuRRgAwgdWiLCJqxxQ+2juO08hKddXwcIMDwPN5Q3ZqHz+rYjYRqn1
+         Vg6mNtBGtlUg0HnvkU9h2bV9l1+ayXOpo6264yJBjV+rrXYosNdd1xtRVSIMdh5MPKRo
+         nVhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690705645; x=1691310445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yd7KEXZAW7eX+hNRe4Tt2lcKQC5uzSvrHXquUEQC3kY=;
-        b=kxAw3ilMTZX7J8gbL3RjtRMN+FjgWh1EUhMMwQzpKhdsPdb3AvS4YeOVMMOor4ZpPP
-         Gday7FVV1c8K28Dw307k1TomooXZOL/Yth7i2mrPPeweafODyPNhDQiCX9t20jldkj4r
-         jCNSTLvN+tYtiXjl/SIU1EQjtAUIO/+JVIJtxjjOUF11aVHBs96YTDtSs80ygAQfSddm
-         Whl76uPRd4pUzCBwqmJQqvsmy+00yvFxTf+0vi9wFigryKKB/u6wj04lNXbvTbN4AWNc
-         DRY2kEGnGllrrGQxGdWlvZvRIsBKozzZc709kWeK4appNjmA5EFBQkZXT28pwzNdh3Pz
-         ceOQ==
-X-Gm-Message-State: ABy/qLbFRV339S+ZCmsXnkJ+NV4AGY4o8j4+VQw1/3q3Ov2ff6vPQuN/
-        Zg1Mg5fJyqIRGTvKQTlMUCo=
-X-Google-Smtp-Source: APBJJlG4Fd0Z04vIN8O51EYm+AoZ1UaXmlDkenzktyyD+nL0+Zu6mVBfLEg9aEJRCFHUIoyhA4DvwQ==
-X-Received: by 2002:a05:6402:b0e:b0:521:7a5e:ab1e with SMTP id bm14-20020a0564020b0e00b005217a5eab1emr7141332edb.21.1690705644988;
-        Sun, 30 Jul 2023 01:27:24 -0700 (PDT)
-Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id m17-20020aa7d351000000b005224c6b2183sm3790791edr.39.2023.07.30.01.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 01:27:24 -0700 (PDT)
-From:   Nam Cao <namcaov@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Nam Cao <namcaov@gmail.com>
-Subject: test code for kprobe
-Date:   Sun, 30 Jul 2023 10:27:10 +0200
-Message-Id: <fc71730b9350026427fe1c2bdbce9b993d8bc6f5.1690704360.git.namcaov@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1690704360.git.namcaov@gmail.com>
-References: <cover.1690704360.git.namcaov@gmail.com>
+        d=1e100.net; s=20221208; t=1690705666; x=1691310466;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D60VbFymTmhk33TulwzZUfrsQML4Fn7VfvjzkkAQ+Fw=;
+        b=a3+ixBt4OWJ6egUM37EqFnxVgyT6jMPZKrEPqX1LJq3yOo367sC7PV21uXOTqjRNdo
+         C0R5Oq1xcyMtKrj0ffGbqSjkmom6XrzbIMqMJWo1cqxcT7jL3aXeuGhrLwcM19uSGaxm
+         ApBe2A/xBlhWFr73RIIYxegajOMuK/0qtj8g6m5jCfwaObo7loGlpXSP6FPHmD5faO+t
+         EHnyiehYoRcuByWDwimhnTIMgWS6TUjumQ5mYLEHufvSdJg0RXiaam6LvzuVFuXX2NlS
+         VUHt8nd/BvxLEx2F5TqnHdp9JCgRNPDPbKRNwoZKvgwOcWDwAQJaOrXTX/tdhq3PeKq2
+         DIPg==
+X-Gm-Message-State: ABy/qLYip7/euflhrJMlh+UZ9zvoKfFfkvgIxqWkBha0e7cLJo4517yY
+        uKcNi1C3LlxVX8Wpbwq88hTsXA==
+X-Google-Smtp-Source: APBJJlEkx8evuqe35HveMmTK6Z9zxyAvK3EkdcIpk1D+eGhBx5CLd26uF+T5+BYxOm63+kwz6uVdTQ==
+X-Received: by 2002:a17:907:784f:b0:99b:d693:cb8e with SMTP id lb15-20020a170907784f00b0099bd693cb8emr3556505ejc.71.1690705666463;
+        Sun, 30 Jul 2023 01:27:46 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id v23-20020a1709067d9700b00993860a6d37sm4314892ejo.40.2023.07.30.01.27.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 01:27:45 -0700 (PDT)
+Message-ID: <dfd8be75-6ae7-8989-4717-db82c5c0656d@linaro.org>
+Date:   Sun, 30 Jul 2023 10:27:44 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 14/17] mips: dts: loongson1b: Add PWM timer clocksource
+Content-Language: en-US
+To:     Keguang Zhang <keguang.zhang@gmail.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
+ <20230729134318.1694467-15-keguang.zhang@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230729134318.1694467-15-keguang.zhang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- drivers/test_kprobe/Makefile      |   3 +
- drivers/test_kprobe/test_kprobe.c | 265 ++++++++++++++++++++++++++++++
- 2 files changed, 268 insertions(+)
- create mode 100644 drivers/test_kprobe/Makefile
- create mode 100644 drivers/test_kprobe/test_kprobe.c
+On 29/07/2023 15:43, Keguang Zhang wrote:
+> Add the device node of PWM timer clocksource
+> for Loongson-1B boards.
 
-diff --git a/drivers/test_kprobe/Makefile b/drivers/test_kprobe/Makefile
-new file mode 100644
-index 000000000000..c3c39bd0f8b5
---- /dev/null
-+++ b/drivers/test_kprobe/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+obj-m += test_kprobe.o
-diff --git a/drivers/test_kprobe/test_kprobe.c b/drivers/test_kprobe/test_kprobe.c
-new file mode 100644
-index 000000000000..543108c5fc8a
---- /dev/null
-+++ b/drivers/test_kprobe/test_kprobe.c
-@@ -0,0 +1,265 @@
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/kprobes.h>
-+#include <linux/string.h>
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-+__attribute__ ((naked))
-+int sample_c_j(void) {
-+	__asm__(
-+		"c.j label_cj\n"
-+		"li a0, 0\n ret\n"
-+		"li a0, 1\n ret\n"
-+		"li a0, 2\n ret\n"
-+		"li a0, 3\n ret\n"
-+		"label_cj:\n"
-+		"li a0, 4\n ret\n"
-+		"li a0, 5\n ret\n"
-+		"li a0, 6\n ret\n"
-+	);
-+}
-+
-+__attribute__ ((naked))
-+int sample_c_jr(void) {
-+	__asm__(
-+		"la a0, label_c_jr\n"
-+		"c_jr_location:\n"
-+		"c.jr a0\n"
-+		"li a0, 0\n ret\n"
-+		"li a0, 1\n ret\n"
-+		"li a0, 2\n ret\n"
-+		"li a0, 3\n ret\n"
-+		"label_c_jr:\n"
-+		"li a0, 4\n ret\n"
-+		"li a0, 5\n ret\n"
-+		"li a0, 6\n ret\n"
-+	);
-+}
-+
-+__attribute__ ((naked))
-+int sample_c_jalr(void) {
-+	__asm__(
-+		"mv a1, x1\n"
-+		"la a0, label_c_jalr\n"
-+		"c_jalr_location:\n"
-+		"c.jalr a0\n"
-+
-+		"addi a0, a0, -5\n"
-+		"jr a1\n"
-+
-+		"label_c_jalr:\n"
-+		"li a0, 9\n ret\n"
-+	);
-+}
-+
-+__attribute__ ((naked))
-+int sample_c_beqz(int a0) {
-+	__asm__(
-+		"c.beqz a0, beqz_label\n"
-+		"li a0, 10\n ret\n"
-+		"beqz_label:\n"
-+		"li a0, 4\n ret\n"
-+	);
-+}
-+
-+__attribute__ ((naked))
-+int sample_c_bnez(int a0) {
-+	__asm__(
-+		"c.bnez a0, bnez_label\n"
-+		"li a0, 10\n ret\n"
-+		"bnez_label:\n"
-+		"li a0, 4\n ret\n"
-+	);
-+}
-+
-+static int pre_handler(struct kprobe *p, struct pt_regs *regs) {
-+	printk("pre_handler() called\n");
-+
-+	return 0;
-+}
-+
-+static int test_c_j(void) {
-+	static struct kprobe kp;
-+
-+	int ret;
-+
-+	/* Test C.J */
-+	kp.symbol_name = "sample_c_j";
-+	kp.pre_handler = pre_handler;
-+
-+	ret = register_kprobe(&kp);
-+	if (ret) {
-+		printk("Couldn't register kprobe, err=%d\n", ret);
-+		return -1;
-+	}
-+
-+	ret = sample_c_j();
-+	if (ret != 4) {
-+		printk("ERROR: expect value 4, got %d\n", ret);
-+		return -1;
-+	}
-+	else {
-+		printk("Got value 4, all good!\n");
-+		return 0;
-+	}
-+}
-+
-+static int test_c_jr(void) {
-+	static struct kprobe kp;
-+	int ret;
-+
-+	/* Test C.JR */
-+	kp.symbol_name = "c_jr_location";
-+	kp.pre_handler = pre_handler;
-+
-+	ret = register_kprobe(&kp);
-+	if (ret) {
-+		printk("Couldn't register kprobe, err=%d\n", ret);
-+		return -1;
-+	}
-+
-+	ret = sample_c_jr();
-+	if (ret != 4) {
-+		printk("Expect value 4, got %d\n", ret);
-+		return -1;
-+	}
-+	else {
-+		printk("Got value 4, all good!\n");
-+		return 0;
-+	}
-+}
-+
-+static int test_c_jalr(void) {
-+	struct kprobe kp;
-+	int ret;
-+
-+	memset(&kp, 0, sizeof(kp));
-+
-+	/* Test C.JR */
-+	kp.symbol_name = "c_jalr_location";
-+	kp.pre_handler = pre_handler;
-+
-+	ret = register_kprobe(&kp);
-+	if (ret) {
-+		printk("Couldn't register kprobe, err=%d\n", ret);
-+		return -1;
-+	}
-+
-+	ret = sample_c_jalr();
-+	if (ret != 4) {
-+		printk("Expect value 4, got %d\n", ret);
-+		return -1;
-+	}
-+	else {
-+		printk("Got value 4, all good!\n");
-+	}
-+
-+	unregister_kprobe(&kp);
-+
-+	return 0;
-+}
-+
-+static int test_c_bnez(void) {
-+	static struct kprobe kp;
-+
-+	int ret;
-+
-+	/* Test C.JR */
-+	kp.symbol_name = "sample_c_bnez";
-+	kp.pre_handler = pre_handler;
-+
-+	ret = register_kprobe(&kp);
-+	if (ret) {
-+		printk("Couldn't register kprobe, err=%d\n", ret);
-+		return -1;
-+	}
-+
-+	ret = sample_c_bnez(1);
-+	if (ret != 4) {
-+		printk("Expect value 4, got %d\n", ret);
-+		return -1;
-+	} else {
-+		printk("Got value 4, all good!\n");
-+	}
-+
-+	ret = sample_c_bnez(0);
-+	if (ret != 10) {
-+		printk("Expect value 10, got %d\n", ret);
-+		return -1;
-+	} else {
-+		printk("Got value 4, all good!\n");
-+	}
-+
-+	return 0;
-+}
-+
-+static int test_c_beqz(void) {
-+	static struct kprobe kp;
-+
-+	int ret;
-+
-+	/* Test C.JR */
-+	kp.symbol_name = "sample_c_beqz";
-+	kp.pre_handler = pre_handler;
-+
-+	ret = register_kprobe(&kp);
-+	if (ret) {
-+		printk("Couldn't register kprobe, err=%d\n", ret);
-+		return -1;
-+	}
-+
-+	ret = sample_c_beqz(0);
-+	if (ret != 4) {
-+		printk("Expect value 4, got %d\n", ret);
-+		return -1;
-+	}
-+	else {
-+		printk("Got value 4, all good!\n");
-+		return 0;
-+	}
-+
-+	ret = sample_c_beqz(1);
-+	if (ret != 10) {
-+		printk("Expect value 10, got %d\n", ret);
-+		return -1;
-+	}
-+	else {
-+		printk("Got value 4, all good!\n");
-+		return 0;
-+	}
-+}
-+
-+static int hello_init(void)
-+{
-+	printk("Hello\n");
-+
-+	printk("Testing C.J...\n");
-+	if (test_c_j())
-+		return -1;
-+
-+	printk("Testing C.JR...\n");
-+	if (test_c_jr())
-+		return -1;
-+
-+	printk("Testing C.JALR...\n");
-+	if (test_c_jalr())
-+		return -1;
-+
-+	printk("Testing C.BNEZ...\n");
-+	if (test_c_bnez())
-+		return -1;
-+
-+	printk("Testing C.BEQZ...\n");
-+	if (test_c_beqz())
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void hello_exit(void)
-+{
-+	printk("Goodbye\n");
-+}
-+
-+module_init(hello_init);
-+module_exit(hello_exit);
--- 
-2.34.1
+Don't split adding new DTS into many small commits. There is little
+point in adding broken/incomplete DTS and immediately fix it. Just add
+complete one. We do the same for each drivers and DTS is not different here.
+
+It would be entirely different if you followed 'release early, release
+often' approach, so release pieces as fast as you have them ready. You
+decided to ignore that rule, so no, you don't get 20 commits fixing DTS
+you added in first commit of the same patchset.
+
+
+
+Best regards,
+Krzysztof
 
