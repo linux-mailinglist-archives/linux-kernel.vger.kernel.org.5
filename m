@@ -2,56 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F417686DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF227686E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbjG3Rtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 13:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
+        id S229851AbjG3RuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 13:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbjG3Rtk (ORCPT
+        with ESMTP id S229804AbjG3RuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:49:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F3E103;
-        Sun, 30 Jul 2023 10:49:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABAD760CEB;
-        Sun, 30 Jul 2023 17:49:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CB04C433C7;
-        Sun, 30 Jul 2023 17:49:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690739378;
-        bh=BFXGx1j2qWD6Pge+tz0jzNDQdNlCTwlDsesEGFQFsa8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UveM2nWfwnRQxqt+6BLNLWh9LKumKVq1Cfzl2SMTm5HBI2YMf62u5f/WmutilFPBY
-         aTr6WpCV4i9FHgQlUAEnfXkbOWXWc3gn7qu/jEZ7dyhq9qeI6LS9YoRHS3d/PKWthZ
-         obKOEbSgq9AHKcn1sxfIzGZGdlfhd+1ebbA1gupf+Hup06D0GSpdHy+Kfyg+ufsimI
-         K5f+Yh3z/ktqtiqfpYmaxg3YTUfc7WBUL4QMoN7Bb+Jd6STGYZHKCVv6i8bKSADEV+
-         oX8/iU6Z3TGMXLLQAKVVaxWzkuhP6/EqIU+xhiFeBHfj8YoQP0qBFmkIUuh4d+1AFq
-         0SKAlbvr77vZw==
-Date:   Sun, 30 Jul 2023 19:49:34 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Svyatoslav Ryhel <clamor95@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sun, 30 Jul 2023 13:50:01 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5481721
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:49:58 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9923833737eso549244366b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:49:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690739397; x=1691344197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=87/hc2oBNjx7AA5ml7v6DGG7KmXPNmXMrKuNLd+Cam8=;
+        b=KoV2A2S2VXihDWH28FFjmqkUNx/7SLTAOrGQ9wnBcM/91bkK7BGhEUgOU3A4YRpAHu
+         dJHmJ+Y2wCvhqHn/GFCq7xOaRBaQdqwBh1FV9dn2tpiCptiSA23cENGKBHI50c7j42c8
+         zHDoYmWAkI6fvZBhdFAWZAeT9MB1s63jqNcp1YCX0fPeHJ1mZz06G6JVrVgAn8LylstE
+         kGitWH3MJv6EO+FgkC2GiJJpfsAP2jMvCMLrSHYJMXnGeO84O4A67jJquVk7Mj5xc2Yg
+         MpWuz0Tzd/qdZIsNHAWWVvdaMvc0xwoKF6vBjW6ijQ3P3rQ5caw9gZQ9JKV6E3jr1HdK
+         cSJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690739397; x=1691344197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=87/hc2oBNjx7AA5ml7v6DGG7KmXPNmXMrKuNLd+Cam8=;
+        b=BFUchv/kRVO8aLr7S6yeHpzrfbdMSJ9gauFVSsj9NN5Cc0PdZenhjk4sqWJyPpP/mE
+         c6qeDXJYoaO3A2sXqRWBuT0seFG/qRMgWk9bstDCe3z2PVl0JHrPnRGSlnWA4QODuaqb
+         oCm67HFyBZTU84rFNWpiZgmMyVpwnyjJQ0yFMKLduPl9eXxO/y9gQ+CudXh15ixp3vKZ
+         4rwVCt3pSKd+9DCnG6CcJ9Veaj/t38BGr6cs+KjxQSiLN/hjEEnKvZfRd8sB4+nSCSUG
+         F6BA6qEtsuAzmtNeCUPWv6Br83qr7F0EfbPso0tDyV+pgT5M3Yu0t5sfS96U3I75j7gb
+         chDg==
+X-Gm-Message-State: ABy/qLagw+a7/JDmm29Zx9H1n0whmGE8cGEGetNv2xxU1eriKyRv6wFJ
+        NNwcnl4y6/V33PCY0RAFsGQYog==
+X-Google-Smtp-Source: APBJJlG9GR8kO2Ji9RE+Ttxw2a12BgviIbh3tv8s6bTvtxdn1bX+lNclOz8m8RLw+QWanNdxGK79MA==
+X-Received: by 2002:a17:906:7791:b0:994:34a2:8727 with SMTP id s17-20020a170906779100b0099434a28727mr5204356ejm.41.1690739397336;
+        Sun, 30 Jul 2023 10:49:57 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id f19-20020a170906495300b00992c4103cb5sm4913537ejt.129.2023.07.30.10.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 10:49:57 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] GPIO-based hotplug i2c bus
-Message-ID: <20230730174934.vobmyhubi7jsqzjv@intel.intel>
-References: <20230729160857.6332-1-clamor95@gmail.com>
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 1/4] ARM: dts: st: stm32mp157c-emstamp: drop incorrect vref_ddr property
+Date:   Sun, 30 Jul 2023 19:49:51 +0200
+Message-Id: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729160857.6332-1-clamor95@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,36 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Svyatoslav,
+The STPMIC1 PMIC vref_ddr regulator does not support over-current
+protection, according to bindings and Linux driver:
 
-On Sat, Jul 29, 2023 at 07:08:55PM +0300, Svyatoslav Ryhel wrote:
-> ASUS Transformers require this driver for proper work with their dock.
-> Dock is controlled by EC and its presence is detected by a GPIO.
-> 
-> The Transformers have a connector that's used for USB, charging or
-> for attaching a keyboard (called a dock; it also has a battery and
-> a touchpad). This connector probably (I don't have the means to verify
-> that) has an I2C bus lines and a "detect" line (pulled low on the dock
-> side) among the pins. I guess there is either no additional chip or
-> a transparent bridge/buffer chip, but nothing that could be controlled
-> by software. For DT this setup could be modelled like an I2C gate or
-> a 2-port mux with enable joining two I2C buses (one "closer" to the
-> CPU as a parent).
-> 
-> In this case it's hard to tell the difference if this is real or virtual
-> hardware.
+  stm32mp157c-emsbc-argon.dtb: stpmic@33: regulators:vref_ddr: 'regulator-over-current-protection' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-How did you test this device?
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> This patchset is a predecessor of a possible larger patchset which
-> should bring support for a asus-ec, an i2c mfd device programmed by
-> Asus for their Transformers tablet line. Similar approach is used in
-> Microsoft Surface RT for attachable Type Cover.
+---
 
-Would be nice to have a driver using this support in the series,
-otherwise it looks like thrown there without any use. Do you have
-any use of it already? Even in your private repository just to
-take a look.
+Changes in v2:
+1. None
+---
+ arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
-Andi
+diff --git a/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi b/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
+index fd89542c69c9..f8e9980ed3d4 100644
+--- a/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
+@@ -310,7 +310,6 @@ vdda: ldo6 {
+ 			vref_ddr: vref_ddr {
+ 				regulator-name = "vref_ddr";
+ 				regulator-always-on;
+-				regulator-over-current-protection;
+ 			};
+ 
+ 			bst_out: boost {
+-- 
+2.34.1
+
