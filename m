@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367B5768674
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52415768676
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjG3QcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 12:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
+        id S229891AbjG3Qdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 12:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjG3QcF (ORCPT
+        with ESMTP id S229487AbjG3Qdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 12:32:05 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB130191;
-        Sun, 30 Jul 2023 09:32:03 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36UGVfTf115020;
-        Sun, 30 Jul 2023 11:31:41 -0500
+        Sun, 30 Jul 2023 12:33:33 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9E8C3;
+        Sun, 30 Jul 2023 09:33:32 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36UGXO2K101207;
+        Sun, 30 Jul 2023 11:33:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690734701;
-        bh=glKNrx/Ioty8GYnB2OacIcjPOLDn23OpE54z9sdrjCU=;
+        s=ti-com-17Q1; t=1690734804;
+        bh=UbK6VczzUc+IeuNsHfdHRJGM+KHDFC25Yriv34c97yE=;
         h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=R8aMMEX5oF/eaa5CrVXgStgRvqjUJ89L4DQmpS3FRM6OSIxwKuKs6Sh9stm7a49Y2
-         XNzsRy12fqREu+H3/KeQBD/I+xP1mG3/9BOQO0qIN7y+4hu/4++d4sfUD1zIcxbkCQ
-         PyOiDTK1mblrKfe9Bm0Wwqetzo9M6j4qBB4YPQ9s=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36UGVfwK070926
+        b=p2FcX4JGfERSwgqdwa8Ur4vi+wxLiaG94cf0C9x+YlUgrf03LJdh2KEUQ9RwFGmdl
+         Wl39u2sgzy3elqZuBzj+6wPwtQEbyv6C7YxY7eUuEuwzPxaB7jlNHiVfC2HUyMWiJc
+         0hAuqKJKaC62W0Aab6BfWqwDkeY40jqd5oGW3xDM=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36UGXNjP025254
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 30 Jul 2023 11:31:41 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+        Sun, 30 Jul 2023 11:33:23 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 30
- Jul 2023 11:31:40 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 11:33:23 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 30 Jul 2023 11:31:40 -0500
+ Frontend Transport; Sun, 30 Jul 2023 11:33:23 -0500
 Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36UGVeLh026108;
-        Sun, 30 Jul 2023 11:31:40 -0500
-Date:   Sun, 30 Jul 2023 11:31:40 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36UGXNoc065888;
+        Sun, 30 Jul 2023 11:33:23 -0500
+Date:   Sun, 30 Jul 2023 11:33:23 -0500
 From:   Nishanth Menon <nm@ti.com>
 To:     Aradhya Bhatia <a-bhatia1@ti.com>
 CC:     Vignesh Raghavendra <vigneshr@ti.com>,
@@ -57,19 +57,19 @@ CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Devarsh Thakkar <devarsht@ti.com>,
         Jai Luthra <j-luthra@ti.com>,
         Jayesh Choudhary <j-choudhary@ti.com>
-Subject: Re: [PATCH v3 3/8] arm64: dts: ti: k3-am62x-sk-common: Add DSS
+Subject: Re: [PATCH v3 6/8] arm64: dts: ti: k3-am625-beagleplay: Add DSS
  pinmux info
-Message-ID: <20230730163140.m3ualqtf4jablbj2@retaliate>
+Message-ID: <20230730163323.fp62ehguxz4u4s7l@manhole>
 References: <20230728173438.12995-1-a-bhatia1@ti.com>
- <20230728173438.12995-4-a-bhatia1@ti.com>
+ <20230728173438.12995-7-a-bhatia1@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230728173438.12995-4-a-bhatia1@ti.com>
+In-Reply-To: <20230728173438.12995-7-a-bhatia1@ti.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,101 +78,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23:04-20230728, Aradhya Bhatia wrote:
-> Add pinmux info for video output signals from DSS and OLDI.
-> 
-> The DSS outputs OLDI signals through its first video port (VP1) and DPI
-> signals via its second video port (VP2). DSS has 2 OLDI transmitters,
-> and each of them outputs 4 Data Lanes and 1 Clock Lane. The DPI output
-> from DSS is 24 bits (RGB888) and is forwarded to an HDMI transmitter
-> (SIL9022) on the board.
-> 
-> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
-> ---
->  .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> index 540ed8a0d7fb..d479c0c415a7 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-> @@ -226,6 +226,64 @@ AM62X_IOPAD(0x08c, PIN_OUTPUT, 2) /* (L25/J17) GPMC0_WEN.MCASP1_AXR0 */
->  			AM62X_IOPAD(0x084, PIN_INPUT, 2) /* (L23/K20) GPMC0_ADVN_ALE.MCASP1_AXR2 */
->  		>;
->  	};
-> +
-> +	main_dss0_pins_default: main-dss0-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM62X_IOPAD(0x0100, PIN_OUTPUT, 0) /* (AC25) VOUT0_VSYNC */
-> +			AM62X_IOPAD(0x00f8, PIN_OUTPUT, 0) /* (AB24) VOUT0_HSYNC */
-> +			AM62X_IOPAD(0x0104, PIN_OUTPUT, 0) /* (AC24) VOUT0_PCLK */
-> +			AM62X_IOPAD(0x00fc, PIN_OUTPUT, 0) /* (Y20) VOUT0_DE */
-> +			AM62X_IOPAD(0x00b8, PIN_OUTPUT, 0) /* (U22) VOUT0_DATA0 */
-> +			AM62X_IOPAD(0x00bc, PIN_OUTPUT, 0) /* (V24) VOUT0_DATA1 */
-> +			AM62X_IOPAD(0x00c0, PIN_OUTPUT, 0) /* (W25) VOUT0_DATA2 */
-> +			AM62X_IOPAD(0x00c4, PIN_OUTPUT, 0) /* (W24) VOUT0_DATA3 */
-> +			AM62X_IOPAD(0x00c8, PIN_OUTPUT, 0) /* (Y25) VOUT0_DATA4 */
-> +			AM62X_IOPAD(0x00cc, PIN_OUTPUT, 0) /* (Y24) VOUT0_DATA5 */
-> +			AM62X_IOPAD(0x00d0, PIN_OUTPUT, 0) /* (Y23) VOUT0_DATA6 */
-> +			AM62X_IOPAD(0x00d4, PIN_OUTPUT, 0) /* (AA25) VOUT0_DATA7 */
-> +			AM62X_IOPAD(0x00d8, PIN_OUTPUT, 0) /* (V21) VOUT0_DATA8 */
-> +			AM62X_IOPAD(0x00dc, PIN_OUTPUT, 0) /* (W21) VOUT0_DATA9 */
-> +			AM62X_IOPAD(0x00e0, PIN_OUTPUT, 0) /* (V20) VOUT0_DATA10 */
-> +			AM62X_IOPAD(0x00e4, PIN_OUTPUT, 0) /* (AA23) VOUT0_DATA11 */
-> +			AM62X_IOPAD(0x00e8, PIN_OUTPUT, 0) /* (AB25) VOUT0_DATA12 */
-> +			AM62X_IOPAD(0x00ec, PIN_OUTPUT, 0) /* (AA24) VOUT0_DATA13 */
-> +			AM62X_IOPAD(0x00f0, PIN_OUTPUT, 0) /* (Y22) VOUT0_DATA14 */
-> +			AM62X_IOPAD(0x00f4, PIN_OUTPUT, 0) /* (AA21) VOUT0_DATA15 */
-> +			AM62X_IOPAD(0x005c, PIN_OUTPUT, 1) /* (R24) GPMC0_AD8.VOUT0_DATA16 */
-> +			AM62X_IOPAD(0x0060, PIN_OUTPUT, 1) /* (R25) GPMC0_AD9.VOUT0_DATA17 */
-> +			AM62X_IOPAD(0x0064, PIN_OUTPUT, 1) /* (T25) GPMC0_AD10.VOUT0_DATA18 */
-> +			AM62X_IOPAD(0x0068, PIN_OUTPUT, 1) /* (R21) GPMC0_AD11.VOUT0_DATA19 */
-> +			AM62X_IOPAD(0x006c, PIN_OUTPUT, 1) /* (T22) GPMC0_AD12.VOUT0_DATA20 */
-> +			AM62X_IOPAD(0x0070, PIN_OUTPUT, 1) /* (T24) GPMC0_AD13.VOUT0_DATA21 */
-> +			AM62X_IOPAD(0x0074, PIN_OUTPUT, 1) /* (U25) GPMC0_AD14.VOUT0_DATA22 */
-> +			AM62X_IOPAD(0x0078, PIN_OUTPUT, 1) /* (U24) GPMC0_AD15.VOUT0_DATA23 */
-> +		>;
-> +	};
-> +
-> +	main_oldi0_pins_default: main-oldi0-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM62X_IOPAD(0x0260, PIN_OUTPUT, 0) /* (AA5) OLDI0_A0N */
-> +			AM62X_IOPAD(0x025c, PIN_OUTPUT, 0) /* (Y6) OLDI0_A0P */
-> +			AM62X_IOPAD(0x0268, PIN_OUTPUT, 0) /* (AD3) OLDI0_A1N */
-> +			AM62X_IOPAD(0x0264, PIN_OUTPUT, 0) /* (AB4) OLDI0_A1P */
-> +			AM62X_IOPAD(0x0270, PIN_OUTPUT, 0) /* (Y8) OLDI0_A2N */
-> +			AM62X_IOPAD(0x026c, PIN_OUTPUT, 0) /* (AA8) OLDI0_A2P */
-> +			AM62X_IOPAD(0x0278, PIN_OUTPUT, 0) /* (AB6) OLDI0_A3N */
-> +			AM62X_IOPAD(0x0274, PIN_OUTPUT, 0) /* (AA7) OLDI0_A3P */
-> +			AM62X_IOPAD(0x0280, PIN_OUTPUT, 0) /* (AC6) OLDI0_A4N */
-> +			AM62X_IOPAD(0x027c, PIN_OUTPUT, 0) /* (AC5) OLDI0_A4P */
-> +			AM62X_IOPAD(0x0288, PIN_OUTPUT, 0) /* (AE5) OLDI0_A5N */
-> +			AM62X_IOPAD(0x0284, PIN_OUTPUT, 0) /* (AD6) OLDI0_A5P */
-> +			AM62X_IOPAD(0x0290, PIN_OUTPUT, 0) /* (AE6) OLDI0_A6N */
-> +			AM62X_IOPAD(0x028c, PIN_OUTPUT, 0) /* (AD7) OLDI0_A6P */
-> +			AM62X_IOPAD(0x0298, PIN_OUTPUT, 0) /* (AD8) OLDI0_A7N */
-> +			AM62X_IOPAD(0x0294, PIN_OUTPUT, 0) /* (AE7) OLDI0_A7P */
-> +			AM62X_IOPAD(0x02a0, PIN_OUTPUT, 0) /* (AD4) OLDI0_CLK0N */
-> +			AM62X_IOPAD(0x029c, PIN_OUTPUT, 0) /* (AE3) OLDI0_CLK0P */
-> +			AM62X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (AE4) OLDI0_CLK1N */
-> +			AM62X_IOPAD(0x02a4, PIN_OUTPUT, 0) /* (AD5) OLDI0_CLK1P */
-> +		>;
-> +	};
->  };
->  
->  &mcu_pmx0 {
-> @@ -410,3 +468,8 @@ &mcasp1 {
->  	tx-num-evt = <32>;
->  	rx-num-evt = <32>;
->  };
-> +
+[...]
+
 > +&dss {
 > +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_dss0_pins_default &main_oldi0_pins_default>;
-No. pinctrl-0 cells is 1.
-pinctrl-0 = <&main_dss0_pins_default>, <&main_oldi0_pins_default>;
+> +	pinctrl-0 = <&dss0_pins_default &oldi0_pins_default>;
 
-please.
-
+Same - 
+pinctrl-0 = <&dss0_pins_default>, <&oldi0_pins_default>;
 > +};
 > -- 
 > 2.40.1
