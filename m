@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 063E97683AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E0C7683AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbjG3Eik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 00:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        id S229608AbjG3Eio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 00:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG3Eif (ORCPT
+        with ESMTP id S229542AbjG3Eik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 00:38:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9C690;
-        Sat, 29 Jul 2023 21:38:33 -0700 (PDT)
+        Sun, 30 Jul 2023 00:38:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD990;
+        Sat, 29 Jul 2023 21:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690691905; x=1691296705; i=w_armin@gmx.de;
- bh=BD8hFlQwsdOyFI9NzhWM+aGWhlWruJtFDzKFX/mPS20=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=Aaqs9WgUpFXoFMBasWsFu90ILhzXYU6QwBagSYceGlhk/uandX4wJREBbST9LgLJ3264OT3
- z/OwaAkFHL/LDFEcESo6quO1LoJBMZVj6xEF+EdmhUa1zgqww5E7wg7xKsedJ3l7aFo7ONfFH
- 0QAkMd/ufzNMb1kiIuVV/iYDKZ2kbrMCWy2rryFBXzRy/VglqgX7Ehw1aCt4J2ikpfBqkdu3A
- zeMLPvN8r7KtkS9UfoFMdag1k+lpBPnrGXj1YO1Z/jG3oM1DGBhyN48q0Tfw0pOBuYkfYLh/t
- xpfbAANaD7d3nyts1CG6Z3/rqVuR+CgsbRlerxOSXmx2fsUkvu2g==
+ s=s31663417; t=1690691911; x=1691296711; i=w_armin@gmx.de;
+ bh=ppZ3N9xbXVQLye/TUgXN3mwxwN5QaCrAO8Uykzqp8q4=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=pFl/p/Dt4DxVqMTrTnSH42fxc4PSZv1+qaSusQc9jC31/O4+ud7nRvNtY8g5uDpb6WItQMJ
+ 5nWcGOULIJ6kDVX+9BdgNtARA9MTVBAzfFz/gS/1UQ0dd1tVSGIyBrcVUe1i/bwXR91lNakmW
+ RtMCl0azIC98yOfWayNWcAEVzmd6zo/3wLf1IjRm3XSGx/ISWdC5qUw30yyINsm7UuzPAiqFT
+ 2mIvbU8PbhT4/NWTdP1WhQ2tmt+hsnwmmub1Ic8WED4CUm1sAyEWcsJ1wwR4m0s8kHKu+ZiG5
+ hJQ6tyMoAX1tZtU1paltLpdsEfW2yJf3Pg5E6U4Jzcjtv6kAfwmQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1N0X8u-1pcHxc3esu-00wY0N; Sun, 30 Jul 2023 06:38:24 +0200
+ (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1Mlw3X-1pzg0K04VH-00j3ru; Sun, 30 Jul 2023 06:38:31 +0200
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     hdegoede@redhat.com, markgross@kernel.org
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] platform/x86: wmi-bmof: Use device_create_bin_file()
-Date:   Sun, 30 Jul 2023 06:38:15 +0200
-Message-Id: <20230730043817.12888-1-W_Armin@gmx.de>
+Subject: [PATCH 2/3] platform/x86: wmi-bmof: Simplify read_bmof()
+Date:   Sun, 30 Jul 2023 06:38:16 +0200
+Message-Id: <20230730043817.12888-2-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230730043817.12888-1-W_Armin@gmx.de>
+References: <20230730043817.12888-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:T1uTsb7y5VIVnDKiXgPZOzjWPZIpfxC4PGQkNaHPeQsAZyWqW7X
- w/MP9O8ahGpiJZuGUQve7isw0NHtq9m+M5lDtNszJ0Kuh3octY1BBcFZevf2qsJuhPWj/tg
- i0/fYYae5R/TYSTGNkfbMAI4TlGS2C1u3nahRvaGX5fkk9OgL2tJ+UADxwnug1R74ecPAFv
- 80tTrhPw8SKy2KqAh9/WA==
-UI-OutboundReport: notjunk:1;M01:P0:40wm7Byt9GE=;r23/9AEoafCMS53crVWTWtqEeax
- 7DJ/RqqW82A9oGPyemOGUki4uoWDehFSf9QsPeELIJ+CMfMWAcGZ3FwnRbvUHGT6Usl2r3pAv
- 9kah7XVKlQCsicDYYJR/F6eggFYt3dldBuWTG4Crmu7AcNoduevAq6ybGzRy9c4p59rGDvpm3
- siCGPDn085Ctif8CqH/X0kkEUvLsJ4uESkjak7XMinI3pAdnGsrMjYWMbqhx86qbGp7zzEh6h
- j4g6FMlP7wS6aOP5UQugvucQQ9s1282lDqLrYAOUwy575gzuMulrZRop8HIPoy0BX4w4z8zql
- E8obJqEngg1Ck0E+TxceGExP2j4ppkHQYrEKlYmXuzh0723l7N+MWYrvvyUk4wY4sVsmNCY19
- bPJaKlvJWKTeqFg9Paon/xnMQ/86vVclpL7qPfta1A+IWB3OVnwEXARu4801qckQ5ZD8HT9Mn
- gHDB6CQuOrDtGRYM3aLh1+caZQ2vKfdRDWC4GHh7zr5nhcGsdNqvNqZEzBVNyUWNawfI3NMsf
- eMAH96ZxQILtphwaZhmWL//W23Dm+ZFAF3kIFI+xxlOKkdjocKi8NbNHEAcs47RM07pGrjCO5
- G8hhEtTRawYn9ybwrnfuyvYyQ4OdqvX5MxpE4UnppDIJD4RLkSwviDhyNpWvMNnADoZv4+JUu
- JAJtyGzOnwPoaMTL1z6Nbcr+6s0CEw/2VB9aHQrvEiNAiINJ4ox3BAVIgOXP4QXUqfhq5n0l/
- j7tVU3mdv7fO2Lp52SItIMRwauq9MsEaXInGNRXJzoxzBtoA48BGyq1mSAgRcr9yaR6cT/v3c
- YdIya9rxkLVSp2+xOYH/W6CrC1ASoT9wE+/Yf7g8G5bNRrKDc+vIbpHLweJxnzgSOVEkSATVr
- 3QPOmCqQRNCYJOfcL5k/SgxccwBEIKiv6l3C07/LZ1R3ynwUcAOymY4CR6ksbIHHCBuinaOHm
- GQRgCvFi00Afc1NQRUwSr/1S9IU=
+X-Provags-ID: V03:K1:d13USs0sWiOCl1mSrpyTf2Drqr0gR2u6MQjVGh5ZCFreA14nqSC
+ ml6n8OBXwJDu+CTRtifJ7KPQ/bUs+v2ShhPJBBdjiCHkWJa7L3oAW/CiIp1s02oUPfGx0wr
+ HWM/zPn2qtPlvzqynnK9eIUfkaTNZaPmArjXol9iRJBQDqDj8a7PYLhTFzBdunFb/rza+cP
+ HKGn5HAws2b217tusRBNA==
+UI-OutboundReport: notjunk:1;M01:P0:j/wGR76xZV4=;D2fJ32ernuagQWbQZCbkikelh5f
+ 020Y5sVkRbkgZKJIfsuzTj7hmlvQO6vj4z/qrVdgJvK0N+QtJwjYlOXE/9ZH76Rod0IrTs9MC
+ Ra49hvCy9/aAW5xGo+i4+qYW96d8xxG4XXErDodyVVCry4HXLPxi9DSrplXl0XFvC9wRLKSQb
+ /qNsa//8XJ64MJDDxar78B53I/X9AtKxCdVtU31Qz0bkqwyQrxfV8C+nXeAApQS+Us7gMp6J8
+ 0ve2zz4d8x0q28emBfjzPnEOW+bAW4OofPCxgFORk/+v+bhR6w3+R4gWquv2aEmJPvbkhBrpt
+ AeG2sL2vOV51yF/qAkSvQXf/5cnrcZN7mdc4uTP3UafPf1Zqc8sNwJkdr5cts/PGokd+bCom/
+ W8s+vwuITfCGyV4mOxWJeNFCNyeelD4IJakFG7Qhdj9KWQXtwnXF/efTdv4pZtfE7DyZtBaAM
+ ibA/Q1zkM8B64+3OQNEEnnR0Dz3szlt60OxetJhG88TLpjkrZTp+s3D8RsrXYW7f6UgSxNbnr
+ p/s6xUdb7fTaYO8qTJmv2U319CdfOqRvKW+MwM92FAAB/F8eZBL3pzGID1uJPOvEfr6zvBrvU
+ 4LTi4tkxe1R4JKvxjOTSw6wLTW0MvShZ/hBuyxzuei2eXqAd0NkLqOIwRlKKAoTvj2TnIiwD6
+ 8k2f/660ogNdJi53ArtIxk3FrW+fk8okxyWHPqs+ucRvtDBJ5LU7MepAkQLaa11ZP9Odel/i1
+ 9Zo6GAjAi6RR6Z0ERAQ/WxSzByCjtexfP7XWJO+ReUMqgabVLG9ihQjjYji8KHu/zB99T2Kk9
+ Bf7eD01+MLpQRyRNUx48T4gOS/otfWpK4i3KZcC52/3cyEjYGVp7Sen8P9hNYWiVn4ffntzhe
+ uTzQF3roh1GUMHSiVP2FUTJZyAZijSl9RDTZR5hE8tiLgAcicovOznd3iSi3YomQAZ3uc4QFY
+ 13bTWUz/QyJMKAZyd+Epm7fwdmU=
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use device_create_bin_file() instead of sysfs_create_bin_file()
-to avoid having to access the device kobject.
+Replace offset handling code with a single call
+to memory_read_from_buffer() to simplify read_bmof().
 
 Tested on a ASUS PRIME B650-PLUS.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi-bmof.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/platform/x86/wmi-bmof.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bm=
 of.c
-index 80137afb9753..d0516cacfcb5 100644
+index d0516cacfcb5..644d2fd889c0 100644
 =2D-- a/drivers/platform/x86/wmi-bmof.c
 +++ b/drivers/platform/x86/wmi-bmof.c
-@@ -75,7 +75,7 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const=
- void *context)
- 	priv->bmof_bin_attr.read =3D read_bmof;
- 	priv->bmof_bin_attr.size =3D priv->bmofdata->buffer.length;
+@@ -25,25 +25,13 @@ struct bmof_priv {
+ 	struct bin_attribute bmof_bin_attr;
+ };
 
--	ret =3D sysfs_create_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
-+	ret =3D device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
- 	if (ret)
- 		goto err_free;
-
-@@ -90,7 +90,7 @@ static void wmi_bmof_remove(struct wmi_device *wdev)
+-static ssize_t
+-read_bmof(struct file *filp, struct kobject *kobj,
+-	 struct bin_attribute *attr,
+-	 char *buf, loff_t off, size_t count)
++static ssize_t read_bmof(struct file *filp, struct kobject *kobj, struct =
+bin_attribute *attr,
++			 char *buf, loff_t off, size_t count)
  {
- 	struct bmof_priv *priv =3D dev_get_drvdata(&wdev->dev);
+-	struct bmof_priv *priv =3D
+-		container_of(attr, struct bmof_priv, bmof_bin_attr);
++	struct bmof_priv *priv =3D container_of(attr, struct bmof_priv, bmof_bin=
+_attr);
 
--	sysfs_remove_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
-+	device_remove_bin_file(&wdev->dev, &priv->bmof_bin_attr);
- 	kfree(priv->bmofdata);
+-	if (off < 0)
+-		return -EINVAL;
+-
+-	if (off >=3D priv->bmofdata->buffer.length)
+-		return 0;
+-
+-	if (count > priv->bmofdata->buffer.length - off)
+-		count =3D priv->bmofdata->buffer.length - off;
+-
+-	memcpy(buf, priv->bmofdata->buffer.pointer + off, count);
+-	return count;
++	return memory_read_from_buffer(buf, count, &off, priv->bmofdata->buffer.=
+pointer,
++				       priv->bmofdata->buffer.length);
  }
 
+ static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
 =2D-
 2.39.2
 
