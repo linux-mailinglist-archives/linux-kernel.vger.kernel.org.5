@@ -2,196 +2,570 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 900E67684EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272AB7684F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjG3LKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 07:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S229972AbjG3LPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 07:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjG3LKn (ORCPT
+        with ESMTP id S229587AbjG3LPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 07:10:43 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0B110FF
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690715442; x=1722251442;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=/UZEFD5Q5s+sCcrSu3x3Qmee3YQ2Rd58OPsaXTgWV8A=;
-  b=HfN9cdwJAW2iMiKNDGigLfgliIW+fZJpZNWEdeCSUrfQPR41Bf7tEgev
-   TTy/js7lHhvYuo907V0J/v++DEKUBkdEC6P/oX+3U1ml50VuTihCSzvfA
-   nvaozEniZBkuj4d7NiQSBuB6brqcCjfDdt8D0ezrhmbaLTC3i1p/vto8Q
-   u8l1EAJwHpTnNBW58oKBwZ3Vis3LhlvEYKr8yjOi2fAp8Oyv0rbYeDuTG
-   vC4pVdsDuZDPpHiP3i4imDxdEI10npZN/2LhOo3WBYrwDvdSUDzVrqypT
-   2fMJi+dJyXgrrK18NAQAzmEcqtBBf+NtKd1CjdJ5V8alxvk0B7pCaZbaC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="455202405"
-X-IronPort-AV: E=Sophos;i="6.01,242,1684825200"; 
-   d="scan'208";a="455202405"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 04:10:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10786"; a="901790745"
-X-IronPort-AV: E=Sophos;i="6.01,242,1684825200"; 
-   d="scan'208";a="901790745"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga005.jf.intel.com with ESMTP; 30 Jul 2023 04:10:41 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 30 Jul 2023 04:10:41 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 30 Jul 2023 04:10:40 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Sun, 30 Jul 2023 04:10:40 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Sun, 30 Jul 2023 04:10:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iX6tGvGnsVBHO0zAlw6UH+N8cewvBM/QMJqmh7N5DpRODb5P69PYd+9s194/SXpgTdycAT5+ymHalaUIYOgW7i+16JrxQosBlCr1TyDs71BX5IlSLOwahTmotDSSAShn1QfBe0h2ilX8L2YqTIwbPYJ9razge5iB5L2YzUj2LSIXCMO4iGKmxmZgTslf4ifudgSrUdlFfkCLpBRMPi4RTrXAThV41HawLlTeoVjA5hgzq6Nbzqa1E+EeiZTvCDYgCFpMjEu+ffXJs9Zi6uSikraao/cxttULyPRZmuIfrfUu07mCuJIaojsvXiEN1pHfvFg6ETXVwv4Uz9p0huqhaQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/UZEFD5Q5s+sCcrSu3x3Qmee3YQ2Rd58OPsaXTgWV8A=;
- b=V47/hcNCSZ5xDK/ury9llobRiOaMUbxSAwb87nGFLTPl7zmjgjJd0aP4TIYdFOnTMXJXkUlfFlaYA1Nj6xBzRpJkA3Wy+D4kk+x27U9gwr8pQks5x0qABPDlHUjzSWh0qHuc1Jf4ud76WCkLb3zR4dqPn+9reoGvuZ/HJnxqgi+bFAJmJhJSnzloeEVpU0K3r2vg/cWawsMcSg3q9wpm1k0BaqbrPM1NVDRO7YFURVsmwHx/hQwiuoQpE5hwB7H3x/CBSpkSgv2MXz09ETOjGah2PqN8LhXKNbNkxBLopUG9sekv7j5shJ4AdcMMqJNEBAK4npo2aTpp34LraTCfzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by PH7PR11MB8479.namprd11.prod.outlook.com (2603:10b6:510:30c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42; Sun, 30 Jul
- 2023 11:10:38 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::f8a8:855c:2d19:9ac1]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::f8a8:855c:2d19:9ac1%7]) with mapi id 15.20.6631.042; Sun, 30 Jul 2023
- 11:10:38 +0000
-From:   "Usyskin, Alexander" <alexander.usyskin@intel.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>,
-        "Lubart, Vitaly" <vitaly.lubart@intel.com>
-Subject: RE: [PATCH] mtd: fix use-after-free in mtd release
-Thread-Topic: [PATCH] mtd: fix use-after-free in mtd release
-Thread-Index: AQHZwJtISddYv7J3rUGIhkR1woyPZ6/NuDAAgAACR4CAAAqxgIAACoiAgARbWXA=
-Date:   Sun, 30 Jul 2023 11:10:38 +0000
-Message-ID: <CY5PR11MB63660B9CE604C0CFF2E088DAED04A@CY5PR11MB6366.namprd11.prod.outlook.com>
-References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-        <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>   <20230727172013.7c85c05d@xps-13>
-        <ZMKUJbl7kFOfgKGg@smile.fi.intel.com> <20230727183611.37d01f51@xps-13>
-In-Reply-To: <20230727183611.37d01f51@xps-13>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY5PR11MB6366:EE_|PH7PR11MB8479:EE_
-x-ms-office365-filtering-correlation-id: c3dbafb8-4238-4381-2c59-08db90ed9ada
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vamHM3bo8weEyBzW7QWvxd50Heth/qQ5Jvamxp7K1oEvJ+AFPA6fKjGHPnIXAUryAipcJHRHdBJGZ7rStNLS+0YRw4wl442pxABS9h+y8yg4Q+GxQWRwWc15MlwAiZgRl/anLR6vQkmtqW4W96BAnmEw0i8BdAuf0afHUOIA2fLTdb7rtZ7+8bPY+00RbLIUcy3WQ2H34DiJKYoXNX/wE3lERowa8PLS45v+W8TD7uj4DunTVWSsVLqFzQMQeabhP3rlwS5pmVKpgLEtE/5af832OLOqeld+xHO8LKz5Zfpd+1SETdpWcPae2PEkjoVNIk7dd6FAOO2WqUe1kCc5TvbIGcxSOYWArNqIqZDnFTLPRVx6Ypj4lQ/adfamQOKvq/Q4witLc9PJcUfgkv8YWe46ncxOEaSQyIzoFo9yQgob04+oFhF/dkJhYoJJOw44WTIQ+7u5gnGN761EFFMpIUdKqoez9/jRRmwTUk+fw1kvYo1N+8LhKCGF7ZGtBOptgxSHfTiIw04wIdwLLispUAeAD5qIxRl1HJy5PTY1XAe+n9sXdWvTrQEyvm52p6usZQTURqrBFwdiQ3664IOEoi/+T37l9PUObTcPBuZJVyIKyMD8PuNjYGdHzzFUKfBZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(39860400002)(136003)(376002)(366004)(346002)(451199021)(38100700002)(82960400001)(122000001)(55016003)(86362001)(38070700005)(33656002)(9686003)(478600001)(71200400001)(7696005)(186003)(6506007)(8676002)(8936002)(5660300002)(52536014)(76116006)(4326008)(66946007)(66556008)(66476007)(2906002)(66446008)(64756008)(54906003)(110136005)(41300700001)(316002)(66574015)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a29WYnpRSkFpVDR4MEFLMk1pQW0rNEZxL0FzN0d4YWdqNFJpMVpFZXBWb1B0?=
- =?utf-8?B?UTJnMk9NRzJSNFNjYnJTbWw4cVNJbVBpWGxXZEtWZ0lLekpZRk5qcVJRRW1K?=
- =?utf-8?B?dlI1VDVsdVRKRG9jUVRYamdxTEZpSWp5V29veGsxRHdoNW9mNzBkcHZTclhj?=
- =?utf-8?B?TnY1ZFY2UlVRU2pNNjVmLzIwNW5ERUNtQW5LSDEzQ29IZTBHa1NsZjlnWDI2?=
- =?utf-8?B?QVJyeGJZcEdxUVhoblBmVDY3TFV6Y0UrTDhNTm9SNk1CL0NJOFRMUkswQ2RQ?=
- =?utf-8?B?WTlsTFg1RFFmS2szaHRyd1IwbnA3NjRuSmdva1o1WklIVjhNR0NrTnRiK0Jj?=
- =?utf-8?B?d3dzeFBOUU5wRitPYTMwYlIvMUs4OVVzeUFzNnQvQzVLa211S3A1eDh4UWtX?=
- =?utf-8?B?N0Y0elZYVUdRWFM3M29FcHJDT0xZd1piL2kyWDBTT2NoUVg4bXFRc3hwZVJW?=
- =?utf-8?B?QTc3VWNYaEFNTCs3NGtFcHFNZllaMFBKWkhXcXpheEozT3JGRm1XemxwVTdn?=
- =?utf-8?B?Vmt0K25DSm1UNGJVSnZ6RkVWNkRJUElCbEc2OWJuSDJ1VTFWcjUyMysySlMz?=
- =?utf-8?B?dnpQL2ZKSUFaeTlWRU1ReFlrYnlJZ1AwRFhQZmttZUtaeEx3Z3pTUUZuZ2lS?=
- =?utf-8?B?MTlaZFZQZzkzd3JUZmYzR1lRdG83eVdOZCtKY2czU0M2cnM3NjZISzRLRWJJ?=
- =?utf-8?B?aENTMGMzWmJqbHJHaGFJaXgxL2tTTDZqeHRKdk5SN1E3bWI2SnJSVGY5c2Y4?=
- =?utf-8?B?VHFiUWNXZFpXYy90cWlrYlhTZTJGbno1RDJYZEh1a1ZISTc0bEs1SGM0dER5?=
- =?utf-8?B?bkgvRGFtcWViODFWL0ZaazNEQnk5bklWM2hEV0twMllBQmxZdC9VNUhPam0x?=
- =?utf-8?B?V2J1bnY3RGRNQTBkR1VXNERrWkIyMHhlQzdRRlhRZUttV1BRVi9remhUSWNB?=
- =?utf-8?B?S2RyYzlBUzdUaWFDNWlIL3p0OWdHOHZwK0pKdExuWmdrTzNVMEkrNHYvZGFv?=
- =?utf-8?B?L2dCM1JTdnVZcWJRMzA1bXQ3MGJzTXNwcmJiQkcxQ083NmJ2SWo4azlxaFFT?=
- =?utf-8?B?cXZmTVc5RW5xS0V2azVwM0NDdmg3OU04Z28vcXJueHI5WjZXWVk4eWVOSEJ1?=
- =?utf-8?B?TTNkS1E1eEhMRXFJYVpITmdCWk1BMTBRekl4N28vYlMrOXNLK1Bhb255ZXR6?=
- =?utf-8?B?UVJlTVhueU00SytjMXRCUUY4QnRqeTZ2U2N1bnRwWDRldjBIZkRlTHpTck45?=
- =?utf-8?B?NzQ4UHZkdUVRUWdCSGYzczZHOWE2YVZxSXhDTEtNZmRyYXVhYlFjam9NVkxx?=
- =?utf-8?B?SGtKUDJieWdmZDgvUUhMWkE5M1EyNXA4L054ekdmazVOMkFIanI4RUE0eWhh?=
- =?utf-8?B?eGRVTVpzaFhDbStvOVVFS0drLzNVQjNoZStGVTVuYi9xWWFIdithd0NkaEE4?=
- =?utf-8?B?NFYxSThmTG9Jekx2U3E4bzFqWmQ1dDJxTlpLYnZJUFdUb002Y21uang4UWlQ?=
- =?utf-8?B?NHFGR2NGeWkzOHQ4TE9MVG9hVVNhVjREaEtaK2EzcG0zR1NwN2dqUmlqTVFn?=
- =?utf-8?B?UTF3Z0FMVG9kQTkzLzhiN0I2TnBLcmpLcjBMd0o4OENnczl6anhPYXJFWldn?=
- =?utf-8?B?NWJCeklmSWplLzMwMTBoNE03Z0FjK01SWkZ2YUY5ZnZIZno3MERUS2hVWk5Y?=
- =?utf-8?B?N283NGFrREh4Zk95dmdSeldydDFPZmNVN0lRcGVWaEsyNXZWY2wvdHBGSVUr?=
- =?utf-8?B?MXl6U2hvSURJZGpnTElJRmhzQ3BmT2M5TnEyUkNZcnhzU0h6S0pWa2xWS0hN?=
- =?utf-8?B?VTVWdzd5aFFndTkwNmJsOGk5bEpPU1BHUGt4NWFsVzg4cW9ZUStBcFliUld3?=
- =?utf-8?B?ajhFUWRzRmpFMkRPVWFTZGxZY3EzUWtoUnNiYzdhZU5ick1Gd1FIRDM0bjBX?=
- =?utf-8?B?QjNNdlUra2Q1OERZdUVwdXhRemR1ZDAwWHQ2cmpackVWZnhwby9WRkNYNHR3?=
- =?utf-8?B?Qk0xeWJVbWRpb1RkWVVoWmFqN2d2TENmVnIyWDlHb3hrOHhncCtvYndtNDJa?=
- =?utf-8?B?OTVjdjJHUnJBNEZvZmNUbjJ3RGRLNFozejM3cjR1bmRHcVY1cW1OMFhocmwx?=
- =?utf-8?Q?g4rc=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Sun, 30 Jul 2023 07:15:38 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5765B1980
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:15:35 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5221cf2bb8cso5265275a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690715733; x=1691320533;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O7+3EyhpcBsHboH41ni+vyFcH49CV73ESCn3SFaRXeg=;
+        b=aS/AEAnRGvTu/Qzdq+EmdPenmRpxt31izG6Mc28oX1+wdIHfdxm+VWSZgp8vw9Dnmc
+         UuuBjjkmhdmZJlH6FDdIHrLc4SBEyJCYYXF/A5fhYuZ6SihXmYO/CCYOwiZ4/udr6apz
+         jBFHgXOVpZRWSBUEv4FuMh88yLZJrv3L3+p2WJZaHisT3Le+x+xHDaMJzqBXdGyo9ds3
+         EOS3tHhZsIT+XLSTwSbtrXRfDGztXkq6hsIkrgKZil4qwOQw/m025Uf4BGZJg1qkGRuS
+         t9m4KS0btVtztfyUoRNRykkAV2Wf0O7HXl14XI2JwPzEx/5y9XWVdunj5smz5W8YETC9
+         GO6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690715733; x=1691320533;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O7+3EyhpcBsHboH41ni+vyFcH49CV73ESCn3SFaRXeg=;
+        b=TYXEwloqImfzyE6sffigXgdJdm3qEf219Rg2WkGG8Os2dV0R0Yg3+dnyTbgAPjSatb
+         fuy+RAeql15tWJ+GUqe0R/kTdiaklwMTPXHMfpt1g+I8XZTmfXUGzkOLsjlosxhF8JKG
+         KW5tzb05pC8rbABQyP/Kue75twGh1UJ2x4QtA2AxKDfs0JEKET25XCtLck4FbOIz14oy
+         XfKdu29i4E7KSifPdPCu/VDbQWZGra5H4O9lNskhb0bEY2ebRB4Ufnyq4UQ+9RkxuJDS
+         ztFsSmmqZODzD5+hQ/IPpVdMAW/UgdnvGCYg6/6B67YPWsQbNxOTDndkCSIZCiw3WPoh
+         U1xw==
+X-Gm-Message-State: ABy/qLZyfA8AT0H/acaQhRTIGvzRWH1FnuvHOV4/6VcD6nDewngbwT4s
+        3YmcC3j4Y3FeQUS+sivWq8+Wcg==
+X-Google-Smtp-Source: APBJJlEa0lxw6eOUJwI4LyWuc/cBUr045qjk6+rh1oV2SaN6dDOC4z9bETSfAyAs8zVWM0qF1/t2jg==
+X-Received: by 2002:a17:906:7499:b0:99b:627b:e96d with SMTP id e25-20020a170906749900b0099b627be96dmr5218052ejl.44.1690715733453;
+        Sun, 30 Jul 2023 04:15:33 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id x24-20020a170906135800b009930308425csm4481522ejb.31.2023.07.30.04.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 04:15:33 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ARM: dts: qcom: use defines for interrupts
+Date:   Sun, 30 Jul 2023 13:15:30 +0200
+Message-Id: <20230730111530.98105-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3dbafb8-4238-4381-2c59-08db90ed9ada
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2023 11:10:38.2326
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xanafXsOJWUKXfGnlwUpklfhRskkXdoCh5exOXDSTR44WChqbyz26WTDpLNdxjf2LzZ5tR44Dt/MsIAy8IuP7o1jh0Mhi5KhNKQjH86W25s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8479
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gSGkgQW5keSwNCj4gDQo+IGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbSB3
-cm90ZSBvbiBUaHUsIDI3IEp1bCAyMDIzIDE4OjU4OjI5DQo+ICswMzAwOg0KPiANCj4gPiBPbiBU
-aHUsIEp1bCAyNywgMjAyMyBhdCAwNToyMDoxM1BNICswMjAwLCBNaXF1ZWwgUmF5bmFsIHdyb3Rl
-Og0KPiA+ID4gYW5kcml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tIHdyb3RlIG9uIFRodSwg
-MjcgSnVsIDIwMjMgMTg6MTI6MDQNCj4gPiA+ICswMzAwOg0KPiA+ID4gPiBPbiBUaHUsIEp1bCAy
-NywgMjAyMyBhdCAwNTo1Nzo1OFBNICswMzAwLCBBbGV4YW5kZXIgVXN5c2tpbiB3cm90ZToNCj4g
-Pg0KPiA+IC4uLg0KPiA+DQo+ID4gPiA+ID4gRml4ZXM6IDE5YmZhOWViZWJiNSAoIm10ZDogdXNl
-IHJlZmNvdW50IHRvIHByZXZlbnQgY29ycnVwdGlvbiIpDQo+ID4gPiA+DQo+ID4gPiA+IENsb3Nl
-czogPw0KPiA+ID4NCj4gPiA+IERpZCBJIG1pc3MgYSByZWNlbnQgdXBkYXRlIG9uIHRoZSB1c2Ug
-b2YgRml4ZXM/DQo+ID4NCj4gPiBUaGV5IGFyZSBvcnRob2dvbmFsIHRvIGVhY2ggb3RoZXIuIEFj
-dHVhbGx5IENsb3NlcyBnb2VzIGNsb3NlciB3aXRoDQo+ID4gUmVwb3J0ZWQtYnkuDQo+ID4NCj4g
-PiBJIGJlbGlldmUgYm90aCBvZiB0aGVtIG5lZWRzIHRvIGJlIGFkZGVkIChieSBJIG1pZ2h0IG1p
-c3Mgc29tZXRoaW5nKS4NCj4gPg0KPiA+ID4gSSB0aG91Z2h0IENsb3NlcyB3YXMNCj4gPiA+IHN1
-cHBvc2VkIHRvIHBvaW50IGF0IGEgYnVnIHJlcG9ydCB3aGlsZSBGaXhlcyB3b3VsZCBwb2ludCB0
-byB0aGUgZmF1bHR5DQo+ID4gPiBjb21taXQuDQo+ID4NCj4gPiBDb3JyZWN0Lg0KPiA+DQo+ID4g
-PiBSaWdodCBub3cgSSBmZWVsIGxpa2UgRml4ZXMgaXMgdGhlIHJpZ2h0IHRhZywNCj4gPg0KPiA+
-IE5vYm9keSBvYmplY3RzIHRoYXQgKHNlZSBhYm92ZSkuDQo+ID4NCj4gPiA+IGJ1dCBpZiB5b3Ug
-aGF2ZSBhIHNvdXJjZSBleHBsYWluaW5nIHdoeSB3ZSBzaG91bGQgbm90IGxvbmdlciBkbyBpdCBs
-aWtlDQo+ID4gPiBJIGFtIHVzZWQgdG8sIEkgd291bGQgYXBwcmVjaWF0ZSBhIGxpbmsuDQo+ID4N
-Cj4gPiBTaW5jZSB5b3Uga25vdyBhYm91dCBDbG9zZXMgYWxyZWFkeSwgSSB0aGluayB0aGVyZSBp
-cyBub3RoaW5nIHRvIGFkZC4NCj4gDQo+IEFoIHNvcnJ5IEkgbWlzdW5kZXJzdG9vZCB5b3VyIGZp
-cnN0IGUtbWFpbC4gSSB0aG91Z2h0IHlvdSB3ZXJlDQo+IHN1Z2dlc3RpbmcgdG8gcmVwbGFjZSBG
-aXhlcyBieSBDbG9zZXMuIFNvcnJ5IGZvciB0aGUgbWlzdW5kZXJzdGFuZGluZyA6KQ0KPiANCj4g
-VGhhbmtzLA0KPiBNaXF1w6hsDQoNCk1pcXVlbCwgaXMgdGhpcyBwYXRjaCBoZWxwcyB3aXRoIHlv
-dXIgb3JpZ2luYWwgcHJvYmxlbSBvZiBkZXZpY2VzIG5vdCBmcmVlZD8NCg0KWmhhbmcsIGlzIHRo
-aXMgcGF0Y2ggaGVscHMgd2l0aCB5b3VyIHByb2JsZW0gd2l0aCBLQXNhbj8NCg0KLS0gDQpUaGFu
-a3MsDQpTYXNoYQ0KDQoNCg0K
+Replace hard-coded interrupt parts (GIC, flags) with standard defines
+for readability.  No changes in resulting DTBs.
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm/boot/dts/qcom/qcom-apq8064.dtsi | 44 ++++++++++++------------
+ arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi |  2 +-
+ arch/arm/boot/dts/qcom/qcom-msm8660.dtsi | 22 ++++++------
+ arch/arm/boot/dts/qcom/qcom-msm8974.dtsi |  6 ++--
+ arch/arm/boot/dts/qcom/qcom-sdx55.dtsi   | 18 +++++-----
+ arch/arm/boot/dts/qcom/qcom-sdx65.dtsi   | 26 +++++++-------
+ 6 files changed, 59 insertions(+), 59 deletions(-)
+
+diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
+index e0adf237fc5c..c693bfc63488 100644
+--- a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
+@@ -190,7 +190,7 @@ cpu_crit3: trip1 {
+ 
+ 	cpu-pmu {
+ 		compatible = "qcom,krait-pmu";
+-		interrupts = <1 10 0x304>;
++		interrupts = <GIC_PPI 10 0x304>;
+ 	};
+ 
+ 	clocks {
+@@ -244,7 +244,7 @@ apps_smsm: apps@0 {
+ 
+ 		modem_smsm: modem@1 {
+ 			reg = <1>;
+-			interrupts = <0 38 IRQ_TYPE_EDGE_RISING>;
++			interrupts = <GIC_SPI 38 IRQ_TYPE_EDGE_RISING>;
+ 
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -252,7 +252,7 @@ modem_smsm: modem@1 {
+ 
+ 		q6_smsm: q6@2 {
+ 			reg = <2>;
+-			interrupts = <0 89 IRQ_TYPE_EDGE_RISING>;
++			interrupts = <GIC_SPI 89 IRQ_TYPE_EDGE_RISING>;
+ 
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -260,7 +260,7 @@ q6_smsm: q6@2 {
+ 
+ 		wcnss_smsm: wcnss@3 {
+ 			reg = <3>;
+-			interrupts = <0 204 IRQ_TYPE_EDGE_RISING>;
++			interrupts = <GIC_SPI 204 IRQ_TYPE_EDGE_RISING>;
+ 
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -268,7 +268,7 @@ wcnss_smsm: wcnss@3 {
+ 
+ 		dsps_smsm: dsps@4 {
+ 			reg = <4>;
+-			interrupts = <0 137 IRQ_TYPE_EDGE_RISING>;
++			interrupts = <GIC_SPI 137 IRQ_TYPE_EDGE_RISING>;
+ 
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+@@ -316,7 +316,7 @@ tlmm_pinmux: pinctrl@800000 {
+ 			#gpio-cells = <2>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+-			interrupts = <0 16 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+ 
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&ps_hold>;
+@@ -338,9 +338,9 @@ intc: interrupt-controller@2000000 {
+ 		timer@200a000 {
+ 			compatible = "qcom,kpss-wdt-apq8064", "qcom,kpss-timer",
+ 				     "qcom,msm-timer";
+-			interrupts = <1 1 0x301>,
+-				     <1 2 0x301>,
+-				     <1 3 0x301>;
++			interrupts = <GIC_PPI 1 0x301>,
++				     <GIC_PPI 2 0x301>,
++				     <GIC_PPI 3 0x301>;
+ 			reg = <0x0200a000 0x100>;
+ 			clock-frequency = <27000000>;
+ 			cpu-offset = <0x80000>;
+@@ -428,7 +428,7 @@ gsbi1_serial: serial@12450000 {
+ 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
+ 				reg = <0x12450000 0x100>,
+ 				      <0x12400000 0x03>;
+-				interrupts = <0 193 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI1_UART_CLK>, <&gcc GSBI1_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				status = "disabled";
+@@ -440,7 +440,7 @@ gsbi1_i2c: i2c@12460000 {
+ 				pinctrl-1 = <&i2c1_pins_sleep>;
+ 				pinctrl-names = "default", "sleep";
+ 				reg = <0x12460000 0x1000>;
+-				interrupts = <0 194 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI1_QUP_CLK>, <&gcc GSBI1_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				#address-cells = <1>;
+@@ -469,7 +469,7 @@ gsbi2_i2c: i2c@124a0000 {
+ 				pinctrl-0 = <&i2c2_pins>;
+ 				pinctrl-1 = <&i2c2_pins_sleep>;
+ 				pinctrl-names = "default", "sleep";
+-				interrupts = <0 196 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI2_QUP_CLK>, <&gcc GSBI2_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				#address-cells = <1>;
+@@ -544,7 +544,7 @@ gsbi5_serial: serial@1a240000 {
+ 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
+ 				reg = <0x1a240000 0x100>,
+ 				      <0x1a200000 0x03>;
+-				interrupts = <0 154 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI5_UART_CLK>, <&gcc GSBI5_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				status = "disabled";
+@@ -553,7 +553,7 @@ gsbi5_serial: serial@1a240000 {
+ 			gsbi5_spi: spi@1a280000 {
+ 				compatible = "qcom,spi-qup-v1.1.1";
+ 				reg = <0x1a280000 0x1000>;
+-				interrupts = <0 155 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
+ 				pinctrl-0 = <&spi5_default>;
+ 				pinctrl-1 = <&spi5_sleep>;
+ 				pinctrl-names = "default", "sleep";
+@@ -580,7 +580,7 @@ gsbi6_serial: serial@16540000 {
+ 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
+ 				reg = <0x16540000 0x100>,
+ 				      <0x16500000 0x03>;
+-				interrupts = <0 156 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI6_UART_CLK>, <&gcc GSBI6_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				status = "disabled";
+@@ -616,7 +616,7 @@ gsbi7_serial: serial@16640000 {
+ 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
+ 				reg = <0x16640000 0x1000>,
+ 				      <0x16600000 0x1000>;
+-				interrupts = <0 158 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 158 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI7_UART_CLK>, <&gcc GSBI7_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				status = "disabled";
+@@ -677,7 +677,7 @@ ssbi@500000 {
+ 			pmicintc: pmic {
+ 				compatible = "qcom,pm8921";
+ 				interrupt-parent = <&tlmm_pinmux>;
+-				interrupts = <74 8>;
++				interrupts = <74 IRQ_TYPE_LEVEL_LOW>;
+ 				#interrupt-cells = <2>;
+ 				interrupt-controller;
+ 				#address-cells = <1>;
+@@ -710,7 +710,7 @@ pm8921_mpps: mpps@50 {
+ 				rtc@11d {
+ 					compatible = "qcom,pm8921-rtc";
+ 					interrupt-parent = <&pmicintc>;
+-					interrupts = <39 1>;
++					interrupts = <39 IRQ_TYPE_EDGE_RISING>;
+ 					reg = <0x11d>;
+ 					allow-set-time;
+ 				};
+@@ -719,7 +719,7 @@ pwrkey@1c {
+ 					compatible = "qcom,pm8921-pwrkey";
+ 					reg = <0x1c>;
+ 					interrupt-parent = <&pmicintc>;
+-					interrupts = <50 1>, <51 1>;
++					interrupts = <50 IRQ_TYPE_EDGE_RISING>, <51 IRQ_TYPE_EDGE_RISING>;
+ 					debounce = <15625>;
+ 					pull-up;
+ 				};
+@@ -1084,7 +1084,7 @@ sdcc3: mmc@12180000 {
+ 		sdcc3bam: dma-controller@12182000 {
+ 			compatible = "qcom,bam-v1.3.0";
+ 			reg = <0x12182000 0x8000>;
+-			interrupts = <0 96 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc SDC3_H_CLK>;
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+@@ -1112,7 +1112,7 @@ sdcc4: mmc@121c0000 {
+ 		sdcc4bam: dma-controller@121c2000 {
+ 			compatible = "qcom,bam-v1.3.0";
+ 			reg = <0x121c2000 0x8000>;
+-			interrupts = <0 95 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc SDC4_H_CLK>;
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+@@ -1141,7 +1141,7 @@ sdcc1: mmc@12400000 {
+ 		sdcc1bam: dma-controller@12402000 {
+ 			compatible = "qcom,bam-v1.3.0";
+ 			reg = <0x12402000 0x8000>;
+-			interrupts = <0 98 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc SDC1_H_CLK>;
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+index 1e06f76a7369..10e9ca281a3f 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+@@ -162,7 +162,7 @@ scm {
+ 
+ 	timer {
+ 		compatible = "arm,armv7-timer";
+-		interrupts = <1 2 0xf08>,
++		interrupts = <GIC_PPI 2 0xf08>,
+ 			     <1 3 0xf08>,
+ 			     <1 4 0xf08>,
+ 			     <1 1 0xf08>;
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8660.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8660.dtsi
+index 78023ed2fdf7..735b71dbe744 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8660.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-msm8660.dtsi
+@@ -47,7 +47,7 @@ memory {
+ 
+ 	cpu-pmu {
+ 		compatible = "qcom,scorpion-mp-pmu";
+-		interrupts = <1 9 0x304>;
++		interrupts = <GIC_PPI 9 0x304>;
+ 	};
+ 
+ 	clocks {
+@@ -105,9 +105,9 @@ intc: interrupt-controller@2080000 {
+ 
+ 		timer@2000000 {
+ 			compatible = "qcom,scss-timer", "qcom,msm-timer";
+-			interrupts = <1 0 0x301>,
+-				     <1 1 0x301>,
+-				     <1 2 0x301>;
++			interrupts = <GIC_PPI 0 0x301>,
++				     <GIC_PPI 1 0x301>,
++				     <GIC_PPI 2 0x301>;
+ 			reg = <0x02000000 0x100>;
+ 			clock-frequency = <27000000>,
+ 					  <32768>;
+@@ -121,7 +121,7 @@ tlmm: pinctrl@800000 {
+ 			gpio-controller;
+ 			gpio-ranges = <&tlmm 0 0 173>;
+ 			#gpio-cells = <2>;
+-			interrupts = <0 16 0x4>;
++			interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 
+@@ -299,7 +299,7 @@ gsbi12_serial: serial@19c40000 {
+ 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
+ 				reg = <0x19c40000 0x1000>,
+ 				      <0x19c00000 0x1000>;
+-				interrupts = <0 195 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI12_UART_CLK>, <&gcc GSBI12_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				status = "disabled";
+@@ -308,7 +308,7 @@ gsbi12_serial: serial@19c40000 {
+ 			gsbi12_i2c: i2c@19c80000 {
+ 				compatible = "qcom,i2c-qup-v1.1.1";
+ 				reg = <0x19c80000 0x1000>;
+-				interrupts = <0 196 IRQ_TYPE_LEVEL_HIGH>;
++				interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
+ 				clocks = <&gcc GSBI12_QUP_CLK>, <&gcc GSBI12_H_CLK>;
+ 				clock-names = "core", "iface";
+ 				#address-cells = <1>;
+@@ -342,7 +342,7 @@ ssbi@500000 {
+ 			pm8058: pmic {
+ 				compatible = "qcom,pm8058";
+ 				interrupt-parent = <&tlmm>;
+-				interrupts = <88 8>;
++				interrupts = <88 IRQ_TYPE_LEVEL_LOW>;
+ 				#interrupt-cells = <2>;
+ 				interrupt-controller;
+ 				#address-cells = <1>;
+@@ -375,7 +375,7 @@ pwrkey@1c {
+ 					compatible = "qcom,pm8058-pwrkey";
+ 					reg = <0x1c>;
+ 					interrupt-parent = <&pm8058>;
+-					interrupts = <50 1>, <51 1>;
++					interrupts = <50 IRQ_TYPE_EDGE_RISING>, <51 IRQ_TYPE_EDGE_RISING>;
+ 					debounce = <15625>;
+ 					pull-up;
+ 				};
+@@ -384,7 +384,7 @@ pm8058_keypad: keypad@148 {
+ 					compatible = "qcom,pm8058-keypad";
+ 					reg = <0x148>;
+ 					interrupt-parent = <&pm8058>;
+-					interrupts = <74 1>, <75 1>;
++					interrupts = <74 IRQ_TYPE_EDGE_RISING>, <75 IRQ_TYPE_EDGE_RISING>;
+ 					debounce = <15>;
+ 					scan-delay = <32>;
+ 					row-hold = <91500>;
+@@ -437,7 +437,7 @@ rtc@1e8 {
+ 					compatible = "qcom,pm8058-rtc";
+ 					reg = <0x1e8>;
+ 					interrupt-parent = <&pm8058>;
+-					interrupts = <39 1>;
++					interrupts = <39 IRQ_TYPE_EDGE_RISING>;
+ 					allow-set-time;
+ 				};
+ 
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+index 706fef53767e..d6bd42fc55e1 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-msm8974.dtsi
+@@ -518,7 +518,7 @@ blsp1_i2c1: i2c@f9923000 {
+ 			status = "disabled";
+ 			compatible = "qcom,i2c-qup-v2.1.1";
+ 			reg = <0xf9923000 0x1000>;
+-			interrupts = <0 95 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc GCC_BLSP1_QUP1_I2C_APPS_CLK>, <&gcc GCC_BLSP1_AHB_CLK>;
+ 			clock-names = "core", "iface";
+ 			pinctrl-names = "default", "sleep";
+@@ -546,7 +546,7 @@ blsp1_i2c3: i2c@f9925000 {
+ 			status = "disabled";
+ 			compatible = "qcom,i2c-qup-v2.1.1";
+ 			reg = <0xf9925000 0x1000>;
+-			interrupts = <0 97 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>, <&gcc GCC_BLSP1_AHB_CLK>;
+ 			clock-names = "core", "iface";
+ 			pinctrl-names = "default", "sleep";
+@@ -646,7 +646,7 @@ blsp2_i2c6: i2c@f9968000 {
+ 			status = "disabled";
+ 			compatible = "qcom,i2c-qup-v2.1.1";
+ 			reg = <0xf9968000 0x1000>;
+-			interrupts = <0 106 IRQ_TYPE_LEVEL_HIGH>;
++			interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&gcc GCC_BLSP2_QUP6_I2C_APPS_CLK>, <&gcc GCC_BLSP2_AHB_CLK>;
+ 			clock-names = "core", "iface";
+ 			pinctrl-names = "default", "sleep";
+diff --git a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+index 55ce87b75253..20bf6560a6b9 100644
+--- a/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-sdx55.dtsi
+@@ -740,57 +740,57 @@ timer@17820000 {
+ 
+ 			frame@17821000 {
+ 				frame-number = <0>;
+-				interrupts = <GIC_SPI 7 0x4>,
+-					     <GIC_SPI 6 0x4>;
++				interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17821000 0x1000>,
+ 				      <0x17822000 0x1000>;
+ 			};
+ 
+ 			frame@17823000 {
+ 				frame-number = <1>;
+-				interrupts = <GIC_SPI 8 0x4>;
++				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17823000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17824000 {
+ 				frame-number = <2>;
+-				interrupts = <GIC_SPI 9 0x4>;
++				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17824000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17825000 {
+ 				frame-number = <3>;
+-				interrupts = <GIC_SPI 10 0x4>;
++				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17825000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17826000 {
+ 				frame-number = <4>;
+-				interrupts = <GIC_SPI 11 0x4>;
++				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17826000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17827000 {
+ 				frame-number = <5>;
+-				interrupts = <GIC_SPI 12 0x4>;
++				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17827000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17828000 {
+ 				frame-number = <6>;
+-				interrupts = <GIC_SPI 13 0x4>;
++				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17828000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17829000 {
+ 				frame-number = <7>;
+-				interrupts = <GIC_SPI 14 0x4>;
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17829000 0x1000>;
+ 				status = "disabled";
+ 			};
+diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
+index 1a3583029a64..8fff67d7a5e9 100644
+--- a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
+@@ -665,57 +665,57 @@ timer@17820000 {
+ 
+ 			frame@17821000 {
+ 				frame-number = <0>;
+-				interrupts = <GIC_SPI 7 0x4>,
+-					     <GIC_SPI 6 0x4>;
++				interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17821000 0x1000>,
+ 				      <0x17822000 0x1000>;
+ 			};
+ 
+ 			frame@17823000 {
+ 				frame-number = <1>;
+-				interrupts = <GIC_SPI 8 0x4>;
++				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17823000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17824000 {
+ 				frame-number = <2>;
+-				interrupts = <GIC_SPI 9 0x4>;
++				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17824000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17825000 {
+ 				frame-number = <3>;
+-				interrupts = <GIC_SPI 10 0x4>;
++				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17825000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17826000 {
+ 				frame-number = <4>;
+-				interrupts = <GIC_SPI 11 0x4>;
++				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17826000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17827000 {
+ 				frame-number = <5>;
+-				interrupts = <GIC_SPI 12 0x4>;
++				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17827000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17828000 {
+ 				frame-number = <6>;
+-				interrupts = <GIC_SPI 13 0x4>;
++				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17828000 0x1000>;
+ 				status = "disabled";
+ 			};
+ 
+ 			frame@17829000 {
+ 				frame-number = <7>;
+-				interrupts = <GIC_SPI 14 0x4>;
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+ 				reg = <0x17829000 0x1000>;
+ 				status = "disabled";
+ 			};
+@@ -802,10 +802,10 @@ apps_bcm_voter: bcm-voter {
+ 
+ 	timer {
+ 		compatible = "arm,armv7-timer";
+-		interrupts = <1 13 0xf08>,
+-			<1 12 0xf08>,
+-			<1 10 0xf08>,
+-			<1 11 0xf08>;
++		interrupts = <GIC_PPI 13 0xf08>,
++			     <GIC_PPI 12 0xf08>,
++			     <GIC_PPI 10 0xf08>,
++			     <GIC_PPI 11 0xf08>;
+ 		clock-frequency = <19200000>;
+ 	};
+ };
+-- 
+2.34.1
+
