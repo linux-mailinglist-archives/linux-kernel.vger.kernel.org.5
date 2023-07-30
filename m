@@ -2,83 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB2B7684B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 11:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC5F7684BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 12:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbjG3JrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 05:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S229875AbjG3KFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 06:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjG3JrQ (ORCPT
+        with ESMTP id S229468AbjG3KFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 05:47:16 -0400
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FDF19A;
-        Sun, 30 Jul 2023 02:47:15 -0700 (PDT)
-Received: from [192.168.0.2] (ip5f5ae955.dynamic.kabel-deutschland.de [95.90.233.85])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+        Sun, 30 Jul 2023 06:05:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0477B1987;
+        Sun, 30 Jul 2023 03:05:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id F3C7D61E5FE01;
-        Sun, 30 Jul 2023 11:46:24 +0200 (CEST)
-Message-ID: <f21e34ca-72ad-26b5-fac4-fd71180719a2@molgen.mpg.de>
-Date:   Sun, 30 Jul 2023 11:46:24 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 85713606A0;
+        Sun, 30 Jul 2023 10:05:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08A7DC433C8;
+        Sun, 30 Jul 2023 10:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690711516;
+        bh=uOCk5v0cyP6RW8hFIA0Q6PFQ6s4G0QrkYFOB5/6POr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LT4eAcY5XhRvLvdH93Bkd5xsfSPDiJfQnzf9cooDdJS2UZrjbmdXzh8IM/nwLTwVf
+         Pth60zkM5VDPFPix/oU8BWI5VwSl/vygiOJQ8ErThM8XbW68EPCkIaPRaiA7HM2+cm
+         34MXibtCvfsIX8QkZ8MyR3G1v5TiDmIFFEMvTjLDx3rZdNC3QFyKeMfLR5SHR75rjQ
+         QU51C+uZNpZOfphoWMfTrsyzfjSmmW0XtgypvYQFqnURcG7u3UA5xHiOdGp45+EmfR
+         W0drXq5jQ1u773SJC1orh9Qcy10urhzPN4tMNe1RyrBOBlzoHJUrr5I4WKEtok/1Gz
+         wzwsQgU8m/aMA==
+Date:   Sun, 30 Jul 2023 11:05:12 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: power: supply: Add pm8916 VM-BMS
+Message-ID: <20230730-clustered-untidy-e943b4a65d71@spud>
+References: <20230728-pm8916-bms-lbc-v1-0-56da32467487@trvn.ru>
+ <20230728-pm8916-bms-lbc-v1-1-56da32467487@trvn.ru>
+ <20230729-facecloth-trembling-3311ca245505@spud>
+ <25e933dc3f28fd73a9b76f172dacfdb2@trvn.ru>
+ <20230729-splatter-garland-495a414c323e@spud>
+ <0b41a93ee82674e65a3801f5a37edd5a@trvn.ru>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] md: fix potential OOB in multipath_remove_disk()
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>,
-        Zhang Shurong <zhang_shurong@foxmail.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <tencent_E2C71605D88087940237AA9A44CC8D436D06@qq.com>
- <ZK7Zy2U86znezl+a@infradead.org>
- <tencent_0EDE0D522DF8161358B80786820BAAA5C406@qq.com>
- <CAPhsuW54pW7As-A1G4H+OWALUh7_a5+-zkLXghTh6_JjcWZoMQ@mail.gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CAPhsuW54pW7As-A1G4H+OWALUh7_a5+-zkLXghTh6_JjcWZoMQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jEPzFvG+l0KcHHNb"
+Content-Disposition: inline
+In-Reply-To: <0b41a93ee82674e65a3801f5a37edd5a@trvn.ru>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Song, Zhang and Christoph,
 
+--jEPzFvG+l0KcHHNb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Am 29.07.23 um 12:46 schrieb Song Liu:
-> On Sat, Jul 15, 2023 at 5:45 PM Zhang Shurong wrote:
->>
->> 在 2023年7月13日星期四 CST 上午12:50:19，Christoph Hellwig 写道：
->>> On Thu, Jul 13, 2023 at 12:46:05AM +0800, Zhang Shurong wrote:
->>>> If rddev->raid_disk is greater than mddev->raid_disks, there will be
->>>> an out-of-bounds in multipath_remove_disk. We have already found
->>>> similar reports as follows:
->>>>
->>>> 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
->>>> 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
->>>>
->>>> Fix this bug by checking whether the "number" variable is
->>>> valid.
->>>
->>> I think it might just be time to finally dropped the deprecated md
->>> multipath code instead..
->> Should I write another patch to delete them?
-> 
-> Yes, please write a patch to delete the multipath code.
+On Sat, Jul 29, 2023 at 05:15:06PM +0500, Nikita Travkin wrote:
+> Conor Dooley =D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0) 29.07.2023 17:10:
+> > On Sat, Jul 29, 2023 at 05:06:14PM +0500, Nikita Travkin wrote:
+> >> Conor Dooley =D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0) 29.07.2023 15:03:
+> >> > On Fri, Jul 28, 2023 at 10:19:30PM +0500, Nikita Travkin wrote:
+> >=20
+> >> >> +  interrupt-names:
+> >> >> +    items:
+> >> >> +      - const: fifo
+> >> >
+> >> > Same here, but do you really need a name, when you have only one
+> >> > interrupt?
+> >> >
+> >>
+> >> Hm, thinking of this more, the hardware actually has more than one
+> >> interrupt, even though this one seems to be the only really useful
+> >> one. Would a better way forward be to list all of them
+> >=20
+> > Yes.
+> >=20
+> >> (and fix
+> >> the driver to get the value by it's name)
+> >=20
+> > It's not a fix to do that, the order of the interrupts is not variable,
+> > so there's nothing wrong with using the indices. You can do it if you
+> > like.
+> >=20
+> >> or it would be
+> >> acceptable to leave the names here and extend the list at a later
+> >> date when (if ever) other interrupts are needed?
+> >=20
+> > If you know what they are, please describe them now, even if the driver
+> > does not use them (yet).
+> >=20
+>=20
+> Thanks for the clarification! Will make sure both drivers have all
+> interrupts described in v2
 
-How would fixing this bug work with the stable series? Probably a 
-removal patch wouldn’t be picked, right? Shouldn’t the fix be accepted 
-in master, and then the code be removed?
+Note that bindings describe hardware, not the driver. The driver need
+not touch the other interrupts if it does not use them, but make the
+hardware description (IOW the dt-binding) accurate & as complete as you
+can.
 
+Thanks,
+Conor.
 
-Kind regards,
+--jEPzFvG+l0KcHHNb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Paul
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMY10wAKCRB4tDGHoIJi
+0hbHAP0XUtnKtw/UNbikUvhnQxyenApvfmv5T5vsTNrJ2nJQBAD+N70WAQYlMFim
+l0UKWHTL0bMfQZOTyejhQCMs7tlq1AA=
+=T3/R
+-----END PGP SIGNATURE-----
+
+--jEPzFvG+l0KcHHNb--
