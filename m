@@ -2,234 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596307686A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF677686A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjG3RUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 13:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
+        id S229664AbjG3RWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 13:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3RUE (ORCPT
+        with ESMTP id S229449AbjG3RWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:20:04 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CBE10C4
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:20:03 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qQA5J-00029v-8i; Sun, 30 Jul 2023 19:20:01 +0200
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-07-30]
-Date:   Sun, 30 Jul 2023 17:20:00 +0000
-Message-Id: <169073747103.4140879.6035275932676410922@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 30 Jul 2023 13:22:48 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F71102;
+        Sun, 30 Jul 2023 10:22:47 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so37234371fa.2;
+        Sun, 30 Jul 2023 10:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690737765; x=1691342565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fAAPafUCJ2pRxW/N+9tfq47Lu1Ww0WCELCCpvql1l10=;
+        b=X4ZRseiDdqSGT748A2Sh2ob4JEtxR+TXGzikjntpXqxg/eTWkuN2OpOufJuBisxR+N
+         56U//CGBUZ+peAz10Kn4GfCCtgWYI8DvY5Fuw46CW0GDm7/arTaWWYjTxRzqjduX9bdH
+         YI+qkVZ9XWCK6CCBiauz3z8US0G1sVuL7Gml0fv49JJTDyiAFHra5pqzj+nwFO1vT7iE
+         bew3AtjOmuqAWGGZCnNiSo+kfYRWwwbkjaUM6Q8D/V77ZKt03rkyFVxbhQV5z5qDMdQN
+         rvHHOJbWSoq29Pcs2hNPOHKJuOa3t6I2gUdOHHeyiKoGEehOTLo6QYAoQBkFKrVOpwms
+         DrgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690737765; x=1691342565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fAAPafUCJ2pRxW/N+9tfq47Lu1Ww0WCELCCpvql1l10=;
+        b=kAeEg3xwIqUyu6U6lHLjHWFfuq3+Mn0FmWAzlNnqeihfPQoA7H4lxuqpoUA11q5nMT
+         6MD7fS1lFKg59u+SYe82JyfynfFVHOsYYeJhDsU2swdgzNBV6yCfrrF9JspA4EZFyyZ+
+         5nLgoHq0xiYzZ7noWY+Pu6nX16bJStVtNUzBo4K1Uv4csAhA8uUM4hWlvdx5mBmeZ0L8
+         SGfwVBAA+e6FdzbTkhrn86QktmWHAXPFVOWI/Pa3+tgBgxhduwRE4483cKxhv7X+XQAr
+         XZYMA5G2OhSJDt01DNsdy1EHLvDvrf4xQnJ4p6aRtSj45OcvDPIbyVCnd516RNslQHAd
+         asxg==
+X-Gm-Message-State: ABy/qLZjn+MRg8YEX3pQCuRO9FXOY9pmDEgR2P0bq8QcDuscBWmzzEdB
+        z0CS265XN2eHp2D1EudkNkKhFGoHm+dI5m/VaqI=
+X-Google-Smtp-Source: APBJJlHzg61K1OIAwJKyO/9lLNYZJk5c0zWM1z7XNOG2nQScIrV0w8Fo2IT0+SzCZT/XDWrVux3ZdkzbUZH3qwDyJcI=
+X-Received: by 2002:a2e:7c0a:0:b0:2b9:cc8e:8729 with SMTP id
+ x10-20020a2e7c0a000000b002b9cc8e8729mr4709350ljc.26.1690737765193; Sun, 30
+ Jul 2023 10:22:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690737603;c7b38a74;
-X-HE-SMSGID: 1qQA5J-00029v-8i
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net> <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+In-Reply-To: <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Sun, 30 Jul 2023 19:22:34 +0200
+Message-ID: <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        catalin.marinas@arm.com, bpf@vger.kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. Nothing much to report from by side: everything looks like
-business as usual currently. 
+Hi Mark,
+I am really looking forward to your feedback on this series.
 
-One thing you might be interested in: seems the Ryzen keyboard problems
-that a9c4a912b7d ("ACPI: resource: Remove "Zen" specific match and
-quirks") [v6.5-rc1] was supposed to fix once and for all kinda came
-back, as the new approach apparently still doesn't work on all machines:
-
-https://lore.kernel.org/lkml/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
-https://bugzilla.kernel.org/show_bug.cgi?id=217726 (not confirmed yet)
-
-Seems we yet again need quirks:
-https://lore.kernel.org/all/79ee5522-3f3e-3480-dfb2-0c7640a97587@amd.com/
-
-:-/
-
-Ciao, Thorsten
-
----
-
-Hi, this is regzbot, the Linux kernel regression tracking bot.
-
-Currently I'm aware of 10 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
-
-
-======================================================
-current cycle (v6.4.. aka v6.5-rc), culprit identified
-======================================================
-
-
-PCI: acpiphp: Oops on first attempt to suspend, freeze on second
-----------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
-https://lore.kernel.org/lkml/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
-
-By Woody Suwalski; 10 days ago; 23 activities, latest 0 days ago.
-Introduced in 40613da52b13 (v6.5-rc1)
-
-Fix incoming:
-* Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
-  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=b607aa1edc9ca2ff16ae29c48e3e4090fae8aeab
-
-
-[ *NEW* ] IRQ override revert breaks keyboard on Lenovo Yoga 7 14ARB7
----------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
-https://lore.kernel.org/lkml/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
-
-By August Wikerfors; 3 days ago; 7 activities, latest 1 days ago.
-Introduced in a9c4a912b7dc (v6.5-rc1)
-
-Fix incoming:
-* ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
-  https://lore.kernel.org/all/79ee5522-3f3e-3480-dfb2-0c7640a97587@amd.com/
+On Mon, Jul 17, 2023 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> Hi Mark,
+>
+> On Mon, Jul 3, 2023 at 7:15=E2=80=AFPM Mark Rutland <mark.rutland@arm.com=
+> wrote:
+> >
+> > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
+> > > Hi Mark,
+> >
+> > Hi Daniel,
+> >
+> > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
+> > > > BPF programs currently consume a page each on ARM64. For systems wi=
+th many BPF
+> > > > programs, this adds significant pressure to instruction TLB. High i=
+TLB pressure
+> > > > usually causes slow down for the whole system.
+> > > >
+> > > > Song Liu introduced the BPF prog pack allocator[1] to mitigate the =
+above issue.
+> > > > It packs multiple BPF programs into a single huge page. It is curre=
+ntly only
+> > > > enabled for the x86_64 BPF JIT.
+> > > >
+> > > > This patch series enables the BPF prog pack allocator for the ARM64=
+ BPF JIT.
+> >
+> > > If you get a chance to take another look at the v4 changes from Puran=
+jay and
+> > > in case they look good to you reply with an Ack, that would be great.
+> >
+> > Sure -- this is on my queue of things to look at; it might just take me=
+ a few
+> > days to get the time to give this a proper look.
+> >
+> > Thanks,
+> > Mark.
+>
+> I am eagerly looking forward to your feedback on this series.
+>
+> Thanks,
+> Puranjay
 
 
-drm: amdgpu: HW acceleration broke on ThinkPad E595
----------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
-https://lore.kernel.org/amd-gfx/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
-
-By Michel Dänzer; 13 days ago; 12 activities, latest 1 days ago.
-Introduced in 84b4dd3f84d (v6.5-rc1)
-
-Recent activities from: Michel Dänzer (4), Alex Deucher (2), Zhang,
-  Jesse(Jie) (2)
-
-2 patch postings are associated with this regression, the latest is this:
-* RE: [PATCH 28/29] drm/amdkfd: Refactor migrate init to support partition switch
-  https://lore.kernel.org/amd-gfx/DM4PR12MB5152E173B970C3974F071E76E306A@DM4PR12MB5152.namprd12.prod.outlook.com/
-  2 days ago, by Zhang, Jesse(Jie)
-
-
-net: phylink: mv88e6060 dsa driver broken
------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CABikg9wM0f5cjYY0EV_i3cMT2JcUT1bSe_kkiYk0wFwMrTo8=w@mail.gmail.com/
-https://lore.kernel.org/netdev/CABikg9wM0f5cjYY0EV_i3cMT2JcUT1bSe_kkiYk0wFwMrTo8=w@mail.gmail.com/
-
-By Sergei Antonov; 26 days ago; 17 activities, latest 2 days ago.
-Introduced in de5c9bf40c45 (v6.5-rc1)
-
-Fix incoming:
-* https://lore.kernel.org/netdev/3ef4662e-7888-9f41-32a3-d4cd07f1572c@leemhuis.info/
-
-
-kernel pointer dereference regression due to extract_iter_to_sg()
------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-
-By Ondrej Mosnáček; 17 days ago; 8 activities, latest 3 days ago.
-Introduced in c1abe6f570af (v6.5-rc1)
-
-Recent activities from: David Howells (3), Sven Schnelle (2), Linux
-  regression tracking (Thorsten Leemhuis) (1)
-
-One patch associated with this regression:
-* [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
-  https://lore.kernel.org/lkml/97730.1690408399@warthog.procyon.org.uk/
-  3 days ago, by David Howells
-
-
-drm/bridge: lt9611: Dragonboard 845c (SDM845) devboard broken when running AOSP
--------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-https://lore.kernel.org/dri-devel/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-
-By Amit Pundir; 25 days ago; 20 activities, latest 16 days ago; poked 4 days ago.
-Introduced in 8ddce13ae69 (v6.5-rc1)
-
-
-===================================================
-current cycle (v6.4.. aka v6.5-rc), unknown culprit
-===================================================
-
-
-[ *NEW* ] ASUE140D:00 04F3:31B9 doesn't respond to input
---------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217726/
-https://bugzilla.kernel.org/show_bug.cgi?id=217726
-https://lore.kernel.org/lkml/bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com/
-
-By Guilhem Lettron and Guilhem Lettron; 1 days ago; 2 activities, latest 0 days ago.
-Introduced in v6.4..v6.5-rc1
-
-Recent activities from: Bagas Sanjaya (1), Guilhem Lettron (1)
-
-
-mm/page_alloc.c:4453 with cfg80211_wiphy_work [cfg80211]
---------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217675/
-https://bugzilla.kernel.org/show_bug.cgi?id=217675
-https://lore.kernel.org/lkml/51e53417-cfad-542c-54ee-0fb9e26c4a38@gmail.com/
-
-By rudi and rudi; 14 days ago; 9 activities, latest 3 days ago.
-Introduced in v6.5-rc1..831fe284d827 (v6.5-rc1..v6.5-rc2)
-
-Fix incoming:
-* wifi: cfg80211: Fix return value in scan logic
-  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=fd7f08d92fcd7cc3eca0dd6c853f722a4c6176df
-
-
-mm/vmalloc: NULL or otherwise bad pointer dereferences on ARM64
----------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
-https://lore.kernel.org/lkml/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
-
-By Mark Brown; 20 days ago; 10 activities, latest 10 days ago.
-Introduced in v6.4..v6.5-rc1
-
-One patch associated with this regression:
-* Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use pte_offset_kernel()
-  https://lore.kernel.org/lkml/b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com/
-  19 days ago, by Hugh Dickins
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169013434330.3594767.429224047854988999@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+Thanks,
+Puranjay
