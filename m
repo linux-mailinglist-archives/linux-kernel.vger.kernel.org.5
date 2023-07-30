@@ -2,195 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B9476894A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 01:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB0076894C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 01:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjG3Xhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 19:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        id S229509AbjG3Xsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 19:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3Xhb (ORCPT
+        with ESMTP id S229459AbjG3Xst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 19:37:31 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935EDE7C;
-        Sun, 30 Jul 2023 16:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690760247;
-        bh=mm6RxOwGfiU74ywzZ1i3ynNKnObG5WZOWaIhzscxZTE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rlGB8IBZAIw7rS6mwxOmPu2H3XN6sIG5y9/egkkDypKlueOEzuZXaXFIitixoBxQ0
-         dkIE3eU2d/S6ySwKJc2fSlA/Kl7wHW12FK8X9L2SEnipkdlTnoO4Y7KPmchyXLYPzE
-         2LHUMWTeT42L3RjMuBSj/6xWnW1PlmlHbGTN6JaksdnGqfY7ltxu3ncMwJqRg1Lciw
-         mIrhuFpv0elH3a+BTRFFYn1uN5YQgzw5BQApL8DOo9kWOKGZNS7eo5X25nbKjkj6GE
-         P8a0zKrQ4SayPDufjKfuHQD6EVtbv/YT1inF4bP7YXz6UOl7LP/Y78c2tHD0v5YFpT
-         RqfOazTKaNtKQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RDd8724Zrz4wbv;
-        Mon, 31 Jul 2023 09:37:27 +1000 (AEST)
-Date:   Mon, 31 Jul 2023 09:37:24 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Anastasia Eskova <anastasia.eskova@ibm.com>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Eric DeVolder <eric.devolder@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: linux-next: manual merge of the s390 tree with the mm tree
-Message-ID: <20230731093724.1c75858d@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vjBWBHUZn9SzQEm.9tRgpLH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 30 Jul 2023 19:48:49 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA9F10C1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 16:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690760928; x=1722296928;
+  h=date:from:to:cc:subject:message-id;
+  bh=yeZFBpa5qECCIffI037Tf0cHoqLcqd6jW2G1zTuoTis=;
+  b=Lj9gkKH4Id+GFwaq9uKrxhx9LSXVFwSBt5F5RxsYoIY8JDN+TBjYOnKo
+   AdhI/nsN78PVgnLeatQeGqh8RrvltAOQ8yOTxjSdPVKaBdBncqLVT1cE7
+   ZVTqL1nJ7U5VYeFzW4N7M2Jb4Q8iOWx9yXtiDQRfEGISCXe/azHgnf/zU
+   fXzeIwKAV0nNXdZpFICxfkDbhzTJW4EfH6BPOkD7EYof4updt5XmJkmcV
+   M1M2iUXa+k+B86wMuNxyCmGvR+0QNjXE4fkHjOunLQqT2GIfM9FreRO0S
+   fO9R1AYqqOdq4ZoK1KzYjMydVx5YdLkOshHAQR0xC/a6uxc2h+3kU/1sq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="368896288"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="368896288"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 16:48:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="678125919"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="678125919"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 30 Jul 2023 16:48:46 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQG9W-0004pb-0S;
+        Sun, 30 Jul 2023 23:48:46 +0000
+Date:   Mon, 31 Jul 2023 07:48:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ a48c5d5d98224135415f2bd0f764ae2ddafbe7c9
+Message-ID: <202307310743.lopeRvcI-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vjBWBHUZn9SzQEm.9tRgpLH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: a48c5d5d98224135415f2bd0f764ae2ddafbe7c9  Merge branch into tip/master: 'x86/mm'
 
-Hi all,
+elapsed time: 724m
 
-Today's linux-next merge of the s390 tree got a conflict in:
+configs tested: 107
+configs skipped: 4
 
-  arch/s390/Kconfig
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-between commits:
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r031-20230730   gcc  
+alpha                randconfig-r034-20230730   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r033-20230730   gcc  
+arc                  randconfig-r043-20230730   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r016-20230730   clang
+arm                  randconfig-r046-20230730   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230730   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r011-20230730   clang
+hexagon              randconfig-r036-20230730   clang
+hexagon              randconfig-r041-20230730   clang
+hexagon              randconfig-r045-20230730   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230730   clang
+i386         buildonly-randconfig-r005-20230730   clang
+i386         buildonly-randconfig-r006-20230730   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230730   clang
+i386                 randconfig-i002-20230730   clang
+i386                 randconfig-i003-20230730   clang
+i386                 randconfig-i004-20230730   clang
+i386                 randconfig-i005-20230730   clang
+i386                 randconfig-i006-20230730   clang
+i386                 randconfig-i011-20230730   gcc  
+i386                 randconfig-i012-20230730   gcc  
+i386                 randconfig-i013-20230730   gcc  
+i386                 randconfig-i014-20230730   gcc  
+i386                 randconfig-i015-20230730   gcc  
+i386                 randconfig-i016-20230730   gcc  
+i386                 randconfig-r024-20230730   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r006-20230730   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r015-20230730   clang
+mips                 randconfig-r025-20230730   clang
+mips                 randconfig-r032-20230730   gcc  
+nios2                               defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r026-20230730   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r012-20230730   gcc  
+powerpc              randconfig-r022-20230730   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r042-20230730   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230730   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r005-20230730   gcc  
+sh                   randconfig-r035-20230730   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r014-20230730   gcc  
+sparc                randconfig-r021-20230730   gcc  
+sparc64              randconfig-r001-20230730   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r002-20230730   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230730   clang
+x86_64       buildonly-randconfig-r002-20230730   clang
+x86_64       buildonly-randconfig-r003-20230730   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r023-20230730   gcc  
+x86_64               randconfig-x001-20230730   gcc  
+x86_64               randconfig-x002-20230730   gcc  
+x86_64               randconfig-x003-20230730   gcc  
+x86_64               randconfig-x004-20230730   gcc  
+x86_64               randconfig-x005-20230730   gcc  
+x86_64               randconfig-x006-20230730   gcc  
+x86_64               randconfig-x011-20230730   clang
+x86_64               randconfig-x012-20230730   clang
+x86_64               randconfig-x013-20230730   clang
+x86_64               randconfig-x014-20230730   clang
+x86_64               randconfig-x015-20230730   clang
+x86_64               randconfig-x016-20230730   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-  e86a64d19d20 ("s390/kexec: refactor for kernel/Kconfig.kexec")
-  54d5daef8143 ("kexec: rename ARCH_HAS_KEXEC_PURGATORY")
-
-from the mm tree and commits:
-
-  8cf57d7217c3 ("s390: add support for user-defined certificates")
-  37002bc6b603 ("docs: move s390 under arch")
-  b90a64caf844 ("s390/cert_store: select CRYPTO_LIB_SHA256")
-
-from the s390 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/s390/Kconfig
-index 42c98931de2c,18bf754e1fad..000000000000
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@@ -246,28 -245,6 +247,28 @@@ config PGTABLE_LEVEL
- =20
-  source "kernel/livepatch/Kconfig"
- =20
- +config ARCH_DEFAULT_KEXEC
- +	def_bool y
- +
- +config ARCH_SUPPORTS_KEXEC
- +	def_bool y
- +
- +config ARCH_SUPPORTS_KEXEC_FILE
- +	def_bool CRYPTO && CRYPTO_SHA256 && CRYPTO_SHA256_S390
- +
- +config ARCH_SUPPORTS_KEXEC_SIG
- +	def_bool MODULE_SIG_FORMAT
- +
- +config ARCH_SUPPORTS_KEXEC_PURGATORY
- +	def_bool KEXEC_FILE
- +
- +config ARCH_SUPPORTS_CRASH_DUMP
- +	def_bool y
- +	help
-- 	  Refer to <file:Documentation/s390/zfcpdump.rst> for more details on th=
-is.
-++	  Refer to <file:Documentation/arch/s390/zfcpdump.rst> for more details =
-on this.
- +	  This option also enables s390 zfcpdump.
-- 	  See also <file:Documentation/s390/zfcpdump.rst>
-++	  See also <file:Documentation/arch/s390/zfcpdump.rst>
- +
-  menu "Processor type and features"
- =20
-  config HAVE_MARCH_Z10_FEATURES
-@@@ -506,6 -483,47 +507,17 @@@ config SCHED_TOPOLOG
- =20
-  source "kernel/Kconfig.hz"
- =20
- -config KEXEC
- -	def_bool y
- -	select KEXEC_CORE
- -
- -config KEXEC_FILE
- -	bool "kexec file based system call"
- -	select KEXEC_CORE
- -	depends on CRYPTO
- -	depends on CRYPTO_SHA256
- -	depends on CRYPTO_SHA256_S390
- -	help
- -	  Enable the kexec file based system call. In contrast to the normal
- -	  kexec system call this system call takes file descriptors for the
- -	  kernel and initramfs as arguments.
- -
- -config ARCH_HAS_KEXEC_PURGATORY
- -	def_bool y
- -	depends on KEXEC_FILE
- -
- -config KEXEC_SIG
- -	bool "Verify kernel signature during kexec_file_load() syscall"
- -	depends on KEXEC_FILE && MODULE_SIG_FORMAT
- -	help
- -	  This option makes kernel signature verification mandatory for
- -	  the kexec_file_load() syscall.
- -
- -	  In addition to that option, you need to enable signature
- -	  verification for the corresponding kernel image type being
- -	  loaded in order for this to work.
- -
-+ config CERT_STORE
-+ 	bool "Get user certificates via DIAG320"
-+ 	depends on KEYS
-+ 	select CRYPTO_LIB_SHA256
-+ 	help
-+ 	  Enable this option if you want to access user-provided secure boot
-+ 	  certificates via DIAG 0x320.
-+=20
-+ 	  These certificates will be made available via the keyring named
-+ 	  'cert_store'.
-+=20
-  config KERNEL_NOBP
-  	def_bool n
-  	prompt "Enable modified branch prediction for the kernel by default"
-
---Sig_/vjBWBHUZn9SzQEm.9tRgpLH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTG9DQACgkQAVBC80lX
-0Gxgpwf/XOvFaXEfeeAij5RL2JQuTdXbqzDqNo3SN6E2B4NO3J9I4g6S4RrDRhpx
-GdCLBIgTlooD0wNb8vnKXCtuTmK1B1STZXp/oywjH1TOeRFvAvd5ABf0F/VP8xGB
-jLKz4o6ohII9SRkXyjzCUUgYcUeRnsHsgajLjPEUWpXg3ax/DwxttkjNUY5PzlDU
-aKi5yHTowFqIDuPbE9eUVnK4JGLSGNrwSSWrJRqvp3yEbnfhjrsxMLfzQrUQn07D
-YlDXv3XxfyRjah+TcVqYn8E4O1etkcvobWRS81ii+oHzMpFGL2wTzp588TUkxD3m
-XeJd5NemYtKWVYG4O6KC0xoJp3Kbrg==
-=xMss
------END PGP SIGNATURE-----
-
---Sig_/vjBWBHUZn9SzQEm.9tRgpLH--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
