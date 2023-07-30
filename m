@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF227686E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AE37686E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229851AbjG3RuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 13:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S229842AbjG3RuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 13:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjG3RuB (ORCPT
+        with ESMTP id S229505AbjG3RuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:50:01 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5481721
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:49:58 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9923833737eso549244366b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:49:58 -0700 (PDT)
+        Sun, 30 Jul 2023 13:50:02 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD671705
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:50:00 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdf08860dso671237666b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:50:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690739397; x=1691344197;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=87/hc2oBNjx7AA5ml7v6DGG7KmXPNmXMrKuNLd+Cam8=;
-        b=KoV2A2S2VXihDWH28FFjmqkUNx/7SLTAOrGQ9wnBcM/91bkK7BGhEUgOU3A4YRpAHu
-         dJHmJ+Y2wCvhqHn/GFCq7xOaRBaQdqwBh1FV9dn2tpiCptiSA23cENGKBHI50c7j42c8
-         zHDoYmWAkI6fvZBhdFAWZAeT9MB1s63jqNcp1YCX0fPeHJ1mZz06G6JVrVgAn8LylstE
-         kGitWH3MJv6EO+FgkC2GiJJpfsAP2jMvCMLrSHYJMXnGeO84O4A67jJquVk7Mj5xc2Yg
-         MpWuz0Tzd/qdZIsNHAWWVvdaMvc0xwoKF6vBjW6ijQ3P3rQ5caw9gZQ9JKV6E3jr1HdK
-         cSJw==
+        d=linaro.org; s=google; t=1690739399; x=1691344199;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qguXrs4rxGcbuCHOHcNCgApPSjMlmrZgyKpyWeupbD8=;
+        b=zws/0VbtnpKpRF1lvbRBleJfUuecSrRxeRow4xtk/RAhRpnPpBiQgL0ZB2jkQGa3ME
+         q/uI/ieAfQtCb/qRnKjGNHMuBTDsI1qBqjq4icaRGik4u7SnjlqfTpGFSZpYLqHw4Opq
+         NCYDuuEtQMcqls9LzdQpfabnaDMhZ7vyaYlRUy9npcR2Q1xL+0teS19kW8Ii7q5Q+PUV
+         qdboRTgqROPfnTE/usxiSYsr6nHF7n7Y14SxbojW4+lUMWZLuNccXVtwv7HTnzOEHUpP
+         DRY9Vm64cIzYTDKsCG+Nka6uFReGNCL02AMNNsmXL6f9AbBSL/d6OAaDYKoBwg0TXhCW
+         7TuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690739397; x=1691344197;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=87/hc2oBNjx7AA5ml7v6DGG7KmXPNmXMrKuNLd+Cam8=;
-        b=BFUchv/kRVO8aLr7S6yeHpzrfbdMSJ9gauFVSsj9NN5Cc0PdZenhjk4sqWJyPpP/mE
-         c6qeDXJYoaO3A2sXqRWBuT0seFG/qRMgWk9bstDCe3z2PVl0JHrPnRGSlnWA4QODuaqb
-         oCm67HFyBZTU84rFNWpiZgmMyVpwnyjJQ0yFMKLduPl9eXxO/y9gQ+CudXh15ixp3vKZ
-         4rwVCt3pSKd+9DCnG6CcJ9Veaj/t38BGr6cs+KjxQSiLN/hjEEnKvZfRd8sB4+nSCSUG
-         F6BA6qEtsuAzmtNeCUPWv6Br83qr7F0EfbPso0tDyV+pgT5M3Yu0t5sfS96U3I75j7gb
-         chDg==
-X-Gm-Message-State: ABy/qLagw+a7/JDmm29Zx9H1n0whmGE8cGEGetNv2xxU1eriKyRv6wFJ
-        NNwcnl4y6/V33PCY0RAFsGQYog==
-X-Google-Smtp-Source: APBJJlG9GR8kO2Ji9RE+Ttxw2a12BgviIbh3tv8s6bTvtxdn1bX+lNclOz8m8RLw+QWanNdxGK79MA==
-X-Received: by 2002:a17:906:7791:b0:994:34a2:8727 with SMTP id s17-20020a170906779100b0099434a28727mr5204356ejm.41.1690739397336;
-        Sun, 30 Jul 2023 10:49:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690739399; x=1691344199;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qguXrs4rxGcbuCHOHcNCgApPSjMlmrZgyKpyWeupbD8=;
+        b=WPz2p6gxL/jszPLkRhL0GPq90IRW3QLKMnF5Aq8nRtsgsMRjH/46THfAu9KT7k0X7+
+         hPrfe3PkGA3PYP3I1+3ZC8Dsx0QQIZ5d4BmblTeto5cMp9/IMvf8O6xORxhctQNdEkQy
+         sOL9TpN7OEyhxl1KF6C8HYYtUfc7QerfIq/DgL+scZwnGbALen+qOsMzK7a1/gNMLmkg
+         JcmN21tVPJwXm/XfT0AKzeGVWEhGjeQeFQGj2udeKu+d76MS/rxhjupv+hiM2xsl1c0l
+         hwqLwqfgIDPSvU4tllpVNEwYt2kGo5IaJGfwkWbAhrNbxC8FKhVOpUUXxlMoJDuzTb+u
+         dlVw==
+X-Gm-Message-State: ABy/qLbB7oTglRD7+huFGeR7nYWgnlbtm7CxOf8a/+EIdRhBzAyJfePT
+        ZltL6dY4VKXQnjPgbx4YzRmnZw==
+X-Google-Smtp-Source: APBJJlGYOCXtkkxRgf9ch6URmqY64GItVtmscencCEMZ8NP0GlBTZlArsL8PgKSu5kTgES1Dkua/UA==
+X-Received: by 2002:a17:907:961c:b0:99b:af5a:fc2c with SMTP id gb28-20020a170907961c00b0099baf5afc2cmr6119843ejc.26.1690739399106;
+        Sun, 30 Jul 2023 10:49:59 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id f19-20020a170906495300b00992c4103cb5sm4913537ejt.129.2023.07.30.10.49.55
+        by smtp.gmail.com with ESMTPSA id f19-20020a170906495300b00992c4103cb5sm4913537ejt.129.2023.07.30.10.49.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 10:49:57 -0700 (PDT)
+        Sun, 30 Jul 2023 10:49:58 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -61,10 +62,12 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
         linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 1/4] ARM: dts: st: stm32mp157c-emstamp: drop incorrect vref_ddr property
-Date:   Sun, 30 Jul 2023 19:49:51 +0200
-Message-Id: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 2/4] ARM: dts: st: stm32mp157c-emstamp: correct regulator-active-discharge
+Date:   Sun, 30 Jul 2023 19:49:52 +0200
+Message-Id: <20230730174954.5293-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
+References: <20230730174954.5293-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,10 +80,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The STPMIC1 PMIC vref_ddr regulator does not support over-current
-protection, according to bindings and Linux driver:
+The "regulator-active-discharge" property is uint32, not boolean:
 
-  stm32mp157c-emsbc-argon.dtb: stpmic@33: regulators:vref_ddr: 'regulator-over-current-protection' does not match any of the regexes: 'pinctrl-[0-9]+'
+  stm32mp157c-emsbc-argon.dtb: stpmic@33: regulators:pwr_sw1:regulator-active-discharge: True is not of type 'array'
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
@@ -89,21 +91,22 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Changes in v2:
 1. None
 ---
- arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi b/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
-index fd89542c69c9..f8e9980ed3d4 100644
+index f8e9980ed3d4..009209ca673b 100644
 --- a/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
 +++ b/arch/arm/boot/dts/st/stm32mp157c-emstamp-argon.dtsi
-@@ -310,7 +310,6 @@ vdda: ldo6 {
- 			vref_ddr: vref_ddr {
- 				regulator-name = "vref_ddr";
- 				regulator-always-on;
--				regulator-over-current-protection;
+@@ -320,7 +320,7 @@ bst_out: boost {
+ 			vbus_otg: pwr_sw1 {
+ 				regulator-name = "vbus_otg";
+ 				interrupts = <IT_OCP_OTG 0>;
+-				regulator-active-discharge;
++				regulator-active-discharge = <1>;
  			};
  
- 			bst_out: boost {
+ 			vbus_usbh: pwr_sw2 {
 -- 
 2.34.1
 
