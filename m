@@ -2,74 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AD1768513
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E398768515
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjG3L1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 07:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S230008AbjG3LhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 07:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjG3L1X (ORCPT
+        with ESMTP id S229483AbjG3LhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 07:27:23 -0400
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F34E7A
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:27:22 -0700 (PDT)
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6b9d8b76be5so6862124a34.1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:27:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690716442; x=1691321242;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8iZ0euyhf3cxTHoSvXRmLk1hGHNPN+FfgZk8tEqnMAQ=;
-        b=Ah56abdwmORqN02IkkzZn007UrrD0Hi/otzlI65EHb3/MvRGLFWEckpV+b5/2/XMHo
-         k+lNCflEem5vwIwYcHVyTFIRZlxoQZh+eYIf6V9pB7yDx70mn3OHHH2dmgasvx7N93My
-         JoIoJSQRnnsSXUSLHiKCix5e0+KkgUj4+nhz2bHIwtMUc1h4wQhT/pJycD93NkD5Mjju
-         Z4Ag3O/Z/RcT2Otnfu766IyiyZAf0o1oTp5KV9JIVCR/KW/3QRv6DO9uD070wbMiXAaM
-         0XgKOIpYK6IRSm5qs7GQhF7Kwdnun4amHWcOnDFaYyiBd7i5ZbR1UUzFpCkQnneEM9fg
-         fdMw==
-X-Gm-Message-State: ABy/qLbacadwDnbtVUUGzc1GwBsg5j6XOrv1qffIoWUj29tPIOgegWzj
-        9/jZCByeYX3beQSdD7iU0DaC2mVy6uVZVy5SWiANn3fjs6D0
-X-Google-Smtp-Source: APBJJlGH39mGatRRe+OrB1vfflfuHBjvic8knbq0JlrEEynWLKJZsl77Q8FnRKzDN2NkvslABuN6fYUoACuHHsXGJgfKpqQbU7+x
+        Sun, 30 Jul 2023 07:37:08 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D10A198B;
+        Sun, 30 Jul 2023 04:37:04 -0700 (PDT)
+X-QQ-mid: bizesmtp63t1690717014tgd3261d
+Received: from linux-lab-host.localdomain ( [61.141.77.223])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 30 Jul 2023 19:36:52 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: QityeSR92A2N5I2UQznh0WlH9UJdZDmHmjA4vMsPMpsFD/fe8OZo2nHTrPYFV
+        8s/wNrPrsTN436SvMNg5wfvgyDCuAjLCZ82ok5k5eX0CwOGWlOrzhSmLvsPAvZiMolA3m5u
+        w3M4YSexXp+vTLUkyOxyf2mMlmVMFdMWD3JizFxOFqrrLfVAtfNpdMQOcZoIgZLWMluHjaN
+        Occ8r6RAwxbkn71/rqf1C2kj2g41IgFqpGpWKeZMAUm/RKZFaosyYGdMoO6Iqa8cQp3LOs6
+        RiMfY6bonJaxfz6A8LV07AMIK2F1QeWHRWOK1VGsPtiNEb9eoHzxnlv/dWnkQFZTNCBWVWF
+        pSYn1QIq+vibR/6gndXMS7SrvQ8DQRs6tqb9Q6eu1e46bBPl6UXNRw4ldritA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 10450196367034135589
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v3 4/7] selftests/nolibc: add XARCH and ARCH mapping support
+Date:   Sun, 30 Jul 2023 19:36:51 +0800
+Message-Id: <20230730113651.38052-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230730070325.GA8033@1wt.eu>
+References: <20230730070325.GA8033@1wt.eu>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:14cc:b0:6b9:a31c:368c with SMTP id
- t12-20020a05683014cc00b006b9a31c368cmr8579557otq.0.1690716442152; Sun, 30 Jul
- 2023 04:27:22 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 04:27:22 -0700
-In-Reply-To: <20230730105902.1226-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f354120601b298ab@google.com>
-Subject: Re: [syzbot] [wireless?] INFO: task hung in rfkill_unregister (3)
-From:   syzbot <syzbot+bb540a4bbfb4ae3b425d@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi, Willy
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> On Sun, Jul 30, 2023 at 02:38:18PM +0800, Zhangjin Wu wrote:
+> > with 'override', we are further able to use:
+> > 
+> >     $ make ARCH=powerpc
+> >     Makefile:29: *** ARCH=powerpc, XARCH=ppc.  Stop.
+> >     $ make ARCH=ppc
+> >     Makefile:29: *** ARCH=powerpc, XARCH=ppc.  Stop.
+> >     $ make ARCH=ppc64
+> >     Makefile:29: *** ARCH=powerpc, XARCH=ppc64.  Stop.
+> >     $ make ARCH=ppc64le
+> >     Makefile:29: *** ARCH=powerpc, XARCH=ppc64le.  Stop.
+> > 
+> > So, with 'override', users will be able to directly use the famous ARCH, it is
+> > able to accept powerpc, ppc, ppc64, ppc64le and users can simply ignore XARCH
+> > and we are able to only use XARCH as an internal variable to temply save input
+> > ARCH and then convert it to an internal ARCH.
+> 
+> But it's extremely confusing as you can see above: the user passes
+> one value and another one is found instead inside the makefile.
 
-Reported-and-tested-by: syzbot+bb540a4bbfb4ae3b425d@syzkaller.appspotmail.com
+Yeah, there really is some deviation and confusion.
 
-Tested on:
+> Initially I said that I didn't want that we'd put incorrect values
+> in ARCH so that it could be properly propagated through the various
+> makefile layers and include files, and that led to XARCH. 
+>
 
-commit:         d31e3792 Merge tag '6.5-rc3-smb3-client-fixes' of git:..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=141df2d9a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=32bbbdc67cf060fa
-dashboard link: https://syzkaller.appspot.com/bug?extid=bb540a4bbfb4ae3b425d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17dfa639a80000
+I remember the good trick to set a default variant for ARCH.
 
-Note: testing is done by a robot and is best-effort only.
+> > Without 'override', we must carefully document its usage, it may be:
+> > 
+> >     # XARCH and ARCH mapping
+> >     #
+> >     # Usage:
+> >     #      $ make ARCH=<kernel-supported-ARCH> XARCH=<nolibc-test-supported-variants> ...
+> >     #
+> >     #      e.g. make ARCH=powerpc XARCH=[ppc|ppc64|ppc64le]
+> 
+> Please let's do much simpler:
+> 
+>       # XARCH extends the kernel's ARCH with a few variants of the same
+>       # architecture that only differ by the configuration, the toolchain
+>       # and the Qemu program used. It is copied as-is into ARCH except for
+>       # a few specific values which are mapped like this:
+>       #  XARCH        ARCH      config
+>       #   ppc        powerpc    32 bits
+>       #   ppc64      powerpc    64 bits big endian
+>       #   ppc64le    powerpc    64 bits little endian
+>       #
+>       # It is recommended to only use XARCH, though it does not harm if
+>       # ARCH is already set. For simplicity, ARCH is sufficient for all
+>       # architectures where both are equal.
+>
+
+It is clearer enough, applied.
+
+    # XARCH extends the kernel's ARCH with a few variants of the same
+    # architecture that only differ by the configuration, the toolchain
+    # and the Qemu program used. It is copied as-is into ARCH except for
+    # a few specific values which are mapped like this:
+    #
+    #  XARCH        | ARCH      | config
+    #  -------------|-----------|-------------------------
+    #  ppc          | powerpc   | 32 bits
+    #  ppc64        | powerpc   | 64 bits big endian
+    #  ppc64le      | powerpc   | 64 bits little endian
+    #
+    # It is recommended to only use XARCH, though it does not harm if
+    # ARCH is already set. For simplicity, ARCH is sufficient for all
+    # architectures where both are equal.
+    
+    # configure default variants for target kernel supported architectures
+    XARCH_powerpc    = ppc
+    XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
+
+    # map from user input variants to their kernel supported architectures
+    ARCH_ppc         = powerpc
+    ARCH_ppc64       = powerpc
+    ARCH_ppc64le     = powerpc
+    ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+
+Any more discovery?
+
+Note, ':=' above is required to fix up the 'recusive' warning when no
+ARCH passed for the default x86.
+
+> This way we'll even have the luxury of adding armv5, armv7 and thumb2
+> if we want.
+> 
+> >     # XARCH is used to save user-input ARCH variant
+> >     # configure default variants for target kernel supported architectures
+> > 
+> > For the help page, if we only use '\$$XARCH or \$$ARCH', it may mislead users:
+> > 
+> > 	@echo "  run-user               runs the executable under QEMU (uses \$$ARCH or \\$XARCH, \$$TEST)"
+> > 
+> > That's why I at last add the 'override' keyword to make sure even if users
+> > wrongly and only use ARCH as the argument, it must not fail, or we forcely ask
+> > user pass ARCH and XARCH together.
+> > 
+> > 	@echo "  run-user               runs the executable under QEMU (uses \$$ARCH and \\$XARCH, \$$TEST)"
+> > 
+> > Or we simply only and always ask users to use XARCH (as the first version does)
+> > for nolibc-test and let ARCH as the default one from a previous build kernel:
+> > 
+> > 	@echo "  run-user               runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
+> 
+> No, no, no, we don't use some defaults from a previous build. That makes
+> problems much harder to debug and reproduce. However I'm fine with only
+> indicating that QEMU uses XARCH if you want.
+>
+
+Ok, hope I have not misunderstood again ;-) so, here is the latest version I prepared:
+
+    help:
+    	@echo "Supported targets under selftests/nolibc:"
+    	@echo "  all          call the \"run\" target below"
+    	@echo "  help         this help"
+    	@echo "  sysroot      create the nolibc sysroot here (uses \$$ARCH)"
+    	@echo "  nolibc-test  build the executable (uses \$$CC and \$$CROSS_COMPILE)"
+    	@echo "  libc-test    build an executable using the compiler's default libc instead"
+    	@echo "  run-user     runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
+    	@echo "  initramfs    prepare the initramfs with nolibc-test"
+    	@echo "  defconfig    create a fresh new default config (uses \$$XARCH)"
+    	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$XARCH)"
+    	@echo "  run          runs the kernel in QEMU after building it (uses \$$XARCH, \$$TEST)"
+    	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$XARCH, \$$TEST)"
+    	@echo "  clean        clean the sysroot, initramfs, build and output files"
+    	@echo ""
+    	@echo "The output file is \"run.out\". Test ranges may be passed using \$$TEST."
+    	@echo ""
+    	@echo "Currently using the following variables:"
+    	@echo "  ARCH          = $(ARCH)"
+    	@echo "  XARCH         = $(XARCH)"
+    	@echo "  CROSS_COMPILE = $(CROSS_COMPILE)"
+    	@echo "  CC            = $(CC)"
+    	@echo "  OUTPUT        = $(OUTPUT)"
+    	@echo "  TEST          = $(TEST)"
+    	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$XARCH]"
+    	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$XARCH]"
+    	@echo ""
+
+> > That means, the ugly 'override' does help us to save lots of teach work ;-)
+> 
+> Precisely not. In my opinion you focus a lot on first use but not enough
+> on troubleshooting. If someone wastes 20 minutes because they didn't want
+> to take 20 seconds to read a help message, it's their problem. But if
+> someones wastes one hour trying to debug a horribly inconsistent makefile
+> that modifies their most critical variables along the execution, and they
+> have to figure how to insert their stuff there to be accepted by the code,
+> it's not respectful of their time and it becomes our problem.
+>
+
+It is reasonable, we did discuss this before, the critical area is small
+but is there, so, it may really introduce risks in the future, let's
+give up 'override' completely.
+
+> > I'm ok with 'override' or not, welcome your confirm, which direction do you
+> > prefer?
+> 
+> The one with least complications and which doesn't override ARCH. Also
+> please remember the example I provided where the test can be fired from
+> the top dir where ARCH has a well-defined set of values. You found yourself
+> inconvenient to have to change it between commands and that's why you were
+> trying to add menuconfig here to work around this problem.
+
+Best regards,
+Zhangjin
+
+> 
+> Thanks,
+> Willy
