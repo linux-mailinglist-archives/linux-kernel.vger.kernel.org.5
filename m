@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEC4768575
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E868768579
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjG3NQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54306 "EHLO
+        id S230128AbjG3NQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjG3NQw (ORCPT
+        with ESMTP id S230109AbjG3NQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:16:52 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEF91B6
+        Sun, 30 Jul 2023 09:16:54 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C432F10D0
         for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:16:51 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6bc6a2650a5so7100579a34.2
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6bc4dfb93cbso7096028a34.1
         for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:16:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1690723011; x=1691327811;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=oGVUirxVTDZ7vJHx7E2WkvsFtu2tIh0g/z5nRixG5LQ=;
-        b=VhLDREglHvxLjtHekN3bsyYY4uYniXqaB9n5OcxMZGzKn3A8s6nLStszfv0j76pByf
-         E8mN0itU0fsqnzr9x2rAko8nDlzYn3Waa7lLaKU7FA0WR06IiWhWw4KjfzSDJwF2+4F5
-         xlFFoTUnzV0/IcVR9iP2BpLQzqiDJBlrfsQWd7w5AYdziis1VzjLCLamMU6R8GlWXIzL
-         RGSrzRjDybT0ZQ36HcQPmQm+hZ5yweiXUuhncEiGfirzoyaOATk5tfhOkmgrXj3Snlj/
-         btq00ds+kLEv0f6bc1vII1L1s9xlfGQoOt1OrRyuLxnBCYGXpR4oynCy/WlRK67gohb8
-         cttw==
-X-Gm-Message-State: ABy/qLZJiw1w6tHn5eEp/QyHvFIPeAMolYL3bFAmTvTfNXtD2XDRErcL
-        VZvXJ9eQR0SYdlmlMiMOVAsbxOBliaWzOWym78A8DEyhwb61
-X-Google-Smtp-Source: APBJJlELZvKOcEMzlyL5FN02V7iwD/Wiz1fiY/pl6RhA5Z/G4zWxNMQ1IKl1Kngkm7uBKI1zTQfgrnzcsrHqxLvCLOctEzlZdobJ
+        bh=b9dj6/lAKaW7GGrTXIaj0DpOh57UC6d0adFmPDAuxes=;
+        b=ZYloL80Bli0+ZBQh2Ddj1YawEOBeTHYQ9qtUfLLRatqhioVJVOi/4GLj1MX1refVhJ
+         akCjX8gDXc+YQFXDngTxbBuj+CPBblQylsq9AD/xJmbUZ+VH8s4EJJ1wjRmcbiv2OLZz
+         p0qgSI6gZSkdZamHK+vEmUwZaavUSZxqNipp9n7znaIpCD6Lf7ll4iB7T0Nb/GvhZiVx
+         OcnxAHhtE/mPv5KEatloQejKWJKXN9e5d6vGp+y74ovxgENfv5YBDuFD0Z9Qk6N6p1t0
+         At0QzraflOY6G02Drt5JaHwCeES5nYq0At4lg74Fac+3BHxU9Oc9n6nKfVw+rqUdA6kM
+         XDpw==
+X-Gm-Message-State: ABy/qLYZL/dndj5pO+QnNEI35YUKLrxWb/HpVPTPGsNUJ1oiznBzFRJW
+        y1C1DJClVKMFVBlqU/dM+P88WY6BjcQdu88XR3lxa/Hwe57r
+X-Google-Smtp-Source: APBJJlHpcOCZP0IFDoUOY33ez3X+TGQHNRABxm66oNBgly7kzFWnsqskmbEbz5GivcZV95hOR9nmWsIf929BUTTsHBjdDLKiGoBw
 MIME-Version: 1.0
-X-Received: by 2002:a9d:4e9a:0:b0:6bb:2244:cb72 with SMTP id
- v26-20020a9d4e9a000000b006bb2244cb72mr8840045otk.2.1690723010882; Sun, 30 Jul
- 2023 06:16:50 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 06:16:50 -0700
+X-Received: by 2002:a05:6830:1e4d:b0:6b9:e272:d192 with SMTP id
+ e13-20020a0568301e4d00b006b9e272d192mr8794396otj.7.1690723011116; Sun, 30 Jul
+ 2023 06:16:51 -0700 (PDT)
+Date:   Sun, 30 Jul 2023 06:16:51 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a34010601b420d6@google.com>
-Subject: [syzbot] Monthly jfs report (Jul 2023)
-From:   syzbot <syzbot+listd87de47c524d3cfa086b@syzkaller.appspotmail.com>
-To:     jfs-discussion@lists.sourceforge.net,
+Message-ID: <0000000000007dc6d60601b4207b@google.com>
+Subject: [syzbot] Monthly ntfs3 report (Jul 2023)
+From:   syzbot <syzbot+list34537c28a13cbdf0663a@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -55,38 +55,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello jfs maintainers/developers,
+Hello ntfs3 maintainers/developers,
 
-This is a 31-day syzbot report for the jfs subsystem.
+This is a 31-day syzbot report for the ntfs3 subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jfs
+https://syzkaller.appspot.com/upstream/s/ntfs3
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 50 issues are still open and 13 have been fixed so far.
+During the period, 7 new issues were detected and 0 were fixed.
+In total, 63 issues are still open and 24 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref  Crashes Repro Title
-<1>  1009    Yes   UBSAN: array-index-out-of-bounds in xtInsert
-                   https://syzkaller.appspot.com/bug?extid=55a7541cfd25df68109e
-<2>  992     Yes   general protection fault in lmLogSync (2)
-                   https://syzkaller.appspot.com/bug?extid=e14b1036481911ae4d77
-<3>  686     Yes   kernel BUG in jfs_evict_inode
-                   https://syzkaller.appspot.com/bug?extid=9c0c58ea2e4887ab502e
-<4>  560     Yes   general protection fault in write_special_inodes
-                   https://syzkaller.appspot.com/bug?extid=c732e285f8fc38d15916
-<5>  343     Yes   kernel BUG in txUnlock
-                   https://syzkaller.appspot.com/bug?extid=a63afa301d1258d09267
-<6>  312     Yes   UBSAN: array-index-out-of-bounds in txCommit
-                   https://syzkaller.appspot.com/bug?extid=0558d19c373e44da3c18
-<7>  215     Yes   general protection fault in jfs_flush_journal
-                   https://syzkaller.appspot.com/bug?extid=194bfe3476f96782c0b6
-<8>  150     Yes   KASAN: use-after-free Read in release_metapage
-                   https://syzkaller.appspot.com/bug?extid=f1521383cec5f7baaa94
-<9>  93      Yes   KASAN: use-after-free Read in diFree
-                   https://syzkaller.appspot.com/bug?extid=1964c915c8c3913b3d7a
-<10> 90      Yes   UBSAN: array-index-out-of-bounds in xtSearch
-                   https://syzkaller.appspot.com/bug?extid=76a072c2f8a60280bd70
+<1>  4288    Yes   UBSAN: shift-out-of-bounds in ntfs_fill_super (2)
+                   https://syzkaller.appspot.com/bug?extid=478c1bf0e6bf4a8f3a04
+<2>  3585    Yes   KASAN: slab-out-of-bounds Read in ntfs_iget5
+                   https://syzkaller.appspot.com/bug?extid=b4084c18420f9fad0b4f
+<3>  1748    Yes   possible deadlock in ni_fiemap
+                   https://syzkaller.appspot.com/bug?extid=c300ab283ba3bc072439
+<4>  1380    Yes   KASAN: out-of-bounds Write in end_buffer_read_sync
+                   https://syzkaller.appspot.com/bug?extid=3f7f291a3d327486073c
+<5>  1187    Yes   possible deadlock in attr_data_get_block
+                   https://syzkaller.appspot.com/bug?extid=36bb70085ef6edc2ebb9
+<6>  1077    Yes   possible deadlock in ntfs_set_state
+                   https://syzkaller.appspot.com/bug?extid=f91c29a5d5a01ada051a
+<7>  576     No    possible deadlock in ntfs_mark_rec_free
+                   https://syzkaller.appspot.com/bug?extid=f83f0dbef763c426e3cf
+<8>  507     Yes   possible deadlock in mi_read
+                   https://syzkaller.appspot.com/bug?extid=bc7ca0ae4591cb2550f9
+<9>  421     Yes   possible deadlock in ntfs_fiemap
+                   https://syzkaller.appspot.com/bug?extid=96cee7d33ca3f87eee86
+<10> 68      Yes   WARNING in do_mkdirat
+                   https://syzkaller.appspot.com/bug?extid=919c5a9be8433b8bf201
 
 ---
 This report is generated by a bot. It may contain errors.
