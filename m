@@ -2,143 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBD2768696
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A1E76869E
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjG3RIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 13:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41244 "EHLO
+        id S229618AbjG3RLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 13:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjG3RH7 (ORCPT
+        with ESMTP id S229449AbjG3RLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:07:59 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F53310D5
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:07:57 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-39cdf9f9d10so5581622b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:07:57 -0700 (PDT)
+        Sun, 30 Jul 2023 13:11:15 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E96610CC;
+        Sun, 30 Jul 2023 10:11:14 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso5229607a12.2;
+        Sun, 30 Jul 2023 10:11:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690737073; x=1691341873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rINeYgAe2vWhDTqaE4dNqaz5whR3/rodCQD83wYGPSA=;
+        b=hpv/S4CN6eOm6FJZ35c2VwAJgs4Pe25/en1e7BCtSlW0+Qb8MdnDp5/F6vVoF19arz
+         FbKIL3dq25ni+8wRTzOwOSW9CY106Yg067ngdUmoBU002DvJoQhgOw3cW9UGKFx4Q50r
+         S8QE1X1ZRE/B2UAinA3avVFZXRZxXFnkzOe8WCmxRG/l7iFIE0l2efquhhoZkvMbC2eC
+         yz5sq9VzDm56QHNErPAUvpZdiLmMzi1JEiRO2Kx2YW44FpWiURgbkLVGgyGQccyh1P9c
+         fmNa7BuYxBnbSE5zAbqC+tsN15Ds+GTv4IKEIkJjPWiS8M4BLjNpXOXU3qk+bhw6cbuq
+         FE8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690736877; x=1691341677;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n9vqfGmyOwEWs7LNdvGwPbGUY0I/3aqKJVRSebRF0Hw=;
-        b=Ik7QefnWk8PDO/3e4E5cGNTmgSqCLyISeJXjNINhrs4wzCgaTNrLwOp6YwImukNnWL
-         r/bCZNtK0F0jWrZuuKk1KeJUj6MAHJXpY+Y/vBDCtNywOetgbvM6jdWEH5PSKs+SvGih
-         gGCNCGiA/RsZuZ9ko3dx9ckxO9OXr8PNIpDTK3GUhXa/mGrmeAWVQ53xc5uHcYZAB3Oa
-         UzJUZzWjTWaPMQFmX5M42IG6yI67T5LDIm7abWlHDi8VntvJaRvWk/HDP+zVT+xn5n37
-         m5k4ciZohfJbxAr2WKh7bnjJGLAcMbXCKvwb9JyXEnDOv+bPFgJKQ2tJr0hbpo+q6HW0
-         bzfw==
-X-Gm-Message-State: ABy/qLY2xrtPPTDWHOKhG1LlKe8lEDrgwxhjqBkSCBovuVvTQhxGHlaY
-        wUCTGkrE2e2LmkJ9g2TX2YFvtC429ZmQ7/jt6a+BR6nDpkY7
-X-Google-Smtp-Source: APBJJlFEFPjxuV31812GyI4xDhE5rXq/ScX8K056ndvulUKc1AymUgQvC0H0TbZUGEz1hebbvWrJgmQwsYyN/se+4PTg5jOA3Je+
+        d=1e100.net; s=20221208; t=1690737073; x=1691341873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rINeYgAe2vWhDTqaE4dNqaz5whR3/rodCQD83wYGPSA=;
+        b=g52UT0QV8W2uFivnQ8je67guLr33CTrZzJSIPCTjgwTkR27e3f12Tw2w44H/eMXwM7
+         OIw66XgMUxdKbtu/2btWkwdLRXX1qh0bhIHmlKYbvDZLew9C0dnrcuuNVPjT37PswzMl
+         ZS8usW+OQcQ+3S4ocPd9cWX97ebnrn6oubUOw0P4F45Nms80pxiOkhxTa54zK1t4oFfL
+         GcDngrw+QPuloFqdtlTUJPQDSea/G2RKuIIxxHH9tGYvvvcoRorxSRoJZ8WLH1e2ZYKK
+         4bPzAuXkQGRADKO6QRhORZALusdpW9mlscY++TweXQIXz9EKj/o6IwnOa2FVX2Ck2iAQ
+         2l/w==
+X-Gm-Message-State: ABy/qLYrjtBYFKMW3+NMzh47CFpCjeqdnvOLTt9oT29eIL9Cl9qwOu98
+        RuK08pVNhV8kzRUeUTJSnslpigrRSXSNUOz/ODweW4R2GlBLsg==
+X-Google-Smtp-Source: APBJJlH9Zt3gdvhmq1i8yEj+qg/u7Gs2dp8bd7HOb1u6g1X4ipRKMAQiiY8sjrPfNi5rESjl0vsCdRs1VByyoS6gVg8=
+X-Received: by 2002:aa7:d452:0:b0:522:c877:5690 with SMTP id
+ q18-20020aa7d452000000b00522c8775690mr984265edr.17.1690737072488; Sun, 30 Jul
+ 2023 10:11:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:17a4:b0:39e:ced7:602b with SMTP id
- bg36-20020a05680817a400b0039eced7602bmr14547448oib.2.1690736876717; Sun, 30
- Jul 2023 10:07:56 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 10:07:56 -0700
-In-Reply-To: <000000000000a3d67705ff730522@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f20fc00601b75a80@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20230729134318.1694467-1-keguang.zhang@gmail.com> <20230729134318.1694467-4-keguang.zhang@gmail.com>
+In-Reply-To: <20230729134318.1694467-4-keguang.zhang@gmail.com>
+From:   Du Huanpeng <u74147@gmail.com>
+Date:   Mon, 31 Jul 2023 01:11:00 +0800
+Message-ID: <CANvTkNbss+ovB_nXYvAXT9dZt4H1KsF41EQ4f3zHf1dEnpdreA@mail.gmail.com>
+Subject: Re: [PATCH 03/17] MIPS: dts: Add basic DT support for Loongson-1 boards
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Keguang Zhang <keguang.zhang@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8829=
+=E6=97=A5=E5=91=A8=E5=85=AD 21:45=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Add initial devicetree for Loongson-1 boards, including
+> LSGZ_1B_DEV and SMARTLOONG_1C board.
+> These basic DTs contain CPU, clock and core INTC.
+>
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> ---
+>  arch/mips/boot/dts/Makefile                   |  1 +
+>  arch/mips/boot/dts/loongson/Makefile          |  3 +
+>  arch/mips/boot/dts/loongson/loongson1.dtsi    | 22 ++++++
+>  arch/mips/boot/dts/loongson/loongson1b.dtsi   | 75 +++++++++++++++++++
+>  arch/mips/boot/dts/loongson/loongson1c.dtsi   | 29 +++++++
+>  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 25 +++++++
+>  arch/mips/boot/dts/loongson/smartloong_1c.dts | 25 +++++++
+>  7 files changed, 180 insertions(+)
+>  create mode 100644 arch/mips/boot/dts/loongson/loongson1.dtsi
+>  create mode 100644 arch/mips/boot/dts/loongson/loongson1b.dtsi
+>  create mode 100644 arch/mips/boot/dts/loongson/loongson1c.dtsi
+>  create mode 100644 arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
+>  create mode 100644 arch/mips/boot/dts/loongson/smartloong_1c.dts
+>
+> diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+> index 928f38a79dff..2e040b1ba97b 100644
+> --- a/arch/mips/boot/dts/Makefile
+> +++ b/arch/mips/boot/dts/Makefile
+> @@ -6,6 +6,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)   +=3D img
+>  subdir-$(CONFIG_MACH_INGENIC)          +=3D ingenic
+>  subdir-$(CONFIG_LANTIQ)                        +=3D lantiq
+>  subdir-$(CONFIG_MACH_LOONGSON64)       +=3D loongson
+> +subdir-$(CONFIG_MACH_LOONGSON32)       +=3D loongson
+>  subdir-$(CONFIG_SOC_VCOREIII)          +=3D mscc
+>  subdir-$(CONFIG_MIPS_MALTA)            +=3D mti
+>  subdir-$(CONFIG_LEGACY_BOARD_SEAD3)    +=3D mti
+> diff --git a/arch/mips/boot/dts/loongson/Makefile b/arch/mips/boot/dts/lo=
+ongson/Makefile
+> index 5c6433e441ee..9d95f1351d5f 100644
+> --- a/arch/mips/boot/dts/loongson/Makefile
+> +++ b/arch/mips/boot/dts/loongson/Makefile
+> @@ -6,4 +6,7 @@ dtb-$(CONFIG_MACH_LOONGSON64)   +=3D loongson64c_8core_rs=
+780e.dtb
+>  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64g_4core_ls7a.dtb
+>  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64v_4core_virtio.dtb
+>
+> +dtb-$(CONFIG_LOONGSON1B_LSGZ_DEV)      +=3D lsgz_1b_dev.dtb
+> +dtb-$(CONFIG_LOONGSON1C_SMARTLOONG)    +=3D smartloong_1c.dtb
+> +
+>  obj-$(CONFIG_BUILTIN_DTB)      +=3D $(addsuffix .o, $(dtb-y))
+> diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boot/=
+dts/loongson/loongson1.dtsi
+> new file mode 100644
+> index 000000000000..a2b5c828bbbd
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/clock/loongson,ls1x-clk.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +/ {
+> +       #address-cells =3D <1>;
+> +       #size-cells =3D <1>;
+> +
+> +       cpu_intc: interrupt-controller {
+> +               compatible =3D "mti,cpu-interrupt-controller";
+> +               #address-cells =3D <0>;
+> +
+> +               interrupt-controller;
+> +               #interrupt-cells =3D <1>;
+> +       };
+> +};
+> diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot=
+/dts/loongson/loongson1b.dtsi
+> new file mode 100644
+> index 000000000000..784ae9b6572d
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "loongson1.dtsi"
+> +
+> +/ {
+> +       cpus {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <0>;
+> +
+> +               cpu@0 {
+> +                       device_type =3D "cpu";
+> +                       reg =3D <0>;
+> +                       #clock-cells =3D <1>;
+> +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
+> +                       operating-points-v2 =3D <&cpu_opp_table>;
+> +               };
+> +       };
+> +
+> +       cpu_opp_table: opp-table {
+> +               compatible =3D "operating-points-v2";
+> +               opp-shared;
+> +
+> +               opp-44000000 {
+> +                       opp-hz =3D /bits/ 64 <44000000>;
+> +               };
+> +               opp-47142000 {
+> +                       opp-hz =3D /bits/ 64 <47142000>;
+> +               };
+> +               opp-50769000 {
+> +                       opp-hz =3D /bits/ 64 <50769000>;
+> +               };
+> +               opp-55000000 {
+> +                       opp-hz =3D /bits/ 64 <55000000>;
+> +               };
+> +               opp-60000000 {
+> +                       opp-hz =3D /bits/ 64 <60000000>;
+> +               };
+> +               opp-66000000 {
+> +                       opp-hz =3D /bits/ 64 <66000000>;
+> +               };
+> +               opp-73333000 {
+> +                       opp-hz =3D /bits/ 64 <73333000>;
+> +               };
+> +               opp-82500000 {
+> +                       opp-hz =3D /bits/ 64 <82500000>;
+> +               };
+> +               opp-94285000 {
+> +                       opp-hz =3D /bits/ 64 <94285000>;
+> +               };
+> +               opp-110000000 {
+> +                       opp-hz =3D /bits/ 64 <110000000>;
+> +               };
+> +               opp-132000000 {
+> +                       opp-hz =3D /bits/ 64 <132000000>;
+> +               };
+> +               opp-165000000 {
+> +                       opp-hz =3D /bits/ 64 <165000000>;
+> +               };
+> +               opp-220000000 {
+> +                       opp-hz =3D /bits/ 64 <220000000>;
+> +               };
+> +       };
+> +
+> +       clkc: clock-controller@1fe78030 {
+> +               compatible =3D "loongson,ls1b-clk";
+> +               reg =3D <0x1fe78030 0x8>;
+> +
+> +               clocks =3D <&xtal>;
+> +               #clock-cells =3D <1>;
+> +       };
+> +};
+> diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot=
+/dts/loongson/loongson1c.dtsi
+> new file mode 100644
+> index 000000000000..d552e1668984
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "loongson1.dtsi"
+> +
+> +/ {
+> +       cpus {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <0>;
+> +
+> +               cpu@0 {
+> +                       device_type =3D "cpu";
+> +                       reg =3D <0>;
+> +                       #clock-cells =3D <1>;
+> +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
+> +               };
+> +       };
+> +
+> +       clkc: clock-controller@1fe78030 {
+> +               compatible =3D "loongson,ls1c-clk";
+> +               reg =3D <0x1fe78030 0x8>;
+> +
+> +               clocks =3D <&xtal>;
+> +               #clock-cells =3D <1>;
+> +       };
+> +};
+> diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot=
+/dts/loongson/lsgz_1b_dev.dts
+> new file mode 100644
+> index 000000000000..d12c723b0a2b
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "loongson1b.dtsi"
+> +
+> +/ {
+> +       compatible =3D "loongson,lsgz-1b-dev", "loongson,ls1b";
+> +       model =3D "LSGZ_1B_DEV Board";
+> +
+> +       memory@0 {
+> +               device_type =3D "memory";
+> +               reg =3D <0x0 0x4000000>;
+> +       };
+> +
+> +       xtal: xtal {
+for your information, hope it helps:
+in <devicetree-specification-v0.4.pdf> Page: 8
+The name of a node should be somewhat generic, reflecting the function
+of the device and not its precise programming model. If appropriate,
+ the name should be one of the following choices:
+... clock ...
 
-HEAD commit:    d31e3792919e Merge tag '6.5-rc3-smb3-client-fixes' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17afd745a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9d670a4f6850b6f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15278939a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14dd3f31a80000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-d31e3792.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c6c2342933c9/vmlinux-d31e3792.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/42df60b42886/bzImage-d31e3792.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/78ffd1ddff6c/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
-
-BTRFS info (device loop1): relocating block group 5242880 flags data|metadata
-assertion failed: root->reloc_root == reloc_root, in fs/btrfs/relocation.c:1919
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/relocation.c:1919!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 12638 Comm: syz-executor311 Not tainted 6.5.0-rc3-syzkaller-00297-gd31e3792919e #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
-Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9 b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
-RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
-RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
-RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
-R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
-FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0x8d1/0xe70 fs/btrfs/relocation.c:3749
- btrfs_relocate_block_group+0x714/0xd90 fs/btrfs/relocation.c:4087
- btrfs_relocate_chunk+0x143/0x440 fs/btrfs/volumes.c:3283
- __btrfs_balance fs/btrfs/volumes.c:4018 [inline]
- btrfs_balance+0x20fc/0x3ef0 fs/btrfs/volumes.c:4395
- btrfs_ioctl_balance fs/btrfs/ioctl.c:3604 [inline]
- btrfs_ioctl+0x1362/0x5cf0 fs/btrfs/ioctl.c:4637
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb31abe6e49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb31aba2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fb31ac73728 RCX: 00007fb31abe6e49
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007fb31ac73720 R08: 00007fb31aba26c0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb31ac7372c
-R13: 0000000000000006 R14: 00007ffe768d5660 R15: 00007ffe768d5748
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:prepare_to_merge+0x9cc/0xcd0 fs/btrfs/relocation.c:1919
-Code: c5 e9 81 fd ff ff e8 e3 59 00 fe b9 7f 07 00 00 48 c7 c2 40 d9 b6 8a 48 c7 c6 20 e6 b6 8a 48 c7 c7 a0 da b6 8a e8 54 bc e3 fd <0f> 0b 4c 8b 7c 24 38 48 8b 5c 24 10 44 8b 6c 24 0c e8 ae 59 00 fe
-RSP: 0018:ffffc90023e176d0 EFLAGS: 00010282
-RAX: 000000000000004f RBX: ffff88801e898560 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81698120 RDI: 0000000000000005
-RBP: ffff88801e898558 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 6f69747265737361 R12: dffffc0000000000
-R13: ffff88801e898000 R14: ffff88802d944000 R15: ffff888017616618
-FS:  00007fb31aba26c0(0000) GS:ffff88806b600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb31ac3a758 CR3: 000000002e1dc000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
+> +               compatible =3D "fixed-clock";
+> +               clock-frequency =3D <33000000>;
+> +               clock-output-names =3D "xtal";
+> +               #clock-cells =3D <0>;
+> +       };
+> +};
+> diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/bo=
+ot/dts/loongson/smartloong_1c.dts
+> new file mode 100644
+> index 000000000000..64e869acfd86
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "loongson1c.dtsi"
+> +
+> +/ {
+> +       compatible =3D "loongmasses,smartloong-1c", "loongson,ls1c";
+> +       model =3D "Smartloong_1C Board";
+> +
+> +       memory@0 {
+> +               device_type =3D "memory";
+> +               reg =3D <0x0 0x2000000>;
+> +       };
+> +
+> +       xtal: xtal {
+> +               compatible =3D "fixed-clock";
+> +               clock-frequency =3D <24000000>;
+> +               clock-output-names =3D "xtal";
+> +               #clock-cells =3D <0>;
+> +       };
+> +};
+> --
+> 2.39.2
+>
 
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Du Huanpeng
