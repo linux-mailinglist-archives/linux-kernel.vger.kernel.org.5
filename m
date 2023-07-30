@@ -2,164 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DFD76862D
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FD5768633
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjG3PQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 11:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        id S229751AbjG3PXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 11:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjG3PQl (ORCPT
+        with ESMTP id S229527AbjG3PXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 11:16:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3D2171B
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:16:16 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742eso42076825e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:16:16 -0700 (PDT)
+        Sun, 30 Jul 2023 11:23:38 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C3C1A6;
+        Sun, 30 Jul 2023 08:23:36 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9891c73e0fbso774456066b.1;
+        Sun, 30 Jul 2023 08:23:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690730174; x=1691334974;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ed3bTY/DQrtVo38S3b99vtsCN5ydWYuckmFt+jfpXnQ=;
-        b=CsLvLnj1VBExXRAAglTYPWH2EpYCorZggOAC3yIHs0vybciyxsExVcLP/39obiFOYD
-         FverDpvbx+BWRlvxddS1Ucch0Lo8ySBj5n4n9qsls9ncd4/U0ukC8FCsg5LU0Ps7yXpS
-         0x73YYFy0A18lccSHORRLeDqKaS8nvvq1tbkN/1SKvxZESadhIFOz/0oIn1npIu6dGrI
-         2CSL9zF3tMODmGVmKAr7ZywN5DBo03IuiGI33kAtutuURXCt6kQH4LYr2FKRdNpyhVsi
-         OuuSaUD++enIZiLNISEKbcIDH+KKX7DGzU9igsnu/+61mXgL/I4WQRrk8Tlu5bD6f8xb
-         lAyA==
+        d=gmail.com; s=20221208; t=1690730615; x=1691335415;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7PX8xKK6O5wTvwtcUjC9IemCaEOi5PCdC3MyRdH4mEU=;
+        b=ZZeauXSqR4Gj+o9zgwWzvae9cSHIy1Q3fNln5iTZWZPGQudHC/xIEOv4XI+4ebjwx9
+         PrGZbv3RrQcMu4eSUDzWFTPBzGLkLYIHaZifRFnrzQ1892eXnLQn3pspUoIyLndhnlPt
+         oGSUIZlWK80gsqBpIXuuX4Im0uGOqtIwYRX4dlihJb9s4VXDthECEGX3i6XxKEqosebq
+         MBMoGhtV68DIizvmu9acc8zY9Ew7m6eQlKgDOqMVnCgGFBEWYeDLgIRwy8gCmvqSnmPB
+         vTqbMX9wZ6KVt0rlmexLjunx30Ldo5kSO76VjFksq+E9uXgIUK1czxFRkdeBYy3VrT3i
+         TS2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690730174; x=1691334974;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ed3bTY/DQrtVo38S3b99vtsCN5ydWYuckmFt+jfpXnQ=;
-        b=l5DFJAE0OqA9UJDZYpLQO/ng+i2JvHTjYiEzqZaaun9rcgHVcl1Uxb91s8q+qW0kuJ
-         smr+zYXKp5p15eiiywO+ff9grWdzmeZ4FOjVEZYeguNG301skm9lSRGezrVHYnQPC73/
-         pZiNDPQ+5RIe+hPA16eZaQcZBEt5fe6K75RL2I4t3weCApIocySPqTje/eR6QyQJIldv
-         la9NwSG9rDRlw7hJaMSd2gOCyoReqC8lnel64Ex+9NDyA1yphvGPQ33BJnbs+AYnNzKb
-         J50d7GRRHTk7kB2WH5I9u+0P0xg9dctsWw9uIR6UnbeGeckIVR/YxJ99coCG+W57Na+7
-         jDzA==
-X-Gm-Message-State: ABy/qLZmMb2vUXBzzez8p08zQhbpIfAUk1AsJc7C/LX3sz0BEMu4URxX
-        zDBnaWP7ieN7iy+swL2F3r10/Q==
-X-Google-Smtp-Source: APBJJlEvwIYdcin+SgJIaKf3f0NWjv2vOyb8TeOb/EE1tTkylJ9cPozIeSxvQxhFH8cAtZQs6UhkkA==
-X-Received: by 2002:a05:600c:3787:b0:3fa:97b3:7ce0 with SMTP id o7-20020a05600c378700b003fa97b37ce0mr3917250wmr.26.1690730174681;
-        Sun, 30 Jul 2023 08:16:14 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:6b6a:b465:0:eda5:aa63:ce24:dac2])
-        by smtp.gmail.com with ESMTPSA id f17-20020a7bcc11000000b003fd2d33ea53sm9123027wmh.14.2023.07.30.08.16.13
+        d=1e100.net; s=20221208; t=1690730615; x=1691335415;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PX8xKK6O5wTvwtcUjC9IemCaEOi5PCdC3MyRdH4mEU=;
+        b=EAUnDuqENXEDM2hO9XderGMt4iuZGIOniy01Ny5RI81Cwo1kc50OVfEgGGJc05sOY3
+         mkLFIdWifmqLTEv3L5Y6oh9/TFQm6FxLabvMjBRuYQzqP+dEueFA7eq/wMd2W1Qzj1YI
+         OsFMBpKpkAagL8gUGXTQ6W3f1TkC3EFM1mxZwWo/3UNe4/a4IxjwDycykRLbIwWrWI8a
+         Rxq/+U8fhTjoUcSGOAqe0dWx+D8S32KzXZP6/lkUR+2Brrh+Gv9E8Ut5dx2sPCjjGgRn
+         N6zJuHfDIos/Md7R3KnSGaL3XQjMDOvhm6pN/G2Pie8oAlwInczeAZz/tME6Hxq98JP0
+         b1Cg==
+X-Gm-Message-State: ABy/qLY0HI0m4k1cTHHwKutGGljy9iJ831o62NTnQwd+nAju2ZXDtzk5
+        H8qYNRVbTgB2I1YYcMin97MbPnN8iGY=
+X-Google-Smtp-Source: APBJJlHQ3IYa7n9r9AgEUAqsmkPfnF5daq7th+7HqRWkx3Qk1N6gibmKlrcWC8pXoXPYmgr5B+NkZA==
+X-Received: by 2002:a17:906:304f:b0:99b:4bab:2841 with SMTP id d15-20020a170906304f00b0099b4bab2841mr5425707ejd.26.1690730614887;
+        Sun, 30 Jul 2023 08:23:34 -0700 (PDT)
+Received: from standask-GA-A55M-S2HP ([188.123.113.247])
+        by smtp.gmail.com with ESMTPSA id f25-20020a1709067f9900b009934855d8f1sm4733868ejr.34.2023.07.30.08.23.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 08:16:14 -0700 (PDT)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
-        rppt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [v2 6/6] mm: hugetlb: Skip initialization of struct pages freed later by HVO
-Date:   Sun, 30 Jul 2023 16:16:06 +0100
-Message-Id: <20230730151606.2871391-7-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230730151606.2871391-1-usama.arif@bytedance.com>
-References: <20230730151606.2871391-1-usama.arif@bytedance.com>
+        Sun, 30 Jul 2023 08:23:34 -0700 (PDT)
+Date:   Sun, 30 Jul 2023 17:23:32 +0200
+From:   Stanislav Jakubek <stano.jakubek@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: gpio: brcm,kona-gpio: convert to YAML
+Message-ID: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is done by marking the region for which to skip initialization
-with the MEMBLOCK_RSRV_NOINIT flag.
-If the region is for hugepages and if HVO is enabled, then those
-struct pages which will be freed later don't need to be initialized.
-This can save significant time when a large number of hugepages are
-allocated at boot time. HUGETLB_VMEMMAP_RESERVE_SIZE
-struct pages at the start of hugepage still need to be initialized.
+Convert Broadcom Kona family GPIO controller bindings to DT schema.
 
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Changes during conversion:
+  - add used, but previously undocumented SoC-specific compatibles
+
+Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
 ---
- mm/hugetlb.c         | 21 +++++++++++++++++++++
- mm/hugetlb_vmemmap.c |  2 +-
- mm/hugetlb_vmemmap.h |  3 +++
- 3 files changed, 25 insertions(+), 1 deletion(-)
+Changes since RFC:
+  - fix interrupts maxItems
+  - narrow interrupts min/maxItems per each variant
+  - thanks for the feedback Linus, Krzysztof :)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index bf60545496d7..8434100f60ae 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3151,6 +3151,9 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- {
- 	struct huge_bootmem_page *m = NULL; /* initialize for clang */
- 	int nr_nodes, node;
-+	phys_addr_t hugetlb_vmemmap_reserve_size =
-+		HUGETLB_VMEMMAP_RESERVE_SIZE * sizeof(struct page);
-+	phys_addr_t noinit_base;
+ .../bindings/gpio/brcm,kona-gpio.txt          |  52 ---------
+ .../bindings/gpio/brcm,kona-gpio.yaml         | 100 ++++++++++++++++++
+ MAINTAINERS                                   |   2 +-
+ 3 files changed, 101 insertions(+), 53 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
+
+diff --git a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
+deleted file mode 100644
+index 4a63bc96b687..000000000000
+--- a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
++++ /dev/null
+@@ -1,52 +0,0 @@
+-Broadcom Kona Family GPIO
+-=========================
+-
+-This GPIO driver is used in the following Broadcom SoCs:
+-  BCM11130, BCM11140, BCM11351, BCM28145, BCM28155
+-
+-The Broadcom GPIO Controller IP can be configured prior to synthesis to
+-support up to 8 banks of 32 GPIOs where each bank has its own IRQ. The
+-GPIO controller only supports edge, not level, triggering of interrupts.
+-
+-Required properties
+--------------------
+-
+-- compatible: "brcm,bcm11351-gpio", "brcm,kona-gpio"
+-- reg: Physical base address and length of the controller's registers.
+-- interrupts: The interrupt outputs from the controller. There is one GPIO
+-  interrupt per GPIO bank. The number of interrupts listed depends on the
+-  number of GPIO banks on the SoC. The interrupts must be ordered by bank,
+-  starting with bank 0. There is always a 1:1 mapping between banks and
+-  IRQs.
+-- #gpio-cells: Should be <2>. The first cell is the pin number, the second
+-  cell is used to specify optional parameters:
+-  - bit 0 specifies polarity (0 for normal, 1 for inverted)
+-  See also "gpio-specifier" in .../devicetree/bindings/gpio/gpio.txt.
+-- #interrupt-cells: Should be <2>. The first cell is the GPIO number. The
+-  second cell is used to specify flags. The following subset of flags is
+-  supported:
+-  - trigger type (bits[1:0]):
+-      1 = low-to-high edge triggered.
+-      2 = high-to-low edge triggered.
+-      3 = low-to-high or high-to-low edge triggered
+-      Valid values are 1, 2, 3
+-  See also .../devicetree/bindings/interrupt-controller/interrupts.txt.
+-- gpio-controller: Marks the device node as a GPIO controller.
+-- interrupt-controller: Marks the device node as an interrupt controller.
+-
+-Example:
+-	gpio: gpio@35003000 {
+-		compatible = "brcm,bcm11351-gpio", "brcm,kona-gpio";
+-		reg = <0x35003000 0x800>;
+-		interrupts =
+-		       <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH
+-			GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH
+-			GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH
+-			GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH
+-			GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH
+-			GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+-		#gpio-cells = <2>;
+-		#interrupt-cells = <2>;
+-		gpio-controller;
+-		interrupt-controller;
+-	};
+diff --git a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
+new file mode 100644
+index 000000000000..296fdd6b8f38
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
+@@ -0,0 +1,100 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/brcm,kona-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Broadcom Kona family GPIO controller
++
++description:
++  The Broadcom GPIO Controller IP can be configured prior to synthesis to
++  support up to 8 banks of 32 GPIOs where each bank has its own IRQ. The
++  GPIO controller only supports edge, not level, triggering of interrupts.
++
++maintainers:
++  - Ray Jui <rjui@broadcom.com>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - brcm,bcm11351-gpio
++          - brcm,bcm21664-gpio
++          - brcm,bcm23550-gpio
++      - const: brcm,kona-gpio
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    minItems: 4
++    maxItems: 6
++    description:
++      The interrupt outputs from the controller. There is one GPIO interrupt
++      per GPIO bank. The number of interrupts listed depends on the number of
++      GPIO banks on the SoC. The interrupts must be ordered by bank, starting
++      with bank 0. There is always a 1:1 mapping between banks and IRQs.
++
++  '#gpio-cells':
++    const: 2
++
++  '#interrupt-cells':
++    const: 2
++
++  gpio-controller: true
++
++  interrupt-controller: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - '#gpio-cells'
++  - '#interrupt-cells'
++  - gpio-controller
++  - interrupt-controller
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: brcm,bcm11351-gpio
++    then:
++      properties:
++        interrupts:
++          minItems: 6
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - brcm,bcm21664-gpio
++              - brcm,bcm23550-gpio
++    then:
++      properties:
++        interrupts:
++          maxItems: 4
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    gpio@35003000 {
++        compatible = "brcm,bcm11351-gpio", "brcm,kona-gpio";
++        reg = <0x35003000 0x800>;
++        interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
++                     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
++        #gpio-cells = <2>;
++        #interrupt-cells = <2>;
++        gpio-controller;
++        interrupt-controller;
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 733bcfa0209a..368fee1ef5b0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4221,7 +4221,7 @@ BROADCOM KONA GPIO DRIVER
+ M:	Ray Jui <rjui@broadcom.com>
+ R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+ S:	Supported
+-F:	Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
++F:	Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
+ F:	drivers/gpio/gpio-bcm-kona.c
  
- 	/* do node specific alloc */
- 	if (nid != NUMA_NO_NODE) {
-@@ -3158,6 +3161,15 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- 				0, MEMBLOCK_ALLOC_ACCESSIBLE, nid);
- 		if (!m)
- 			return 0;
-+
-+		if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
-+			noinit_base = virt_to_phys(
-+				(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
-+			memblock_reserved_mark_noinit(
-+				noinit_base,
-+				huge_page_size(h) - hugetlb_vmemmap_reserve_size);
-+		}
-+
- 		goto found;
- 	}
- 	/* allocate from next node when distributing huge pages */
-@@ -3172,6 +3184,15 @@ int __alloc_bootmem_huge_page(struct hstate *h, int nid)
- 		 */
- 		if (!m)
- 			return 0;
-+
-+		if (vmemmap_optimize_enabled && hugetlb_vmemmap_optimizable(h)) {
-+			noinit_base = virt_to_phys(
-+				(void *)((phys_addr_t) m + hugetlb_vmemmap_reserve_size));
-+			memblock_reserved_mark_noinit(
-+				noinit_base,
-+				huge_page_size(h) - hugetlb_vmemmap_reserve_size);
-+		}
-+
- 		goto found;
- 	}
- 
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index bdf750a4786b..b5b7834e0f42 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -443,7 +443,7 @@ static int vmemmap_remap_alloc(unsigned long start, unsigned long end,
- DEFINE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
- EXPORT_SYMBOL(hugetlb_optimize_vmemmap_key);
- 
--static bool vmemmap_optimize_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON);
-+bool vmemmap_optimize_enabled = IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON);
- core_param(hugetlb_free_vmemmap, vmemmap_optimize_enabled, bool, 0);
- 
- /**
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index 3e7978a9af73..3fff6f611c19 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -64,4 +64,7 @@ static inline bool hugetlb_vmemmap_optimizable(const struct hstate *h)
- {
- 	return hugetlb_vmemmap_optimizable_size(h) != 0;
- }
-+
-+extern bool vmemmap_optimize_enabled;
-+
- #endif /* _LINUX_HUGETLB_VMEMMAP_H */
+ BROADCOM MPI3 STORAGE CONTROLLER DRIVER
 -- 
-2.25.1
+2.34.1
 
