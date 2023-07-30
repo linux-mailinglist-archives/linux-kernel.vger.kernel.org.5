@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D095F7687A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 21:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDED7687AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 21:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjG3TtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 15:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
+        id S229638AbjG3Tuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 15:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjG3TtH (ORCPT
+        with ESMTP id S229477AbjG3Tui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 15:49:07 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DC910D8
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 12:49:06 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-992e22c09edso558912966b.2
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 12:49:06 -0700 (PDT)
+        Sun, 30 Jul 2023 15:50:38 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A2FE5;
+        Sun, 30 Jul 2023 12:50:37 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3a4875e65a3so2606594b6e.2;
+        Sun, 30 Jul 2023 12:50:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690746545; x=1691351345;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K0RMQyHf1S3Bsa35UR4acJ/fdA34+QRYTwD5K564HMM=;
-        b=PdbGH6vUkI5RQ3CsT3okvuaa4Tcwo6GZad0kgWK/QuxR3QVPimaMRiv6d2GJUcGdqZ
-         6wJWS0nJlo6X5BNG5jmYttbJ0eYPO3LGZ4y+NsVyDlnqddRtYPSLDEt2mj4GEwH2tiIq
-         5s7wiSK7DUzLI2jsISRff6MAi5Aipr4KhKwvnuGauNEVViVg33sBJRNsr5EMCYFbTbgU
-         12C8OVJfKdKbHH8FY3jkjakNdtH9r2hLtbSDLMViwbxmYmtpBXJa5YWjPJ5p69yMrqcD
-         d3qDM48XHPzuZiacpWAjHdEVIWmyJI5xSGoPsjTjUSNx4QL9RvwOE+08mlUlmuJKVdr6
-         OOEg==
+        d=gmail.com; s=20221208; t=1690746637; x=1691351437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qCJ7pSNYfqsNs7KY1Muuh1w5+Pispwv1vOpFTja5zL0=;
+        b=Q0IGHbDGkFY3YeOFTDA3cZqvk5wkbbRyaJG5zMnOusSgw7tJcqSUK1dm1mKj62xHaY
+         d5bOOUfLh8Yn8rW6C3WZOYKpR42jZyFwBQocgNUjueBnIqV5yfLJZ2OKCNxUXWa4Rcjo
+         +B4otyODmgNAODZHmGKQrkWv19eDQyTSqBDgCqZ4CCbo8xEWMpv5niLvsK4t/YrQyqm2
+         1FHUYhlcXE7eliQ0ulDaTDorpEoAB6hBxvhWMtT03INAJqPp5H1bAxcxJcZe5oSoD6cn
+         KJsIRR9Splvy83StSEBBFR4ASfPzeHCg74O5TNmGU2R9a32YLHaHPi+srKgIY5MoJp7F
+         VuWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690746545; x=1691351345;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0RMQyHf1S3Bsa35UR4acJ/fdA34+QRYTwD5K564HMM=;
-        b=Fn6gNscXMf/mVT1tf12OpAAm0wodwtxOflfHmp3dWnytORMqie/WMioohHjG0uFDlc
-         NTVMebYQ63KbUCmK06D3QHYebmcoAmwlegs56vmYeImL1Pw+wo8DVhgbMDkFCi3g9pH0
-         79z86qEr/aZMLMsU8mOsAdqwXaJzpLicVkKay0qwNgylT8jwy7eF5F3Hf1ZYZ6aA1O0y
-         5bzwOeadd7XPDt6sWV2KX937jaHHz/MWdP9uVq5QARMumPLCgrctyY5PgaRkaNAa7hcJ
-         /G7V/xMjn9qSuYncaajswlX/LVIUTm75I/bKasSvkD1bvsMDfBC0haftBIjI47fh1UFB
-         ogFw==
-X-Gm-Message-State: ABy/qLYWQ7fI58Owm7lg4vbI1VBFpHKgVDVWDcERGMF1WUM8UqazxgAS
-        0EW+McleKtrTNR7yuPTv3T1P6w==
-X-Google-Smtp-Source: APBJJlHrpb+viUP1W8CeU7uOtAtMAoCLVyCpfXOl41PJX7SxhNONrYammNz0vfDLN9J1iEhBRDJV9A==
-X-Received: by 2002:a17:907:a0c6:b0:96f:8666:5fc4 with SMTP id hw6-20020a170907a0c600b0096f86665fc4mr4970673ejc.50.1690746544975;
-        Sun, 30 Jul 2023 12:49:04 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id v25-20020a17090606d900b00992e265a22dsm5085950ejb.136.2023.07.30.12.49.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 12:49:04 -0700 (PDT)
-Message-ID: <deea8977-53a1-31d0-ba3d-8daac1ab49c1@linaro.org>
-Date:   Sun, 30 Jul 2023 21:49:02 +0200
+        d=1e100.net; s=20221208; t=1690746637; x=1691351437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qCJ7pSNYfqsNs7KY1Muuh1w5+Pispwv1vOpFTja5zL0=;
+        b=gDrcpWjzQ+J438bS/p68zi5DdWyTUCQCnVzTN0chRTJ0lk/qIqHJcM2lLYMcW1Xhs1
+         36viXemt9tTgTzPG3j9F3AuFU/2mo4brQSzvf7cSN1/LkEHGa/dkpjWNRs7vBGKtu9qP
+         R8UngDGr+uhp0TDC6oAL6VFXJZU8y7fjqKhwyg/RZT/sGOZiWHwH212HwyNdFVbykiMd
+         Kf0WqEAgFHJLCwDvAiMb2f3DQm6egFzCPJKzY5DIZOVOr1k+8TT5lBpa6BFbShP2/OvE
+         /59lL47Q44NFaCKAJeGD4+fU2GCv8B4o6SscjTdLjHMLyM9S1TC2go1bMmAPtntpqv3r
+         ZIVA==
+X-Gm-Message-State: ABy/qLYKg4L/fuwQeH4e5uFxMsOTCsg2k4CgQmjbwqL3cVJJtJ7GPTGn
+        nooFLxLr2bDDqaXw7aCRJzTn0PV0k7ZXXgN3HWU=
+X-Google-Smtp-Source: APBJJlG0xWNr7SrEMc7Tyhix/H/7zR1s4xwyI+OFP7Il6Z6Gzj9sBa9pBs4gVKmd31DA5K+40Lf8mQqjKC7aLeDs9Tc=
+X-Received: by 2002:a05:6808:14cb:b0:3a2:572a:eaa6 with SMTP id
+ f11-20020a05680814cb00b003a2572aeaa6mr9760362oiw.5.1690746637249; Sun, 30 Jul
+ 2023 12:50:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] ASoC: dt-bindings: Convert maxim,max98925 to DT schema
-Content-Language: en-US
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ryan Lee <ryans.lee@maximintegrated.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230730194230.34447-1-krzysztof.kozlowski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230730194230.34447-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230728180833.18399-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230728180833.18399-1-aboutphysycs@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 30 Jul 2023 22:50:01 +0300
+Message-ID: <CAHp75VeBm=DpfhXOBmgHM-5Y9DBNqwdGdcWRzMxn6PVrZCKbKw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: pmic-eic-sprd: remove unnecessary call to platform_set_drvdata()
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        zhang.lyra@gmail.com, baolin.wang@linux.alibaba.com,
+        orsonzhai@gmail.com, andy@kernel.org, brgl@bgdev.pl,
+        linus.walleij@linaro.org, Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2023 21:42, Krzysztof Kozlowski wrote:
-> Convert the Maxim Integrated MAX98925/MAX98926/MAX98927 speaker
-> amplifier bindings to DT schema format.  Changes during conversion: add
-> sound-dai-cells, already used by DTS.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+On Fri, Jul 28, 2023 at 9:09=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
+com> wrote:
+>
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Als=
+o,
+> the private data is defined in this driver, so there is no risk of it bei=
+ng
+> accessed outside of this driver file.
 
-...
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> +  imon-slot-no:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 0
-> +    maximum: 30
-> +    default: 0
-> +    description:
-> +      Slot number used to send current information.
-> +
-> +  interleave-mode:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
-> +    default: 0
-
-Ehhh, two drivers have actually different property for this and the
-original bindings were not correct. I will send a v2 unifying it.
-
-Best regards,
-Krzysztof
-
+--=20
+With Best Regards,
+Andy Shevchenko
