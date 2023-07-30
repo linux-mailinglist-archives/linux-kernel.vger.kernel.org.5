@@ -2,77 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9046076858F
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282A7768598
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjG3N00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S230121AbjG3Nam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjG3N0Y (ORCPT
+        with ESMTP id S230105AbjG3Nal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:26:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8290EE7F;
-        Sun, 30 Jul 2023 06:26:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C91A60C4D;
-        Sun, 30 Jul 2023 13:26:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE86C433C8;
-        Sun, 30 Jul 2023 13:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690723582;
-        bh=WwgLymzmxnBrZ9f6hsSKR6h4CTJfMx2hwDOS2SI6yYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A1b6917DMvdT8q0WB5fzqseyK0S1MaHxzqi5+CXsvOnDO8nCLXqVTc+l10YoM7Ro8
-         TkLEm/AAJ4+ouDUj5DlLexfFGDmXGieMDuNjx37pvewyfCZA5KzgKLZVqfALFuEt8u
-         3gWFKgCExmC/wvoBjxp+pOBwmSsuG+/4W5NSn4K5IEgl7IpBK7mYKQqcf4Y3SVWwvU
-         o+KXgmFhjqUCMK2jnKaqceBr6vwr925vXvJ+5NUFH1cXSyX+dIGVUkjCSTET5EZIBH
-         Yo8TJnz/aYt226jX0RkOz6LIwfrqY+jHHxWYMrXbLrWHvHpsIbATznJNfDZtK8rEW1
-         X+3D9dBVNQm/Q==
-Date:   Sun, 30 Jul 2023 21:26:11 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Xiaolei Wang <xiaolei.wang@windriver.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, richardcochran@gmail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: dts: imx: Set default tuning step for imx7d usdhc
-Message-ID: <20230730132611.GR151430@dragon>
-References: <20230724154510.2532561-1-xiaolei.wang@windriver.com>
+        Sun, 30 Jul 2023 09:30:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECB01700
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1690723836; x=1691328636; i=aros@gmx.com;
+ bh=l5krJ3jVttvwQkkfk6cfKWWfR1eKtB3g81VmPSj2Ekc=;
+ h=X-UI-Sender-Class:Date:To:From:Subject;
+ b=XuseGh+RbeY3H6gFebUMw71HjxguP0+z0NHYQNO4EmtvM3u7bIJk+9b5wNPNh9zOSmtGAkI
+ rHCtheKUYUqazBbujxmzuFN3jaYZ6/i407cryxCdkh2drBKB4vpIslnizS/5ZGCSTmVN+WBRr
+ x8KMIcjPMMBYp5tM7j1bk6y+czwjlKy1lK8A7SfEtbNnmzbEkQvSRZg/oMlgnCwKtvWWLhe/n
+ U+dYXvEyGiZ3wsgq54xNylZOk1t73gSEzkyMpCdf5/NNhmDEcaSyWlwRjRbUYDmGuK1SQxsBa
+ PMlnCbY2MiWP+BZ1qqAV9uYd8y7jgtlvE4iMjJzwFLUDB7uCc3OQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.35.110.16] ([98.159.234.36]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M42jQ-1qQ6VH2wwS-0004Em; Sun, 30
+ Jul 2023 15:30:35 +0200
+Message-ID: <16a44663-808c-2eb4-ea6e-66f51a66f7cf@gmx.com>
+Date:   Sun, 30 Jul 2023 13:30:34 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230724154510.2532561-1-xiaolei.wang@windriver.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org
+From:   "Artem S. Tashkinov" <aros@gmx.com>
+Subject: Very bad bad firmware loading reporting situation
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1pMQTssx+5e9+gHWi7B2riude2WpZ4J8wUFZSk6jFQYY0cOEdUA
+ SmgvwyXZO7nrGCnlBEJR/xPSZbl0sdEfygKig/Jvfh0VaxdYslQ0x0aWqq2/Xg2p/sU4z/q
+ j8Dje0uRZSkPBydcF0MW/ofPXn4RMONOmGi0edjTX8CcGU6fIBXVfHoBa9UpxAqGGiPhaJv
+ mjWVzOARLpGbYIKuf0N4Q==
+UI-OutboundReport: notjunk:1;M01:P0:joV5KZBTFc0=;G2qv5klkO8IRqXDRZd4vEArwMce
+ zp053gDNhe8Ubt42P+1I2YKghs55ne1JxpoZc3cOFHYjyCHmbRMbsIBji5ksKARzWpj1F1sZP
+ /illildiNDXgMvUJ3hEZpbLZZDDwYf9vQmCdVz/JDtatXR/1cw8Qf2Fmp2I1v++StAo53bExY
+ ifgtkz0+uZJX1GaK8MD5wMHYtfZnxqsTbP32iURsORMD8cg+wF8yFN7ggOo1qlLoIfIFDPfq4
+ xFleVLzOleqc2Ijr6uYyY7iFAZoZCgN4/NgAzfOmGS8PKRy1t3B7I77YNJC44ADxexZ7dZVai
+ /tW24DVPvGu6DkUY+ENd9L+J1X2vcqbNNfzfHeb59uQu/PYOFIUcyY+2TIH+r3zVLg1lvgrVb
+ 7NNcKQFXbloXCfDBDPDMIZMOxA8isrJ5bMBjossYz/SkzHMHhCXQqogw9DG/Cla0BsbHE/2J6
+ /+0AIfKckyHqVs8PdI74QlFs/gpqtOLqm0AA6A7l34UQ2q550YW7Ukd4P3aA+CeowmctMDGBx
+ k/Iy4mwbe4blTIwZcoX3dCTooxn61ZkKMg17xyq/BPVrv1MjDGuOxWbkT1Xc++L6FZKXWU+bi
+ 7gA41pnrnulTc4ENer0WDWVGqtUCSzbMgGmMgzD3+eAbgJOHKfeh9ci6wxAlLhZSEKwD78sOC
+ xc6Gb7OtuNteJo8Bzt603mP7u9mZOVlMP8EnhMWet0FEZdKLy43cK0T8odvf8o4JGq09D2fDP
+ BzefZUV713/gbZPw/wowE5QGC6xaIxvMjItBOW/2hvFDnVDuRIEDXmKv8/YaIuCdLiGskFuNk
+ iUSk8KdhVhSBn9mSBwiWXbszzd8sFNrNMnQQT+PXfZPUnlDkjqN5M8f0+Otvd0Mdg6ss+wmiR
+ oB1Ng4xqnvb42GTT6waDF1aAVpe1kcRo2PiLaFBNx6WW7aZT5IjSjoyTKomHpQVhi4RNFDiGn
+ OV03xicSIlxUdVohH4v8jdBNpE8=
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_SBL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 11:45:10PM +0800, Xiaolei Wang wrote:
-> If the tuning step is not set, the tuning step is set to 1.
-> For some sd cards, the following Tuning timeout will occur.
-> 
-> Tuning failed, falling back to fixed sampling clock
-> mmc0: Tuning failed, falling back to fixed sampling clock
-> 
-> So set the default tuning step. This refers to the NXP vendor's
-> commit below:
-> 
-> https://github.com/nxp-imx/linux-imx/blob/lf-6.1.y/
-> arch/arm/boot/dts/imx7s.dtsi#L1216-L1217
-> 
-> Fixes: 1e336aa0c025 ("mmc: sdhci-esdhc-imx: correct the tuning start tap and step setting")
-> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-> Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Hi everyone,
 
-Applied, thanks!
+I really dislike how firmware loading is handled by kernel [modules]:
+
+* Many modules don't report which firmware files are getting loaded
+* Often no information is reported in regard to firmware files
+themselves, such as version, date or firmware file size. In a perfect
+world it would be nice to at least see the CRC32 checksum of the
+firmware file.
+* Often bus and address are not clearly indicated.
+* All the required firmware files must be probed simultaneously
+(file_exists()) and reported if any of them are missing _before_
+attempting to load any of them.   For instance missing firmware files
+for the amdgpu driver may lead to a system instability or outright crashes=
+.
+
+This needs to change.
+
+What I expect to see in `dmesg`:
+
+module_name: PCI-e 0000:01:00.0 Loading firmware file
+'directory/fw1.bin', version 1.2.3, size 12345 bytes
+module_name: PCI-e 0000:01:00.0 Loading firmware file
+'directory/fw2.bin', version <unversioned>, size 23456 bytes
+module_name: PCI-e 0000:01:00.0 Loading firmware file
+'directory/fw3.bin', version 1.0.0, size 4444 bytes
+
+In case fw2.bin or fw3.bin is missing, the module must report that info
+_before_ attempting to load any found/existing firmware files.
+
+module_name: PCI-e 0000:01:00.0 Warning: missing firmware file
+'directory/fw3.bin'
+module_name: PCI-e 0000:01:00.0 Warning: missing firmware file
+'directory/fw2.bin'
+module_name: PCI-e 0000:01:00.0 Loading firmware file
+'directory/fw1.bin', version 1.2.3, size 12345 bytes
+
+As it currently stands firmware files are loaded on a one by one basis,
+so in case you don't want to keep hundreds of megabytes of useless files
+in /lib/firmware, several reboot attempts may be required to figure out
+all the missing firmware files which is far from optimal.
+
+
+Case in point:
+
+cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Cirrus Logic CS35L41 (35a40),
+Revision: B2
+cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Reset line busy, assuming
+shared reset
+cs35l41-hda i2c-CSC3551:00-cs35l41-hda.1: Cirrus Logic CS35L41 (35a40),
+Revision: B2
+cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: xz decompression failed (xz_ret=
+=3D6)
+cs35l41-hda i2c-CSC3551:00-cs35l41-hda.0: Falling back to default firmware=
+.
+
+No information about firmware being requested whatsoever. No information
+about bus or hardware device or maybe there is but it's hard to read.
+There's no module named "cs35l41-hda".
+
+
+Another example:
+
+mt7921e 0000:01:00.0: enabling device (0000 -> 0002)
+mt7921e 0000:01:00.0: ASIC revision: 79220010
+mt7921e 0000:01:00.0: HW/SW Version: 0x8a108a10, Build Time: 2023062714370=
+2a
+mt7921e 0000:01:00.0: WM Firmware Version: ____000000, Build Time:
+20230627143946
+
+No information about firmware file(s) being loaded whatsoever. Actually
+three files are being loaded by this device (Wi-Fi + BlueTooth).
+
+This issue is tracked here:
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217734
