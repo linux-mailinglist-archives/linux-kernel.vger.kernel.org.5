@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 173B3768536
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 14:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F24768539
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 14:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjG3MHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 08:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
+        id S230047AbjG3MK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 08:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjG3MHA (ORCPT
+        with ESMTP id S229437AbjG3MK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 08:07:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BFC198C;
-        Sun, 30 Jul 2023 05:06:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 30 Jul 2023 08:10:56 -0400
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE63510E3;
+        Sun, 30 Jul 2023 05:10:54 -0700 (PDT)
+Received: from localhost.localdomain (fhswifi.lu.lv [5.179.19.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E08B60BB8;
-        Sun, 30 Jul 2023 12:06:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93FEC433C7;
-        Sun, 30 Jul 2023 12:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690718818;
-        bh=Ra80a0aIKgvFmi8fzh0InRNVF5NIjmriiDM4GB77148=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=XRM1UN5ebIxwK9KklCEaRFpaRj701rZnPO31EK2m8/ERHJs4c+Kg9CBpofNiEx6/F
-         2QYuSDr2fi3DWvjdHLFH0CU/rh7ddKOrMtev3tQdqzmpUizdY8dSxg8NjTIvpxBBE0
-         xi7rVbJWkAbFyOQZUI8hSqQvD8rt6gaWEQFjksJVzzlJ1qbqG5fh9vErzXxJZth8XD
-         km6VJC6IsUT6PcRdtIi4tj3iI6kdVP8jig6Q19f89h8ceH8MHZ9w2jyxHcudqII6q6
-         H4Uy3sk0oFzBL9FQVxL+r9F+bOxAJ7HvqXI/FXyImjsTtqmI7fW29FsnK8k49l5jE6
-         R9XeUsik2vdyw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     linux-rdma@vger.kernel.org, linuxarm@huawei.com,
+        by ixit.cz (Postfix) with ESMTPSA id C992F160057;
+        Sun, 30 Jul 2023 14:10:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1690719052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8xPO/h+VRMWWUdnfCzdT2GNLOOjMm+3WDZzPS6rqiDY=;
+        b=yuke68O41Sz0uTySgOzG6labzf7hb8vdOhRXavKZ9941dYwAArzT/N8YyWZp++evnscZFA
+        lRKUGnCj1WeZJbuQDpyBvaHuCvr7whQEIREPXP7dvmVMXS2mPyMoacVJFoewiQfJiE6GO/
+        2xVjB0ieiJ+sEH74dvwhZiFOx+NHc9Q=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        David Heidelberg <david@ixit.cz>, Peng Fan <peng.fan@nxp.com>
+Cc:     kernel@puri.sm,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
-References: <20230721092052.2090449-1-huangjunxian6@hisilicon.com>
-Subject: Re: [PATCH v4 for-next] RDMA/core: Get IB width and speed from netdev
-Message-Id: <169071881408.197073.10243396231178591967.b4-ty@kernel.org>
-Date:   Sun, 30 Jul 2023 15:06:54 +0300
+Subject: [PATCH] arm64: dts: imx8mq-librem5-devkit: switch to vqmmc-supply
+Date:   Sun, 30 Jul 2023 15:10:46 +0300
+Message-Id: <20230730121047.43115-1-david@ixit.cz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_DYNAMIC,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Resolves following warning:
+arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dtb: mmc@30b50000: Unevaluated properties are not allowed ('power-supply' was unexpected)
+	from schema $id: http://devicetree.org/schemas/mmc/fsl-imx-esdhc.yaml#
 
-On Fri, 21 Jul 2023 17:20:52 +0800, Junxian Huang wrote:
-> Previously, there was no way to query the number of lanes for a network
-> card, so the same netdev_speed would result in a fixed pair of width and
-> speed. As network card specifications become more diverse, such fixed
-> mode is no longer suitable, so a method is needed to obtain the correct
-> width and speed based on the number of lanes.
-> 
-> This patch retrieves netdev lanes and speed from net_device and
-> translates them to IB width and speed.
-> 
-> [...]
+Cc: kernel@puri.sm
+Cc: Guido Günther <agx@sigxcpu.org>
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks!
-
-[1/1] RDMA/core: Get IB width and speed from netdev
-      https://git.kernel.org/rdma/rdma/c/cb06b6b3f6cbc5
-
-Best regards,
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+index b3549eae6278..a8b5da3ca08f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+@@ -1031,7 +1031,7 @@ &usdhc2 {
+ 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+ 	bus-width = <4>;
+ 	vmmc-supply = <&reg_usdhc2_vmmc>;
+-	power-supply = <&wifi_pwr_en>;
++	vqmmc-supply = <&wifi_pwr_en>;
+ 	broken-cd;
+ 	disable-wp;
+ 	cap-sdio-irq;
 -- 
-Leon Romanovsky <leon@kernel.org>
+2.40.1
+
