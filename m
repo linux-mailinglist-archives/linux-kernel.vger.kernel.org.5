@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382CF768415
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 09:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C26A768418
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 09:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbjG3HDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 03:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
+        id S229564AbjG3HKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 03:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3HDf (ORCPT
+        with ESMTP id S229449AbjG3HKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 03:03:35 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9AB5710FE;
-        Sun, 30 Jul 2023 00:03:33 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36U73PO2008085;
-        Sun, 30 Jul 2023 09:03:25 +0200
-Date:   Sun, 30 Jul 2023 09:03:25 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v3 4/7] selftests/nolibc: add XARCH and ARCH mapping
- support
-Message-ID: <20230730070325.GA8033@1wt.eu>
-References: <45cc24c1cf8794782be2ae631ca01bcd136da6d9.1690468707.git.falcon@tinylab.org>
- <20230730063818.10573-1-falcon@tinylab.org>
+        Sun, 30 Jul 2023 03:10:33 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392EC10FE;
+        Sun, 30 Jul 2023 00:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690701029; bh=ATqRlo8LtsDvVCdJdSwTHcECxAmz60tFbmxDsJJ7stk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lMvY8YgC6MMin+su5szDVx5+GH27Z03H3fi88ErT0IWNceW+A6l/zDlwAYtH8qEkV
+         tIM/26C3LLAdA3L0fb1VpezrHQbwXTlN4/46HTAPKG+0nKs1wpz3MrhZ+nb19vNshv
+         GUGy1CxhFkI3WRD+smpEZCaZoDcVFOdgUgR9TcwQ=
+Date:   Sun, 30 Jul 2023 09:10:29 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Armin Wolf <W_Armin@gmx.de>
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] platform/x86: wmi-bmof: Use device_create_bin_file()
+Message-ID: <5dc6355a-dedd-4471-abab-6b0c4ea434b1@t-8ch.de>
+References: <20230730043817.12888-1-W_Armin@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230730063818.10573-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230730043817.12888-1-W_Armin@gmx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 02:38:18PM +0800, Zhangjin Wu wrote:
-> with 'override', we are further able to use:
+On 2023-07-30 06:38:15+0200, Armin Wolf wrote:
+> Use device_create_bin_file() instead of sysfs_create_bin_file()
+> to avoid having to access the device kobject.
 > 
->     $ make ARCH=powerpc
->     Makefile:29: *** ARCH=powerpc, XARCH=ppc.  Stop.
->     $ make ARCH=ppc
->     Makefile:29: *** ARCH=powerpc, XARCH=ppc.  Stop.
->     $ make ARCH=ppc64
->     Makefile:29: *** ARCH=powerpc, XARCH=ppc64.  Stop.
->     $ make ARCH=ppc64le
->     Makefile:29: *** ARCH=powerpc, XARCH=ppc64le.  Stop.
+> Tested on a ASUS PRIME B650-PLUS.
 > 
-> So, with 'override', users will be able to directly use the famous ARCH, it is
-> able to accept powerpc, ppc, ppc64, ppc64le and users can simply ignore XARCH
-> and we are able to only use XARCH as an internal variable to temply save input
-> ARCH and then convert it to an internal ARCH.
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 
-But it's extremely confusing as you can see above: the user passes
-one value and another one is found instead inside the makefile.
-Initially I said that I didn't want that we'd put incorrect values
-in ARCH so that it could be properly propagated through the various
-makefile layers and include files, and that led to XARCH. 
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Tested-by: Thomas Weißschuh <linux@weissschuh.net>
 
-> Without 'override', we must carefully document its usage, it may be:
+> ---
+>  drivers/platform/x86/wmi-bmof.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->     # XARCH and ARCH mapping
->     #
->     # Usage:
->     #      $ make ARCH=<kernel-supported-ARCH> XARCH=<nolibc-test-supported-variants> ...
->     #
->     #      e.g. make ARCH=powerpc XARCH=[ppc|ppc64|ppc64le]
-
-Please let's do much simpler:
-
-      # XARCH extends the kernel's ARCH with a few variants of the same
-      # architecture that only differ by the configuration, the toolchain
-      # and the Qemu program used. It is copied as-is into ARCH except for
-      # a few specific values which are mapped like this:
-      #  XARCH        ARCH      config
-      #   ppc        powerpc    32 bits
-      #   ppc64      powerpc    64 bits big endian
-      #   ppc64le    powerpc    64 bits little endian
-      #
-      # It is recommended to only use XARCH, though it does not harm if
-      # ARCH is already set. For simplicity, ARCH is sufficient for all
-      # architectures where both are equal.
-
-This way we'll even have the luxury of adding armv5, armv7 and thumb2
-if we want.
-
->     # XARCH is used to save user-input ARCH variant
->     # configure default variants for target kernel supported architectures
+> diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bmof.c
+> index 80137afb9753..d0516cacfcb5 100644
+> --- a/drivers/platform/x86/wmi-bmof.c
+> +++ b/drivers/platform/x86/wmi-bmof.c
+> @@ -75,7 +75,7 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
+>  	priv->bmof_bin_attr.read = read_bmof;
+>  	priv->bmof_bin_attr.size = priv->bmofdata->buffer.length;
 > 
-> For the help page, if we only use '\$$XARCH or \$$ARCH', it may mislead users:
+> -	ret = sysfs_create_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
+> +	ret = device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+>  	if (ret)
+>  		goto err_free;
 > 
-> 	@echo "  run-user               runs the executable under QEMU (uses \$$ARCH or \\$XARCH, \$$TEST)"
+> @@ -90,7 +90,7 @@ static void wmi_bmof_remove(struct wmi_device *wdev)
+>  {
+>  	struct bmof_priv *priv = dev_get_drvdata(&wdev->dev);
 > 
-> That's why I at last add the 'override' keyword to make sure even if users
-> wrongly and only use ARCH as the argument, it must not fail, or we forcely ask
-> user pass ARCH and XARCH together.
+> -	sysfs_remove_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
+> +	device_remove_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+>  	kfree(priv->bmofdata);
+>  }
 > 
-> 	@echo "  run-user               runs the executable under QEMU (uses \$$ARCH and \\$XARCH, \$$TEST)"
+> --
+> 2.39.2
 > 
-> Or we simply only and always ask users to use XARCH (as the first version does)
-> for nolibc-test and let ARCH as the default one from a previous build kernel:
-> 
-> 	@echo "  run-user               runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
-
-No, no, no, we don't use some defaults from a previous build. That makes
-problems much harder to debug and reproduce. However I'm fine with only
-indicating that QEMU uses XARCH if you want.
-
-> That means, the ugly 'override' does help us to save lots of teach work ;-)
-
-Precisely not. In my opinion you focus a lot on first use but not enough
-on troubleshooting. If someone wastes 20 minutes because they didn't want
-to take 20 seconds to read a help message, it's their problem. But if
-someones wastes one hour trying to debug a horribly inconsistent makefile
-that modifies their most critical variables along the execution, and they
-have to figure how to insert their stuff there to be accepted by the code,
-it's not respectful of their time and it becomes our problem.
-
-> I'm ok with 'override' or not, welcome your confirm, which direction do you
-> prefer?
-
-The one with least complications and which doesn't override ARCH. Also
-please remember the example I provided where the test can be fired from
-the top dir where ARCH has a well-defined set of values. You found yourself
-inconvenient to have to change it between commands and that's why you were
-trying to add menuconfig here to work around this problem.
-
-Thanks,
-Willy
