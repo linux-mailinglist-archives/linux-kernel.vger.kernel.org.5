@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB5E768583
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9046076858F
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjG3NUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S229746AbjG3N00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjG3NTu (ORCPT
+        with ESMTP id S229602AbjG3N0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:19:50 -0400
+        Sun, 30 Jul 2023 09:26:24 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21CF1AE;
-        Sun, 30 Jul 2023 06:19:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8290EE7F;
+        Sun, 30 Jul 2023 06:26:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EBB160C19;
-        Sun, 30 Jul 2023 13:19:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C93B5C433C7;
-        Sun, 30 Jul 2023 13:19:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C91A60C4D;
+        Sun, 30 Jul 2023 13:26:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE86C433C8;
+        Sun, 30 Jul 2023 13:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690723188;
-        bh=VFrpwpxcLavxMY3HOmr+OiukVNHupv8GzfGgfplcls0=;
+        s=k20201202; t=1690723582;
+        bh=WwgLymzmxnBrZ9f6hsSKR6h4CTJfMx2hwDOS2SI6yYE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bKUf8CFQGFdgx0wcdsvqLNWLHUMhKZIj2b4E35AOfJj2lpMcxvx6rqOO8F1YbsK7m
-         2CJLGz8H84q2eEbNDaR9OoT9ePQPDELQ5xcC+ugVY4yg69zfl5pfzWI5WzftAGW5WS
-         W2UrnZegcYjrJINKJGADOUgXynsMSu3wee1XzHS0tooGh46/modtQYrxx735X4A/xH
-         l+U84JySIn/sXLSrU6Hg1Wx3rs4911P28K8rEOz5y5FBmj9kNRarwlPLPHxl7BBpmL
-         wuyZtFaO3ZowwXNmHqaozgO6cj8ajUMKxx0nITCaW6V7Ra6CRYuPjsvZ3eEGfVduMo
-         KOfjgBg8AlCYg==
-Date:   Sun, 30 Jul 2023 21:19:37 +0800
+        b=A1b6917DMvdT8q0WB5fzqseyK0S1MaHxzqi5+CXsvOnDO8nCLXqVTc+l10YoM7Ro8
+         TkLEm/AAJ4+ouDUj5DlLexfFGDmXGieMDuNjx37pvewyfCZA5KzgKLZVqfALFuEt8u
+         3gWFKgCExmC/wvoBjxp+pOBwmSsuG+/4W5NSn4K5IEgl7IpBK7mYKQqcf4Y3SVWwvU
+         o+KXgmFhjqUCMK2jnKaqceBr6vwr925vXvJ+5NUFH1cXSyX+dIGVUkjCSTET5EZIBH
+         Yo8TJnz/aYt226jX0RkOz6LIwfrqY+jHHxWYMrXbLrWHvHpsIbATznJNfDZtK8rEW1
+         X+3D9dBVNQm/Q==
+Date:   Sun, 30 Jul 2023 21:26:11 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
 Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2 00/10] arm64: dts: imx8ulp: add more nodes
-Message-ID: <20230730131937.GN151430@dragon>
-References: <20230724075833.2763190-1-peng.fan@oss.nxp.com>
+        conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, richardcochran@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ARM: dts: imx: Set default tuning step for imx7d usdhc
+Message-ID: <20230730132611.GR151430@dragon>
+References: <20230724154510.2532561-1-xiaolei.wang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230724075833.2763190-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230724154510.2532561-1-xiaolei.wang@windriver.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,33 +58,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 03:58:23PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, Jul 24, 2023 at 11:45:10PM +0800, Xiaolei Wang wrote:
+> If the tuning step is not set, the tuning step is set to 1.
+> For some sd cards, the following Tuning timeout will occur.
 > 
-> V2:
->  Add blank line between property and child node in patch 3
->  Move compatible in the beginning in patch 8
->  For patch 9, the pinctrl settings are same, because drive strengh only
->  has a enable/disable bit.
+> Tuning failed, falling back to fixed sampling clock
+> mmc0: Tuning failed, falling back to fixed sampling clock
 > 
-> Add flexspi, cm33, thermal, cpuidle, reserved memory nodes
-> Enable flexspi, lpi2c7, spi-nor, cm33 for i.MX8ULP-EVK
-> Set default clock for SDHC
+> So set the default tuning step. This refers to the NXP vendor's
+> commit below:
 > 
-> Haibo Chen (3):
->   arm64: dts: imx8ulp: add flexspi node
->   arm64: dts: imx8ulp-evk: add 100MHz/200MHz pinctrl setting for eMMC
->   arm64: dts: imx8ulp-evk: enable lpi2c7 bus
+> https://github.com/nxp-imx/linux-imx/blob/lf-6.1.y/
+> arch/arm/boot/dts/imx7s.dtsi#L1216-L1217
 > 
-> Han Xu (1):
->   arm64: dts: imx8ulp-evk: add spi-nor device support
-> 
-> Peng Fan (6):
->   arm64: dts: imx8ulp: add cm33 node
->   arm64: dts: imx8ulp: set default clock for SDHC
->   arm64: dts: imx8ulp: add thermal node
->   arm64: dts: imx8ulp: add cpuidle node
->   arm64: dts: imx8ulp-evk: add reserved memory for cma
->   arm64: dts: imx8ulp-evk: enable CM33 node
+> Fixes: 1e336aa0c025 ("mmc: sdhci-esdhc-imx: correct the tuning start tap and step setting")
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+> Reviewed-by: Fabio Estevam <festevam@gmail.com>
 
-Applied all, thanks!
+Applied, thanks!
