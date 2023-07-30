@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34441768656
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B0976865C
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbjG3QJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 12:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        id S229585AbjG3QPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 12:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjG3QJ0 (ORCPT
+        with ESMTP id S229520AbjG3QPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 12:09:26 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CF610F9
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 09:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690733356; x=1691338156; i=efault@gmx.de;
- bh=30KU6uhA2dYHzSo+IuxIfT+wc1vnoytUNnxdaHVwU04=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=ny85DKkVL3UimhYcC3Wh+BYRpLdHOJiFn9X/1lc4XWQ69unj9g9Av5pXtF83ygWvmNzxPM+
- ipgy+AC/bfjUr8I5dxzeU9dBUvM9k35etfDetlxDO+hgWndulN7ez6ZWlvJzfN9OvKKCo6z08
- pbJwHlMHyilCSy8ZL51qukSf2xKpMRBY832UFBgl4kR1EQZFgg4YJF3g4g9kKs3z0qIT0HWJx
- BGUTOZ28LCKGYa9TDVihHE0GtwHRBT5RmmMsOG6nsWbu73jpUm9iwxdFn7bk/HRwGpvhPZj3X
- VROAkfzdBGXJi2A64Qkmz/eeZt6bqiQKEtxfh6sTigoVxPYJ0XvA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.221.149.208]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N4hzj-1pgjt511j5-011l3r; Sun, 30
- Jul 2023 18:09:16 +0200
-Message-ID: <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
-Subject: Re: arm64: perf test 26 rpi4 oops
-From:   Mike Galbraith <efault@gmx.de>
-To:     Will Deacon <will@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Date:   Sun, 30 Jul 2023 18:09:15 +0200
-In-Reply-To: <20230728141852.GA21718@willie-the-truck>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
-         <20230728141852.GA21718@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Sun, 30 Jul 2023 12:15:38 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A4C1707
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 09:15:37 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso5951451e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 09:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690733735; x=1691338535;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5recWV/7FkYLd6mSLma/a+qiyOjQ21TUrbudJOgS8qc=;
+        b=qiWLXEFScZ4SoKHXVTxpgpbHkWDjL+tisbcTJaSpXhTocAt44CSAXerjypvDD3HSrY
+         l3kz/iV5KWYJAU7T/3opg4y+wjaspRU7rzL4d9PBPkSuq/QTda4pFhjSajwaUbavcbQm
+         F78lkiIRjUv83fstrJAWpSEFg6/b5FtsuDD4m75dtLo/PLj4Wulq9RerY7di6pAzzd9d
+         zrgnSrcFvyL0yCyaaM9o79wwv5xz7EUaluus8aXPnCxcW5MKxfCfGSSA0eZ7kGyz5Abt
+         vnE65goemgmtqXqicmU+vqNo4PSoN7TEY8fxVHBGz9E014wYqV+KpJPOLu2JP5/QGWH5
+         oa5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690733735; x=1691338535;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5recWV/7FkYLd6mSLma/a+qiyOjQ21TUrbudJOgS8qc=;
+        b=VA0i2W3iOSA+u+RUlKb1NOvIWnzuK1Q6AamacmaX5zrHiG9/uIBPOJ/c8UoEPRf5Ta
+         WZyns9W7829gG2kGrKsXa/VvXpuwqB8nSj5IRCuO3tojUuWVpB6/diGyGwrRxN1yiEw7
+         dZpVmqbV5rH4WTihI22P7E8Sh3lTvsMTiTJ5eNSu0+3xecE/B4OkexSD8r+sURH2cu7o
+         PRugOvSQJzbPCqzAXTQX5w65zYVHsofZi9cVNJlgknTtwg8F0MGfskXju+HgDIfV5SEs
+         HjD2FDru7P6OckQlIHHCiDSKCQEKCYfeI14rZoKG83WaSGLVUrK+Myu1QHiPRkfKw3dS
+         tOxQ==
+X-Gm-Message-State: ABy/qLayMX4+NnTRiGYbipE19d8TiKEf6unaBCrSnnTsw/q+vTF6VIPx
+        IOgjFjeQ0Q3X0mdcRqR4LP8wRJMXZDq4fQ==
+X-Google-Smtp-Source: APBJJlFrAfq3M891FFozfdDMtZcr99WH7W3j+1rV8ozSE7iNm82woz2A1hZqa5krNqzlpbpwXmU9BA==
+X-Received: by 2002:a19:7619:0:b0:4f3:d682:7b1c with SMTP id c25-20020a197619000000b004f3d6827b1cmr4332745lff.45.1690733735043;
+        Sun, 30 Jul 2023 09:15:35 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id j9-20020aa7ca49000000b0051873c201a0sm4194664edt.26.2023.07.30.09.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 09:15:34 -0700 (PDT)
+From:   Nam Cao <namcaov@gmail.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Nam Cao <namcaov@gmail.com>
+Subject: [PATCH] ARM: optprobes: fix typo "consitional"
+Date:   Sun, 30 Jul 2023 18:13:46 +0200
+Message-Id: <20230730161346.64066-1-namcaov@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:u1OuaKafwCesQFew5dhGh/4P0ibEODRjLUO1MgtdymAL5jrnwxz
- ZCwzUxfqPbLYaeLsMKUO+oievmIte/K1y6lYvgUeSsIa899OpXz/WhrlIHjW39PM+jHWgsw
- l0Cotj4s3+B/OdVt6diXjHUZNHClYvmoeBcdRw8MWT7yhpmT83YRInquixMHTgXB9igKloM
- 4CPjJhThcrF2Ls1DPyrGg==
-UI-OutboundReport: notjunk:1;M01:P0:ipSK4lrVGE8=;fZ4XnU9Ewaty9D6gMOdefnw1EkG
- PJ5rhTPAzHPzfHcyrd/kjsV+tgqXeJIkhFuaVLVU9a6K9ukW0JJqLn2FYbwMs7Zxnjn2tRLfM
- mu1Jdo6zrvydWKJkr7fSmRLQKoovzqZqlHBmoe+4v8Yi42+SyZiYAhr4pHRwvY3W8PXUGKD5y
- ZGXALX0illzUB01siw2N0mXBPJNX3xYyiHco2BRXalu6R8hpaz7dcySyffp9dyVnRAAnRXjc0
- L7MJYmtqO92XVizopQxhRXZY/2DS1AYqEWiy0+bdMnejJ97Sy3tER8Vctc4N9NjHrNs2J6p5L
- U6SOxAYDNxbKgh0GPxvBWzcx77Mi6R6ULXUAbVPPbZY/Xd/zFHacxWfyLr8/mX4azSFnsnLAT
- xPqLW2b2xj16Bjb/e0Ggfml6JHWso+PoeoEgHKWCsUugSIMfrsBf/LwafoxVdJSsikJqGOPUf
- 6db0Q75g5CgnHP64CMEQF8r92iASbjy/OBuzwxOY63oo2G4Gih/Yqve/0YGMX+Tk0I2mlSfxY
- A+Ib4+0uyWK699y6M6gR/2clkR3GLAH7FVr5dYHinprdGlYSBLLpoafOAmMhS3KUyeLQEt27N
- yrqTMrPvI40R7+UdUccBiJPDL7+lE1WAMfjw2k/VuC0EbRZqT6r1URsOKCcNO02Pi1awpZUmE
- Ut48bqw+/ZHkko8HJs20eDEPZLj5dug2xRskAP1/Xy9zerjhPHcVrIFY5qZpqMgRQu6t+i660
- FlV5I5lJSI5iwVZjc2SOBi2BnFxBYCQS8vAcHv2xp1ymWaU3U9N/T9e9+K2g9m8unRERsgSVg
- A04BYTmQt8vpdqdZ2hwD89QdJLEXk6OK7lWEv63PbhnAzhZw2Lsp5qzGGCz7E29SZ+7mH116z
- mJEeJHJwLbQS0oGoCKFPREjTC07W49YkilEXnybnkujnGDPgkUN0tu47mmOlFcClg4HvDLbHK
- gmOdAZlByUrbkVBm4h3Rdlbi6xk=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-28 at 15:18 +0100, Will Deacon wrote:
->
-> Looking at this quickly with Mark, the most likely explanation is that
-> a bogus kernel address is being passed as the source pointer to
-> copy_to_user().
+Fix "consitional" to be "conditional".
 
-'start' in read_kcore_iter() is bogus a LOT when running perf test 26,
-and that back to at least 5.15.  Seems removal of bogon-proofing gave a
-toothless old bug teeth, but seemingly only to perf test 26.  Rummaging
-around with crash vmlinux /proc/kcore seems to be bogon free anyway.
+Signed-off-by: Nam Cao <namcaov@gmail.com>
+---
+ arch/arm/probes/kprobes/opt-arm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Someone should perhaps take a peek at perf.  Bogons aside, it also
-doesn't seem to care deeply about kernel response.  Whether the kernel
-oops or I bat 945 bogons aside, it says 'OK'.  That seems a tad odd.
+diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
+index 7f65048380ca..bdd7264471db 100644
+--- a/arch/arm/probes/kprobes/opt-arm.c
++++ b/arch/arm/probes/kprobes/opt-arm.c
+@@ -307,7 +307,7 @@ void __kprobes arch_optimize_kprobes(struct list_head *oplist)
+ 
+ 		/*
+ 		 * Make it a conditional branch if replaced insn
+-		 * is consitional
++		 * is conditional
+ 		 */
+ 		insn = (__mem_to_opcode_arm(
+ 			  op->optinsn.copied_insn[0]) & 0xf0000000) |
+-- 
+2.34.1
 
-	-Mike
