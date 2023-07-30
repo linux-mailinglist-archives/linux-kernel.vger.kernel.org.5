@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E240376855F
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B17768561
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjG3NCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
+        id S230081AbjG3NC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjG3NC3 (ORCPT
+        with ESMTP id S229597AbjG3NCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:02:29 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD141B4
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:02:26 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a5ab2d2b3bso7316412b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:02:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690722146; x=1691326946;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L3+xX9E6P6Lf07taF/YiDpnu7cq3lZOdD7lzicgvWJk=;
-        b=XhJcyer+Yfurfyj+XLQXqOqeRwG1C+PGwqUoBUN3Lo/n3PIEKJ+3P4cXRqw6ku1/Lo
-         TKc23CPL2T0sFFRc8vwMfDiceUfU+NdUHA23kc8A4aY3E0VjYSKf+mY8Ne9dydstkGLm
-         r3+PipVI/S7S9WIUMaPcW+713ibccLIbK6TnVZLfO65wlEAy+rf8coi25M4YayKCEDsA
-         sv3hOcX3YDM5Na6d00oqcMYnlNxlxNZLp5/bo25qiNZpuBR+gkYml2ez96Kvs+eVfN+k
-         EYXbNmh0SHcWtCxHq6MFWXkIu6DUzIVSyFKRHbg4NMe0cZoLWulaevSmKHcf+SyeDEMR
-         drkg==
-X-Gm-Message-State: ABy/qLZ1AfySrJetxZR/cEngeO8GIzb0mDX8iCbgyzrnE1BTWTJ08dWI
-        tECsUBrpXpzNPtmQGMB3jc/mIWtM9MBORECospWAiTQte0bf
-X-Google-Smtp-Source: APBJJlG96CVIIsihm/Fxb7X6S10L+GaNCemgOioeKaGsHP2Wv5x5f9CCNO3XQlCS+4eQFs5HR/lTgkjruv8CsTQDzH8Rtei/qQSy
+        Sun, 30 Jul 2023 09:02:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BE48E;
+        Sun, 30 Jul 2023 06:02:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CF21960C34;
+        Sun, 30 Jul 2023 13:02:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA1BC433C8;
+        Sun, 30 Jul 2023 13:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690722172;
+        bh=aSQY9HgsSaUQiAf8RxghVlYx43Ai3Jca+KXRTpfnolE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pGVvCfLv1qPeprL6gkTA+HdOY1f42ww7pwISpAM4apBYN42tKs9No9A4tQtfTMqyl
+         CD9EadEVtrN5fSpdoqtKtQpkzkLRN7UnJGvl0H8E0DB9ZmHgnuMpfZ7U5M7dbyA2Wq
+         5XzZq0SmCA+8YhIsPXPhxUTGxcG6cV+9o6XQT77vMjBiHneasPtB+qHEdyvq35pKm6
+         tPLISx6/GAahXadAgU20hmI5tBDfWwJS0eULs/2YWw5Ix53QiXJqPG+zLuV0YU+9R7
+         tr4BQ5qapzdsjdBFcNn6htWnkzg1OOpdR/BCWTcwG150U5oh5rp4EkHEmloDcXa56r
+         UHpVC4Ic/+6Xw==
+Date:   Sun, 30 Jul 2023 15:02:49 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 19/22] Input: s6sy761 - use device core to create
+ driver-specific device attributes
+Message-ID: <20230730130249.lb4cafvirda5uuh7@intel.intel>
+References: <20230729005133.1095051-1-dmitry.torokhov@gmail.com>
+ <20230729005133.1095051-19-dmitry.torokhov@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3099:b0:3a1:e58d:aae0 with SMTP id
- bl25-20020a056808309900b003a1e58daae0mr13498872oib.3.1690722146261; Sun, 30
- Jul 2023 06:02:26 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 06:02:26 -0700
-In-Reply-To: <20230730115619.1280-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1204d0601b3ec90@google.com>
-Subject: Re: [syzbot] [wireless?] INFO: task hung in rfkill_sync_work
-From:   syzbot <syzbot+9ef743bba3a17c756174@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230729005133.1095051-19-dmitry.torokhov@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,20 +57,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Dmitry,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On Fri, Jul 28, 2023 at 05:51:28PM -0700, Dmitry Torokhov wrote:
+> Instead of creating driver-specific device attributes with
+> devm_device_add_group() have device core do this by setting up dev_groups
+> pointer in the driver structure.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Reported-and-tested-by: syzbot+9ef743bba3a17c756174@syzkaller.appspotmail.com
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
 
-Tested on:
+Andi
 
-commit:         d31e3792 Merge tag '6.5-rc3-smb3-client-fixes' of git:..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f0f67ea80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2bdbc68bd11d47f3
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ef743bba3a17c756174
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=101a1d31a80000
-
-Note: testing is done by a robot and is best-effort only.
+> ---
+>  drivers/input/touchscreen/s6sy761.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/s6sy761.c b/drivers/input/touchscreen/s6sy761.c
+> index 998d99d18911..149cc2c4925e 100644
+> --- a/drivers/input/touchscreen/s6sy761.c
+> +++ b/drivers/input/touchscreen/s6sy761.c
+> @@ -286,10 +286,7 @@ static struct attribute *s6sy761_sysfs_attrs[] = {
+>  	&dev_attr_devid.attr,
+>  	NULL
+>  };
+> -
+> -static struct attribute_group s6sy761_attribute_group = {
+> -	.attrs = s6sy761_sysfs_attrs
+> -};
+> +ATTRIBUTE_GROUPS(s6sy761_sysfs);
+>  
+>  static int s6sy761_power_on(struct s6sy761_data *sdata)
+>  {
+> @@ -465,10 +462,6 @@ static int s6sy761_probe(struct i2c_client *client)
+>  	if (err)
+>  		return err;
+>  
+> -	err = devm_device_add_group(&client->dev, &s6sy761_attribute_group);
+> -	if (err)
+> -		return err;
+> -
+>  	pm_runtime_enable(&client->dev);
+>  
+>  	return 0;
+> @@ -535,6 +528,7 @@ MODULE_DEVICE_TABLE(i2c, s6sy761_id);
+>  static struct i2c_driver s6sy761_driver = {
+>  	.driver = {
+>  		.name = S6SY761_DEV_NAME,
+> +		.dev_groups = s6sy761_sysfs_groups,
+>  		.of_match_table = of_match_ptr(s6sy761_of_match),
+>  		.pm = pm_ptr(&s6sy761_pm_ops),
+>  	},
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
