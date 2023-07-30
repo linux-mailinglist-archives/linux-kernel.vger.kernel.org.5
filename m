@@ -2,113 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3147687F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1397687F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbjG3UaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 16:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        id S230130AbjG3UbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 16:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjG3UaW (ORCPT
+        with ESMTP id S229820AbjG3UbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 16:30:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF64E113;
-        Sun, 30 Jul 2023 13:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690749011; x=1691353811; i=w_armin@gmx.de;
- bh=1EdUeSoMNd8wr3Gkc7pk6EgX5RIq5J8Xt9rcA1v6fmA=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=XsIunzewEyOm8RlGLbuHmNn92steIF4+jtPbLkNGX8oLP6rNZh+63ay7Qrnn3o9PXa0soM0
- meEF6F/np/KjuPQxIrhYbe/EcyWJ2H1/o46BcmIJ8HwIwudIh0U+cmdv0gvy+786XyjcIZDzx
- d5WITbH+rbX+HWRoEuLkCrG3Qp9Td6zLTZMEhEgGOCmLUUcpNWs/D6pe0fNR7GPgn8+j1nWLQ
- 7tBCuIbTm5kRV0PCN8DPEIjIdvH7e+FzkXozi2NkhoOvbeXehJx0ZJz7gCjI6twIKwdOejx8K
- QD+RkovPG9oK/XCisNtXXXywIrwnwoPD6lfl8dlZ3ZqmQEhrh95g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MWics-1qNz3K41lo-00X3pV; Sun, 30
- Jul 2023 22:30:11 +0200
-Message-ID: <0f761565-424b-695f-222d-64c672dfbdc5@gmx.de>
-Date:   Sun, 30 Jul 2023 22:30:10 +0200
+        Sun, 30 Jul 2023 16:31:02 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C254C113
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 13:31:00 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c10ba30afso106984166b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 13:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690749059; x=1691353859;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vxg8TeRb0NZN4rPS9q09YPBYQiS+mNKDuiZUWy7sPoE=;
+        b=T2n6ZC3LdIPpNjPMhN0clIMSRupAJ5wmAIrIV2AoJfro+kU5iA8/4yn42jO6rr69KY
+         wlFKXo9FYxNLBpVmMuMD7xjD7OfDUHbdkDV5H4bL5F1gwwgYCoBVQziK2Ov72H+8AYXD
+         dAs3n55aJS/5MJTM41Sk2zeIycwOvxCY392vlX/oUddRdV4BebFpNM/2yxnMzjPoILmv
+         kL6nr9rbvkKvpw2Z+POeAAWSI5wmttSM6ttgdwlNXQZ1xhi2CPIzvSdVAGv4oFnZQPsb
+         oNKKsCSf/9bgaDzt1UY1bsmaolIp+qu61sqcEKIHVawKKhkzmGr2oTGz8jxq1KQq1KDT
+         aMzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690749059; x=1691353859;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vxg8TeRb0NZN4rPS9q09YPBYQiS+mNKDuiZUWy7sPoE=;
+        b=hGJbXF/TwABzweiGCOGJSfpaFVJzA5s4rsF8pWUkI/jMxk+eLfXJQ+nLMZJpe6o28S
+         PHH8l+e9gG14U1AUlu5Lxjm8VkzKFnKDCjfzNVwE8OOkSL6bFWkjzv2W+qxaaxuTjzu3
+         oLu6MrK/zWJvdQbLA8Fp+rYK38qZ3jZjQjwh7k2yCEKEZ37DAH3qcNYarsNzkDkGr5VZ
+         xMNzT1jGGAiVdOMBt2PQfaHNZqLyiUiv05Ap3Et2gbxs/iTkJgz0oU3uv6qumryEK158
+         o1HPQCyrOQOH2H6HvcASeHe9C+TAkyU11D4+TL5vpnrayJN45rwz//IxdHFSS91Q2upS
+         fcTg==
+X-Gm-Message-State: ABy/qLaY7r/AM8ye4EAsHCn752zNxmb9pjix7fmIdk6pPO5lqjmv5woX
+        b/1qb0UErAiR73Hh168Lz6P8aQ==
+X-Google-Smtp-Source: APBJJlHOTxeh1CTXqfEUzI4IuLFNKbWoKOerY31UzGFO9qNi7Sim6hqRNPHAsYOXrUACqIz4IMuq6Q==
+X-Received: by 2002:a17:906:53d0:b0:99b:4d3d:c9b7 with SMTP id p16-20020a17090653d000b0099b4d3dc9b7mr6068918ejo.31.1690749059260;
+        Sun, 30 Jul 2023 13:30:59 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id n22-20020a170906841600b009934707378fsm5072399ejx.87.2023.07.30.13.30.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 13:30:58 -0700 (PDT)
+Message-ID: <25858c22-ef92-2136-67ef-0d27364c1600@linaro.org>
+Date:   Sun, 30 Jul 2023 22:30:56 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] platform/x86: wmi-bmof: Update MAINTAINERS entry
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230730043817.12888-1-W_Armin@gmx.de>
- <20230730043817.12888-3-W_Armin@gmx.de>
- <873de462-b06c-44af-a5d3-559a78161a7d@t-8ch.de>
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+To:     Svyatoslav Ryhel <clamor95@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-3-clamor95@gmail.com>
 Content-Language: en-US
-From:   Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <873de462-b06c-44af-a5d3-559a78161a7d@t-8ch.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Qw14HjhCgz/eFYEuZ1ZhaX6yBB97u51HkoH/dWXItrhRaeQjl9g
- eU7Uzex06B4V8Zu58SHm/DXw9tza1hQe/N/atRUa32axnbMtSU2Uw7eJPnT7skNMFwzJwA5
- YQ6U9kMlarVaNLVBgAWdTjKXS9qoyhba85lOwUHA5BvT7l2uTqxXKsVTBxeS4Gtf1gdvOor
- 8Tq+/n7wwYmDlftz7cW8A==
-UI-OutboundReport: notjunk:1;M01:P0:TjD20CGeY4w=;co2UyZosuA25nvCG+/vlxtiVTrx
- 1+C0nsV9jIbLWok2kfu62HXwikT6AN5YmtTCvpE+3R3On7oxvbnOQFnXu/XRWt3jKDJ6atvLh
- PfksAw2ZRkuaLPACQM921UeUluO8+EWbu5Tzgi9yKT5/0/lGJp7k1P2VrwlRzCTX/28yYB/YS
- 0e6PyXtYtNmWHDV8mW8ZAmpiJ97blQxWebiTKGncTb5o0q1vep5h6w9I4Wu1GIP9hk68yphV3
- BHRNOTU+Og7wZbUsO/a07bhMa9LDH/ZwTyRcr3gtbM3W/XT/wvsx0/Pp6/ObNck3qXwW7uQsP
- V8Fd8KQKUpMKcaeuqmXVKCTvoFVacqDxAk87Y4Y7erYmp5iY7Ml+3S30TLfRVqV1u1tgQp0SB
- D+QtmTdet36Mss3/x9Rn/mffdRvflHi2n4d2nAxydCM0Uw6vb0L/p1Q+T3ZYx+kGl0E2aOimr
- VhNhmSGpEnBUdTBB8VLN09lzaLYHJSorPqVNQhUBIKWfmv/faMytaGfW+xzgBfWcs/ieVEJK8
- TWp9vypU2kbVcL3wa1Qm2QkFnadcluC0aedc4U53E6XMj/4AVoUaw5cYVoTOCLFXW7Nzl/Bsj
- 2+WyFZszN9l++Nl7S/84hgYNMRa3m/5MVNXfOsWD2LyCw04VFCN0GxxlREUZP4oxPlTo9ujpL
- /ybGpCmiY9cq+mTLQ8YN7Q4dnPr+Fv17ReGNr51H/sg5GYf0NIoGZDnks1shBwPfDb2H9EB/e
- XsNztMY5eVtOGXFJKNlLwCbv+utkG9Scp+VXWjFxLXWBBh4w9nZ5DlAi7oJiLj+UaRCYB/u0K
- ds+htf/EyM0FTg4RCjZnwTfOv9QXerVEQ/At5CC9VGgop1sGXC8wKn27cU9gUxIlDEKCv5zV8
- t7oMHCP1b4hl3a3RpE1oPU3Tif6Dw00UJGLq34Hovzw6pLv9VkSbQxmz3FkedbbLK1VTbM11l
- 9TsA9w==
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230729160857.6332-3-clamor95@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.07.23 um 09:11 schrieb Thomas Wei=C3=9Fschuh:
+On 29/07/2023 18:08, Svyatoslav Ryhel wrote:
+> From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> 
+> Implement driver for hot-plugged I2C busses, where some devices on
+> a bus are hot-pluggable and their presence is indicated by GPIO line.
+> 
+> This feature is mainly used by the ASUS Transformers family. The
+> Transformers have a connector that's used for USB, charging or for
+> attaching a dock-keyboard (which also has a battery and a touchpad).
+> This connector probably (can't be verified since no datasheets or
+> special equipment is available) has an I2C bus lines and a "detect"
+> line (pulled low on the dock side) among the pins. I guess there
+> is either no additional chip or a transparent bridge/buffer chip,
+> but nothing that could be controlled by software. For DT this setup
+> could be modelled like an I2C gate or 2-port mux with enable joining
+> two I2C buses (one "closer" to the CPU as a parent).
+> 
+> Co-developed-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Ion Agorria <ion@agorria.com>
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
 
-> On 2023-07-30 06:38:17+0200, Armin Wolf wrote:
->> The WMI Binary MOF driver is important for the development
->> of modern WMI drivers, i am willing to maintain it.
->> Also fix the mailing list address.
->>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->> ---
->>   MAINTAINERS | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 426d3be71da2..9b871fb34e83 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -22954,8 +22954,9 @@ S:	Odd fixes
->>   F:	drivers/net/wireless/legacy/wl3501*
->>
->>   WMI BINARY MOF DRIVER
->> -L:	platform-drivers-x86@vger.kernel.org
->> -S:	Orphan
->> +M:	Armin Wolf <W_Armin@gmx.de>
->> +L:	platform-driver-x86@vger.kernel.org
->> +S:	Maintained
-> If you want a reviewer or second maintainer I would be volunteering.
+...
 
-Sure, the driver might be quite small, but having an reviewer is always go=
-od.
+> +	ret = devm_add_action_or_reset(&pdev->dev, devm_i2c_put_adapter,
+> +				       parent);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->gpio = devm_gpiod_get(&pdev->dev, "detect", GPIOD_IN);
+> +	if (IS_ERR(priv->gpio))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->gpio),
+> +				     "failed to get detect GPIO\n");
+> +
+> +	is_i2c = parent->algo->master_xfer;
+> +	is_smbus = parent->algo->smbus_xfer;
+> +
+> +	snprintf(priv->adap.name, sizeof(priv->adap.name),
+> +		 "i2c-hotplug (master i2c-%d)", i2c_adapter_id(parent));
+> +	priv->adap.owner = THIS_MODULE;
+> +	priv->adap.algo = i2c_hotplug_algo[is_i2c][is_smbus];
+> +	priv->adap.algo_data = NULL;
+> +	priv->adap.lock_ops = &i2c_hotplug_lock_ops;
+> +	priv->adap.class = parent->class;
+> +	priv->adap.retries = parent->retries;
+> +	priv->adap.timeout = parent->timeout;
+> +	priv->adap.quirks = parent->quirks;
+> +	if (parent->bus_recovery_info)
+> +		priv->adap.bus_recovery_info = &i2c_hotplug_recovery_info;
+> +
+> +	if (!priv->adap.algo)
+> +		return -EINVAL;
+> +
+> +	priv->irq = platform_get_irq(pdev, 0);
+> +	if (priv->irq < 0)
+> +		return dev_err_probe(&pdev->dev, priv->irq,
+> +				     "failed to get IRQ %d\n", priv->irq);
+> +
+> +	ret = devm_request_threaded_irq(&pdev->dev, priv->irq, NULL,
+> +					i2c_hotplug_interrupt,
+> +					IRQF_ONESHOT | IRQF_SHARED,
 
-Armin Wolf
+Shared IRQ with devm is a recipe for disaster. Are you sure this is a
+shared one? You have a remove() function which also points that it is
+not safe. You can:
+1. investigate to be sure it is 100% safe (please document why do you
+think it is safe)
+2. drop devm
+3. drop shared flag.
 
->>   F:	Documentation/ABI/stable/sysfs-platform-wmi-bmof
->>   F:	Documentation/wmi/devices/wmi-bmof.rst
->>   F:	drivers/platform/x86/wmi-bmof.c
->> --
->> 2.39.2
->>
+
+
+Best regards,
+Krzysztof
+
