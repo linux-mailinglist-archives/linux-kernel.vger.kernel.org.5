@@ -2,307 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E46A768625
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AB6768620
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjG3PJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 11:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        id S229927AbjG3PEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 11:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjG3PJP (ORCPT
+        with ESMTP id S229452AbjG3PEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 11:09:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6697CD;
-        Sun, 30 Jul 2023 08:09:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D59360C8F;
-        Sun, 30 Jul 2023 15:09:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D1FCC433C8;
-        Sun, 30 Jul 2023 15:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690729752;
-        bh=i6Um7zwUZZ/IUCCNWHWQm1K0RmCrv6YoXL840drPBtA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tSXTirDFqcdHZajDAdeX7GgivtbJKzcJP5uxaNpQ+w/VjAWOfWX+i1vrV3DogWOzn
-         jORLxUbv02r/Pi2n2b2KdXTclN1vOTq0uS7ww11tObMCillIzytcYht19AxNl5WQoP
-         npfpLOgugUwd6BkZnX0FcQ0maRffqzwzWUGoqd1TMDnQmJscVlSdi7oddYcHv3vlas
-         4VMzslRoC6CalNO9Vq6nvQDILfjgsEc3vaarMlQmfbz4DnOX39U/AKhddSWzQPJNll
-         uBDPhE2cXZSOoO41gtoKr1i1q4W19zBOjiABB8QxLLh9lXbQCkbwp+4fjI7pmHJ0h/
-         Nkqs0KM1XvyRg==
-Date:   Sun, 30 Jul 2023 22:57:32 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guo Ren <guoren@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache
- operations support
-Message-ID: <ZMZ6XB6gX2kFd/Nt@xhacker>
-References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Sun, 30 Jul 2023 11:04:36 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8203BCD;
+        Sun, 30 Jul 2023 08:04:32 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a3e1152c23so2750357b6e.2;
+        Sun, 30 Jul 2023 08:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690729472; x=1691334272;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E2zpBBpZBXYPQAISvn06iBuDvpcDOCSrd4IGlSeVlOg=;
+        b=YUzPt880xMjeQMJp5vo5iaibSUf3gcr6CPb1B8soLp58TSPeVkarzlCyMd81nrJ8hA
+         XcjkyevonHaNc50OmIQ2JfCwWlksvyrzIRtB5cstfosrnQ3iJdFx7saTOQNd2izUmhIk
+         wr9n6jy5k6N0cohFrApyduylbhEWAg54PtxHHdIwA/EDZqANE5vhZl30983Rn19Yqph1
+         /3l/EgcQ1nZI556xGK3dIGYAadCpidwzHpHL9c7D/ghXy7SZoFnlr2Q64p5Ayp8W4bFA
+         bYBir4s4tV1Uykyh9KZ/7Zy82hs+DHBLwg5zXZesjGbvQUQ1bEsuha1Xc70vlmtZa0Yw
+         HOKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690729472; x=1691334272;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E2zpBBpZBXYPQAISvn06iBuDvpcDOCSrd4IGlSeVlOg=;
+        b=Gp+kdMEn3xH3r3Y7tDO/LP1nmGO4dEOJSxH8Khxd7ds2gaPDfqNFx5J6mxb2p5ynTT
+         FVV7KmrE2t2/YmPburDlfRVgZlCAUCeuZeEAztRiGWDe3LzCa65mrP+vcu/VYlBwoSJc
+         MWNtTkx5LgzqGKSNOMs1Dag3HQ2ePOfTLQwuYFgy7Ok6JHTsOn0mk/m2FDsYAjHvkBtw
+         62dmJlFW8O9KKp+nznDui9sxPEZgvvKy9bKvMAzLwNdkES7V3scJ5N52TcvnL/f08Ew/
+         r/pyQN3gjGirXTkO4zdEIpf9cTBe1WdlsyZU02YaLIZjlDE+r9byepCj4mveSsH2aGkn
+         Q9OA==
+X-Gm-Message-State: ABy/qLYdfvy0tp+JCPBdFTq6OgpArzcqOy+Z0Sbma9SeEpqa/rnoELUl
+        dQiczWR7o8g8qQm0Gmfke5c=
+X-Google-Smtp-Source: APBJJlFRpM/b6XQ3u3jjqZBlP4x6bfJrNDWH5Riaw34JWKXMNqMmY3dYXLFkNVdVOiKpxGb/0T+CkA==
+X-Received: by 2002:a05:6808:434b:b0:3a4:350e:b226 with SMTP id dx11-20020a056808434b00b003a4350eb226mr6627498oib.33.1690729471583;
+        Sun, 30 Jul 2023 08:04:31 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id j19-20020aca1713000000b003a40b3fce01sm3359309oii.10.2023.07.30.08.04.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 08:04:31 -0700 (PDT)
+Message-ID: <808c7eb4-abc6-21c9-f929-7070c0da1d05@gmail.com>
+Date:   Sun, 30 Jul 2023 12:04:26 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] rust: upgrade to Rust 1.71.0
+Content-Language: en-US
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+References: <20230729220317.416771-1-ojeda@kernel.org>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230729220317.416771-1-ojeda@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 02, 2023 at 09:34:26PM +0100, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 7/29/23 19:03, Miguel Ojeda wrote:
+> This is the second upgrade to the Rust toolchain, from 1.68.2 to 1.71.0
+> (i.e. the latest).
 > 
-> Introduce support for nonstandard noncoherent systems in the RISC-V
-> architecture. It enables function pointer support to handle cache
-> management in such systems.
+> See the upgrade policy [1] and the comments on the first upgrade in
+> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
 > 
-> This patch adds a new configuration option called
-> "RISCV_NONSTANDARD_CACHE_OPS." This option is a boolean flag that
-> depends on "RISCV_DMA_NONCOHERENT" and enables the function pointer
-> support for cache management in nonstandard noncoherent systems.
+> # Unstable features
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Tested-by: Conor Dooley <conor.dooley@microchip.com> # tyre-kicking on a d1
+> No unstable features (that we use) were stabilized.
+> 
+> Therefore, the only unstable feature allowed to be used outside
+> the `kernel` crate is still `new_uninit`, though other code to be
+> upstreamed may increase the list.
+> 
+> Please see [2] for details.
+> 
+> # Required changes
+> 
+> For the upgrade, this patch requires the following changes:
+> 
+>    - Removal of the `__rust_*` allocator functions, together with
+>      the addition of the `__rust_no_alloc_shim_is_unstable` static.
+>      See [3] for details.
+> 
+>    - Some more compiler builtins added due to `<f{32,64}>::midpoint()`
+>      that got added in Rust 1.71 [4].
+> 
+> # `alloc` upgrade and reviewing
+> 
+> The vast majority of changes are due to our `alloc` fork being upgraded
+> at once.
+> 
+> There are two kinds of changes to be aware of: the ones coming from
+> upstream, which we should follow as closely as possible, and the updates
+> needed in our added fallible APIs to keep them matching the newer
+> infallible APIs coming from upstream.
+> 
+> Instead of taking a look at the diff of this patch, an alternative
+> approach is reviewing a diff of the changes between upstream `alloc` and
+> the kernel's. This allows to easily inspect the kernel additions only,
+> especially to check if the fallible methods we already have still match
+> the infallible ones in the new version coming from upstream.
+> 
+> Another approach is reviewing the changes introduced in the additions in
+> the kernel fork between the two versions. This is useful to spot
+> potentially unintended changes to our additions.
+> 
+> To apply these approaches, one may follow steps similar to the following
+> to generate a pair of patches that show the differences between upstream
+> Rust and the kernel (for the subset of `alloc` we use) before and after
+> applying this patch:
+> 
+>      # Get the difference with respect to the old version.
+>      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
+>      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
+>          cut -d/ -f3- |
+>          grep -Fv README.md |
+>          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
+>      git -C linux diff --patch-with-stat --summary -R > old.patch
+>      git -C linux restore rust/alloc
+> 
+>      # Apply this patch.
+>      git -C linux am rust-upgrade.patch
+> 
+>      # Get the difference with respect to the new version.
+>      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
+>      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
+>          cut -d/ -f3- |
+>          grep -Fv README.md |
+>          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
+>      git -C linux diff --patch-with-stat --summary -R > new.patch
+>      git -C linux restore rust/alloc
+> 
+> Now one may check the `new.patch` to take a look at the additions (first
+> approach) or at the difference between those two patches (second
+> approach). For the latter, a side-by-side tool is recommended.
+> 
+> Link: https://rust-for-linux.com/rust-version-policy [1]
+> Link: https://github.com/Rust-for-Linux/linux/issues/2 [2]
+> Link: https://github.com/rust-lang/rust/pull/86844 [3]
+> Link: https://github.com/rust-lang/rust/pull/92048 [4]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 > ---
-> v9 -> v10
-> * Added __ro_after_init compiler attribute for noncoherent_cache_ops
-> * Renamed clean -> wback
-> * Renamed inval -> inv
-> * Renamed flush -> wback_inv
+> Based on top of `rust-next`, since we want to be on top of commit
+> 7c74839b2acc ("rust: alloc: Add realloc and alloc_zeroed to the
+> GlobalAlloc impl"), in order to be able to simply remove the `__rust_*`
+> functions here.
 > 
-> v8 -> v9
-> * New patch
-> ---
->  arch/riscv/Kconfig                       |  7 ++++
->  arch/riscv/include/asm/dma-noncoherent.h | 28 +++++++++++++++
->  arch/riscv/mm/dma-noncoherent.c          | 43 ++++++++++++++++++++++++
->  arch/riscv/mm/pmem.c                     | 13 +++++++
->  4 files changed, 91 insertions(+)
->  create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index d9e451ac862a..42c86b13c5e1 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -265,6 +265,13 @@ config RISCV_DMA_NONCOHERENT
->  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->  	select DMA_DIRECT_REMAP
->  
-> +config RISCV_NONSTANDARD_CACHE_OPS
-> +	bool
-> +	depends on RISCV_DMA_NONCOHERENT
-> +	help
-> +	  This enables function pointer support for non-standard noncoherent
-> +	  systems to handle cache management.
-
-Per Documentation/riscv/patch-acceptance.rst:
-
-"we'll only consider patches for extensions that either:
-
-- Have been officially frozen or ratified by the RISC-V Foundation, or
-- Have been implemented in hardware that is widely available, per standard
-  Linux practice."
-
-I'm not sure which item this patch series belongs to.
-
-> +
->  config AS_HAS_INSN
->  	def_bool $(as-instr,.insn r 51$(comma) 0$(comma) 0$(comma) t0$(comma) t0$(comma) zero)
->  
-> diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
-> new file mode 100644
-> index 000000000000..969cf1f1363a
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/dma-noncoherent.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2023 Renesas Electronics Corp.
-> + */
-> +
-> +#ifndef __ASM_DMA_NONCOHERENT_H
-> +#define __ASM_DMA_NONCOHERENT_H
-> +
-> +#include <linux/dma-direct.h>
-> +
-> +/*
-> + * struct riscv_cache_ops - Structure for CMO function pointers
-
-can we reword this line as
-"struct riscv_nonstd_cache_ops - Structure for non-standard CMO function
-pointers" to explictly note this is only for non-standard CMO.
-
-> + *
-> + * @wback: Function pointer for cache writeback
-> + * @inv: Function pointer for invalidating cache
-> + * @wback_inv: Function pointer for flushing the cache (writeback + invalidating)
-> + */
-> +struct riscv_cache_ops {
-> +	void (*wback)(phys_addr_t paddr, unsigned long size);
-> +	void (*inv)(phys_addr_t paddr, unsigned long size);
-> +	void (*wback_inv)(phys_addr_t paddr, unsigned long size);
-> +};
-> +
-> +extern struct riscv_cache_ops noncoherent_cache_ops;
-> +
-> +void riscv_noncoherent_register_cache_ops(const struct riscv_cache_ops *ops);
-> +
-> +#endif	/* __ASM_DMA_NONCOHERENT_H */
-> diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
-> index b9a9f57e02be..4c2e3f1cdfe6 100644
-> --- a/arch/riscv/mm/dma-noncoherent.c
-> +++ b/arch/riscv/mm/dma-noncoherent.c
-> @@ -9,13 +9,26 @@
->  #include <linux/dma-map-ops.h>
->  #include <linux/mm.h>
->  #include <asm/cacheflush.h>
-> +#include <asm/dma-noncoherent.h>
->  
->  static bool noncoherent_supported;
->  
-> +struct riscv_cache_ops noncoherent_cache_ops __ro_after_init = {
-> +	.wback = NULL,
-> +	.inv = NULL,
-> +	.wback_inv = NULL,
-> +};
-> +
->  static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t size)
->  {
->  	void *vaddr = phys_to_virt(paddr);
->  
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.wback)) {
-
-I'm worried about the performance impact here.
-For unified kernel Image reason, RISCV_NONSTANDARD_CACHE_OPS will be
-enabled by default, so standard CMO and T-HEAD's CMO platform's
-performance will be impacted, because even an unlikely is put
-here, the check action still needs to be done.
-
-> +		noncoherent_cache_ops.wback(paddr, size);
-> +		return;
-> +	}
-> +#endif
->  	ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
->  }
->  
-> @@ -23,6 +36,13 @@ static inline void arch_dma_cache_inv(phys_addr_t paddr, size_t size)
->  {
->  	void *vaddr = phys_to_virt(paddr);
->  
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.inv)) {
-> +		noncoherent_cache_ops.inv(paddr, size);
-> +		return;
-> +	}
-> +#endif
-> +
->  	ALT_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
->  }
->  
-> @@ -30,6 +50,13 @@ static inline void arch_dma_cache_wback_inv(phys_addr_t paddr, size_t size)
->  {
->  	void *vaddr = phys_to_virt(paddr);
->  
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.wback_inv)) {
-> +		noncoherent_cache_ops.wback_inv(paddr, size);
-> +		return;
-> +	}
-> +#endif
-> +
->  	ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
->  }
->  
-> @@ -50,6 +77,13 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
->  {
->  	void *flush_addr = page_address(page);
->  
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.wback_inv)) {
-> +		noncoherent_cache_ops.wback_inv(page_to_phys(page), size);
-> +		return;
-> +	}
-> +#endif
-> +
->  	ALT_CMO_OP(flush, flush_addr, size, riscv_cbom_block_size);
->  }
->  
-> @@ -75,3 +109,12 @@ void riscv_noncoherent_supported(void)
->  	     "Non-coherent DMA support enabled without a block size\n");
->  	noncoherent_supported = true;
->  }
-> +
-> +void riscv_noncoherent_register_cache_ops(const struct riscv_cache_ops *ops)
-> +{
-> +	if (!ops)
-> +		return;
-> +
-> +	noncoherent_cache_ops = *ops;
-> +}
-> +EXPORT_SYMBOL_GPL(riscv_noncoherent_register_cache_ops);
-> diff --git a/arch/riscv/mm/pmem.c b/arch/riscv/mm/pmem.c
-> index 089df92ae876..c5fc5ec96f6d 100644
-> --- a/arch/riscv/mm/pmem.c
-> +++ b/arch/riscv/mm/pmem.c
-> @@ -7,15 +7,28 @@
->  #include <linux/libnvdimm.h>
->  
->  #include <asm/cacheflush.h>
-> +#include <asm/dma-noncoherent.h>
->  
->  void arch_wb_cache_pmem(void *addr, size_t size)
->  {
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.wback)) {
-> +		noncoherent_cache_ops.wback(virt_to_phys(addr), size);
-> +		return;
-> +	}
-> +#endif
->  	ALT_CMO_OP(clean, addr, size, riscv_cbom_block_size);
->  }
->  EXPORT_SYMBOL_GPL(arch_wb_cache_pmem);
->  
->  void arch_invalidate_pmem(void *addr, size_t size)
->  {
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +	if (unlikely(noncoherent_cache_ops.inv)) {
-> +		noncoherent_cache_ops.inv(virt_to_phys(addr), size);
-> +		return;
-> +	}
-> +#endif
->  	ALT_CMO_OP(inval, addr, size, riscv_cbom_block_size);
->  }
->  EXPORT_SYMBOL_GPL(arch_invalidate_pmem);
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> [...]
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
