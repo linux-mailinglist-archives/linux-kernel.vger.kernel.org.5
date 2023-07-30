@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4077687E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F4A7687E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjG3UVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 16:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        id S229873AbjG3UXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 16:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjG3UVA (ORCPT
+        with ESMTP id S229478AbjG3UXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 16:21:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79817191
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 13:20:59 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so2456879a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 13:20:59 -0700 (PDT)
+        Sun, 30 Jul 2023 16:23:38 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49A4E78;
+        Sun, 30 Jul 2023 13:23:37 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31771bb4869so4108939f8f.0;
+        Sun, 30 Jul 2023 13:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690748458; x=1691353258;
+        d=gmail.com; s=20221208; t=1690748616; x=1691353416;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8f/MgDrEv8Tw5VaLnW3VcLxIwrS6Qd/GuTI2klbB/as=;
-        b=pb/mOZGqU4gvRpiwlnn7bHtk5y1t8Zlci00vsSjMi6KXB/5z7EnVF7UnwFF37vxs/q
-         /JHPiF+WDMD6TvloGE+goL0s1lISx0gQbq5tx44PSBhQYQjGgY+r5D+eOmlStfkPvEUD
-         pcCajAVX91Ef6RusRfytRtiqHFm5/0ziEfUzmS/a/p0G2egsQ1I3+wEq57FusDQESfRn
-         k1HrTjBw+9smfgGqFWDlBKHL7JZQ8f9JpPTALclXnCE3/Pi5aCQ+AN1Ohu9d/QfsGFPo
-         CUJbXY4EF+invy4vpmU8CDPYI9T4MYXNf3lKe0rtc6I4r0uuzSYXwrsnLJ58i+MfjoF3
-         /yHA==
+        bh=/vYtuaLSa3SGm5E8omUOIenjmbSci2X5VPEYpr2AFA4=;
+        b=ZtXACvOSAuWFvc3YOp2Alqp5WlBQl0KfEyzpuv6eY8gclBHIvs0aajZvCYwU/VVwKk
+         yHRxigtS8j2wKitnrMiNg/s+VsC2hoZCpuWCEEKOk2p1G4CEOKz5nTyb/d0TVlAD7gEF
+         T9DwcNSaMXeZ9M0XuvZ1tyVFm1TaqKFKISZR8+5DY5eCteH+Aeazz5nXPsSY5CQ/0Nz3
+         23GTR6lBAuMQcDrR6f8ey44/PnPt9qnMKEpRWwX64KtUgLjKYkYJgc78dL+wSgofrFRU
+         XtOPv223adiEn2JE4xvdyuP8mvSUyBZxRWuNGmvj3AmKa59gFCLcC4KrAkqrSEj5r2RU
+         3sfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690748458; x=1691353258;
+        d=1e100.net; s=20221208; t=1690748616; x=1691353416;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8f/MgDrEv8Tw5VaLnW3VcLxIwrS6Qd/GuTI2klbB/as=;
-        b=RmwUuFfuEXEPasAZ0YH0lHAkrmV0t4dJH9E80RgjsEsNufQkc7FMSGwFuVYa8+a0FP
-         yWL1LcZ349hE786IOwoy10z+mxeIenm9F1PgeY9ioHZDGgOixuyJj3tr4mdhs9uh0P1I
-         HSvTHnoeCEqh2M0yz5+SSh+PnKtHIjLQ7Jpo/IiuQ6xRHRWSPk5BJuRLsmeQmSBS6rPQ
-         2O/hszu1GS6M7He4Lv1lWHiBnuM23uykG50BMGw27f5YJPvroOVUq4LZqxmGHnODSJFk
-         S2SMogRmje88DXS9FrCD7UV+E3VRpiH9BfxXLpqkRlL+vCco9zX6qvOs7LrqCW3Mvt8t
-         mBhQ==
-X-Gm-Message-State: ABy/qLbdagtjxMWtuwhjnKkLvA/f/shZW8PlM0fZfFyL1/LwpWcypmFm
-        dAMTTKGOMr8i5i/e8bK+A6+g9w==
-X-Google-Smtp-Source: APBJJlGU7AKTZgnUH7tZLhdoNMXBGmqsRp6wlJ6rIt/BwPXPqtzqgMF4PF4altfte1iWVEf70DFpAQ==
-X-Received: by 2002:a17:906:329b:b0:988:9621:d855 with SMTP id 27-20020a170906329b00b009889621d855mr4326827ejw.61.1690748457920;
-        Sun, 30 Jul 2023 13:20:57 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id h19-20020a17090634d300b0098e422d6758sm5066254ejb.219.2023.07.30.13.20.56
+        bh=/vYtuaLSa3SGm5E8omUOIenjmbSci2X5VPEYpr2AFA4=;
+        b=a9i+EjfHKrpdcLPmRP2C/s5TPgpDC5ThrkFQHZHH/S+HFuyo8bAiIwB3Qc5bPNBdpU
+         hk7uhFwYCGdTf8iOIVVXJDXAQhygPyiONyC2SwnyaUhl4yfrJYkgRx6db34U4I6YBr4j
+         9GTz8umktfV856smIHZFxyDYgYAXaJ65Ze2SReN061Gw2+IUI6PxSlyoiXVsBmxPsGg2
+         acobrPwSEiuu56k3akXePEMFJbASapg4+gJTDGB+/hKHA8+FYJIy85iMeLlIQySOSSr/
+         Ilic07iOtbggc49mRtuxhv0J39HaQYkVTzqkA/JywcqIQp/O9/xXGzzJJoVVP5bHcNOe
+         yUIQ==
+X-Gm-Message-State: ABy/qLYFUjXW7hzkwkCvHQGOc1iBwIE5OKd11tw8VUjaCOGsbqY5DhXo
+        1D93IeZzdO3V+x4xyc6GEYhRYs5a/5y96A==
+X-Google-Smtp-Source: APBJJlHzJ/scDx/KxfBt5DF6cNHWYrD53yHSjsI6HW8/9R06q8uIAOH959VKXhAax0YHT4vqXJ/lpQ==
+X-Received: by 2002:a5d:5101:0:b0:314:3ca0:c8c2 with SMTP id s1-20020a5d5101000000b003143ca0c8c2mr561546wrt.11.1690748615883;
+        Sun, 30 Jul 2023 13:23:35 -0700 (PDT)
+Received: from tpt440p.steeds.sam ([2602:fbf6:10:a::2])
+        by smtp.gmail.com with ESMTPSA id e5-20020a5d5005000000b00311d8c2561bsm10814398wrt.60.2023.07.30.13.23.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 13:20:57 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: msm8953-daisy: use new speaker maxim,interleave-mode
-Date:   Sun, 30 Jul 2023 22:20:51 +0200
-Message-Id: <20230730202051.71099-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Sun, 30 Jul 2023 13:23:35 -0700 (PDT)
+From:   "Sicelo A. Mhlongo" <absicsz@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-omap@vger.kernel.org, "Sicelo A. Mhlongo" <absicsz@gmail.com>
+Subject: [PATCH] bus: omap_l3_smx: identify timeout source before rebooting
+Date:   Sun, 30 Jul 2023 22:22:40 +0200
+Message-Id: <20230730202240.898519-1-absicsz@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAX98927 speaker amplifier "interleave_mode" property was never
-documented.  Corrected bindings expect "maxim,interleave-mode" instead,
-which is already supported by Linux driver.  Change is not compatible
-with older Linux kernels.
+Identify and print the error source before rebooting the board due to an l3
+application timeout error, by delaying the BUG_ON. This is helpful when
+debugging, e.g. via serial.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Signed-off-by: Sicelo A. Mhlongo <absicsz@gmail.com>
 ---
+ drivers/bus/omap_l3_smx.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Depends on:
-https://lore.kernel.org/linux-devicetree/20230730201826.70453-2-krzysztof.kozlowski@linaro.org/T/#u
----
- arch/arm64/boot/dts/qcom/msm8953-xiaomi-daisy.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-daisy.dts b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-daisy.dts
-index 790d19c99af1..a5957e79b818 100644
---- a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-daisy.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-daisy.dts
-@@ -125,7 +125,7 @@ speaker_codec: audio-codec@3a {
+diff --git a/drivers/bus/omap_l3_smx.c b/drivers/bus/omap_l3_smx.c
+index bb1606f5ce2d..70f4903d5468 100644
+--- a/drivers/bus/omap_l3_smx.c
++++ b/drivers/bus/omap_l3_smx.c
+@@ -170,11 +170,9 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
+ 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_0);
+ 		/*
+ 		 * if we have a timeout error, there's nothing we can
+-		 * do besides rebooting the board. So let's BUG on any
+-		 * of such errors and handle the others. timeout error
+-		 * is severe and not expected to occur.
++		 * do besides rebooting the board after identifying the
++		 * error source.
+ 		 */
+-		BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
+ 	} else {
+ 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_1);
+ 		/* No timeout error for debug sources */
+@@ -190,6 +188,12 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
+ 		ret |= omap3_l3_block_irq(l3, error, error_addr);
+ 	}
  
- 		vmon-slot-no = <1>;
- 		imon-slot-no = <1>;
--		interleave_mode = <0>;
-+		maxim,interleave-mode;
- 
- 		#sound-dai-cells = <0>;
- 	};
++	/*
++	 * BUG on application timeout errors since they are severe and not
++	 * expected to occur.
++	 */
++	BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
++
+ 	/* Clear the status register */
+ 	clear = (L3_AGENT_STATUS_CLEAR_IA << int_type) |
+ 		L3_AGENT_STATUS_CLEAR_TA;
 -- 
-2.34.1
+2.40.1
 
