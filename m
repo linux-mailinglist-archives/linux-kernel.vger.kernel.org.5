@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E22A576840F
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 08:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D353768412
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 08:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjG3Gmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 02:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
+        id S229667AbjG3Gzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 02:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjG3Gmd (ORCPT
+        with ESMTP id S229472AbjG3Gzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 02:42:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC4E10CB;
-        Sat, 29 Jul 2023 23:42:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4796960B3F;
-        Sun, 30 Jul 2023 06:42:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4C4C433C9;
-        Sun, 30 Jul 2023 06:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690699351;
-        bh=WN7Qt+nbl0/4iHAEWJM+rZFL0e1kn7laryW2NscqO+E=;
+        Sun, 30 Jul 2023 02:55:52 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6E61BFC;
+        Sat, 29 Jul 2023 23:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690700149; bh=AsR7SScjhhhuUIwlLxCxzyirY1+1rrg50w0GYvxxVrU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vFuyycwTRfRDllXlaF43uwvad1SPeVzs6mgE8o8YcFHZQWLs+PEU7jYNuZa+SmPlp
-         Kjf1yX+pv/n3bjhJfwd+706Vyk9himvjFo6Y+Ua9mu1x+RcT85ja/OZYJp+mSJpKgZ
-         eDmmxwlf7n5LPwT+keowhxr25M1sZEMlKwaRiuoppiS3lvJMSJlRZKzDRRxDVMrNoI
-         tyRY8NTPmRw87zYdwcL34dPfXvRFAdXlx7P+urIZFdD10UrDC3JqN9YKdwu9tmQbM6
-         XRjMQdMRZ4OeLjzRnXxLAlVQwFTZU0aGbNTKdGyVrWKTVoourTYQWdaZVqDAZ3tz6M
-         rcT5Gymqcl8rQ==
-Date:   Sun, 30 Jul 2023 14:42:20 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Andrej Picej <andrej.picej@norik.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        S.Riedmueller@phytec.de, S.Mueller-Klieser@phytec.de,
-        upstream@phytec.de
-Subject: Re: [PATCH v2 3/3] ARM: dts: imx6: phycore: Rely on PMIC
- reboot/reset handler
-Message-ID: <20230730064220.GA151430@dragon>
-References: <20230719114328.2239818-1-andrej.picej@norik.com>
- <20230719114328.2239818-3-andrej.picej@norik.com>
+        b=hXOJs9hdlTZS/ostodKTbuDvGIJo6RGBMKe31DoWM+uezQM3R5hs9Ppdlz1bG/J4H
+         +2xyXaUlD5gxa1nxD7rcFDOp8ksTUt4KuFYZZvsJMF+pMKCbjdi4m2xBPem35bV/dE
+         zT6AyTYZE/kvrLmTxK1zoartVArnQo+ArOgnMVxo=
+Date:   Sun, 30 Jul 2023 08:55:47 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Yuan Tan <tanyuan@tinylab.org>, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/2] selftests/nolibc: add testcase for pipe.
+Message-ID: <ebf02a04-6e89-4bc9-beff-3902ad8a78b5@t-8ch.de>
+References: <cover.1690307717.git.tanyuan@tinylab.org>
+ <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
+ <27bd9bc1-e7a5-4a81-91c9-2642feabb7ce@t-8ch.de>
+ <20230730033343.GB7339@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230719114328.2239818-3-andrej.picej@norik.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230730033343.GB7339@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 01:43:28PM +0200, Andrej Picej wrote:
-> Due to the missing signal connection between i.MX6 WDOG_B pin and the
-> PMICs external reset, the internal i.MX6 watchdog is not able to reset
-> the phyCORE i.MX6 SoM properly. Thus disable the internal i.MX6 watchdog
-> to prevent unexpected PMIC settings after reset.
+On 2023-07-30 05:33:43+0200, Willy Tarreau wrote:
+> On Sun, Jul 30, 2023 at 12:17:24AM +0200, Thomas Weißschuh wrote:
+> > > +	case 0:
+> > > +		close(pipefd[0]);
+> > > +		write(pipefd[1], msg, strlen(msg));
+> > 
+> > Isn't this missing to write trailing the 0 byte?
 > 
-> NOTE: This patch should not be backported as it might break existing
-> uses and fixes in bootloaders.
+> It depends if the other side expects to get the trailing 0.
+> In general it's better to avoid sending it since it's only
+> used for internal representation, and the other side must
+> be prepared to receive anything anyway.
 > 
-> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
+> > Also check the return value.
+> 
+> Indeed!
+> 
+> > > +		close(pipefd[1]);
+> > 
+> > Do we need to close the pipefds? The process is exiting anyways.
+> 
+> It's better to, because we could imagine looping over the tests for
+> example. Thus each test shoulld have as little impact as possible
+> on other tests.
 
-Applied, thanks!
+I meant the newly forked child exiting, not nolibc-test in general.
+The exit is just below, so the fds in the child are close here anyways.
+                |
+		|
+		v
+> > > +		exit(EXIT_SUCCESS);
+> > > +
+> > > +	default:
+> > > +		close(pipefd[1]);
+> > > +		read(pipefd[0], buf, 32);
+> > 
+> > Use sizeof(buf). Check return value == strlen(msg).
+> > 
+> > > +		close(pipefd[0]);
+> > > +		wait(NULL);
+> > 
+> > waitpid(pid, NULL, 0);
+> > 
+> > > +
+> > > +		if (strcmp(buf, msg))
+> > > +			return 1;
+> > > +		return 0;
+> > 
+> > return !!strcmp(buf, msg);
+> 
+> In fact before that we need to terminate the output buffer. If for any
+> reason the transfer fails (e.g. the syscall fails or transfers data at
+> another location or of another length, we could end up comparing past
+> the end of the buffer. Thus I suggest adding this immediately after the
+> read():
+> 
+> 		buf[sizeof(buf) - 1] = 0;
+
+This would still access uninitialized memory and lead to UB in strcmp as
+not all bytes in buf were written to by read().
+
+If we want to be really sure we should use memcmp() instead of strcmp().
+For memcmp() I would prefer to transfer and check without the '\0', so
+my review comments from before need to be adapted a bit.
