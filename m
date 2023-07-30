@@ -2,276 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FD5768633
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C2C768634
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbjG3PXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 11:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S229777AbjG3P1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 11:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjG3PXi (ORCPT
+        with ESMTP id S229503AbjG3P1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 11:23:38 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C3C1A6;
-        Sun, 30 Jul 2023 08:23:36 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9891c73e0fbso774456066b.1;
-        Sun, 30 Jul 2023 08:23:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690730615; x=1691335415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7PX8xKK6O5wTvwtcUjC9IemCaEOi5PCdC3MyRdH4mEU=;
-        b=ZZeauXSqR4Gj+o9zgwWzvae9cSHIy1Q3fNln5iTZWZPGQudHC/xIEOv4XI+4ebjwx9
-         PrGZbv3RrQcMu4eSUDzWFTPBzGLkLYIHaZifRFnrzQ1892eXnLQn3pspUoIyLndhnlPt
-         oGSUIZlWK80gsqBpIXuuX4Im0uGOqtIwYRX4dlihJb9s4VXDthECEGX3i6XxKEqosebq
-         MBMoGhtV68DIizvmu9acc8zY9Ew7m6eQlKgDOqMVnCgGFBEWYeDLgIRwy8gCmvqSnmPB
-         vTqbMX9wZ6KVt0rlmexLjunx30Ldo5kSO76VjFksq+E9uXgIUK1czxFRkdeBYy3VrT3i
-         TS2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690730615; x=1691335415;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7PX8xKK6O5wTvwtcUjC9IemCaEOi5PCdC3MyRdH4mEU=;
-        b=EAUnDuqENXEDM2hO9XderGMt4iuZGIOniy01Ny5RI81Cwo1kc50OVfEgGGJc05sOY3
-         mkLFIdWifmqLTEv3L5Y6oh9/TFQm6FxLabvMjBRuYQzqP+dEueFA7eq/wMd2W1Qzj1YI
-         OsFMBpKpkAagL8gUGXTQ6W3f1TkC3EFM1mxZwWo/3UNe4/a4IxjwDycykRLbIwWrWI8a
-         Rxq/+U8fhTjoUcSGOAqe0dWx+D8S32KzXZP6/lkUR+2Brrh+Gv9E8Ut5dx2sPCjjGgRn
-         N6zJuHfDIos/Md7R3KnSGaL3XQjMDOvhm6pN/G2Pie8oAlwInczeAZz/tME6Hxq98JP0
-         b1Cg==
-X-Gm-Message-State: ABy/qLY0HI0m4k1cTHHwKutGGljy9iJ831o62NTnQwd+nAju2ZXDtzk5
-        H8qYNRVbTgB2I1YYcMin97MbPnN8iGY=
-X-Google-Smtp-Source: APBJJlHQ3IYa7n9r9AgEUAqsmkPfnF5daq7th+7HqRWkx3Qk1N6gibmKlrcWC8pXoXPYmgr5B+NkZA==
-X-Received: by 2002:a17:906:304f:b0:99b:4bab:2841 with SMTP id d15-20020a170906304f00b0099b4bab2841mr5425707ejd.26.1690730614887;
-        Sun, 30 Jul 2023 08:23:34 -0700 (PDT)
-Received: from standask-GA-A55M-S2HP ([188.123.113.247])
-        by smtp.gmail.com with ESMTPSA id f25-20020a1709067f9900b009934855d8f1sm4733868ejr.34.2023.07.30.08.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 08:23:34 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 17:23:32 +0200
-From:   Stanislav Jakubek <stano.jakubek@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: gpio: brcm,kona-gpio: convert to YAML
-Message-ID: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
+        Sun, 30 Jul 2023 11:27:30 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451C7171F
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690730848; x=1722266848;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qKL6AV/RJuaeynuX1l+RCD0edE24l5muTqMBrmTwkMw=;
+  b=KM/RFiJ4vwgf0ktUUDHxXxEcWIENRIVtPX6xwJYpQRxhDBGVsqSWPqaQ
+   DSjGnYSVdgO7e9FNDgIz0HaF6JHQLr/Pk6+63ljk5ROTR9VJMW4TiGs2w
+   KVX9ocKPC5/hB+ma41k8i3gXuHVCSNNJZK1RcGXrrpH+ihj49Fa8+KCsw
+   evkBSQqZ/ekXzZ8/SZ3VeKlEXUSWenHRRqwFw39I4y5DI5KhIRBjmMiGa
+   rWSdzf18mWoVxlxPrhYODUv3mDCGhGgkvL0suzL9w4LaL89SflxBkhmjw
+   gi6mnnYU/ZN4SsDaxlRgxFa2gmYy+KsB5iyZcDuXIezQBZommrT1Q9+96
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="349154052"
+X-IronPort-AV: E=Sophos;i="6.01,242,1684825200"; 
+   d="scan'208";a="349154052"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 08:27:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="851770570"
+X-IronPort-AV: E=Sophos;i="6.01,242,1684825200"; 
+   d="scan'208";a="851770570"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 30 Jul 2023 08:27:26 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQ8KL-0004eF-1K;
+        Sun, 30 Jul 2023 15:27:25 +0000
+Date:   Sun, 30 Jul 2023 23:26:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: drivers/net/ethernet/intel/i40e/i40e_main.c:16227:1: warning: the
+ frame size of 1032 bytes is larger than 1024 bytes
+Message-ID: <202307302339.4WcgJQA7-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Broadcom Kona family GPIO controller bindings to DT schema.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d31e3792919e5c97d572c8a27a5a7c1eb9de5aca
+commit: c27cd083cfb9d392f304657ed00fcde1136704e7 Compiler attributes: GCC cold function alignment workarounds
+date:   6 months ago
+config: x86_64-intel-next-customedconfig-intel_next_rpm_defconfig (https://download.01.org/0day-ci/archive/20230730/202307302339.4WcgJQA7-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230730/202307302339.4WcgJQA7-lkp@intel.com/reproduce)
 
-Changes during conversion:
-  - add used, but previously undocumented SoC-specific compatibles
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307302339.4WcgJQA7-lkp@intel.com/
 
-Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
----
-Changes since RFC:
-  - fix interrupts maxItems
-  - narrow interrupts min/maxItems per each variant
-  - thanks for the feedback Linus, Krzysztof :)
+All warnings (new ones prefixed by >>):
 
- .../bindings/gpio/brcm,kona-gpio.txt          |  52 ---------
- .../bindings/gpio/brcm,kona-gpio.yaml         | 100 ++++++++++++++++++
- MAINTAINERS                                   |   2 +-
- 3 files changed, 101 insertions(+), 53 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
+   drivers/net/ethernet/intel/i40e/i40e_main.c: In function 'i40e_probe.part.0':
+>> drivers/net/ethernet/intel/i40e/i40e_main.c:16227:1: warning: the frame size of 1032 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+   16227 | }
+         | ^
 
-diff --git a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
-deleted file mode 100644
-index 4a63bc96b687..000000000000
---- a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
-+++ /dev/null
-@@ -1,52 +0,0 @@
--Broadcom Kona Family GPIO
--=========================
--
--This GPIO driver is used in the following Broadcom SoCs:
--  BCM11130, BCM11140, BCM11351, BCM28145, BCM28155
--
--The Broadcom GPIO Controller IP can be configured prior to synthesis to
--support up to 8 banks of 32 GPIOs where each bank has its own IRQ. The
--GPIO controller only supports edge, not level, triggering of interrupts.
--
--Required properties
---------------------
--
--- compatible: "brcm,bcm11351-gpio", "brcm,kona-gpio"
--- reg: Physical base address and length of the controller's registers.
--- interrupts: The interrupt outputs from the controller. There is one GPIO
--  interrupt per GPIO bank. The number of interrupts listed depends on the
--  number of GPIO banks on the SoC. The interrupts must be ordered by bank,
--  starting with bank 0. There is always a 1:1 mapping between banks and
--  IRQs.
--- #gpio-cells: Should be <2>. The first cell is the pin number, the second
--  cell is used to specify optional parameters:
--  - bit 0 specifies polarity (0 for normal, 1 for inverted)
--  See also "gpio-specifier" in .../devicetree/bindings/gpio/gpio.txt.
--- #interrupt-cells: Should be <2>. The first cell is the GPIO number. The
--  second cell is used to specify flags. The following subset of flags is
--  supported:
--  - trigger type (bits[1:0]):
--      1 = low-to-high edge triggered.
--      2 = high-to-low edge triggered.
--      3 = low-to-high or high-to-low edge triggered
--      Valid values are 1, 2, 3
--  See also .../devicetree/bindings/interrupt-controller/interrupts.txt.
--- gpio-controller: Marks the device node as a GPIO controller.
--- interrupt-controller: Marks the device node as an interrupt controller.
--
--Example:
--	gpio: gpio@35003000 {
--		compatible = "brcm,bcm11351-gpio", "brcm,kona-gpio";
--		reg = <0x35003000 0x800>;
--		interrupts =
--		       <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH
--			GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH
--			GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH
--			GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH
--			GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH
--			GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
--		#gpio-cells = <2>;
--		#interrupt-cells = <2>;
--		gpio-controller;
--		interrupt-controller;
--	};
-diff --git a/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
-new file mode 100644
-index 000000000000..296fdd6b8f38
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
-@@ -0,0 +1,100 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/brcm,kona-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Broadcom Kona family GPIO controller
-+
-+description:
-+  The Broadcom GPIO Controller IP can be configured prior to synthesis to
-+  support up to 8 banks of 32 GPIOs where each bank has its own IRQ. The
-+  GPIO controller only supports edge, not level, triggering of interrupts.
-+
-+maintainers:
-+  - Ray Jui <rjui@broadcom.com>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - brcm,bcm11351-gpio
-+          - brcm,bcm21664-gpio
-+          - brcm,bcm23550-gpio
-+      - const: brcm,kona-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 4
-+    maxItems: 6
-+    description:
-+      The interrupt outputs from the controller. There is one GPIO interrupt
-+      per GPIO bank. The number of interrupts listed depends on the number of
-+      GPIO banks on the SoC. The interrupts must be ordered by bank, starting
-+      with bank 0. There is always a 1:1 mapping between banks and IRQs.
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  '#interrupt-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-+  interrupt-controller: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - '#gpio-cells'
-+  - '#interrupt-cells'
-+  - gpio-controller
-+  - interrupt-controller
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: brcm,bcm11351-gpio
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 6
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - brcm,bcm21664-gpio
-+              - brcm,bcm23550-gpio
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 4
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    gpio@35003000 {
-+        compatible = "brcm,bcm11351-gpio", "brcm,kona-gpio";
-+        reg = <0x35003000 0x800>;
-+        interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
-+        #gpio-cells = <2>;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        interrupt-controller;
-+    };
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 733bcfa0209a..368fee1ef5b0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4221,7 +4221,7 @@ BROADCOM KONA GPIO DRIVER
- M:	Ray Jui <rjui@broadcom.com>
- R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
- S:	Supported
--F:	Documentation/devicetree/bindings/gpio/brcm,kona-gpio.txt
-+F:	Documentation/devicetree/bindings/gpio/brcm,kona-gpio.yaml
- F:	drivers/gpio/gpio-bcm-kona.c
- 
- BROADCOM MPI3 STORAGE CONTROLLER DRIVER
+
+vim +16227 drivers/net/ethernet/intel/i40e/i40e_main.c
+
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16075  
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16076  	if (pf->flags & I40E_FLAG_IWARP_ENABLED) {
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16077  		pf->iwarp_base_vector = i40e_get_lump(pf, pf->irq_pile,
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16078  						      pf->num_iwarp_msix,
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16079  						      I40E_IWARP_IRQ_PILE_ID);
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16080  		if (pf->iwarp_base_vector < 0) {
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16081  			dev_info(&pdev->dev,
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16082  				 "failed to get tracking for %d vectors for IWARP err=%d\n",
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16083  				 pf->num_iwarp_msix, pf->iwarp_base_vector);
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16084  			pf->flags &= ~I40E_FLAG_IWARP_ENABLED;
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16085  		}
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16086  	}
+93cd765bb27365 Anjali Singhai Jain     2013-11-20  16087  
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16088  	i40e_dbg_pf_init(pf);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16089  
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16090  	/* tell the firmware that we're starting */
+44033fac14340f Jesse Brandeburg        2014-04-23  16091  	i40e_send_version(pf);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16092  
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16093  	/* since everything's happy, start the service_task timer */
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16094  	mod_timer(&pf->service_timer,
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16095  		  round_jiffies(jiffies + pf->service_timer_period));
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16096  
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16097  	/* add this PF to client device list and launch a client service task */
+004eb614c4d2fc Mitch Williams          2017-04-04  16098  	if (pf->flags & I40E_FLAG_IWARP_ENABLED) {
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16099  		err = i40e_lan_add_device(pf);
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16100  		if (err)
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16101  			dev_info(&pdev->dev, "Failed to add PF to client API service list: %d\n",
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16102  				 err);
+004eb614c4d2fc Mitch Williams          2017-04-04  16103  	}
+e3219ce6a77546 Anjali Singhai Jain     2016-01-20  16104  
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16105  #define PCI_SPEED_SIZE 8
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16106  #define PCI_WIDTH_SIZE 8
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16107  	/* Devices on the IOSF bus do not have this information
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16108  	 * and will report PCI Gen 1 x 1 by default so don't bother
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16109  	 * checking them.
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16110  	 */
+d36e41dc78d313 Jacob Keller            2017-06-23  16111  	if (!(pf->hw_features & I40E_HW_NO_PCI_LINK_CHECK)) {
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16112  		char speed[PCI_SPEED_SIZE] = "Unknown";
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16113  		char width[PCI_WIDTH_SIZE] = "Unknown";
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16114  
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16115  		/* Get the negotiated link width and speed from PCI config
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16116  		 * space
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16117  		 */
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16118  		pcie_capability_read_word(pf->pdev, PCI_EXP_LNKSTA,
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16119  					  &link_status);
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16120  
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16121  		i40e_set_pci_config_data(hw, link_status);
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16122  
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16123  		switch (hw->bus.speed) {
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16124  		case i40e_bus_speed_8000:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16125  			strscpy(speed, "8.0", PCI_SPEED_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16126  		case i40e_bus_speed_5000:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16127  			strscpy(speed, "5.0", PCI_SPEED_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16128  		case i40e_bus_speed_2500:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16129  			strscpy(speed, "2.5", PCI_SPEED_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16130  		default:
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16131  			break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16132  		}
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16133  		switch (hw->bus.width) {
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16134  		case i40e_bus_width_pcie_x8:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16135  			strscpy(width, "8", PCI_WIDTH_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16136  		case i40e_bus_width_pcie_x4:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16137  			strscpy(width, "4", PCI_WIDTH_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16138  		case i40e_bus_width_pcie_x2:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16139  			strscpy(width, "2", PCI_WIDTH_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16140  		case i40e_bus_width_pcie_x1:
+f029c781dd6d8e Wolfram Sang            2022-08-30  16141  			strscpy(width, "1", PCI_WIDTH_SIZE); break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16142  		default:
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16143  			break;
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16144  		}
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16145  
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16146  		dev_info(&pdev->dev, "PCI-Express: Speed %sGT/s Width x%s\n",
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16147  			 speed, width);
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16148  
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16149  		if (hw->bus.width < i40e_bus_width_pcie_x8 ||
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16150  		    hw->bus.speed < i40e_bus_speed_8000) {
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16151  			dev_warn(&pdev->dev, "PCI-Express bandwidth available for this device may be insufficient for optimal performance.\n");
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16152  			dev_warn(&pdev->dev, "Please move the device to a different PCI-e link with more lanes and/or higher transfer rate.\n");
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16153  		}
+3fced535079a6a Anjali Singhai Jain     2015-09-03  16154  	}
+d4dfb81af79496 Catherine Sullivan      2013-11-28  16155  
+e827845c7deefb Catherine Sullivan      2015-02-06  16156  	/* get the requested speeds from the fw */
+e827845c7deefb Catherine Sullivan      2015-02-06  16157  	err = i40e_aq_get_phy_capabilities(hw, false, false, &abilities, NULL);
+e827845c7deefb Catherine Sullivan      2015-02-06  16158  	if (err)
+8279e49531f427 Neerav Parikh           2015-09-03  16159  		dev_dbg(&pf->pdev->dev, "get requested speeds ret =  %s last_status =  %s\n",
+f1c7e72e390391 Shannon Nelson          2015-06-04  16160  			i40e_stat_str(&pf->hw, err),
+f1c7e72e390391 Shannon Nelson          2015-06-04  16161  			i40e_aq_str(&pf->hw, pf->hw.aq.asq_last_status));
+e827845c7deefb Catherine Sullivan      2015-02-06  16162  	pf->hw.phy.link_info.requested_speeds = abilities.link_speed;
+e827845c7deefb Catherine Sullivan      2015-02-06  16163  
+1d96340196f1ee Damian Dybek            2018-12-19  16164  	/* set the FEC config due to the board capabilities */
+1d96340196f1ee Damian Dybek            2018-12-19  16165  	i40e_set_fec_in_flags(abilities.fec_cfg_curr_mod_ext_info, &pf->flags);
+1d96340196f1ee Damian Dybek            2018-12-19  16166  
+fc72dbce09989b Catherine Sullivan      2015-09-01  16167  	/* get the supported phy types from the fw */
+fc72dbce09989b Catherine Sullivan      2015-09-01  16168  	err = i40e_aq_get_phy_capabilities(hw, false, true, &abilities, NULL);
+fc72dbce09989b Catherine Sullivan      2015-09-01  16169  	if (err)
+fc72dbce09989b Catherine Sullivan      2015-09-01  16170  		dev_dbg(&pf->pdev->dev, "get supported phy types ret =  %s last_status =  %s\n",
+fc72dbce09989b Catherine Sullivan      2015-09-01  16171  			i40e_stat_str(&pf->hw, err),
+fc72dbce09989b Catherine Sullivan      2015-09-01  16172  			i40e_aq_str(&pf->hw, pf->hw.aq.asq_last_status));
+fc72dbce09989b Catherine Sullivan      2015-09-01  16173  
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16174  	/* make sure the MFS hasn't been set lower than the default */
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16175  #define MAX_FRAME_SIZE_DEFAULT 0x2600
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16176  	val = (rd32(&pf->hw, I40E_PRTGL_SAH) &
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16177  	       I40E_PRTGL_SAH_MFS_MASK) >> I40E_PRTGL_SAH_MFS_SHIFT;
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16178  	if (val < MAX_FRAME_SIZE_DEFAULT)
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16179  		dev_warn(&pdev->dev, "MFS for port %x has been set below the default: %x\n",
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16180  			 i, val);
+3a2c6ced90e183 Todd Fujinaka           2020-05-28  16181  
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16182  	/* Add a filter to drop all Flow control frames from any VSI from being
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16183  	 * transmitted. By doing so we stop a malicious VF from sending out
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16184  	 * PAUSE or PFC frames and potentially controlling traffic for other
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16185  	 * PF/VF VSIs.
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16186  	 * The FW can still send Flow control frames if enabled.
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16187  	 */
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16188  	i40e_add_filter_to_drop_tx_flow_control_frames(&pf->hw,
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16189  						       pf->main_vsi_seid);
+e7358f54a3954d Anjali Singhai Jain     2015-10-01  16190  
+31b606d0c40a14 Carolyn Wyborny         2016-02-17  16191  	if ((pf->hw.device_id == I40E_DEV_ID_10G_BASE_T) ||
+31b606d0c40a14 Carolyn Wyborny         2016-02-17  16192  		(pf->hw.device_id == I40E_DEV_ID_10G_BASE_T4))
+d36e41dc78d313 Jacob Keller            2017-06-23  16193  		pf->hw_features |= I40E_HW_PHY_CONTROLS_LEDS;
+4ad9f4f9e2873c Harshitha Ramamurthy    2016-11-08  16194  	if (pf->hw.device_id == I40E_DEV_ID_SFP_I_X722)
+d36e41dc78d313 Jacob Keller            2017-06-23  16195  		pf->hw_features |= I40E_HW_HAVE_CRT_RETIMER;
+0c22b3dd68a67e Jesse Brandeburg        2014-02-11  16196  	/* print a string summarizing features */
+0c22b3dd68a67e Jesse Brandeburg        2014-02-11  16197  	i40e_print_features(pf);
+0c22b3dd68a67e Jesse Brandeburg        2014-02-11  16198  
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16199  	return 0;
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16200  
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16201  	/* Unwind what we've done if something failed in the setup */
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16202  err_vsis:
+9e6c9c0f2ce675 Mauro S. M. Rodrigues   2017-05-12  16203  	set_bit(__I40E_DOWN, pf->state);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16204  	i40e_clear_interrupt_scheme(pf);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16205  	kfree(pf->vsi);
+04b03013a52517 Shannon Nelson          2013-11-28  16206  err_switch_setup:
+04b03013a52517 Shannon Nelson          2013-11-28  16207  	i40e_reset_interrupt_capability(pf);
+292a089d78d3e2 Steven Rostedt (Google  2022-12-20  16208) 	timer_shutdown_sync(&pf->service_timer);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16209  err_mac_addr:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16210  err_configure_lan_hmc:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16211  	(void)i40e_shutdown_lan_hmc(hw);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16212  err_init_lan_hmc:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16213  	kfree(pf->qp_pile);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16214  err_sw_init:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16215  err_adminq_setup:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16216  err_pf_reset:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16217  	iounmap(hw->hw_addr);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16218  err_ioremap:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16219  	kfree(pf);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16220  err_pf_alloc:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16221  	pci_disable_pcie_error_reporting(pdev);
+56d766d64ca5c9 Johannes Thumshirn      2016-06-07  16222  	pci_release_mem_regions(pdev);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16223  err_pci_reg:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16224  err_dma:
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16225  	pci_disable_device(pdev);
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16226  	return err;
+41c445ff0f482b Jesse Brandeburg        2013-09-11 @16227  }
+41c445ff0f482b Jesse Brandeburg        2013-09-11  16228  
+
+:::::: The code at line 16227 was first introduced by commit
+:::::: 41c445ff0f482bb6e6b72dcee9e598e20575f743 i40e: main driver core
+
+:::::: TO: Jesse Brandeburg <jesse.brandeburg@intel.com>
+:::::: CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
