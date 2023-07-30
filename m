@@ -2,65 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF607683AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE987683B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjG3Eir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 00:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        id S229550AbjG3Eth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 00:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjG3Ein (ORCPT
+        with ESMTP id S229379AbjG3Etg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 00:38:43 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B3190;
-        Sat, 29 Jul 2023 21:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690691913; x=1691296713; i=w_armin@gmx.de;
- bh=E2BkeqRCchKlZ5UcyxQtt4MhIEQUjS96zlYo9ea8ANU=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=YctsM5z6bD2R2i6cuAwy9pNIdWl+v3Of8byFPRfhEzaPXol9F7a93v9Jw4GFfHFHCosTO5f
- IY5beO3j7kT1PxuBPlDNVQ2kg4tY/wn5mnVzuZkc0N77/kdlkCiJrv5VAqBWXclkfZYhFCuw+
- IISPzYz/vIqgZr4SWLZa5riHItjteuzy/3gfF+RJyuIYMGKtoCYN6EVz5LlJs5FDb+Ku3mZ77
- YO0wwpKnS6Myf3KKxY/ro/D5YE5GOiqF/E3ST03t8+RgkC7Z//XAxZDwfl8iWv9Ui7ZNVnV7O
- /FoYIdmvnOT7hUIvIHdTJasVaWC+vQZJIci8FmhJr8qFRg9m6xYQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MNKm0-1qFSjL2BLe-00Omus; Sun, 30 Jul 2023 06:38:33 +0200
-From:   Armin Wolf <W_Armin@gmx.de>
-To:     hdegoede@redhat.com, markgross@kernel.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] platform/x86: wmi-bmof: Update MAINTAINERS entry
-Date:   Sun, 30 Jul 2023 06:38:17 +0200
-Message-Id: <20230730043817.12888-3-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230730043817.12888-1-W_Armin@gmx.de>
-References: <20230730043817.12888-1-W_Armin@gmx.de>
+        Sun, 30 Jul 2023 00:49:36 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F50D18B;
+        Sat, 29 Jul 2023 21:49:34 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qPyN1-0000Tk-CT; Sun, 30 Jul 2023 06:49:31 +0200
+Message-ID: <8ee87fe1-684f-ad59-21c7-4401a4e70bee@leemhuis.info>
+Date:   Sun, 30 Jul 2023 06:49:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZD31ytDUWJlArlOSfgK1DEogizZfOi6umDyQasAIbzXC2Jsa/jf
- 4S2OzB85Z+Oc9nioDF+noGfnr90eFNIB0fy31uh6OYkkCgpcXGpTDNYttM/8eUzY4xQ+b3y
- q7SwevFbdRNv8crhQMXtAbg06Xhil9xwFKvsoxB+SR/hWhZIW2967tqCU9iLUdeiFvPCMHl
- EwNPE6glc+uKlBpNbakfA==
-UI-OutboundReport: notjunk:1;M01:P0:blwVOjIpxc0=;Dk7rdXuJFyaOWGloVcMKS5eEOsS
- vuV9O+339FgbD84970BO0U3aiMz6rWd60hZ92nnlYzXbdsj0E44vM1rSRr8UdpDXlCo4iQs9R
- 8GUyOl1KycYZHdkrdrfTWEMD9O7hcOnWZdXxlVRkKn3nj2e+F1dbPLPnb9omXf81ExW5Wtj+s
- +9cuYtupt6B91rxKvQG3Sp5VyaAxDxJLA8jcGq3haYvueiaaa/tBDBhAKgOqG9LZdPBqKumSm
- z2T7Ra16k+cSVwb8Gs891gjg/V6dtlinQOxSDu5E5itwnz7NkA/U+6odGwyewxW9+Q/kJ8e76
- 2o6w/Qvmc5eLVXWUUFMJh4X8E3zzuGSNQCuK1jUOfs1ZDUxchLKpelAsvIkriZ8g2irWSLsz4
- IhIISQo9JmosC/c/kKiIE+H9+5LWY7S6FLLQceLSC6s/Dr2P9VJHdBLEGgViiJidP76Ayy2ab
- G73AcfQjPjKosWgXEvgcHcW8U/eS3rWiS4cebn76p4UA4ef66XvInHtQ5XXwTZbzfEGkMqROi
- ous3MewVuiMVZC2DAlDlnM4mLSYjFin9NbCGwY/F/yEnConUEmViGX0dWBBV/AT0MI2xTEgr+
- nWauj0oofKDn3QfUUEBwpd+XVwp1RVCFmPwA2tYNMCovH+mCU0NGDdz59dxG3Hlpptzjv3LNA
- PTfD1lHalcY/9TfC3mbLIKJqlgOrjDbiH+pR8EjGUaF5LGz9pTkAzFQPNHPzFsmfUhaaoEBV8
- nJxxOD2SWiI1ehHZVCYt8GVYBiamgK5E6aCULynI3VXoGmj9XYtyr0srXgMW/Dy34f4nNiCYF
- RLQhql7NE5qtzOBtYRxcj/qu3zQiJS/u+v22B6xH8X1XOF77d1inTTzkfvLP4SMGp563tWRIN
- QZv7fONW5EFPlgtVKquXWE1mXZDtZcnthQtaWLwsrzbF9c3dh9TjnF+/qBQCFxYtyBSmHCVqX
- ysvJ71n+u1/5B4j+VeGFsFsXQh8=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: 6.5 - 6.4.7 Regression : ASUS UM5302TA Keyboard don't work
+Content-Language: en-US, de-DE
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Linux Input Devices <linux-input@vger.kernel.org>,
+        ACPI Asus <acpi4asus-user@lists.sourceforge.net>,
+        Linux x86 Platform Drivers 
+        <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        Guilhem Lettron <guilhem@lettron.fr>
+References: <bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690692574;533bb25a;
+X-HE-SMSGID: 1qPyN1-0000Tk-CT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,31 +53,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WMI Binary MOF driver is important for the development
-of modern WMI drivers, i am willing to maintain it.
-Also fix the mailing list address.
+Lo!
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- MAINTAINERS | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On 30.07.23 04:41, Bagas Sanjaya wrote:
+> 
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+> 
+>> On a kernel 6.4.5 and less, the keyboard is working fine.
+>>
+>> Beginning with 6.5 rc1 and 6.4.7 any key don't respond.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 426d3be71da2..9b871fb34e83 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22954,8 +22954,9 @@ S:	Odd fixes
- F:	drivers/net/wireless/legacy/wl3501*
+That is a AMD Ryzen Laptop. And if that really started from
+v6.4.6..v6.4.7 then I guess there is a decent chance that this is caused
+by ```ACPI: resource: Remove "Zen" specific match and quirks``` from
+Mario. Hence adding him to the list of recipients.
 
- WMI BINARY MOF DRIVER
--L:	platform-drivers-x86@vger.kernel.org
--S:	Orphan
-+M:	Armin Wolf <W_Armin@gmx.de>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
- F:	Documentation/ABI/stable/sysfs-platform-wmi-bmof
- F:	Documentation/wmi/devices/wmi-bmof.rst
- F:	drivers/platform/x86/wmi-bmof.c
-=2D-
-2.39.2
+Guilhem Lettron: if you have a minute, could you try if reverting that
+patch ontop of 6.4.7 fixes things?
+
+Ciao, Thorsten
+
+>> [    0.668850] input: ASUE140D:00 04F3:31B9 Keyboard as /devices/platform/AMDI0010:01/i2c-1/i2c-ASUE140D:00/0018:04F3:31B9.0001/input/input5
+>> ...
+>> [    1.930328] input: ASUE140D:00 04F3:31B9 Keyboard as /devices/platform/AMDI0010:01/i2c-1/i2c-ASUE140D:00/0018:04F3:31B9.0001/input/input13
+> 
+> See Bugzilla for the full thread.
+> 
+> Anyway, I'm adding this regression to regzbot:
+> 
+> #regzbot introduced: v6.4..v6.5-rc1 https://bugzilla.kernel.org/show_bug.cgi?id=217726
+> #regzbot title: ASUE140D:00 04F3:31B9 doesn't respond to input
+> 
+> Thanks.
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217726
 
