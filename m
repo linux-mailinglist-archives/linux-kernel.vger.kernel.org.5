@@ -2,70 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A41768438
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 09:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E61576843A
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 09:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjG3HlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 03:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56330 "EHLO
+        id S229681AbjG3HmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 03:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjG3HlI (ORCPT
+        with ESMTP id S229445AbjG3Hl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 03:41:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0FF198E;
-        Sun, 30 Jul 2023 00:41:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690702863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W6ewvr0FuRcnzy1sYvOX0rJHbQtOdV3pD/pLGGyIiQY=;
-        b=YMgAsJVkeAQ/k4TtYhgWOi9bkYvqOMQ+kYKzry7qopWRF4X47YXCC7Qy6gJ6Lw0qoS1qr2
-        4ZgqlN0+3jV60xACrqVd7D8ISrN4s1o2/TjPYF3qDzybxyh61e2rknWIitqwwFi5JUTKzo
-        etAcnlyPnyKDp0xgb+QbTITj+PtUIhmNrNKxxviN/GHNGadMn16gv4u7rQMeNHRJ5GBKTu
-        3w87BOkmCCGlqAd0RzEKMbVmpWYGrZ5vgOkPruSUW+So8+IFl0W8LHZB6P20xc/rRct+eK
-        bWKmGXVuOod52Jdpfg/v7jZ+2uviCEzcKY6NVZFta2xwo4swF7N+rCfzzrw0Mg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690702863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W6ewvr0FuRcnzy1sYvOX0rJHbQtOdV3pD/pLGGyIiQY=;
-        b=2+vO3fk74NOeBRY7+OMw/Co/dCVcOzO9c5JkJ7gmQmOGWOF+quzu0L5xhEPS0Z7Bnwsh8L
-        bYMtr2WZS8qgvYBQ==
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: RE: [patch v2 28/38] x86/cpu: Provide an AMD/HYGON specific
- topology parser
-In-Reply-To: <BYAPR21MB16882172252C0C013A0E3B5ED704A@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120931.226185847@linutronix.de>
- <BYAPR21MB16882172252C0C013A0E3B5ED704A@BYAPR21MB1688.namprd21.prod.outlook.com>
-Date:   Sun, 30 Jul 2023 09:41:02 +0200
-Message-ID: <874jllq229.ffs@tglx>
+        Sun, 30 Jul 2023 03:41:59 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D37198E;
+        Sun, 30 Jul 2023 00:41:58 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36U5ra1h024294;
+        Sun, 30 Jul 2023 00:41:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=yiQhQPcbST93uqmvQs608MRTPE8/5cstdmtGYWxa/aE=;
+ b=c2CYQ9A7capXAcItO1gK977aNSwB10fl3UrApk/2n+AL41Igqnbq0Hmo4cx251SEuIdA
+ d7j+Wtq1BHAjd8QDhpE7DNYAaTX1uCYqtvMfXstMG4C2q+Yt+q2qxy5QNSAVlsj4nwzg
+ 755ANzd0K5yf/Pv8UR/noO4up9tmKb9qWCWY9NVr+ou11LdrEui1aM/uffrXrpMxKxBM
+ K3UXcYP+vL5mC7jPm3sDLBNFpfv0u1OLWhF3lEBZTZoHafl4AqQ6EQStRMqdmwmbA0tU
+ +rWXEen0oDtJsojTCcxT0YGFF0151l4bFwN1oGiasVdDsrQKpUm160ttNZQcRrs6xnJY aA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529k1px2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 30 Jul 2023 00:41:44 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 30 Jul
+ 2023 00:41:41 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 30 Jul 2023 00:41:41 -0700
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 90E163F706D;
+        Sun, 30 Jul 2023 00:41:37 -0700 (PDT)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>,
+        <simon.horman@corigine.com>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH 0/2] octeontx2-af: Code restructuting and TC
+Date:   Sun, 30 Jul 2023 13:11:32 +0530
+Message-ID: <20230730074134.2838427-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-Proofpoint-GUID: 76iSP1rRAbjcbrcMjdwIhwLes1VPPNcI
+X-Proofpoint-ORIG-GUID: 76iSP1rRAbjcbrcMjdwIhwLes1VPPNcI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,28 +69,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30 2023 at 05:20, Michael Kelley wrote:
-> From: Thomas Gleixner <tglx@linutronix.de> Sent: Friday, July 28, 2023 5:13 AM
->> +	/*
->> +	 * If leaf 0xb is available, then SMT shift is set already. If not
->> +	 * take it from ecx.threads_per_cpu and use topo_update_dom() as
->
-> "take it from ebx.threads_per_cu and use topology_update_dom() as"
->
->> +	 * topology_set_dom() would propagate and overwrite the already
->> +	 * propagated CORE level.
->> +	 */
->> +	if (!has_0xb) {
->> +		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(leaf.threads_per_cu),
->> +				    leaf.threads_per_cu);
->
-> leaf.threads_per_cu needs to be (leaf.threads_per_cu + 1) above.  If
-> the core has two hyper-threads, the value of the threads_per_cu
-> field returned by CPUID is "1".
->
-> All my Hyper-V VMs on AMD processors were coming up with only
-> one thread per core.   The change fixes the problem.
+This patchset includes minor code restructuring related to TC flower offload
+for outer vlan and adding support for TC inner vlan offload.
 
-You are right. Thanks for tracking that down!
+Patch #1 Code restructure to handle TC flower outer vlan offload
 
-    tglx
+Patch #2 Add TC flower offload support for inner vlan
+
+Suman Ghosh (2):
+  octeontx2-af: Code restructure to handle TC outer VLAN offload
+  octeontx2-af: TC flower offload support for inner VLAN
+
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |   1 +
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |   3 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        |   5 +
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |  13 +++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 105 +++++++++++-------
+ 5 files changed, 89 insertions(+), 38 deletions(-)
+
+-- 
+2.25.1
+
