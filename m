@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8DB7684E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBF57684E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjG3LGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 07:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        id S229948AbjG3LHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 07:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjG3LGC (ORCPT
+        with ESMTP id S229445AbjG3LHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 07:06:02 -0400
+        Sun, 30 Jul 2023 07:07:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4504710F9
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:06:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753BA10F9
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:07:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D76F960BFA
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:06:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5873C433C7;
-        Sun, 30 Jul 2023 11:05:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BDA260BF0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:07:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11291C433C8;
+        Sun, 30 Jul 2023 11:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690715160;
-        bh=V546RUpxt63ZWqQa6M0/DBvPcQOj9XCJwcNEKgwKQDQ=;
+        s=korg; t=1690715240;
+        bh=E4LNqsv1lwU4GRCt6fPvRvslxpVxWHFdlSY8gywKbz0=;
         h=Date:From:To:Cc:Subject:From;
-        b=sQorlwEyhplrM87Gh1qSTzw9U6xOWz1SFvcOJioN04hYQBtUibIxWJSmo5l0PPEkP
-         QX9X7zWADm6JvFDDnNyCS31cYPudvRwb/T4Bf0Bf7PXgD10y9zpTpzXBgS9dUEHf4s
-         BbsO6cbHUAo8ekz8N0bZBQJQHxD386KDMvOlArwQ=
-Date:   Sun, 30 Jul 2023 13:05:57 +0200
+        b=A1mwbhzHA+JMDrF31uyYGSPfGFk/1ZQM5KQz2VAj8k8/PAc5jpwNodvgcfp+XGpAm
+         9W6QOt+PEPyJ17F0xZo0S4QhT5jC9ewkyO2nG3scLSwgR3Gz0gwF+AaCN2IUZKOFuu
+         fFqJTvZTEsfn5sdZ6UCuDt0Nq4cbH0V8DvcWI3xk=
+Date:   Sun, 30 Jul 2023 13:07:17 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 6.5-rc4
-Message-ID: <ZMZEFScpcIdjLiFy@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [GIT PULL] Staging driver fixes for 6.5-rc4
+Message-ID: <ZMZEZev25nzJoNaM@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -50,46 +51,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b574c:
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-  Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.5-rc4
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-6.5-rc4
 
-for you to fetch changes up to f8ea95021022826a010f56cf19451c21f4c9c155:
+for you to fetch changes up to 5f1c7031e044cb2fba82836d55cc235e2ad619dc:
 
-  misc/genalloc: Name subpools by of_node_full_name() (2023-07-26 09:45:01 +0200)
+  staging: ks7010: potential buffer overflow in ks_wlan_set_encode_ext() (2023-07-27 09:54:33 +0200)
 
 ----------------------------------------------------------------
-Char driver and Documentation fixes for 6.5-rc4
+Staging driver fixes for 6.5-rc4
 
-Here is a char driver fix and some documentation updates for 6.5-rc4
-that contain the following changes:
-  - sram/genalloc bugfix for reported problem
-  - security-bugs.rst update based on recent discussions
-  - embargoed-hardware-issues minor cleanups and then partial revert for
-    the project/company lists
+Here are 3 small staging driver fixes for 6.5-rc4 that resolve some
+reported problems.  These fixes are:
+  - fix for an old bug in the r8712 driver
+  - fbtft driver fix for a spi device
+  - potential overflow fix in the ks7010 driver
 
-All of these have been in linux-next for a while with no reported
-problems, and the documentation updates have all been reviewed by the
-relevant developers.
+All of these have been in linux-next with no reported problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Greg Kroah-Hartman (4):
-      Documentation: security-bugs.rst: update preferences when dealing with the linux-distros group
-      Documentation: security-bugs.rst: clarify CVE handling
-      Documentation: embargoed-hardware-issues.rst: clean out empty and unused entries
-      Documentation: embargoed-hardware-issues.rst: add AMD to the list
+Larry Finger (1):
+      staging: r8712: Fix memory leak in _r8712_init_xmit_priv()
 
-Linus Walleij (1):
-      misc/genalloc: Name subpools by of_node_full_name()
+Raphael Gallais-Pou (1):
+      staging: fbtft: ili9341: use macro FBTFT_REGISTER_SPI_DRIVER
 
- .../process/embargoed-hardware-issues.rst          |  3 --
- Documentation/process/security-bugs.rst            | 39 ++++++++++------------
- drivers/misc/sram.c                                |  2 +-
- lib/genalloc.c                                     |  2 +-
- 4 files changed, 20 insertions(+), 26 deletions(-)
+Zhang Shurong (1):
+      staging: ks7010: potential buffer overflow in ks_wlan_set_encode_ext()
+
+ drivers/staging/fbtft/fb_ili9341.c     |  2 +-
+ drivers/staging/ks7010/ks_wlan_net.c   |  6 +++--
+ drivers/staging/rtl8712/rtl871x_xmit.c | 43 +++++++++++++++++++++++++++-------
+ drivers/staging/rtl8712/xmit_linux.c   |  6 +++++
+ 4 files changed, 45 insertions(+), 12 deletions(-)
