@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9871F768398
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 05:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D188B76839F
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 05:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjG3DeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 23:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S229605AbjG3Dxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 23:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjG3DeF (ORCPT
+        with ESMTP id S229502AbjG3Dxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 23:34:05 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 60B5A10D3;
-        Sat, 29 Jul 2023 20:34:01 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36U3XhXI007361;
-        Sun, 30 Jul 2023 05:33:43 +0200
-Date:   Sun, 30 Jul 2023 05:33:43 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     Yuan Tan <tanyuan@tinylab.org>, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] selftests/nolibc: add testcase for pipe.
-Message-ID: <20230730033343.GB7339@1wt.eu>
-References: <cover.1690307717.git.tanyuan@tinylab.org>
- <160ddef0313e11085ee906144d6d9678b8156171.1690307717.git.tanyuan@tinylab.org>
- <27bd9bc1-e7a5-4a81-91c9-2642feabb7ce@t-8ch.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <27bd9bc1-e7a5-4a81-91c9-2642feabb7ce@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sat, 29 Jul 2023 23:53:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313A01BC9;
+        Sat, 29 Jul 2023 20:53:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C452460909;
+        Sun, 30 Jul 2023 03:53:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3B877C433C8;
+        Sun, 30 Jul 2023 03:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690689218;
+        bh=OBw8aJVrT+hGofvjQ/7LOP2RwmFtXtB9iZEBLUSuvg4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sdENXbEIwwXMsspJjH69gJUZqKlaahVL5Yo3QlEl4yEH3g2XHilHplvn7byuW6Et5
+         /QbgZyzDAck0yyhJViMoA4/EkHOc3aGwbqBrxwbJXOnBhU+CFVrP2zDO4Wim45jNe4
+         xdBmWOOUewMqLc84gwqfI9r5+SmErveoC/pCE1SI2u5NoRnA2ihCPC1qOF7BKZFcLd
+         KwswPVoXs3NAkprRbMvhjkcLdFfi2jGg64dtXoaFLxc+c1T0zFkdyRkBZ5PgkCkcbb
+         Q/dzATaRce834mYPdlM6BB53DEz2hrPbDkOJe059Wu31yu74mCWKCstLd+vQ+wBEMi
+         dgnnwxDhUdj+A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 21DCDC6445B;
+        Sun, 30 Jul 2023 03:53:38 +0000 (UTC)
+Subject: Re: [GIT PULL] smb3 client fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAH2r5mvzyVsou=Avw8GjxwV5CRgEMY_4XO+JEaZLk+GF-QjyzA@mail.gmail.com>
+References: <CAH2r5mvzyVsou=Avw8GjxwV5CRgEMY_4XO+JEaZLk+GF-QjyzA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mvzyVsou=Avw8GjxwV5CRgEMY_4XO+JEaZLk+GF-QjyzA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc3-smb3-client-fixes
+X-PR-Tracked-Commit-Id: a171eb5cac427fa8d084eaf5e47fbe4c0f1e279f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d31e3792919e5c97d572c8a27a5a7c1eb9de5aca
+Message-Id: <169068921813.25281.17550201565429848923.pr-tracker-bot@kernel.org>
+Date:   Sun, 30 Jul 2023 03:53:38 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 12:17:24AM +0200, Thomas Weißschuh wrote:
-> > +	case 0:
-> > +		close(pipefd[0]);
-> > +		write(pipefd[1], msg, strlen(msg));
-> 
-> Isn't this missing to write trailing the 0 byte?
+The pull request you sent on Sat, 29 Jul 2023 14:07:53 -0500:
 
-It depends if the other side expects to get the trailing 0.
-In general it's better to avoid sending it since it's only
-used for internal representation, and the other side must
-be prepared to receive anything anyway.
+> git://git.samba.org/sfrench/cifs-2.6.git tags/6.5-rc3-smb3-client-fixes
 
-> Also check the return value.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d31e3792919e5c97d572c8a27a5a7c1eb9de5aca
 
-Indeed!
+Thank you!
 
-> > +		close(pipefd[1]);
-> 
-> Do we need to close the pipefds? The process is exiting anyways.
-
-It's better to, because we could imagine looping over the tests for
-example. Thus each test shoulld have as little impact as possible
-on other tests.
-
-> > +		exit(EXIT_SUCCESS);
-> > +
-> > +	default:
-> > +		close(pipefd[1]);
-> > +		read(pipefd[0], buf, 32);
-> 
-> Use sizeof(buf). Check return value == strlen(msg).
-> 
-> > +		close(pipefd[0]);
-> > +		wait(NULL);
-> 
-> waitpid(pid, NULL, 0);
-> 
-> > +
-> > +		if (strcmp(buf, msg))
-> > +			return 1;
-> > +		return 0;
-> 
-> return !!strcmp(buf, msg);
-
-In fact before that we need to terminate the output buffer. If for any
-reason the transfer fails (e.g. the syscall fails or transfers data at
-another location or of another length, we could end up comparing past
-the end of the buffer. Thus I suggest adding this immediately after the
-read():
-
-		buf[sizeof(buf) - 1] = 0;
-
-Willy
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
