@@ -2,145 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2467685AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D25B7685AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjG3Nis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
+        id S229721AbjG3Nk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjG3Nip (ORCPT
+        with ESMTP id S229527AbjG3Nk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:38:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2551B8
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690724277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DSftxCILntSGnswMPgbYyCjlJ7VpupykbCPvHRv8Qw4=;
-        b=eqF3h4Ws+Fg8MIQ1/3HEoQ4v9s4mqtzTRFMl0W5nXgroAWmaTe48W1kMaHflvSFUdb72Ev
-        0AGonO//U25sZ61lIBGttLxTu6UgbLf2+H5iYTj8eGLGxO57GIf1tD5fc6ZmmTjQMZiOst
-        6+xJePspt1pO74OjKP6YQD/VHO1bYeE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-138-lzXbus6AOXW-eGcW8AxYQA-1; Sun, 30 Jul 2023 09:37:54 -0400
-X-MC-Unique: lzXbus6AOXW-eGcW8AxYQA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BC9C3C0DDA4;
-        Sun, 30 Jul 2023 13:37:54 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2BD5C57964;
-        Sun, 30 Jul 2023 13:37:53 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM x86 fixes for Linux 6.5-rc4
-Date:   Sun, 30 Jul 2023 09:37:53 -0400
-Message-Id: <20230730133753.2839616-1-pbonzini@redhat.com>
+        Sun, 30 Jul 2023 09:40:27 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7DC1B8;
+        Sun, 30 Jul 2023 06:40:26 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5576ad1b7e7so476816a12.1;
+        Sun, 30 Jul 2023 06:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690724426; x=1691329226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=glTkxbBHI8FuvLUadeSjD4NNnkjJQ+H4w63ZZABdmPA=;
+        b=sQN2Bi8qp05k33larDBVywlucB22K59GBsYSyF/KjdwuffLTv0aYitjRYK/xOVFmFf
+         DWyQkVzHrvffItt8A7nDoO4pP5SluIqk0xEJz/ENeMMAn4+ncNoGD1W/N+NgPJCUKtwp
+         amBwE44DA7jTiJCxR4q34z2/N70oom0WekXDGsCIe3u9ULPZtNGHqXE2xwxKnp6IU8o5
+         TQf+qcmbii3BuBzjWoImuwYcpJDAijCVhOtk+dWQmU4GkVDzNDNaFdvfiWQHqqW6l+Ax
+         QXVfMqq3y2fQo6nzy64s4bMzlYEund9vGa4r2MpMpfnaGzBFSwkeCssgMKjkxIhy93OI
+         UZSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690724426; x=1691329226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=glTkxbBHI8FuvLUadeSjD4NNnkjJQ+H4w63ZZABdmPA=;
+        b=XYsAYjR48T1eTiCxofJRH4o6pk0PFGTXA0sy0Uh/FtCfh6sr4MkIod6ZkukA+C1P/s
+         gUJocUJeusHqE9UnPnULVlzXMVvehXoDwwzkL7zBvZI8Xn1fk5jhgF5O/cAifOchFsAN
+         oimDvoETU4j7VV2njcVNGaKwJXj6E6Y3rg3PUF9Z8kOdJrxDtNYy1tBtH3afdnzMJ3ID
+         8GGS/anYZ3sWsiHLXUK/bib8otkEWI64Sh62iae0CDOQrWxlhT9LHKMF6iTAX03p7JeA
+         vhEN7nzYN1oXzrkSs8gYMuLrvsX/eai4MZ5sDl6tQHHAr6qFYjVJ0WwXDq65dSiHOZTm
+         kXgw==
+X-Gm-Message-State: ABy/qLZEr0QnEddjjfL3pck5SKOCl98ufHWRp4Ac4ASUNKLqsgbwuHbo
+        S7jP7r8Sd/vOrXHokNde6DH9xiVp/fVKfemH2tk=
+X-Google-Smtp-Source: APBJJlHHyjBcSw6Sn6fkSgL6k6N+VoMe4zmdxkqQ1fdRviyr9y5VU0Ip/xLfowgnQAULoDNBc2wyUhfASTaeQ52bmJc=
+X-Received: by 2002:a17:90a:c84:b0:263:25f9:65b2 with SMTP id
+ v4-20020a17090a0c8400b0026325f965b2mr4088255pja.4.1690724425701; Sun, 30 Jul
+ 2023 06:40:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230726075747.1016930-1-xiaolei.wang@windriver.com>
+In-Reply-To: <20230726075747.1016930-1-xiaolei.wang@windriver.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 30 Jul 2023 10:40:14 -0300
+Message-ID: <CAOMZO5D5Lrp0cVyoXjtwhwwDkOiaafX-0yzgx1NcS9UQ_5jh7g@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: imx: Set default tuning step for imx6sx usdhc
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, linux-imx@nxp.com, richardcochran@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Xiaolei,
 
-The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
+On Wed, Jul 26, 2023 at 4:58=E2=80=AFAM Xiaolei Wang <xiaolei.wang@windrive=
+r.com> wrote:
+>
+> If the tuning step is not set, the tuning step is set to 1.
+> For some sd cards, the following Tuning timeout will occur.
+>
+> Tuning failed, falling back to fixed sampling clock
+>
+> So set the default tuning step. This refers to the NXP vendor's
+> commit below:
+>
+> https://github.com/nxp-imx/linux-imx/blob/lf-6.1.y/
+> arch/arm/boot/dts/imx6sx.dtsi#L1108-L1109
+>
+> Fixes: 1e336aa0c025 ("mmc: sdhci-esdhc-imx: correct the tuning start tap =
+and step setting")
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
 
-  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
+Thanks for your patch:
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-
-for you to fetch changes up to 5a7591176c47cce363c1eed704241e5d1c42c5a6:
-
-  KVM: selftests: Expand x86's sregs test to cover illegal CR0 values (2023-07-29 11:05:32 -0400)
-
-Half kernel, half selftests.
-
-----------------------------------------------------------------
-x86:
-
-* Do not register IRQ bypass consumer if posted interrupts not supported
-
-* Fix missed device interrupt due to non-atomic update of IRR
-
-* Use GFP_KERNEL_ACCOUNT for pid_table in ipiv
-
-* Make VMREAD error path play nice with noinstr
-
-* x86: Acquire SRCU read lock when handling fastpath MSR writes
-
-* Support linking rseq tests statically against glibc 2.35+
-
-* Fix reference count for stats file descriptors
-
-* Detect userspace setting invalid CR0
-
-Non-KVM:
-
-* Remove coccinelle script that has caused multiple confusion
-  ("debugfs, coccinelle: check for obsolete DEFINE_SIMPLE_ATTRIBUTE() usage",
-  acked by Greg)
-
-----------------------------------------------------------------
-Like Xu (1):
-      KVM: x86/irq: Conditionally register IRQ bypass consumer again
-
-Maxim Levitsky (3):
-      KVM: x86: VMX: __kvm_apic_update_irr must update the IRR atomically
-      KVM: x86: VMX: set irr_pending in kvm_apic_update_irr
-      KVM: x86: check the kvm_cpu_get_interrupt result before using it
-
-Peng Hao (1):
-      KVM: X86: Use GFP_KERNEL_ACCOUNT for pid_table in ipiv
-
-Sean Christopherson (16):
-      KVM: VMX: Make VMREAD error path play nice with noinstr
-      KVM: VMX: Use vmread_error() to report VM-Fail in "goto" path
-      KVM: x86: Acquire SRCU read lock when handling fastpath MSR writes
-      Revert "KVM: SVM: Skip WRMSR fastpath on VM-Exit if next RIP isn't valid"
-      selftests/rseq: Play nice with binaries statically linked against glibc 2.35+
-      KVM: Grab a reference to KVM for VM and vCPU stats file descriptors
-      KVM: selftests: Use pread() to read binary stats header
-      KVM: selftests: Clean up stats fd in common stats_test() helper
-      KVM: selftests: Explicitly free vcpus array in binary stats test
-      KVM: selftests: Verify userspace can create "redundant" binary stats files
-      KVM: selftests: Verify stats fd can be dup()'d and read
-      KVM: selftests: Verify stats fd is usable after VM fd has been closed
-      Revert "debugfs, coccinelle: check for obsolete DEFINE_SIMPLE_ATTRIBUTE() usage"
-      KVM: x86: Disallow KVM_SET_SREGS{2} if incoming CR0 is invalid
-      KVM: VMX: Don't fudge CR0 and CR4 for restricted L2 guest
-      KVM: selftests: Expand x86's sregs test to cover illegal CR0 values
-
- arch/x86/include/asm/kvm-x86-ops.h                 |  1 +
- arch/x86/include/asm/kvm_host.h                    |  3 +-
- arch/x86/kvm/lapic.c                               | 25 +++++---
- arch/x86/kvm/svm/svm.c                             | 16 ++---
- arch/x86/kvm/vmx/vmenter.S                         |  8 +--
- arch/x86/kvm/vmx/vmx.c                             | 64 ++++++++++++++------
- arch/x86/kvm/vmx/vmx_ops.h                         | 12 +++-
- arch/x86/kvm/x86.c                                 | 50 +++++++++++-----
- .../api/debugfs/debugfs_simple_attr.cocci          | 68 ---------------------
- .../testing/selftests/kvm/include/kvm_util_base.h  |  6 +-
- .../testing/selftests/kvm/kvm_binary_stats_test.c  | 68 ++++++++++++++-------
- .../testing/selftests/kvm/x86_64/set_sregs_test.c  | 70 ++++++++++++----------
- tools/testing/selftests/rseq/rseq.c                | 28 +++++++--
- virt/kvm/kvm_main.c                                | 24 ++++++++
- 14 files changed, 256 insertions(+), 187 deletions(-)
- delete mode 100644 scripts/coccinelle/api/debugfs/debugfs_simple_attr.cocci
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
