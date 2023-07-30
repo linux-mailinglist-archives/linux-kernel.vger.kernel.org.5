@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAF0768709
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 20:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5713A76870D
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 20:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjG3SIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 14:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        id S229944AbjG3SI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 14:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjG3SIW (ORCPT
+        with ESMTP id S229891AbjG3SIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 14:08:22 -0400
+        Sun, 30 Jul 2023 14:08:23 -0400
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF691B4
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:08:14 -0700 (PDT)
-X-UUID: 0a6b3bc22f0411ee9cb5633481061a41-20230731
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A375C1718
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:08:15 -0700 (PDT)
+X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=5st1uPVswkp7Jf2ahEjpIkqtcT+MrlPvHk5P9itktPg=;
-        b=XCpqvtcR49Ekyqaj7sAPwu6zR1S5zAS56kjN8ujQwO+8eZQRAaqLKMdkmBfcklrskHsu6MyfypY1QpbElk9rS2uj5B2bN08BcKfwYtof1H7wyrliX7sI5ooC+szcEjudR9RzkcP7Ld5vul740MRN4C+uv3Scu4k7M2m35OOsZcU=;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=rUtEDz36Ege3wRJGsZeZHbrLvnL2PPOHhITk/HK+wd0=;
+        b=at7QoIuqMX8n3cyreCSdGqy1h85o7k9lAplZYTz3wrLdW1LIotoI8uAS4wegTuDfaImU8FVaRUm0T8bCHXWgw3yFNxtXl+OOQgrBX0iUO3uJQB1rTBYUtOH253TOz1ftsVwhivOh8AwhXIF721BNPUU+kcLRoq+TWZNrTF8qDmg=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:adef8156-e62f-4c36-81d0-e74ade193316,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:9b94f2b3-a467-4aa9-9e04-f584452e3794,B
+X-CID-O-INFO: VERSION:1.1.30,REQID:c9e47b98-cd78-4fe9-8a38-dd8f7fbc5fb1,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:9c94f2b3-a467-4aa9-9e04-f584452e3794,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
         DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 0a6b3bc22f0411ee9cb5633481061a41-20230731
+X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
 Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
         (envelope-from <jiaxin.yu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1055043603; Mon, 31 Jul 2023 02:08:09 +0800
+        with ESMTP id 584771536; Mon, 31 Jul 2023 02:08:09 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
  MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 31 Jul 2023 02:08:08 +0800
+ 15.2.1118.26; Mon, 31 Jul 2023 02:08:09 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 31 Jul 2023 02:08:07 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 31 Jul 2023 02:08:08 +0800
 From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
 To:     <broonie@kernel.org>, <andrzej.hajda@intel.com>,
         <neil.armstrong@linaro.org>, <robert.foss@linaro.org>,
@@ -58,9 +58,9 @@ CC:     <chunxu.li@mediatek.com>,
         <linux-kernel@vger.kernel.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
-Date:   Mon, 31 Jul 2023 02:08:02 +0800
-Message-ID: <20230730180803.22570-3-jiaxin.yu@mediatek.com>
+Subject: [v3 3/3] drm/bridge: it6505: Add audio support
+Date:   Mon, 31 Jul 2023 02:08:03 +0800
+Message-ID: <20230730180803.22570-4-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
 References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
@@ -68,50 +68,149 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-MTK:  N
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use SND_SOC_DAPM_LINE instead of SND_SOC_DAPM_OUTPUT to trigger
-DAPM events to hdmi-codec when userspace control the DPAM pin.
+Add audio support for it6505
+
+1. Bridge to hdmi-codec to support audio feature. At the same time,
+   the function of automatically detecting audio is removed.
+2. It is observed that some DP-to-HDMI dongles will get into bad
+   states if sending InfoFrame without audio data. Defer to enable
+   it6505's audio feature when PCM triggers START or RESUME.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 ---
- sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c | 2 +-
- sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/ite-it6505.c | 81 ++++++++++++++++++++++++++---
+ 1 file changed, 75 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-index 0432f9d89020..ae51d70e2c0b 100644
---- a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
-@@ -964,7 +964,7 @@ mt8186_mt6366_da7219_max98357_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
- 	SND_SOC_DAPM_HP("Headphones", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_OUTPUT("HDMI1"),
-+	SND_SOC_DAPM_LINE("HDMI1", NULL),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL1, SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL2, SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_UL1, SND_SOC_NOPM, 0, 0, NULL, 0),
-diff --git a/sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c b/sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c
-index 9c11016f032c..a39e37fa4e02 100644
---- a/sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c
-+++ b/sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c
-@@ -1032,7 +1032,7 @@ mt8186_mt6366_rt1019_rt5682s_widgets[] = {
- 	SND_SOC_DAPM_SPK("Speakers", NULL),
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_OUTPUT("HDMI1"),
-+	SND_SOC_DAPM_LINE("HDMI1", NULL),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL1, SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_DL2, SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_MIXER(SOF_DMA_UL1, SND_SOC_NOPM, 0, 0, NULL, 0),
+diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+index 504d51c42f79..1cfcb0731288 100644
+--- a/drivers/gpu/drm/bridge/ite-it6505.c
++++ b/drivers/gpu/drm/bridge/ite-it6505.c
+@@ -2162,7 +2162,6 @@ static void it6505_stop_link_train(struct it6505 *it6505)
+ 
+ static void it6505_link_train_ok(struct it6505 *it6505)
+ {
+-	struct device *dev = &it6505->client->dev;
+ 
+ 	it6505->link_state = LINK_OK;
+ 	/* disalbe mute enable avi info frame */
+@@ -2170,11 +2169,6 @@ static void it6505_link_train_ok(struct it6505 *it6505)
+ 	it6505_set_bits(it6505, REG_INFOFRAME_CTRL,
+ 			EN_VID_CTRL_PKT, EN_VID_CTRL_PKT);
+ 
+-	if (it6505_audio_input(it6505)) {
+-		DRM_DEV_DEBUG_DRIVER(dev, "Enable audio!");
+-		it6505_enable_audio(it6505);
+-	}
+-
+ 	if (it6505->hdcp_desired)
+ 		it6505_start_hdcp(it6505);
+ }
+@@ -2846,6 +2840,45 @@ static void __maybe_unused it6505_audio_shutdown(struct device *dev, void *data)
+ 		it6505_disable_audio(it6505);
+ }
+ 
++static int it6505_audio_hw_params(struct device *dev, void *data,
++				  struct hdmi_codec_daifmt *daifmt,
++				  struct hdmi_codec_params *params)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++
++	return it6505_audio_setup_hw_params(it6505, params);
++}
++
++static int it6505_audio_setup_trigger(struct it6505 *it6505, int cmd)
++{
++	struct device *dev = &it6505->client->dev;
++
++	DRM_DEV_DEBUG_DRIVER(dev, "event: %d", cmd);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		queue_delayed_work(system_wq, &it6505->delayed_audio,
++				   msecs_to_jiffies(180));
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		cancel_delayed_work(&it6505->delayed_audio);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int it6505_audio_trigger(struct device *dev, int cmd)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++
++	return it6505_audio_setup_trigger(it6505, cmd);
++}
++
+ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+ 						       void *data,
+ 						       hdmi_codec_plugged_cb fn,
+@@ -2860,6 +2893,36 @@ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+ 	return 0;
+ }
+ 
++static const struct hdmi_codec_ops it6505_audio_codec_ops = {
++	.hw_params = it6505_audio_hw_params,
++	.trigger = it6505_audio_trigger,
++	.audio_shutdown = it6505_audio_shutdown,
++	.hook_plugged_cb = it6505_audio_hook_plugged_cb,
++};
++
++static int it6505_register_audio_driver(struct device *dev)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++	struct hdmi_codec_pdata codec_data = {
++		.ops = &it6505_audio_codec_ops,
++		.max_i2s_channels = 8,
++		.i2s = 1,
++		.data = it6505,
++	};
++	struct platform_device *pdev;
++
++	pdev = platform_device_register_data(dev, HDMI_CODEC_DRV_NAME,
++					     PLATFORM_DEVID_AUTO, &codec_data,
++					     sizeof(codec_data));
++	if (IS_ERR(pdev))
++		return PTR_ERR(pdev);
++
++	INIT_DELAYED_WORK(&it6505->delayed_audio, it6505_delayed_audio);
++	DRM_DEV_DEBUG_DRIVER(dev, "bound to %s", HDMI_CODEC_DRV_NAME);
++
++	return 0;
++}
++
+ static inline struct it6505 *bridge_to_it6505(struct drm_bridge *bridge)
+ {
+ 	return container_of(bridge, struct it6505, bridge);
+@@ -3421,6 +3484,12 @@ static int it6505_i2c_probe(struct i2c_client *client)
+ 		return err;
+ 	}
+ 
++	err = it6505_register_audio_driver(dev);
++	if (err < 0) {
++		DRM_DEV_ERROR(dev, "Failed to register audio driver: %d", err);
++		return err;
++	}
++
+ 	INIT_WORK(&it6505->link_works, it6505_link_training_work);
+ 	INIT_WORK(&it6505->hdcp_wait_ksv_list, it6505_hdcp_wait_ksv_list);
+ 	INIT_DELAYED_WORK(&it6505->hdcp_work, it6505_hdcp_work);
 -- 
 2.25.1
 
