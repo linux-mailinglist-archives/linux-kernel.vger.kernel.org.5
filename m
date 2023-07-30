@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB8F7682CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 02:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068787682F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 03:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjG3A1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 20:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50156 "EHLO
+        id S229533AbjG3As4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 20:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG3A1j (ORCPT
+        with ESMTP id S229462AbjG3Asz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 20:27:39 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4BE1708;
-        Sat, 29 Jul 2023 17:27:38 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 2A8B932005B5;
-        Sat, 29 Jul 2023 20:27:35 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 29 Jul 2023 20:27:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1690676854; x=1690763254; bh=5oVpB8cg24iMSoIqJPBrzh1VmgfW5bnbCkN
-        cqJv/vSY=; b=NnbNweek63dx+oTkE0HkrT2cbIXFOBsFi1ljUwofsDoEoSBlgSl
-        CTzCfaadIgqqaugqTvzKiqmY2itx2uY9Kgcrqa/eQEowNZebTGthd6uA2BShrEto
-        gxLxJJJi6uLnrPfuxtqiiJq5n9htCzwNH7GHz9YSV4LetlCiroE3TYLPZERAlxiW
-        gHzJIQWDfpVjRljBwINppGyOZG5QuVrMK48lFoKG3i7YCSg2VxoGixmJeXievni6
-        m4d4PzWFVQezyB8ne01Up1E9y1yQjLwPDgJWPvjggXZgFiNF6v/NSZYhsTVUJW8v
-        HWEvHnNvRiNzxQEgmKPeWud/1HRSyzIN9Og==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690676854; x=1690763254; bh=5oVpB8cg24iMSoIqJPBrzh1VmgfW5bnbCkN
-        cqJv/vSY=; b=x5h9cydy/S0jYnVAfqDGbjqw6OL/FitloQa9bP5TsbcXzmhF+My
-        T0UmtyrI8l3hV657cwcmuwUcxP9hhYok6TprtPc7G/AxK2rIySycfACGeEFeBFl8
-        Kjc8D9ABYKLD4McgClcoNsO4GzqlQooHxfYMNNzps4sCR6T88htEoYWBz0BO2qNi
-        Bdjj6Z6ttg9p+diLgjmkQ7956Ldfd4Q9Zs0BzVRnyX1wjz6Mpqso/pPJ7ZQzsf1T
-        EeV2OibXxLE6qNmCklV/4ewmKP4j38eOSPWxNDqm4STtKLaTsYQnzWKaS0A9ke29
-        umG+PwlAZkquaPWi0YPa6qTBREo7rhVDbIw==
-X-ME-Sender: <xms:dq7FZLZ-5OI54pKHfjEaI2RguRjDFcCMk4jtLmQB8T1V_QRdnEiDYA>
-    <xme:dq7FZKaT39BdCLE_CUK1-tuNcIeqZyqLTZOdjU7NxkyczI-_QVypPgtvkqgefXU0S
-    7qbFHPAv4Kw>
-X-ME-Received: <xmr:dq7FZN9ZQdYlw5cOKie_VqSYAb7NeLUqt3qpBGryRvxI4cpJWHFAtodfJ8I_eMmgERVEzYI61fdrkdQmf8Rn5bbejT690aMBAi1vGlhqvZMZCGBaskw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrieelgdefgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
-    hthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:dq7FZBoKCXFOCK1QrHM6hnS9Y2bIMruNH5vK0tSsJxj16bZnhDnYug>
-    <xmx:dq7FZGptKFgyS-YsyLkT9alBIFeHAoNTu_noMkGCowufprz6nEyZPw>
-    <xmx:dq7FZHRuIibnjzqQf9_B2lNjxm-DFVVLs8SgDOGizsBSVa3E8MU02g>
-    <xmx:dq7FZLB-ieafJmrnZCXjbRBZ3l3_Ps60ynjikPNgalStGxIaOIwemw>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 29 Jul 2023 20:27:32 -0400 (EDT)
-Message-ID: <2afc8cac-5749-f7f5-1278-2e1252924ba4@themaw.net>
-Date:   Sun, 30 Jul 2023 08:27:28 +0800
+        Sat, 29 Jul 2023 20:48:55 -0400
+Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BFC1722
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 17:48:51 -0700 (PDT)
+Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-56c99e94fa9so1283814eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 17:48:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690678131; x=1691282931;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BURO1MpdTlN3V32S0AQv/o3bpO0z6wVd1hYAKFqfAOI=;
+        b=KRbKhRGSUIPPQZqX9QwuVwWlpt3F9nwk74HosoWA4nRWhMNreIb7OtN9ONzE/Nisal
+         GkP7L3eeTQQMeNBuKYZIu480zWn9wchi7bsjb3jx4ngIVDlQeSlGyMsbTWtMPfU2fJ0B
+         OaQQ91kE/OVD0YZi8vmFg9tbSjxHffHzk0lVkMdy+3MWqQC/bxO7k86rU0hGP05GFiuC
+         1JSDatU60tb0Bg5Xn7kYGHe1vWFG/2IlTL4O3BhhUjAp6cvSYMxBxqpNXpkW3+aRNIrd
+         cWutKG8PQrNw+DfyLTLLptaLF7SSqfsh8D0Xh0+eg66fRKrgK9ILZZjEkdwsxLZDz1AQ
+         AVww==
+X-Gm-Message-State: ABy/qLZH+GcHEhTybZb1WLdZDnKTZzfXKYmOsGR1qjwfQjpzZkfwDMD6
+        AH7Z4AMmflztGDUX0QOvRtuc000zbGWqx1zvN+PoABCAHusN
+X-Google-Smtp-Source: APBJJlEQ/73yYh9D/b/HEdwPOZidKd8YbVdb82EikXEA9jpczY+J5DnFHEkYU3SIfWErKq9jy8qffyjmL8+XtMk4bpS7vVhPzry/
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] arch/*/configs/*defconfig: Replace AUTOFS4_FS by
- AUTOFS_FS
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sven Joachim <svenjoac@gmx.de>
-Cc:     autofs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230727200041.21404-1-svenjoac@gmx.de>
- <CAHk-=wgK9-Tx4BxYMrc0pg==mcaz3cjWF6-CBwVpM_BZAmf4JQ@mail.gmail.com>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <CAHk-=wgK9-Tx4BxYMrc0pg==mcaz3cjWF6-CBwVpM_BZAmf4JQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a4a:33ca:0:b0:56c:99c3:1ffa with SMTP id
+ q193-20020a4a33ca000000b0056c99c31ffamr1793607ooq.0.1690678131199; Sat, 29
+ Jul 2023 17:48:51 -0700 (PDT)
+Date:   Sat, 29 Jul 2023 17:48:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007095cd0601a9ad91@google.com>
+Subject: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in bpf_mprog_detach
+From:   syzbot <syzbot+0c06ba0f831fe07a8f27@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 30/7/23 05:07, Linus Torvalds wrote:
-> On Thu, 27 Jul 2023 at 13:01, Sven Joachim <svenjoac@gmx.de> wrote:
->> Commit a2225d931f75 ("autofs: remove left-over autofs4 stubs")
->> promised the removal of the fs/autofs/Kconfig fragment for AUTOFS4_FS
->> within a couple of releases, but five years later this still has not
->> happened yet, and AUTOFS4_FS is still enabled in 63 defconfigs.
-> Ok, I ran the script, and also decided that we might as well remove
-> the AUTOFS4 legacy naming stub entry by now.
->
-> It has been five years, and people will have either picked up the new
-> name with 'make oldconfig', or they just don't use 'make oldconfig' at
-> all.
+syzbot found the following issue on:
 
-Agreed, thanks Linus.
+HEAD commit:    ec87f05402f5 octeontx2-af: Install TC filter rules in hard..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a76df1a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8acaeb93ad7c6aaa
+dashboard link: https://syzkaller.appspot.com/bug?extid=0c06ba0f831fe07a8f27
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0fc53904fc08/disk-ec87f054.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/aee64718ea5c/vmlinux-ec87f054.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d3b6d3f4cfbc/bzImage-ec87f054.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0c06ba0f831fe07a8f27@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: array-index-out-of-bounds in ./include/linux/bpf_mprog.h:292:24
+index 4294967295 is out of range for type 'bpf_mprog_fp [64]'
+CPU: 1 PID: 13232 Comm: syz-executor.1 Not tainted 6.5.0-rc2-syzkaller-00573-gec87f05402f5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
+ bpf_mprog_read include/linux/bpf_mprog.h:292 [inline]
+ bpf_mprog_fetch kernel/bpf/mprog.c:307 [inline]
+ bpf_mprog_detach+0xcd7/0xd50 kernel/bpf/mprog.c:381
+ tcx_prog_detach+0x258/0x950 kernel/bpf/tcx.c:78
+ bpf_prog_detach kernel/bpf/syscall.c:3877 [inline]
+ __sys_bpf+0x36ee/0x4ec0 kernel/bpf/syscall.c:5357
+ __do_sys_bpf kernel/bpf/syscall.c:5449 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5447 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5447
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f443e27cb29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f443cdfe0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f443e39bf80 RCX: 00007f443e27cb29
+RDX: 0000000000000020 RSI: 0000000020000340 RDI: 0000000000000009
+RBP: 00007f443e2c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f443e39bf80 R15: 00007ffdb0833788
+ </TASK>
+================================================================================
 
 
-Ian
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
