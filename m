@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC10768800
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD97768805
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjG3UgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 16:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
+        id S229907AbjG3Uhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 16:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjG3UgU (ORCPT
+        with ESMTP id S229602AbjG3Uhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 16:36:20 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF65FE78;
-        Sun, 30 Jul 2023 13:36:18 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id B20255C006F;
-        Sun, 30 Jul 2023 16:36:14 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sun, 30 Jul 2023 16:36:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690749374; x=1690835774; bh=KX
-        x1odTZH/+yyu8Xceytmb1rqrk/nlaenTURJ0pY3Bo=; b=NQKMjRqK0xMvMTQNgv
-        iAifdPQ+ZfrI0rGu+Tehf2cN9P+75cBZV6qyzBYP9/cl0PHGmqm6D3P3gGsHyjTr
-        S+M01OnB33J0JWjZoMc0jMNJnhSg43s3buwdvZdNLJYHa0COx9rFsTwyhtyf5mqK
-        NJW9QUOXXmG0Z9EzwhiMtxS4QgxBdp8xap1LxOkuq9Zb2EZuqssgNmFGJDZf+5bk
-        HBQKSKmtlBKcbh1KKJZiO7E7T+o0npHKaC4caulAihNpGQxJiSeTORNjbSRhCeaN
-        wE8t5NkRIbej9ACZdOTCghDpu5+KMPDIpm7Qb6pQ4C3cfN80fV9S7OkVzILJRu1B
-        c7Hg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690749374; x=1690835774; bh=KXx1odTZH/+yy
-        u8Xceytmb1rqrk/nlaenTURJ0pY3Bo=; b=XcK3hl6SNRH0FRh9ZhQSBQTC2hpgR
-        vq2D9BxSc+T5kyXofL/I9FfYKkXcYXYi6Uzn8I/zmHoE6oJZmYJudIm7laFKa3qc
-        xPK1Y4tG20hJmgV2Qb4pGN6P18rvadmomk7IhK01sbV3nX79RwmztK8qMELzUjEA
-        dl/A4O9h1e+2FTVRK0B6gHMyeiSKYtYShFR/WvubRtIGtlYD7Yk6FtTvRjXvjeOB
-        /XMcctI6ix6rtUsy9/5eVkApBzt9uix73Hl70me3ZsSKXCQxsasDti4oYn4/lhB0
-        gM0jJ8EhZB9LtAHuPknm2xoxRbBGFuXhlY7GayIUtMNNCUd1fx4DAd0nA==
-X-ME-Sender: <xms:vMnGZDd90uJ1foq-grnJmtBlmUsF17Rbz69CrSheZjp5lLqE-hMUTA>
-    <xme:vMnGZJPWyBhIPsbwpjdLFzApjvx0sybQ9b-Op_BuP0Tgg6_Xm8wYzJmbvKEmZjK1f
-    U_T5vcRI4tIspQLMx4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjedugdduhedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:vMnGZMjGLz8XJmZOJKPjTD4r_uiTFXyKaJgtjAFWjT2TOoDAEs7bzA>
-    <xmx:vMnGZE-_MsmlnFKJh2aZb_O-mAyWEsd_OKjQMJPxwe_SI1jZf1d4Og>
-    <xmx:vMnGZPsylF0bgytZ9CtTuyWfA1QtygVBzKfwzcVMbNUiIHQ2j1aZfA>
-    <xmx:vsnGZLRVyn53NbhgDOMKWCn6oF1H6ZMi2YyuD2rlHQj1YZ8ErcNjdw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 25B5BB60089; Sun, 30 Jul 2023 16:36:12 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <92c00ddb-e956-4861-af80-5f5558c9a8f5@app.fastmail.com>
-In-Reply-To: <CAJM55Z8vF8_xq0QyByLUGM2W-8m6R-_6SdOFdLETV7J-yo5DMQ@mail.gmail.com>
-References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <ZMZ6XB6gX2kFd/Nt@xhacker>
- <CAJM55Z8vF8_xq0QyByLUGM2W-8m6R-_6SdOFdLETV7J-yo5DMQ@mail.gmail.com>
-Date:   Sun, 30 Jul 2023 22:35:50 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
-        "Jisheng Zhang" <jszhang@kernel.org>
-Cc:     Prabhakar <prabhakar.csengg@gmail.com>,
-        "Conor.Dooley" <conor.dooley@microchip.com>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        guoren <guoren@kernel.org>,
-        "Andrew Jones" <ajones@ventanamicro.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Albert Ou" <aou@eecs.berkeley.edu>,
-        "Samuel Holland" <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "Biju Das" <biju.das.jz@bp.renesas.com>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache operations
- support
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 30 Jul 2023 16:37:40 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE6BE7B;
+        Sun, 30 Jul 2023 13:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690749449; x=1691354249; i=w_armin@gmx.de;
+ bh=q7OP8V2DT813Vh5AtHafrOKSFe4UpPHy9Xm2bDdU1kY=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=kowpZfu343ZK+RMc8H2L7q/Mzd4NQ0gMBL5b2wfvDfytLI6aaRHBp3ZOKEFXXzYo5Hw+vfw
+ 6xRFIYba3RqFINQqZ1Wc3qk1mmTYNf49cd/EzSK/uWvnLmA8hkVMuvKQjLWYQVAIs6AFGZa8j
+ Kcd/+G2DG6CMimmxKXCnaxepofkWHN7JqnV0FrBqP2xIggv6YHDtpZkBbK6R/8+CoLHypMa9k
+ gYekBIXbjlDdw2HsAQRzhNFxLF93bbQLy84zWzv/JdcbMt1I5e9kjNgf31KqyXZPCXyMdubTg
+ 9kqKIAoWeIxcIpfUfJlIcbe6HBaIA2J7qwfW2hgUogfkURb2V6nA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1Mg6Zq-1pvpxu3Lgs-00hcts; Sun, 30 Jul 2023 22:37:28 +0200
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     hdegoede@redhat.com, markgross@kernel.org, thomas@t-8ch.de
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] platform/x86: wmi-bmof: Use device_create_bin_file()
+Date:   Sun, 30 Jul 2023 22:37:21 +0200
+Message-Id: <20230730203723.8882-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CdbeZQsXtKr9gi1eNdbTGVnk8pvpGaJz1jXBA1gTTkaiEr8xSPK
+ 8E05q9XA7a2Pq8W7CvwcN9x1uJMbjLYIzea8aCDgfsGnRdoAo4jDMEzzlGsIgacQZjcCO/U
+ 8pQvelw/F7DBpbfEeBPuClURw2XZrTQFxP9rOz4JQt+ucL+NO0+/LYls1q7aBQattOtEXt+
+ pY7oAfh2B8RLTawWdqUEw==
+UI-OutboundReport: notjunk:1;M01:P0:WWo3pNYYI5o=;sbV8szpItLDdEUNWWVcud2Sls2y
+ VYmyEzUdqwOONARNTHJ5nke28qFWModApFJ4PFUwv3Vfh5edVii6spFasUdn5nAKnZ8vF8oLg
+ kBVAdXJoDGuO5clpzzuPgI4EMIJxbypgCjpFWB8TTN6N2Az5HPjqBvut0nJjNGZ5DnhmvKeiT
+ 2Vj8yzEFrQeLCdXW2Ngt/nKFPuiplnp6zb9+GZ2kF8FiEYdmWZSngfpovqz6CA1CrB9UNZF1Q
+ 9E2qGVhvH6tcFRRcdnOf22HAa97IWSBe60BaVwojguXHh0RXMycXxvhaboh3uANPfiP65JN+G
+ U94hGQT6DAw2mQMUqahA+/RIN41vtHbpdNLvmhPO44Yo05Lsw1BGEzPQ8u08oD6DkVTMwCwYv
+ qvumQPE6ZVqgfJYo/v5a2pOB4tnH3XBVEwaShhJcjutDQjR1ZUiPRS2ycKjhzJ2rDk3hADeH0
+ MioLiJc074v+q2umhe8KZM0fit3NPQR4gn8lB+2rq1OESOpJ4zaASucHyr8g+l1fhm1FPFV/B
+ FeQq3J4OkThcMLf88o84+5k/rccaB7uOxqs1o59WnlpGHH22m/PqEn8Bc4jYcuinhBCFenJXq
+ KLXiBUZQHtY6LkGq+dbTkidQ2dOdON0h/CdsaHrulfI8wSM5tlvc1QwUm3eI69M/io5YvQNiI
+ jPJmB4NQ4L1WZaI43slwvxKz1iX/p+4vfRqJX9590WiG9B2ghFXn2T9bI7/aTYzDZNhNLjyqi
+ EsZxzc8GtZeUE6X7bCOyVIID+heWxZA/banfaLg4uJgNJwiDwT877H/goTi52oJGib53lNVdT
+ Fiu4a7t1hRY8Ynx2W7ZAumUSYC1KBkK2F6+yCMQ8tR6AMRaoARVy4Zz/fe14/VbN6Qc4MrELw
+ cus0oYKjSkbgntdMNuvYW0mJusmthWzmBY+s3570uRaP67P0M/WjWkY5Z0Uw8dL+0mLYLOOqW
+ i4gtmaobG2+7gm8YkvHYly06LQY=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023, at 17:42, Emil Renner Berthing wrote:
-> On Sun, 30 Jul 2023 at 17:11, Jisheng Zhang <jszhang@kernel.org> wrote:
+Use device_create_bin_file() instead of sysfs_create_bin_file()
+to avoid having to access the device kobject.
 
->> > +
->> >  static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t size)
->> >  {
->> >       void *vaddr = phys_to_virt(paddr);
->> >
->> > +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
->> > +     if (unlikely(noncoherent_cache_ops.wback)) {
->>
->> I'm worried about the performance impact here.
->> For unified kernel Image reason, RISCV_NONSTANDARD_CACHE_OPS will be
->> enabled by default, so standard CMO and T-HEAD's CMO platform's
->> performance will be impacted, because even an unlikely is put
->> here, the check action still needs to be done.
->
-> On IRC I asked why not use a static key so the overhead is just a
-> single nop when the standard CMO ops are available, but the consensus
-> seemed to be that the flushing would completely dominate this branch.
-> And on platforms with the standard CMO ops the branch be correctly
-> predicted anyway.
+Tested on a ASUS PRIME B650-PLUS.
 
-Not just the flushing, but also loading back the invalidated
-cache lines afterwards is just very expensive. I don't think
-you would be able to measure a difference between the static
-key and a correctly predicted branch on any relevant usecase here.
+Reviewed-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+Tested-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Changes since v1:
+- add Revieved-by and Tested-by tags
+=2D--
+ drivers/platform/x86/wmi-bmof.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-     Arnd
+diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bm=
+of.c
+index 80137afb9753..d0516cacfcb5 100644
+=2D-- a/drivers/platform/x86/wmi-bmof.c
++++ b/drivers/platform/x86/wmi-bmof.c
+@@ -75,7 +75,7 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const=
+ void *context)
+ 	priv->bmof_bin_attr.read =3D read_bmof;
+ 	priv->bmof_bin_attr.size =3D priv->bmofdata->buffer.length;
+
+-	ret =3D sysfs_create_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
++	ret =3D device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+ 	if (ret)
+ 		goto err_free;
+
+@@ -90,7 +90,7 @@ static void wmi_bmof_remove(struct wmi_device *wdev)
+ {
+ 	struct bmof_priv *priv =3D dev_get_drvdata(&wdev->dev);
+
+-	sysfs_remove_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
++	device_remove_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+ 	kfree(priv->bmofdata);
+ }
+
+=2D-
+2.39.2
+
