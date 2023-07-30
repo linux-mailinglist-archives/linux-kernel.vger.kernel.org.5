@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239AC76838E
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 05:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CC0768390
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 05:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjG3DBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 23:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
+        id S229578AbjG3DEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 23:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjG3DBj (ORCPT
+        with ESMTP id S229448AbjG3DEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 23:01:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1F11BFC;
-        Sat, 29 Jul 2023 20:01:38 -0700 (PDT)
+        Sat, 29 Jul 2023 23:04:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CB71BCE;
+        Sat, 29 Jul 2023 20:04:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F0AB7609FB;
-        Sun, 30 Jul 2023 03:01:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1431C433C8;
-        Sun, 30 Jul 2023 03:01:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7501160766;
+        Sun, 30 Jul 2023 03:04:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FF3DC433C7;
+        Sun, 30 Jul 2023 03:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690686097;
-        bh=y7zjaCepfGyihTSLnmL3Mq/+VnrmlfJ9HetaB/1wc7M=;
+        s=k20201202; t=1690686283;
+        bh=XCxytUv15QG7HcusHOJ5Fk2+EpLtcAQKZgoCyEga+HM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jG5bpSBNCPLIgGdMWSxGiLs9Ljnse0247UXOqDnZGYCHLBRKlVmoZ/tRAegRaj+Ha
-         1glSnLOij0P61SBlkGS1RstMtxUFquLiQdJijqyXtjneGbQpBdhye1lv4K7un7O2Lq
-         cMJykJowSpTfbNmsVv5FObn1RdU9fhDHOQgVxEKROjtIame73urzDIIENsJi4xgZqK
-         t3OhMiY+/2fZVT3l+t9bzgdhzsegYZS5F0vxCouc34phie8zxPpY4o7t780kv7cVLJ
-         YK6TgOzdHpaSkFG1zH3bLMff3QpzTzwu9mWLtLuEmr7hQVUvhsd9L8piqaCKku11NR
-         lPuRtWYQ2fpkw==
-Date:   Sun, 30 Jul 2023 11:01:23 +0800
+        b=aZyjTugRZgJmIUBOqtcLYNhG8MM3e2k840ITznMTguA0Yvv4UQf9DiVQ947HIsXdg
+         F7DSkRN2LI3p91vRxkDFW9hap/llVm/VrnnJ2bb3YSPlSO73dLwtDBgyWzN7RF55fB
+         AKOpbbmJ+ICB5GlOhFdmog4a8KicXo9AX8NridKRwhZ/1tqwq+aPOcXpZ2wkzb460M
+         QwxAKDDhQXx5q/rz1CBDbk2uwCEF7c4g9/PjEC125eMGQr+LUqjwWYJqeTBgxlwprY
+         v0Vf1brnXQa6uIQ6Yvcq+vjGCVOk4BoDqUDnLFVCdq8MM9mAvL2ixl2AnVgw6Iga4T
+         O3qAJu+W1O0ZQ==
+Date:   Sun, 30 Jul 2023 11:04:30 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Josua Mayer <josua@solid-run.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>
-Subject: Re: [PATCH v3 4/4] arm64: dts: freescale: Add support for LX2162 SoM
- & Clearfog Board
-Message-ID: <20230730030123.GS151430@dragon>
-References: <20230619090026.22713-1-josua@solid-run.com>
- <20230619090026.22713-5-josua@solid-run.com>
- <20230718024607.GY9559@dragon>
- <1ab424ee-21a8-9ca4-e792-3222e68e1098@solid-run.com>
+To:     Bough Chen <haibo.chen@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sherry Sun <sherry.sun@nxp.com>, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 09/10] arm64: dts: imx8ulp-evk: add 100MHz/200MHz pinctrl
+ setting for eMMC
+Message-ID: <20230730030430.GT151430@dragon>
+References: <20230625124238.4071717-1-peng.fan@oss.nxp.com>
+ <20230625124238.4071717-10-peng.fan@oss.nxp.com>
+ <20230718033227.GE9559@dragon>
+ <DB7PR04MB4010E151615277AB6BD3E4CD9002A@DB7PR04MB4010.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1ab424ee-21a8-9ca4-e792-3222e68e1098@solid-run.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB7PR04MB4010E151615277AB6BD3E4CD9002A@DB7PR04MB4010.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,57 +71,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 23, 2023 at 12:37:38PM +0200, Josua Mayer wrote:
-> Hi Shawn,
-> 
-> Thank you for reviewing.
-> 
-> Note I have added a general question inline below.
-> 
-> Am 18.07.23 um 04:46 schrieb Shawn Guo:
-> > On Mon, Jun 19, 2023 at 12:00:26PM +0300, Josua Mayer wrote:
-> > > Add support for the SolidRun LX2162A System on Module (SoM), and the
-> > > Clearfog evaluation board.
-> 
-> > > +&dpmac11 {
-> > > +	status = "okay";
-> > We generally end property list with 'status'.
-> Okay, I will change the order for v4.
+On Mon, Jul 24, 2023 at 06:51:17AM +0000, Bough Chen wrote:
+> > -----Original Message-----
+> > From: Shawn Guo <shawnguo@kernel.org>
+> > Sent: 2023年7月18日 11:32
+> > To: Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > Cc: robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+> > s.hauer@pengutronix.de; kernel@pengutronix.de; festevam@gmail.com;
+> > dl-linux-imx <linux-imx@nxp.com>; devicetree@vger.kernel.org;
+> > linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org; Bough
+> > Chen <haibo.chen@nxp.com>; Sherry Sun <sherry.sun@nxp.com>; Peng Fan
+> > <peng.fan@nxp.com>
+> > Subject: Re: [PATCH 09/10] arm64: dts: imx8ulp-evk: add 100MHz/200MHz
+> > pinctrl setting for eMMC
 > > 
-> > Shawn
+> > On Sun, Jun 25, 2023 at 08:42:37PM +0800, Peng Fan (OSS) wrote:
+> > > From: Haibo Chen <haibo.chen@nxp.com>
+> > >
+> > > Add 100MHz and 200MHz pinctrl setting for eMMC, and enable 8 bit bus
+> > > mode to config the eMMC work at HS400ES mode.
+> > >
+> > > Also update to use Standard Drive Strength for USDHC pad to get a
+> > > better signal quality per Hardware team suggests.
+> > >
+> > > Reviewed-by: Sherry Sun <sherry.sun@nxp.com>
+> > > Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 26
+> > > ++++++++++---------
+> > >  1 file changed, 14 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> > > b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> > > index e459dc35e469..ab7af705bbca 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+> > > @@ -121,9 +121,11 @@ &lpuart5 {
+> > >  };
+> > >
+> > >  &usdhc0 {
+> > > -	pinctrl-names = "default", "sleep";
+> > > +	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+> > >  	pinctrl-0 = <&pinctrl_usdhc0>;
+> > >  	pinctrl-1 = <&pinctrl_usdhc0>;
+> > > +	pinctrl-2 = <&pinctrl_usdhc0>;
+> > > +	pinctrl-3 = <&pinctrl_usdhc0>;
 > > 
-> > > +	phys = <&serdes_2 0>;
-> > > +	phy-handle = <&ethernet_phy2>;
-> > > +	phy-connection-type = "sgmii";
-> > > +};
-> > > +
-> > > +&emdio1 {
-> > > +	/*
-> > > +	 * SoM has a phy at address 1 connected to SoC Ethernet Controller 1.
-> > > +	 * It competes for WRIOP MAC17, and no connector has been wired.
-> > > +	 */
-> > > +	/delete-node/ ethernet-phy@1;
-> Perhaps somebody can help here on what is best practice:
-> As outlined in the comment the SoM includes an ethernet phy at address 1,
-> which is not used at all by the Clearfog carrier.
+> > All three speed modes use the same pinctrl?
 > 
-> What is the best practice for unused but available components?
+> Yes, the IOMUX on imx8ulp do not support config different drive strength. So here use the same pinctrl.
 
-If you are saying the connector is not wired on Clearfog, it might make
-more sense to give it a disabled status in clearfog dts, IMO.
+Mention that in the commit log or with a comment would be helpful.
 
 Shawn
-
-> 
-> The phy can still communicate on mdio - just it will never receive rgmii
-> signals from ether cpu or carrier.
-> I am leaning towards just keeping it with status okay, if only for the
-> prospect that a smart driver might put it in a power-saving mode.
-> 
-> > > +
-> > > +	ethernet_phy0: ethernet-phy@8 {
-> > > +		compatible = "ethernet-phy-ieee802.3-c45";
-> > > +		reg = <8>;
-> > > +		max-speed = <1000>;
-> > > +	};
-> > > +
