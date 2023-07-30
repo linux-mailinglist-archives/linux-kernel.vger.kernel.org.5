@@ -2,116 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467787685D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3A17685D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbjG3Nt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        id S229802AbjG3Nt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3Nt0 (ORCPT
+        with ESMTP id S229707AbjG3Nte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:49:26 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6BC10C1;
-        Sun, 30 Jul 2023 06:49:25 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-403b36a4226so16579761cf.0;
-        Sun, 30 Jul 2023 06:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690724964; x=1691329764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FlliIXo6uvrh08ojtOL3l75jp+3FAUoZdbrhJ9gY36E=;
-        b=qEe/zN7auL/09nK5d8mKb1+/OjEMFoMxKz8xc6T/ntSdzi8G+npmr55x3t1SxgXuMx
-         +VukRHmefryMS0onazV7SximRLqYA8oa8Rj0dUlD3Z6no2jvnsOc6lF4Cxb2i8up01S1
-         etk9hJvHq+hOKAlQgVk0Adox4LTETi171kcFiy6IB1l1qZzMrE9dYjIS2uv+TsF4WTcq
-         V+m4NPnuWIg/5OxtWLX5uSQ0qsmtvGx5Xjj+/V74cPcLDhWYEqxDv2RgkO4M6qJPipgw
-         3zhqkU8eUtO3Phz2it6QzkiunhjTnxtBKH8SWZRSEsLAEoTZs4SK9MC5zN2KOqBkuZZv
-         9eEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690724964; x=1691329764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FlliIXo6uvrh08ojtOL3l75jp+3FAUoZdbrhJ9gY36E=;
-        b=ijkFFWXswG9d5CBxtKTvNIyGrFJnKATxwpHzdd1+rmRjJ1YXVFx0oXv9JKhj+pjgIf
-         raLISYXt3hn+Tv6rWSaTi1BxVT266qNe/cErqmOgjV02Zr8V1SQ80wFhCtB8dZFGZKag
-         iFpbn2tnmaiqzeD8UYnQUA24FIo/JSC3RsvlYkdnAk7MtanqAuG/8dGL99qkTYlCo6bu
-         TtGth35OoeH6Lx7NSUjvHtNJpCt2vElvTi9aLjw+NDr9lPsa7N+/5OcXUiBZcbgZ4/2m
-         siAtMfrS8Qv+FffB5hd3I1Ma/d4QqCrjM6Yo1Lr4Ao8qcTerQMwIFGy8egc2Ve74ALaZ
-         892w==
-X-Gm-Message-State: ABy/qLZiReVMVA+0Ml9JfuLr04T5Ur8/zdQggn0Hesoz5lyFozDUUqxZ
-        l05Oc3JlkzBP8mBocq1LkwyeXQQJvuaE+6B9oiIMHjJZEc+Pbyg9
-X-Google-Smtp-Source: APBJJlE8m37sRUm45VC3Dw3ekTbcowEPlAHwCfE8/e5sWDKU9fPzGQnSEePTwCLFkzQcghx6XQHPt+51Ako5OsdBuy8=
-X-Received: by 2002:a05:622a:1212:b0:403:c2dc:929d with SMTP id
- y18-20020a05622a121200b00403c2dc929dmr7268810qtx.48.1690724964385; Sun, 30
- Jul 2023 06:49:24 -0700 (PDT)
+        Sun, 30 Jul 2023 09:49:34 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B9A10C1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:49:31 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VoVv5KT_1690724968;
+Received: from 192.168.75.41(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VoVv5KT_1690724968)
+          by smtp.aliyun-inc.com;
+          Sun, 30 Jul 2023 21:49:29 +0800
+Message-ID: <07c85385-be34-8fdc-876c-dc97639c5643@linux.alibaba.com>
+Date:   Sun, 30 Jul 2023 21:49:27 +0800
 MIME-Version: 1.0
-References: <20230730114951.74067-1-hffilwlqm@gmail.com>
-In-Reply-To: <20230730114951.74067-1-hffilwlqm@gmail.com>
-From:   Manjusaka <lizheao940510@gmail.com>
-Date:   Sun, 30 Jul 2023 21:49:13 +0800
-Message-ID: <CAFYRFEw98BhpcLyFdwivLcy5M6hk3fDRcWZVtUytSw7kNUQXRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/2] bpf, xdp: Add tracepoint to xdp attaching failure
-To:     Leon Hwang <hffilwlqm@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        hawk@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
-        mykolal@fb.com, shuah@kernel.org, tangyeechou@gmail.com,
-        kernel-patches-bot@fb.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v4] erofs: DEFLATE compression support
+To:     Chao Yu <chao@kernel.org>, linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20230713001441.30462-1-hsiangkao@linux.alibaba.com>
+ <20230716091940.40899-1-hsiangkao@linux.alibaba.com>
+ <9570176a-02c2-c500-14c6-b8ca220cfb96@kernel.org>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <9570176a-02c2-c500-14c6-b8ca220cfb96@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is very important to help us to debug the xdp program. At
-the same time, we can make some monitoring tools to observe the kernel
-status by using this trace event
-
-=E6=9D=8E=E8=80=85=E7=92=88 & Zheaoli
-
-Email: lizheao940510@gmail.com
-Github: https://github.com/Zheaoli
 
 
-Leon Hwang <hffilwlqm@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8830=E6=97=
-=A5=E5=91=A8=E6=97=A5 19:50=E5=86=99=E9=81=93=EF=BC=9A
->
-> This series introduces a new tracepoint in bpf_xdp_link_attach(). By
-> this tracepoint, error message will be captured when error happens in
-> dev_xdp_attach(), e.g. invalid attaching flags.
->
-> v3 -> v4:
-> * Fix selftest-crashed issue.
->
-> Leon Hwang (2):
->   bpf, xdp: Add tracepoint to xdp attaching failure
->   selftests/bpf: Add testcase for xdp attaching failure tracepoint
->
->  include/trace/events/xdp.h                    | 17 +++++
->  net/core/dev.c                                |  5 +-
->  .../selftests/bpf/prog_tests/xdp_attach.c     | 65 +++++++++++++++++++
->  .../bpf/progs/test_xdp_attach_fail.c          | 54 +++++++++++++++
->  4 files changed, 140 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_attach_fai=
-l.c
->
->
-> base-commit: a33d978500acd8fb67efac9773ba0a8502c1ff06
-> --
-> 2.41.0
->
->
+On 2023/7/30 20:53, Chao Yu wrote:
+> On 2023/7/16 17:19, Gao Xiang wrote:
+>> Add DEFLATE compression as the 3rd supported algorithm.
+>>
+>> DEFLATE is a popular generic-purpose compression algorithm for quite
+>> long time (many advanced formats like gzip, zlib, zip, png are all
+>> based on that) as Apple documentation written "If you require
+>> interoperability with non-Apple devices, use COMPRESSION_ZLIB. [1]".
+>>
+>> Due to its popularity, there are several hardware on-market DEFLATE
+>> accelerators, such as (s390) DFLTCC, (Intel) IAA/QAT, (HiSilicon) ZIP
+>> accelerator, etc.  In addition, there are also several high-performence
+>> IP cores and even open-source FPGA approches available for DEFLATE.
+>> Therefore, it's useful to support DEFLATE compression in order to find
+>> a way to utilize these accelerators for asynchronous I/Os and get
+>> benefits from these later.
+>>
+>> Besides, it's a good choice to trade off between compression ratios
+>> and performance compared to LZ4 and LZMA.  The DEFLATE core format is
+>> simple as well as easy to understand, therefore the code size of its
+>> decompressor is small even for the bootloader use cases.  The runtime
+>> memory consumption is quite limited too (e.g. 32K + ~7K for each zlib
+>> stream).  As usual, EROFS ourperforms similar approaches too.
+>>
+>> Alternatively, DEFLATE could still be used for some specific files
+>> since EROFS supports multiple compression algorithms in one image.
+>>
+>> [1] https://developer.apple.com/documentation/compression/compression_algorithm
+>> ---
+>> changes since v3:
+>>   - fix 'insz' mis-calculation, which leads to failure on 4k pclusters.
+>>
+>>   fs/erofs/Kconfig                |  15 ++
+>>   fs/erofs/Makefile               |   1 +
+>>   fs/erofs/compress.h             |   2 +
+>>   fs/erofs/decompressor.c         |   6 +
+>>   fs/erofs/decompressor_deflate.c | 250 ++++++++++++++++++++++++++++++++
+>>   fs/erofs/erofs_fs.h             |   7 +
+>>   fs/erofs/internal.h             |  20 +++
+>>   fs/erofs/super.c                |  10 ++
+>>   fs/erofs/zmap.c                 |   5 +-
+>>   9 files changed, 314 insertions(+), 2 deletions(-)
+>>   create mode 100644 fs/erofs/decompressor_deflate.c
+>>
+>> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
+>> index f259d92c9720..56a99ba8ce22 100644
+>> --- a/fs/erofs/Kconfig
+>> +++ b/fs/erofs/Kconfig
+>> @@ -99,6 +99,21 @@ config EROFS_FS_ZIP_LZMA
+>>         If unsure, say N.
+>> +config EROFS_FS_ZIP_DEFLATE
+>> +    bool "EROFS DEFLATE compressed data support"
+>> +    depends on EROFS_FS_ZIP
+>> +    select ZLIB_INFLATE
+>> +    help
+>> +      Saying Y here includes support for reading EROFS file systems
+>> +      containing DEFLATE compressed data.  It gives better compression
+>> +      ratios than the default LZ4 format, while it costs more CPU
+>> +      overhead.
+>> +
+>> +      DEFLATE support is an experimental feature for now and so most
+>> +      file systems will be readable without selecting this option.
+>> +
+>> +      If unsure, say N.
+>> +
+>>   config EROFS_FS_ONDEMAND
+>>       bool "EROFS fscache-based on-demand read support"
+>>       depends on CACHEFILES_ONDEMAND && (EROFS_FS=m && FSCACHE || EROFS_FS=y && FSCACHE=y)
+>> diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
+>> index a3a98fc3e481..994d0b9deddf 100644
+>> --- a/fs/erofs/Makefile
+>> +++ b/fs/erofs/Makefile
+>> @@ -5,4 +5,5 @@ erofs-objs := super.o inode.o data.o namei.o dir.o utils.o sysfs.o
+>>   erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
+>>   erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o pcpubuf.o
+>>   erofs-$(CONFIG_EROFS_FS_ZIP_LZMA) += decompressor_lzma.o
+>> +erofs-$(CONFIG_EROFS_FS_ZIP_DEFLATE) += decompressor_deflate.o
+>>   erofs-$(CONFIG_EROFS_FS_ONDEMAND) += fscache.o
+>> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+>> index b1b846504027..349c3316ae6b 100644
+>> --- a/fs/erofs/compress.h
+>> +++ b/fs/erofs/compress.h
+>> @@ -94,4 +94,6 @@ extern const struct z_erofs_decompressor erofs_decompressors[];
+>>   /* prototypes for specific algorithms */
+>>   int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+>>                   struct page **pagepool);
+>> +int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+>> +                   struct page **pagepool);
+>>   #endif
+>> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+>> index cfad1eac7fd9..332ec5f74002 100644
+>> --- a/fs/erofs/decompressor.c
+>> +++ b/fs/erofs/decompressor.c
+>> @@ -379,4 +379,10 @@ const struct z_erofs_decompressor erofs_decompressors[] = {
+>>           .name = "lzma"
+>>       },
+>>   #endif
+>> +#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
+>> +    [Z_EROFS_COMPRESSION_DEFLATE] = {
+>> +        .decompress = z_erofs_deflate_decompress,
+>> +        .name = "deflate"
+>> +    },
+>> +#endif
+>>   };
+>> diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
+>> new file mode 100644
+>> index 000000000000..c34e29b15465
+>> --- /dev/null
+>> +++ b/fs/erofs/decompressor_deflate.c
+>> @@ -0,0 +1,250 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +#include <linux/module.h>
+>> +#include <linux/zlib.h>
+>> +#include "compress.h"
+>> +
+>> +struct z_erofs_deflate {
+>> +    struct z_erofs_deflate *next;
+>> +    struct z_stream_s z;
+>> +    u8 bounce[PAGE_SIZE];
+>> +};
+>> +
+>> +static DEFINE_SPINLOCK(z_erofs_deflate_lock);
+>> +static unsigned int z_erofs_deflate_nstrms, z_erofs_deflate_avail_strms;
+>> +static struct z_erofs_deflate *z_erofs_deflate_head;
+>> +static DECLARE_WAIT_QUEUE_HEAD(z_erofs_deflate_wq);
+>> +
+>> +module_param_named(deflate_streams, z_erofs_deflate_nstrms, uint, 0444);
+>> +
+>> +void z_erofs_deflate_exit(void)
+>> +{
+>> +    /* there should be no running fs instance */
+>> +    while (z_erofs_deflate_avail_strms) {
+>> +        struct z_erofs_deflate *strm;
+>> +
+>> +        spin_lock(&z_erofs_deflate_lock);
+>> +        strm = z_erofs_deflate_head;
+>> +        if (!strm) {
+>> +            spin_unlock(&z_erofs_deflate_lock);
+>> +            DBG_BUGON(1);
+>> +            return;
+>> +        }
+>> +        z_erofs_deflate_head = NULL;
+>> +        spin_unlock(&z_erofs_deflate_lock);
+>> +
+>> +        while (strm) {
+>> +            struct z_erofs_deflate *n = strm->next;
+>> +
+>> +            vfree(strm->z.workspace);
+>> +            kfree(strm);
+>> +            --z_erofs_deflate_avail_strms;
+>> +            strm = n;
+>> +        }
+>> +    }
+>> +}
+>> +
+>> +int __init z_erofs_deflate_init(void)
+>> +{
+>> +    /* by default, use # of possible CPUs instead */
+>> +    if (!z_erofs_deflate_nstrms)
+>> +        z_erofs_deflate_nstrms = num_possible_cpus();
+>> +
+>> +    for (; z_erofs_deflate_avail_strms < z_erofs_deflate_nstrms;
+>> +         ++z_erofs_deflate_avail_strms) {
+>> +        struct z_erofs_deflate *strm;
+>> +
+>> +        strm = kzalloc(sizeof(*strm), GFP_KERNEL);
+>> +        if (!strm)
+>> +            goto out_failed;
+>> +
+>> +        /* XXX: in-kernel zlib cannot shrink windowbits currently */
+>> +        strm->z.workspace = vmalloc(zlib_inflate_workspacesize());
+>> +        if (!strm->z.workspace)
+> 
+> kfree(strm)?
+
+z_erofs_deflate_exit() below will handle this.
+
+Thanks,
+Gao Xiang
+
+> 
+> Thanks,
+> 
+>> +            goto out_failed;
+>> +
+>> +        spin_lock(&z_erofs_deflate_lock);
+>> +        strm->next = z_erofs_deflate_head;
+>> +        z_erofs_deflate_head = strm;
+>> +        spin_unlock(&z_erofs_deflate_lock);
+>> +    }
+>> +    return 0;
+>> +
+>> +out_failed:
+>> +    pr_err("failed to allocate zlib workspace\n");
+>> +    z_erofs_deflate_exit();
+>> +    return -ENOMEM;
+>> +}
+>> +
