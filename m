@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62159768621
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FA9768622
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjG3PFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 11:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
+        id S229997AbjG3PG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 11:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbjG3PFJ (ORCPT
+        with ESMTP id S229868AbjG3PG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 11:05:09 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D301712;
-        Sun, 30 Jul 2023 08:04:59 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a5ad21a1f9so2360844b6e.2;
-        Sun, 30 Jul 2023 08:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690729499; x=1691334299;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sjtmh4nNwvExMynVKxhinGFBrbzl40KOySzNLRmSZXM=;
-        b=Ypafvh4XXnWnBJB9s/Y0H0I4mPNKmfOcCQJFjcnzzoXFaA8EXXp4rDydrHFcI5PheE
-         W+AhkX3JIKQ7By/Iilv8gjPt1/R/r6JIszHs65liPby7ZV0/y+aMSVpkCRzc3vXSk4r2
-         h5Zlh0vSQGGtGQ2puArhOvD+TBguZZ2g07sNRCHKwGevnonQzAk1ii83urr5LYBCC6PA
-         MATSGNA/sM7wwPpseeVEKu70wEc/5YXh16RsjizPgqf+0AYzLGDOVaV16oiWR1vzEn8a
-         s83T9K93hF5lmcsawzRKNpY6F/QtItw+OL08aavfEY6Iswp22qOpLFZiNGocdXSMduTs
-         1B8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690729499; x=1691334299;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sjtmh4nNwvExMynVKxhinGFBrbzl40KOySzNLRmSZXM=;
-        b=jcqkBfIj3ZusqbvGe9ZHsU/k2nJJPL7i1SuTE6LhNOUUqswgxmfhApOzM5tHK5sTbu
-         FaxaWwM3O6hiGtr2ihz0YQMv3De1z+Z6tFWwdDwG9qhuQ7wlU82UNqr5cmJCz9EVSQKu
-         aFlEdfbSl6IsDypEYXE6sgbyq0lek1q+sJkYy9eIRAnkT94J46OgfV8D7S7rMKa1h32D
-         KuksaBZoBx0djG5odwYC9sDiPdyIFZjSvY/Sf82qCvEMc8e3PR9woW74ft+9O8KyDkS9
-         6qA+zZu6NYcOkBoLh3nd9bScphAuRxDlbPVtPy0o3kyVXaqf7PGwmceG0qnEI8GU4qgp
-         xJdg==
-X-Gm-Message-State: ABy/qLZrjIzR2kYDH4NwTE41u6OAgxoXRTCRq5ebTUTaraGUb1mJo5CA
-        T3VB6SwIfAMCShDLE7dkLKI=
-X-Google-Smtp-Source: APBJJlFzfU16xWOnu1QveV7x9esXMMOKh87PthZ+O4eEVcrHiZfA92eR+7URAoU21ZlP72nX8MVmZw==
-X-Received: by 2002:a05:6808:1a2a:b0:3a7:2120:8bb with SMTP id bk42-20020a0568081a2a00b003a7212008bbmr2357986oib.17.1690729498846;
-        Sun, 30 Jul 2023 08:04:58 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id j19-20020aca1713000000b003a40b3fce01sm3359309oii.10.2023.07.30.08.04.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 08:04:58 -0700 (PDT)
-Message-ID: <de0f5630-a0ad-92c4-a11c-0824b334cd84@gmail.com>
-Date:   Sun, 30 Jul 2023 12:04:55 -0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] rust: enable `no_mangle_with_rust_abi` Clippy lint
-Content-Language: en-US
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-References: <20230729220317.416771-1-ojeda@kernel.org>
- <20230729220317.416771-2-ojeda@kernel.org>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230729220317.416771-2-ojeda@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Sun, 30 Jul 2023 11:06:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E007CD
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:06:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A6CE360C8C
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 15:06:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA830C433C7;
+        Sun, 30 Jul 2023 15:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690729585;
+        bh=sxXT8+GXdV7qRF5Fj0Xa8//dfWxQO1148iNut5roa4E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DQ7eSIkk9lRxgcR3IYwsMS/YZFCFcxGlQoeQ6nW++m7AXYGDelzVhLW4+pbnNk6hN
+         a0akBpdZBiOWKyOcdAWlSpi9Wj0uTQgBiXwNUIGDzJAE3U6/DKoqORgibbiQcklmLI
+         o6p29RPBLIvodnochNQdHbzt2aAE7hUdqqofp9tB6NAye7IXWGr0Ea0d0M8FctTGLw
+         xtEClq6Q+TSy1quO/5wJ0DTWYZlSE/+pQv9nrDh1fm+b4Clq4NXqxJ5hL/5SmL4AsE
+         IhEo6bB1wIRsRAobQza281oq2DfElNHJSQLv+rDuXu8sMma+jsPLJuLjTwqi68choQ
+         eDdsqnOUJ0Hfw==
+Date:   Mon, 31 Jul 2023 00:06:21 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Subject: [GIT PULL] probes: Fixes for 6.5-rc3
+Message-Id: <20230731000621.1d34c8638a1285901fb6f9a7@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SCC_BODY_URI_ONLY,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/23 19:03, Miguel Ojeda wrote:
-> Introduced in Rust 1.69.0 [1], this lint prevents forgetting to set
-> the C ABI when using `#[no_mangle]` (or thinking it is implied).
-> 
-> For instance, it would have prevented the issue [2] fixed by commit
-> c682e4c37d2b ("rust: kernel: Mark rust_fmt_argument as extern "C"").
-> 
->      error: `#[no_mangle]` set on a function with the default (`Rust`) ABI
->        --> rust/kernel/print.rs:21:1
->         |
->      21 | / unsafe fn rust_fmt_argument(
->      22 | |     buf: *mut c_char,
->      23 | |     end: *mut c_char,
->      24 | |     ptr: *const c_void,
->      25 | | ) -> *mut c_char {
->         | |________________^
->         |
->         = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#no_mangle_with_rust_abi
->         = note: requested on the command line with `-D clippy::no-mangle-with-rust-abi`
->      help: set an ABI
->         |
->      21 | unsafe extern "C" fn rust_fmt_argument(
->         |        ++++++++++
->      help: or explicitly set the default
->         |
->      21 | unsafe extern "Rust" fn rust_fmt_argument(
->         |        +++++++++++++
-> 
-> Thus enable it.
-> 
-> In rare cases, we may need to use the Rust ABI even with `#[no_mangle]`
-> (e.g. one case, before 1.71.0, would have been the `__rust_*`
-> functions). In those cases, we would need to `#[allow(...)]` the lint,
-> since using `extern "Rust"` explicitly (as the compiler suggests)
-> currently gets overwritten by `rustfmt` [3].
-> 
-> Link: https://github.com/rust-lang/rust-clippy/issues/10347 [1]
-> Link: https://github.com/Rust-for-Linux/linux/pull/967 [2]
-> Link: https://github.com/rust-lang/rustfmt/issues/5701 [3]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Hi Linus,
+
+Probe fixes for 6.5-rc3:
+
+- probe-events: Fix to add NULL check for some BTF API calls which can
+  return error code and NULL.
+
+- ftrace selftests: Fix to check fprobe and kprobe event correctly. This
+  fixes a miss condition of the test command.
+
+- kprobes: Prohibit probing on the function which starts from "__cfi_"
+  and "__pfx_" since those are auto generated for kernel CFI and not
+  executed.
+
+
+Please pull the latest probes-fixes-v6.5-rc3 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+probes-fixes-v6.5-rc3
+
+Tag SHA1: 1586c2c77c542c0f9a20bfe5bbebfc739f8dbd2a
+Head SHA1: de02f2ac5d8cfb311f44f2bf144cc20002f1fbbd
+
+
+Masami Hiramatsu (Google) (3):
+      tracing/probes: Fix to add NULL check for BTF APIs
+      selftests/ftrace: Fix to check fprobe event eneblement
+      kprobes: Prohibit probing on CFI preamble symbol
+
+----
+ kernel/kprobes.c                                           | 14 +++++++++++++-
+ kernel/trace/trace_probe.c                                 |  8 ++++----
+ .../selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc  |  2 +-
+ 3 files changed, 18 insertions(+), 6 deletions(-)
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
