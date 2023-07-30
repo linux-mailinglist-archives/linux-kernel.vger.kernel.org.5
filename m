@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5713A76870D
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 20:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035D4768711
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 20:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjG3SI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 14:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        id S229542AbjG3SJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 14:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbjG3SIX (ORCPT
+        with ESMTP id S229472AbjG3SJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 14:08:23 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A375C1718
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:08:15 -0700 (PDT)
-X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=rUtEDz36Ege3wRJGsZeZHbrLvnL2PPOHhITk/HK+wd0=;
-        b=at7QoIuqMX8n3cyreCSdGqy1h85o7k9lAplZYTz3wrLdW1LIotoI8uAS4wegTuDfaImU8FVaRUm0T8bCHXWgw3yFNxtXl+OOQgrBX0iUO3uJQB1rTBYUtOH253TOz1ftsVwhivOh8AwhXIF721BNPUU+kcLRoq+TWZNrTF8qDmg=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:c9e47b98-cd78-4fe9-8a38-dd8f7fbc5fb1,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:9c94f2b3-a467-4aa9-9e04-f584452e3794,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 0a6d24142f0411ee9cb5633481061a41-20230731
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <jiaxin.yu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 584771536; Mon, 31 Jul 2023 02:08:09 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 31 Jul 2023 02:08:09 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 31 Jul 2023 02:08:08 +0800
-From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
-To:     <broonie@kernel.org>, <andrzej.hajda@intel.com>,
-        <neil.armstrong@linaro.org>, <robert.foss@linaro.org>,
-        <Laurent.pinchart@ideasonboard.com>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <angelogioacchino.delregno@collabora.com>,
-        <nfraprado@collabora.com>
-CC:     <chunxu.li@mediatek.com>,
-        <ajye_huang@compal.corp-partner.google.com>,
-        <allen-kh.cheng@mediatek.com>, <dri-devel@lists.freedesktop.org>,
-        <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: [v3 3/3] drm/bridge: it6505: Add audio support
-Date:   Mon, 31 Jul 2023 02:08:03 +0800
-Message-ID: <20230730180803.22570-4-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
-References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
+        Sun, 30 Jul 2023 14:09:00 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694091FDC
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:08:40 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bcf2de59cso600208566b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 11:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690740518; x=1691345318;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rfPh0rQxcpXl603MOWrHPrRTfxrFlYqNDM8hmhIpN5I=;
+        b=JCezjIrSBcfhqzNXY9YsythVWHzvD8ErnLuKBP6QBwscMfItqs+U0r2Yc7X3hFjL7i
+         t1BN+Dcmj/ijSuSnvlAl/kr2iRJ7I1VICgLgwWB76duYYFQvudb/IPD5c8jGXAop5/Ub
+         asQ+959WHRTScFop01Z5XWFwYRVWliJFjKVhGFVQF68LHCtYD2qOa5162XTrZEmLURoV
+         vbdtqHFkTwMj1zccO7uqbKXbk5FzDGo+yvI7TaDIh8qvyVg2Ob9AWu73mMFwT3JD9krL
+         4r1tq5yjzi8PRMOifyXyyc3fe7+GyYEp+2y+aIW1Mji0uub1FfKHONlVX+TAWel/Ov7R
+         u+jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690740518; x=1691345318;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rfPh0rQxcpXl603MOWrHPrRTfxrFlYqNDM8hmhIpN5I=;
+        b=Eaji37AYmK/XkkovlkN4yK9oNTxlivwL0ltKCNsBkwpwJzqZrlzbFEESxAbfz1wskT
+         GCGcisF8l4XxECA/x0L85f11B2wDa5qb9gnQ+VVnMqZfLnCzfQhged/u4UB6oKWANS4c
+         DjfecYJNk3Ue9unP2EtFKDEV5M3xEFRFUAKdjDMkqO+T6IPFP/OYCZuNyUHqDJpnLBD0
+         +7kw1xOyaau2y14Ad31I5oPzCfAtpWgtsetfddaM97B+SWz1C/g8ekrxcag2xWLQkNYQ
+         SFrdIgmOwGzgUxbd71suWsY7aBUoJAFxmZblt4pOo2IeRVOal7THvy54uGDXBo4l6zH+
+         EbTA==
+X-Gm-Message-State: ABy/qLaL0G5QEZ3+z2y6dCOzwlBaWwFEhX/JKwixIQD9BCWVXCuvV0VL
+        yw+2JZeVzyzHlbfLpZjV7Wx6Qg==
+X-Google-Smtp-Source: APBJJlHxY/MaR0paiPXpydEunRqNiPLIODON0sih2jzqQjy0Kg/zC761MpbUD5tSRmqd1DnrIEd86A==
+X-Received: by 2002:a17:906:3294:b0:99b:cd2a:641 with SMTP id 20-20020a170906329400b0099bcd2a0641mr5097665ejw.23.1690740518078;
+        Sun, 30 Jul 2023 11:08:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id f23-20020a170906495700b0098748422178sm4951807ejt.56.2023.07.30.11.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 11:08:37 -0700 (PDT)
+Message-ID: <1078561c-d9f9-0678-0417-412a0beda6e3@linaro.org>
+Date:   Sun, 30 Jul 2023 20:08:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: supply: maxim,max17040: update
+ properties
+Content-Language: en-US
+To:     Svyatoslav Ryhel <clamor95@gmail.com>,
+        Iskren Chernev <me@iskren.info>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matheus Castello <matheus@castello.eng.br>,
+        Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230730172648.71578-1-clamor95@gmail.com>
+ <20230730172648.71578-2-clamor95@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230730172648.71578-2-clamor95@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,139 +83,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add audio support for it6505
+On 30/07/2023 19:26, Svyatoslav Ryhel wrote:
+> Add status and temperature properties.
+> 
+> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+> ---
+>  .../bindings/power/supply/maxim,max17040.yaml | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
+> index 2627cd3eed83..4bccf25a111c 100644
+> --- a/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/maxim,max17040.yaml
+> @@ -55,6 +55,14 @@ properties:
+>    interrupts:
+>      maxItems: 1
+>  
+> +  io-channels:
+> +    items:
+> +      - description: battery temperature
+> +
+> +  io-channel-names:
+> +    items:
+> +      - const: temp
+> +
+>    wakeup-source:
+>      type: boolean
+>      description: |
+> @@ -95,3 +103,26 @@ examples:
+>          wakeup-source;
+>        };
+>      };
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c0 {
 
-1. Bridge to hdmi-codec to support audio feature. At the same time,
-   the function of automatically detecting audio is removed.
-2. It is observed that some DP-to-HDMI dongles will get into bad
-   states if sending InfoFrame without audio data. Defer to enable
-   it6505's audio feature when PCM triggers START or RESUME.
+Just i2c
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
----
- drivers/gpu/drm/bridge/ite-it6505.c | 81 ++++++++++++++++++++++++++---
- 1 file changed, 75 insertions(+), 6 deletions(-)
+With above:
 
-diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
-index 504d51c42f79..1cfcb0731288 100644
---- a/drivers/gpu/drm/bridge/ite-it6505.c
-+++ b/drivers/gpu/drm/bridge/ite-it6505.c
-@@ -2162,7 +2162,6 @@ static void it6505_stop_link_train(struct it6505 *it6505)
- 
- static void it6505_link_train_ok(struct it6505 *it6505)
- {
--	struct device *dev = &it6505->client->dev;
- 
- 	it6505->link_state = LINK_OK;
- 	/* disalbe mute enable avi info frame */
-@@ -2170,11 +2169,6 @@ static void it6505_link_train_ok(struct it6505 *it6505)
- 	it6505_set_bits(it6505, REG_INFOFRAME_CTRL,
- 			EN_VID_CTRL_PKT, EN_VID_CTRL_PKT);
- 
--	if (it6505_audio_input(it6505)) {
--		DRM_DEV_DEBUG_DRIVER(dev, "Enable audio!");
--		it6505_enable_audio(it6505);
--	}
--
- 	if (it6505->hdcp_desired)
- 		it6505_start_hdcp(it6505);
- }
-@@ -2846,6 +2840,45 @@ static void __maybe_unused it6505_audio_shutdown(struct device *dev, void *data)
- 		it6505_disable_audio(it6505);
- }
- 
-+static int it6505_audio_hw_params(struct device *dev, void *data,
-+				  struct hdmi_codec_daifmt *daifmt,
-+				  struct hdmi_codec_params *params)
-+{
-+	struct it6505 *it6505 = dev_get_drvdata(dev);
-+
-+	return it6505_audio_setup_hw_params(it6505, params);
-+}
-+
-+static int it6505_audio_setup_trigger(struct it6505 *it6505, int cmd)
-+{
-+	struct device *dev = &it6505->client->dev;
-+
-+	DRM_DEV_DEBUG_DRIVER(dev, "event: %d", cmd);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		queue_delayed_work(system_wq, &it6505->delayed_audio,
-+				   msecs_to_jiffies(180));
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		cancel_delayed_work(&it6505->delayed_audio);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int it6505_audio_trigger(struct device *dev, int cmd)
-+{
-+	struct it6505 *it6505 = dev_get_drvdata(dev);
-+
-+	return it6505_audio_setup_trigger(it6505, cmd);
-+}
-+
- static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
- 						       void *data,
- 						       hdmi_codec_plugged_cb fn,
-@@ -2860,6 +2893,36 @@ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
- 	return 0;
- }
- 
-+static const struct hdmi_codec_ops it6505_audio_codec_ops = {
-+	.hw_params = it6505_audio_hw_params,
-+	.trigger = it6505_audio_trigger,
-+	.audio_shutdown = it6505_audio_shutdown,
-+	.hook_plugged_cb = it6505_audio_hook_plugged_cb,
-+};
-+
-+static int it6505_register_audio_driver(struct device *dev)
-+{
-+	struct it6505 *it6505 = dev_get_drvdata(dev);
-+	struct hdmi_codec_pdata codec_data = {
-+		.ops = &it6505_audio_codec_ops,
-+		.max_i2s_channels = 8,
-+		.i2s = 1,
-+		.data = it6505,
-+	};
-+	struct platform_device *pdev;
-+
-+	pdev = platform_device_register_data(dev, HDMI_CODEC_DRV_NAME,
-+					     PLATFORM_DEVID_AUTO, &codec_data,
-+					     sizeof(codec_data));
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
-+	INIT_DELAYED_WORK(&it6505->delayed_audio, it6505_delayed_audio);
-+	DRM_DEV_DEBUG_DRIVER(dev, "bound to %s", HDMI_CODEC_DRV_NAME);
-+
-+	return 0;
-+}
-+
- static inline struct it6505 *bridge_to_it6505(struct drm_bridge *bridge)
- {
- 	return container_of(bridge, struct it6505, bridge);
-@@ -3421,6 +3484,12 @@ static int it6505_i2c_probe(struct i2c_client *client)
- 		return err;
- 	}
- 
-+	err = it6505_register_audio_driver(dev);
-+	if (err < 0) {
-+		DRM_DEV_ERROR(dev, "Failed to register audio driver: %d", err);
-+		return err;
-+	}
-+
- 	INIT_WORK(&it6505->link_works, it6505_link_training_work);
- 	INIT_WORK(&it6505->hdcp_wait_ksv_list, it6505_hdcp_wait_ksv_list);
- 	INIT_DELAYED_WORK(&it6505->hdcp_work, it6505_hdcp_work);
--- 
-2.25.1
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+Best regards,
+Krzysztof
 
