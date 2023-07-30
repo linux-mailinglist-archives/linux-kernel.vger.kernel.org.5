@@ -2,78 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A87768509
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9A076850D
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 13:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjG3LV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 07:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35104 "EHLO
+        id S230002AbjG3LWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 07:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbjG3LVq (ORCPT
+        with ESMTP id S230005AbjG3LWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 07:21:46 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840B81BC9
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:21:44 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-522bc9556f5so1030817a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 04:21:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690716103; x=1691320903;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IXMMuR7B8SyK63Dw8ZGg1s6tNzHxfB46KYaCNLw2R9A=;
-        b=iZMeKYUrky0Kyba23iJz0Vvzj6/FNsU2A/iW5w1Ze3vQnSwcNcI1cd0Hm1+/GWH4ek
-         Qh1nsGioCeNw5vV7dHulevMKIprN+jot6ml79LoEKunRZNP6/+9ajjnZr0trCcyra4AI
-         A2ILQDt/Lt65j+vARLsO7zFjd7HLkSVRbO6+ZQE3rtbp61P1F3i7euh+oU+BlmHQ6BRD
-         ytTCbeWDDF0SOdgg78tUHFT0i0PnxRLctoDzSrt6+s0SgQWWFHl0AHUwdZVtsYToWH4F
-         SO3fG5DQmerPjA6zh7LtFUYDLoEtct50NG8M+jNyNLaUz/U/SG1qUgLg3No00jSRxgst
-         tfvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690716103; x=1691320903;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXMMuR7B8SyK63Dw8ZGg1s6tNzHxfB46KYaCNLw2R9A=;
-        b=AHziuXQjeinTitklHGcmYYgrl8Dqjl1aQHy7pQP4kN4akyCnOxZ4yTME/xbnhbSoJf
-         2MP7dW1YMaUBm7HwDi/rOkAC0aUDgPzM0whC43Sjuqp6x1r2COX7wwL46ycYBrnFJHTo
-         rQWbDXXqkrzJHgBhsu4EP6gdtaY+7c//L5ctXeQSq3qkffss2iQtvUsbAL/FdHFHvbGX
-         1Yb33r9uR32vAPM65tKswxhePJHUiBLbdXRfmI2pw86IqNcCLEuDDwmKKYP9xXheCcNc
-         Y4c2kEFqVs8CFkLd91itnXc6uRgkGBuKYTvkCy9fdy+959ctFTGD7oXodpQor8QCeH5l
-         38RQ==
-X-Gm-Message-State: ABy/qLbBrqLf0wzpxm6WuBvRtXSItnIHga2pImec5KiJc8I7of0uy6ik
-        J3sJmNje6K0H1/2QrKlICK1Mwg==
-X-Google-Smtp-Source: APBJJlE8ilH9S5BU+cuNoWGe2EiqfevrmLHWL5ZksdYE6C2yZfS5A0YQy9JAY98HegdYIs/Rz9fL7w==
-X-Received: by 2002:aa7:d293:0:b0:51d:d4c3:6858 with SMTP id w19-20020aa7d293000000b0051dd4c36858mr6284928edq.12.1690716103010;
-        Sun, 30 Jul 2023 04:21:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id d15-20020aa7d68f000000b00522594a614fsm3966620edr.13.2023.07.30.04.21.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 04:21:42 -0700 (PDT)
-Message-ID: <6ff004bb-2f5e-d0ee-9f50-2d2b631eb6e0@linaro.org>
-Date:   Sun, 30 Jul 2023 13:21:40 +0200
+        Sun, 30 Jul 2023 07:22:04 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59A5198E;
+        Sun, 30 Jul 2023 04:22:01 -0700 (PDT)
+X-QQ-mid: bizesmtp77t1690716110tv8bivfu
+Received: from linux-lab-host.localdomain ( [61.141.77.223])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 30 Jul 2023 19:21:49 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: eeGIu46hDGgGrNOUk9kqFEgsnoRGVRs0YH7r5TFTD0m9ie1JZ6KZoIHj2r/fp
+        eQWVrfAE3N6rJx8MYKVspuOzM31OFsjtMsJtMwTfJd39KhZEqwkcGFV2alHjT1jzWBvkqIu
+        BN9mpoUn+YS2Gcg/t5JzuKU+DVxZpQOxO9UK183z+pBoTRxOExfZbGGvz4wQYRBkvvSdt4Q
+        TZtcS8MCwILTEJ7duybxPS2ojY5ZcEcOgdLtip9jdfV5L1JyEKOgCXARldrSFv+YePRzBu1
+        U9Nvw31sa1wLYYBwIgH7CafAC0oTZrhjUKkF5HOZ+kvdbsRgP1eT8i2deGiJ4qDi5mX3prx
+        i5EqUCZZf7gZt3vy63LGRa8hQkQBvr6ro7epVMC9vHZqDbmVJf4SzQ38kgleQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 7311399538816519313
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v3 3/7] selftests/nolibc: add extra configs customize support
+Date:   Sun, 30 Jul 2023 19:21:49 +0800
+Message-Id: <20230730112149.37896-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230730061801.GA7690@1wt.eu>
+References: <20230730061801.GA7690@1wt.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v4 1/4] arm64: dts: lx2160a: describe the SerDes block #2
-Content-Language: en-US
-To:     Josua Mayer <josua@solid-run.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-References: <20230730092422.16771-1-josua@solid-run.com>
- <20230730092422.16771-2-josua@solid-run.com>
- <8ee50871-e299-7a2e-2ece-a43e8263f6b5@linaro.org>
- <1b31e40d-5468-d886-f4c3-59dcac33ff7d@solid-run.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1b31e40d-5468-d886-f4c3-59dcac33ff7d@solid-run.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,24 +51,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/07/2023 13:04, Josua Mayer wrote:
-> Hi Krzysztof,
+> On Sun, Jul 30, 2023 at 02:01:31PM +0800, Zhangjin Wu wrote:
+> > > > > Seems 'nolibc-test-config' is really more meaningful than 'defconfig', especially
+> > > > > when we want to use tinyconfig through it?
+> > > > > 
+> > > > >     $ make nolibc-test-config DEFCONFIG=tinyconfig
+[...]
+> > 
+> > And this:
+> > 
+> >     # extra configs/ files appended to .config during the nolibc-test-config target
+> >     # include common + architecture specific
+> >     EXTRA_CONFIG         = common.config $(XARCH).config
+> > 
+> > And the update of the help target too.
+> > 
+> > If both of you are happy with this? let's do it ;-)
 > 
-> Am 30.07.23 um 12:13 schrieb Krzysztof Kozlowski:
->> On 30/07/2023 11:24, Josua Mayer wrote:
->>> Add description for the LX2160A second SerDes block.
->>> It is functionally identical to the first one already added in:
->>>
->>> 3cbe93a "arch: arm64: dts: lx2160a: describe the SerDes block #1"
->> Please use proper commit xxx syntax as asked by checkpatch.
-> 
-> checkpatch doesn't tell me anything. Please can you elaborate what the 
-> issue is?
-> 
+> Well, I understand "nolibc-test-config" as "the config suitable to
+> correctly run nolibc-test". In that case I agree. We can indeed start
+> from the defconfig, and if we manage to refine it we can later map it
+> to anything else that's known to work. And if we eventually split
+> nolibc-test into multiple tests (libc, syscalls, ipc, network, whatever)
+> then we might as well adopt different configs in the future. I'd also
 
-The syntax is "commit xxx". Then checkpatch will tell you that SHA is
-too short.
+Agree, with this info, I do like nolibc-test-config, let's align all
+related with nolibc-test- prefix and NOLIBC_TEST_CONFIG too ;-)
+
+I have thought about a simpler 'config' target for both tinyconfig and
+defconfig before, but I'm worried about the same issue mentioned by
+Willy, it may conflict with the one from top-level Makefile.
+
+With exact nolibc-test prefix, it is better.
+
+> want to keep defconfig on its own because it relies on each arch's
+> defconfig and is a simple way to verify they work (as they should).
+> As I said, till now I haven't met issues with defconfig so probably
+> we don't need to patch it, but we could revisit that option later if
+> needed.
+>
+
+No Willy, this patch here is not originally for tinyconfig, is for
+pmac32_defconfig used by the default ppc32 qemu machine has no builtin
+console, it is configured as a module:
+
+    CONFIG_SERIAL_8250=m
+    CONFIG_SERIAL_PMACZILOG=m
+    CONFIG_SERIAL_PMACZILOG_TTYS=y
+
+This is why we also need to add such extra logic also for defconfig
+target. Another solution is ask the kernel maintainer to switch the =m
+to =y, but as we discussed before, it is better to depends on the kernel
+part, so, an extra logic is used here for better flexibility and less
+dependency.
+
+If we still to reserve the 'defconfig' target, is this ok for you?
+
+    defconfig: nolibc-test-config
+
+    Or
+
+    nolibc-test-defconfig: nolibc-test-config
+
+Which one do you like? If 'defconfig', the one for tinyconfig may also
+better to use 'tinyconfig':
+
+    tinyconfig defconfig: nolibc-test-config
+    tinyconfig: CONFIG=tinyconfig
+
+Otherwise,
+
+    nolibc-test-tinyconfig nolibc-test-defconfig: nolibc-test-config
+    nolibc-test-tinyconfig: CONFIG=tinyconfig
+
+I'm ok with anyone of them (note, the tinyconfig related parts will not
+be really added here), what about you?
+
+> I'm still having that question about your "make allnoconfig" at the
+> end, which for me simply replaces the config you've just created, thus
+> which makes no sense. There might be a trick that I'm missing but if so
+> it should be explained there because the only situation where anybody
+> should start a question with "why" when reading code is when they
+> discovered a bug.
+>
+
+Yeah, the name of allnoconfig doesn't confuse a little, to simplify it a
+lot, let's simply use 'olddefconfig' (as 'oldconfig' you suggested in
+another replay, but without prompt and silently set new options as
+default) instead?
+
+> Also please split the mrproper and defconfig on two distinc lines, as
+> there's no point anymore in keeping them as a single one.
+>
+
+Yeah, it is better.
+
+> Since you're using the extra options for nolibc-test-config, I think
+> they should be called "nolibc-test-common.config" and
+> "nolibc-test-$XARCH.config" so that we don't restart with tons of
+> "if" and macros when adding a new target.
+
+Done.
+
+Btw, since this one does have some relationship with another three
+patches (two are from tinyconfig part1, like the XARCH you mentioned two
+times), in order to make them more fast forward, I have reorder them to
+make things clear.
+
+* selftests/nolibc: fix up O= option support
+
+    Fix up the wrong srctree previously used, then, we can use objtree
+    directly in this patch.
+
+* selftests/nolibc: add macros to reduce duplicated changes
+
+    Some of the macros are heavily used in our new nolibc-test-config
+    target, for we require to split mrproper and prepare into more
+    lines, shorter macros prepared earlier does help this.
+
+* selftests/nolibc: add XARCH and ARCH mapping support
+
+    Add this one earlier, then, our patch can use the XARCH directly.
+
+As you suggested, If no other opposite, another two about CROSS_COMPILE
+will be moved to this powerpc series too:
+
+* selftests/nolibc: allow customize CROSS_COMPILE by architecture
+* selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+
+At last, here is it?
+
+    # extra configs/ files appended to .config during the nolibc-test-config target
+    # include common + architecture specific
+    NOLIBC_TEST_CONFIG   = nolibc-test-common.config nolibc-test-$(XARCH).config
+
+    nolibc-test-config:
+	$(Q)$(MAKE_KERNEL) mrproper
+	$(Q)$(MAKE_KERNEL) $(or $(CONFIG),$(DEFCONFIG)) prepare
+	$(Q)$(srctree)/scripts/kconfig/merge_config.sh -Q -O "$(objtree)" -m "$(KERNEL_CONFIG)" $(foreach c,$(NOLIBC_TEST_CONFIG),$(wildcard $(CURDIR)/configs/$c))
+	$(Q)$(MAKE_KERNEL) olddefconfig
+	$(Q)$(MAKE_KERNEL) prepare
+
+    defconfig: nolibc-test-config
+
+The last line still depends on your confirm.
+
+Without more issues, I will renew this patchset as v4, thanks very much!
+
+(will update the XARCH patch to get your confirm in another reply too)
 
 Best regards,
-Krzysztof
+Zhangjin
 
+> Thomas, are you also OK with this ?
+> 
+> Thanks,
+> Willy
