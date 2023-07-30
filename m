@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624C07687A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 21:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8694E76878A
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 21:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjG3TqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 15:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S229852AbjG3Tlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 15:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjG3TqS (ORCPT
+        with ESMTP id S229450AbjG3Tlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 15:46:18 -0400
-X-Greylist: delayed 327 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Jul 2023 12:45:55 PDT
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFC119BB;
-        Sun, 30 Jul 2023 12:45:55 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 00F7D100D5860;
-        Sun, 30 Jul 2023 21:40:27 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id B5CD2120C49; Sun, 30 Jul 2023 21:40:26 +0200 (CEST)
-Date:   Sun, 30 Jul 2023 21:40:26 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     bhelgaas@google.com, alex.williamson@redhat.com,
-        treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vsethi@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
-        sagar.tv@gmail.com
-Subject: Re: [PATCH V3] PCI: pciehp: Disable ACS Source Validation during
- hot-remove
-Message-ID: <20230730194026.GA19962@wunner.de>
-References: <20230111190533.29979-1-vidyas@nvidia.com>
- <20230730191519.3124390-1-vidyas@nvidia.com>
+        Sun, 30 Jul 2023 15:41:37 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525F610CE
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 12:41:36 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-522462d8416so5351206a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 12:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690746094; x=1691350894;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WJYbyaefc/2i9vxMYh4LV8u/phkvsoN38kGEgw8r95o=;
+        b=AFZwbx56sJ+a6yG9O2+3i/BtGXdUMIQCcLca48UvA9nmO+UYRzJu7cukzOJpodtxBd
+         zphVbgVcbNsg3MD/PPfG5BzGlcbg9NPkXjy8JJOuyOAu9KeYjL/jXYOIpVuxQ9izWaM2
+         y/YZY+exFmADoBiM577c1L6IX6jfT2Hp8oaww=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690746094; x=1691350894;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WJYbyaefc/2i9vxMYh4LV8u/phkvsoN38kGEgw8r95o=;
+        b=jRC5Rb6dOouCG+Z4IhkZJ9gXbjNL0CRBe3BIrjBPkRXu2nQqs71+OfB2nyltOkHEve
+         MLqDJT6OEcPaWWWXJrNmMsBeMSJptVGeVRz++rgGB2Yjh5Qg/WRPTWd5OddpOFVYruzj
+         8Mc1+RgY6XJ4Jm4sAfsu3axHYPqGng4PsAV8axkVA8y2OXLaZI9ftx+5IYoF7lpGDfgQ
+         Yi+26X+eS5jbB7VqdadaI6DQxdPvnmCFaXReCFF2EMEiUeasghGYqfVB6gs12lhpGY5I
+         dgN4KWrpmijssMOEKrNnQ2uxj6RJtnpvD7blU8MldojkKk4n9pDs1hDr/e25i1V76u7h
+         6Rhw==
+X-Gm-Message-State: ABy/qLZorN9tvy6bxexV7yMIeXFsjzNk7+Su9Ie1TN4ZpezJtA/+vtjB
+        9pCSdIDReZ8f+NExNT6QpC3WkuxNZat1bDddhx/8gA==
+X-Google-Smtp-Source: APBJJlFqpWjzAKtpeFXYw2ZL6CzMoUFkJOPK43RW1A7yfZ3ejKc8gvCEcN7qKEjJfeWz0Hq+dmPBpg==
+X-Received: by 2002:a17:906:114:b0:973:ff8d:2a46 with SMTP id 20-20020a170906011400b00973ff8d2a46mr4899448eje.3.1690746094397;
+        Sun, 30 Jul 2023 12:41:34 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id f25-20020a1709067f9900b009934855d8f1sm5015160ejr.34.2023.07.30.12.41.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 12:41:33 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so5370060a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 12:41:33 -0700 (PDT)
+X-Received: by 2002:aa7:c795:0:b0:522:28fa:3009 with SMTP id
+ n21-20020aa7c795000000b0052228fa3009mr6411013eds.13.1690746093501; Sun, 30
+ Jul 2023 12:41:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230730191519.3124390-1-vidyas@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <169073747103.4140879.6035275932676410922@leemhuis.info>
+In-Reply-To: <169073747103.4140879.6035275932676410922@leemhuis.info>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 30 Jul 2023 12:41:16 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj2+Mcvdr3PPvUvchhZRCtLdjSFbK7S5R3N2DrEUCz6jw@mail.gmail.com>
+Message-ID: <CAHk-=wj2+Mcvdr3PPvUvchhZRCtLdjSFbK7S5R3N2DrEUCz6jw@mail.gmail.com>
+Subject: Re: Linux regressions report for mainline [2023-07-30]
+To:     "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>, Rafael Wysocki <rafael@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:45:19AM +0530, Vidya Sagar wrote:
-> PCIe 6.0, 6.12.1.1 specifies that downstream devices are permitted to
-> send upstream messages before they have been assigned a bus number and
-> such messages have a Requester ID with Bus number set to 00h.
-> If the Downstream port has ACS Source Validation enabled, these messages
-> will be detected as ACS violation error.
-> 
-> Hence, disable ACS Source Validation in the bridge device during
-> hot-remove operation and re-enable it after enumeration of the
-> downstream hierarchy but before binding the respective device drivers.
+On Sun, 30 Jul 2023 at 10:20, Regzbot (on behalf of Thorsten Leemhuis)
+<regressions@leemhuis.info> wrote:
+>
+> One thing you might be interested in: seems the Ryzen keyboard problems
+> that a9c4a912b7d ("ACPI: resource: Remove "Zen" specific match and
+> quirks") [v6.5-rc1] was supposed to fix once and for all kinda came
+> back, as the new approach apparently still doesn't work on all machines:
 
-What are these messages that are sent before assignment of a bus number?
+Gaah.
 
-What's the user-visible issue that occurs when they're blocked?
+We must be doing something fundamentally wrong in the irq overrides,
+this is ridiculous. One step forwards, two steps back.
 
-Doesn't disabling Source Validation introduce a security hole because the
-device may spoof messages before Source Validation is re-enabled?
+Right now all our entries in that override table say "don't override".
 
-PCIe r6.1 sec 6.12.1.1 does indeed point out that the downstream device
-is *permitted* to send these messages but the Implementation Note
-does *not* prescribe that Source Validation shall be disabled to let them
-through.  It merely points out that the messages may be filtered if
-Source Validation is enabled.
+In fact, right now they all seem to be about the legacy keyboard irq.
+I get the feeling that we are just doing something horribly horribly
+wrong wrt the override thing, and that all these quirks come from
+that.
 
-Thanks,
+I get the feeling that maybe we simply should strive to use the values
+the BIOS has _programmed_, not the DSDT or MADT values at all? After
+all, the BIOS has presumably set things up so that the keyboard works,
+so us taking values from the BIOS tables (which are clearly
+unreliable) is a bit suspect.
 
-Lukas
+IOW, maybe we should simply never touch the irq setup for irq 1?
+
+Does anybody have any idea what MS does?
+
+             Linus
