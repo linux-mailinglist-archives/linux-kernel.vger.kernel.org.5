@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0665F768667
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F387768668
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 18:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjG3QTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 12:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
+        id S229949AbjG3QT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 12:19:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjG3QTV (ORCPT
+        with ESMTP id S229808AbjG3QTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 12:19:21 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6FC1702;
-        Sun, 30 Jul 2023 09:19:18 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcf2de59cso589895466b.0;
-        Sun, 30 Jul 2023 09:19:18 -0700 (PDT)
+        Sun, 30 Jul 2023 12:19:23 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9681E7A;
+        Sun, 30 Jul 2023 09:19:19 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c136ee106so47261966b.1;
+        Sun, 30 Jul 2023 09:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690733957; x=1691338757;
+        d=gmail.com; s=20221208; t=1690733958; x=1691338758;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lUYRYySpjk8ohdaW/yDF6ftOLcjXMMQdsYiTIF2jWhI=;
-        b=QD12hqsMJgaXqcXToADNM5dmMy2Lkg+i8N8XpXnPAHhTvopXxcrbDynB1MogaqKdOD
-         opzClWBQyn47NCGV3EHIglzRKCzS7J3fGnpT219a79y+QuYbDe9/QnLxxKHE/oQtRhZd
-         zRetlMU+KXKaAuwxP1tpT3nRJ3b1IWqxBrsweXKkaEosGUSzf6LUhqZadACeKPwvd89Z
-         6Eq+n9hL+ILbSKH36z7AlNbEZZP1MkVeaQ8WirohhCn3JJWMjKWiV+u0/mrEcG/+aZar
-         y2YvX9GrPq9/YBMNxqh3TJahSjybxnOUVA752JjgGX1eVhDvt3qWtApzNwL9gVAseb87
-         Pitw==
+        bh=L+KONCSgAp3/sMR9Z+HZNnzOWVTWuWrXqat5fDErNCs=;
+        b=ei6pl+UpMS7feUcexYxE9SQmNaG3jgtrLPaYFgX0oo4y1bUXMmMFw0+NvWnnn0fXnj
+         pHGzsasZGlPylZzhFKmJr7cIUUmDrIVij5IP0TVLcCAosdnwVByTf1yuge0Gvo1DBDtb
+         VCRskvGxHNsPv1fDpRDuXAycyP70qnTH4fr3v/24kwxemJ9JOXp9lDebisV/QnxhKWRy
+         OjjEdDB6IAtMW9cCGWV/PnLCBlLb7Dc4KzZ4BPDvQuFNXhm5JZYxkYo0rAom+u2dNCH9
+         9jwK+AdqN2GDQEmbgBgemwQ5BMDUH6nep7WLWt11BKD4SfV+F493OlQttXPExXho95qC
+         Mlbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690733957; x=1691338757;
+        d=1e100.net; s=20221208; t=1690733958; x=1691338758;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lUYRYySpjk8ohdaW/yDF6ftOLcjXMMQdsYiTIF2jWhI=;
-        b=UqhTwDEUCWKRcaopxgd3pDlWO1HhYS9cbzu0BKiKODTCAXdQIO+fbvHjwnrxMdlLTX
-         WrrhLR700xBwf8qDX0kLWeFEHVtvWg4oJOuNGUWrP28rJlFInwHcADU1PPwk7cKVbErp
-         Bqi6jzL9PPrWbiYjeCfuISM5YR1nufdNcAIQaNQofZEGPGrWOX0fx5zCwS/6XaKi27+4
-         ZajKH/DZud/QTP+FEp5Sb1HdpuC3RBO0VOlKrJcd7e2e0pAtQwbZ5/KZlSXXCmelM6f4
-         OgYxPpeJc8FnkEJJaTXPXO41fkoN/bIbw9DaevBgl+pbLw+URFImcj1DwHHYKdUbaDr4
-         we7g==
-X-Gm-Message-State: ABy/qLYlQRgI3iQL1l8EsnGjhngBq1qRAHQLjUXFBtu1OMvGTW4UinjY
-        7Io7p5mw8AX5c/nXC1z08U0=
-X-Google-Smtp-Source: APBJJlER8y10yssmg+xKisiFZwNFyWqruHA9OqWN2LlpT1/5F5OOLocJ1UX4Vql2JIKhaptb0tfj/w==
-X-Received: by 2002:a17:907:2721:b0:988:a578:4d65 with SMTP id d1-20020a170907272100b00988a5784d65mr4413059ejl.32.1690733956437;
-        Sun, 30 Jul 2023 09:19:16 -0700 (PDT)
+        bh=L+KONCSgAp3/sMR9Z+HZNnzOWVTWuWrXqat5fDErNCs=;
+        b=SSXBzuBfHrLhqp92GJIxmtQSTMTETWoXa04FjUdFimAFhd5HFvSekHebKmOTz7nSo+
+         DR/K3jx+hcfZHNhym2jLzgI5pv4415I9QE1I7dBEghZqfGoveredjRI13KEv9FaDFK3d
+         7kFGZv3XVpgrUOZioxYA/H15IwnaAc0JjIPOOJARkcrBy7dIYL8T7XO6JIx9hosQVL4Z
+         wv+z6eO/Ms8F6UYRVfYyPEQwQCminF6f5aBhMowShIkBf68OQzS0V7zJtFLfLBDnGwox
+         DE7wEvldO/vB3ZhOqZjkjAhjX7fIOoz1uAnnje68o3oMBw2GQpWTLkOaZ/YN7VfmpSRj
+         ZFDw==
+X-Gm-Message-State: ABy/qLbrXuSVnzABTfFYx1ZNdTufK9Mkuez46qr5cP56QynbNI/gJHIU
+        OHsJOPz+Wbfzz5u7jrCqBZ0=
+X-Google-Smtp-Source: APBJJlFCHve327u00PpbJKH63qVeU0ELQ0kbcek89QcnlH0S2KCdSLWN0Dcx5OPLPC52i5nVUQWXtw==
+X-Received: by 2002:a17:906:30c5:b0:99b:c985:cf7e with SMTP id b5-20020a17090630c500b0099bc985cf7emr5772051ejb.54.1690733957799;
+        Sun, 30 Jul 2023 09:19:17 -0700 (PDT)
 Received: from xws.fritz.box ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id va16-20020a17090711d000b00992aea2c55dsm4858798ejb.153.2023.07.30.09.19.14
+        by smtp.gmail.com with ESMTPSA id va16-20020a17090711d000b00992aea2c55dsm4858798ejb.153.2023.07.30.09.19.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 09:19:15 -0700 (PDT)
+        Sun, 30 Jul 2023 09:19:17 -0700 (PDT)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     Bjorn Andersson <andersson@kernel.org>
 Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
@@ -62,9 +62,9 @@ Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
         Johan Hovold <johan@kernel.org>,
         Steev Klimaszewski <steev@kali.org>,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/3] firmware: qcom_scm: Add support for Qualcomm Secure Execution Environment SCM interface
-Date:   Sun, 30 Jul 2023 18:19:03 +0200
-Message-ID: <20230730161906.606163-3-luzmaximilian@gmail.com>
+Subject: [PATCH v5 3/3] firmware: Add support for Qualcomm UEFI Secure Application
+Date:   Sun, 30 Jul 2023 18:19:04 +0200
+Message-ID: <20230730161906.606163-4-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230730161906.606163-1-luzmaximilian@gmail.com>
 References: <20230730161906.606163-1-luzmaximilian@gmail.com>
@@ -80,760 +80,1003 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for SCM calls to Secure OS and the Secure Execution
-Environment (SEE) residing in the TrustZone (TZ) via the QSEECOM
-interface. This allows communication with Secure/TZ applications, for
-example 'uefisecapp' managing access to UEFI variables.
+On platforms using the Qualcomm UEFI Secure Application (uefisecapp),
+EFI variables cannot be accessed via the standard interface in EFI
+runtime mode. The respective functions return EFI_UNSUPPORTED. On these
+platforms, we instead need to talk to uefisecapp. This commit provides
+support for this and registers the respective efivars operations to
+access EFI variables from the kernel.
 
-For better separation, make qcom_scm spin up a dedicated child
-(platform) device in case QSEECOM support has been detected. The
-corresponding driver for this device is then responsible for managing
-any QSEECOM clients. Specifically, this driver attempts to automatically
-detect known and supported applications, creating a client (auxiliary)
-device for each one. The respective client/auxiliary driver is then
-responsible for managing and communicating with the application.
-
-While this patch introduces only a very basic interface without the more
-advanced features (such as re-entrant and blocking SCM calls and
-listeners/callbacks), this is enough to talk to the aforementioned
-'uefisecapp'.
+Communication with uefisecapp follows the Qualcomm QSEECOM / Secure OS
+conventions via the respective SCM call interface. This is also the
+reason why variable access works normally while boot services are
+active. During this time, said SCM interface is managed by the boot
+services. When calling ExitBootServices(), the ownership is transferred
+to the kernel. Therefore, UEFI must not use that interface itself (as
+multiple parties accessing this interface at the same time may lead to
+complications) and cannot access variables for us.
 
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 ---
 
 Changes in v5:
- - Add a dedicated platform device and corresponding for managing the
-   QSEECOM clients. Unlike before, this device is now instantiated by
-   qcom_scm.c if it detects QSEECOM support.
+ - Clean up some comments inside functions and remove simple ones.
 
 Changes in v4:
- - Remove instantiation of dedicated QSEECOM device and load the driver
-   via qcom_scm instead. In particular:
-   - Add a list of tested devices to ensure that we don't run into any
-     issues with the currently unimplemented re-entrant calls.
-   - Use the QSEECOM version to check for general availability of the
-     interface.
-   - Attempt to automatically detect available QSEECOM applications
-     (and instantiate respective clients) based on a fixed list.
- - Use auxiliary bus and devices for clients instead of MFD.
- - Restructure DMA allocations: Use dma_map_single() directly inside 
-   qcom_scm_qseecom_app_send() instead of requiring clients to allocate
-   DMA memory themselves.
+ - Adapt to changes in DMA allocation in patch 3.
+ - Rework alignment: Use native alignment of types instead of a general
+   8 byte alignment. While the windows driver uses 8 byte alignment for
+   GUIDs, the native (4 byte) alignment seems to work fine here.
+ - Add a helper macro for determining size and layout of request and
+   response buffers, taking care of proper alignment.
+ - Implement support for EFI's query_variable_info() call, which is now
+   supported by the kernel (and expected by efivarfs).
+ - Move UCS-2 string helpers to lib/ucs2_string.c
 
 Changes in v3:
- - Rebase ontop of latest qcom_scm changes (qcom_scm.h moved).
- - Move qcom_qseecom.h in accordance with qcom_scm.
+ - No functional changes.
 
 Changes in v2:
- - Bind the interface to a device.
- - Establish a device link to the SCM device to ensure proper ordering.
- - Register client apps as child devices instead of requiring them to be
-   specified in the device tree.
  - Rename (qctree -> qseecom) to allow differentiation between old
    (qseecom) and new (smcinvoke) interfaces to the trusted execution
    environment.
 
 ---
  MAINTAINERS                                |   6 +
- drivers/firmware/Kconfig                   |  16 +
+ drivers/firmware/Kconfig                   |  17 +
  drivers/firmware/Makefile                  |   1 +
- drivers/firmware/qcom_qseecom.c            | 128 +++++++
- drivers/firmware/qcom_scm.c                | 392 +++++++++++++++++++++
- include/linux/firmware/qcom/qcom_qseecom.h |  46 +++
- include/linux/firmware/qcom/qcom_scm.h     |  21 ++
- 7 files changed, 610 insertions(+)
- create mode 100644 drivers/firmware/qcom_qseecom.c
- create mode 100644 include/linux/firmware/qcom/qcom_qseecom.h
+ drivers/firmware/qcom_qseecom.c            |   4 +-
+ drivers/firmware/qcom_qseecom_uefisecapp.c | 869 +++++++++++++++++++++
+ 5 files changed, 896 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/firmware/qcom_qseecom_uefisecapp.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index ae1fd58fc64c..7a0a69a32a8c 100644
+index 7a0a69a32a8c..06a35919bb97 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -17689,6 +17689,12 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
- F:	drivers/mtd/nand/raw/qcom_nandc.c
+@@ -17695,6 +17695,12 @@ L:	linux-arm-msm@vger.kernel.org
+ S:	Maintained
+ F:	drivers/firmware/qcom_qseecom.c
  
-+QUALCOMM QSEECOM DRIVER
++QUALCOMM QSEECOM UEFISECAPP DRIVER
 +M:	Maximilian Luz <luzmaximilian@gmail.com>
 +L:	linux-arm-msm@vger.kernel.org
 +S:	Maintained
-+F:	drivers/firmware/qcom_qseecom.c
++F:	drivers/firmware/qcom_qseecom_uefisecapp.c
 +
  QUALCOMM RMNET DRIVER
  M:	Subash Abhinov Kasiviswanathan <quic_subashab@quicinc.com>
  M:	Sean Tranchetti <quic_stranche@quicinc.com>
 diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index b59e3041fd62..e4cb2b8f32ac 100644
+index e4cb2b8f32ac..d3389e5b74e1 100644
 --- a/drivers/firmware/Kconfig
 +++ b/drivers/firmware/Kconfig
-@@ -226,6 +226,22 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+@@ -242,6 +242,23 @@ config QCOM_QSEECOM
  
- 	  Say Y here to enable "download mode" by default.
+ 	  Select Y here to enable the QSEECOM interface driver.
  
-+config QCOM_QSEECOM
-+	bool "Qualcomm QSEECOM interface driver"
++config QCOM_QSEECOM_UEFISECAPP
++	bool "Qualcomm SEE UEFI Secure App client driver"
 +	depends on QCOM_SCM
++	depends on QCOM_QSEECOM
++	depends on EFI
 +	help
-+	  Various Qualcomm SoCs have a Secure Execution Environment (SEE) running
-+	  in the Trust Zone. This module provides an interface to that via the
-+	  QSEECOM mechanism, using SCM calls.
++	  Various Qualcomm SoCs do not allow direct access to EFI variables.
++	  Instead, these need to be accessed via the UEFI Secure Application
++	  (uefisecapp), residing in the Secure Execution Environment (SEE).
 +
-+	  The QSEECOM interface allows, among other things, access to applications
-+	  running in the SEE. An example of such an application is 'uefisecapp',
-+	  which is required to access UEFI variables on certain systems. If
-+	  selected, the interface will also attempt to detect and register client
-+	  devices for supported applications.
++	  This module provides a client driver for uefisecapp, installing efivar
++	  operations to allow the kernel accessing EFI variables, and via that also
++	  provide user-space with access to EFI variables via efivarfs.
 +
-+	  Select Y here to enable the QSEECOM interface driver.
++	  Select Y here to provide access to EFI variables on the aforementioned
++	  platforms.
 +
  config SYSFB
  	bool
  	select BOOT_VESA_SUPPORT
 diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 28fcddcd688f..aa48e0821b7d 100644
+index aa48e0821b7d..d41b094a5e58 100644
 --- a/drivers/firmware/Makefile
 +++ b/drivers/firmware/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
+@@ -21,6 +21,7 @@ obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
  obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
  qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_QCOM_QSEECOM)	+= qcom_qseecom.o
+ obj-$(CONFIG_QCOM_QSEECOM)	+= qcom_qseecom.o
++obj-$(CONFIG_QCOM_QSEECOM_UEFISECAPP) += qcom_qseecom_uefisecapp.o
  obj-$(CONFIG_SYSFB)		+= sysfb.o
  obj-$(CONFIG_SYSFB_SIMPLEFB)	+= sysfb_simplefb.o
  obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
 diff --git a/drivers/firmware/qcom_qseecom.c b/drivers/firmware/qcom_qseecom.c
-new file mode 100644
-index 000000000000..e9edd500c3d9
---- /dev/null
+index e9edd500c3d9..7296ce453492 100644
+--- a/drivers/firmware/qcom_qseecom.c
 +++ b/drivers/firmware/qcom_qseecom.c
-@@ -0,0 +1,128 @@
+@@ -80,7 +80,9 @@ static int qseecom_client_register(struct platform_device *qseecom_dev,
+  * assuming the app has already been loaded (usually by firmware bootloaders)
+  * and its ID can be queried successfully.
+  */
+-static const struct qseecom_app_desc qcom_qseecom_apps[] = {};
++static const struct qseecom_app_desc qcom_qseecom_apps[] = {
++	{ "qcom.tz.uefisecapp", "uefisecapp" },
++};
+ 
+ static int qcom_qseecom_probe(struct platform_device *qseecom_dev)
+ {
+diff --git a/drivers/firmware/qcom_qseecom_uefisecapp.c b/drivers/firmware/qcom_qseecom_uefisecapp.c
+new file mode 100644
+index 000000000000..fa9b26675645
+--- /dev/null
++++ b/drivers/firmware/qcom_qseecom_uefisecapp.c
+@@ -0,0 +1,869 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Driver for Qualcomm Secure Execution Environment (SEE) interface (QSEECOM).
-+ * Responsible for setting up and managing QSEECOM client devices.
++ * Client driver for Qualcomm UEFI Secure Application (qcom.tz.uefisecapp).
++ * Provides access to UEFI variables on platforms where they are secured by the
++ * aforementioned Secure Execution Environment (SEE) application.
 + *
 + * Copyright (C) 2023 Maximilian Luz <luzmaximilian@gmail.com>
 + */
-+#include <linux/auxiliary_bus.h>
++
++#include <linux/efi.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
 +#include <linux/platform_device.h>
++#include <linux/slab.h>
 +#include <linux/types.h>
++#include <linux/ucs2_string.h>
 +
 +#include <linux/firmware/qcom/qcom_qseecom.h>
-+#include <linux/firmware/qcom/qcom_scm.h>
 +
-+struct qseecom_app_desc {
-+	const char *app_name;
-+	const char *dev_name;
-+};
++/* -- Qualcomm "uefisecapp" interface definitions. -------------------------- */
 +
-+static void qseecom_client_release(struct device *dev)
-+{
-+	struct qseecom_client *client = container_of(dev, struct qseecom_client, aux_dev.dev);
++/* Maximum length of name string with null-terminator */
++#define QSEE_MAX_NAME_LEN			1024
 +
-+	kfree(client);
-+}
++#define QSEE_CMD_UEFI(x)			(0x8000 | (x))
++#define QSEE_CMD_UEFI_GET_VARIABLE		QSEE_CMD_UEFI(0)
++#define QSEE_CMD_UEFI_SET_VARIABLE		QSEE_CMD_UEFI(1)
++#define QSEE_CMD_UEFI_GET_NEXT_VARIABLE		QSEE_CMD_UEFI(2)
++#define QSEE_CMD_UEFI_QUERY_VARIABLE_INFO	QSEE_CMD_UEFI(3)
 +
-+static void qseecom_client_remove(void *data)
-+{
-+	struct qseecom_client *client = data;
++/**
++ * struct qsee_req_uefi_get_variable - Request for GetVariable command.
++ * @command_id:  The ID of the command. Must be %QSEE_CMD_UEFI_GET_VARIABLE.
++ * @length:      Length of the request in bytes, including this struct and any
++ *               parameters (name, GUID) stored after it as well as any padding
++ *               thereof for alignment.
++ * @name_offset: Offset from the start of this struct to where the variable
++ *               name is stored (as utf-16 string), in bytes.
++ * @name_size:   Size of the name parameter in bytes, including null-terminator.
++ * @guid_offset: Offset from the start of this struct to where the GUID
++ *               parameter is stored, in bytes.
++ * @guid_size:   Size of the GUID parameter in bytes, i.e. sizeof(efi_guid_t).
++ * @data_size:   Size of the output buffer, in bytes.
++ */
++struct qsee_req_uefi_get_variable {
++	u32 command_id;
++	u32 length;
++	u32 name_offset;
++	u32 name_size;
++	u32 guid_offset;
++	u32 guid_size;
++	u32 data_size;
++} __packed;
 +
-+	auxiliary_device_delete(&client->aux_dev);
-+	auxiliary_device_uninit(&client->aux_dev);
-+}
++/**
++ * struct qsee_rsp_uefi_get_variable - Response for GetVariable command.
++ * @command_id:  The ID of the command. Should be %QSEE_CMD_UEFI_GET_VARIABLE.
++ * @length:      Length of the response in bytes, including this struct and the
++ *               returned data.
++ * @status:      Status of this command.
++ * @attributes:  EFI variable attributes.
++ * @data_offset: Offset from the start of this struct to where the data is
++ *               stored, in bytes.
++ * @data_size:   Size of the returned data, in bytes. In case status indicates
++ *               that the buffer is too small, this will be the size required
++ *               to store the EFI variable data.
++ */
++struct qsee_rsp_uefi_get_variable {
++	u32 command_id;
++	u32 length;
++	u32 status;
++	u32 attributes;
++	u32 data_offset;
++	u32 data_size;
++} __packed;
 +
-+static int qseecom_client_register(struct platform_device *qseecom_dev,
-+				   const struct qseecom_app_desc *desc)
-+{
-+	struct qseecom_client *client;
-+	u32 app_id;
-+	int ret;
++/**
++ * struct qsee_req_uefi_set_variable - Request for the SetVariable command.
++ * @command_id:  The ID of the command. Must be %QSEE_CMD_UEFI_SET_VARIABLE.
++ * @length:      Length of the request in bytes, including this struct and any
++ *               parameters (name, GUID, data) stored after it as well as any
++ *               padding thereof required for alignment.
++ * @name_offset: Offset from the start of this struct to where the variable
++ *               name is stored (as utf-16 string), in bytes.
++ * @name_size:   Size of the name parameter in bytes, including null-terminator.
++ * @guid_offset: Offset from the start of this struct to where the GUID
++ *               parameter is stored, in bytes.
++ * @guid_size:   Size of the GUID parameter in bytes, i.e. sizeof(efi_guid_t).
++ * @attributes:  The EFI variable attributes to set for this variable.
++ * @data_offset: Offset from the start of this struct to where the EFI variable
++ *               data is stored, in bytes.
++ * @data_size:   Size of EFI variable data, in bytes.
++ *
++ */
++struct qsee_req_uefi_set_variable {
++	u32 command_id;
++	u32 length;
++	u32 name_offset;
++	u32 name_size;
++	u32 guid_offset;
++	u32 guid_size;
++	u32 attributes;
++	u32 data_offset;
++	u32 data_size;
++} __packed;
 +
-+	/* Try to find the app ID, skip device if not found */
-+	ret = qcom_scm_qseecom_app_get_id(desc->app_name, &app_id);
-+	if (ret)
-+		return ret == -ENOENT ? 0 : ret;
++/**
++ * struct qsee_rsp_uefi_set_variable - Response for the SetVariable command.
++ * @command_id:  The ID of the command. Should be %QSEE_CMD_UEFI_SET_VARIABLE.
++ * @length:      The length of this response, i.e. the size of this struct in
++ *               bytes.
++ * @status:      Status of this command.
++ * @_unknown1:   Unknown response field.
++ * @_unknown2:   Unknown response field.
++ */
++struct qsee_rsp_uefi_set_variable {
++	u32 command_id;
++	u32 length;
++	u32 status;
++	u32 _unknown1;
++	u32 _unknown2;
++} __packed;
 +
-+	dev_info(&qseecom_dev->dev, "setting up client for %s\n", desc->app_name);
++/**
++ * struct qsee_req_uefi_get_next_variable - Request for the
++ * GetNextVariableName command.
++ * @command_id:  The ID of the command. Must be
++ *               %QSEE_CMD_UEFI_GET_NEXT_VARIABLE.
++ * @length:      Length of the request in bytes, including this struct and any
++ *               parameters (name, GUID) stored after it as well as any padding
++ *               thereof for alignment.
++ * @guid_offset: Offset from the start of this struct to where the GUID
++ *               parameter is stored, in bytes.
++ * @guid_size:   Size of the GUID parameter in bytes, i.e. sizeof(efi_guid_t).
++ * @name_offset: Offset from the start of this struct to where the variable
++ *               name is stored (as utf-16 string), in bytes.
++ * @name_size:   Size of the name parameter in bytes, including null-terminator.
++ */
++struct qsee_req_uefi_get_next_variable {
++	u32 command_id;
++	u32 length;
++	u32 guid_offset;
++	u32 guid_size;
++	u32 name_offset;
++	u32 name_size;
++} __packed;
 +
-+	/* Allocate and set-up the client device */
-+	client = kzalloc(sizeof(*client), GFP_KERNEL);
-+	if (!client)
-+		return -ENOMEM;
++/**
++ * struct qsee_rsp_uefi_get_next_variable - Response for the
++ * GetNextVariableName command.
++ * @command_id:  The ID of the command. Should be
++ *               %QSEE_CMD_UEFI_GET_NEXT_VARIABLE.
++ * @length:      Length of the response in bytes, including this struct and any
++ *               parameters (name, GUID) stored after it as well as any padding
++ *               thereof for alignment.
++ * @status:      Status of this command.
++ * @guid_size:   Size of the GUID parameter in bytes, i.e. sizeof(efi_guid_t).
++ * @name_offset: Offset from the start of this struct to where the variable
++ *               name is stored (as utf-16 string), in bytes.
++ * @name_size:   Size of the name parameter in bytes, including null-terminator.
++ */
++struct qsee_rsp_uefi_get_next_variable {
++	u32 command_id;
++	u32 length;
++	u32 status;
++	u32 guid_offset;
++	u32 guid_size;
++	u32 name_offset;
++	u32 name_size;
++} __packed;
 +
-+	client->aux_dev.name = desc->dev_name;
-+	client->aux_dev.dev.parent = &qseecom_dev->dev;
-+	client->aux_dev.dev.release = qseecom_client_release;
-+	client->app_id = app_id;
++/**
++ * struct qsee_req_uefi_query_variable_info - Response for the
++ * GetNextVariableName command.
++ * @command_id: The ID of the command. Must be
++ *              %QSEE_CMD_UEFI_QUERY_VARIABLE_INFO.
++ * @length:     The length of this request, i.e. the size of this struct in
++ *              bytes.
++ * @attributes: The storage attributes to query the info for.
++ */
++struct qsee_req_uefi_query_variable_info {
++	u32 command_id;
++	u32 length;
++	u32 attributes;
++} __packed;
 +
-+	ret = auxiliary_device_init(&client->aux_dev);
-+	if (ret) {
-+		kfree(client);
-+		return ret;
-+	}
++/**
++ * struct qsee_rsp_uefi_query_variable_info - Response for the
++ * GetNextVariableName command.
++ * @command_id:        The ID of the command. Must be
++ *                     %QSEE_CMD_UEFI_QUERY_VARIABLE_INFO.
++ * @length:            The length of this response, i.e. the size of this
++ *                     struct in bytes.
++ * @status:            Status of this command.
++ * @_pad:              Padding.
++ * @storage_space:     Full storage space size, in bytes.
++ * @remaining_space:   Free storage space available, in bytes.
++ * @max_variable_size: Maximum variable data size, in bytes.
++ */
++struct qsee_rsp_uefi_query_variable_info {
++	u32 command_id;
++	u32 length;
++	u32 status;
++	u32 _pad;
++	u64 storage_space;
++	u64 remaining_space;
++	u64 max_variable_size;
++} __packed;
 +
-+	ret = auxiliary_device_add(&client->aux_dev);
-+	if (ret) {
-+		auxiliary_device_uninit(&client->aux_dev);
-+		return ret;
-+	}
-+
-+	ret = devm_add_action_or_reset(&qseecom_dev->dev, qseecom_client_remove, client);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
++/* -- Alignment helpers ----------------------------------------------------- */
 +
 +/*
-+ * List of supported applications. One client device will be created per entry,
-+ * assuming the app has already been loaded (usually by firmware bootloaders)
-+ * and its ID can be queried successfully.
++ * Helper macro to ensure proper alignment of types (fields and arrays) when
++ * stored in some (contiguous) buffer.
++ *
++ * Note: The driver from which this one has been reverse-engineered expects an
++ * alignment of 8 bytes (64 bits) for GUIDs. Our definition of efi_guid_t,
++ * however, has an alignment of 4 byte (32 bits). So far, this seems to work
++ * fine here. See also the comment on the typedef of efi_guid_t.
 + */
-+static const struct qseecom_app_desc qcom_qseecom_apps[] = {};
++#define qcuefi_buf_align_fields(fields...)					\
++	({									\
++		size_t __len = 0;						\
++		fields								\
++		__len;								\
++	})
 +
-+static int qcom_qseecom_probe(struct platform_device *qseecom_dev)
++#define __field_impl(size, align, offset)					\
++	({									\
++		size_t *__offset = (offset);					\
++		size_t __aligned;						\
++										\
++		__aligned = ALIGN(__len, align);				\
++		__len = __aligned + (size);					\
++										\
++		if (__offset)							\
++			*__offset = __aligned;					\
++	});
++
++#define __array_offs(type, count, offset)					\
++	__field_impl(sizeof(type) * (count), __alignof__(type), offset)
++
++#define __array(type, count)		__array_offs(type, count, NULL)
++#define __field_offs(type, offset)	__array_offs(type, 1, offset)
++#define __field(type)			__array_offs(type, 1, NULL)
++
++/* -- UEFI app interface. --------------------------------------------------- */
++
++struct qcuefi_client {
++	struct qseecom_client *client;
++	struct efivars efivars;
++};
++
++static struct device *qcuefi_dev(struct qcuefi_client *qcuefi)
 +{
-+	int ret;
-+	int i;
++	return &qcuefi->client->aux_dev.dev;
++}
 +
-+	/* Set up client devices for each base application */
-+	for (i = 0; i < ARRAY_SIZE(qcom_qseecom_apps); i++) {
-+		ret = qseecom_client_register(qseecom_dev, &qcom_qseecom_apps[i]);
-+		if (ret)
-+			return ret;
++static efi_status_t qsee_uefi_status_to_efi(u32 status)
++{
++	u64 category = status & 0xf0000000;
++	u64 code = status & 0x0fffffff;
++
++	return category << (BITS_PER_LONG - 32) | code;
++}
++
++static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const efi_char16_t *name,
++					   const efi_guid_t *guid, u32 *attributes,
++					   unsigned long *data_size, void *data)
++{
++	struct qsee_req_uefi_get_variable *req_data;
++	struct qsee_rsp_uefi_get_variable *rsp_data;
++	unsigned long buffer_size = *data_size;
++	efi_status_t efi_status = EFI_SUCCESS;
++	unsigned long name_length;
++	size_t guid_offs;
++	size_t name_offs;
++	size_t req_size;
++	size_t rsp_size;
++	ssize_t status;
++
++	if (!name || !guid)
++		return EFI_INVALID_PARAMETER;
++
++	name_length = ucs2_strnlen(name, QSEE_MAX_NAME_LEN) + 1;
++	if (name_length > QSEE_MAX_NAME_LEN)
++		return EFI_INVALID_PARAMETER;
++
++	if (buffer_size && !data)
++		return EFI_INVALID_PARAMETER;
++
++	req_size = qcuefi_buf_align_fields(
++		__field(*req_data)
++		__array_offs(*name, name_length, &name_offs)
++		__field_offs(*guid, &guid_offs)
++	);
++
++	rsp_size = qcuefi_buf_align_fields(
++		__field(*rsp_data)
++		__array(u8, buffer_size)
++	);
++
++	req_data = kzalloc(req_size, GFP_KERNEL);
++	if (!req_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out;
 +	}
 +
++	rsp_data = kzalloc(rsp_size, GFP_KERNEL);
++	if (!rsp_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out_free_req;
++	}
++
++	req_data->command_id = QSEE_CMD_UEFI_GET_VARIABLE;
++	req_data->data_size = buffer_size;
++	req_data->name_offset = name_offs;
++	req_data->name_size = name_length * sizeof(*name);
++	req_data->guid_offset = guid_offs;
++	req_data->guid_size = sizeof(*guid);
++	req_data->length = req_size;
++
++	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name, name_length);
++	if (status < 0)
++		return EFI_INVALID_PARAMETER;
++
++	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
++
++	status = qcom_qseecom_app_send(qcuefi->client, req_data, req_size, rsp_data, rsp_size);
++	if (status) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->command_id != QSEE_CMD_UEFI_GET_VARIABLE) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->length < sizeof(*rsp_data)) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->status) {
++		dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x%x\n",
++			__func__, rsp_data->status);
++		efi_status = qsee_uefi_status_to_efi(rsp_data->status);
++
++		/* Update size and attributes in case buffer is too small. */
++		if (efi_status == EFI_BUFFER_TOO_SMALL) {
++			*data_size = rsp_data->data_size;
++			if (attributes)
++				*attributes = rsp_data->attributes;
++		}
++
++		goto out_free;
++	}
++
++	if (rsp_data->length > rsp_size) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->data_offset + rsp_data->data_size > rsp_data->length) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	/*
++	 * Note: We need to set attributes and data size even if the buffer is
++	 * too small and we won't copy any data. This is described in spec, so
++	 * that callers can either allocate a buffer properly (with two calls
++	 * to this function) or just read back attributes withouth having to
++	 * deal with that.
++	 *
++	 * Specifically:
++	 * - If we have a buffer size of zero and no buffer, just return the
++	 *   attributes, required size, and indicate success.
++	 * - If the buffer size is nonzero but too small, indicate that as an
++	 *   error.
++	 * - Otherwise, we are good to copy the data.
++	 *
++	 * Note that we have already ensured above that the buffer pointer is
++	 * non-NULL if its size is nonzero.
++	 */
++	*data_size = rsp_data->data_size;
++	if (attributes)
++		*attributes = rsp_data->attributes;
++
++	if (buffer_size == 0 && !data) {
++		efi_status = EFI_SUCCESS;
++		goto out_free;
++	}
++
++	if (buffer_size < rsp_data->data_size) {
++		efi_status = EFI_BUFFER_TOO_SMALL;
++		goto out_free;
++	}
++
++	memcpy(data, ((void *)rsp_data) + rsp_data->data_offset, rsp_data->data_size);
++
++out_free:
++	kfree(rsp_data);
++out_free_req:
++	kfree(req_data);
++out:
++	return efi_status;
++}
++
++static efi_status_t qsee_uefi_set_variable(struct qcuefi_client *qcuefi, const efi_char16_t *name,
++					   const efi_guid_t *guid, u32 attributes,
++					   unsigned long data_size, const void *data)
++{
++	struct qsee_req_uefi_set_variable *req_data;
++	struct qsee_rsp_uefi_set_variable *rsp_data;
++	efi_status_t efi_status = EFI_SUCCESS;
++	unsigned long name_length;
++	size_t name_offs;
++	size_t guid_offs;
++	size_t data_offs;
++	size_t req_size;
++	ssize_t status;
++
++	if (!name || !guid)
++		return EFI_INVALID_PARAMETER;
++
++	name_length = ucs2_strnlen(name, QSEE_MAX_NAME_LEN) + 1;
++	if (name_length > QSEE_MAX_NAME_LEN)
++		return EFI_INVALID_PARAMETER;
++
++	/*
++	 * Make sure we have some data if data_size is nonzero. Note that using
++	 * a size of zero is a valid use-case described in spec and deletes the
++	 * variable.
++	 */
++	if (data_size && !data)
++		return EFI_INVALID_PARAMETER;
++
++	req_size = qcuefi_buf_align_fields(
++		__field(*req_data)
++		__array_offs(*name, name_length, &name_offs)
++		__field_offs(*guid, &guid_offs)
++		__array_offs(u8, data_size, &data_offs)
++	);
++
++	req_data = kzalloc(req_size, GFP_KERNEL);
++	if (!req_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out;
++	}
++
++	rsp_data = kzalloc(sizeof(*rsp_data), GFP_KERNEL);
++	if (!rsp_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out_free_req;
++	}
++
++	req_data->command_id = QSEE_CMD_UEFI_SET_VARIABLE;
++	req_data->attributes = attributes;
++	req_data->name_offset = name_offs;
++	req_data->name_size = name_length * sizeof(*name);
++	req_data->guid_offset = guid_offs;
++	req_data->guid_size = sizeof(*guid);
++	req_data->data_offset = data_offs;
++	req_data->data_size = data_size;
++	req_data->length = req_size;
++
++	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name, name_length);
++	if (status < 0)
++		return EFI_INVALID_PARAMETER;
++
++	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
++
++	if (data_size)
++		memcpy(((void *)req_data) + req_data->data_offset, data, req_data->data_size);
++
++	status = qcom_qseecom_app_send(qcuefi->client, req_data, req_size, rsp_data,
++				       sizeof(*rsp_data));
++	if (status) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->command_id != QSEE_CMD_UEFI_SET_VARIABLE) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->length != sizeof(*rsp_data)) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->status) {
++		dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x%x\n",
++			__func__, rsp_data->status);
++		efi_status = qsee_uefi_status_to_efi(rsp_data->status);
++	}
++
++out_free:
++	kfree(rsp_data);
++out_free_req:
++	kfree(req_data);
++out:
++	return efi_status;
++}
++
++static efi_status_t qsee_uefi_get_next_variable(struct qcuefi_client *qcuefi,
++						unsigned long *name_size, efi_char16_t *name,
++						efi_guid_t *guid)
++{
++	struct qsee_req_uefi_get_next_variable *req_data;
++	struct qsee_rsp_uefi_get_next_variable *rsp_data;
++	efi_status_t efi_status = EFI_SUCCESS;
++	size_t guid_offs;
++	size_t name_offs;
++	size_t req_size;
++	size_t rsp_size;
++	ssize_t status;
++
++	if (!name_size || !name || !guid)
++		return EFI_INVALID_PARAMETER;
++
++	if (*name_size == 0)
++		return EFI_INVALID_PARAMETER;
++
++	req_size = qcuefi_buf_align_fields(
++		__field(*req_data)
++		__field_offs(*guid, &guid_offs)
++		__array_offs(*name, *name_size / sizeof(*name), &name_offs)
++	);
++
++	rsp_size = qcuefi_buf_align_fields(
++		__field(*rsp_data)
++		__field(*guid)
++		__array(*name, *name_size / sizeof(*name))
++	);
++
++	req_data = kzalloc(req_size, GFP_KERNEL);
++	if (!req_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out;
++	}
++
++	rsp_data = kzalloc(rsp_size, GFP_KERNEL);
++	if (!rsp_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out_free_req;
++	}
++
++	req_data->command_id = QSEE_CMD_UEFI_GET_NEXT_VARIABLE;
++	req_data->guid_offset = guid_offs;
++	req_data->guid_size = sizeof(*guid);
++	req_data->name_offset = name_offs;
++	req_data->name_size = *name_size;
++	req_data->length = req_size;
++
++	memcpy(((void *)req_data) + req_data->guid_offset, guid, req_data->guid_size);
++	status = ucs2_strscpy(((void *)req_data) + req_data->name_offset, name,
++			      *name_size / sizeof(*name));
++	if (status < 0)
++		return EFI_INVALID_PARAMETER;
++
++	status = qcom_qseecom_app_send(qcuefi->client, req_data, req_size, rsp_data, rsp_size);
++	if (status) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->command_id != QSEE_CMD_UEFI_GET_NEXT_VARIABLE) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->length < sizeof(*rsp_data)) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->status) {
++		dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x%x\n",
++			__func__, rsp_data->status);
++		efi_status = qsee_uefi_status_to_efi(rsp_data->status);
++
++		/*
++		 * If the buffer to hold the name is too small, update the
++		 * name_size with the required size, so that callers can
++		 * reallocate it accordingly.
++		 */
++		if (efi_status == EFI_BUFFER_TOO_SMALL)
++			*name_size = rsp_data->name_size;
++
++		goto out_free;
++	}
++
++	if (rsp_data->length > rsp_size) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->name_offset + rsp_data->name_size > rsp_data->length) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->guid_offset + rsp_data->guid_size > rsp_data->length) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->name_size > *name_size) {
++		*name_size = rsp_data->name_size;
++		efi_status = EFI_BUFFER_TOO_SMALL;
++		goto out_free;
++	}
++
++	if (rsp_data->guid_size != sizeof(*guid)) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	memcpy(guid, ((void *)rsp_data) + rsp_data->guid_offset, rsp_data->guid_size);
++	status = ucs2_strscpy(name, ((void *)rsp_data) + rsp_data->name_offset,
++			      rsp_data->name_size / sizeof(*name));
++	*name_size = rsp_data->name_size;
++
++	if (status < 0) {
++		/*
++		 * Return EFI_DEVICE_ERROR here because the buffer size should
++		 * have already been validated above, causing this function to
++		 * bail with EFI_BUFFER_TOO_SMALL.
++		 */
++		return EFI_DEVICE_ERROR;
++	}
++
++out_free:
++	kfree(rsp_data);
++out_free_req:
++	kfree(req_data);
++out:
++	return efi_status;
++}
++
++static efi_status_t qsee_uefi_query_variable_info(struct qcuefi_client *qcuefi, u32 attr,
++						  u64 *storage_space, u64 *remaining_space,
++						  u64 *max_variable_size)
++{
++	struct qsee_req_uefi_query_variable_info *req_data;
++	struct qsee_rsp_uefi_query_variable_info *rsp_data;
++	efi_status_t efi_status = EFI_SUCCESS;
++	int status;
++
++	req_data = kzalloc(sizeof(*req_data), GFP_KERNEL);
++	if (!req_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out;
++	}
++
++	rsp_data = kzalloc(sizeof(*rsp_data), GFP_KERNEL);
++	if (!rsp_data) {
++		efi_status = EFI_OUT_OF_RESOURCES;
++		goto out_free_req;
++	}
++
++	req_data->command_id = QSEE_CMD_UEFI_QUERY_VARIABLE_INFO;
++	req_data->attributes = attr;
++	req_data->length = sizeof(*req_data);
++
++	status = qcom_qseecom_app_send(qcuefi->client, req_data, sizeof(*req_data), rsp_data,
++				       sizeof(*rsp_data));
++	if (status) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->command_id != QSEE_CMD_UEFI_QUERY_VARIABLE_INFO) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->length != sizeof(*rsp_data)) {
++		efi_status = EFI_DEVICE_ERROR;
++		goto out_free;
++	}
++
++	if (rsp_data->status) {
++		dev_dbg(qcuefi_dev(qcuefi), "%s: uefisecapp error: 0x%x\n",
++			__func__, rsp_data->status);
++		efi_status = qsee_uefi_status_to_efi(rsp_data->status);
++		goto out_free;
++	}
++
++	if (storage_space)
++		*storage_space = rsp_data->storage_space;
++
++	if (remaining_space)
++		*remaining_space = rsp_data->remaining_space;
++
++	if (max_variable_size)
++		*max_variable_size = rsp_data->max_variable_size;
++
++out_free:
++	kfree(rsp_data);
++out_free_req:
++	kfree(req_data);
++out:
++	return efi_status;
++}
++
++/* -- Global efivar interface. ---------------------------------------------- */
++
++static struct qcuefi_client *__qcuefi;
++static DEFINE_MUTEX(__qcuefi_lock);
++
++static int qcuefi_set_reference(struct qcuefi_client *qcuefi)
++{
++	mutex_lock(&__qcuefi_lock);
++
++	if (qcuefi && __qcuefi) {
++		mutex_unlock(&__qcuefi_lock);
++		return -EEXIST;
++	}
++
++	__qcuefi = qcuefi;
++
++	mutex_unlock(&__qcuefi_lock);
 +	return 0;
 +}
 +
-+static int qcom_qseecom_remove(struct platform_device *qseecom_dev)
++static struct qcuefi_client *qcuefi_acquire(void)
 +{
-+	return 0;	/* Nothing to do here, all is managed via devm. */
++	mutex_lock(&__qcuefi_lock);
++	return __qcuefi;
 +}
 +
-+static struct platform_driver qcom_qseecom_driver = {
-+	.driver = {
-+		.name	= "qcom_qseecom",
-+	},
-+	.probe = qcom_qseecom_probe,
-+	.remove = qcom_qseecom_remove,
++static void qcuefi_release(void)
++{
++	mutex_unlock(&__qcuefi_lock);
++}
++
++static efi_status_t qcuefi_get_variable(efi_char16_t *name, efi_guid_t *vendor, u32 *attr,
++					unsigned long *data_size, void *data)
++{
++	struct qcuefi_client *qcuefi;
++	efi_status_t status;
++
++	qcuefi = qcuefi_acquire();
++	if (!qcuefi)
++		return EFI_NOT_READY;
++
++	status = qsee_uefi_get_variable(qcuefi, name, vendor, attr, data_size, data);
++
++	qcuefi_release();
++	return status;
++}
++
++static efi_status_t qcuefi_set_variable(efi_char16_t *name, efi_guid_t *vendor,
++					u32 attr, unsigned long data_size, void *data)
++{
++	struct qcuefi_client *qcuefi;
++	efi_status_t status;
++
++	qcuefi = qcuefi_acquire();
++	if (!qcuefi)
++		return EFI_NOT_READY;
++
++	status = qsee_uefi_set_variable(qcuefi, name, vendor, attr, data_size, data);
++
++	qcuefi_release();
++	return status;
++}
++
++static efi_status_t qcuefi_get_next_variable(unsigned long *name_size, efi_char16_t *name,
++					     efi_guid_t *vendor)
++{
++	struct qcuefi_client *qcuefi;
++	efi_status_t status;
++
++	qcuefi = qcuefi_acquire();
++	if (!qcuefi)
++		return EFI_NOT_READY;
++
++	status = qsee_uefi_get_next_variable(qcuefi, name_size, name, vendor);
++
++	qcuefi_release();
++	return status;
++}
++
++static efi_status_t qcuefi_query_variable_info(u32 attr, u64 *storage_space, u64 *remaining_space,
++					       u64 *max_variable_size)
++{
++	struct qcuefi_client *qcuefi;
++	efi_status_t status;
++
++	qcuefi = qcuefi_acquire();
++	if (!qcuefi)
++		return EFI_NOT_READY;
++
++	status = qsee_uefi_query_variable_info(qcuefi, attr, storage_space, remaining_space,
++					       max_variable_size);
++
++	qcuefi_release();
++	return status;
++}
++
++static const struct efivar_operations qcom_efivar_ops = {
++	.get_variable = qcuefi_get_variable,
++	.set_variable = qcuefi_set_variable,
++	.get_next_variable = qcuefi_get_next_variable,
++	.query_variable_info = qcuefi_query_variable_info,
 +};
 +
-+static int __init qcom_qseecom_init(void)
-+{
-+	return platform_driver_register(&qcom_qseecom_driver);
-+}
-+subsys_initcall(qcom_qseecom_init);
++/* -- Driver setup. --------------------------------------------------------- */
 +
-+static void __exit qcom_qseecom_exit(void)
++static int qcom_uefisecapp_probe(struct auxiliary_device *aux_dev,
++				 const struct auxiliary_device_id *aux_dev_id)
 +{
-+	platform_driver_unregister(&qcom_qseecom_driver);
++	struct qcuefi_client *qcuefi;
++	int status;
++
++	qcuefi = devm_kzalloc(&aux_dev->dev, sizeof(*qcuefi), GFP_KERNEL);
++	if (!qcuefi)
++		return -ENOMEM;
++
++	qcuefi->client = container_of(aux_dev, struct qseecom_client, aux_dev);
++
++	auxiliary_set_drvdata(aux_dev, qcuefi);
++	status = qcuefi_set_reference(qcuefi);
++	if (status)
++		return status;
++
++	status = efivars_register(&qcuefi->efivars, &qcom_efivar_ops);
++	if (status)
++		qcuefi_set_reference(NULL);
++
++	return status;
 +}
-+module_exit(qcom_qseecom_exit);
++
++static void qcom_uefisecapp_remove(struct auxiliary_device *aux_dev)
++{
++	struct qcuefi_client *qcuefi = auxiliary_get_drvdata(aux_dev);
++
++	efivars_unregister(&qcuefi->efivars);
++	qcuefi_set_reference(NULL);
++}
++
++static const struct auxiliary_device_id qcom_uefisecapp_id_table[] = {
++	{ .name = "qcom_qseecom.uefisecapp" },
++	{}
++};
++MODULE_DEVICE_TABLE(auxiliary, qcom_uefisecapp_id_table);
++
++static struct auxiliary_driver qcom_uefisecapp_driver = {
++	.probe = qcom_uefisecapp_probe,
++	.remove = qcom_uefisecapp_remove,
++	.id_table = qcom_uefisecapp_id_table,
++	.driver = {
++		.name = "qcom_qseecom_uefisecapp",
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++	},
++};
++module_auxiliary_driver(qcom_uefisecapp_driver);
 +
 +MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
-+MODULE_DESCRIPTION("Driver for the Qualcomm SEE (QSEECOM) interface");
++MODULE_DESCRIPTION("Client driver for Qualcomm SEE UEFI Secure App");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:qcom_qseecom");
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index b6055b1c18d8..6c4a8366959c 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -55,6 +55,53 @@ struct qcom_scm_mem_map_info {
- 	__le64 mem_size;
- };
- 
-+/**
-+ * struct qcom_scm_qseecom_resp - QSEECOM SCM call response.
-+ * @result:    Result or status of the SCM call. See &enum qcom_scm_qseecom_result.
-+ * @resp_type: Type of the response. See &enum qcom_scm_qseecom_resp_type.
-+ * @data:      Response data. The type of this data is given in @resp_type.
-+ */
-+struct qcom_scm_qseecom_resp {
-+	u64 result;
-+	u64 resp_type;
-+	u64 data;
-+};
-+
-+enum qcom_scm_qseecom_result {
-+	QSEECOM_RESULT_SUCCESS			= 0,
-+	QSEECOM_RESULT_INCOMPLETE		= 1,
-+	QSEECOM_RESULT_BLOCKED_ON_LISTENER	= 2,
-+	QSEECOM_RESULT_FAILURE			= 0xFFFFFFFF,
-+};
-+
-+enum qcom_scm_qseecom_resp_type {
-+	QSEECOM_SCM_RES_APP_ID			= 0xEE01,
-+	QSEECOM_SCM_RES_QSEOS_LISTENER_ID	= 0xEE02,
-+};
-+
-+enum qcom_scm_qseecom_tz_owner {
-+	QSEECOM_TZ_OWNER_SIP			= 2,
-+	QSEECOM_TZ_OWNER_TZ_APPS		= 48,
-+	QSEECOM_TZ_OWNER_QSEE_OS		= 50
-+};
-+
-+enum qcom_scm_qseecom_tz_svc {
-+	QSEECOM_TZ_SVC_APP_ID_PLACEHOLDER	= 0,
-+	QSEECOM_TZ_SVC_APP_MGR			= 1,
-+	QSEECOM_TZ_SVC_INFO			= 6,
-+};
-+
-+enum qcom_scm_qseecom_tz_cmd_app {
-+	QSEECOM_TZ_CMD_APP_SEND			= 1,
-+	QSEECOM_TZ_CMD_APP_LOOKUP		= 3,
-+};
-+
-+enum qcom_scm_qseecom_tz_cmd_info {
-+	QSEECOM_TZ_CMD_INFO_VERSION		= 3,
-+};
-+
-+#define QSEECOM_MAX_APP_NAME_SIZE		64
-+
- /* Each bit configures cold/warm boot address for one of the 4 CPUs */
- static const u8 qcom_scm_cpu_cold_bits[QCOM_SCM_BOOT_MAX_CPUS] = {
- 	0, BIT(0), BIT(3), BIT(5)
-@@ -1321,6 +1368,339 @@ static int qcom_scm_find_dload_address(struct device *dev, u64 *addr)
- 	return 0;
- }
- 
-+#ifdef CONFIG_QCOM_QSEECOM
-+
-+/* Lock for QSEECOM SCM call executions */
-+static DEFINE_MUTEX(qcom_scm_qseecom_call_lock);
-+
-+static int __qcom_scm_qseecom_call(const struct qcom_scm_desc *desc,
-+				   struct qcom_scm_qseecom_resp *res)
-+{
-+	struct qcom_scm_res scm_res = {};
-+	int status;
-+
-+	/*
-+	 * QSEECOM SCM calls should not be executed concurrently. Therefore, we
-+	 * require the respective call lock to be held.
-+	 */
-+	lockdep_assert_held(&qcom_scm_qseecom_call_lock);
-+
-+	status = qcom_scm_call(__scm->dev, desc, &scm_res);
-+
-+	res->result = scm_res.result[0];
-+	res->resp_type = scm_res.result[1];
-+	res->data = scm_res.result[2];
-+
-+	if (status)
-+		return status;
-+
-+	return 0;
-+}
-+
-+/**
-+ * qcom_scm_qseecom_call() - Perform a QSEECOM SCM call.
-+ * @desc: SCM call descriptor.
-+ * @res:  SCM call response (output).
-+ *
-+ * Performs the QSEECOM SCM call described by @desc, returning the response in
-+ * @rsp.
-+ *
-+ * Return: Zero on success, nonzero on failure.
-+ */
-+static int qcom_scm_qseecom_call(const struct qcom_scm_desc *desc,
-+				 struct qcom_scm_qseecom_resp *res)
-+{
-+	int status;
-+
-+	/*
-+	 * Note: Multiple QSEECOM SCM calls should not be executed same time,
-+	 * so lock things here. This needs to be extended to callback/listener
-+	 * handling when support for that is implemented.
-+	 */
-+
-+	mutex_lock(&qcom_scm_qseecom_call_lock);
-+	status = __qcom_scm_qseecom_call(desc, res);
-+	mutex_unlock(&qcom_scm_qseecom_call_lock);
-+
-+	dev_dbg(__scm->dev, "%s: owner=%x, svc=%x, cmd=%x, result=%lld, type=%llx, data=%llx\n",
-+		__func__, desc->owner, desc->svc, desc->cmd, res->result,
-+		res->resp_type, res->data);
-+
-+	if (status) {
-+		dev_err(__scm->dev, "qseecom: scm call failed with error %d\n", status);
-+		return status;
-+	}
-+
-+	/*
-+	 * TODO: Handle incomplete and blocked calls:
-+	 *
-+	 * Incomplete and blocked calls are not supported yet. Some devices
-+	 * and/or commands require those, some don't. Let's warn about them
-+	 * prominently in case someone attempts to try these commands with a
-+	 * device/command combination that isn't supported yet.
-+	 */
-+	WARN_ON(res->result == QSEECOM_RESULT_INCOMPLETE);
-+	WARN_ON(res->result == QSEECOM_RESULT_BLOCKED_ON_LISTENER);
-+
-+	return 0;
-+}
-+
-+/**
-+ * qcom_scm_qseecom_get_version() - Query the QSEECOM version.
-+ * @version: Pointer where the QSEECOM version will be stored.
-+ *
-+ * Performs the QSEECOM SCM querying the QSEECOM version currently running in
-+ * the TrustZone.
-+ *
-+ * Return: Zero on success, nonzero on failure.
-+ */
-+static int qcom_scm_qseecom_get_version(u32 *version)
-+{
-+	struct qcom_scm_desc desc = {};
-+	struct qcom_scm_qseecom_resp res = {};
-+	u32 feature = 10;
-+	int ret;
-+
-+	desc.owner = QSEECOM_TZ_OWNER_SIP;
-+	desc.svc = QSEECOM_TZ_SVC_INFO;
-+	desc.cmd = QSEECOM_TZ_CMD_INFO_VERSION;
-+	desc.arginfo = QCOM_SCM_ARGS(1, QCOM_SCM_VAL);
-+	desc.args[0] = feature;
-+
-+	ret = qcom_scm_qseecom_call(&desc, &res);
-+	if (ret)
-+		return ret;
-+
-+	*version = res.result;
-+	return 0;
-+}
-+
-+/**
-+ * qcom_scm_qseecom_app_get_id() - Query the app ID for a given QSEE app name.
-+ * @app_name: The name of the app.
-+ * @app_id:   The returned app ID.
-+ *
-+ * Query and return the application ID of the SEE app identified by the given
-+ * name. This returned ID is the unique identifier of the app required for
-+ * subsequent communication.
-+ *
-+ * Return: Zero on success, nonzero on failure, -ENOENT if the app has not been
-+ * loaded or could not be found.
-+ */
-+int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
-+{
-+	unsigned long name_buf_size = QSEECOM_MAX_APP_NAME_SIZE;
-+	unsigned long app_name_len = strlen(app_name);
-+	struct qcom_scm_desc desc = {};
-+	struct qcom_scm_qseecom_resp res = {};
-+	dma_addr_t name_buf_phys;
-+	char *name_buf;
-+	int status;
-+
-+	if (app_name_len >= name_buf_size)
-+		return -EINVAL;
-+
-+	name_buf = kzalloc(name_buf_size, GFP_KERNEL);
-+	if (!name_buf)
-+		return -ENOMEM;
-+
-+	memcpy(name_buf, app_name, app_name_len);
-+
-+	name_buf_phys = dma_map_single(__scm->dev, name_buf, name_buf_size, DMA_TO_DEVICE);
-+	status = dma_mapping_error(__scm->dev, name_buf_phys);
-+	if (status) {
-+		kfree(name_buf);
-+		dev_err(__scm->dev, "qseecom: failed to map dma address\n");
-+		return status;
-+	}
-+
-+	desc.owner = QSEECOM_TZ_OWNER_QSEE_OS;
-+	desc.svc = QSEECOM_TZ_SVC_APP_MGR;
-+	desc.cmd = QSEECOM_TZ_CMD_APP_LOOKUP;
-+	desc.arginfo = QCOM_SCM_ARGS(2, QCOM_SCM_RW, QCOM_SCM_VAL);
-+	desc.args[0] = name_buf_phys;
-+	desc.args[1] = app_name_len;
-+
-+	status = qcom_scm_qseecom_call(&desc, &res);
-+	dma_unmap_single(__scm->dev, name_buf_phys, name_buf_size, DMA_TO_DEVICE);
-+	kfree(name_buf);
-+
-+	if (status)
-+		return status;
-+
-+	if (res.result == QSEECOM_RESULT_FAILURE)
-+		return -ENOENT;
-+
-+	if (res.result != QSEECOM_RESULT_SUCCESS)
-+		return -EINVAL;
-+
-+	if (res.resp_type != QSEECOM_SCM_RES_APP_ID)
-+		return -EINVAL;
-+
-+	*app_id = res.data;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_get_id);
-+
-+/**
-+ * qcom_scm_qseecom_app_send() - Send to and receive data from a given QSEE app.
-+ * @app_id:   The ID of the target app.
-+ * @req:      Request buffer sent to the app (must be DMA-mappable).
-+ * @req_size: Size of the request buffer.
-+ * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
-+ * @rsp_size: Size of the response buffer.
-+ *
-+ * Sends a request to the QSEE app associated with the given ID and read back
-+ * its response. The caller must provide two DMA memory regions, one for the
-+ * request and one for the response, and fill out the @req region with the
-+ * respective (app-specific) request data. The QSEE app reads this and returns
-+ * its response in the @rsp region.
-+ *
-+ * Return: Zero on success, nonzero on failure.
-+ */
-+int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
-+			      size_t rsp_size)
-+{
-+	struct qcom_scm_qseecom_resp res = {};
-+	struct qcom_scm_desc desc = {};
-+	dma_addr_t req_phys;
-+	dma_addr_t rsp_phys;
-+	int status;
-+
-+	/* Map request buffer */
-+	req_phys = dma_map_single(__scm->dev, req, req_size, DMA_TO_DEVICE);
-+	status = dma_mapping_error(__scm->dev, req_phys);
-+	if (status) {
-+		dev_err(__scm->dev, "qseecom: failed to map request buffer\n");
-+		return status;
-+	}
-+
-+	/* Map response buffer */
-+	rsp_phys = dma_map_single(__scm->dev, rsp, rsp_size, DMA_FROM_DEVICE);
-+	status = dma_mapping_error(__scm->dev, rsp_phys);
-+	if (status) {
-+		dma_unmap_single(__scm->dev, req_phys, req_size, DMA_TO_DEVICE);
-+		dev_err(__scm->dev, "qseecom: failed to map response buffer\n");
-+		return status;
-+	}
-+
-+	/* Set up SCM call data */
-+	desc.owner = QSEECOM_TZ_OWNER_TZ_APPS;
-+	desc.svc = QSEECOM_TZ_SVC_APP_ID_PLACEHOLDER;
-+	desc.cmd = QSEECOM_TZ_CMD_APP_SEND;
-+	desc.arginfo = QCOM_SCM_ARGS(5, QCOM_SCM_VAL,
-+				     QCOM_SCM_RW, QCOM_SCM_VAL,
-+				     QCOM_SCM_RW, QCOM_SCM_VAL);
-+	desc.args[0] = app_id;
-+	desc.args[1] = req_phys;
-+	desc.args[2] = req_size;
-+	desc.args[3] = rsp_phys;
-+	desc.args[4] = rsp_size;
-+
-+	/* Perform call */
-+	status = qcom_scm_qseecom_call(&desc, &res);
-+
-+	/* Unmap buffers */
-+	dma_unmap_single(__scm->dev, rsp_phys, rsp_size, DMA_FROM_DEVICE);
-+	dma_unmap_single(__scm->dev, req_phys, req_size, DMA_TO_DEVICE);
-+
-+	if (status)
-+		return status;
-+
-+	if (res.result != QSEECOM_RESULT_SUCCESS)
-+		return -EIO;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_send);
-+
-+/*
-+ * We do not yet support re-entrant calls via the qseecom interface. To prevent
-+ + any potential issues with this, only allow validated machines for now.
-+ */
-+static const struct of_device_id qcom_scm_qseecom_allowlist[] = {
-+	{ .compatible = "lenovo,thinkpad-x13s", },
-+	{ }
-+};
-+
-+static bool qcom_scm_qseecom_machine_is_allowed(void)
-+{
-+	struct device_node *np;
-+	bool match;
-+
-+	np = of_find_node_by_path("/");
-+	if (!np)
-+		return false;
-+
-+	match = of_match_node(qcom_scm_qseecom_allowlist, np);
-+	of_node_put(np);
-+
-+	return match;
-+}
-+
-+static void qcom_scm_qseecom_free(void *data)
-+{
-+	struct platform_device *qseecom_dev = data;
-+
-+	platform_device_unregister(qseecom_dev);
-+}
-+
-+static int qcom_scm_qseecom_init(struct qcom_scm *scm)
-+{
-+	struct platform_device *qseecom_dev;
-+	u32 version;
-+	int ret;
-+
-+	/*
-+	 * Note: We do two steps of validation here: First, we try to query the
-+	 * QSEECOM version as a check to see if the interface exists on this
-+	 * device. Second, we check against known good devices due to current
-+	 * driver limitations (see comment in qcom_scm_qseecom_allowlist).
-+	 *
-+	 * Note that we deliberately do the machine check after the version
-+	 * check so that we can log potentially supported devices. This should
-+	 * be safe as downstream sources indicate that the version query is
-+	 * neither blocking nor reentrant.
-+	 */
-+	ret = qcom_scm_qseecom_get_version(&version);
-+	if (ret)
-+		return 0;
-+
-+	dev_info(scm->dev, "qseecom: found qseecom with version 0x%x\n", version);
-+
-+	if (!qcom_scm_qseecom_machine_is_allowed()) {
-+		dev_info(scm->dev, "qseecom: untested device, skipping\n");
-+		return 0;
-+	}
-+
-+	/*
-+	 * Set up QSEECOM interface device. All application clients will be
-+	 * set up and managed by the corresponding driver for it.
-+	 */
-+	qseecom_dev = platform_device_alloc("qcom_qseecom", -1);
-+	if (!qseecom_dev)
-+		return -ENOMEM;
-+
-+	qseecom_dev->dev.parent = scm->dev;
-+
-+	ret = platform_device_add(qseecom_dev);
-+	if (ret) {
-+		platform_device_put(qseecom_dev);
-+		return ret;
-+	}
-+
-+	return devm_add_action_or_reset(scm->dev, qcom_scm_qseecom_free, qseecom_dev);
-+}
-+
-+#else /* CONFIG_QCOM_QSEECOM */
-+
-+static int qcom_scm_qseecom_init(struct qcom_scm *scm)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_QCOM_QSEECOM */
-+
- /**
-  * qcom_scm_is_available() - Checks if SCM is available
-  */
-@@ -1468,6 +1848,18 @@ static int qcom_scm_probe(struct platform_device *pdev)
- 	if (download_mode)
- 		qcom_scm_set_download_mode(true);
- 
-+	/*
-+	 * Initialize the QSEECOM interface. Note: QSEECOM is fairly
-+	 * self-contained and this only adds the interface device (the driver
-+	 * of which does most of the heavy lifting). So any errors returned
-+	 * here should be either -ENOMEM or -EINVAL (with the latter only in
-+	 * case there's a bug in our code). This means that there is no need to
-+	 * bring down the whole SCM driver. Just log the error instead and let
-+	 * SCM live.
-+	 */
-+	ret = qcom_scm_qseecom_init(scm);
-+	WARN(ret < 0, "failed to initialize qseecom: %d", ret);
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/firmware/qcom/qcom_qseecom.h b/include/linux/firmware/qcom/qcom_qseecom.h
-new file mode 100644
-index 000000000000..b531547e1dc9
---- /dev/null
-+++ b/include/linux/firmware/qcom/qcom_qseecom.h
-@@ -0,0 +1,46 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Driver for Qualcomm Secure Execution Environment (SEE) interface (QSEECOM).
-+ * Responsible for setting up and managing QSEECOM client devices.
-+ *
-+ * Copyright (C) 2023 Maximilian Luz <luzmaximilian@gmail.com>
-+ */
-+#include <linux/auxiliary_bus.h>
-+#include <linux/types.h>
-+
-+#include <linux/firmware/qcom/qcom_scm.h>
-+
-+/**
-+ * struct qseecom_client - QSEECOM client device.
-+ * @aux_dev: Underlying auxiliary device.
-+ * @app_id: ID of the loaded application.
-+ */
-+struct qseecom_client {
-+	struct auxiliary_device aux_dev;
-+	u32 app_id;
-+};
-+
-+/**
-+ * qcom_qseecom_app_send() - Send to and receive data from a given QSEE app.
-+ * @client:   The QSEECOM client associated with the target app.
-+ * @req:      Request buffer sent to the app (must be DMA-mappable).
-+ * @req_size: Size of the request buffer.
-+ * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
-+ * @rsp_size: Size of the response buffer.
-+ *
-+ * Sends a request to the QSEE app associated with the given client and read
-+ * back its response. The caller must provide two DMA memory regions, one for
-+ * the request and one for the response, and fill out the @req region with the
-+ * respective (app-specific) request data. The QSEE app reads this and returns
-+ * its response in the @rsp region.
-+ *
-+ * Note: This is a convenience wrapper around qcom_scm_qseecom_app_send().
-+ * Clients should prefer to use this wrapper.
-+ *
-+ * Return: Zero on success, nonzero on failure.
-+ */
-+static inline int qcom_qseecom_app_send(struct qseecom_client *client, void *req, size_t req_size,
-+					void *rsp, size_t rsp_size)
-+{
-+	return qcom_scm_qseecom_app_send(client->app_id, req, req_size, rsp, rsp_size);
-+}
-diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
-index 250ea4efb7cb..dd4236cffbec 100644
---- a/include/linux/firmware/qcom/qcom_scm.h
-+++ b/include/linux/firmware/qcom/qcom_scm.h
-@@ -122,4 +122,25 @@ extern int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
- extern int qcom_scm_lmh_profile_change(u32 profile_id);
- extern bool qcom_scm_lmh_dcvsh_available(void);
- 
-+#ifdef CONFIG_QCOM_QSEECOM
-+
-+int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id);
-+int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
-+			      size_t rsp_size);
-+
-+#else /* CONFIG_QCOM_QSEECOM */
-+
-+int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
-+{
-+	return -EINVAL;
-+}
-+
-+int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
-+			      size_t rsp_size)
-+{
-+	return -EINVAL;
-+}
-+
-+#endif /* CONFIG_QCOM_QSEECOM */
-+
- #endif
 -- 
 2.41.0
 
