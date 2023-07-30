@@ -2,42 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3A17685D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1167685EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 16:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjG3Nt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S229777AbjG3OFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 10:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjG3Nte (ORCPT
+        with ESMTP id S229736AbjG3OFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:49:34 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B9A10C1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:49:31 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VoVv5KT_1690724968;
-Received: from 192.168.75.41(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VoVv5KT_1690724968)
-          by smtp.aliyun-inc.com;
-          Sun, 30 Jul 2023 21:49:29 +0800
-Message-ID: <07c85385-be34-8fdc-876c-dc97639c5643@linux.alibaba.com>
-Date:   Sun, 30 Jul 2023 21:49:27 +0800
+        Sun, 30 Jul 2023 10:05:49 -0400
+X-Greylist: delayed 509 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Jul 2023 07:05:47 PDT
+Received: from out-94.mta1.migadu.com (out-94.mta1.migadu.com [95.215.58.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDB6191
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 07:05:46 -0700 (PDT)
+Message-ID: <40a3ab47-da3e-0d08-b3fa-b4663f3e727d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690725435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PGVwrSKPSqOKImBWbZoAx1qzxZDIg0U6/MyAhWrgbuQ=;
+        b=iwoYw6Haq+kOYGPuPZKv5wW+uOf7UmUbzIK+dEi5BcvQ8JE87XsTTo3/OaLFjVQBD/o/ir
+        fRSrCMrpEvqE0XtHAMIKkjF5ulAwlVSYlFZPhPk/oZ9ZcnH4KqxFkMf4MzqaUwsOND4ZDJ
+        4e/ew8GqIOajhMOJNNAbOKquCrq4by4=
+Date:   Sun, 30 Jul 2023 21:57:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v4] erofs: DEFLATE compression support
-To:     Chao Yu <chao@kernel.org>, linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20230713001441.30462-1-hsiangkao@linux.alibaba.com>
- <20230716091940.40899-1-hsiangkao@linux.alibaba.com>
- <9570176a-02c2-c500-14c6-b8ca220cfb96@kernel.org>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <9570176a-02c2-c500-14c6-b8ca220cfb96@kernel.org>
+Subject: Re: [PATCH 03/13] scatterlist: Add sg_set_folio()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20230621164557.3510324-1-willy@infradead.org>
+ <20230621164557.3510324-4-willy@infradead.org>
+ <a2a2180c-62ac-452f-0737-26f01f228c79@linux.dev>
+ <ZMZHH5Xc507OZA1O@casper.infradead.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <ZMZHH5Xc507OZA1O@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -45,202 +57,29 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+在 2023/7/30 19:18, Matthew Wilcox 写道:
+> On Sun, Jul 30, 2023 at 07:01:26PM +0800, Zhu Yanjun wrote:
+>> Does the following function have folio version?
+>>
+>> "
+>> int sg_alloc_append_table_from_pages(struct sg_append_table *sgt_append,
+>> 		struct page **pages, unsigned int n_pages, unsigned int offset,
+>> 		unsigned long size, unsigned int max_segment,
+>> 		unsigned int left_pages, gfp_t gfp_mask)
+>> "
+> No -- I haven't needed to convert anything that uses
+> sg_alloc_append_table_from_pages() yet.  It doesn't look like it should
+> be _too_ hard to add a folio version.
 
-On 2023/7/30 20:53, Chao Yu wrote:
-> On 2023/7/16 17:19, Gao Xiang wrote:
->> Add DEFLATE compression as the 3rd supported algorithm.
->>
->> DEFLATE is a popular generic-purpose compression algorithm for quite
->> long time (many advanced formats like gzip, zlib, zip, png are all
->> based on that) as Apple documentation written "If you require
->> interoperability with non-Apple devices, use COMPRESSION_ZLIB. [1]".
->>
->> Due to its popularity, there are several hardware on-market DEFLATE
->> accelerators, such as (s390) DFLTCC, (Intel) IAA/QAT, (HiSilicon) ZIP
->> accelerator, etc.  In addition, there are also several high-performence
->> IP cores and even open-source FPGA approches available for DEFLATE.
->> Therefore, it's useful to support DEFLATE compression in order to find
->> a way to utilize these accelerators for asynchronous I/Os and get
->> benefits from these later.
->>
->> Besides, it's a good choice to trade off between compression ratios
->> and performance compared to LZ4 and LZMA.  The DEFLATE core format is
->> simple as well as easy to understand, therefore the code size of its
->> decompressor is small even for the bootloader use cases.  The runtime
->> memory consumption is quite limited too (e.g. 32K + ~7K for each zlib
->> stream).  As usual, EROFS ourperforms similar approaches too.
->>
->> Alternatively, DEFLATE could still be used for some specific files
->> since EROFS supports multiple compression algorithms in one image.
->>
->> [1] https://developer.apple.com/documentation/compression/compression_algorithm
->> ---
->> changes since v3:
->>   - fix 'insz' mis-calculation, which leads to failure on 4k pclusters.
->>
->>   fs/erofs/Kconfig                |  15 ++
->>   fs/erofs/Makefile               |   1 +
->>   fs/erofs/compress.h             |   2 +
->>   fs/erofs/decompressor.c         |   6 +
->>   fs/erofs/decompressor_deflate.c | 250 ++++++++++++++++++++++++++++++++
->>   fs/erofs/erofs_fs.h             |   7 +
->>   fs/erofs/internal.h             |  20 +++
->>   fs/erofs/super.c                |  10 ++
->>   fs/erofs/zmap.c                 |   5 +-
->>   9 files changed, 314 insertions(+), 2 deletions(-)
->>   create mode 100644 fs/erofs/decompressor_deflate.c
->>
->> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
->> index f259d92c9720..56a99ba8ce22 100644
->> --- a/fs/erofs/Kconfig
->> +++ b/fs/erofs/Kconfig
->> @@ -99,6 +99,21 @@ config EROFS_FS_ZIP_LZMA
->>         If unsure, say N.
->> +config EROFS_FS_ZIP_DEFLATE
->> +    bool "EROFS DEFLATE compressed data support"
->> +    depends on EROFS_FS_ZIP
->> +    select ZLIB_INFLATE
->> +    help
->> +      Saying Y here includes support for reading EROFS file systems
->> +      containing DEFLATE compressed data.  It gives better compression
->> +      ratios than the default LZ4 format, while it costs more CPU
->> +      overhead.
->> +
->> +      DEFLATE support is an experimental feature for now and so most
->> +      file systems will be readable without selecting this option.
->> +
->> +      If unsure, say N.
->> +
->>   config EROFS_FS_ONDEMAND
->>       bool "EROFS fscache-based on-demand read support"
->>       depends on CACHEFILES_ONDEMAND && (EROFS_FS=m && FSCACHE || EROFS_FS=y && FSCACHE=y)
->> diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
->> index a3a98fc3e481..994d0b9deddf 100644
->> --- a/fs/erofs/Makefile
->> +++ b/fs/erofs/Makefile
->> @@ -5,4 +5,5 @@ erofs-objs := super.o inode.o data.o namei.o dir.o utils.o sysfs.o
->>   erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
->>   erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o pcpubuf.o
->>   erofs-$(CONFIG_EROFS_FS_ZIP_LZMA) += decompressor_lzma.o
->> +erofs-$(CONFIG_EROFS_FS_ZIP_DEFLATE) += decompressor_deflate.o
->>   erofs-$(CONFIG_EROFS_FS_ONDEMAND) += fscache.o
->> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
->> index b1b846504027..349c3316ae6b 100644
->> --- a/fs/erofs/compress.h
->> +++ b/fs/erofs/compress.h
->> @@ -94,4 +94,6 @@ extern const struct z_erofs_decompressor erofs_decompressors[];
->>   /* prototypes for specific algorithms */
->>   int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
->>                   struct page **pagepool);
->> +int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
->> +                   struct page **pagepool);
->>   #endif
->> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
->> index cfad1eac7fd9..332ec5f74002 100644
->> --- a/fs/erofs/decompressor.c
->> +++ b/fs/erofs/decompressor.c
->> @@ -379,4 +379,10 @@ const struct z_erofs_decompressor erofs_decompressors[] = {
->>           .name = "lzma"
->>       },
->>   #endif
->> +#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
->> +    [Z_EROFS_COMPRESSION_DEFLATE] = {
->> +        .decompress = z_erofs_deflate_decompress,
->> +        .name = "deflate"
->> +    },
->> +#endif
->>   };
->> diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
->> new file mode 100644
->> index 000000000000..c34e29b15465
->> --- /dev/null
->> +++ b/fs/erofs/decompressor_deflate.c
->> @@ -0,0 +1,250 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +#include <linux/module.h>
->> +#include <linux/zlib.h>
->> +#include "compress.h"
->> +
->> +struct z_erofs_deflate {
->> +    struct z_erofs_deflate *next;
->> +    struct z_stream_s z;
->> +    u8 bounce[PAGE_SIZE];
->> +};
->> +
->> +static DEFINE_SPINLOCK(z_erofs_deflate_lock);
->> +static unsigned int z_erofs_deflate_nstrms, z_erofs_deflate_avail_strms;
->> +static struct z_erofs_deflate *z_erofs_deflate_head;
->> +static DECLARE_WAIT_QUEUE_HEAD(z_erofs_deflate_wq);
->> +
->> +module_param_named(deflate_streams, z_erofs_deflate_nstrms, uint, 0444);
->> +
->> +void z_erofs_deflate_exit(void)
->> +{
->> +    /* there should be no running fs instance */
->> +    while (z_erofs_deflate_avail_strms) {
->> +        struct z_erofs_deflate *strm;
->> +
->> +        spin_lock(&z_erofs_deflate_lock);
->> +        strm = z_erofs_deflate_head;
->> +        if (!strm) {
->> +            spin_unlock(&z_erofs_deflate_lock);
->> +            DBG_BUGON(1);
->> +            return;
->> +        }
->> +        z_erofs_deflate_head = NULL;
->> +        spin_unlock(&z_erofs_deflate_lock);
->> +
->> +        while (strm) {
->> +            struct z_erofs_deflate *n = strm->next;
->> +
->> +            vfree(strm->z.workspace);
->> +            kfree(strm);
->> +            --z_erofs_deflate_avail_strms;
->> +            strm = n;
->> +        }
->> +    }
->> +}
->> +
->> +int __init z_erofs_deflate_init(void)
->> +{
->> +    /* by default, use # of possible CPUs instead */
->> +    if (!z_erofs_deflate_nstrms)
->> +        z_erofs_deflate_nstrms = num_possible_cpus();
->> +
->> +    for (; z_erofs_deflate_avail_strms < z_erofs_deflate_nstrms;
->> +         ++z_erofs_deflate_avail_strms) {
->> +        struct z_erofs_deflate *strm;
->> +
->> +        strm = kzalloc(sizeof(*strm), GFP_KERNEL);
->> +        if (!strm)
->> +            goto out_failed;
->> +
->> +        /* XXX: in-kernel zlib cannot shrink windowbits currently */
->> +        strm->z.workspace = vmalloc(zlib_inflate_workspacesize());
->> +        if (!strm->z.workspace)
-> 
-> kfree(strm)?
+In many places, this function is used. So this function needs the folio 
+version.
 
-z_erofs_deflate_exit() below will handle this.
+Another problem, after folio is used, I want to know the performance 
+after folio is implemented.
 
-Thanks,
-Gao Xiang
+How to make tests to get the performance?
 
-> 
-> Thanks,
-> 
->> +            goto out_failed;
->> +
->> +        spin_lock(&z_erofs_deflate_lock);
->> +        strm->next = z_erofs_deflate_head;
->> +        z_erofs_deflate_head = strm;
->> +        spin_unlock(&z_erofs_deflate_lock);
->> +    }
->> +    return 0;
->> +
->> +out_failed:
->> +    pr_err("failed to allocate zlib workspace\n");
->> +    z_erofs_deflate_exit();
->> +    return -ENOMEM;
->> +}
->> +
+Thanks a lot.
+
+Zhu Yanjun
+
