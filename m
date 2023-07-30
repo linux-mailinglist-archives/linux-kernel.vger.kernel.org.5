@@ -2,51 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FA9768622
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA0D768628
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 17:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjG3PG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 11:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S229842AbjG3PQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 11:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjG3PG0 (ORCPT
+        with ESMTP id S229550AbjG3PQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 11:06:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E007CD
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:06:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A6CE360C8C
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 15:06:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA830C433C7;
-        Sun, 30 Jul 2023 15:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690729585;
-        bh=sxXT8+GXdV7qRF5Fj0Xa8//dfWxQO1148iNut5roa4E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DQ7eSIkk9lRxgcR3IYwsMS/YZFCFcxGlQoeQ6nW++m7AXYGDelzVhLW4+pbnNk6hN
-         a0akBpdZBiOWKyOcdAWlSpi9Wj0uTQgBiXwNUIGDzJAE3U6/DKoqORgibbiQcklmLI
-         o6p29RPBLIvodnochNQdHbzt2aAE7hUdqqofp9tB6NAye7IXWGr0Ea0d0M8FctTGLw
-         xtEClq6Q+TSy1quO/5wJ0DTWYZlSE/+pQv9nrDh1fm+b4Clq4NXqxJ5hL/5SmL4AsE
-         IhEo6bB1wIRsRAobQza281oq2DfElNHJSQLv+rDuXu8sMma+jsPLJuLjTwqi68choQ
-         eDdsqnOUJ0Hfw==
-Date:   Mon, 31 Jul 2023 00:06:21 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Subject: [GIT PULL] probes: Fixes for 6.5-rc3
-Message-Id: <20230731000621.1d34c8638a1285901fb6f9a7@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Sun, 30 Jul 2023 11:16:13 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247EE138
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:16:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742eso42076465e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 08:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690730169; x=1691334969;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ouZz2dgRhulfVTdETwQCaMD2VZFH/MAUlpDLBWAqkC4=;
+        b=WYTpzSFOlYTX+54AiGoo2AA6+qI3YxJezUgecbxkq/6VQ/LX7Ah6udam0ur8G0HjPX
+         RztF/lP1AHUJ2o1PYC0taV8FxRDd1UlwjQfxZQmlUSkseRnHWdytaHx9vLUYLJYfj+aN
+         fuybUXorlBSBwpIdZ4Ycg0xUrjHlBZItHlPKOiPgPzGs5B4NwRWq0TzxEuVhUFIMG6iU
+         TU+gOjw1rI1cZIkIjQCSdZoNtaqWU/Xc3jk5NJJ1sB7ZAhVavj/a3nWEuHgQ+CUaPQ/n
+         4CwC1tggDxRRF2El08SFrf28EzZfrvE0NAH36Pa/IErGXSHXEjiaHX6TDZddoE5vnKlw
+         JV1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690730169; x=1691334969;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ouZz2dgRhulfVTdETwQCaMD2VZFH/MAUlpDLBWAqkC4=;
+        b=SgQYeQg2f+wfaWFb0fGODD+0/ioLrWQQLw1709iLHExP9sfWDEVoGHTKIpWpM+/JFH
+         WqLiAh8Gqeq3g8R/qt8+s00m11NQ2yH21aJS1UJS1aRMakgGHnC700sFrv7LAwwllaBe
+         9IdHUBn2PLD36rZsDLDNxJ90UoSosGGSASO3ZMaForEjKznc0QpBxV7o2fMEkqfLowYJ
+         rVMKCa3grY0Ht3FFotQl3fBsGzI+0XjeH4VVf274BvK8KvbBVxmZY1SdADvu6Wd0axml
+         q9coRRI1eOIF8A1ow3RWdsEZSdKpvTnwqLQXJtPZuBsQDp7AITPsLYBdpWg/V/h5BdOq
+         wAKA==
+X-Gm-Message-State: ABy/qLZG2S6HySdIl4bM7JN2cuMelB2IHlJHkDr1bwFclmGh7u2X4tZq
+        VCEMxrdxBSEOl3kPZpXNY1uNkQ==
+X-Google-Smtp-Source: APBJJlF5dPGoSedZx/k6nvqInFyfA+121sKKm+aczGQUh4mWlfALM9vJLpnAFciGz6wtqb1QaD/A4A==
+X-Received: by 2002:a7b:cbd6:0:b0:3fb:ef86:e2e with SMTP id n22-20020a7bcbd6000000b003fbef860e2emr6360945wmi.19.1690730169537;
+        Sun, 30 Jul 2023 08:16:09 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:6b6a:b465:0:eda5:aa63:ce24:dac2])
+        by smtp.gmail.com with ESMTPSA id f17-20020a7bcc11000000b003fd2d33ea53sm9123027wmh.14.2023.07.30.08.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 08:16:08 -0700 (PDT)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     linux-mm@kvack.org, muchun.song@linux.dev, mike.kravetz@oracle.com,
+        rppt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com, Usama Arif <usama.arif@bytedance.com>
+Subject: [v2 0/6] mm/memblock: Skip prep and initialization of struct pages freed later by HVO
+Date:   Sun, 30 Jul 2023 16:16:00 +0100
+Message-Id: <20230730151606.2871391-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,41 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+If the region is for gigantic hugepages and if HVO is enabled, then those
+struct pages which will be freed later by HVO don't need to be prepared and
+initialized. This can save significant time when a large number of hugepages
+are allocated at boot time.
 
-Probe fixes for 6.5-rc3:
+For a 1G hugepage, this series avoid initialization and preparation of
+262144 - 64 = 262080 struct pages per hugepage.
 
-- probe-events: Fix to add NULL check for some BTF API calls which can
-  return error code and NULL.
+When tested on a 512G system (which can allocate max 500 1G hugepages), the
+kexec-boot time with HVO and DEFERRED_STRUCT_PAGE_INIT enabled without this
+patchseries to running init is 3.9 seconds. With this patch it is 1.2 seconds.
+This represents an approximately 70% reduction in boot time and will
+significantly reduce server downtime when using a large number of
+gigantic pages.
 
-- ftrace selftests: Fix to check fprobe and kprobe event correctly. This
-  fixes a miss condition of the test command.
+Thanks,
+Usama
 
-- kprobes: Prohibit probing on the function which starts from "__cfi_"
-  and "__pfx_" since those are auto generated for kernel CFI and not
-  executed.
+[v1->v2]:
+- (Mike Rapoport) Code quality improvements (function names, arguments,
+comments).
 
-
-Please pull the latest probes-fixes-v6.5-rc3 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-probes-fixes-v6.5-rc3
-
-Tag SHA1: 1586c2c77c542c0f9a20bfe5bbebfc739f8dbd2a
-Head SHA1: de02f2ac5d8cfb311f44f2bf144cc20002f1fbbd
+[RFC->v1]:
+- (Mike Rapoport) Change from passing hugepage_size in
+memblock_alloc_try_nid_raw for skipping struct page initialization to
+using MEMBLOCK_RSRV_NOINIT flag
 
 
-Masami Hiramatsu (Google) (3):
-      tracing/probes: Fix to add NULL check for BTF APIs
-      selftests/ftrace: Fix to check fprobe event eneblement
-      kprobes: Prohibit probing on CFI preamble symbol
 
-----
- kernel/kprobes.c                                           | 14 +++++++++++++-
- kernel/trace/trace_probe.c                                 |  8 ++++----
- .../selftests/ftrace/test.d/dynevent/add_remove_btfarg.tc  |  2 +-
- 3 files changed, 18 insertions(+), 6 deletions(-)
+Usama Arif (6):
+  mm: hugetlb: Skip prep of tail pages when HVO is enabled
+  mm: hugetlb_vmemmap: Use nid of the head page to reallocate it
+  memblock: pass memblock_type to memblock_setclr_flag
+  memblock: introduce MEMBLOCK_RSRV_NOINIT flag
+  mm: move allocation of gigantic hstates to the start of mm_core_init
+  mm: hugetlb: Skip initialization of struct pages freed later by HVO
+
+ include/linux/memblock.h |  9 +++++
+ mm/hugetlb.c             | 71 +++++++++++++++++++++++++---------------
+ mm/hugetlb_vmemmap.c     |  6 ++--
+ mm/hugetlb_vmemmap.h     | 18 +++++++---
+ mm/internal.h            |  9 +++++
+ mm/memblock.c            | 45 +++++++++++++++++--------
+ mm/mm_init.c             |  6 ++++
+ 7 files changed, 118 insertions(+), 46 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.25.1
+
