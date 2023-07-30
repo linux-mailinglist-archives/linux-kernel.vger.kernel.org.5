@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E0C7683AD
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF607683AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 06:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjG3Eio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 00:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S229627AbjG3Eir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 00:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjG3Eik (ORCPT
+        with ESMTP id S229587AbjG3Ein (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 00:38:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD990;
-        Sat, 29 Jul 2023 21:38:39 -0700 (PDT)
+        Sun, 30 Jul 2023 00:38:43 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B3190;
+        Sat, 29 Jul 2023 21:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690691911; x=1691296711; i=w_armin@gmx.de;
- bh=ppZ3N9xbXVQLye/TUgXN3mwxwN5QaCrAO8Uykzqp8q4=;
+ s=s31663417; t=1690691913; x=1691296713; i=w_armin@gmx.de;
+ bh=E2BkeqRCchKlZ5UcyxQtt4MhIEQUjS96zlYo9ea8ANU=;
  h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=pFl/p/Dt4DxVqMTrTnSH42fxc4PSZv1+qaSusQc9jC31/O4+ud7nRvNtY8g5uDpb6WItQMJ
- 5nWcGOULIJ6kDVX+9BdgNtARA9MTVBAzfFz/gS/1UQ0dd1tVSGIyBrcVUe1i/bwXR91lNakmW
- RtMCl0azIC98yOfWayNWcAEVzmd6zo/3wLf1IjRm3XSGx/ISWdC5qUw30yyINsm7UuzPAiqFT
- 2mIvbU8PbhT4/NWTdP1WhQ2tmt+hsnwmmub1Ic8WED4CUm1sAyEWcsJ1wwR4m0s8kHKu+ZiG5
- hJQ6tyMoAX1tZtU1paltLpdsEfW2yJf3Pg5E6U4Jzcjtv6kAfwmQ==
+ b=YctsM5z6bD2R2i6cuAwy9pNIdWl+v3Of8byFPRfhEzaPXol9F7a93v9Jw4GFfHFHCosTO5f
+ IY5beO3j7kT1PxuBPlDNVQ2kg4tY/wn5mnVzuZkc0N77/kdlkCiJrv5VAqBWXclkfZYhFCuw+
+ IISPzYz/vIqgZr4SWLZa5riHItjteuzy/3gfF+RJyuIYMGKtoCYN6EVz5LlJs5FDb+Ku3mZ77
+ YO0wwpKnS6Myf3KKxY/ro/D5YE5GOiqF/E3ST03t8+RgkC7Z//XAxZDwfl8iWv9Ui7ZNVnV7O
+ /FoYIdmvnOT7hUIvIHdTJasVaWC+vQZJIci8FmhJr8qFRg9m6xYQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1Mlw3X-1pzg0K04VH-00j3ru; Sun, 30 Jul 2023 06:38:31 +0200
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MNKm0-1qFSjL2BLe-00Omus; Sun, 30 Jul 2023 06:38:33 +0200
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     hdegoede@redhat.com, markgross@kernel.org
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] platform/x86: wmi-bmof: Simplify read_bmof()
-Date:   Sun, 30 Jul 2023 06:38:16 +0200
-Message-Id: <20230730043817.12888-2-W_Armin@gmx.de>
+Subject: [PATCH 3/3] platform/x86: wmi-bmof: Update MAINTAINERS entry
+Date:   Sun, 30 Jul 2023 06:38:17 +0200
+Message-Id: <20230730043817.12888-3-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230730043817.12888-1-W_Armin@gmx.de>
 References: <20230730043817.12888-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d13USs0sWiOCl1mSrpyTf2Drqr0gR2u6MQjVGh5ZCFreA14nqSC
- ml6n8OBXwJDu+CTRtifJ7KPQ/bUs+v2ShhPJBBdjiCHkWJa7L3oAW/CiIp1s02oUPfGx0wr
- HWM/zPn2qtPlvzqynnK9eIUfkaTNZaPmArjXol9iRJBQDqDj8a7PYLhTFzBdunFb/rza+cP
- HKGn5HAws2b217tusRBNA==
-UI-OutboundReport: notjunk:1;M01:P0:j/wGR76xZV4=;D2fJ32ernuagQWbQZCbkikelh5f
- 020Y5sVkRbkgZKJIfsuzTj7hmlvQO6vj4z/qrVdgJvK0N+QtJwjYlOXE/9ZH76Rod0IrTs9MC
- Ra49hvCy9/aAW5xGo+i4+qYW96d8xxG4XXErDodyVVCry4HXLPxi9DSrplXl0XFvC9wRLKSQb
- /qNsa//8XJ64MJDDxar78B53I/X9AtKxCdVtU31Qz0bkqwyQrxfV8C+nXeAApQS+Us7gMp6J8
- 0ve2zz4d8x0q28emBfjzPnEOW+bAW4OofPCxgFORk/+v+bhR6w3+R4gWquv2aEmJPvbkhBrpt
- AeG2sL2vOV51yF/qAkSvQXf/5cnrcZN7mdc4uTP3UafPf1Zqc8sNwJkdr5cts/PGokd+bCom/
- W8s+vwuITfCGyV4mOxWJeNFCNyeelD4IJakFG7Qhdj9KWQXtwnXF/efTdv4pZtfE7DyZtBaAM
- ibA/Q1zkM8B64+3OQNEEnnR0Dz3szlt60OxetJhG88TLpjkrZTp+s3D8RsrXYW7f6UgSxNbnr
- p/s6xUdb7fTaYO8qTJmv2U319CdfOqRvKW+MwM92FAAB/F8eZBL3pzGID1uJPOvEfr6zvBrvU
- 4LTi4tkxe1R4JKvxjOTSw6wLTW0MvShZ/hBuyxzuei2eXqAd0NkLqOIwRlKKAoTvj2TnIiwD6
- 8k2f/660ogNdJi53ArtIxk3FrW+fk8okxyWHPqs+ucRvtDBJ5LU7MepAkQLaa11ZP9Odel/i1
- 9Zo6GAjAi6RR6Z0ERAQ/WxSzByCjtexfP7XWJO+ReUMqgabVLG9ihQjjYji8KHu/zB99T2Kk9
- Bf7eD01+MLpQRyRNUx48T4gOS/otfWpK4i3KZcC52/3cyEjYGVp7Sen8P9hNYWiVn4ffntzhe
- uTzQF3roh1GUMHSiVP2FUTJZyAZijSl9RDTZR5hE8tiLgAcicovOznd3iSi3YomQAZ3uc4QFY
- 13bTWUz/QyJMKAZyd+Epm7fwdmU=
+X-Provags-ID: V03:K1:ZD31ytDUWJlArlOSfgK1DEogizZfOi6umDyQasAIbzXC2Jsa/jf
+ 4S2OzB85Z+Oc9nioDF+noGfnr90eFNIB0fy31uh6OYkkCgpcXGpTDNYttM/8eUzY4xQ+b3y
+ q7SwevFbdRNv8crhQMXtAbg06Xhil9xwFKvsoxB+SR/hWhZIW2967tqCU9iLUdeiFvPCMHl
+ EwNPE6glc+uKlBpNbakfA==
+UI-OutboundReport: notjunk:1;M01:P0:blwVOjIpxc0=;Dk7rdXuJFyaOWGloVcMKS5eEOsS
+ vuV9O+339FgbD84970BO0U3aiMz6rWd60hZ92nnlYzXbdsj0E44vM1rSRr8UdpDXlCo4iQs9R
+ 8GUyOl1KycYZHdkrdrfTWEMD9O7hcOnWZdXxlVRkKn3nj2e+F1dbPLPnb9omXf81ExW5Wtj+s
+ +9cuYtupt6B91rxKvQG3Sp5VyaAxDxJLA8jcGq3haYvueiaaa/tBDBhAKgOqG9LZdPBqKumSm
+ z2T7Ra16k+cSVwb8Gs891gjg/V6dtlinQOxSDu5E5itwnz7NkA/U+6odGwyewxW9+Q/kJ8e76
+ 2o6w/Qvmc5eLVXWUUFMJh4X8E3zzuGSNQCuK1jUOfs1ZDUxchLKpelAsvIkriZ8g2irWSLsz4
+ IhIISQo9JmosC/c/kKiIE+H9+5LWY7S6FLLQceLSC6s/Dr2P9VJHdBLEGgViiJidP76Ayy2ab
+ G73AcfQjPjKosWgXEvgcHcW8U/eS3rWiS4cebn76p4UA4ef66XvInHtQ5XXwTZbzfEGkMqROi
+ ous3MewVuiMVZC2DAlDlnM4mLSYjFin9NbCGwY/F/yEnConUEmViGX0dWBBV/AT0MI2xTEgr+
+ nWauj0oofKDn3QfUUEBwpd+XVwp1RVCFmPwA2tYNMCovH+mCU0NGDdz59dxG3Hlpptzjv3LNA
+ PTfD1lHalcY/9TfC3mbLIKJqlgOrjDbiH+pR8EjGUaF5LGz9pTkAzFQPNHPzFsmfUhaaoEBV8
+ nJxxOD2SWiI1ehHZVCYt8GVYBiamgK5E6aCULynI3VXoGmj9XYtyr0srXgMW/Dy34f4nNiCYF
+ RLQhql7NE5qtzOBtYRxcj/qu3zQiJS/u+v22B6xH8X1XOF77d1inTTzkfvLP4SMGp563tWRIN
+ QZv7fONW5EFPlgtVKquXWE1mXZDtZcnthQtaWLwsrzbF9c3dh9TjnF+/qBQCFxYtyBSmHCVqX
+ ysvJ71n+u1/5B4j+VeGFsFsXQh8=
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace offset handling code with a single call
-to memory_read_from_buffer() to simplify read_bmof().
-
-Tested on a ASUS PRIME B650-PLUS.
+The WMI Binary MOF driver is important for the development
+of modern WMI drivers, i am willing to maintain it.
+Also fix the mailing list address.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/wmi-bmof.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+ MAINTAINERS | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bm=
-of.c
-index d0516cacfcb5..644d2fd889c0 100644
-=2D-- a/drivers/platform/x86/wmi-bmof.c
-+++ b/drivers/platform/x86/wmi-bmof.c
-@@ -25,25 +25,13 @@ struct bmof_priv {
- 	struct bin_attribute bmof_bin_attr;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 426d3be71da2..9b871fb34e83 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22954,8 +22954,9 @@ S:	Odd fixes
+ F:	drivers/net/wireless/legacy/wl3501*
 
--static ssize_t
--read_bmof(struct file *filp, struct kobject *kobj,
--	 struct bin_attribute *attr,
--	 char *buf, loff_t off, size_t count)
-+static ssize_t read_bmof(struct file *filp, struct kobject *kobj, struct =
-bin_attribute *attr,
-+			 char *buf, loff_t off, size_t count)
- {
--	struct bmof_priv *priv =3D
--		container_of(attr, struct bmof_priv, bmof_bin_attr);
-+	struct bmof_priv *priv =3D container_of(attr, struct bmof_priv, bmof_bin=
-_attr);
-
--	if (off < 0)
--		return -EINVAL;
--
--	if (off >=3D priv->bmofdata->buffer.length)
--		return 0;
--
--	if (count > priv->bmofdata->buffer.length - off)
--		count =3D priv->bmofdata->buffer.length - off;
--
--	memcpy(buf, priv->bmofdata->buffer.pointer + off, count);
--	return count;
-+	return memory_read_from_buffer(buf, count, &off, priv->bmofdata->buffer.=
-pointer,
-+				       priv->bmofdata->buffer.length);
- }
-
- static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
+ WMI BINARY MOF DRIVER
+-L:	platform-drivers-x86@vger.kernel.org
+-S:	Orphan
++M:	Armin Wolf <W_Armin@gmx.de>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
+ F:	Documentation/ABI/stable/sysfs-platform-wmi-bmof
+ F:	Documentation/wmi/devices/wmi-bmof.rst
+ F:	drivers/platform/x86/wmi-bmof.c
 =2D-
 2.39.2
 
