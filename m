@@ -2,347 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A1E76869E
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596307686A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 19:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjG3RLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 13:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
+        id S229640AbjG3RUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 13:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3RLP (ORCPT
+        with ESMTP id S229449AbjG3RUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 13:11:15 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E96610CC;
-        Sun, 30 Jul 2023 10:11:14 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso5229607a12.2;
-        Sun, 30 Jul 2023 10:11:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690737073; x=1691341873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rINeYgAe2vWhDTqaE4dNqaz5whR3/rodCQD83wYGPSA=;
-        b=hpv/S4CN6eOm6FJZ35c2VwAJgs4Pe25/en1e7BCtSlW0+Qb8MdnDp5/F6vVoF19arz
-         FbKIL3dq25ni+8wRTzOwOSW9CY106Yg067ngdUmoBU002DvJoQhgOw3cW9UGKFx4Q50r
-         S8QE1X1ZRE/B2UAinA3avVFZXRZxXFnkzOe8WCmxRG/l7iFIE0l2efquhhoZkvMbC2eC
-         yz5sq9VzDm56QHNErPAUvpZdiLmMzi1JEiRO2Kx2YW44FpWiURgbkLVGgyGQccyh1P9c
-         fmNa7BuYxBnbSE5zAbqC+tsN15Ds+GTv4IKEIkJjPWiS8M4BLjNpXOXU3qk+bhw6cbuq
-         FE8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690737073; x=1691341873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rINeYgAe2vWhDTqaE4dNqaz5whR3/rodCQD83wYGPSA=;
-        b=g52UT0QV8W2uFivnQ8je67guLr33CTrZzJSIPCTjgwTkR27e3f12Tw2w44H/eMXwM7
-         OIw66XgMUxdKbtu/2btWkwdLRXX1qh0bhIHmlKYbvDZLew9C0dnrcuuNVPjT37PswzMl
-         ZS8usW+OQcQ+3S4ocPd9cWX97ebnrn6oubUOw0P4F45Nms80pxiOkhxTa54zK1t4oFfL
-         GcDngrw+QPuloFqdtlTUJPQDSea/G2RKuIIxxHH9tGYvvvcoRorxSRoJZ8WLH1e2ZYKK
-         4bPzAuXkQGRADKO6QRhORZALusdpW9mlscY++TweXQIXz9EKj/o6IwnOa2FVX2Ck2iAQ
-         2l/w==
-X-Gm-Message-State: ABy/qLYrjtBYFKMW3+NMzh47CFpCjeqdnvOLTt9oT29eIL9Cl9qwOu98
-        RuK08pVNhV8kzRUeUTJSnslpigrRSXSNUOz/ODweW4R2GlBLsg==
-X-Google-Smtp-Source: APBJJlH9Zt3gdvhmq1i8yEj+qg/u7Gs2dp8bd7HOb1u6g1X4ipRKMAQiiY8sjrPfNi5rESjl0vsCdRs1VByyoS6gVg8=
-X-Received: by 2002:aa7:d452:0:b0:522:c877:5690 with SMTP id
- q18-20020aa7d452000000b00522c8775690mr984265edr.17.1690737072488; Sun, 30 Jul
- 2023 10:11:12 -0700 (PDT)
+        Sun, 30 Jul 2023 13:20:04 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CBE10C4
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 10:20:03 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1qQA5J-00029v-8i; Sun, 30 Jul 2023 19:20:01 +0200
+From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2023-07-30]
+Date:   Sun, 30 Jul 2023 17:20:00 +0000
+Message-Id: <169073747103.4140879.6035275932676410922@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com> <20230729134318.1694467-4-keguang.zhang@gmail.com>
-In-Reply-To: <20230729134318.1694467-4-keguang.zhang@gmail.com>
-From:   Du Huanpeng <u74147@gmail.com>
-Date:   Mon, 31 Jul 2023 01:11:00 +0800
-Message-ID: <CANvTkNbss+ovB_nXYvAXT9dZt4H1KsF41EQ4f3zHf1dEnpdreA@mail.gmail.com>
-Subject: Re: [PATCH 03/17] MIPS: dts: Add basic DT support for Loongson-1 boards
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690737603;c7b38a74;
+X-HE-SMSGID: 1qQA5J-00029v-8i
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keguang Zhang <keguang.zhang@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8829=
-=E6=97=A5=E5=91=A8=E5=85=AD 21:45=E5=86=99=E9=81=93=EF=BC=9A
->
-> Add initial devicetree for Loongson-1 boards, including
-> LSGZ_1B_DEV and SMARTLOONG_1C board.
-> These basic DTs contain CPU, clock and core INTC.
->
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
->  arch/mips/boot/dts/Makefile                   |  1 +
->  arch/mips/boot/dts/loongson/Makefile          |  3 +
->  arch/mips/boot/dts/loongson/loongson1.dtsi    | 22 ++++++
->  arch/mips/boot/dts/loongson/loongson1b.dtsi   | 75 +++++++++++++++++++
->  arch/mips/boot/dts/loongson/loongson1c.dtsi   | 29 +++++++
->  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 25 +++++++
->  arch/mips/boot/dts/loongson/smartloong_1c.dts | 25 +++++++
->  7 files changed, 180 insertions(+)
->  create mode 100644 arch/mips/boot/dts/loongson/loongson1.dtsi
->  create mode 100644 arch/mips/boot/dts/loongson/loongson1b.dtsi
->  create mode 100644 arch/mips/boot/dts/loongson/loongson1c.dtsi
->  create mode 100644 arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
->  create mode 100644 arch/mips/boot/dts/loongson/smartloong_1c.dts
->
-> diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-> index 928f38a79dff..2e040b1ba97b 100644
-> --- a/arch/mips/boot/dts/Makefile
-> +++ b/arch/mips/boot/dts/Makefile
-> @@ -6,6 +6,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)   +=3D img
->  subdir-$(CONFIG_MACH_INGENIC)          +=3D ingenic
->  subdir-$(CONFIG_LANTIQ)                        +=3D lantiq
->  subdir-$(CONFIG_MACH_LOONGSON64)       +=3D loongson
-> +subdir-$(CONFIG_MACH_LOONGSON32)       +=3D loongson
->  subdir-$(CONFIG_SOC_VCOREIII)          +=3D mscc
->  subdir-$(CONFIG_MIPS_MALTA)            +=3D mti
->  subdir-$(CONFIG_LEGACY_BOARD_SEAD3)    +=3D mti
-> diff --git a/arch/mips/boot/dts/loongson/Makefile b/arch/mips/boot/dts/lo=
-ongson/Makefile
-> index 5c6433e441ee..9d95f1351d5f 100644
-> --- a/arch/mips/boot/dts/loongson/Makefile
-> +++ b/arch/mips/boot/dts/loongson/Makefile
-> @@ -6,4 +6,7 @@ dtb-$(CONFIG_MACH_LOONGSON64)   +=3D loongson64c_8core_rs=
-780e.dtb
->  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64g_4core_ls7a.dtb
->  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64v_4core_virtio.dtb
->
-> +dtb-$(CONFIG_LOONGSON1B_LSGZ_DEV)      +=3D lsgz_1b_dev.dtb
-> +dtb-$(CONFIG_LOONGSON1C_SMARTLOONG)    +=3D smartloong_1c.dtb
-> +
->  obj-$(CONFIG_BUILTIN_DTB)      +=3D $(addsuffix .o, $(dtb-y))
-> diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boot/=
-dts/loongson/loongson1.dtsi
-> new file mode 100644
-> index 000000000000..a2b5c828bbbd
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/clock/loongson,ls1x-clk.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/ {
-> +       #address-cells =3D <1>;
-> +       #size-cells =3D <1>;
-> +
-> +       cpu_intc: interrupt-controller {
-> +               compatible =3D "mti,cpu-interrupt-controller";
-> +               #address-cells =3D <0>;
-> +
-> +               interrupt-controller;
-> +               #interrupt-cells =3D <1>;
-> +       };
-> +};
-> diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot=
-/dts/loongson/loongson1b.dtsi
-> new file mode 100644
-> index 000000000000..784ae9b6572d
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "loongson1.dtsi"
-> +
-> +/ {
-> +       cpus {
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +
-> +               cpu@0 {
-> +                       device_type =3D "cpu";
-> +                       reg =3D <0>;
-> +                       #clock-cells =3D <1>;
-> +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
-> +                       operating-points-v2 =3D <&cpu_opp_table>;
-> +               };
-> +       };
-> +
-> +       cpu_opp_table: opp-table {
-> +               compatible =3D "operating-points-v2";
-> +               opp-shared;
-> +
-> +               opp-44000000 {
-> +                       opp-hz =3D /bits/ 64 <44000000>;
-> +               };
-> +               opp-47142000 {
-> +                       opp-hz =3D /bits/ 64 <47142000>;
-> +               };
-> +               opp-50769000 {
-> +                       opp-hz =3D /bits/ 64 <50769000>;
-> +               };
-> +               opp-55000000 {
-> +                       opp-hz =3D /bits/ 64 <55000000>;
-> +               };
-> +               opp-60000000 {
-> +                       opp-hz =3D /bits/ 64 <60000000>;
-> +               };
-> +               opp-66000000 {
-> +                       opp-hz =3D /bits/ 64 <66000000>;
-> +               };
-> +               opp-73333000 {
-> +                       opp-hz =3D /bits/ 64 <73333000>;
-> +               };
-> +               opp-82500000 {
-> +                       opp-hz =3D /bits/ 64 <82500000>;
-> +               };
-> +               opp-94285000 {
-> +                       opp-hz =3D /bits/ 64 <94285000>;
-> +               };
-> +               opp-110000000 {
-> +                       opp-hz =3D /bits/ 64 <110000000>;
-> +               };
-> +               opp-132000000 {
-> +                       opp-hz =3D /bits/ 64 <132000000>;
-> +               };
-> +               opp-165000000 {
-> +                       opp-hz =3D /bits/ 64 <165000000>;
-> +               };
-> +               opp-220000000 {
-> +                       opp-hz =3D /bits/ 64 <220000000>;
-> +               };
-> +       };
-> +
-> +       clkc: clock-controller@1fe78030 {
-> +               compatible =3D "loongson,ls1b-clk";
-> +               reg =3D <0x1fe78030 0x8>;
-> +
-> +               clocks =3D <&xtal>;
-> +               #clock-cells =3D <1>;
-> +       };
-> +};
-> diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot=
-/dts/loongson/loongson1c.dtsi
-> new file mode 100644
-> index 000000000000..d552e1668984
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +#include "loongson1.dtsi"
-> +
-> +/ {
-> +       cpus {
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +
-> +               cpu@0 {
-> +                       device_type =3D "cpu";
-> +                       reg =3D <0>;
-> +                       #clock-cells =3D <1>;
-> +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
-> +               };
-> +       };
-> +
-> +       clkc: clock-controller@1fe78030 {
-> +               compatible =3D "loongson,ls1c-clk";
-> +               reg =3D <0x1fe78030 0x8>;
-> +
-> +               clocks =3D <&xtal>;
-> +               #clock-cells =3D <1>;
-> +       };
-> +};
-> diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot=
-/dts/loongson/lsgz_1b_dev.dts
-> new file mode 100644
-> index 000000000000..d12c723b0a2b
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "loongson1b.dtsi"
-> +
-> +/ {
-> +       compatible =3D "loongson,lsgz-1b-dev", "loongson,ls1b";
-> +       model =3D "LSGZ_1B_DEV Board";
-> +
-> +       memory@0 {
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x4000000>;
-> +       };
-> +
-> +       xtal: xtal {
-for your information, hope it helps:
-in <devicetree-specification-v0.4.pdf> Page: 8
-The name of a node should be somewhat generic, reflecting the function
-of the device and not its precise programming model. If appropriate,
- the name should be one of the following choices:
-... clock ...
+Hi Linus. Nothing much to report from by side: everything looks like
+business as usual currently. 
 
-> +               compatible =3D "fixed-clock";
-> +               clock-frequency =3D <33000000>;
-> +               clock-output-names =3D "xtal";
-> +               #clock-cells =3D <0>;
-> +       };
-> +};
-> diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/bo=
-ot/dts/loongson/smartloong_1c.dts
-> new file mode 100644
-> index 000000000000..64e869acfd86
-> --- /dev/null
-> +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "loongson1c.dtsi"
-> +
-> +/ {
-> +       compatible =3D "loongmasses,smartloong-1c", "loongson,ls1c";
-> +       model =3D "Smartloong_1C Board";
-> +
-> +       memory@0 {
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x2000000>;
-> +       };
-> +
-> +       xtal: xtal {
-> +               compatible =3D "fixed-clock";
-> +               clock-frequency =3D <24000000>;
-> +               clock-output-names =3D "xtal";
-> +               #clock-cells =3D <0>;
-> +       };
-> +};
-> --
-> 2.39.2
->
+One thing you might be interested in: seems the Ryzen keyboard problems
+that a9c4a912b7d ("ACPI: resource: Remove "Zen" specific match and
+quirks") [v6.5-rc1] was supposed to fix once and for all kinda came
+back, as the new approach apparently still doesn't work on all machines:
+
+https://lore.kernel.org/lkml/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
+https://bugzilla.kernel.org/show_bug.cgi?id=217726 (not confirmed yet)
+
+Seems we yet again need quirks:
+https://lore.kernel.org/all/79ee5522-3f3e-3480-dfb2-0c7640a97587@amd.com/
+
+:-/
+
+Ciao, Thorsten
 
 ---
-Du Huanpeng
+
+Hi, this is regzbot, the Linux kernel regression tracking bot.
+
+Currently I'm aware of 10 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+======================================================
+current cycle (v6.4.. aka v6.5-rc), culprit identified
+======================================================
+
+
+PCI: acpiphp: Oops on first attempt to suspend, freeze on second
+----------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
+https://lore.kernel.org/lkml/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com/
+
+By Woody Suwalski; 10 days ago; 23 activities, latest 0 days ago.
+Introduced in 40613da52b13 (v6.5-rc1)
+
+Fix incoming:
+* Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=b607aa1edc9ca2ff16ae29c48e3e4090fae8aeab
+
+
+[ *NEW* ] IRQ override revert breaks keyboard on Lenovo Yoga 7 14ARB7
+---------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
+https://lore.kernel.org/lkml/596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se/
+
+By August Wikerfors; 3 days ago; 7 activities, latest 1 days ago.
+Introduced in a9c4a912b7dc (v6.5-rc1)
+
+Fix incoming:
+* ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
+  https://lore.kernel.org/all/79ee5522-3f3e-3480-dfb2-0c7640a97587@amd.com/
+
+
+drm: amdgpu: HW acceleration broke on ThinkPad E595
+---------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
+https://lore.kernel.org/amd-gfx/647beed4-9d0b-e351-6f66-756f73eb73a5@daenzer.net/
+
+By Michel Dänzer; 13 days ago; 12 activities, latest 1 days ago.
+Introduced in 84b4dd3f84d (v6.5-rc1)
+
+Recent activities from: Michel Dänzer (4), Alex Deucher (2), Zhang,
+  Jesse(Jie) (2)
+
+2 patch postings are associated with this regression, the latest is this:
+* RE: [PATCH 28/29] drm/amdkfd: Refactor migrate init to support partition switch
+  https://lore.kernel.org/amd-gfx/DM4PR12MB5152E173B970C3974F071E76E306A@DM4PR12MB5152.namprd12.prod.outlook.com/
+  2 days ago, by Zhang, Jesse(Jie)
+
+
+net: phylink: mv88e6060 dsa driver broken
+-----------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CABikg9wM0f5cjYY0EV_i3cMT2JcUT1bSe_kkiYk0wFwMrTo8=w@mail.gmail.com/
+https://lore.kernel.org/netdev/CABikg9wM0f5cjYY0EV_i3cMT2JcUT1bSe_kkiYk0wFwMrTo8=w@mail.gmail.com/
+
+By Sergei Antonov; 26 days ago; 17 activities, latest 2 days ago.
+Introduced in de5c9bf40c45 (v6.5-rc1)
+
+Fix incoming:
+* https://lore.kernel.org/netdev/3ef4662e-7888-9f41-32a3-d4cd07f1572c@leemhuis.info/
+
+
+kernel pointer dereference regression due to extract_iter_to_sg()
+-----------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+
+By Ondrej Mosnáček; 17 days ago; 8 activities, latest 3 days ago.
+Introduced in c1abe6f570af (v6.5-rc1)
+
+Recent activities from: David Howells (3), Sven Schnelle (2), Linux
+  regression tracking (Thorsten Leemhuis) (1)
+
+One patch associated with this regression:
+* [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
+  https://lore.kernel.org/lkml/97730.1690408399@warthog.procyon.org.uk/
+  3 days ago, by David Howells
+
+
+drm/bridge: lt9611: Dragonboard 845c (SDM845) devboard broken when running AOSP
+-------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+https://lore.kernel.org/dri-devel/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+
+By Amit Pundir; 25 days ago; 20 activities, latest 16 days ago; poked 4 days ago.
+Introduced in 8ddce13ae69 (v6.5-rc1)
+
+
+===================================================
+current cycle (v6.4.. aka v6.5-rc), unknown culprit
+===================================================
+
+
+[ *NEW* ] ASUE140D:00 04F3:31B9 doesn't respond to input
+--------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217726/
+https://bugzilla.kernel.org/show_bug.cgi?id=217726
+https://lore.kernel.org/lkml/bdc6cb4d-a853-72b2-b132-989b64740ad9@gmail.com/
+
+By Guilhem Lettron and Guilhem Lettron; 1 days ago; 2 activities, latest 0 days ago.
+Introduced in v6.4..v6.5-rc1
+
+Recent activities from: Bagas Sanjaya (1), Guilhem Lettron (1)
+
+
+mm/page_alloc.c:4453 with cfg80211_wiphy_work [cfg80211]
+--------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217675/
+https://bugzilla.kernel.org/show_bug.cgi?id=217675
+https://lore.kernel.org/lkml/51e53417-cfad-542c-54ee-0fb9e26c4a38@gmail.com/
+
+By rudi and rudi; 14 days ago; 9 activities, latest 3 days ago.
+Introduced in v6.5-rc1..831fe284d827 (v6.5-rc1..v6.5-rc2)
+
+Fix incoming:
+* wifi: cfg80211: Fix return value in scan logic
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=fd7f08d92fcd7cc3eca0dd6c853f722a4c6176df
+
+
+mm/vmalloc: NULL or otherwise bad pointer dereferences on ARM64
+---------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
+https://lore.kernel.org/lkml/42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk/
+
+By Mark Brown; 20 days ago; 10 activities, latest 10 days ago.
+Introduced in v6.4..v6.5-rc1
+
+One patch associated with this regression:
+* Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use pte_offset_kernel()
+  https://lore.kernel.org/lkml/b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com/
+  19 days ago, by Hugh Dickins
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/169013434330.3594767.429224047854988999@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
