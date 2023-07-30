@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7478768364
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 03:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292FF768367
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 03:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjG3BuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Jul 2023 21:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S229538AbjG3B4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Jul 2023 21:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjG3BuG (ORCPT
+        with ESMTP id S229448AbjG3B4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Jul 2023 21:50:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA6A2134;
-        Sat, 29 Jul 2023 18:50:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=NbwbCQT8KMNRIPvq+q9lapcQ2h0sWsXj0fj9zqMOVKI=; b=O3JWKw4XNWjyAbDPQmLJilCOgX
-        eCSDsaDMyaSYoP1ehB6ebHPhygQWZsuv/uXlyeuu2uLa1dyCtL/nWtdlrNuKUsRDkW+fNQoWxYLPB
-        eyEmWr94Eqj5+vKictOKFtZM40gWI9jyNgbrEZY0WUnck1Z9MVyhmT8mmqNT0u7Ay+MGs9boK7eV5
-        +U885x4QsoQ9LaKaL36Al+sdqfhHvpSWDx+nHrfc+1BlHXcPvW7hRD0sAq0tfXC2n2A/05KKzF+Ee
-        9ZzZpNYDBYq95yoP+VGJPBQAflx5UPkEJ1L+zv35zRvS73LPNF6DRK2Qrd8fY2CwSJT+B1SUCtPOy
-        rcVDzpmQ==;
-Received: from [2601:1c2:980:9ec0:e65e:37ff:febd:ee53]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qPvZI-009Xez-06;
-        Sun, 30 Jul 2023 01:50:00 +0000
-Message-ID: <1c4b9496-2ac3-d271-0ef9-0c0979da55ae@infradead.org>
-Date:   Sat, 29 Jul 2023 18:49:58 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] alpha: remove __init annotation from exported
- page_is_ram()
-Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Chen Gong <gong.chen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-References: <20230729074223.1457109-1-masahiroy@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230729074223.1457109-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+        Sat, 29 Jul 2023 21:56:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5122115;
+        Sat, 29 Jul 2023 18:56:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FA6E60281;
+        Sun, 30 Jul 2023 01:56:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8B84C433C8;
+        Sun, 30 Jul 2023 01:56:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690682162;
+        bh=WmIX/oNZC4zCelNw3YcY9OzgIWnMX4OG6p9fKSNA9zc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SfAOvaPn/Ps2ruKdP7oZsoeZ2VS30Um1/J6XR8NCQ7Vkx60doQZDIVNbGf9Cc/8Yi
+         NmPKM3PDTMkjpCjZuwjsz5kjO1BzQ2sldxKwNBkDRicDsZmYmGGGQqk6IxDLGmPWMk
+         ab9G4rc4GBG6LOgjUDcChqqTDalNIzNjXByzbFJIMdS7kjuwQJrmqo2pr3AvToWmt3
+         9JgL3UbbXe1Rh0Y1XkslZ/4ioXQ2PMsR1bnHae7S7mHAQjBxqLZAhAYxf5/ZhgSsIq
+         I6wEzHTsPfS7qeE/XUzh0DJ5ZRdr2uWN+PnjdG6fgslDJYCCKPnbpjLgI6/TWSQLEP
+         KIUWbg+hqq0ww==
+Date:   Sun, 30 Jul 2023 10:55:58 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     akpm@linux-foundation.org, adobriyan@gmail.com, arnd@kernel.org,
+        ndesaulniers@google.com, sfr@canb.auug.org.au,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig] 2/2] fs/proc: Add /proc/cmdline_image
+ for embedded arguments
+Message-Id: <20230730105558.58a279d40e0d92eccd8ccb73@kernel.org>
+In-Reply-To: <5f3e1c5e-9456-4aa4-ae0b-6353357045d7@paulmck-laptop>
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+        <20230728033701.817094-2-paulmck@kernel.org>
+        <20230729232346.a09a94e5586942aeda5df188@kernel.org>
+        <5f3e1c5e-9456-4aa4-ae0b-6353357045d7@paulmck-laptop>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 29 Jul 2023 08:41:46 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
+> On Sat, Jul 29, 2023 at 11:23:46PM +0900, Masami Hiramatsu wrote:
+> > Hi Paul,
+> > 
+> > On Thu, 27 Jul 2023 20:37:01 -0700
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > 
+> > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will show
+> > > all kernel boot parameters, both those supplied by the boot loader and
+> > > those embedded in the kernel image.  This works well for those who just
+> > > want to see all of the kernel boot parameters, but is not helpful to those
+> > > who need to see only those parameters that were embedded into the kernel
+> > > image.  This is especially important in situations where there are many
+> > > kernel images for different kernel versions and kernel configurations,
+> > > all of which opens the door to a great deal of human error.
+> > 
+> > There is /proc/bootconfig file which shows all bootconfig entries and is
+> > formatted as easily filter by grep (or any other line-based commands).
+> > (e.g. `grep ^kernel\\. /proc/cmdline` will filter all kernel cmdline
+> > parameters in the bootconfig)
+> > Could you clarify the reason why you need a dump of bootconfig file?
+> 
+> Because I was unaware of /proc/bootconfig?  ;-)
 
-On 7/29/23 00:42, Masahiro Yamada wrote:
-> EXPORT_SYMBOL and __init is a bad combination because the .init.text
-> section is freed up after the initialization.
-> 
-> Commit c5a130325f13 ("ACPI/APEI: Add parameter check before error
-> injection") exported page_is_ram(), hence the __init annotation should
-> be removed.
-> 
-> This fixes the modpost warning in ARCH=alpha builds:
-> 
->   WARNING: modpost: vmlinux: page_is_ram: EXPORT_SYMBOL used for init symbol. Remove __init or EXPORT_SYMBOL.
-> 
-> Fixes: c5a130325f13 ("ACPI/APEI: Add parameter check before error injection")
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Oh :)
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
 > 
->  arch/alpha/kernel/setup.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> So how about if I replace this patch of mine with the following?
+
+Yes, I missed to update the proc.rst. Thanks!
+
 > 
-> diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-> index b650ff1cb022..3d7473531ab1 100644
-> --- a/arch/alpha/kernel/setup.c
-> +++ b/arch/alpha/kernel/setup.c
-> @@ -385,8 +385,7 @@ setup_memory(void *kernel_end)
->  #endif /* CONFIG_BLK_DEV_INITRD */
->  }
->  
-> -int __init
-> -page_is_ram(unsigned long pfn)
-> +int page_is_ram(unsigned long pfn)
->  {
->  	struct memclust_struct * cluster;
->  	struct memdesc_struct * memdesc;
+> And thank you for pointing me at /proc/bootconfig.
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 98c43c5ef1ee..832d66d4e396 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -684,6 +684,7 @@ files are there, and which are missing.
+>   File         Content
+>   ============ ===============================================================
+>   apm          Advanced power management info
+> + bootconfig   Kernel command line obtained from boot config	(5.5)
+>   buddyinfo    Kernel memory allocator information (see text)	(2.5)
+>   bus          Directory containing bus specific information
+>   cmdline      Kernel command line, both from bootloader and embedded
+
 
 -- 
-~Randy
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
