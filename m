@@ -2,240 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C487684AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 11:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DAB768458
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 10:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjG3JkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 05:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S229729AbjG3IFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 04:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjG3JkA (ORCPT
+        with ESMTP id S229450AbjG3IFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 05:40:00 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E161BE5;
-        Sun, 30 Jul 2023 02:39:59 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso33518065e9.0;
-        Sun, 30 Jul 2023 02:39:59 -0700 (PDT)
+        Sun, 30 Jul 2023 04:05:33 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F066B1710
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:05:31 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-317716a4622so3253158f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:05:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690709997; x=1691314797;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Rk7t1E5DhGQ1pORnpZFlzRE4LWcZ9ydkNYKXYDX32o=;
-        b=DU50+8ijaCum0qT6GV+BHzU8I6sQEAdqXZmT1iI7+9pCysXpKGr/gI20kvpbGLhDpc
-         +yRHN+5wZLbl3fK76BtNqXxEJdaVDgd5W/I5vtvJ/1i2jqrRIaVUm6JZ6jsZiyeCTzjp
-         SX6/3j5o0kxw9TyIGF/N0zqTdsKdCWi3pQPcCwOVpui/TAy26aKQwbIscdY5BOnVkGi3
-         H2BvctKPYOqtonmttjuqY8zWr6916377V53pOhFEYhxgBb8bFeXHK+rsDGPG0CvTBop0
-         jAI4GwkPkjqEEalLCw3EHaesWUGOqzxStjBNOS8ZhSYmKTINdZsoFoXBEuITq/ioHgDi
-         Coog==
+        d=tessares.net; s=google; t=1690704330; x=1691309130;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1JpH7d50QcjlB0UPKJcTbCmQKM5Qu33XaovPiSJVQEs=;
+        b=ZjH2k4XIfgl6uS73UzgK4wovQ15iQxQGiwFX7IOQscCb+shwV37MQ8aItVNiPlSuQ6
+         IlnMNRW1qAhizdzjLqAUW6E7f6R4zPGiFbPvkxnuoBHMSjGI5JXPWnR8CjcdU6n2f1EK
+         env7uzYZcAl1Gkf/V0xTRWfBZ/MpUKACyHI1DEKI3JVnd/0cMi3KiuGXhNGp9i/Ty/c9
+         /uxhBzDOKBmcAvLa7+J+i2+/MtZvlW83uieHmxKMiSBiYd04/iWy4WSjgWFzPtuitsVf
+         QgFUlBLgrG8LMpNlT49e1l+0w/rbahlCtd6LxGn5xCJA61sczDrKx3l5VMTg1FJrXsdj
+         ++Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690709997; x=1691314797;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Rk7t1E5DhGQ1pORnpZFlzRE4LWcZ9ydkNYKXYDX32o=;
-        b=Tzni7VmSjYNtjTvKhRFeCPQTynlhHbmQPGNbRwz+UNePXSkigV2tbobD1Vvt8ghJSk
-         bvk3J+mwUOtsN8Ol0CxVPqYLMkADE0P7zECpuyqDvNo+qEVw6VEIYtI5j+tN6vOJjdWf
-         oqFMctpZuUwK3ofpSitPYOSTFo75AfWQCjvwsHzR3VWtQDmitkSGDO5KQJMWgf98dMAP
-         MMc8wwF8RsDTc3K01BQlHGdZDPMCz+PK+IvQCTP73TAKY78jqT1UsNuyzwmJryDM2JDZ
-         oWnD/jjXmb+XuYEN6yllOqf5UBuXJv9nEW3tjlM/LguLuRLIlc9bv8h4iFB16eRWZPYT
-         KnOw==
-X-Gm-Message-State: ABy/qLYvFtW5dCMu8tf43IfLzFRsnOY3ZHf9MQ7n2/NivChm1yHh26Mh
-        Np5q9NSp7HcAeSP4OMXqSlI=
-X-Google-Smtp-Source: APBJJlHHdAGqkph1WHpqRloPfuqnnY0hTB29cpMqUGBeHvwkhPcSVm/x+T/jia3q3Hx+3ZISedy/zg==
-X-Received: by 2002:adf:fc10:0:b0:317:6459:e3ae with SMTP id i16-20020adffc10000000b003176459e3aemr4560322wrr.68.1690709997542;
-        Sun, 30 Jul 2023 02:39:57 -0700 (PDT)
-Received: from localhost.localdomain (host-87-11-86-47.retail.telecomitalia.it. [87.11.86.47])
-        by smtp.googlemail.com with ESMTPSA id h16-20020adffa90000000b0031423a8f4f7sm9574599wrr.56.2023.07.30.02.39.56
+        d=1e100.net; s=20221208; t=1690704330; x=1691309130;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1JpH7d50QcjlB0UPKJcTbCmQKM5Qu33XaovPiSJVQEs=;
+        b=aeacPNZGwbILRw6NEcg539v7vxVq9KcJtOXpjZ43qofI+74KskqTssZKINdvvIBjxv
+         nitnULmE3KMF96rTdMzt6jUUo8nAAHSRLm0+gOWXY2bmaBH+ANJo1Y6IiqmQ2tINThvr
+         nf37JtIL1XKruF8B6REUR4W6jUnXQ9o9HevCrVhQTdmdCrqbmCkCGENRlJ4LxGBT8y/4
+         2LgRO6xvyJpHYyom8LJCSYIOdDuwi/m2YD6pdQZx1Zqa1Q5+WaC4Lmo++mFOJUMTcNMe
+         aaRWdMlNvs1/0yQY5uqNgHaPKDShVtDD2rBwMSK8OkbrWwPI+gW1cmxDXlqYcd2LdPtw
+         +sVw==
+X-Gm-Message-State: ABy/qLauv1eoUSTyOYAwBx8vavfQwIqCnT1w6KjM30LJ+swqibEWYDQC
+        CnWGm9nn99U2rthljcgfA7TQPw==
+X-Google-Smtp-Source: APBJJlGd5gAPj/i7sI/3N9J/Nir1AuCmhJl8wHThq6nlSOmEiXmZovxjHRXi6Otdbw5V65hUCZsQPw==
+X-Received: by 2002:a5d:5101:0:b0:317:64ca:eaf1 with SMTP id s1-20020a5d5101000000b0031764caeaf1mr4424857wrt.17.1690704330306;
+        Sun, 30 Jul 2023 01:05:30 -0700 (PDT)
+Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
+        by smtp.gmail.com with ESMTPSA id z7-20020a5d4407000000b0031766e99429sm9338684wrq.115.2023.07.30.01.05.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 02:39:57 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        Sun, 30 Jul 2023 01:05:29 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH net-next 0/4] mptcp: cleanup and improvements in the
+ selftests
+Date:   Sun, 30 Jul 2023 10:05:14 +0200
+Message-Id: <20230730-upstream-net-next-20230728-mptcp-selftests-misc-v1-0-7e9cc530a9cd@tessares.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALoZxmQC/z2NQQrCMBBFr1Jm7UAaQY1XERcl/dEBE0NmlELp3
+ Q2CLv7i8eG9lRRNoHQeVmp4i8qzdBh3A8X7VG5gmTuTd37vjv7Er6rWMGUusL7F+H/larGy4pE
+ MaspZNLIbg4tpPgSkQN1aG5Is3+KFfg66btsHKLzSt4sAAAA=
+To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Atin Bainada <hi@atinb.me>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [net-next PATCH v3 5/5] net: dsa: qca8k: use dsa_for_each macro instead of for loop
-Date:   Sun, 30 Jul 2023 09:41:13 +0200
-Message-Id: <20230730074113.21889-5-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230730074113.21889-1-ansuelsmth@gmail.com>
-References: <20230730074113.21889-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1619;
+ i=matthieu.baerts@tessares.net; h=from:subject:message-id;
+ bh=R+PsDSeOsK6DRQCgnPaQ0p8AQt2Q2fy33uMXa6qwvZo=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBkxhnIeqEaf/93z9Oq2kkK8awgQo6LIJLZJuk70
+ JbrNVHBe/GJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZMYZyAAKCRD2t4JPQmmg
+ cxNZD/9y/26FJR4a4x5mXCtzWRpRNEs6apsl4qRVW5GrS8INFeu8tmHSmSi1UPe3w4HOqkzNIOF
+ sh5+Nh5JQvqUVl6stWCEYt+KhLmN3UnFbHhG18EJ6V82LAzuCBnImFTPsYDEwfBWkvXzYI0pV7W
+ M8t11X4K+AJQqnj15rYzy/gFG+T35RetnT/dsrXhBa3OGID1L9A90sWG5v7JUpx+6/5L7h8zliM
+ plGTFAOri3/5S5F2rwMrQ4QTKm1ZSwo5O6S0pt5ZeY0FVdoPuvvwNanyH6/H2WpLixxK5Be7sNg
+ m7Xery9sz3mLwW21DcXsxmtC6rQuGtJrc9m1keKOIxdefgBve/wb9U5GNYylMlwcXBp4xHRUesD
+ 8NTciPV7VU/vmVYBRYQ28qLLTQXJK7v45C/wsukEPuWQIGlnQQeGEBFVHMYwP1I+JeQ5+v+tGE0
+ AjvLfpYrkRfeygXmt2xMRUQ039qjJNi+Ey4/YnLN4/j+0h/BB4enFxhDxApJ3vvH7osV7Zqjsfn
+ tAcObFdSf42A8/VYoEwh0MTdTZx1h3bcDgENlPEB5leE8ujG2OFzQSv3AP0VZs62GmiBigM2LjP
+ 8r8oScgrtZnFPGm+9cxnU2LZPu/s0HRD6jYZ23pOHScfQLu3h182RkLXOQrm1ujOtuNs0gCo/GC
+ o/M4iQ+IGPmbz2g==
+X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert for loop to dsa_for_each macro to save some redundant write on
-unconnected/unused port and tidy things up.
+This small series of 4 patches adds some improvements in MPTCP
+selftests:
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+- Patch 1 reworks the detailed report of mptcp_join.sh selftest to
+  better display what went well or wrong per test.
+
+- Patch 2 adds colours (if supported, forced and/or not disabled) in
+  mptcp_join.sh selftest output to help spotting issues.
+
+- Patch 3 modifies an MPTCP selftest tool to interact with the
+  path-manager via Netlink to always look for errors if any. This makes
+  sure odd behaviours can be seen in the logs and errors can be caught
+  later if needed.
+
+- Patch 4 removes stdout and stderr redirections to /dev/null when using
+  pm_nl_ctl if no errors are expected in order to log odd behaviours.
+
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 ---
-changes v3:
-- Fix compilation error with unfinished patch in v2
+Matthieu Baerts (4):
+      selftests: mptcp: join: rework detailed report
+      selftests: mptcp: join: colored results
+      selftests: mptcp: pm_nl_ctl: always look for errors
+      selftests: mptcp: userspace_pm: unmute unexpected errors
 
- drivers/net/dsa/qca/qca8k-8xxx.c | 107 ++++++++++++++++---------------
- 1 file changed, 54 insertions(+), 53 deletions(-)
+ tools/testing/selftests/net/mptcp/mptcp_join.sh   | 452 ++++++++++------------
+ tools/testing/selftests/net/mptcp/mptcp_lib.sh    |  39 ++
+ tools/testing/selftests/net/mptcp/pm_netlink.sh   |   6 +-
+ tools/testing/selftests/net/mptcp/pm_nl_ctl.c     |  33 +-
+ tools/testing/selftests/net/mptcp/userspace_pm.sh | 100 ++---
+ 5 files changed, 329 insertions(+), 301 deletions(-)
+---
+base-commit: 64a37272fa5fb2d951ebd1a96fd42b045d64924c
+change-id: 20230728-upstream-net-next-20230728-mptcp-selftests-misc-0190cfd69ef9
 
-diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
-index 81c6fab0a01b..f8a573679101 100644
---- a/drivers/net/dsa/qca/qca8k-8xxx.c
-+++ b/drivers/net/dsa/qca/qca8k-8xxx.c
-@@ -1800,7 +1800,8 @@ static int
- qca8k_setup(struct dsa_switch *ds)
- {
- 	struct qca8k_priv *priv = ds->priv;
--	int cpu_port, ret, i;
-+	struct dsa_port *dp;
-+	int cpu_port, ret;
- 	u32 mask;
- 
- 	cpu_port = qca8k_find_cpu_port(ds);
-@@ -1855,27 +1856,27 @@ qca8k_setup(struct dsa_switch *ds)
- 		dev_warn(priv->dev, "mib init failed");
- 
- 	/* Initial setup of all ports */
--	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
-+	dsa_switch_for_each_port(dp, ds) {
- 		/* Disable forwarding by default on all ports */
--		ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
-+		ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(dp->index),
- 				QCA8K_PORT_LOOKUP_MEMBER, 0);
- 		if (ret)
- 			return ret;
-+	}
- 
--		/* Enable QCA header mode on all cpu ports */
--		if (dsa_is_cpu_port(ds, i)) {
--			ret = qca8k_write(priv, QCA8K_REG_PORT_HDR_CTRL(i),
--					  FIELD_PREP(QCA8K_PORT_HDR_CTRL_TX_MASK, QCA8K_PORT_HDR_CTRL_ALL) |
--					  FIELD_PREP(QCA8K_PORT_HDR_CTRL_RX_MASK, QCA8K_PORT_HDR_CTRL_ALL));
--			if (ret) {
--				dev_err(priv->dev, "failed enabling QCA header mode");
--				return ret;
--			}
-+	/* Disable MAC by default on all user ports */
-+	dsa_switch_for_each_user_port(dp, ds)
-+		qca8k_port_set_status(priv, dp->index, 0);
-+
-+	/* Enable QCA header mode on all cpu ports */
-+	dsa_switch_for_each_cpu_port(dp, ds) {
-+		ret = qca8k_write(priv, QCA8K_REG_PORT_HDR_CTRL(dp->index),
-+				  FIELD_PREP(QCA8K_PORT_HDR_CTRL_TX_MASK, QCA8K_PORT_HDR_CTRL_ALL) |
-+				  FIELD_PREP(QCA8K_PORT_HDR_CTRL_RX_MASK, QCA8K_PORT_HDR_CTRL_ALL));
-+		if (ret) {
-+			dev_err(priv->dev, "failed enabling QCA header mode on port %d", dp->index);
-+			return ret;
- 		}
--
--		/* Disable MAC by default on all user ports */
--		if (dsa_is_user_port(ds, i))
--			qca8k_port_set_status(priv, i, 0);
- 	}
- 
- 	/* Forward all unknown frames to CPU port for Linux processing
-@@ -1897,48 +1898,48 @@ qca8k_setup(struct dsa_switch *ds)
- 		return ret;
- 
- 	/* Setup connection between CPU port & user ports
--	 * Configure specific switch configuration for ports
-+	 * Individual user ports get connected to CPU port only
- 	 */
--	for (i = 0; i < QCA8K_NUM_PORTS; i++) {
--		/* Individual user ports get connected to CPU port only */
--		if (dsa_is_user_port(ds, i)) {
--			ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(i),
--					QCA8K_PORT_LOOKUP_MEMBER,
--					BIT(cpu_port));
--			if (ret)
--				return ret;
--
--			ret = regmap_clear_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(i),
--						QCA8K_PORT_LOOKUP_LEARN);
--			if (ret)
--				return ret;
--
--			/* For port based vlans to work we need to set the
--			 * default egress vid
--			 */
--			ret = qca8k_rmw(priv, QCA8K_EGRESS_VLAN(i),
--					QCA8K_EGREES_VLAN_PORT_MASK(i),
--					QCA8K_EGREES_VLAN_PORT(i, QCA8K_PORT_VID_DEF));
--			if (ret)
--				return ret;
--
--			ret = qca8k_write(priv, QCA8K_REG_PORT_VLAN_CTRL0(i),
--					  QCA8K_PORT_VLAN_CVID(QCA8K_PORT_VID_DEF) |
--					  QCA8K_PORT_VLAN_SVID(QCA8K_PORT_VID_DEF));
--			if (ret)
--				return ret;
--		}
-+	dsa_switch_for_each_user_port(dp, ds) {
-+		u8 port = dp->index;
-+
-+		ret = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port),
-+				QCA8K_PORT_LOOKUP_MEMBER,
-+				BIT(cpu_port));
-+		if (ret)
-+			return ret;
-+
-+		ret = regmap_clear_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(port),
-+					QCA8K_PORT_LOOKUP_LEARN);
-+		if (ret)
-+			return ret;
- 
--		/* The port 5 of the qca8337 have some problem in flood condition. The
--		 * original legacy driver had some specific buffer and priority settings
--		 * for the different port suggested by the QCA switch team. Add this
--		 * missing settings to improve switch stability under load condition.
--		 * This problem is limited to qca8337 and other qca8k switch are not affected.
-+		/* For port based vlans to work we need to set the
-+		 * default egress vid
- 		 */
--		if (priv->switch_id == QCA8K_ID_QCA8337)
--			qca8k_setup_hol_fixup(priv, i);
-+		ret = qca8k_rmw(priv, QCA8K_EGRESS_VLAN(port),
-+				QCA8K_EGREES_VLAN_PORT_MASK(port),
-+				QCA8K_EGREES_VLAN_PORT(port, QCA8K_PORT_VID_DEF));
-+		if (ret)
-+			return ret;
-+
-+		ret = qca8k_write(priv, QCA8K_REG_PORT_VLAN_CTRL0(port),
-+				  QCA8K_PORT_VLAN_CVID(QCA8K_PORT_VID_DEF) |
-+				  QCA8K_PORT_VLAN_SVID(QCA8K_PORT_VID_DEF));
-+		if (ret)
-+			return ret;
- 	}
- 
-+	/* The port 5 of the qca8337 have some problem in flood condition. The
-+	 * original legacy driver had some specific buffer and priority settings
-+	 * for the different port suggested by the QCA switch team. Add this
-+	 * missing settings to improve switch stability under load condition.
-+	 * This problem is limited to qca8337 and other qca8k switch are not affected.
-+	 */
-+	if (priv->switch_id == QCA8K_ID_QCA8337)
-+		dsa_switch_for_each_available_port(dp, ds)
-+			qca8k_setup_hol_fixup(priv, dp->index);
-+
- 	/* Special GLOBAL_FC_THRESH value are needed for ar8327 switch */
- 	if (priv->switch_id == QCA8K_ID_QCA8327) {
- 		mask = QCA8K_GLOBAL_FC_GOL_XON_THRES(288) |
+Best regards,
 -- 
-2.40.1
+Matthieu Baerts <matthieu.baerts@tessares.net>
 
