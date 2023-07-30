@@ -2,112 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F4A7687E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD3E7687E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 22:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjG3UXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 16:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
+        id S229973AbjG3UZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 16:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjG3UXi (ORCPT
+        with ESMTP id S229478AbjG3UZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 16:23:38 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49A4E78;
-        Sun, 30 Jul 2023 13:23:37 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31771bb4869so4108939f8f.0;
-        Sun, 30 Jul 2023 13:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690748616; x=1691353416;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vYtuaLSa3SGm5E8omUOIenjmbSci2X5VPEYpr2AFA4=;
-        b=ZtXACvOSAuWFvc3YOp2Alqp5WlBQl0KfEyzpuv6eY8gclBHIvs0aajZvCYwU/VVwKk
-         yHRxigtS8j2wKitnrMiNg/s+VsC2hoZCpuWCEEKOk2p1G4CEOKz5nTyb/d0TVlAD7gEF
-         T9DwcNSaMXeZ9M0XuvZ1tyVFm1TaqKFKISZR8+5DY5eCteH+Aeazz5nXPsSY5CQ/0Nz3
-         23GTR6lBAuMQcDrR6f8ey44/PnPt9qnMKEpRWwX64KtUgLjKYkYJgc78dL+wSgofrFRU
-         XtOPv223adiEn2JE4xvdyuP8mvSUyBZxRWuNGmvj3AmKa59gFCLcC4KrAkqrSEj5r2RU
-         3sfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690748616; x=1691353416;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/vYtuaLSa3SGm5E8omUOIenjmbSci2X5VPEYpr2AFA4=;
-        b=a9i+EjfHKrpdcLPmRP2C/s5TPgpDC5ThrkFQHZHH/S+HFuyo8bAiIwB3Qc5bPNBdpU
-         hk7uhFwYCGdTf8iOIVVXJDXAQhygPyiONyC2SwnyaUhl4yfrJYkgRx6db34U4I6YBr4j
-         9GTz8umktfV856smIHZFxyDYgYAXaJ65Ze2SReN061Gw2+IUI6PxSlyoiXVsBmxPsGg2
-         acobrPwSEiuu56k3akXePEMFJbASapg4+gJTDGB+/hKHA8+FYJIy85iMeLlIQySOSSr/
-         Ilic07iOtbggc49mRtuxhv0J39HaQYkVTzqkA/JywcqIQp/O9/xXGzzJJoVVP5bHcNOe
-         yUIQ==
-X-Gm-Message-State: ABy/qLYFUjXW7hzkwkCvHQGOc1iBwIE5OKd11tw8VUjaCOGsbqY5DhXo
-        1D93IeZzdO3V+x4xyc6GEYhRYs5a/5y96A==
-X-Google-Smtp-Source: APBJJlHzJ/scDx/KxfBt5DF6cNHWYrD53yHSjsI6HW8/9R06q8uIAOH959VKXhAax0YHT4vqXJ/lpQ==
-X-Received: by 2002:a5d:5101:0:b0:314:3ca0:c8c2 with SMTP id s1-20020a5d5101000000b003143ca0c8c2mr561546wrt.11.1690748615883;
-        Sun, 30 Jul 2023 13:23:35 -0700 (PDT)
-Received: from tpt440p.steeds.sam ([2602:fbf6:10:a::2])
-        by smtp.gmail.com with ESMTPSA id e5-20020a5d5005000000b00311d8c2561bsm10814398wrt.60.2023.07.30.13.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 13:23:35 -0700 (PDT)
-From:   "Sicelo A. Mhlongo" <absicsz@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-omap@vger.kernel.org, "Sicelo A. Mhlongo" <absicsz@gmail.com>
-Subject: [PATCH] bus: omap_l3_smx: identify timeout source before rebooting
-Date:   Sun, 30 Jul 2023 22:22:40 +0200
-Message-Id: <20230730202240.898519-1-absicsz@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Sun, 30 Jul 2023 16:25:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80318E6F;
+        Sun, 30 Jul 2023 13:25:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1316D60CA3;
+        Sun, 30 Jul 2023 20:25:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DAAC433C8;
+        Sun, 30 Jul 2023 20:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690748710;
+        bh=x1t0wCpNg2HmSz334jJtp+B33GOT7KvodGTWYjxWMcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O96Knyjpbnv+P1a9fe0v+3sttKCx2Am5WWJ36UC1DFi5g9hoFz0bdOv3aBbGkg+D1
+         loE2omnCWusus7JTKey3qGoR/scHz1jZ0N2Me99L2hNTTe1NrKPZbDIYXtRo8gTH5q
+         fbN43ZRtzAGIkCyPoQs8/b8aID+vWwBbTDky51dG3s6KAszwzpYxxkdjoYHNsSUJIr
+         HG/0xsYAmaC/Lg2+3r0kaE1GNv5n8MmHOrJwGMBhDmdPM+38WQqgSc2KysE7bx50Gm
+         vMTpcDAbSeZHc4SPG+EZ+bksDwH/0419N7cQoEfybCiNJ+7zOk8w+d6kOvi/H7Ng25
+         aOi6PupPCaPhQ==
+Date:   Sun, 30 Jul 2023 22:25:07 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+Message-ID: <20230730202507.ojwinyjsx7ygyavp@intel.intel>
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-3-clamor95@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230729160857.6332-3-clamor95@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Identify and print the error source before rebooting the board due to an l3
-application timeout error, by delaying the BUG_ON. This is helpful when
-debugging, e.g. via serial.
+Hi Svyatoslav,
 
-Signed-off-by: Sicelo A. Mhlongo <absicsz@gmail.com>
----
- drivers/bus/omap_l3_smx.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+(I'm not going to comment at this stage on some coding issues)
 
-diff --git a/drivers/bus/omap_l3_smx.c b/drivers/bus/omap_l3_smx.c
-index bb1606f5ce2d..70f4903d5468 100644
---- a/drivers/bus/omap_l3_smx.c
-+++ b/drivers/bus/omap_l3_smx.c
-@@ -170,11 +170,9 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
- 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_0);
- 		/*
- 		 * if we have a timeout error, there's nothing we can
--		 * do besides rebooting the board. So let's BUG on any
--		 * of such errors and handle the others. timeout error
--		 * is severe and not expected to occur.
-+		 * do besides rebooting the board after identifying the
-+		 * error source.
- 		 */
--		BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
- 	} else {
- 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_1);
- 		/* No timeout error for debug sources */
-@@ -190,6 +188,12 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
- 		ret |= omap3_l3_block_irq(l3, error, error_addr);
- 	}
- 
-+	/*
-+	 * BUG on application timeout errors since they are severe and not
-+	 * expected to occur.
-+	 */
-+	BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
-+
- 	/* Clear the status register */
- 	clear = (L3_AGENT_STATUS_CLEAR_IA << int_type) |
- 		L3_AGENT_STATUS_CLEAR_TA;
--- 
-2.40.1
+On Sat, Jul 29, 2023 at 07:08:57PM +0300, Svyatoslav Ryhel wrote:
+> From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> 
+> Implement driver for hot-plugged I2C busses, where some devices on
+> a bus are hot-pluggable and their presence is indicated by GPIO line.
+> 
+> This feature is mainly used by the ASUS Transformers family. The
 
+But not just Asus, right?
+
+> Transformers have a connector that's used for USB, charging or for
+> attaching a dock-keyboard (which also has a battery and a touchpad).
+> This connector probably (can't be verified since no datasheets or
+> special equipment is available) has an I2C bus lines and a "detect"
+> line (pulled low on the dock side) among the pins. I guess there
+> is either no additional chip or a transparent bridge/buffer chip,
+> but nothing that could be controlled by software. For DT this setup
+> could be modelled like an I2C gate or 2-port mux with enable joining
+> two I2C buses (one "closer" to the CPU as a parent).
+
+the description looks like it's hiding many doubts for a commit
+log :)
+
+In the commit log we want to be sure on what we are doing.
+
+[...]
+
+> +static int i2c_hotplug_activate(struct i2c_hotplug_priv *priv)
+
+there is no point for this to be "integer".
+
+> +{
+> +	int ret;
+> +
+> +	if (priv->adap.algo_data)
+> +		return 0;
+> +
+> +	/*
+> +	 * Store the dev data in adapter dev, since
+> +	 * previous i2c_del_adapter might have wiped it.
+> +	 */
+> +	priv->adap.dev.parent = priv->dev;
+> +	priv->adap.dev.of_node = priv->dev->of_node;
+> +
+> +	dev_dbg(priv->adap.dev.parent, "connection detected");
+> +
+> +	ret = i2c_add_adapter(&priv->adap);
+> +	if (!ret)
+> +		priv->adap.algo_data = (void *)1;
+
+You want to set algo_data to "1" in order to keep the
+activate/deactivate ordering.
+
+But if we fail to add the adapter, what's the point to keep it
+active?
+
+> +	return ret;
+> +}
+> +
+> +static void i2c_hotplug_deactivate(struct i2c_hotplug_priv *priv)
+> +{
+> +	if (!priv->adap.algo_data)
+> +		return;
+> +
+> +	dev_dbg(priv->adap.dev.parent, "disconnection detected");
+> +
+> +	i2c_del_adapter(&priv->adap);
+> +	priv->adap.algo_data = NULL;
+> +}
+> +
+> +static irqreturn_t i2c_hotplug_interrupt(int irq, void *dev_id)
+> +{
+> +	struct i2c_hotplug_priv *priv = dev_id;
+> +
+> +	/* debounce */
+> +	msleep(20);
+
+can you explain this waiting and why 20ms?
+
+Andi
+
+> +	if (gpiod_get_value_cansleep(priv->gpio))
+> +		i2c_hotplug_activate(priv);
+> +	else
+> +		i2c_hotplug_deactivate(priv);
+> +
+> +	return IRQ_HANDLED;
+> +}
