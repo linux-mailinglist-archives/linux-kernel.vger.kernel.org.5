@@ -2,69 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A56768932
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB44768936
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229615AbjG3WxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 18:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S229628AbjG3Wyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 18:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjG3WxM (ORCPT
+        with ESMTP id S229449AbjG3Wyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 18:53:12 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E5CAB;
-        Sun, 30 Jul 2023 15:53:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe1a35a135so5515959e87.1;
-        Sun, 30 Jul 2023 15:53:11 -0700 (PDT)
+        Sun, 30 Jul 2023 18:54:45 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF6B189;
+        Sun, 30 Jul 2023 15:54:44 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5221f3affe4so5236417a12.0;
+        Sun, 30 Jul 2023 15:54:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690757589; x=1691362389;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LolaIywE6Sh5m79upv1Hlv7iJcp6yOQ3wePrb1ubGYo=;
-        b=jTqShHh3AKaXKv+/TOf7Dw67nNE8EsUvCRjvuM8F9L7rnfNY2qpL1Q/maOoBmdqtab
-         Q1qbNzNQq6ZqXcm/LzLenqy4sKr4vz3kR1wrDmMrmQifr8G+SEuHb3i3ArBT2VL7TLj6
-         ZKfwz4Lz4ssg1H1ZlnnIDg7VZD+nbVRBNHzrfPlFVnw97Q0sMpavFJT65tdagB4NVqo6
-         3OnApNsFLLk7DJWQwtePRfmgIw5tEhHz6xU5oGxAZtGNthrOaRCk2wTmFyyX9g7flkCW
-         rrtIxgsT1dXHW3srqz+8ptSc0Q1eGoWuO4ae0Eng4UT7f3bHK0HP7U3d8EzezP5QOtzY
-         nIWQ==
+        d=gmail.com; s=20221208; t=1690757683; x=1691362483;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=5id/UpecirppNKHw6frQ7LNJC/s0/wNTJgIw2H535Gg=;
+        b=pfLzsG0gwcGduiDbOQnsiHv9rXg4h/DTOju4W/hI9JKQcFbVYt7/Oj/dmPlZDZl4mn
+         Zl2G6q6rG/Io1ShjiNrIpZM6Ggyoqd2iGmNLh4+4B+YUdmzpqxLPkeIF+RT6OgRUbCCh
+         pfuPZvvJ48JW+eXz+k5cEFOvlW1OE9nSM/WgBpvM+wseJoqfm7hzmQvE9WqFNudHFizL
+         2SHlWAIOIQ/Hd9mcpLCxl+Tw3ZHdHmsoDvSaFVhia8ne0CoZVgKzTX/OtbjN5TM9uRl2
+         SndIiRJ9wUfKaXVDYHpsPmyxnZjdZAid+HOqooQ1zxYgBdSPqlduAKdvNpvVeb/cUga5
+         mnQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690757589; x=1691362389;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LolaIywE6Sh5m79upv1Hlv7iJcp6yOQ3wePrb1ubGYo=;
-        b=CU0vx1hVhCl1MK7FNjLB2lc8lr2KhldFlYtNNhSzsVt+qsTkDIrA8a7PfhwWUjEd9/
-         lrajkzX7YjMqIrwpOiAxxzzyPinIIYtvj9BKLaKbGveD+rXJluwyA2k0AD3zxhjuEQ5m
-         F/T8NqqG2iSEGcJuaN0rMM8V2pySAJRqJlpB9fL90dr+hufeBYtTSLYfcIY38LReSbOo
-         pAVfE8tt6XmGCsVVfci510B05VgT4/de8WiM+90bmzLi5wvYLOQFI8TZP2L8iUp2tazP
-         MhmoS7XFKrNFCf/V/MssUnU1RKMADG748v3FkdPMtX6yTPgHYk+WnSy05dsWL+u2dP2k
-         rqFA==
-X-Gm-Message-State: ABy/qLYm5F3k/xEugM06V4KSIPRnmzg9UeQ9afNhe1XHnPaF+rBLnnhv
-        z1f1P6v/9gn6M29HBQswHhc=
-X-Google-Smtp-Source: APBJJlFcCh/Jqh3WTePQM0jpaW7rqln031MmdUN+IobVOmTzYSo6PVlzPI/t5X0zqw0y9G+PCtE+Fw==
-X-Received: by 2002:a19:ca5b:0:b0:4f8:710c:e2c7 with SMTP id h27-20020a19ca5b000000b004f8710ce2c7mr4263989lfj.33.1690757589451;
-        Sun, 30 Jul 2023 15:53:09 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id v24-20020a1cf718000000b003fc05b89e5bsm9604089wmh.34.2023.07.30.15.53.08
+        d=1e100.net; s=20221208; t=1690757683; x=1691362483;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5id/UpecirppNKHw6frQ7LNJC/s0/wNTJgIw2H535Gg=;
+        b=liveDx/40dLY1JVtpQvW0flCQkVzZWEu3Z0giz6rm2Amj+/+D4vWQ18qvRuocKz6UK
+         ANMfA3e+oCh9wCVfKNcpM2tsX8dqxC3eUkxw+Z2Ljc1cHeldrhefmvRRdyaWkcu5SqqN
+         s4ctW5YSoBlb3ZMhapvZxiDTaPJEavZyksikx5+GSrIKYRqEyjx7tpqSB62VgCDNjwI1
+         SUySxCqfJE5xgnNCsEPqZ1yMqLFO9OdUQ28LtmrBGM9m2dfwpnAgHamQDTC428/Nruto
+         xU7gy5lZRWSRG6avVFVj6IjXU6LGfCip5bAglwTa1fFEo1JS6PzSTxDSbFbwu6Heazy2
+         fxCg==
+X-Gm-Message-State: ABy/qLbB9AydBl8LhVUwAAvlJNWSAjMZQrMcUde8QlBm60vm21Bv+eEC
+        wlECMhUqy3z0XrYnTrDl0Es=
+X-Google-Smtp-Source: APBJJlGIQFooEtH+R4RbuRtOKCXAMUOZDuMNzPQFGdNFlju1t+lp6Tmxh/pX9CZ3dxaXuokbu6R9hQ==
+X-Received: by 2002:a17:906:a097:b0:99b:d89c:9dd7 with SMTP id q23-20020a170906a09700b0099bd89c9dd7mr3938179ejy.77.1690757683086;
+        Sun, 30 Jul 2023 15:54:43 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id bq6-20020a170906d0c600b00992ca779f42sm5215809ejb.97.2023.07.30.15.54.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 15:53:08 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, wens@csie.org,
-        samuel@sholland.org, ulf.hansson@linaro.org, mripard@kernel.org,
-        Zhang Jianhua <chris.zjh@huawei.com>
-Cc:     chris.zjh@huawei.com, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] clk: sunxi-ng: Modify mismatched function name
-Date:   Mon, 31 Jul 2023 00:53:07 +0200
-Message-ID: <3174068.5fSG56mABF@jernej-laptop>
-In-Reply-To: <20230722153107.2078179-1-chris.zjh@huawei.com>
-References: <20230722153107.2078179-1-chris.zjh@huawei.com>
+        Sun, 30 Jul 2023 15:54:42 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 6224F27C0054;
+        Sun, 30 Jul 2023 18:54:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Sun, 30 Jul 2023 18:54:39 -0400
+X-ME-Sender: <xms:LurGZDrPinLNvU2nY6Ddh64RG6JT3kkxuM4IszkfwH3m30V622HXKw>
+    <xme:LurGZNpzthjNV382ifYBwdXuujj6zoWmO9oTWoVb9rtFiujwl9RdaHpz_DGcdxaYo
+    dFq7KTELhHoaNfG8g>
+X-ME-Received: <xmr:LurGZAOIHUKBYTfcM8sUnaWbcU931Lk-aa2AiqOTERDMAHhwXB_GLVGm57g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjedvgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudekhffg
+    geelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:LurGZG4HbfDSvUVyHV9OPyBKx-4u3URvOilubmsdUSfpjtAIRFP11g>
+    <xmx:LurGZC7CxMxdrFKnL3klSS6eRuYXpMgQ17WFwVnMLzgtpbZghjdSUA>
+    <xmx:LurGZOidil28DYshv2TC9_ihq3SPwXsGbTdf2TAxf9BJRRx_UDfYYg>
+    <xmx:L-rGZOPUVjBHUIhmYeL2cEJskWLPdc7XiyQxgw49fo120iJZ3pnj7w>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 30 Jul 2023 18:54:37 -0400 (EDT)
+Date:   Sun, 30 Jul 2023 15:53:57 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Fox Chen <foxhlchen@gmail.com>,
+        John Baublitz <john.m.baublitz@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        Andreas Hindborg <nmi@metaspace.dk>
+Subject: Re: [PATCH 1/3] rust: allocator: Prevent mis-aligned allocation
+Message-ID: <ZMbqBfEI9CuT0FUe@boqun-archlinux>
+References: <20230730012905.643822-1-boqun.feng@gmail.com>
+ <20230730012905.643822-2-boqun.feng@gmail.com>
+ <CANiq72nf4N_HXOAZupM_Gq=c0jg-L__YUQtx4fSRpNuRqt4JAw@mail.gmail.com>
+ <AWaNaTAJOJWWnEqJGgGsUTg8NiFGODsiRHl2OJRPb6XvWdXR8IuH7AjLgFn0OH1m_UZKHAcDFoElSPNXKQvgahydWGy3sE4lGEH2W9S-Kdg=@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AWaNaTAJOJWWnEqJGgGsUTg8NiFGODsiRHl2OJRPb6XvWdXR8IuH7AjLgFn0OH1m_UZKHAcDFoElSPNXKQvgahydWGy3sE4lGEH2W9S-Kdg=@protonmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,19 +124,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sobota, 22. julij 2023 ob 17:31:07 CEST je Zhang Jianhua napisal(a):
-> No functional modification involved.
+On Sun, Jul 30, 2023 at 10:41:54PM +0000, Björn Roy Baron wrote:
+> On Jul 30, 2023, 10:43 PM, Miguel Ojeda < miguel.ojeda.sandonis@gmail.com> wrote:
+> > On Sun, Jul 30, 2023 at 3:29 AM Boqun > Feng <boqun.feng@gmail.com> wrote:
+> > >
+> > > +// Note: Although these are *safe* functions, but they are only generated at
+> > > +// `GlobalAlloc` callsites, hence we assume the parameters obey the same
+> > > +// `GlobalAlloc` function safety requirements: size and align should form a
+> > > +// valid layout, and size is greater than 0.
+> >
+> > Thanks for adding all the `// SAFETY` comments here Boqun!
+> >
+> > Björn, do they look good to you? (since you fixed the issue in the compiler)
 > 
-> drivers/clk/sunxi-ng/ccu_mmc_timing.c:54: warning: expecting prototype for
-> sunxi_ccu_set_mmc_timing_mode(). Prototype was for
-> sunxi_ccu_get_mmc_timing_mode() instead
+> Based on a quick look, yes. The __rust_* methods that are normally generated by the compiled directly jump to the respective global allocator method, so they have the same safety requirements.
 > 
-> Fixes: f6f64ed868d3 ("clk: sunxi-ng: Add interface to query or configure MMC
-> timing modes.") Signed-off-by: Zhang Jianhua <chris.zjh@huawei.com>
 
-Applied, thanks!
+Good to know, thanks!
 
-Best regards,
-Jernej
+> >
+> > On this comment in particular, "generated at `GlobalAlloc` callsites"
+> sounds a bit confusing to me. Would "... called by the compiler with
+> parameters that obey ..." make sense? Or does the sentence refer to
 
+Agreed. It's better. So reword as below:
 
+// Note: Although these are *safe* functions, but they are called by the
+// compiler with the parameters that obey the same `GlobalAlloc`
+// function safety requirements: size and align should form a valid
+// layout, and size is greater than 0.
+
+Regards,
+Boqun
+
+> the normal case (i.e. when the functions are generated)? Anyway, it is
+> not a big deal.
+> >
+> > Cheers,
+> > Miguel
+> 
+> Cheers,
+> Björn
+> 
+> (resent as I accidentally sent html instead of plain text)
