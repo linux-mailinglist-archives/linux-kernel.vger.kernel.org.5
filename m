@@ -2,130 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A43768925
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E41B768926
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjG3Weh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 18:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S229541AbjG3Wgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 18:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjG3Wee (ORCPT
+        with ESMTP id S229379AbjG3Wgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 18:34:34 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6654FAB
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 15:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690756472; bh=aKix5vI82drtxsFJdrJm0j7tUyn/l8L90W2u/GMMIY8=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=ZxQ8zgchK2eVTF870eZXOfgQ1CIfB+WBlA1AytsoMRcYlE9kVDNeaDa70Mn2YTWU05pSDE8tzK/7jxyo9rDa7bNmGmn2olWxCC/skH5higudmeBsbs1GOIsJO8TfxIg5JFDX0AFjZuk/KQVvqRJtAfEiaODKiOEHcIS5tzECBZrpAuE4D3rWXwAdMULvu9PCJVD39t0dDc9R9QLFSjIEg7MbCsOjU2YI2LBVKlYqvzZPMuQV8p1Z01k5RsOYJ3b+RmhzXmoyG1iwwj5Oeav8Q3AXgK4ERBzQDeqLV8KDXNzg/qS1xKbj2io9ZuuV/gGvD0eHNcrBoT5UyW2SBdFinQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690756472; bh=LE4U9gxfE64/qhnYX5v/EEqd+oDxql5K6YFnogBbDsk=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=a9cE3zt1BOR924ad8EsbxLkMeRe90+iqwaJldoY8e3Xze05WlDVb1s6DMB8L+7o5tWyp1Y9KgutAdXq+CWIdiLeQ8+5v88f+W6nFqtsgXUZI+JjofTK1HZ809daFQuW5y93y+Ea9krH47a6ssiO/Nz/jfDnapU6gX7H38+JMqWrApb7xIfEoBH9Tmr7adi1q4Ed+PKczVOkP2Qdcs4j5ds6DfdQrmQXFFe/DId0n2Jw5YxzivtKPH4lzin8exAzbvDpTI7nLTSkIZZz0f7vipwkNbYXoB2wA5bV5FW3dxSHxTfsS06e9rcuazS4OYdPYzhocUFqYdC6uVqY1yDAn0A==
-X-YMail-OSG: _ArBdX4VM1nGidBTqFVjB1RbqRDoUeZGvKd7C2DYH_tAMVmkGyAD_gzehRfyof3
- 2PmStS5mzzYlFwyHlpetITLkljKGNskDAiT52lSkx8ceLqBvWGFFpk4EOZEdO_CHuvY6OD4VZB2J
- 9qYvzclwvflHJhAI3jcMprLd0Xcqi04QJauNgc_dpXCdEHzHrwCjIZE2DGFp1uZK0YCxp0ele2MO
- cJx6YEURirQvNLG2ZbhjUYYVxpKkwPgSsaTB5gHbr3z_Qvqj64FBGAoQjeC6zBYXpmx.FYomox7I
- To6Hvovx.ZkH5fsbEbVQP0N3iZrtiemZ5KMKDB7SkZg6AyzavTlFuXN3L3M3BbF.r2GiMyUpxFJO
- ywsSxLdR.gYri4L7jBz.7uSge8dHmc0c5lu1kbVy2Jof6c.qC8Cl.Wfwnif_cOwfk9QcYFs2oPFL
- 6qHkE3j1CJuetJ6me.APowlnnFL3FUyZmSNi_V05FpL3P9bRTa9.7KqpL8lqvKRrHSP3s0c70hDi
- wewyMTX947KPL6QIoOaEwe7lN3DGZlXfOjdRzz1gW.ZMKhnOQ7fv6Lbqr99T7imrn3r3j9R920Iy
- 8OKvA_AOV_.yy8sziTvKY5kVpPETFRSljsIhADCgG66PFqTHEiJOhd5_ZCljRv8TQzYaiphA4LdX
- K.3xgBYlS2f7S0yK6bzzImnEoRPP_KFLJvnoSGNY3bwYgtKRyoG4twR5YBZPUPCvZc6HrEtuBnyi
- lhR5Z2k1dmfYcgJ3lw3livol7DlphnGad7ikXfQfBkE8XMIskahBYIdlT1rWQMsPsp_r..R6kcaI
- Mqi1jJhWz08kOx0Xy9UOAHG8vdLktyGQxIeoco9bP9xVJBdVokvI6JsGxPBgJFaSs04lPBLjDYEB
- znr5T_zWKl9rh_MOHjviq_JKVVk50xYwtCZ7.ijmdL6nn385oW6rQ4v.713hBo11o.juWKhB_.CU
- Yn5jqCH2v8eNrFve9J7B6L6.3cf4YQgMpCLSsFCI1mRQFtSDxrEXUtWMIxKs8z7X4Qz13SZVWATF
- nMzALdh9moaEaKmXmS0jCoXZi82y25cytRoR9viWsKC4kvpPVD02s5maug5CPQp2Ua1B2FpFVn6U
- hL5vgdAI0RZg3NjTtsfQmgF3NF0GZUtrQiElaparn3u4XeuMWQ1Y.Atwgx0Z8YOA5_p9NePw415V
- NgjYSq8xzh69oqqY90ZP7Z9eSQCnzNg5j8Vsa_PCKLEZsnhE9qJ3aCYCFJE6oLZ45cb9IN3bidI5
- IP9CwK3QYnnQahHA4rBQrSw9.B3kl.2ZzKI2H2TyYo9k64yg5zTG5.E..ZLqqAj0doaGkvvd28eG
- Ib88FNaiJmS8W0qRi9wWY3Gpd7Ir4HytisRLsnYQwrO9csGnTG25gtXRQEGFwIZ_ylkCpfHy9fO2
- DqfqfhokLTk42bX69HncljcV2NSjeCwYteNmLjlxCoPsQurDy1DHoXnaLu8EVJM.009BLjpAZg9a
- 1GKzfZpVFAXElnpbXPW9p7jMhxsC9jL35n5HJ63z_N4aB_MmUyxvxHnalDeFg_NnT5dymVLGNK_W
- QyFe45PohCY9eLYTgH5Lfl8Cgf1Nz4eSuTchCTiDh01t.8ZJKkfyg40lAq3nHiSrH6BcU1yS7.9f
- d3LgzLQI9nuDBOzm_Z9gToVTokzf.8yAG3CHAKs4p14RzR_L_FIz77c.LnYdctWbcq.d6T1DNl0Y
- XjImwU8pb2_UefI86w_lwsNcFUyNYQzRh6JbFO1tvzlixZvRqr1F1MQhj8BGMdNc53j1_yfD5ejD
- Sjfx1emjqScUwO4mqI8doNaRKeikX4uEAijVGM2D8PL4UJabpRONE7jb.kdJuczT1kpEeA3UVYyZ
- YmGq_a8i09S0AIA2h.SIP.gb7_Qz75f1xBAGHpMyJzlc3S6fRjWT7ExOuI2LI_DzCORSjQQqT591
- 6r1y7tb_h6YmNzGWEEKT48Fl5mJUkWDlGC.GK2Yyy7JHtTR0XkzwRrco0eM8SqmyE6DKPxCsTlCY
- O5ni5oBxGdFqdTVy9Y._AnzUi1uwpUfK.yfDoxXUbTEUdW_TT02l8siKjkXMXZX2YKqaLm4THbGN
- BlR0SMyURg8.G3TnC27OeSMg6K8kEjP9AZv9W2lzYl2ZKWbedSUEUvXYYQBceGsUO4zqT6n5K3XR
- APuBYlq7BR8d_ZP_890WoHE8DLPjKDms2I3crLPw_t.zkUYUR.32NpRmVO2BWOSls7am0lpjnwDR
- pCyO_kZLg7.4rTPEpqBetlv9OPxEZuRL.2MzJQ9GiECFXnb4O9iJaie6zeLssTN2MD5.6BENdiXz
- o7a1mHA--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: c3a89b9d-88a5-4ca0-bc48-b72059988390
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Sun, 30 Jul 2023 22:34:32 +0000
-Received: by hermes--production-gq1-7d844d8954-4zvpd (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ac6118e96f5bc100bda3c1c8526cbebe;
-          Sun, 30 Jul 2023 22:34:26 +0000 (UTC)
-Message-ID: <2882094d-3551-09c3-a192-ce9b3f80758e@schaufler-ca.com>
-Date:   Sun, 30 Jul 2023 15:34:25 -0700
+        Sun, 30 Jul 2023 18:36:44 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E272999
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 15:36:42 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7878e573827so149465239f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 15:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690756602; x=1691361402;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lDvvnEzdFIrdUiG83WsNjbCP3bQWatbIJ8fJqr65Lvk=;
+        b=brm40JYbJ8D9cKsi0SYHbq2R8Px7z2MxFgw30dbmSpPNYS4S7dSh3moFhzNGY72RcY
+         L4Uf8QsVR0JCAlT111GdXnMFLtJNi3t2AwkHldFldXvu/JLn4+GPI1w51LBgLyJrqNRG
+         5uRhuWpzcqAr2z114rsG/fVBGkMxPRCMayXEkomolOyojgg3G/t7eiuV88hIU1hbAZlg
+         7r4hQhDCgRsSAkBZtT7KfX9+UfFmu2mAiX7VwfmLmOb+LBNYHdxEp0GHlaIf8lGzZAFa
+         QzlOoQrEFk5JteZGI/W8FBPzb4epOYKiTaoOC8aMGPWkw1cOPcSZgiyqqorZgJijGLtK
+         HsZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690756602; x=1691361402;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lDvvnEzdFIrdUiG83WsNjbCP3bQWatbIJ8fJqr65Lvk=;
+        b=KtczhDVtqQkfP15rPOMe4EaGPok3sFmH+r+68ozJpid6uc1Uuc9d7T76AiLeFCDFHP
+         FdKZvNq1GSjbAgfTEQnqLAxhW1A7tGP0QUs2+Py6N5LvIz9KWJDuQRY9tQI1MCw8Ioin
+         37PX7oKO87F8ynwAMDtN+sNRMISe854MbbNKarSavry1bB/jO9Ebl3bL0HNxmxIhP7bl
+         yODFsZybovu654cXkP7eZFdqCi1brr94eDzJ/q+zCIJtav9anR2C7whNJGNa9Kyxdh/s
+         /R8UzBp1XPnV+9v2RzvihlcYk85hJPtdtICUuUSv/adCbuxdCpGC0AITWykTWWBfCQVs
+         LsQw==
+X-Gm-Message-State: ABy/qLbydqARoAPxbcGtc12diekiwM0hBClgZsFLVcncr0RaBwIeDbAi
+        VFTY9JVo4td/tZxxXj3xrds=
+X-Google-Smtp-Source: APBJJlFSeTxbJz+kawr36922RXoKnx+mSdsRkXymnAy8jdS+NwJwYa0mEuVdDNb01tly07EVueCYsQ==
+X-Received: by 2002:a5d:8701:0:b0:777:8e86:7702 with SMTP id u1-20020a5d8701000000b007778e867702mr6405754iom.16.1690756602215;
+        Sun, 30 Jul 2023 15:36:42 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id s5-20020a5ec645000000b0077e24ace3edsm2935405ioo.52.2023.07.30.15.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 15:36:41 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 1/1] drm_dbg: add trailing newlines to remaining callsites
+Date:   Sun, 30 Jul 2023 16:36:31 -0600
+Message-ID: <20230730223631.55295-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v12 04/11] LSM: syscalls for current process attributes
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
-References: <20230629195535.2590-1-casey@schaufler-ca.com>
- <20230629195535.2590-5-casey@schaufler-ca.com>
- <dde1ce1f-280d-f4b2-4bb0-bc9d8a6894a3@digikod.net>
- <CAHC9VhRvNLYE6aQJ9-LReLGQ5304j7wC4MLN1B7X8LV=2zgyXQ@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAHC9VhRvNLYE6aQJ9-LReLGQ5304j7wC4MLN1B7X8LV=2zgyXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21647 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/2023 3:28 PM, Paul Moore wrote:
-> On Tue, Jul 11, 2023 at 11:36 AM Mickaël Salaün <mic@digikod.net> wrote:
->> On 29/06/2023 21:55, Casey Schaufler wrote:
->>
->  ...
->>> +/**
->>> + * security_setselfattr - Set an LSM attribute on the current process.
->>> + * @attr: which attribute to set
->>> + * @ctx: the user-space source for the information
->>> + * @size: the size of the data
->>> + * @flags: reserved for future use, must be 0
->>> + *
->>> + * Set an LSM attribute for the current process. The LSM, attribute
->>> + * and new value are included in @ctx.
->>> + *
->>> + * Returns 0 on success, -EINVAL if the input is inconsistent, -EFAULT
->>> + * if the user buffer is inaccessible or an LSM specific failure.
->>> + */
->>> +int security_setselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
->>> +                      size_t size, u32 flags)
->>> +{
->>> +     struct security_hook_list *hp;
->>> +     struct lsm_ctx lctx;
->>> +
->>> +     if (flags)
->>> +             return -EINVAL;
->>> +     if (size < sizeof(*ctx))
->>> +             return -EINVAL;
->>> +     if (copy_from_user(&lctx, ctx, sizeof(*ctx)))
->> I'd suggest to handle all the user space copy here and pass a kernel
->> pointer to each LSM hook calls (and handle kmalloc and kfree here, if
->> needed).
-> Agreed.  I thought I mentioned something like that at one point, maybe
-> not.  In general we should do whatever user/kernel copying and sanity
-> checking in the LSM layer that we can; there will be somethings we
-> can't check, but those that we can, we should.
+All callers should uniformly include a trailing newline, the vast
+majority already do: 207 DRM_DEV_DEBUG, 1288 drm_dbg.  Clean up the
+remainders, in this and next commits (split for easy acks).
 
-That is in direct conflict with the "thin LSM" concept. My recollection,
-and it could be wrong, was that you wanted the user space copy in the
-LSM specific code. Maybe I'm wrong. I will move it into the infrastructure.
-It will make the code simpler.
+No functional changes.
+
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ drivers/gpu/drm/drm_connector.c                |  4 +++-
+ drivers/gpu/drm/i915/display/intel_ddi.c       |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |  4 ++--
+ drivers/gpu/drm/kmb/kmb_crtc.c                 | 10 +++++-----
+ drivers/gpu/drm/kmb/kmb_plane.c                |  6 +++---
+ drivers/gpu/drm/msm/msm_fb.c                   |  6 +++---
+ drivers/gpu/drm/vc4/vc4_crtc.c                 |  4 ++--
+ 7 files changed, 19 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index 48df7a5ea503..39eab45649c8 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -2868,7 +2868,9 @@ int drm_mode_getconnector(struct drm_device *dev, void *data,
+ 						     dev->mode_config.max_width,
+ 						     dev->mode_config.max_height);
+ 		else
+-			drm_dbg_kms(dev, "User-space requested a forced probe on [CONNECTOR:%d:%s] but is not the DRM master, demoting to read-only probe",
++			drm_dbg_kms(dev,
++				    "User-space requested a forced probe on [CONNECTOR:%d:%s] "
++				    "but is not the DRM master, demoting to read-only probe\n",
+ 				    connector->base.id, connector->name);
+ 	}
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+index 3a7b98837516..993ba9f01018 100644
+--- a/drivers/gpu/drm/i915/display/intel_ddi.c
++++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+@@ -3808,7 +3808,7 @@ static int intel_ddi_compute_config_late(struct intel_encoder *encoder,
+ 	struct drm_connector *connector = conn_state->connector;
+ 	u8 port_sync_transcoders = 0;
+ 
+-	drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] [CRTC:%d:%s]",
++	drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] [CRTC:%d:%s]\n",
+ 		    encoder->base.base.id, encoder->base.name,
+ 		    crtc_state->uapi.crtc->base.id, crtc_state->uapi.crtc->name);
+ 
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+index 3aeede6aee4d..c7daae828792 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+@@ -1428,7 +1428,7 @@ eb_relocate_entry(struct i915_execbuffer *eb,
+ 	if (unlikely(reloc->write_domain & (reloc->write_domain - 1))) {
+ 		drm_dbg(&i915->drm, "reloc with multiple write domains: "
+ 			  "target %d offset %d "
+-			  "read %08x write %08x",
++			  "read %08x write %08x\n",
+ 			  reloc->target_handle,
+ 			  (int) reloc->offset,
+ 			  reloc->read_domains,
+@@ -1439,7 +1439,7 @@ eb_relocate_entry(struct i915_execbuffer *eb,
+ 		     & ~I915_GEM_GPU_DOMAINS)) {
+ 		drm_dbg(&i915->drm, "reloc with read/write non-GPU domains: "
+ 			  "target %d offset %d "
+-			  "read %08x write %08x",
++			  "read %08x write %08x\n",
+ 			  reloc->target_handle,
+ 			  (int) reloc->offset,
+ 			  reloc->read_domains,
+diff --git a/drivers/gpu/drm/kmb/kmb_crtc.c b/drivers/gpu/drm/kmb/kmb_crtc.c
+index 647872f65bff..a58baf25322d 100644
+--- a/drivers/gpu/drm/kmb/kmb_crtc.c
++++ b/drivers/gpu/drm/kmb/kmb_crtc.c
+@@ -94,7 +94,7 @@ static void kmb_crtc_set_mode(struct drm_crtc *crtc,
+ 	vm.hback_porch = 0;
+ 	vm.hsync_len = 28;
+ 
+-	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d",
++	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d\n",
+ 		__func__, __LINE__,
+ 			m->crtc_vdisplay, vm.vback_porch, vm.vfront_porch,
+ 			vm.vsync_len, m->crtc_hdisplay, vm.hback_porch,
+@@ -194,24 +194,24 @@ static enum drm_mode_status
+ 	int vfp = mode->vsync_start - mode->vdisplay;
+ 
+ 	if (mode->vdisplay < KMB_CRTC_MAX_HEIGHT) {
+-		drm_dbg(dev, "height = %d less than %d",
++		drm_dbg(dev, "height = %d less than %d\n",
+ 			mode->vdisplay, KMB_CRTC_MAX_HEIGHT);
+ 		return MODE_BAD_VVALUE;
+ 	}
+ 	if (mode->hdisplay < KMB_CRTC_MAX_WIDTH) {
+-		drm_dbg(dev, "width = %d less than %d",
++		drm_dbg(dev, "width = %d less than %d\n",
+ 			mode->hdisplay, KMB_CRTC_MAX_WIDTH);
+ 		return MODE_BAD_HVALUE;
+ 	}
+ 	refresh = drm_mode_vrefresh(mode);
+ 	if (refresh < KMB_MIN_VREFRESH || refresh > KMB_MAX_VREFRESH) {
+-		drm_dbg(dev, "refresh = %d less than %d or greater than %d",
++		drm_dbg(dev, "refresh = %d less than %d or greater than %d\n",
+ 			refresh, KMB_MIN_VREFRESH, KMB_MAX_VREFRESH);
+ 		return MODE_BAD;
+ 	}
+ 
+ 	if (vfp < KMB_CRTC_MIN_VFP) {
+-		drm_dbg(dev, "vfp = %d less than %d", vfp, KMB_CRTC_MIN_VFP);
++		drm_dbg(dev, "vfp = %d less than %d\n", vfp, KMB_CRTC_MIN_VFP);
+ 		return MODE_BAD;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_plane.c
+index 9e0562aa2bcb..308bd1cb50c8 100644
+--- a/drivers/gpu/drm/kmb/kmb_plane.c
++++ b/drivers/gpu/drm/kmb/kmb_plane.c
+@@ -78,7 +78,7 @@ static unsigned int check_pixel_format(struct drm_plane *plane, u32 format)
+ 	 * plane configuration is not supported.
+ 	 */
+ 	if (init_disp_cfg.format && init_disp_cfg.format != format) {
+-		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration");
++		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration\n");
+ 		return -EINVAL;
+ 	}
+ 	for (i = 0; i < plane->format_count; i++) {
+@@ -124,7 +124,7 @@ static int kmb_plane_atomic_check(struct drm_plane *plane,
+ 	if ((init_disp_cfg.width && init_disp_cfg.height) &&
+ 	    (init_disp_cfg.width != fb->width ||
+ 	    init_disp_cfg.height != fb->height)) {
+-		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration");
++		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration\n");
+ 		return -EINVAL;
+ 	}
+ 	can_position = (plane->type == DRM_PLANE_TYPE_OVERLAY);
+@@ -375,7 +375,7 @@ static void kmb_plane_atomic_update(struct drm_plane *plane,
+ 	spin_lock_irq(&kmb->irq_lock);
+ 	if (kmb->kmb_under_flow || kmb->kmb_flush_done) {
+ 		spin_unlock_irq(&kmb->irq_lock);
+-		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning");
++		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning\n");
+ 		return;
+ 	}
+ 	spin_unlock_irq(&kmb->irq_lock);
+diff --git a/drivers/gpu/drm/msm/msm_fb.c b/drivers/gpu/drm/msm/msm_fb.c
+index e3f61c39df69..80166f702a0d 100644
+--- a/drivers/gpu/drm/msm/msm_fb.c
++++ b/drivers/gpu/drm/msm/msm_fb.c
+@@ -89,7 +89,7 @@ int msm_framebuffer_prepare(struct drm_framebuffer *fb,
+ 
+ 	for (i = 0; i < n; i++) {
+ 		ret = msm_gem_get_and_pin_iova(fb->obj[i], aspace, &msm_fb->iova[i]);
+-		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)",
++		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)\n",
+ 			      fb->base.id, i, msm_fb->iova[i], ret);
+ 		if (ret)
+ 			return ret;
+@@ -176,7 +176,7 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+ 	const struct msm_format *format;
+ 	int ret, i, n;
+ 
+-	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)",
++	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)\n",
+ 			mode_cmd, mode_cmd->width, mode_cmd->height,
+ 			(char *)&mode_cmd->pixel_format);
+ 
+@@ -232,7 +232,7 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
+ 
+ 	refcount_set(&msm_fb->dirtyfb, 1);
+ 
+-	drm_dbg_state(dev, "create: FB ID: %d (%p)", fb->base.id, fb);
++	drm_dbg_state(dev, "create: FB ID: %d (%p)\n", fb->base.id, fb);
+ 
+ 	return fb;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index bef9d45ef1df..959123759711 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -592,7 +592,7 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, old_state);
+ 	struct drm_device *dev = crtc->dev;
+ 
+-	drm_dbg(dev, "Disabling CRTC %s (%u) connected to Encoder %s (%u)",
++	drm_dbg(dev, "Disabling CRTC %s (%u) connected to Encoder %s (%u)\n",
+ 		crtc->name, crtc->base.id, encoder->name, encoder->base.id);
+ 
+ 	require_hvs_enabled(dev);
+@@ -620,7 +620,7 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
+ 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
+ 	int idx;
+ 
+-	drm_dbg(dev, "Enabling CRTC %s (%u) connected to Encoder %s (%u)",
++	drm_dbg(dev, "Enabling CRTC %s (%u) connected to Encoder %s (%u)\n",
+ 		crtc->name, crtc->base.id, encoder->name, encoder->base.id);
+ 
+ 	if (!drm_dev_enter(dev, &idx))
+-- 
+2.41.0
 
