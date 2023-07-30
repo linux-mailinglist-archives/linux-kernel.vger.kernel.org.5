@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4EE7684A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 11:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C605D7684A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 11:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbjG3Jj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 05:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        id S229845AbjG3Jj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 05:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjG3Jjy (ORCPT
+        with ESMTP id S229526AbjG3Jjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 05:39:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF48A1BDA;
-        Sun, 30 Jul 2023 02:39:52 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-307d58b3efbso3159550f8f.0;
-        Sun, 30 Jul 2023 02:39:52 -0700 (PDT)
+        Sun, 30 Jul 2023 05:39:55 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817701BDC;
+        Sun, 30 Jul 2023 02:39:54 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31783d02093so3157121f8f.0;
+        Sun, 30 Jul 2023 02:39:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690709991; x=1691314791;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MRAG2y5s5jsU57Ef4re95fs4ggBIVFmrGwBiaiHU1mc=;
-        b=s3ymq2gEh2sqzFH6eqK2NbhQ/Qz5ntzHr8uZDZKVNQKk3orQ9D+ZJj8CdbFWvcgGFP
-         lcP4q446xVKGTZAYMyFLyr8kUufoq4COJyzqm9jbRxgAP0PntzFddF2mrEaYTvnW1KrS
-         axFJm/Y6NX5gR73g5JJPKTo8gjF1xHw8fg5JLBmfhK5H7Im9UDMgK3DI6loXO9XUEqTQ
-         DBGjGmTH/YqmUvrIhP3O5o9G+ROPVdcAFCCezifE+9h0kuxxxQjwlEWlH43QYCpxfHty
-         U6Y5u+8vdRU2/+eeN8Y9j/DO+rm+685K70BbRzEzqSmFz33otwp03iTbj445QB9ikyoY
-         he8Q==
+        d=gmail.com; s=20221208; t=1690709993; x=1691314793;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xVvb7llve9pJsIAfqXRB6HIfyDuylIO0ZQ0la81l44g=;
+        b=BlMKD5Cew4zlPpXl/ocIrOS5kdJwUJWm+yxbb+4l2Cb4UUmmRx1VkU+fBU+qNm6oIw
+         CocroWdcv8AOYZy5rMG9w6dcyl6xYwwjdxghopNf5f/oBnWdE8xNFGCx8oQ3spxtQPr1
+         ouDwWQHdUQEHlRtpvsLs0eLHr8of5wfbF1dhoojn8n+dxLX1Chd2CsPzqaoMtlMGAuFA
+         ymt67C8pJsyShJQ8tpP1ZHUmLfMuSSVN5HTiqGn198I4XFpYpMTqC2lgAGzLxNq3KdCg
+         GtT4gtm9/SLPKjZJAX41TLszWyP9RTatVDNmVGFfUNk9+PXxGOMnUFNdxuIdsXlW00Bv
+         ERqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690709991; x=1691314791;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MRAG2y5s5jsU57Ef4re95fs4ggBIVFmrGwBiaiHU1mc=;
-        b=AhrJ8qWaH7BUdEUdcnCVl/Q72hkbVPMdxlXXZHWz470jlYUWoARAIecwwm0lqCcb3c
-         aiuEvcI7I7ySLnLIV1APzDlqZp76MNrx6jYoHe5CI5kaqFTDDO7m95TUd7M7PdOAQPIz
-         CWv9KopuJ4QZ6BJfBEPC861oG9OtKOkk3ZtssxUD/lqTIPew/ww5K6PRmVuOe9dMwy64
-         jS8lOz98VEObOX/ahHJCcZeIvD5yV+E0UbSnrU45sAqfRKJ4gcmopJgvUwtdA1KVtRb0
-         iY2xkPEiZ3yTxC30JHSsgoY4BtI20W34FkEpcdRkcBvg1qbM8bphmKTr3WmKyuutS6tw
-         fHvQ==
-X-Gm-Message-State: ABy/qLZM2/QIx+Rnub0dxng2PntZVcQqtmFjXyPWYacNOL2DK4wXTKNB
-        q8v2vXMUwHQzGVRZrQKjgY0=
-X-Google-Smtp-Source: APBJJlGKqG4u0OtFceKUNe0E1pLghIwW4JNpbGOfD4LrswczxE5umvvnEGrTsen13A+6K3pNyEi9ew==
-X-Received: by 2002:a5d:4f05:0:b0:317:66c0:9d82 with SMTP id c5-20020a5d4f05000000b0031766c09d82mr4471002wru.64.1690709991021;
-        Sun, 30 Jul 2023 02:39:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690709993; x=1691314793;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xVvb7llve9pJsIAfqXRB6HIfyDuylIO0ZQ0la81l44g=;
+        b=CzCXfhelWWybs7wlMoopFr1QQyCJ6duSjAihyWC12Oob7Wp4+CaptOiDCEeTFcHY/m
+         rum/Otnfkrgq5G/JTYjWLqQSGYabPogJNv8b3r0QnMii+iR4LQr+KCyxY8gVJ6fnaY9N
+         qX7qavt9LpJX7Sn8pOhzGHuDH1r3MNRcW5CbK68VdTn3QMxbbyZEZ00scecpIl4ysdaw
+         r0Hqr22raHqDGNUq79OL2x7anEb5nY/RCtWe1/rS150Kf+/w8woBtRbtypkQCWoEnpg5
+         OM0UcYPRk5u35ua722V2DPBdOSDQRsAyMjHzijdXb8Cy7I4pEbO8LOHX01itq/8/YkZJ
+         H5PQ==
+X-Gm-Message-State: ABy/qLZj+Afz5ZTlPRwqPtaAY2PCs+uC1C+v8kwwm33cfHcsj3tfSPf/
+        Imb/XN8leymM8rbEBMjIV94=
+X-Google-Smtp-Source: APBJJlHJU5YOEh/lpQ/szAo8ABLBqQepFNnIBQ3XmVCJuP31gQV/ldPNNtqYeR3O2taiQMNedoRemw==
+X-Received: by 2002:a5d:548b:0:b0:316:fc86:28ae with SMTP id h11-20020a5d548b000000b00316fc8628aemr6491695wrv.15.1690709992651;
+        Sun, 30 Jul 2023 02:39:52 -0700 (PDT)
 Received: from localhost.localdomain (host-87-11-86-47.retail.telecomitalia.it. [87.11.86.47])
-        by smtp.googlemail.com with ESMTPSA id h16-20020adffa90000000b0031423a8f4f7sm9574599wrr.56.2023.07.30.02.39.49
+        by smtp.googlemail.com with ESMTPSA id h16-20020adffa90000000b0031423a8f4f7sm9574599wrr.56.2023.07.30.02.39.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 02:39:50 -0700 (PDT)
+        Sun, 30 Jul 2023 02:39:52 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -63,12 +64,13 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         Atin Bainada <hi@atinb.me>,
         Michal Kubiak <michal.kubiak@intel.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Simon Horman <simon.horman@corigine.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: [net-next PATCH v3 1/5] net: dsa: tag_qca: return early if dev is not found
-Date:   Sun, 30 Jul 2023 09:41:09 +0200
-Message-Id: <20230730074113.21889-1-ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: [net-next PATCH v3 2/5] net: dsa: qca8k: make learning configurable and keep off if standalone
+Date:   Sun, 30 Jul 2023 09:41:10 +0200
+Message-Id: <20230730074113.21889-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230730074113.21889-1-ansuelsmth@gmail.com>
+References: <20230730074113.21889-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,49 +83,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently checksum is recalculated and dsa tag stripped even if we later
-don't find the dev.
+Address learning should initially be turned off by the driver for port
+operation in standalone mode, then the DSA core handles changes to it
+via ds->ops->port_bridge_flags().
 
-To improve code, exit early if we don't find the dev and skip additional
-operation on the skb since it will be freed anyway.
+Currently this is not the case for qca8k where learning is enabled
+unconditionally in qca8k_setup for every user port.
+
+Handle ports configured in standalone mode by making the learning
+configurable and not enabling it by default.
+
+Implement .port_pre_bridge_flags and .port_bridge_flags dsa ops to
+enable learning for bridge that request it and tweak
+.port_stp_state_set to correctly disable learning when port is
+configured in standalone mode.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
 changes v2:
 - Add review tag
+- Change qca8k_port_bridge_flags to be more explicit with flag handling
+  as suggested by Vladimir
 
- net/dsa/tag_qca.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/dsa/qca/qca8k-8xxx.c   |  7 +++--
+ drivers/net/dsa/qca/qca8k-common.c | 48 ++++++++++++++++++++++++++++++
+ drivers/net/dsa/qca/qca8k.h        |  6 ++++
+ 3 files changed, 58 insertions(+), 3 deletions(-)
 
-diff --git a/net/dsa/tag_qca.c b/net/dsa/tag_qca.c
-index e757c8de06f1..e5ff7c34e577 100644
---- a/net/dsa/tag_qca.c
-+++ b/net/dsa/tag_qca.c
-@@ -75,10 +75,6 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
- 		return NULL;
- 	}
+diff --git a/drivers/net/dsa/qca/qca8k-8xxx.c b/drivers/net/dsa/qca/qca8k-8xxx.c
+index ae088a4df794..31552853fdd4 100644
+--- a/drivers/net/dsa/qca/qca8k-8xxx.c
++++ b/drivers/net/dsa/qca/qca8k-8xxx.c
+@@ -1870,9 +1870,8 @@ qca8k_setup(struct dsa_switch *ds)
+ 			if (ret)
+ 				return ret;
  
--	/* Remove QCA tag and recalculate checksum */
--	skb_pull_rcsum(skb, QCA_HDR_LEN);
--	dsa_strip_etype_header(skb, QCA_HDR_LEN);
--
- 	/* Get source port information */
- 	port = FIELD_GET(QCA_HDR_RECV_SOURCE_PORT, hdr);
+-			/* Enable ARP Auto-learning by default */
+-			ret = regmap_set_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(i),
+-					      QCA8K_PORT_LOOKUP_LEARN);
++			ret = regmap_clear_bits(priv->regmap, QCA8K_PORT_LOOKUP_CTRL(i),
++						QCA8K_PORT_LOOKUP_LEARN);
+ 			if (ret)
+ 				return ret;
  
-@@ -86,6 +82,10 @@ static struct sk_buff *qca_tag_rcv(struct sk_buff *skb, struct net_device *dev)
- 	if (!skb->dev)
- 		return NULL;
- 
-+	/* Remove QCA tag and recalculate checksum */
-+	skb_pull_rcsum(skb, QCA_HDR_LEN);
-+	dsa_strip_etype_header(skb, QCA_HDR_LEN);
-+
- 	return skb;
+@@ -1978,6 +1977,8 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
+ 	.port_change_mtu	= qca8k_port_change_mtu,
+ 	.port_max_mtu		= qca8k_port_max_mtu,
+ 	.port_stp_state_set	= qca8k_port_stp_state_set,
++	.port_pre_bridge_flags	= qca8k_port_pre_bridge_flags,
++	.port_bridge_flags	= qca8k_port_bridge_flags,
+ 	.port_bridge_join	= qca8k_port_bridge_join,
+ 	.port_bridge_leave	= qca8k_port_bridge_leave,
+ 	.port_fast_age		= qca8k_port_fast_age,
+diff --git a/drivers/net/dsa/qca/qca8k-common.c b/drivers/net/dsa/qca/qca8k-common.c
+index 13b8452ce5b2..fce04ce12cf9 100644
+--- a/drivers/net/dsa/qca/qca8k-common.c
++++ b/drivers/net/dsa/qca/qca8k-common.c
+@@ -565,9 +565,26 @@ int qca8k_get_mac_eee(struct dsa_switch *ds, int port,
+ 	return 0;
  }
  
++static int qca8k_port_configure_learning(struct dsa_switch *ds, int port,
++					 bool learning)
++{
++	struct qca8k_priv *priv = ds->priv;
++
++	if (learning)
++		return regmap_set_bits(priv->regmap,
++				       QCA8K_PORT_LOOKUP_CTRL(port),
++				       QCA8K_PORT_LOOKUP_LEARN);
++	else
++		return regmap_clear_bits(priv->regmap,
++					 QCA8K_PORT_LOOKUP_CTRL(port),
++					 QCA8K_PORT_LOOKUP_LEARN);
++}
++
+ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ {
++	struct dsa_port *dp = dsa_to_port(ds, port);
+ 	struct qca8k_priv *priv = ds->priv;
++	bool learning = false;
+ 	u32 stp_state;
+ 
+ 	switch (state) {
+@@ -582,8 +599,11 @@ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ 		break;
+ 	case BR_STATE_LEARNING:
+ 		stp_state = QCA8K_PORT_LOOKUP_STATE_LEARNING;
++		learning = dp->learning;
+ 		break;
+ 	case BR_STATE_FORWARDING:
++		learning = dp->learning;
++		fallthrough;
+ 	default:
+ 		stp_state = QCA8K_PORT_LOOKUP_STATE_FORWARD;
+ 		break;
+@@ -591,6 +611,34 @@ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ 
+ 	qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port),
+ 		  QCA8K_PORT_LOOKUP_STATE_MASK, stp_state);
++
++	qca8k_port_configure_learning(ds, port, learning);
++}
++
++int qca8k_port_pre_bridge_flags(struct dsa_switch *ds, int port,
++				struct switchdev_brport_flags flags,
++				struct netlink_ext_ack *extack)
++{
++	if (flags.mask & ~BR_LEARNING)
++		return -EINVAL;
++
++	return 0;
++}
++
++int qca8k_port_bridge_flags(struct dsa_switch *ds, int port,
++			    struct switchdev_brport_flags flags,
++			    struct netlink_ext_ack *extack)
++{
++	int ret;
++
++	if (flags.mask & BR_LEARNING) {
++		ret = qca8k_port_configure_learning(ds, port,
++						    flags.val & BR_LEARNING);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
+ }
+ 
+ int qca8k_port_bridge_join(struct dsa_switch *ds, int port,
+diff --git a/drivers/net/dsa/qca/qca8k.h b/drivers/net/dsa/qca/qca8k.h
+index c5cc8a172d65..8f88b7db384d 100644
+--- a/drivers/net/dsa/qca/qca8k.h
++++ b/drivers/net/dsa/qca/qca8k.h
+@@ -522,6 +522,12 @@ int qca8k_get_mac_eee(struct dsa_switch *ds, int port, struct ethtool_eee *e);
+ 
+ /* Common bridge function */
+ void qca8k_port_stp_state_set(struct dsa_switch *ds, int port, u8 state);
++int qca8k_port_pre_bridge_flags(struct dsa_switch *ds, int port,
++				struct switchdev_brport_flags flags,
++				struct netlink_ext_ack *extack);
++int qca8k_port_bridge_flags(struct dsa_switch *ds, int port,
++			    struct switchdev_brport_flags flags,
++			    struct netlink_ext_ack *extack);
+ int qca8k_port_bridge_join(struct dsa_switch *ds, int port,
+ 			   struct dsa_bridge bridge,
+ 			   bool *tx_fwd_offload,
 -- 
 2.40.1
 
