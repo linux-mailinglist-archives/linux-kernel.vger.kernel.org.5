@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF09B768901
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D6C768908
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 00:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbjG3WEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 18:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S229641AbjG3WLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 18:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG3WEE (ORCPT
+        with ESMTP id S229478AbjG3WLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 18:04:04 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD8610D0;
-        Sun, 30 Jul 2023 15:04:03 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe167d4a18so16516865e9.0;
-        Sun, 30 Jul 2023 15:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690754642; x=1691359442;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pahPU3wSvsqJHIDLsqPi1ulLhJMWKZSO5rvQ5dMXskQ=;
-        b=q0sSR9AXHGYYmyVNDr+xpag+Dw277dZX9Y4ekqdWpmmrFAk+IkylG9pts4k/utI7SB
-         zHxzRfyKPebgYRJYkunUtLvj5sS8zxKQl/rhUk5cZJQIXFjNIZ/nNClC0D6BWdCUF1kr
-         fzAyd0fX7gdRjXwXHsIBljOjfQ2Pkl9bdDOji8mRYkSKOyEo1mHn2Y/99CtOUV7UOkQe
-         KxzfIg/nQMircpIV0T3thGF+3HJlvdO6sZVPjU2MIA6s6Go9vK32qNngksFxfQBf571Z
-         60mN9fdB21OXpFV8KY3m4hJg5j4fWeOvu585h2Cu3kZsVc1XjPt+g2fNfR9rszK7il5D
-         lU+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690754642; x=1691359442;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pahPU3wSvsqJHIDLsqPi1ulLhJMWKZSO5rvQ5dMXskQ=;
-        b=JfyASavspLr+F6tT5nQJJ9En37T32BSp4JSxrM8Atan4oDdO+WPVy5Ny0gbGfjCmrM
-         zcw3VrPS2SOi34sVjLTZklTq/2QKq6OgoGMuotip+O0yZ46QuAKvIcn9f9Kbuwv+xCt6
-         4KvpXES1lcFpjc11Nqbe7DVtSf7J7sy2ZmW73FN0VrCmvdtAwdGeuGE3ZrntRmbf++n8
-         3hHdnr/11XNz61TvoUC1GruCJqzBHDgnQtwNilw8odKLhrfhfg8iCeZEnYxAdYHTx31X
-         fzPllNeRiT1j6XXY9jlem9M46XswnxTJpAjI1eXuckm0QW+VV24o2Zvf3HYOIALjNueT
-         3arw==
-X-Gm-Message-State: ABy/qLZeMP5S1jUVH5yQ5Lei6q6So4x7mFYTMYHzgn8wDTyW+D99thgQ
-        eOp87KGQhwoyqm0g/qbvJH8=
-X-Google-Smtp-Source: APBJJlEgMsbnQlEpC7AIysBE3EqDVlDLnNG1AaWLi6MDNW/FVVcuRxpaFON35Ui2Xu5tD4xU0RLM5A==
-X-Received: by 2002:a05:6000:1289:b0:313:ecd3:7167 with SMTP id f9-20020a056000128900b00313ecd37167mr5545390wrx.42.1690754641719;
-        Sun, 30 Jul 2023 15:04:01 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id u13-20020a5d514d000000b003172510d19dsm11132401wrt.73.2023.07.30.15.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 15:04:01 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     linux-sunxi@lists.linux.dev, John Watts <contact@jookia.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Sun, 30 Jul 2023 18:11:53 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60A510D5;
+        Sun, 30 Jul 2023 15:11:48 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RDbFH2dQpzBg;
+        Mon, 31 Jul 2023 00:11:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1690755107; bh=XeiZSisA1teraNfcUk/a3LOgtrVOqBrf3jTR2Qc7bJ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PRu1PhNxXlz0lKRxHQBH57tTm9vhI1meIw/X/0z9+rwMa/1Itt2sVuWyqJwKMk6xJ
+         7deONlOh/QN5k9fQyaEKNY7MUQVacCRyAsGF2a64xcAngC1CcPn3LGP4dH7d9up7Gu
+         lN5HFn4UzK4bTkTksfhnUyUeYym1jmyYGqgzCDhhom7BrdE4iQZAsMUQb6MghG6GK4
+         laFh4svpIJJ/N9aUd6wZTprliZpbKa9JrsheelzhQvwHs2n0ScQwhFtxGeSvhqSyqL
+         5VvadZjCWu2WBSjANsJMyJOVrV7s235+w6d4Aa0OfS9iM3oIUhuQR9L/UO8BmwQpQF
+         PIctLvor/LDew==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Mon, 31 Jul 2023 00:11:46 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
-Date:   Mon, 31 Jul 2023 00:03:59 +0200
-Message-ID: <5694691.DvuYhMxLoT@jernej-laptop>
-In-Reply-To: <ZLzwaQlS-l_KKpUX@titan>
-References: <20230721221552.1973203-2-contact@jookia.org>
- <20230721221552.1973203-4-contact@jookia.org> <ZLzwaQlS-l_KKpUX@titan>
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+Message-ID: <ZMbgIovV7lxlgd5T@qmqm.qmqm.pl>
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-3-clamor95@gmail.com>
+ <20230730202507.ojwinyjsx7ygyavp@intel.intel>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230730202507.ojwinyjsx7ygyavp@intel.intel>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 23. julij 2023 ob 11:18:33 CEST je John Watts napisal(a):
-> On Sat, Jul 22, 2023 at 08:15:51AM +1000, John Watts wrote:
-> > ...
-> > +			/omit-if-no-ref/
-> > +			can0_pins: can0-pins {
-> > +				pins = "PB2", "PB3";
-> > +				function = "can0";
-> > +			};
-> > ...
-> > +		can0: can@2504000 {
-> > +			compatible = "allwinner,sun20i-d1-can";
-> > +			reg = <0x02504000 0x400>;
-> > +			interrupts = <SOC_PERIPHERAL_IRQ(21) 
-IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&ccu CLK_BUS_CAN0>;
-> > +			resets = <&ccu RST_BUS_CAN0>;
-> > +			status = "disabled";
-> > +		};
+On Sun, Jul 30, 2023 at 10:25:07PM +0200, Andi Shyti wrote:
+> On Sat, Jul 29, 2023 at 07:08:57PM +0300, Svyatoslav Ryhel wrote:
+> > +static int i2c_hotplug_activate(struct i2c_hotplug_priv *priv)
+[...]
+> > +{
+> > +	int ret;
+> > +
+> > +	if (priv->adap.algo_data)
+> > +		return 0;
+[...]
+> > +	ret = i2c_add_adapter(&priv->adap);
+> > +	if (!ret)
+> > +		priv->adap.algo_data = (void *)1;
 > 
-> Just a quick late night question to people with more knowledge than me:
+> You want to set algo_data to "1" in order to keep the
+> activate/deactivate ordering.
 > 
-> These chips only have one pinctrl configuration for can0 and can1. Should
-> the can nodes have this pre-set instead of the board dts doing this?
+> But if we fail to add the adapter, what's the point to keep it
+> active?
 
-Yes, that's usually how it's done.
+The code above does "if we added the adapter, remember we did so".
+IOW, if we failed to add the adapter we don't set the mark so that
+the next interrupt edge can trigger another try. Also we prevent
+trying to remove an adapter we didn't successfully add.
 
-> 
-> I see this happening in sun4i-a10.dtsi for instance, but it also seems like
-> it could become a problem when it comes to re-using the dtsi for newer chip
-> variants.
+> > +static irqreturn_t i2c_hotplug_interrupt(int irq, void *dev_id)
+> > +{
+> > +	struct i2c_hotplug_priv *priv = dev_id;
+> > +
+> > +	/* debounce */
+> > +	msleep(20);
+> can you explain this waiting and why 20ms?
 
-Properties can be either rewritten or deleted further down, so don't worry 
-about that.
+It's an arbitrary time long enough to avoid having to handle multiple
+on/off events that could happen when the dock is being inserted (ringing)
+and short enough to not have to worry about the user getting impatient.
 
-Best regards,
-Jernej
-
-> 
-> John.
-
-
-
-
+Best Regards
+Micha³ Miros³aw
