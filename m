@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F27B768472
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 10:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3D0768473
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 10:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjG3I11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 04:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
+        id S229805AbjG3I1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 04:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjG3I1Z (ORCPT
+        with ESMTP id S229782AbjG3I11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 04:27:25 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A208010FF
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:23 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bdf08860dso615375166b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:23 -0700 (PDT)
+        Sun, 30 Jul 2023 04:27:27 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210751709
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:25 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522382c4840so5113894a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 01:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690705642; x=1691310442;
+        d=gmail.com; s=20221208; t=1690705643; x=1691310443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vN0J3GV61DkjP0ahWmkHwTyaQTvoRppASb5qgqqzbjw=;
-        b=YZ2PPNBg6wWWnGRDU+wNzK5MoU3WKBPc9bVBjoUVTHI40uNXcmzZbmcbHV/KePlTAA
-         AvBLFvCrTMZr49yldYsyTtHx5WeF60pgvz27lPOQgW4mVziCjoiwqLLqE9sw6s88Eu8q
-         wazoKoBUdGEmiu9gptXikAzNwam/aXa8cYvusmmzBQozVt17FXPHU8oGcZMvjf63r3wE
-         S1EvUfy74hilsMM5ZmtGoutxXKH+RtveolpjldW+9ZONd1ESlxIIaj+HNpFCEDgEQMOp
-         Yfh7PFJNxyTOWkuQ2KNS4zA+6sbc7NXFBRQgbk0atwu0WxWLY0qOPzPc3AtxIeehAFrS
-         t+Pg==
+        bh=SimULQDdjpxXsYNdrfirKLk/fw8zuGv/egec0Yb7dzM=;
+        b=Ka3V4bKaipjHIdFwBaUbvZopzCCe7cVlYdzQdNIAY9n6AyuDohH4211nmO3bbJ0Xdg
+         Ur0LWW2k9uEXsnlWhaBWI0p2ybgnV00QpSTvbZoPhQyCNx5Ir2Woi0bFudpmb52ynpJk
+         ePutJ+JeE0YVQuiJqkllHi9DbdxxTNI/m496ybuqV8txe4ucnSZICAFThXnLkkFYCJSh
+         AEs+Yk+Uc5uz7+wFWgWiACGxsPKVM4q3vMD4/CcOk09PU+Z5e8Fvk1hCzwcZs1xhryaZ
+         DnrVUhkNKibdML6rONMM386r/39VektrRLvv11bmJNfTHI65A5OEAsow8Mdnttalrr+O
+         5LiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690705642; x=1691310442;
+        d=1e100.net; s=20221208; t=1690705643; x=1691310443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vN0J3GV61DkjP0ahWmkHwTyaQTvoRppASb5qgqqzbjw=;
-        b=VRHYCYwe9eKLvPnRBJ9J5xcm5LvOLZu3ph3kYzVclvrl/CjHbBu7BsnRtLUky9tYNW
-         q2Lou2cTUn8pkNBZ5yzYvuilRBN/VOMQq8hlPiKKVpZdxzMVX6mboQ8hLLBBWK9D8auc
-         m+xFc9E/WS0klBaTEK50NcA7CCI8fyRQEXdOaYZS40163jlIKj3oIUSOUHojbNmfhcpx
-         94et26uQRXrRQq58tmzKq4ix4JZdmAERy8SRUH49j1KJZEfX8wCbPyS0/j1U2VceQAS8
-         nplyM0cUkggxPPg9wQxW0V53UPZ788Faly+MEKBuFLUtye4YFmmCleOMCIwILIrw4A3S
-         Bshw==
-X-Gm-Message-State: ABy/qLYQUMkWJYO/awpIQl8C5+Kgrx/Jso6JvL50fc9c6KgNHo/le4MK
-        P76oLNUVLy5P9CtXoCF+Lws=
-X-Google-Smtp-Source: APBJJlGNq1tfaMiD7YOayjCJR0VBHsHKj+FG19g87epOYJbJwj4g1BG7lyZFx5qqyHX0lkQVKOG+sg==
-X-Received: by 2002:a17:906:8441:b0:98e:2413:952f with SMTP id e1-20020a170906844100b0098e2413952fmr4407133ejy.18.1690705642114;
-        Sun, 30 Jul 2023 01:27:22 -0700 (PDT)
+        bh=SimULQDdjpxXsYNdrfirKLk/fw8zuGv/egec0Yb7dzM=;
+        b=V8IX56jvcbF3arZhLkmbsjO+ceTQ+HV+P5HOSZROyYRUzbIhyuyKVfxmaq8e2u64Zb
+         waF1zmqegi956OZ1koxlTTxHOS+UosBYIlhNqIZj7PsqYCOmArAXqeD7F1RVoL8v0yBe
+         uAgkZE37mRoXY9+fUJ+FjImKJqKKiX4GhOl7nSS3ceXLCr71o/a3R303eGO3aStAR3hW
+         r52kH1+WBjDCPytw8ik4F1Owr7DqCSkAUJChqTyUuAybzZnkfauX8v5M8Mw/m6FRFuZM
+         r24jD18OWhbcqoiDAa3CsP1BO5MgVcJyvSroQC5TxGo+ygWSKhqeUjT60hpRuR2errDy
+         4rsw==
+X-Gm-Message-State: ABy/qLbMJVDEIJ/ROGPtPSugIyW0He7r6tRhwncNSiLvamAAr5ohFj6M
+        iyxVsu7DYGmOOOeCMf29Lfs=
+X-Google-Smtp-Source: APBJJlHuYaRULyZJssvkHmCmmwoVNjfNhvOm5DYln4RYnWRjLUMNsD8+TP8VgT1J4/gKJsVzi0knqw==
+X-Received: by 2002:a17:906:530e:b0:993:6845:89d6 with SMTP id h14-20020a170906530e00b00993684589d6mr4470426ejo.47.1690705643484;
+        Sun, 30 Jul 2023 01:27:23 -0700 (PDT)
 Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
-        by smtp.gmail.com with ESMTPSA id qk29-20020a170906d9dd00b0098e34446464sm4327706ejb.25.2023.07.30.01.27.21
+        by smtp.gmail.com with ESMTPSA id n16-20020a1709067b5000b009927a49ba94sm4333519ejo.169.2023.07.30.01.27.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 01:27:21 -0700 (PDT)
+        Sun, 30 Jul 2023 01:27:23 -0700 (PDT)
 From:   Nam Cao <namcaov@gmail.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Nam Cao <namcaov@gmail.com>
-Subject: [PATCH 2/3] riscv: kprobes: simulate c.jr and c.jalr instructions
-Date:   Sun, 30 Jul 2023 10:27:08 +0200
-Message-Id: <db8b7787e9208654cca50484f68334f412be2ea9.1690704360.git.namcaov@gmail.com>
+Subject: [PATCH 3/3] riscv: kprobes: simulate c.beqz and c.bnez
+Date:   Sun, 30 Jul 2023 10:27:09 +0200
+Message-Id: <1d879dba4e4ee9a82e27625d6483b5c9cfed684f.1690704360.git.namcaov@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1690704360.git.namcaov@gmail.com>
 References: <cover.1690704360.git.namcaov@gmail.com>
@@ -74,91 +74,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kprobes currently rejects c.jr and c.jalr instructions. Implement them.
+kprobes currently rejects instruction c.beqz and c.bnez. Implement them.
 
 Signed-off-by: Nam Cao <namcaov@gmail.com>
 ---
  arch/riscv/kernel/probes/decode-insn.c   |  4 +--
- arch/riscv/kernel/probes/simulate-insn.c | 37 ++++++++++++++++++++++++
+ arch/riscv/kernel/probes/simulate-insn.c | 44 ++++++++++++++++++++++++
  arch/riscv/kernel/probes/simulate-insn.h |  2 ++
- 3 files changed, 41 insertions(+), 2 deletions(-)
+ 3 files changed, 48 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
-index 39adb07a342d..6dba23a55ac7 100644
+index 6dba23a55ac7..65d9590bfb9f 100644
 --- a/arch/riscv/kernel/probes/decode-insn.c
 +++ b/arch/riscv/kernel/probes/decode-insn.c
-@@ -29,14 +29,14 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
- 	 * TODO: the REJECTED ones below need to be implemented
+@@ -30,13 +30,13 @@ riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
  	 */
  #ifdef CONFIG_RISCV_ISA_C
--	RISCV_INSN_REJECTED(c_jr,		insn);
  	RISCV_INSN_REJECTED(c_jal,		insn);
--	RISCV_INSN_REJECTED(c_jalr,		insn);
- 	RISCV_INSN_REJECTED(c_beqz,		insn);
- 	RISCV_INSN_REJECTED(c_bnez,		insn);
+-	RISCV_INSN_REJECTED(c_beqz,		insn);
+-	RISCV_INSN_REJECTED(c_bnez,		insn);
  	RISCV_INSN_REJECTED(c_ebreak,		insn);
  
  	RISCV_INSN_SET_SIMULATE(c_j,		insn);
-+	RISCV_INSN_SET_SIMULATE(c_jr,		insn);
-+	RISCV_INSN_SET_SIMULATE(c_jalr,		insn);
+ 	RISCV_INSN_SET_SIMULATE(c_jr,		insn);
+ 	RISCV_INSN_SET_SIMULATE(c_jalr,		insn);
++	RISCV_INSN_SET_SIMULATE(c_beqz,		insn);
++	RISCV_INSN_SET_SIMULATE(c_bnez,		insn);
  #endif
  
  	RISCV_INSN_SET_SIMULATE(jal,		insn);
 diff --git a/arch/riscv/kernel/probes/simulate-insn.c b/arch/riscv/kernel/probes/simulate-insn.c
-index 3ba45c612cd8..1ead6f4951f9 100644
+index 1ead6f4951f9..d3099d67816d 100644
 --- a/arch/riscv/kernel/probes/simulate-insn.c
 +++ b/arch/riscv/kernel/probes/simulate-insn.c
-@@ -212,3 +212,40 @@ bool __kprobes simulate_c_j(u32 opcode, unsigned long addr, struct pt_regs *regs
- 
- 	return true;
+@@ -249,3 +249,47 @@ bool __kprobes simulate_c_jalr(u32 opcode, unsigned long addr, struct pt_regs *r
+ {
+ 	return simulate_c_jr_jalr(opcode, addr, regs, true);
  }
 +
-+static bool __kprobes simulate_c_jr_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs,
-+					 bool is_jalr)
++static bool __kprobes simulate_c_bnez_beqz(u32 opcode, unsigned long addr, struct pt_regs *regs,
++					   bool is_bnez)
 +{
 +	/*
-+	 *  15    12 11  7 6   2 1  0
-+	 * | funct4 | rs1 | rs2 | op |
-+	 *     4       5     5    2
++	 *  15    13 12           10 9    7 6                 2 1  0
++	 * | funct3 | offset[8|4:3] | rs1' | offset[7:6|2:1|5] | op |
++	 *     3            3          3             5           2
 +	 */
 +
-+	unsigned long jump_addr;
++	s32 offset;
++	u32 rs1;
++	unsigned long rs1_val;
 +
-+	u32 rs1 = (opcode >> 7) & 0x1f;
++	rs1 = 0x8 | ((opcode >> 7) & 0x7);
 +
-+	if (rs1 == 0) /* C.JR is only valid when rs1 != x0 */
++	if (!rv_insn_reg_get_val(regs, rs1, &rs1_val))
 +		return false;
 +
-+	if (!rv_insn_reg_get_val(regs, rs1, &jump_addr))
-+		return false;
++	if ((rs1_val != 0 && is_bnez) || (rs1_val == 0 && !is_bnez)) {
++		offset =  ((opcode >> 3)  & 0x3) << 1;
++		offset |= ((opcode >> 10) & 0x3) << 3;
++		offset |= ((opcode >> 2)  & 0x1) << 5;
++		offset |= ((opcode >> 5)  & 0x3) << 6;
++		offset |= ((opcode >> 12) & 0x1) << 8;
++		offset = sign_extend32(offset, 8);
++	} else {
++		offset = 2;
++	}
 +
-+	if (is_jalr && !rv_insn_reg_set_val(regs, 1, addr + 2))
-+		return false;
-+
-+	instruction_pointer_set(regs, jump_addr);
++	instruction_pointer_set(regs, addr + offset);
 +
 +	return true;
 +}
 +
-+bool __kprobes simulate_c_jr(u32 opcode, unsigned long addr, struct pt_regs *regs)
++bool __kprobes simulate_c_bnez(u32 opcode, unsigned long addr, struct pt_regs *regs)
 +{
-+	return simulate_c_jr_jalr(opcode, addr, regs, false);
++	return simulate_c_bnez_beqz(opcode, addr, regs, true);
 +}
 +
-+bool __kprobes simulate_c_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs)
++bool __kprobes simulate_c_beqz(u32 opcode, unsigned long addr, struct pt_regs *regs)
 +{
-+	return simulate_c_jr_jalr(opcode, addr, regs, true);
++	return simulate_c_bnez_beqz(opcode, addr, regs, false);
 +}
 diff --git a/arch/riscv/kernel/probes/simulate-insn.h b/arch/riscv/kernel/probes/simulate-insn.h
-index 4bd6c266e7d3..472a1948ec4f 100644
+index 472a1948ec4f..44ebbc444db9 100644
 --- a/arch/riscv/kernel/probes/simulate-insn.h
 +++ b/arch/riscv/kernel/probes/simulate-insn.h
-@@ -25,5 +25,7 @@ bool simulate_branch(u32 opcode, unsigned long addr, struct pt_regs *regs);
- bool simulate_jal(u32 opcode, unsigned long addr, struct pt_regs *regs);
- bool simulate_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs);
+@@ -27,5 +27,7 @@ bool simulate_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs);
  bool simulate_c_j(u32 opcode, unsigned long addr, struct pt_regs *regs);
-+bool simulate_c_jr(u32 opcode, unsigned long addr, struct pt_regs *regs);
-+bool simulate_c_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs);
+ bool simulate_c_jr(u32 opcode, unsigned long addr, struct pt_regs *regs);
+ bool simulate_c_jalr(u32 opcode, unsigned long addr, struct pt_regs *regs);
++bool simulate_c_bnez(u32 opcode, unsigned long addr, struct pt_regs *regs);
++bool simulate_c_beqz(u32 opcode, unsigned long addr, struct pt_regs *regs);
  
  #endif /* _RISCV_KERNEL_PROBES_SIMULATE_INSN_H */
 -- 
