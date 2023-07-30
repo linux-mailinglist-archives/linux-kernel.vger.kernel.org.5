@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132037684C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 12:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE11D7684CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 12:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbjG3KMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 06:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        id S229921AbjG3KNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 06:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbjG3KMr (ORCPT
+        with ESMTP id S229879AbjG3KNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 06:12:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2831BDC;
-        Sun, 30 Jul 2023 03:12:47 -0700 (PDT)
+        Sun, 30 Jul 2023 06:13:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4587010C1;
+        Sun, 30 Jul 2023 03:13:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A1E560BB8;
-        Sun, 30 Jul 2023 10:12:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA156C433C8;
-        Sun, 30 Jul 2023 10:12:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6FF66068F;
+        Sun, 30 Jul 2023 10:13:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38A0C433C8;
+        Sun, 30 Jul 2023 10:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690711966;
+        s=korg; t=1690711991;
         bh=WpJsh3fyEuGUo6PH6fN0EFyznVrVxs5GaJUXkqK1ArM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r0ZG1YBo7p3AhQ7nCHn4uhQ7Hm7JZrQlbuYQsyASaUYbv1fr1arLvsa/zEP1IFYyX
-         T50mHgXA2ipNp2yDKfCOYbDwi68Hb7WY52dPDkG8P+joHA8i+luLhQiq+4ZLw48ZSQ
-         JwcrqD1u/ORhlVJXW5jsGt36Rf/WRMuyzex2aP9M=
-Date:   Sun, 30 Jul 2023 12:12:42 +0200
+        b=nV8ShlEG/+v+bYW2/rSVxdi5O9PKWdmulDttqQLptSkQKdhOrhN6JtjF/AlJxQYn7
+         XjYFwCQ50FZ0eNPZuUC3rAJldMdm9CknM3CBwNCYCsxngQMZ0giD0DbnK1Fwcp6Sbr
+         l0nVDirecyQtuyW4/aUFXyz2B8Vk2jqc68PzEsxA=
+Date:   Sun, 30 Jul 2023 12:13:07 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Oscar Megia =?iso-8859-1?Q?L=F3pez?= <megia.oscar@gmail.com>,
-        kernel-janitors@vger.kernel.org,
+Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <error27@gmail.com>
-Subject: Re: Contributing subsequent patch versions
-Message-ID: <2023073013-remix-outscore-c4f9@gregkh>
-References: <877cqlmdpg.fsf@gmail.com>
- <8ef54195-4102-0c6c-e14d-efc9bc45cddc@web.de>
- <877cqk5zdt.fsf@gmail.com>
- <20230728181014.GA607743@mit.edu>
- <87tttlncib.fsf@gmail.com>
- <85938916-305c-c8b9-89db-45e522616526@web.de>
+        linux-kselftest@vger.kernel.org, linux-rtc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5] selftests: rtc: Improve rtctest error handling
+Message-ID: <2023073058-uncurled-leverage-4045@gregkh>
+References: <20230722060706.79759-1-atulpant.linux@gmail.com>
+ <9d51f21d-04e8-3dd2-91b9-9ab0cf848760@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85938916-305c-c8b9-89db-45e522616526@web.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <9d51f21d-04e8-3dd2-91b9-9ab0cf848760@web.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
