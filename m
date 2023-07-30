@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6412768565
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0187E76856F
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 15:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbjG3NGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 09:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        id S229960AbjG3NPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 09:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjG3NGN (ORCPT
+        with ESMTP id S229751AbjG3NPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 09:06:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04289D
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:06:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 42D6B60C47
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 13:06:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C272AC433C7;
-        Sun, 30 Jul 2023 13:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690722371;
-        bh=yUFX0JNmhulifpf7JRLBOEUmmVr+WQ7QQNQgsvMOT/Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=r6cZSmaSk45hHvXEloRDO7/3v2X4PoGlY8Wycw27kY6FHxdc+0RM/etuyYRRxSTjR
-         +7t3UkEjMFvPwBhJUpd9UpNSsllsHHBswd4CaRsAq27wiZrIE8eJb1cUai/0g+URKx
-         FOGXUYDoPQYdf2MhqPWOoODU3l4VOgvFEHZ8M/Fu4HHQXfyD3U5jh8wUmqMoegUODB
-         F3ad9aQFaVo/D4FxedY3B8VL99B8KYwVL97ETdoQc/GsAmHds7lbnJ7iscYT+5I73k
-         HYf3xj47j6/ykzHTQ30UeqR/Yq8Z5utbSCsG00mJVhZ8A+glq3QGKTfuktQ3XKtMFy
-         PdkBYqsKwRMOQ==
-Message-ID: <e452ec90-7eb9-146b-e627-d912b1b46ef9@kernel.org>
-Date:   Sun, 30 Jul 2023 21:06:09 +0800
+        Sun, 30 Jul 2023 09:15:06 -0400
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9203D10D0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:15:05 -0700 (PDT)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1bb51abaa8bso7250442fac.2
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 06:15:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690722904; x=1691327704;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3XIUDaOs7+BQjxwItc93IvTb31XPxrAwckSZrXWNhms=;
+        b=kpaocpgkxU8CwHin5z40s0pTZgYkD85ifAg7DmwIPcyMiovBb/G8ExR3onKhPuWLtT
+         u8QnAnKL/ZIO8n9GQhd6WiidwF5CIAMAeFvPvz5eCGfQ6irjhJeeTeGgXlD7UupCjGWJ
+         fN9GtyjKfmIX73npzki5gcNydsLaLtjIvs2Wa3xfeCr+B7oPJY9O/Xthq//m1UWHy77O
+         Yx27dddVglZgvLnBWfGtpMqCrE5KbeWZoS4RKjHqDk7/R0ERRFD5TdhzhQOgN9PVX4xu
+         N4tQszyqK7LLEK+JN/LIbzmC+uUvhmVQVKb+RLc3b+Y9xjGxL9wfv37LT7YgGNjhrTey
+         kZEQ==
+X-Gm-Message-State: ABy/qLbDHBQ3rjILVZoItm4A9AIQZ4EGguSDC0RHAmwil7abYobM23ab
+        n7MCIt+Huh7/cllvKl5UVreHZXMzyHNBeNSkBYwHzoGcYkBH
+X-Google-Smtp-Source: APBJJlHGWxL1lWigMTJ+YUjdpXjRTpWP/0i1kSbTk3tdg80ZpJaWvf4G1nFa0rY7TOxNAGWTrRFtKfXhOHFJcbwX63GPajph5S0f
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] erofs: fix wrong primary bvec selection on deduplicated
- extents
-Content-Language: en-US
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     Shijie Sun <sunshijie@xiaomi.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230719065459.60083-1-hsiangkao@linux.alibaba.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20230719065459.60083-1-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:c7af:b0:1bb:3fd4:6cc2 with SMTP id
+ dy47-20020a056870c7af00b001bb3fd46cc2mr9005870oab.6.1690722904342; Sun, 30
+ Jul 2023 06:15:04 -0700 (PDT)
+Date:   Sun, 30 Jul 2023 06:15:04 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002087490601b41a01@google.com>
+Subject: [syzbot] Monthly nilfs report (Jul 2023)
+From:   syzbot <syzbot+list879a30818ab26ff997d4@syzkaller.appspotmail.com>
+To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/19 14:54, Gao Xiang wrote:
-> When handling deduplicated compressed data, there can be multiple
-> decompressed extents pointing to the same compressed data in one shot.
-> 
-> In such cases, the bvecs which belong to the longest extent will be
-> selected as the primary bvecs for real decompressors to decode and the
-> other duplicated bvecs will be directly copied from the primary bvecs.
-> 
-> Previously, only relative offsets of the longest extent was checked to
-> decompress the primary bvecs.  On rare occasions, it can be incorrect
-> if there are several extents with the same start relative offset.
-> As a result, some short bvecs could be selected for decompression and
-> then cause data corruption.
-> 
-> For example, as Shijie Sun reported off-list, considering the following
-> extents of a file:
->   117:   903345..  915250 |   11905 :     385024..    389120 |    4096
-> ...
->   119:   919729..  930323 |   10594 :     385024..    389120 |    4096
-> ...
->   124:   968881..  980786 |   11905 :     385024..    389120 |    4096
-> 
-> The start relative offset is the same: 2225, but extent 119 (919729..
-> 930323) is shorter than the others.
-> 
-> Let's restrict the bvec length in addition to the start offset if bvecs
-> are not full.
-> 
-> Reported-by: Shijie Sun <sunshijie@xiaomi.com>
-> Fixes: 5c2a64252c5d ("erofs: introduce partial-referenced pclusters")
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Hello nilfs maintainers/developers,
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+This is a 31-day syzbot report for the nilfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/nilfs
 
-Thanks,
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 12 issues are still open and 33 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 274     Yes   kernel BUG at fs/buffer.c:LINE!
+                  https://syzkaller.appspot.com/bug?extid=cfed5b56649bddf80d6e
+<2> 110     Yes   WARNING in mark_buffer_dirty (5)
+                  https://syzkaller.appspot.com/bug?extid=cdfcae656bac88ba0e2d
+<3> 80      Yes   INFO: task hung in nilfs_detach_log_writer
+                  https://syzkaller.appspot.com/bug?extid=e3973c409251e136fdd0
+<4> 5       Yes   general protection fault in folio_create_empty_buffers
+                  https://syzkaller.appspot.com/bug?extid=0ad741797f4565e7e2d2
+<5> 5       Yes   kernel BUG in end_buffer_async_write
+                  https://syzkaller.appspot.com/bug?extid=5c04210f7c7f897c1e7f
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
