@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1782768406
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 08:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157FB768408
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Jul 2023 08:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjG3Get (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 02:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
+        id S229639AbjG3Gfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 02:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjG3Ges (ORCPT
+        with ESMTP id S229379AbjG3Gfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 02:34:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC5719B2;
-        Sat, 29 Jul 2023 23:34:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ACBC360B68;
-        Sun, 30 Jul 2023 06:34:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68578C433C7;
-        Sun, 30 Jul 2023 06:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690698886;
-        bh=Z5v1Wq8+4+Vexd0JNyIgN2hruFf3+DV45YQaU/siC00=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gfOz+w3YBGyGQs6WfX9nF3KLzKFD/cH8igmsQGy4U4ap0zoCl/ZTUymjCOaCqCwN/
-         vY8jyR+hDs+hhjjpojF7Yo6DF6nekZBClPG00dKYAU777T1sYSVwTLC4kbKGWi5xW8
-         G7qeLdLt9imqB1jXSHzOzcaz7GoI9BWqfUhw4zvlQpOPXbVtROf9xrZ3k5PH+/gz6s
-         Kf9tpAQO4Jv9/8VDmB4WPnoNHQ8Hvm3BdxLvQCKUjmP+azU6R3Z/s63f60fJxS8eN0
-         pYaqMGxePN36BbVRmPDEVTdRHFbltdYbxprWEVB6OCzVEc/1EFz+tKEMbQs/PPWTPU
-         gezjhrWMzFm1A==
-Date:   Sun, 30 Jul 2023 14:34:34 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Andrej Picej <andrej.picej@norik.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        S.Riedmueller@phytec.de, S.Mueller-Klieser@phytec.de,
-        upstream@phytec.de
-Subject: Re: [PATCH v2 1/3] ARM: dts: imx6: phytec: fix RTC interrupt level
-Message-ID: <20230730063434.GY151430@dragon>
-References: <20230719114328.2239818-1-andrej.picej@norik.com>
+        Sun, 30 Jul 2023 02:35:39 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5AB19B2
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 23:35:38 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-565e4741723so481151eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Jul 2023 23:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690698937; x=1691303737;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
+        b=WyheoXtMfTcS7C7OclQZZh2gRdvyNNfQIKBmEWZCt8PMXVmVr8gastYlCMJIafS063
+         5XSy97M6CskW3raz19O0tGRLDgOmzFSJ4PkKGsUd+4va/SYFpb8L+8ChTefPqTOw1aUx
+         IlFN2LQmTi48xkPwKeNw77GJ9qs4xEjyBaIp/A+8fFgL6FpmdSb8JpsGIh0ehdZwbQIm
+         w1fpdESm/9XKNfh0tTpZu71tiPuMyhct3z0kLVXW38QCul79F+Ler8YZMx0NMaPgys+3
+         PSLwJz6h0ZrYn+MTHIMmrHzAonlIAJU20fbjkPkFooyaLQlzvlfktA9Re18rOhIH8twX
+         OcTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690698937; x=1691303737;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
+        b=XUEncUawWcX2pWIO6keRRDa34rEtJoBA/CKqL2urxLDxuo7R6CV4LBiTU/i54lSgOy
+         JGgKP0VvjZWkFOi5FiMcviUXiAeUUJBO+ooMBveLEUoy1JZjnRaowL9EkTKdFm0snnii
+         nclmNJ2RA7NN4QGdAUR/wd26w6IuTYdz63fGC5Y4ZlSV+t+kK4FkVgtwAdBcfnfEqwtv
+         FZuqaYDLMbq/TsKkP1FvehIixy56kyETY0z55pKBfAC5WQd3EfkUuXGSNvMCPKngQ1Ar
+         J9RvH56ioAP+Ok6gvM49eTgTF8QHFxNFZA5/rlG5F8kb/Y7Mq9pD1PU/NuEmVnncPis1
+         WWmQ==
+X-Gm-Message-State: ABy/qLbME+oysHu0NgPu5Fm6f8fUwF4psZ9Cg9fgoVqnwbRa88WIP9+K
+        1eauLZSQTrmnPlBo1uSvHjdDPSIZlDJ/1nn+cyE=
+X-Google-Smtp-Source: APBJJlGmZHfbI/HebzHbB/vRXdq7nurWADyYAcGoB1Nn0vp9nDAveVGO/xiPz02MJ4dBd+dvge/l2zHhjhyAshJGa0g=
+X-Received: by 2002:a05:6820:2108:b0:56c:5e21:c72d with SMTP id
+ cd8-20020a056820210800b0056c5e21c72dmr2981597oob.1.1690698937164; Sat, 29 Jul
+ 2023 23:35:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230719114328.2239818-1-andrej.picej@norik.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a05:6358:a084:b0:11a:67b4:a778 with HTTP; Sat, 29 Jul 2023
+ 23:35:36 -0700 (PDT)
+Reply-To: dravasmith27@gmail.com
+From:   Dr Ava Smith <khanadbul01@gmail.com>
+Date:   Sat, 29 Jul 2023 23:35:36 -0700
+Message-ID: <CALr78wU9U4MNhEj2CM1rTBe6C9N9=ME8A89PaxrwwA4jgxRM3Q@mail.gmail.com>
+Subject: GREETINGS FROM DR AVA SMITH
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:c31 listed in]
+        [list.dnswl.org]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [dravasmith27[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [khanadbul01[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [khanadbul01[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 01:43:26PM +0200, Andrej Picej wrote:
-> RTC interrupt level should be set to "LOW". This was revealed by the
-> introduction of commit:
-> 
->   f181987ef477 ("rtc: m41t80: use IRQ flags obtained from fwnode")
-> 
-> which changed the way IRQ type is obtained.
-> 
-> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
-
-Applied as a fix with tag:
-
-  Fixes: 800d595151bb ("ARM: dts: imx6: Add initial support for phyBOARD-Mira")
-
-Shawn
+-- 
+Hello Dear,
+how are you today?hope you are fine
+My name is Dr Ava Smith ,Am an English and French nationalities.
+I will give you pictures and more details about me as soon as i hear from you
+Thanks
+Ava
