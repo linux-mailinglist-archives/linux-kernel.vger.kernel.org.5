@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBA576A23B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C9C76A240
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjGaUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S230350AbjGaUxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjGaUwa (ORCPT
+        with ESMTP id S230441AbjGaUwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:52:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0294A198D;
-        Mon, 31 Jul 2023 13:52:30 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690836748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=buYJKjQ237JCo+lND5Be2oqIGKiZxmUkCcs0tnZIjrA=;
-        b=nLxjrl/FgW7S5RAri34yJK3Fps7e3JoJprljai7RwaoDmY+XLlkIWCsJAWaHFrbEh8cOZa
-        kc82sC5ZUoxnTxPyQ3ZjZORcYpjlAjTE1Sutd5dff2HoHm5WQrb291oFq3LkyxH3lh3c5C
-        DS/BUlUb5YVNmdAF5IbOHufqlyo76BEx2OXrh7f3j1qs8CojtQL8dsuhq5EInC22NFuFas
-        5p6HnQmIPVS9nbe7vmDs+FnD+1j9Y+89QRdLk0Jmir61FVRe0KSRQxYix3Py1fzA+51Yw7
-        Yy4oNDR+7Y8rKN3nOeFpPSP64iK/UeEbrP5ONDh1XikPJZ6LACJfdPhm/SdiLA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690836748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=buYJKjQ237JCo+lND5Be2oqIGKiZxmUkCcs0tnZIjrA=;
-        b=yY7ufkgtHNjU8gf3lLYpYl69LwEFgE9y4qgu3u0WHPPKKI0piKmkBxl8ghoz+vka0QjIgr
-        0AnxLUi+55/ZG3Dw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
-In-Reply-To: <20230731173515.GP29590@hirez.programming.kicks-ass.net>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
- <87v8e0m26q.ffs@tglx>
- <20230731173515.GP29590@hirez.programming.kicks-ass.net>
-Date:   Mon, 31 Jul 2023 22:52:27 +0200
-Message-ID: <87cz07n6r8.ffs@tglx>
+        Mon, 31 Jul 2023 16:52:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D23D198B;
+        Mon, 31 Jul 2023 13:52:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9521C612CC;
+        Mon, 31 Jul 2023 20:52:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1664C433C8;
+        Mon, 31 Jul 2023 20:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690836760;
+        bh=4bc7n+F7Mq8FK6H3ud6CK8gDj85KBAh5RyJs5hitlVE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eY+wxcw6USz4xRYOjCO77U7nKEkA27D/Zyuj2zPsNqNtlV7JBnJPKdelD6sJYj/Yu
+         HEmCgiW2eBi8t8hR2GBe6I7+rRu781RkvhmZ8wQkMr4sQpnVDDm3x9wi+3Ia+CIvOl
+         Yyz8uxIVBuVESYD9GlfwIt7QDp0KSFpgh0uonfpC9bhDwYrrkhNa1/V0/iA70+GDCc
+         2Unsh5RZjyRXK4AwSs90QRSp7SBCHqS56k0J5LUW18dbsNVknT9wqMkV4fseaNDzwv
+         PCl2uCrk7VkJJQCGffugV3PE3RWJXQ1lYtsAoXVgB2JiT8M673AMqIZgAAXGHCCGO5
+         8CNNqoweA9foQ==
+Date:   Mon, 31 Jul 2023 14:53:44 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Markus Mayer <mmayer@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix -Warray-bounds bug
+Message-ID: <ZMgfWEA0GAN/Rog8@work>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,38 +60,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31 2023 at 19:35, Peter Zijlstra wrote:
-> On Mon, Jul 31, 2023 at 07:16:29PM +0200, Thomas Gleixner wrote:
->> On Mon, Jul 31 2023 at 18:11, Thomas Gleixner wrote:
->> > On Fri, Jul 21 2023 at 12:22, Peter Zijlstra wrote:
->> >> -#define FUTEX2_MASK (FUTEX2_32 | FUTEX2_PRIVATE)
->> >> +#define FUTEX2_MASK (FUTEX2_64 | FUTEX2_PRIVATE)
->> >>  
->> >>  /**
->> >>   * futex_parse_waitv - Parse a waitv array from userspace
->> >> @@ -207,7 +207,12 @@ static int futex_parse_waitv(struct fute
->> >>  		if ((aux.flags & ~FUTEX2_MASK) || aux.__reserved)
->> >>  			return -EINVAL;
->> >
->> > With the above aux.flags with FUTEX2_32 set will result in -EINVAL. I
->> > don't think that's intentional.
->> 
->> Also if you allow 64bit wide futexes, how is that supposed to work with
->> the existing code, which clearly expects a 32bit uval throughout the
->> place?
->
-> Not allowed yet, these patches only allow 8,16,32. I still need to audit
-> the whole futex core and do 'u32 -> unsigned long' (and everything else
-> that follows from that), and only when that's done can the futex2
-> syscalls allow FUTEX2_64 on 64bit archs.
->
-> So for now, these patches:
->
->   - add the FUTEX2_64 flag,
->   - add 'unsigned long' interface such that
->     64bit can potentiall use it,
->   - explicitly disallow having it set.
+Update the iteration conditions in the for() loop to avoid writing in
+array `table` beyond its allocated size.
 
-I figured that out very late. This flags having a size fields which
-claims to be flags had confused the hell out of me.
+This fixes the following -Warray-bounds warning seen after building
+ARM with multi_v7_defconfig (GCC 13):
+In function 'brcm_avs_get_freq_table',
+    inlined from 'brcm_avs_cpufreq_init' at drivers/cpufreq/brcmstb-avs-cpufreq.c:623:15:
+drivers/cpufreq/brcmstb-avs-cpufreq.c:449:28: warning: array subscript 5 is outside array bounds of 'void[60]' [-Warray-bounds=]
+  449 |         table[i].frequency = CPUFREQ_TABLE_END;
+In file included from include/linux/node.h:18,
+                 from include/linux/cpu.h:17,
+                 from include/linux/cpufreq.h:12,
+                 from drivers/cpufreq/brcmstb-avs-cpufreq.c:44:
+In function 'devm_kmalloc_array',
+    inlined from 'devm_kcalloc' at include/linux/device.h:328:9,
+    inlined from 'brcm_avs_get_freq_table' at drivers/cpufreq/brcmstb-avs-cpufreq.c:437:10,
+    inlined from 'brcm_avs_cpufreq_init' at drivers/cpufreq/brcmstb-avs-cpufreq.c:623:15:
+include/linux/device.h:323:16: note: at offset 60 into object of size 60 allocated by 'devm_kmalloc'
+  323 |         return devm_kmalloc(dev, bytes, flags);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This helps with the ongoing efforts to tighten the FORTIFY_SOURCE
+routines on memcpy() and help us make progress towards globally
+enabling -Warray-bounds.
+
+Link: https://github.com/KSPP/linux/issues/324
+Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
+Cc: stable@vger.kernel.org
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/cpufreq/brcmstb-avs-cpufreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+index 1bdd513bcd19..99ba2d707eff 100644
+--- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
++++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+@@ -439,7 +439,7 @@ brcm_avs_get_freq_table(struct device *dev, struct private_data *priv)
+ 	if (!table)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	for (i = AVS_PSTATE_P0; i <= AVS_PSTATE_MAX; i++) {
++	for (i = AVS_PSTATE_P0; i < AVS_PSTATE_MAX; i++) {
+ 		ret = brcm_avs_set_pstate(priv, i);
+ 		if (ret)
+ 			return ERR_PTR(ret);
+-- 
+2.34.1
 
