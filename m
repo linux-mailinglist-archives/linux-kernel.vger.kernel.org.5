@@ -2,123 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BFB76A234
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9AC76A23C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjGaUvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
+        id S230363AbjGaUwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjGaUvO (ORCPT
+        with ESMTP id S230269AbjGaUwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:51:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7AC1996;
-        Mon, 31 Jul 2023 13:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0rQhfOHno9kOrBF8fBhXP/I9K++I3qDiyVLQoCDK1W4=; b=M5P5CTtU8QVHseBu0j23jZKJQ5
-        zdmFeCi+q8wFnS2+KLHSjnJHSd5pnzFickjfzr8jPwi/vCHqAcZ9WCA0mR/QI+0Kjh6XoL08hbzME
-        VBoQ7z2I6Dq5QBWWD3rWbO5iIaX+lC0AM/wvJ+GiOSWfF9SPutpolOgNZ/ukNLIzK/aedDEcVPyTh
-        B6h6pyyaLRZgV2Xnjk90uOZf4W9KyZ4Eh/0yo+2JjiRxVLIfvbTk5JuH66kGyMozCxgEvJ5Em1xlL
-        kXWtKSBK2wPTpBoShax3yAK0g9H7optbF9G7QT4V+AJEEI2MXcMbpAcaMH4qxLMKm3Dc+XsCAUXi2
-        4McdhxWA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQZqi-00HKH5-1O;
-        Mon, 31 Jul 2023 20:50:40 +0000
-Date:   Mon, 31 Jul 2023 13:50:40 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Joel Granados <joel.granados@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Kees Cook <keescook@chromium.org>,
-        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Alexander Aring <alex.aring@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        bridge@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
-        David Ahern <dsahern@kernel.org>,
-        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Florian Westphal <fw@strlen.de>, willy@infradead.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Simon Horman <horms@verge.net.au>,
-        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
-        Xin Long <lucien.xin@gmail.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
-        Joel Granados <j.granados@samsung.com>
-Subject: Re: [PATCH v2 00/14] sysctl: Add a size argument to register
- functions in sysctl
-Message-ID: <ZMgeoDT0t3NeALM0@bombadil.infradead.org>
-References: <20230731071728.3493794-1-j.granados@samsung.com>
+        Mon, 31 Jul 2023 16:52:31 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75CA1996;
+        Mon, 31 Jul 2023 13:52:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690836750; x=1722372750;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=MMLrINQqlo5ERuabFfXtd8/9Tw71gDUXuerUekiwWns=;
+  b=L6cKbiUPJa5/5Gc9ZasMJTyzLARIBIvQcNYpRtZ8GKkrC2HOnmgn47U5
+   rgF0WV1eISsGGAhi9/V4EmzWyEYug+O7ka+UDLvcFvz7cAhrgBwn6POcx
+   ko7Uyi2a8ZDG8d0RduaieN2PMk74NRadQJ5WmeaUOkO3BCY7MeboLHkS4
+   6jYseJrGJUDulgr2iAEmPyDAqLAfN0PaDYBgHve2aVhbR9/Q4WraW8uPt
+   SqnvHV1QVw9xX4WlHm3y0dj+VocrrAlXbNlxZoFl2tdA2OHE9Ls1I0+H+
+   blFRsCN5ypaN4WKKoTQLJJN7kwClNU85Ay7XleAwIHrWlFTKUTvIgGN5L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="359161162"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="359161162"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:52:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="842441541"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="842441541"
+Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.100.68])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:52:29 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+Date:   Mon, 31 Jul 2023 13:52:27 -0700
+Subject: [PATCH] cxl/mbox: Fix debug message print
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731071728.3493794-1-j.granados@samsung.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230731-cxl-fix-clear-event-debug-print-v1-1-42c068f500d1@intel.com>
+X-B4-Tracking: v=1; b=H4sIAAofyGQC/x2N0QqDMBAEf0XuuQdRsdL+SunDJdnqgU3lYkUQ/
+ 72xbzsszOyUYYpM92onw6pZP6lAfakojJIGsMbC1LimdX1bc9gmfunGYYIYY0VaOMJ/B55Ny25
+ 910dxuHXXQMXiJYO9SQrj6XlLXmDnMRuK559+PI/jB5s+O2yKAAAA
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-c6835
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690836749; l=2332;
+ i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
+ bh=MMLrINQqlo5ERuabFfXtd8/9Tw71gDUXuerUekiwWns=;
+ b=NDJ8AYz1EeCWvAUu2l2ox6sAWAIJUwJeMOPRrqpv92zI33XtqFnHAuM5FC2jHGCMk3cctKFt/
+ zitomy7UZ0HAZnC2ofeB7jGrXZL4V+4R6mAim0aDVQaaerdii0kWuH0
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 09:17:14AM +0200, Joel Granados wrote:
-> Why?
+The handle value used to report an event being cleared by dev_dbg() is
+incorrect due to a post increment of the payload handle index.
 
-It would be easier to read if the what went before the why.
+Delay the increment of the index until after the print.  Also add the
+debugging for event processing which was useful in finding this bug.
 
-> This is a preparation patch set that will make it easier for us to apply
-> subsequent patches that will remove the sentinel element (last empty element)
-> in the ctl_table arrays.
-> 
-> In itself, it does not remove any sentinels but it is needed to bring all the
-> advantages of the removal to fruition which is to help reduce the overall build
-> time size of the kernel and run time memory bloat by about ~64 bytes per
-> sentinel.
+To: Davidlohr Bueso <dave@stgolabs.net>
+To: Jonathan Cameron <jonathan.cameron@huawei.com>
+To: Dave Jiang <dave.jiang@intel.com>
+To: Alison Schofield <alison.schofield@intel.com>
+To: Vishal Verma <vishal.l.verma@intel.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: linux-cxl@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+NOTE: This does fix a bug in the patch referenced below.  However, I
+don't think that warrants back porting because this is only a debug
+print.
 
-s/sentinel/declared ctl array
+Fixes: 6ebe28f9ec72 ("cxl/mem: Read, trace, and clear events on driver load")
+---
+ drivers/cxl/core/mbox.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Because the you're suggesting we want to remove the sentinel but we
-want to help the patch reviewer know that a sentil is required per
-declared ctl array.
+diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+index d6d067fbee97..f052d5f174ee 100644
+--- a/drivers/cxl/core/mbox.c
++++ b/drivers/cxl/core/mbox.c
+@@ -882,9 +882,10 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
+ 	 */
+ 	i = 0;
+ 	for (cnt = 0; cnt < total; cnt++) {
+-		payload->handles[i++] = get_pl->records[cnt].hdr.handle;
++		payload->handles[i] = get_pl->records[cnt].hdr.handle;
+ 		dev_dbg(mds->cxlds.dev, "Event log '%d': Clearing %u\n", log,
+ 			le16_to_cpu(payload->handles[i]));
++		i++;
+ 
+ 		if (i == max_handles) {
+ 			payload->nr_recs = i;
+@@ -946,9 +947,13 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
+ 		if (!nr_rec)
+ 			break;
+ 
+-		for (i = 0; i < nr_rec; i++)
++		for (i = 0; i < nr_rec; i++) {
++			dev_dbg(dev, "Event log %d: processing handle %u\n",
++				type,
++				le16_to_cpu(payload->records[i].hdr.handle));
+ 			cxl_event_trace_record(cxlmd, type,
+ 					       &payload->records[i]);
++		}
+ 
+ 		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
+ 			trace_cxl_overflow(cxlmd, type, payload);
 
-You can also mention here briefly that this helps ensure that future moves of
-sysctl arrays out from kernel/sysctl.c to their own subsystem won't
-penalize in enlarging the kernel build size or run time memory consumption.
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230731-cxl-fix-clear-event-debug-print-3b57da0e956c
 
-Thanks for spinning this up again!
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
 
-  Luis
