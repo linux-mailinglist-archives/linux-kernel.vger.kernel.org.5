@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D183A769AE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB46769AED
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbjGaPjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        id S232017AbjGaPjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjGaPjX (ORCPT
+        with ESMTP id S230258AbjGaPju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:39:23 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E97D8;
-        Mon, 31 Jul 2023 08:39:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 991E85C0115;
-        Mon, 31 Jul 2023 11:39:20 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Mon, 31 Jul 2023 11:39:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1690817960; x=1690904360; bh=3sigVTCHFGVp6funFXn9uMuJRWZKuRcAdPw
-        XsFRL79U=; b=euvsBWRLUcgYzXOv1gUR1dh6GsWM/6vgxNlLxFaWlFVPxBRK+Y5
-        vh2ASC2d2M/80LiY9f/xB9tqCii5mb6xmIGqOlzvlZCyyS8uJImpF5z909mG2RvD
-        4Yb+5faz+AGFAn05IIwkGQD7+pVTbO2z23gqA/MTSyFWSVZdKi+9YJRf4LS9aKIu
-        Xpvw8IbIZpVOOGCQH5P3/53IQc8VH5CtCe9mpcAhvRejuVevHS0VArXpmQPNuSeh
-        f7gjGEncdVNwVhUpoFueY3kBYVbknAaCyfbhtTV7AC8+EZ9s7Brhxj87YG/b3SoC
-        yI/aNBgtMLYUk4azI6ida25VQTdv6523X+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690817960; x=1690904360; bh=3sigVTCHFGVp6funFXn9uMuJRWZKuRcAdPw
-        XsFRL79U=; b=HyWGJiXZ+MNH2y46FO1+cigNi91kIU4365wFjuNjNMtMGeumAf1
-        K5gjGXK6lndpZUxYot6IDZ7jH/k8dvYOHqCTqddLCImU0CPjNdShIOnGfVXgYuWE
-        mR0HQiceO2GsvtfsGm1QS7ah7G8hsVL7NerNtH7ayETLiic3ADu7voN97pzk1Y0c
-        phGWV+tPcrLVc5xnRspm7x3L+feofd19kq9lorOdzfWPjyM8V1fCH3rclBMq7TRq
-        bEyojzgHEeDYtpDjReh1Eq4HJLnUOHJTgxTzrDpDbXdnpZ/Xt8w6xqP12zhlViU7
-        A4+Vsd7mM9G3PsXmUtlKOwTpZVby9pY2PlA==
-X-ME-Sender: <xms:qNXHZI4kvdwJPdlvXkp6H3EQRNgSQRMfQwrECk61YoaEkL39jzEGCg>
-    <xme:qNXHZJ5APgqGiWebqlTjRr5x-ONt_2HHrZ6kZo9uAftnF65zgwx_pwIQEy15SQMCM
-    hZlQQOX2w0eC9nAGy4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:qNXHZHfPl9ekhjjXlnW9-PY2Vr_lT25YYa6_jWHQwqlmUh0wpoTnNA>
-    <xmx:qNXHZNKrn-gD26nLbRak_Lkq-0wnU5XAIGA8ZYtqqnzSUG-g5GsA1g>
-    <xmx:qNXHZMKYNj4PfS7OO6NihWOZZ-ib3udGBHBpWZpglOXtHDHW1AHxxg>
-    <xmx:qNXHZL-DxcazecXQPWBgxihOE1ZM_w2xR59y9f0WEngbh0VgUSL3Xw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0CAB4B60089; Mon, 31 Jul 2023 11:39:20 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <c7526061-2f4e-4843-825c-98d9494af625@app.fastmail.com>
-In-Reply-To: <7C51AA15-DEBE-486B-9788-F84B260F8880@gmail.com>
-References: <20230731110239.107086-1-clamor95@gmail.com>
- <20230731110239.107086-3-clamor95@gmail.com>
- <a16db5ac-2b9a-45ab-b693-2f459d689c7d@app.fastmail.com>
- <7C51AA15-DEBE-486B-9788-F84B260F8880@gmail.com>
-Date:   Mon, 31 Jul 2023 17:38:59 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Svyatoslav Ryhel" <clamor95@gmail.com>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Samu Onkalo" <samu.p.onkalo@nokia.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] misc: adps990x: convert to OF
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 11:39:50 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA56AE0;
+        Mon, 31 Jul 2023 08:39:49 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VE2WvD024128;
+        Mon, 31 Jul 2023 15:39:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=mqdgDMedgXDsMg8vog/VIYIJoUvfxDyZ66BXl2u6HuQ=;
+ b=g0fE7tOx4EndgYJqJ+FBpa4bQFAYy4AUt/FZPB3D8oe3WKxIkSlUxG54/tNGtIfHGxCa
+ gms6vbqoZsEMlYXqePPHfWpeRjx2r6uGwbjQmM2ClHEBhjZ2QnKh+znYN07nvCRYVHD4
+ kK81eKU1aIPP6lPh8NgPdG3sQWTJjlsPR3/ef3Jn1JiMwcYjOh4HNOVJ9xw6yVVf2iio
+ DeJMN9SddbUyacNlDhrTfdrtCUFHyYW+USFHG4tr5LALOXrp4YJ9dirRHTTaww4La1BY
+ GneeeHg7h/bwgTsCHL7oaJDj0lRXMFfj3Ctzvfrx98zGoY/BFTRDOAgbGNnX8A8ObOP1 fA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6d8grsgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 15:39:41 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VFdes9000601
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 15:39:40 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 08:39:40 -0700
+Date:   Mon, 31 Jul 2023 08:39:38 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Chris Lew <quic_clew@quicinc.com>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+Subject: Re: [PATCH 2/4] soc: qcom: aoss: Add debugfs interface for sending
+ messages
+Message-ID: <20230731153938.GF1428172@hu-bjorande-lv.qualcomm.com>
+References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
+ <20230731041013.2950307-3-quic_bjorande@quicinc.com>
+ <21dfb855-8f44-4a4c-9dba-52eb5ae46b9b@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <21dfb855-8f44-4a4c-9dba-52eb5ae46b9b@lunn.ch>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: xdBwbo7bfTmDlyBRAK8Mm44zJddJyOlv
+X-Proofpoint-GUID: xdBwbo7bfTmDlyBRAK8Mm44zJddJyOlv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_08,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 impostorscore=0 spamscore=0 adultscore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=961
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307310140
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023, at 16:58, Svyatoslav Ryhel wrote:
-> 31 =D0=BB=D0=B8=D0=BF=D0=BD=D1=8F 2023 =D1=80. 16:18:16 GMT+03:00, Arn=
-d Bergmann <arnd@arndb.de> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=B2(-=D0=
-=BB=D0=B0):
->>On Mon, Jul 31, 2023, at 13:02, Svyatoslav Ryhel wrote:
->>> Add ability to use device tree bindings keeping existing setup.
->>
->>I see that there are no more in-tree users of the old
->>apds990x_platform_data, so I think it would be best to completely
->>remove that codepath and merge that structure into struct
->>apds990x_chip, to simplify the probing and avoid the extra
->>allocation.
->
-> Thank you very much for your review, but is it mandatory to drop pdata=20
-> in this particular patch set? To be honest this driver needs serious=20
-> upgrades and refactoring, and I have no dedication to invest my time=20
-> into refactoring it, moreover, I am not a maintainer of this driver,=20
-> nor a full time kernel maintainer of any kind. I am doing what I am=20
-> doing only because one of my devices uses this als but it is not=20
-> something crucial.
+On Mon, Jul 31, 2023 at 10:21:31AM +0200, Andrew Lunn wrote:
+> On Sun, Jul 30, 2023 at 09:10:11PM -0700, Bjorn Andersson wrote:
+> > From: Chris Lew <clew@codeaurora.org>
+> > 
+> > In addition to the normal runtime commands, the Always On Processor
+> > (AOP) provides a number of debug commands which can be used during
+> > system debugging for things such as preventing power collapse or placing
+> > floor votes for certain resources. Some of these are documented in the
+> > Robotics RB5 "Debug AOP ADB" linked below.
+> > 
+> > Provide a debugfs interface for the developer/tester to send these
+> > commands to the AOP.
+> 
+> This sort of sending arbitrary binary blob commands is not liked,
+> since it allow user space closed source drivers. At minimum, please
+> provide a file per command, with the kernel marshalling parameters
+> into the binary format, and decoding any returned values.
+> 
 
-We have a lot of drivers that are lacking the cleanup I'm asking
-for, so I don't think I'd mandate it at this point, but I don't
-actually expect the patch to be any more complicated in the end,
-so just try it out.
+Thanks for your input Andrew, that is a valid concern.
 
-I think at the minimum, please remove the include/platform_data
-header and move the contents into the driver itself, I'd be fine
-with that. If you can easily do further cleanup by dropping
-the separate allocation and folding the apds990x_fw_probe()
-function back into apds990x_probe(), please do that, just stop
-at the point where you feel it gets too complicated.
+The interface is in debugfs and as such wouldn't be suitable for closed
+source drivers, as in the majority of our shipping software debugfs
+isn't enabled.
 
-    Arnd
+Regards,
+Bjorn
