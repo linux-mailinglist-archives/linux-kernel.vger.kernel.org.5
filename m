@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1771F76968B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D29769691
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbjGaMml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S232426AbjGaMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjGaMmi (ORCPT
+        with ESMTP id S231253AbjGaMnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:42:38 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011B710DF;
-        Mon, 31 Jul 2023 05:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690807358; x=1722343358;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0MB2M7pKhqWAVfxRDoJt9ipjAOPvnCoU+CUBnmXYZ8o=;
-  b=PlBeKTTpCsgQwYYjSoWGC2dFQ0hzanX4/eowTCwqluSpnbCPrXH6LlWO
-   ESWJMFjDqW/dEimKCy9AwcILrwb5oeBzYc7uKh4wD+wGOiItQirpugUKZ
-   Dn9yRnmkkPmxAPclntLWxAa9NdvUZYr/ynLT4epvUlfEQTD2sNFNod08U
-   J3irWz0pdrKKqQg+CgfWmLTEQaJjfzLD0vfrRxQFjtxxaPT6mF4ZBh1dW
-   Dk5fKw/kYzbO3aDlFLZdonmxJPN9tAGCGGiV+Cd0dDz7FbxRg5pTJUoGB
-   Gz5Ntw4o/zz58kabEeqnsDh/Hk9ovmpkFAgYPxODWKrte9ePq9oBLYPKJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="348604838"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="348604838"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 05:42:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="871667298"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 31 Jul 2023 05:42:36 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 Jul 2023 15:42:34 +0300
-Date:   Mon, 31 Jul 2023 15:42:33 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     RD Babiera <rdbabiera@google.com>
-Cc:     gregkh@linuxfoundation.org, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: altmodes/displayport: Signal hpd when
- configuring pin assignment
-Message-ID: <ZMesOaooOBvl7X1j@kuha.fi.intel.com>
-References: <20230726020903.1409072-1-rdbabiera@google.com>
+        Mon, 31 Jul 2023 08:43:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E205BE46;
+        Mon, 31 Jul 2023 05:43:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 794EB61138;
+        Mon, 31 Jul 2023 12:43:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD173C433C8;
+        Mon, 31 Jul 2023 12:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690807418;
+        bh=EJYQmky5MRQWTs/BzAO6qxitvyCrK779971jP7CGnMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QQib0nQAlua30FPPY+CgnForzZCp0adBhrIDFMwqUnm+OcklNSq1YjanT0axZ8Xc6
+         eSC/Mf0F2nnX3QNMBzATOwqQubXDFvHWjig7fbnLPueuYLZpS3wHyQHMQHQ9OzwogC
+         AwCJ+I0libuB3dz+lUjrMpUNlIJIwGnpuAaUP4HhZcZkCP0e1vw9QPM1kRhqQ5VrVD
+         A3DWwLek2OnG4hCUNl7Bj+bguc0YyPIAqCq0KKfgY38kgbS4AqR3B+l8ChNP2mWomZ
+         aduUaCu6TDn1Mvip2q09x+j1/JvMGSCLtKuKz3BIvHrD2/+h/rtOmFUd+/ZjZbsVrd
+         7q4USvLDI/8jg==
+Date:   Mon, 31 Jul 2023 14:43:33 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
+        chao@kernel.org, huyue2@coolpad.com, jack@suse.cz,
+        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com, xiang@kernel.org
+Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
+Message-ID: <20230731-augapfel-penibel-196c3453f809@brauner>
+References: <000000000000f43cab0601c3c902@google.com>
+ <20230731093744.GA1788@lst.de>
+ <9b57e5f7-62b6-fd65-4dac-a71c9dc08abc@linux.alibaba.com>
+ <20230731111622.GA3511@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230726020903.1409072-1-rdbabiera@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230731111622.GA3511@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,76 +63,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 02:09:02AM +0000, RD Babiera wrote:
-> When connecting to some DisplayPort partners, the initial status update
-> after entering DisplayPort Alt Mode notifies that the DFP_D/UFP_D is not in
-> the connected state. This leads to sending a configure message that keeps
-> the device in USB mode. The port partner then sets DFP_D/UFP_D to the
-> connected state and HPD to high in the same Attention message. Currently,
-> the HPD signal is dropped in order to handle configuration.
+On Mon, Jul 31, 2023 at 01:16:22PM +0200, Christoph Hellwig wrote:
+> On Mon, Jul 31, 2023 at 06:58:14PM +0800, Gao Xiang wrote:
+> > Previously, deactivate_locked_super() or .kill_sb() will only be
+> > called after fill_super is called, and .s_magic will be set at
+> > the very beginning of erofs_fc_fill_super().
+> >
+> > After ("fs: open block device after superblock creation"), such
+> > convension is changed now.  Yet at a quick glance,
+> >
+> > WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
+> >
+> > in erofs_kill_sb() can be removed since deactivate_locked_super()
+> > will also be called if setup_bdev_super() is falled.  I'd suggest
+> > that removing this WARN_ON() in the related commit, or as
+> > a following commit of the related branch of the pull request if
+> > possible.
 > 
-> This patch saves changes to the HPD signal when the device chooses to
-> configure during dp_altmode_status_update, and invokes sysfs_notify if
-> necessary for HPD after configuring.
-> 
-> Fixes: 0e3bb7d6894d ("usb: typec: Add driver for DisplayPort alternate mode")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> Agreed.  I wonder if we should really call into ->kill_sb before
+> calling into fill_super, but I need to carefull look into the
+> details.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I think checking for s_magic in erofs kill sb is wrong as it introduces
+a dependency on both fill_super() having been called and that s_magic is
+initialized first. If someone reorders erofs_kill_sb() such that s_magic
+is only filled in once everything else succeeded it would cause the same
+bug. That doesn't sound nice to me.
 
-> ---
->  drivers/usb/typec/altmodes/displayport.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
-> index 66de880b28d0..cdf8261e22db 100644
-> --- a/drivers/usb/typec/altmodes/displayport.c
-> +++ b/drivers/usb/typec/altmodes/displayport.c
-> @@ -60,6 +60,7 @@ struct dp_altmode {
->  
->  	enum dp_state state;
->  	bool hpd;
-> +	bool pending_hpd;
->  
->  	struct mutex lock; /* device lock */
->  	struct work_struct work;
-> @@ -144,8 +145,13 @@ static int dp_altmode_status_update(struct dp_altmode *dp)
->  		dp->state = DP_STATE_EXIT;
->  	} else if (!(con & DP_CONF_CURRENTLY(dp->data.conf))) {
->  		ret = dp_altmode_configure(dp, con);
-> -		if (!ret)
-> +		if (!ret) {
->  			dp->state = DP_STATE_CONFIGURE;
-> +			if (dp->hpd != hpd) {
-> +				dp->hpd = hpd;
-> +				dp->pending_hpd = true;
-> +			}
-> +		}
->  	} else {
->  		if (dp->hpd != hpd) {
->  			drm_connector_oob_hotplug_event(dp->connector_fwnode);
-> @@ -161,6 +167,16 @@ static int dp_altmode_configured(struct dp_altmode *dp)
->  {
->  	sysfs_notify(&dp->alt->dev.kobj, "displayport", "configuration");
->  	sysfs_notify(&dp->alt->dev.kobj, "displayport", "pin_assignment");
-> +	/*
-> +	 * If the DFP_D/UFP_D sends a change in HPD when first notifying the
-> +	 * DisplayPort driver that it is connected, then we wait until
-> +	 * configuration is complete to signal HPD.
-> +	 */
-> +	if (dp->pending_hpd) {
-> +		drm_connector_oob_hotplug_event(dp->connector_fwnode);
-> +		sysfs_notify(&dp->alt->dev.kobj, "displayport", "hpd");
-> +		dp->pending_hpd = false;
-> +	}
->  
->  	return dp_altmode_notify(dp);
->  }
-> 
-> base-commit: fdf0eaf11452d72945af31804e2a1048ee1b574c
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
+I think ->fill_super() should only be called after successfull
+superblock allocation and after the device has been successfully opened.
+Just as this code does now. So ->kill_sb() should only be called after
+we're guaranteed that ->fill_super() has been called.
 
--- 
-heikki
+We already mostly express that logic through the fs_context object.
+Anything that's allocated in fs_context->init_fs_context() is freed in
+fs_context->free() before fill_super() is called. After ->fill_super()
+is called fs_context->s_fs_info will have been transferred to
+sb->s_fs_info and will have to be killed via ->kill_sb().
+
+Does that make sense?
