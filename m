@@ -2,171 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E741C7698F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B87F7698F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbjGaOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S231849AbjGaOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbjGaOGW (ORCPT
+        with ESMTP id S232877AbjGaOG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:06:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3B330EF;
-        Mon, 31 Jul 2023 07:01:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 23D3D1F854;
-        Mon, 31 Jul 2023 14:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690812100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4Ospd9tdJ/9LVp9GV33x9w2ee0DMxOY/R8DWILwyoQ=;
-        b=izT7z9kjtwxOBd9ghqMUp1UFv1IzvxxuGghUc5FGEFkHNFKlE5V//FQpLnrmQJp7FlPSJp
-        Xuv4Ke6C1VYJnbjifSu0kjIbNHReHlmW4psqMnLlfrx0so82ocMYQELlVseeW7BXqVyatk
-        Sd41VkUZqY6vCaNeqNz7XCn6Yx6s3oU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690812100;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b4Ospd9tdJ/9LVp9GV33x9w2ee0DMxOY/R8DWILwyoQ=;
-        b=9dhqslck7oayWZRDdaD/VpUlVPqR61Ngeng4Mcn2EZ7M7Oi2f75cwTVe/DkwsGLS7lWFfO
-        IxxsbHMZt8eUFnDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E978C1322C;
-        Mon, 31 Jul 2023 14:01:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id p8sAOMO+x2QSSgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 31 Jul 2023 14:01:39 +0000
-Message-ID: <13748adb-1e0f-d492-d2ca-66f2c6be33d0@suse.de>
-Date:   Mon, 31 Jul 2023 16:01:39 +0200
+        Mon, 31 Jul 2023 10:06:29 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A0B1BDF;
+        Mon, 31 Jul 2023 07:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690812159; x=1722348159;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZjKOqjp3rusEQTrMwBC9OMZcGMJrR0bk27etxmfvtG8=;
+  b=kxsQVXX/HzG8FRtIUM6S7W2v8Bn/WPd1wWEGa2e55ALfXpYkmVcewfEn
+   gcx5mUVbj+OpkE1rD1RPWGsIbEwoVjl/AdR1WCCjKe+KgENVOTPBBsmOw
+   mIQGtrQArfyD5FH6AwLC7oWmyeyTAHAZZoCVD26oO16n57IQG1RQtdTPb
+   gwlmkR3N+aKnacs4uI9tzu4uTrPge6E3qYOGNVWQNKlaOSjFE5Env+bRE
+   pSqImeeqEshiHql4nX6xsPvJVh+Hn+V67uqzot+ad4DcpOszGNDmwUffU
+   Qq+2qfdWHe0kAKQq14ug6UIXoQO4XjQhUwcnYPMWma78SCdqzWUM49h4K
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="asc'?scan'208";a="227468323"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Jul 2023 07:02:37 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 31 Jul 2023 07:02:36 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 31 Jul 2023 07:02:34 -0700
+Date:   Mon, 31 Jul 2023 15:01:58 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+CC:     Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>, <stable@vger.kernel.org>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v3] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+Message-ID: <20230731-calzone-gratified-dbc51639beec@wendy>
+References: <20230731095936.23397-1-xingmingzheng@iscas.ac.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------yn6IudZAIQmkHUvoB83qGyX8"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        protocol="application/pgp-signature"; boundary="sR3rHcOfeYhw3z0E"
+Content-Disposition: inline
+In-Reply-To: <20230731095936.23397-1-xingmingzheng@iscas.ac.cn>
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------yn6IudZAIQmkHUvoB83qGyX8
-Content-Type: multipart/mixed; boundary="------------lFs1kHQPQJKWrh5RcffCHU8U";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Helge Deller <deller@gmx.de>, Javier Martinez Canillas <javierm@redhat.com>,
- linux-fbdev@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Message-ID: <13748adb-1e0f-d492-d2ca-66f2c6be33d0@suse.de>
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
-In-Reply-To: <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
+--sR3rHcOfeYhw3z0E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---------------lFs1kHQPQJKWrh5RcffCHU8U
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Hey,
 
-SGksDQoNCkFtIDEzLjA3LjIzIHVtIDE4OjExIHNjaHJpZWIgUmFuZHkgRHVubGFwOg0KPiAN
-Cj4gDQo+IE9uIDcvMTIvMjMgMTk6MzcsIFN0ZXBoZW4gUm90aHdlbGwgd3JvdGU6DQo+PiBI
-aSBhbGwsDQoNCnNvcnJ5LCBJJ3ZlIGJlZW4gQUZLIGZvciBhIGJpdC4gSSdsbCBzZW5kIGEg
-Zml4IHNvb24uDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4+DQo+PiBDaGFuZ2VzIHNp
-bmNlIDIwMjMwNzEyOg0KPj4NCj4gDQo+IG9uIHBwYzY0Og0KPiANCj4gSW4gZmlsZSBpbmNs
-dWRlZCBmcm9tIC4uL2luY2x1ZGUvbGludXgvZGV2aWNlLmg6MTUsDQo+ICAgICAgICAgICAg
-ICAgICAgIGZyb20gLi4vYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2lvLmg6MjIsDQo+ICAg
-ICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9pby5oOjEzLA0KPiAgICAg
-ICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvaXJxLmg6MjAsDQo+ICAgICAg
-ICAgICAgICAgICAgIGZyb20gLi4vYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2hhcmRpcnEu
-aDo2LA0KPiAgICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvaGFyZGly
-cS5oOjExLA0KPiAgICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvaW50
-ZXJydXB0Lmg6MTEsDQo+ICAgICAgICAgICAgICAgICAgIGZyb20gLi4vZHJpdmVycy92aWRl
-by9mYmRldi9wczNmYi5jOjI1Og0KPiAuLi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3BzM2ZiLmM6
-IEluIGZ1bmN0aW9uICdwczNmYl9wcm9iZSc6DQo+IC4uL2RyaXZlcnMvdmlkZW8vZmJkZXYv
-cHMzZmIuYzoxMTcyOjQwOiBlcnJvcjogJ3N0cnVjdCBmYl9pbmZvJyBoYXMgbm8gbWVtYmVy
-IG5hbWVkICdkZXYnDQo+ICAgMTE3MiB8ICAgICAgICAgICAgICAgICAgZGV2X2RyaXZlcl9z
-dHJpbmcoaW5mby0+ZGV2KSwgZGV2X25hbWUoaW5mby0+ZGV2KSwNCj4gICAgICAgIHwgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn4NCj4gLi4vaW5jbHVkZS9s
-aW51eC9kZXZfcHJpbnRrLmg6MTEwOjM3OiBub3RlOiBpbiBkZWZpbml0aW9uIG9mIG1hY3Jv
-ICdkZXZfcHJpbnRrX2luZGV4X3dyYXAnDQo+ICAgIDExMCB8ICAgICAgICAgICAgICAgICBf
-cF9mdW5jKGRldiwgZm10LCAjI19fVkFfQVJHU19fKTsgICAgICAgICAgICAgICAgICAgICAg
-IFwNCj4gICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+
-fn5+fn5+fn4NCj4gLi4vZHJpdmVycy92aWRlby9mYmRldi9wczNmYi5jOjExNzE6OTogbm90
-ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvICdkZXZfaW5mbycNCj4gICAxMTcxIHwgICAgICAg
-ICBkZXZfaW5mbyhpbmZvLT5kZXZpY2UsICIlcyAlcywgdXNpbmcgJXUgS2lCIG9mIHZpZGVv
-IG1lbW9yeVxuIiwNCj4gICAgICAgIHwgICAgICAgICBefn5+fn5+fg0KPiAuLi9kcml2ZXJz
-L3ZpZGVvL2ZiZGV2L3BzM2ZiLmM6MTE3Mjo2MTogZXJyb3I6ICdzdHJ1Y3QgZmJfaW5mbycg
-aGFzIG5vIG1lbWJlciBuYW1lZCAnZGV2Jw0KPiAgIDExNzIgfCAgICAgICAgICAgICAgICAg
-IGRldl9kcml2ZXJfc3RyaW5nKGluZm8tPmRldiksIGRldl9uYW1lKGluZm8tPmRldiksDQo+
-ICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIF5+DQo+IC4uL2luY2x1ZGUvbGludXgvZGV2X3ByaW50ay5oOjEx
-MDozNzogbm90ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNybyAnZGV2X3ByaW50a19pbmRleF93
-cmFwJw0KPiAgICAxMTAgfCAgICAgICAgICAgICAgICAgX3BfZnVuYyhkZXYsIGZtdCwgIyNf
-X1ZBX0FSR1NfXyk7ICAgICAgICAgICAgICAgICAgICAgICBcDQo+ICAgICAgICB8ICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+DQo+IC4uL2RyaXZl
-cnMvdmlkZW8vZmJkZXYvcHMzZmIuYzoxMTcxOjk6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBt
-YWNybyAnZGV2X2luZm8nDQo+ICAgMTE3MSB8ICAgICAgICAgZGV2X2luZm8oaW5mby0+ZGV2
-aWNlLCAiJXMgJXMsIHVzaW5nICV1IEtpQiBvZiB2aWRlbyBtZW1vcnlcbiIsDQo+ICAgICAg
-ICB8ICAgICAgICAgXn5+fn5+fn4NCj4gDQo+IA0KPiBGdWxsIHJhbmRjb25maWcgZmlsZSBp
-cyBhdHRhY2hlZC4NCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVy
-IERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFu
-a2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3Rl
-diwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJC
-IDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
+On Mon, Jul 31, 2023 at 05:59:36PM +0800, Mingzheng Xing wrote:
+> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the new=
+er
+> 20191213 version which moves some instructions from the I extension to the
+> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+> that version, we should explicitly specifying Zicsr and Zifencei via -mar=
+ch
+> to cope with the new changes. but this only occurs when binutils >=3D 2.36
+> and GCC >=3D 11.1.0. It's a different story when binutils < 2.36.
+>=20
+> binutils-2.36 supports the Zifencei extension[2] and splits Zifencei and
+> Zicsr from I[3]. GCC-11.1.0 is particular[4] because it add support Zicsr
+> and Zifencei extension for -march. binutils-2.35 does not support the
+> Zifencei extension, and does not need to specify Zicsr and Zifencei when
+> working with GCC >=3D 12.1.0.
+>=20
+> To make our lives easier, let's relax the check to binutils >=3D 2.36 in
+> CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. For the other two cases,
+> where clang < 17 or GCC < 11.1.0, we will deal with them in
+> CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
+>=20
+> For more information, please refer to:
+> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
+> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang a=
+nd binutils")
+> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed=
+44286efa8ae8717a77d94b51ac3614e2ca6dc [0]
+> Link: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579=
+d4a7a4a76bab51b5b52fec2cd [1]
+> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3D5a1=
+b31e1e1cee6e9f1c92abff59cdcfff0dddf30 [2]
+> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3D729=
+a53530e86972d1143553a415db34e6e01d5d2 [3]
+> Link: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad08c38=
+2da47e048007a78fa3fb4ef49 [4]
+> Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.o=
+rg
+> Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
+> Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
 
---------------lFs1kHQPQJKWrh5RcffCHU8U--
+You need to actually put the CC: stable@vger.kernel.org into the commit
+message for the stable folks to pick things up.
 
---------------yn6IudZAIQmkHUvoB83qGyX8
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 4c07b9189c86..2704bd91dfb5 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -570,24 +570,31 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+>  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>  	def_bool y
+>  	# https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed44=
+286efa8ae8717a77d94b51ac3614e2ca6dc
+> -	depends on AS_IS_GNU && AS_VERSION >=3D 23800
+> -	help
+> -	  Newer binutils versions default to ISA spec version 20191213 which
+> -	  moves some instructions from the I extension to the Zicsr and Zifencei
+> -	  extensions.
+> +	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579d4=
+a7a4a76bab51b5b52fec2cd
+> +	depends on AS_IS_GNU && AS_VERSION >=3D 23600
+> +	help
+> +	  Binutils-2.38 and GCC-12.1.0 bumped the default ISA spec to the newer
+> +	  20191213 version, which moves some instructions from the I extension =
+to
+> +	  the Zicsr and Zifencei extensions. This requires explicitly specifying
+> +	  zicsr and zifencei when binutils >=3D 2.38 or GCC >=3D 12.1.0,
+
+> but this only
+> +	  occurs when binutils >=3D 2.36 and GCC >=3D 11.1.0.
+> +	 It's a different story when binutils < 2.36.
+
+I would replace this with something like:
+	Binutils-2.38 and GCC-12.1.0 bumped the default ISA spec to the newer
+	20191213 version, which moves some instructions from the I extension to
+	the Zicsr and Zifencei extensions. This requires explicitly specifying
+	zicsr and zifencei when binutils >=3D 2.38 or GCC >=3D 12.1.0. Zicsr
+	and Zifencei are supported in binutils from version 2.36 onwards.
+	To make life easier, and avoid forcing toolchains that default to a
+	newer ISA spec to version 2.2, relax the check to binutils >=3D 2.36.
+	For clang < 17 or GCC < 11.1.0, for which this is not possible, this is
+	dealt with in CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
+
+I tried to take the personification out of it & hopefully made it a
+little clearer what dropping the check to 2.36 does for us.
+
+> Also, we have to consider the case of clang paired with binutils.
+
+I think this sentence can go, its covered in the other config text.
+
+I'm sorry for being a bit of a pedant about this, but this has been such
+a can of worms that I would like things to remain explained well enough
+that the text is sufficient next time a revisit is required.
+
+Thanks,
+Conor.
+
+> +	  To make our lives easier, we relax the check to binutils >=3D 2.36. >=
+ =20
+>  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+>  	def_bool y
+>  	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>  	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4=
+498694e15bf8a16
+> -	depends on CC_IS_CLANG && CLANG_VERSION < 170000
+> -	help
+> -	  Certain versions of clang do not support zicsr and zifencei via -march
+> -	  but newer versions of binutils require it for the reasons noted in the
+> -	  help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+> -	  option causes an older ISA spec compatible with these older versions
+> -	  of clang to be passed to GAS, which has the same result as passing zi=
+csr
+> -	  and zifencei to -march.
+> +	# https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad08c382d=
+a47e048007a78fa3fb4ef49
+> +	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC=
+_VERSION < 110100)
+> +	help
+> +	  Certain versions of clang and GCC do not support zicsr and zifencei v=
+ia
+> +	  -march. This option causes an older ISA spec compatible with these ol=
+der
+> +	  versions of clang and GCC to be passed to GAS, which has the same res=
+ult
+> +	  as passing zicsr and zifencei to -march.
+> =20
+>  config FPU
+>  	bool "FPU support"
+> diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/c=
+ompat_vdso/Makefile
+> index 189345773e7e..b86e5e2c3aea 100644
+> --- a/arch/riscv/kernel/compat_vdso/Makefile
+> +++ b/arch/riscv/kernel/compat_vdso/Makefile
+> @@ -11,7 +11,13 @@ compat_vdso-syms +=3D flush_icache
+>  COMPAT_CC :=3D $(CC)
+>  COMPAT_LD :=3D $(LD)
+> =20
+> -COMPAT_CC_FLAGS :=3D -march=3Drv32g -mabi=3Dilp32
+> +# binutils 2.35 does not support the zifencei extension, but in the ISA
+> +# spec 20191213, G stands for IMAFD_ZICSR_ZIFENCEI.
+> +ifdef CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+> +	COMPAT_CC_FLAGS :=3D -march=3Drv32g -mabi=3Dilp32
+> +else
+> +	COMPAT_CC_FLAGS :=3D -march=3Drv32imafd -mabi=3Dilp32
+> +endif
+>  COMPAT_LD_FLAGS :=3D -melf32lriscv
+> =20
+>  # Disable attributes, as they're useless and break the build.
+> --=20
+> 2.34.1
+>=20
+
+--sR3rHcOfeYhw3z0E
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTHvsMFAwAAAAAACgkQlh/E3EQov+CV
-ABAAlQIWYmZpcCipgTuWePaqwW4zZGtdDJz9h/7Kr7WHaJiyGLrreCarEryqWKawzv/JoT4MzMLH
-+N6RLDF+bLE1BPQ4ZFvAGzAcCF0ygR+AuzQEWn10/a8CUWY6/s7sCVinKWA71BuJdgkvSa2rbBl5
-xHqFjLPSAAF1tmV0qctbWXgPGFq+DbNAbje5PbLU2lxmbigEQ59DSVhOiMH0oS4Opyxw//R5zzEe
-jHDnL1hraznsJJlY9Rb+i2OYu5XP9Huat8jvzRH6TR7TnzOboGd+rMcULq5Ohoibb5uIceZ/7D/c
-4Z/bI9LHv2Q6Y01n48JmOb0vO/tf1o8VxdvpfJT+MOBpaBsKSMCoDKVm+aYLe/G1xFcOlOPs+ivR
-Hdfy9qcq80JXMdb5hDdi21UzQNz9VNnlm3irVK4PNgU15s19p1XlyxYni1EkxAkcvhviFvUUzvYX
-kAv5nqXLPcTJebQUKvZnmHpTVhlgXNVR5Ap9gt451JoA9MLSGMqfXqSGKMjLEgaYqPkgLc8WYr3u
-7SrQPwb3QfV779hi9fYPFVRPFlWqyZCfxMtn0IDqDUJKIH/Knb8nlHZzWmjTr6aeCZEWgsGYpQHf
-ATIL24aQDi0YZmR8OM+qIQkw2IL4/63cb+ctVmH63rcD2OG1IGelNxFAFyo+3k+6j2qizt5ksZJG
-nrU=
-=h8pD
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMe+1gAKCRB4tDGHoIJi
+0gBrAPsHa6EvXr3G1je0dOAZODpBCMpYhT5F0/c3PVvv6IaExgD/Yv0Zt62UDpAM
+JnC/CIXdfLT13VMVGzN5EthtdrNgSAI=
+=6YQe
 -----END PGP SIGNATURE-----
 
---------------yn6IudZAIQmkHUvoB83qGyX8--
+--sR3rHcOfeYhw3z0E--
