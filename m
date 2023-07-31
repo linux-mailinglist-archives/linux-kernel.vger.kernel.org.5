@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7715A768968
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D219876896C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbjGaAtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 20:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S229708AbjGaBB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 21:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjGaAtc (ORCPT
+        with ESMTP id S229448AbjGaBBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 20:49:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F280E78;
-        Sun, 30 Jul 2023 17:49:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3124760DF9;
-        Mon, 31 Jul 2023 00:49:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9299CC43397;
-        Mon, 31 Jul 2023 00:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690764570;
-        bh=HSe9skEoxlUTuOZvdtNJpMW/Hkn8jkbcfx3F/K4PLVY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p+D7khP4AiP7n5c2GyfpNG+VVGVttTyGWAQRc+NtLtBozyiyHmuvJg4wLhYTRPoU3
-         O9cBmMMFPhdKcNDf02eZ/qCyEXOQjoZH9sC1zubZ+OvUqczlj8iMOoR0ScKqGqPZfi
-         /0GdSLc0GJj/ZdFSCR38HMGD1p2QSJoLhuRoaFnoe3zvSkoa/hOECqnC1pED6etxQL
-         aAOrXh8KdMZOjVBCN7o49+4wVhsaZQL4Zt9iVou7PcJs2jzmzXV1+Lbq68FSLQU/sM
-         UxduwZh/q3IBFeozIKt3xDmJ2r/x3wP2vzNIeAhaXc8QAvW3lwN3Br3OIZKpTpL6As
-         tvqnrlzZf/H/w==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so6267536e87.0;
-        Sun, 30 Jul 2023 17:49:30 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZLCSqmX2Ds8EuQp9mJ8zu852jZc7fCThFSz0Z4VzJlnPyKMUIi
-        6mgisCRIi/8TQWIF0nVQ61UQygvcyN/0+b8kbV0=
-X-Google-Smtp-Source: APBJJlF7/ie/dP5ysn5qcMXEX8GaXG49PtXGNJVueUhetg/GlqbiKWs42dguiSGoTIKK9SRUFsaY3KxIgB75UtwPxKU=
-X-Received: by 2002:ac2:5047:0:b0:4fb:92df:a27b with SMTP id
- a7-20020ac25047000000b004fb92dfa27bmr4330470lfm.39.1690764568411; Sun, 30 Jul
- 2023 17:49:28 -0700 (PDT)
+        Sun, 30 Jul 2023 21:01:24 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07EAE79;
+        Sun, 30 Jul 2023 18:01:22 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbea147034so36737725e9.0;
+        Sun, 30 Jul 2023 18:01:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690765281; x=1691370081;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nqHefzyFteg+XSDK8TjKUuurTQ3TCfNZauRn+ePIKMo=;
+        b=mBNiY17I+06vfDqduqEp9Eu92UazmmoxGjGV5kDopFuUT3knqdiTTaca9SCpEpD9U/
+         oQ8YBtrW1BMlZUID0/sARvSK9sdrj5uxl8TKHvdoT41BvOoLGgf9B7h2cJkcJE8/wSNu
+         Gt8Y1IzTZVZ7Kz5GUj/4dCWEjSGOweLHg0yISc7oE6BXOSqOQA9mbngEbTnnuG9cIejs
+         RT0f4pP/x2f44lVzh9dHBcECScP3gZwpakwCuo1C3FEBV/6xksXT0m9sS1ePp9E22H7s
+         XW0ypopZdDfZmy4xPx91Xbt3vJHdBt+chF5oO6s45DLvzO03yKREiBt8GbZU0mxJErDq
+         pEZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690765281; x=1691370081;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nqHefzyFteg+XSDK8TjKUuurTQ3TCfNZauRn+ePIKMo=;
+        b=CdDQXqgvmbb9UzHn9yDGmvuoKR/r7JRMHw442L2WWUaU+OGaZmLnlwItYgYwx2/CZ6
+         CyGXF0UMBsx6Lf2Vy8JW+jEo4fQwB2hcxKHoDb+yBv93unn3MARRnmMclHYGk8gFnqz8
+         6xzwhLjo3sqMeZCar7WZCq8G+ozMyEIwUZEjLUUql6QLMgQHGVWzetx7GH6IfaImlk6t
+         1xdLujSsfzDqhRxdvYCrgy0+QMSjLbVHG0J6BfVqllEi87F341UEYk9NPzTN6Y0SNQDZ
+         +rMfoTyZ8tfYbENCZ1lraUrDJ4uIw3IjUunB4COd5aW6New8favFfXvu7bpzhdg15r3c
+         fA9Q==
+X-Gm-Message-State: ABy/qLZvLT+tNxpH3sjhmxNJxk3f7HWcFAxuC6O7XFr+t9qFILE0OZh6
+        4TbhZ0NqEf6z8PNshvJVtjjAAIUHdtw=
+X-Google-Smtp-Source: APBJJlHwCz1UkjOVuaRzHJmxVag4LxAKS6YT7RLfOi3MxMHa4thRTAcv1sSdpxv5AIbv3pz0RxUqYQ==
+X-Received: by 2002:a7b:c405:0:b0:3fc:4:a5b5 with SMTP id k5-20020a7bc405000000b003fc0004a5b5mr5226525wmi.29.1690765281064;
+        Sun, 30 Jul 2023 18:01:21 -0700 (PDT)
+Received: from localhost.localdomain ([2a05:f480:1000:b09:5400:4ff:fe6f:7099])
+        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b003fe20533a1esm1850336wmj.44.2023.07.30.18.01.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 18:01:20 -0700 (PDT)
+From:   zhangshida <starzhangzsd@gmail.com>
+X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, starzhangzsd@gmail.com
+Subject: [PATCH v2] ext4: Fix rec_len verify error
+Date:   Mon, 31 Jul 2023 09:01:04 +0800
+Message-Id: <20230731010104.1781335-1-zhangshida@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <ZMZ6XB6gX2kFd/Nt@xhacker> <CAJM55Z8vF8_xq0QyByLUGM2W-8m6R-_6SdOFdLETV7J-yo5DMQ@mail.gmail.com>
- <92c00ddb-e956-4861-af80-5f5558c9a8f5@app.fastmail.com>
-In-Reply-To: <92c00ddb-e956-4861-af80-5f5558c9a8f5@app.fastmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Mon, 31 Jul 2023 08:49:17 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTRHzT+CEtb1LVYdfCorVUdLvCh_eMxrmC=xjdQ_JS6Sg@mail.gmail.com>
-Message-ID: <CAJF2gTTRHzT+CEtb1LVYdfCorVUdLvCh_eMxrmC=xjdQ_JS6Sg@mail.gmail.com>
-Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache
- operations support
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        "Conor.Dooley" <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 4:36=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Sun, Jul 30, 2023, at 17:42, Emil Renner Berthing wrote:
-> > On Sun, 30 Jul 2023 at 17:11, Jisheng Zhang <jszhang@kernel.org> wrote:
->
-> >> > +
-> >> >  static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t s=
-ize)
-> >> >  {
-> >> >       void *vaddr =3D phys_to_virt(paddr);
-> >> >
-> >> > +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> >> > +     if (unlikely(noncoherent_cache_ops.wback)) {
-> >>
-> >> I'm worried about the performance impact here.
-> >> For unified kernel Image reason, RISCV_NONSTANDARD_CACHE_OPS will be
-> >> enabled by default, so standard CMO and T-HEAD's CMO platform's
-> >> performance will be impacted, because even an unlikely is put
-> >> here, the check action still needs to be done.
-> >
-> > On IRC I asked why not use a static key so the overhead is just a
-> > single nop when the standard CMO ops are available, but the consensus
-> > seemed to be that the flushing would completely dominate this branch.
-> > And on platforms with the standard CMO ops the branch be correctly
-> > predicted anyway.
->
-> Not just the flushing, but also loading back the invalidated
-> cache lines afterwards is just very expensive. I don't think
-> you would be able to measure a difference between the static
-> key and a correctly predicted branch on any relevant usecase here.
-Maybe we should move CMO & THEAD ops to the noncoherent_cache_ops, and
-only keep one of them.
+From: Shida Zhang <zhangshida@kylinos.cn>
 
-I prefer noncoherent_cache_ops, it's more maintance than ALTERNATIVE.
+With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+a problem occurred when more than 13 million files were directly created
+under a directory:
 
-Heiko, How do you think about this?
+EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
 
->
->      Arnd
+When enough files are created, the fake_dirent->reclen will be 0xffff.
+it doesn't equal to the blocksize 65536, i.e. 0x10000.
 
+But it is not the same condition when blocksize equals to 4k.
+when enough file are created, the fake_dirent->reclen will be 0x1000.
+it equals to the blocksize 4k, i.e. 0x1000.
 
+The problem seems to be related to the limitation of the 16-bit field
+when the blocksize is set to 64k. To address this, Modify the check so
+as to handle it properly.
 
---=20
-Best Regards
- Guo Ren
+Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+---
+v1->v2:
+  Use a better way to check the condition, as suggested by Andreas.
+
+ fs/ext4/namei.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 0caf6c730ce3..fffed95f8531 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
+ 	struct ext4_dir_entry *dp;
+ 	struct dx_root_info *root;
+ 	int count_offset;
++	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
+ 
+-	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
++	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
+ 		count_offset = 8;
+ 	else if (le16_to_cpu(dirent->rec_len) == 12) {
+ 		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
+-- 
+2.27.0
+
