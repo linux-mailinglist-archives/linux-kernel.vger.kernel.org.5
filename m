@@ -2,434 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F513769BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C091769BF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbjGaQLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S233315AbjGaQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbjGaQLX (ORCPT
+        with ESMTP id S233331AbjGaQLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:11:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F553170A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690819836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9D9FieDLZcsb1FDGxBpvmkRicBVLa/sqJyjLA/WaIr0=;
-        b=QlYUvaCVwMfvqFbH1JUuuYA5ZPmVFiqCYe5EZXtP+yAQyQ6fh0man6VCjxxi1IG8Knkouf
-        zD+4CG3clQf0ymIuKPM6+zkIY9brPv8m9YBQEDLFnvwQYqvkAi6bOwcvbWhpx/6u5mPwhv
-        zchBvvDGFKpdomysPhxa9OwCRB1IMvE=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-345-3117eTpqNBOWHoaYitVp2w-1; Mon, 31 Jul 2023 12:10:34 -0400
-X-MC-Unique: 3117eTpqNBOWHoaYitVp2w-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63d289847dcso11431046d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:10:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690819834; x=1691424634;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9D9FieDLZcsb1FDGxBpvmkRicBVLa/sqJyjLA/WaIr0=;
-        b=VZJ2lklUKXQM83e0sqOzDwxTjVSRnXyE6s1bnZiy5cK8OK3V/uk+0Q33KSSCBpGJVJ
-         kZ1IQ6nCqVyjRsUoCy3ypl9r8joe0f37Gxkky/7kO43q2uMmHCv/WU7qJD/EOZfo8ga8
-         8ixb4AElgLZz6Zc2fA4DsBJhZkLhmscDa592DSrykIf5TZnajxX2cb//4zyVWQD/uEZ2
-         LecX/15k/kNMG1PVS89NY827L0OnPQD7mfaGCSPxiCgVa0GV4zbzGCtofguESTRLTblT
-         BX3lT9yECPswhl3ZM3fWb7cVcc/h3zXGyFO1PxDjFYssi/lzsw6PxpKeQxPYav51Jy5Q
-         XNtA==
-X-Gm-Message-State: ABy/qLbjPaWFPSncMolujrB02KSromvcZD7zTwTTwUvEYs7MQR5xUlsQ
-        XWhcyYO134eLPgFhtZY54JuzXc97UgK7yXwKXEnkV35jUzSsmPOoYUU8PbWbSGzUQqkgMtTTxgc
-        xMxUmmxppMcPX/NECBMG7+uo/
-X-Received: by 2002:a05:6214:5090:b0:63d:ee8:4127 with SMTP id kk16-20020a056214509000b0063d0ee84127mr9673543qvb.2.1690819834087;
-        Mon, 31 Jul 2023 09:10:34 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFBW0/2UJO3rdppPnlxWOX9l7PeksP2SIlJUnOMWCR2gyoWHZpO/GRBaouJmPC9W6C8tXdceA==
-X-Received: by 2002:a05:6214:5090:b0:63d:ee8:4127 with SMTP id kk16-20020a056214509000b0063d0ee84127mr9673500qvb.2.1690819833497;
-        Mon, 31 Jul 2023 09:10:33 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id k4-20020a0cf584000000b00632209f7157sm2333834qvm.143.2023.07.31.09.10.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 09:10:33 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 12:10:31 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Message-ID: <ZMfc9+/44kViqjeN@x1n>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
- <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com>
+        Mon, 31 Jul 2023 12:11:40 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF387E5D
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:11:36 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VGB2AA019542;
+        Mon, 31 Jul 2023 11:11:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690819862;
+        bh=roEF03BR0TLsi5is9PdSrkT/cuSNsmjx4QDz+G21o8o=;
+        h=From:To:CC:Subject:Date;
+        b=B5n6MNcwtB1ZYCt8SLxCYhGVWCdoBAjpfbLlhEupqlyXLEgkNWfjISMTMc69KuqMv
+         JdU4ZUcQp+zs37lpd7dVqzQjMKC1B9K5cTnSPgXnslPm7AXzLuq3WGAH5M3/mtfraX
+         eIH9Gk95Smht+v8zNJsT37PX7Wkg29HpWScHdza4=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VGB29A123794
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Jul 2023 11:11:02 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 31
+ Jul 2023 11:11:01 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 31 Jul 2023 11:11:01 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VGAuHb062500;
+        Mon, 31 Jul 2023 11:10:57 -0500
+From:   Udit Kumar <u-kumar1@ti.com>
+To:     <vigneshr@ti.com>, <nm@ti.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <quic_bjorande@quicinc.com>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <krzysztof.kozlowski@linaro.org>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <j-keerthy@ti.com>, <a-nandan@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v4] arm64: defconfig: Enable various configs for TI K3 platforms
+Date:   Mon, 31 Jul 2023 21:40:48 +0530
+Message-ID: <20230731161048.2522154-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75 autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 11:35:22AM +0200, David Hildenbrand wrote:
-> On 29.07.23 00:35, David Hildenbrand wrote:
-> > > The original reason for not setting FOLL_NUMA all the time is
-> > > documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
-> > > page faults from gup/gup_fast") from way back in 2012:
-> > > 
-> > >            * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
-> > >            * would be called on PROT_NONE ranges. We must never invoke
-> > >            * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
-> > >            * page faults would unprotect the PROT_NONE ranges if
-> > >            * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
-> > >            * bitflag. So to avoid that, don't set FOLL_NUMA if
-> > >            * FOLL_FORCE is set.
-> > > 
-> > > but I don't think the original reason for this is *true* any more.
-> > > 
-> > > Because then two years later in 2014, in commit c46a7c817e66 ("x86:
-> > > define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
-> > > Mel made the code able to distinguish between PROT_NONE and NUMA
-> > > pages, and he changed the comment above too.
-> > 
-> > 
-> 
-> Sleeping over it and looking into some nasty details, I realized the following things:
-> 
-> 
-> (1) The pte_protnone() comment in include/linux/pgtable.h is
->     either wrong or misleading.
-> 
->     Especially the "For PROT_NONE VMAs, the PTEs are not marked
->     _PAGE_PROTNONE" is *wrong* nowadays on x86.
-> 
->     Doing an mprotect(PROT_NONE) will also result in pte_protnone()
->     succeeding, because the pages *are* marked _PAGE_PROTNONE.
-> 
->     The comment should be something like this
-> 
->     /*
->      * In an inaccessible (PROT_NONE) VMA, pte_protnone() *may* indicate
->      * "yes". It is perfectly valid to indicate "no" in that case,
->      * which is why our default implementation defaults to "always no".
->      *
->      * In an accessible VMA, however, pte_protnone() *reliably*
->      * indicates PROT_NONE page protection due to NUMA hinting. NUMA
->      * hinting faults only apply in accessible VMAs.
->      *
->      * So, to reliably distinguish between PROT_NONE due to an
->      * inaccessible VMA and NUMA hinting, looking at the VMA
->      * accessibility is sufficient.
->      */
-> 
->     I'll send that as a separate patch.
-> 
-> 
-> (2) Consequently, commit c46a7c817e66 from 2014 does not tell the whole
->     story.
-> 
->     commit 21d9ee3eda77 ("mm: remove remaining references to NUMA
->     hinting bits and helpers") from 2015 made the distinction again
->     impossible.
-> 
->     Setting FOLL_FORCE | FOLL_HONOR_NUMA_HINT would end up never making
->     progress in GUP with an inaccessible (PROT_NONE) VMA.
+Enable TI ECAP, DP83869 driver, OMAP2 Mailbox, K3 remote proc
+SND_SOC_J721E_EVM, MCAN, UFS and RTI, Thermal driver to be built
+as module.
 
-If we also teach follow_page_mask() on vma_is_accessible(), we should still
-be good, am I right?
+These configs are supported on below TI platforms
 
-Basically fast-gup will stop working on protnone, and it always fallbacks
-to slow-gup. Then it seems we're good decoupling FORCE with NUMA hint.
+ECAP on am642, am65 iot2050 EVM.
 
-I assume that that's what you did below in the patch too, which looks right
-to me.
+DP83869 on AM64x EVM.
 
-> 
->     (a) GUP sees the pte_protnone() and triggers a NUMA hinting fault,
->         although NUMA hinting does not apply.
-> 
->     (b) handle_mm_fault() refuses to do anything with pte_protnone() in
->         an inaccessible VMA. And even if it would do something, the new
->         PTE would end up as pte_protnone() again.
->     So, GUP will keep retrying. I have a reproducer that triggers that
->     using ptrace read in an inaccessible VMA.
-> 
->     It's easy to make that work in GUP, simply by looking at the VMA
->     accessibility.
-> 
->     See my patch proposal, that cleanly decouples FOLL_FORCE from
->     FOLL_HONOR_NUMA_HINT.
-> 
-> 
-> (3) follow_page() does not check VMA permissions and, therefore, my
->     "implied FOLL_FORCE" assumption is not actually completely wrong.
-> 
->     And especially callers that dont't pass FOLL_WRITE really expect
->     follow_page() to work even if the VMA is inaccessible.
-> 
->     But the interaction with NUMA hinting is just nasty, absolutely
->     agreed.
-> 
->     As raised in another comment, I'm looking into removing the
->     "foll_flags" parameter from follow_page() completely and cleanly
->     documenting the semantics of follow_page().
-> 
->     IMHO, the less follow_page(), the better. Let's see what we can do
->     to improve that.
-> 
-> 
-> So this would be the patch I would suggest as the first fix we can also
-> backport to stable.
-> 
-> Gave it a quick test, also with my ptrace read reproducer (trigger
-> FOLL_FORCE on inaccessible VMA; make sure it works and that the pages don't
-> suddenly end up readable in the page table). Seems to work.
-> 
-> I'll follow up with cleanups and moving FOLL_HONOR_NUMA_HINT setting to the
-> relevant callers (especially KVM). Further, I'll add a selftest to make
-> sure that ptrace on inaccessible VMAs keeps working as expected.
-> 
-> 
-> 
-> From 36c1aeb9aa3e859762f671776601a71179247d17 Mon Sep 17 00:00:00 2001
-> From: David Hildenbrand <david@redhat.com>
-> Date: Fri, 28 Jul 2023 21:57:04 +0200
-> Subject: [PATCH] mm/gup: reintroduce FOLL_NUMA as FOLL_HONOR_NUMA_FAULT
-> 
-> As it turns out, unfortunately commit 474098edac26 ("mm/gup: replace
-> FOLL_NUMA by gup_can_follow_protnone()") missed that follow_page() and
-> follow_trans_huge_pmd() never set FOLL_NUMA because they really don't want
-> NUMA hinting faults.
-> 
-> As spelled out in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting page
-> faults from gup/gup_fast"): "Other follow_page callers like KSM should not
-> use FOLL_NUMA, or they would fail to get the pages if they use follow_page
-> instead of get_user_pages."
-> 
-> While we didn't get BUG reports on the changed follow_page() semantics yet
-> (and it's just a matter of time), liubo reported [1] that smaps_rollup
-> results are imprecise, because they miss accounting of pages that are
-> mapped PROT_NONE due to NUMA hinting.
-> 
-> As KVM really depends on these NUMA hinting faults, removing the
-> pte_protnone()/pmd_protnone() handling in GUP code completely is not really
-> an option.
-> 
-> To fix the issues at hand, let's revive FOLL_NUMA as FOLL_HONOR_NUMA_FAULT
-> to restore the original behavior and add better comments.
-> 
-> Set FOLL_HONOR_NUMA_FAULT independent of FOLL_FORCE. To make that
-> combination work in inaccessible VMAs, we have to perform proper VMA
-> accessibility checks in gup_can_follow_protnone().
-> 
-> Move gup_can_follow_protnone() to internal.h which feels more
-> appropriate and is required as long as FOLL_HONOR_NUMA_FAULT is an
-> internal flag.
-> 
-> As Linus notes [2], this handling doesn't make sense for many GUP users.
-> So we should really see if we instead let relevant GUP callers specify it
-> manually, and not trigger NUMA hinting faults from GUP as default.
-> 
-> [1] https://lore.kernel.org/r/20230726073409.631838-1-liubo254@huawei.com
-> [2] https://lore.kernel.org/r/CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com
-> 
-> Reported-by: liubo <liubo254@huawei.com>
-> Reported-by: Peter Xu <peterx@redhat.com>
-> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
-> Cc: <stable@vger.kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: liubo <liubo254@huawei.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  include/linux/mm.h | 15 ---------------
->  mm/gup.c           | 18 ++++++++++++++----
->  mm/huge_memory.c   |  2 +-
->  mm/internal.h      | 31 +++++++++++++++++++++++++++++++
->  4 files changed, 46 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 2dd73e4f3d8e..f8d7fa3c01c1 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3400,21 +3400,6 @@ static inline int vm_fault_to_errno(vm_fault_t vm_fault, int foll_flags)
->  	return 0;
->  }
-> -/*
-> - * Indicates whether GUP can follow a PROT_NONE mapped page, or whether
-> - * a (NUMA hinting) fault is required.
-> - */
-> -static inline bool gup_can_follow_protnone(unsigned int flags)
-> -{
-> -	/*
-> -	 * FOLL_FORCE has to be able to make progress even if the VMA is
-> -	 * inaccessible. Further, FOLL_FORCE access usually does not represent
-> -	 * application behaviour and we should avoid triggering NUMA hinting
-> -	 * faults.
-> -	 */
-> -	return flags & FOLL_FORCE;
-> -}
-> -
->  typedef int (*pte_fn_t)(pte_t *pte, unsigned long addr, void *data);
->  extern int apply_to_page_range(struct mm_struct *mm, unsigned long address,
->  			       unsigned long size, pte_fn_t fn, void *data);
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 76d222ccc3ff..54b8d77f3a3d 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -597,7 +597,7 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
->  	pte = ptep_get(ptep);
->  	if (!pte_present(pte))
->  		goto no_page;
-> -	if (pte_protnone(pte) && !gup_can_follow_protnone(flags))
-> +	if (pte_protnone(pte) && !gup_can_follow_protnone(vma, flags))
->  		goto no_page;
->  	page = vm_normal_page(vma, address, pte);
-> @@ -714,7 +714,7 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
->  	if (likely(!pmd_trans_huge(pmdval)))
->  		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
-> -	if (pmd_protnone(pmdval) && !gup_can_follow_protnone(flags))
-> +	if (pmd_protnone(pmdval) && !gup_can_follow_protnone(vma, flags))
->  		return no_page_table(vma, flags);
->  	ptl = pmd_lock(mm, pmd);
-> @@ -851,6 +851,10 @@ struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
->  	if (WARN_ON_ONCE(foll_flags & FOLL_PIN))
->  		return NULL;
-> +	/*
-> +	 * We never set FOLL_HONOR_NUMA_FAULT because callers don't expect
-> +	 * to fail on PROT_NONE-mapped pages.
-> +	 */
->  	page = follow_page_mask(vma, address, foll_flags, &ctx);
->  	if (ctx.pgmap)
->  		put_dev_pagemap(ctx.pgmap);
-> @@ -1200,6 +1204,12 @@ static long __get_user_pages(struct mm_struct *mm,
->  	VM_BUG_ON(!!pages != !!(gup_flags & (FOLL_GET | FOLL_PIN)));
-> +	/*
-> +	 * For now, always trigger NUMA hinting faults. Some GUP users like
-> +	 * KVM really require it to benefit from autonuma.
-> +	 */
-> +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
-> +
->  	do {
->  		struct page *page;
->  		unsigned int foll_flags = gup_flags;
-> @@ -2551,7 +2561,7 @@ static int gup_pte_range(pmd_t pmd, pmd_t *pmdp, unsigned long addr,
->  		struct page *page;
->  		struct folio *folio;
-> -		if (pte_protnone(pte) && !gup_can_follow_protnone(flags))
-> +		if (pte_protnone(pte) && !gup_can_follow_protnone(NULL, flags))
->  			goto pte_unmap;
->  		if (!pte_access_permitted(pte, flags & FOLL_WRITE))
-> @@ -2971,7 +2981,7 @@ static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned lo
->  		if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
->  			     pmd_devmap(pmd))) {
->  			if (pmd_protnone(pmd) &&
-> -			    !gup_can_follow_protnone(flags))
-> +			    !gup_can_follow_protnone(NULL, flags))
->  				return 0;
->  			if (!gup_huge_pmd(pmd, pmdp, addr, next, flags,
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index eb3678360b97..ef6bdc4a6fec 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -1468,7 +1468,7 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
->  		return ERR_PTR(-EFAULT);
->  	/* Full NUMA hinting faults to serialise migration in fault paths */
-> -	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(flags))
-> +	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(vma, flags))
->  		return NULL;
->  	if (!pmd_write(*pmd) && gup_must_unshare(vma, flags, page))
-> diff --git a/mm/internal.h b/mm/internal.h
-> index a7d9e980429a..7db17259c51a 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -937,6 +937,8 @@ enum {
->  	FOLL_FAST_ONLY = 1 << 20,
->  	/* allow unlocking the mmap lock */
->  	FOLL_UNLOCKABLE = 1 << 21,
-> +	/* Honor (trigger) NUMA hinting faults on PROT_NONE-mapped pages. */
-> +	FOLL_HONOR_NUMA_FAULT = 1 << 22,
->  };
->  /*
-> @@ -1004,6 +1006,35 @@ static inline bool gup_must_unshare(struct vm_area_struct *vma,
->  	return !PageAnonExclusive(page);
->  }
-> +/*
-> + * Indicates whether GUP can follow a PROT_NONE mapped page, or whether
-> + * a (NUMA hinting) fault is required.
-> + */
-> +static inline bool gup_can_follow_protnone(struct vm_area_struct *vma,
-> +					   unsigned int flags)
-> +{
-> +	/*
-> +	 * If callers don't want to honor NUMA hinting faults, no need to
-> +	 * determine if we would actually have to trigger a NUMA hinting fault.
-> +	 */
-> +	if (!(flags & FOLL_HONOR_NUMA_FAULT))
-> +		return true;
-> +
-> +	/* We really need the VMA ... */
-> +	if (!vma)
-> +		return false;
+OMAP2 Mailbox, K3 remote proc on AM64 on J7200,J721E and J784S4 SOC.
 
-I'm not sure whether the compiler will be smart enough to inline this for
-fast-gup on pmd/pte.  One way to guarantee this is we simply always bail
-out for fast-gup on protnone (ignoring calling gup_can_follow_protnone()
-with a comment), as discussed above.  Then WARN_ON_ONCE(!vma) for all the
-rest callers, assuming that's a required knowledge to know what the
-protnone means.
+CONFIG_SND_SOC_J721E_EVM on J721E.
 
-Thanks,
+MCAN on AM68 SK, J721E, J721S2, AM642 AM642-Phyboards
 
-> +
-> +	/*
-> +	 * ... because NUMA hinting faults only apply in accessible VMAs. In
-> +	 * inaccessible (PROT_NONE) VMAs, NUMA hinting faults don't apply.
-> +	 *
-> +	 * Requiring a fault here even for inaccessible VMAs would mean that
-> +	 * FOLL_FORCE cannot make any progress, because handle_mm_fault()
-> +	 * refuses to process NUMA hinting faults in inaccessible VMAs.
-> +	 */
-> +	return !vma_is_accessible(vma);
-> +}
-> +
->  extern bool mirrored_kernelcore;
->  static inline bool vma_soft_dirty_enabled(struct vm_area_struct *vma)
-> -- 
-> 2.41.0
-> 
-> 
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+UFS feature on J721E EVM
 
+RTI watchdog on AM62, AM62A, AM64, AM65, J721E and J7200 SOC.
+
+Thermal driver on AM62, AM62A AM65, J7200, J721E, J721S2,
+J784S4  platform.
+
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+---
+bloat-o-meter reports after this change
+add/remove: 4/1 grow/shrink: 2/0 up/down: 1592/-8 (1584)
+[...]
+Total: Before=28027075, After=28028659, chg +0.01%
+
+Change log:
+
+Changes in v4:
+  Added CONFIG_K3_THERMAL as module
+  Rebased with next-20230731 
+Link to v3:
+https://lore.kernel.org/all/20230726172411.2075066-1-u-kumar1@ti.com/
+
+
+Changes in v3:
+ Updated commit message along with including platform list
+ Updated SOB
+Link to v2:
+https://lore.kernel.org/all/20230726133049.2074105-1-u-kumar1@ti.com/
+
+Changes in v2:
+ Squashed all patches into one
+link to v1:.
+https://lore.kernel.org/all/20230725105346.1981285-1-u-kumar1@ti.com/
+
+ arch/arm64/configs/defconfig | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 03fce1752521..bf13d5c46578 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -180,6 +180,8 @@ CONFIG_NET_ACT_GATE=m
+ CONFIG_QRTR_SMD=m
+ CONFIG_QRTR_TUN=m
+ CONFIG_CAN=m
++CONFIG_CAN_M_CAN=m
++CONFIG_CAN_M_CAN_PLATFORM=m
+ CONFIG_BT=m
+ CONFIG_BT_HIDP=m
+ # CONFIG_BT_LE is not set
+@@ -378,6 +380,7 @@ CONFIG_AT803X_PHY=y
+ CONFIG_REALTEK_PHY=y
+ CONFIG_ROCKCHIP_PHY=y
+ CONFIG_DP83867_PHY=y
++CONFIG_DP83869_PHY=m
+ CONFIG_DP83TD510_PHY=y
+ CONFIG_VITESSE_PHY=y
+ CONFIG_CAN_FLEXCAN=m
+@@ -658,6 +661,7 @@ CONFIG_THERMAL_EMULATION=y
+ CONFIG_IMX_SC_THERMAL=m
+ CONFIG_IMX8MM_THERMAL=m
+ CONFIG_QORIQ_THERMAL=m
++CONFIG_K3_THERMAL=m
+ CONFIG_SUN8I_THERMAL=y
+ CONFIG_ROCKCHIP_THERMAL=m
+ CONFIG_RCAR_THERMAL=y
+@@ -697,6 +701,7 @@ CONFIG_UNIPHIER_WATCHDOG=y
+ CONFIG_PM8916_WATCHDOG=m
+ CONFIG_BCM2835_WDT=y
+ CONFIG_BCM7038_WDT=m
++CONFIG_K3_RTI_WATCHDOG=m
+ CONFIG_MFD_ALTERA_SYSMGR=y
+ CONFIG_MFD_BD9571MWV=y
+ CONFIG_MFD_AXP20X_I2C=y
+@@ -940,6 +945,7 @@ CONFIG_SND_SOC_MSM8916_WCD_DIGITAL=m
+ CONFIG_SND_SOC_PCM3168A_I2C=m
+ CONFIG_SND_SOC_RK817=m
+ CONFIG_SND_SOC_RT5640=m
++CONFIG_SND_SOC_J721E_EVM=m
+ CONFIG_SND_SOC_RT5659=m
+ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
+ CONFIG_SND_SOC_SIMPLE_MUX=m
+@@ -1061,10 +1067,13 @@ CONFIG_MMC_SDHCI_XENON=y
+ CONFIG_MMC_SDHCI_AM654=y
+ CONFIG_MMC_OWL=y
+ CONFIG_SCSI_UFSHCD=y
++CONFIG_SCSI_UFS_BSG=y
+ CONFIG_SCSI_UFSHCD_PLATFORM=y
++CONFIG_SCSI_UFS_CDNS_PLATFORM=m
+ CONFIG_SCSI_UFS_QCOM=m
+ CONFIG_SCSI_UFS_HISI=y
+ CONFIG_SCSI_UFS_RENESAS=m
++CONFIG_SCSI_UFS_TI_J721E=m
+ CONFIG_SCSI_UFS_EXYNOS=y
+ CONFIG_NEW_LEDS=y
+ CONFIG_LEDS_CLASS=y
+@@ -1244,6 +1253,7 @@ CONFIG_TEGRA186_TIMER=y
+ CONFIG_RENESAS_OSTM=y
+ CONFIG_ARM_MHU=y
+ CONFIG_IMX_MBOX=y
++CONFIG_OMAP2PLUS_MBOX=m
+ CONFIG_PLATFORM_MHU=y
+ CONFIG_BCM2835_MBOX=y
+ CONFIG_QCOM_APCS_IPC=y
+@@ -1256,6 +1266,8 @@ CONFIG_MTK_IOMMU=y
+ CONFIG_QCOM_IOMMU=y
+ CONFIG_REMOTEPROC=y
+ CONFIG_IMX_REMOTEPROC=y
++CONFIG_TI_K3_R5_REMOTEPROC=m
++CONFIG_TI_K3_DSP_REMOTEPROC=m
+ CONFIG_MTK_SCP=m
+ CONFIG_QCOM_Q6V5_ADSP=m
+ CONFIG_QCOM_Q6V5_MSS=m
+@@ -1370,6 +1382,7 @@ CONFIG_PWM_SAMSUNG=y
+ CONFIG_PWM_SL28CPLD=m
+ CONFIG_PWM_SUN4I=m
+ CONFIG_PWM_TEGRA=m
++CONFIG_PWM_TIECAP=m
+ CONFIG_PWM_TIEHRPWM=m
+ CONFIG_PWM_VISCONTI=m
+ CONFIG_SL28CPLD_INTC=y
+@@ -1457,6 +1470,7 @@ CONFIG_FPGA_REGION=m
+ CONFIG_OF_FPGA_REGION=m
+ CONFIG_TEE=y
+ CONFIG_OPTEE=y
++CONFIG_MUX_GPIO=m
+ CONFIG_MUX_MMIO=y
+ CONFIG_SLIMBUS=m
+ CONFIG_SLIM_QCOM_CTRL=m
 -- 
-Peter Xu
+2.34.1
 
