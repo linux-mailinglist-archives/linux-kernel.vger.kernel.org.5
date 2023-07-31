@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B20D769CE4
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8C3769CE5
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbjGaQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        id S233152AbjGaQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbjGaQh7 (ORCPT
+        with ESMTP id S233626AbjGaQiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:37:59 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB32E5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:37:32 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6964A1F854;
-        Mon, 31 Jul 2023 16:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690821451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQexKwbMw/0jrCvp1mBl0Fr7yOygUHw2vHpVI3P30Jc=;
-        b=tpuB/uTTqnw/VrWMQsnjA938YOn7XAj5/u+3IcT7fLm22OM7ohWxaZ46+ry10fSQKUObwo
-        Ge4MK3ROhvepkY41dTJLmsFqNxdYDuCIQeKpFMSryXLhitmEgw890rFRTLH5duDYphsepO
-        rDf6PGvoqoUtQ5Z+diz1gQRUJkKsZ28=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690821451;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQexKwbMw/0jrCvp1mBl0Fr7yOygUHw2vHpVI3P30Jc=;
-        b=ez6HW3VZZe0VXx4zFKd0iYlY3rDvtmMHKka+KhRWz1XN/qKqWMvmWQIbfZJDqua7Xl4f7Q
-        l1nBPC6r8NC5+rAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BBF71322C;
-        Mon, 31 Jul 2023 16:37:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yREgDUvjx2TuFwAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 31 Jul 2023 16:37:31 +0000
-Message-ID: <69d4239c-25b7-5d14-6140-490bb88dccb4@suse.de>
-Date:   Mon, 31 Jul 2023 18:37:30 +0200
+        Mon, 31 Jul 2023 12:38:06 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868D3268F
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690821464; x=1722357464;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=NgqvfxSJUC2JHt7NcWNd2gM99VuVW9MfNgvGVYKkFho=;
+  b=fcGURWdpeIyLIex8gTZtg98CXkZipCJSfgevvCX43x4OPoNeRoyaSRrp
+   3curqOWSdEnk0geONeRkvpOz1BNWbO2hoXDPkEtLXux7oL1nmUObPKrae
+   fwIwyYIMi+U3EH9D+TQuGnDrFSfAoflUGPMj1E8sTe6yIHN1lLsMyTnET
+   xBQmRsclBv5XjwWIM1I+PV0G4un1dVLOAsblMtkf6yf/WQW3pdn2M2Qkt
+   kd6Gpfatk/OuKtl+K+oFjQvOIF8LiCMC1G42I/QzhdOP1NS7bSDwLXkCx
+   FBMdkVPOp6BzRQVJ/VCtGddfoTYQN/m5h4Xd8ZYLYIYVAkHgKjdFLxgQn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371781654"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="371781654"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:37:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="705491790"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="705491790"
+Received: from awolfson-mobl3.ger.corp.intel.com (HELO [10.249.39.2]) ([10.249.39.2])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:37:40 -0700
+Message-ID: <ec653abc-f2f8-8a9d-4b8a-ea9d985d32fe@linux.intel.com>
+Date:   Mon, 31 Jul 2023 18:37:36 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 1/2] nvme-auth: unlock mutex in one place only
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module
+ loading.
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
+ <87r0oohyea.wl-tiwai@suse.de>
 Content-Language: en-US
-To:     Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, axboe@kernel.dk, kbusch@kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-References: <20230731145106.917526-1-shiftee@posteo.net>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230731145106.917526-1-shiftee@posteo.net>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <87r0oohyea.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 16:51, Mark O'Donovan wrote:
-> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-> ---
->   drivers/nvme/host/auth.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
-> index daf5d144a8ea..e1a98647c3a2 100644
-> --- a/drivers/nvme/host/auth.c
-> +++ b/drivers/nvme/host/auth.c
-> @@ -758,12 +758,11 @@ static void nvme_queue_auth_work(struct work_struct *work)
->   		__func__, chap->qid);
->   	mutex_lock(&ctrl->dhchap_auth_mutex);
->   	ret = nvme_auth_dhchap_setup_host_response(ctrl, chap);
-> +	mutex_unlock(&ctrl->dhchap_auth_mutex);
->   	if (ret) {
-> -		mutex_unlock(&ctrl->dhchap_auth_mutex);
->   		chap->error = ret;
->   		goto fail2;
->   	}
-> -	mutex_unlock(&ctrl->dhchap_auth_mutex);
->   
->   	/* DH-HMAC-CHAP Step 3: send reply */
->   	dev_dbg(ctrl->device, "%s: qid %d send reply\n",
-If you insist.
+Hey,
 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Den 2023-07-31 kl. 17:51, skrev Takashi Iwai:
+> On Wed, 19 Jul 2023 18:41:32 +0200,
+> Maarten Lankhorst wrote:
+>> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
+>> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
+>> driver load of xe, and will fail completely before it loads.
+>>
+>> -EPROBE_DEFER has to be returned before any device is created in probe(),
+>> otherwise the removal of the device will cause EPROBE_DEFER to try again
+>> in an infinite loop.
+>>
+>> The conversion is done in gradual steps. First I add an argument to
+>> snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
+>> separately. Then I convert each driver to move snd_hdac_i915_init out of the
+>> workqueue. Finally I drop the ability to choose modprobe behavior after the
+>> last user is converted.
+>>
+>> I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
+>> modprobe, but I don't have the hardware to test if it can be safely removed.
+>> It can still be done easily in a followup patch to simplify probing.
+>>
+>> ---
+>> New since first version:
+>>
+>> - snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
+>>    for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
+>>    off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
+>>    setting depends on whether kernel booted with nomodeset.
+>> - Incorporated all feedback review.
+> Maarten, are you working on v3 patch set?
+> Or, for moving forward, should we merge v2 now and fix the rest based
+> on that later?
+
+I've been working on a small change to keep the workqueue in SOF and 
+only move the binding to the probe function to match what snd-hda-intel 
+is doing, but I don't know if that is needed?
+
+It was a bit unclear to me based on feedback if I should try to kill the 
+workqueue on all drivers (but with no way to test), or keep it around.
 
 Cheers,
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+~Maarten
 
