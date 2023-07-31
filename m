@@ -2,77 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9063776A428
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02BA76A429
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbjGaW3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
+        id S231804AbjGaW3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjGaW3F (ORCPT
+        with ESMTP id S230482AbjGaW3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:29:05 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C45118F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:29:04 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2682e33509bso3691046a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:29:04 -0700 (PDT)
+        Mon, 31 Jul 2023 18:29:08 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DE8EC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:29:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57320c10635so59922147b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:29:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690842544; x=1691447344;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZ2LktP96v4dfRE8Vwz3CbzB0RzxRif3DX7AM2KfeLU=;
-        b=W5Y/ZFO8fcDmdLpJ87+PfI5fOmpc9vEwXzyecBfLbCyZ0GTM8w90J+3zAzdpy6NJz7
-         oN75grQ8eQDlRNXh9m0FTorlSFzI02DfJXMBs6hCwfOOPf1uibjhip1NDYHp2c+VaZrL
-         Kww8XaqG/kSwDmcjbe//sAJ6As/LvmM7RqnYitr3QxxIAxvCtbZsksmiCzbKAlErBl5K
-         842P4ApJ1ZtrFKthlx9CGhxRDI3Is4wJDpo6xtaG/OXydEHZQjVOem8BQc4b/XqjtChc
-         69KezMVWzShyQzD07638xV5dcSLgLLH8IxOyNDvTi6yNRWD7hUlknbb7Lz54Pq0X8u5z
-         eFNg==
+        d=google.com; s=20221208; t=1690842546; x=1691447346;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Q8GvYD+4dtlsTwSTiHUPQzTJlHbTbzrpGF3h1vVBww=;
+        b=wjwMM2KWT8HU0SHDHdNRxn0t00ajJ3rnXd0KHF3IvjHCM9C9HEucQqbNqO3DdnlESa
+         nz4NidPHfLZdlM97AQO2l5R9cvi5qOsP8Ijvq8FdyQ975MNIp/vKfJQp4Fn/KRaq6Jwk
+         4kloVUH4EDmpWV0M/Jbjnxx6ZpxxBUBTWBZfCkK7wrUfN/3hE3YtfIlsy05XGvIcQMBR
+         YwOaTVtyj5jc9ti6xzcRvjvMofBrcZ2GDu27qgywzvVHzJ4o32YZtNXzHqvcANqA6/YW
+         sTLo8o8faSsSn6oqDWZE2/b1jMu9Jj3r8qqQ2mBwBCqkSpgBEgjiP8UrfNG7IjOkrlZB
+         RMgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690842544; x=1691447344;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZ2LktP96v4dfRE8Vwz3CbzB0RzxRif3DX7AM2KfeLU=;
-        b=LQBF+gGvX99XcTYmiSgj0bBMm43gABoTxO9XVw5oVxj+t7bAtz0Mh9OHi5pww7njci
-         ROTef6DkIS9DVE+hX0WGGekUEhr+8cu2RmzG7R9G+PE9BpksKOdkN/oAW15zES9Bv+nr
-         fqDbSOYnAuhoyOjEl2twtBzCoQY6CvafJIIYxcfbdqcGTtqq8LePa2Abr5bLMrzTTqLu
-         mqagFn8/GOZlamovLelwuPVhsav2jYtEDyHfBSq4F5aozUYSP5DTFfP9HRhPvB/kVLg7
-         83qfhGMYj8PkoWN3rPSyXQ4Awk6a5hmgeThcjQQOiUamSwOVBAFWYY7xkBYJaEm5CDdu
-         fNww==
-X-Gm-Message-State: ABy/qLblXK/wUFvstJy8FPKt+Da40ZBrV7MIm48Eh+CmuuaYCuzJ7I22
-        ZYv6LJ80tiw+fPLB9OJRxNnDng==
-X-Google-Smtp-Source: APBJJlEUVR4VzSj0cl+vQ2Tn5yIlGKmK3ZbTpxqa/RsOvz61oB7ESg7499A8aoE+8LjqoQ/Hs4qsdA==
-X-Received: by 2002:a17:90a:a683:b0:268:6339:318 with SMTP id d3-20020a17090aa68300b0026863390318mr10058262pjq.30.1690842543576;
-        Mon, 31 Jul 2023 15:29:03 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id a15-20020a17090a70cf00b00267fbd521dbsm8239085pjm.5.2023.07.31.15.29.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 15:29:03 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 22:28:59 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
+        d=1e100.net; s=20221208; t=1690842546; x=1691447346;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Q8GvYD+4dtlsTwSTiHUPQzTJlHbTbzrpGF3h1vVBww=;
+        b=H32vOinjC5j2MmKd1kXdd0TFbUC84DJNi2PDXcyts+v/kJ3FUIUpoIYApdl+AYLHqE
+         FaceXGqgeFYpcKFCSQbTX87HAbkVbsFNdnKFE7bprUzJkkYpbIljIbvXwfuWJDWVNBLU
+         1JPFNVBTzZvd5HHZmOL8wpvbSJbwjhSNVPCB1n74bPU4xu/Nbe8rW1zbwkto1f8Zg/++
+         UoEeQDpKlVLeI8rvURKYegAeFSYvTG0Ug0jrMWSzddPxEKCSG/wAFmjfCmyeR9KCvsJp
+         yBVG0Odmi3ttOFGfKcCkq17Q0nX4TblgxFJMiYtfL+N1qKZf9jcPlk5UByu3NfqUoxJf
+         3+Pw==
+X-Gm-Message-State: ABy/qLZHWPIPLMyTv3FVun/HzodEbNxu4pP3SK5LSJYvdoOvd1ag3/v+
+        51FEb4OdQohxqCO7FSInuZpg8EEdVuQ=
+X-Google-Smtp-Source: APBJJlGgIomNHDqU6KhEMJb1Ck8ilBU2ctVZYZehyK88j/kbenJFHvBGJ75gfwK64a/yrr50dO0Jiu4+k6c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b109:0:b0:56d:502:9eb0 with SMTP id
+ p9-20020a81b109000000b0056d05029eb0mr90305ywh.6.1690842545957; Mon, 31 Jul
+ 2023 15:29:05 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 15:29:04 -0700
+In-Reply-To: <20230731063317.3720-1-xin3.li@intel.com>
+Mime-Version: 1.0
+References: <20230731063317.3720-1-xin3.li@intel.com>
+Message-ID: <ZMg1sD7IamB0INVs@google.com>
+Subject: Re: [PATCH v9 00/36] x86: enable FRED for x86-64
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
+        Babu Moger <babu.moger@amd.com>,
         Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>
-Subject: Re: [PATCH v2 6/6] KVM: Documentation: Add the missing description
- for tdp_mmu_page into kvm_mmu_page
-Message-ID: <ZMg1q59MV7/iQayd@google.com>
-References: <20230626182016.4127366-1-mizhang@google.com>
- <20230626182016.4127366-7-mizhang@google.com>
- <ZJsLV+urA0Yrw6Wn@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZJsLV+urA0Yrw6Wn@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Sandipan Das <sandipan.das@amd.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Breno Leitao <leitao@debian.org>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
+        Conghui <conghui.chen@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Jane Malalane <jane.malalane@citrix.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Yantengsi <siyanteng@loongson.cn>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sathvika Vasireddy <sv@linux.ibm.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,33 +131,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 27, 2023, Sean Christopherson wrote:
-> On Mon, Jun 26, 2023, Mingwei Zhang wrote:
-> > Add the description for tdp_mmu_page into kvm_mmu_page description.
-> > tdp_mmu_page is a field to differentiate shadow pages from TDP MMU and
-> > non-TDP MMU. When TDP MMU is enabled, sp->tdp_mmu_page=1 indicates a shadow
-> > page for L1, while sp->tdp_mmu_page=0 indicates a shadow page for an L2.
-> > When TDP MMU is disabled, sp->tdp_mmu_page is always 0. So update the doc
-> > to reflect the information.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > ---
-> >  Documentation/virt/kvm/x86/mmu.rst | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > index cc4bd190c93d..678dc0260a54 100644
-> > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > @@ -278,6 +278,8 @@ Shadow pages contain the following information:
-> >      since the last time the page table was actually used; if emulation
-> >      is triggered too frequently on this page, KVM will unmap the page
-> >      to avoid emulation in the future.
-> > +  tdp_mmu_page:
-> > +    Is 1 if the shadow page is a TDP MMU page.
-> 
-> Maybe add a short blurb explaining that it's used for control flow when starting
-> from a common entry point?  E.g. walking page tables given a root, and walking
-> lists that can hold both shadow MMU and TDP MMU pages.
+On Sun, Jul 30, 2023, Xin Li wrote:
+> This patch set enables the Intel flexible return and event delivery
+> (FRED) architecture for x86-64.
 
-will do. Thanks.
+...
+
+> -- 
+> 2.34.1
+
+What is this based on?	FYI, you're using a version of git that will (mostly)
+automatically generate the based, e.g. I do 
+
+  git format-patch --base=HEAD~$nr ...
+
+in my scripts, where $nr is the number of patches I am sending.  My specific
+approaches requires HEAD-$nr to be a publicly visible object/commit, but that
+should be the case the vast majority of the time anyways.
