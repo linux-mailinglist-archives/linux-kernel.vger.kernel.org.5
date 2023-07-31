@@ -2,336 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF4976A2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD51F76A2FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjGaVdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
+        id S230085AbjGaVgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjGaVca (ORCPT
+        with ESMTP id S230008AbjGaVgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:32:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C3F1BF9;
-        Mon, 31 Jul 2023 14:31:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EE0D612E7;
-        Mon, 31 Jul 2023 21:31:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60922C433C8;
-        Mon, 31 Jul 2023 21:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690839082;
-        bh=6lP5+Cei+2goByQ2ABFk3N4PaZH64I6jAOzydkz/QyY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LmcG8qXoZM2ed67Z2dFJogRdJ/NwHB+d/XWKqQWCUPkXA/QLPCj7qQN/emwgnK6fv
-         3e+5rcn3qU6Ga7ddJiELPa9u6LLujs2Jmdl80RteHjjT2FikK72++qtRjXB2EOpRw2
-         3/UTQ0/R40Pqekg/Kn4dOdB52rK9kGHfhAmsudslE7Jze7uhf8Zdxz+hJCL/VO5DXm
-         7HNIaLER8ktQ0y7iDvKsxmIxHwb1/GpAI4AzdoS4x5g3ZIwvav6c9ZyMED6iwq6Zwy
-         7y2LJTWdxLg3hQlJMgKysq0aJMKkGfVChen65n60N6ULzjLTxx64jIRgEO81cDDczo
-         octOy7lLcJcOg==
-Message-ID: <defaff1f-af76-8b02-8d23-534310be16bb@kernel.org>
-Date:   Mon, 31 Jul 2023 23:31:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 24/33] iris: vidc: add debug files
+        Mon, 31 Jul 2023 17:36:20 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0E82697;
+        Mon, 31 Jul 2023 14:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690839355; x=1722375355;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=k+AlJmWN0nzfiXL5uLfjsSAc23qe/IuY1nG8GtNNdOE=;
+  b=kIgeECvuJYYHeVOgnJ38XJhdB0yZP5L2UD4DGkPS5IlntDdNzfHQoMm/
+   7MWcWjzR9mJss3EQ87DrkU9HwGU8IrVcAr4YQ+ry/69LD18+bH4kY5h9B
+   aDbg6HLde6LsNKKxZlLRu+57a4bAEvl5KBP9h9uD2Gbyf86ZD57SHgNsb
+   YWmoosfk1kmtgp3+zo5cMNKwqlv/XVMCn2NY+zdPHxsrD3d4Vgcn4kOEH
+   xEKCitkTM8ky3E/AMMrpMs6OTNT3Bt7fakYiEz4WGpqIsGYIKYTp/G0zn
+   o3gMVxtLyWfgoulqEGMO7Rt6Ah2x+JNdG1NWBVa6t8cubMzogJ0ZbIT2T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="359168893"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="359168893"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 14:33:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="798401161"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="798401161"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Jul 2023 14:33:21 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 31 Jul 2023 14:33:21 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 31 Jul 2023 14:33:21 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 31 Jul 2023 14:33:20 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z9NGRFxrIBW94arzpc1aIpwbss7vTBVZNmm1RHqFVyYX9kku0QX1Li67/raR8Q/ydXtP5YaHiQlhQPiGQHH4o/MFQ4z+ouXAXSuAhQrOfmaixjgSyh8Q7YjeMe6PTmr79q1wvL6brh6B7MvHe9uZFwaQqkZgag/3fg4QkO2TxwiAGqssyUa55kP7cRGDOosEf6paIlzzgfQFuW06d1vFpu8Ho/0urLsEuT+nejcbRN5Gl2FBH1R0uTXt62lZMTsv8t+xchWoU4mlYPVBsfF4IpD9IJoZrnHKZNWmwJhy6UglmGDYvVS/FbvMEsdExZoQ4uAnTzs3wD3mTL9Rk6dncg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WYhvxFWbOui6CRhEGQ8bUlPYYTL3K2TCodBNb+fm1fg=;
+ b=LiNk3dvn3EJ0AC1p/HtL8dUO2L6xzPY+Phgxq/eJEGDEOqQumMS7MkQF5uq83T0h2hlRWC5uUZzr9L0ijO8zNs+LLxU44XLQHYph2lcwxCubxHVWvGYpP6GLw1QoMYMHp+gTCAUA1IDTb+58rwIQZcjF9FU4TN0ptNPQPP9NB2dqJIaEUqQehZBJ2TCyuE1WTpXXpzWTlEXsNQWn1JHETVoqF8De11hDFAH46/Mx6GACSb3sbHcl8+LVN8QM/xJscPTLZQJeu2Jm6vFR+CoQfZdwBUAAQeo3zpIougoVxx5CCN+7kPQH8iwImxkHjo0rFwN33iifBKY8tQBRsSbMHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com (2603:10b6:510:277::5)
+ by PH7PR11MB8012.namprd11.prod.outlook.com (2603:10b6:510:24b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Mon, 31 Jul
+ 2023 21:33:19 +0000
+Received: from PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::d218:3a45:e9ae:f699]) by PH7PR11MB7605.namprd11.prod.outlook.com
+ ([fe80::d218:3a45:e9ae:f699%4]) with mapi id 15.20.6631.042; Mon, 31 Jul 2023
+ 21:33:19 +0000
+Message-ID: <22850f02-5b5f-ab2d-dda5-47cd6b880708@intel.com>
+Date:   Mon, 31 Jul 2023 14:33:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/i915/huc: fix intel_huc.c doc bulleted list format
+ error
 Content-Language: en-US
-To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-25-git-send-email-quic_vgarodia@quicinc.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <1690550624-14642-25-git-send-email-quic_vgarodia@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     David Reaver <me@davidreaver.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Airlie" <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+CC:     John Harrison <John.C.Harrison@Intel.com>,
+        Alan Previn <alan.previn.teres.alexis@intel.com>,
+        <linux-doc@vger.kernel.org>, <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20230727025400.372965-1-me@davidreaver.com>
+From:   "Ceraolo Spurio, Daniele" <daniele.ceraolospurio@intel.com>
+In-Reply-To: <20230727025400.372965-1-me@davidreaver.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::35) To PH7PR11MB7605.namprd11.prod.outlook.com
+ (2603:10b6:510:277::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB7605:EE_|PH7PR11MB8012:EE_
+X-MS-Office365-Filtering-Correlation-Id: 91c9705a-4d88-47eb-6b37-08db920dc1ea
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b+dP9pysvmPJ+Tu7VGLaHBWJLwgQmKPMW04nmYEy3QYc6YpiVTMXtGWEHrRoQWnkG7gP0cmdlhA7p/bppVzPgUiA1duc5P9tjYkJdm2wG4MYHEJVnlH73JwB1ocE3EfMl39t5jCePDwDwoIzzjrL0VpvmTjCJ4L345bj4irum1FXuD0/LYoAoSuS5JHonHnXw+gsQRILcesy7EJCJS4Yj0jbpK84Qo27DnuIxHrHJnMKpAjMGnJAe59vy1C4UNxktBdF0qGgP0H2nxyvrjno6K6oFDS9NfYZMRY/mqXz7sjdIptV7u+fgk+CR3oDao2qn8sngIbWEy+3Hp/guTwXKetkgGobT7LMjjcdvNcQUo1bDSMLGu9HhprGKN51CTr83IihR89b2MZjc+liLxq2jV3Y9jLPAmGfuyfK66CimFTdaGOUGakj9XDVGu22tMV0SbRpkT4VaMxfxWmZs8qx7zps5CGpwODBg0LxK9mcNrzkg0flIoYFL6L1rfm9J7a4eOLq86hUwXMAKznPDGagD3LqINjnSGFJZkAHRFOOI/HPHUkOKwJ4CRBhbhAWJpp1f+yIzzxyc+FOkoBu+wWtG/NXH/ilHze9SA91bIwqgvV3ns6hwtaEHyeNBqdWHJLJTo/QAgZPKIcqwqIVdoUN6qbRJheHEQkG0I+9lKMdQcZfBHB7e+ITkYYKrh4rKn92
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB7605.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(376002)(366004)(346002)(396003)(451199021)(2906002)(316002)(8676002)(8936002)(5660300002)(41300700001)(86362001)(36756003)(31696002)(6512007)(6486002)(53546011)(54906003)(478600001)(82960400001)(6506007)(26005)(966005)(186003)(110136005)(31686004)(2616005)(83380400001)(66946007)(38100700002)(4326008)(66476007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVNNL0xyWnhGR05GbTVXTkNLaG9SU0ZKNDVra0l5ZHgrTTV0QkhKVnlHdEpS?=
+ =?utf-8?B?MGVlS3BkUWhuVWFGNElYTFE1Zk5SeFB6MjdpYW9lK0pDU3FVemlDVzdFREdz?=
+ =?utf-8?B?RW1ZbHJpdlFyOTRhUGxtSGRnc2krQ0hlbit5cU15L3VpTVdZcFZKNHNLKytY?=
+ =?utf-8?B?SzF3STNRYWJScmJHUUFOQ1hPSnp5dDNCWWlDWmFWdXVUanJUN1hQeWM5MDJx?=
+ =?utf-8?B?YVVHWHVkRDl0MXpIbzZIT3NSdE9NcjV1TzFoU09tMkVuRVEzUEtvanVvd3Vh?=
+ =?utf-8?B?bzYrc1NGU1hVUjlJYWRjSWJxMnpFMWJ4bDExV3J3UG9pdGd1aFNseTBDaXZ4?=
+ =?utf-8?B?bkg5ZTFOdFBrekhCWEdoMWxYQjVGelZHdXlMVVZGdFNoTEw5S1Q3SmpPa3Zw?=
+ =?utf-8?B?cDlWbklwOVVQQS9paUluZWFBV29BNy9YcEMrdHJpSFJXSnEvWHI2blZxUkVT?=
+ =?utf-8?B?MllMMEdiL2tRWHlRSzEvTjNSSTJjRU5JcDJORTBvWmVqU1FXbzE2YUZqZDJN?=
+ =?utf-8?B?NVlJNDR0RnV3c2N5cjRIbDliRXJ5emRDbDh2eGJQMTRtRmNadDREQnVwOWpT?=
+ =?utf-8?B?QW5TVE5BSW9SckVBYnhoY052ZnN0OFBmcHltb1U1YlJLSTl3WmtDZjE3Q1ZY?=
+ =?utf-8?B?S3lsZU9LeTlTMU5ocmU3c1JiRjd0T3JVRVlNZEpadDg0d3I2LzJLU00yYVN1?=
+ =?utf-8?B?SWpHUlZENm03eGtUYmNyYldSa3lSOFBURWZDbUgwZ0I5YlQxcFVrTUEyb3lx?=
+ =?utf-8?B?V1Y3NzViVTM3MUdZVHlIb29UalZlRUlpcmhWWXNlUXJTM2FJUjdIUWgxbW01?=
+ =?utf-8?B?WnUvdlVoVGVkZkFPZlo2Y0s0VHduS0RLQXNyRnNxN1k4cUlaSUhxeElMcXBB?=
+ =?utf-8?B?NG4xc08zbVNCaUU1bXU0akNOd1dKNHlaZGh4ZzQrdXVmRGtkbmNuaTBVVTMr?=
+ =?utf-8?B?eExnRWxDWDlIajhqL0VHckF3RVphb3J5N1RLYytEUkpvTmV0YmZTcmI0TVZX?=
+ =?utf-8?B?T1RhUWc4bVFjMWEwdnErUmtqbjV2MVQxT01WbzhqcjJhOUFtWHJ6YzVSZGcw?=
+ =?utf-8?B?amlocDdOVGFiMVFEM3dZU21saWpreEZLd05yZ2ZnSjJVWFp3WWRkZ0RDdFp1?=
+ =?utf-8?B?dWs4QTlVOXhad2duakVSS2haWkZJZ1MyUTFqanNtMTdsZjRWRXFGMm0vRUNl?=
+ =?utf-8?B?T2pVOWlTdy95Q0tqN0d2eFl2WG1INkpPMjVvVHRKdEZaNG91cUhMR3VaR285?=
+ =?utf-8?B?eVNJN0FiMCtNTjNZU01vaUJOc2xaeERlVFBNQ2t0VzNINmZ2dTdkSzQydVBn?=
+ =?utf-8?B?ZFllWFRPak1yRVU0Y0xGL0s5S28zMGlHMklDd281L2ZORUJlQnZ1QzBsS3hp?=
+ =?utf-8?B?NzVEQjZzVzVRUUN3ZHB3eDN0c241Z3FUZFdhYTZtZXRPSmtwa2gxNFRvWW5W?=
+ =?utf-8?B?dncwa0lTbGRWTmkvMkVaek1UNUdtZWU2QURPdW5xMS9YS05VNnd5aHR0K3hr?=
+ =?utf-8?B?WFJYWjg2LzJlRGdFM1MrdU16Mi9rOGxaNyt0UTRGZlhscVRCaWJZZEVEUThR?=
+ =?utf-8?B?V3JYa2ltTHE4NWNhaVFnbitPaWk2SUxOcUxXNHNoU2d1YWJWWGhrSElET0Jn?=
+ =?utf-8?B?T3NybCtuVENhQTVCaENFZWJmdGhOU0NWZ0grUVFBbU95MDRQUldnM3h6dFlF?=
+ =?utf-8?B?dDIrRzZqTGVRaUk0NUdvTEtGc2UwTXkvdENsZjJkYnpHd0lKekZYZndMNHg1?=
+ =?utf-8?B?UWw3UFFndjFjU3RxODZmSTVuMlE3QUdHeFBUaEhucUg5dklONWlnMWE1S2Fi?=
+ =?utf-8?B?YU1VeDY0V1Z4WXNSOUZUMFNEZVd4R2xMVW5SaWpaS001L21TSmcwUk5PdzJp?=
+ =?utf-8?B?VEI5NGk0ck5obmg4TjBGMmdRWXdVWjFySUlsbHUyTkI0ZmRpTkxnN2hIWkRN?=
+ =?utf-8?B?OXozL2twR0R4ZjhOM0JSMm1lWDZpNngwSXhXOUNIZEIrd3IvNVM2b3FGV05n?=
+ =?utf-8?B?V0MzSEozUERkRG50M1FXMmRydUU5Umh3UkNiTWtzUSs2ZlF4Qm1vUU83bWdJ?=
+ =?utf-8?B?aXlhcDRqeEtmdUlGb3J0MENZUEt5QVptUGRZL21ybUEwZ1FwWXdReW9BVG56?=
+ =?utf-8?B?N2txQTcwcUd1aGZWUUQzUXZMR2tJOUh4djFLZDg3ZTA3UlF6YVI0UmJMcTdn?=
+ =?utf-8?B?THc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91c9705a-4d88-47eb-6b37-08db920dc1ea
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7605.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 21:33:19.0235
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H/GmbOC1V7x2oYhYz8oNDcswwaufSeVPsbYgNX7vTwAV5NBKq6EHmxNlxUEqTcX723lRNWvZL8m/4bL1F0YWfUMFq6wpaH36ZBILjpH3YNA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8012
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 15:23, Vikash Garodia wrote:
-> this implements the debugging framework.
 
-Your commit msgs are not helping to understand why do you need it and
-what is this doing. Based on this commit description I would ask you to
-drop most of this code as it looks useless. Extend the commit msg to
-provide proper justification and list of features each unit provides.
 
-Please do not use "This commit/patch", but imperative mood. See longer
-explanation here:
-https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
+On 7/26/2023 7:54 PM, David Reaver wrote:
+> Fix the following make htmldocs errors/warnings:
+>
+> ./drivers/gpu/drm/i915/gt/uc/intel_huc.c:29: ERROR: Unexpected indentation.
+> ./drivers/gpu/drm/i915/gt/uc/intel_huc.c:30: WARNING: Block quote ends without a blank line; unexpected unindent.
+> ./drivers/gpu/drm/i915/gt/uc/intel_huc.c:35: WARNING: Bullet list ends without a blank line; unexpected unindent.
+>
+> This output is a bit misleading. The real issue here is we need a blank
+> line before and after the bulleted list.
+>
+> Link: https://www.kernel.org/doc/html/latest/gpu/i915.html#huc
+> Link: https://lore.kernel.org/dri-devel/20230530152958.1384061-1-daniele.ceraolospurio@intel.com/
+>
+> Signed-off-by: David Reaver <me@davidreaver.com>
 
-> 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+Reviewed-by: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+
+and pushed to drm-intel-gt-next.
+
+thanks for the fix,
+Daniele
+
 > ---
->  .../platform/qcom/iris/vidc/inc/msm_vidc_debug.h   | 186 +++++++
->  .../platform/qcom/iris/vidc/src/msm_vidc_debug.c   | 581 +++++++++++++++++++++
->  2 files changed, 767 insertions(+)
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_debug.h
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_debug.c
-> 
-> diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_debug.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_debug.h
-> new file mode 100644
-> index 0000000..ffced01
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_debug.h
-> @@ -0,0 +1,186 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#ifndef __MSM_VIDC_DEBUG__
-> +#define __MSM_VIDC_DEBUG__
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/errno.h>
-> +#include <linux/module.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/types.h>
-> +
-> +struct msm_vidc_core;
-> +struct msm_vidc_inst;
-> +
-> +#ifndef VIDC_DBG_LABEL
-> +#define VIDC_DBG_LABEL "msm_vidc"
-> +#endif
-
-Drop these three. Don't re-invent Linux kernel API.
-
-> +
-> +/* Allow only 6 prints/sec */
-> +#define VIDC_DBG_SESSION_RATELIMIT_INTERVAL (1 * HZ)
-> +#define VIDC_DBG_SESSION_RATELIMIT_BURST 6
-> +
-> +#define VIDC_DBG_TAG_INST VIDC_DBG_LABEL ": %4s: %s: "
-> +#define VIDC_DBG_TAG_CORE VIDC_DBG_LABEL ": %4s: %08x: %s: "
-> +#define FW_DBG_TAG VIDC_DBG_LABEL ": %6s: "
-> +#define DEFAULT_SID ((u32)-1)
-> +
-> +#ifndef MSM_VIDC_EMPTY_BRACE
-> +#define MSM_VIDC_EMPTY_BRACE {},
-
-That's the funniest code I saw since some time.
-
-> +#endif
-> +
-> +extern unsigned int msm_vidc_debug;
-
-Nope.
-
-> +extern unsigned int msm_fw_debug;
-
-Nope.
-
-> +extern bool msm_vidc_fw_dump;
-
-Nope.
-
-> +
-> +/* do not modify the log message as it is used in test scripts */
-> +#define FMT_STRING_SET_CTRL \
-> +	"%s: state %s, name %s, id 0x%x value %d\n"
-> +#define FMT_STRING_STATE_CHANGE \
-> +	"%s: state changed to %s from %s\n"
-> +#define FMT_STRING_MSG_SFR \
-> +	"SFR Message from FW: %s\n"
-> +#define FMT_STRING_FAULT_HANDLER \
-> +	"%s: faulting address: %lx\n"
-> +#define FMT_STRING_SET_CAP \
-> +	"set cap: name: %24s, cap value: %#10x, hfi: %#10llx\n"
-> +
-> +/* To enable messages OR these values and
-> + * echo the result to debugfs file.
+>   drivers/gpu/drm/i915/gt/uc/intel_huc.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/gt/uc/intel_huc.c b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
+> index ddd146265beb..fa70defcb5b2 100644
+> --- a/drivers/gpu/drm/i915/gt/uc/intel_huc.c
+> +++ b/drivers/gpu/drm/i915/gt/uc/intel_huc.c
+> @@ -26,6 +26,7 @@
+>    * The kernel driver is only responsible for loading the HuC firmware and
+>    * triggering its security authentication. This is done differently depending
+>    * on the platform:
 > + *
-> + * To enable all messages set msm_vidc_debug = 0x101F
-> + */
-> +
-> +enum vidc_msg_prio_drv {
-> +	VIDC_ERR        = 0x00000001,
-> +	VIDC_HIGH       = 0x00000002,
-> +	VIDC_LOW        = 0x00000004,
-> +	VIDC_PERF       = 0x00000008,
-> +	VIDC_PKT        = 0x00000010,
-> +	VIDC_BUS        = 0x00000020,
-> +	VIDC_STAT       = 0x00000040,
-> +	VIDC_ENCODER    = 0x00000100,
-> +	VIDC_DECODER    = 0x00000200,
-> +	VIDC_PRINTK     = 0x10000000,
-> +	VIDC_FTRACE     = 0x20000000,
-> +};
-> +
-> +enum vidc_msg_prio_fw {
-> +	FW_LOW          = 0x00000001,
-> +	FW_MED          = 0x00000002,
-> +	FW_HIGH         = 0x00000004,
-> +	FW_ERROR        = 0x00000008,
-> +	FW_FATAL        = 0x00000010,
-> +	FW_PERF         = 0x00000020,
-> +	FW_CACHE_LOW    = 0x00000100,
-> +	FW_CACHE_MED    = 0x00000200,
-> +	FW_CACHE_HIGH   = 0x00000400,
-> +	FW_CACHE_ERROR  = 0x00000800,
-> +	FW_CACHE_FATAL  = 0x00001000,
-> +	FW_CACHE_PERF   = 0x00002000,
-> +	FW_PRINTK       = 0x10000000,
-> +	FW_FTRACE       = 0x20000000,
-> +};
-> +
-> +#define DRV_LOG        (VIDC_ERR | VIDC_PRINTK)
-> +#define DRV_LOGSHIFT   (0)
-> +#define DRV_LOGMASK    (0x0FFFFFFF)
-> +
-> +#define FW_LOG         (FW_ERROR | FW_FATAL | FW_PRINTK)
-> +#define FW_LOGSHIFT    (0)
-> +#define FW_LOGMASK     (0x0FFFFFFF)
-> +
-> +#define dprintk_inst(__level, __level_str, inst, __fmt, ...) \
-> +	do { \
-> +		if (inst && (msm_vidc_debug & (__level))) { \
-> +			pr_info(VIDC_DBG_TAG_INST __fmt, \
-> +				__level_str, \
-> +				inst->debug_str, \
-> +				##__VA_ARGS__); \
-> +		} \
-> +	} while (0)
-> +
-> +#define i_vpr_e(inst, __fmt, ...) dprintk_inst(VIDC_ERR,  "err ", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_i(inst, __fmt, ...) dprintk_inst(VIDC_HIGH, "high", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_h(inst, __fmt, ...) dprintk_inst(VIDC_HIGH, "high", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_l(inst, __fmt, ...) dprintk_inst(VIDC_LOW,  "low ", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_p(inst, __fmt, ...) dprintk_inst(VIDC_PERF, "perf", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_t(inst, __fmt, ...) dprintk_inst(VIDC_PKT,  "pkt ", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_b(inst, __fmt, ...) dprintk_inst(VIDC_BUS,  "bus ", inst, __fmt, ##__VA_ARGS__)
-
-NAK for entire interface. Please use standard debugging functions, not
-pr_info for everything.
-
-dev_dbg, dev_info, dev_warn, dev_err. Only these.
-
-
-> +#define i_vpr_s(inst, __fmt, ...) dprintk_inst(VIDC_STAT, "stat", inst, __fmt, ##__VA_ARGS__)
-> +
-> +#define i_vpr_hp(inst, __fmt, ...) \
-> +	dprintk_inst(VIDC_HIGH | VIDC_PERF, "high", inst, __fmt, ##__VA_ARGS__)
-> +#define i_vpr_hs(inst, __fmt, ...) \
-> +	dprintk_inst(VIDC_HIGH | VIDC_STAT, "stat", inst, __fmt, ##__VA_ARGS__)
-> +> +#define dprintk_core(__level, __level_str, __fmt, ...) \
-
-NAK
-
-> +	do { \
-> +		if (msm_vidc_debug & (__level)) { \
-> +			pr_info(VIDC_DBG_TAG_CORE __fmt, \
-> +				__level_str, \
-> +				DEFAULT_SID, \
-> +				"codec", \
-> +				##__VA_ARGS__); \
-> +		} \
-> +	} while (0)
-> +
-> +#define d_vpr_e(__fmt, ...) dprintk_core(VIDC_ERR,  "err ", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_h(__fmt, ...) dprintk_core(VIDC_HIGH, "high", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_l(__fmt, ...) dprintk_core(VIDC_LOW,  "low ", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_p(__fmt, ...) dprintk_core(VIDC_PERF, "perf", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_t(__fmt, ...) dprintk_core(VIDC_PKT,  "pkt ", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_b(__fmt, ...) dprintk_core(VIDC_BUS,  "bus ", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_s(__fmt, ...) dprintk_core(VIDC_STAT, "stat", __fmt, ##__VA_ARGS__)
-> +#define d_vpr_hs(__fmt, ...) \
-> +	dprintk_core(VIDC_HIGH | VIDC_STAT, "high", __fmt, ##__VA_ARGS__)
-> +
-> +#define dprintk_ratelimit(__level, __level_str, __fmt, ...) \
-> +	do { \
-> +		if (msm_vidc_check_ratelimit()) { \
-> +			dprintk_core(__level, __level_str, __fmt, ##__VA_ARGS__); \
-> +		} \
-> +	} while (0)
-> +
-> +#define dprintk_firmware(__level, __fmt, ...)	\
-> +	do { \
-> +		if ((msm_fw_debug & (__level)) & FW_PRINTK) { \
-> +			pr_info(FW_DBG_TAG __fmt, \
-> +				"fw", \
-> +				##__VA_ARGS__); \
-> +		} \
-> +	} while (0)
-> +
-> +enum msm_vidc_debugfs_event {
-> +	MSM_VIDC_DEBUGFS_EVENT_ETB,
-> +	MSM_VIDC_DEBUGFS_EVENT_EBD,
-> +	MSM_VIDC_DEBUGFS_EVENT_FTB,
-> +	MSM_VIDC_DEBUGFS_EVENT_FBD,
-> +};
-> +
-> +enum msm_vidc_bug_on_error {
-> +	MSM_VIDC_BUG_ON_FATAL             = BIT(0),
-> +	MSM_VIDC_BUG_ON_NOC               = BIT(1),
-> +	MSM_VIDC_BUG_ON_WD_TIMEOUT        = BIT(2),
-> +};
-> +
-> +struct dentry *msm_vidc_debugfs_init_drv(void);
-> +struct dentry *msm_vidc_debugfs_init_core(struct msm_vidc_core *core);
-> +struct dentry *msm_vidc_debugfs_init_inst(struct msm_vidc_inst *inst,
-> +					  struct dentry *parent);
-> +void msm_vidc_debugfs_deinit_inst(struct msm_vidc_inst *inst);
-> +void msm_vidc_debugfs_update(struct msm_vidc_inst *inst,
-> +			     enum msm_vidc_debugfs_event e);
-> +int msm_vidc_check_ratelimit(void);
-> +
-> +static inline bool is_stats_enabled(void)
-> +{
-> +	return !!(msm_vidc_debug & VIDC_STAT);
-
-...
-
-> +struct dentry *msm_vidc_debugfs_init_core(struct msm_vidc_core *core)
-> +{
-> +	struct dentry *dir = NULL;
-> +	char debugfs_name[MAX_DEBUGFS_NAME];
-> +	struct dentry *parent;
-> +
-> +	if (!core->debugfs_parent) {
-> +		d_vpr_e("%s: invalid params\n", __func__);
-> +		goto failed_create_dir;
-> +	}
-> +	parent = core->debugfs_parent;
-> +
-> +	snprintf(debugfs_name, MAX_DEBUGFS_NAME, "core");
-> +	dir = debugfs_create_dir(debugfs_name, parent);
-> +	if (IS_ERR_OR_NULL(dir)) {
-> +		dir = NULL;
-> +		d_vpr_e("Failed to create debugfs for msm_vidc\n");
-> +		goto failed_create_dir;
-> +	}
-> +	if (!debugfs_create_file("info", 0444, dir, core, &core_info_fops)) {
-> +		d_vpr_e("debugfs_create_file: fail\n");
-> +		goto failed_create_dir;
-> +	}
-> +
-> +	if (!debugfs_create_file("stats_delay_ms", 0644, dir, core, &stats_delay_fops)) {
-> +		d_vpr_e("debugfs_create_file: fail\n");
-
-
-What is this entire debugfs supposed to provide?
-
-
-
-Best regards,
-Krzysztof
+>    * - older platforms (from Gen9 to most Gen12s): the load is performed via DMA
+>    *   and the authentication via GuC
+>    * - DG2: load and authentication are both performed via GSC.
+> @@ -33,6 +34,7 @@
+>    *   not-DG2 older platforms), while the authentication is done in 2-steps,
+>    *   a first auth for clear-media workloads via GuC and a second one for all
+>    *   workloads via GSC.
+> + *
+>    * On platforms where the GuC does the authentication, to correctly do so the
+>    * HuC binary must be loaded before the GuC one.
+>    * Loading the HuC is optional; however, not using the HuC might negatively
 
