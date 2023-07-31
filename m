@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13627768FDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C62B768FE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjGaIRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S231959AbjGaISu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjGaIQy (ORCPT
+        with ESMTP id S232132AbjGaISV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:16:54 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81981724
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:14:26 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so8847467a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:14:26 -0700 (PDT)
+        Mon, 31 Jul 2023 04:18:21 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18472111
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:15:38 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so6692673e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690791265; x=1691396065;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1690791337; x=1691396137;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=p6rcZPwVJBWeYJ6kXZi9yA1FdLwGokDC5tlnkatV15w=;
-        b=QTPoqYTCsActNvpiAsIPcOEkIha2cz1+i9EOrcWeVuAQqRzbD3Hp5oHPMMY04ggq1M
-         nb4yyl+8vcvkiM6/JOorvvZp1HReTdhzm49qyaeTOLRzfaMpTO4kCqEAGSwHnglglu7G
-         9efwAZ/KTTYT8NhsP5q9zsmcKy9sM9ibjUTw9OgEU/xN4eSet842XCNdRIIRxyp2oEig
-         tbjADNqkvsW8eaHlK4e5rhJXARqmxaouqn18YdFDGrB/qOvJsVXwvURJ3rJWoljvkiJi
-         LtdI+5aozZY/3fJ/P1e9EGUJlFFbUGv/9IKS2naDnAYj3UtTLw3Egf3fPWziZJlEi0ZP
-         +Bmw==
+        bh=mYG0LasLifyyUM7Rwt2a0NjqR/rKg7HRv/UVMGYC+s0=;
+        b=bQvvl/B5tmOti6yZEthNbWipKzs48ju0grUG9tHoZV/l+Ad9JAM4+FLF2dmQQMoz7M
+         A+usfwRp8znkWl4k7fAOM8+pA7fR3iz1nN4Xuo0SVjeIo2h8NZGrP/D3uEjC3ujgN7lQ
+         jpyw4hIsOM9xgl7weU4KmNVcFBztPJwgxhaIRs8T5rlSUVl1ZjzhTG+o6K6BrtHBugj3
+         ghwIVYBXqMTkLKBsgSgb24pfNladB4HFpw/qQ3EAA6jO3OtO/cSJvtETNb5SNZ+qW/DJ
+         aOzfu8kqujjSjniHI6pUTarYdIoH+s4ZCOdbvGbF41lW+HlBAilP+9qDcwU9xs82PfbP
+         aGlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690791265; x=1691396065;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690791337; x=1691396137;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p6rcZPwVJBWeYJ6kXZi9yA1FdLwGokDC5tlnkatV15w=;
-        b=XlFI6L8SvGM9qehXto0WzKSoUhMMgHNXYG4wiSQR05uUMEd2ka9Arw1RLfdru9ePC1
-         NBoR5rPq3d5yaI7+q0SW5JHpawG9IcZ5kpEmnNNyXUPULoRLlpkTwiPUlwE7W2hbcFG4
-         gyPRdtQXNZvXnMBLhIpYhQjtVAoYehI/AHhS3iYOHm9uJ07KLiCZ8RlnOVyfLFshpXZM
-         phF3gH1uR2GN2eLtXcJRMxHi1T88WO/YqkmjyMQ8U5igb04jY2DDfbeYVex8OxlmDlC2
-         r6V3Qa8oQKpZv84CLxiNOvZ0iciGU0VQf4tAWBKZrg7phKFY6asqYhSueUBxkUR8vl6I
-         ynTA==
-X-Gm-Message-State: ABy/qLY1lUvujU0MvSUrXA7Rj9MLfWtu6eeAqCOBeTF5yZmoapPYOlLp
-        8z/gs6OXw/CPJ8nI1hHlq8PQiQ==
-X-Google-Smtp-Source: APBJJlEcpNtkDOqJUGvWGXqCV6phd4Pm6wZGFOPble3FSFbPOjaBdJp/J199LjmDjTErsa3F80PoGg==
-X-Received: by 2002:a05:6402:3508:b0:51d:cf7b:c9f0 with SMTP id b8-20020a056402350800b0051dcf7bc9f0mr13989833edd.12.1690791265071;
-        Mon, 31 Jul 2023 01:14:25 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id w5-20020aa7d285000000b005227ead61d0sm5095073edq.83.2023.07.31.01.14.23
+        bh=mYG0LasLifyyUM7Rwt2a0NjqR/rKg7HRv/UVMGYC+s0=;
+        b=RtVvHCBond/zILGJK1ziigRZiTjAoixxo/4lzkH+5k7CiayH19FcYqQrSEpBB1pVWj
+         T/yuq3TZIjveZinNVR/JBxiTtowkMG/v/OS2D2PIuNMpJfKi4pkhhrdNeuS+R9HR+9W5
+         c+w8vvokX7yiOftP9n1IZTIcNM2O9jMWFwQ7vIPxQvcZW4ukfT6BliY8n1UP8w/liDyJ
+         Ci/62AfAi/XuTTksDR8Fj5vLc6oagDa39p34XimXfYdla1caa6HcK+GBoCMxv+xLZBNH
+         zRT/uMHjSPEGE5l+DrPwqNeqsj3qSws7y1tTxhUiKsBTAdZpwVQIsqIBV5HoLUcg2tLB
+         OKCw==
+X-Gm-Message-State: ABy/qLZ5ix2tsOCTayW1w43l1W94BjxR/Gz4jXt3PkEm/Q99GoFSf7sI
+        SB63cEBvp1txsU0T5ZeOMQHDLQ==
+X-Google-Smtp-Source: APBJJlEuqM3DeDa8wJtUXqjMUMmkQbWCxdq2T9GkSujeAsdIbk7bsJuEfiDxnmkMz/LJuSBzEP7Glw==
+X-Received: by 2002:a05:6512:1105:b0:4fe:8b5:588a with SMTP id l5-20020a056512110500b004fe08b5588amr6068382lfg.57.1690791336811;
+        Mon, 31 Jul 2023 01:15:36 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id f14-20020ac2532e000000b004fb73bea65esm1975317lfh.25.2023.07.31.01.15.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:14:24 -0700 (PDT)
-Message-ID: <ab66c8a4-6a5e-651b-8f77-047980ebc238@linaro.org>
-Date:   Mon, 31 Jul 2023 10:14:22 +0200
+        Mon, 31 Jul 2023 01:15:36 -0700 (PDT)
+Message-ID: <93dd0930-8699-9995-c9ac-d361c4c385f1@linaro.org>
+Date:   Mon, 31 Jul 2023 10:15:34 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v3 5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add
- mt7986-wm8960 document
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] soc: qcom: aoss: Add debugfs interface for sending
+ messages
 Content-Language: en-US
-To:     =?UTF-8?B?TWFzbyBIdWFuZyAo6buD5Yqg56u5KQ==?= 
-        <Maso.Huang@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chenxiangrui@huaqin.corp-partner.google.com" 
-        <chenxiangrui@huaqin.corp-partner.google.com>,
-        =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?= 
-        <Allen-KH.Cheng@mediatek.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>, "arnd@arndb.de" <arnd@arndb.de>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <20230728090819.18038-1-maso.huang@mediatek.com>
- <20230728090819.18038-6-maso.huang@mediatek.com>
- <7d70f893-ee75-d355-4b4c-4afe7a72cd7c@linaro.org>
- <5f794f6d3595e845433aab3c48eb47ec7962c929.camel@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <5f794f6d3595e845433aab3c48eb47ec7962c929.camel@mediatek.com>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Lew <quic_clew@quicinc.com>
+Cc:     Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org
+References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
+ <20230731041013.2950307-3-quic_bjorande@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230731041013.2950307-3-quic_bjorande@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,105 +117,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 09:31, Maso Huang (黃加竹) wrote:
-> On Fri, 2023-07-28 at 14:49 +0200, Krzysztof Kozlowski wrote:
->>  	 
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>  On 28/07/2023 11:08, Maso Huang wrote:
->>> Add document for mt7986 board with wm8960.
->>>
->>> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
->>> ---
->>>  .../sound/mediatek,mt7986-wm8960.yaml         | 53
->> +++++++++++++++++++
->>>  1 file changed, 53 insertions(+)
->>>  create mode 100644
->> Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml
->>>
->>> diff --git
->> a/Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml 
->> b/Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml
->>> new file mode 100644
->>> index 000000000000..76394f7e5502
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt7986-
->> wm8960.yaml
->>> @@ -0,0 +1,53 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: 
->> http://devicetree.org/schemas/sound/mediatek,mt7986-wm8960.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: MediaTek MT7986 sound card with WM8960 codec
->>> +
->>> +maintainers:
->>> +  - Maso Huang <maso.huang@mediatek.com>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: mediatek,mt7986-wm8960-machine
->>> +
->>> +  mediatek,platform:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>> +    description: The phandle of MT7986 platform.
->>> +
->>> +  audio-routing:
->>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->>> +    description:
->>> +      A list of the connections between audio components. Each
->> entry is a
->>> +      sink/source pair of strings. Valid names could be the input
->> or output
->>> +      widgets of audio components, power supplies, MicBias of
->> codec and the
->>> +      software switch.
->>> +
->>> +  mediatek,audio-codec:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>> +    description: The phandle of wm8960 codec.
->>> +
->>
->> How did you implement Rob's comment? Or did you just ignore it?
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> Hi Krzysztof,
-> 
-> Sorry, I did not mean to ignore Rob's comment.
-> I waited for some suggestion in mail below, but it seems Rob was a
-> little busy.
-> 
-> https://lore.kernel.org/lkml/8c6316e79e40406e4d46709f602dcb14a4c00562.camel@mediatek.com/
-> 
-> After gentle ping last week and receiving your advice, I thought that
-> means to send the v3 patch and might discuss dtbingding in v3 series.
-> 
-> So sorry for misunderstanding it, I'll check the details with Rob in v3
-> series then refine it in v4.
+On 31.07.2023 06:10, Bjorn Andersson wrote:
+> From: Chris Lew <clew@codeaurora.org>
+No QUIC email?
 
-The problem is that you did not reference in this patch any ongoing
-discussion and further questions, so comment looks like addressed, while
-it was not.
+[...]
 
-Rob said:
-"in a common schema and reference them "
-You said:
-"common part yaml and reference to it"
-so I think you both agreed on the same.
 
-The advice would be to create common binding which is then referenced by
-other and your bindings. However if you start doing it, you will notice
-that it is impossible, because you have conflicting types for
-"audio-codec", so you cannot have one definition.
+> +static ssize_t qmp_debugfs_write(struct file *file, const char __user *userstr,
+> +				 size_t len, loff_t *pos)
+> +{
+> +	struct qmp *qmp = file->private_data;
+> +	char buf[QMP_MSG_LEN];
+> +	int ret;
+> +
+> +	if (!len || len > QMP_MSG_LEN)
+>=? Otherwise the last char may be overwritten by the NULL termination
+couple lines below
 
-This leads to the point - property is probably wrong and you need
-dai-link with sound-dai property, just like most cards are doing.
-
-Best regards,
-Krzysztof
-
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(buf, userstr, len))
+> +		return -EFAULT;
+> +	buf[len] = '\0';
+> +
+> +	ret = qmp_send(qmp, buf);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return len;
+> +}
+Konrad
