@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 074417692CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D327692D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjGaKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        id S231285AbjGaKNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbjGaKNK (ORCPT
+        with ESMTP id S230453AbjGaKNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:13:10 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A35DE3;
-        Mon, 31 Jul 2023 03:13:09 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RDv9R4xgmz6J7N8;
-        Mon, 31 Jul 2023 18:09:31 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 31 Jul
- 2023 11:13:06 +0100
-Date:   Mon, 31 Jul 2023 11:13:06 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: iio: admv1014: make all regs required
-Message-ID: <20230731111306.000036da@Huawei.com>
-In-Reply-To: <BN6PR03MB339557689BCCF795B18C68319B05A@BN6PR03MB3395.namprd03.prod.outlook.com>
-References: <20230727113136.98037-1-antoniu.miclaus@analog.com>
-        <7f7d1c90-9969-66bd-fd71-defffe0e05d6@linaro.org>
-        <BN6PR03MB3395F9139A225AA97A100B829B01A@BN6PR03MB3395.namprd03.prod.outlook.com>
-        <20230729125516.68a29852@jic23-huawei>
-        <BN6PR03MB339557689BCCF795B18C68319B05A@BN6PR03MB3395.namprd03.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 31 Jul 2023 06:13:38 -0400
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEDAE3;
+        Mon, 31 Jul 2023 03:13:36 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99bfcf4c814so339718566b.0;
+        Mon, 31 Jul 2023 03:13:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690798415; x=1691403215;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MCE5qRVpdCIKbrLA0MVnXkLR11xNVpzRW52JK1t8Hl4=;
+        b=i+oPgCtmwd/oNMe+7K4iY0i4ukVkOFpwCzUYTWtivNJri0aNDT9McTMxZeNRpeQGEP
+         SxKnJaAkJkqdFD9EnkffzwuA6e5fpYMo7dJXAoXpQYjuf8kBqnCJzr+eVHoigXh5a4up
+         ii8Po7DexJq7zLoKWCpFRdeqlUa2Emb4cf6Hn5qShE+J04K5GO2lRkU7IXf7YFy0Dy9t
+         QHnr/ywZEj3TKY4g/q9fsGTp3cyUgHlvkDz+TPrkx0rcLC/Hi2k65o5fb+QPLjIETbAa
+         u1CiDJkeNkt/tRalP4RanFARDRpMTBfKdbvbFFPVMADajEJ9wFxvPmu2htXtr8HdWRkq
+         dbiw==
+X-Gm-Message-State: ABy/qLbu8SrqQ5avvNp/jkXPFFA2QEZvhj63hhdcypwcyEZ0qF0yLNVk
+        fKjaPtdduizZtd0l3YTrj3Y=
+X-Google-Smtp-Source: APBJJlFARErXv7L48dVMZakbBdzXoKvqyy2gZ2NRTNuT/zjcchJMAEgti0oj85PtPUcuAzWQdnFtBA==
+X-Received: by 2002:a17:906:74c8:b0:992:9005:5ed5 with SMTP id z8-20020a17090674c800b0099290055ed5mr7480077ejl.32.1690798415227;
+        Mon, 31 Jul 2023 03:13:35 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id q26-20020a1709060e5a00b00992b50fbbe9sm5927789eji.90.2023.07.31.03.13.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 03:13:34 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 03:13:33 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, leit@meta.com, bpf@vger.kernel.org,
+        ast@kernel.org, martin.lau@linux.dev
+Subject: Re: [PATCH 2/4] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZMeJTRTEEcahEHLJ@gmail.com>
+References: <20230724142237.358769-1-leitao@debian.org>
+ <20230724142237.358769-3-leitao@debian.org>
+ <ZL61cIrQuo92Xzbu@google.com>
+ <ZL+VfRiJQqrrLe/9@gmail.com>
+ <ZMAAMKTaKSIKi1RW@google.com>
+ <ZMP07KtOeJ09ejAd@gmail.com>
+ <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKH8qBsm7JGnO+SF7PELT7Ua+5=RA8sAWdnD0UBiG3TYh0djHA@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,102 +71,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 07:40:14 +0000
-"Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
-
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Saturday, July 29, 2023 2:55 PM
-> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
-> > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>;
-> > robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> > conor+dt@kernel.org; linux-iio@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH] dt-bindings: iio: admv1014: make all regs required
-> > 
-> > [External]
-> > 
-> > On Thu, 27 Jul 2023 12:02:04 +0000
-> > "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
-> >   
-> > > > -----Original Message-----
-> > > > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > > > Sent: Thursday, July 27, 2023 2:47 PM
-> > > > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>; jic23@kernel.org;
-> > > > robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> > > > conor+dt@kernel.org; linux-iio@vger.kernel.org;
-> > > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > > Subject: Re: [PATCH] dt-bindings: iio: admv1014: make all regs required
+On Fri, Jul 28, 2023 at 11:07:10AM -0700, Stanislav Fomichev wrote:
+> On Fri, Jul 28, 2023 at 10:03 AM Breno Leitao <leitao@debian.org> wrote:
+> >
+> > Hello Stanislav,
+> >
+> > On Tue, Jul 25, 2023 at 10:02:40AM -0700, Stanislav Fomichev wrote:
+> > > On 07/25, Breno Leitao wrote:
+> > > > On Mon, Jul 24, 2023 at 10:31:28AM -0700, Stanislav Fomichev wrote:
+> > > > > On 07/24, Breno Leitao wrote:
+> > > > > > Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> > > > > > level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> > > > > > where a sockptr_t is either userspace or kernel space, and handled as
+> > > > > > such.
+> > > > > >
+> > > > > > Function io_uring_cmd_getsockopt() is inspired by __sys_getsockopt().
+> > > > >
+> > > > > We probably need to also have bpf bits in the new
+> > > > > io_uring_cmd_getsockopt?
 > > > >
-> > > > [External]
-> > > >
-> > > > On 27/07/2023 13:31, Antoniu Miclaus wrote:  
-> > > > > Since the regulators are required in the driver implementation, make
-> > > > > them required also in the bindings.  
-> > 
-> > This bit is probably not strictly true.  Try no providing them and you will
-> > probably find stub regulators created on assumption they are fixed regs
-> > that we aren't interested in controlling.
-> >   
-> > > > >  
-> > > >
-> > > > The true reason should be whether the hardware requires them.  
-> > Because if  
-> > > > hardware does not need some, the driver should be fixed.  
-> > > The datasheet is not very explicit on this topic, but all the specifications of  
-> > the  
-> > > part are built around these pins being supplied.
-> > > Moreover, the evaluation board or the part comes with all VCC pins  
-> > connected  
-> > > to fixed supplies.  
-> > 
-> > Agreed - these should be required in the binding.
-> >   
-> Hello Jonathan,
+> > > > It might be interesting to have the BPF hook for this function as
+> > > > well, but I would like to do it in a following patch, so, I can
+> > > > experiment with it better, if that is OK.
+> >
+> > I spent smoe time looking at the problem, and I understand we want to
+> > call something as BPF_CGROUP_RUN_PROG_{G,S}ETSOCKOPT() into
+> > io_uring_cmd_{g,s}etsockopt().
+> >
+> > Per the previous conversation with Williem,
+> > io_uring_cmd_{g,s}etsockopt() should use optval as a user pointer (void __user
+> > *optval), and optlen as a kernel integer (it comes as from the io_uring
+> > SQE), such as:
+> >
+> >         void __user *optval = u64_to_user_ptr(READ_ONCE(cmd->sqe->optval));
+> >         int optlen = READ_ONCE(cmd->sqe->optlen);
+> >
+> > Function BPF_CGROUP_RUN_PROG_GETSOCKOPT() calls
+> > __cgroup_bpf_run_filter_getsockopt() which expects userpointer for
+> > optlen and optval.
+> >
+> > At the same time BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN() expects kernel
+> > pointers for both optlen and optval.
+> >
+> > In this current patchset, it has user pointer for optval and kernel value
+> > for optlen. I.e., a third combination.  So, none of the functions would
+> > work properly, and we probably do not want to create another function.
+> >
+> > I am wondering if it is a good idea to move
+> > __cgroup_bpf_run_filter_getsockopt() to use sockptr_t, so, it will be
+> > able to adapt to any combination.
 > 
-> Not sure if I fully understand. Should I drop this patch? 
+> Yeah, I think it makes sense. However, note that the intent of that
+> optlen being a __user pointer is to possibly write some (updated)
+> value back into the userspace.
+> Presumably, you'll pass that updated optlen into some io_uring
+> completion queue? (maybe a stupid question, not super familiar with
+> io_uring)
 
-Patch is good.  The binding should state these are required - it doesn't
-mean that the driver will fail to probe on systems that doesn't provide
-them.  It does encourage any new DTS files to incorporate them which is
-good to have.
+On io_uring proposal, the optlen is part of the SQE for setsockopt().
+You give a  userpointer (optval) and set the optlen in the SQE->optlen.
 
-Only thing that needs changing is the patch should not justify the
-addition of these to the binding because they 'are required in the
-driver implementation'.  Just drop that statement and the patch is
-fine.
+For getsockopt(), the optlen is returned as a result of the operation,
+in the CQE->res.
 
+If you need more detail about it, I documented this behaviour in the
+cover-letter (PS1):
 
+https://lore.kernel.org/all/20230724142237.358769-1-leitao@debian.org/
 
-> And also drop the "required" of the regulators in the admv1013 patch?
-> https://patchwork.kernel.org/project/linux-iio/patch/20230727110121.93546-1-antoniu.miclaus@analog.com/
-
-As long as the patch doesn't say anything about what the driver does
-then it is fine.  Note DT bindings and patch descriptions for them should
-never mention the driver.
-
-Jonathan
-
-> 
-> Thanks,
-> > There was an old disagreement on this in which it they were not marked
-> > required in some bindings because the regulator subsystem would assume
-> > they
-> > were fixed supplies that were just missing in the DT and so provides stub
-> > regulators.
-> > My understanding at least has changed and now we mark the required even
-> > if
-> > the driver works fine on some boards without them being supplied.
-> > 
-> > Note though that this means the whole of trivial-devices.yaml is garbage
-> > as very few devices actually work without any power :)
-> > 
-> > Jonathan
-> > 
-> > 
-> >   
-> > > > Best regards,
-> > > > Krzysztof  
-> > >  
-> 
-
+Thanks for the feedback!
