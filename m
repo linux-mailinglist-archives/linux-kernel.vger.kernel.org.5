@@ -2,72 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E430A76A018
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E49C76A01B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjGaSNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        id S230372AbjGaSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjGaSM7 (ORCPT
+        with ESMTP id S230026AbjGaSNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:12:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B576CE4;
-        Mon, 31 Jul 2023 11:12:58 -0700 (PDT)
+        Mon, 31 Jul 2023 14:13:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57410173B;
+        Mon, 31 Jul 2023 11:13:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5216A61245;
-        Mon, 31 Jul 2023 18:12:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A07BAC433C7;
-        Mon, 31 Jul 2023 18:12:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87BB961253;
+        Mon, 31 Jul 2023 18:13:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B07AC433C7;
+        Mon, 31 Jul 2023 18:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690827177;
-        bh=+LoXBGC73LDdBqfU5YvRRgV4ri7WaMiK0YBWUkXbAio=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Q4NJvAYguFW6J0lMNQg+HqsEbIPbceiM+6wiK84nvGYZ8gp1+7tUrgeQ/KC1XBGp5
-         Xb0fILtfj+LtKm8nSAyqMHwZlUvFP5S754BUBWUY2zLPyRnSQOdpWR/NFlJ2OlQYdF
-         VAwD0/YJ+ifQMMtRae26U+5Yyl/mQOmaCjpPkyKCpExmxxB59NliLOMRqahd0iChkU
-         5S240BpNAoN69jym1T5P9fB0MpnHnOoMjOeth2//+u0uyTHWTeSPwq8othPVymimo+
-         iiFTsoX8OqypfLJrN8xSIFkNEpQCUWtVdYd+1iMfb6P8Vtsb071qGYJy41n0EXDoAC
-         2s3KOTsYpaI1w==
-Received: (nullmailer pid 3476368 invoked by uid 1000);
-        Mon, 31 Jul 2023 18:12:54 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1690827211;
+        bh=JgYLR2p0UTU8jfWLZC91aaSiGzPX/p54RufKdswTSfw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Fv0gjn6meUczIYDumYbwS4gGefpf9Vxw+E9d5BDfhrUMlnDUxyfn3EuMJETmy+vIE
+         D1Gy3YcjvM907jdwBmPLtCek+s/7z9wtABc8mjmRl3C168LhTD0HibCXA4nkKDZkXg
+         EJ6Sj+JbY2bpyjhR3MpNsc9pZt+vWvtqmxGUp2Zr39DAeWaEJCHekj+DZ2I8MOEOR8
+         EBEIOHgzPYW6tu2vdPXSONfD9julemh6ZdDie2H4wJLLsambTyqqyhbzIKiWqbrkdJ
+         8rFgrPCQ1oOn71KP6G8IzKbJQhWVmAbCRa5LrgosmibsZFLHUquk0kWVMyBBQj0GMb
+         m4L00Bx0bKgnA==
+Date:   Mon, 31 Jul 2023 11:13:30 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     hayeswang@realtek.com, edumazet@google.com,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        davem@davemloft.net, linux-usb@vger.kernel.org, pabeni@redhat.com,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: Error 'netif_napi_add_weight() called with weight 256'
+Message-ID: <20230731111330.5211e637@kernel.org>
+In-Reply-To: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
+References: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     David Dai <davidai@google.com>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Mel Gorman <mgorman@suse.de>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>, kernel-team@android.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        linux-pm@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-In-Reply-To: <20230731174613.4133167-2-davidai@google.com>
-References: <20230731174613.4133167-1-davidai@google.com>
- <20230731174613.4133167-2-davidai@google.com>
-Message-Id: <169082717438.3476261.13394216168233236806.robh@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: cpufreq: add bindings for virtual
- cpufreq
-Date:   Mon, 31 Jul 2023 12:12:54 -0600
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,77 +57,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 31 Jul 2023 10:46:08 -0700, David Dai wrote:
-> Adding bindings to represent a virtual cpufreq device.
+On Mon, 31 Jul 2023 11:02:40 -0500 Limonciello, Mario wrote:
+> Hi,
 > 
-> Virtual machines may expose MMIO regions for a virtual cpufreq device for
-> guests to read frequency information or to request frequency selection. The
-> virtual cpufreq device has an individual controller for each CPU.
+> I noticed today with 6.5-rc4 and also on 6.1.42 that I'm getting an 
+> error from an r8152 based dongle (Framework ethernet expansion card).
 > 
-> Co-developed-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: David Dai <davidai@google.com>
-> ---
->  .../bindings/cpufreq/cpufreq-virtual.yaml     | 89 +++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml
+> netif_napi_add_weight() called with weight 256
 > 
+> It seems that this message is likely introduced by
+> 8ded532cd1cbe ("r8152: switch to netif_napi_add_weight()")
+> 
+> which if the card has support_2500full set will program the value to 256:
+> 
+> 	netif_napi_add_weight(netdev, &tp->napi, r8152_poll,
+> 			      tp->support_2500full ? 256 : 64);
+> 
+> It's err level from
+> 82dc3c63c692b ("net: introduce NAPI_POLL_WEIGHT")
+> 
+> Why is this considered an error but the driver uses the bigger value?
+> Should it be downgraded to a warning?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/dist-packages/jsonschema/validators.py", line 909, in resolve_from_url
-    document = self.store[url]
-  File "/usr/local/lib/python3.10/dist-packages/jsonschema/_utils.py", line 28, in __getitem__
-    return self.store[self.normalize(uri)]
-KeyError: 'http://devicetree.org/meta-schemas/core.yamll'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/dist-packages/jsonschema/validators.py", line 912, in resolve_from_url
-    document = self.resolve_remote(url)
-  File "/usr/local/lib/python3.10/dist-packages/jsonschema/validators.py", line 1011, in resolve_remote
-    result = self.handlers[scheme](uri)
-  File "/usr/local/lib/python3.10/dist-packages/dtschema/schema.py", line 91, in http_handler
-    raise RefResolutionError('Error in referenced schema matching $id: ' + uri)
-jsonschema.exceptions.RefResolutionError: Error in referenced schema matching $id: http://devicetree.org/meta-schemas/core.yamll
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 64, in <module>
-    ret |= check_doc(f)
-  File "/usr/local/bin/dt-doc-validate", line 32, in check_doc
-    for error in sorted(dtsch.iter_errors(), key=lambda e: e.linecol):
-  File "/usr/local/lib/python3.10/dist-packages/dtschema/schema.py", line 130, in iter_errors
-    meta_schema = self.resolver.resolve_from_url(self['$schema'])
-  File "/usr/local/lib/python3.10/dist-packages/jsonschema/validators.py", line 914, in resolve_from_url
-    raise exceptions.RefResolutionError(exc)
-jsonschema.exceptions.RefResolutionError: Error in referenced schema matching $id: http://devicetree.org/meta-schemas/core.yamll
-Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.example.dts:69.19-72.13: Warning (unit_address_vs_reg): /example-0/soc/cpufreq: node has a reg or ranges property, but no unit name
-Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.example.dtb: /example-0/cpus/cpu@0: failed to match any schema with compatible: ['arm,arm-v8']
-Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.example.dtb: /example-0/cpus/cpu@1: failed to match any schema with compatible: ['arm,arm-v8']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731174613.4133167-2-davidai@google.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Could you double check that the warning wasn't there before? The code
+added by commit 195aae321c82 ("r8152: support new chips") in 5.13 looks
+very much equivalent.
+The custom weight is probably due to a misunderstanding. We have 200G
+adapters using the standard weight of 64, IDK why 2.5G adapter would
+need anything special.
