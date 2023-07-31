@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1757476996E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54190769971
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjGaOZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        id S230470AbjGaOZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjGaOZU (ORCPT
+        with ESMTP id S230107AbjGaOZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:25:20 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F68B6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:25:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 31 Jul 2023 10:25:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F7AB3;
+        Mon, 31 Jul 2023 07:25:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DAFA62219B;
-        Mon, 31 Jul 2023 14:25:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690813517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LCbDFSxjpHTs+cbk9I/Ykb/mloJrU9IYWAAZqh7E04o=;
-        b=GXZni3DWsCW1cxREtS+Sy21DRRGDhnjuLY7Xg9iTLSyNYi5cG9Kn98DUtU6dTgPIH+Z1kp
-        RD5bDwM5dKcctKrdAd5hInG/0XxTANzngCLQ9ciclFYg8OZ3VtTBnUIz2/gBv4UWp0tp8K
-        rTu7O5cnRZAWSGOguZBMKO/GGa8haT4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B77221322C;
-        Mon, 31 Jul 2023 14:25:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sArQKU3Ex2TcVQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 31 Jul 2023 14:25:17 +0000
-Date:   Mon, 31 Jul 2023 16:25:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v2 1/2] seqlock: Do the lockdep annotation before locking
- in do_write_seqcount_begin_nested()
-Message-ID: <ZMfETPzGfpPP7F79@dhcp22.suse.cz>
-References: <20230623171232.892937-1-bigeasy@linutronix.de>
- <20230623171232.892937-2-bigeasy@linutronix.de>
- <d9b7c170-ed0d-5d37-e099-20d233115943@I-love.SAKURA.ne.jp>
- <20230626081254.XmorFrhs@linutronix.de>
- <ZJmkPuqpW-wQAyNz@alley>
- <a1c559b7-335e-5401-d167-301c5b1cd312@I-love.SAKURA.ne.jp>
- <20230727151029.e_M9bi8N@linutronix.de>
- <b6ba16ce-4849-d32c-68fe-07a15aaf9d9c@I-love.SAKURA.ne.jp>
- <649fa1a7-4efd-8cc7-92c7-ac7944adc283@I-love.SAKURA.ne.jp>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4239461184;
+        Mon, 31 Jul 2023 14:25:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6875C433C8;
+        Mon, 31 Jul 2023 14:25:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690813526;
+        bh=qCfflXFGYhn43P6n1KQI8WSYPLhbVuUpK+kcLC8wKz0=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=WWS3ykmV+4XOl3dMwArWTJnZV2Hf1rfM17pDDR+aP+bS2eCzG+2SKCEEA+gnbNPPX
+         gVfeFbwcsIAI6RKKiEcQcIVZczpczv7+J0Z530pyi7N8Z+MkTKL4Xu+79wDnBOPngZ
+         kMk0me1dNdxI7c7RUE8/XfkPX/Ycer/EFr5LTPefpHjF593ESy6PW/bEPNtUt7KTdb
+         92LP9ZEYJje0geskmjgzUlyCPMrHLs0G4L298UKu4iQW7sXfEov7rYjxuQ1mt9tLVQ
+         5MialwJ6ogiiTTJq4d7pxPYk2K7ScjPSXwTexZMrvCbwZzf/KpLeSYE+OHVqWYRQFG
+         TMG24gi9TnYqw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Wang Ming <machel@vivo.com>
+Cc:     opensource.kernel@vivo.com
+In-Reply-To: <20230726105457.3743-1-machel@vivo.com>
+References: <20230726105457.3743-1-machel@vivo.com>
+Subject: Re: [PATCH v2] spi: Use dev_err_probe instead of dev_err
+Message-Id: <169081352446.53208.1309498212353397667.b4-ty@kernel.org>
+Date:   Mon, 31 Jul 2023 15:25:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <649fa1a7-4efd-8cc7-92c7-ac7944adc283@I-love.SAKURA.ne.jp>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,33 +62,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 29-07-23 20:05:43, Tetsuo Handa wrote:
-> On 2023/07/29 14:31, Tetsuo Handa wrote:
-> > On 2023/07/28 0:10, Sebastian Andrzej Siewior wrote:
-> >> On 2023-06-28 21:14:16 [+0900], Tetsuo Handa wrote:
-> >>>> Anyway, please do not do this change only because of printk().
-> >>>> IMHO, the current ordering is more logical and the printk() problem
-> >>>> should be solved another way.
-> >>>
-> >>> Then, since [PATCH 1/2] cannot be applied, [PATCH 2/2] is automatically
-> >>> rejected.
-> >>
-> >> My understanding is that this patch gets applied and your objection will
-> >> be noted.
-> > 
-> > My preference is that zonelist_update_seq is not checked by !__GFP_DIRECT_RECLAIM
-> > allocations, which is a low-hanging fruit towards GFP_LOCKLESS mentioned at
-> > https://lkml.kernel.org/r/ZG3+l4qcCWTPtSMD@dhcp22.suse.cz and
-> > https://lkml.kernel.org/r/ZJWWpGZMJIADQvRS@dhcp22.suse.cz .
-> > 
-> > Maybe we can defer checking zonelist_update_seq till retry check like below,
-> > for this is really an infrequent event.
-> > 
+On Wed, 26 Jul 2023 18:54:47 +0800, Wang Ming wrote:
+> It is possible that dma_request_chan will return EPROBE_DEFER,
+> which means that dev is not ready yet. In this case,
+> dev_err(dev), there will be no output. This patch fixes the bug.
 > 
-> An updated version with comments added.
+> 
 
-Seriously, don't you see how hairy all this is? And for what? Nitpicking
-something that doesn't seem to be a real problem in the first place?
--- 
-Michal Hocko
-SUSE Labs
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: Use dev_err_probe instead of dev_err
+      commit: 893aa09ee5959533d8e51e06b1bde35286edaf70
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
