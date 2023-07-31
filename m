@@ -2,179 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DEC769ADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10696769ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbjGaPct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S229942AbjGaPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjGaPcr (ORCPT
+        with ESMTP id S231816AbjGaPc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:32:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649DCBF;
-        Mon, 31 Jul 2023 08:32:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 31 Jul 2023 11:32:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CA8130;
+        Mon, 31 Jul 2023 08:32:52 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0257B611A0;
-        Mon, 31 Jul 2023 15:32:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D35A5C433C8;
-        Mon, 31 Jul 2023 15:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690817565;
-        bh=W0IpSFwS67t8wZMVaiBzUL8aZ4W06IfVmvreY4qbGLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T2K5ueSBGnVMsidOJRqwrd4MjEmjg+Hw3FDDf740xrfNrJZEP43f/YESO5YpUSVrp
-         ACOsDnY958gSrkfOzCOgVClGrmL3A4f/hHSKx09Ys/ySrp9DJfhgOC4Tw/+7EruT91
-         lEXwNmjptQx0YV8SvmJFwKjFDmWy2P/+rzBxS75CVoJVb3niIIfWe+m2wMrVzSwkVE
-         3bJyGkXW1wj/t0lbCZ4sHlIXg4wS+DXHLhXCLZX/0apuvdbe05xZcMbLvRju9w2ADt
-         23PNQZ3UgyXI/tcWHZs/pyc3eRqRAohZaqYBkl4E23N49vcUJDPHsu6uxQyirqekTt
-         4OcN/oZWxia/w==
-Date:   Mon, 31 Jul 2023 16:32:40 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: add rk3588 compatible to
- rockchip,dwc3
-Message-ID: <20230731-decipher-smuggler-2f83caa8c616@spud>
-References: <20230720173643.69553-1-sebastian.reichel@collabora.com>
- <20230720173643.69553-2-sebastian.reichel@collabora.com>
- <20230722-coleslaw-breeder-40827e23f717@spud>
- <20230731151224.2vlk7bnabrqhz3pr@mercury.elektranox.org>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 779EC21D89;
+        Mon, 31 Jul 2023 15:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690817570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2FbcQ8yFfgUJFefrrMdKUgNR2DCiMc4lJKw7kMkuHo4=;
+        b=Fl7kPpTgfDgeXnVU4h+yHv3cdMKZ+UYT+MOJsEh4DUAqhp/Z/CiniBVHmsInWPlwSz4kEy
+        Uty6+dq+diketKgqXLVRdnNJagHMM/treIQEx0PqDXYozZDnuuaICoS01bo+3gP7Bx0Q4S
+        MXOz/bQ0DTbVVTP2Wmrcyb3UHpl8VvA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690817570;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2FbcQ8yFfgUJFefrrMdKUgNR2DCiMc4lJKw7kMkuHo4=;
+        b=VzaWJ7/r9SZgvsJK4+5Iyk0RYRjJvV9fSQ/HRKfC4U3THia5co5KjbpIvj+/ZWiPy+tCq9
+        mY+FEvkQJBW8+ACA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02513133F7;
+        Mon, 31 Jul 2023 15:32:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id y2kIOiHUx2RgeAAAMHmgww
+        (envelope-from <svarbanov@suse.de>); Mon, 31 Jul 2023 15:32:49 +0000
+Message-ID: <088fcc47-e5a3-c1a4-88cf-8f3c2bfdd130@suse.de>
+Date:   Mon, 31 Jul 2023 18:32:49 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZiAI6f3sKG+VEhr4"
-Content-Disposition: inline
-In-Reply-To: <20230731151224.2vlk7bnabrqhz3pr@mercury.elektranox.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC PATCH] iommu: arm-smmu-nvidia: Add default domain type
+ implementation op
+Content-Language: en-US
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Stanimir Varbanov <svarbanov@suse.de>, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Krishna Reddy <vdumpa@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20230710082252.9702-1-svarbanov@suse.de> <ZKvgG4-IzqiYPSUT@orome>
+ <93026b47-3b72-8439-486e-e0cda21dd0fe@suse.com> <ZK17X4ueSI5rWKVL@orome>
+From:   Stanimir Varbanov <svarbanov@suse.de>
+In-Reply-To: <ZK17X4ueSI5rWKVL@orome>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thierry,
 
---ZiAI6f3sKG+VEhr4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/11/23 18:55, Thierry Reding wrote:
+> On Tue, Jul 11, 2023 at 01:58:34PM +0300, Stanimir Varbanov wrote:
+>> Hi Thierry,
+>>
+>> Thank you for the comments!
+>>
+>> On 7/10/23 13:40, Thierry Reding wrote:
+>>> On Mon, Jul 10, 2023 at 11:22:52AM +0300, Stanimir Varbanov wrote:
+>>>> Add def_domain_type implementation op and override default IOMMU
+>>>> domain Kconfig option (CONFIG_IOMMU_DEFAULT_PASSTHROUGH=y), which
+>>>> could be enabled on some distros. The current quirk has been done
+>>>> for Tegra234 machine, because I found the issue on it. The issue
+>>>> itself appears on USB host controller which cannot be initialized
+>>>> without IOMMU translation. Something more, we proved that IOMMU
+>>>> translation is needed for display and GPU drivers as well.
+>>>>
+>>>> I evaluated few possible options to solve that:
+>>>>
+>>>>  a) select default IOMMU domain from .def_domain_type op
+>>>>  b) Unset CONFIG_IOMMU_DEFAULT_PASSTHROUGH=n
+>>>>  c) add iommu.passthrough=0 on the kernel cmdline
+>>>>  d) firmware - ACPI / DT
+>>>>
+>>>> a) This option is implemented in the proposed patch.
+>>>>
+>>>> b) Since that the community has agreed that pass-through is preferred
+>>>> as a default IOMMU domain option because this will avoid performance
+>>>> impacts on some of the platforms [1]. On the other side we have examples
+>>>> where you cannot even install Linux distribution on a machine where the
+>>>> storage media cannot be detected and the system just hangs.
+>>>
+>>> That's not how I read that thread. It sounds more to me like Will and
+>>> Robin had ideas on how to improve the performance and were planning to
+>>> address these issues. It doesn't exactly sound to me like there was
+>>> concensus to make passthrough the default.
+>>>
+>>> Having said that, given that it's possible for distributions and users
+>>> to set CONFIG_IOMMU_DEFAULT_PASSTHROUGH=y, I think it would be useful in
+>>> general to have a way of enforcing IOMMU translations if it's needed by
+>>> the hardware.
+>>
+>> Exactly, the problem is that some platforms prefer passthrough to avoid
+>> performance impacts but others cannot even boot the kernel (and thus
+>> installation failure). Passing iommu.passthrough=0 should be an
+>> administrator decision, balancing between security and performance.
+>>
+>> On the other hand the aforementioned mail thread gave some performance
+>> numbers which might be are outdated having the improvements made in smmu
+>> driver in mind. Unfortunately, I cannot confirm that the performance has
+>> been improved during that time.
+>>
+>>>
+>>> I'm not sure I fully understand the particular problems that you're
+>>> seeing on Tegra234, though. I'm not aware of anything in the USB host
+>>> controller driver (or hardware, for that matter) that would require the
+>>> IOMMU to be enabled. The only peculiarity that I can think of is the
+>>> firmware, which is typically loaded by an early bootloader and therefore
+>>> might perhaps need the IOMMU to properly map this in the kernel.
+>>> However, my understanding is that this firmware is loaded into special
+>>> carveout regions which don't require remapping.
+>>
+>> On Jetson Orin AGX (R35.2.1) I see these errors:
+>>
+>> tegra-mc 2c00000.memory-controller: unknown: write @0x0000000000000080:
+>> EMEM address decode error (EMEM decode error)
+>>
+>> tegra-xusb 3610000.usb: Error while assigning device slot ID
+>> tegra-xusb 3610000.usb: Max number of devices this xHCI host supports is 36.
+>> usb usb2-port3: couldn't allocate usb_device
+>> tegra-mc 2c00000.memory-controller: unknown: write @0x0000000000000090:
+>> EMEM address decode error (EMEM decode error)
+>> tegra-xusb 3610000.usb: Error while assigning device slot ID
+>> tegra-xusb 3610000.usb: Max number of devices this xHCI host supports is 36.
+>> usb usb1-port3: couldn't allocate usb_device
+>>
+>> tegra-mc 2c00000.memory-controller: unknown: write @0x00000000000000a0:
+>> EMEM address decode error (EMEM decode error)
+>> tegra-xusb 3610000.usb: Error while assigning device slot ID
+>> tegra-xusb 3610000.usb: Max number of devices this xHCI host supports is 36.
+>> usb usb1-port4: couldn't allocate usb_device
+>>
+>>>
+>>> However, passthrough is admittedly not something that we've thoroughly
+>>> tested, so it's possible you're running into a use-case that I'm not
+>>> aware of. In that case, could you provide a few more specifics (such as
+>>> the DTB and .config) of your build configuration so that I can try and
+>>> reproduce?
+>>
+>> To reproduce you have to add iommu.passthrough=1 on kernel cmdline. The
+>> dtb is from Jetpack.
+> 
+> I was able to reproduce this on Jetson Orin NX (the differences to AGX
+> Orin should be negligible in this context), though I ended up patching
+> the DTB to disable all SMMUs. What fixed it for me was to drop the
+> dma-coherent property from the usb@3610000 node. Can you try that on
+> your end to see if that works for you as well?
+> 
 
-On Mon, Jul 31, 2023 at 05:12:24PM +0200, Sebastian Reichel wrote:
-> Hi,
->=20
-> On Sat, Jul 22, 2023 at 12:42:09PM +0100, Conor Dooley wrote:
-> > On Thu, Jul 20, 2023 at 07:36:41PM +0200, Sebastian Reichel wrote:
-> > > RK3588 has three DWC3 controllers. Two of them are fully functional in
-> > > host, device and OTG mode including USB2 support. They are connected =
-to
-> > > dedicated PHYs, that also support USB-C's DisplayPort alternate mode.
-> > >=20
-> > > The third controller is connected to one of the combphy's shared
-> > > with PCIe and SATA. It can only be used in host mode and does not
-> > > support USB2. Compared to the other controllers this one needs
-> > > some extra clocks.
-> > >=20
-> > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> >=20
-> > I feel like I say it a bunch for some of these Rockchip bindings
-> > patches, but if you're adding more clocks for some SoCs, should some
-> > per-SoC constraints not also be added?
->=20
-> The extra clocks are not actually needed by all the USB3 controllers
-> in the SoC. Only one of three USB3 controllers needs them. In v1 I
-> used different compatible values to narrow the clock binding down
-> and Krzysztof asked to remove that. So please tell me what it should
-> look like.
+I can confirm that deleting dma-coherent property from usb@3610000 DT
+node fixes the issue with USB host controller for me.
 
-Maybe Krzysztof and I were talking about different things. I was talking
-about constraining !3588 SoCs so that nobody tries to use a utmi and
-pipe clock on those, and only allowing them on a 3588. AFAICT, what
-Krzysztof objected to was having more than one compatible for
-controllers on the 3588. Maybe he weigh in.
-
-Thanks,
-Conor.
-
-> > > ---
-> > >  .../devicetree/bindings/usb/rockchip,dwc3.yaml        | 11 +++++++++=
---
-> > >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml=
- b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> > > index 291844c8f3e1..cbc3e55e05e1 100644
-> > > --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> > > +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
-> > > @@ -30,6 +30,7 @@ select:
-> > >          enum:
-> > >            - rockchip,rk3328-dwc3
-> > >            - rockchip,rk3568-dwc3
-> > > +          - rockchip,rk3588-dwc3
-> > >    required:
-> > >      - compatible
-> > > =20
-> > > @@ -39,6 +40,7 @@ properties:
-> > >        - enum:
-> > >            - rockchip,rk3328-dwc3
-> > >            - rockchip,rk3568-dwc3
-> > > +          - rockchip,rk3588-dwc3
-> > >        - const: snps,dwc3
-> > > =20
-> > >    reg:
-> > > @@ -58,7 +60,9 @@ properties:
-> > >            Master/Core clock, must to be >=3D 62.5 MHz for SS
-> > >            operation and >=3D 30MHz for HS operation
-> > >        - description:
-> > > -          Controller grf clock
-> > > +          Controller grf clock OR UTMI clock
-> > > +      - description:
-> > > +          PIPE clock
-> > > =20
-> > >    clock-names:
-> > >      minItems: 3
-> > > @@ -66,7 +70,10 @@ properties:
-> > >        - const: ref_clk
-> > >        - const: suspend_clk
-> > >        - const: bus_clk
-> > > -      - const: grf_clk
-> > > +      - enum:
-> > > +          - grf_clk
-> > > +          - utmi
-> > > +      - const: pipe
-> > > =20
-> > >    power-domains:
-> > >      maxItems: 1
-> > > --=20
-> > > 2.40.1
-> > >=20
->=20
->=20
-
-
-
---ZiAI6f3sKG+VEhr4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMfUGAAKCRB4tDGHoIJi
-0gYdAQCtVymT2J92udmYoQAUhL5iDXjhAv7jPmdRlPyKGj/qHgEA/fz2olBaKF0u
-BkCLMkL5P1piybZ1GpYuKH/Qjf9ugg8=
-=3JZ5
------END PGP SIGNATURE-----
-
---ZiAI6f3sKG+VEhr4--
+~Stan
