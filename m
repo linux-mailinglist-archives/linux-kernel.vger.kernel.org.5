@@ -2,125 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D4A769702
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10683769703
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbjGaNBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S232597AbjGaNCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjGaNBs (ORCPT
+        with ESMTP id S232930AbjGaNCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:01:48 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DB91710
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:35 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso5986685a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690808493; x=1691413293;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1gHj3euc6IvaK2yxym4XFdLcoLwgJrcjksU1YEUljLA=;
-        b=fC80ReJK3iWMlaL+BbSA0nCiL93bEX6P7tRt7ANtyVDgcScDhV+o3sOQoy97CaO4Fc
-         tEL/xlWU0W0zhd1/GwwwfMA5AWJ1HFiLG1ILv44KuhGNkLxL0geNm6hFfep1aInXufV3
-         138c9aHzw6SZ4hEp3lRsfcdYOL1ek71Xh1vgWdZSFwfyn0IjCYRHNVDg1TowaF4vxIby
-         lShV/V8NVkLgnHdR1yV9dY0AReAgr7d/ExE/Mr8OFKXkLr/B0HczfGsEHpyXE4iTVlf+
-         1y3p4DoYLUKZ74N85qMABPpsvNuABVHgZsj006Rx4ELfASa3hz7++2+jlUYJAlliXf/l
-         mTuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690808493; x=1691413293;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1gHj3euc6IvaK2yxym4XFdLcoLwgJrcjksU1YEUljLA=;
-        b=h9OThlOJeq+m7WbyD22hRb8+eMbOv0BQVmZe3hRImvUEOVXmsQD1RdFfNBvuv/uEWJ
-         xaTYdmROv6X0DAI8vuV3WnMIY3+FNoeUbWH15WRXQLbDBG9F4ZpueTk+e2rnfUadGQBV
-         4bgpCBx5+IyYKTiPzYQYIIKn0X6RUg5cqbGk31LG5wgxdK6+jw1BZpK1Rj7+ue4HlGFp
-         3anDzpFf1nf9WYlksE9vgVlUP0KLdRDGC2UtbUUw5GOCTm9CHrBoC3F7csNppXMs+L6O
-         l2zWRok3nq4FGJGf1PbW5C8jnlk6O/OLAEUcrjYXKjIC+M6dXnxxjE8w5Tg4kOuoej9a
-         F+gg==
-X-Gm-Message-State: ABy/qLbE/0VgOih1Q3bC7jV+nL983+vvTBW05DvRJu8kdHpC0gVQcQeH
-        rA5Kutx/xIlIH1TmU27A8UQPFA==
-X-Google-Smtp-Source: APBJJlE+ddWgOsEvgPYwNxVC0LAn5r9swW2mMYAuK5RtUFhMlMdwzlsTYxQuUFXrZJsb+tcQd4wSZA==
-X-Received: by 2002:a17:906:3011:b0:99c:20f0:deaf with SMTP id 17-20020a170906301100b0099c20f0deafmr815244ejz.77.1690808493404;
-        Mon, 31 Jul 2023 06:01:33 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id z7-20020a170906074700b0099293cdbc98sm6207575ejb.145.2023.07.31.06.01.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 06:01:32 -0700 (PDT)
-Message-ID: <75cbeeed-84c9-7637-b2a7-b37d87f5872e@linaro.org>
-Date:   Mon, 31 Jul 2023 15:01:31 +0200
+        Mon, 31 Jul 2023 09:02:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCD31992;
+        Mon, 31 Jul 2023 06:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690808525; x=1722344525;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=MmC9xGoejms+ISOBYAaX9CSOU1cYHJNvJ9GhMdQWQUs=;
+  b=eLbqx/ZiveI5aSG9R0zK8zXJec0gWOITCAOB7QDSItVAVKpAS9jVgJpH
+   4Da4mlSLrvp6laBWYrTO1UJYimLC2vOlL5ir7IgUCAhiyW7hVKJ7zwq/F
+   xzM9n1X8dkWScwugGJ65PLaI/PZDjQ/4ux5TvteIGTncExB1tf85jJbi4
+   rp3NYYAawY6/vcUTgzVqflJHhl1201J2WlOc49k74Ytbtgo9kYmrcM089
+   vKqG7u4n6amfT1McG1P9DV18vCArosKjkK5YDb6y+Pgv9G2Yh/gL0j3SG
+   pOAF4GoZ7+mfo6APhDHZtNqB/Fubzg7i5DDQJ7hn7LlpDqqYb4Av5uG6c
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="349313820"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="349313820"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:02:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852023939"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="852023939"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.208.223])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:01:59 -0700
+Message-ID: <25b32870-12e1-b237-648a-3c6fd9678bb9@intel.com>
+Date:   Mon, 31 Jul 2023 16:01:54 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 2/2] dt-bindings: clock: intel,cgu-lgm: add
- mxl,control-gate option
+ Firefox/102.0 Thunderbird/102.13.1
+Subject: Re: [PATCH v3 4/7] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
 Content-Language: en-US
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, yzhu@maxlinear.com,
-        rtanwar@maxlinear.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Eckert.Florian@googlemail.com
-References: <20230731100349.184553-1-fe@dev.tdt.de>
- <20230731100349.184553-3-fe@dev.tdt.de>
- <780aa090-3a97-abab-271f-59790df29cc4@linaro.org>
- <11386dd27487075a9a0b1a2aa7794951@dev.tdt.de>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <11386dd27487075a9a0b1a2aa7794951@dev.tdt.de>
+To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20230722093219.174898-1-yangjihong1@huawei.com>
+ <20230722093219.174898-5-yangjihong1@huawei.com>
+ <4ec5cf9e-130d-4259-420f-420508186858@intel.com>
+ <095df85c-e44e-9ff0-ad28-c3473a9a01e4@huawei.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <095df85c-e44e-9ff0-ad28-c3473a9a01e4@huawei.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 14:59, Florian Eckert wrote:
-> Thanks for your reply,
+On 31/07/23 15:38, Yang Jihong wrote:
+> Hello,
 > 
->> You described the desired Linux feature or behavior, not the actual
->> hardware. The bindings are about the latter, so instead you need to
->> rephrase the property and its description to match actual hardware
->> capabilities/features/configuration etc.
+> On 2023/7/31 19:08, Adrian Hunter wrote:
+>> On 22/07/23 12:32, Yang Jihong wrote:
+>>> User space tasks can migrate between CPUs, we need to track side-band
+>>> events for all CPUs.
+>>>
+>>> The specific scenarios are as follows:
+>>>
+>>>           CPU0                                 CPU1
+>>>    perf record -C 0 start
+>>>                                taskA starts to be created and executed
+>>>                                  -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+>>>                                     events only deliver to CPU1
+>>>                                ......
+>>>                                  |
+>>>                            migrate to CPU0
+>>>                                  |
+>>>    Running on CPU0    <----------/
+>>>    ...
+>>>
+>>>    perf record -C 0 stop
+>>>
+>>> Now perf samples the PC of taskA. However, perf does not record the
+>>> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
+>>> Therefore, the comm and symbols of taskA cannot be parsed.
+>>>
+>>> The solution is to record sideband events for all CPUs when tracing
+>>> selected CPUs. Because this modifies the default behavior, add related
+>>> comments to the perf record man page.
+>>>
+>>> The sys_perf_event_open invoked is as follows:
+>>>
+>>>    # perf --debug verbose=3 record -e cpu-clock -C 1 true
+>>>    <SNIP>
+>>>    Opening: cpu-clock
+>>>    ------------------------------------------------------------
+>>>    perf_event_attr:
+>>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>>      size                             136
+>>>      config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+>>>      { sample_period, sample_freq }   4000
+>>>      sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+>>>      read_format                      ID|LOST
+>>>      disabled                         1
+>>>      inherit                          1
+>>>      freq                             1
+>>>      sample_id_all                    1
+>>>      exclude_guest                    1
+>>>    ------------------------------------------------------------
+>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+>>>    Opening: dummy:u
+>>>    ------------------------------------------------------------
+>>>    perf_event_attr:
+>>>      type                             1 (PERF_TYPE_SOFTWARE)
+>>>      size                             136
+>>>      config                           0x9 (PERF_COUNT_SW_DUMMY)
+>>>      { sample_period, sample_freq }   1
+>>>      sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+>>>      read_format                      ID|LOST
+>>>      inherit                          1
+>>>      exclude_kernel                   1
+>>>      exclude_hv                       1
+>>>      mmap                             1
+>>>      comm                             1
+>>>      task                             1
+>>>      sample_id_all                    1
+>>>      exclude_guest                    1
+>>>      mmap2                            1
+>>>      comm_exec                        1
+>>>      ksymbol                          1
+>>>      bpf_event                        1
+>>>    ------------------------------------------------------------
+>>>    sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+>>>    sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+>>>    sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+>>>    sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+>>>    sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+>>>    sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+>>>    sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+>>>    sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+>>>    <SNIP>
+>>>
+>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>>> ---
+>>>   tools/perf/Documentation/perf-record.txt |  3 +++
+>>>   tools/perf/builtin-record.c              | 14 +++++++++++++-
+>>>   2 files changed, 16 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>>> index 680396c56bd1..dac53ece51ab 100644
+>>> --- a/tools/perf/Documentation/perf-record.txt
+>>> +++ b/tools/perf/Documentation/perf-record.txt
+>>> @@ -388,6 +388,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
+>>>   In per-thread mode with inheritance mode on (default), samples are captured only when
+>>>   the thread executes on the designated CPUs. Default is to monitor all CPUs.
+>>>   +User space tasks can migrate between CPUs, so when tracing selected CPUs,
+>>> +a dummy event is created to track sideband for all CPUs.
+>>> +
+>>>   -B::
+>>>   --no-buildid::
+>>>   Do not save the build ids of binaries in the perf.data files. This skips
+>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>>> index 3ff9d972225e..4e8e97928f05 100644
+>>> --- a/tools/perf/builtin-record.c
+>>> +++ b/tools/perf/builtin-record.c
+>>> @@ -912,6 +912,7 @@ static int record__config_tracking_events(struct record *rec)
+>>>   {
+>>>       struct record_opts *opts = &rec->opts;
+>>>       struct evlist *evlist = rec->evlist;
+>>> +    bool system_wide = false;
+>>>       struct evsel *evsel;
+>>>         /*
+>>> @@ -921,7 +922,18 @@ static int record__config_tracking_events(struct record *rec)
+>>>        */
+>>>       if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
+>>>           perf_pmus__num_core_pmus() > 1) {
+>>> -        evsel = evlist__findnew_tracking_event(evlist, false);
+>>> +
+>>> +        /*
+>>> +         * User space tasks can migrate between CPUs, so when tracing
+>>> +         * selected CPUs, sideband for all CPUs is still needed.
+>>> +         *
+>>> +         * If all (non-dummy) evsel have exclude_user,
+>>> +         * system_wide is not needed.
+>>> +         */
+>>> +        if (!!opts->target.cpu_list && !opts->all_kernel)
+>>
+>> Not everyone uses all-kernel.  Can we check the evsels are either dummy
+>> or exclude_user?
+> For perf_record, exclude_user of all evsels is set in evsel__config(), and record__config_tracking_events() is before evsel__config().
 > 
-> You have correctly identified that this is not a hardware configuration,
-> but a driver configuration. Currently, the driver is configured so that
-> the gates cannot be switched via the clk subsystem callbacks. When
-> registering the data structures from the driver, I have to pass a flag
-> GATE_CLK_HW so that the gate is managed by the driver.
+> Uh..., it seems that only opts->all_kernel can be used to check exclude_user of evsels.
 > 
-> I didn't want to always change the source of the driver when it has to 
-> take
-> care of the GATE, so I wanted to map this via the dts.
-> 
-> I have a board support package from Maxlinear for the Lightning Mountain 
-> Soc
-> with other drivers that are not upstream now. Some of them use the
-> clock framework some of them does not.
-> 
-> Due to missing documents it is not possible to send these drivers 
-> upstream.
+> void evsel__config()
+> {
+>   ...
+>   if (opts->all_kernel) {
+>     attr->exclude_kernel = 0;
+>     attr->exclude_user   = 1;
+>   }
+>   ...
+> }
 
-So when you upstream them, the binding becomes wrong or not needed?
-Sorry, bindings are entirely independent of OS, so using this as an
-argument is clear no-go.
+The parser updates attr in accordance with ":k" etc.  I guess 
+opts->all_kernel or opts->all_user override that as well.
 
-> Strictly speaking, this is about the gptc and the watchdog.
-> 
-> Since it is a buildin_platform driver, it can also not work via
-> module parameters.
 
-None of this explains any hardware related part of this binding. You
-created now policy for one specific OS. Devicetree, which is OS
-independent, is not for such purposes.
-
-Best regards,
-Krzysztof
 
