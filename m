@@ -2,100 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81ACE76A45A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F90376A45D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbjGaWtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
+        id S230169AbjGaWuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbjGaWtv (ORCPT
+        with ESMTP id S230021AbjGaWuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:49:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A8E1BCC
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ahdjnU/aZEg8hQeqIwNWmpju2UZuGxXlSNy7n0A7aSc=; b=cpSiKELBZ5h3LCVZdnTVpaRM0n
-        /ae9paxwqpOr0ptZRDqtA067osyVwL3FQSi9FlMCyykqOZBm0syCGzsqSYg3R+EP0fDdt957aC2gS
-        F8CjcHIpLt+lpSzmFyS/FjSfor+Cba6xoOTeqPfeq29paZs5YJP6X3KyJw9Rc23lAmkprDdnZlpzi
-        w35NPFZwU6L/tfZ2f7WUxYO3xbcfpd99HRHtY+nC2AZeVcIFU8r7of31p7fnfAijpmEiB0YULuUAt
-        S8l/BpVRV8lj47x5JJmSTIJIfsIEvJZeV5KSpUDon6QZGBc4k+z1fZuciDtTEsn0YwxBuEiMtzbll
-        gtFblefw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQbhn-00D8le-2g;
-        Mon, 31 Jul 2023 22:49:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22E43300134;
-        Tue,  1 Aug 2023 00:49:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EE138200C570F; Tue,  1 Aug 2023 00:49:34 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 00:49:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v6 2/2] Sched/fair: Block nohz tick_stop when cfs
- bandwidth in use
-Message-ID: <20230731224934.GD51835@hirez.programming.kicks-ass.net>
-References: <20230712133357.381137-1-pauld@redhat.com>
- <20230712133357.381137-3-pauld@redhat.com>
+        Mon, 31 Jul 2023 18:50:18 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBAC1BD9;
+        Mon, 31 Jul 2023 15:50:08 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RFD313l6jzCY;
+        Tue,  1 Aug 2023 00:50:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1690843805; bh=0tPOp+JS5ixYfQHrHF0O6mJvd9r7PaF0dMi6lLuDr9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BDK7Ld3dgMmPUsyXfLAEJHARvKa6QywWLiAMVNRmjE1JQmKHTa+eu4ZBa8Kav5DtK
+         PS1ZB4wmwnAg1H3KcLhD/sV4g5/+p+xmtMzlRyXEKRc2WcZTn1MdbWiPM41l15zEqO
+         umVDhKyd0AApiCw8JujYem19aM31ROvCw4s1AemV0/N68LdEpS3MzkImLI9fVLIGwK
+         cgZEi/qI/D9XomueW1b4wGiRLXyLWU8OdvtUHh81jTyI4O6aqU3OzQcPOciHyP/+YJ
+         ilXlfw7DX5lUIcUXAjlp3gHSTtA10UqkUvibgmg/fHtUnzheYJSgqeXIgQVA1hOTh5
+         7Lb2WILHGddPA==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Tue, 1 Aug 2023 00:50:03 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+Message-ID: <ZMg6m+Dru6rxCRqU@qmqm.qmqm.pl>
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-3-clamor95@gmail.com>
+ <25858c22-ef92-2136-67ef-0d27364c1600@linaro.org>
+ <ZMbcb0yuTz6l6BYh@qmqm.qmqm.pl>
+ <b9183dfc-8e8a-9602-f31c-5de9e27acb88@linaro.org>
+ <ZMd1qI7RjQhpI8zO@qmqm.qmqm.pl>
+ <fdc513a3-c0e0-c57d-5c9a-8da6fa2f54e2@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-In-Reply-To: <20230712133357.381137-3-pauld@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fdc513a3-c0e0-c57d-5c9a-8da6fa2f54e2@linaro.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 09:33:57AM -0400, Phil Auld wrote:
-> CFS bandwidth limits and NOHZ full don't play well together.  Tasks
-> can easily run well past their quotas before a remote tick does
-> accounting.  This leads to long, multi-period stalls before such
-> tasks can run again. Currently, when presented with these conflicting
-> requirements the scheduler is favoring nohz_full and letting the tick
-> be stopped. However, nohz tick stopping is already best-effort, there
-> are a number of conditions that can prevent it, whereas cfs runtime
-> bandwidth is expected to be enforced.
+On Mon, Jul 31, 2023 at 02:59:41PM +0200, Krzysztof Kozlowski wrote:
+> On 31/07/2023 10:49, Micha³ Miros³aw wrote:
+> > On Mon, Jul 31, 2023 at 08:58:14AM +0200, Krzysztof Kozlowski wrote:
+> >> On 30/07/2023 23:55, Micha³ Miros³aw wrote:
+> >>> On Sun, Jul 30, 2023 at 10:30:56PM +0200, Krzysztof Kozlowski wrote:
+> >>>> On 29/07/2023 18:08, Svyatoslav Ryhel wrote:
+> >>>>> From: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+> >>>>>
+> >>>>> Implement driver for hot-plugged I2C busses, where some devices on
+> >>>>> a bus are hot-pluggable and their presence is indicated by GPIO line.
+> >>> [...] 
+> >>>>> +	priv->irq = platform_get_irq(pdev, 0);
+> >>>>> +	if (priv->irq < 0)
+> >>>>> +		return dev_err_probe(&pdev->dev, priv->irq,
+> >>>>> +				     "failed to get IRQ %d\n", priv->irq);
+> >>>>> +
+> >>>>> +	ret = devm_request_threaded_irq(&pdev->dev, priv->irq, NULL,
+> >>>>> +					i2c_hotplug_interrupt,
+> >>>>> +					IRQF_ONESHOT | IRQF_SHARED,
+> >>>>
+> >>>> Shared IRQ with devm is a recipe for disaster. Are you sure this is a
+> >>>> shared one? You have a remove() function which also points that it is
+> >>>> not safe. You can:
+> >>>> 1. investigate to be sure it is 100% safe (please document why do you
+> >>>> think it is safe)
+> >>>
+> >>> Could you elaborate on what is unsafe in using devm with shared
+> >>> interrupts (as compared to non-shared or not devm-managed)?
+> >>>
+> >>> The remove function is indeed reversing the order of cleanup. The
+> >>> shutdown path can be fixed by removing `remove()` and adding
+> >>> `devm_add_action_or_reset(...deactivate)` before the IRQ is registered.
+> >> Shared interrupt might be triggered easily by other device between
+> >> remove() and irq release function (devm_free_irq() or whatever it is
+> >> called).
+> > 
+> > This is no different tham a non-shared interrupt that can be triggered
+> > by the device being removed. Since devres will release the IRQ first,
+> > before freeing the driver data, the interrupt hander will see consistent
+> > driver-internal state. (The difference between remove() and devres
+> > release phase is that for the latter sysfs files are already removed.)
 > 
-> Make the scheduler favor bandwidth over stopping the tick by setting
-> TICK_DEP_BIT_SCHED when the only running task is a cfs task with
-> runtime limit enabled. We use cfs_b->hierarchical_quota to
-> determine if the task requires the tick.
+> True, therefore non-devm interrupts are recommended also in such case.
+> Maybe one of my solutions is actually not recommended.
 > 
-> Add check in pick_next_task_fair() as well since that is where
-> we have a handle on the task that is actually going to be running.
-> 
-> Add check in sched_can_stop_tick() to cover some edge cases such
-> as nr_running going from 2->1 and the 1 remains the running task.
+> However if done right, driver with non-shared interrupts, is expected to
+> disable interrupts in remove(), thus there is no risk. We have big
+> discussions in the past about it, so feel free to dig through LKML to
+> read more about. Anyway shared and devm is a clear no go.
 
-These appear fine to me, except:
+Can you share pointers to some of those discussions? Quick search
+about devm_request_irq() and friends found only a thread from 2013
+about conversions of RTC drivers to use devres. [1] IIRC the issue was
+then that the drivers requested IRQs before fully initializing the state
+(as many still do). Back to the original question: what is the risk
+in using devres with shared interrupts? (Let's assume the probe() is already
+fixed and remove() removed.)
 
-> Add sched_feat HZ_BW (off by default) to control the tick_stop
-> behavior.
+BTW, We have devres doc [2] in the kernel tree that, among other things,
+lists IRQs as a managed resource and mentions no warnings nor restictions
+for driver authors. I'd expect that if devm_request_threaded_irq() for
+shared iterrupts was indeed deprecated, it should be documented in a way
+easy to refer to.
 
-What was the thinking here? This means nobody will be using this -- why
-would you want this default disabled?
+[1] https://groups.google.com/g/linux.kernel/c/yi2ueo-sNJs
+[2] Documentation/udriver-api/driver-model/devres.rst
 
+Best Regards
+Micha³ Miros³aw
