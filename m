@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF1876956A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA2876956D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjGaMAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        id S231533AbjGaMCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjGaMAx (ORCPT
+        with ESMTP id S229994AbjGaMCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:00:53 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA95B5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:00:52 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vog4uW9_1690804847;
-Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vog4uW9_1690804847)
-          by smtp.aliyun-inc.com;
-          Mon, 31 Jul 2023 20:00:48 +0800
-Message-ID: <6e76323f-a1cc-7d20-676e-4eccdbcf6b91@linux.alibaba.com>
-Date:   Mon, 31 Jul 2023 20:01:15 +0800
+        Mon, 31 Jul 2023 08:02:19 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8ECB5;
+        Mon, 31 Jul 2023 05:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NtFOEPY77USWKXTfle1qi3nnxQlNUFkP6IPh0bUdyZY=; b=odO5I1ugzWHvFkRK1PF57mg0rI
+        P3cmTIC7c1kuhvIy56ar2u7ujCRmaboo+U/yV1LaMt9P5A49M1cA/wBHflBMsdnxJGfpfE3yYACJe
+        rAjCXOrSIQuBpN/RJHZaJRGg5rxSE8jMO1CWH83mugDImMTIXQtOcLrSlv/bgzLGH9/flcOGiSEMB
+        L/TXRt5vAi11qHQDxzuIdd0fQprbmyeHVpLX5hHeLEyoE5NAYcKHGHQZE8uMBpJuGowVbNHDiBuKn
+        9hvkmyX7tS9ReQTWYnEPPMzvhsMKBX/tHVEzkyyOCC82XruDQpBK1CmYvACxEJMCXou97J8/vlLJQ
+        HVEhm1BA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQRb7-00Cfzv-2V;
+        Mon, 31 Jul 2023 12:02:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 221963002CE;
+        Mon, 31 Jul 2023 14:02:01 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 09295206A36EE; Mon, 31 Jul 2023 14:02:01 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 14:02:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     anna-maria@linutronix.de, tglx@linutronix.de, frederic@kernel.org,
+        gautham.shenoy@amd.com, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Subject: Re: [RFC][PATCH 2/3] cpuidle,teo: Improve NOHZ management
+Message-ID: <20230731120200.GF29590@hirez.programming.kicks-ass.net>
+References: <20230728145515.990749537@infradead.org>
+ <20230728145808.902892871@infradead.org>
+ <CAJZ5v0hi25zZ_SRnSk0r=7q=UFh1dsrWEao6225KZVWp3-ivDQ@mail.gmail.com>
+ <20230728220109.GA3934165@hirez.programming.kicks-ass.net>
+ <CAJZ5v0ir_VsvBi4KKhpcjQnVsTK-EXZJjNsk=Jp84HLvaspChw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/8] mm/compaction: avoid missing last page block in
- section after skip offline sections
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-2-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230728171037.2219226-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0ir_VsvBi4KKhpcjQnVsTK-EXZJjNsk=Jp84HLvaspChw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 31, 2023 at 12:17:27PM +0200, Rafael J. Wysocki wrote:
 
-
-On 7/29/2023 1:10 AM, Kemeng Shi wrote:
-> skip_offline_sections_reverse will return the last pfn in found online
-> section. Then we set block_start_pfn to start of page block which
-> contains the last pfn in section. Then we continue, move one page
-> block forward and ignore the last page block in the online section.
-> Make block_start_pfn point to first page block after online section to fix
-> this:
-> 1. make skip_offline_sections_reverse return end pfn of online section,
-> i.e. pfn of page block after online section.
-> 2. assign block_start_pfn with next_pfn.
+> Something really simple like:
 > 
-> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+> 1. Check sched_cpu_util() (which is done by teo anyway).
+> 2. If that is around 90% of the maximum CPU capacity, select the first
+> non-polling idle state and be done (don't stop the tick as my other
+> replay earlier today).
+
+So I really don't like using cpu_util() here, yes, 90% is a high number,
+but it doesn't say *anything* about the idle duration. Remember, this is
+a 32ms window, so 90% of that is 28.8ms.
+
+(not entirely accurate, since it's an exponential average, but that
+doesn't change the overal argument, only some of the particulars)
+
+That is, 90% util, at best, says there is no idle longer than 3.2 ms.
+But that is still vastly longer than pretty much all residencies. Heck,
+that is still 3 ticks worth of HZ=1000 ticks. So 90% util should not
+preclude disabling the tick (at HZ=1000).
+
+Now, typically this won't be the case, and at 90% you'll have lots of
+small idles adding up to 3.2ms total idle. But the point is, you can't
+tell the difference. And as such util is a horrible measure to use for
+cpuidle.
+
+> > If we track the tick+ bucket -- as
+> > we must in order to say anything useful about it, then we can decide the
+> > tick state before (as I do here) calling sleep_length().
+> >
+> > The timer-pull rework from Anna-Maria unfortunately makes the
+> > tick_nohz_get_sleep_length() thing excessively expensive and it really
+> > doesn't make sense to call it when we retain the tick.
+> >
+> > It's all a bit of a chicken-egg situation, cpuidle wants to know when
+> > the next timer is, but telling when that is, wants to know if the tick
+> > stays. We need to break that somehow -- I propose by not calling it when
+> > we know we'll keep the tick.
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 9b7a0a69e19f..ce7841363b12 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -259,7 +259,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
->   
->   	while (start_nr-- > 0) {
->   		if (online_section_nr(start_nr))
-> -			return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
-> +			return section_nr_to_pfn(start_nr + 1);
+> By selecting a state whose target residency will not be met, we lose
+> on both energy and performance, so doing this really should be
+> avoided, unless the state is really shallow in which case there may be
+> no time for making this consideration.
 
-This is incorrect, you returned the start pfn of this section.
-
->   	}
->   
->   	return 0;
-> @@ -1670,8 +1670,7 @@ static void isolate_freepages(struct compact_control *cc)
->   
->   			next_pfn = skip_offline_sections_reverse(block_start_pfn);
->   			if (next_pfn)
-> -				block_start_pfn = max(pageblock_start_pfn(next_pfn),
-> -						      low_pfn);
-> +				block_start_pfn = max(next_pfn, low_pfn);
-
-'block_start_pfn' should be pageblock aligned. If the 'next_pfn' is not 
-pageblock-aligned (though this is not the common case), we should skip it.
-
-But if the 'next_pfn' is pageblock-aligned, yes, the commit f63224525309 
-still ignores the last pageblock, which is not right. So I think it 
-should be:
-block_start_pfn = pageblock_aligned(next_pfn) ? : 
-pageblock_start_pfn(next_pfn);
-block_start_pfn = max(block_start_pfn, low_pfn);
+I'm not sure how that relates to what I propose above. By adding the
+tick+ bucket we have more historical information as related to the tick
+boundary, how does that make us select states we won't match residency
+for?
