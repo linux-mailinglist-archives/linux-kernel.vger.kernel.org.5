@@ -2,133 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB46769522
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17FE769527
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjGaLpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S231469AbjGaLqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjGaLpg (ORCPT
+        with ESMTP id S230304AbjGaLqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:45:36 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24923A1;
-        Mon, 31 Jul 2023 04:45:35 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso179730939f.3;
-        Mon, 31 Jul 2023 04:45:35 -0700 (PDT)
+        Mon, 31 Jul 2023 07:46:13 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62046E68
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:45:47 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686be28e1a8so2860577b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690803934; x=1691408734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1690803946; x=1691408746;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3qqk/kt6+Ga7PWsdfCK1cL1LbXt2AwvGMSRMyEpCfxI=;
-        b=okzYRkktr+nRrSVtBCUlShJ4iEpZ4pP6gbHywAWdvOlXSUoGQKdU1X0HWGYabemgKH
-         ytJtYPBeUmdTwPScRayYq5tIJ7ak5hhR0ew7NKN/Yo+fqw8AZAX2VpLThA7e6RhhpeGw
-         hnmLHI7Y6YN/pNZbqjNKJQBi5RKYL1MV2iktpmMb4E2/ruFT59/jbxVqJXmmQHo2/HAT
-         05fUJ8tb3NGegcZhmZjThREc4+fFBqwwcSiAz4nVC7Ez4xC/5904A9vnR4KY8kqEX+rD
-         kIxNYijsDgmpEmDesKraaqvWv9+SAElTQ+yLhbTsaQfeADCySqlFkzj9r8xzKkC/A4Td
-         PyhQ==
+        bh=eixVz+lC2CT7QVfWGuIxIWOZy5K4rUiP49mRPzTth6c=;
+        b=VT13zwPYUAOAfBEH3rgUxFldZISumpumgvx/iD+w+BPKXFCSw3sb4v14W/QgLOOhbW
+         Y4qIeqO4CObDAuwhvipQAF/Nxwdfy7bhGuyOdCPdgvA74GZiUNA7YMGM2eJh0mgKpjun
+         mbuYrgNQg2POZNYGwztFta3wBsE1ysU2dL3o/0F2XgHLPdsBU4kATSfglaZu9LdweHrO
+         bc9/9LGBiT2538a98gFqSDRWXk4QjqRgfxoau2+N8CLFE5sgcBFdagXToM/WS7YhLx40
+         aAfi3jZsaDNavimHFkfpKR1AsIE9HlF8UzHi7DX9PX+WONweh99kzIdKxsN7CAlxRgQ/
+         uYwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690803934; x=1691408734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3qqk/kt6+Ga7PWsdfCK1cL1LbXt2AwvGMSRMyEpCfxI=;
-        b=OC1cFdOLl0qG1hJyPlTdxK7NBPhhi901H4f6LjrbJ5Db2Yb2XSiHlMNz5QNsMNWAPW
-         x7B+q4zAxSYXueXdRlJ6gdx/6sFB71FCR8YhhFS3fyhlgH0r+kfeqdGXfR2elTK/RglJ
-         QXA7Ms3Fl4lNBqYvVIh1jIX+CZvV88eEYncmzG2r6FQUcEANtgoBo18rugZR+PAwUomr
-         AJ485S5s0IPLqh0X3sCIhqC0l8wous+gQhyBBM7whgWp00xygVj6DTYbVmoc3xmw6Afl
-         EU7v1nRo9qWVOkG+Pd/PSGF/CpyS/gO7ABYyI0TwC/OhXYjydpx5GSW/Ul5bOseqX79Z
-         ODwg==
-X-Gm-Message-State: ABy/qLZ2ccpquaAp54WxzUxJldHawzCvorizs7mxGue86zkPzoICoClX
-        7vwPhd7u2g+sE4dbrlmqNJM73K/Rp4K9iXSd0aw=
-X-Google-Smtp-Source: APBJJlFrThYBjex3opWL4ObHhYJCyDIqwz8yyEyTGf1e1HNfu2R5yX7uSTL8+3rOH2emiyhCqRd8wSTGDCFWcr7gH1E=
-X-Received: by 2002:a05:6602:8b:b0:786:26f0:3092 with SMTP id
- h11-20020a056602008b00b0078626f03092mr7456305iob.3.1690803934488; Mon, 31 Jul
- 2023 04:45:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690803946; x=1691408746;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eixVz+lC2CT7QVfWGuIxIWOZy5K4rUiP49mRPzTth6c=;
+        b=XsSq3uU6MhgFJ/1+MDY67/Y3y3bZJOG9Eaze7gnJBM0Z/n/jz0kf2aDGyaN81JSk0t
+         9qdQBPTWBAc05EZgRMBbryl4k7bjA2vumKXHZN+Aj+Md1gXJovjB7zHxuU7jwNZ5RRBL
+         4QEG//9g2HuCKHFdtRhlcgQnVxBEPyMvbT36UJlFn+shYwk+fzQfDfgPjXn81inhEIT0
+         2QjJiEoY3hsgYRz+YZyJbotP3g/XRFMNRF5eQFCpM1n+egyzkV60MxYzZHM4/S43idDt
+         5bWV2ahNmWBjB6W0xWotctjl9UinBbXFQ/f2evCpnpgIc3TYwahf6MjLu2aZ6Io/fQBM
+         AHKw==
+X-Gm-Message-State: ABy/qLa/f7Ye0HOKkMw3z94sXOHF8p6xmypHSEtJOTr4gqZSjAcXge1y
+        TvzZOTPDiIH44W69uOqCJaSWqw==
+X-Google-Smtp-Source: APBJJlGydmwkyBJiOoqdphaZJq4iW3Nm7CDrOuaHl7TUuebUj9EajXLsR+UqO8/g3DIuDKwJOE5j+Q==
+X-Received: by 2002:a05:6a00:194b:b0:677:c5bf:dccc with SMTP id s11-20020a056a00194b00b00677c5bfdcccmr10108630pfk.19.1690803946336;
+        Mon, 31 Jul 2023 04:45:46 -0700 (PDT)
+Received: from [10.90.34.137] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id n9-20020aa78a49000000b00668652b020bsm7440809pfa.105.2023.07.31.04.45.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 04:45:46 -0700 (PDT)
+Message-ID: <ab4422ae-f923-1424-bb10-c345de059f3f@bytedance.com>
+Date:   Mon, 31 Jul 2023 19:45:38 +0800
 MIME-Version: 1.0
-References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <ZMZ6XB6gX2kFd/Nt@xhacker> <CA+V-a8u3F_XDjBfVVVvNMfjrni8pgpcRgbVt6_Ax1TmG2fJdEg@mail.gmail.com>
- <20230731-tribute-splashing-6a90f443cefe@wendy>
-In-Reply-To: <20230731-tribute-splashing-6a90f443cefe@wendy>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 31 Jul 2023 12:45:08 +0100
-Message-ID: <CA+V-a8uHAQBZJBVtLbhxczwAAZYcVSRz+CGoQX0EmPDU5OxEFA@mail.gmail.com>
-Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache
- operations support
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guo Ren <guoren@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: [PATCH 03/11] maple_tree: Add some helper functions
+To:     Matthew Wilcox <willy@infradead.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+ <20230726080916.17454-4-zhangpeng.00@bytedance.com>
+ <20230726150252.x56owgz3ikujzicu@revolver>
+ <ZME23DS/Elz2XPey@casper.infradead.org>
+Cc:     mathieu.desnoyers@efficios.com, npiggin@gmail.com,
+        Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
+        akpm@linux-foundation.org, michael.christie@oracle.com,
+        peterz@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, avagin@gmail.com, surenb@google.com,
+        brauner@kernel.org
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <ZME23DS/Elz2XPey@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
 
-On Mon, Jul 31, 2023 at 12:39=E2=80=AFPM Conor Dooley
-<conor.dooley@microchip.com> wrote:
->
-> On Mon, Jul 31, 2023 at 12:30:43PM +0100, Lad, Prabhakar wrote:
-> > On Sun, Jul 30, 2023 at 4:09=E2=80=AFPM Jisheng Zhang <jszhang@kernel.o=
-rg> wrote:
-> > > On Sun, Jul 02, 2023 at 09:34:26PM +0100, Prabhakar wrote:
-> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> > > > +config RISCV_NONSTANDARD_CACHE_OPS
-> > > > +     bool
-> > > > +     depends on RISCV_DMA_NONCOHERENT
-> > > > +     help
-> > > > +       This enables function pointer support for non-standard nonc=
-oherent
-> > > > +       systems to handle cache management.
-> > >
-> > > Per Documentation/riscv/patch-acceptance.rst:
-> > >
-> > > "we'll only consider patches for extensions that either:
-> > >
-> > > - Have been officially frozen or ratified by the RISC-V Foundation, o=
-r
-> > > - Have been implemented in hardware that is widely available, per sta=
-ndard
-> > >   Linux practice."
-> > >
-> > > I'm not sure which item this patch series belongs to.
-> > >
-> > Maybe Conor can help me here ;)
->
-> I'm not entirely sure why you need my help, it's your company that
-> manufactures the SoC that needs this after all.. I think Emil already
-> pointed out that it was the latter of the two. I guess it is not an
-> "extension" in the strictest sense of the word, but it fills the same
-> gap as one, so /shrug.
->
-Aaha I was wondering If there had to be an additional entry here to
-fit this case, but if it already does fit in ignore me. Thanks for the
-clarification.
 
-Cheers,
-Prabhakar
+在 2023/7/26 23:08, Matthew Wilcox 写道:
+> On Wed, Jul 26, 2023 at 11:02:52AM -0400, Liam R. Howlett wrote:
+>> * Peng Zhang <zhangpeng.00@bytedance.com> [230726 04:10]:
+>>>   static inline
+>>> -enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
+>>> +enum maple_type ma_parent_type(struct maple_tree *mt, struct maple_node *node)
+>>
+>> I was trying to keep ma_* prefix to mean the first argument is
+>> maple_node and mt_* to mean maple_tree.  I wasn't entirely successful
+>> with this and I do see why you want to use ma_, but maybe reverse the
+>> arguments here?
+> 
+> I think your first idea is better.  Usually we prefer to order the
+> arguments by "containing thing" to "contained thing".  So always use
+> (struct address_space *, struct folio *), for example.  Or (struct
+> mm_struct *, struct vm_area_struct *).
+There are disagreements here, so how to decide? But I don't know if the
+new version still has this helper.
+> 
