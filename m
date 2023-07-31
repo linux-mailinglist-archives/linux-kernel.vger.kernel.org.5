@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1843E768FC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9270768FC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbjGaIOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        id S231948AbjGaIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbjGaIN7 (ORCPT
+        with ESMTP id S232130AbjGaINQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:13:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266F33A91
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:10:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690791028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wsHzc5Afx1z/5KjDEZBNQHniASDdnavGgK/qk3C3lP0=;
-        b=OaJMxhGl4Fc7Da6/zL4h+x20rnzf1n8IGSTnxAAtqdnp5LL0DDs5EWcIhqxqWn8ogmrq26
-        YdED5ecVHSJ/0Xd+tjuXX4WxX7Rb8CvHFpMqbrr7c4zF5nCgku0yXnng0JDTpVT8GF5WF9
-        YiP3BXHG0GuIovXk/i6IpMdDr6Aa408=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-6e3JuJivN2S7AgHsLpld9w-1; Mon, 31 Jul 2023 04:10:26 -0400
-X-MC-Unique: 6e3JuJivN2S7AgHsLpld9w-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fc08035926so26648395e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:10:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690791025; x=1691395825;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsHzc5Afx1z/5KjDEZBNQHniASDdnavGgK/qk3C3lP0=;
-        b=C8EF/ypkXTjPW9wbgRIRUMb1ccpsfJC/tw3I1m4ooK6kcI2RyhJzyOninflTNuMEAn
-         0Z+2gQvE9kuhmFUV6aPzNx56lRUt8+fdEEHTiSSMrE/+c7CmRE0ujFIHoGbpRO+vq6E6
-         inO9MVkMiY9RHIKBCDCDIK7SznJMg+qAHszQH2q8oZY5mmuQNiDujmpLLuoSKYMCxySl
-         5Z/RWlnjC8VTTt2+/r5w1xyeOhq62Zz3GP8X7b+TcolkXj0/g+0dEtLWSzP1HApvqJbI
-         F+3JtD/XC812lE+30atn7DJ/9ZdwBWjhWluIRdfV6VBX9qcB/wl9gv62QcBrOYi7WD9J
-         vNsg==
-X-Gm-Message-State: ABy/qLaN3KJap8u0XtPEKCqxTZFgqsMEAbPpf41JZB3p1hrhgzlQGEN7
-        5zoot4SklDOQM7UOLvp6/7+ePMZC4x5ceC09NL2YiI8Tcq5xD/9bIK0t+kI9TfE/fiSXl7X1XGH
-        SZGPy+DJ+Cj2noKHRE5qFCcTI
-X-Received: by 2002:a05:600c:21c1:b0:3fe:1b5e:82 with SMTP id x1-20020a05600c21c100b003fe1b5e0082mr2780347wmj.20.1690791025233;
-        Mon, 31 Jul 2023 01:10:25 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH6WxCPiuCjMbvYCs3Muyf80T7yG1isIk70DQ2GXEQ5HFv4E9qlsTMMGH0Y/lz+Uk1eIK+VGw==
-X-Received: by 2002:a05:600c:21c1:b0:3fe:1b5e:82 with SMTP id x1-20020a05600c21c100b003fe1b5e0082mr2780332wmj.20.1690791024920;
-        Mon, 31 Jul 2023 01:10:24 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05600c378c00b003fc0062f0f8sm10824433wmr.9.2023.07.31.01.10.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 01:10:24 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] drm/ssd130x: clean up some inconsistent indenting
-In-Reply-To: <20230731074927.22755-1-jiapeng.chong@linux.alibaba.com>
-References: <20230731074927.22755-1-jiapeng.chong@linux.alibaba.com>
-Date:   Mon, 31 Jul 2023 10:10:23 +0200
-Message-ID: <87pm48wlg0.fsf@minerva.mail-host-address-is-not-set>
+        Mon, 31 Jul 2023 04:13:16 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFD1723;
+        Mon, 31 Jul 2023 01:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1690791036;
+        bh=VVBFsacjEVmUUG4a0c8yaWevpfLl40G7Jll0Zstz/vs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TXUNAYagpG6NiEnger4e6aCr8xHINobNmTVYGqfCmLXBAJ/hvoR94T3h6fZoDAgej
+         +4WKDUw0OwmKtLchCuJJ45yqghfN91OEs6XD45QBcDusblHk1l/V3gAj4tMo1Zy6oL
+         0LRAIAVe0p/fFYwXRziKMJ7b6FvTG2QcKyIa25I0=
+Date:   Mon, 31 Jul 2023 10:10:36 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, tanyuan@tinylab.org, w@1wt.eu
+Subject: Re: [PATCH 4/4] selftests/nolibc: enable -Wall compiler warnings
+Message-ID: <940dcf77-05ae-4cf6-b5f0-5b8cf80adab6@t-8ch.de>
+References: <20230731-nolibc-warnings-v1-4-74973d2a52d7@weissschuh.net>
+ <20230731071718.21085-1-falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230731071718.21085-1-falcon@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com> writes:
+On 2023-07-31 15:17:18+0800, Zhangjin Wu wrote:
+> > It will help the developers to avoid cruft and detect some bugs.
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > ---
+> >  tools/testing/selftests/nolibc/Makefile | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+> > index f42adef87e12..72227d75c6da 100644
+> > --- a/tools/testing/selftests/nolibc/Makefile
+> > +++ b/tools/testing/selftests/nolibc/Makefile
+> > @@ -79,7 +79,7 @@ endif
+> >  CFLAGS_s390 = -m64
+> >  CFLAGS_mips = -EL
+> >  CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+> > -CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 \
+> > +CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -Wall \
+> 
+> Very good static analyzer support.
+> 
+> What about further add more options?
+> 
+>     +CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -Wall -Wextra -Werror\
+> 
+> A simple test shows, it can catch more issues.
 
-Hello Jiapeng,
+-Wextra will need some further rework for 32bit architectures to avoid
+some warnings.
+(At least mips for which I tested it)
 
-Thanks for your patch.
+I don't think -Werror is appropriate. If we want to test the functioning
+of nolibc with weird compilers these may very well add new warnings and
+that shouldn't break the build.
 
-> No functional modification involved.
->
-> drivers/gpu/drm/solomon/ssd130x.c:715 ssd130x_primary_plane_duplicate_state() warn: inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-
-Interesting that checkpatch didn't catch this, even when running with --strict.
-
-Do you know which tool this bot is using to catch these inconsistencies?
-
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6034
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
-Pushed to drm-misc (drm-misc-next). Thanks!
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+> 
+> Thanks,
+> Zhangjin
+> 
+> >  		$(call cc-option,-fno-stack-protector) \
+> >  		$(CFLAGS_$(ARCH)) $(CFLAGS_STACKPROTECTOR)
+> >  LDFLAGS := -s
+> > 
+> > -- 
+> > 2.41.0
