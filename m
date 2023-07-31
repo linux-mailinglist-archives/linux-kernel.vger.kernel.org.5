@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D317691CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FAF7691D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjGaJcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S232033AbjGaJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbjGaJb0 (ORCPT
+        with ESMTP id S232190AbjGaJcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:31:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D0B10C7;
-        Mon, 31 Jul 2023 02:31:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB2C460FC9;
-        Mon, 31 Jul 2023 09:31:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC62BC433C7;
-        Mon, 31 Jul 2023 09:31:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690795883;
-        bh=zYigZsP8fdIjtW7KGQQk4Oz0hhJCFy2GrbtMAsuaLbo=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=KJBv/vNCAhFIChIedfaFYMFRDRtEHGnQOutW74PrtN0yINRx9sesgfEIPA76BUurZ
-         2BxelLvPyRG/U2veoAgfBjHzsNLb/CVVUpco2AcA+H5LTVkJe5CMkdaXVxe3bTf1EJ
-         w+9d9ZvuC/76p0wTadBFDg/7BdPgzKtGTM76hNwigrWHgpuGOKif79TmYVf06C/yxs
-         18OqWtVwiimBfyvoi+G8p9vAbgqmIYHxMwzj3vDqBHiG0UPWjAt6mzOjHwGugNKbAQ
-         um6BkRFzBvFr7UKsKOd/Cs/T7Tb1QkLV7FiRYeJ6Ldl9KtlMWrG+Yg4vbayFUt0HdP
-         Uspvuiox1tjZw==
-Received: (nullmailer pid 2176699 invoked by uid 1000);
-        Mon, 31 Jul 2023 09:31:20 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Mon, 31 Jul 2023 05:32:54 -0400
+Received: from mailgate.ics.forth.gr (mailgate.ics.forth.gr [139.91.1.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A447718E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:32:52 -0700 (PDT)
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 36V9WnWF012593
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:32:50 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1690795964; x=1693387964;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hYrmhTrrV00n+yse0bYXu7c0/zKBC0CeIUzRE0uLZlg=;
+        b=YKxeiPnJ67koIgsdTCopqGc/amJ0bseu3UDSU5nSdpRpkcuijU1pq6ZVCDOPlVf6
+        wZueesH/esX70fAKmkgkN2ZCK8LbJyg86Z6eWqiPF+HVNvq+ePyeE9hX75kCyzZv
+        pjdBjLeAw9iiMg6iyHbBCriSLduq5G6nJDE5Qhul7b8B5/nxOkW3YEzM6gYfpqHl
+        t+ebkzx0pEKPDk0z0FSIIgrCbtv58UpHijerTxDkS1BVgh3+YIaLpIxa7lmZ1ZSQ
+        PSb0ABzerHksfIFhxTNld/aXodm/JJ1DrHD3boREa0pAnejNUQeWPIDdf+dnjv+f
+        +D8pYAm4QT0ERZjNq8dX3Q==;
+X-AuditID: 8b5b014d-a23ec70000002178-b5-64c77fbc718e
+Received: from enigma.ics.forth.gr (enigma-2.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 83.D4.08568.CBF77C46; Mon, 31 Jul 2023 12:32:44 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user: mick at ics.forth.gr
+Message-ID: <3d4d9b22-8451-f4d5-bbd8-117988f3a545@ics.forth.gr>
+Date:   Mon, 31 Jul 2023 12:32:38 +0300
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Jai Luthra <j-luthra@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, nm@ti.com, devarsht@ti.com,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230731-upstream_csi-v8-15-fb7d3661c2c9@ti.com>
-References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
- <20230731-upstream_csi-v8-15-fb7d3661c2c9@ti.com>
-Message-Id: <169079588075.2176682.10224087620577481487.robh@kernel.org>
-Subject: Re: [PATCH v8 15/16] media: dt-bindings: Add TI J721E CSI2RX
-Date:   Mon, 31 Jul 2023 03:31:20 -0600
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/11] RISC-V: drivers/iommu/riscv: Add command, fault,
+ page-req queues
+To:     Zong Li <zong.li@sifive.com>,
+        Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <1fd79e5c53d9d6ed2264f60dd4261f293cc00472.1689792825.git.tjeznach@rivosinc.com>
+ <CANXhq0pm+1yXuvUGudwNtvNHWV3FytH4VfCnq7_Ws=t-MZP_kQ@mail.gmail.com>
+Content-Language: el-GR
+From:   Nick Kossifidis <mick@ics.forth.gr>
+In-Reply-To: <CANXhq0pm+1yXuvUGudwNtvNHWV3FytH4VfCnq7_Ws=t-MZP_kQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAIsWRmVeSWpSXmKPExsXSHT1dWXdP/fEUg/lXtSy2/p7FbjHr0nFG
+        i19fLCw6Z29gt7i8aw6bxbbPLWwWGy7NYrR4ebmH2aJtFr/FwQ9PWC0+z6+w+LKsndGi5Y6p
+        xYe7s9kc+DyeHJzH5LFm3hpGjzcvX7J4HO74wu6xaVUnm8fmJfUeLzbPZPS4MSvC41LzdXaP
+        vz+3snh83iQXwB3FZZOSmpNZllqkb5fAlfF2IU/BAt6KvvNXmRsYW7i6GDk5JARMJPreXmTp
+        YuTiEBI4zijx8dZ2ZoiEpcTmTy9ZQGxeAXuJvXtusoHYLAKqEu8WzmaCiAtKnJz5BKxGVCBa
+        YsOFR2C2sECsxIeOV2D1IgIeEjvnfWMCWcAscJZZYumdh2ALhAQuMkpMvQ9WxCwgLnHk/G+w
+        OJuApsT8SwfBBnEKBEq07lnNAlFjJtG1tYsRwpaXaN46m3kCo8AsJHfMQjJqFpKWWUhaFjCy
+        rGIUSCwz1stMLtZLyy8qydBLL9rECI40Rt8djLc3v9U7xMjEwXiIUYKDWUmE91TAoRQh3pTE
+        yqrUovz4otKc1OJDjNIcLErivCdsFyQLCaQnlqRmp6YWpBbBZJk4OKUamLxSTzWYPrmWOF/h
+        lcJ0r9ge0z+9UjNndomGrXotIr9O4Oa8m0Fni27kZtYtNN+osG9RY29H8PPy2wof161+tlEi
+        /VrqowXVeyeX/fpsc/3sqp9f7b49q1/2rSNdK3n1kqszzPXM1syseqIxo3TfOuMH23VFDM7v
+        L3zZ4CET9DEgZpbqo2l+BbwqMapRSSb/HW2SoxZxFTTyeMz3VZos9vXtiTN/l3H8a21ReS3z
+        9ADDi6PnVO42ZoscuDuR6eXNeYu26XV0XeposFvPGmedutK+M6ZNWUZrWmGSZtCa3zYuNav9
+        1L4mKNr52k+yOV4+vbk9nylH/TxX6rMPN0OZ5JS0rR+8bQm3cJkhtmnnTyWW4oxEQy3mouJE
+        AJtm9pUjAwAA
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 31 Jul 2023 13:59:33 +0530, Jai Luthra wrote:
-> From: Pratyush Yadav <p.yadav@ti.com>
+On 7/29/23 15:58, Zong Li wrote:
+> On Thu, Jul 20, 2023 at 3:34 AM Tomasz Jeznach <tjeznach@rivosinc.com> wrote:
+>> +       iommu->cap = riscv_iommu_readq(iommu, RISCV_IOMMU_REG_CAP);
+>> +
+>> +       /* For now we only support WSIs until we have AIA support */
 > 
-> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
-> capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
-> parts together.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-> v7->v8:
-> - Drop "Device Tree Bindings" from title
-> - Rename "Wrapper" to "Shim" in title as that is the name referred in
->   the TRM and other places
-> - Update maintainer to myself
-> - Drop items from compatible as only a single element is present
-> - Rename compatible to "ti,j721e-csi2rx-shim" to distinguish from the
->   SoC-specific CSI2RX bridge compatible
-> 
->  .../bindings/media/ti,j721e-csi2rx-shim.yaml       | 100 +++++++++++++++++++++
->  1 file changed, 100 insertions(+)
+> I'm not completely understand AIA support here, because I saw the pci
+> case uses the MSI, and kernel seems to have the AIA implementation.
+> Could you please elaborate it?
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+When I wrote this we didn't have AIA in the kernel, and without IMSIC we 
+can't have MSIs in the hart (we can still have MSIs in the PCIe controller).
 
-yamllint warnings/errors:
+> 
+> Should we define the "interrupt-names" in dt-bindings?
+> 
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: ticsi2rx@4500000: csi-bridge@4504000: False schema does not allow {'compatible': ['ti,j721e-csi2rx', 'cdns,csi2rx'], 'reg': [[72368128, 4096]], 'clocks': [[4294967295, 26, 2], [4294967295, 26, 0], [4294967295, 26, 2], [4294967295, 26, 2], [4294967295, 26, 3], [4294967295, 26, 3]], 'clock-names': ['sys_clk', 'p_clk', 'pixel_if0_clk', 'pixel_if1_clk', 'pixel_if2_clk', 'pixel_if3_clk'], 'phys': [[4294967295]], 'phy-names': ['dphy'], 'ports': {'#address-cells': [[1]], '#size-cells': [[0]], 'port@0': {'reg': [[0]], 'endpoint': {'remote-endpoint': [[4294967295]], 'bus-type': [[4]], 'clock-lanes': [[0]], 'data-lanes': [[1, 2]]}}}}
-	from schema $id: http://devicetree.org/schemas/media/ti,j721e-csi2rx-shim.yaml#
-Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: /example-0/ticsi2rx@4500000/csi-bridge@4504000: failed to match any schema with compatible: ['ti,j721e-csi2rx', 'cdns,csi2rx']
-Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: /example-0/ticsi2rx@4500000/csi-bridge@4504000: failed to match any schema with compatible: ['ti,j721e-csi2rx', 'cdns,csi2rx']
+Yes we should, along with queue lengths below.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731-upstream_csi-v8-15-fb7d3661c2c9@ti.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+>> +
+>> +       /* Make sure fctl.WSI is set */
+>> +       fctl = riscv_iommu_readl(iommu, RISCV_IOMMU_REG_FCTL);
+>> +       fctl |= RISCV_IOMMU_FCTL_WSI;
+>> +       riscv_iommu_writel(iommu, RISCV_IOMMU_REG_FCTL, fctl);
+>> +
+>> +       /* Parse Queue lengts */
+>> +       ret = of_property_read_u32(pdev->dev.of_node, "cmdq_len", &iommu->cmdq_len);
+>> +       if (!ret)
+>> +               dev_info(dev, "command queue length set to %i\n", iommu->cmdq_len);
+>> +
+>> +       ret = of_property_read_u32(pdev->dev.of_node, "fltq_len", &iommu->fltq_len);
+>> +       if (!ret)
+>> +               dev_info(dev, "fault/event queue length set to %i\n", iommu->fltq_len);
+>> +
+>> +       ret = of_property_read_u32(pdev->dev.of_node, "priq_len", &iommu->priq_len);
+>> +       if (!ret)
+>> +               dev_info(dev, "page request queue length set to %i\n", iommu->priq_len);
+>> +
+>>          dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+>>
