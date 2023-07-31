@@ -2,120 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A9D769AF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDF8769AFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbjGaPll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
+        id S232081AbjGaPlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231510AbjGaPli (ORCPT
+        with ESMTP id S232180AbjGaPlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:41:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77980171B;
-        Mon, 31 Jul 2023 08:41:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17279611B3;
-        Mon, 31 Jul 2023 15:41:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C8BAC433C9;
-        Mon, 31 Jul 2023 15:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690818094;
-        bh=pfPkl/XcTZd6RMGu2uh5vTemrvIMiriILRyHow4+KYs=;
+        Mon, 31 Jul 2023 11:41:50 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3924E6D;
+        Mon, 31 Jul 2023 08:41:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690818097; bh=/Cx11AsbPTQDsfBUToKatqbK79fehIY0/tu2Jfdvybs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lit37bnl8taUcq0x/ZnX6IWyhn/ACxWhlqLkYm57pz06QMq+FitKMIbOvp6bahXRI
-         O9nBTwtPke2LxFZahShly7hstfWFfVQeP5zVO1HB7X4wW8lmv60svVOKl06gLSbzzU
-         Ooyr2l96Srw8sA1eu1JJGYhiYF6/97cHMkDO4LqUZgi96rP+phJ4yJVW3Rf4MPB55/
-         FuvNH35z2wUjvrOjI4JTn/fHEVg6IZAUdb6gTIrEPM8hjqSKDtwnd8QhNohxUkez2b
-         NF6GPPUbehocPDE3c0fEmEIlPzhdUlSRY1WroXgMFWkB93bQITmMxh81JiP59Xkq49
-         TraiyEWY+cRsA==
-Date:   Mon, 31 Jul 2023 08:41:33 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     zhangshida <starzhangzsd@gmail.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn
-Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
-Message-ID: <20230731154133.GA11332@frogsfrogsfrogs>
-References: <20230731010104.1781335-1-zhangshida@kylinos.cn>
+        b=EW9y1XvVLr6Q40ChjfL3aACV0TXMyR9LJqzGdSnUQzfAtsDMB/1iZrBDdu0IeNZ9W
+         IogUKExlqWsxpw+FCB3pYnAiS7XIi+rCn99cauo+fcv3y4kcLmdTyOKNJ2XxgRBWPO
+         PZcx2IIwFz7aBklyFfBoVnQ68MzQthPL4VHzs4hs=
+Date:   Mon, 31 Jul 2023 17:41:36 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Yuan Tan <tanyuan@tinylab.org>
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: Re: [PATCH v2 2/2] selftests/nolibc: add testcase for pipe
+Message-ID: <2ba88bae-2986-4e70-9828-824d7b140277@t-8ch.de>
+References: <cover.1690733545.git.tanyuan@tinylab.org>
+ <9221753abe0509ef5cbb474a31873012e0e40706.1690733545.git.tanyuan@tinylab.org>
+ <a4899657-7d7b-4786-8903-8f51e438535d@t-8ch.de>
+ <C3AF612281F87D1A+733ce5c0d1efe1f81423e6885203d92cdb4eaee7.camel@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <C3AF612281F87D1A+733ce5c0d1efe1f81423e6885203d92cdb4eaee7.camel@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 09:01:04AM +0800, zhangshida wrote:
-> From: Shida Zhang <zhangshida@kylinos.cn>
+On 2023-07-31 20:35:28+0800, Yuan Tan wrote:
+> On Mon, 2023-07-31 at 08:10 +0200, Thomas Weißschuh wrote:
+> > On 2023-07-31 13:51:00+0800, Yuan Tan wrote:
+> > > Add a testcase of pipe that child process sends message to parent
+> > > process.
+> > 
+> > Thinking about it some more:
+> > 
+> > What's the advantage of going via a child process?
+> > The pipe should work the same within the same process.
+> > 
 > 
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
-> 
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-> 
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
-> 
-> But it is not the same condition when blocksize equals to 4k.
-> when enough file are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
-> 
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k. To address this, Modify the check so
-> as to handle it properly.
+> The pipe is commonly used for process communication, and I think as a
+> test case it is supposed to cover the most common scenarios.
 
-urughghahrhrhr<shudder>
+The testcase is supposed to cover the code of nolibc.
+It should be the *minimal* amount of code to be reasonable sure that the
+code in nolibc does the correct thing.
+If pipe() returns a value that behaves like a pipe I see no reason to
+doubt it will also survive fork().
 
-Sorry that I missed that rec_len is an encoded number, not a plain le16
-integer...
+Validating that would mean testing the kernel and not nolibc.
+For the kernel there are different testsuites.
 
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> ---
-> v1->v2:
->   Use a better way to check the condition, as suggested by Andreas.
-> 
->  fs/ext4/namei.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..fffed95f8531 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
->  	struct ext4_dir_entry *dp;
->  	struct dx_root_info *root;
->  	int count_offset;
-> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
->  
-> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
->  		count_offset = 8;
->  	else if (le16_to_cpu(dirent->rec_len) == 12) {
-
-...but what about all the other le16_to_cpu(ext4_dir_entry{,_2}.rec_len)
-accesses in this file?  Don't those also need to be converted to
-ext4_rec_len_from_disk calls?
-
-Also,
-Fixes: dbe89444042ab ("ext4: Calculate and verify checksums for htree nodes")
-
---D
-
->  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> -- 
-> 2.27.0
-> 
+Less code means less work for everyone involved, now and in the future.
