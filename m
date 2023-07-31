@@ -2,164 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54FBA7697C1
+	by mail.lfdr.de (Postfix) with ESMTP id A01367697C2
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbjGaNgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S232575AbjGaNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbjGaNgB (ORCPT
+        with ESMTP id S230080AbjGaNgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 09:36:01 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A0B1708;
-        Mon, 31 Jul 2023 06:35:56 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d09ba80fbcaso4675013276.2;
-        Mon, 31 Jul 2023 06:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690810555; x=1691415355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oAyXH6ekoTa05SAgzmQb3wllKwSfvfzCrLBBn4jkkW4=;
-        b=gLyC++uMA73NEwRZEkud6ZUJY1Dsimw7XhAv41TwiKC98Ik61qftRevUzwfUiCxVuh
-         3uiAbaiSuFE3ZrDVAso6i83lCKnNJ+FPzNkyVtSgjHfQuoGXYydiYmckIJwB5OfK2reR
-         Pb/ym26WIkf73+Jgbx8ZvnV6cQU6id7zSxbjIZ9J584vqeqvMDGbk7CdMrtKp2LdVAx+
-         /1Ey3DbxGLl4U2VVP0YYA9XL79GU50m5t/jyuaca5rfNmOP1DYjW5RCNVUo4QUPNoi4p
-         DY6ghdxqzyynDLBHa49ou/WG4Q/DI01xGlCKNv3htUCiMk0QXakVvdWP6f5gVqx6O9Gq
-         x7IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690810555; x=1691415355;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oAyXH6ekoTa05SAgzmQb3wllKwSfvfzCrLBBn4jkkW4=;
-        b=kjmaaDsSoJS6xiBmRZMIpu53NaUsr+kbubPhYDT9JVt3aNc7xsNHVdW51XwGP4msfp
-         AbO+QHNLIA3p83MjYHQLNx5ipnhepZHQs1jDdogdf4kLaAoZ5weCzJ4PJd2WbvLBoyuQ
-         PD/ze1ywR3Z8XMftJj/Jt7860Zw9YHu53xLe+G0VF2A3z+WutpffY+8c9uvg7Upspp8v
-         p+Zd9fYJLKNvgYAtjWnn3f7TRFBFHZEeuce752LvshQVEmhEa7JHPfoyW+4lsb5JrEBR
-         JVLfQ/m3Mp+YNxtuYu2A+NJykkDivwVDA7GV8HKc0zHwR1cHFxLbSlqZGZk6V4Ep0HMr
-         XANg==
-X-Gm-Message-State: ABy/qLYxp1SPB37NA2iCO99Cfk4oHZcpJawpbHpRnSIMrp5Mxsal8S3X
-        D4t/o1xgirPX7UeyaNwkIG95ytV3JtYl2lYXrqo=
-X-Google-Smtp-Source: APBJJlHlKQxquau9vHbub3enl9P4TMStwyjPMWusF11iwrzgObp/yDS37tRQeizN7EUqGRl1cyuLrJAbgaz0DyI7iTQ=
-X-Received: by 2002:a25:ce04:0:b0:d0c:9ab2:72d3 with SMTP id
- x4-20020a25ce04000000b00d0c9ab272d3mr9716417ybe.14.1690810555377; Mon, 31 Jul
- 2023 06:35:55 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576A61709
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:35:56 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6D19F6606FD9;
+        Mon, 31 Jul 2023 14:35:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690810555;
+        bh=fSMcySe3529Rsza7CghbwZLPVsnFpOjB0fUjYOJUHGQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=i7az6YSJdry61SaWB5mqcppW5hGRzeUPF9Re/v1j9Avn7QlKeLq5MHKbtRcJIq5+3
+         sjo7ztfFOogRmqdGysyz5Frj12axf9fvX9fOsMvfXczYHurrdEjZRupvIrS+dGNT8N
+         +gFYn5M0QQwPAS0MfH9vJJXHeRJMCEjOw8TW/CTbR+kpPTRrFtBZhtqmiKhtTWziQx
+         j10sOIgvuwQQhxy0KLEUqKTRXdi8LpV2wa4f94kNxymP7D1seI7ZFSuLyb4SQkj8cw
+         z/sJoowlMRAbs+1wfzb4cs82ZUcZrtlw5SHwNHL83RTeIkUoUORn6Y+ltOam5Ekz1I
+         8Tv/fBVRIINqQ==
+Date:   Mon, 31 Jul 2023 15:35:51 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        Danilo Krummrich <dakr@redhat.com>
+Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
+Message-ID: <20230731153551.7365daa4@collabora.com>
+In-Reply-To: <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
+References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
+        <20230722234746.205949-3-dmitry.osipenko@collabora.com>
+        <20230725092709.51356f39@collabora.com>
+        <20230725103234.0c8923f1@collabora.com>
+        <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com>
- <97730.1690408399@warthog.procyon.org.uk> <yt9dbkfxsxtl.fsf@linux.ibm.com>
-In-Reply-To: <yt9dbkfxsxtl.fsf@linux.ibm.com>
-From:   =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>
-Date:   Mon, 31 Jul 2023 15:35:44 +0200
-Message-ID: <CAAUqJDvk0y4x=fzfe8GX_t7Qj4WcRBfTOK2Za718wki9h-XkjA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Harald Freudenberger <freude@linux.vnet.ibm.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 7:55=E2=80=AFAM Sven Schnelle <svens@linux.ibm.com>=
- wrote:
->
-> David Howells <dhowells@redhat.com> writes:
->
-> >
-> > Fix af_alg_alloc_areq() to initialise areq->first_rsgl.sgl.sgt.sgl to p=
-oint
-> > to the scatterlist array in areq->first_rsgl.sgl.sgl.
-> >
-> > Without this, the gcm-aes-s390 driver will oops when it tries to do
-> > gcm_walk_start() on req->dst because req->dst is set to the value of
-> > areq->first_rsgl.sgl.sgl by _aead_recvmsg() calling
-> > aead_request_set_crypt().
-> >
-> > The problem comes if an empty ciphertext is passed: the loop in
-> > af_alg_get_rsgl() just passes straight out and doesn't set areq->first_=
-rsgl
-> > up.
-> >
-> > This isn't a problem on x86_64 using gcmaes_crypt_by_sg() because, as f=
-ar
-> > as I can tell, that ignores req->dst and only uses req->src[*].
-> >
-> > [*] Is this a bug in aesni-intel_glue.c?
-> >
-> > The s390x oops looks something like:
-> >
-> >  Unable to handle kernel pointer dereference in virtual kernel address =
-space
-> >  Failing address: 0000000a00000000 TEID: 0000000a00000803
-> >  Fault in home space mode while using kernel ASCE.
-> >  AS:00000000a43a0007 R3:0000000000000024
-> >  Oops: 003b ilc:2 [#1] SMP
-> >  ...
-> >  Call Trace:
-> >   [<000003ff7fc3d47e>] gcm_walk_start+0x16/0x28 [aes_s390]
-> >   [<00000000a2a342f2>] crypto_aead_decrypt+0x9a/0xb8
-> >   [<00000000a2a60888>] aead_recvmsg+0x478/0x698
-> >   [<00000000a2e519a0>] sock_recvmsg+0x70/0xb0
-> >   [<00000000a2e51a56>] sock_read_iter+0x76/0xa0
-> >   [<00000000a273e066>] vfs_read+0x26e/0x2a8
-> >   [<00000000a273e8c4>] ksys_read+0xbc/0x100
-> >   [<00000000a311d808>] __do_syscall+0x1d0/0x1f8
-> >   [<00000000a312ff30>] system_call+0x70/0x98
-> >  Last Breaking-Event-Address:
-> >   [<000003ff7fc3e6b4>] gcm_aes_crypt+0x104/0xa68 [aes_s390]
-> >
-> > Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to creat=
-e scatterlists")
-> > Reported-by: Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com>
-> > Link: https://lore.kernel.org/r/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmS=
-tPqBhubxyk_A@mail.gmail.com/
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > cc: Herbert Xu <herbert@gondor.apana.org.au>
-> > cc: Sven Schnelle <svens@linux.ibm.com>
-> > cc: Harald Freudenberger <freude@linux.vnet.ibm.com>
-> > cc: "David S. Miller" <davem@davemloft.net>
-> > cc: Paolo Abeni <pabeni@redhat.com>
-> > cc: linux-crypto@vger.kernel.org
-> > cc: linux-s390@vger.kernel.org
-> > cc: regressions@lists.linux.dev
-> > ---
-> >  crypto/af_alg.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-> > index 06b15b9f661c..9ee8575d3b1a 100644
-> > --- a/crypto/af_alg.c
-> > +++ b/crypto/af_alg.c
-> > @@ -1192,6 +1192,7 @@ struct af_alg_async_req *af_alg_alloc_areq(struct=
- sock *sk,
-> >
-> >       areq->areqlen =3D areqlen;
-> >       areq->sk =3D sk;
-> > +     areq->first_rsgl.sgl.sgt.sgl =3D areq->first_rsgl.sgl.sgl;
-> >       areq->last_rsgl =3D NULL;
-> >       INIT_LIST_HEAD(&areq->rsgl_list);
-> >       areq->tsgl =3D NULL;
->
-> Just tested, with this fix the kernel no longer crashes. Thanks!
->
-> Tested-by: Sven Schnelle <svens@linux.ibm.com>
++Danilo, to confirm my understanding of the gpuva remap operation is
+correct.
 
-Same here. Thanks for the fix!
+On Mon, 31 Jul 2023 15:27:31 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-Tested-by: Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com>
+> On 7/25/23 11:32, Boris Brezillon wrote:
+> >> Can we make it an atomic_t, so we can avoid taking the lock when the
+> >> GEM has already been pinned. That's something I need to be able to grab
+> >> a pin-ref in a path where the GEM resv lock is already held[1]. We could
+> >> of course expose the locked version,  
+> > My bad, that's actually not true. The problem is not that I call
+> > drm_gem_shmem_pin() with the resv lock already held, but that I call
+> > drm_gem_shmem_pin() in a dma-signaling path where I'm not allowed to
+> > take a resv lock. I know for sure pin_count > 0, because all GEM objects
+> > mapped to a VM have their memory pinned right now, and this should
+> > stand until we decide to add support for live-GEM eviction, at which
+> > point we'll probably have a way to detect when a GEM is evicted, and
+> > avoid calling drm_gem_shmem_pin() on it.
+> > 
+> > TLDR; I can't trade the atomic_t for a drm_gem_shmem_pin_locked(),
+> > because that wouldn't solve my problem. The other solution would be to
+> > add an atomic_t at the driver-GEM level, and only call
+> > drm_gem_shmem_[un]pin() on 0 <-> 1 transitions, but I thought using an
+> > atomic at the GEM-shmem level, to avoid locking when we can, would be
+> > beneficial to the rest of the eco-system. Let me know if that's not an
+> > option, and I'll go back to the driver-specific atomic_t.  
+> 
+> Could you please explain why do you need to pin GEM in a signal handler?
+> This is not something drivers usually do or need to do. You likely also
+> shouldn't need to detect that GEM is evicted in yours driver. I'd expect
+> that Panthor shouldn't differ from Panfrost in regards to how GEM memory
+> management is done and Panfrost doesn't need to do anything special.
+
+Panthor VM management is completely different, and the case I'm
+referring to is 'asynchronous VM_BIND': mapping a GEM object to a GPU VM
+asynchronously, so we can make it depend on other operations, encoded as
+syncobjs passed to the VM_BIND operation.
+
+Here is the workflow we have for this use case:
+
+1. Create + push a VM_BIND job to the VM_BIND queue (a drm_sched_entity
+that's taking care of asynchronous VM map/unmap operations). Because
+this operation is asynchronous, and the execution itself happens in a
+dma-signaling path (drm_sched::run_job()), we need to pre-allocate the
+MMU page tables for the worst case scenario, and make sure the GEM pages
+are pinned at job creation time.
+
+2. The VM operation itself is executed when all dependencies are met
+(drm_sched calls run_job()). In case of a map operation, we call
+drm_gpuva_sm_map(), which might split the map operation into
+remap+unamp+map ones if the region being mapped is covering a region
+that was previously mapped to a different GEM object or a different
+portion of the same GEM object (see the gpuva_mgr doc [1]). A
+remap operation is just a way to split an existing mapping in 2 mappings
+covering the left/right side of the previous mapping, plus a hole in
+the middle. This means that our VM mapping object (drm_gpuva), which
+was pointing to a GEM object that had its pages pinned, is now turned
+into 2 mapping objects, and we need to make sure those 2 mappings own a
+reference to the pages, otherwise we'll have an unbalanced refcount
+when we release those 2 mappings further down the road.
+
+3. Release resources attached to mappings that were removed (that
+includes releasing the ref we had on GEM pages) and free the mapping
+objects. We do that asynchronously, outside of the dma-signaling path.
+
+> 
+> Note that patch #14 makes locked pin/unpin functions public and turns
+> the unlocked variants into helpers, you'll be able to experiment with
+> these funcs in the Panthor driver.
+
+Unfortunately, those won't help. I really need a way to increment the
+refcount without holding the lock, because we're in a dma-signaling
+path when we call drm_gpuva_sm_map(). Note that I could live with a
+drm_shmem_gem_pin_if_already_pinned() variant that would return NULL if
+pin_count == 0 instead of trying to acquire the lock, but I'd still
+need this refcount to be an atomic_t.
+
+As I said, an alternative to this approach would be to have a separate
+atomic refcount at the panthor_gem_object level, but I feel like we'd
+just be duplicating something that exists already.
+
+[1]https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/drm_gpuva_mgr.c#n67
