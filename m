@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE56376A083
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F73E76A084
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjGaSkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S229675AbjGaSky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbjGaSkZ (ORCPT
+        with ESMTP id S231925AbjGaSkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:40:25 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795DC1BC5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:40:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5222c5d71b8so7010978a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:40:24 -0700 (PDT)
+        Mon, 31 Jul 2023 14:40:41 -0400
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8FB9E;
+        Mon, 31 Jul 2023 11:40:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690828823; x=1691433623;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VbqTPQRqx5r6b8SVskB/TyQ1aJsbLTn8hYnlmIsS2WQ=;
-        b=Zuy0CCRclkOgd6i0onP3AHjnvLf5Pi/PG33b2RnSaMRaFYgnrijDZynKSRGcGPfFtn
-         6HGAR5J+8e4+PeBtmkgx/cZ61q/v0PXGPWnIfmIlf8GAFb2KPPI0Ls7ce18qnxqxiFIR
-         7KILYcWIkQNM6iceCUchGu6R8RHp5jfNYsK6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690828823; x=1691433623;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VbqTPQRqx5r6b8SVskB/TyQ1aJsbLTn8hYnlmIsS2WQ=;
-        b=i2YTxQkh0ZLsoHSSjijjtbhd/+UasNZ8ldY+6cNN+KKro4lKvrzNdJxZAdsa13Q2Nl
-         G3PajJrLeEE/gqhfaKq8giH7dMqF/ttWrYoom25BeVYHtq5BcETaCNzrZxSAeHWRJth7
-         pSoI97AswjPXQP9MxsGCfltN3ak2j07Lt+X6QXThz77WEzZDZVOdxf29ZUioRGJ4btse
-         99tCneLb+Bh260tykNAa3w6qjUHOSlaj01Rjlpx8BWastTpoA72z+o2Asae+MayTYq/i
-         aul9yDhM/FTnfpYTweBIqwN4ROSa2SMXHR2RHAHgWnkS/s3zVLvRKaAZd330XS6sFHTP
-         HfAA==
-X-Gm-Message-State: ABy/qLYsgyjkYrqOBs674kvabVN5a5sipHGsOWhm5MP/sMdwxn6GhzH3
-        l3pTHOFkAxer9trioQfWahknHoznM+FWLk+cMbw9DDR2
-X-Google-Smtp-Source: APBJJlFWGNXe4swzVdalBQhhIjCze8aKGfXwjkJyQ6Uhk0Hi0OKvPJomZC/w1FVXgfdCzOykRfdeuQ==
-X-Received: by 2002:aa7:db49:0:b0:522:38f9:e653 with SMTP id n9-20020aa7db49000000b0052238f9e653mr586908edt.30.1690828822848;
-        Mon, 31 Jul 2023 11:40:22 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id u19-20020a056402111300b0050bc4600d38sm5765400edv.79.2023.07.31.11.40.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 11:40:22 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5221b90f763so7027425a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:40:21 -0700 (PDT)
-X-Received: by 2002:aa7:d7d1:0:b0:51e:25af:dc59 with SMTP id
- e17-20020aa7d7d1000000b0051e25afdc59mr532272eds.40.1690828821624; Mon, 31 Jul
- 2023 11:40:21 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1690828840; x=1722364840;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RdX52nkveqrBNCZb7CBVWE1vKssTmJSxH9qrLsYuR7A=;
+  b=hXKSspP9dwGa/timWXJZpFQfY9B/U5PpyQy0Oq5x5ytcKSjj4sh3JLQG
+   yaBQuJFw+7HS8wpMIFm6XofdLemRfLxuiD56WhKjdazD8qsmhhf4ffOFN
+   E8Bm0aGMGCF3uB18ioVMx0FRQb9FOjUGRLDopWxDd8Ceuf+930fdGs1Ck
+   M=;
+X-IronPort-AV: E=Sophos;i="6.01,245,1684800000"; 
+   d="scan'208";a="19591887"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-f7c754c9.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 18:40:37 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2c-m6i4x-f7c754c9.us-west-2.amazon.com (Postfix) with ESMTPS id EC5A840D45;
+        Mon, 31 Jul 2023 18:40:36 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 18:40:36 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.100.27) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 18:40:33 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <yuehaibing@huawei.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, Kuniyuki Iwashima <kuniyu@amazon.com>
+Subject: Re: [PATCH net-next] inet6: Remove unused function declaration udpv6_connect()
+Date:   Mon, 31 Jul 2023 11:40:24 -0700
+Message-ID: <20230731184024.9011-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230731140437.37056-1-yuehaibing@huawei.com>
+References: <20230731140437.37056-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-References: <CAPM=9twNnV4zMCvrPkw3H-ajZOH-01JVh_kDrxdPYQErz8ZTdA@mail.gmail.com>
- <CAHk-=wi=eDN4Ub0qSN27ztBAvHSXCyiY2stu3_XbTpYpQX4x7w@mail.gmail.com>
- <ZJX27JDyrgvdeCe4@slm.duckdns.org> <ZMdu1YqUI7VIEq1y@alley>
-In-Reply-To: <ZMdu1YqUI7VIEq1y@alley>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 Jul 2023 11:40:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com>
-Message-ID: <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com>
-Subject: Re: arm32 build warnings in workqueue.c
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Dave Airlie <airlied@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.106.100.27]
+X-ClientProxiedBy: EX19D033UWC003.ant.amazon.com (10.13.139.217) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 01:20, Petr Mladek <pmladek@suse.com> wrote:
->
-> Would it help to use const variables?
+From: Yue Haibing <yuehaibing@huawei.com>
+Date: Mon, 31 Jul 2023 22:04:37 +0800
+> This is never implemented since the beginning of git history.
+> 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-I guess it would _work_ these days (I think modern C has picked up
-what C++ idiom of "const variable with an initializer is a constant"),
-although with old compilers I would actually not be at all surprised
-to see 'const variable' uses being turned into "load from memory",
+Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 
-But I don't see any real advantage, and it gets very nasty for non-static ones.
 
-I think people just need to expand some things manually if they use a debugger.
-
-It's not like we don't use macros absolutely EVERYWHERE ELSE, and any
-gdb user already has to deal with it. The workqueue flags are the
-least of your problems.
-
-So I think the whole "gdb debug info" argument is complete garbage,
-and was never true at all. If you want gdb to know about these
-constants, you just do the same thing that gdb users already have to
-do for other things.
-
-We have all those gdb python helper scripts for other kernel magic -
-some of it *much* deeper magic than a trivial "combine a few
-constants".
-
-And honestly, I don't understand why anybody seriously believes that
-those WORK_STRUCT constants are somehow very important. We have many
-*much* more fundamental constants that are #define's. Thinking that
-WORK_OFFQ_CANCELING needs special gdb understanding when we have
-PAGE_SIZE that does not seems entirely crazy to me.
-
-              Linus
+> ---
+>  include/net/transp_v6.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/include/net/transp_v6.h b/include/net/transp_v6.h
+> index d27b1caf3753..1a97e3f32029 100644
+> --- a/include/net/transp_v6.h
+> +++ b/include/net/transp_v6.h
+> @@ -33,8 +33,6 @@ void udplitev6_exit(void);
+>  int tcpv6_init(void);
+>  void tcpv6_exit(void);
+>  
+> -int udpv6_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len);
+> -
+>  /* this does all the common and the specific ctl work */
+>  void ip6_datagram_recv_ctl(struct sock *sk, struct msghdr *msg,
+>  			   struct sk_buff *skb);
+> -- 
+> 2.34.1
