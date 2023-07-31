@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC19769FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60C6769FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbjGaRmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56846 "EHLO
+        id S230126AbjGaRoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjGaRmP (ORCPT
+        with ESMTP id S229459AbjGaRoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:42:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CD91AD;
-        Mon, 31 Jul 2023 10:42:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690825331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6uM5FAWSraTF9ANkM/RUmC/VT5LAIL5f6xuNyR6CtXc=;
-        b=wLX5xXa3KKs4oWRl7RM9tDekVld4fxYHH+Z0whYiiVmHaDEsEllfAXbyWJphyeg5+HPds/
-        nLQlnCCzdLLgEJqjARagiUXRSTyiVtq43iwdHHIvFLhXPkHkGK1+E7zmXcmyRxFZtm35DA
-        k6MoXYwE5oRD1yqXJ+zuIBW+mP8s7fNs6piPVn5A6UQml3ALhY8TkBCnuqvxCadSYBHG4g
-        Z2E3jdv431oHpf1zA0809fJPbLq3bBOX66prnGyv3XsHoKzdBtwx9eGM1huKHt+/VmvkpN
-        7aekZoy8gyMuQKkiAV2XteDD9zY6sac92NBwkWG5DuntmNE/E0h4eEXZALMfAQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690825331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6uM5FAWSraTF9ANkM/RUmC/VT5LAIL5f6xuNyR6CtXc=;
-        b=0qUHJK4AU408x6a0y+G2L9DA0OvkZEV/pL8k3VSHNHWY2v93IvUv/Q51lk2G4v2dDi11w2
-        //lPmALRQigWJ0Dw==
-To:     Peter Zijlstra <peterz@infradead.org>, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
-        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
-        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
-In-Reply-To: <87edkonjrk.ffs@tglx>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
-Date:   Mon, 31 Jul 2023 19:42:11 +0200
-Message-ID: <87mszcm0zw.ffs@tglx>
+        Mon, 31 Jul 2023 13:44:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137E610B;
+        Mon, 31 Jul 2023 10:44:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DBF16124F;
+        Mon, 31 Jul 2023 17:44:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95F50C433C7;
+        Mon, 31 Jul 2023 17:44:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690825469;
+        bh=ERL5BDHihGjEFPJ2UxTVdlcp/qwmTYb2pctG9U8dKXY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S9wI4zjSS2eLIrbHx+v2W5ABu327IFBU7OpWsBtnWP7CyJKgH3MM2b74/KPrg+ZVo
+         RmxUepvPvmOwwVj48jucpb0t13CsAzF1h/x4gkiSb/U8Ht1sTX2LA25hmwn6P4yVMS
+         pzbxFVIKN1TFUtiF954RsmrsGYxaUkJYhStlIPl4z8kWouTB4L74UHpY2O/z/50usb
+         eKQYPdDFCZPxzDpIdB7WA5Qes8Uf+/AYxc4HuoJkJLnOcShzUwHZJMvz6asm1kVa5o
+         Wa7ccOI5eH8nqUEQvxHclgD1vCPkCU2kJNxEMJicQtrSs6/nC9ISiHRARoM1HWAu6E
+         mUe0wZSfDFVYA==
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Explicitly include correct DT includes
+Date:   Mon, 31 Jul 2023 18:44:24 +0100
+Message-Id: <169081113966.3427180.6648898239320683110.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230714174021.4039807-1-robh@kernel.org>
+References: <20230714174021.4039807-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,36 +58,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31 2023 at 18:11, Thomas Gleixner wrote:
+On Fri, 14 Jul 2023 11:40:20 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> [...]
 
-> On Fri, Jul 21 2023 at 12:22, Peter Zijlstra wrote:
->> +#define FUTEX2_8		0x00
->> +#define FUTEX2_16		0x01
->>  #define FUTEX2_32		0x02
->> -			/*	0x04 */
->> +#define FUTEX2_64		0x03
->> +#define FUTEX2_NUMA		0x04
->>  			/*	0x08 */
->>  			/*	0x10 */
->>  			/*	0x20 */
->> --- a/kernel/futex/syscalls.c
->> +++ b/kernel/futex/syscalls.c
->> @@ -183,7 +183,7 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
->>  	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
->>  }
->>  
->> -#define FUTEX2_MASK (FUTEX2_32 | FUTEX2_PRIVATE)
->> +#define FUTEX2_MASK (FUTEX2_64 | FUTEX2_PRIVATE)
->>  
->>  /**
->>   * futex_parse_waitv - Parse a waitv array from userspace
->> @@ -207,7 +207,12 @@ static int futex_parse_waitv(struct fute
->>  		if ((aux.flags & ~FUTEX2_MASK) || aux.__reserved)
->>  			return -EINVAL;
->
-> With the above aux.flags with FUTEX2_32 set will result in -EINVAL. I
-> don't think that's intentional.
+Applied to arm64 (for-next/misc), thanks!
 
-Aargh. This is really nasty to make FUTEX2_64 0x3 and abuse it to test
-the flags for validity. Intuitive and obvious is something else.
+[1/1] arm64: Explicitly include correct DT includes
+      https://git.kernel.org/arm64/c/b9d601249740
 
+Cheers,
+-- 
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
