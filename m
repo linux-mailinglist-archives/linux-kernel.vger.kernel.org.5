@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE1476A3DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699C076A3E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjGaWCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        id S231765AbjGaWDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:03:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbjGaWCT (ORCPT
+        with ESMTP id S231822AbjGaWDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:02:19 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A364139
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:02:17 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb119be881so42802275ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690840937; x=1691445737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sZXwDT7lSpqyD7OTKZuyX3OzGyE3jIs1AadqKpDkW4k=;
-        b=tOj5Wt8YaFbV9ywN8nWXCNvxhO7wQxvdH1VuIunjBBAFvrIRXATc1vv1fhcuEb/L70
-         6vI9iaVn3df/+UxPaojvO5Rgor46IcxGgiooU1s5haTR0pdIPEwSRwcvZPAXGyFiH3bw
-         yaFnfDJ4DE+SoVu9fyI8CWeoD2XZ2V0l7OrojyOM4pj17/rkfyxy9wlEneag46uAQUZ6
-         FYmKPIhBnvgFvsP3VgHD5an3SyGSlka7JM5wUfGW++JWly0Ywc3x1k5DWdL3frlpoAfc
-         VHK8LiITN+JKqZJy9ty314CUeJBBEZGXdkDUPtSeoOOnQYNH5vnTVmuxi6DPv/+A/NJk
-         VRXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690840937; x=1691445737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sZXwDT7lSpqyD7OTKZuyX3OzGyE3jIs1AadqKpDkW4k=;
-        b=bkHlERn+reR6h1gDg+LQmZ++IID64PCVmBLvBjau+LcnUQpde7QUbdsHBW4qgAt44w
-         k3pTQyiDgxigdkvgpTVP7kQDOgibvVrfUz7JfxHJRoNs5fmXLBTk4/Nb1FUbCgH+U/3Y
-         Pg07dKqCHcdBwCFJdL7AC94dLIwA3ya3sr7trCbbc6IuPWFj/bP2oLZ860AgLUHENub3
-         P0qbRJtBfpt0uHBIm0trxmSwSUiOSWr3UrqWikdJWEOyfiidhwcFrYW3bdnLbbsH+bKK
-         GL2TqvHTxEAx5fabI2SGzYIFYJ7bsd4brXJLS0v7U0cAcSAbxABpXxEJVsDOLd8EoLxd
-         phdA==
-X-Gm-Message-State: ABy/qLbxcfmyfZctKah9JGXg+0oyv0UHEASQ3Gh0s0Dxk5BUyuCSgd6/
-        fYyswHOVio01piBAUOqhOtNggg==
-X-Google-Smtp-Source: APBJJlG/7TIXArFl9nzqfXiuLGmMf5q7GAr+Ricr4oDD2rfNy25Ng3+2Iw3hd1zL6TZ5ztIEFXv3mQ==
-X-Received: by 2002:a17:902:cec7:b0:1bc:6c8:cded with SMTP id d7-20020a170902cec700b001bc06c8cdedmr8032979plg.67.1690840936879;
-        Mon, 31 Jul 2023 15:02:16 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id f16-20020a170902ce9000b001b016313b1dsm9052782plg.86.2023.07.31.15.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 15:02:16 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 22:02:12 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>
-Subject: Re: [PATCH v2 5/6] KVM: Documentation: Add the missing description
- for mmu_valid_gen into kvm_mmu_page
-Message-ID: <ZMgvZA+4FhtWB4Dl@google.com>
-References: <20230626182016.4127366-1-mizhang@google.com>
- <20230626182016.4127366-6-mizhang@google.com>
- <ZJsKsQNWVq4zNmGk@google.com>
+        Mon, 31 Jul 2023 18:03:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0E7139;
+        Mon, 31 Jul 2023 15:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=gHoaM7eGFNI0KBp/0qw5JaxvSgb4EPXM7prcdF6Gpvo=; b=YOow06njeJ2olbzkCBKb8IZ9Nj
+        jVqID3WRMSIwJ/moJkKieCB6dlOM6c18c0/E525uSPWKhKvDBfNhl9+sz1rfHT7CU0mSzimPsTbJD
+        SK2jmsLU3kM/+Y+W+yFl5k69zuubZRgknxIPJtf1rGYYqD6UM5g0DcZNixGYffLkNEyZaZHbpNAYz
+        mnxoMRdRuuxhHWWwK+QcuIELp00rYFGkNBppcswr9d0vcIkKFOXZRwth+afyxMBZQ4ZhStUOUIrfh
+        vJLv4jqUMgfChpAkgO1/UwuuaC8r5L/k4nORLEkD6rVlDJTDwp5/6ZNJg5U2A4yRLuJa/HKlsXMhI
+        3TkWjTVw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQayW-00HSp6-1h;
+        Mon, 31 Jul 2023 22:02:48 +0000
+Message-ID: <afac2810-f93e-eda5-975e-041ac4b908b5@infradead.org>
+Date:   Mon, 31 Jul 2023 15:02:47 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZJsKsQNWVq4zNmGk@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/2] cpufreq: add virtual-cpufreq driver
+Content-Language: en-US
+To:     David Dai <davidai@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230731174613.4133167-1-davidai@google.com>
+ <20230731174613.4133167-3-davidai@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230731174613.4133167-3-davidai@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 27, 2023, Sean Christopherson wrote:
-> On Mon, Jun 26, 2023, Mingwei Zhang wrote:
-> > Add the description for mmu_valid_gen into kvm_mmu_page description.
-> > mmu_valid_gen is used in shadow MMU for fast zapping. Update the doc to
-> > reflect that.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  Documentation/virt/kvm/x86/mmu.rst | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > index 97d695207e11..cc4bd190c93d 100644
-> > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > @@ -208,6 +208,10 @@ Shadow pages contain the following information:
-> >      The page is not backed by a guest page table, but its first entry
-> >      points to one.  This is set if NPT uses 5-level page tables (host
-> >      CR4.LA57=1) and is shadowing L1's 4-level NPT (L1 CR4.LA57=1).
-> > +  mmu_valid_gen:
-> > +    Used by comparing against kvm->arch.mmu_valid_gen to check whether the
-> 
-> This needs to explain what the generation is, and where it comes from.
-> 
->   The MMU generation of this page, used to effect a "fast" zap of all MMU pages
->   across all roots.  To zap all pages in all roots without blocking vCPUs, e.g.
->   when deleting a memslot, KVM updates the per-VM valid MMU generation to mark
->   all existing pages and roots invalid/obsolete.  Obsolete pages can't be used,
->   e.g. vCPUs must load a new, valid root before re-entering the guest.
-> 
->   The MMU generation is only ever '0' or '1', as slots_lock must be held until
->   all obsolete pages are zapped and freed, i.e. there is exactly one valid
->   generation and (at most) one invalid generation.
-> 
->   Note, the TDP MMU doesn't use mmu_gen as non-root TDP MMU pages are reachable
->   only from their owning root, whereas all pages for shadow MMUs are reachable
->   via the hash map.  The TDP MMU uses role.invalid to track obsolete roots.
 
-Sean, thanks for the detailed explanation. I will pick the most of the
-content and get into the next version.
-> 
-> And then big bonus points if you add
-> 
->   Page Role
->   =========
-> 
-> to explain the purpose of the role, and how/when it's used in the shadow MMU versus
-> the TDP MMU.  The shadow MMU's use of a hash map is a fundemental aspect that really
-> should be documented here.
-> 
-> > +    shadow page is obsolete thus a convenient variable for fast zapping.
-> > +    Note that TDP MMU does not use mmu_valid_gen.
-> >    gfn:
-> >      Either the guest page table containing the translations shadowed by this
-> >      page, or the base page frame for linear translations.  See role.direct.
-> > -- 
-> > 2.41.0.162.gfafddb0af9-goog
-> > 
+
+On 7/31/23 10:46, David Dai wrote:
+> diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+> index f429b9b37b76..3977ca796747 100644
+> --- a/drivers/cpufreq/Kconfig
+> +++ b/drivers/cpufreq/Kconfig
+> @@ -217,6 +217,21 @@ config CPUFREQ_DT
+>  
+>  	  If in doubt, say N.
+>  
+> +config CPUFREQ_VIRT
+> +        tristate "Virtual cpufreq driver"
+> +	depends on OF
+> +	select PM_OPP
+> +        help
+
+The 4 lines above should be indented with one tab (not 8 spaces).
+
+> +	  This adds a virtualized cpufreq driver for guest kernels that
+> +	  read/writes to a MMIO region for a virtualized cpufreq device to
+
+	  reads/writes to an MMIO region
+
+> +	  communicate with the host. It sends frequency updates to the host
+> +	  which gets used as a hint to schedule vCPU threads and select CPU
+> +	  frequency. If a VM does not support a virtualized FIE such as AMUs,
+> +	  it updates the frequency scaling factor by polling host CPU frequency
+> +	  to enable accurate Per-Entity Load Tracking for tasks running in the guest.
+> +
+> +	  If in doubt, say N.
+
+-- 
+~Randy
