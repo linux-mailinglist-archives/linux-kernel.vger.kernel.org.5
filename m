@@ -2,114 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DA176929D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223E87692A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjGaJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S231321AbjGaKBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbjGaJ7B (ORCPT
+        with ESMTP id S231297AbjGaKBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:59:01 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F055C1AD
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:58:38 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe12baec61so19319035e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:58:38 -0700 (PDT)
+        Mon, 31 Jul 2023 06:01:19 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F091D3598;
+        Mon, 31 Jul 2023 02:59:32 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bccc9ec02so684228666b.2;
+        Mon, 31 Jul 2023 02:59:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690797517; x=1691402317;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rg2nsL33DJP3APkKNMN9PVz8TJV+b2lWQs0h39zCPdk=;
-        b=D0CoOihB3i7vfd0NMuE+IHCa036Obg/hpIa5zSSxwWWza07mstlN8/upTS0yoIfuj5
-         Qg6dODVcwzceCYpXrF9g1tFAA/I5TkGckqYyQuqoOY7h7H0xpUa/Jd7z85nZ7QUDxHhc
-         EArzckJn73/0IGSJWZllm5YnLABbccWDAZuGWIqaxhgHdV5D4D2OsVvwAvIrVPQX2Qv4
-         hb9cBaMHMop6CgT1oMVocppR0fAnA+DzmcgTrl2FHd8Kt7EHyOpaayst2z/RsELa0BYm
-         wniLBlCyEK/MXeK86TQdiWtXsaBVqE4tyCt+/TqHDQMEzlR3+fhP4JbYGru2veBQQ4vL
-         p0lg==
+        d=gmail.com; s=20221208; t=1690797569; x=1691402369;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y6btwtxFM0exA7hajr4yQPObG72hgpwZQHb0o/diXn8=;
+        b=KYGP/raz1IL6SXz9GdbWlegE4tKzmySleQiJiEGnai6C+nJmxDJp+0DqPvH1sJAWDa
+         o8c9+MdioOU3zMbVBRWb0jVLuw4ZhMcAuF0+5Be3d+QPyk/ODbFKcYwhVgHz1Yw0gUmu
+         OKYhrI/OANqx2fS9VE6yhVCNakZw1OYVFWNmbYtk2Q7hycUQIZFQzwCaqol4IMiIAoNc
+         ZY5JlKXzpoBKFq/EAou7z/1GDYtKlOE7XQtFH7V5S1O+fdWPZ2QAhQgEn8tXTaDBaZS9
+         lYxkKXxBkpOcOwl4XZ2nQNQe5ItCo98rDX+k0wJ+1Bt0fwsEE8evnf299mTaKvZqHGwf
+         1mKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690797517; x=1691402317;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rg2nsL33DJP3APkKNMN9PVz8TJV+b2lWQs0h39zCPdk=;
-        b=BrfPUXZ2yukPjVFUIyHn9zIz+ZYKvFSbwh9ZJ/XdHrZhwc0MPUcbeurZVQsZ8LX+RK
-         nDBi21eBSJcVYaaVyJd6lIlKODTZ8uaNih1xSTf+On5CIWjHpkD2kq5MPzt6N479LZwn
-         nIa4f4qIVMvbpmrOoAVicgx2aLUdLlmzHlg0HTudkoDApG6jAbpqpRUcge1NysVkjEGg
-         bwzZoQ/YZCsyWlgn3ws2RP5ZiSFbejBAsrmqCYAWlwxe1VPeZLCTr1gcL6JENKY7g1Ro
-         P5x+Vxi6Zcve4s/Nh8+7GoLHxbXhlCuTUItxjsMJm2J7VuJ8OD49dW8wV1lpzRl1tXtp
-         WHdQ==
-X-Gm-Message-State: ABy/qLaDugF5qQnSFg8PCm1WzvB1hlcZNNkHM2Flegphq94xeHi+eNnA
-        OTspobaynlsLpFHdUs96+NBiRQ==
-X-Google-Smtp-Source: APBJJlHWatIum20TrxpJEWJ1w3MDJ0L8YbqPTf426+yes4pyrdIxTQM3BwWTW5meZG9v5qeIpdgvMQ==
-X-Received: by 2002:adf:e586:0:b0:316:f24b:597a with SMTP id l6-20020adfe586000000b00316f24b597amr6780410wrm.46.1690797517412;
-        Mon, 31 Jul 2023 02:58:37 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id i17-20020a5d55d1000000b003143be36d99sm12568762wrw.58.2023.07.31.02.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 02:58:36 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230717225623.3214384-1-robh@kernel.org>
-References: <20230717225623.3214384-1-robh@kernel.org>
-Subject: Re: [PATCH] ARM: meson: Drop unused includes
-Message-Id: <169079751641.200989.17748164958378497482.b4-ty@linaro.org>
-Date:   Mon, 31 Jul 2023 11:58:36 +0200
+        d=1e100.net; s=20221208; t=1690797569; x=1691402369;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y6btwtxFM0exA7hajr4yQPObG72hgpwZQHb0o/diXn8=;
+        b=PdI4j4P9I2VsoGkrqBAr7Po85JT8PuHIx3WagNg8Jn9r0Pcb+D3D/hmr+omSHTqo+C
+         S3gY0LifZSaBpirEa64iFQcYZd8DIGhpddd0fhKQr5/+qtyUfkXaT6ohHY4m8ZoHuMgM
+         GWZvGL+KoWWwHHeV2S8NuUR67iOtAwwv4c7XbTlp575v5HT12/FnsD237dK5jgx9eCmi
+         El+qCbEQ9xIHlH+oRxLFkfkyV/uBkhmtEHKPTYN63efW9gxJgYj8noCXy5AuzwTBzCUv
+         PHouve+bmqI0OXfgQGZ7M9/BfQ8Q5N61NrlmlWFcL4D29+ipfgbfq14/orqRC3dL458d
+         22vQ==
+X-Gm-Message-State: ABy/qLZdr46hLLdkFOvf3I9VKLgMMCy2DkprlMtdjBfd4D8pFEdbSi3q
+        4sH+vCPwnUQgIo8Z3lkGAHM=
+X-Google-Smtp-Source: APBJJlHXWtuHxida9k1IkQW8Pq1jD1+TJQF0qW3h0tswoDv7cYKWZ9nDxIcCkHwunl05C+kCHUlXcQ==
+X-Received: by 2002:a17:906:2219:b0:99b:e5c3:2e45 with SMTP id s25-20020a170906221900b0099be5c32e45mr6118052ejs.28.1690797568995;
+        Mon, 31 Jul 2023 02:59:28 -0700 (PDT)
+Received: from [192.168.3.32] ([213.149.38.169])
+        by smtp.gmail.com with ESMTPSA id x23-20020a1709065ad700b009893b06e9e3sm5991877ejs.225.2023.07.31.02.59.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 02:59:28 -0700 (PDT)
+Message-ID: <ee25836b-f49f-acf2-086f-3c39f1e088b8@gmail.com>
+Date:   Mon, 31 Jul 2023 11:59:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH V5] PCI: qcom: Fixing broken pcie enumeration for 2_3_3
+ configs ops
+To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh@kernel.org, mani@kernel.org, lpieralisi@kernel.org,
+        bhelgaas@google.com, kw@linux.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        gregkh@linuxfoundation.org, dmitry.baryshkov@linaro.org
+Cc:     stable@vger.kernel.org
+References: <20230724063429.3980462-1-quic_srichara@quicinc.com>
+Content-Language: en-US
+From:   Robert Marko <robimarko@gmail.com>
+In-Reply-To: <20230724063429.3980462-1-quic_srichara@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Mon, 17 Jul 2023 16:56:23 -0600, Rob Herring wrote:
-> of_platform.h is not needed, so drop it.
-> 
-> 
+On 24. 07. 2023. 08:34, Sricharan Ramabadhran wrote:
+> PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for IPQ8074 2_3_3 post_init.
+> PCIe slave addr register offset is 0x358, but was wrongly changed to
+> 0x168 as a part of commit 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix
+> from register definitions"). Fixing it, by using the right macro and remove
+> the unused PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
+>
+> Without this access to the registers of slave addr space like iATU etc
+> are broken leading to pcie enumeration failure.
+>
+> Fixes: 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from register definitions")
+> Cc: <Stable@vger.kernel.org>
+> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.6/arm-mach)
+I can confirm this fixes Gen2 PCIe on Xiaomi AX9000 (IPQ8072A) so:
+Tested-by: Robert Marko <robimarko@gmail.com>
 
-[1/1] ARM: meson: Drop unused includes
-      https://git.kernel.org/amlogic/c/b5bd2ccac2d5b2830c1d59e759e5e35e50639b99
-
-These changes has been applied on the intermediate git tree [1].
-
-The v6.6/arm-mach branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
-
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
-
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
-
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
--- 
-Neil
-
+> ---
+>   [v5] Fixed subject, commit log
+>   [v4] Fix commit sub and added '<mani@kernel.org>' reviewed-by tag
+>   [v3] Added reviewed-by tag, fixed subject, commit text
+>   [v2] Fixed the 'fixes tag' correctly, subject, right macro usage
+>
+>   drivers/pci/controller/dwc/pcie-qcom.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 4ab30892f6ef..8418894b3de7 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -43,7 +43,6 @@
+>   #define PARF_PHY_REFCLK				0x4c
+>   #define PARF_CONFIG_BITS			0x50
+>   #define PARF_DBI_BASE_ADDR			0x168
+> -#define PARF_SLV_ADDR_SPACE_SIZE_2_3_3		0x16c /* Register offset specific to IP ver 2.3.3 */
+>   #define PARF_MHI_CLOCK_RESET_CTRL		0x174
+>   #define PARF_AXI_MSTR_WR_ADDR_HALT		0x178
+>   #define PARF_AXI_MSTR_WR_ADDR_HALT_V2		0x1a8
+> @@ -810,8 +809,7 @@ static int qcom_pcie_post_init_2_3_3(struct qcom_pcie *pcie)
+>   	u16 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+>   	u32 val;
+>   
+> -	writel(SLV_ADDR_SPACE_SZ,
+> -		pcie->parf + PARF_SLV_ADDR_SPACE_SIZE_2_3_3);
+> +	writel(SLV_ADDR_SPACE_SZ, pcie->parf + PARF_SLV_ADDR_SPACE_SIZE);
+>   
+>   	val = readl(pcie->parf + PARF_PHY_CTRL);
+>   	val &= ~PHY_TEST_PWR_DOWN;
+>
