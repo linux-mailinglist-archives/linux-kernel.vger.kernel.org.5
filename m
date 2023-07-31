@@ -2,152 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6784768B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 07:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CB0768B51
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 07:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjGaFjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 01:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S230071AbjGaFkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 01:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbjGaFjr (ORCPT
+        with ESMTP id S230086AbjGaFj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 01:39:47 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F021738;
-        Sun, 30 Jul 2023 22:39:18 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V5IHoU031259;
-        Mon, 31 Jul 2023 05:39:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Y37+2zogaPTYO9ta+KBrS9cJl/BaP8CRdIqHRWIBk7c=;
- b=AEb7imhqFNGFyOdBQEE/gEwDQ4b33tb2J9gkcHKAwIbp3er5rX+vw49ZWK6iV5RqMDz2
- 35h3kA2jZEVD1YLw5X6yU8CG7dPO5OBELz/bdvmYkEzE7kZhAKHSTzaWNjbGMJqLMcWI
- YEFs7N/Gqn3ItIZk7LJl+ASl3gMsp8VaeelfkNhAAlKMirBwijoaJm2FA7K50wDJx1o3
- Ptd8++f1GcFe/7od246rGvN4nKaINaFbg2rXK1IxM1pbq9msusEdongUmjWTpZH2JjRg
- +XzeJTMWK5pU5Jqexy853FcGZjv4lFryW4tlHNe3ca8QKh002nLgIPFAaW4sdmiNxUhu cA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4uantqdj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 05:39:10 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V5d9S5021500
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 05:39:09 GMT
-Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 30 Jul
- 2023 22:39:06 -0700
-Message-ID: <7a84284c-d842-255d-8b68-037f79367ee7@quicinc.com>
-Date:   Mon, 31 Jul 2023 11:09:03 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v4 0/9] PCI: EPC: Add support to wake up host from D3
- states
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <krzysztof.kozlowski@linaro.org>
-References: <1689232218-28265-1-git-send-email-quic_krichai@quicinc.com>
- <20230728043726.GJ4433@thinkpad>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20230728043726.GJ4433@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tn6oj-hh4u42sMjLTjmxs--ob8FVfnD3
-X-Proofpoint-ORIG-GUID: tn6oj-hh4u42sMjLTjmxs--ob8FVfnD3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=755
- phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310050
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 01:39:58 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1597010F5;
+        Sun, 30 Jul 2023 22:39:55 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7F2155C0103;
+        Mon, 31 Jul 2023 01:39:52 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 31 Jul 2023 01:39:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1690781992; x=1690868392; bh=UrQ44egSsYKrgrC8lXSaEIOM2nJnUB+IsN4
+        O98912zA=; b=db2uzzxQtgivo508fRTO8f4XT0UETH9ryLw+9yH+LWGIeJWJsCJ
+        HyAkf5A99D/hyoKbJOko/ceLBuwZp2QtRooFcET2ZSJwaqbE4XTiUv+2ML8KaYYr
+        tt8Ij6oLz9J3q18bAAOJaYnkH6yKUrILmwSFmfJM13iSYvenRqhyQQqGJh7PJCgB
+        Kk6ktQNggVLNepXFQkg9hrbSvPSYoyF9eAs0xMuHa3xVMrzH5dMfaQUjEpSG2CHo
+        mZKgUWbVbnZpTXQCcByWUxXsR5+0RmMUIfNBtlHVn4/qTnbVbb6vHbK6G5qFeXe9
+        dlcwt1USgct6rxxQiGj/1DBjCiZXcngSYUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1690781992; x=1690868392; bh=UrQ44egSsYKrgrC8lXSaEIOM2nJnUB+IsN4
+        O98912zA=; b=SfnVnfPXXL3mwHIIIuxPP6P+wTbpKu+T6nwkEpJpH+uTqi10iQl
+        lD6rkBhcUmKB0he2oTsKCEaftfGrtSaqsYJM+K8d3W2oSMvoD56zpeUQ3WlPSzr3
+        4MWl9xiznEpkINcxm8BeUmkGejh123fEjEY9a9Q6EiELNqwX+K5H0uNMTMXeMi1b
+        JnnccxzQVYFYS79Uib2hmQXRRlKzYLqdciQvM7zVwq/JtGNDe1MqWdreZGZw1elt
+        XNvMJ+M7dCsV1mGGKcvWo/CJ+pU39XDBGqIImYfqgc4OBunU2MmKSzOG8UxRRUhU
+        MhYl+QjUDC6CfSnaepOeCe5ZcXCZKyfmNrg==
+X-ME-Sender: <xms:JknHZOMr2B4otX3Whv5p7QD31LWKZOV1ZByR19K3gtbtUbPwFhNm7g>
+    <xme:JknHZM-9svD2oW6dTXmKjS-jUEVrQ_rqiGBAenlNEiBElmdzYvvw6omz1MiwHqp_3
+    4_celspL1uzJzMXq0k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjedvgdeljecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:JknHZFQj14YdLw_Py2F6LCjGho0W-InNWUSUf3BIsHyO6kNrRQGrag>
+    <xmx:JknHZOvuqmGJScNtxpxYPB1lJNKlYCo_xghCmtbd94kWOGCl2Sv2fA>
+    <xmx:JknHZGegVm_0iakLrtjFQGm0TP735QzgOq6DLHfE1nSsO160ldBXew>
+    <xmx:KEnHZJUFsthMA4fissNqKUiT-ALEs3M42gkkAfH9V-DqtYFiAL0ZOw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id CC613B60089; Mon, 31 Jul 2023 01:39:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <8b3466e4-a295-4249-bd05-2edbf7b3f6e3@app.fastmail.com>
+In-Reply-To: <CAJF2gTTRHzT+CEtb1LVYdfCorVUdLvCh_eMxrmC=xjdQ_JS6Sg@mail.gmail.com>
+References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <ZMZ6XB6gX2kFd/Nt@xhacker>
+ <CAJM55Z8vF8_xq0QyByLUGM2W-8m6R-_6SdOFdLETV7J-yo5DMQ@mail.gmail.com>
+ <92c00ddb-e956-4861-af80-5f5558c9a8f5@app.fastmail.com>
+ <CAJF2gTTRHzT+CEtb1LVYdfCorVUdLvCh_eMxrmC=xjdQ_JS6Sg@mail.gmail.com>
+Date:   Mon, 31 Jul 2023 07:39:30 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     guoren <guoren@kernel.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
+        "Jisheng Zhang" <jszhang@kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        "Conor.Dooley" <conor.dooley@microchip.com>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        "Andrew Jones" <ajones@ventanamicro.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Samuel Holland" <samuel@sholland.org>,
+        linux-riscv@lists.infradead.org,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "Biju Das" <biju.das.jz@bp.renesas.com>,
+        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache operations
+ support
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/28/2023 10:07 AM, Manivannan Sadhasivam wrote:
-> On Thu, Jul 13, 2023 at 12:40:09PM +0530, Krishna chaitanya chundru wrote:
->> Here we propose this patch series to add support in PCI endpoint
->> driver to wake up host from D3 states.
+On Mon, Jul 31, 2023, at 02:49, Guo Ren wrote:
+> On Mon, Jul 31, 2023 at 4:36=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> =
+wrote:
 >>
->> As endpoint cannot send any data/MSI when the D-state is in
->> D3cold or D3hot. Endpoint needs to bring the device back to D0
->> to send any kind of data.
+>> On Sun, Jul 30, 2023, at 17:42, Emil Renner Berthing wrote:
+>> > On Sun, 30 Jul 2023 at 17:11, Jisheng Zhang <jszhang@kernel.org> wr=
+ote:
 >>
->> For this endpoint needs to send inband PME the device is in D3 state or
->> toggle wake when the device is D3 cold and vaux is not supplied.
+>> >> > +
+>> >> >  static inline void arch_dma_cache_wback(phys_addr_t paddr, size=
+_t size)
+>> >> >  {
+>> >> >       void *vaddr =3D phys_to_virt(paddr);
+>> >> >
+>> >> > +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
+>> >> > +     if (unlikely(noncoherent_cache_ops.wback)) {
+>> >>
+>> >> I'm worried about the performance impact here.
+>> >> For unified kernel Image reason, RISCV_NONSTANDARD_CACHE_OPS will =
+be
+>> >> enabled by default, so standard CMO and T-HEAD's CMO platform's
+>> >> performance will be impacted, because even an unlikely is put
+>> >> here, the check action still needs to be done.
+>> >
+>> > On IRC I asked why not use a static key so the overhead is just a
+>> > single nop when the standard CMO ops are available, but the consens=
+us
+>> > seemed to be that the flushing would completely dominate this branc=
+h.
+>> > And on platforms with the standard CMO ops the branch be correctly
+>> > predicted anyway.
 >>
->> As EPF doestn't know the D-state of the PCI, added a notify op whenever
->> device state changes.
->>
->> Based on the D-state the EPF driver decides to wake host either by
->> toggling wake or by sending PME.
->>
->> When the MHI state is in M3 MHI driver will wakeup the host using the
->> wakeup op.
->>
-> Please split this series into two. One adding D-state support and another
-> (dependant) adding wakeup support. We can try to merge atleast first one for
-> 6.6.
+>> Not just the flushing, but also loading back the invalidated
+>> cache lines afterwards is just very expensive. I don't think
+>> you would be able to measure a difference between the static
+>> key and a correctly predicted branch on any relevant usecase here.
+> Maybe we should move CMO & THEAD ops to the noncoherent_cache_ops, and
+> only keep one of them.
 >
-> - Mani
-Sure, can you point me any patch series that is added dependant on 
-another series.
->> ---
->> Changes from v3:
->> 	- changed the bool return type to int for waking the host in mhi ep driver
->> 	 as suggested by dan and bjorn.
->> 	- Changed commit logs as suggested by bjorn.
->> Changes from v2:
->>          - Addressed review comments made by mani.
->> Changes from v1:
->>          - Moved from RFC patch to regular patch
->>          - Inclueded EPF patch and added a new op patch to notify D-state change.
->> ---
->>
->> Krishna chaitanya chundru (9):
->>    PCI: endpoint: Add D-state change notifier support
->>    PCI: qcom-ep: Add support for D-state change notification
->>    PCI: epf-mhi: Add support for handling D-state notify from EPC
->>    PCI: qcom-ep: Update the D-state log
->>    PCI: endpoint: Add wakeup host API to EPC core
->>    PCI: dwc: Add wakeup host op to pci_epc_ops
->>    PCI: qcom-ep: Add wake up host op to dw_pcie_ep_ops
->>    PCI: epf-mhi: Add wakeup host op
->>    bus: mhi: ep: wake up host if the MHI state is in M3
->>
->>   Documentation/PCI/endpoint/pci-endpoint.rst     | 11 +++++
->>   drivers/bus/mhi/ep/main.c                       | 27 ++++++++++++
->>   drivers/pci/controller/dwc/pcie-designware-ep.c | 12 +++++
->>   drivers/pci/controller/dwc/pcie-designware.h    |  3 ++
->>   drivers/pci/controller/dwc/pcie-qcom-ep.c       | 36 ++++++++++++++-
->>   drivers/pci/endpoint/functions/pci-epf-mhi.c    | 27 ++++++++++++
->>   drivers/pci/endpoint/pci-epc-core.c             | 58 +++++++++++++++++++++++++
->>   include/linux/mhi_ep.h                          |  4 ++
->>   include/linux/pci-epc.h                         | 12 +++++
->>   include/linux/pci-epf.h                         |  1 +
->>   10 files changed, 190 insertions(+), 1 deletion(-)
->>
->> -- 
->> 2.7.4
->>
+> I prefer noncoherent_cache_ops, it's more maintance than ALTERNATIVE.
+
+I think moving the THEAD ops at the same level as all nonstandard
+operations makes sense, but I'd still leave CMO as an explicit
+fast path that avoids the indirect branch. This seems like the right
+thing to do both for readability and for platforms on which the
+indirect branch has a noticeable overhead.
+
+    Arnd
