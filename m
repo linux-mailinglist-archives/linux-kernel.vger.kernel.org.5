@@ -2,102 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1416F769982
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAC2769988
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbjGaOaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S231636AbjGaOcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjGaOaG (ORCPT
+        with ESMTP id S229790AbjGaOb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:30:06 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD28B6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:30:03 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-563fbc76454so4749850a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:30:03 -0700 (PDT)
+        Mon, 31 Jul 2023 10:31:56 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F99D3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:54 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3178dd771ceso3200308f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690813802; x=1691418602;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ObUdgROJ4Fh6eGJrzpfR0YhkAzW7v0vw5c8AAWfwu6Y=;
-        b=Tk9LoTMTTsEQqNvFWItA11F7gfp/gOQ/YnVlWInA1K44dlehN3cr8tbgER2TDsioQD
-         M8EKZjZr+uxZAvdq1pAthJlrk/hQVImPC0csEHGHRru6EtYPWYFaQ1dK9ZYypfOlkYZM
-         7OIjHkZVMJra3SF3JYr8YPdSWXFrA8YESyjxZmccUc+UwE9tzenDvdDMhSQdogJ02/9V
-         CODm8eN5WRLPtikUqG1VqppGe4N7ikOXJ7q/qqEsdshtoH2o29FkfUssxpWVO2u68lNC
-         MRbdwHNMeLCe6r6iXAovuJbi9j/lZYb8wTzl0/MUSRwZ40jvN1IAyn8Za88mB4OVqXi4
-         rKsg==
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690813913; x=1691418713;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C2IHwKYnLNDMWdLQxEd/SU6Gdll+SBIjNHACmkW+1QA=;
+        b=1Qf5eCcJY8sevNEC/HX5WLYyVc+EFCLz9jXCySaH7tyM+geGe1kMnUSZ+/E4BYlCXh
+         W3edA2AXUuC5BKOj8XrvmeNHJ7WP9ifEwtiPu9Tp52dWyoTMnISkGQ2qmyD9p1xONMr5
+         4Bk0RYDmiJ15bYd4a/yLPTy3t6ButwFW8Nbvo7Jfz2/DmxwFcxSZws9UYQOZwlg7Vh+2
+         Q7hOkVEUUL/dc8XEUfKogGjybD4/mRfnbWugqUafRzXXZPCgu13+WLkgjrSpg6zwrC9k
+         DosdBrNSqNpCpIF9hP6S4tkKVcWLAxPo1+Rb9h/BoUFYP5nABGsShjPI9gJuopM3lz8s
+         UPEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690813802; x=1691418602;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ObUdgROJ4Fh6eGJrzpfR0YhkAzW7v0vw5c8AAWfwu6Y=;
-        b=kRGKtt2van4wre+dS0sSH9d28vsEwutfzy0P73Oa4i/4cYeXRJgXLDtbcfXupcFT+c
-         7GlCfdNQbHEyIEuYAdO+T8OombS+WrYGDtzCf/6JksA9BsJb5d+tHP7pFad4n56YK9/B
-         RBvcLZKrTi2uW8u98Zh4zBgH9ieCpr6pUBdSWaCkGqQpHMClq/owc6qzTHLwC6LzbfSq
-         QVnNWjpQXB9uRdV3dcaZ1pQ01/tF8bw+AqSExu8Rn7ZxakAabEMo9VybtI4Se9dlRpxa
-         GIPgYGB1KMXR7XdP9ZfAQvLi9bKcYgrbDzQch2bVkoP2k+NN0bkMT27e9LNH9nE/y8Qr
-         fJiA==
-X-Gm-Message-State: ABy/qLYHv1sE33wybDeb0++n0wgW6fnhpRpLtGR6ElfdKkRfknTSDsO4
-        EofK4A4F+st+IsUhzvP5JSokV2Mb030=
-X-Google-Smtp-Source: APBJJlFJCgvQUS3lYgpzxhrJr8+EP6qWlgqSSdZQQWXDlb76ZJKxLdFvbGJeFc6OC4VTdbe4FKDPaZCJ5V8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ce84:b0:1b8:2cee:946b with SMTP id
- f4-20020a170902ce8400b001b82cee946bmr43357plg.11.1690813802190; Mon, 31 Jul
- 2023 07:30:02 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 07:30:00 -0700
-In-Reply-To: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
-Mime-Version: 1.0
-References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
-Message-ID: <ZMfFaF2M6Vrh/QdW@google.com>
-Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
-From:   Sean Christopherson <seanjc@google.com>
-To:     wuzongyong <wuzongyo@mail.ustc.edu.cn>
-Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
-        kvm@vger.kernel.org, x86@kernel.org, linux-coco@lists.linux.dev
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1690813913; x=1691418713;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C2IHwKYnLNDMWdLQxEd/SU6Gdll+SBIjNHACmkW+1QA=;
+        b=GRBvi7s7x4OJgzvFqikZ14BlXXjHFFg09igTdyw/HFc/43loDyVI/AqHOATCtOEDEw
+         gYGzCOK/9bPtc72jFRBN8Xl41cIZp4FMoCeD9xj3HgikjhkB6Ad4og+Bpy/7lESEtEZ5
+         MsFWKjH1RVyz2m1MEeh22Aq0zhFVmcEV2+J3Um5cagacQQdZ4p8vE9eImOqx9+xAfoae
+         oy72B3Np99HVMDyPMerAhbHtNHHEaYrR0n5GxgP1RRTtSYhIKZijv3jUohmSzyZWtfPV
+         62sVMhiD5XIiy4BrmBN08DOaQgGb+doktIy6fjrBxmS0JiJoS2xPckGADMCoOC9yxQwD
+         ttDQ==
+X-Gm-Message-State: ABy/qLaD6xwFLhOAmgvGxHiwQf5H31LR5jthafLNfeBH3z3WX+ujnVQq
+        D7F99UHk6WZDdF/DL//wKEPoRA==
+X-Google-Smtp-Source: APBJJlH00VTTAnNgAW+4jvAVqrnGVXcPWqJGW20E2ovP93Zlr7ToKwpkPaYdKeXrn2KrLbF/uGp/ZQ==
+X-Received: by 2002:a5d:53d1:0:b0:317:3b13:94c3 with SMTP id a17-20020a5d53d1000000b003173b1394c3mr3768wrw.41.1690813912679;
+        Mon, 31 Jul 2023 07:31:52 -0700 (PDT)
+Received: from [127.0.1.1] ([93.5.22.158])
+        by smtp.googlemail.com with ESMTPSA id i8-20020adfefc8000000b0030ada01ca78sm13301675wrp.10.2023.07.31.07.31.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 07:31:52 -0700 (PDT)
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+Subject: [PATCH v3 0/3] Add startek-kd070fhfid015 display support
+Date:   Mon, 31 Jul 2023 16:31:44 +0200
+Message-Id: <20230711-startek_display-v3-0-dc847e6b359b@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANDFx2QC/4WNXQuCMBhG/4rsuoWbuGlX/Y+I2MdrvrSmbDYS8
+ b83vQyiy/PAc85CIgSESE7FQgIkjDj4DNWhIKZX/g4UbWbCS16VkjEaJxUmeNwsxtGpmbZ1Y7m
+ oO6GVIvmlVQSqg/Kmzz//ci6PY4AO33vmcs3cY5yGMO/VxLb1dyAxWlImqpZJDbZq6rNWs0Md4
+ GiGJ9l0if9R8KxopDZSWzAC2i/Fuq4f9McorwkBAAA=
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Guillaume La Roque <glaroque@baylibre.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2339; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=i6hwF/bJpJiGLlOquFWKnen03Rk1zyVrmixDTCRPG84=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkx8XXu3CXuIBVE4+ylx3SVjuGG6Y/iHPbGE8oiaZd
+ ttt09YuJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZMfF1wAKCRArRkmdfjHURUCED/
+ 0dUeD68t5MIIs++03ZpXnCgWOUMbzXPT9Qjuw7VUV4cixKxnp8cjGoF+e8V3RWOTx8y2WuUqcP6kDm
+ PFEWU7yRd6D/vbNIvB07ueoF0Hk2rRRZWHCaGXNAr3KGI2Kb3NIPzQp0m4uk/f32vIUQDX2olHT+hK
+ gRxi6aQVqHPSnvz09aqghcOuLC9z8dF0YAUtdfb4INILqTOfgKT9CEdlwXfpttt02fdofnXtf5u9P1
+ Je1C5yRBe4MDTZuIJDCu5Z5tSqIzkBlIcjLcFVJO3U5KhoCHkMKF+CGOWnIBL4JVjSzPh7QnZ9vdtp
+ Pg6ECNV1fg+ny4AD3JzSQHthyIISd9VTeyMCvY2VHiKMUvEQJqzHsWgME+vK7NOTQ7967dPW1AGha0
+ eSxSrzBgmKHdgR7sfeeOboqGNQsNiJ57dgZB9zJiuuNxbmsC0mVICdjJlM4Ht6x5UhahUBgjeztMe+
+ Lk92bEnejpMUa2tOyHX0SMwOSnM5RoA3Dhor9S2ZyQI8fzUm8BBfQBTsEkU2d9T+f7WBt/pXFIpXfM
+ iYRQ/XeLFDBnTxq3yOqj3nkoseI/VY3aG1xzndpOrdb9u73Uc3y1XLOZ/Ir+GeRC/DAWJ/01ez1xAW
+ 3syFP+w29gsfhsIBwI384Whi0a4UkpYKGxbOBKLib9NvaYcUkk0rAz7pPL3Q==
+X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
+ fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023, wuzongyong wrote:
-> Hi,
-> I am writing a firmware in Rust to support SEV based on project td-shim[1].
-> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
-> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
-> #UD.
+Add the support of the Startek KD070FHFID015 panel.
+It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
 
-...
+I use this display plugged to my mt8365-evk board.
 
-> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
-> #BP.
-> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
-> Any suggestion is appreciated!
+This serie come from a bigger one [1]. Then I addressed the previous
+comments for the related commits here.
 
-Have you tried my suggestions from the other thread[*]?
+[1]: https://lore.kernel.org/all/20230220-display-v1-0-45cbc68e188b@baylibre.com/
 
-  : > > I'm curious how this happend. I cannot find any condition that would
-  : > > cause the int3 instruction generate a #UD according to the AMD's spec.
-  : 
-  : One possibility is that the value from memory that gets executed diverges from the
-  : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
-  : be the case in this test), stale cache/tlb entries, etc.
-  : 
-  : > > BTW, it worked nomarlly with qemu and ovmf.
-  : > 
-  : > Does this happen every time you boot the guest with your firmware? What
-  : > processor are you running on?
-  : 
-  : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
-  : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
-  : tracepoints.
+Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+---
+Changes in v3:
+- Remove spurious line.
+- Remove useless ops (enable and disable).
+- Remove brightness value init because it is set right after
+  using mipi_dsi_dcs_get_display_brightness(...).
+- Link to v2: https://lore.kernel.org/r/20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com
 
-[*] https://lore.kernel.org/all/ZMFd5kkehlkIfnBA@google.com
+Changes in v2:
+- Replace "dcdc-gpio" by "enable-gpio" because this pin enable the
+  Power IC supply. Also, this property come from panel-common.
+- Remove height-mm and width-mm since they are useless here.
+- Re-order elements in the stk_panel structure for readability.
+- Link to v1: https://lore.kernel.org/r/20230711-startek_display-v1-0-163917bed385@baylibre.com
+
+Changes in v1:
+- Fix typos in the driver.
+- Merge 2 regulators in one bulk variable in the driver.
+- Remove backlight enable/disable from the driver because it's already
+  managed by the backlight core.
+- Move hardcoded values from function to the generic structure in the
+  driver.
+- Remove unnecessary function (stk_panel_del).
+- Replace some functions by macro to increase the readability.
+- Link to parent serie: [1]
+
+---
+Alexandre Mergnat (2):
+      dt-bindings: display: panel: add startek kd070fhfid015 support
+      arm64: defconfig: enable STARTEK KD070FHFID015 panel
+
+Guillaume La Roque (1):
+      drm/panel: Support for startek-kd070fhfid015 MIPI-DSI panel
+
+ .../display/panel/startek,kd070fhfid015.yaml       |  69 ++++
+ arch/arm64/configs/defconfig                       |   1 +
+ drivers/gpu/drm/panel/Kconfig                      |  11 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ .../gpu/drm/panel/panel-startek-kd070fhfid015.c    | 412 +++++++++++++++++++++
+ 5 files changed, 494 insertions(+)
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230711-startek_display-958d265f6baa
+
+Best regards,
+-- 
+Alexandre Mergnat <amergnat@baylibre.com>
+
