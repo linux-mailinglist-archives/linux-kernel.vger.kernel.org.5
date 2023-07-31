@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 946D3769B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B25769B60
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbjGaPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S232771AbjGaPxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjGaPxO (ORCPT
+        with ESMTP id S230382AbjGaPxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:53:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9D61BB;
-        Mon, 31 Jul 2023 08:53:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 31 Jul 2023 11:53:51 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0D4197;
+        Mon, 31 Jul 2023 08:53:49 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 938FD611CD;
-        Mon, 31 Jul 2023 15:53:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71AB1C433C8;
-        Mon, 31 Jul 2023 15:53:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690818793;
-        bh=L2tZXZmD+sXdaCCAuGFE2vWovGgLcHM5kSykAonNNRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pmf1rBhcf2IvuO1HRVVazeKI85pL2NAawrpMNiTlOnq4vloDO3GiOKfezq+ghBcX4
-         X9w/xZMsXvTOgL9Hc/p72KdqRzwZ7m/m66c0T5BxRUCmD2MDS5ltLjxQ+uffTzmt18
-         NEC+EZ1hGciytwGGDO+wBsU5VApeZzIsDEWUdwhI=
-Date:   Mon, 31 Jul 2023 17:53:10 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v9 03/10] serial: sc16is7xx: remove obsolete out_thread
- label
-Message-ID: <2023073135-puppy-reflected-700d@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
- <20230725142343.1724130-4-hugo@hugovil.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id E721B2B0;
+        Mon, 31 Jul 2023 15:53:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E721B2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1690818829; bh=0QY6HyvA67YBA+RRCf78/xZwHKCdp8V5uvhfiTxon5k=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TbBXu4W1XQowc/ukCvezgEJB6vZS6KlL4euv/FyTL37SZLY3sLWl1iA/fdBSLp9wK
+         vC0D5aQlc5tthnWnkftnn8+3YMyS85tcKhRUeCJrnj55ViVoa3JQ0jbqGjcUw6RhLg
+         AlJZkXLVeNyXbsrlxiL1zNqsa6S1XCpvRa/2HMfUjBdN0m8aUIQP+N1wFkdZ1pLvnR
+         FHlSINSLf4PUuVgWEy1g4j9SR0WXRN4SS7yjDZckhcDEINv/Zmr3ZrISC307S6u1p2
+         FrsyYPK2EF2Jt75mrtc6VrroEkhD0+T53R0gmAd08Fvaw4qM7gsrMAzv11ytfORjQF
+         YpG2ZeFP5VjcA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Docs/process/changes: Consolidate NFS-utils update
+ links
+In-Reply-To: <20230728211616.59550-1-sj@kernel.org>
+References: <20230728211616.59550-1-sj@kernel.org>
+Date:   Mon, 31 Jul 2023 09:53:47 -0600
+Message-ID: <87wmygdqlw.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725142343.1724130-4-hugo@hugovil.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 10:23:35AM -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> 
-> Commit c8f71b49ee4d ("serial: sc16is7xx: setup GPIO controller later
-> in probe") moved GPIO setup code later in probe function. Doing so
-> also required to move ports cleanup code (out_ports label) after the
-> GPIO cleanup code.
-> 
-> After these moves, the out_thread label becomes misplaced and makes
-> part of the cleanup code illogical.
-> 
-> This patch remove the now obsolete out_thread label and make GPIO
-> setup code jump to out_ports label if it fails.
-> 
-> Fixes: c8f71b49ee4d ("serial: sc16is7xx: setup GPIO controller later in probe")
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+SeongJae Park <sj@kernel.org> writes:
 
-Why is this not ok for stable kernels yet it has a Fixes: tag?
+> Two update links for NFS-utils are in two duplicate sessions.
+> Consolidate.
+>
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>  Documentation/process/changes.rst | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 
-Please fix.
+Both patches applied, thanks.
 
-thanks,
-
-greg k-h
+jon
