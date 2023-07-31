@@ -2,189 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECA57696B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DFF7696BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjGaMrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S231304AbjGaMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbjGaMqo (ORCPT
+        with ESMTP id S230332AbjGaMs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:46:44 -0400
-Received: from tarta.nabijaczleweli.xyz (unknown [139.28.40.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1AD22128
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
-        s=202305; t=1690807567;
-        bh=gkt0rIqkUhHlExY4cS774r8mZa6RShIBQ5xwZJifOGA=;
-        h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=gDgkZC1SHcBGjwdzSOrh14xZq6Rnem5ixqY9Au3dq9UYcY9Q+rOpTBYXAO+ysuwyI
-         Fna5ExqvxpaKnV8YQ5eVY8ZZHW4KPJX7CfRnin1gvAucCx4grdoS3Gcw+aOPrcnIAR
-         kNgClwbG2rddNifKf355pphKQfbeBdxNLJtLpAuqxANQBh2+ipvLrg+fO3m7QKeFN9
-         RuR8kZEuzQeIDxtvKcXVhqVphaD0ca7iwfVUTd03e9udOEGz4VhZKLN+w0xNIQ8NtL
-         O6s2x2D0EUsNQV9NLEfmp+qaa+4VrTQkcE4pBA/QTZRbbO1AV5TGrij7rqguN8Dnmr
-         iX/0WxxQmC+3g==
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 5ECE34C96;
-        Mon, 31 Jul 2023 14:46:07 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 14:46:06 +0200
-From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
-        <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2] checkpatch: don't take signature to be part of the
- commit SHA
-Message-ID: <rxy7gchww3kwb3vltenfsq3qbrjuv3s4rg4jrvopejwekesxya@k2z4k54jp2od>
-References: <yobkleyyfic3cxlslgwft7eomzc4k2e4r6goy2x3xhbnzvee46@2u4treiamxdy>
+        Mon, 31 Jul 2023 08:48:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250719A5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690807622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+5eFnfguwCDod1JiXQvQSHlRtViJAMop/KReTBW7wSY=;
+        b=Jdj4uHPFZ+ecmo+kUZWQRZCAAXiv3zZheiqUOy4y8/qRcAfnBqf1owLl/qIWt13OpRqsq9
+        cuX7bvJPMWQsuhg9E33LcaYKOb7wu8ta0IUBVuzAc6pIOaDpqLpJ5exGjjfk7HbzREwA5L
+        U7XQAJbfqrGx7QK3dRRQWQgIDpMFx3g=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-297-V-RfdZUpNw-PuaPUHVjlCg-1; Mon, 31 Jul 2023 08:46:59 -0400
+X-MC-Unique: V-RfdZUpNw-PuaPUHVjlCg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9B7208030AC;
+        Mon, 31 Jul 2023 12:46:58 +0000 (UTC)
+Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98F9F492CA6;
+        Mon, 31 Jul 2023 12:46:51 +0000 (UTC)
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     terraluna977@gmail.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com,
+        helgaas@kernel.org
+Subject: [PATCH QEMU] acpiphp: hack to send BusCheck to missing device on root bus
+Date:   Mon, 31 Jul 2023 14:46:49 +0200
+Message-Id: <20230731124649.2601384-1-imammedo@redhat.com>
+In-Reply-To: <20230729215009.GA820749@bhelgaas>
+References: <20230729215009.GA820749@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zbb544vyg5m3kjn7"
-Content-Disposition: inline
-In-Reply-To: <yobkleyyfic3cxlslgwft7eomzc4k2e4r6goy2x3xhbnzvee46@2u4treiamxdy>
-User-Agent: NeoMutt/20230517
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A reproducer for [1], faking a missing device (supposedly root port)
+on root bus, and ability to send BusCheck to it.
 
---zbb544vyg5m3kjn7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Usage:
+./qemu-system-x86_64 -monitor stdio -M q35 -cpu host -smp 4 -enable-kvm  -m 4G
+   -nographic
+   -monitor stdio
+   -snapshot
+   -serial file:/tmp/s
+   -kernel ~/builds/linux-2.6/arch/x86/boot/bzImage
+   -append 'root=/dev/sda1 console=ttyS0'
+   -device pcie-root-port,id=rp1,bus=pcie.0,chassis=0,addr=8
+   vm_disk_image
 
-I had just received:
-  $ scripts/checkpatch.pl 0001-splice-always-fsnotify_access-in-fsnotify_mo=
-dify-out.patch
-  WARNING: Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<ti=
-tle line>")' - ie: 'Fixes: gpg: Signatu (":35 CEST")'
-  #25:
-  Fixes: 983652c69199 ("splice: report related fsnotify events")
+wait till it boots and then at monitor prompt hotplug a device
+(no hotplug will happen since hacked AML code will send only
+notify to missing device, but it's sufficient to reproduce kernel crash
+at commit [2]):
 
-  total: 0 errors, 1 warnings, 60 lines checked
+(qemu)  device_add e1000e,bus=rp1
 
-  NOTE: For some of the reported defects, checkpatch may be able to
-        mechanically convert to the typical style using --fix or --fix-inpl=
-ace.
+observe in guest logs:
+[  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
+[...]
+[  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
+[  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
+[  612.277809]  enable_slot+0x21f/0x3e0
+[  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
+[  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
+[  612.277827]  acpi_device_hotplug+0xbc/0x540
+[  612.277834]  acpi_hotplug_work_fn+0x15/0x20
+[  612.277839]  process_one_work+0x1f7/0x370
+[  612.277845]  worker_thread+0x45/0x3b0
+[  612.277850]  ? __pfx_worker_thread+0x10/0x10
+[  612.277854]  kthread+0xdc/0x110
+[  612.277860]  ? __pfx_kthread+0x10/0x10
+[  612.277866]  ret_from_fork+0x28/0x40
+[  612.277871]  ? __pfx_kthread+0x10/0x10
+[  612.277876]  ret_from_fork_asm+0x1b/0x30
 
-  0001-splice-always-fsnotify_access-in-fsnotify_modify-out.patch has style=
- problems, please review.
-
-  NOTE: If any of the errors are false positives, please report
-        them to the maintainer, see CHECKPATCH in MAINTAINERS.
-
-This fails when the Fixes:ed SHAs are signed, since the output is
-  $ git log --format=3D'%H %s'
-  gpg: Signature made Wed 28 Jun 2023 19:05:02 CEST
-  gpg:                using RSA key 7D69474E84028C5CC0C44163BCFD0B018D2658F1
-  gpg: Good signature from "=D0=BD=D0=B0=D0=B1 <nabijaczleweli@nabijaczlewe=
-li.xyz>" [ultimate]
-  gpg:                 aka "=D0=BD=D0=B0=D0=B1 <nabijaczleweli@gmail.com>" =
-[ultimate]
-  gpg:                 aka "nabijaczleweli <nabijaczleweli@gmail.com>" [ult=
-imate]
-  53307062b2b644dc0de7bde916d6193492f37643 splice: fsnotify_access(in), fsn=
-otify_modify(out) on success in tee
-or
-  $ git log --format=3D'%H %s' 983652c69199
-  gpg: Signature made Tue 04 Apr 2023 15:57:35 CEST
-  gpg:                using EDDSA key 408734571EA70C78B332692891C61BC06578D=
-CA2
-  gpg: Can't check signature: No public key
-  983652c691990b3257a07f67f4263eb847baa82d splice: report related fsnotify =
-events
-
-The fix mimics what was done in commit f24fb53984cf ("perf tools: Don't
-include signature in version strings"): just don't ask for the
-signatures being validated.
-
-With this, my patch passed validation.
-
-Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
+1)
+  Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
+2)
+  commit 40613da52b13fb ("PCI: acpiphp: Reassign resources on bridge if necessary")
+Signed-off-by: Igor Mammedov <imammedo@redhat.com>
 ---
-No-change rebase of v2.
+ hw/i386/acpi-build.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
- scripts/checkpatch.pl | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+diff --git a/hw/i386/acpi-build.c b/hw/i386/acpi-build.c
+index 9c74fa17ad..f6c2584289 100644
+--- a/hw/i386/acpi-build.c
++++ b/hw/i386/acpi-build.c
+@@ -1784,11 +1784,18 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
+         if (pci_host) {
+             PCIBus *bus = PCI_HOST_BRIDGE(pci_host)->bus;
+             Aml *scope = aml_scope("PCI0");
++            Aml *dev;
+             /* Scan all PCI buses. Generate tables to support hotplug. */
+             build_append_pci_bus_devices(scope, bus);
+             if (object_property_find(OBJECT(bus), ACPI_PCIHP_PROP_BSEL)) {
+                 build_append_pcihp_slots(scope, bus);
+             }
++
++            /* nonexisting PCI device */
++            dev = aml_device("RPX");
++            aml_append(dev, aml_name_decl("_ADR", aml_int(0x100000)));
++            aml_append(scope, dev);
++
+             aml_append(sb_scope, scope);
+         }
+     }
+@@ -1852,12 +1859,8 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
+         scope =  aml_scope("_GPE");
+         {
+             method = aml_method("_E01", 0, AML_NOTSERIALIZED);
+-            if (has_pcnt) {
+-                aml_append(method,
+-                    aml_acquire(aml_name("\\_SB.PCI0.BLCK"), 0xFFFF));
+-                aml_append(method, aml_call0("\\_SB.PCI0.PCNT"));
+-                aml_append(method, aml_release(aml_name("\\_SB.PCI0.BLCK")));
+-            }
++            /* send BusCheck to non-present PCI device */
++            aml_append(method, aml_notify(aml_name("\\_SB.PCI0.RPX"), aml_int(0)));
+             aml_append(scope, method);
+         }
+         aml_append(dsdt, scope);
+-- 
+2.39.3
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 880fde13d9b8..734c7d4a4ac7 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -71,6 +71,7 @@ my $color =3D "auto";
- my $allow_c99_comments =3D 1; # Can be overridden by --ignore C99_COMMENT_=
-TOLERANCE
- # git output parsing needs US English output, so first set backtick child =
-process LANGUAGE
- my $git_command =3D'export LANGUAGE=3Den_US.UTF-8; git';
-+my $git_log_no =3D "--no-show-signature --no-color";
- my $tabsize =3D 8;
- my ${CONFIG_} =3D "CONFIG_";
-=20
-@@ -1164,7 +1165,7 @@ sub seed_camelcase_includes {
- 	$camelcase_seeded =3D 1;
-=20
- 	if (-e "$gitroot") {
--		my $git_last_include_commit =3D `${git_command} log --no-merges --pretty=
-=3Dformat:"%h%n" -1 -- include`;
-+		my $git_last_include_commit =3D `${git_command} log ${git_log_no} --no-m=
-erges --pretty=3Dformat:"%h%n" -1 -- include`;
- 		chomp $git_last_include_commit;
- 		$camelcase_cache =3D ".checkpatch-camelcase.git.$git_last_include_commit=
-";
- 	} else {
-@@ -1226,7 +1227,7 @@ sub git_commit_info {
-=20
- 	return ($id, $desc) if ((which("git") eq "") || !(-e "$gitroot"));
-=20
--	my $output =3D `${git_command} log --no-color --format=3D'%H %s' -1 $comm=
-it 2>&1`;
-+	my $output =3D `${git_command} log ${git_log_no} --format=3D'%H %s' -1 $c=
-ommit 2>&1`;
- 	$output =3D~ s/^\s*//gm;
- 	my @lines =3D split("\n", $output);
-=20
-@@ -1277,7 +1278,7 @@ if ($git) {
- 		} else {
- 			$git_range =3D "-1 $commit_expr";
- 		}
--		my $lines =3D `${git_command} log --no-color --no-merges --pretty=3Dform=
-at:'%H %s' $git_range`;
-+		my $lines =3D `${git_command} log ${git_log_no} --no-merges --pretty=3Df=
-ormat:'%H %s' $git_range`;
- 		foreach my $line (split(/\n/, $lines)) {
- 			$line =3D~ /^([0-9a-fA-F]{40,40}) (.*)$/;
- 			next if (!defined($1) || !defined($2));
---=20
-2.39.2
-
---zbb544vyg5m3kjn7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmTHrQ0ACgkQvP0LAY0m
-WPFSUw//QdKu5w48p2Xa5JYfsOGlZ3mcuCxXsap36cNjh06CZjahhMiS5/82Zmi3
-e/D7x0jfL+rHltNU3O2Kx4k6fBJ71jttNM93b1JuPPt2bSpaz0PF9WdHaeu992xV
-gC59zAHFw3ypDk4ofqywF7IPSyrYU+FTyQ6ZR6kUz/nvO06gQfba5NwMWZq0QSqp
-mRhKDbcVxQkwRxDgqrLrh4A5hjbg50/ZPEOiAusb7awL9JRUbTg3fzIBV5qJA2WO
-fRUnsmJmBeTWkfnl7A1qM11rPj6d45wbO+nq5W30UwwUvtDvAhXdDEuRN7oXbuuE
-GjlPQRzGoe0vXP15cLzVWBNxfc5HM+qp696GBcns0AWPCSVKBBTebWkIJ/P3hCsx
-FztZQrKcV+5U068t47gmOHwASeRGPTAz9Dbf/UmPYRgq8WSbISMNdHFtf5EF4J/V
-CegN6h0KSf1Mnh+L4BFT7c4PZoLJBkQioZ7MQ/lbDTAVKRAJjL7c9tNSAGukg1Sc
-GTT/HUcFF1Z/Uk8msQWO9uduRRDspMe0SwOlb7DTC0sRpWsSdNRD0tpGmv/CQ/jE
-0N9bdR41j4PCVwX5eHJrXjo1EqYnH29PJaH33qcZ9k/SPRMQ9KCusysgioGhNaT3
-5p3K53sLpMxXdqNL3+IJJKPJgYZP2U+WkW39YV7353LN042RP04=
-=ZFNB
------END PGP SIGNATURE-----
-
---zbb544vyg5m3kjn7--
