@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93540769792
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F03976979A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjGaN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
+        id S232693AbjGaN20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjGaN1q (ORCPT
+        with ESMTP id S233000AbjGaN2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:27:46 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD3319A3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:27:24 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-29-J0C5Am00Mue96-CayWZXzA-1; Mon, 31 Jul 2023 14:26:55 +0100
-X-MC-Unique: J0C5Am00Mue96-CayWZXzA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 31 Jul
- 2023 14:26:54 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 31 Jul 2023 14:26:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-CC:     'Nathan Chancellor' <nathan@kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH next v2 5/5] minmax: Relax check to allow comparison
- between int and small unsigned constants.
-Thread-Topic: [PATCH next v2 5/5] minmax: Relax check to allow comparison
- between int and small unsigned constants.
-Thread-Index: AQHZwWNPMLQeS+3oD0yU5qzbmq+nnq/T3YRw
-Date:   Mon, 31 Jul 2023 13:26:54 +0000
-Message-ID: <9c14002108ff49e1a54819133fe9e2a3@AcuMS.aculab.com>
-References: <bde3d2dc933848bbaceeb9b7102f6f4c@AcuMS.aculab.com>
- <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com>
-In-Reply-To: <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 31 Jul 2023 09:28:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FD4171F;
+        Mon, 31 Jul 2023 06:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=z3FGDGVTFrElSVM7fG1oVI/2ZdLRjgqGQNhHfwty3ro=; b=gT1/elGv8pRKZcUAdG87anzivd
+        bQYyicftn/s4ecFExe79VFyXXKm4PsJXltInnPUVRyGqMwTQ5IqeaWlri5k9m69YCNyncH6jcww5b
+        0pavFKpPHmrYlleE9z4EDEBH1CsBhFD2t1pneT8PYLnICc5sGq3LnOjG3uuDRBK159PCKsg/vkBMo
+        68hYTVV+3ZXkOGHemrthHSfQXmpNG93pwA+tsAQi7uJFAZYtmhkOvyJXYxZy7BRyewjSXTSmcUf4N
+        F4yFzoc4Ag4BpxLQW3b4n+w+OMxW0RbfqdbNTXOoWnagtjDMHfTiPS9aoJz8QFwzVk/tA8rR+s4Xo
+        3f+UcpXg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQSvb-00CjRi-2p;
+        Mon, 31 Jul 2023 13:27:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD30C3001DD;
+        Mon, 31 Jul 2023 15:27:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BB3622058B54B; Mon, 31 Jul 2023 15:27:14 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 15:27:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
+Message-ID: <20230731132714.GH29590@hirez.programming.kicks-ass.net>
+References: <20230728105650.565799744@linutronix.de>
+ <20230728120930.839913695@linutronix.de>
+ <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <871qgop8dc.ffs@tglx>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871qgop8dc.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,52 +79,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QnkgdGhlIHRpbWUgSSd2ZSBkb25lOg0KDQojZGVmaW5lIF9faXNfbm9uZWdfaW50KHgpCQkJCQlc
-DQoJX19idWlsdGluX2Nob29zZV9leHByKCFfX2lzX2NvbnN0ZXhwcih4KSwgZmFsc2UsIAlcDQoJ
-CSgoeCkgPj0gKHR5cGVvZih4KSkwICYmICh4KSA8PSAodHlwZW9mKCh4KSArIDApKShsb25nKV9f
-SU5UX01BWF9fKSkNCg0KI2RlZmluZSBfX2lzX3NpZ25lZCh4KSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCiAgICAgICBfX2J1aWx0aW5f
-Y2hvb3NlX2V4cHIoX19pc19jb25zdGV4cHIoaXNfc2lnbmVkX3R5cGUodHlwZW9mKHgpKSksICAg
-ICAgICBcDQogICAgICAgICAgICAgICBpc19zaWduZWRfdHlwZSh0eXBlb2YoeCkpLCAwKQ0KDQoj
-ZGVmaW5lIF9fdHlwZXNfb2soeCwgeSkgCQkJCQlcDQoJKF9faXNfc2lnbmVkKHgpID09IF9faXNf
-c2lnbmVkKHkpIHx8CQkJXA0KCQlfX2lzX3NpZ25lZCgoeCkgKyAwKSA9PSBfX2lzX3NpZ25lZCgo
-eSkgKyAwKSB8fAlcDQoJCV9faXNfbm9uZWdfaW50KHgpIHx8IF9faXNfbm9uZWdfaW50KHkpKQ0K
-DQp0aGUgZXJyb3IgbWVzc2FnZSBmb3INCg0KPiAgCXN0YXRpY19hc3NlcnQoX190eXBlc19vayh4
-LCB5KSwJCQlcDQo+ICAJCSNvcCAiKCIgI3ggIiwgIiAjeSAiKSBzaWduZWRuZXNzIGVycm9yLCBm
-aXggdHlwZXMgb3IgY29uc2lkZXIgIiAjb3AgIl91bnNpZ25lZCgpIGJlZm9yZSAiICNvcCAiX3Qo
-KSIpOyBcDQoNCmdlbmVyYXRlZCBieSBjbGFuZyA4LjAuMCBhbmQgbGF0ZXIgaXMgc2ltaWxhciB0
-byAoc2VlIGh0dHBzOi8vZ29kYm9sdC5vcmcvei9qcTYxM0duc2EpOg0KDQo8c291cmNlPjo0OTox
-MjogZXJyb3I6IHN0YXRpYyBhc3NlcnRpb24gZmFpbGVkIGR1ZSB0byByZXF1aXJlbWVudCAnX19i
-dWlsdGluX2Nob29zZV9leHByKChzaXplb2YoaW50KSA9PSBzaXplb2YgKCooOCA/ICgodm9pZCAq
-KSgobG9uZykoKCgoaW50KSgtMSkpIDwgKGludCkxKSkgKiAwTCkpIDogKGludCAqKTgpKSksICgo
-KGludCkoLTEpKSA8IChpbnQpMSksIDApID09IF9fYnVpbHRpbl9jaG9vc2VfZXhwcigoc2l6ZW9m
-KGludCkgPT0gc2l6ZW9mICgqKDggPyAoKHZvaWQgKikoKGxvbmcpKCgoKHVuc2lnbmVkIGludCko
-LTEpKSA8ICh1bnNpZ25lZCBpbnQpMSkpICogMEwpKSA6IChpbnQgKik4KSkpLCAoKCh1bnNpZ25l
-ZCBpbnQpKC0xKSkgPCAodW5zaWduZWQgaW50KTEpLCAwKSB8fCBfX2J1aWx0aW5fY2hvb3NlX2V4
-cHIoKHNpemVvZihpbnQpID09IHNpemVvZiAoKig4ID8gKCh2b2lkICopKChsb25nKSgoKChpbnQp
-KC0xKSkgPCAoaW50KTEpKSAqIDBMKSkgOiAoaW50ICopOCkpKSwgKCgoaW50KSgtMSkpIDwgKGlu
-dCkxKSwgMCkgPT0gX19idWlsdGluX2Nob29zZV9leHByKChzaXplb2YoaW50KSA9PSBzaXplb2Yg
-KCooOCA/ICgodm9pZCAqKSgobG9uZykoKCgodW5zaWduZWQgaW50KSgtMSkpIDwgKHVuc2lnbmVk
-IGludCkxKSkgKiAwTCkpIDogKGludCAqKTgpKSksICgoKHVuc2lnbmVkIGludCkoLTEpKSA8ICh1
-bnNpZ25lZCBpbnQpMSksIDApIHx8IChfX2J1aWx0aW5fY2hvb3NlX2V4cHIoIShzaXplb2YoaW50
-KSA9PSBzaXplb2YgKCooOCA/ICgodm9pZCAqKSgobG9uZykoYSkgKiAwTCkpIDogKGludCAqKTgp
-KSksIDAsIF9fYnVpbHRpbl9jaG9vc2VfZXhwcihfX2J1aWx0aW5fY2hvb3NlX2V4cHIoKHNpemVv
-ZihpbnQpID09IHNpemVvZiAoKig4ID8gKCh2b2lkICopKChsb25nKSgoKChpbnQpKC0xKSkgPCAo
-aW50KTEpKSAqIDBMKSkgOiAoaW50ICopOCkpKSwgKCgoaW50KSgtMSkpIDwgKGludCkxKSwgMCks
-IGEsIDApID49IDAgJiYgKGEpIDw9IChpbnQpKGxvbmcpMjE0NzQ4MzY0NykpIHx8IChfX2J1aWx0
-aW5fY2hvb3NlX2V4cHIoIShzaXplb2YoaW50KSA9PSBzaXplb2YgKCooOCA/ICgodm9pZCAqKSgo
-bG9uZykoMjE0NzQ4MzY0OFUgLSAwKSAqIDBMKSkgOiAoaW50ICopOCkpKSwgMCwgX19idWlsdGlu
-X2Nob29zZV9leHByKF9fYnVpbHRpbl9jaG9vc2VfZXhwcigoc2l6ZW9mKGludCkgPT0gc2l6ZW9m
-ICgqKDggPyAoKHZvaWQgKikoKGxvbmcpKCgoKHVuc2lnbmVkIGludCkoLTEpKSA8ICh1bnNpZ25l
-ZCBpbnQpMSkpICogMEwpKSA6IChpbnQgKik4KSkpLCAoKCh1bnNpZ25lZCBpbnQpKC0xKSkgPCAo
-dW5zaWduZWQgaW50KTEpLCAwKSwgMjE0NzQ4MzY0OFUgLSAwLCAwKSA+PSAwICYmICgyMTQ3NDgz
-NjQ4VSAtIDApIDw9ICh1bnNpZ25lZCBpbnQpKGxvbmcpMjE0NzQ4MzY0NykpJzogbWluKGEsIDB4
-ODAwMDAwMDB1IC0gMCkgc2lnbmVkbmVzcyBlcnJvciwgZml4IHR5cGVzIG9yIGNvbnNpZGVyIG1p
-bl91bnNpZ25lZCgpIGJlZm9yZSBtaW5fdCgpDQoNClJlcGVhdGluZyB0aGUgZXhwcmVzc2lvbiBz
-ZWVtcyBzb21ld2hhdCBzdWItb3B0aW1hbCENClN1cmVseSBpdCBzaG91bGRuJ3QgYmUgb3V0cHV0
-dGluZyB0aGUgZXhwYW5zaW9uIG9mIHRoZQ0KaW5wdXQgd2hlbiBhbiBlcnJvciBtZXNzYWdlIGlz
-IHN1cHBsaWVkPw0KDQpJcyB0aGVyZSBhbnkgKHNhbmUpIHdheSB0byBzdG9wIGl0IGJlaW5nIHRo
-YXQgdmVyYm9zZT8NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
-QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
-aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Mon, Jul 31, 2023 at 02:34:39PM +0200, Thomas Gleixner wrote:
 
+> This collides massively with the other work I'm doing, which uses the
+> MADT provided information to actually evaluate various topology related
+> things upfront and later during bringup. Thats badly needed because lots
+> of todays infrastructure is based on heuristics and guesswork.
+> 
+> But it seems I wasted a month on reworking all of this just to be
+> stopped cold in the tracks by completely undocumented and unnecessary
+> hyper-v abuse.
+> 
+> So if Hyper-V insists on abusing the initial APIC ID as read from CPUID
+> for topology information related to L3, then hyper-v should override the
+> cache topology mechanism and not impose this insanity on the basic
+> topology evaluation infrastructure.
+
+So I'm very tempted to suggest you continue with the topology rewrite
+and let Hyper-V keep the pieces. They're very clearly violating the SDM.
+
+Thing as they stand are untenable, the whole topology thing as it exists
+today is an untenable shitshow.
+
+Michael, is there anything you can do early (as in MADT parse early) to
+fix up the APIC-IDs?
