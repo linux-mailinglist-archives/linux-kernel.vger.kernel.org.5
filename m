@@ -2,135 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75CD769545
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC41769549
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjGaLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S230135AbjGaLyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:54:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbjGaLwO (ORCPT
+        with ESMTP id S230400AbjGaLyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:52:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3168A1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:52:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6015F6108A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:52:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 556C0C433C7;
-        Mon, 31 Jul 2023 11:52:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690804332;
-        bh=/AYjU/vSc3wf9r50UiRvnk6wekIDVhhqPGjM9BKbUvM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uOZiL0RyBDUTJLSxZ0mRr+gonZxxr6TOEGZCatCGirdCYF8+tXOl2htserQD1w+mh
-         29XRnZzirppyUvjMarv7AeHmVlBkgu8x/xwDDtD/cjXchBnZ/SCPJ1wLMSoGYoUDII
-         wH8fwU6kDSs1D4INE5cyiL4GFh2saaWdyFF/gurKJGcM6K4rhYB3/ZeJvDLlCiaGF/
-         6edvTP7S41kHDODYBKj6VHG5WqS1KHdwfoCbMzfVMZcOiMjr6wvovZ669HJjlWVTb4
-         wZcCfhzysCfAGvxIoL8SnhPscOvQrwQWGdgSKoAWfxQZH19mOCVCQwdIr0fV3g2Qbw
-         4ECQVtwMgYpKg==
-Date:   Mon, 31 Jul 2023 12:52:07 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, lstoakes@gmail.com,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org
-Subject: Re: arm64: perf test 26 rpi4 oops
-Message-ID: <20230731115207.GB24767@willie-the-truck>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
- <20230728141852.GA21718@willie-the-truck>
- <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
- <20230731104340.GA24767@willie-the-truck>
+        Mon, 31 Jul 2023 07:54:01 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3332119F;
+        Mon, 31 Jul 2023 04:54:00 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qQRTH-0004qB-Gx; Mon, 31 Jul 2023 13:53:55 +0200
+Message-ID: <edb7c56e-92d2-317e-b11b-caaabd33161b@leemhuis.info>
+Date:   Mon, 31 Jul 2023 13:53:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731104340.GA24767@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
+Content-Language: en-US, de-DE
+To:     Randy Dunlap <rd.dunlab@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Helge Deller <deller@gmx.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-fbdev@vger.kernel.org,
+        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Geoff Levand <geoff@infradead.org>
+References: <20230713123710.5d7d81e4@canb.auug.org.au>
+ <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
+ <ZLYHtVuS7AElXcCb@debian.me> <874jm1jv9m.fsf@mail.lhotse>
+ <d9616a67-23e8-118f-dc0a-7ed4afd4bffd@gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <d9616a67-23e8-118f-dc0a-7ed4afd4bffd@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1690804440;66623b8a;
+X-HE-SMSGID: 1qQRTH-0004qB-Gx
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:43:40AM +0100, Will Deacon wrote:
-> [+Lorenzo, Kefeng and others]
-> 
-> On Sun, Jul 30, 2023 at 06:09:15PM +0200, Mike Galbraith wrote:
-> > On Fri, 2023-07-28 at 15:18 +0100, Will Deacon wrote:
-> > >
-> > > Looking at this quickly with Mark, the most likely explanation is that
-> > > a bogus kernel address is being passed as the source pointer to
-> > > copy_to_user().
-> > 
-> > 'start' in read_kcore_iter() is bogus a LOT when running perf test 26,
-> > and that back to at least 5.15.  Seems removal of bogon-proofing gave a
-> > toothless old bug teeth, but seemingly only to perf test 26.  Rummaging
-> > around with crash vmlinux /proc/kcore seems to be bogon free anyway.
-> > 
-> > Someone should perhaps take a peek at perf.  Bogons aside, it also
-> > doesn't seem to care deeply about kernel response.  Whether the kernel
-> > oops or I bat 945 bogons aside, it says 'OK'.  That seems a tad odd.
-> 
-> Aha, so I think I triggered the issue you're seeing under QEMU (log
-> below). perf (unhelpfully) doesn't have stable test numbers, so it's
-> test 21 in my case. However, it only explodes if I run it as root, since
-> /proc/kcore is 0400 on my system.
-> 
-> The easiest way to trigger the problem is simply:
-> 
-> # objdump -d /proc/kcore
-> 
-> Looking at the history, I wonder whether this is because of a combination
-> of:
-> 
-> e025ab842ec3 ("mm: remove kern_addr_valid() completely")
-> 
-> which removed the kern_addr_valid() check on the basis that kcore used
-> copy_from_kernel_nofault() anyway, and:
-> 
-> 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
-> 
-> which replaced the copy_from_kernel_nofault() with _copy_to_user().
-> 
-> So with both of those applied, we're missing the address check on arm64.
+On 18.07.23 18:15, Randy Dunlap wrote:
+> On 7/18/23 04:48, Michael Ellerman wrote:
+>> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>>> On Thu, Jul 13, 2023 at 09:11:10AM -0700, Randy Dunlap wrote:
+>>>> on ppc64:
+>>>>
+>>>> In file included from ../include/linux/device.h:15,
+>>>>                  from ../arch/powerpc/include/asm/io.h:22,
+>>>>                  from ../include/linux/io.h:13,
+>>>>                  from ../include/linux/irq.h:20,
+>>>>                  from ../arch/powerpc/include/asm/hardirq.h:6,
+>>>>                  from ../include/linux/hardirq.h:11,
+>>>>                  from ../include/linux/interrupt.h:11,
+>>>>                  from ../drivers/video/fbdev/ps3fb.c:25:
+>>>> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
+>>>> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
+> [...]
+>>
+>> Does regzbot track issues in linux-next?
 
-Digging into this a little more, the fault occurs because kcore is
-treating everything from '_text' to '_end' as KCORE_TEXT and expects it
-to be mapped linearly. However, there's plenty of stuff we _don't_ map
-in that range on arm64 (e.g. .head.text, the pKVM hypervisor, the entry
-trampoline) so kcore is broken.
+Seems your patch didn't make any progress, at least I can't see it in
+-next. Is there a reason why, or did I miss anything?
 
-One hack is to limit KCORE_TEXT to actually point at the kernel text
-(see below), but this is a user-visible change in behaviour for things
-like .data so I think it would be better to restore the old behaviour
-of handling the faults.
+And yes, sure, I'm aware that it's -next and a driver that people might
+not enable regularly. But I noticed it and thought "quickly bring it up,
+might be good to fix this rather sooner than later before other people
+run into it (and who knows, maybe it'll switch a light in some CI system
+from red to green as well)"
 
-Lorenzo?
+Ciao, Thorsten
 
-Will
-
---->8
-
-diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-index 9cb32e1a78a0..3696a209c1ec 100644
---- a/fs/proc/kcore.c
-+++ b/fs/proc/kcore.c
-@@ -635,7 +635,7 @@ static struct kcore_list kcore_text;
-  */
- static void __init proc_kcore_text_init(void)
- {
--       kclist_add(&kcore_text, _text, _end - _text, KCORE_TEXT);
-+       kclist_add(&kcore_text, _stext, _etext - _stext, KCORE_TEXT);
- }
- #else
- static void __init proc_kcore_text_init(void)
-
+>> The driver seems to only use info->dev in that one dev_info() line,
+>> which seems purely cosmetic, so I think it could just be removed, eg:
+>>
+>> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
+>> index d4abcf8aff75..a304a39d712b 100644
+>> --- a/drivers/video/fbdev/ps3fb.c
+>> +++ b/drivers/video/fbdev/ps3fb.c
+>> @@ -1168,8 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
+>>  
+>>  	ps3_system_bus_set_drvdata(dev, info);
+>>  
+>> -	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+>> -		 dev_driver_string(info->dev), dev_name(info->dev),
+>> +	dev_info(info->device, "using %u KiB of video memory\n",
+>>  		 info->fix.smem_len >> 10);
+>>  
+>>  	task = kthread_run(ps3fbd, info, DEVICE_NAME);
+> 
+> 
+> Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> 
+> Thanks.
+> 
