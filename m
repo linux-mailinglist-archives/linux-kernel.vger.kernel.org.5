@@ -2,169 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BF77696DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2B37696E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbjGaM4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
+        id S232466AbjGaM4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbjGaM4U (ORCPT
+        with ESMTP id S231496AbjGaM4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:56:20 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DC9E46
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:56:19 -0700 (PDT)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230731125618epoutp030c06d8eb9d689053496124fe27404dca~29RRwcfy00659606596epoutp039
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:56:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230731125618epoutp030c06d8eb9d689053496124fe27404dca~29RRwcfy00659606596epoutp039
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690808178;
-        bh=PoQdjC9lBed1xqyEfsVkXd2x90gYvZd/Stb7lCXTnc0=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=LuUu7/5fRl/u/nmzXK28mdlMVJO716v2tHVJ/FeOjosWbXvgkrzD9pLB4q5RVg3ay
-         YqYSO0bZ8TDHs7JOl9bnqBBXgG3s5znchJgh3LEhRYo4Oh7SkM8FnWkd7BVD9557F6
-         lvfu8ioe7NFYAfH3vmus+Vx8e7vMJaL4EL5Mpfwk=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20230731125617epcas2p2bb52468597e84125e3aa7f80af87b0af~29RROibJM2783127831epcas2p2k;
-        Mon, 31 Jul 2023 12:56:17 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.70]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4RDyss17kgz4x9Pv; Mon, 31 Jul
-        2023 12:56:17 +0000 (GMT)
-X-AuditID: b6c32a4d-853ff70000047356-10-64c7af70f776
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7F.00.29526.07FA7C46; Mon, 31 Jul 2023 21:56:17 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v2 4/4] bio-integrity: create multi-page bvecs in
- bio_integrity_add_page()
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung Choi <j-young.choi@samsung.com>
-From:   Jinyoung Choi <j-young.choi@samsung.com>
-To:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230731125616epcms2p15f142bc599785edac8be3ab9eb63fecc@epcms2p1>
-Date:   Mon, 31 Jul 2023 21:56:16 +0900
-X-CMS-MailID: 20230731125616epcms2p15f142bc599785edac8be3ab9eb63fecc
+        Mon, 31 Jul 2023 08:56:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8D010FB
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:56:34 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3178dd771ceso3085813f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:56:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690808193; x=1691412993;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nl47p+lhboU+z7yqQAdLU53qCAq/cgITfMp8i0hKzaM=;
+        b=GCDJykYsdkZ28Qd+xAhdQtc8OTjEGSAnN/luvISL56xNYot0qN2W7AmMncFO/UMOp/
+         1iIgAP73jbbAZnpiOjSq/U8WveeRL7k8dRNB2F8njyYpWCoY62tbN6lzqWppA+vhWLBu
+         BmDnv/xtm3QTQMKAIvzL+n762+dCvFSOcT51Q+aXCrBdCXKNqtE5LQDWtrqqefYtg/wZ
+         c81lNlUlF5upgWiUtGYOc9bCKBWm5JgW3ahbJ4nV0+xbMttuTUGHhHD/FrSKiQBSa2fS
+         RMtALohENj/A+PDZ+1ZkhokLOaBoo1XT2dkzunxSA5nF8gHQYFc0qC2RgamiHBv4PSE/
+         1CUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690808193; x=1691412993;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nl47p+lhboU+z7yqQAdLU53qCAq/cgITfMp8i0hKzaM=;
+        b=ZoGw5nfaJravb6hK5A7caWaH/Wf4ZA4Eig8cZ6Euhn8aiq1hMF+NAji+y/wuWO4dLn
+         KDx308JdIUKxjkDWQiuIjHEtxnB6KnimWze9t2Lvp0hnei3CfKo4GF6Dz4egGu3/e1h4
+         7zn3ARBTUe7PHgDTEqs4a/RkTaN7plr1zCXmT9OA82eI7RkEvkT7HrZ5fbM/TfcTAYmA
+         c88OSINBTxHQxJX+fiVThoOtGvJejARr+iJHYAImD6emyYN4sxK3JohzwOQ3g4SfQVES
+         p2e6v0DvNln1llzRA90OTRV/NxbLnwWQFdt1BoTlewDk1DgiBMvQty1+pTiZM+pLgZ73
+         EkQQ==
+X-Gm-Message-State: ABy/qLbuMMBOzqNpgWJOV0pQNilQV8uIhnnH5d5pe7zpiSLf/V7Ck89W
+        nL3G6qxc9l0kGFSbhh5J0u2Ktxx5ox7tfewbt9G7VGKO
+X-Google-Smtp-Source: APBJJlFf+yX41704/Jet1OmH9ZeyLaIdduO8AEk28NMMMDe947xm40qK5pJw1cWhLmDLtvd6Rl9UIQ==
+X-Received: by 2002:a5d:610b:0:b0:314:15a8:7879 with SMTP id v11-20020a5d610b000000b0031415a87879mr8049419wrt.34.1690808193215;
+        Mon, 31 Jul 2023 05:56:33 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f723:b60b:92cd:4df4? ([2a01:e0a:982:cbb0:f723:b60b:92cd:4df4])
+        by smtp.gmail.com with ESMTPSA id z17-20020adfec91000000b003179d7ed4f3sm4869161wrn.12.2023.07.31.05.56.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 05:56:32 -0700 (PDT)
+Message-ID: <4af4b9ed-41c0-db13-9359-f0069230860b@linaro.org>
+Date:   Mon, 31 Jul 2023 14:56:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 2/3] drm/panel: Support for startek-kd070fhfid015
+ MIPI-DSI panel
+Content-Language: en-US
+To:     amergnat@baylibre.com, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Guillaume La Roque <glaroque@baylibre.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com>
+ <20230711-startek_display-v2-2-87bc7bdec6e9@baylibre.com>
+Organization: Linaro Developer Services
+In-Reply-To: <20230711-startek_display-v2-2-87bc7bdec6e9@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMJsWRmVeSWpSXmKPExsWy7bCmhW7h+uMpBm0drBar7/azWcy6/ZrF
-        4uUhTYtJh64xWuy9pW1xedccNovlx/8xWax7/Z7FgcPj/L2NLB6Xz5Z6bFrVyebx8ektFo++
-        LasYPT5vkvNoP9DNFMAelW2TkZqYklqkkJqXnJ+SmZduq+QdHO8cb2pmYKhraGlhrqSQl5ib
-        aqvk4hOg65aZA3SSkkJZYk4pUCggsbhYSd/Opii/tCRVISO/uMRWKbUgJafAvECvODG3uDQv
-        XS8vtcTK0MDAyBSoMCE7Y07DcpaCHqGKNdtXMjYwPuTrYuTkkBAwkXiwpJu1i5GLQ0hgD6PE
-        hgXnmbsYOTh4BQQl/u4QBjGFBWIktszQASkXElCSOLdmFiOILSxgINFyu40FxGYT0JPY8Xw3
-        O8gYEYHPTBKXf3xghZjPKzGj/SkLhC0tsX35VrBmTgE/ianX3zJBxDUkfizrZYawRSVurn7L
-        DmO/PzafEcIWkWi9dxaqRlDiwc/dUHFJiUOHvrKB3CkhkC+x4UAgRLhGou3Xe6hyfYlrHRvB
-        TuAV8JX4ce0IWJxFQFXi8aR1UDUuErdPPQJbyywgL7H97RxwKDALaEqs36UPMV1Z4sgtFogK
-        PomOw3/ZYR5s2PgbK3vHvCdMEK1qEouajCDCMhJfD89nn8CoNAsRyrOQrJ2FsHYBI/MqRqnU
-        guLc9NRkowJD3bzUcnjkJufnbmIEp04t3x2Mr9f/1TvEyMTBeIhRgoNZSYT3VMChFCHelMTK
-        qtSi/Pii0pzU4kOMpkBPT2SWEk3OBybvvJJ4QxNLAxMzM0NzI1MDcyVx3nutc1OEBNITS1Kz
-        U1MLUotg+pg4OKUamGYUGbeXVCR8Yjnt/XaXbL+nU8TL8HVPcwV3ydguvuTioPppXd/G6pvX
-        f3xYv8trneHtoMp1a8ovfTFrtVzCO7m+5dpp60VcNY+28zsx1cZt6G1ROzJnrecJn6p19y5U
-        eNv88Szebhzrca75VubUAzHsOh+4v9+YOU10sdLXk/kn3hYUBqas/ujRPGWuaJjBE47u6vky
-        Ri6JhTYFeT0FsbHXHz/775W1fUvsatFZy35t8o3vvxqvt+7d1hX1Lw4G5/gd/th37AW7LbfQ
-        b1WRIxzzfxnM/dbfNi1W9/MW1Zv77ufdPHfI6OHG7UsK/y74uNP/tohp8jy5yOxC2VW/dmSq
-        VcdsjHH/73WrqFRIMk2JpTgj0VCLuag4EQBrJolpJgQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
-References: <20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
-        <CGME20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p1>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In general, the bvec data structure consists of one for physically
-continuous pages. But, in the bvec configuration for bip, physically
-continuous integrity pages are composed of each bvec.
+Hi,
 
-Allow bio_integrity_add_page() to create multi-page bvecs, just like
-the bio payloads. This simplifies adding larger payloads, and fixes
-support for non-tiny workloads with nvme, which stopped using
-scatterlist for metadata a while ago.
+On 13/07/2023 11:07, amergnat@baylibre.com wrote:
+> From: Guillaume La Roque <glaroque@baylibre.com>
+> 
+> This driver support the Startek KD070FHFID015, which is a 7-inch TFT LCD
+> display using MIPI DSI interface.
+> 
+> Signed-off-by: Guillaume La Roque <glaroque@baylibre.com>
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> ---
+>   drivers/gpu/drm/panel/Kconfig                      |  11 +
+>   drivers/gpu/drm/panel/Makefile                     |   1 +
+>   .../gpu/drm/panel/panel-startek-kd070fhfid015.c    | 431 +++++++++++++++++++++
+>   3 files changed, 443 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 203c0ef0bbfd..c45e877c22c1 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -733,6 +733,17 @@ config DRM_PANEL_SONY_TULIP_TRULY_NT35521
+>   	  NT35521 1280x720 video mode panel as found on Sony Xperia M4
+>   	  Aqua phone.
+>   
+> +config DRM_PANEL_STARTEK_KD070FHFID015
+> +	tristate "STARTEK KD070FHFID015 panel"
+> +	depends on OF
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	help
+> +	  Say Y here if you want to enable support for STARTEK KD070FHFID015 DSI panel
+> +	  based on RENESAS-R69429 controller. The pannel is a 7-inch TFT LCD display
+> +	  with a resolution of 1024 x 600 pixels. It provides a MIPI DSI interface to
+> +	  the host, a built-in LED backlight and touch controller.
+> +
+>   config DRM_PANEL_TDO_TL070WSH30
+>   	tristate "TDO TL070WSH30 DSI panel"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index 30cf553c8d1d..f8b362091ce7 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -74,6 +74,7 @@ obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7789V) += panel-sitronix-st7789v.o
+>   obj-$(CONFIG_DRM_PANEL_SONY_ACX565AKM) += panel-sony-acx565akm.o
+>   obj-$(CONFIG_DRM_PANEL_SONY_TD4353_JDI) += panel-sony-td4353-jdi.o
+>   obj-$(CONFIG_DRM_PANEL_SONY_TULIP_TRULY_NT35521) += panel-sony-tulip-truly-nt35521.o
+> +obj-$(CONFIG_DRM_PANEL_STARTEK_KD070FHFID015) += panel-startek-kd070fhfid015.o
+>   obj-$(CONFIG_DRM_PANEL_TDO_TL070WSH30) += panel-tdo-tl070wsh30.o
+>   obj-$(CONFIG_DRM_PANEL_TPO_TD028TTEC1) += panel-tpo-td028ttec1.o
+>   obj-$(CONFIG_DRM_PANEL_TPO_TD043MTEA1) += panel-tpo-td043mtea1.o
+> diff --git a/drivers/gpu/drm/panel/panel-startek-kd070fhfid015.c b/drivers/gpu/drm/panel/panel-startek-kd070fhfid015.c
+> new file mode 100644
+> index 000000000000..a25dfbdf8d9d
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-startek-kd070fhfid015.c
+> @@ -0,0 +1,431 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2016 InforceComputing
+> + * Copyright (C) 2016 Linaro Ltd
+> + * Copyright (C) 2023 BayLibre, SAS
+> + *
+> + * Authors:
+> + * - Vinay Simha BN <simhavcs@gmail.com>
+> + * - Sumit Semwal <sumit.semwal@linaro.org>
+> + * - Guillaume La Roque <glaroque@baylibre.com>
+> + *
+> + */
+> +
+> +#include <linux/backlight.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <video/mipi_display.h>
+> +
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +
+> +#define DSI_REG_MCAP	0xB0
+> +#define DSI_REG_IS	0xB3 /* Interface Setting */
+> +#define DSI_REG_IIS	0xB4 /* Interface ID Setting */
+> +#define DSI_REG_CTRL	0xB6
+> +
+> +enum {
+> +	IOVCC = 0,
+> +	POWER = 1
+> +};
+> +
+> +
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Spurious empty line
 
-Fixes: 783b94bd9250 ("nvme-pci: do not build a scatterlist to map metadata")
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jinyoung Choi <j-young.choi@samsung.com>
----
- block/bio-integrity.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+> +struct stk_panel {
+> +	bool prepared;
+> +	const struct drm_display_mode *mode;
+> +	struct backlight_device *backlight;
+> +	struct drm_panel base;
+> +	struct gpio_desc *enable_gpio; /* Power IC supply enable */
+> +	struct gpio_desc *reset_gpio; /* External reset */
+> +	struct mipi_dsi_device *dsi;
+> +	struct regulator_bulk_data supplies[2];
+> +};
+> +
+> +static inline struct stk_panel *to_stk_panel(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct stk_panel, base);
+> +}
+> +
+> +static int stk_panel_init(struct stk_panel *stk)
+> +{
+> +	struct mipi_dsi_device *dsi = stk->dsi;
+> +	struct device *dev = &stk->dsi->dev;
+> +	int ret;
+> +
+> +	ret = mipi_dsi_dcs_soft_reset(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to mipi_dsi_dcs_soft_reset: %d\n", ret);
+> +		return ret;
+> +	}
+> +	mdelay(5);
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set exit sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(120);
+> +
+> +	mipi_dsi_generic_write_seq(dsi, DSI_REG_MCAP, 0x04);
+> +
+> +	/* Interface setting, video mode */
+> +	mipi_dsi_generic_write_seq(dsi, DSI_REG_IS, 0x14, 0x08, 0x00, 0x22, 0x00);
+> +	mipi_dsi_generic_write_seq(dsi, DSI_REG_IIS, 0x0C, 0x00);
+> +	mipi_dsi_generic_write_seq(dsi, DSI_REG_CTRL, 0x3A, 0xD3);
+> +
+> +	ret = mipi_dsi_dcs_set_display_brightness(dsi, 0x77);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to write display brightness: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	mipi_dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
+> +				 MIPI_DCS_WRITE_MEMORY_START);
+> +
+> +	ret = mipi_dsi_dcs_set_pixel_format(dsi, 0x77);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set pixel format: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = mipi_dsi_dcs_set_column_address(dsi, 0, stk->mode->hdisplay - 1);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set column address: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = mipi_dsi_dcs_set_page_address(dsi, 0, stk->mode->vdisplay - 1);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set page address: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int stk_panel_on(struct stk_panel *stk)
+> +{
+> +	struct mipi_dsi_device *dsi = stk->dsi;
+> +	struct device *dev = &stk->dsi->dev;
+> +	int ret;
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> +	if (ret < 0)
+> +		dev_err(dev, "failed to set display on: %d\n", ret);
+> +
+> +	mdelay(20);
+> +
+> +	return ret;
+> +}
+> +
+> +static void stk_panel_off(struct stk_panel *stk)
+> +{
+> +	struct mipi_dsi_device *dsi = stk->dsi;
+> +	struct device *dev = &stk->dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_set_display_off(dsi);
+> +	if (ret < 0)
+> +		dev_err(dev, "failed to set display off: %d\n", ret);
+> +
+> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+> +	if (ret < 0)
+> +		dev_err(dev, "failed to enter sleep mode: %d\n", ret);
+> +
+> +	msleep(100);
+> +}
+> +
+> +static int stk_panel_disable(struct drm_panel *panel)
+> +{
+> +	return 0;
+> +}
 
-diff --git a/block/bio-integrity.c b/block/bio-integrity.c
-index c6b3bc86e1f9..ec8ac8cf6e1b 100644
---- a/block/bio-integrity.c
-+++ b/block/bio-integrity.c
-@@ -123,17 +123,34 @@ void bio_integrity_free(struct bio *bio)
- int bio_integrity_add_page(struct bio *bio, struct page *page,
- 			   unsigned int len, unsigned int offset)
- {
-+	struct request_queue *q = bdev_get_queue(bio->bi_bdev);
- 	struct bio_integrity_payload *bip = bio_integrity(bio);
- 
--	if (bip->bip_vcnt >= bip->bip_max_vcnt) {
--		printk(KERN_ERR "%s: bip_vec full\n", __func__);
-+	if (((bip->bip_iter.bi_size + len) >> SECTOR_SHIFT) >
-+	    queue_max_hw_sectors(q))
- 		return 0;
--	}
- 
--	if (bip->bip_vcnt &&
--	    bvec_gap_to_prev(&bdev_get_queue(bio->bi_bdev)->limits,
--			     &bip->bip_vec[bip->bip_vcnt - 1], offset))
--		return 0;
-+	if (bip->bip_vcnt > 0) {
-+		struct bio_vec *bv = &bip->bip_vec[bip->bip_vcnt - 1];
-+		bool same_page = false;
-+
-+		if (bvec_try_merge_hw_page(q, bv, page, len, offset,
-+					   &same_page)) {
-+			bip->bip_iter.bi_size += len;
-+			return len;
-+		}
-+
-+		if (bip->bip_vcnt >=
-+		    min(bip->bip_max_vcnt, queue_max_integrity_segments(q)))
-+			return 0;
-+
-+		/*
-+		 * If the queue doesn't support SG gaps and adding this segment
-+		 * would create a gap, disallow it.
-+		 */
-+		if (bvec_gap_to_prev(&q->limits, bv, offset))
-+			return 0;
-+	}
- 
- 	bvec_set_page(&bip->bip_vec[bip->bip_vcnt], page, len, offset);
- 	bip->bip_vcnt++;
--- 
-2.34.1
+You can totally drop those enable/disable ops.
+
+> +
+> +static int stk_panel_unprepare(struct drm_panel *panel)
+> +{
+> +	struct stk_panel *stk = to_stk_panel(panel);
+> +
+> +	if (!stk->prepared)
+> +		return 0;
+> +
+> +	stk_panel_off(stk);
+> +	regulator_bulk_disable(ARRAY_SIZE(stk->supplies), stk->supplies);
+> +	gpiod_set_value(stk->reset_gpio, 0);
+> +	gpiod_set_value(stk->enable_gpio, 1);
+> +
+> +	stk->prepared = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static int stk_panel_prepare(struct drm_panel *panel)
+> +{
+> +	struct stk_panel *stk = to_stk_panel(panel);
+> +	struct device *dev = &stk->dsi->dev;
+> +	int ret;
+> +
+> +	if (stk->prepared)
+> +		return 0;
+> +
+> +	gpiod_set_value(stk->reset_gpio, 0);
+> +	gpiod_set_value(stk->enable_gpio, 0);
+> +	ret = regulator_enable(stk->supplies[IOVCC].consumer);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	mdelay(8);
+> +	ret = regulator_enable(stk->supplies[POWER].consumer);
+> +	if (ret < 0)
+> +		goto iovccoff;
+> +
+> +	mdelay(20);
+> +	gpiod_set_value(stk->enable_gpio, 1);
+> +	mdelay(20);
+> +	gpiod_set_value(stk->reset_gpio, 1);
+> +	mdelay(10);
+> +	ret = stk_panel_init(stk);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to init panel: %d\n", ret);
+> +		goto poweroff;
+> +	}
+> +
+> +	ret = stk_panel_on(stk);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set panel on: %d\n", ret);
+> +		goto poweroff;
+> +	}
+> +
+> +	stk->prepared = true;
+> +
+> +	return 0;
+> +
+> +poweroff:
+> +	regulator_disable(stk->supplies[POWER].consumer);
+> +iovccoff:
+> +	regulator_disable(stk->supplies[IOVCC].consumer);
+> +	gpiod_set_value(stk->reset_gpio, 0);
+> +	gpiod_set_value(stk->enable_gpio, 0);
+> +
+> +	return ret;
+> +}
+> +
+> +static int stk_panel_enable(struct drm_panel *panel)
+> +{
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode default_mode = {
+> +		.clock = 163204,
+> +		.hdisplay = 1200,
+> +		.hsync_start = 1200 + 144,
+> +		.hsync_end = 1200 + 144 + 16,
+> +		.htotal = 1200 + 144 + 16 + 45,
+> +		.vdisplay = 1920,
+> +		.vsync_start = 1920 + 8,
+> +		.vsync_end = 1920 + 8 + 4,
+> +		.vtotal = 1920 + 8 + 4 + 4,
+> +		.width_mm = 95,
+> +		.height_mm = 151,
+> +};
+> +
+> +static int stk_panel_get_modes(struct drm_panel *panel,
+> +				 struct drm_connector *connector)
+> +{
+> +	struct drm_display_mode *mode;
+> +
+> +	mode = drm_mode_duplicate(connector->dev, &default_mode);
+> +	if (!mode) {
+> +		dev_err(panel->dev, "failed to add mode %ux%ux@%u\n",
+> +			default_mode.hdisplay, default_mode.vdisplay,
+> +			drm_mode_vrefresh(&default_mode));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	drm_mode_set_name(mode);
+> +	drm_mode_probed_add(connector, mode);
+> +	connector->display_info.width_mm = default_mode.width_mm;
+> +	connector->display_info.height_mm = default_mode.height_mm;
+> +	return 1;
+> +}
+> +
+> +static int dsi_dcs_bl_get_brightness(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	int ret;
+> +	u16 brightness = bl->props.brightness;
+
+Why that ? you'll overwrite the value right after, leave brightness uninitialized.
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +	ret = mipi_dsi_dcs_get_display_brightness(dsi, &brightness);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +	return brightness & 0xff;
+> +}
+> +
+> +static int dsi_dcs_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +	ret = mipi_dsi_dcs_set_display_brightness(dsi, bl->props.brightness);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to set DSI control: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +	return 0;
+> +}
+> +
+> +static const struct backlight_ops dsi_bl_ops = {
+> +	.update_status = dsi_dcs_bl_update_status,
+> +	.get_brightness = dsi_dcs_bl_get_brightness,
+> +};
+> +
+> +static struct backlight_device *
+> +drm_panel_create_dsi_backlight(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	struct backlight_properties props = {
+> +		.type = BACKLIGHT_RAW,
+> +		.brightness = 255,
+> +		.max_brightness = 255,
+> +	};
+> +
+> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
+> +					      &dsi_bl_ops, &props);
+> +}
+> +
+> +static const struct drm_panel_funcs stk_panel_funcs = {
+> +	.disable = stk_panel_disable,
+> +	.unprepare = stk_panel_unprepare,
+> +	.prepare = stk_panel_prepare,
+> +	.enable = stk_panel_enable,
+> +	.get_modes = stk_panel_get_modes,
+> +};
+> +
+> +static const struct of_device_id stk_of_match[] = {
+> +	{ .compatible = "startek,kd070fhfid015", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, stk_of_match);
+> +
+> +static int stk_panel_add(struct stk_panel *stk)
+> +{
+> +	struct device *dev = &stk->dsi->dev;
+> +	int ret;
+> +
+> +	stk->mode = &default_mode;
+> +
+> +	stk->supplies[IOVCC].supply = "iovcc";
+> +	stk->supplies[POWER].supply = "power";
+> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(stk->supplies), stk->supplies);
+> +	if (ret) {
+> +		dev_err(dev, "regulator_bulk failed\n");
+> +		return ret;
+> +	}
+> +
+> +	stk->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(stk->reset_gpio)) {
+> +		ret = PTR_ERR(stk->reset_gpio);
+> +		dev_err(dev, "cannot get reset-gpios %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	stk->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
+> +	if (IS_ERR(stk->enable_gpio)) {
+> +		ret = PTR_ERR(stk->enable_gpio);
+> +		dev_err(dev, "cannot get enable-gpio %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	stk->backlight = drm_panel_create_dsi_backlight(stk->dsi);
+> +	if (IS_ERR(stk->backlight)) {
+> +		ret = PTR_ERR(stk->backlight);
+> +		dev_err(dev, "failed to register backlight %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	drm_panel_init(&stk->base, &stk->dsi->dev, &stk_panel_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +
+> +	drm_panel_add(&stk->base);
+> +
+> +	return 0;
+> +}
+> +
+> +static int stk_panel_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct stk_panel *stk;
+> +	int ret;
+> +
+> +	dsi->lanes = 4;
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = (MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_LPM);
+> +
+> +	stk = devm_kzalloc(&dsi->dev, sizeof(*stk), GFP_KERNEL);
+> +	if (!stk)
+> +		return -ENOMEM;
+> +
+> +	mipi_dsi_set_drvdata(dsi, stk);
+> +
+> +	stk->dsi = dsi;
+> +
+> +	ret = stk_panel_add(stk);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0)
+> +		drm_panel_remove(&stk->base);
+> +
+> +	return 0;
+> +}
+> +
+> +static void stk_panel_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct stk_panel *stk = mipi_dsi_get_drvdata(dsi);
+> +	int err;
+> +
+> +	err = stk_panel_disable(&stk->base);
+> +	if (err < 0)
+> +		dev_err(&dsi->dev, "failed to disable panel: %d\n", err);
+> +
+> +	err = mipi_dsi_detach(dsi);
+> +	if (err < 0)
+> +		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n",
+> +			err);
+> +
+> +	drm_panel_remove(&stk->base);
+> +}
+> +
+> +static void stk_panel_shutdown(struct mipi_dsi_device *dsi)
+> +{
+> +	struct stk_panel *stk = mipi_dsi_get_drvdata(dsi);
+> +
+> +	stk_panel_disable(&stk->base);
+> +}
+> +
+> +static struct mipi_dsi_driver stk_panel_driver = {
+> +	.driver = {
+> +		.name = "panel-startek-kd070fhfid015",
+> +		.of_match_table = stk_of_match,
+> +	},
+> +	.probe = stk_panel_probe,
+> +	.remove = stk_panel_remove,
+> +	.shutdown = stk_panel_shutdown,
+> +};
+> +module_mipi_dsi_driver(stk_panel_driver);
+> +
+> +MODULE_AUTHOR("Guillaume La Roque <glaroque@baylibre.com>");
+> +MODULE_DESCRIPTION("STARTEK KD070FHFID015");
+> +MODULE_LICENSE("GPL");
+> 
+
+With those changes:
+
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+
+Thanks,
+Neil
+
