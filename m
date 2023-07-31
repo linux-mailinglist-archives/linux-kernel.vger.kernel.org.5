@@ -2,85 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8451769572
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB063769575
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbjGaMCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:02:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        id S232144AbjGaMDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjGaMCs (ORCPT
+        with ESMTP id S232475AbjGaMDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:02:48 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC0E10F7;
-        Mon, 31 Jul 2023 05:02:37 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id CEC1B5C0127;
-        Mon, 31 Jul 2023 08:02:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 31 Jul 2023 08:02:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690804954; x=1690891354; bh=j40iFgR8znkwD
-        nes11QIZUBFrePDVRliFxxrmg4h4mQ=; b=x/2rJZ+9fqPXutkZg6s5yXHxqggkT
-        ccWLIHfgug9r24dtWg4YcPYK6KdJckBpYzhTj6NfNLh0DXxNjHubmgMhonms4I9U
-        hjCskC78PYtq7sf05r+FDuH0HitxO6VQSrUcUs66a5ft+36yeAsqlO/uaKt3tIjF
-        fm6brproJVuFahJ1tb4HLH1kz9jy0pakAIlEX/IvBiqBfkkBAktGaYfA5OXuUk2h
-        i0mvXAfI5lppFoOoELAsoAiGEkrSGEHN5M3wOkyK8wkLcpfV4W6BrFUuhffJ1Qb0
-        b2711HoRzGfQ4k1ERuf82iY8SKbTYygEIHDNSYPFlVU7pAnJX7uTfHUxg==
-X-ME-Sender: <xms:2qLHZCfslkKfPgsvtGZbLjwt9FI_N5VwRAAHw3r-La91hkK6KmEkJQ>
-    <xme:2qLHZMOyV8DjRYu9AUCCETweaLL7ho6bCBk_5vMQ9PzdW6-vkko3kXsS_LtJ6abH6
-    5R6BvTrromHPXI>
-X-ME-Received: <xmr:2qLHZDinFo19eErkDDqrdHk__yvSh8ZMlQxpel2wsSznWV2kNswqe4-MR6Qg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeejgeeg
-    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:2qLHZP_uZGmEQd-Klz8tTaiz4woEZWowhcOdEsd7dr7hqvlVxxmRUA>
-    <xmx:2qLHZOugCkDRGTd18nnPcouWV7LE9xc1YfL4Byk-y-vqS-_GoUEMRw>
-    <xmx:2qLHZGFCpHRpyPgLvCdfKqqSzri3STBeK9BT3xN-Z23HLe7Gtmp4ng>
-    <xmx:2qLHZILNH5VqWMODTHZOSUmvfiQGizOcuUJZjIuMxZkGb9Wjfmq9Kw>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 31 Jul 2023 08:02:33 -0400 (EDT)
-Date:   Mon, 31 Jul 2023 15:02:25 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc:     petrm@nvidia.com, razor@blackwall.org,
-        Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1 01/11] selftests: forwarding:
- custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
-Message-ID: <ZMei0VMIH/l1GzVM@shredder>
-References: <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
- <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
- <ZL6OljQubhVtQjcD@shredder>
- <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
- <ZMEQGIOQXv6so30x@shredder>
- <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
- <ZMYXABUN9OzfN5D3@shredder>
- <da3f4f4e-47a7-25be-fa61-aebeba1d8d0c@alu.unizg.hr>
- <ZMdouQRypZCGZhV0@shredder>
- <2f203995-5ae0-13bc-d1a6-997c2b36a2b8@alu.unizg.hr>
+        Mon, 31 Jul 2023 08:03:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEB31A3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:02:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E37E761089
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:02:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4D23C433C7;
+        Mon, 31 Jul 2023 12:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690804978;
+        bh=cBSymYPkjmxohnnaoxyxwZuTdKvrG00Ch3k3nTvBjRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t8FHtgQdz7fIkyhoeSAUrF8hO5Q26wudZMKsPbiv3v+SfGrdCoCiq6w6maC0D5YPn
+         UCTUkioaI0VCzInyUM7SyefFMmLSM5fBtz47+leXGtVYjXOFEkxxId8OpJ7R6xhlqY
+         0BkVmJYHQWjNxiixk3QjRp1WQ3p4KWp3d1fdNI2+SKNCkslxuEBduLZItsJUzZC88X
+         Xwn+kRqtsatuwPS2yurm0fcdbNi2kmJhPgLfnXwqjqlHCHVZY+jNhg/4qz7DoQ1r+C
+         e3Ljftk6oMkkUM2Tcr2sdR67g5wEkXs0OAhlDhRRmUEBKlZKy9OWVBEjQSOrGrYPoY
+         dqFZWnUzanc4Q==
+Date:   Mon, 31 Jul 2023 15:02:54 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ratheesh Kannoth <rkannoth@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
+        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        jiri@resnulli.us
+Subject: Re: [PATCH net-next 2/4] tc: flower: support for SPI
+Message-ID: <20230731120254.GB87829@unreal>
+References: <20230731113408.2586913-1-rkannoth@marvell.com>
+ <20230731113408.2586913-3-rkannoth@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2f203995-5ae0-13bc-d1a6-997c2b36a2b8@alu.unizg.hr>
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230731113408.2586913-3-rkannoth@marvell.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,179 +60,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:24:27AM +0200, Mirsad Todorovac wrote:
-> I guess that means only three are left.
+On Mon, Jul 31, 2023 at 05:04:06PM +0530, Ratheesh Kannoth wrote:
+> tc flower rules support to classify ESP/AH
+> packets matching SPI field.
 > 
-> # ./bridge_mdb.sh
-> dev br0 port veth1 grp 239.1.1.1 src 192.0.2.1 temp filter_mode include proto static vid 10  259.99
-> TEST: IPv4 (S, G) port group entries configuration tests            [FAIL]
-> 	Entry has an unpending group timer after replace
-> dev br0 port veth1 grp ff0e::1 src 2001:db8:1::1 temp filter_mode include proto static vid 10  259.99
-> TEST: IPv6 (S, G) port group entries configuration tests            [FAIL]
-> 	Entry has an unpending group timer after replace
+> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+> ---
+>  include/uapi/linux/pkt_cls.h |  3 +++
+>  net/sched/cls_flower.c       | 35 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 38 insertions(+)
+> 
+> diff --git a/include/uapi/linux/pkt_cls.h b/include/uapi/linux/pkt_cls.h
+> index 7865f5a9885b..a90b0e3d351f 100644
+> --- a/include/uapi/linux/pkt_cls.h
+> +++ b/include/uapi/linux/pkt_cls.h
+> @@ -594,6 +594,9 @@ enum {
+>  
+>  	TCA_FLOWER_KEY_L2TPV3_SID,	/* be32 */
+>  
+> +	TCA_FLOWER_KEY_SPI,		/* be32 */
+> +	TCA_FLOWER_KEY_SPI_MASK,	/* be32 */
+> +
 
-I suspect that what happens here is that you have a faster system
-than me or a different HZ value (check CONFIG_HZ, mine is 1000). The
-group membership time is probably 260.00 which is why grepping for
-"0.00" works when it shouldn't. Can you try the patch below? No need to
-run all the other tests.
+You can't add new fields in the middle of UAPI exposed enum. It will
+break all applications were compiled against old header but run on new
+kernel and vice versa.
 
-diff --git a/tools/testing/selftests/net/forwarding/bridge_mdb.sh b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-index 8493c3dfc01e..41c33a2de0a6 100755
---- a/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-+++ b/tools/testing/selftests/net/forwarding/bridge_mdb.sh
-@@ -617,7 +617,7 @@ __cfg_test_port_ip_sg()
-                grep -q "permanent"
-        check_err $? "Entry not added as \"permanent\" when should"
-        bridge -d -s mdb show dev br0 vid 10 | grep "$grp_key" | \
--               grep -q "0.00"
-+               grep -q " 0.00"
-        check_err $? "\"permanent\" entry has a pending group timer"
-        bridge mdb del dev br0 port $swp1 $grp_key vid 10
- 
-@@ -626,7 +626,7 @@ __cfg_test_port_ip_sg()
-                grep -q "temp"
-        check_err $? "Entry not added as \"temp\" when should"
-        bridge -d -s mdb show dev br0 vid 10 | grep "$grp_key" | \
--               grep -q "0.00"
-+               grep -q " 0.00"
-        check_fail $? "\"temp\" entry has an unpending group timer"
-        bridge mdb del dev br0 port $swp1 $grp_key vid 10
- 
-@@ -659,7 +659,7 @@ __cfg_test_port_ip_sg()
-                grep -q "permanent"
-        check_err $? "Entry not marked as \"permanent\" after replace"
-        bridge -d -s mdb show dev br0 vid 10 | grep "$grp_key" | \
--               grep -q "0.00"
-+               grep -q " 0.00"
-        check_err $? "Entry has a pending group timer after replace"
- 
-        bridge mdb replace dev br0 port $swp1 $grp_key vid 10 temp
-@@ -667,7 +667,7 @@ __cfg_test_port_ip_sg()
-                grep -q "temp"
-        check_err $? "Entry not marked as \"temp\" after replace"
-        bridge -d -s mdb show dev br0 vid 10 | grep "$grp_key" | \
--               grep -q "0.00"
-+               grep -q " 0.00"
-        check_fail $? "Entry has an unpending group timer after replace"
-        bridge mdb del dev br0 port $swp1 $grp_key vid 10
+Thanks
 
-> # ./bridge_vlan_mcast.sh
-> TEST: Vlan mcast_startup_query_interval global option default value   [FAIL]
-> 	Wrong default mcast_startup_query_interval global vlan option value
-> # ./mirror_gre_changes.sh
-> TEST: mirror to gretap: TTL change (skip_hw)                        [FAIL]
-> 	Expected to capture 10 packets, got 15.
-> TEST: mirror to ip6gretap: TTL change (skip_hw)                     [FAIL]
-> 	Expected to capture 10 packets, got 13.
-> WARN: Could not test offloaded functionality
-
-I hope Nik and Petr will find the time to look into those. If not, I
-will check when I can.
-
+>  	TCA_FLOWER_L2_MISS,		/* u8 */
+>  
+>  	TCA_FLOWER_KEY_CFM,		/* nested */
+> diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+> index 8da9d039d964..eca260272845 100644
+> --- a/net/sched/cls_flower.c
+> +++ b/net/sched/cls_flower.c
+> @@ -72,6 +72,7 @@ struct fl_flow_key {
+>  	struct flow_dissector_key_num_of_vlans num_of_vlans;
+>  	struct flow_dissector_key_pppoe pppoe;
+>  	struct flow_dissector_key_l2tpv3 l2tpv3;
+> +	struct flow_dissector_key_ipsec ipsec;
+>  	struct flow_dissector_key_cfm cfm;
+>  } __aligned(BITS_PER_LONG / 8); /* Ensure that we can do comparisons as longs. */
+>  
+> @@ -726,6 +727,8 @@ static const struct nla_policy fl_policy[TCA_FLOWER_MAX + 1] = {
+>  	[TCA_FLOWER_KEY_PPPOE_SID]	= { .type = NLA_U16 },
+>  	[TCA_FLOWER_KEY_PPP_PROTO]	= { .type = NLA_U16 },
+>  	[TCA_FLOWER_KEY_L2TPV3_SID]	= { .type = NLA_U32 },
+> +	[TCA_FLOWER_KEY_SPI]		= { .type = NLA_U32 },
+> +	[TCA_FLOWER_KEY_SPI_MASK]	= { .type = NLA_U32 },
+>  	[TCA_FLOWER_L2_MISS]		= NLA_POLICY_MAX(NLA_U8, 1),
+>  	[TCA_FLOWER_KEY_CFM]		= { .type = NLA_NESTED },
+>  };
+> @@ -795,6 +798,24 @@ static void fl_set_key_val(struct nlattr **tb,
+>  		nla_memcpy(mask, tb[mask_type], len);
+>  }
+>  
+> +static int fl_set_key_spi(struct nlattr **tb, struct fl_flow_key *key,
+> +			  struct fl_flow_key *mask,
+> +			  struct netlink_ext_ack *extack)
+> +{
+> +	if (key->basic.ip_proto != IPPROTO_ESP &&
+> +	    key->basic.ip_proto != IPPROTO_AH) {
+> +		NL_SET_ERR_MSG(extack,
+> +			       "Protocol must be either ESP or AH");
+> +		return -EINVAL;
+> +	}
+> +
+> +	fl_set_key_val(tb, &key->ipsec.spi,
+> +		       TCA_FLOWER_KEY_SPI,
+> +		       &mask->ipsec.spi, TCA_FLOWER_KEY_SPI_MASK,
+> +		       sizeof(key->ipsec.spi));
+> +	return 0;
+> +}
+> +
+>  static int fl_set_key_port_range(struct nlattr **tb, struct fl_flow_key *key,
+>  				 struct fl_flow_key *mask,
+>  				 struct netlink_ext_ack *extack)
+> @@ -1894,6 +1915,12 @@ static int fl_set_key(struct net *net, struct nlattr **tb,
+>  			return ret;
+>  	}
+>  
+> +	if (tb[TCA_FLOWER_KEY_SPI]) {
+> +		ret = fl_set_key_spi(tb, key, mask, extack);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	if (tb[TCA_FLOWER_KEY_ENC_IPV4_SRC] ||
+>  	    tb[TCA_FLOWER_KEY_ENC_IPV4_DST]) {
+>  		key->enc_control.addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
+> @@ -2066,6 +2093,8 @@ static void fl_init_dissector(struct flow_dissector *dissector,
+>  			     FLOW_DISSECTOR_KEY_PPPOE, pppoe);
+>  	FL_KEY_SET_IF_MASKED(mask, keys, cnt,
+>  			     FLOW_DISSECTOR_KEY_L2TPV3, l2tpv3);
+> +	FL_KEY_SET_IF_MASKED(mask, keys, cnt,
+> +			     FLOW_DISSECTOR_KEY_IPSEC, ipsec);
+>  	FL_KEY_SET_IF_MASKED(mask, keys, cnt,
+>  			     FLOW_DISSECTOR_KEY_CFM, cfm);
+>  
+> @@ -3364,6 +3393,12 @@ static int fl_dump_key(struct sk_buff *skb, struct net *net,
+>  				 sizeof(key->l2tpv3.session_id)))
+>  		goto nla_put_failure;
+>  
+> +	if (key->ipsec.spi &&
+> +	    fl_dump_key_val(skb, &key->ipsec.spi, TCA_FLOWER_KEY_SPI,
+> +			    &mask->ipsec.spi, TCA_FLOWER_KEY_SPI_MASK,
+> +			    sizeof(key->ipsec.spi)))
+> +		goto nla_put_failure;
+> +
+>  	if ((key->basic.ip_proto == IPPROTO_TCP ||
+>  	     key->basic.ip_proto == IPPROTO_UDP ||
+>  	     key->basic.ip_proto == IPPROTO_SCTP) &&
+> -- 
+> 2.25.1
 > 
-> NOTE: The error happened because two patches collided. This patch
 > 
-> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-> index 975fc5168c6334..40a8c1541b7f81 100755
-> --- a/tools/testing/selftests/net/forwarding/lib.sh
-> +++ b/tools/testing/selftests/net/forwarding/lib.sh
-> @@ -30,6 +30,7 @@ REQUIRE_MZ=${REQUIRE_MZ:=yes}
->  REQUIRE_MTOOLS=${REQUIRE_MTOOLS:=no}
->  STABLE_MAC_ADDRS=${STABLE_MAC_ADDRS:=no}
->  TCPDUMP_EXTRA_FLAGS=${TCPDUMP_EXTRA_FLAGS:=}
-> +TROUTE6=${TROUTE6:=traceroute6}
->  relative_path="${BASH_SOURCE%/*}"
->  if [[ "$relative_path" == "${BASH_SOURCE}" ]]; then
-> 
-> and this patch
-> 
-> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-> index 71f7c0c49677..5b0183013017 100755
-> --- a/tools/testing/selftests/net/forwarding/lib.sh
-> +++ b/tools/testing/selftests/net/forwarding/lib.sh
-> @@ -16,8 +16,6 @@ TEAMD=${TEAMD:=teamd}
->  WAIT_TIME=${WAIT_TIME:=5}
->  PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
->  PAUSE_ON_CLEANUP=${PAUSE_ON_CLEANUP:=no}
-> -NETIF_TYPE=${NETIF_TYPE:=veth}
-> -NETIF_CREATE=${NETIF_CREATE:=yes}
->  MCD=${MCD:=smcrouted}
->  MC_CLI=${MC_CLI:=smcroutectl}
->  PING_COUNT=${PING_COUNT:=10}
-> @@ -30,6 +28,20 @@ REQUIRE_MZ=${REQUIRE_MZ:=yes}
->  REQUIRE_MTOOLS=${REQUIRE_MTOOLS:=no}
->  STABLE_MAC_ADDRS=${STABLE_MAC_ADDRS:=no}
->  TCPDUMP_EXTRA_FLAGS=${TCPDUMP_EXTRA_FLAGS:=}
-> +NETIF_TYPE=${NETIF_TYPE:=veth}
-> +NETIF_CREATE=${NETIF_CREATE:=yes}
-> +declare -A NETIFS=(
-> +       [p1]=veth0
-> +       [p2]=veth1
-> +       [p3]=veth2
-> +       [p4]=veth3
-> +       [p5]=veth4
-> +       [p6]=veth5
-> +       [p7]=veth6
-> +       [p8]=veth7
-> +       [p9]=veth8
-> +       [p10]=veth9
-> +)
-> 
->  relative_path="${BASH_SOURCE%/*}"
->  if [[ "$relative_path" == "${BASH_SOURCE}" ]]; then
-> 
-> are not compatible.
-> 
-> I have applied the 'require_command $TROUTE6' patch manually.
-> 
-> I suppose this is what you intended to have:
-> 
-> # Can be overridden by the configuration file.
-> PING=${PING:=ping}
-> PING6=${PING6:=ping6}
-> MZ=${MZ:=mausezahn}
-> ARPING=${ARPING:=arping}
-> TEAMD=${TEAMD:=teamd}
-> WAIT_TIME=${WAIT_TIME:=5}
-> PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
-> PAUSE_ON_CLEANUP=${PAUSE_ON_CLEANUP:=no}
-> MCD=${MCD:=smcrouted}
-> MC_CLI=${MC_CLI:=smcroutectl}
-> PING_COUNT=${PING_COUNT:=10}
-> PING_TIMEOUT=${PING_TIMEOUT:=5}
-> WAIT_TIMEOUT=${WAIT_TIMEOUT:=20}
-> INTERFACE_TIMEOUT=${INTERFACE_TIMEOUT:=600}
-> LOW_AGEING_TIME=${LOW_AGEING_TIME:=1000}
-> REQUIRE_JQ=${REQUIRE_JQ:=yes}
-> REQUIRE_MZ=${REQUIRE_MZ:=yes}
-> REQUIRE_MTOOLS=${REQUIRE_MTOOLS:=no}
-> STABLE_MAC_ADDRS=${STABLE_MAC_ADDRS:=no}
-> TCPDUMP_EXTRA_FLAGS=${TCPDUMP_EXTRA_FLAGS:=}
-> TROUTE6=${TROUTE6:=traceroute6}
-> NETIF_TYPE=${NETIF_TYPE:=veth}
-> NETIF_CREATE=${NETIF_CREATE:=yes}
-> declare -A NETIFS=(
->        [p1]=veth0
->        [p2]=veth1
->        [p3]=veth2
->        [p4]=veth3
->        [p5]=veth4
->        [p6]=veth5
->        [p7]=veth6
->        [p8]=veth7
->        [p9]=veth8
->        [p10]=veth9
-> )
-> 
-> relative_path="${BASH_SOURCE%/*}"
-> if [[ "$relative_path" == "${BASH_SOURCE}" ]]; then
->         relative_path="."
-> fi
-> ------------------------------------------------
-> 
-> Probably for the production patch you would like to have this fixed.
-
-No, I don't intend to submit the patch that automatically creates the
-veth pairs. It is superseded by "selftests: forwarding: Skip test when
-no interfaces are specified".
